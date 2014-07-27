@@ -45,3 +45,10 @@ SwingLabs Swing Component Extensions
 swingx-all-1.6.4.jar
 http://swingx.java.net/
 Contains extensions to the Swing GUI toolkit, including new and enhanced components that provide functionality commonly required by rich client applications.
+
+===============================================================
+JChart2D
+jchart2d-3.2.2.jar
+http://jchart2d.sourceforge.net/
+JChart2D is an minimalistic realtime charting library
+

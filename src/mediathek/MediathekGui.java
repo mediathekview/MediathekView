@@ -306,7 +306,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         setFocusSuchfeld();
 
-        bandwidthMonitor = new MVBandwidthMonitor(this,cbBandwidthDisplay);
+        bandwidthMonitor = new MVBandwidthMonitor(this, cbBandwidthDisplay);
         cbBandwidthDisplay.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -640,6 +640,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
     private void initTabs() {
         daten.guiFilme = new GuiFilme(daten, daten.mediathekGui);
+        daten.guiFilme.init();
         daten.guiDownloads = new GuiDownloads(daten, daten.mediathekGui);
         daten.guiAbo = new GuiAbo(daten, daten.mediathekGui);
         jTabbedPane.addTab("Filme", daten.guiFilme);

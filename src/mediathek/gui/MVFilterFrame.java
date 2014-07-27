@@ -139,11 +139,11 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jRadioButtonF3.addActionListener(new BeobRadio(2));
         jRadioButtonF4.addActionListener(new BeobRadio(3));
         jRadioButtonF5.addActionListener(new BeobRadio(4));
-        jRadioButtonF1.addMouseListener(new BeobMaus(jRadioButtonF1, 0));
-        jRadioButtonF2.addMouseListener(new BeobMaus(jRadioButtonF2, 1));
-        jRadioButtonF3.addMouseListener(new BeobMaus(jRadioButtonF3, 2));
-        jRadioButtonF4.addMouseListener(new BeobMaus(jRadioButtonF4, 3));
-        jRadioButtonF5.addMouseListener(new BeobMaus(jRadioButtonF5, 4));
+        jRadioButtonF1.addMouseListener(new BeobMaus(0));
+        jRadioButtonF2.addMouseListener(new BeobMaus(1));
+        jRadioButtonF3.addMouseListener(new BeobMaus(2));
+        jRadioButtonF4.addMouseListener(new BeobMaus(3));
+        jRadioButtonF5.addMouseListener(new BeobMaus(4));
 
         setFilterAnzahl();
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FILTER_ANZAHL, MVFilterFrame.class.getSimpleName()) {
@@ -227,12 +227,10 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     public class BeobMaus extends MouseAdapter {
 
         //rechhte Maustaste
-        private final JRadioButton JRadioButton;
         JSpinner jSpinner;
         int filter;
 
-        public BeobMaus(JRadioButton jr, int f) {
-            JRadioButton = jr;
+        public BeobMaus(int f) {
             filter = f;
         }
 
@@ -525,23 +523,23 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jButtonOk.setText("OK");
 
         buttonGroup1.add(jRadioButtonF1);
-        jRadioButtonF1.setToolTipText("Filterprofile: Profil wählen und Einstellungen vornehmen");
+        jRadioButtonF1.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 1 speichern");
         jRadioButtonF1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/filter_off_1.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF2);
-        jRadioButtonF2.setToolTipText("Filterprofile: Profil wählen und Einstellungen vornehmen");
+        jRadioButtonF2.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 2 speichern");
         jRadioButtonF2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/filter_off_2.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF3);
-        jRadioButtonF3.setToolTipText("Filterprofile: Profil wählen und Einstellungen vornehmen");
+        jRadioButtonF3.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 3 speichern");
         jRadioButtonF3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/filter_off_3.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF4);
-        jRadioButtonF4.setToolTipText("Filterprofile: Profil wählen und Einstellungen vornehmen");
+        jRadioButtonF4.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 4 speichern");
         jRadioButtonF4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/filter_off_4.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF5);
-        jRadioButtonF5.setToolTipText("Filterprofile: Profil wählen und Einstellungen vornehmen");
+        jRadioButtonF5.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 5 speichern");
         jRadioButtonF5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/filter_off_5.png"))); // NOI18N
 
         jLabel6.setText("Filterprofile:");
