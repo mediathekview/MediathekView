@@ -147,14 +147,7 @@ public class GuiFilme extends PanelVorlage {
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
         jPanelFilter.setLayout(new BorderLayout());
         filmInfoHud = daten.filmInfoHud;
-        init(); //alles einrichten, Beobachter anhängen
-        setFilterPanel();
-        loadTable(); //Filme laden
-        tabelle.initTabelle();
-        if (tabelle.getRowCount() > 0) {
-            tabelle.setRowSelectionInterval(0, 0);
-        }
-        addMVListener();
+//        init(); //alles einrichten, Beobachter anhängen
     }
 
     //===================================
@@ -185,10 +178,7 @@ public class GuiFilme extends PanelVorlage {
         loadTable();
     }
 
-    //===================================
-    // Private
-    //===================================
-    private void init() {
+    public void init() {
         panelBeschreibungSetzen();
         Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
             @Override
@@ -295,8 +285,21 @@ public class GuiFilme extends PanelVorlage {
                         }
                     }
                 });
+
+        // "Filme" einrichten, ...
+        setFilterPanel();
+        MVListeFilme.checkBlacklist();
+        loadTable(); //Filme laden
+        tabelle.initTabelle();
+        if (tabelle.getRowCount() > 0) {
+            tabelle.setRowSelectionInterval(0, 0);
+        }
+        addMVListener();
     }
 
+    //===================================
+    // Private
+    //===================================
     private void addMVListener() {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
             @Override
@@ -624,7 +627,11 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
         mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
         mVFilter.get_jToggleButtonHistory().setSelected(history);
-        mVFilter.get_jComboBoxZeitraum().setSelectedIndex(5);
+        try {
+            mVFilter.get_jComboBoxZeitraum().setSelectedIndex(Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE_START)));
+        } catch (Exception ignored) {
+            mVFilter.get_jComboBoxZeitraum().setSelectedIndex(5);
+        }
         mVFilter.get_jSliderMinuten().setValue(0);
         mVFilter.get_jTextFieldFilterMinuten().setText(String.valueOf(mVFilter.get_jSliderMinuten().getValue()));
 
@@ -645,6 +652,7 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jComboBoxZeitraum().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_TAGE_START, String.valueOf(mVFilter.get_jComboBoxZeitraum().getSelectedIndex()));
                 if (!stopBeob) {
                     MVListeFilme.checkBlacklist();
                     loadTable();
@@ -739,13 +747,13 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jTextFieldFilterThemaTitel().setText("");
         mVFilter.setThemaTitel(true);
 
-        mVFilter.get_jCheckBoxKeineAbos().setSelected(false);
-        mVFilter.get_jCheckBoxKeineGesehenen().setSelected(false);
-        mVFilter.get_jCheckBoxNurHd().setSelected(false);
-        mVFilter.get_jCheckBoxNeue().setSelected(false);
-        mVFilter.get_jComboBoxZeitraum().setSelectedIndex(5);
-        mVFilter.get_jSliderMinuten().setValue(0);
-        mVFilter.get_jTextFieldFilterMinuten().setText(String.valueOf(mVFilter.get_jSliderMinuten().getValue()));
+//        mVFilter.get_jCheckBoxKeineAbos().setSelected(false);
+//        mVFilter.get_jCheckBoxKeineGesehenen().setSelected(false);
+//        mVFilter.get_jCheckBoxNurHd().setSelected(false);
+//        mVFilter.get_jCheckBoxNeue().setSelected(false);
+//        mVFilter.get_jComboBoxZeitraum().setSelectedIndex(5);
+//        mVFilter.get_jSliderMinuten().setValue(0);
+//        mVFilter.get_jTextFieldFilterMinuten().setText(String.valueOf(mVFilter.get_jSliderMinuten().getValue()));
         stopBeob = false;
 
         // und jetzt wieder laden

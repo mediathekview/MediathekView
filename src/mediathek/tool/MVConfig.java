@@ -101,6 +101,7 @@ public class MVConfig {
     public static final String SYSTEM_IMPORT_URL_MANUELL = "system-import-url-manuell";
     public static final String SYSTEM_EXPORT_DATEI = "system-export-datei";
     // Filter
+    public static final String SYSTEM_FILTER_TAGE_START = "filter-tage-start"; // index im Array GuiFilme.COMBO_ZEIT_INT
     public static final String SYSTEM_FILTER_DAUER = "filter-dauer";
     public static final String SYSTEM_FILTER_TAGE = "filter-tage"; // index im Array GuiFilme.COMBO_ZEIT_INT
     public static final String SYSTEM_FILTER_KEINE_ABO = "filter-keineAbo";
