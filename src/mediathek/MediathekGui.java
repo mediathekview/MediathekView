@@ -307,6 +307,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         setFocusSuchfeld();
 
         bandwidthMonitor = new MVBandwidthMonitor(this, cbBandwidthDisplay);
+        cbBandwidthDisplay.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ANSICHT_BANDWIDTH)));
+        bandwidthMonitor.toggleVisibility();
         cbBandwidthDisplay.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
