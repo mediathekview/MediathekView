@@ -97,7 +97,7 @@ public class MVSenderIconCache {
 
     private static ImageIcon scaleImage(String source, int maxHeight) {
 
-        int newHeight = 0, newWidth = 0;        // Variables for the new height and width
+        int newWidth = 0;        // Variables for the new height and width
         int priorHeight = 0, priorWidth = 0;
         Image image;
         ImageIcon sizeImage;
@@ -108,10 +108,9 @@ public class MVSenderIconCache {
         priorHeight = sizeImage.getIconHeight();
         priorWidth = sizeImage.getIconWidth();
 
-        newHeight = maxHeight;
-        newWidth = (int) (((float) priorWidth / (float) priorHeight) * (float) newHeight);
+        newWidth = (int) (((float) priorWidth / (float) priorHeight) * (float) maxHeight);
 
-        return new ImageIcon(image.getScaledInstance(newWidth, newHeight, Image.SCALE_AREA_AVERAGING));
+        return new ImageIcon(image.getScaledInstance(newWidth, maxHeight, Image.SCALE_AREA_AVERAGING));
     }
 
 }

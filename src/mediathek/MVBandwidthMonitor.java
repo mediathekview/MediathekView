@@ -16,15 +16,18 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.LinkedList;
 import java.util.TimerTask;
+import mediathek.tool.Funktionen;
+import mediathek.tool.MVConfig;
 
 /**
  * This class will manage and display the download bandwidth chart display.
  */
 class MVBandwidthMonitor {
+
     private double counter = 0.0;
     private HudWindow hudWindow = null;
     private JCheckBoxMenuItem menuItem = null;
-    private ITrace2D m_trace = new Trace2DLtd(300);
+    private Trace2DLtd m_trace = new Trace2DLtd(300);
 
     /**
      * Timer for collecting sample data.
@@ -41,34 +44,67 @@ class MVBandwidthMonitor {
             @Override
             public void windowClosing(WindowEvent e) {
                 menuItem.setSelected(false);
+                Daten.mVConfig.add(MVConfig.SYSTEM_ANSICHT_BANDWIDTH, Boolean.toString(menuItem.isSelected()));
             }
         });
 
-        //setup chart display
-        Chart2D chart = new Chart2D();
-        chart.setOpaque(false);
-        chart.setPaintLabels(false);
-        chart.setUseAntialiasing(true);
+        if (Funktionen.getOs() == Funktionen.OS_LINUX) {
+            //setup chart display
+            Chart2D chart = new Chart2D();
+            chart.setOpaque(true);
+            chart.setPaintLabels(false);
+            chart.setUseAntialiasing(true);
 
-        //setup trace point handling
-        m_trace.setColor(Color.GREEN);
-        m_trace.setName("KB/s");
+            //setup trace point handling
+//            m_trace.setColor(Color.GREEN);
+            m_trace.setName("KB/s");
 
-        chart.addTrace(m_trace);
+            chart.addTrace(m_trace);
+            m_trace.setMaxSize(100);
 
-        IAxis x_achse = chart.getAxisX();
-        x_achse.getAxisTitle().setTitle("");
-        x_achse.setPaintScale(false);
-        x_achse.setVisible(false);
+            IAxis x_achse = chart.getAxisX();
+            x_achse.getAxisTitle().setTitle("");
+            x_achse.setPaintScale(true);
+            x_achse.setVisible(true);
+            
+            IAxis y_achse = chart.getAxisY();
+            y_achse.getAxisTitle().setTitle("");
+            x_achse.setPaintScale(true);
+            x_achse.setVisible(true);
 
-        JPanel panel = new JPanel();
-        panel.setOpaque(false);
-        panel.setLayout(new BorderLayout(0, 0));
-        panel.add(chart, BorderLayout.CENTER);
-        hudWindow.setContentPane(panel);
+            JPanel panel = new JPanel();
+            panel.setOpaque(false);
+            panel.setLayout(new BorderLayout(0, 0));
+            panel.add(chart, BorderLayout.CENTER);
+            hudWindow.setContentPane(panel);
 
-        chart.removeAxisYLeft(chart.getAxisY());
+//            chart.removeAxisYLeft(chart.getAxisY());
+        } else {
+            //setup chart display
+            Chart2D chart = new Chart2D();
+            chart.setOpaque(false);
+            chart.setPaintLabels(false);
+            chart.setUseAntialiasing(true);
 
+            //setup trace point handling
+            m_trace.setColor(Color.GREEN);
+            m_trace.setName("KB/s");
+
+            chart.addTrace(m_trace);
+
+            IAxis x_achse = chart.getAxisX();
+            x_achse.getAxisTitle().setTitle("");
+            x_achse.setPaintScale(false);
+            x_achse.setVisible(false);
+
+            JPanel panel = new JPanel();
+            panel.setOpaque(false);
+            panel.setLayout(new BorderLayout(0, 0));
+            panel.add(chart, BorderLayout.CENTER);
+            hudWindow.setContentPane(panel);
+
+            chart.removeAxisYLeft(chart.getAxisY());
+        }
         final Dimension dim = hudDialog.getSize();
         dim.height = 120;
         dim.width = 240;
@@ -80,6 +116,7 @@ class MVBandwidthMonitor {
      */
     public void toggleVisibility() {
         final boolean isSelected = menuItem.isSelected();
+        Daten.mVConfig.add(MVConfig.SYSTEM_ANSICHT_BANDWIDTH, Boolean.toString(menuItem.isSelected()));
         hudWindow.getJDialog().setVisible(isSelected);
         try {
             if (menuItem.isSelected()) {
@@ -96,12 +133,13 @@ class MVBandwidthMonitor {
                         }
                         activeDownloadList.clear();
 
-                        if (bandwidth < 0.0)
+                        if (bandwidth < 0.0) {
                             bandwidth = 0.0;
+                        }
 
-                        if (bandwidth > 0.0)
+                        if (bandwidth > 0.0) {
                             bandwidth /= 1024.0; // convert to KByte
-
+                        }
                         counter++;
                         m_trace.addPoint(counter, bandwidth);
                     }

@@ -80,6 +80,7 @@ import javax.swing.Timer;
  * @version 1.0
  * @since 1.0
  */
+@SuppressWarnings("unchecked")
 public class TelegraphQueue implements ActionListener {
 
     // a queue, a timer and a notification

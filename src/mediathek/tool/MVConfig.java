@@ -65,6 +65,7 @@ public class MVConfig {
     public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN = "Meldungsfenster-Fehlermeldungen";
     public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN = "Meldungsfenster-Playermeldungen";
     public static final String SYSTEM_ANSICHT_SET_LANG = "Ansicht-Set-lang";
+    public static final String SYSTEM_ANSICHT_BANDWIDTH = "Ansicht-Bandwidth";
     public static final String SYSTEM_ICON_STANDARD = "Icon-Standard";
     public static final String SYSTEM_ICON_PFAD = "Icon-Pfad";
     public static final String SYSTEM_BREITE_MELDUNGEN = "breite-Meldungen";
