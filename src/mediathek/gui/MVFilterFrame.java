@@ -664,6 +664,15 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     }
 
     @Override
+    public void enableFilter(boolean enable) {
+        jRadioButtonF1.setEnabled(enable);
+        jRadioButtonF2.setEnabled(enable);
+        jRadioButtonF3.setEnabled(enable);
+        jRadioButtonF4.setEnabled(enable);
+        jRadioButtonF5.setEnabled(enable);
+    }
+
+    @Override
     public JButton get_jButtonFilterLoeschen() {
         return jButtonFilterLoeschen;
     }

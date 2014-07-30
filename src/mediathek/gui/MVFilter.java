@@ -81,5 +81,6 @@ public interface MVFilter {
 
     public void mvFfilter(int i);
 
-//    public void filterReset();
+    public void enableFilter(boolean enable);
+
 }
