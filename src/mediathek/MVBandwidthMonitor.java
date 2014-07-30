@@ -66,7 +66,7 @@ class MVBandwidthMonitor {
             x_achse.getAxisTitle().setTitle("");
             x_achse.setPaintScale(true);
             x_achse.setVisible(true);
-            
+
             IAxis y_achse = chart.getAxisY();
             y_achse.getAxisTitle().setTitle("");
             x_achse.setPaintScale(true);
@@ -137,19 +137,23 @@ class MVBandwidthMonitor {
                             bandwidth = 0.0;
                         }
 
-                        if (bandwidth > 0.0) {
-                            bandwidth /= 1024.0; // convert to KByte
-                        }
+//                        if (bandwidth > 0.0) {
+//                            bandwidth /= 1024.0; // convert to KByte
+//                        }
                         counter++;
-                        m_trace.addPoint(counter, bandwidth);
+                        m_trace.addPoint(counter / 60, bandwidth); // minutes
                     }
                 };
-                timer.schedule(task, 0, 1000);
+                if (Daten.debug) {
+                    timer.schedule(task, 0, 100);
+                } else {
+                    timer.schedule(task, 0, 1000);
+                }
             } else {
-                timer.cancel();
                 timer.purge();
             }
         } catch (IllegalStateException ignored) {
+            System.out.println(ignored.getMessage());
         }
     }
 }
