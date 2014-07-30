@@ -307,16 +307,16 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         setFocusSuchfeld();
 
         cbBandwidthDisplay.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ANSICHT_BANDWIDTH)));
-        if (Funktionen.getOs() == Funktionen.OS_LINUX) {
-            bandwidthMonitorLinux = new MVBandwidthMonitorLinux(this, cbBandwidthDisplay);
-            bandwidthMonitorLinux.toggleVisibility();
-            cbBandwidthDisplay.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    bandwidthMonitorLinux.toggleVisibility();
-                }
-            });
-        } else {
+//        if (Funktionen.getOs() == Funktionen.OS_LINUX) {
+//            bandwidthMonitorLinux = new MVBandwidthMonitorLinux(this, cbBandwidthDisplay);
+//            bandwidthMonitorLinux.toggleVisibility();
+//            cbBandwidthDisplay.addActionListener(new ActionListener() {
+//                @Override
+//                public void actionPerformed(ActionEvent e) {
+//                    bandwidthMonitorLinux.toggleVisibility();
+//                }
+//            });
+//        } else {
             bandwidthMonitor = new MVBandwidthMonitor(this, cbBandwidthDisplay);
             bandwidthMonitor.toggleVisibility();
             cbBandwidthDisplay.addActionListener(new ActionListener() {
@@ -325,7 +325,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                     bandwidthMonitor.toggleVisibility();
                 }
             });
-        }
+//        }
 
         duration.ping("Gui steht!");
     }

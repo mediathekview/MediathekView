@@ -26,10 +26,6 @@ import info.monitorenter.gui.chart.traces.Trace2DLtd;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.LinkedList;
@@ -42,7 +38,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.MVConfig;
 
-public class MVBandwidthMonitorLinux extends javax.swing.JFrame {
+public class MVBandwidthMonitorLinux extends javax.swing.JDialog {
 
     private double counter = 0.0;
     private JCheckBoxMenuItem menuItem = null;
@@ -50,11 +46,11 @@ public class MVBandwidthMonitorLinux extends javax.swing.JFrame {
     private final java.util.Timer timer = new java.util.Timer(false);
 
     public MVBandwidthMonitorLinux(JFrame parent, final JCheckBoxMenuItem menuItem) {
+        super(parent);
         initComponents();
         this.menuItem = menuItem;
         setBounds(0, 0, 400, 400);
         this.setTitle("Bandbreite");
-
         this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -73,7 +69,7 @@ public class MVBandwidthMonitorLinux extends javax.swing.JFrame {
 
         //setup trace point handling
         m_trace.setColor(Color.RED);
-//            m_trace.setName("KB/s");
+        m_trace.setName("");
 
         chart.addTrace(m_trace);
 
