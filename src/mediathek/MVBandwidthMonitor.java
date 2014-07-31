@@ -3,20 +3,23 @@ package mediathek;
 import com.explodingpixels.macwidgets.HudWindow;
 import info.monitorenter.gui.chart.Chart2D;
 import info.monitorenter.gui.chart.IAxis;
-import info.monitorenter.gui.chart.ITrace2D;
 import info.monitorenter.gui.chart.labelformatters.LabelFormatterAutoUnits;
 import info.monitorenter.gui.chart.traces.Trace2DLtd;
-import mediathek.controller.starter.Start;
-import mediathek.daten.Daten;
-import mediathek.daten.DatenDownload;
-
-import javax.swing.*;
-import javax.swing.border.Border;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.LinkedList;
 import java.util.TimerTask;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
+import mediathek.controller.starter.Start;
+import mediathek.daten.Daten;
+import mediathek.daten.DatenDownload;
 import mediathek.tool.Funktionen;
 import mediathek.tool.MVConfig;
 
@@ -38,7 +41,7 @@ class MVBandwidthMonitor {
     public MVBandwidthMonitor(JFrame parent, final JCheckBoxMenuItem menuItem) {
         this.menuItem = menuItem;
         hudWindow = new HudWindow("Bandbreite", null);
-        hudWindow.makeResizeable();
+//        hudWindow.makeResizeable();
 
         JDialog hudDialog = hudWindow.getJDialog();
 
@@ -52,6 +55,8 @@ class MVBandwidthMonitor {
         });
 
         if (Funktionen.getOs() == Funktionen.OS_LINUX) {
+//            hudDialog.getContentPane().add(new BottomPanel(hudDialog), BorderLayout.SOUTH);
+            hudDialog.setBackground(null);
             //setup chart display
             Chart2D chart = new Chart2D();
             chart.setOpaque(true);
@@ -150,7 +155,8 @@ class MVBandwidthMonitor {
 //                            bandwidth /= 1024.0; // convert to KByte
 //                        }
                         counter++;
-                        m_trace.addPoint(counter / 60, bandwidth); // minutes
+//                        m_trace.addPoint(counter / 60, bandwidth); // minutes
+                        m_trace.addPoint(counter / 60, 1200000); // minutes
                     }
                 };
                 if (Daten.debug) {
@@ -165,4 +171,49 @@ class MVBandwidthMonitor {
             System.out.println(ignored.getMessage());
         }
     }
+
+//    private static class BottomPanel extends JPanel {
+//
+//        private static final Icon RESIZE_ICON = new ImageIcon(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/resize_corner_dark.png")));
+//
+//        private final Window fWindow;
+//        private final JLabel fResizeCorner = new JLabel(RESIZE_ICON);
+//        private int fXOffsetToWindowEdge;
+//        private int fYOffsetToWidnowEdge;
+//
+//        public BottomPanel(Window window) {
+//            super(new FlowLayout(FlowLayout.RIGHT));
+//            fWindow = window;
+//            setOpaque(false);
+//            add(fResizeCorner);
+//            fResizeCorner.addMouseListener(createMouseListener());
+//            fResizeCorner.addMouseMotionListener(createMouseMotionListener());
+//        }
+//
+//        private MouseAdapter createMouseListener() {
+//            return new MouseAdapter() {
+//                @Override
+//                public void mousePressed(MouseEvent e) {
+//                    Point windowPoint
+//                            = SwingUtilities.convertPoint(fResizeCorner, e.getPoint(), fWindow);
+//                    fXOffsetToWindowEdge = fWindow.getWidth() - windowPoint.x;
+//                    fYOffsetToWidnowEdge = fWindow.getHeight() - windowPoint.y;
+//                }
+//            };
+//        }
+//
+//        private MouseMotionListener createMouseMotionListener() {
+//            return new MouseMotionAdapter() {
+//                @Override
+//                public void mouseDragged(MouseEvent e) {
+//                    Point windowPoint = SwingUtilities.convertPoint(fResizeCorner, e.getPoint(), fWindow);
+//                    fWindow.setSize(windowPoint.x + fXOffsetToWindowEdge,
+//                            windowPoint.y + fYOffsetToWidnowEdge);
+//
+//                }
+//            };
+//        }
+//
+//    }
+
 }
