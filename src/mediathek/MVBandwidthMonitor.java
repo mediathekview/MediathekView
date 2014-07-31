@@ -4,6 +4,7 @@ import com.explodingpixels.macwidgets.HudWindow;
 import info.monitorenter.gui.chart.Chart2D;
 import info.monitorenter.gui.chart.IAxis;
 import info.monitorenter.gui.chart.labelformatters.LabelFormatterAutoUnits;
+import info.monitorenter.gui.chart.labelformatters.LabelFormatterMV;
 import info.monitorenter.gui.chart.traces.Trace2DLtd;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -41,7 +42,7 @@ class MVBandwidthMonitor {
     public MVBandwidthMonitor(JFrame parent, final JCheckBoxMenuItem menuItem) {
         this.menuItem = menuItem;
         hudWindow = new HudWindow("Bandbreite", null);
-//        hudWindow.makeResizeable();
+        hudWindow.makeResizeable();
 
         JDialog hudDialog = hudWindow.getJDialog();
 
@@ -83,9 +84,9 @@ class MVBandwidthMonitor {
             y_achse.setPaintScale(true);
             y_achse.setVisible(true);
             y_achse.setPaintGrid(true);
-            y_achse.setMajorTickSpacing(100);
-            y_achse.setMinorTickSpacing(10);
-            y_achse.setFormatter(new LabelFormatterAutoUnits());
+            y_achse.setMajorTickSpacing(10);
+            y_achse.setMinorTickSpacing(2);
+            y_achse.setFormatter(new LabelFormatterMV());
 
             JPanel panel = new JPanel();
             panel.setOpaque(true);
@@ -155,8 +156,8 @@ class MVBandwidthMonitor {
 //                            bandwidth /= 1024.0; // convert to KByte
 //                        }
                         counter++;
-//                        m_trace.addPoint(counter / 60, bandwidth); // minutes
-                        m_trace.addPoint(counter / 60, 1200000); // minutes
+                        m_trace.addPoint(counter / 60, bandwidth); // minutes
+//                        m_trace.addPoint(counter / 60, 1200000); // minutes
                     }
                 };
                 if (Daten.debug) {
