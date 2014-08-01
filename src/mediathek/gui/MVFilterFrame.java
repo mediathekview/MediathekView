@@ -380,6 +380,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         jLabel3.setText("Mindestlänge [min]:");
 
+        jTextFieldFilterMinuten.setEditable(false);
+
         jToggleButtonLivestram.setText("Livestreams");
 
         jCheckBoxKeineGesehenen.setText("gesehene ausblenden");

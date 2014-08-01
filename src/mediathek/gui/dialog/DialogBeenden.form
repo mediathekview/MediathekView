@@ -186,7 +186,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel3">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Warten bis die Downloads fertig sind und dann"/>
+            <Property name="text" type="java.lang.String" value="Warten bis alle wartenden und laufenden"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
@@ -195,7 +195,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel4">
           <Properties>
-            <Property name="text" type="java.lang.String" value="erst beenden"/>
+            <Property name="text" type="java.lang.String" value="Downloads fertig sind und dann erst beenden"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
