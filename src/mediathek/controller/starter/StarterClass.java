@@ -25,10 +25,15 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import javax.swing.SwingUtilities;
+
+import com.jidesoft.utils.SystemInfo;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
@@ -201,33 +206,42 @@ public class StarterClass {
         }
     }
 
-    private void writeSpotlight(final DatenDownload datenDownload, Start start, boolean abgebrochen) {
-        // == zum Test
-        System.out.println("bin drin!!");
-        //==
-        if (abgebrochen) {
-            // Downlaod wurde abgebrochen
+    /**
+     * This will write the content of the film description into the OS X Finder Info Comment Field.
+     * This enables Spotlight to search for these tags.
+     * THIS IS AN OS X specific functionality!
+     *
+     * @param datenDownload The download information object
+     * @param wasCancelled Was the download cancelled?
+     */
+    private void writeSpotlightComment(final DatenDownload datenDownload, final boolean wasCancelled) {
+        //no need to run when not OS X...
+        if (wasCancelled || (!SystemInfo.isMacOSX()))
             return;
-        }
-        
-        // Filmdatei
-        File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-        try {
-            if (file.exists()) {
-                if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
-                    // ein Film der mit einem Button gestartet wurde, Download oder Abspielen unbekannt
-                } else {
-                    if (start.stoppen) {
-                        // Download abgebrochen
-                    } else if (start.status == Start.STATUS_FERTIG) {
-                        // dann ists gut
-                    } else if (start.status == Start.STATUS_ERR) {
-                        // Download mit Fehler
-                    }
-                }
+
+        final Path filmPath = Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+        if (Files.exists(filmPath)) {
+            final String strFilePath = filmPath.toString();
+            String strComment = datenDownload.film.arr[DatenFilm.FILM_BESCHREIBUNG_NR];
+
+            //replace quotation marks...
+            strComment = strComment.replace("\"","\\\"");
+
+            final String script = "tell application \"Finder\"\n" +
+                    "set my_file to POSIX file \"" + strFilePath + "\" as alias\n" +
+                    "set comment of my_file to \"" + strComment + "\"\n" +
+                    "end tell\n";
+            try {
+                ScriptEngineManager mgr = new ScriptEngineManager();
+                ScriptEngine engine = mgr.getEngineByName("AppleScript");
+                engine.eval(script);
+            } catch (Exception ex) {
+                Log.fehlerMeldung(915263987, Log.FEHLER_ART_PROG, "StarterClass.writeSpotlightComment", "Fehler beim Spotlight schreiben" + filmPath.toString());
+                //AppleScript may not be available if user does not use the official MacApp.
+                //We need to log that as well if there are error reports.
+                if (!System.getProperty("OSX_OFFICIAL_APP").equalsIgnoreCase("true"))
+                    Log.fehlerMeldung(915263987, Log.FEHLER_ART_PROG,"StarterClass.writeSpotlightComment","MV wird NICHT über die offizielle Mac App genutzt.");
             }
-        } catch (Exception ex) {
-            Log.fehlerMeldung(915263987, Log.FEHLER_ART_PROG, "StartetClass.writeSpotlight", "Fehler beim Spotlight schreiben" + file.getAbsolutePath());
         }
     }
 
@@ -267,7 +281,7 @@ public class StarterClass {
 
         @Override
         public synchronized void run() {
-            while (true) {
+            while (!isInterrupted()) {
                 try {
                     while ((datenDownload = getNextStart()) != null) {
                         startStarten(datenDownload);
@@ -471,9 +485,11 @@ public class StarterClass {
                 });
             }
             deleteIfEmpty(file);
+
             if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT_NR])) {
-                writeSpotlight(datenDownload, start, false);
+                writeSpotlightComment(datenDownload, false);
             }
+
             fertigmeldung(datenDownload, start, false);
             start.restSekunden = -1;
             start.percent = Start.PROGRESS_FERTIG;
@@ -727,9 +743,11 @@ public class StarterClass {
 
         private void finalizeDownload() {
             deleteIfEmpty(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]));
+
             if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT_NR])) {
-                writeSpotlight(datenDownload, start, state == HttpDownloadState.CANCEL);
+                writeSpotlightComment(datenDownload, state == HttpDownloadState.CANCEL);
             }
+
             fertigmeldung(datenDownload, start, state == HttpDownloadState.CANCEL);
             switch (state) {
                 case CANCEL:

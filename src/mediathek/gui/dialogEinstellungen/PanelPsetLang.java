@@ -222,7 +222,7 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
         });
-        jCheckBoxSpotlight.setEnabled(Funktionen.isOsx() || Daten.debug);
+        jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX() || Daten.debug);
         jCheckBoxSpotlight.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -587,7 +587,7 @@ public class PanelPsetLang extends PanelVorlage {
                 if (dialogZiel.ziel.contains(File.separator)) {
                     exportPfad = dialogZiel.ziel.substring(0, dialogZiel.ziel.lastIndexOf(File.separator));
                 }
-                daten.ioXmlSchreiben.exportPset(liste.toArray(new DatenPset[0]), dialogZiel.ziel);
+                daten.ioXmlSchreiben.exportPset(liste.toArray(new DatenPset[liste.size()]), dialogZiel.ziel);
             }
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
@@ -624,16 +624,16 @@ public class PanelPsetLang extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
+        javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
         jButtonHilfe = new javax.swing.JButton();
         jButtonPruefen = new javax.swing.JButton();
-        jSplitPane1 = new javax.swing.JSplitPane();
+        javax.swing.JSplitPane jSplitPane1 = new javax.swing.JSplitPane();
         jTabbedPane = new javax.swing.JTabbedPane();
-        jPanelDetails = new javax.swing.JPanel();
+        javax.swing.JPanel jPanelDetails = new javax.swing.JPanel();
         javax.swing.JPanel jPanel7 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
         jTextFieldSetName = new javax.swing.JTextField();
-        jPanel4 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
         javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
         jTextAreaSetBeschreibung = new javax.swing.JTextArea();
         javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
@@ -643,13 +643,13 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonAbspielen = new javax.swing.JButton();
         jLabelMeldungAbspielen = new javax.swing.JLabel();
         jLabelMeldungSeichern = new javax.swing.JLabel();
-        jPanel10 = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel10 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
         jButtonGruppeFarbe = new javax.swing.JButton();
         jButtonGruppeStandardfarbe = new javax.swing.JButton();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
-        jPanel9 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel11 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel13 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanel9 = new javax.swing.JPanel();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel7 = new javax.swing.JLabel();
         jTextFieldGruppeZielPfad = new javax.swing.JTextField();
@@ -660,22 +660,22 @@ public class PanelPsetLang extends PanelVorlage {
         jCheckBoxLaenge = new javax.swing.JCheckBox();
         jSpinnerLaenge = new javax.swing.JSpinner();
         javax.swing.JLabel jLabel12 = new javax.swing.JLabel();
-        jPanel11 = new javax.swing.JPanel();
-        jPanel8 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel11 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel8 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel10 = new javax.swing.JLabel();
         jTextFieldGruppeDirektPraefix = new javax.swing.JTextField();
         javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
         jTextFieldGruppeDirektSuffix = new javax.swing.JTextField();
-        jTextArea1 = new javax.swing.JTextArea();
-        jPanel12 = new javax.swing.JPanel();
+        javax.swing.JTextArea jTextArea1 = new javax.swing.JTextArea();
+        javax.swing.JPanel jPanel12 = new javax.swing.JPanel();
         jRadioButtonAufloesungNormal = new javax.swing.JRadioButton();
         jRadioButtonAufloesungKlein = new javax.swing.JRadioButton();
         jRadioButtonAufloesungHD = new javax.swing.JRadioButton();
-        jLabel14 = new javax.swing.JLabel();
-        jPanel13 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel14 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanel13 = new javax.swing.JPanel();
         jCheckBoxInfodatei = new javax.swing.JCheckBox();
         jCheckBoxSpotlight = new javax.swing.JCheckBox();
-        jPanelProgramme = new javax.swing.JPanel();
+        javax.swing.JPanel jPanelProgramme = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTableProgramme = new javax.swing.JTable();
         javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
@@ -699,7 +699,7 @@ public class PanelPsetLang extends PanelVorlage {
         jCheckBoxRestart = new javax.swing.JCheckBox();
         javax.swing.JLabel jLabel9 = new javax.swing.JLabel();
         jTextFieldProgZielDateiName = new javax.swing.JTextField();
-        jPanel3 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         javax.swing.JTable jTablePset = new javax.swing.JTable();
         jButtonGruppeDuplizieren = new javax.swing.JButton();
@@ -735,7 +735,7 @@ public class PanelPsetLang extends PanelVorlage {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -870,7 +870,7 @@ public class PanelPsetLang extends PanelVorlage {
                         .addComponent(jButtonGruppeStandardfarbe))
                     .addComponent(jLabel11)
                     .addComponent(jLabel13))
-                .addContainerGap(258, Short.MAX_VALUE))
+                .addContainerGap(290, Short.MAX_VALUE))
         );
 
         jPanel5Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonGruppeFarbe, jButtonGruppeStandardfarbe});
@@ -944,7 +944,7 @@ public class PanelPsetLang extends PanelVorlage {
                                 .addComponent(jButtonGruppePfad))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jCheckBoxThema)
-                                .addGap(0, 242, Short.MAX_VALUE)))
+                                .addGap(0, 261, Short.MAX_VALUE)))
                         .addGap(16, 16, 16))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel8)
@@ -1088,7 +1088,7 @@ public class PanelPsetLang extends PanelVorlage {
 
         jCheckBoxInfodatei.setText("Infodatei anlegen: \"Filmname.txt\"");
 
-        jCheckBoxSpotlight.setText("Spotlight anlegen (nur für OSX)");
+        jCheckBoxSpotlight.setText("Filmbeschreibung als Finder-Kommentar für Spotlight speichern");
 
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
         jPanel13.setLayout(jPanel13Layout);
@@ -1104,11 +1104,10 @@ public class PanelPsetLang extends PanelVorlage {
         jPanel13Layout.setVerticalGroup(
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel13Layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jCheckBoxInfodatei)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxSpotlight)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jCheckBoxSpotlight))
         );
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
@@ -1118,7 +1117,7 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextArea1, javax.swing.GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
+                    .addComponent(jTextArea1)
                     .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1135,7 +1134,7 @@ public class PanelPsetLang extends PanelVorlage {
                 .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Download", jPanel11);
@@ -1238,7 +1237,7 @@ public class PanelPsetLang extends PanelVorlage {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextFieldProgSuffix, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE))))
+                                .addComponent(jTextFieldProgSuffix, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE))))
                     .addGroup(jPanelProgrammDetailsLayout.createSequentialGroup()
                         .addGroup(jPanelProgrammDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
@@ -1385,7 +1384,7 @@ public class PanelPsetLang extends PanelVorlage {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSplitPane1)
+                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 801, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonPruefen, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1406,7 +1405,6 @@ public class PanelPsetLang extends PanelVorlage {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButtonAbspielen;
     private javax.swing.JButton jButtonExport;
     private javax.swing.JButton jButtonGruppeAb;
@@ -1433,31 +1431,15 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxSpeichern;
     private javax.swing.JCheckBox jCheckBoxSpotlight;
     private javax.swing.JCheckBox jCheckBoxThema;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabelMeldungAbspielen;
     private javax.swing.JLabel jLabelMeldungSeichern;
-    private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel11;
-    private javax.swing.JPanel jPanel12;
-    private javax.swing.JPanel jPanel13;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel8;
-    private javax.swing.JPanel jPanel9;
-    private javax.swing.JPanel jPanelDetails;
-    private javax.swing.JPanel jPanelProgramme;
     private javax.swing.JRadioButton jRadioButtonAufloesungHD;
     private javax.swing.JRadioButton jRadioButtonAufloesungKlein;
     private javax.swing.JRadioButton jRadioButtonAufloesungNormal;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSpinner jSpinnerLaenge;
-    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTabbedPane jTabbedPane;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextAreaSetBeschreibung;
     private javax.swing.JTextField jTextFieldGruppeDirektPraefix;
     private javax.swing.JTextField jTextFieldGruppeDirektSuffix;

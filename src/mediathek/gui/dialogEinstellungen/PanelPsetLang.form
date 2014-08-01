@@ -3,6 +3,10 @@
 <Form version="1.5" maxVersion="1.5" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <NonVisualComponents>
     <Component class="javax.swing.ButtonGroup" name="buttonGroup1">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+      </AuxValues>
     </Component>
   </NonVisualComponents>
   <AuxValues>
@@ -22,7 +26,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jSplitPane1" max="32767" attributes="0"/>
+                  <Component id="jSplitPane1" pref="801" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="jButtonPruefen" min="-2" pref="84" max="-2" attributes="0"/>
@@ -68,6 +72,10 @@
       <Properties>
         <Property name="dividerLocation" type="int" value="200"/>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+      </AuxValues>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout"/>
       <SubComponents>
@@ -88,6 +96,10 @@
                   </Border>
                 </Property>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
                   <JTabbedPaneConstraints tabName="Einstellungen">
@@ -196,13 +208,17 @@
                           </Border>
                         </Property>
                       </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                      </AuxValues>
 
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jScrollPane2" pref="536" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane2" pref="541" max="32767" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -324,6 +340,10 @@
               </SubComponents>
             </Container>
             <Container class="javax.swing.JPanel" name="jPanel10">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
                   <JTabbedPaneConstraints tabName="Aussehen">
@@ -361,6 +381,10 @@
                       </Border>
                     </Property>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                  </AuxValues>
 
                   <Layout>
                     <DimensionLayout dim="0">
@@ -376,7 +400,7 @@
                                   <Component id="jLabel11" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel13" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="258" max="32767" attributes="0"/>
+                              <EmptySpace pref="290" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -414,17 +438,29 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Wird das Set als Button verwendet,"/>
                       </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                      </AuxValues>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel13">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="kann damit die Schriftfarbe ver&#xe4;ndert werden."/>
                       </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                      </AuxValues>
                     </Component>
                   </SubComponents>
                 </Container>
               </SubComponents>
             </Container>
             <Container class="javax.swing.JPanel" name="jPanel9">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
                   <JTabbedPaneConstraints tabName="Speicherziel">
@@ -484,7 +520,7 @@
                                           </Group>
                                           <Group type="102" alignment="0" attributes="0">
                                               <Component id="jCheckBoxThema" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace min="0" pref="242" max="32767" attributes="0"/>
+                                              <EmptySpace min="0" pref="261" max="32767" attributes="0"/>
                                           </Group>
                                       </Group>
                                       <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
@@ -600,6 +636,10 @@
               </SubComponents>
             </Container>
             <Container class="javax.swing.JPanel" name="jPanel11">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
                   <JTabbedPaneConstraints tabName="Download">
@@ -614,7 +654,7 @@
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jTextArea1" pref="604" max="32767" attributes="0"/>
+                              <Component id="jTextArea1" max="32767" attributes="0"/>
                               <Component id="jPanel8" alignment="1" max="32767" attributes="0"/>
                               <Component id="jPanel12" alignment="0" max="32767" attributes="0"/>
                               <Component id="jPanel13" alignment="0" max="32767" attributes="0"/>
@@ -634,7 +674,7 @@
                           <Component id="jPanel12" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel13" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="18" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -648,6 +688,10 @@
                       </Border>
                     </Property>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                  </AuxValues>
 
                   <Layout>
                     <DimensionLayout dim="0">
@@ -718,6 +762,10 @@
                       <Border info="null"/>
                     </Property>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                  </AuxValues>
                 </Component>
                 <Container class="javax.swing.JPanel" name="jPanel12">
                   <Properties>
@@ -727,6 +775,10 @@
                       </Border>
                     </Property>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                  </AuxValues>
 
                   <Layout>
                     <DimensionLayout dim="0">
@@ -789,6 +841,10 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Wenn es die Aufl&#xf6;sung nicht gibt, wird die n&#xe4;chstkleinere genommen."/>
                       </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                      </AuxValues>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -800,6 +856,10 @@
                       </Border>
                     </Property>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                  </AuxValues>
 
                   <Layout>
                     <DimensionLayout dim="0">
@@ -807,7 +867,7 @@
                           <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jCheckBoxInfodatei" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jCheckBoxInfodatei" min="-2" max="-2" attributes="0"/>
                                   <Component id="jCheckBoxSpotlight" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
@@ -817,11 +877,10 @@
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jCheckBoxInfodatei" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jCheckBoxSpotlight" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
+                              <Component id="jCheckBoxInfodatei" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jCheckBoxSpotlight" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -834,7 +893,7 @@
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="jCheckBoxSpotlight">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Spotlight anlegen (nur f&#xfc;r OSX)"/>
+                        <Property name="text" type="java.lang.String" value="Filmbeschreibung als Finder-Kommentar f&#xfc;r Spotlight speichern"/>
                       </Properties>
                     </Component>
                   </SubComponents>
@@ -842,6 +901,10 @@
               </SubComponents>
             </Container>
             <Container class="javax.swing.JPanel" name="jPanelProgramme">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
                   <JTabbedPaneConstraints tabName="Hilfsprogramme">
@@ -1036,7 +1099,7 @@
                                               <EmptySpace max="-2" attributes="0"/>
                                               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="jTextFieldProgSuffix" pref="118" max="32767" attributes="2"/>
+                                              <Component id="jTextFieldProgSuffix" pref="160" max="32767" attributes="2"/>
                                           </Group>
                                       </Group>
                                   </Group>
@@ -1181,6 +1244,10 @@
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="jPanel3">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+          </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
               <JSplitPaneConstraints position="left"/>

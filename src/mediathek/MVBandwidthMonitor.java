@@ -41,7 +41,7 @@ class MVBandwidthMonitor {
 
     public MVBandwidthMonitor(JFrame parent, final JCheckBoxMenuItem menuItem) {
         this.menuItem = menuItem;
-        hudWindow = new HudWindow("Bandbreite", null);
+        hudWindow = new HudWindow("Bandbreite", parent);
         hudWindow.makeResizeable();
 
         JDialog hudDialog = hudWindow.getJDialog();
