@@ -166,9 +166,9 @@ public class DialogBeenden extends JDialog {
 
         jCheckBoxShutdown.setText("und dann auch den Rechner herunterfahren");
 
-        jLabel3.setText("Warten bis die Downloads fertig sind und dann");
+        jLabel3.setText("Warten bis alle wartenden und laufenden");
 
-        jLabel4.setText("erst beenden");
+        jLabel4.setText("Downloads fertig sind und dann erst beenden");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);

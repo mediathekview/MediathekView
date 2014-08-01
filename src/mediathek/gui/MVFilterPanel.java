@@ -330,6 +330,8 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
         jLabel3.setText("Mindestlänge [min]:");
 
+        jTextFieldFilterMinuten.setEditable(false);
+
         jCheckBoxKeineGesehenen.setText("gesehene ausblenden");
 
         jCheckBoxKeineAbos.setText("Abos nicht anzeigen");
@@ -394,10 +396,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                         .addComponent(jRadioButtonIrgendwo))
                     .addComponent(jComboBoxZeitraum, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jSliderMinuten, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldFilterMinuten))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
@@ -411,7 +410,10 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                             .addComponent(jToggleButtonLivestram)
                             .addComponent(jToggleButtonHistory))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldFilterMinuten)))
                 .addContainerGap())
         );
 
