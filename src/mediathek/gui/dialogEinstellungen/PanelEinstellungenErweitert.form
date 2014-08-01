@@ -112,7 +112,7 @@
         <Component class="javax.swing.JButton" name="jButtonHilfeNeuladen">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/programm/help_16.png"/>
+              <Image iconType="3" name="/mediathek/res/programm/help_16.png"/>
             </Property>
           </Properties>
         </Component>
@@ -179,7 +179,7 @@
         <Component class="javax.swing.JButton" name="jButtonHilfe">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/programm/help_16.png"/>
+              <Image iconType="3" name="/mediathek/res/programm/help_16.png"/>
             </Property>
           </Properties>
         </Component>
@@ -281,14 +281,14 @@
         <Component class="javax.swing.JButton" name="jButtonProgrammDateimanager">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/programm/fileopen_16.png"/>
+              <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
             </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonHilfeProgrammDateimanager">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/programm/help_16.png"/>
+              <Image iconType="3" name="/mediathek/res/programm/help_16.png"/>
             </Property>
           </Properties>
         </Component>
@@ -307,14 +307,14 @@
         <Component class="javax.swing.JButton" name="jButtonHilfeVideoplayer">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/programm/help_16.png"/>
+              <Image iconType="3" name="/mediathek/res/programm/help_16.png"/>
             </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonProgrammVideoplayer">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/programm/fileopen_16.png"/>
+              <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
             </Property>
           </Properties>
         </Component>
@@ -363,14 +363,14 @@
         <Component class="javax.swing.JButton" name="jButtonProgrammUrl">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/programm/fileopen_16.png"/>
+              <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
             </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonHilfeProgrammUrl">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/programm/help_16.png"/>
+              <Image iconType="3" name="/mediathek/res/programm/help_16.png"/>
             </Property>
           </Properties>
         </Component>

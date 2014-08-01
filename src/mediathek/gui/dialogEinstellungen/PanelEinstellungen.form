@@ -201,7 +201,7 @@
         <Component class="javax.swing.JButton" name="jButtonRefresh">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/programm/icons_refresh_16.png"/>
+              <Image iconType="3" name="/mediathek/res/programm/icons_refresh_16.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="neue Icons suchen"/>
           </Properties>
@@ -328,7 +328,7 @@
         <Component class="javax.swing.JButton" name="jButtonHilfeAnzahl">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/programm/help_16.png"/>
+              <Image iconType="3" name="/mediathek/res/programm/help_16.png"/>
             </Property>
           </Properties>
         </Component>

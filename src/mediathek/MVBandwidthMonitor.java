@@ -85,7 +85,7 @@ class MVBandwidthMonitor {
             y_achse.setVisible(true);
             y_achse.setPaintGrid(true);
             y_achse.setMajorTickSpacing(10);
-            y_achse.setMinorTickSpacing(2);
+            y_achse.setMinorTickSpacing(1);
             y_achse.setFormatter(new LabelFormatterMV());
 
             JPanel panel = new JPanel();
@@ -156,8 +156,8 @@ class MVBandwidthMonitor {
 //                            bandwidth /= 1024.0; // convert to KByte
 //                        }
                         counter++;
-                        m_trace.addPoint(counter / 60, bandwidth); // minutes
-//                        m_trace.addPoint(counter / 60, 1200000); // minutes
+//                        m_trace.addPoint(counter / 60, bandwidth); // minutes
+                        m_trace.addPoint(counter / 60, 199521); // minutes
                     }
                 };
                 if (Daten.debug) {
