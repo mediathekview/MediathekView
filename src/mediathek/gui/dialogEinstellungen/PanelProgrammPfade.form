@@ -164,7 +164,7 @@
                 <Component class="javax.swing.JButton" name="jButtonVlcPfad">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/mediathek/res/programm/programm/fileopen_16.png"/>
+                      <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -247,7 +247,7 @@
                 <Component class="javax.swing.JButton" name="jButtonFlvPfad">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/mediathek/res/programm/programm/fileopen_16.png"/>
+                      <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -275,7 +275,7 @@
             <Component class="javax.swing.JButton" name="jButtonHilfe">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/programm/help_16.png"/>
+                  <Image iconType="3" name="/mediathek/res/programm/help_16.png"/>
                 </Property>
               </Properties>
             </Component>
@@ -337,7 +337,7 @@
                 <Component class="javax.swing.JButton" name="jButtonMplayerPfad">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/mediathek/res/programm/programm/fileopen_16.png"/>
+                      <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
                     </Property>
                   </Properties>
                 </Component>
@@ -425,7 +425,7 @@
                 <Component class="javax.swing.JButton" name="jButtonFFmpegPfad">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/mediathek/res/programm/programm/fileopen_16.png"/>
+                      <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
                     </Property>
                   </Properties>
                 </Component>

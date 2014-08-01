@@ -22,7 +22,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jSplitPane1" pref="783" max="32767" attributes="0"/>
+                  <Component id="jSplitPane1" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="jButtonPruefen" min="-2" pref="84" max="-2" attributes="0"/>
@@ -53,7 +53,7 @@
     <Component class="javax.swing.JButton" name="jButtonHilfe">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/mediathek/res/programm/programm/help_16.png"/>
+          <Image iconType="3" name="/mediathek/res/programm/help_16.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Hilfedialog anzeigen"/>
       </Properties>
@@ -202,7 +202,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jScrollPane2" pref="475" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane2" pref="536" max="32767" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -306,7 +306,7 @@
                     <Component class="javax.swing.JLabel" name="jLabelMeldungAbspielen">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/programm/programm/alert_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/programm/alert_16.png"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="kein Set zum Abspielen ausgew&#xe4;hlt!"/>
                       </Properties>
@@ -314,7 +314,7 @@
                     <Component class="javax.swing.JLabel" name="jLabelMeldungSeichern">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/programm/programm/alert_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/programm/alert_16.png"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="kein Set zum Speichern ausgew&#xe4;hlt!"/>
                       </Properties>
@@ -347,7 +347,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="352" max="32767" attributes="0"/>
+                          <EmptySpace pref="350" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -376,7 +376,7 @@
                                   <Component id="jLabel11" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel13" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="197" max="32767" attributes="0"/>
+                              <EmptySpace pref="258" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -448,7 +448,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="302" max="32767" attributes="0"/>
+                          <EmptySpace pref="300" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -484,7 +484,7 @@
                                           </Group>
                                           <Group type="102" alignment="0" attributes="0">
                                               <Component id="jCheckBoxThema" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace min="0" pref="181" max="32767" attributes="0"/>
+                                              <EmptySpace min="0" pref="242" max="32767" attributes="0"/>
                                           </Group>
                                       </Group>
                                       <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
@@ -551,7 +551,7 @@
                     <Component class="javax.swing.JButton" name="jButtonGruppePfad">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/programm/programm/fileopen_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="Pfad ausw&#xe4;hlen"/>
                       </Properties>
@@ -614,7 +614,7 @@
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jTextArea1" max="32767" attributes="0"/>
+                              <Component id="jTextArea1" pref="604" max="32767" attributes="0"/>
                               <Component id="jPanel8" alignment="1" max="32767" attributes="0"/>
                               <Component id="jPanel12" alignment="0" max="32767" attributes="0"/>
                               <Component id="jPanel13" alignment="0" max="32767" attributes="0"/>
@@ -634,7 +634,7 @@
                           <Component id="jPanel12" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel13" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="30" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -675,7 +675,7 @@
                                   <Component id="jLabel5" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="jTextFieldGruppeDirektSuffix" alignment="2" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="31" max="32767" attributes="0"/>
+                              <EmptySpace pref="33" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -754,7 +754,7 @@
                               <Component id="jRadioButtonAufloesungKlein" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="27" max="32767" attributes="0"/>
+                              <EmptySpace pref="29" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -796,7 +796,7 @@
                   <Properties>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                        <TitledBorder title="Infodatei"/>
+                        <TitledBorder title="nach dem Speichern"/>
                       </Border>
                     </Property>
                   </Properties>
@@ -804,9 +804,12 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
+                          <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jCheckBoxInfodatei" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jCheckBoxInfodatei" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jCheckBoxSpotlight" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
                               <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
@@ -816,7 +819,9 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jCheckBoxInfodatei" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="20" max="32767" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="jCheckBoxSpotlight" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -825,6 +830,11 @@
                     <Component class="javax.swing.JCheckBox" name="jCheckBoxInfodatei">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Infodatei anlegen: &quot;Filmname.txt&quot;"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JCheckBox" name="jCheckBoxSpotlight">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Spotlight anlegen (nur f&#xfc;r OSX)"/>
                       </Properties>
                     </Component>
                   </SubComponents>
@@ -858,7 +868,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" pref="166" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" pref="164" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -950,7 +960,7 @@
                     <Component class="javax.swing.JButton" name="jButtonProgPlus">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/programm/programm/add_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/programm/add_16.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="neues Programm anlegen"/>
                       </Properties>
@@ -958,7 +968,7 @@
                     <Component class="javax.swing.JButton" name="jButtonProgMinus">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/programm/programm/remove_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/programm/remove_16.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="markiertes Programm l&#xf6;schen"/>
                       </Properties>
@@ -972,7 +982,7 @@
                     <Component class="javax.swing.JButton" name="jButtonProgAuf">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/programm/programm/move_up_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/programm/move_up_16.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="markierte Zeile eins nach oben"/>
                       </Properties>
@@ -980,7 +990,7 @@
                     <Component class="javax.swing.JButton" name="jButtonProgAb">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/programm/programm/move_down_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/programm/move_down_16.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="markierte Zeile eins nach unten"/>
                       </Properties>
@@ -1026,7 +1036,7 @@
                                               <EmptySpace max="-2" attributes="0"/>
                                               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="jTextFieldProgSuffix" pref="57" max="32767" attributes="2"/>
+                                              <Component id="jTextFieldProgSuffix" pref="118" max="32767" attributes="2"/>
                                           </Group>
                                       </Group>
                                   </Group>
@@ -1099,7 +1109,7 @@
                     <Component class="javax.swing.JButton" name="jButtonProgPfad">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/programm/programm/fileopen_16.png"/>
+                          <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="Pfad ausw&#xe4;hlen"/>
                       </Properties>
@@ -1204,7 +1214,7 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="jScrollPane3" pref="336" max="32767" attributes="0"/>
+                      <Component id="jScrollPane3" pref="334" max="32767" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="jButtonGruppeAuf" min="-2" max="-2" attributes="0"/>
@@ -1264,7 +1274,7 @@
             <Component class="javax.swing.JButton" name="jButtonGruppeNeu">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/programm/add_16.png"/>
+                  <Image iconType="3" name="/mediathek/res/programm/add_16.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="neue Programmgruppe anlegen"/>
               </Properties>
@@ -1272,7 +1282,7 @@
             <Component class="javax.swing.JButton" name="jButtonGruppeLoeschen">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/programm/remove_16.png"/>
+                  <Image iconType="3" name="/mediathek/res/programm/remove_16.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Programmgruppe l&#xf6;schen"/>
               </Properties>
@@ -1280,7 +1290,7 @@
             <Component class="javax.swing.JButton" name="jButtonGruppeAuf">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/programm/move_up_16.png"/>
+                  <Image iconType="3" name="/mediathek/res/programm/move_up_16.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Programmgruppe nach oben schieben"/>
               </Properties>
@@ -1288,7 +1298,7 @@
             <Component class="javax.swing.JButton" name="jButtonGruppeAb">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/programm/move_down_16.png"/>
+                  <Image iconType="3" name="/mediathek/res/programm/move_down_16.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Programmgruppe nach unten schieben"/>
               </Properties>

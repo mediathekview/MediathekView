@@ -133,14 +133,14 @@
     <Component class="javax.swing.JButton" name="jButtonMinus">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/mediathek/res/programm/programm/remove_16.png"/>
+          <Image iconType="3" name="/mediathek/res/programm/remove_16.png"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonPlus">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/mediathek/res/programm/programm/add_16.png"/>
+          <Image iconType="3" name="/mediathek/res/programm/add_16.png"/>
         </Property>
       </Properties>
     </Component>
@@ -152,14 +152,14 @@
     <Component class="javax.swing.JButton" name="jButtonDown">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/mediathek/res/programm/programm/move_down_16.png"/>
+          <Image iconType="3" name="/mediathek/res/programm/move_down_16.png"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonUp">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/mediathek/res/programm/programm/move_up_16.png"/>
+          <Image iconType="3" name="/mediathek/res/programm/move_up_16.png"/>
         </Property>
       </Properties>
     </Component>
@@ -198,7 +198,7 @@
     <Component class="javax.swing.JLabel" name="jLabelAlert">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/mediathek/res/programm/programm/alert_32.png"/>
+          <Image iconType="3" name="/mediathek/res/programm/alert_32.png"/>
         </Property>
       </Properties>
     </Component>

@@ -248,7 +248,7 @@
         <Component class="javax.swing.JButton" name="jButtonZiel">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/programm/fileopen_16.png"/>
+              <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Zielpfad ausw&#xe4;hlen"/>
           </Properties>
@@ -287,7 +287,7 @@
         <Component class="javax.swing.JButton" name="jButtonDelHistory">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/programm/del_16.png"/>
+              <Image iconType="3" name="/mediathek/res/programm/del_16.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="History l&#xf6;schen"/>
           </Properties>

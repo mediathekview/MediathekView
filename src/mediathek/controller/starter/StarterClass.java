@@ -19,16 +19,6 @@
  */
 package mediathek.controller.starter;
 
-import mediathek.controller.Log;
-import mediathek.daten.Daten;
-import mediathek.daten.DatenDownload;
-import mediathek.daten.DatenPset;
-import mediathek.gui.dialog.DialogContinueDownload;
-import mediathek.gui.dialog.DialogDownloadfehler;
-import mediathek.tool.*;
-import msearch.daten.DatenFilm;
-
-import javax.swing.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,6 +28,20 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import javax.swing.SwingUtilities;
+import mediathek.controller.Log;
+import mediathek.daten.Daten;
+import mediathek.daten.DatenDownload;
+import mediathek.daten.DatenPset;
+import mediathek.gui.dialog.DialogContinueDownload;
+import mediathek.gui.dialog.DialogDownloadfehler;
+import mediathek.tool.Datum;
+import mediathek.tool.Konstanten;
+import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVInfoFile;
+import mediathek.tool.MVInputStream;
+import mediathek.tool.MVNotification;
+import msearch.daten.DatenFilm;
 
 public class StarterClass {
     //Tags Filme
@@ -194,6 +198,36 @@ public class StarterClass {
                     }
                 });
             }
+        }
+    }
+
+    private void writeSpotlight(final DatenDownload datenDownload, Start start, boolean abgebrochen) {
+        // == zum Test
+        System.out.println("bin drin!!");
+        //==
+        if (abgebrochen) {
+            // Downlaod wurde abgebrochen
+            return;
+        }
+        
+        // Filmdatei
+        File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+        try {
+            if (file.exists()) {
+                if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
+                    // ein Film der mit einem Button gestartet wurde, Download oder Abspielen unbekannt
+                } else {
+                    if (start.stoppen) {
+                        // Download abgebrochen
+                    } else if (start.status == Start.STATUS_FERTIG) {
+                        // dann ists gut
+                    } else if (start.status == Start.STATUS_ERR) {
+                        // Download mit Fehler
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Log.fehlerMeldung(915263987, Log.FEHLER_ART_PROG, "StartetClass.writeSpotlight", "Fehler beim Spotlight schreiben" + file.getAbsolutePath());
         }
     }
 
@@ -437,6 +471,9 @@ public class StarterClass {
                 });
             }
             deleteIfEmpty(file);
+            if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT_NR])) {
+                writeSpotlight(datenDownload, start, false);
+            }
             fertigmeldung(datenDownload, start, false);
             start.restSekunden = -1;
             start.percent = Start.PROGRESS_FERTIG;
@@ -690,6 +727,9 @@ public class StarterClass {
 
         private void finalizeDownload() {
             deleteIfEmpty(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]));
+            if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT_NR])) {
+                writeSpotlight(datenDownload, start, state == HttpDownloadState.CANCEL);
+            }
             fertigmeldung(datenDownload, start, state == HttpDownloadState.CANCEL);
             switch (state) {
                 case CANCEL:
