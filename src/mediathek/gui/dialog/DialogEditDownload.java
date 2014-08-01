@@ -42,6 +42,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
     private JLabel[] labelListe;
     private final JCheckBox jCheckBoxRestart = new JCheckBox();
     private final JCheckBox jCheckBoxInfodatei = new JCheckBox();
+    private final JCheckBox jCheckBoxSpotlight = new JCheckBox();
     public boolean ok = false;
     private final MVPanelDownloadZiel mVPanelDownloadZiel;
     private final boolean gestartet;
@@ -143,6 +144,17 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 c.weightx = 10;
                 gridbag.setConstraints(jCheckBoxInfodatei, c);
                 jPanelExtra.add(jCheckBoxInfodatei);
+            } else if (i == DatenDownload.DOWNLOAD_SPOTLIGHT_NR) {
+                labelListe[i].setForeground(Color.BLUE);
+                jCheckBoxSpotlight.setSelected(Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT_NR]));
+                jCheckBoxSpotlight.addActionListener(new BeobCheckbox());
+                jCheckBoxSpotlight.setEnabled(!gestartet);
+                gridbag.setConstraints(labelListe[i], c);
+                jPanelExtra.add(labelListe[i]);
+                c.gridx = 1;
+                c.weightx = 10;
+                gridbag.setConstraints(jCheckBoxSpotlight, c);
+                jPanelExtra.add(jCheckBoxSpotlight);
             } else {
                 if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR) {
                     labelListe[i].setForeground(Color.BLUE);
@@ -306,6 +318,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
         public void actionPerformed(ActionEvent e) {
             datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR] = Boolean.toString(jCheckBoxRestart.isSelected());
             datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR] = Boolean.toString(jCheckBoxInfodatei.isSelected());
+            datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT_NR] = Boolean.toString(jCheckBoxSpotlight.isSelected());
         }
     }
 }

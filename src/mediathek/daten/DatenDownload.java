@@ -165,6 +165,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             arr[DOWNLOAD_URL_RTMP_NR] = ffilm.getUrlRtmpFuerAufloesung(aufloesung);
         }
         arr[DatenDownload.DOWNLOAD_INFODATEI_NR] = pSet.arr[DatenPset.PROGRAMMSET_INFODATEI_NR];
+        arr[DatenDownload.DOWNLOAD_SPOTLIGHT_NR] = pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT_NR];
         arr[DatenDownload.DOWNLOAD_GEO_NR] = ffilm.arr[DatenFilm.FILM_GEO_NR];
         // und jetzt noch die Dateigröße für die entsp. URL
         film = ffilm;
