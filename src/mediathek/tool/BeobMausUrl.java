@@ -24,18 +24,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import org.jdesktop.swingx.JXHyperlink;
+import javax.swing.*;
 
+/**
+ *  This class provides a "copy URL" popup menu for a given {@link javax.swing.JButton}.
+ */
 public class BeobMausUrl extends MouseAdapter {
-
-    //rechhte Maustaste auf URL
     private final BeobUrl beobUrl = new BeobUrl();
-    private final JXHyperlink link;
+    private final JButton link;
 
-    public BeobMausUrl(JXHyperlink llink) {
-        link = llink;
+    public BeobMausUrl(JButton link) {
+        this.link = link;
     }
 
     @Override

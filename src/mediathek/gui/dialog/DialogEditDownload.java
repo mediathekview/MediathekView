@@ -220,12 +220,13 @@ public class DialogEditDownload extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
+        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         jPanelExtra = new javax.swing.JPanel();
         jButtonBeenden = new javax.swing.JButton();
         jButtonAbbrechen = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Download editieren");
         setMinimumSize(new java.awt.Dimension(500, 0));
 
         javax.swing.GroupLayout jPanelExtraLayout = new javax.swing.GroupLayout(jPanelExtra);
@@ -281,7 +282,6 @@ public class DialogEditDownload extends javax.swing.JDialog {
     private javax.swing.JButton jButtonAbbrechen;
     private javax.swing.JButton jButtonBeenden;
     private javax.swing.JPanel jPanelExtra;
-    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 
     private class BeobachterDocumentTextfeld implements DocumentListener {
