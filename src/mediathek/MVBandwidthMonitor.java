@@ -1,9 +1,9 @@
 package mediathek;
 
 import com.explodingpixels.macwidgets.HudWindow;
+import com.jidesoft.utils.SystemInfo;
 import info.monitorenter.gui.chart.Chart2D;
 import info.monitorenter.gui.chart.IAxis;
-import info.monitorenter.gui.chart.labelformatters.LabelFormatterAutoUnits;
 import info.monitorenter.gui.chart.labelformatters.LabelFormatterMV;
 import info.monitorenter.gui.chart.traces.Trace2DLtd;
 import java.awt.BorderLayout;
@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.TimerTask;
 import javax.swing.JCheckBoxMenuItem;
@@ -32,7 +33,7 @@ class MVBandwidthMonitor {
     private double counter = 0.0;
     private HudWindow hudWindow = null;
     private JCheckBoxMenuItem menuItem = null;
-    private Trace2DLtd m_trace = new Trace2DLtd(300);
+    private Trace2DLtd m_trace = new Trace2DLtd(1000);
 
     /**
      * Timer for collecting sample data.
@@ -41,6 +42,9 @@ class MVBandwidthMonitor {
 
     public MVBandwidthMonitor(JFrame parent, final JCheckBoxMenuItem menuItem) {
         this.menuItem = menuItem;
+        if (!SystemInfo.isMacOSX()) {
+            parent = null;
+        }
         hudWindow = new HudWindow("Bandbreite", parent);
         hudWindow.makeResizeable();
 
@@ -56,7 +60,6 @@ class MVBandwidthMonitor {
         });
 
         if (Funktionen.getOs() == Funktionen.OS_LINUX) {
-//            hudDialog.getContentPane().add(new BottomPanel(hudDialog), BorderLayout.SOUTH);
             hudDialog.setBackground(null);
             //setup chart display
             Chart2D chart = new Chart2D();
@@ -156,12 +159,18 @@ class MVBandwidthMonitor {
 //                            bandwidth /= 1024.0; // convert to KByte
 //                        }
                         counter++;
-//                        m_trace.addPoint(counter / 60, bandwidth); // minutes
-                        m_trace.addPoint(counter / 60, 199521); // minutes
+
+                        //m_trace.addPoint(counter / 60, roundBandwidth(bandwidth)); // minutes
+                        //m_trace.addPoint(counter / 60, roundBandwidth(Daten.guiDebug.getJSpinner().getValue() + counter)); // minutes
+                        if (counter % 300 == 0) {
+                            m_trace.addPoint(counter / 60, Daten.guiDebug.getJSpinner().getValue() * 0.95); // minutes
+                        } else {
+                            m_trace.addPoint(counter / 60, Daten.guiDebug.getJSpinner().getValue()); // minutes
+                        }                        //m_trace.addPoint(counter / 60, 199521); // minutes
                     }
                 };
                 if (Daten.debug) {
-                    timer.schedule(task, 0, 100);
+                    timer.schedule(task, 0, 10);
                 } else {
                     timer.schedule(task, 0, 1000);
                 }
@@ -173,48 +182,24 @@ class MVBandwidthMonitor {
         }
     }
 
-//    private static class BottomPanel extends JPanel {
-//
-//        private static final Icon RESIZE_ICON = new ImageIcon(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/resize_corner_dark.png")));
-//
-//        private final Window fWindow;
-//        private final JLabel fResizeCorner = new JLabel(RESIZE_ICON);
-//        private int fXOffsetToWindowEdge;
-//        private int fYOffsetToWidnowEdge;
-//
-//        public BottomPanel(Window window) {
-//            super(new FlowLayout(FlowLayout.RIGHT));
-//            fWindow = window;
-//            setOpaque(false);
-//            add(fResizeCorner);
-//            fResizeCorner.addMouseListener(createMouseListener());
-//            fResizeCorner.addMouseMotionListener(createMouseMotionListener());
+    private double roundBandwidth(double d) {
+        int i = 0;
+        while (d > 100) {
+            ++i;
+            d /= 10;
+        }
+        d = Math.round(d);
+        d = d * Math.pow(10, i);
+        return d;
+    }
+//    private double roundBandwidth(double d) {
+//        int i = 0;
+//        while (d > 100) {
+//            ++i;
+//            d /= 10;
 //        }
-//
-//        private MouseAdapter createMouseListener() {
-//            return new MouseAdapter() {
-//                @Override
-//                public void mousePressed(MouseEvent e) {
-//                    Point windowPoint
-//                            = SwingUtilities.convertPoint(fResizeCorner, e.getPoint(), fWindow);
-//                    fXOffsetToWindowEdge = fWindow.getWidth() - windowPoint.x;
-//                    fYOffsetToWidnowEdge = fWindow.getHeight() - windowPoint.y;
-//                }
-//            };
-//        }
-//
-//        private MouseMotionListener createMouseMotionListener() {
-//            return new MouseMotionAdapter() {
-//                @Override
-//                public void mouseDragged(MouseEvent e) {
-//                    Point windowPoint = SwingUtilities.convertPoint(fResizeCorner, e.getPoint(), fWindow);
-//                    fWindow.setSize(windowPoint.x + fXOffsetToWindowEdge,
-//                            windowPoint.y + fYOffsetToWidnowEdge);
-//
-//                }
-//            };
-//        }
-//
+//        d = Math.round(d);
+//        d = d * Math.pow(10, i);
+//        return d;
 //    }
-
 }

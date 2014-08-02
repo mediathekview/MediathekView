@@ -154,26 +154,26 @@ public class LabelFormatterMV extends ALabelFormatter {
      *
      */
     private final void chooseUnit(final double min, final double max) {
-        try {
-            if (max < 1.0 * 1000) {
-                this.m_unit = UnitFactory.UNCHANGED;
-            } else if (max < 1.0 * 1000 * 1000) {
-                this.m_unit = (AUnit) UnitKilo.class.newInstance();
-            } else if (max < 1.0 * 1000 * 1000 * 1000) {
-                this.m_unit = (AUnit) UnitMega.class.newInstance();
-            } else {
-                this.m_unit = (AUnit) UnitGiga.class.newInstance();
-            }
-        } catch (Exception ex) {
-            this.m_unit = UnitFactory.UNCHANGED;
-        }
-//        double range = this.getAxis().getRange().getExtent();
-//        if (range == 0) {
-//            //range = 1;
-//            range = 5*max;
+//        try {
+//            if (max < 1.0 * 1000) {
+//                this.m_unit = UnitFactory.UNCHANGED;
+//            } else if (max < 1.0 * 1000 * 1000) {
+//                this.m_unit = (AUnit) UnitKilo.class.newInstance();
+//            } else if (max < 1.0 * 1000 * 1000 * 1000) {
+//                this.m_unit = (AUnit) UnitMega.class.newInstance();
+//            } else {
+//                this.m_unit = (AUnit) UnitGiga.class.newInstance();
+//            }
+//        } catch (Exception ex) {
+//            this.m_unit = UnitFactory.UNCHANGED;
 //        }
-//        //this.m_unit = UnitFactory.getInstance().getUnit(range, UnitSystemSI.getInstance()); //Xaver
-//        this.m_unit = UnitFactory.getInstance().getUnit(range, UnitSystemSI.getInstance());
+        double range = this.getAxis().getRange().getExtent();
+        if (range == 0) {
+            range = 1;
+            //range = 5*max;
+        }
+        //this.m_unit = UnitFactory.getInstance().getUnit(range, UnitSystemSI.getInstance()); //Xaver
+        this.m_unit = UnitFactory.getInstance().getUnit(range, UnitSystemSI.getInstance());
     }
 
     /**

@@ -317,14 +317,14 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 //                }
 //            });
 //        } else {
-            bandwidthMonitor = new MVBandwidthMonitor(this, cbBandwidthDisplay);
-            bandwidthMonitor.toggleVisibility();
-            cbBandwidthDisplay.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    bandwidthMonitor.toggleVisibility();
-                }
-            });
+        bandwidthMonitor = new MVBandwidthMonitor(this, cbBandwidthDisplay);
+        bandwidthMonitor.toggleVisibility();
+        cbBandwidthDisplay.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                bandwidthMonitor.toggleVisibility();
+            }
+        });
 //        }
 
         duration.ping("Gui steht!");
@@ -675,7 +675,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         panelMeldungen.setLayout(new BorderLayout());
         panelMeldungen.add(splitPane, BorderLayout.CENTER);
         if (Daten.debug) {
-//////            jTabbedPane.addTab("Debug", new GuiDebug(daten));
+            daten.guiDebug = new GuiDebug(daten);
+            jTabbedPane.addTab("Debug", daten.guiDebug);
         }
         initFrames();
     }
