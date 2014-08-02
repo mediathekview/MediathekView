@@ -27,6 +27,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JSpinner;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import mediathek.MediathekGui;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
@@ -37,6 +41,7 @@ import mediathek.tool.MVNotification;
 import msearch.daten.MSConfig;
 
 public class GuiDebug extends JPanel {
+
     private final JButton[] buttonSender;
     private final String[] sender;
     private Daten daten;
@@ -47,12 +52,10 @@ public class GuiDebug extends JPanel {
         daten = d;
         sender = Daten.filmeLaden.getSenderNamen();
         buttonSender = new JButton[sender.length];
-        
+
         jPanel3.setLayout(new GridLayout(1, 1));
         jPanel3.add(new PanelInfoStarts());
         jPanel3.repaint();
-        
-        
 
         //Tab1 Sender löschen Panel füllen
         for (int i = 0; i < Daten.filmeLaden.getSenderNamen().length; ++i) {
@@ -142,6 +145,17 @@ public class GuiDebug extends JPanel {
                         + "</html>");
             }
         });
+        jSlider1.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                jLabelValue.setText(jSlider1.getValue() + "");
+            }
+        });
+    }
+
+    public JSlider getJSpinner() {
+        return jSlider1;
     }
 
     private void addSender() {
@@ -160,24 +174,26 @@ public class GuiDebug extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbed1 = new javax.swing.JTabbedPane();
-        jPanel2 = new javax.swing.JPanel();
+        javax.swing.JTabbedPane jTabbed1 = new javax.swing.JTabbedPane();
+        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         jPanelSenderLaden = new javax.swing.JPanel();
         jToggleButtonAllesLaden = new javax.swing.JToggleButton();
         jButtonFilmlisteLoeschen = new javax.swing.JButton();
         jButtonAllesSpeichern = new javax.swing.JButton();
         jButtonAlleLaden = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         jPanelSender = new javax.swing.JPanel();
         jPanelLoeschen = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
         jButtonCheckUrl = new javax.swing.JButton();
         jTextFieldUrl = new javax.swing.JTextField();
         jButtonCheck = new javax.swing.JButton();
         jButtonGc = new javax.swing.JButton();
         jButtonNotify = new javax.swing.JButton();
         jButtonFehler = new javax.swing.JButton();
+        jSlider1 = new javax.swing.JSlider();
+        jLabelValue = new javax.swing.JLabel();
 
         jPanelSenderLaden.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Sender starten"));
         jPanelSenderLaden.setLayout(new java.awt.BorderLayout());
@@ -300,6 +316,12 @@ public class GuiDebug extends JPanel {
 
         jButtonFehler.setText("Fehler ausgeben");
 
+        jSlider1.setMajorTickSpacing(100000);
+        jSlider1.setMaximum(2000000);
+        jSlider1.setPaintTicks(true);
+
+        jLabelValue.setText("jLabel1");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -315,8 +337,11 @@ public class GuiDebug extends JPanel {
                             .addComponent(jButtonCheckUrl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldUrl, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE))
+                    .addComponent(jSlider1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jButtonFehler)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButtonFehler)
+                            .addComponent(jLabelValue))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -335,7 +360,11 @@ public class GuiDebug extends JPanel {
                 .addComponent(jButtonNotify)
                 .addGap(18, 18, 18)
                 .addComponent(jButtonFehler)
-                .addContainerGap(281, Short.MAX_VALUE))
+                .addGap(43, 43, 43)
+                .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabelValue)
+                .addContainerGap(178, Short.MAX_VALUE))
         );
 
         jPanel5Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonCheckUrl, jTextFieldUrl});
@@ -368,14 +397,12 @@ public class GuiDebug extends JPanel {
     private javax.swing.JButton jButtonFilmlisteLoeschen;
     private javax.swing.JButton jButtonGc;
     private javax.swing.JButton jButtonNotify;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel jLabelValue;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanelLoeschen;
     private javax.swing.JPanel jPanelSender;
     private javax.swing.JPanel jPanelSenderLaden;
-    private javax.swing.JTabbedPane jTabbed1;
+    private javax.swing.JSlider jSlider1;
     private javax.swing.JTextField jTextFieldUrl;
     private javax.swing.JToggleButton jToggleButtonAllesLaden;
     // End of variables declaration//GEN-END:variables

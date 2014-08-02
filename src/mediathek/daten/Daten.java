@@ -38,6 +38,7 @@ import mediathek.controller.Log;
 import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.StarterClass;
 import mediathek.gui.GuiAbo;
+import mediathek.gui.GuiDebug;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
 import mediathek.gui.dialog.MVFilmInformation;
@@ -96,6 +97,7 @@ public class Daten {
     public GuiFilme guiFilme = null; // Tab mit den Filmen
     public GuiDownloads guiDownloads = null; // Tab mit den Downloads
     public GuiAbo guiAbo = null; // Tab mit den Abos
+    public static GuiDebug guiDebug = null;
     public MVFilmInformation filmInfoHud = null; // Infos zum Film
 
     private boolean configCopy = false;
@@ -308,7 +310,7 @@ public class Daten {
 
         mVColor.load(); // Farben einrichten
         MVFont.initFont(); // Fonts einrichten
-        
+
         // erst die Systemdaten, dann die Filmliste
         updateSplashScreen("Lade Filmliste...");
         new MSFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste(), "", Daten.listeFilme);
