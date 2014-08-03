@@ -68,7 +68,7 @@ class MVBandwidthMonitor {
         chart.setPaintLabels(true);
         chart.setUseAntialiasing(true);
         chart.setToolTipType(Chart2D.ToolTipType.VALUE_SNAP_TO_TRACEPOINTS);
-        if (Funktionen.getOs() == Funktionen.OS_LINUX) {
+        if (Funktionen.getOs() == Funktionen.OperatingSystemType.LINUX) {
             hudDialog.setBackground(null);
             chart.setOpaque(true);
             m_trace.setColor(Color.RED);
