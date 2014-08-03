@@ -2,13 +2,17 @@ package mediathek;
 
 import com.explodingpixels.macwidgets.HudWindow;
 import com.jidesoft.utils.SystemInfo;
-import java.awt.BasicStroke;
+import info.monitorenter.gui.chart.Chart2D;
+import info.monitorenter.gui.chart.IAxis;
+import info.monitorenter.gui.chart.labelformatters.LabelFormatterAutoUnits;
+import info.monitorenter.gui.chart.rangepolicies.RangePolicyForcedPoint;
+import info.monitorenter.gui.chart.traces.Trace2DLtd;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
+import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.TimerTask;
 import javax.swing.JCheckBoxMenuItem;
@@ -21,26 +25,6 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.Funktionen;
 import mediathek.tool.MVConfig;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.block.BlockBorder;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.chart.renderer.category.LineAndShapeRenderer;
-import org.jfree.chart.renderer.xy.XYDotRenderer;
-import org.jfree.chart.renderer.xy.XYSplineRenderer;
-import org.jfree.chart.title.TextTitle;
-import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.xy.DefaultXYDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  * This class will manage and display the download bandwidth chart display.
@@ -50,15 +34,16 @@ class MVBandwidthMonitor {
     private long counter = 0;
     private HudWindow hudWindow = null;
     private JCheckBoxMenuItem menuItem = null;
-    XYSeriesCollection dataset = new XYSeriesCollection();
-    XYSeries series1 = new XYSeries("Punkte1");
-    XYPlot plot = null;
-    final int MAXDATE = 300;
+    private Chart2D chart = new Chart2D();
+    private Trace2DLtd m_trace = new Trace2DLtd(100);
+    private IAxis x_achse = null;
+    private IAxis y_achse = null;
 
     /**
      * Timer for collecting sample data.
      */
     private java.util.Timer timer = new java.util.Timer(false);
+    TimerTask timerTask = null;
 
     public MVBandwidthMonitor(JFrame parent, final JCheckBoxMenuItem menuItem) {
         this.menuItem = menuItem;
@@ -70,63 +55,56 @@ class MVBandwidthMonitor {
 
         JDialog hudDialog = hudWindow.getJDialog();
 
-        hudDialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        hudDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         hudDialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 menuItem.setSelected(false);
-                Daten.mVConfig.add(MVConfig.SYSTEM_ANSICHT_BANDWIDTH, Boolean.toString(menuItem.isSelected()));
+                toggleVisibility();
             }
         });
 
+        JPanel panel = new JPanel();
+        chart.setPaintLabels(true);
+        chart.setUseAntialiasing(true);
+        chart.setToolTipType(Chart2D.ToolTipType.VALUE_SNAP_TO_TRACEPOINTS);
         if (Funktionen.getOs() == Funktionen.OS_LINUX) {
             hudDialog.setBackground(null);
+            chart.setOpaque(true);
+            m_trace.setColor(Color.RED);
+            panel.setOpaque(true);
+        } else {
+            chart.setOpaque(false);
+            m_trace.setColor(Color.GREEN);
+            panel.setOpaque(false);
         }
+        x_achse = chart.getAxisX();
+        x_achse.getAxisTitle().setTitle("Minuten");
+        x_achse.setPaintScale(true);
+        x_achse.setVisible(true);
+        x_achse.setPaintGrid(false);
+        x_achse.setMajorTickSpacing(10);
+        x_achse.setMinorTickSpacing(1);
 
-        XYDotRenderer dot = new XYDotRenderer();
-        dot.setDotHeight(1);
-        dot.setDotWidth(1);
-        XYSplineRenderer splineRenderer = new XYSplineRenderer();
-        splineRenderer.setBaseShapesVisible(false);
+        y_achse = chart.getAxisY();
+        y_achse.getAxisTitle().setTitle("");
+        y_achse.setPaintScale(true);
+        y_achse.setVisible(true);
+        y_achse.setPaintGrid(true);
+        y_achse.setMajorTickSpacing(5);
+        y_achse.setMinorTickSpacing(1);
+        y_achse.setFormatter(new LabelFormatterAutoUnits());
+        y_achse.setRangePolicy(new RangePolicyForcedPoint());
 
-        NumberAxis xax = new NumberAxis("x");
-        NumberAxis yax = new NumberAxis("y");
-        createDataset();
-        plot = new XYPlot(dataset, xax, yax, splineRenderer);
-        JFreeChart chart = new JFreeChart(plot);
-        ChartPanel chartPanel = new ChartPanel(chart);
-
-        ValueAxis domainAxis = plot.getDomainAxis();
-        domainAxis.setAutoRange(true);
-        domainAxis.setFixedAutoRange(MAXDATE);
-
-        ValueAxis rangeAxis = plot.getRangeAxis();
-        rangeAxis.setAutoRange(true);
-
-        JPanel panel = new JPanel();
-        panel.setOpaque(true);
+        m_trace.setName("");
+        chart.addTrace(m_trace);
         panel.setLayout(new BorderLayout(0, 0));
-        panel.add(chartPanel, BorderLayout.CENTER);
+        panel.add(chart, BorderLayout.CENTER);
         hudWindow.setContentPane(panel);
-
         final Dimension dim = hudDialog.getSize();
         dim.height = 150;
         dim.width = 300;
         hudDialog.setSize(dim);
-    }
-
-    private void createDataset() {
-        for (int i = 0; i < MAXDATE; ++i) {
-            series1.add(i, 0);
-        }
-        dataset.addSeries(series1);
-    }
-
-    private void addRowDataset(long value, long time) {
-        // create the dataset...
-        series1.remove(0);
-        series1.add(time, value);
-
     }
 
     /**
@@ -138,10 +116,10 @@ class MVBandwidthMonitor {
         hudWindow.getJDialog().setVisible(isSelected);
         try {
             if (menuItem.isSelected()) {
-                TimerTask task = new TimerTask() {
+                timerTask = new TimerTask() {
                     @Override
                     public void run() {
-                        long bandwidth = 0;
+                        double bandwidth = 0.0;
                         //only count running/active downloads and calc accumulated progress..
                         LinkedList<DatenDownload> activeDownloadList = Daten.listeDownloads.getListOfStartsNotFinished(Start.QUELLE_ALLE);
                         for (DatenDownload download : activeDownloadList) {
@@ -151,30 +129,27 @@ class MVBandwidthMonitor {
                         }
                         activeDownloadList.clear();
 
-                        if (bandwidth < 0) {
-                            bandwidth = 0;
+                        if (bandwidth < 0.0) {
+                            bandwidth = 0.0;
                         }
 
-//                        if (bandwidth > 0.0) {
-//                            bandwidth /= 1024.0; // convert to KByte
-//                        }
                         counter++;
-                        if (counter > 24 * 60 * 60) {
-                            counter = 0;
-                        }
-                        //addRowDataset(bandwidth, counter);
-                        addRowDataset(Daten.guiDebug.getJSpinner().getValue(), counter);
-                        //m_trace.addPoint(counter / 60, roundBandwidth(bandwidth)); // minutes
-                        //m_trace.addPoint(counter / 60, roundBandwidth(Daten.guiDebug.getJSpinner().getValue() + counter)); // minutes
-                        //m_trace.addPoint(counter / 60, 199521); // minutes
+
+//                        m_trace.addPoint(counter, Daten.guiDebug.getJSpinner().getValue()); // minutes
+//                        x_achse.getAxisTitle().setTitle(roundBandwidth(Daten.guiDebug.getJSpinner().getValue(), counter));
+                        m_trace.addPoint(counter, bandwidth); // minutes
+                        x_achse.getAxisTitle().setTitle(roundBandwidth(bandwidth, counter));
                     }
                 };
                 if (Daten.debug) {
-                    timer.schedule(task, 0, 10);
+                    timer.schedule(timerTask, 0, 100);
                 } else {
-                    timer.schedule(task, 0, 1000);
+                    timer.schedule(timerTask, 0, 1000);
                 }
             } else {
+                if (timerTask != null) {
+                    timerTask.cancel();
+                }
                 timer.purge();
             }
         } catch (IllegalStateException ignored) {
@@ -182,24 +157,14 @@ class MVBandwidthMonitor {
         }
     }
 
-    private double roundBandwidth(double d) {
-        int i = 0;
-        while (d > 100) {
-            ++i;
-            d /= 10;
+    private String roundBandwidth(double bandw, long time) {
+
+        if (bandw > 1000000) {
+            return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + new DecimalFormat("####0.00").format(bandw / 1000000) + " MByte/s";
+        } else if (bandw > 1000) {
+            return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + Math.round(bandw / 1000) + " kByte/s";
+        } else {
+            return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + Math.round(bandw) + " Byte/s";
         }
-        d = Math.round(d);
-        d = d * Math.pow(10, i);
-        return d;
     }
-//    private double roundBandwidth(double d) {
-//        int i = 0;
-//        while (d > 100) {
-//            ++i;
-//            d /= 10;
-//        }
-//        d = Math.round(d);
-//        d = d * Math.pow(10, i);
-//        return d;
-//    }
 }
