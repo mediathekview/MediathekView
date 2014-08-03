@@ -158,15 +158,13 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         ListePset pSet;
         InputStream datei;
         switch (Funktionen.getOs()) {
-            case Funktionen.OS_LINUX:
+            case LINUX:
                 datei = new GetFile().getPsetVorlageLinux();
                 break;
-            case Funktionen.OS_MAC:
+            case MAC:
                 datei = new GetFile().getPsetVorlageMac();
                 break;
-            case Funktionen.OS_WIN_32BIT:
-            case Funktionen.OS_WIN_64BIT:
-            case Funktionen.OS_UNKNOWN:
+
             default:
                 datei = new GetFile().getPsetVorlageWindows();
         }

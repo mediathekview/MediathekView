@@ -27,60 +27,54 @@ import mediathek.Main;
 import mediathek.controller.Log;
 
 public class Funktionen {
+    public enum OperatingSystemType {
+        UNKNOWN(""), WIN32("Windows"), WIN64("Windows"), LINUX("Linux"), MAC("Mac");
+        private final String name;
 
-    public static final int OS_UNKNOWN = 0;
-    public static final int OS_WIN_32BIT = 1;
-    public static final int OS_WIN_64BIT = 2;
-    public static final int OS_LINUX = 3;
-    public static final int OS_MAC = 4;
-    public static final String OS_UNKNOWN_STRING = "";
-    public static final String OS_WIN_32BIT_STRING = "Windows";
-    public static final String OS_WIN_64BIT_STRING = "Windows";
-    public static final String OS_LINUX_STRING = "Linux";
-    public static final String OS_MAC_STRING = "Mac";
+        OperatingSystemType(String name) {
+            this.name = name;
+        }
 
-    public static boolean isOsx() {
-        return SystemInfo.isMacOSX();
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 
-    public static int getOs() {
-        int os = OS_UNKNOWN;
+    /**
+     * Detect and return the currently used operating system.
+     *
+     * @return The enum for supported Operating Systems.
+     */
+    public static OperatingSystemType getOs() {
+        OperatingSystemType os = OperatingSystemType.UNKNOWN;
+
         if (System.getProperty("os.name").toLowerCase().contains("windows")) {
             if (System.getenv("ProgramFiles") != null) {
                 // win 32Bit
-                os = OS_WIN_32BIT;
+                os = OperatingSystemType.WIN32;
             } else if (System.getenv("ProgramFiles(x86)") != null) {
                 // win 64Bit
-                os = OS_WIN_64BIT;
+                os = OperatingSystemType.WIN64;
             }
-        } else if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-            os = OS_LINUX;
-        } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            os = OS_MAC;
+        } else if (SystemInfo.isLinux()) {
+            os = OperatingSystemType.LINUX;
+        } else if (SystemInfo.isMacOSX()) {
+            os = OperatingSystemType.MAC;
         }
+
         return os;
     }
 
     public static String getOsString() {
-        String os = OS_UNKNOWN_STRING;
-        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            if (System.getenv("ProgramFiles") != null) {
-                // win 32Bit
-                os = OS_WIN_32BIT_STRING;
-            } else if (System.getenv("ProgramFiles(x86)") != null) {
-                // win 64Bit
-                os = OS_WIN_64BIT_STRING;
-            }
-        } else if (System.getProperty("os.name").toLowerCase().contains("linux")) {
-            os = OS_LINUX_STRING;
-        } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            os = OS_MAC_STRING;
-        }
-        return os;
+        return getOs().toString();
     }
 
+    /**
+     * Retrieve the path to the program jar file.
+     * @return The program jar file path with a separator added.
+     */
     public static String getPathJar() {
-        // liefert den Pfad der Programmdatei mit File.separator am Schluss
         String pFilePath = "pFile";
         File propFile = new File(pFilePath);
         if (!propFile.exists()) {
@@ -89,7 +83,7 @@ public class Funktionen {
                 File jarFile = new File(cS.getLocation().toURI().getPath());
                 String jarDir = jarFile.getParentFile().getPath();
                 propFile = new File(jarDir + File.separator + pFilePath);
-            } catch (Exception ex) {
+            } catch (Exception ignored) {
             }
         }
         String s = propFile.getAbsolutePath().replace(pFilePath, "");
@@ -113,11 +107,11 @@ public class Funktionen {
 
     public static String[] getJavaVersion() {
         String[] ret = new String[4];
-        int i = 0;
-        ret[i++] = "Vendor: " + System.getProperty("java.vendor");
-        ret[i++] = "VMname: " + System.getProperty("java.vm.name");
-        ret[i++] = "Version: " + System.getProperty("java.version");
-        ret[i++] = "Runtimeversion: " + System.getProperty("java.runtime.version");
+
+        ret[0] = "Vendor: " + System.getProperty("java.vendor");
+        ret[1] = "VMname: " + System.getProperty("java.vm.name");
+        ret[2] = "Version: " + System.getProperty("java.version");
+        ret[3] = "Runtimeversion: " + System.getProperty("java.runtime.version");
         return ret;
     }
 

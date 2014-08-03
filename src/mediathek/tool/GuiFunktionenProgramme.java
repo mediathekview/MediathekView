@@ -54,15 +54,13 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         final String PFAD_WIN = "\\SMPlayer\\mplayer\\mplayer.exe";
         String pfad;
         switch (getOs()) {
-            case OS_LINUX:
+            case LINUX:
                 pfad = PFAD_LINUX;
                 break;
-            case OS_MAC:
+            case MAC:
                 pfad = PFAD_MAC;
                 break;
-            case OS_WIN_32BIT:
-            case OS_WIN_64BIT:
-            case OS_UNKNOWN:
+
             default:
                 if (System.getenv("ProgramFiles") != null) {
                     pfad = System.getenv("ProgramFiles") + PFAD_WIN;
@@ -87,15 +85,13 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         final String PFAD_WIN = "\\VideoLAN\\VLC\\vlc.exe";
         String pfad;
         switch (getOs()) {
-            case OS_LINUX:
+            case LINUX:
                 pfad = PFAD_LINUX_VLC;
                 break;
-            case OS_MAC:
+            case MAC:
                 pfad = PFAD_MAC_VLC;
                 break;
-            case OS_WIN_32BIT:
-            case OS_WIN_64BIT:
-            case OS_UNKNOWN:
+
             default:
                 pfad = PFAD_WIN_DEFAULT;
                 if (new File(pfad).exists()) {
@@ -129,15 +125,13 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         final String PFAD_WINDOWS_FLV = "bin\\flvstreamer_win32_latest.exe";
         String pfad;
         switch (getOs()) {
-            case OS_LINUX:
+            case LINUX:
                 pfad = PFAD_LINUX_FLV;
                 break;
-            case OS_MAC:
+            case MAC:
                 pfad = Funktionen.getPathJar() + PFAD_MAC_FLV;
                 break;
-            case OS_WIN_32BIT:
-            case OS_WIN_64BIT:
-            case OS_UNKNOWN:
+
             default:
                 pfad = Funktionen.getPathJar() + PFAD_WINDOWS_FLV;
         }
@@ -158,15 +152,13 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         final String PFAD_WINDOWS_FFMPEG = "bin\\ffmpeg.exe";
         String pfad;
         switch (getOs()) {
-            case OS_LINUX:
+            case LINUX:
                 pfad = PFAD_LINUX_FFMPEG;
                 break;
-            case OS_MAC:
+            case MAC:
                 pfad = Funktionen.getPathJar() + PFAD_MAC_FFMPEG;
                 break;
-            case OS_WIN_32BIT:
-            case OS_WIN_64BIT:
-            case OS_UNKNOWN:
+
             default:
                 pfad = Funktionen.getPathJar() + PFAD_WINDOWS_FFMPEG;
         }
@@ -184,15 +176,13 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         final String PFAD_LINUX_SCRIPT = "bin/flv.sh";
         final String PFAD_WINDOWS_SCRIPT = "bin\\flv.bat";
         switch (getOs()) {
-            case OS_LINUX:
+            case LINUX:
                 pfadScript = getPathJar() + PFAD_LINUX_SCRIPT;
                 break;
-            case OS_MAC:
+            case MAC:
                 pfadScript = getPathJar() + PFAD_LINUX_SCRIPT;
                 break;
-            case OS_WIN_32BIT:
-            case OS_WIN_64BIT:
-            case OS_UNKNOWN:
+
             default:
                 pfadScript = getPathJar() + PFAD_WINDOWS_SCRIPT;
         }
@@ -344,7 +334,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                     in.close();
                 }
             }
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
         return true;
     }
@@ -446,7 +436,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                     ret = true;
                 }
             }
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
         return ret;
     }

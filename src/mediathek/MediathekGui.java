@@ -336,7 +336,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             String laf = Daten.mVConfig.get(MVConfig.SYSTEM_LOOK);
             //if we have the old values, reset to System LAF
             if (laf.equals("") || laf.length() == 1) {
-                if (Funktionen.getOs() != Funktionen.OS_LINUX) {
+                if (Funktionen.getOs() != Funktionen.OperatingSystemType.LINUX) {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 }
             } else {
@@ -587,7 +587,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_MELDUNGEN))) {
                 setFrame(2, MVConfig.SYSTEM_GROESSE_MELDUNGEN, panelMeldungen, MVToolBar.TOOLBAR_TAB_MELDUNGEN, "Meldungen");
             } else {
-                setTab(2, panelMeldungen, "Meldungen", nr++);
+                setTab(2, panelMeldungen, "Meldungen", nr);
             }
         }
         mVToolBar.loadVisible(); // die können sich im externen Fenster geändert haben
@@ -640,12 +640,51 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         return false;
     }
 
-    private void initTabs() {
+    private void setupFilmTab()
+    {
         daten.guiFilme = new GuiFilme(daten, daten.mediathekGui);
         daten.guiFilme.init();
+
+        JPanel filmPanel = new JPanel();
+        filmPanel.setLayout(new BorderLayout());
+        filmPanel.add(daten.guiFilme, BorderLayout.CENTER);
+
+        /*JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
+        final JButton filterButton = new JButton("");
+        filterButton.setIcon(GetIcon.getProgramIcon("filter_anzeigen_22.png"));
+        buttonPanel.add(filterButton);
+        filmPanel.add(buttonPanel, BorderLayout.NORTH);
+
+        final JidePopup popup = new JidePopup();
+        popup.setMovable(true);
+        popup.setResizable(true);
+        popup.setAttachable(false);
+        popup.getContentPane().setLayout(new BorderLayout());
+        MVFilterPanel filterPanel = new MVFilterPanel(null,daten);
+        popup.getContentPane().add(new JScrollPane(filterPanel));
+        popup.setOwner(filterButton);
+        popup.setDefaultFocusComponent(filterPanel);
+        popup.packPopup();
+        popup.setDetached(false);
+        Dimension dim = popup.getSize();
+        dim.height /= 4;
+        popup.setSize(dim);
+
+        filterButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                popup.showPopup();
+            }
+        });*/
+        jTabbedPane.addTab("Filme", filmPanel);
+    }
+
+    private void initTabs() {
         daten.guiDownloads = new GuiDownloads(daten, daten.mediathekGui);
         daten.guiAbo = new GuiAbo(daten, daten.mediathekGui);
-        jTabbedPane.addTab("Filme", daten.guiFilme);
+
+        setupFilmTab();
 
         // jetzt noch den Rest
         panelMeldungen = new PanelVorlage(daten, this) {

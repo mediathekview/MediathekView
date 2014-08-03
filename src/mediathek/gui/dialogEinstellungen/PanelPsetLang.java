@@ -367,7 +367,7 @@ public class PanelPsetLang extends PanelVorlage {
         jCheckBoxThema.setEnabled(pSet != null);
         jSpinnerLaenge.setEnabled(pSet != null);
         jCheckBoxInfodatei.setEnabled(pSet != null);
-        jCheckBoxSpotlight.setEnabled(pSet != null && (Funktionen.isOsx() || Daten.debug));
+        jCheckBoxSpotlight.setEnabled(pSet != null && (SystemInfo.isMacOSX() || Daten.debug));
         if (pSet != null) {
             jTabbedPane.setTitleAt(0, "Set Name: " + pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
             if (pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR].equals("")) {

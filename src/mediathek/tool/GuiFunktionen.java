@@ -94,7 +94,8 @@ public class GuiFunktionen extends Funktionen {
         // < > ? " : | \ / *
         boolean winPfad = false;
         String ret = name;
-        if (Funktionen.getOs() == Funktionen.OS_WIN_32BIT || Funktionen.getOs() == Funktionen.OS_WIN_64BIT) {
+        final OperatingSystemType os = getOs();
+        if (os == OperatingSystemType.WIN32 || os == OperatingSystemType.WIN64) {
             // win verträgt keine Pfadnamen/Dateinamen mit einem "." am Schluß
             while (!ret.isEmpty() && ret.endsWith(".")) {
                 ret = ret.substring(0, ret.length() - 1);
@@ -106,7 +107,7 @@ public class GuiFunktionen extends Funktionen {
             } else {
                 ret = ret.replace("/", "-");
             }
-            if (Funktionen.getOs() == Funktionen.OS_WIN_32BIT || Funktionen.getOs() == Funktionen.OS_WIN_64BIT) {
+            if (Funktionen.getOs() == OperatingSystemType.WIN32 || Funktionen.getOs() == OperatingSystemType.WIN64) {
                 if (ret.length() > 1) {
                     if (ret.charAt(1) == ':') {
                         // damit auch "d:" und nicht nur "d:\" als Pfad geht
@@ -153,7 +154,8 @@ public class GuiFunktionen extends Funktionen {
         // ===============================
         // Windows
         boolean winPfad = false;
-        if (Funktionen.getOs() == Funktionen.OS_WIN_32BIT || Funktionen.getOs() == Funktionen.OS_WIN_64BIT) {
+        final OperatingSystemType os = getOs();
+        if (os == OperatingSystemType.WIN32 || os == OperatingSystemType.WIN64) {
             if (!istDatei && ret.length() > 1) {
                 if (ret.charAt(1) == ':') {
                     // damit auch "d:" und nicht nur "d:\" als Pfad geht
@@ -400,7 +402,7 @@ public class GuiFunktionen extends Funktionen {
 
     public static String getStandardDownloadPath() {
         //lifert den Standardpfad für Downloads
-        if (getOs() == OS_MAC) {
+        if (getOs() == OperatingSystemType.MAC) {
             return addsPfad(getHomePath(), "Desktop");
         }
         return addsPfad(getHomePath(), Konstanten.VERZEICNHISS_DOWNLOADS);

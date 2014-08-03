@@ -31,9 +31,6 @@ import mediathek.gui.dialogEinstellungen.PanelEinstellungenGeo;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.gui.dialogEinstellungen.PanelPsetKurz;
 import mediathek.gui.dialogEinstellungen.PanelPsetLang;
-import static mediathek.tool.Funktionen.OS_MAC;
-import static mediathek.tool.Funktionen.OS_WIN_32BIT;
-import static mediathek.tool.Funktionen.OS_WIN_64BIT;
 import static mediathek.tool.Funktionen.getOs;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.MVConfig;
@@ -150,9 +147,9 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         jCheckBoxAnpassen.setVisible(false);
         jCheckBoxAlleEinstellungen.setVisible(false);
         switch (getOs()) {
-            case OS_MAC:
-            case OS_WIN_32BIT:
-            case OS_WIN_64BIT:
+            case MAC:
+            case WIN32:
+            case WIN64:
                 // da wird nur der VLC gebraucht, der Rest wird mitgeliefert
                 jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, ddaten, true /* vlc */, false /* flvstreamer */, false /* mplayer */, false /*ffmpeg*/));
                 break;
