@@ -76,7 +76,9 @@ class MVBandwidthMonitor {
         } else {
             chart.setOpaque(false);
             m_trace.setColor(Color.GREEN);
-            panel.setOpaque(false);
+            //a transparent chart is a HUGE GPU performance killer and will BURN GPU resources :(
+            //panel.setOpaque(false);
+            panel.setBackground(Color.BLACK);
         }
         x_achse = chart.getAxisX();
         x_achse.getAxisTitle().setTitle("Minuten");
