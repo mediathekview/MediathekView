@@ -42,8 +42,8 @@ class MVBandwidthMonitor {
     /**
      * Timer for collecting sample data.
      */
-    private java.util.Timer timer = new java.util.Timer(false);
-    TimerTask timerTask = null;
+    private final java.util.Timer timer = new java.util.Timer(false);
+    private TimerTask timerTask = null;
 
     public MVBandwidthMonitor(JFrame parent, final JCheckBoxMenuItem menuItem) {
         this.menuItem = menuItem;
@@ -71,14 +71,11 @@ class MVBandwidthMonitor {
         if (Funktionen.getOs() == Funktionen.OperatingSystemType.LINUX) {
             hudDialog.setBackground(null);
             chart.setOpaque(true);
-            m_trace.setColor(Color.RED);
             panel.setOpaque(true);
         } else {
-            chart.setOpaque(false);
-            m_trace.setColor(Color.GREEN);
             //a transparent chart is a HUGE GPU performance killer and will BURN GPU resources :(
             //panel.setOpaque(false);
-            panel.setBackground(Color.BLACK);
+            panel.setBackground(Color.WHITE);
         }
         x_achse = chart.getAxisX();
         x_achse.getAxisTitle().setTitle("Minuten");
@@ -99,6 +96,7 @@ class MVBandwidthMonitor {
         y_achse.setRangePolicy(new RangePolicyForcedPoint());
 
         m_trace.setName("");
+        m_trace.setColor(Color.RED);
         chart.addTrace(m_trace);
         panel.setLayout(new BorderLayout(0, 0));
         panel.add(chart, BorderLayout.CENTER);
@@ -146,7 +144,7 @@ class MVBandwidthMonitor {
                 if (Daten.debug) {
                     timer.schedule(timerTask, 0, 100);
                 } else {
-                    timer.schedule(timerTask, 0, 1000);
+                    timer.schedule(timerTask, 0, 1_000);
                 }
             } else {
                 if (timerTask != null) {
@@ -161,10 +159,10 @@ class MVBandwidthMonitor {
 
     private String roundBandwidth(double bandw, long time) {
 
-        if (bandw > 1000000) {
-            return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + new DecimalFormat("####0.00").format(bandw / 1000000) + " MByte/s";
-        } else if (bandw > 1000) {
-            return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + Math.round(bandw / 1000) + " kByte/s";
+        if (bandw > 1_000_000.0) {
+            return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + new DecimalFormat("####0.00").format(bandw / 1_000_000.0) + " MByte/s";
+        } else if (bandw > 1_000.0) {
+            return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + Math.round(bandw / 1_000.0) + " kByte/s";
         } else {
             return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + Math.round(bandw) + " Byte/s";
         }
