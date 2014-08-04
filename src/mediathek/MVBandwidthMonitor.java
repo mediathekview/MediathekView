@@ -31,11 +31,10 @@ import mediathek.tool.MVConfig;
  */
 class MVBandwidthMonitor {
 
-    private long counter = 0;
+    private double counter = 0; // double sonst "läuft" die Chart nicht
     private HudWindow hudWindow = null;
     private JCheckBoxMenuItem menuItem = null;
-    private Chart2D chart = new Chart2D();
-    private Trace2DLtd m_trace = new Trace2DLtd(100);
+    private Trace2DLtd m_trace = new Trace2DLtd(300);
     private IAxis x_achse = null;
     private IAxis y_achse = null;
 
@@ -65,6 +64,7 @@ class MVBandwidthMonitor {
         });
 
         JPanel panel = new JPanel();
+        Chart2D chart = new Chart2D();
         chart.setPaintLabels(true);
         chart.setUseAntialiasing(true);
         chart.setToolTipType(Chart2D.ToolTipType.VALUE_SNAP_TO_TRACEPOINTS);
@@ -137,8 +137,8 @@ class MVBandwidthMonitor {
 
 //                        m_trace.addPoint(counter, Daten.guiDebug.getJSpinner().getValue()); // minutes
 //                        x_achse.getAxisTitle().setTitle(roundBandwidth(Daten.guiDebug.getJSpinner().getValue(), counter));
-                        m_trace.addPoint(counter, bandwidth); // minutes
-                        x_achse.getAxisTitle().setTitle(roundBandwidth(bandwidth, counter));
+                        m_trace.addPoint(counter / 60, bandwidth); // minutes
+                        x_achse.getAxisTitle().setTitle(roundBandwidth(bandwidth, (long) counter));
                     }
                 };
                 if (Daten.debug) {
