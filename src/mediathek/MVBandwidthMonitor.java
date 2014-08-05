@@ -36,7 +36,6 @@ class MVBandwidthMonitor {
     private JCheckBoxMenuItem menuItem = null;
     private Trace2DLtd m_trace = new Trace2DLtd(300);
     private IAxis x_achse = null;
-    private IAxis y_achse = null;
 
     /**
      * Timer for collecting sample data.
@@ -85,7 +84,7 @@ class MVBandwidthMonitor {
         x_achse.setMajorTickSpacing(10);
         x_achse.setMinorTickSpacing(1);
 
-        y_achse = chart.getAxisY();
+        IAxis y_achse = chart.getAxisY();
         y_achse.getAxisTitle().setTitle("");
         y_achse.setPaintScale(true);
         y_achse.setVisible(true);
