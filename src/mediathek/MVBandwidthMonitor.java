@@ -10,6 +10,8 @@ import info.monitorenter.gui.chart.traces.Trace2DLtd;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
@@ -18,12 +20,18 @@ import java.util.TimerTask;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.Funktionen;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 
 /**
@@ -36,7 +44,9 @@ class MVBandwidthMonitor {
     private JCheckBoxMenuItem menuItem = null;
     private Trace2DLtd m_trace = new Trace2DLtd(300);
     private IAxis x_achse = null;
-
+    private JSlider jSliderBandbreite = new JSlider();
+    private JLabel jLabelBandwidth = new JLabel();
+    private boolean stopBeob = false;
     /**
      * Timer for collecting sample data.
      */
@@ -99,11 +109,61 @@ class MVBandwidthMonitor {
         chart.addTrace(m_trace);
         panel.setLayout(new BorderLayout(0, 0));
         panel.add(chart, BorderLayout.CENTER);
+        if (Funktionen.getOs() == Funktionen.OperatingSystemType.LINUX) {
+            ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getSimpleName()) {
+                @Override
+                public void ping() {
+                    setSliderBandwith();
+                }
+            });
+            jSliderBandbreite.setMajorTickSpacing(10);
+            jSliderBandbreite.setMinorTickSpacing(5);
+            jSliderBandbreite.setToolTipText("");
+            setSliderBandwith();
+            jSliderBandbreite.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    if (stopBeob) {
+                        return;
+                    }
+                    int b = jSliderBandbreite.getValue() * 10;
+                    jLabelBandwidth.setText(b + " kByte/s");
+                    Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getName());
+                }
+            });
+            JPanel p = new JPanel(new BorderLayout());
+            p.setBorder(new EmptyBorder(4, 4, 4, 4));
+            p.add(new JLabel("Max: "), BorderLayout.WEST);
+            p.add(jSliderBandbreite, BorderLayout.CENTER);
+            p.add(jLabelBandwidth, BorderLayout.EAST);
+            panel.add(p, BorderLayout.SOUTH);
+        }
         hudWindow.setContentPane(panel);
+
         final Dimension dim = hudDialog.getSize();
         dim.height = 150;
         dim.width = 300;
         hudDialog.setSize(dim);
+    }
+
+    private void setSliderBandwith() {
+        stopBeob = true;
+        int bandbreite;
+        try {
+            bandbreite = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
+        } catch (Exception ex) {
+            bandbreite = 0;
+            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, "0");
+        }
+        jSliderBandbreite.setValue(bandbreite / 10);
+        if (bandbreite == 0) {
+            jLabelBandwidth.setText("aus");
+
+        } else {
+            jLabelBandwidth.setText(bandbreite + " kByte/s");
+        }
+        stopBeob = false;
     }
 
     /**
@@ -140,11 +200,7 @@ class MVBandwidthMonitor {
                         x_achse.getAxisTitle().setTitle(roundBandwidth(bandwidth, (long) counter));
                     }
                 };
-                if (Daten.debug) {
-                    timer.schedule(timerTask, 0, 100);
-                } else {
-                    timer.schedule(timerTask, 0, 1_000);
-                }
+                timer.schedule(timerTask, 0, 1_000);
             } else {
                 if (timerTask != null) {
                     timerTask.cancel();

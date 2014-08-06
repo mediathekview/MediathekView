@@ -347,7 +347,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel5">
           <Properties>
-            <Property name="text" type="java.lang.String" value="(nur f&#xfc;r direkte Downloads, bei &quot;0&quot; gibt es keine Begrenzung)"/>
+            <Property name="text" type="java.lang.String" value="(nur f&#xfc;r direkte Downloads)"/>
           </Properties>
         </Component>
       </SubComponents>

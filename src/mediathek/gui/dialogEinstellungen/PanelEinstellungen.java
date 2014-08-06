@@ -75,6 +75,12 @@ public class PanelEinstellungen extends PanelVorlage {
                 init();
             }
         });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelEinstellungen.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setSliderBandwith();
+            }
+        });
         jCheckBoxNotification.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -99,6 +105,23 @@ public class PanelEinstellungen extends PanelVorlage {
                 }
             }
         });
+        setSliderBandwith();
+        jSliderBandbreite.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (stopBeob) {
+                    return;
+                }
+                int b = jSliderBandbreite.getValue() * 10;
+                jLabelBandwidth.setText(b + " kByte/s");
+                Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelEinstellungen.class.getName());
+            }
+        });
+    }
+
+    private void setSliderBandwith() {
+        stopBeob = true;
         int bandbreite;
         try {
             bandbreite = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
@@ -107,16 +130,13 @@ public class PanelEinstellungen extends PanelVorlage {
             Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, "0");
         }
         jSliderBandbreite.setValue(bandbreite / 10);
-        jLabelBandwidth.setText(bandbreite + " kByte/s");
-        jSliderBandbreite.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                int b = jSliderBandbreite.getValue() * 10;
-                jLabelBandwidth.setText(b + " kByte/s");
-                Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelEinstellungen.class.getName());
-            }
-        });
+        if (bandbreite == 0) {
+            jLabelBandwidth.setText("aus");
+
+        } else {
+            jLabelBandwidth.setText(bandbreite + " kByte/s");
+        }
+        stopBeob = false;
     }
 
     private void cbxIconPackagesItemStateChanged(java.awt.event.ItemEvent evt) {
@@ -149,8 +169,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jCheckBoxNotification.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_NOTIFICATION)));
         jCheckBoxSuchen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_UPDATE_SUCHEN)));
         jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE)));
-        // UserAgent
-        // Rest
+
         if (Daten.mVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD).equals("")) {
             jSpinnerDownload.setValue(1);
             Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
@@ -364,7 +383,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jLabel4.setText("Downloadgeschwindigkeit begrenzen:");
 
-        jLabel5.setText("(nur für direkte Downloads, bei \"0\" gibt es keine Begrenzung)");
+        jLabel5.setText("(nur für direkte Downloads)");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
