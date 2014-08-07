@@ -213,7 +213,6 @@ class MVBandwidthMonitor {
     }
 
     private String roundBandwidth(double bandw, long time) {
-
         if (bandw > 1_000_000.0) {
             return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + new DecimalFormat("####0.00").format(bandw / 1_000_000.0) + " MByte/s";
         } else if (bandw > 1_000.0) {

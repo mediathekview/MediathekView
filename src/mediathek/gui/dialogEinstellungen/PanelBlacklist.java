@@ -89,8 +89,7 @@ public class PanelBlacklist extends PanelVorlage {
     private void init_() {
         jCheckBoxAbo.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO)));
         jCheckBoxBlacklistEingeschaltet.setSelected(!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET)));
-        jCheckBoxBlacklistEingeschaltet.setForeground(jCheckBoxBlacklistEingeschaltet.isSelected() ? cGruen : cRot);
-        jCheckBoxBlacklistEingeschaltet.setText(jCheckBoxBlacklistEingeschaltet.isSelected() ? "Blacklist eingeschaltet" : "Blacklist ausgeschaltet");
+        setCheckBlacklist();
         jCheckBoxZukunftNichtAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN)));
         try {
             jSliderMinuten.setValue(Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE)));
@@ -139,8 +138,7 @@ public class PanelBlacklist extends PanelVorlage {
         jCheckBoxBlacklistEingeschaltet.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                jCheckBoxBlacklistEingeschaltet.setForeground(jCheckBoxBlacklistEingeschaltet.isSelected() ? cGruen : cRot);
-                jCheckBoxBlacklistEingeschaltet.setText(jCheckBoxBlacklistEingeschaltet.isSelected() ? "Blacklist eingeschaltet" : "Blacklist ausgeschaltet");
+                setCheckBlacklist();
                 Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET, Boolean.toString(!jCheckBoxBlacklistEingeschaltet.isSelected()));
                 notifyBlack();
                 setPanelBlacklist();
@@ -225,6 +223,11 @@ public class PanelBlacklist extends PanelVorlage {
         initCombo();
         comboThemaLaden();
         setPanelBlacklist();
+    }
+
+    private void setCheckBlacklist() {
+        jCheckBoxBlacklistEingeschaltet.setForeground(jCheckBoxBlacklistEingeschaltet.isSelected() ? cGruen : cRot);
+        jCheckBoxBlacklistEingeschaltet.setText(jCheckBoxBlacklistEingeschaltet.isSelected() ? "Blacklist ist eingeschaltet" : "Blacklist ist ausgeschaltet");
     }
 
     private void notifyBlack() {
