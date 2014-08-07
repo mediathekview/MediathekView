@@ -40,7 +40,7 @@ public class MVInfoFile {
 
     public static void writeInfoFile(JFrame paFrame, Daten daten, DatenFilm film) {
         String titel = film.arr[DatenFilm.FILM_TITEL_NR];
-        titel = GuiFunktionen.replaceLeerDateiname(titel, true /*istDatei*/);
+        titel = GuiFunktionen.replaceLeerDateiname(titel);
         String pfad = "";
         ListePset lp = daten.listePset.getListeSpeichern();
         if (lp.size() > 0) {
