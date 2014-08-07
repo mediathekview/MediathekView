@@ -63,6 +63,7 @@ public class PanelDateinamen extends PanelVorlage {
         }
         jButtonBearbeiten.setEnabled(jRadioButtonNamenNormal.isSelected() || jRadioButtonNameAscii.isSelected());
         jCheckBoxUnicode.setEnabled(jRadioButtonNamenNormal.isSelected() || jRadioButtonNameAscii.isSelected());
+        jCheckBoxUnicode.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ZIELNAMEN_UNICODE)));
         jRadioButtonNamenNormal.addActionListener(new ActionListener() {
 
             @Override

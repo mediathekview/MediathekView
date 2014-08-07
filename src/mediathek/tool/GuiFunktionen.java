@@ -141,60 +141,43 @@ public class GuiFunktionen extends Funktionen {
         return ret;
     }
 
-    public static String replaceLeerDateiname(String name, boolean istDatei) {
-        // aus einem Pfadnamen/Dateinamen werden verbotene Zeichen entfernt
-        // "istDatei" kennzeichnet einen Dateinamen, sonst Pfadnamen
-        // verbotene Zeichen entfernen
+    public static String replaceLeerDateiname(String name) {
+        // aus einem Dateinamen werden verbotene Zeichen entfernt
         // < > ? " : | \ / *
         if (Daten.mVConfig.get(MVConfig.SYSTEM_ZIELNAMEN_ANPASSEN).equals(Konstanten.ZIELNAMEN_ANPASSEN_NIX)) {
             // dann wars das!
             return name;
         }
         String ret = name;
-        // ===============================
-        // Windows
-        boolean winPfad = false;
+        
+        //  nur für Windows
         final OperatingSystemType os = getOs();
         if (os == OperatingSystemType.WIN32 || os == OperatingSystemType.WIN64) {
-            if (!istDatei && ret.length() > 1) {
-                if (ret.charAt(1) == ':') {
-                    // damit auch "d:" und nicht nur "d:\" als Pfad geht
-                    winPfad = true;
-                    ret = ret.replaceFirst(":", ""); // muss zum Schluss wieder rein, kann aber so nicht ersetzt werden
-                }
-            }
             // win verträgt keine Pfadnamen/Dateinamen mit einem "." am Schluß
             while (!ret.isEmpty() && ret.endsWith(".")) {
                 ret = ret.substring(0, ret.length() - 1);
             }
         }
-        // ===============================
+
         // wir immer entfernt
-        if (istDatei) {
-            if (File.separator.equals("\\")) {
-                ret = ret.replace("\\", "");
-            } else {
-                ret = ret.replace("/", "");
-            }
+        if (File.separator.equals("\\")) {
+            ret = ret.replace("\\", "");
+        } else {
+            ret = ret.replace("/", "");
         }
         ret = ret.replace("\n", "");
-        // und jetzt je nach Einstellungen abarbeiten
-        ret = Daten.mVReplaceList.replace(ret, !istDatei);
+
+        // wenn gewünscht, Unicode "vereinfachen"
         if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ZIELNAMEN_UNICODE))) {
-            // wenn gewünscht, Unicode "vereinfachen"
             ret = cleanUnicode(ret, "_");
         }
+
+        // und jetzt noch Ersetzungstabelle
+        ret = Daten.mVReplaceList.replace(ret, false /*path*/);
+
+        // und jetzt wenn gewünscht, dann NUR Asccii-Zeichen erlauben
         if (Daten.mVConfig.get(MVConfig.SYSTEM_ZIELNAMEN_ANPASSEN).equals(Konstanten.ZIELNAMEN_ANPASSEN_ASCII)) {
-            // wenn gewünscht, dann NUR Asccii-Zeichen erlauben
             ret = getAscii(ret);
-        }
-        if (winPfad) {
-            // c: wieder herstellen
-            if (ret.length() == 1) {
-                ret = ret + ":";
-            } else if (ret.length() > 1) {
-                ret = ret.charAt(0) + ":" + ret.substring(1);
-            }
         }
         return ret;
     }
