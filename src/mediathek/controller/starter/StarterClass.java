@@ -216,8 +216,9 @@ public class StarterClass {
      */
     private void writeSpotlightComment(final DatenDownload datenDownload, final boolean wasCancelled) {
         //no need to run when not OS X...
-        if (wasCancelled || (!SystemInfo.isMacOSX()))
+        if (wasCancelled || (!SystemInfo.isMacOSX())) {
             return;
+        }
 
         final Path filmPath = Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         if (Files.exists(filmPath)) {
@@ -225,12 +226,12 @@ public class StarterClass {
             String strComment = datenDownload.film.arr[DatenFilm.FILM_BESCHREIBUNG_NR];
 
             //replace quotation marks...
-            strComment = strComment.replace("\"","\\\"");
+            strComment = strComment.replace("\"", "\\\"");
 
-            final String script = "tell application \"Finder\"\n" +
-                    "set my_file to POSIX file \"" + strFilePath + "\" as alias\n" +
-                    "set comment of my_file to \"" + strComment + "\"\n" +
-                    "end tell\n";
+            final String script = "tell application \"Finder\"\n"
+                    + "set my_file to POSIX file \"" + strFilePath + "\" as alias\n"
+                    + "set comment of my_file to \"" + strComment + "\"\n"
+                    + "end tell\n";
             try {
                 ScriptEngineManager mgr = new ScriptEngineManager();
                 ScriptEngine engine = mgr.getEngineByName("AppleScript");
@@ -239,8 +240,9 @@ public class StarterClass {
                 Log.fehlerMeldung(915263987, Log.FEHLER_ART_PROG, "StarterClass.writeSpotlightComment", "Fehler beim Spotlight schreiben" + filmPath.toString());
                 //AppleScript may not be available if user does not use the official MacApp.
                 //We need to log that as well if there are error reports.
-                if (!System.getProperty("OSX_OFFICIAL_APP").equalsIgnoreCase("true"))
-                    Log.fehlerMeldung(915263987, Log.FEHLER_ART_PROG,"StarterClass.writeSpotlightComment","MV wird NICHT über die offizielle Mac App genutzt.");
+                if (!System.getProperty("OSX_OFFICIAL_APP").equalsIgnoreCase("true")) {
+                    Log.fehlerMeldung(915263987, Log.FEHLER_ART_PROG, "StarterClass.writeSpotlightComment", "MV wird NICHT über die offizielle Mac App genutzt.");
+                }
             }
         }
     }
@@ -547,7 +549,7 @@ public class StarterClass {
          * @return Length in bytes or -1 on error.
          */
         private long getContentLength(final URL url) {
-            final int TIMEOUT = 2500; // ms
+            final int TIMEOUT = 5000; //ms, beim Start eines Downloads
             long ret = -1;
             HttpURLConnection conn = null;
             try {
@@ -603,13 +605,20 @@ public class StarterClass {
             final byte[] buffer = new byte[MVBandwidthTokenBucket.DEFAULT_BUFFER_SIZE];
             long p, pp = 0, startProzent = -1;
             int len;
-
+            long aktBandwidth, aktSize = 0;
+            boolean melden = false;
             while ((len = start.mVInputStream.read(buffer)) != -1 && (!start.stoppen)) {
                 downloaded += len;
                 fos.write(buffer, 0, len);
                 datenDownload.mVFilmSize.addAktSize(len);
+
+                //für die Anzeige prüfen ob sich was geändert hat
+                if (aktSize != datenDownload.mVFilmSize.getAktSize()) {
+                    aktSize = datenDownload.mVFilmSize.getAktSize();
+                    melden = true;
+                }
                 if (datenDownload.mVFilmSize.getSize() > 0) {
-                    p = (datenDownload.mVFilmSize.getAktSize() * (long) 1000) / datenDownload.mVFilmSize.getSize();
+                    p = (aktSize * (long) 1000) / datenDownload.mVFilmSize.getSize();
                     if (startProzent == -1) {
                         startProzent = p;
                     }
@@ -625,7 +634,6 @@ public class StarterClass {
                         // Restzeit ermitteln
                         if (p > 2 && p > startProzent) {
                             // sonst macht es noch keinen Sinn
-                            start.bandbreite = start.mVInputStream.getBandwidth();
                             int diffZeit = start.startZeit.diffInSekunden();
                             int restProzent = 1000 - (int) p;
                             start.restSekunden = (diffZeit * restProzent / (p - startProzent));
@@ -633,8 +641,17 @@ public class StarterClass {
                             // als die bereits geladene Speilzeit des Films
                             bereitsAnschauen(datenDownload);
                         }
-                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
+                        melden = true;
                     }
+                }
+                aktBandwidth = start.mVInputStream.getBandwidth();
+                if (aktBandwidth != start.bandbreite) {
+                    start.bandbreite = aktBandwidth;
+                    melden = true;
+                }
+                if (melden) {
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
+                    melden = false;
                 }
             }
             Log.systemMeldung(start.mVInputStream.toString());

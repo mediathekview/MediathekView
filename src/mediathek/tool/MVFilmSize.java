@@ -89,13 +89,13 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
 
     public void setString() {
         if (aktSizeL <= 0) {
-            if (sizeL != 0) {
+            if (sizeL > 0) {
                 sizeStr = getGroesse(sizeL);
             } else {
                 sizeStr = "";
             }
         } else {
-            if (sizeL != 0) {
+            if (sizeL > 0) {
                 sizeStr = getGroesse(aktSizeL) + " von " + getGroesse(sizeL);
             } else {
                 sizeStr = getGroesse(aktSizeL);
