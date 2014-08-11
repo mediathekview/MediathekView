@@ -42,7 +42,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="jSplitPane1" pref="493" max="32767" attributes="0"/>
+              <Component id="jSplitPane1" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="2" attributes="0">
                   <Component id="jButtonPruefen" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -674,7 +674,7 @@
                           <Component id="jPanel12" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel13" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="22" max="32767" attributes="0"/>
+                          <EmptySpace pref="21" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -893,7 +893,7 @@
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="jCheckBoxSpotlight">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Filmbeschreibung als Finder-Kommentar f&#xfc;r Spotlight speichern"/>
+                        <Property name="text" type="java.lang.String" value="Filmbeschreibung als Finder-Kommentar f&#xfc;r Spotlight speichern (nur OS X)"/>
                       </Properties>
                     </Component>
                   </SubComponents>
