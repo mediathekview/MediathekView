@@ -304,6 +304,20 @@ public class DatenDownload implements Comparable<DatenDownload> {
         return Boolean.parseBoolean(arr[DOWNLOAD_PROGRAMM_RESTART_NR]);
     }
 
+    public boolean isInfoFile() {
+        if (arr[DOWNLOAD_INFODATEI_NR].equals("")) {
+            return false;
+        }
+        return Boolean.parseBoolean(arr[DOWNLOAD_INFODATEI_NR]);
+    }
+
+    public boolean isSpotlight() {
+        if (arr[DOWNLOAD_SPOTLIGHT_NR].equals("")) {
+            return false;
+        }
+        return Boolean.parseBoolean(arr[DOWNLOAD_SPOTLIGHT_NR]);
+    }
+
     public String getTextRestzeit() {
         if (start != null) {
             if (start.status < Start.STATUS_FERTIG && start.status >= Start.STATUS_RUN && start.restSekunden > 0) {

@@ -327,7 +327,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                             object[i] = 0;
                         }
                     } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR
-                            || i == DatenDownload.DOWNLOAD_UNTERBROCHEN_NR) {
+                            || i == DatenDownload.DOWNLOAD_UNTERBROCHEN_NR
+                            || i == DatenDownload.DOWNLOAD_SPOTLIGHT_NR
+                            || i == DatenDownload.DOWNLOAD_INFODATEI_NR) {
                         object[i] = "";
                     } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
                         object[i] = download.datumFilm;

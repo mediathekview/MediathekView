@@ -1088,7 +1088,7 @@ public class PanelPsetLang extends PanelVorlage {
 
         jCheckBoxInfodatei.setText("Infodatei anlegen: \"Filmname.txt\"");
 
-        jCheckBoxSpotlight.setText("Filmbeschreibung als Finder-Kommentar für Spotlight speichern");
+        jCheckBoxSpotlight.setText("Filmbeschreibung als Finder-Kommentar für Spotlight speichern (nur OS X)");
 
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
         jPanel13.setLayout(jPanel13Layout);
@@ -1134,7 +1134,7 @@ public class PanelPsetLang extends PanelVorlage {
                 .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Download", jPanel11);
@@ -1396,7 +1396,7 @@ public class PanelPsetLang extends PanelVorlage {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
+                .addComponent(jSplitPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jButtonPruefen)

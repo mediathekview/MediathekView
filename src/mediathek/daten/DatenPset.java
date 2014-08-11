@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -293,5 +294,6 @@ public class DatenPset {
         arr[PROGRAMMSET_IST_ABO_NR] = Boolean.toString(false);
         arr[PROGRAMMSET_THEMA_ANLEGEN_NR] = Boolean.toString(true);
         arr[PROGRAMMSET_INFODATEI_NR] = Boolean.toString(false);
+        arr[PROGRAMMSET_SPOTLIGHT_NR] = Boolean.toString(SystemInfo.isMacOSX());
     }
 }
