@@ -286,6 +286,7 @@ public class GuiDownloads extends PanelVorlage {
                     // nur alle 250ms aufrufen
                     lastUpdate = new Date().getTime();
                     Daten.listeDownloads.setModelProgress(model);
+                    // ist ein Kompromiss: beim Sortieren nach Progress wird die Tabelle nicht neu sortiert!
                     //tabelle.fireTableDataChanged(true /*setSpalten*/);
                 }
             }

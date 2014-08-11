@@ -65,7 +65,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 //            this.add(d);
 //        }
 //    }
-
     public synchronized void zurueckgestellteWiederAktivieren() {
         ListIterator<DatenDownload> it = this.listIterator(0);
         while (it.hasNext()) {
@@ -337,7 +336,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     } else if (i == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
                         object[i] = download.getTextBandbreite();
                     } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
-                        object[i] = null;
+                        object[i] = setProgress(download);
                     } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
                         object[i] = download.mVFilmSize;
                     } else if (i == DatenDownload.DOWNLOAD_REF_NR) {
@@ -354,6 +353,22 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
+    private String setProgress(DatenDownload download) {
+        if (download.start != null) {
+            if (1 < download.start.percent && download.start.percent < Start.PROGRESS_FERTIG) {
+                String s = Double.toString(download.start.percent / 10.0) + "%";
+                while (s.length() < 5) {
+                    s = "0" + s;
+                }
+                return s;
+            } else {
+                return Start.getTextProgress(download.start);
+            }
+        } else {
+            return "";
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public synchronized void setModelProgress(TModelDownload tModel) {
         ListIterator<List> it = tModel.getDataVector().listIterator();
@@ -365,7 +380,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 if (datenDownload.start.status == Start.STATUS_RUN) {
                     tModel.setValueAt(datenDownload.getTextRestzeit(), row, DatenDownload.DOWNLOAD_RESTZEIT_NR);
                     tModel.setValueAt(datenDownload.getTextBandbreite(), row, DatenDownload.DOWNLOAD_BANDBREITE_NR);
-                    tModel.setValueAt(null, row, DatenDownload.DOWNLOAD_PROGRESS_NR);
+                    tModel.setValueAt(setProgress(datenDownload), row, DatenDownload.DOWNLOAD_PROGRESS_NR);
                     tModel.setValueAt(datenDownload.mVFilmSize, row, DatenDownload.DOWNLOAD_GROESSE_NR);
                 }
             }
@@ -380,7 +395,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             if (datenDownload.start != null) {
                 l.set(DatenDownload.DOWNLOAD_RESTZEIT_NR, datenDownload.getTextRestzeit());
                 l.set(DatenDownload.DOWNLOAD_BANDBREITE_NR, datenDownload.getTextBandbreite());
-                l.set(DatenDownload.DOWNLOAD_PROGRESS_NR, null);
+                l.set(DatenDownload.DOWNLOAD_PROGRESS_NR, setProgress(datenDownload));
                 l.set(DatenDownload.DOWNLOAD_GROESSE_NR, datenDownload.mVFilmSize);
                 l.set(DatenDownload.DOWNLOAD_UNTERBROCHEN_NR, null);
             }
@@ -534,12 +549,12 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     /**
      * Get the number of all currently active downloads.
+     *
      * @return number of active downloads.
      */
-    public int getActiveDownloads()
-    {
-       int[] starts = getStarts();
-       return starts[4];
+    public int getActiveDownloads() {
+        int[] starts = getStarts();
+        return starts[4];
     }
 
     private synchronized int[] getStarts() {
@@ -560,8 +575,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             if (download.start != null) {
                 final int quelle = download.getQuelle();
                 if (quelle == Start.QUELLE_ABO || quelle == Start.QUELLE_DOWNLOAD) {
-                    switch (download.start.status)
-                    {
+                    switch (download.start.status) {
                         case Start.STATUS_INIT:
                             ++ret[3];
                             break;
@@ -586,6 +600,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     /**
      * Return the number of Starts, which are queued in state INIT or RUN.
+     *
      * @return number of queued Starts.
      */
     public synchronized int getNumberOfStartsNotFinished() {
@@ -603,6 +618,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     /**
      * Return a List of all not yet finished downloads.
+     *
      * @param quelle Use QUELLE_XXX constants from {@link mediathek.controller.starter.Start}.
      * @return A list with all download objects.
      */
@@ -723,10 +739,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
         //Das if-statement ist offenbar überflüssig, da es wegen der Konstante nie angesprungen wird
         //if (Konstanten.MAX_SENDER_FILME_LADEN == 1) {
-            //dann wars dass
+        //dann wars dass
         //    return null;
         //}
-
         //zweiter Versuch, Start mit einem passenden Sender
         it = iterator();
         while (it.hasNext()) {
