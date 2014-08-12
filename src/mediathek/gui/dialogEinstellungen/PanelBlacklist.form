@@ -576,7 +576,7 @@
     </Container>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxBlacklistEingeschaltet">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Blacklist ausschalten"/>
+        <Property name="text" type="java.lang.String" value="Blacklist ist eingeschaltet"/>
       </Properties>
     </Component>
   </SubComponents>
