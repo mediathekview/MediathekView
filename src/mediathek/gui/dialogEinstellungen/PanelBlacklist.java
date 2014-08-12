@@ -227,7 +227,6 @@ public class PanelBlacklist extends PanelVorlage {
 
     private void setCheckBlacklist() {
         jCheckBoxBlacklistEingeschaltet.setForeground(jCheckBoxBlacklistEingeschaltet.isSelected() ? cGruen : cRot);
-        jCheckBoxBlacklistEingeschaltet.setText(jCheckBoxBlacklistEingeschaltet.isSelected() ? "Blacklist ist eingeschaltet" : "Blacklist ist ausgeschaltet");
     }
 
     private void notifyBlack() {
@@ -659,7 +658,7 @@ public class PanelBlacklist extends PanelVorlage {
 
         jTabbedPaneBlacklist.addTab("Sender-Thema-Titel", jPanel1);
 
-        jCheckBoxBlacklistEingeschaltet.setText("Blacklist ausschalten");
+        jCheckBoxBlacklistEingeschaltet.setText("Blacklist ist eingeschaltet");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
