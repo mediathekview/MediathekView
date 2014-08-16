@@ -8,9 +8,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTable;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
-import javax.swing.table.TableModel;
 
 import com.explodingpixels.macwidgets.plaf.EmphasizedLabelUI;
 

@@ -2,7 +2,6 @@ package mediathek;
 
 import com.explodingpixels.macwidgets.BottomBar;
 import com.explodingpixels.macwidgets.BottomBarSize;
-import com.explodingpixels.macwidgets.MacWidgetFactory;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,10 +24,9 @@ import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
  * Time: 19:54
  */
 public final class MVStatusBar extends JPanel {
-
-    boolean stopTimer = false;
-    EnumMap<MVStatusBar.StatusbarIndex, String> displayListForLeftLabel = new EnumMap<>(MVStatusBar.StatusbarIndex.class);
-    MVStatusBar.StatusbarIndex currentIndex = MVStatusBar.StatusbarIndex.NONE;
+    private boolean stopTimer = false;
+    private EnumMap<MVStatusBar.StatusbarIndex, String> displayListForLeftLabel = new EnumMap<>(MVStatusBar.StatusbarIndex.class);
+    private MVStatusBar.StatusbarIndex currentIndex = MVStatusBar.StatusbarIndex.NONE;
 
     private final JLabel lblCenter;
     private final JLabel lblRechts;
@@ -39,7 +37,7 @@ public final class MVStatusBar extends JPanel {
     public MVStatusBar() {
         bottomBar = new BottomBar(BottomBarSize.LARGE);
 
-        lblCenter = MacWidgetFactory.createEmphasizedLabel("");
+        lblCenter = new JLabel();
         bottomBar.addComponentToLeft(lblCenter);
 
         if (Daten.debug) {
@@ -52,7 +50,7 @@ public final class MVStatusBar extends JPanel {
         progressPanel.setLayout(new FlowLayout());
         progressPanel.setOpaque(false);
 
-        lblRechts = MacWidgetFactory.createEmphasizedLabel("");
+        lblRechts = new JLabel();
         progressPanel.add(lblRechts);
 
         progress = new JProgressBar();
@@ -140,11 +138,11 @@ public final class MVStatusBar extends JPanel {
         strText += Daten.listeFilme.genDate();
         strText += " Uhr  ";
 
-        int sekunden = Daten.listeFilme.getAge();
+        final int sekunden = Daten.listeFilme.getAge();
 
         if (sekunden != 0) {
             strText += "||  Alter: ";
-            int minuten = sekunden / 60;
+            final int minuten = sekunden / 60;
             String strSekunde = String.valueOf(sekunden % 60);
             String strMinute = String.valueOf(minuten % 60);
             String strStunde = String.valueOf(minuten / 60);
@@ -169,9 +167,9 @@ public final class MVStatusBar extends JPanel {
     }
 
     /**
-     * Wähle den Textstring aus dem Index {@code i}, der im linken Textfeld dargestellt werden soll.
+     * Wähle den Textstring aus dem Index {@code i}, der im zentralen Textfeld dargestellt werden soll.
      *
-     * @param i
+     * @param i Index, für den ein Text dargestellt werden soll.
      */
     public void setIndexForCenterDisplay(StatusbarIndex i) {
         currentIndex = i;
