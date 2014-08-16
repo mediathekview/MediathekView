@@ -706,8 +706,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         panelMeldungen.setLayout(new BorderLayout());
         panelMeldungen.add(splitPane, BorderLayout.CENTER);
         if (Daten.debug) {
-            daten.guiDebug = new GuiDebug(daten);
-            jTabbedPane.addTab("Debug", daten.guiDebug);
+            Daten.guiDebug = new GuiDebug(daten);
+            jTabbedPane.addTab("Debug", Daten.guiDebug);
         }
         initFrames();
     }
