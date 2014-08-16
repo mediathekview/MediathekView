@@ -224,24 +224,29 @@ public class StarterClass {
         if (Files.exists(filmPath)) {
             final String strFilePath = filmPath.toString();
             String strComment = datenDownload.film.arr[DatenFilm.FILM_BESCHREIBUNG_NR];
+            if (strComment != null) {
+                //no need to write spotlight data when there is no description...
+                if (strComment.isEmpty())
+                    return;
 
-            //replace quotation marks...
-            strComment = strComment.replace("\"", "\\\"");
+                //replace quotation marks...
+                strComment = strComment.replace("\"", "\\\"");
 
-            final String script = "tell application \"Finder\"\n"
-                    + "set my_file to POSIX file \"" + strFilePath + "\" as alias\n"
-                    + "set comment of my_file to \"" + strComment + "\"\n"
-                    + "end tell\n";
-            try {
-                ScriptEngineManager mgr = new ScriptEngineManager();
-                ScriptEngine engine = mgr.getEngineByName("AppleScript");
-                engine.eval(script);
-            } catch (Exception ex) {
-                Log.fehlerMeldung(915263987, Log.FEHLER_ART_PROG, "StarterClass.writeSpotlightComment", "Fehler beim Spotlight schreiben" + filmPath.toString());
-                //AppleScript may not be available if user does not use the official MacApp.
-                //We need to log that as well if there are error reports.
-                if (!System.getProperty("OSX_OFFICIAL_APP").equalsIgnoreCase("true")) {
-                    Log.fehlerMeldung(915263987, Log.FEHLER_ART_PROG, "StarterClass.writeSpotlightComment", "MV wird NICHT über die offizielle Mac App genutzt.");
+                final String script = "tell application \"Finder\"\n"
+                        + "set my_file to POSIX file \"" + strFilePath + "\" as alias\n"
+                        + "set comment of my_file to \"" + strComment + "\"\n"
+                        + "end tell\n";
+                try {
+                    ScriptEngineManager mgr = new ScriptEngineManager();
+                    ScriptEngine engine = mgr.getEngineByName("AppleScript");
+                    engine.eval(script);
+                } catch (Exception ex) {
+                    Log.fehlerMeldung(915263987, Log.FEHLER_ART_PROG, "StarterClass.writeSpotlightComment", "Fehler beim Spotlight schreiben" + filmPath.toString());
+                    //AppleScript may not be available if user does not use the official MacApp.
+                    //We need to log that as well if there are error reports.
+                    if (!System.getProperty("OSX_OFFICIAL_APP").equalsIgnoreCase("true")) {
+                        Log.fehlerMeldung(915263987, Log.FEHLER_ART_PROG, "StarterClass.writeSpotlightComment", "MV wird NICHT über die offizielle Mac App genutzt.");
+                    }
                 }
             }
         }
