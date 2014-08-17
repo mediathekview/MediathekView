@@ -739,7 +739,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         application.addPreferencesMenuItem();
         application.setEnabledAboutMenu(true);
         application.setEnabledPreferencesMenu(true);
-        application.enableSuddenTermination();
 
         //setup the MediathekView Dock Icon
         try {
@@ -1373,22 +1372,26 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 break;
 
             case MAC:
-                /*try {
-                    final String script = "tell application \"System Events\"\n" +
-                            "shut down\n" +
-                            "end tell";
-                    ScriptEngineManager mgr = new ScriptEngineManager();
-                    ScriptEngine engine = mgr.getEngineByName("AppleScript");
-                    engine.eval(script);
-                } catch (Exception ex) {
-                    Log.fehlerMeldung(915263987, Log.FEHLER_ART_PROG, "MediathekGui.shutdownComputer", "Fehler beim AppleScript shutdown command");
-                    //AppleScript may not be available if user does not use the official MacApp.
-                    //We need to log that as well if there are error reports.
-                    if (!System.getProperty("OSX_OFFICIAL_APP").equalsIgnoreCase("true")) {
-                        Log.fehlerMeldung(915263987, Log.FEHLER_ART_PROG, "MediathekGui.shutdownComputer", "MV wird NICHT über die offizielle Mac App genutzt.");
-                    }
-                }*/
-                strShutdownCommand = "shutdown -h now";
+                //we cannot shutdown the system while we are running...
+                //MV (or java) will prevent OS X shutdown process and there seems to be no way around it.
+                //NASTY WORKAROUND:
+                //use applescript to execute a scriptlet application which will wait 5 seconds until it
+                //asks the system to shut down
+                //meanwhile we MUST terminate MV WITHIN 5 seconds in order not to interrupt the
+                //shutdown process :(
+                //AND this whole shit works ONLY with osascript, not with the java script engine...
+                //Scriptlet(executable) content:
+                //delay 5
+                //tell application "system events" to shut down
+                //EOF
+                //The OSX_Shutdown scriptlet application is provided in the official MV app bundle.
+                try {
+                    final ProcessBuilder builder = new ProcessBuilder("/usr/bin/osascript", "-e");
+                    builder.command().add("tell application \"OSX_Shutdown\" to activate");
+                    builder.start();
+                }
+                catch (Exception ignored) {
+                }
                 break;
 
             case WIN32:
