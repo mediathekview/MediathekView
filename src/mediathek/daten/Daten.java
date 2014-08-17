@@ -154,7 +154,6 @@ public class Daten {
     public static void setUserAgentAuto() {
         // Useragent wird vom Programm verwaltet
         Daten.mVConfig.add(MVConfig.SYSTEM_USER_AGENT_AUTO, Boolean.TRUE.toString());
-        Daten.mVConfig.add(MVConfig.SYSTEM_USER_AGENT, Konstanten.USER_AGENT_DEFAULT);
     }
 
     public static void setUserAgentManuel(String ua) {
@@ -164,12 +163,7 @@ public class Daten {
     }
 
     public static boolean isUserAgentAuto() {
-        if (Daten.mVConfig.get(MVConfig.SYSTEM_USER_AGENT_AUTO).equals("")) {
-            Daten.mVConfig.add(MVConfig.SYSTEM_USER_AGENT_AUTO, Boolean.TRUE.toString());
-            return true;
-        } else {
-            return Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USER_AGENT_AUTO));
-        }
+        return Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USER_AGENT_AUTO));
     }
 
     public static String getUserAgent() {
@@ -243,7 +237,6 @@ public class Daten {
     private void init() {
         //MVConfig initialisieren
         mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
-        mVConfig.add(MVConfig.SYSTEM_USER_AGENT, Konstanten.USER_AGENT_DEFAULT);
         mVConfig.add(MVConfig.SYSTEM_LOOK, "0");
         mVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.TRUE.toString());
@@ -273,6 +266,8 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_TAB_FILME_ICON_KLEIN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_TAB_ABO_ICON_KLEIN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_FONT_SIZE, "0");
+        // UserAgent
+        mVConfig.add(MVConfig.SYSTEM_USER_AGENT_AUTO, Boolean.TRUE.toString());
         try {
             Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_MPLAYER, GuiFunktionenProgramme.getMusterPfadMplayer());
             Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
@@ -283,7 +278,6 @@ public class Daten {
         if (Daten.debug) {
             mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUS));
         }
-        MSConfig.setUserAgent(Konstanten.USER_AGENT_DEFAULT);
     }
 
     /**
@@ -317,7 +311,6 @@ public class Daten {
         Daten.listeFilme.themenLaden();
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
         MVListeFilme.checkBlacklist();
-        MSConfig.setUserAgent(getUserAgent());
     }
 
     public void allesSpeichern() {
