@@ -22,6 +22,8 @@ package mediathek.gui.dialog;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import com.jidesoft.utils.SystemInfo;
 import mediathek.daten.Daten;
 import mediathek.tool.EscBeenden;
 
@@ -43,7 +45,12 @@ public class DialogBeenden extends JDialog {
     public DialogBeenden(Frame parent) {
         super(parent, true);
         initComponents();
-        jButtonWarten.addActionListener(new BeobWarten());
+        jButtonWarten.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                warten();
+            }
+        });
         jButtonAbbrechen.addActionListener(new BeobAbbrechen());
         jButtonSofort.addActionListener(new BeobSofort());
         jCheckBoxShutdown.addActionListener(new ActionListener() {
@@ -72,27 +79,41 @@ public class DialogBeenden extends JDialog {
 //        jProgressBar1.setMaximum(10);
 //        jProgressBar1.setMinimum(0);
 //        jProgressBar1.setValue(5);
-        jProgressBar1.setStringPainted(true);
-        jProgressBar1.setString("warten");
+        if (!SystemInfo.isMacOSX()) {
+            //indeterminate progress bar can´t paint strings on OSX...
+            jProgressBar1.setStringPainted(true);
+            jProgressBar1.setString("warten");
+        }
         try {
-            Warten w = new Warten();
-            Thread t = new Thread(w);
-            t.start();
+            WartenThread w = new WartenThread();
+            w.start();
         } catch (Exception ex) {
             beenden = false;
             beenden();
         }
     }
 
-    private class Warten implements Runnable {
+    private class WartenThread extends Thread {
+        public WartenThread() {
+            setName("DialogBeenden WartenThread");
+        }
 
         @Override
         public synchronized void run() {
             try {
-                int ret;
-                while ((ret = Daten.listeDownloads.nochNichtFertigeDownloads()) > 0) {
-                    jProgressBar1.setString(ret == 1 ? "1 Download läuft noch" : ret + " Downloads laufen noch");
-                    this.wait(2000);
+                int numDownloads;
+                while ((numDownloads = Daten.listeDownloads.nochNichtFertigeDownloads()) > 0) {
+                    if (!SystemInfo.isMacOSX()) {
+                        final int ret = numDownloads;
+                        //We are not on EDT...
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                jProgressBar1.setString(ret == 1 ? "1 Download läuft noch" : ret + " Downloads laufen noch");
+                            }
+                        });
+                    }
+                    sleep(2000);
                 }
                 beenden = true;
                 beenden();
@@ -245,14 +266,6 @@ public class DialogBeenden extends JDialog {
     private javax.swing.JCheckBox jCheckBoxShutdown;
     private javax.swing.JProgressBar jProgressBar1;
     // End of variables declaration//GEN-END:variables
-
-    private class BeobWarten implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            warten();
-        }
-    }
 
     private class BeobAbbrechen implements ActionListener {
 
