@@ -30,9 +30,6 @@ import java.awt.image.BufferedImage;
  */
 public interface Application {
 
-    static int REQUEST_USER_ATTENTION_TYPE_CRITICAL = 1;
-    static int REQUEST_USER_ATTENTION_TYPE_INFORMATIONAL = 2;
-
     /**
      * See
      * <a href="http://developer.apple.com/documentation/Java/Reference/1.5.0/appledoc/api/com/apple/eawt/Application.html#addAboutMenuItem()">
@@ -138,22 +135,10 @@ public interface Application {
     Point getMouseLocationOnScreen();
 
     /**
-     * See
-     * <a href="http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/Classes/NSApplication_Class/index.html#//apple_ref/doc/uid/TP40004004">
-     * Apple's NSApplication Class Reference
-     * </a>.
-     *
-     * @param type on of {@link #REQUEST_USER_ATTENTION_TYPE_CRITICAL} or {@link #REQUEST_USER_ATTENTION_TYPE_INFORMATIONAL}.
+     * Let the Finder dock icon bounce.
+     * @param critical if true, the dock icon will bounce indefinetly, if false it will bounce only once.
      */
-    int requestUserAttention(int type);
-
-    /**
-     * See
-     * <a href="http://developer.apple.com/documentation/Cocoa/Reference/ApplicationKit/Classes/NSApplication_Class/index.html#//apple_ref/doc/uid/TP40004004">
-     * Apple's NSApplication Class Reference
-     * </a>
-     */
-    void cancelUserAttentionRequest(int request);
+    void requestUserAttention(final boolean critical);
 
     /**
      * Update the application's icon image
@@ -173,4 +158,17 @@ public interface Application {
      * @return
      */
     boolean isMac();
+
+    /**
+     * Enables this application to be suddenly terminated.
+     *
+     * Call this method to indicate your application's state is saved, and requires no notification to be terminated.
+     * Letting your application remain terminatable improves the user experience by avoiding re-paging in your application when it's asked to quit.
+     *
+     * <b>Note: enabling sudden termination will allow your application to be quit without notifying your QuitHandler, or running any shutdown hooks.</b>
+     * User initiated Cmd-Q, logout, restart, or shutdown requests will effectively "kill -KILL" your application.
+     *
+     * This call has no effect on Mac OS X versions prior to 10.6.
+     */
+    void enableSuddenTermination();
 }

@@ -240,34 +240,23 @@ public class DefaultApplication implements Application {
     }
 
     @Override
-    public int requestUserAttention(int type) {
-        if (type != REQUEST_USER_ATTENTION_TYPE_CRITICAL && type != REQUEST_USER_ATTENTION_TYPE_INFORMATIONAL) {
-            throw new IllegalArgumentException("Requested user attention type is not allowed: " + type);
-        }
-        try {
-            Object application = getNSApplication();
-            Field critical = application.getClass().getField("UserAttentionRequestCritical");
-            Field informational = application.getClass().getField("UserAttentionRequestInformational");
-            Field actual = type == REQUEST_USER_ATTENTION_TYPE_CRITICAL ? critical : informational;
-
-          return (Integer) application.getClass().getMethod("requestUserAttention", new Class[]{Integer.TYPE}).invoke(application, actual.get(null));
-
-        } catch (ClassNotFoundException e) {
-            return -1;
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
+    public void enableSuddenTermination()
+    {
+      callMethod("enableSuddenTermination");
     }
 
     @Override
-    public void cancelUserAttentionRequest(int request) {
-        try {
-            Object application = getNSApplication();
-            application.getClass().getMethod("cancelUserAttentionRequest", new Class[]{Integer.TYPE}).invoke(application, request);
-        } catch (ClassNotFoundException e) {
-            // Nada
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
+    public void requestUserAttention(final boolean critical)
+    {
+        if (isMac()) {
+            try {
+                Class[] paramBoolean = new Class[1];
+                paramBoolean[0] = Boolean.TYPE;
+
+                Method method = application.getClass().getDeclaredMethod("requestUserAttention", paramBoolean);
+                method.invoke(application, critical);
+            } catch (Exception ignored) {
+            }
         }
     }
 

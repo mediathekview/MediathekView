@@ -74,10 +74,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private Daten daten;
     private final DialogEinstellungen dialogEinstellungen;
     private final JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
-    JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
-    JPanel jPanelAnzahl = new JPanel();
-    PanelVorlage panelMeldungen = new PanelVorlage(daten, this);
-    JSplitPane splitPane = null;
+    private JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
+    private JPanel jPanelAnzahl = new JPanel();
+    private PanelVorlage panelMeldungen = new PanelVorlage(daten, this);
+    private JSplitPane splitPane = null;
     private final MVToolBar mVToolBar;
     private MVStatusBar statusBar;
     private final MVFrame[] frames = new MVFrame[3]; // Downloads, Abos, Meldungen
@@ -92,7 +92,16 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     /**
      * The application proxy object into OS X´s native world.
      */
-    final DefaultApplication application = new DefaultApplication();
+    final private DefaultApplication application = new DefaultApplication();
+
+    /**
+     * Return the currently used java native bridge object
+     * @return The object into the native OSX world.
+     */
+    public DefaultApplication getOsxApplicationAdapter()
+    {
+        return application;
+    }
 
     /**
      * Legt die statusbar an.
@@ -730,6 +739,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         application.addPreferencesMenuItem();
         application.setEnabledAboutMenu(true);
         application.setEnabledPreferencesMenu(true);
+        application.enableSuddenTermination();
 
         //setup the MediathekView Dock Icon
         try {
@@ -1343,29 +1353,62 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         Log.printEndeMeldung();
         if (dialogBeenden != null) {
             if (dialogBeenden.isShutdownRequested()) {
-                shutdown();
+                shutdownComputer();
             }
         }
-        this.dispose();
+
+        dispose();
         System.exit(0);
     }
 
-    private void shutdown() {
-        try {
-            String shutdownCommand;
-            String osName = System.getProperty("os.name");
-            if (osName.startsWith("Win")) {
-                shutdownCommand = "shutdown.exe -s -t 0";
-            } else if (osName.startsWith("Linux") || osName.startsWith("Mac")) {
-                shutdownCommand = "shutdown -h now";
-            } else {
+    /**
+     * Shutdown the computer depending on Operating System.
+     */
+    private void shutdownComputer() {
+        String strShutdownCommand = "";
+
+        switch (Funktionen.getOs()) {
+            case LINUX:
+                strShutdownCommand = "shutdown -h now";
+                break;
+
+            case MAC:
+                /*try {
+                    final String script = "tell application \"System Events\"\n" +
+                            "shut down\n" +
+                            "end tell";
+                    ScriptEngineManager mgr = new ScriptEngineManager();
+                    ScriptEngine engine = mgr.getEngineByName("AppleScript");
+                    engine.eval(script);
+                } catch (Exception ex) {
+                    Log.fehlerMeldung(915263987, Log.FEHLER_ART_PROG, "MediathekGui.shutdownComputer", "Fehler beim AppleScript shutdown command");
+                    //AppleScript may not be available if user does not use the official MacApp.
+                    //We need to log that as well if there are error reports.
+                    if (!System.getProperty("OSX_OFFICIAL_APP").equalsIgnoreCase("true")) {
+                        Log.fehlerMeldung(915263987, Log.FEHLER_ART_PROG, "MediathekGui.shutdownComputer", "MV wird NICHT über die offizielle Mac App genutzt.");
+                    }
+                }*/
+                strShutdownCommand = "shutdown -h now";
+                break;
+
+            case WIN32:
+            case WIN64:
+                strShutdownCommand = "shutdown.exe -s -t 0";
+                break;
+
+            default:
                 Log.fehlerMeldung(465321789, Log.FEHLER_ART_PROG, MediathekGui.class.getSimpleName(), "Shutdown unsupported operating system ...");
-                return;
+                break;
+        }
+
+        //only run if we have a proper shutdown command...
+        if (!strShutdownCommand.isEmpty()) {
+            try {
+                Log.systemMeldung("Shutdown: " + strShutdownCommand);
+                Runtime.getRuntime().exec(strShutdownCommand);
+            } catch (IOException ex) {
+                Log.fehlerMeldung(915263047, Log.FEHLER_ART_PROG, "MediathekGui.shutdownComputer", ex);
             }
-            Log.systemMeldung("Shutdown: " + shutdownCommand);
-            Runtime.getRuntime().exec(shutdownCommand);
-        } catch (Exception ex) {
-            Log.fehlerMeldung(915263047, Log.FEHLER_ART_PROG, "StarterClass.Starten.run", ex);
         }
     }
 

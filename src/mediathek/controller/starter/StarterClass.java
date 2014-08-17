@@ -501,6 +501,10 @@ public class StarterClass {
             start.restSekunden = -1;
             start.percent = Start.PROGRESS_FERTIG;
             notifyStartEvent(datenDownload);
+
+            if (SystemInfo.isMacOSX()) {
+                daten.mediathekGui.getOsxApplicationAdapter().requestUserAttention(false);
+            }
         }
 
         private boolean starten() {
@@ -782,6 +786,9 @@ public class StarterClass {
                     break;
             }
             notifyStartEvent(datenDownload);
+
+            if (SystemInfo.isMacOSX())
+                daten.mediathekGui.getOsxApplicationAdapter().requestUserAttention(false);
         }
 
         private boolean cancelDownload() {
