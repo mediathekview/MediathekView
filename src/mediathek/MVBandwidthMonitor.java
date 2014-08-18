@@ -10,8 +10,11 @@ import info.monitorenter.gui.chart.traces.Trace2DLtd;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
@@ -21,7 +24,9 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JSlider;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
@@ -29,7 +34,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
+import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
+import mediathek.gui.MVFilterFrame;
+import mediathek.res.GetIcon;
 import mediathek.tool.Funktionen;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
@@ -52,6 +60,7 @@ class MVBandwidthMonitor {
      */
     private final java.util.Timer timer = new java.util.Timer(false);
     private TimerTask timerTask = null;
+    private final JPanel panelSlider = new JPanel(new BorderLayout());
 
     public MVBandwidthMonitor(JFrame parent, final JCheckBoxMenuItem menuItem) {
         this.menuItem = menuItem;
@@ -72,11 +81,17 @@ class MVBandwidthMonitor {
             }
         });
 
-        JPanel panel = new JPanel();
         Chart2D chart = new Chart2D();
         chart.setPaintLabels(true);
         chart.setUseAntialiasing(true);
         chart.setToolTipType(Chart2D.ToolTipType.VALUE_SNAP_TO_TRACEPOINTS);
+
+        chart.addMouseListener(new BeobMaus());
+        hudDialog.addMouseListener(new BeobMaus());
+        panelSlider.addMouseListener(new BeobMaus());
+        jSliderBandbreite.addMouseListener(new BeobMaus());
+
+        JPanel panel = new JPanel();
         if (Funktionen.getOs() == Funktionen.OperatingSystemType.LINUX) {
             hudDialog.setBackground(null);
             chart.setOpaque(true);
@@ -109,42 +124,46 @@ class MVBandwidthMonitor {
         chart.addTrace(m_trace);
         panel.setLayout(new BorderLayout(0, 0));
         panel.add(chart, BorderLayout.CENTER);
-        if (Funktionen.getOs() == Funktionen.OperatingSystemType.LINUX) {
-            ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getSimpleName()) {
-                @Override
-                public void ping() {
-                    setSliderBandwith();
+
+        // Slider zum Einstellen der Bandbreite
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setSliderBandwith();
+            }
+        });
+        jSliderBandbreite.setMajorTickSpacing(10);
+        jSliderBandbreite.setMinorTickSpacing(5);
+        jSliderBandbreite.setToolTipText("");
+        setSliderBandwith();
+        jSliderBandbreite.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (stopBeob) {
+                    return;
                 }
-            });
-            jSliderBandbreite.setMajorTickSpacing(10);
-            jSliderBandbreite.setMinorTickSpacing(5);
-            jSliderBandbreite.setToolTipText("");
-            setSliderBandwith();
-            jSliderBandbreite.addChangeListener(new ChangeListener() {
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    if (stopBeob) {
-                        return;
-                    }
-                    int b = jSliderBandbreite.getValue() * 10;
-                    jLabelBandwidth.setText(b + " kByte/s");
-                    Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getName());
-                }
-            });
-            JPanel p = new JPanel(new BorderLayout());
-            p.setBorder(new EmptyBorder(4, 4, 4, 4));
-            p.add(new JLabel("Max: "), BorderLayout.WEST);
-            p.add(jSliderBandbreite, BorderLayout.CENTER);
-            p.add(jLabelBandwidth, BorderLayout.EAST);
-            panel.add(p, BorderLayout.SOUTH);
-        }
+                int b = jSliderBandbreite.getValue() * 10;
+                jLabelBandwidth.setText(b + " kByte/s");
+                Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getName());
+            }
+        });
+        panelSlider.setBorder(new EmptyBorder(4, 4, 4, 4));
+        panelSlider.add(new JLabel("Max: "), BorderLayout.WEST);
+        panelSlider.add(jSliderBandbreite, BorderLayout.CENTER);
+        panelSlider.add(jLabelBandwidth, BorderLayout.EAST);
+        panel.add(panelSlider, BorderLayout.SOUTH);
+        setSlider();
         hudWindow.setContentPane(panel);
 
         final Dimension dim = hudDialog.getSize();
         dim.height = 150;
         dim.width = 300;
         hudDialog.setSize(dim);
+    }
+
+    private void setSlider() {
+        panelSlider.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BANDWIDTH_MONITOR_SLIDER)));
     }
 
     private void setSliderBandwith() {
@@ -171,7 +190,7 @@ class MVBandwidthMonitor {
      */
     public void toggleVisibility() {
         final boolean isSelected = menuItem.isSelected();
-        Daten.mVConfig.add(MVConfig.SYSTEM_ANSICHT_BANDWIDTH, Boolean.toString(menuItem.isSelected()));
+        Daten.mVConfig.add(MVConfig.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(menuItem.isSelected()));
         hudWindow.getJDialog().setVisible(isSelected);
         try {
             if (menuItem.isSelected()) {
@@ -219,6 +238,43 @@ class MVBandwidthMonitor {
             return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + Math.round(bandw / 1_000.0) + " kByte/s";
         } else {
             return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + Math.round(bandw) + " Byte/s";
+        }
+    }
+
+    private class BeobMaus extends MouseAdapter {
+
+        private Point p;
+        private JCheckBoxMenuItem item;
+
+        @Override
+        public void mousePressed(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        private void showMenu(MouseEvent evt) {
+            JPopupMenu jPopupMenu = new JPopupMenu();
+            item = new JCheckBoxMenuItem("Einstellung Bandbreite einblenden");
+            item.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BANDWIDTH_MONITOR_SLIDER)));
+            item.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Daten.mVConfig.add(MVConfig.SYSTEM_BANDWIDTH_MONITOR_SLIDER, Boolean.toString(item.isSelected()));
+                    setSlider();
+                }
+            });
+            jPopupMenu.add(item);
+
+            //Menü anzeigen
+            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }
 }
