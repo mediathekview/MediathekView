@@ -94,11 +94,11 @@ public class Funktionen {
     }
 
     public static String pathProgramIcons() {
-        return getPathJar() + Konstanten.VERZEICNHISS_PROGRAMM_ICONS;
+        return getPathJar() + Konstanten.VERZEICHNIS_PROGRAMM_ICONS;
     }
 
     public static String pathSenderIcons() {
-        return getPathJar() + Konstanten.VERZEICNHISS_SENDER_ICONS;
+        return getPathJar() + Konstanten.VERZEICHNIS_SENDER_ICONS;
     }
 
     public static String getProgVersionString() {

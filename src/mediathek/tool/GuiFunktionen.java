@@ -388,7 +388,7 @@ public class GuiFunktionen extends Funktionen {
         if (getOs() == OperatingSystemType.MAC) {
             return addsPfad(getHomePath(), "Desktop");
         }
-        return addsPfad(getHomePath(), Konstanten.VERZEICNHISS_DOWNLOADS);
+        return addsPfad(getHomePath(), Konstanten.VERZEICHNIS_DOWNLOADS);
     }
 
     public static String[] addLeerListe(String[] str) {

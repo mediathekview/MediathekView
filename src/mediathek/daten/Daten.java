@@ -56,7 +56,6 @@ import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVReplaceList;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
-import msearch.daten.MSConfig;
 import msearch.io.MSFilmlisteLesen;
 import msearch.io.MSFilmlisteSchreiben;
 
@@ -193,7 +192,7 @@ public class Daten {
     public static Path getSettingsDirectory() throws IOException {
         final String baseDirectoryString;
         if (basisverzeichnis.equals("")) {
-            baseDirectoryString = System.getProperty("user.home") + File.separator + Konstanten.VERZEICHNISS_EINSTELLUNGEN + File.separator;
+            baseDirectoryString = System.getProperty("user.home") + File.separator + Konstanten.VERZEICHNIS_EINSTELLUNGEN + File.separator;
         } else {
             baseDirectoryString = basisverzeichnis;
         }
@@ -366,10 +365,10 @@ public class Daten {
                 if (creatTime == -1 || creatTime < DatumZeit.getHeute_0Uhr()) {
                     // nur dann ist die letzte Kopie älter als einen Tag
                     xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + MAX_COPY);
-                    if (xmlFilePathCopy_1.toFile().exists()) {
-                        // das letzte File löschen, sonst klappt das umbenenen unter Win nicht
-                        xmlFilePathCopy_1.toFile().delete();
-                    }
+
+                    // das letzte File löschen, sonst klappt das umbenenen unter Win nicht
+                    Files.deleteIfExists(xmlFilePathCopy_1);
+
                     for (int i = MAX_COPY; i > 1; --i) {
                         xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + (i - 1));
                         xmlFilePathCopy_2 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
