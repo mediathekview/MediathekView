@@ -10,11 +10,6 @@ import info.monitorenter.gui.chart.traces.Trace2DLtd;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
@@ -23,23 +18,12 @@ import java.util.TimerTask;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JSlider;
 import javax.swing.WindowConstants;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
-import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
-import mediathek.gui.MVFilterFrame;
-import mediathek.res.GetIcon;
 import mediathek.tool.Funktionen;
-import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 
 /**
@@ -50,17 +34,13 @@ class MVBandwidthMonitor {
     private double counter = 0; // double sonst "läuft" die Chart nicht
     private HudWindow hudWindow = null;
     private JCheckBoxMenuItem menuItem = null;
-    private Trace2DLtd m_trace = new Trace2DLtd(300);
+    private final Trace2DLtd m_trace = new Trace2DLtd(300);
     private IAxis x_achse = null;
-    private JSlider jSliderBandbreite = new JSlider();
-    private JLabel jLabelBandwidth = new JLabel();
-    private boolean stopBeob = false;
     /**
      * Timer for collecting sample data.
      */
     private final java.util.Timer timer = new java.util.Timer(false);
     private TimerTask timerTask = null;
-    private final JPanel panelSlider = new JPanel(new BorderLayout());
 
     public MVBandwidthMonitor(JFrame parent, final JCheckBoxMenuItem menuItem) {
         this.menuItem = menuItem;
@@ -85,11 +65,6 @@ class MVBandwidthMonitor {
         chart.setPaintLabels(true);
         chart.setUseAntialiasing(true);
         chart.setToolTipType(Chart2D.ToolTipType.VALUE_SNAP_TO_TRACEPOINTS);
-
-        chart.addMouseListener(new BeobMaus());
-        hudDialog.addMouseListener(new BeobMaus());
-        panelSlider.addMouseListener(new BeobMaus());
-        jSliderBandbreite.addMouseListener(new BeobMaus());
 
         JPanel panel = new JPanel();
         if (Funktionen.getOs() == Funktionen.OperatingSystemType.LINUX) {
@@ -125,64 +100,12 @@ class MVBandwidthMonitor {
         panel.setLayout(new BorderLayout(0, 0));
         panel.add(chart, BorderLayout.CENTER);
 
-        // Slider zum Einstellen der Bandbreite
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setSliderBandwith();
-            }
-        });
-        jSliderBandbreite.setMajorTickSpacing(10);
-        jSliderBandbreite.setMinorTickSpacing(5);
-        jSliderBandbreite.setToolTipText("");
-        setSliderBandwith();
-        jSliderBandbreite.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (stopBeob) {
-                    return;
-                }
-                int b = jSliderBandbreite.getValue() * 10;
-                jLabelBandwidth.setText(b + " kByte/s");
-                Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getName());
-            }
-        });
-        panelSlider.setBorder(new EmptyBorder(4, 4, 4, 4));
-        panelSlider.add(new JLabel("Max: "), BorderLayout.WEST);
-        panelSlider.add(jSliderBandbreite, BorderLayout.CENTER);
-        panelSlider.add(jLabelBandwidth, BorderLayout.EAST);
-        panel.add(panelSlider, BorderLayout.SOUTH);
-        setSlider();
         hudWindow.setContentPane(panel);
 
         final Dimension dim = hudDialog.getSize();
         dim.height = 150;
         dim.width = 300;
         hudDialog.setSize(dim);
-    }
-
-    private void setSlider() {
-        panelSlider.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BANDWIDTH_MONITOR_SLIDER)));
-    }
-
-    private void setSliderBandwith() {
-        stopBeob = true;
-        int bandbreite;
-        try {
-            bandbreite = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
-        } catch (Exception ex) {
-            bandbreite = 0;
-            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, "0");
-        }
-        jSliderBandbreite.setValue(bandbreite / 10);
-        if (bandbreite == 0) {
-            jLabelBandwidth.setText("aus");
-
-        } else {
-            jLabelBandwidth.setText(bandbreite + " kByte/s");
-        }
-        stopBeob = false;
     }
 
     /**
@@ -241,40 +164,4 @@ class MVBandwidthMonitor {
         }
     }
 
-    private class BeobMaus extends MouseAdapter {
-
-        private Point p;
-        private JCheckBoxMenuItem item;
-
-        @Override
-        public void mousePressed(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        private void showMenu(MouseEvent evt) {
-            JPopupMenu jPopupMenu = new JPopupMenu();
-            item = new JCheckBoxMenuItem("Einstellung Bandbreite einblenden");
-            item.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BANDWIDTH_MONITOR_SLIDER)));
-            item.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_BANDWIDTH_MONITOR_SLIDER, Boolean.toString(item.isSelected()));
-                    setSlider();
-                }
-            });
-            jPopupMenu.add(item);
-
-            //Menü anzeigen
-            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
-    }
 }
