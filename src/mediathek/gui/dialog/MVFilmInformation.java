@@ -58,33 +58,6 @@ public class MVFilmInformation implements ChangeListener {
     public MVFilmInformation(JFrame owner, JTabbedPane tabbedPane, Daten ddaten) {
         this.ddaten = ddaten;
         parent = owner;
-//        if (Funktionen.getOs() == Funktionen.OS_LINUX) {
-//            foreground = Color.WHITE;
-//            background = Color.BLACK;
-//            //dialog = new JDialog(ddaten.mediathekGui);
-//            dialog = new JDialog();
-//            dialog.setTitle("Filminformation");
-//
-//            for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {
-//                labelArrNames[i] = new JLabel(DatenFilm.COLUMN_NAMES[i] + ":");
-//                labelArrNames[i].setHorizontalAlignment(SwingConstants.RIGHT);
-//                labelArrNames[i].setDoubleBuffered(true);
-//                labelArrNames[i].setForeground(foreground);
-//                labelArrNames[i].setBackground(background);
-//
-//                txtArrCont[i] = new JTextField("");
-//                txtArrCont[i].setEditable(false);
-//                txtArrCont[i].setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-//                txtArrCont[i].setDoubleBuffered(true);
-//                txtArrCont[i].setForeground(foreground);
-//                txtArrCont[i].setBackground(background);
-//            }
-//            JComponent content = setLable();
-//            content.setBackground(background);
-//            content.setForeground(foreground);
-//            dialog.add(content);
-//            dialog.repaint();
-//        } else {
         foreground = Color.WHITE;
         background = Color.BLACK;
         hud = new HudWindow("Filminformation", owner);
@@ -104,13 +77,8 @@ public class MVFilmInformation implements ChangeListener {
         content.setOpaque(false);
         hud.setContentPane(content);
         dialog = hud.getJDialog();
-//        }
         viewImage.setDoubleBuffered(true);
         buttonBild.setOpaque(false);
-//        if (!SystemInfo.isMacOSX()) {
-////            buttonBild.setBackground(background);
-////            buttonBild.setForeground(foreground);
-//        }
         buttonBild.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
