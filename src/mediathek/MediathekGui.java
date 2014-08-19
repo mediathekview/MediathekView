@@ -96,10 +96,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
     /**
      * Return the currently used java native bridge object
+     *
      * @return The object into the native OSX world.
      */
-    public DefaultApplication getOsxApplicationAdapter()
-    {
+    public DefaultApplication getOsxApplicationAdapter() {
         return application;
     }
 
@@ -316,14 +316,26 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         setFocusSuchfeld();
 
         cbBandwidthDisplay.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BANDWIDTH_MONITOR_VISIBLE)));
-        bandwidthMonitor = new MVBandwidthMonitor(this, cbBandwidthDisplay);
-        bandwidthMonitor.toggleVisibility();
-        cbBandwidthDisplay.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                bandwidthMonitor.toggleVisibility();
-            }
-        });
+        if (SystemInfo.isMacOSX()) {
+            bandwidthMonitor = new MVBandwidthMonitor(this, cbBandwidthDisplay);
+            bandwidthMonitor.toggleVisibility();
+            cbBandwidthDisplay.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    bandwidthMonitor.toggleVisibility();
+                }
+            });
+        } else {
+            bandwidthInfo = new MVBandwidthInfo(null, cbBandwidthDisplay);
+            bandwidthInfo.toggleVisibility();
+            cbBandwidthDisplay.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    bandwidthInfo.toggleVisibility();
+                }
+            });
+
+        }
 
         duration.ping("Gui steht!");
     }
@@ -796,6 +808,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
      * Bandwidth monitoring for downloads.
      */
     private MVBandwidthMonitor bandwidthMonitor = null;
+    private MVBandwidthInfo bandwidthInfo = null;
 
     /**
      * This thread will update the percentage drawn on the dock icon on OS X.
@@ -1389,8 +1402,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                     final ProcessBuilder builder = new ProcessBuilder("/usr/bin/osascript", "-e");
                     builder.command().add("tell application \"OSX_Shutdown\" to activate");
                     builder.start();
-                }
-                catch (Exception ignored) {
+                } catch (Exception ignored) {
                 }
                 break;
 
