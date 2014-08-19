@@ -37,6 +37,7 @@ import java.util.LinkedList;
 import java.util.TimerTask;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -50,8 +51,9 @@ import mediathek.tool.MVConfig;
  * This class will manage and display the download bandwidth chart display.
  */
 public class MVBandwidthInfo extends javax.swing.JDialog {
-    
+
     private double counter = 0; // double sonst "läuft" die Chart nicht
+    long restzeit = 0;
     private JCheckBoxMenuItem menuItem = null;
     private Trace2DLtd m_trace = new Trace2DLtd(300);
     private IAxis x_achse = null;
@@ -66,10 +68,10 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
     public MVBandwidthInfo(java.awt.Frame parent, final JCheckBoxMenuItem menuItem) {
         super(parent, false);
         initComponents();
-        
+
         this.menuItem = menuItem;
         setTitle("Bandbreite");
-        
+
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
@@ -78,18 +80,18 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
                 toggleVisibility();
             }
         });
-        
+
         Chart2D chart = new Chart2D();
         chart.setPaintLabels(true);
         chart.setUseAntialiasing(true);
         chart.setToolTipType(Chart2D.ToolTipType.VALUE_SNAP_TO_TRACEPOINTS);
-        
+
         chart.addMouseListener(new BeobMaus());
         addMouseListener(new BeobMaus());
         jPanelInfo.addMouseListener(new BeobMaus());
         jSliderBandwidth.addMouseListener(new BeobMaus());
         jPanelChart.setBackground(Color.WHITE);
-        
+
         x_achse = chart.getAxisX();
         x_achse.getAxisTitle().setTitle("Minuten");
         x_achse.setPaintScale(true);
@@ -97,7 +99,7 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
         x_achse.setPaintGrid(false);
         x_achse.setMajorTickSpacing(10);
         x_achse.setMinorTickSpacing(1);
-        
+
         IAxis y_achse = chart.getAxisY();
         y_achse.getAxisTitle().setTitle("");
         y_achse.setPaintScale(true);
@@ -107,7 +109,7 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
         y_achse.setMinorTickSpacing(1);
         y_achse.setFormatter(new LabelFormatterAutoUnits());
         y_achse.setRangePolicy(new RangePolicyForcedPoint());
-        
+
         m_trace.setName("");
         m_trace.setColor(Color.RED);
         chart.addTrace(m_trace);
@@ -141,11 +143,11 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
         });
         setSlider();
     }
-    
+
     private void setSlider() {
         jPanelInfo.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BANDWIDTH_MONITOR_SLIDER)));
     }
-    
+
     private void setSliderBandwith() {
         stopBeob = true;
         int bandbreite;
@@ -158,7 +160,7 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
         jSliderBandwidth.setValue(bandbreite / 10);
         if (bandbreite == 0) {
             jLabelBandwith.setText("aus");
-            
+
         } else {
             jLabelBandwith.setText(bandbreite + " kByte/s");
         }
@@ -178,9 +180,9 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
                     @Override
                     public void run() {
                         double bandwidth = 0.0;
-                        long restzeit = 0;
                         //only count running/active downloads and calc accumulated progress..
                         LinkedList<DatenDownload> activeDownloadList = Daten.listeDownloads.getListOfStartsNotFinished(Start.QUELLE_ALLE);
+                        restzeit = 0;
                         for (DatenDownload download : activeDownloadList) {
                             if (download.start != null && download.start.status == Start.STATUS_RUN) {
                                 bandwidth += download.start.bandbreite;
@@ -191,16 +193,21 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
                             }
                         }
                         activeDownloadList.clear();
-                        
+
                         if (bandwidth < 0.0) {
                             bandwidth = 0.0;
                         }
-                        
+
                         counter++;
                         m_trace.addPoint(counter / 60, bandwidth); // minutes
                         x_achse.getAxisTitle().setTitle(roundBandwidth(bandwidth, (long) counter));
-                        jLabelAktuell.setText(getRestzeit(restzeit));
-                        jLabelInfo.setText(Daten.listeDownloads.getInfo(false));
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                jLabelAktuell.setText(getRestzeit(restzeit));
+                                jLabelInfo.setText(Daten.listeDownloads.getInfo(false));
+                            }
+                        });
                     }
                 };
                 timer.schedule(timerTask, 0, 1_000);
@@ -214,7 +221,7 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
             System.out.println(ignored.getMessage());
         }
     }
-    
+
     public String getRestzeit(long restzeit) {
         if (restzeit > 0) {
             if (restzeit < 60) {
@@ -225,7 +232,7 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
         }
         return "";
     }
-    
+
     private String roundBandwidth(double bandw, long time) {
         if (bandw > 1_000_000.0) {
             return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + new DecimalFormat("####0.00").format(bandw / 1_000_000.0) + " MByte/s";
@@ -235,7 +242,7 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
             return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + Math.round(bandw) + " Byte/s";
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -347,23 +354,23 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
     private javax.swing.JSlider jSliderBandwidth;
     // End of variables declaration//GEN-END:variables
     private class BeobMaus extends MouseAdapter {
-        
+
         private JCheckBoxMenuItem item;
-        
+
         @Override
         public void mousePressed(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
         }
-        
+
         @Override
         public void mouseReleased(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
         }
-        
+
         private void showMenu(MouseEvent evt) {
             JPopupMenu jPopupMenu = new JPopupMenu();
             item = new JCheckBoxMenuItem("Einstellungen/Infos anzeigen");
@@ -380,5 +387,5 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }
-    
+
 }
