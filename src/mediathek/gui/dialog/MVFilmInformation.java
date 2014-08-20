@@ -85,7 +85,7 @@ public class MVFilmInformation implements ChangeListener {
                 setAktFilm(true);
             }
         });
-        dialog.pack();
+        // dialog.pack(); --> Exception in thread "AWT-EventQueue-0" sun.awt.X11.XException: Cannot write XdndAware property
         Dimension size = dialog.getSize();
         size.width = 600;
         size.height = 600;
