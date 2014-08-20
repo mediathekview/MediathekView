@@ -51,31 +51,11 @@ public class FilmeLaden {
         START, PROGRESS, FINISHED
     }
     // private
-    private MSFilmeSuchen mSearchFilmeSuchen;
     private final MSImportFilmliste msImportFilmliste;
     private final EventListenerList listeners = new EventListenerList();
     private boolean istAmLaufen = false;
 
     public FilmeLaden() {
-        mSearchFilmeSuchen = new MSFilmeSuchen();
-        mSearchFilmeSuchen.addAdListener(new MSListenerFilmeLaden() {
-            @Override
-            public synchronized void start(MSListenerFilmeLadenEvent event) {
-                notifyStart(event);
-            }
-
-            @Override
-            public synchronized void progress(MSListenerFilmeLadenEvent event) {
-                notifyProgress(event);
-            }
-
-            @Override
-            public synchronized void fertig(MSListenerFilmeLadenEvent event) {
-                // Ergebnisliste listeFilme eintragen -> Feierabend!
-                Daten.listeFilme = mSearchFilmeSuchen.listeFilmeNeu;
-                undEnde(event);
-            }
-        });
         msImportFilmliste = new MSImportFilmliste();
         msImportFilmliste.addAdListener(new MSListenerFilmeLaden() {
             @Override
@@ -99,7 +79,7 @@ public class FilmeLaden {
     }
 
     // #########################################################
-    // Filme als Liste importieren
+    // Filmliste importieren
     // #########################################################
     public void filmeLaden(Daten daten, boolean manuell) {
         if (manuell || GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUS) {
@@ -157,46 +137,13 @@ public class FilmeLaden {
     }
 
     // #######################################
-    // Filme bei den Sendern laden
-    // #######################################
-    public void filmeBeimSenderSuchen(boolean senderAllesLaden, boolean filmlisteUpdate) {
-        // Filme bei allen Sender suchen
-        if (!istAmLaufen) {
-            // nicht doppelt starten
-            istAmLaufen = true;
-            hashSet.clear();
-            Daten.listeFilme.neueFilme = false;
-            Daten.listeFilmeNachBlackList.neueFilme = false;
-            fillHash(Daten.listeFilme);
-            MSConfig.senderAllesLaden = senderAllesLaden;
-            MSConfig.updateFilmliste = filmlisteUpdate;
-            MSConfig.debug = Daten.debug;
-            mSearchFilmeSuchen.filmeBeimSenderLaden(Daten.listeFilme);
-        }
-    }
-
-    public void updateSender(String[] sender) {
-        // Filme nur bei EINEM Sender suchen (nur update)
-        if (!istAmLaufen) {
-            // nicht doppelt starten
-            istAmLaufen = true;
-            hashSet.clear();
-            Daten.listeFilme.neueFilme = false;
-            Daten.listeFilmeNachBlackList.neueFilme = false;
-            fillHash(Daten.listeFilme);
-            MSConfig.debug = Daten.debug;
-            mSearchFilmeSuchen.updateSender(sender, Daten.listeFilme);
-        }
-    }
-
-    // #######################################
     // #######################################
     public synchronized void setStop(boolean set) {
         MSConfig.setStop(set);
     }
 
     public String[] getSenderNamen() {
-        return mSearchFilmeSuchen.getNamenSender();
+        return MSFilmeSuchen.getNamenSender();
     }
 
     public void updateDownloadUrlsFilmlisten(boolean old, boolean akt, boolean diff) {
