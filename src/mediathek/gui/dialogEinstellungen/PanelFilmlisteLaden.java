@@ -86,6 +86,8 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         });
         jRadioButtonUpdateAus.addActionListener(new BeobOption());
         jRadioButtonAuto.addActionListener(new BeobOption());
+        // erster Schritt zum Entfernen
+        jRadioButtonOld.setVisible(Daten.debug);
         jRadioButtonOld.addActionListener(new ActionListener() {
 
             @Override
@@ -447,6 +449,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     }
 
     private class BeobachterTableSelect implements MouseListener {
+
         @Override
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 2) {
