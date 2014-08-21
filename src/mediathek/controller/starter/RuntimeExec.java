@@ -165,8 +165,8 @@ public class RuntimeExec {
                                 long akt = start.startZeit.diffInSekunden();
                                 if (oldSecs < akt - 5) {
                                     start.bandbreite = (aktSize - oldSize) * 1_000 / (akt - oldSecs);
-                                    long si = aktSize - oldSize;
-                                    long ti = (akt - oldSecs);
+//                                    long si = aktSize - oldSize;
+//                                    long ti = (akt - oldSecs);
                                     oldSecs = akt;
                                     oldSize = aktSize;
                                 }
