@@ -1321,8 +1321,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         if (Daten.listeDownloads.nochNichtFertigeDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
             dialogBeenden = new DialogBeenden(this);
+            dialogBeenden.setModal(true);
             dialogBeenden.setVisible(true);
-            if (!dialogBeenden.beenden) {
+            if (!dialogBeenden.applicationCanTerminate()) {
                 return;
             }
         }
@@ -1363,6 +1364,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_FILTER, daten.guiFilme.mVFilterFrame);
         daten.allesSpeichern();
         Log.printEndeMeldung();
+
         if (dialogBeenden != null) {
             if (dialogBeenden.isShutdownRequested()) {
                 shutdownComputer();
