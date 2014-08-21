@@ -25,7 +25,13 @@ import javax.swing.JOptionPane;
 import javax.swing.RepaintManager;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
+import mediathek.tool.Konstanten;
 import mediathek.tool.MVSingleInstance;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Main {
 
@@ -51,10 +57,28 @@ public class Main {
     }
 
     /**
+     * Ensures that old film lists in .mediathek directory get deleted because they were moved to
+     * ~/Library/Caches/MediathekView
+     */
+    private static void cleanupOsxFiles()
+    {
+       try {
+           Path oldFilmList = Paths.get(Daten.getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME);
+           Files.deleteIfExists(oldFilmList);
+       }
+       catch (Exception ignored)
+       {
+       }
+    }
+
+    /**
      * @param args the command line arguments
      */
     public static void main(final String args[]) {
-        System.setProperty("apple.laf.useScreenMenuBar", "true");
+        if (SystemInfo.isMacOSX()) {
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+            cleanupOsxFiles();
+        }
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
