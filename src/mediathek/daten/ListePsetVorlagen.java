@@ -25,20 +25,16 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.LinkedList;
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
-import mediathek.controller.GetNewSet;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.Log;
 import mediathek.file.GetFile;
-import mediathek.gui.dialog.DialogNewSet;
 import mediathek.tool.Funktionen;
-import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Konstanten;
-import mediathek.tool.MVConfig;
 import mediathek.tool.TModel;
+import msearch.tool.MSConst;
 
 public class ListePsetVorlagen extends LinkedList<String[]> {
 
@@ -104,7 +100,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             conn.setRequestProperty("User-Agent", Daten.getUserAgent());
             conn.setReadTimeout(TIMEOUT);
             conn.setConnectTimeout(TIMEOUT);
-            inReader = new InputStreamReader(conn.getInputStream(), Konstanten.KODIERUNG_UTF);
+            inReader = new InputStreamReader(conn.getInputStream(), MSConst.KODIERUNG_UTF);
             parser = inFactory.createXMLStreamReader(inReader);
             while (parser.hasNext()) {
                 event = parser.next();

@@ -26,6 +26,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
+import msearch.tool.MSConst;
 
 public class AsxLesen {
 
@@ -38,7 +39,7 @@ public class AsxLesen {
         }
         String url = datei;
         StringBuilder seite = new StringBuilder(STRING_BUFFER_START_BUFFER);
-        String kodierung = Konstanten.KODIERUNG_UTF;
+        String kodierung = MSConst.KODIERUNG_UTF;
         int timeout = 20000; //10 Sekunden
         char[] zeichen = new char[1];
         URLConnection conn;

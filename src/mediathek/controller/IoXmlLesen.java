@@ -40,10 +40,10 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.ListeBlacklist;
 import mediathek.daten.ListePset;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Konstanten;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVReplaceList;
 import msearch.filmeLaden.DatenFilmlisteUrl;
+import msearch.tool.MSConst;
 
 public class IoXmlLesen {
 
@@ -54,7 +54,7 @@ public class IoXmlLesen {
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
             inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
             DatenPset datenPset = null;
-            try (InputStreamReader in = new InputStreamReader(Files.newInputStream(xmlFilePath), Konstanten.KODIERUNG_UTF)) {
+            try (InputStreamReader in = new InputStreamReader(Files.newInputStream(xmlFilePath), MSConst.KODIERUNG_UTF)) {
                 XMLStreamReader parser = inFactory.createXMLStreamReader(in);
                 while (parser.hasNext()) {
                     event = parser.next();
@@ -159,7 +159,7 @@ public class IoXmlLesen {
             inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
             XMLStreamReader parser;
             InputStreamReader in;
-            in = new InputStreamReader(new FileInputStream(datei), Konstanten.KODIERUNG_UTF);
+            in = new InputStreamReader(new FileInputStream(datei), MSConst.KODIERUNG_UTF);
             parser = inFactory.createXMLStreamReader(in);
             while (parser.hasNext()) {
                 event = parser.next();
@@ -223,7 +223,7 @@ public class IoXmlLesen {
             inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
             XMLStreamReader parser;
             InputStreamReader in;
-            in = new InputStreamReader(inStream, Konstanten.KODIERUNG_UTF);
+            in = new InputStreamReader(inStream, MSConst.KODIERUNG_UTF);
             parser = inFactory.createXMLStreamReader(in);
             while (parser.hasNext()) {
                 event = parser.next();
