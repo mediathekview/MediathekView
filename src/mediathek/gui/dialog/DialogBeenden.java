@@ -1,6 +1,7 @@
 /*    
  *    MediathekView
  *    Copyright (C) 2008   W. Xaver
+ *    Copyright (C) 2014   Christian F.
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
  *    
@@ -22,110 +23,208 @@ package mediathek.gui.dialog;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-import com.jidesoft.utils.SystemInfo;
 import mediathek.daten.Daten;
 import mediathek.tool.EscBeenden;
+import org.jdesktop.swingx.JXBusyLabel;
 
 import javax.swing.*;
 
 public class DialogBeenden extends JDialog {
-    public boolean beenden = false;
+    private static final String CANCEL_AND_TERMINATE_PROGRAM = "Downloads abbrechen und Programm beenden";
+    private static final String WAIT_FOR_DOWNLOADS_AND_TERMINATE = "Auf Abschluß aller Downloads warten, danach beenden";
+    private static final String DONT_TERMINATE = "Programm nicht beenden";
+    /**
+     * Indicates whether the application can terminate.
+     */
+    private boolean applicationCanTerminate = false;
+    /**
+     * Indicate whether computer should be shut down.
+     */
     private boolean shutdown = false;
+    /**
+     * JPanel for displaying the glassPane with the busy indicator label.
+     */
+    private JPanel glassPane = null;
+    /**
+     * The download monitoring {@link javax.swing.SwingWorker}.
+     */
+    private SwingWorker<Void, Void> downloadMonitorWorker = null;
 
     /**
-     * Does the user want to shutdown the computer?
-     * @return true if shutdown is wanted.
+     * Return whether the user still wants to terminate the application.
+     * @return true if the app should continue to terminate.
      */
-    public boolean isShutdownRequested()
-    {
-        return shutdown;
+    public boolean applicationCanTerminate() {
+        return applicationCanTerminate;
     }
 
     public DialogBeenden(Frame parent) {
         super(parent, true);
         initComponents();
-        jButtonWarten.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                warten();
-            }
-        });
-        jButtonAbbrechen.addActionListener(new BeobAbbrechen());
-        jButtonSofort.addActionListener(new BeobSofort());
-        jCheckBoxShutdown.addActionListener(new ActionListener() {
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                shutdown = jCheckBoxShutdown.isSelected();
-            }
-        });
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
         new EscBeenden(this) {
             @Override
             public void beenden_() {
-                beenden = false;
-                beenden();
+                escapeHandler();
             }
         };
 
-        getRootPane().setDefaultButton(jButtonAbbrechen);
-    }
-
-    private synchronized void warten() {
-        jProgressBar1.setIndeterminate(true);
-//        jProgressBar1.setMaximum(10);
-//        jProgressBar1.setMinimum(0);
-//        jProgressBar1.setValue(5);
-        if (!SystemInfo.isMacOSX()) {
-            //indeterminate progress bar can´t paint strings on OSX...
-            jProgressBar1.setStringPainted(true);
-            jProgressBar1.setString("warten");
-        }
-        try {
-            WartenThread w = new WartenThread();
-            w.start();
-        } catch (Exception ex) {
-            beenden = false;
-            beenden();
-        }
-    }
-
-    private class WartenThread extends Thread {
-        public WartenThread() {
-            setName("DialogBeenden WartenThread");
-        }
-
-        @Override
-        public synchronized void run() {
-            try {
-                int numDownloads;
-                while ((numDownloads = Daten.listeDownloads.nochNichtFertigeDownloads()) > 0) {
-                    if (!SystemInfo.isMacOSX()) {
-                        final int ret = numDownloads;
-                        //We are not on EDT...
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                jProgressBar1.setString(ret == 1 ? "1 Download läuft noch" : ret + " Downloads laufen noch");
-                            }
-                        });
-                    }
-                    sleep(2000);
-                }
-                beenden = true;
-                beenden();
-            } catch (Exception ex) {
-                beenden = false;
-                beenden();
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                escapeHandler();
             }
-        }
+        });
+
+        cbShutdownComputer.setEnabled(false);
+
+        comboActions.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                final String strSelectedItem = (String) comboActions.getSelectedItem();
+                switch (strSelectedItem) {
+                    case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
+                        cbShutdownComputer.setEnabled(true);
+                        break;
+
+                    default:
+                        cbShutdownComputer.setEnabled(false);
+                        //manually reset shutdown state
+                        cbShutdownComputer.setSelected(false);
+                        shutdown = false;
+                        break;
+                }
+            }
+        });
+
+        cbShutdownComputer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                shutdown = cbShutdownComputer.isSelected();
+            }
+        });
+
+        btnContinue.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                final String strSelectedItem = (String) comboActions.getSelectedItem();
+                switch (strSelectedItem) {
+                    case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
+                        waitUntilDownloadsHaveFinished();
+                        break;
+
+                    case CANCEL_AND_TERMINATE_PROGRAM:
+                        applicationCanTerminate = true;
+                        dispose();
+                        break;
+
+                    case DONT_TERMINATE:
+                        applicationCanTerminate = false;
+                        dispose();
+                        break;
+                }
+            }
+        });
+
+        btnCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                escapeHandler();
+            }
+        });
+
+        pack();
+
+        getRootPane().setDefaultButton(btnContinue);
     }
 
-    private void beenden() {
+    /**
+     * Does the user want to shutdown the computer?
+     *
+     * @return true if shutdown is wanted.
+     */
+    public boolean isShutdownRequested() {
+        return shutdown;
+    }
+
+    /**
+     * Create the ComboBoxModel for user selection.
+     * @return The model with all valid user actions.
+     */
+    private DefaultComboBoxModel<String> getComboBoxModel() {
+        return new DefaultComboBoxModel<>(new String[]{CANCEL_AND_TERMINATE_PROGRAM, WAIT_FOR_DOWNLOADS_AND_TERMINATE, DONT_TERMINATE});
+    }
+
+    /**
+     * This will reset all necessary variables to default and cancel app termination.
+     */
+    private void escapeHandler() {
+        if (downloadMonitorWorker != null)
+            downloadMonitorWorker.cancel(true);
+
+        if (glassPane != null)
+            glassPane.setVisible(false);
+
+        applicationCanTerminate = false;
         dispose();
+    }
+
+    /**
+     * Create the glassPane which will be used as an overlay for the dialog while we are waiting for downloads.
+     * @return The {@link javax.swing.JPanel} for the glassPane.
+     */
+    private JPanel createGlassPane() {
+        String strMessage = "<html>Warte auf Abschluss der Downloads...";
+        if (isShutdownRequested())
+            strMessage += "<br><b>Der Rechner wird danach heruntergefahren.</b>";
+        strMessage += "<br>Sie können den Vorgang mit Escape abbrechen.</html>";
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout(5, 5));
+        JXBusyLabel lbl = new JXBusyLabel();
+        lbl.setText(strMessage);
+        lbl.setBusy(true);
+        lbl.setVerticalAlignment(SwingConstants.CENTER);
+        lbl.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(lbl, BorderLayout.CENTER);
+
+        return panel;
+    }
+
+    /**
+     * Handler which will wait untill all downloads have finished.
+     * Uses a {@link javax.swing.SwingWorker} to properly handle EDT stuff.
+     */
+    private void waitUntilDownloadsHaveFinished() {
+        glassPane = createGlassPane();
+        setGlassPane(glassPane);
+        glassPane.setVisible(true);
+
+        downloadMonitorWorker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                while ((Daten.listeDownloads.nochNichtFertigeDownloads() > 0) && !isCancelled()) {
+                    Thread.sleep(1000);
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                applicationCanTerminate = true;
+                glassPane.setVisible(false);
+                dispose();
+                downloadMonitorWorker = null;
+            }
+        };
+        downloadMonitorWorker.execute();
     }
 
     /** This method is called from within the constructor to
@@ -136,99 +235,25 @@ public class DialogBeenden extends JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
-        jButtonSofort = new javax.swing.JButton();
-        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
-        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
-        jButtonWarten = new javax.swing.JButton();
-        jCheckBoxShutdown = new javax.swing.JCheckBox();
-        jProgressBar1 = new javax.swing.JProgressBar();
-        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
-        javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        jButtonAbbrechen = new javax.swing.JButton();
+        comboActions = new javax.swing.JComboBox<String>();
+        btnContinue = new javax.swing.JButton();
+        cbShutdownComputer = new javax.swing.JCheckBox();
+        btnCancel = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Programm beenden");
+        setTitle("MediathekView beenden");
         setResizable(false);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153), 2));
+        jLabel1.setText("<html>Es sind noch nicht alle Downloads fertig.<br>Wie möchten Sie fortfahren?</html>");
 
-        jButtonSofort.setText("Sofort beenden");
+        comboActions.setModel(getComboBoxModel());
 
-        jLabel2.setText("Downloads abbrechen und Programm beenden");
+        btnContinue.setText("Weiter");
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonSofort, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2)
-                .addGap(18, 18, 18)
-                .addComponent(jButtonSofort)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        cbShutdownComputer.setText("Rechner herunterfahren");
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153), 2));
-
-        jButtonWarten.setText("Warten und dann beenden");
-
-        jCheckBoxShutdown.setText("und dann auch den Rechner herunterfahren");
-
-        jLabel3.setText("Warten bis alle wartenden und laufenden");
-
-        jLabel4.setText("Downloads fertig sind und dann erst beenden");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jCheckBoxShutdown))
-                    .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButtonWarten, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4)
-                .addGap(18, 18, 18)
-                .addComponent(jButtonWarten)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxShutdown)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jLabel1.setText("<html>Es sind noch nicht alle Downloads beendet.<br>Wie möchten Sie fortfahren?</html>");
-
-        jButtonAbbrechen.setText("Programm nicht beenden");
+        btnCancel.setText("Abbrechen");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -237,10 +262,16 @@ public class DialogBeenden extends JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButtonAbbrechen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
+                    .addComponent(comboActions, 0, 0, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(cbShutdownComputer)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnCancel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnContinue)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -248,41 +279,23 @@ public class DialogBeenden extends JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(comboActions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonAbbrechen)
+                .addComponent(cbShutdownComputer)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnContinue)
+                    .addComponent(btnCancel))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonAbbrechen;
-    private javax.swing.JButton jButtonSofort;
-    private javax.swing.JButton jButtonWarten;
-    private javax.swing.JCheckBox jCheckBoxShutdown;
-    private javax.swing.JProgressBar jProgressBar1;
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnContinue;
+    private javax.swing.JCheckBox cbShutdownComputer;
+    private javax.swing.JComboBox<String> comboActions;
     // End of variables declaration//GEN-END:variables
-
-    private class BeobAbbrechen implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            beenden = false;
-            beenden();
-        }
-    }
-
-    private class BeobSofort implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            beenden = true;
-            beenden();
-        }
-    }
-
 }
