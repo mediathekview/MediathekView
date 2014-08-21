@@ -37,11 +37,11 @@ import mediathek.daten.DatenBlacklist;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
-import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVReplaceList;
 import msearch.filmeLaden.DatenFilmlisteUrl;
+import msearch.tool.MSConst;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 
 public class IoXmlSchreiben {
@@ -57,9 +57,9 @@ public class IoXmlSchreiben {
         public OutputStream decompress() throws IOException
         {
             OutputStream outputStream = Files.newOutputStream(xmlFilePath);
-            if (xmlFilePath.endsWith(GuiKonstanten.FORMAT_BZ2)) {
+            if (xmlFilePath.endsWith(MSConst.FORMAT_BZ2)) {
                 decompressedOutputStream = new BZip2CompressorOutputStream(outputStream, 2);
-            } else if (xmlFilePath.endsWith(GuiKonstanten.FORMAT_ZIP)) {
+            } else if (xmlFilePath.endsWith(MSConst.FORMAT_ZIP)) {
                 ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
                 ZipEntry entry = new ZipEntry(Konstanten.PROGRAMMNAME);
                 zipOutputStream.putNextEntry(entry);
