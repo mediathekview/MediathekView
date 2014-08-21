@@ -42,6 +42,7 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.DialogImportPset;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
+import msearch.tool.MSConst;
 
 public class GuiFunktionenProgramme extends GuiFunktionen {
 
@@ -286,7 +287,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                     // und Tschüss
                     return false;
                 }
-                if (datei.endsWith(GuiKonstanten.FORMAT_ZIP)) {
+                if (datei.endsWith(MSConst.FORMAT_ZIP)) {
                     if (!entpacken(zipFile, new File(zielPfad))) {
                         // und Tschüss
                         return false;
@@ -306,7 +307,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 conn.setConnectTimeout(timeout);
                 conn.setReadTimeout(timeout);
                 conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-                if (datei.endsWith(GuiKonstanten.FORMAT_ZIP)) {
+                if (datei.endsWith(MSConst.FORMAT_ZIP)) {
 
                     File tmpFile = File.createTempFile("mediathek", null);
                     tmpFile.deleteOnExit();
@@ -381,7 +382,6 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
 
     private static File buildDirectoryHierarchyFor(String entryName, File destDir) {
         int lastIndex = entryName.lastIndexOf('/');
-        String entryFileName = entryName.substring(lastIndex + 1);
         String internalPathToEntry = entryName.substring(0, lastIndex + 1);
         return new File(destDir, internalPathToEntry);
     }

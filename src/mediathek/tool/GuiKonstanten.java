@@ -30,9 +30,6 @@ public class GuiKonstanten {
     public static final String IMPORT_DATEI_TEXT = "Filme laden (Datei)";
     public static final String DIREKTE_DOWNLOAD_SUFFIX = "mp4,mp3,m4v,flv";
     public static final String DIREKTE_DOWNLOAD_PRAEFIX = "http";
-    //Formate zu Zippen
-    public static final String FORMAT_ZIP = ".zip";
-    public static final String FORMAT_BZ2 = ".bz2";
     // für das Anpassen der URL für den flvstreamer
     public static final String RTMP_FLVSTREAMER = "-r ";
     public static final String RTMP_PRTOKOLL = "rtmp";
