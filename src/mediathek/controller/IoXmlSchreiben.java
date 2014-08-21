@@ -153,11 +153,11 @@ public class IoXmlSchreiben {
     private void xmlSchreibenStart() throws IOException, XMLStreamException {
         Log.systemMeldung("Start Schreiben nach: " + xmlFilePath.toAbsolutePath());
         decompressor = new FileDecompressor(xmlFilePath);
-        out = new OutputStreamWriter(decompressor.decompress(), Konstanten.KODIERUNG_UTF);
+        out = new OutputStreamWriter(decompressor.decompress(), MSConst.KODIERUNG_UTF);
 
         XMLOutputFactory outFactory = XMLOutputFactory.newInstance();
         writer = outFactory.createXMLStreamWriter(out);
-        writer.writeStartDocument(Konstanten.KODIERUNG_UTF, "1.0");
+        writer.writeStartDocument(MSConst.KODIERUNG_UTF, "1.0");
         writer.writeCharacters("\n");//neue Zeile
         writer.writeStartElement(Konstanten.XML_START);
         writer.writeCharacters("\n");//neue Zeile

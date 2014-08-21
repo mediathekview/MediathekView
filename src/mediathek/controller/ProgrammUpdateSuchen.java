@@ -34,6 +34,7 @@ import mediathek.gui.dialog.DialogHinweisUpdate;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVConfig;
+import msearch.tool.MSConst;
 
 public class ProgrammUpdateSuchen {
 
@@ -164,7 +165,7 @@ public class ProgrammUpdateSuchen {
         conn.setRequestProperty("User-Agent", Daten.getUserAgent());
         conn.setReadTimeout(timeout);
         conn.setConnectTimeout(timeout);
-        inReader = new InputStreamReader(conn.getInputStream(), Konstanten.KODIERUNG_UTF);
+        inReader = new InputStreamReader(conn.getInputStream(), MSConst.KODIERUNG_UTF);
         parser = inFactory.createXMLStreamReader(inReader);
         while (parser.hasNext()) {
             event = parser.next();

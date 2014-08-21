@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import mediathek.controller.Log;
-import mediathek.tool.Konstanten;
+import msearch.tool.MSConst;
 
 /**
  *
@@ -47,7 +47,7 @@ public class GetFile {
     public String getHilfeSuchen(String pfad) {
         String ret = "";
         try {
-            InputStreamReader in = new InputStreamReader(getClass().getResource(pfad).openStream(), Konstanten.KODIERUNG_UTF);
+            InputStreamReader in = new InputStreamReader(getClass().getResource(pfad).openStream(), MSConst.KODIERUNG_UTF);
             BufferedReader br = new BufferedReader(in);
             String strLine;
             while ((strLine = br.readLine()) != null) {
