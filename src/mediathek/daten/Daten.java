@@ -30,6 +30,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
+
+import com.jidesoft.utils.SystemInfo;
 import mediathek.MediathekGui;
 import mediathek.controller.FilmeLaden;
 import mediathek.controller.IoXmlLesen;
@@ -179,7 +181,16 @@ public class Daten {
      * @return Den Pfad als String
      */
     public static String getDateiFilmliste() {
-        return getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME;
+        String strFile;
+
+        if (SystemInfo.isMacOSX()) {
+            //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
+            strFile = System.getProperty("user.home") + File.separator + "Library/Caches/MediathekView" + File.separator + Konstanten.JSON_DATEI_FILME;
+        }
+        else
+            strFile = getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME;
+
+        return strFile;
     }
 
     /**
