@@ -181,6 +181,8 @@ public class StarterClass {
             text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
         text.add("Startzeit: " + new SimpleDateFormat("HH:mm:ss").format(start.startZeit));
+        text.add("Endzeit: " + new SimpleDateFormat("HH:mm:ss").format(new Datum().getTime()));
+        text.add("Dauer: " + start.startZeit.diffInSekunden() + " s");
         long dauer = start.startZeit.diffInMinuten();
         if (dauer == 0) {
             text.add("Dauer: <1 Min.");
@@ -226,8 +228,9 @@ public class StarterClass {
             String strComment = datenDownload.film.arr[DatenFilm.FILM_BESCHREIBUNG_NR];
             if (strComment != null) {
                 //no need to write spotlight data when there is no description...
-                if (strComment.isEmpty())
+                if (strComment.isEmpty()) {
                     return;
+                }
 
                 //replace quotation marks...
                 strComment = strComment.replace("\"", "\\\"");
@@ -787,8 +790,9 @@ public class StarterClass {
             }
             notifyStartEvent(datenDownload);
 
-            if (SystemInfo.isMacOSX())
+            if (SystemInfo.isMacOSX()) {
                 daten.mediathekGui.getOsxApplicationAdapter().requestUserAttention(false);
+            }
         }
 
         private boolean cancelDownload() {
