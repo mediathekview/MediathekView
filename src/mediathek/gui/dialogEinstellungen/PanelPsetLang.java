@@ -48,11 +48,10 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
 import mediathek.tool.CellRendererProgramme;
 import mediathek.tool.CellRendererPset;
-import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.GuiKonstanten;
 import mediathek.tool.HinweisKeineAuswahl;
+import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVColor;
 import mediathek.tool.MVTable;
@@ -371,8 +370,8 @@ public class PanelPsetLang extends PanelVorlage {
         if (pSet != null) {
             jTabbedPane.setTitleAt(0, "Set Name: " + pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
             if (pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR].equals("")) {
-                jSpinnerLaenge.setValue(GuiKonstanten.LAENGE_DATEINAME);
-                pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR] = String.valueOf(GuiKonstanten.LAENGE_DATEINAME);
+                jSpinnerLaenge.setValue(Konstanten.LAENGE_DATEINAME);
+                pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR] = String.valueOf(Konstanten.LAENGE_DATEINAME);
             } else {
                 jSpinnerLaenge.setValue(Integer.parseInt(pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR]));
             }
@@ -1544,7 +1543,7 @@ public class PanelPsetLang extends PanelVorlage {
                     try {
                         jTextFieldProgPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(369047894, Log.FEHLER_ART_PROG, "PanelPsetLang.BeobDateiDialogProg", ex);
+                        Log.fehlerMeldung(369047894,  "PanelPsetLang.BeobDateiDialogProg", ex);
                     }
                 }
             } else {
@@ -1560,7 +1559,7 @@ public class PanelPsetLang extends PanelVorlage {
                         String str = chooser.getSelectedFile().getPath();
                         jTextFieldProgPfad.setText(str);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(825630443, Log.FEHLER_ART_PROG, "PanelPsetLang.BeobDateiDialogProg", ex);
+                        Log.fehlerMeldung(825630443,  "PanelPsetLang.BeobDateiDialogProg", ex);
                     }
                 }
             }
@@ -1582,7 +1581,7 @@ public class PanelPsetLang extends PanelVorlage {
                     try {
                         jTextFieldGruppeZielPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(392847589, Log.FEHLER_ART_PROG, "DialogZielPset.ZielBeobachter", ex);
+                        Log.fehlerMeldung(392847589,  "DialogZielPset.ZielBeobachter", ex);
                     }
                 }
                 System.setProperty("apple.awt.fileDialogForDirectories", "false");
@@ -1599,7 +1598,7 @@ public class PanelPsetLang extends PanelVorlage {
                     try {
                         jTextFieldGruppeZielPfad.setText(chooser.getSelectedFile().getPath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(319860075, Log.FEHLER_ART_PROG, "PanelPset.BeobDateiDialogPfad", ex);
+                        Log.fehlerMeldung(319860075, "PanelPset.BeobDateiDialogPfad", ex);
                     }
                 }
             }

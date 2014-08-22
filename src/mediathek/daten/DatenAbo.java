@@ -99,7 +99,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         try {
             mindestdauerMinuten = Integer.parseInt(this.arr[DatenAbo.ABO_MINDESTDAUER_NR]);
         } catch (Exception ex) {
-            Log.fehlerMeldung(462558700, Log.FEHLER_ART_PROG, "DatenAbo.setMindestDauerMinuten", ex);
+            Log.fehlerMeldung(462558700, "DatenAbo.setMindestDauerMinuten", ex);
             mindestdauerMinuten = 0;
             arr[ABO_MINDESTDAUER_NR] = "0";
         }

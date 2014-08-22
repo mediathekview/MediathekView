@@ -71,7 +71,7 @@ public class RuntimeExec {
             clearIn.start();
             clearOut.start();
         } catch (Exception ex) {
-            Log.fehlerMeldung(450028932, Log.FEHLER_ART_PROG, "RuntimeExec.exec", ex, "Fehler beim Starten");
+            Log.fehlerMeldung(450028932,  "RuntimeExec.exec", ex, "Fehler beim Starten");
         }
         return process;
     }
@@ -137,7 +137,7 @@ public class RuntimeExec {
                     meldenDouble(d);
                 } catch (Exception ex) {
                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
-                    Log.fehlerMeldung(912036780, Log.FEHLER_ART_PROG, "RuntimeExec.GetPercentageFromErrorStream-1", input);
+                    Log.fehlerMeldung(912036780,  "RuntimeExec.GetPercentageFromErrorStream-1", input);
                 }
             } else {
                 // für ffmpeg
@@ -195,7 +195,7 @@ public class RuntimeExec {
                     }
                 } catch (Exception ex) {
                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
-                    Log.fehlerMeldung(912036780, Log.FEHLER_ART_PROG, "RuntimeExec.GetPercentageFromErrorStream-2", input);
+                    Log.fehlerMeldung(912036780,  "RuntimeExec.GetPercentageFromErrorStream-2", input);
                 }
             }
         }

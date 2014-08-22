@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -29,9 +30,8 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-
-import com.jidesoft.utils.SystemInfo;
 import mediathek.MediathekGui;
 import mediathek.controller.FilmeLaden;
 import mediathek.controller.IoXmlLesen;
@@ -47,7 +47,6 @@ import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVColor;
@@ -186,9 +185,9 @@ public class Daten {
         if (SystemInfo.isMacOSX()) {
             //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
             strFile = System.getProperty("user.home") + File.separator + "Library/Caches/MediathekView" + File.separator + Konstanten.JSON_DATEI_FILME;
-        }
-        else
+        } else {
             strFile = getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME;
+        }
 
         return strFile;
     }
@@ -290,7 +289,7 @@ public class Daten {
         } catch (Exception ignored) {
         }
         if (Daten.debug) {
-            mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUS));
+            mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUS));
         }
     }
 
@@ -354,11 +353,26 @@ public class Daten {
                         + "von Hand löschen und dann das Programm wieder starten.\n\n"
                         + "Im Forum finden Sie weitere Hilfe.", "Fehler", JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
-                Log.fehlerMeldung(465690123, Log.FEHLER_ART_PROG, Daten.class.getName(), e);
+                Log.fehlerMeldung(465690123, Daten.class.getName(), e);
             }
         }
     }
 
+//    public void allesSpeichern_() {
+//        new Thread(new Save()).start();
+//    }
+//
+//    private class Save implements Runnable {
+//
+//        @Override
+//        public synchronized void run() {
+//            try {
+//                allesSpeichern();
+//            } catch (Exception ex) {
+//                Log.fehlerMeldung(735320168, Log.FEHLER_ART_PROG, Daten.class.getName(), ex);
+//            }
+//        }
+//    }
     private void konfigCopy() {
         final int MAX_COPY = 5;
         boolean renameOk = true;
@@ -401,7 +415,7 @@ public class Daten {
                     Log.systemMeldung("Einstellungen wurden heute schon gesichert");
                 }
             } catch (Exception e) {
-                Log.fehlerMeldung(795623147, Log.FEHLER_ART_PROG, Daten.class.getName(), e);
+                Log.fehlerMeldung(795623147,  Daten.class.getName(), e);
             }
             if (!renameOk) {
                 Log.systemMeldung("Die Einstellungen konnten nicht komplett gesichert werden!");

@@ -123,7 +123,7 @@ public class DatumZeit {
             sdfOut = new SimpleDateFormat("HH:mm:ss");
             zeit = sdfOut.format(filmDate);
         } catch (Exception ex) {
-            Log.fehlerMeldung(663259004, Log.FEHLER_ART_PROG, "DatumZeit.convertTime", ex);
+            Log.fehlerMeldung(663259004, "DatumZeit.convertTime", ex);
         }
         return zeit;
     }
