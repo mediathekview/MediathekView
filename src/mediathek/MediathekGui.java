@@ -57,7 +57,6 @@ import mediathek.res.GetIcon;
 import mediathek.tool.Duration;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
@@ -263,7 +262,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         new CheckUpdate(this, daten).suchen();
         duration.ping("CheckUpdate");
 
-        if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUTO) {
+        if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO) {
             if (Daten.listeFilme.isTooOld()) {
                 Log.systemMeldung("Neue Filmliste laden");
                 Daten.filmeLaden.importFilmliste("");
