@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -29,9 +30,8 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-
-import com.jidesoft.utils.SystemInfo;
 import mediathek.MediathekGui;
 import mediathek.controller.FilmeLaden;
 import mediathek.controller.IoXmlLesen;
@@ -185,9 +185,9 @@ public class Daten {
         if (SystemInfo.isMacOSX()) {
             //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
             strFile = System.getProperty("user.home") + File.separator + "Library/Caches/MediathekView" + File.separator + Konstanten.JSON_DATEI_FILME;
-        }
-        else
+        } else {
             strFile = getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME;
+        }
 
         return strFile;
     }
@@ -358,6 +358,21 @@ public class Daten {
         }
     }
 
+//    public void allesSpeichern_() {
+//        new Thread(new Save()).start();
+//    }
+//
+//    private class Save implements Runnable {
+//
+//        @Override
+//        public synchronized void run() {
+//            try {
+//                allesSpeichern();
+//            } catch (Exception ex) {
+//                Log.fehlerMeldung(735320168, Log.FEHLER_ART_PROG, Daten.class.getName(), ex);
+//            }
+//        }
+//    }
     private void konfigCopy() {
         final int MAX_COPY = 5;
         boolean renameOk = true;

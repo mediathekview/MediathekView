@@ -41,17 +41,8 @@ public class Log {
     public static final int LOG_PLAYER = ListenerMediathekView.EREIGNIS_LOG_PLAYER;
     public static final int FEHLER_ART_PROG = 0;
     public static final String FEHLER_ART_PROG_TEXT = "   Prog: ";
-    public static final int FEHLER_ART_GETURL = 1;
-    public static final String FEHLER_ART_GETURL_TEXT = " GetUrl: ";
-    public static final int FEHLER_ART_MREADER = 2;
-    public static final String FEHLER_ART_MREADER_TEXT = "MReader: ";
-    public static final int FEHLER_ART_FILME_SUCHEN = 3;
-    public static final String FEHLER_ART_FILME_SUCHEN_TEXT = "  Filme: ";
-    public static final int FEHLER_ART_AUTO = 4;
+    public static final int FEHLER_ART_AUTO = 1;
     public static final String FEHLER_ART_AUTO_TEXT = "   Auto: ";
-    public static final int FEHLER_ART_NOGUI = 5;
-    public static final String FEHLER_ART_NOGUI_TEXT = "  NoGui: ";
-    //public static final int FEHLER_ART_MAX = 6;
 
     private static final int MAX_LAENGE_1 = 50000;
     private static final int MAX_LAENGE_2 = 30000;
@@ -196,20 +187,8 @@ public class Log {
             for (Integer[] integers : fehlerListe) {
                 String z;
                 switch (integers[0]) {
-                    case FEHLER_ART_MREADER:
-                        z = FEHLER_ART_MREADER_TEXT;
-                        break;
-                    case FEHLER_ART_FILME_SUCHEN:
-                        z = FEHLER_ART_FILME_SUCHEN_TEXT;
-                        break;
-                    case FEHLER_ART_GETURL:
-                        z = FEHLER_ART_GETURL_TEXT;
-                        break;
                     case FEHLER_ART_PROG:
                         z = FEHLER_ART_PROG_TEXT;
-                        break;
-                    case FEHLER_ART_NOGUI:
-                        z = FEHLER_ART_NOGUI_TEXT;
                         break;
                     case FEHLER_ART_AUTO:
                         z = FEHLER_ART_AUTO_TEXT;
@@ -259,20 +238,8 @@ public class Log {
             for (Integer[] integers : fehlerListe) {
                 String z;
                 switch (integers[0]) {
-                    case FEHLER_ART_MREADER:
-                        z = FEHLER_ART_MREADER_TEXT;
-                        break;
-                    case FEHLER_ART_FILME_SUCHEN:
-                        z = FEHLER_ART_FILME_SUCHEN_TEXT;
-                        break;
-                    case FEHLER_ART_GETURL:
-                        z = FEHLER_ART_GETURL_TEXT;
-                        break;
                     case FEHLER_ART_PROG:
                         z = FEHLER_ART_PROG_TEXT;
-                        break;
-                    case FEHLER_ART_NOGUI:
-                        z = FEHLER_ART_NOGUI_TEXT;
                         break;
                     case FEHLER_ART_AUTO:
                         z = FEHLER_ART_AUTO_TEXT;
@@ -336,17 +303,7 @@ public class Log {
                 x = "=";
             }
             switch (art) {
-                case FEHLER_ART_MREADER:
-                    z = "  ==>";
-                    break;
-                case FEHLER_ART_FILME_SUCHEN:
-                    z = "   >>";
-                    break;
-                case FEHLER_ART_GETURL:
-                    z = "  ++>";
-                    break;
                 case FEHLER_ART_PROG:
-                case FEHLER_ART_NOGUI:
                 case FEHLER_ART_AUTO:
                 default:
                     z = "*";
