@@ -60,11 +60,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return ret;
     }
 
-//    public synchronized void addDatenDownloads(LinkedList<DatenDownload> liste) {
-//        for (DatenDownload d : liste) {
-//            this.add(d);
-//        }
-//    }
     public synchronized void zurueckgestellteWiederAktivieren() {
         ListIterator<DatenDownload> it = this.listIterator(0);
         while (it.hasNext()) {
@@ -267,46 +262,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return null;
     }
 
-//    public synchronized void getModel_(TModelDownload tModel, boolean abos, boolean downloads) {
-//        DatenDownload download;
-//        tModel.setRowCount(this.size());
-//        ListIterator<DatenDownload> iterator = this.listIterator();
-//        int r = 0;
-//        while (iterator.hasNext()) {
-//            download = iterator.next();
-//            if (download.istZurueckgestellt()) {
-//                continue;
-//            }
-//            boolean istAbo = download.istAbo();
-//            if (abos && istAbo || downloads && !istAbo) {
-//                for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
-//                    if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
-//                        tModel.setValueAt("", r, i);
-//                    } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
-//                        tModel.setValueAt(download.datumFilm, r, i);
-//                    } else if (i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
-//                        tModel.setValueAt(download.getTextRestzeit(), r, i);
-//                    } else if (i == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
-//                        tModel.setValueAt(download.getTextBandbreite(), r, i);
-//                    } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
-//                        tModel.setValueAt("", r, i);
-//                    } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
-//                        tModel.setValueAt(download.mVFilmSize, r, i);
-//                    } else if (i == DatenDownload.DOWNLOAD_REF_NR) {
-//                        tModel.setValueAt(download, r, i);
-//                    } else if (i != DatenDownload.DOWNLOAD_FILM_NR_NR && i != DatenDownload.DOWNLOAD_URL_NR && !DatenDownload.anzeigen(i)) {
-//                        // Filmnr und URL immer füllen, egal ob angezeigt
-//                        tModel.setValueAt("", r, i);
-//                    } else {
-//                        tModel.setValueAt(download.arr[i], r, i);
-//                    }
-//                }
-//                ++r;
-//            }
-//        }//while
-//        tModel.setRowCount(r);
-//        tModel.fireTableStructureChanged();
-//    }
     public synchronized void getModel(TModelDownload tModel, boolean abos, boolean downloads) {
         Object[] object;
         tModel.setRowCount(0);
@@ -435,13 +390,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 // ist schon mal geladen worden
                 continue;
             }
-//            if (checkUrlExists(film.arr[DatenFilm.FILM_URL_NR])) {
-//                // haben wir schon in der Downloadliste
-//                continue;
-//            }
-//            //diesen Film in die Downloadliste eintragen
-//            abo.arr[DatenAbo.ABO_DOWN_DATUM_NR] = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
-//            //wenn nicht doppelt, dann in die Liste schreiben
             DatenPset pSet = ddaten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET_NR]);
             if (pSet != null) {
                 // mit der tatsächlichen URL prüfen, ob die URL schon in der Downloadliste ist
@@ -478,17 +426,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-//    public synchronized void listeNummerieren() {
-//        int i = 0;
-//        ListIterator<DatenDownload> it = listIterator();
-//        while (it.hasNext()) {
-//            String str = String.valueOf(i++);
-//            while (str.length() < 3) {
-//                str = "0" + str;
-//            }
-//            it.next().arr[DatenDownload.DOWNLOAD_NR_NR] = str;
-//        }
-//    }
     public String getInfo(boolean mitAbo) {
         String textLinks;
         // Text links: Zeilen Tabelle
@@ -544,7 +481,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     textLinks += ", " + starts[6] + " fehlerhaft";
                 }
             }
-            //textLinks += ")";
         }
         return textLinks;
     }
@@ -739,11 +675,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
 
-        //Das if-statement ist offenbar überflüssig, da es wegen der Konstante nie angesprungen wird
-        //if (Konstanten.MAX_SENDER_FILME_LADEN == 1) {
-        //dann wars dass
-        //    return null;
-        //}
         //zweiter Versuch, Start mit einem passenden Sender
         it = iterator();
         while (it.hasNext()) {
