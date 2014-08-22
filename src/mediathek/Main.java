@@ -37,20 +37,6 @@ public class Main {
 
     public static final String STARTP_MAXIMIERT = "-M";
 
-    /*
-     * Aufruf:
-     * java -jar Mediathek [Pfad zur Konfigdatei, sonst homeverzeichnis] [Schalter]
-     *
-     * Programmschalter:
-     *
-     * -M Fenster maximiert starten
-     * -A Automodus
-     * -noGui ohne GUI starten und die Filmliste laden
-     *
-     * */
-    public Main() {
-    }
-
     private enum StartupMode {
 
         NORMAL, AUTO
@@ -70,6 +56,18 @@ public class Main {
        {
        }
     }
+
+     /*
+     * Aufruf:
+     * java -jar Mediathek [Pfad zur Konfigdatei, sonst homeverzeichnis] [Schalter]
+     *
+     * Programmschalter:
+     *
+     * -M Fenster maximiert starten
+     * -A Automodus
+     * -noGui ohne GUI starten und die Filmliste laden
+     *
+     * */
 
     /**
      * @param args the command line arguments
