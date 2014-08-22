@@ -108,7 +108,7 @@ public class MVInfoFile {
             br.flush();
             br.close();
         } catch (IOException ex) {
-            Log.fehlerMeldung(632656214, Log.FEHLER_ART_PROG, "MVInfoFile.writeInfoFile", dialog.ziel);
+            Log.fehlerMeldung(632656214,  "MVInfoFile.writeInfoFile", dialog.ziel);
         }
     }
 
@@ -163,7 +163,7 @@ public class MVInfoFile {
             br.flush();
             br.close();
         } catch (IOException ex) {
-            Log.fehlerMeldung(975410369, Log.FEHLER_ART_PROG, "StartetClass.writeInfoFile", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.fehlerMeldung(975410369,  "StartetClass.writeInfoFile", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
     }
 

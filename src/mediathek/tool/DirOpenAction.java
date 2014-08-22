@@ -78,7 +78,7 @@ public class DirOpenAction {
                     gut = true;
                 }
             } catch (Exception eex) {
-                Log.fehlerMeldung(306590789, Log.FEHLER_ART_PROG, GuiDownloads.class.getName(), ex, "Ordner öffnen: " + ordner);
+                Log.fehlerMeldung(306590789,GuiDownloads.class.getName(), ex, "Ordner öffnen: " + ordner);
             }
         } finally {
             if (!gut) {

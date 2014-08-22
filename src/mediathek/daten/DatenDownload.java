@@ -31,7 +31,7 @@ import mediathek.tool.Datum;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.GuiKonstanten;
+import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVFilmSize;
 import msearch.daten.DatenFilm;
@@ -283,7 +283,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         try {
             return Integer.parseInt(arr[DOWNLOAD_ART_NR]);
         } catch (Exception ex) {
-            Log.fehlerMeldung(946325800, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
+            Log.fehlerMeldung(946325800, this.getClass().getName(), ex);
             return Start.ART_PROGRAMM;
         }
     }
@@ -292,7 +292,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         try {
             return Integer.parseInt(arr[DOWNLOAD_QUELLE_NR]);
         } catch (Exception ex) {
-            Log.fehlerMeldung(649632580, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
+            Log.fehlerMeldung(649632580,  this.getClass().getName(), ex);
             return Start.QUELLE_BUTTON;
         }
     }
@@ -382,7 +382,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             dateinamePfadBauen(pSet, film, abo, nname, ppfad);
             programmaufrufBauen(programm);
         } catch (Exception ex) {
-            Log.fehlerMeldung(825600145, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
+            Log.fehlerMeldung(825600145,  this.getClass().getName(), ex);
         }
     }
 
@@ -425,7 +425,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             // Kürzen
             if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR])) {
                 // nur dann ist was zu tun
-                int laenge = GuiKonstanten.LAENGE_DATEINAME;
+                int laenge = Konstanten.LAENGE_DATEINAME;
                 if (!pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR].equals("")) {
                     laenge = Integer.parseInt(pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR]);
                 }
@@ -552,7 +552,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(775421006, Log.FEHLER_ART_PROG, "DatenFilm.datumDrehen", ex, datum);
+                Log.fehlerMeldung(775421006,  "DatenFilm.datumDrehen", ex, datum);
             }
         }
         return ret;
@@ -569,7 +569,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     ret = tmp;
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(775421006, Log.FEHLER_ART_PROG, "DatenFilm.datumDrehen", ex, datum);
+                Log.fehlerMeldung(775421006,  "DatenFilm.datumDrehen", ex, datum);
             }
         }
         return ret;
@@ -611,7 +611,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     tmp.setTime(sdf_datum.parse(arr[DatenDownload.DOWNLOAD_DATUM_NR]).getTime());
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(649897321, Log.FEHLER_ART_PROG, "DatumZeit.getDatumForObject", ex,
+                Log.fehlerMeldung(649897321,  "DatumZeit.getDatumForObject", ex,
                         new String[]{"Datum: " + arr[DatenDownload.DOWNLOAD_DATUM_NR], "Zeit: " + arr[DatenDownload.DOWNLOAD_ZEIT_NR]});
             }
         }

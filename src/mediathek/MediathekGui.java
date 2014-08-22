@@ -57,7 +57,6 @@ import mediathek.res.GetIcon;
 import mediathek.tool.Duration;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
@@ -263,7 +262,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         new CheckUpdate(this, daten).suchen();
         duration.ping("CheckUpdate");
 
-        if (GuiFunktionen.getImportArtFilme() == GuiKonstanten.UPDATE_FILME_AUTO) {
+        if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO) {
             if (Daten.listeFilme.isTooOld()) {
                 Log.systemMeldung("Neue Filmliste laden");
                 Daten.filmeLaden.importFilmliste("");
@@ -1414,7 +1413,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 break;
 
             default:
-                Log.fehlerMeldung(465321789, Log.FEHLER_ART_PROG, MediathekGui.class.getSimpleName(), "Shutdown unsupported operating system ...");
+                Log.fehlerMeldung(465321789,  MediathekGui.class.getSimpleName(), "Shutdown unsupported operating system ...");
                 break;
         }
 
@@ -1424,7 +1423,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 Log.systemMeldung("Shutdown: " + strShutdownCommand);
                 Runtime.getRuntime().exec(strShutdownCommand);
             } catch (IOException ex) {
-                Log.fehlerMeldung(915263047, Log.FEHLER_ART_PROG, "MediathekGui.shutdownComputer", ex);
+                Log.fehlerMeldung(915263047,  "MediathekGui.shutdownComputer", ex);
             }
         }
     }

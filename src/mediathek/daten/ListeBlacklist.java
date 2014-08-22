@@ -223,7 +223,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(462558700, Log.FEHLER_ART_PROG, "ListeBlacklist.checkDate: ", ex);
+            Log.fehlerMeldung(462558700,  "ListeBlacklist.checkDate: ", ex);
         }
         return true;
     }
@@ -238,7 +238,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(696987123, Log.FEHLER_ART_PROG, "ListeBlacklist.checkZukunft: ", ex);
+            Log.fehlerMeldung(696987123,  "ListeBlacklist.checkZukunft: ", ex);
         }
         return true;
     }
@@ -250,7 +250,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 return false;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(912304894, Log.FEHLER_ART_PROG, "ListeBlacklist.checkFilmlänge: ", ex);
+            Log.fehlerMeldung(912304894, "ListeBlacklist.checkFilmlänge: ", ex);
         }
         return true;
     }

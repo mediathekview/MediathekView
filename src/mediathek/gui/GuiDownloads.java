@@ -262,6 +262,7 @@ public class GuiDownloads extends PanelVorlage {
             @Override
             public void ping() {
                 reloadTable();
+                daten.allesSpeichern(); // damit nichts verloren geht
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_START_EVENT}, GuiDownloads.class.getSimpleName()) {
@@ -605,7 +606,7 @@ public class GuiDownloads extends PanelVorlage {
         javax.swing.JTable jTable1 = new javax.swing.JTable();
         javax.swing.JPanel jPanelFilter = new javax.swing.JPanel();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        cbDisplayCategories = new javax.swing.JComboBox();
+        cbDisplayCategories = new javax.swing.JComboBox<String>();
         jPanelBeschreibung = new javax.swing.JPanel();
 
         setLayout(new java.awt.BorderLayout());
@@ -632,7 +633,7 @@ public class GuiDownloads extends PanelVorlage {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox cbDisplayCategories;
+    private javax.swing.JComboBox<String> cbDisplayCategories;
     private javax.swing.JPanel jPanelBeschreibung;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
