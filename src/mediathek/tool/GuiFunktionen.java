@@ -423,8 +423,8 @@ public class GuiFunktionen extends Funktionen {
         try {
             ret = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_IMPORT_ART_FILME));
         } catch (Exception ex) {
-            Daten.mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUTO));
-            ret = GuiKonstanten.UPDATE_FILME_AUTO;
+            Daten.mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUTO));
+            ret = Konstanten.UPDATE_FILME_AUTO;
         }
         return ret;
     }

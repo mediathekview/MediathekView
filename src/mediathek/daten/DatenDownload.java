@@ -31,7 +31,7 @@ import mediathek.tool.Datum;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.GuiKonstanten;
+import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVFilmSize;
 import msearch.daten.DatenFilm;
@@ -425,7 +425,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             // Kürzen
             if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR])) {
                 // nur dann ist was zu tun
-                int laenge = GuiKonstanten.LAENGE_DATEINAME;
+                int laenge = Konstanten.LAENGE_DATEINAME;
                 if (!pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR].equals("")) {
                     laenge = Integer.parseInt(pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR]);
                 }

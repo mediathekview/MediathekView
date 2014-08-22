@@ -48,11 +48,10 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
 import mediathek.tool.CellRendererProgramme;
 import mediathek.tool.CellRendererPset;
-import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.GuiKonstanten;
 import mediathek.tool.HinweisKeineAuswahl;
+import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVColor;
 import mediathek.tool.MVTable;
@@ -371,8 +370,8 @@ public class PanelPsetLang extends PanelVorlage {
         if (pSet != null) {
             jTabbedPane.setTitleAt(0, "Set Name: " + pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
             if (pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR].equals("")) {
-                jSpinnerLaenge.setValue(GuiKonstanten.LAENGE_DATEINAME);
-                pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR] = String.valueOf(GuiKonstanten.LAENGE_DATEINAME);
+                jSpinnerLaenge.setValue(Konstanten.LAENGE_DATEINAME);
+                pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR] = String.valueOf(Konstanten.LAENGE_DATEINAME);
             } else {
                 jSpinnerLaenge.setValue(Integer.parseInt(pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR]));
             }

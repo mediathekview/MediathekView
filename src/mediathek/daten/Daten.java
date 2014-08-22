@@ -47,7 +47,6 @@ import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.tool.DatumZeit;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.GuiKonstanten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVColor;
@@ -290,7 +289,7 @@ public class Daten {
         } catch (Exception ignored) {
         }
         if (Daten.debug) {
-            mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(GuiKonstanten.UPDATE_FILME_AUS));
+            mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUS));
         }
     }
 
