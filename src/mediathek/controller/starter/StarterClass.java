@@ -90,16 +90,16 @@ public class StarterClass {
         if (start != null) {
             if (start.percent > -1 && start.percent < 995) {
                 // Prozent werden berechnet und es wurde vor 99,5% abgebrochen
-                Log.fehlerMeldung(696510258, Log.FEHLER_ART_PROG, "StartetClass.pruefen-3", "Download fehlgeschlagen: 99,5% wurden nicht erreicht"
+                Log.fehlerMeldung(696510258,  "StartetClass.pruefen-3", "Download fehlgeschlagen: 99,5% wurden nicht erreicht"
                         + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                 return false;
             }
         }
         File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         if (!file.exists()) {
-            Log.fehlerMeldung(550236231, Log.FEHLER_ART_PROG, "StartetClass.pruefen-1", "Download fehlgeschlagen: Datei existiert nicht" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.fehlerMeldung(550236231,"StartetClass.pruefen-1", "Download fehlgeschlagen: Datei existiert nicht" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_FILM) {
-            Log.fehlerMeldung(795632500, Log.FEHLER_ART_PROG, "StartetClass.pruefen-2", "Download fehlgeschlagen: Datei zu klein" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.fehlerMeldung(795632500,"StartetClass.pruefen-2", "Download fehlgeschlagen: Datei zu klein" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         } else {
             if (datenDownload.istAbo()) {
                 daten.erledigteAbos.zeileSchreiben(datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],
@@ -134,7 +134,7 @@ public class StarterClass {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(795632500, Log.FEHLER_ART_PROG, "StartetClass.deleteIfEmpty", "Fehler beim löschen" + file.getAbsolutePath());
+            Log.fehlerMeldung(795632500,  "StartetClass.deleteIfEmpty", "Fehler beim löschen" + file.getAbsolutePath());
         }
     }
 
@@ -244,11 +244,11 @@ public class StarterClass {
                     ScriptEngine engine = mgr.getEngineByName("AppleScript");
                     engine.eval(script);
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(915263987, Log.FEHLER_ART_PROG, "StarterClass.writeSpotlightComment", "Fehler beim Spotlight schreiben" + filmPath.toString());
+                    Log.fehlerMeldung(915263987,  "StarterClass.writeSpotlightComment", "Fehler beim Spotlight schreiben" + filmPath.toString());
                     //AppleScript may not be available if user does not use the official MacApp.
                     //We need to log that as well if there are error reports.
                     if (!System.getProperty("OSX_OFFICIAL_APP").equalsIgnoreCase("true")) {
-                        Log.fehlerMeldung(915263987, Log.FEHLER_ART_PROG, "StarterClass.writeSpotlightComment", "MV wird NICHT über die offizielle Mac App genutzt.");
+                        Log.fehlerMeldung(915263987, "StarterClass.writeSpotlightComment", "MV wird NICHT über die offizielle Mac App genutzt.");
                     }
                 }
             }
@@ -301,7 +301,7 @@ public class StarterClass {
                     Daten.listeDownloadsButton.buttonStartsPutzen(); // Button Starts aus der Liste löschen
                     sleep(3 * 1000);
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(613822015, Log.FEHLER_ART_PROG, "StarterClass.Starten.run", ex);
+                    Log.fehlerMeldung(613822015,  "StarterClass.Starten.run", ex);
                 }
             } //while(true)
         }
@@ -338,7 +338,7 @@ public class StarterClass {
                     downloadThread.start();
                     break;
                 default:
-                    Log.fehlerMeldung(789356001, Log.FEHLER_ART_PROG, "StartetClass.startStarten", "StarterClass.Starten - Switch-default");
+                    Log.fehlerMeldung(789356001,  "StartetClass.startStarten", "StarterClass.Starten - Switch-default");
                     break;
             }
         }
@@ -372,7 +372,7 @@ public class StarterClass {
                 Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
             } catch (IOException ignored) {
             } catch (Exception ex) {
-                Log.fehlerMeldung(469365281, Log.FEHLER_ART_PROG, "StarterClass.StartenProgramm-1", ex);
+                Log.fehlerMeldung(469365281, "StarterClass.StartenProgramm-1", ex);
             }
         }
 
@@ -486,7 +486,7 @@ public class StarterClass {
                 }
             } catch (Exception ex) {
                 exMessage = ex.getLocalizedMessage();
-                Log.fehlerMeldung(395623710, Log.FEHLER_ART_PROG, "StarterClass.StartenProgramm-2", ex);
+                Log.fehlerMeldung(395623710, "StarterClass.StartenProgramm-2", ex);
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -578,7 +578,7 @@ public class StarterClass {
                 }
             } catch (Exception ex) {
                 ret = -1;
-                Log.fehlerMeldung(643298301, Log.FEHLER_ART_PROG, "StarterClass.StartenDownload.getContentLength", ex);
+                Log.fehlerMeldung(643298301,  "StarterClass.StartenDownload.getContentLength", ex);
             } finally {
                 if (conn != null) {
                     conn.disconnect();
@@ -718,7 +718,7 @@ public class StarterClass {
                             // ==================================
                             // dann wars das
                             responseCode = "Responsecode: " + conn.getResponseCode() + "\n" + conn.getResponseMessage();
-                            Log.fehlerMeldung(915236798, Log.FEHLER_ART_PROG, "StartetClass.StartenDownload", "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
+                            Log.fehlerMeldung(915236798, "StartetClass.StartenDownload", "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
                             SwingUtilities.invokeLater(new Runnable() {
                                 @Override
                                 public void run() {
@@ -744,7 +744,7 @@ public class StarterClass {
                 }
             } catch (Exception ex) {
                 exMessage = ex.getLocalizedMessage();
-                Log.fehlerMeldung(316598941, Log.FEHLER_ART_PROG, "StartetClass.StartenDownload", ex, "Fehler");
+                Log.fehlerMeldung(316598941,  "StartetClass.StartenDownload", ex, "Fehler");
                 start.status = Start.STATUS_ERR;
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override

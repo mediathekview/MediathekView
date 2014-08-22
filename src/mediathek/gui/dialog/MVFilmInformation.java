@@ -292,7 +292,7 @@ public class MVFilmInformation implements ChangeListener {
                 this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
                 this.setSize(new Dimension(image.getWidth(), image.getHeight()));
             } catch (Exception ex) {
-                Log.fehlerMeldung(919302497, Log.FEHLER_ART_PROG, MVFilmInformation.class.getName(), ex);
+                Log.fehlerMeldung(919302497, MVFilmInformation.class.getName(), ex);
             }
             repaint();
         }

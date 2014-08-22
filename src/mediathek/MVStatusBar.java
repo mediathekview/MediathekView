@@ -80,7 +80,7 @@ public final class MVStatusBar extends JPanel {
                         setInfoRechts();
                     }
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(936251087, Log.FEHLER_ART_PROG, MVStatusBar.class.getName(), ex);
+                    Log.fehlerMeldung(936251087, MVStatusBar.class.getName(), ex);
                 }
             }
         });

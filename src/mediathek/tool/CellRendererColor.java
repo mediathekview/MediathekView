@@ -54,7 +54,7 @@ public class CellRendererColor extends DefaultTableCellRenderer {
                 setText("");
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(630365892, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
+            Log.fehlerMeldung(630365892, this.getClass().getName(), ex);
         }
         return this;
     }

@@ -39,17 +39,15 @@ public class Log {
     public static final int LOG_FEHLER = ListenerMediathekView.EREIGNIS_LOG_FEHLER;
     public static final int LOG_SYSTEM = ListenerMediathekView.EREIGNIS_LOG_SYSTEM;
     public static final int LOG_PLAYER = ListenerMediathekView.EREIGNIS_LOG_PLAYER;
-    public static final int FEHLER_ART_PROG = 0;
+//    public static final int FEHLER_ART_PROG = 0;
     public static final String FEHLER_ART_PROG_TEXT = "   Prog: ";
-    public static final int FEHLER_ART_AUTO = 1;
-    public static final String FEHLER_ART_AUTO_TEXT = "   Auto: ";
 
     private static final int MAX_LAENGE_1 = 50000;
     private static final int MAX_LAENGE_2 = 30000;
     private static int zeilenNrSystem = 0;
     private static int zeilenNrProgramm = 0;
     private static int zeilenNrFehler = 0;
-    private static final LinkedList<Integer[]> fehlerListe = new LinkedList<>(); // [Art, Fehlernummer, Anzahl, Exception(0,1 für ja, nein)]
+    private static final LinkedList<Integer[]> fehlerListe = new LinkedList<>(); // [Fehlernummer, Anzahl, Exception(0,1 für ja, nein)]
     private static final boolean progress = false;
     private static final String progressText = "";
     private static final Date startZeit = new Date(System.currentTimeMillis());
@@ -99,25 +97,25 @@ public class Log {
     }
 
     // Fehlermeldung mit Exceptions
-    public static synchronized void fehlerMeldung(int fehlerNummer, int art, String klasse, Exception ex) {
-        fehlermeldung_(fehlerNummer, art, klasse, ex, new String[]{});
+    public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex) {
+        fehlermeldung_(fehlerNummer, klasse, ex, new String[]{});
     }
 
-    public static synchronized void fehlerMeldung(int fehlerNummer, int art, String klasse, Exception ex, String text) {
-        fehlermeldung_(fehlerNummer, art, klasse, ex, new String[]{text});
+    public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex, String text) {
+        fehlermeldung_(fehlerNummer, klasse, ex, new String[]{text});
     }
 
-    public static synchronized void fehlerMeldung(int fehlerNummer, int art, String klasse, Exception ex, String text[]) {
-        fehlermeldung_(fehlerNummer, art, klasse, ex, text);
+    public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex, String text[]) {
+        fehlermeldung_(fehlerNummer, klasse, ex, text);
     }
 
     // Fehlermeldungen
-    public static synchronized void fehlerMeldung(int fehlerNummer, int art, String klasse, String text) {
-        fehlermeldung_(fehlerNummer, art, klasse, null, new String[]{text});
+    public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, String text) {
+        fehlermeldung_(fehlerNummer, klasse, null, new String[]{text});
     }
 
-    public static synchronized void fehlerMeldung(int fehlerNummer, int art, String klasse, String[] text) {
-        fehlermeldung_(fehlerNummer, art, klasse, null, text);
+    public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, String[] text) {
+        fehlermeldung_(fehlerNummer, klasse, null, text);
     }
 
     public static synchronized void systemMeldung(String[] text) {
@@ -174,8 +172,8 @@ public class Log {
             int i_2;
             for (int i = 1; i < fehlerListe.size(); ++i) {
                 for (int k = i; k > 0; --k) {
-                    i_1 = fehlerListe.get(k - 1)[1];
-                    i_2 = fehlerListe.get(k)[1];
+                    i_1 = fehlerListe.get(k - 1)[0];
+                    i_2 = fehlerListe.get(k)[0];
                     // if (str1.compareToIgnoreCase(str2) > 0) {
                     if (i_1 < i_2) {
                         fehlerListe.add(k - 1, fehlerListe.remove(k));
@@ -185,28 +183,17 @@ public class Log {
                 }
             }
             for (Integer[] integers : fehlerListe) {
-                String z;
-                switch (integers[0]) {
-                    case FEHLER_ART_PROG:
-                        z = FEHLER_ART_PROG_TEXT;
-                        break;
-                    case FEHLER_ART_AUTO:
-                        z = FEHLER_ART_AUTO_TEXT;
-                        break;
-                    default:
-                        z = "";
-                }
-                boolean ex = integers[3] == 1;
+                boolean ex = integers[2] == 1;
                 String strEx;
                 if (ex) {
                     strEx = "Ex! ";
                 } else {
                     strEx = "    ";
                 }
-                if (integers[1] < 0) {
-                    systemMeldung(strEx + z + " Fehlernummer: " + integers[1] + " Anzahl: " + integers[2]);
+                if (integers[0] < 0) {
+                    systemMeldung(strEx + " Fehlernummer: " + integers[0] + " Anzahl: " + integers[1]);
                 } else {
-                    systemMeldung(strEx + z + " Fehlernummer:  " + integers[1] + " Anzahl: " + integers[2]);
+                    systemMeldung(strEx + " Fehlernummer:  " + integers[0] + " Anzahl: " + integers[1]);
                 }
             }
         }
@@ -225,8 +212,8 @@ public class Log {
             int i_2;
             for (int i = 1; i < fehlerListe.size(); ++i) {
                 for (int k = i; k > 0; --k) {
-                    i_1 = fehlerListe.get(k - 1)[1];
-                    i_2 = fehlerListe.get(k)[1];
+                    i_1 = fehlerListe.get(k - 1)[0];
+                    i_2 = fehlerListe.get(k)[0];
                     // if (str1.compareToIgnoreCase(str2) > 0) {
                     if (i_1 < i_2) {
                         fehlerListe.add(k - 1, fehlerListe.remove(k));
@@ -236,28 +223,17 @@ public class Log {
                 }
             }
             for (Integer[] integers : fehlerListe) {
-                String z;
-                switch (integers[0]) {
-                    case FEHLER_ART_PROG:
-                        z = FEHLER_ART_PROG_TEXT;
-                        break;
-                    case FEHLER_ART_AUTO:
-                        z = FEHLER_ART_AUTO_TEXT;
-                        break;
-                    default:
-                        z = "";
-                }
-                boolean ex = integers[3] == 1;
+                boolean ex = integers[2] == 1;
                 String strEx;
                 if (ex) {
                     strEx = "Ex! ";
                 } else {
                     strEx = "    ";
                 }
-                if (integers[1] < 0) {
-                    ret += strEx + z + " Fehlernummer: " + integers[1] + " Anzahl: " + integers[2] + "\n";
+                if (integers[0] < 0) {
+                    ret += strEx + " Fehlernummer: " + integers[0] + " Anzahl: " + integers[1] + "\n";
                 } else {
-                    ret += strEx + z + " Fehlernummer:  " + integers[1] + " Anzahl: " + integers[2] + "\n";
+                    ret += strEx + " Fehlernummer:  " + integers[0] + " Anzahl: " + integers[1] + "\n";
                 }
             }
         }
@@ -266,24 +242,23 @@ public class Log {
         return ret;
     }
 
-    private static void addFehlerNummer(int nr, int art, boolean exception) {
+    private static void addFehlerNummer(int nr, boolean exception) {
         Iterator<Integer[]> it = fehlerListe.iterator();
         int ex = exception ? 1 : 2;
         while (it.hasNext()) {
             Integer[] i = it.next();
-            if (i[1] == nr) {
-                i[0] = art;
-                i[2]++;
-                i[3] = ex;
+            if (i[0] == nr) {
+                i[1]++;
+                i[2] = ex;
                 return;
             }
         }
         // dann gibts die Nummer noch nicht
-        fehlerListe.add(new Integer[]{art, nr, 1, ex});
+        fehlerListe.add(new Integer[]{nr, 1, ex});
     }
 
-    private static void fehlermeldung_(int fehlerNummer, int art, String klasse, Exception ex, String[] texte) {
-        addFehlerNummer(fehlerNummer, art, ex != null);
+    private static void fehlermeldung_(int fehlerNummer, String klasse, Exception ex, String[] texte) {
+        addFehlerNummer(fehlerNummer, ex != null);
         if (ex != null || Daten.debug) {
             try {
                 String s = getStackTrace(ex);
@@ -302,12 +277,7 @@ public class Log {
             } else {
                 x = "=";
             }
-            switch (art) {
-                case FEHLER_ART_PROG:
-                case FEHLER_ART_AUTO:
-                default:
-                    z = "*";
-            }
+            z = "*";
             System.out.println(x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x);
             System.out.println(z + " Fehlernr: " + fehlerNummer);
             if (ex != null) {

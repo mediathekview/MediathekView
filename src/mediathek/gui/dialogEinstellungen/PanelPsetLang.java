@@ -1543,7 +1543,7 @@ public class PanelPsetLang extends PanelVorlage {
                     try {
                         jTextFieldProgPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(369047894, Log.FEHLER_ART_PROG, "PanelPsetLang.BeobDateiDialogProg", ex);
+                        Log.fehlerMeldung(369047894,  "PanelPsetLang.BeobDateiDialogProg", ex);
                     }
                 }
             } else {
@@ -1559,7 +1559,7 @@ public class PanelPsetLang extends PanelVorlage {
                         String str = chooser.getSelectedFile().getPath();
                         jTextFieldProgPfad.setText(str);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(825630443, Log.FEHLER_ART_PROG, "PanelPsetLang.BeobDateiDialogProg", ex);
+                        Log.fehlerMeldung(825630443,  "PanelPsetLang.BeobDateiDialogProg", ex);
                     }
                 }
             }
@@ -1581,7 +1581,7 @@ public class PanelPsetLang extends PanelVorlage {
                     try {
                         jTextFieldGruppeZielPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(392847589, Log.FEHLER_ART_PROG, "DialogZielPset.ZielBeobachter", ex);
+                        Log.fehlerMeldung(392847589,  "DialogZielPset.ZielBeobachter", ex);
                     }
                 }
                 System.setProperty("apple.awt.fileDialogForDirectories", "false");
@@ -1598,7 +1598,7 @@ public class PanelPsetLang extends PanelVorlage {
                     try {
                         jTextFieldGruppeZielPfad.setText(chooser.getSelectedFile().getPath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(319860075, Log.FEHLER_ART_PROG, "PanelPset.BeobDateiDialogPfad", ex);
+                        Log.fehlerMeldung(319860075, "PanelPset.BeobDateiDialogPfad", ex);
                     }
                 }
             }

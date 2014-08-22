@@ -246,7 +246,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             setColor(this, datenDownload.start, isSelected);
             handleGeoBlocking(datenDownload, isSelected);
         } catch (Exception ex) {
-            Log.fehlerMeldung(758200166, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
+            Log.fehlerMeldung(758200166,  this.getClass().getName(), ex);
         }
         return this;
     }

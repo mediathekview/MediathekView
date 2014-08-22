@@ -490,7 +490,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldUrl.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(102036579, Log.FEHLER_ART_PROG, "PanelImportFilme.BeobPfad", ex);
+                        Log.fehlerMeldung(102036579, "PanelImportFilme.BeobPfad", ex);
                     }
                 }
             } else {
@@ -506,7 +506,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                     try {
                         jTextFieldUrl.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(733025319, Log.FEHLER_ART_PROG, "PanelImportFilme.BeobPfad", ex);
+                        Log.fehlerMeldung(733025319, "PanelImportFilme.BeobPfad", ex);
                     }
                 }
             }

@@ -56,7 +56,7 @@ public class GetFile {
             //Close the input stream
             in.close();
         } catch (IOException ex) {
-            Log.fehlerMeldung(885692213, Log.FEHLER_ART_PROG, this.getClass().getSimpleName() + ".getHilfeSuchen", ex);
+            Log.fehlerMeldung(885692213,  this.getClass().getSimpleName() + ".getHilfeSuchen", ex);
         }
         return ret;
     }
@@ -65,7 +65,7 @@ public class GetFile {
         try {
             return getClass().getResource(PFAD_PSET_LINUX).openStream();
         } catch (IOException ex) {
-            Log.fehlerMeldung(469691002, Log.FEHLER_ART_PROG, this.getClass().getSimpleName() + ".getLinux", ex);
+            Log.fehlerMeldung(469691002, this.getClass().getSimpleName() + ".getLinux", ex);
         }
         return null;
     }
@@ -74,7 +74,7 @@ public class GetFile {
         try {
             return getClass().getResource(PFAD_PSET_WINDOWS).openStream();
         } catch (IOException ex) {
-            Log.fehlerMeldung(842306087, Log.FEHLER_ART_PROG, this.getClass().getSimpleName() + ".getWindows", ex);
+            Log.fehlerMeldung(842306087, this.getClass().getSimpleName() + ".getWindows", ex);
         }
         return null;
     }
@@ -83,7 +83,7 @@ public class GetFile {
         try {
             return getClass().getResource(PFAD_PSET_MAC).openStream();
         } catch (IOException ex) {
-            Log.fehlerMeldung(496532180, Log.FEHLER_ART_PROG, this.getClass().getSimpleName() + ".getMac", ex);
+            Log.fehlerMeldung(496532180, this.getClass().getSimpleName() + ".getMac", ex);
         }
         return null;
     }

@@ -100,7 +100,7 @@ public class ProgrammUpdateSuchen {
                 }
             });
         } catch (Exception ex) {
-            Log.fehlerMeldung(159002583, Log.FEHLER_ART_PROG, "ProgrammUpdateSuchen.checkVersion", ex);
+            Log.fehlerMeldung(159002583,  "ProgrammUpdateSuchen.checkVersion", ex);
         }
         return neueVersion;
     }
@@ -128,7 +128,7 @@ public class ProgrammUpdateSuchen {
                     Daten.mVConfig.add(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(listInfos.size()));
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(693298731, Log.FEHLER_ART_PROG, "ProgrammUpdateSuchen.checkVersion", ex);
+                Log.fehlerMeldung(693298731, "ProgrammUpdateSuchen.checkVersion", ex);
             }
         } else if (alleAnzeigen) {
             // dann wenigstens einen Hinweis, dass es keine gibt
@@ -146,7 +146,7 @@ public class ProgrammUpdateSuchen {
                 return true;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(683021193, Log.FEHLER_ART_PROG, "ProgrammUpdateSuchen.checkObNeueVersion", ex);
+            Log.fehlerMeldung(683021193, "ProgrammUpdateSuchen.checkObNeueVersion", ex);
         }
         return false;
     }
