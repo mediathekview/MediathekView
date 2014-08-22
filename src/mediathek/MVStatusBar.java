@@ -24,6 +24,7 @@ import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
  * Time: 19:54
  */
 public final class MVStatusBar extends JPanel {
+
     private boolean stopTimer = false;
     private EnumMap<MVStatusBar.StatusbarIndex, String> displayListForLeftLabel = new EnumMap<>(MVStatusBar.StatusbarIndex.class);
     private MVStatusBar.StatusbarIndex currentIndex = MVStatusBar.StatusbarIndex.NONE;
@@ -112,21 +113,23 @@ public final class MVStatusBar extends JPanel {
             progress.setVisible(true);
             stopButton.setVisible(true);
         }
-        if (event.max == 0) {
+        if (event.max == 0 || event.progress == event.max) {
             progress.setIndeterminate(true);
             progress.setMaximum(0);
             progress.setMinimum(0);
             progress.setValue(0);
-            progress.setStringPainted(false);
+            progress.setStringPainted(true);
+            progress.setString(event.text);
         } else {
             progress.setIndeterminate(false);
             progress.setMaximum(event.max);
             progress.setMinimum(0);
             progress.setValue(event.progress);
             progress.setStringPainted(true);
+            progress.setString(event.text);
         }
         if (Daten.debug) {
-            lblRechts.setText(GuiFunktionen.textLaenge(60, event.text, true /* mitte */, true /*addVorne*/));
+            lblRechts.setText(GuiFunktionen.textLaenge(60, event.senderUrl, true /* mitte */, true /*addVorne*/));
         } else {
             lblRechts.setVisible(false);
         }

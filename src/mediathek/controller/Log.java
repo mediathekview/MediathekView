@@ -39,8 +39,6 @@ public class Log {
     public static final int LOG_FEHLER = ListenerMediathekView.EREIGNIS_LOG_FEHLER;
     public static final int LOG_SYSTEM = ListenerMediathekView.EREIGNIS_LOG_SYSTEM;
     public static final int LOG_PLAYER = ListenerMediathekView.EREIGNIS_LOG_PLAYER;
-//    public static final int FEHLER_ART_PROG = 0;
-    public static final String FEHLER_ART_PROG_TEXT = "   Prog: ";
 
     private static final int MAX_LAENGE_1 = 50000;
     private static final int MAX_LAENGE_2 = 30000;
