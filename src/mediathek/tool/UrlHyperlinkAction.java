@@ -79,7 +79,7 @@ public class UrlHyperlinkAction extends AbstractAction {
                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, UrlHyperlinkAction.class.getSimpleName());
                 } catch (Exception eex) {
                     Daten.mVConfig.add(MVConfig.SYSTEM_URL_OEFFNEN, ""); // dann wars wohl nix
-                    Log.fehlerMeldung(316497658, Log.FEHLER_ART_PROG, UrlHyperlinkAction.class.getName(), eex, "URL öffnen: " + url);
+                    Log.fehlerMeldung(316497658,  UrlHyperlinkAction.class.getName(), eex, "URL öffnen: " + url);
                 }
             }
         }

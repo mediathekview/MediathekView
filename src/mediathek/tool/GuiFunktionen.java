@@ -290,7 +290,7 @@ public class GuiFunktionen extends Funktionen {
     public static String addsPfad(String pfad1, String pfad2) {
         String ret = concatPaths(pfad1, pfad2);
         if (ret.equals("")) {
-            Log.fehlerMeldung(283946015, Log.FEHLER_ART_PROG, "GuiFunktionen.addsPfad", pfad1 + " - " + pfad2);
+            Log.fehlerMeldung(283946015,  "GuiFunktionen.addsPfad", pfad1 + " - " + pfad2);
         }
         return ret;
     }
@@ -343,7 +343,7 @@ public class GuiFunktionen extends Funktionen {
             ret = ret.substring(0, ret.indexOf('&'));
         }
         if (ret.equals("")) {
-            Log.fehlerMeldung(395019631, Log.FEHLER_ART_PROG, "GuiFunktionen.getDateiName", pfad);
+            Log.fehlerMeldung(395019631,  "GuiFunktionen.getDateiName", pfad);
         }
         return ret;
     }
@@ -358,7 +358,7 @@ public class GuiFunktionen extends Funktionen {
             }
         }
         if (ret.equals("")) {
-            Log.fehlerMeldung(969871236, Log.FEHLER_ART_PROG, "GuiFunktionen.getDateiSuffix", pfad);
+            Log.fehlerMeldung(969871236, "GuiFunktionen.getDateiSuffix", pfad);
         }
         if (ret.contains("?")) {
             ret = ret.substring(0, ret.indexOf('?'));
@@ -366,7 +366,7 @@ public class GuiFunktionen extends Funktionen {
         if (ret.length() > 5) {
             // dann ist was faul
             ret = "---";
-            Log.fehlerMeldung(821397046, Log.FEHLER_ART_PROG, "GuiFunktionen.getDateiSuffix", pfad);
+            Log.fehlerMeldung(821397046, "GuiFunktionen.getDateiSuffix", pfad);
         }
         return ret;
     }

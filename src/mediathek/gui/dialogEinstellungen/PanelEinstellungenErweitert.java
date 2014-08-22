@@ -106,7 +106,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                             File destination = new File(chooser.getDirectory() + chooser.getFile());
                             jTextFieldProgrammDateimanager.setText(destination.getAbsolutePath());
                         } catch (Exception ex) {
-                            Log.fehlerMeldung(798963047, Log.FEHLER_ART_PROG, "PanelEinstellungenErweitert.ZielBeobachter", ex);
+                            Log.fehlerMeldung(798963047,  "PanelEinstellungenErweitert.ZielBeobachter", ex);
                         }
                     }
                 } else {
@@ -123,7 +123,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         try {
                             jTextFieldProgrammDateimanager.setText(chooser.getSelectedFile().getAbsolutePath());
                         } catch (Exception ex) {
-                            Log.fehlerMeldung(963299647, Log.FEHLER_ART_PROG, "PanelEinstellungenErweitert.ZielBeobachter", ex);
+                            Log.fehlerMeldung(963299647,  "PanelEinstellungenErweitert.ZielBeobachter", ex);
                         }
                     }
                 }
@@ -156,7 +156,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                             File destination = new File(chooser.getDirectory() + chooser.getFile());
                             jTextFieldVideoplayer.setText(destination.getAbsolutePath());
                         } catch (Exception ex) {
-                            Log.fehlerMeldung(821036489, Log.FEHLER_ART_PROG, "PanelEinstellungenErweitert.ZielBeobachter", ex);
+                            Log.fehlerMeldung(821036489,  "PanelEinstellungenErweitert.ZielBeobachter", ex);
                         }
                     }
                 } else {
@@ -173,7 +173,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         try {
                             jTextFieldVideoplayer.setText(chooser.getSelectedFile().getAbsolutePath());
                         } catch (Exception ex) {
-                            Log.fehlerMeldung(732656980, Log.FEHLER_ART_PROG, "PanelEinstellungenErweitert.ZielBeobachter", ex);
+                            Log.fehlerMeldung(732656980,  "PanelEinstellungenErweitert.ZielBeobachter", ex);
                         }
                     }
                 }
@@ -206,7 +206,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                             File destination = new File(chooser.getDirectory() + chooser.getFile());
                             jTextFieldProgrammUrl.setText(destination.getAbsolutePath());
                         } catch (Exception ex) {
-                            Log.fehlerMeldung(369874598, Log.FEHLER_ART_PROG, "PanelEinstellungenErweitert.ZielBeobachter", ex);
+                            Log.fehlerMeldung(369874598,  "PanelEinstellungenErweitert.ZielBeobachter", ex);
                         }
                     }
                 } else {
@@ -223,7 +223,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         try {
                             jTextFieldProgrammUrl.setText(chooser.getSelectedFile().getAbsolutePath());
                         } catch (Exception ex) {
-                            Log.fehlerMeldung(469012789, Log.FEHLER_ART_PROG, "PanelEinstellungenErweitert.ZielBeobachter", ex);
+                            Log.fehlerMeldung(469012789,  "PanelEinstellungenErweitert.ZielBeobachter", ex);
                         }
                     }
                 }

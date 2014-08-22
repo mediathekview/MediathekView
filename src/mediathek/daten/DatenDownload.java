@@ -283,7 +283,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         try {
             return Integer.parseInt(arr[DOWNLOAD_ART_NR]);
         } catch (Exception ex) {
-            Log.fehlerMeldung(946325800, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
+            Log.fehlerMeldung(946325800, this.getClass().getName(), ex);
             return Start.ART_PROGRAMM;
         }
     }
@@ -292,7 +292,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         try {
             return Integer.parseInt(arr[DOWNLOAD_QUELLE_NR]);
         } catch (Exception ex) {
-            Log.fehlerMeldung(649632580, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
+            Log.fehlerMeldung(649632580,  this.getClass().getName(), ex);
             return Start.QUELLE_BUTTON;
         }
     }
@@ -382,7 +382,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             dateinamePfadBauen(pSet, film, abo, nname, ppfad);
             programmaufrufBauen(programm);
         } catch (Exception ex) {
-            Log.fehlerMeldung(825600145, Log.FEHLER_ART_PROG, this.getClass().getName(), ex);
+            Log.fehlerMeldung(825600145,  this.getClass().getName(), ex);
         }
     }
 
@@ -552,7 +552,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(775421006, Log.FEHLER_ART_PROG, "DatenFilm.datumDrehen", ex, datum);
+                Log.fehlerMeldung(775421006,  "DatenFilm.datumDrehen", ex, datum);
             }
         }
         return ret;
@@ -569,7 +569,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     ret = tmp;
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(775421006, Log.FEHLER_ART_PROG, "DatenFilm.datumDrehen", ex, datum);
+                Log.fehlerMeldung(775421006,  "DatenFilm.datumDrehen", ex, datum);
             }
         }
         return ret;
@@ -611,7 +611,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     tmp.setTime(sdf_datum.parse(arr[DatenDownload.DOWNLOAD_DATUM_NR]).getTime());
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(649897321, Log.FEHLER_ART_PROG, "DatumZeit.getDatumForObject", ex,
+                Log.fehlerMeldung(649897321,  "DatumZeit.getDatumForObject", ex,
                         new String[]{"Datum: " + arr[DatenDownload.DOWNLOAD_DATUM_NR], "Zeit: " + arr[DatenDownload.DOWNLOAD_ZEIT_NR]});
             }
         }

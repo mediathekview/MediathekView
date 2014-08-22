@@ -73,7 +73,7 @@ public class OpenPlayerAction {
                     gut = true;
                 }
             } catch (Exception eex) {
-                Log.fehlerMeldung(959632369, Log.FEHLER_ART_PROG, GuiDownloads.class.getName(), ex, "Ordner öffnen: " + datei);
+                Log.fehlerMeldung(959632369, GuiDownloads.class.getName(), ex, "Ordner öffnen: " + datei);
             }
         } finally {
             if (!gut) {

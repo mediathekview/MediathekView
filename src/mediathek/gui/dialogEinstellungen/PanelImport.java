@@ -255,7 +255,7 @@ public class PanelImport extends PanelVorlage {
                     try {
                         jTextFieldDatei.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(304656587, Log.FEHLER_ART_PROG, "PanelImport.BeobPfad", ex);
+                        Log.fehlerMeldung(304656587,  "PanelImport.BeobPfad", ex);
                     }
                 }
             } else {
@@ -273,7 +273,7 @@ public class PanelImport extends PanelVorlage {
                     try {
                         jTextFieldDatei.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(802039730, Log.FEHLER_ART_PROG, "PanelImport.BeobPfad", ex);
+                        Log.fehlerMeldung(802039730, "PanelImport.BeobPfad", ex);
                     }
                 }
             }

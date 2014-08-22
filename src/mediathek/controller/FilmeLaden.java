@@ -72,7 +72,6 @@ public class FilmeLaden {
             public synchronized void fertig(MSListenerFilmeLadenEvent event) {
                 // Ergebnisliste listeFilme eintragen -> Feierabend!
                 duration.stop("Filme laden, ende");
-                //Daten.filmlisteSpeichern();
                 undEnde(event);
             }
         });
@@ -271,7 +270,7 @@ public class FilmeLaden {
                 SwingUtilities.invokeLater(r);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(926369741, Log.FEHLER_ART_PROG, "ListenerFilmeLaden.run_", ex);
+            Log.fehlerMeldung(926369741,  "ListenerFilmeLaden.run_", ex);
         }
     }
 }

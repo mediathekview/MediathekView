@@ -233,7 +233,7 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldProgramm.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(398762109, Log.FEHLER_ART_PROG, "DialogProgrammOrdnerOeffnen.ZielBeobachter", ex);
+                        Log.fehlerMeldung(398762109, "DialogProgrammOrdnerOeffnen.ZielBeobachter", ex);
                     }
                 }
             } else {
@@ -250,7 +250,7 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
                     try {
                         jTextFieldProgramm.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(107458930, Log.FEHLER_ART_PROG, "DialogProgrammOrdnerOeffnen.ZielBeobachter", ex);
+                        Log.fehlerMeldung(107458930,  "DialogProgrammOrdnerOeffnen.ZielBeobachter", ex);
                     }
                 }
             }

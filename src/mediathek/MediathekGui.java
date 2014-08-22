@@ -1413,7 +1413,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 break;
 
             default:
-                Log.fehlerMeldung(465321789, Log.FEHLER_ART_PROG, MediathekGui.class.getSimpleName(), "Shutdown unsupported operating system ...");
+                Log.fehlerMeldung(465321789,  MediathekGui.class.getSimpleName(), "Shutdown unsupported operating system ...");
                 break;
         }
 
@@ -1423,7 +1423,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 Log.systemMeldung("Shutdown: " + strShutdownCommand);
                 Runtime.getRuntime().exec(strShutdownCommand);
             } catch (IOException ex) {
-                Log.fehlerMeldung(915263047, Log.FEHLER_ART_PROG, "MediathekGui.shutdownComputer", ex);
+                Log.fehlerMeldung(915263047,  "MediathekGui.shutdownComputer", ex);
             }
         }
     }

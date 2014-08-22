@@ -161,7 +161,7 @@ public class PanelEinstellungen extends PanelVorlage {
         } catch (Exception ex) {
             Daten.mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
             Daten.mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, "");
-            Log.fehlerMeldung(829304789, Log.FEHLER_ART_PROG, "PanelEinstellungen", ex);
+            Log.fehlerMeldung(829304789,  "PanelEinstellungen", ex);
         }
     }
 
@@ -247,7 +247,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(636875409, Log.FEHLER_ART_PROG, "PanelEinstellungen", ex);
+            Log.fehlerMeldung(636875409,  "PanelEinstellungen", ex);
         }
         DefaultComboBoxModel model = new DefaultComboBoxModel(iconList.toArray());
         jComboBoxIcons.setModel(model);
