@@ -22,7 +22,6 @@ package mediathek.gui;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import javax.swing.JButton;

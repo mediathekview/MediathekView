@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Mediathek>
+
+
+<!--Abos-->
+
+
+<!--Blacklist-->
+
+
+<!--Programmeinstellungen-->
+<system>
+	<Abos-sofort-suchen>true</Abos-sofort-suchen>
+	<Bandbreite>0</Bandbreite>
+	<Bandwidthmonitor-slider>true</Bandwidthmonitor-slider>
+	<Bandwidthmonitor-visible>false</Bandwidthmonitor-visible>
+	<Blacklist-ausgeschaltet>true</Blacklist-ausgeschaltet>
+	<Blacklist-Filmlaenge>0</Blacklist-Filmlaenge>
+	<breite-Meldungen>-1</breite-Meldungen>
+	<Dialog-Download-D-Starten>true</Dialog-Download-D-Starten>
+	<Download-sofort-starten>false</Download-sofort-starten>
+	<Echtzeitsuche>true</Echtzeitsuche>
+	<Eigenschaften-Tabellen-Abos>75,75,200,100,200,200,200,200,200,200,100,200|0,1,2,3,4,5,6,7,8,9,10,11||</Eigenschaften-Tabellen-Abos>
+	<Eigenschaften-Tabellen-Downloads>75,75,150,100,150,250,50,50,100,100,100,100,100,100,100,0,100,0,0,200,0,0,200,0,0,0,0,0,200,0,0,0,0,0,0|0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34||</Eigenschaften-Tabellen-Downloads>
+	<Eigenschaften-Tabellen-Filme>75,100,200,300,50,50,100,100,100,100,0,100,500,0,200,0,0,0,0,0,0,0,0,0,0|0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24||</Eigenschaften-Tabellen-Filme>
+	<filter-anzahl>3</filter-anzahl>
+	<Geo-melden>true</Geo-melden>
+	<Geo-Standort>DE</Geo-Standort>
+	<Groesse>1089:909:0:0</Groesse>
+	<Groesse-Einstellungen>1102:705:409:247</Groesse-Einstellungen>
+	<Groesse-Filter>782:387:760:400</Groesse-Filter>
+	<Hinweis-Nr-angezeigt>1</Hinweis-Nr-angezeigt>
+	<Icon-Pfad>/home/emil/daten/software/Mediathek/Mediathek/build//Icons/SchwarzWeiss</Icon-Pfad>
+	<Icon-Standard>true</Icon-Standard>
+	<maxDownload>1</maxDownload>
+	<Notification-anzeigen>true</Notification-anzeigen>
+	<pfad-ffmpeg>/usr/bin/ffmpeg</pfad-ffmpeg>
+	<pfad-flvstreamer>/usr/bin/flvstreamer</pfad-flvstreamer>
+	<pfad-mplayer>/usr/bin/mplayer</pfad-mplayer>
+	<pfad-vlc>/usr/bin/vlc</pfad-vlc>
+	<programmfenster-maximieren>false</programmfenster-maximieren>
+	<system-font-size>0</system-font-size>
+	<system-icon-groesse-alles>false</system-icon-groesse-alles>
+	<system-import-url-manuell>http://mv.mynews.de/filme/Filmliste-akt.xz</system-import-url-manuell>
+	<System-look>0</System-look>
+	<system-panel-beschreibung-anzeigen>true</system-panel-beschreibung-anzeigen>
+	<system-panel-filme-divider>260</system-panel-filme-divider>
+	<system-tab-abo-icon-anzeigen>true</system-tab-abo-icon-anzeigen>
+	<system-tab-abo-icon-klein>true</system-tab-abo-icon-klein>
+	<system-tab-download-icon-anzeigen>true</system-tab-download-icon-anzeigen>
+	<system-tab-download-icon-klein>true</system-tab-download-icon-klein>
+	<system-tab-filme-icon-anzeigen>true</system-tab-filme-icon-anzeigen>
+	<system-tab-filme-icon-klein>true</system-tab-filme-icon-klein>
+	<Toolbar-Alles-anzeigen>true</Toolbar-Alles-anzeigen>
+	<update-datum>20140829</update-datum>
+	<update-filme>2</update-filme>
+	<update-suchen>true</update-suchen>
+	<User-Agent-Auto>true</User-Agent-Auto>
+	<Version-Programmset>4</Version-Programmset>
+	<Vis-Abo>true</Vis-Abo>
+	<Vis-Download>true</Vis-Download>
+	<Vis-Filter>true</Vis-Filter>
+	<Zielnamen-anpassen>normal</Zielnamen-anpassen>
+	<Zielnamen-Unicode>true</Zielnamen-Unicode>
+</system>
+
+
+
+<!--Programmsets-->
+<Programmset><Name>Linux Speichern</Name><Praefix>http</Praefix><Suffix>mp4,mp3,m4v,flv,m4a</Suffix><Zielpfad>/home/emil/MediathekView</Zielpfad><Zieldateiname>%t-%T-%N</Zieldateiname><Thema-anlegen>true</Thema-anlegen><Abspielen>false</Abspielen><Speichern>true</Speichern><Button>true</Button><Abo>true</Abo><max-Laenge>25</max-Laenge><Beschreibung>Standardset zum Speichern der Filme</Beschreibung><Infodatei>false</Infodatei><Spotlight>false</Spotlight></Programmset>
+<Programm><Programmname>flvstreamer</Programmname><Zieldateiname>%t-%T-%N.flv</Zieldateiname><Programmpfad>/usr/bin/flvstreamer</Programmpfad><Programmschalter>%F --resume -o **</Programmschalter><Praefix>rtmp</Praefix><Restart>true</Restart></Programm>
+<Programm><Programmname>ffmpeg</Programmname><Zieldateiname>%t-%T-%N.mp4</Zieldateiname><Programmpfad>/usr/bin/ffmpeg</Programmpfad><Programmschalter>-i %f -c copy -bsf:a aac_adtstoasc **</Programmschalter><Praefix>http</Praefix><Suffix>m3u8</Suffix><Restart>false</Restart></Programm>
+<Programm><Programmname>VLC</Programmname><Zieldateiname>%t-%T-%N.ts</Zieldateiname><Programmpfad>/usr/bin/vlc</Programmpfad><Programmschalter>%f :sout=#standard{access=file,mux=ts,dst=**} -I dummy --play-and-exit</Programmschalter><Restart>false</Restart></Programm>
+<Programmset><Name>Linux Abspielen</Name><Thema-anlegen>true</Thema-anlegen><Abspielen>true</Abspielen><Speichern>false</Speichern><Button>true</Button><Abo>false</Abo><max-Laenge>25</max-Laenge><Beschreibung>Standardset zum direkten Abspielen der Filme</Beschreibung><Infodatei>false</Infodatei><Spotlight>false</Spotlight></Programmset>
+<Programm><Programmname>skript</Programmname><Programmpfad>/home/emil/daten/software/Mediathek/Mediathek/build/bin/flv.sh</Programmpfad><Programmschalter>/usr/bin/flvstreamer /usr/bin/vlc %F</Programmschalter><Praefix>rtmp</Praefix><Restart>false</Restart></Programm>
+<Programm><Programmname>Vlc</Programmname><Programmpfad>/usr/bin/vlc</Programmpfad><Programmschalter>%f --play-and-exit</Programmschalter><Restart>false</Restart></Programm>
+
+
+<!--Ersetzungstabelle-->
+
+
+<!--Downloads-->
+
+
+<!--Update Filmliste-->
+
+<!--Akt-Filmliste-->
+<film-update-server><film-update-server-nr>000</film-update-server-nr><film-update-server-url>http://www.wp11128329.server-he.de/filme/Filmliste-akt.xz</film-update-server-url><film-update-server-prio>1</film-update-server-prio><film-update-server-art>akt</film-update-server-art></film-update-server>
+<film-update-server><film-update-server-nr>001</film-update-server-nr><film-update-server-url>http://wp11234018.server-he.de/filme/Filmliste-akt.xz</film-update-server-url><film-update-server-prio>1</film-update-server-prio><film-update-server-art>akt</film-update-server-art></film-update-server>
+<film-update-server><film-update-server-nr>002</film-update-server-nr><film-update-server-url>http://mv.mynews.de/filme/Filmliste-akt.xz</film-update-server-url><film-update-server-prio>1</film-update-server-prio><film-update-server-art>akt</film-update-server-art></film-update-server>
+<film-update-server><film-update-server-nr>003</film-update-server-nr><film-update-server-url>http://mv.hostingkunde.de/filme/Filmliste-akt.xz</film-update-server-url><film-update-server-prio>1</film-update-server-prio><film-update-server-art>akt</film-update-server-art></film-update-server>
+<film-update-server><film-update-server-nr>004</film-update-server-nr><film-update-server-url>http://mv-1.df-kunde.de/filme/Filmliste-akt.xz</film-update-server-url><film-update-server-prio>1</film-update-server-prio><film-update-server-art>akt</film-update-server-art></film-update-server>
+<film-update-server><film-update-server-nr>005</film-update-server-nr><film-update-server-url>http://mv-2.df-kunde.de/filme/Filmliste-akt.xz</film-update-server-url><film-update-server-prio>1</film-update-server-prio><film-update-server-art>akt</film-update-server-art></film-update-server>
+<film-update-server><film-update-server-nr>006</film-update-server-nr><film-update-server-url>http://mv-3.df-kunde.de/filme/Filmliste-akt.xz</film-update-server-url><film-update-server-prio>1</film-update-server-prio><film-update-server-art>akt</film-update-server-art></film-update-server>
+
+<!--Old-Filmliste-->
+
+<!--Diff-Filmliste-->
+
+
+</Mediathek>
