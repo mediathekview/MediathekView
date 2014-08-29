@@ -30,6 +30,7 @@ import mediathek.MediathekGui;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelInfoStarts;
+import mediathek.tool.Duration;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVNotification;
 import msearch.io.MSFilmlisteLesen;
@@ -62,7 +63,11 @@ public class GuiDebug extends JPanel {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Daten.listeFilme.clear();
-                new MSFilmlisteLesen().filmlisteLesenJson(Daten.getDateiFilmliste(), "", Daten.listeFilme);
+                Duration duration = new Duration(MediathekGui.class.getSimpleName());
+                duration.ping("Start");
+                new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme);
+//                    new FilmListReader().readFilmListe(new URI("http://www.wp11128329.server-he.de/filme/Filmliste-akt.xz"), Daten.listeFilme);
+                duration.ping("Fertig");
                 Daten.listeFilme.themenLaden();
                 Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
