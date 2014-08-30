@@ -436,7 +436,7 @@ public final class MVTable extends JTable {
 
     public void setSpalten() {
         // gemerkte Einstellungen der Tabelle wieder setzten
-        spaltenAusschalten();
+////        spaltenAusschalten();
         setSelected();
         try {
             for (int i = 0; i < breite.length && i < this.getColumnCount(); ++i) {
