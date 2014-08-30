@@ -37,12 +37,10 @@ public class Filter {
         String[] themaTitelExistiert = aboExistiert.arr[DatenAbo.ABO_THEMA_TITEL_NR].toLowerCase().split(",");
         String[] irgendwoExistiert = aboExistiert.arr[DatenAbo.ABO_IRGENDWO_NR].toLowerCase().split(",");
         // Abos sollen sich nicht nur in der Länge unterscheiden
-        // int laengeExistiert = aboExistiert.mindestdauerMinuten;
         String senderPruefen = aboPruefen.arr[DatenAbo.ABO_SENDER_NR];
         String themaPruefen = aboPruefen.arr[DatenAbo.ABO_THEMA_NR];
         String titelPruefen = aboPruefen.arr[DatenAbo.ABO_TITEL_NR];
         String irgendwoPruefen = aboPruefen.arr[DatenAbo.ABO_IRGENDWO_NR];
-        // int laengePruefen = aboPruefen.mindestdauerMinuten;
 
         if (senderExistiert.equals("") || senderPruefen.equalsIgnoreCase(senderExistiert)) {
             if (themaExistiert.equals("") || themaPruefen.equalsIgnoreCase(themaExistiert)) {
@@ -57,9 +55,7 @@ public class Filter {
                                 || pruefen(irgendwoExistiert, themaPruefen)
                                 || pruefen(irgendwoExistiert, titelPruefen)
                                 || pruefen(irgendwoExistiert, irgendwoPruefen)) {
-                            //if (laengeExistiert == 0 || laengePruefen >= laengeExistiert) {
                             return true;
-                            //}
                         }
                     }
                 }
@@ -88,12 +84,11 @@ public class Filter {
                         if (irgendwoSuchen.length == 0
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_THEMA_NR])
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_TITEL_NR])
-                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_BESCHREIBUNG_NR]) //                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_KEYWORDS_NR])
-                                ) {
+                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_BESCHREIBUNG_NR])
+                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_WEBSEITE_NR])) {
                             if (mitLaenge) {
                                 // die Länge soll mit gefrüft werden
                                 if (laengePruefen(laengeMinutenSuchen, film.dauerL)) {
-                                    //if (laengeMinutenSuchen == 0 || film.dauerL == 0 || film.dauerL > (laengeMinutenSuchen * 60)) {
                                     return true;
                                 }
                             } else {
@@ -107,28 +102,24 @@ public class Filter {
         return false;
     }
 
-    public static boolean laengePruefen(int aboLaengeInMinuten, long filmLaenge) {
-        return aboLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge > (aboLaengeInMinuten * 60);
+    public static boolean laengePruefen(int filterLaengeInMinuten, long filmLaenge) {
+        return filterLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge > (filterLaengeInMinuten * 60);
     }
 
-    private static boolean pruefen(String[] aboFilter, String im) {
+    private static boolean pruefen(String[] filter, String im) {
         // wenn einer passt, dann ists gut
-        if (aboFilter.length == 1) {
-            Pattern p = makePattern(aboFilter[0]);
+        if (filter.length == 1) {
+            Pattern p = makePattern(filter[0]);
             if (p != null) {
                 return (p.matcher(im).matches());
             }
         }
-        for (String s : aboFilter) {
+        for (String s : filter) {
             if (im.toLowerCase().contains(s)) {
                 return true;
             }
         }
         return false;
-    }
-
-    private static boolean textPruefen(String filter, String imFilm) {
-        return imFilm.toLowerCase().contains(filter.toLowerCase());
     }
 
     public static boolean isPattern(String textSuchen) {
@@ -139,8 +130,6 @@ public class Filter {
         Pattern p = null;
         try {
             if (isPattern(textSuchen)) {
-                //p = Pattern.compile(textSuchen.substring(2));
-                //String s = textSuchen.substring(2);
                 p = Pattern.compile(textSuchen.substring(2), Pattern.CASE_INSENSITIVE);
             }
         } catch (Exception ex) {
@@ -178,92 +167,4 @@ public class Filter {
             tf.setForeground(Color.BLACK);
         }
     }
-//    public static boolean filterAufAboPruefen(String aboFilter_SenderSuchen, String aboFilter_themaSuchen, String aboFilter_titelSuchen, String aboFilter_themaTitelSuchen,
-//            String imFilm_Sender, String imFilm_Thema, String imFilm_Titel) {
-//        // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen
-//        // senderSuchen exakt mit sender
-//        // themaSuchen exakt mit thema
-//        // titelSuchen muss im Titel nur enthalten sein
-//
-//        if (aboFilter_SenderSuchen.equals("") || imFilm_Sender.equalsIgnoreCase(aboFilter_SenderSuchen)) {
-//            if (aboFilter_themaSuchen.equals("") || imFilm_Thema.equalsIgnoreCase(aboFilter_themaSuchen)) {
-//
-//                if (aboFilter_titelSuchen.equals("") || pruefenTitel(aboFilter_titelSuchen, imFilm_Titel)) {
-//
-//                    if (aboFilter_themaTitelSuchen.equals("")
-//                            || pruefenThemaTitel(aboFilter_themaTitelSuchen, imFilm_Thema)
-//                            || pruefenThemaTitel(aboFilter_themaTitelSuchen, imFilm_Titel)) {
-//                        return true;
-//                    }
-//                }
-//            }
-//        }
-//        return false;
-//    }
-//    public static boolean filterBlacklist(String aboFilter_SenderSuchen, String aboFilter_themaSuchen, String aboFilter_titelSuchen, String aboFilter_themaTitelSuchen,
-//            String imFilm_Sender, String imFilm_Thema, String imFilm_Titel) {
-//        // liefert true wenn der Film angezeigt werden darf!
-//        // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen
-//        // themaSuchen exakt mit thema
-//        // titelSuchen muss im Titel nur enthalten sein
-//
-//        if (aboFilter_SenderSuchen.equals("") || !imFilm_Sender.equalsIgnoreCase(aboFilter_SenderSuchen)) {
-//            if (aboFilter_themaSuchen.equals("") || !imFilm_Thema.equalsIgnoreCase(aboFilter_themaSuchen)) {
-//
-//                if (aboFilter_titelSuchen.equals("") || !pruefenTitel(aboFilter_titelSuchen, imFilm_Titel)) {
-//
-//                    if (aboFilter_themaTitelSuchen.equals("")) {
-//                        return true;
-//                    } else if (!pruefenThemaTitel(aboFilter_themaTitelSuchen, imFilm_Thema)) {
-//                        return true;
-//                    } else if (!pruefenThemaTitel(aboFilter_themaTitelSuchen, imFilm_Titel)) {
-//                        return true;
-//                    }
-//                }
-//            }
-//        }
-//        return false;
-//    }
-//    private static boolean pruefenTitel(String aboFilter, String im) {
-//        Pattern p = makePattern(aboFilter);
-//        if (p != null) {
-//            return (p.matcher(im).matches());
-//        }
-//        return (textPruefen(aboFilter, im));
-//    }
-//
-//    private static boolean pruefenThemaTitel(String aboFilter, String im) {
-//        Pattern p = makePattern(aboFilter);
-//        if (p != null) {
-//            return (p.matcher(im).matches());
-//        } else if (!aboFilter.contains(" ")) {
-//            return (textPruefen(aboFilter, im));
-//        }
-//        String[] arr = getArr(aboFilter);
-//        for (int i = 0; i < arr.length; ++i) {
-//            if (textPruefen(arr[i], im)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//    private static boolean pruefen(String aboFilter, String im) {
-//        Pattern p = makePattern(aboFilter);
-//        if (p != null) {
-//            return (p.matcher(im).matches());
-//        } else {
-//            return (textPruefen(aboFilter, im));
-//        }
-//    }
-//    private static String[] getArr(String str) {
-//        LinkedList<String> liste = new LinkedList<String>();
-//        String[] s;
-//        s = str.split(" ");
-//        for (int i = 0; i < s.length; ++i) {
-//            if (!s[i].equals("")) {
-//                liste.add(s[i]);
-//            }
-//        }
-//        return liste.toArray(new String[0]);
-//    }
 }
