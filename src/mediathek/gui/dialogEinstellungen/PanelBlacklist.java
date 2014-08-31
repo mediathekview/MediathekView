@@ -95,6 +95,7 @@ public class PanelBlacklist extends PanelVorlage {
 
     private void setAnzahlGefiltert() {
         jTextFieldGefiltert.setText(" " + (Daten.listeFilme.size() - Daten.listeFilmeNachBlackList.size()) + " ");
+        this.doLayout();
     }
 
     private void init_() {
