@@ -84,8 +84,8 @@ public class Filter {
                         if (irgendwoSuchen.length == 0
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_THEMA_NR])
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_TITEL_NR])
-                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_BESCHREIBUNG_NR])
-                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_WEBSEITE_NR])) {
+                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_BESCHREIBUNG_NR])){
+                                // || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_WEBSEITE_NR])) { kostet 25% Zeit zusätzlich!
                             if (mitLaenge) {
                                 // die Länge soll mit gefrüft werden
                                 if (laengePruefen(laengeMinutenSuchen, film.dauerL)) {
