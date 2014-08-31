@@ -84,6 +84,17 @@ public class PanelBlacklist extends PanelVorlage {
                 comboThemaLaden();
             }
         });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEFILTERT, PanelBlacklist.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setAnzahlGefiltert();
+            }
+        });
+        setAnzahlGefiltert();
+    }
+
+    private void setAnzahlGefiltert() {
+        jTextFieldGefiltert.setText(" " + (Daten.listeFilme.size() - Daten.listeFilmeNachBlackList.size()) + " ");
     }
 
     private void init_() {
@@ -360,6 +371,8 @@ public class PanelBlacklist extends PanelVorlage {
         jLabel10 = new javax.swing.JLabel();
         jButtonTabelleLoeschen = new javax.swing.JButton();
         jCheckBoxBlacklistEingeschaltet = new javax.swing.JCheckBox();
+        jTextFieldGefiltert = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -660,6 +673,11 @@ public class PanelBlacklist extends PanelVorlage {
 
         jCheckBoxBlacklistEingeschaltet.setText("Blacklist ist eingeschaltet");
 
+        jTextFieldGefiltert.setEditable(false);
+        jTextFieldGefiltert.setText("0");
+
+        jLabel14.setText("Anzahl gefilterter Filme:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -669,7 +687,10 @@ public class PanelBlacklist extends PanelVorlage {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jCheckBoxBlacklistEingeschaltet)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel14)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldGefiltert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jTabbedPaneBlacklist))
                 .addContainerGap())
         );
@@ -677,7 +698,11 @@ public class PanelBlacklist extends PanelVorlage {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jCheckBoxBlacklistEingeschaltet)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jCheckBoxBlacklistEingeschaltet)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jTextFieldGefiltert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel14)))
                 .addGap(18, 18, 18)
                 .addComponent(jTabbedPaneBlacklist)
                 .addContainerGap())
@@ -699,6 +724,7 @@ public class PanelBlacklist extends PanelVorlage {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -719,6 +745,7 @@ public class PanelBlacklist extends PanelVorlage {
     private javax.swing.JSlider jSliderMinuten;
     private javax.swing.JTabbedPane jTabbedPaneBlacklist;
     private javax.swing.JTable jTableBlacklist;
+    private javax.swing.JTextField jTextFieldGefiltert;
     private javax.swing.JTextField jTextFieldMinuten;
     private javax.swing.JTextField jTextFieldThemaTitel;
     private javax.swing.JTextField jTextFieldTitel;
