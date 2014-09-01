@@ -208,6 +208,29 @@ public class StarterClass {
         }
     }
 
+    private final static String GERMANY_ONLY_TRIM_TEXT = "+++ Aus rechtlichen Gründen ist dieses Video nur innerhalb von Deutschland abrufbar. +++";
+
+    /**
+     * Removes - if existing - the Germany only notice in descriptions.
+     * @param strInput The original film description.
+     * @return The stripped string.
+     */
+    private String removeGermanyOnlyMessage(final String strInput)
+    {
+        if (strInput.contains(GERMANY_ONLY_TRIM_TEXT)) {
+            final int inputLength = strInput.length();
+            final int messageLength = GERMANY_ONLY_TRIM_TEXT.length();
+
+            String newComment = String.copyValueOf(strInput.toCharArray(),messageLength,(inputLength - messageLength));
+            newComment = newComment.trim();
+            System.out.println("STRIPPED COMMENT: " + newComment);
+
+            return newComment;
+        } else {
+            return strInput;
+        }
+    }
+
     /**
      * This will write the content of the film description into the OS X Finder Info Comment Field.
      * This enables Spotlight to search for these tags.
@@ -231,6 +254,8 @@ public class StarterClass {
                 if (strComment.isEmpty()) {
                     return;
                 }
+
+                strComment = removeGermanyOnlyMessage(strComment);
 
                 //replace quotation marks...
                 strComment = strComment.replace("\"", "\\\"");
