@@ -25,6 +25,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
+
+import com.jidesoft.utils.SystemInfo;
 import mediathek.controller.Log;
 import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.Start;
@@ -88,12 +90,22 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
 
             boolean live = datenFilm.arr[DatenFilm.FILM_THEMA_NR].equals(ListeFilme.THEMA_LIVE);
             boolean start = false;
+
+            /*
+             * On OS X do not change font sizes as it violates HIG...
+             */
             if (isSelected) {
-                // setFont(new java.awt.Font("Dialog", Font.BOLD, getFont().getSize()));
-                setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
+                if (SystemInfo.isMacOSX())
+                    setFont(getFont().deriveFont(Font.BOLD));
+                else {
+                    setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
+                }
             } else {
-                // setFont(getFont());
-                setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
+                if (SystemInfo.isMacOSX())
+                    setFont(getFont().deriveFont(Font.PLAIN));
+                else {
+                    setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
+                }
             }
             switch (columnModelIndex) {
                 case DatenFilm.FILM_NR_NR:
