@@ -18,25 +18,6 @@ public class MVSenderIconCache {
 
     static {
         iconCache = new HashMap<>();
-//        iconCache.put("3Sat", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "3sat.png")));
-//        iconCache.put("ARD", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "ard.png")));
-//        iconCache.put("ARD.Podcast", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "ard.png")));
-//        iconCache.put("ARTE.DE", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "arte-de.png")));
-//        iconCache.put("ARTE.FR", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "arte-fr.png")));
-//        iconCache.put("BR", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "br.png")));
-//        iconCache.put("HR", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "hr.png")));
-//        iconCache.put("KiKA", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "kika.png")));
-//        iconCache.put("MDR", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "mdr.png")));
-//        iconCache.put("NDR", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "ndr.png")));
-//        iconCache.put("ORF", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "orf.png")));
-//        iconCache.put("RBB", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "rbb.png")));
-//        iconCache.put("SRF", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "srf.png")));
-//        iconCache.put("SRF.Podcast", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "srf.png")));
-//        iconCache.put("SWR", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "swr.png")));
-//        iconCache.put("WDR", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "wdr.png")));
-//        iconCache.put("ZDF", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "zdf.png")));
-//        iconCache.put("ZDF-tivi", new ImageIcon(MVSenderIconCache.class.getResource(PFAD + "zdf.png")));
-
         iconCache.put("3Sat", scaleImage(PFAD + "3sat.png", height));
         iconCache.put("ARD", scaleImage(PFAD + "ard.png", height));
         iconCache.put("ARD.Podcast", scaleImage(PFAD + "ard.png", height));
@@ -50,11 +31,11 @@ public class MVSenderIconCache {
         iconCache.put("ORF", scaleImage(PFAD + "orf.png", height));
         iconCache.put("RBB", scaleImage(PFAD + "rbb.png", height));
         iconCache.put("SRF", scaleImage(PFAD + "srf.png", height));
-        iconCache.put("SRF.Podcast", scaleImage(PFAD + "srf.png", height));
+        iconCache.put("SRF.Podcast", scaleImage(PFAD + "srf-podcast.png", height));
         iconCache.put("SWR", scaleImage(PFAD + "swr.png", height));
         iconCache.put("WDR", scaleImage(PFAD + "wdr.png", height));
         iconCache.put("ZDF", scaleImage(PFAD + "zdf.png", height));
-        iconCache.put("ZDF-tivi", scaleImage(PFAD + "zdf.png", height));
+        iconCache.put("ZDF-tivi", scaleImage(PFAD + "zdf-tivi.png", height));
 
     }
 
@@ -73,11 +54,11 @@ public class MVSenderIconCache {
         iconCache_small.put("ORF", scaleImage(PFAD + "orf.png", height_small));
         iconCache_small.put("RBB", scaleImage(PFAD + "rbb.png", height_small));
         iconCache_small.put("SRF", scaleImage(PFAD + "srf.png", height_small));
-        iconCache_small.put("SRF.Podcast", scaleImage(PFAD + "srf.png", height_small));
+        iconCache_small.put("SRF.Podcast", scaleImage(PFAD + "srf-podcast.png", height_small));
         iconCache_small.put("SWR", scaleImage(PFAD + "swr.png", height_small));
         iconCache_small.put("WDR", scaleImage(PFAD + "wdr.png", height_small));
         iconCache_small.put("ZDF", scaleImage(PFAD + "zdf.png", height_small));
-        iconCache_small.put("ZDF-tivi", scaleImage(PFAD + "zdf.png", height_small));
+        iconCache_small.put("ZDF-tivi", scaleImage(PFAD + "zdf-tivi.png", height_small));
     }
 
     /**
