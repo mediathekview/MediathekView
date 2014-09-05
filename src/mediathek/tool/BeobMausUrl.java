@@ -17,7 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package mediathek.tool;
 
 import java.awt.event.ActionEvent;
@@ -29,13 +28,18 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 /**
- *  This class provides a "copy URL" popup menu for a given {@link javax.swing.JButton}.
+ * This class provides a "copy URL" popup menu for a given {@link javax.swing.JButton}.
  */
 public class BeobMausUrl extends MouseAdapter {
+
     private final BeobUrl beobUrl = new BeobUrl();
-    private final JButton link;
+    private final String link;
 
     public BeobMausUrl(JButton link) {
+        this.link = link.getText();
+    }
+
+    public BeobMausUrl(String link) {
         this.link = link;
     }
 
@@ -68,7 +72,7 @@ public class BeobMausUrl extends MouseAdapter {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            GuiFunktionen.copyToClipboard(link.getText());
+            GuiFunktionen.copyToClipboard(link);
         }
     }
 }

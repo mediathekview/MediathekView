@@ -44,6 +44,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import mediathek.daten.Daten;
+import mediathek.tool.BeobMausUrl;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
@@ -192,6 +193,7 @@ public class MVAboutDialog extends JDialog {
             e.printStackTrace();
         }
         hprlnkWebsite.setText("Website");
+        hprlnkWebsite.addMouseListener(new BeobMausUrl(Konstanten.ADRESSE_WEBSITE));
 
         JXHyperlink hprlnkDonation = new JXHyperlink();
         hprlnkDonation.setHorizontalAlignment(SwingConstants.LEFT);
@@ -201,6 +203,7 @@ public class MVAboutDialog extends JDialog {
             e.printStackTrace();
         }
         hprlnkDonation.setText("Spende");
+        hprlnkDonation.addMouseListener(new BeobMausUrl(Konstanten.ADRESSE_DONATION));
 
         JXHyperlink hprlnkAnleitung = new JXHyperlink();
         hprlnkAnleitung.setHorizontalAlignment(SwingConstants.LEFT);
@@ -210,6 +213,7 @@ public class MVAboutDialog extends JDialog {
             e1.printStackTrace();
         }
         hprlnkAnleitung.setText("Anleitung");
+        hprlnkAnleitung.addMouseListener(new BeobMausUrl(Konstanten.ADRESSE_ANLEITUNG));
 
         JXHyperlink hprlnkForum = new JXHyperlink();
         hprlnkForum.setHorizontalAlignment(SwingConstants.LEFT);
@@ -219,6 +223,7 @@ public class MVAboutDialog extends JDialog {
             e.printStackTrace();
         }
         hprlnkForum.setText("Forum");
+        hprlnkForum.addMouseListener(new BeobMausUrl(Konstanten.ADRESSE_FORUM));
 
         JPanel pnlProgramPaths = new JPanel();
         TitledBorder border = new TitledBorder("Programmpfade");
