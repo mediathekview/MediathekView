@@ -25,6 +25,7 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import mediathek.MediathekGui;
@@ -58,6 +59,13 @@ public class GuiFunktionen extends Funktionen {
                 + jFrame.getLocation().y);
     }
 
+    public static void getSize(String nr, JDialog jDialog) {
+        Daten.mVConfig.add(nr, jDialog.getSize().width + ":"
+                + jDialog.getSize().height + ":"
+                + jDialog.getLocation().x + ":"
+                + jDialog.getLocation().y);
+    }
+
     public static void setSize(String nr, JFrame jFrame, JFrame relativFrame) {
         int breite, hoehe, posX, posY;
         breite = 0;
@@ -85,6 +93,36 @@ public class GuiFunktionen extends Funktionen {
             jFrame.setLocation(posX, posY);
         } else if (relativFrame != null) {
             jFrame.setLocationRelativeTo(relativFrame);
+        }
+    }
+
+    public static void setSize(String nr, JDialog jDialog, JFrame relativFrame) {
+        int breite, hoehe, posX, posY;
+        breite = 0;
+        hoehe = 0;
+        posX = 0;
+        posY = 0;
+        String[] arr = Daten.mVConfig.get(nr).split(":");
+        try {
+            if (arr.length == 4) {
+                breite = Integer.parseInt(arr[0]);
+                hoehe = Integer.parseInt(arr[1]);
+                posX = Integer.parseInt(arr[2]);
+                posY = Integer.parseInt(arr[3]);
+            }
+        } catch (Exception ex) {
+            breite = 0;
+            hoehe = 0;
+            posX = 0;
+            posY = 0;
+        }
+        if (breite > 0 && hoehe > 0) {
+            jDialog.setSize(new Dimension(breite, hoehe));
+        }
+        if (posX > 0 && posY > 0) {
+            jDialog.setLocation(posX, posY);
+        } else if (relativFrame != null) {
+            jDialog.setLocationRelativeTo(relativFrame);
         }
     }
 
@@ -149,7 +187,7 @@ public class GuiFunktionen extends Funktionen {
             return name;
         }
         String ret = name;
-        
+
         //  nur für Windows
         final OperatingSystemType os = getOs();
         if (os == OperatingSystemType.WIN32 || os == OperatingSystemType.WIN64) {
@@ -290,7 +328,7 @@ public class GuiFunktionen extends Funktionen {
     public static String addsPfad(String pfad1, String pfad2) {
         String ret = concatPaths(pfad1, pfad2);
         if (ret.equals("")) {
-            Log.fehlerMeldung(283946015,  "GuiFunktionen.addsPfad", pfad1 + " - " + pfad2);
+            Log.fehlerMeldung(283946015, "GuiFunktionen.addsPfad", pfad1 + " - " + pfad2);
         }
         return ret;
     }
@@ -343,7 +381,7 @@ public class GuiFunktionen extends Funktionen {
             ret = ret.substring(0, ret.indexOf('&'));
         }
         if (ret.equals("")) {
-            Log.fehlerMeldung(395019631,  "GuiFunktionen.getDateiName", pfad);
+            Log.fehlerMeldung(395019631, "GuiFunktionen.getDateiName", pfad);
         }
         return ret;
     }

@@ -36,6 +36,7 @@ import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.TimerTask;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFrame;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -44,6 +45,7 @@ import javax.swing.event.ChangeListener;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFilmSize;
@@ -64,13 +66,17 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
     private final java.util.Timer timer = new java.util.Timer(false);
     private TimerTask timerTask = null;
 
-    /** Creates new form MVBandwidthInfo */
-    public MVBandwidthInfo(java.awt.Frame parent, final JCheckBoxMenuItem menuItem) {
-        super(parent, false);
+    /** Creates new form MVBandwidthInfo
+     *
+     * @param parent
+     * @param menuItem */
+    public MVBandwidthInfo(JFrame parent, final JCheckBoxMenuItem menuItem) {
+        super((JFrame) null, false);
         initComponents();
 
         this.menuItem = menuItem;
         setTitle("Bandbreite");
+        GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, this, parent);
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -144,6 +150,15 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
             }
         });
         setSlider();
+        jSplitPane1.setOneTouchExpandable(true);
+    }
+
+    public int getDividerLocation() {
+        return jSplitPane1.getDividerLocation();
+    }
+
+    public void setDividerLocation(int div) {
+        jSplitPane1.setDividerLocation(div);
     }
 
     private void setSlider() {
@@ -334,6 +349,7 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
 
         jLabelBandwith.setText("10 kByte/s");
 
+        jEditorPaneInfo.setEditable(false);
         jScrollPane1.setViewportView(jEditorPaneInfo);
 
         javax.swing.GroupLayout jPanelInfoLayout = new javax.swing.GroupLayout(jPanelInfo);
@@ -372,11 +388,11 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE)
+            .addComponent(jSplitPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+            .addComponent(jSplitPane1)
         );
 
         pack();

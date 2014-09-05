@@ -51,6 +51,8 @@ public class MVConfig {
     // Fenstereinstellungen
     public static final String SYSTEM_GROESSE = "Groesse";
     public static final String SYSTEM_GROESSE_EINSTELLUNGEN = "Groesse-Einstellungen";
+    public static final String SYSTEM_GROESSE_INFODIALOG = "Groesse-Infodialog";
+    public static final String SYSTEM_DIVIDER_INFODIALOG = "Divider-Infodialog";
     public static final String SYSTEM_FENSTER_MAX = "programmfenster-maximieren";
     public static final String SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN = "system-panel-videoplayer-anzeigen";
     public static final String SYSTEM_PANEL_MELDUNGEN_ANZEIGEN = "system-panel-meldungen-anzeigen";
