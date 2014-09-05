@@ -485,6 +485,55 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return textLinks;
     }
 
+    public String getInfo() {
+        String textLinks;
+        // Text links: Zeilen Tabelle
+        // nicht gestarted, laufen, fertig OK, fertig fehler
+        int[] starts = getStarts();
+        if (starts[0] == 1) {
+            textLinks = "<span class=\"sans\"><b>Download: 1</b>";
+        } else {
+            textLinks = "<span class=\"sans\"><b>Downloads: " + starts[0] + "</b>";
+        }
+        boolean print = false;
+        for (int ii = 1; ii < starts.length; ++ii) {
+            if (starts[ii] > 0) {
+                print = true;
+                break;
+            }
+        }
+        if (print) {
+            textLinks += " &nbsp;&nbsp;(";
+            if (starts[4] == 1) {
+                textLinks += "1 läuft";
+            } else {
+                textLinks += starts[4] + " laufen";
+            }
+            if (starts[3] == 1) {
+                textLinks += ", 1 wartet";
+            } else {
+                textLinks += ", " + starts[3] + " warten";
+            }
+            if (starts[5] > 0) {
+                if (starts[5] == 1) {
+                    textLinks += ", 1 fertig";
+                } else {
+                    textLinks += ", " + starts[5] + " fertig";
+                }
+            }
+            if (starts[6] > 0) {
+                if (starts[6] == 1) {
+                    textLinks += ", 1 fehlerhaft";
+                } else {
+                    textLinks += ", " + starts[6] + " fehlerhaft";
+                }
+            }
+            textLinks += ")";
+        }
+        textLinks += "<br /></span>";
+        return textLinks;
+    }
+
     /**
      * Get the number of all currently active downloads.
      *

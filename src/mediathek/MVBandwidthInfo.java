@@ -46,6 +46,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
+import mediathek.tool.MVFilmSize;
 
 /**
  * This class will manage and display the download bandwidth chart display.
@@ -53,7 +54,6 @@ import mediathek.tool.MVConfig;
 public class MVBandwidthInfo extends javax.swing.JDialog {
 
     private double counter = 0; // double sonst "läuft" die Chart nicht
-    long restzeit = 0;
     private JCheckBoxMenuItem menuItem = null;
     private Trace2DLtd m_trace = new Trace2DLtd(300);
     private IAxis x_achse = null;
@@ -123,8 +123,10 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
                 setSliderBandwith();
             }
         });
-        jLabelAktuell.setText("");
-        jLabelInfo.setText("");
+        jEditorPaneInfo.setText("");
+        jEditorPaneInfo.setEditable(false);
+        jEditorPaneInfo.setFocusable(false);
+        jEditorPaneInfo.setContentType("text/html");
         jSliderBandwidth.setMajorTickSpacing(10);
         jSliderBandwidth.setMinorTickSpacing(5);
         jSliderBandwidth.setToolTipText("");
@@ -177,15 +179,27 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
         try {
             if (menuItem.isSelected()) {
                 timerTask = new TimerTask() {
+                    long restzeit = 0;
+                    long sumDownloadSize = 0;
+                    long aktSize = 0;
+                    double bandwidth = 0.0;
+                    int anzDownoads = 0;
+
                     @Override
                     public void run() {
-                        double bandwidth = 0.0;
+                        bandwidth = 0.0;
                         //only count running/active downloads and calc accumulated progress..
                         LinkedList<DatenDownload> activeDownloadList = Daten.listeDownloads.getListOfStartsNotFinished(Start.QUELLE_ALLE);
                         restzeit = 0;
+                        sumDownloadSize = 0;
+                        aktSize = 0;
+                        anzDownoads = 0;
                         for (DatenDownload download : activeDownloadList) {
+                            ++anzDownoads;
+                            sumDownloadSize += (download.mVFilmSize.getSize() > 0 ? download.mVFilmSize.getSize() : 0);
                             if (download.start != null && download.start.status == Start.STATUS_RUN) {
                                 bandwidth += download.start.bandbreite;
+                                aktSize += (download.mVFilmSize.getAktSize() > 0 ? download.mVFilmSize.getAktSize() : 0);
                                 if (download.start.restSekunden > restzeit) {
                                     // der längeste gibt die Restzeit vor
                                     restzeit = download.start.restSekunden;
@@ -204,8 +218,7 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                jLabelAktuell.setText(getRestzeit(restzeit));
-                                jLabelInfo.setText(Daten.listeDownloads.getInfo(false));
+                                setInfoText(restzeit, sumDownloadSize, aktSize, bandwidth, anzDownoads);
                             }
                         });
                     }
@@ -243,20 +256,62 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    private void setInfoText(long restzeit, long sumDownoadSize, long sumAktSize, double bandwidth, int anzDownloads) {
+        final String HEAD = "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head>"
+                + "<style type=\"text/css\" .sans {font-family: Verdana, Geneva, sans-serif;}</style></head><body>";
+        final String END = "</body></html>";
+        // Restzeit raten
+        long gesmtRestzeit = 0;
+        if (anzDownloads > 0 && sumDownoadSize > 0 && bandwidth > 1) {
+            gesmtRestzeit = sumDownoadSize - sumAktSize;
+            if (gesmtRestzeit <= 0) {
+                gesmtRestzeit = 0;
+            } else {
+                gesmtRestzeit = gesmtRestzeit / (long) bandwidth;
+            }
+        }
+
+        String info = HEAD;
+        info += Daten.listeDownloads.getInfo();
+        if (restzeit > 0 || gesmtRestzeit > 0) {
+            if (restzeit > gesmtRestzeit) {
+                gesmtRestzeit = 0; // falsch geraten oder es gibt nur einen
+            }
+            if (restzeit > 0) {
+                info += "<span class=\"sans\"><b>Restzeit: </b>" + getRestzeit(restzeit) + " von " + getRestzeit(gesmtRestzeit) + "<br /></span>";
+            } else {
+                info += "<span class=\"sans\"><b>Restzeit: </b>" + getRestzeit(gesmtRestzeit) + "<br /></span>";
+            }
+
+        }
+        if (sumDownoadSize > 0 || sumAktSize > 0) {
+            info += "<span class=\"sans\"><b>Größe: </b>";
+            if (sumAktSize > 0) {
+                info += MVFilmSize.getGroesse(sumAktSize) + " von " + MVFilmSize.getGroesse(sumDownoadSize) + " MByte" + "<br /></span>";
+            } else {
+                info += MVFilmSize.getGroesse(sumDownoadSize) + " MByte" + "<br /></span>";
+            }
+        }
+        info += END;
+        jEditorPaneInfo.setText(info);
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jSplitPane1 = new javax.swing.JSplitPane();
         jPanelChart = new javax.swing.JPanel();
         jPanelInfo = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jSliderBandwidth = new javax.swing.JSlider();
         jLabelBandwith = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabelAktuell = new javax.swing.JLabel();
-        jLabelInfo = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jEditorPaneInfo = new javax.swing.JEditorPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        jSplitPane1.setDividerLocation(120);
+        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
         jPanelChart.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
@@ -264,12 +319,14 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
         jPanelChart.setLayout(jPanelChartLayout);
         jPanelChartLayout.setHorizontalGroup(
             jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 375, Short.MAX_VALUE)
         );
         jPanelChartLayout.setVerticalGroup(
             jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 107, Short.MAX_VALUE)
+            .addGap(0, 115, Short.MAX_VALUE)
         );
+
+        jSplitPane1.setTopComponent(jPanelChart);
 
         jPanelInfo.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
@@ -277,11 +334,7 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
 
         jLabelBandwith.setText("10 kByte/s");
 
-        jLabel2.setText("Restzeit:");
-
-        jLabelAktuell.setText("jLabel3");
-
-        jLabelInfo.setText("jLabel4");
+        jScrollPane1.setViewportView(jEditorPaneInfo);
 
         javax.swing.GroupLayout jPanelInfoLayout = new javax.swing.GroupLayout(jPanelInfo);
         jPanelInfo.setLayout(jPanelInfoLayout);
@@ -290,20 +343,13 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
             .addGroup(jPanelInfoLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(jPanelInfoLayout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSliderBandwidth, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
+                        .addComponent(jSliderBandwidth, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabelBandwith))
-                    .addGroup(jPanelInfoLayout.createSequentialGroup()
-                        .addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanelInfoLayout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabelAktuell))
-                            .addComponent(jLabelInfo))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(jLabelBandwith)))
                 .addContainerGap())
         );
         jPanelInfoLayout.setVerticalGroup(
@@ -315,28 +361,22 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
                     .addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jSliderBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel1)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabelAktuell))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabelInfo)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
+                .addContainerGap())
         );
+
+        jSplitPane1.setRightComponent(jPanelInfo);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanelInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanelChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelInfo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
         );
 
         pack();
@@ -344,14 +384,14 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JEditorPane jEditorPaneInfo;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabelAktuell;
     private javax.swing.JLabel jLabelBandwith;
-    private javax.swing.JLabel jLabelInfo;
     private javax.swing.JPanel jPanelChart;
     private javax.swing.JPanel jPanelInfo;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSlider jSliderBandwidth;
+    private javax.swing.JSplitPane jSplitPane1;
     // End of variables declaration//GEN-END:variables
     private class BeobMaus extends MouseAdapter {
 

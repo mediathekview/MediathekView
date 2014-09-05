@@ -52,7 +52,7 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
                 sizeL = sizeL * 1000 * 1000;
                 sizeStr = size;
             } catch (Exception ex) {
-                Log.fehlerMeldung(978745320,  MVFilmSize.class.getName(), ex, "String: " + size);
+                Log.fehlerMeldung(978745320, MVFilmSize.class.getName(), ex, "String: " + size);
                 sizeL = 0L;
                 sizeStr = "";
             }
@@ -103,7 +103,7 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
         }
     }
 
-    private String getGroesse(long l) {
+    public static String getGroesse(long l) {
         String ret = "";
         if (l > 1000 * 1000) {
             // größer als 1MB sonst kann ich mirs sparen
