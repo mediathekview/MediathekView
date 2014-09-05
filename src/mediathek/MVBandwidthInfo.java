@@ -71,7 +71,8 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
      * @param parent
      * @param menuItem */
     public MVBandwidthInfo(JFrame parent, final JCheckBoxMenuItem menuItem) {
-        super((JFrame) null, false);
+        //super((JFrame) null, false);
+        super(parent, false);
         initComponents();
 
         this.menuItem = menuItem;
@@ -253,9 +254,9 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
     public String getRestzeit(long restzeit) {
         if (restzeit > 0) {
             if (restzeit < 60) {
-                return "< 1 Min.";
+                return "< 1 Min";
             } else {
-                return Long.toString(restzeit / 60) + " Min.";
+                return Long.toString(restzeit / 60) + " Min";
             }
         }
         return "";
@@ -288,17 +289,17 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
 
         String info = HEAD;
         info += Daten.listeDownloads.getInfo();
-        if (restzeit > 0 || gesmtRestzeit > 0) {
-            if (restzeit > gesmtRestzeit) {
-                gesmtRestzeit = 0; // falsch geraten oder es gibt nur einen
-            }
-            if (restzeit > 0) {
-                info += "<span class=\"sans\"><b>Restzeit: </b>" + getRestzeit(restzeit) + " von " + getRestzeit(gesmtRestzeit) + "<br /></span>";
-            } else {
-                info += "<span class=\"sans\"><b>Restzeit: </b>" + getRestzeit(gesmtRestzeit) + "<br /></span>";
-            }
-
+        if (restzeit > gesmtRestzeit) {
+            gesmtRestzeit = 0; // falsch geraten oder es gibt nur einen
         }
+        if (restzeit > 0 && gesmtRestzeit > 0) {
+            info += "<span class=\"sans\"><b>Restzeit: </b>" + "akt: " + getRestzeit(restzeit) + " Gesamt: " + getRestzeit(gesmtRestzeit) + "<br /></span>";
+        } else if (restzeit > 0) {
+            info += "<span class=\"sans\"><b>Restzeit: </b>" + getRestzeit(restzeit) + "<br /></span>";
+        } else if (gesmtRestzeit > 0) {
+            info += "<span class=\"sans\"><b>Restzeit: </b>" + getRestzeit(gesmtRestzeit) + "<br /></span>";
+        }
+
         if (sumDownoadSize > 0 || sumAktSize > 0) {
             info += "<span class=\"sans\"><b>Größe: </b>";
             if (sumAktSize > 0) {
