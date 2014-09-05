@@ -30,6 +30,7 @@ import mediathek.daten.ListePsetVorlagen;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
+import mediathek.tool.BeobMausUrl;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Konstanten;
@@ -57,12 +58,16 @@ public class PanelHilfe extends PanelVorlage {
         try {
             jXHyperlinkWebsite.setText(Konstanten.ADRESSE_WEBSITE);
             jXHyperlinkWebsite.addActionListener(new UrlHyperlinkAction(parentComponent, daten, Konstanten.ADRESSE_WEBSITE));
+            jXHyperlinkWebsite.addMouseListener(new BeobMausUrl(jXHyperlinkWebsite));
             jXHyperlinkAnleitung.setText(Konstanten.ADRESSE_ANLEITUNG);
             jXHyperlinkAnleitung.addActionListener(new UrlHyperlinkAction(parentComponent, daten, Konstanten.ADRESSE_ANLEITUNG));
+            jXHyperlinkAnleitung.addMouseListener(new BeobMausUrl(jXHyperlinkAnleitung));
             jXHyperlinkForum.setText(Konstanten.ADRESSE_FORUM);
             jXHyperlinkForum.addActionListener(new UrlHyperlinkAction(parentComponent, daten, Konstanten.ADRESSE_FORUM));
+            jXHyperlinkForum.addMouseListener(new BeobMausUrl(jXHyperlinkForum));
             jXHyperlinkSpende.setText(Konstanten.ADRESSE_DONATION);
             jXHyperlinkSpende.addActionListener(new UrlHyperlinkAction(parentComponent, daten, Konstanten.ADRESSE_DONATION));
+            jXHyperlinkSpende.addMouseListener(new BeobMausUrl(jXHyperlinkSpende));
         } catch (URISyntaxException ignored) {
         }
         jButtonLogErstellen.addActionListener(new ActionListener() {
