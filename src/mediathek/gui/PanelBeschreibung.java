@@ -63,7 +63,6 @@ public class PanelBeschreibung extends JPanel {
         }
         jXHyperlinkWebsite.addMouseListener(new BeobMausUrl(jXHyperlinkWebsite));
         jEditorPane.setEditable(false);
-//        jEditorPane.setFocusable(false);
         jEditorPane.setContentType("text/html");
         jCheckBoxChange.setIcon(GetIcon.getProgramIcon("edit_16.png"));
         jCheckBoxChange.addActionListener(new ActionListener() {

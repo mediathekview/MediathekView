@@ -34,12 +34,15 @@ public class BeobMausUrl extends MouseAdapter {
 
     private final BeobUrl beobUrl = new BeobUrl();
     private final String link;
+    private final JButton jButton;
 
-    public BeobMausUrl(JButton link) {
-        this.link = link.getText();
+    public BeobMausUrl(JButton jButton) {
+        this.jButton = jButton;
+        this.link = null;
     }
 
     public BeobMausUrl(String link) {
+        jButton = null;
         this.link = link;
     }
 
@@ -72,7 +75,11 @@ public class BeobMausUrl extends MouseAdapter {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            GuiFunktionen.copyToClipboard(link);
+            if (jButton == null) {
+                GuiFunktionen.copyToClipboard(link);
+            } else {
+                GuiFunktionen.copyToClipboard(jButton.getText());
+            }
         }
     }
 }
