@@ -53,36 +53,35 @@ public class UrlHyperlinkAction extends AbstractAction {
         }
     }
 
-    public static boolean urlOeffnen(JFrame paFrame, String url) throws URISyntaxException {
+    public static void urlOeffnen(JFrame paFrame, String url) throws URISyntaxException {
         if (Desktop.isDesktopSupported()) {
             Desktop d = Desktop.getDesktop();
             try {
                 if (d.isSupported(Desktop.Action.BROWSE)) {
                     d.browse(new URI(url));
-                    return true;
+                    return;
                 }
-            } catch (Exception ex) {
-                try {
-                    String programm = "";
-                    if (Daten.mVConfig.get(MVConfig.SYSTEM_URL_OEFFNEN).equals("")) {
-                        String text = "\n Der Browser zum Anzeigen der URL wird nicht gefunden.\n Browser selbst auswählen.";
-                        DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(paFrame, true, "", "Browser suchen", text);
-                        dialog.setVisible(true);
-                        if (dialog.ok) {
-                            programm = dialog.ziel;
-                        }
-                    } else {
-                        programm = Daten.mVConfig.get(MVConfig.SYSTEM_URL_OEFFNEN);
+            } catch (Exception ignored) {
+            }
+            try {
+                String programm = "";
+                if (Daten.mVConfig.get(MVConfig.SYSTEM_URL_OEFFNEN).equals("")) {
+                    String text = "\n Der Browser zum Anzeigen der URL wird nicht gefunden.\n Browser selbst auswählen.";
+                    DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(paFrame, true, "", "Browser suchen", text);
+                    dialog.setVisible(true);
+                    if (dialog.ok) {
+                        programm = dialog.ziel;
                     }
-                    Runtime.getRuntime().exec(programm + " " + url);
-                    Daten.mVConfig.add(MVConfig.SYSTEM_URL_OEFFNEN, programm);
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, UrlHyperlinkAction.class.getSimpleName());
-                } catch (Exception eex) {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_URL_OEFFNEN, ""); // dann wars wohl nix
-                    Log.fehlerMeldung(316497658,  UrlHyperlinkAction.class.getName(), eex, "URL öffnen: " + url);
+                } else {
+                    programm = Daten.mVConfig.get(MVConfig.SYSTEM_URL_OEFFNEN);
                 }
+                Runtime.getRuntime().exec(programm + " " + url);
+                Daten.mVConfig.add(MVConfig.SYSTEM_URL_OEFFNEN, programm);
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, UrlHyperlinkAction.class.getSimpleName());
+            } catch (Exception ex) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_URL_OEFFNEN, ""); // dann wars wohl nix
+                Log.fehlerMeldung(316497658, UrlHyperlinkAction.class.getName(), ex, "URL öffnen: " + url);
             }
         }
-        return false;
     }
 }
