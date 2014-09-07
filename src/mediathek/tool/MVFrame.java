@@ -24,7 +24,7 @@ import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.WindowConstants;
-import mediathek.MVToolBar;
+import mediathek.gui.MVToolBar;
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;

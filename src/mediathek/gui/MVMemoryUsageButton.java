@@ -1,4 +1,4 @@
-package mediathek;
+package mediathek.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;

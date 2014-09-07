@@ -29,7 +29,6 @@ import javax.swing.JPanel;
 import mediathek.MediathekGui;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
-import mediathek.gui.dialogEinstellungen.PanelInfoStarts;
 import mediathek.tool.Duration;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVNotification;
@@ -119,6 +118,13 @@ public class GuiDebug extends JPanel {
                 System.gc();
             }
         });
+        jButtonClean.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Daten.listeFilme.cleanList();
+            }
+        });
         jButtonNotify.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -160,6 +166,7 @@ public class GuiDebug extends JPanel {
         jButtonFilmlisteLoeschen = new javax.swing.JButton();
         jButtonNeuLaden = new javax.swing.JButton();
         jButtonCheck = new javax.swing.JButton();
+        jButtonClean = new javax.swing.JButton();
         javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
         jButtonCheckUrl = new javax.swing.JButton();
         jTextFieldUrl = new javax.swing.JTextField();
@@ -205,6 +212,8 @@ public class GuiDebug extends JPanel {
 
         jButtonCheck.setText("Check Filmliste");
 
+        jButtonClean.setText("Clean Filmliste");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -214,12 +223,15 @@ public class GuiDebug extends JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanelSender, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jButtonFilmlisteLoeschen)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jButtonNeuLaden))
-                            .addComponent(jButtonCheck))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jButtonCheck)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButtonClean, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGap(0, 103, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -234,7 +246,9 @@ public class GuiDebug extends JPanel {
                     .addComponent(jButtonFilmlisteLoeschen)
                     .addComponent(jButtonNeuLaden))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonCheck)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonCheck)
+                    .addComponent(jButtonClean))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanelSender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -328,6 +342,7 @@ public class GuiDebug extends JPanel {
     private javax.swing.JButton jButtonAllesSpeichern;
     private javax.swing.JButton jButtonCheck;
     private javax.swing.JButton jButtonCheckUrl;
+    private javax.swing.JButton jButtonClean;
     private javax.swing.JButton jButtonFehler;
     private javax.swing.JButton jButtonFilmlisteLoeschen;
     private javax.swing.JButton jButtonGc;

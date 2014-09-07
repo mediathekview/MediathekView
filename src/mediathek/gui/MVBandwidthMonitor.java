@@ -1,4 +1,4 @@
-package mediathek;
+package mediathek.gui;
 
 import com.explodingpixels.macwidgets.HudWindow;
 import com.jidesoft.utils.SystemInfo;
@@ -29,7 +29,7 @@ import mediathek.tool.MVConfig;
 /**
  * This class will manage and display the download bandwidth chart display.
  */
-class MVBandwidthMonitor {
+public class MVBandwidthMonitor {
 
     private double counter = 0; // double sonst "läuft" die Chart nicht
     private HudWindow hudWindow = null;
