@@ -19,6 +19,9 @@
  */
 package mediathek;
 
+import mediathek.gui.MVStatusBar;
+import mediathek.gui.MVToolBar;
+import mediathek.gui.MVBandwidthInfo;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.*;
 import java.awt.event.ActionEvent;

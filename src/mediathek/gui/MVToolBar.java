@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek;
+package mediathek.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -66,7 +66,7 @@ public final class MVToolBar extends JToolBar {
     MVButton jButtonFilmeLaden;
     JButton jButtonFilterPanel;
     MVButton jButtonInfo;
-    JXSearchField jTextFieldFilter;
+    public JXSearchField jTextFieldFilter;
 
     private String nrToolbar = "";
     private String nrIconKlein = "";

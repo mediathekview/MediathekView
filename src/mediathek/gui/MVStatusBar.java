@@ -1,4 +1,4 @@
-package mediathek;
+package mediathek.gui;
 
 import com.explodingpixels.macwidgets.BottomBar;
 import com.explodingpixels.macwidgets.BottomBarSize;
@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
+import mediathek.gui.MVMemoryUsageButton;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;

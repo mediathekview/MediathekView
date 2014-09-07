@@ -63,13 +63,17 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jPanelSender" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jButtonFilmlisteLoeschen" linkSize="3" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                       <Component id="jButtonNeuLaden" linkSize="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="jButtonCheck" linkSize="3" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jButtonCheck" linkSize="3" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="jButtonClean" max="32767" attributes="0"/>
+                                  </Group>
                               </Group>
                               <EmptySpace min="0" pref="103" max="32767" attributes="0"/>
                           </Group>
@@ -87,7 +91,10 @@
                           <Component id="jButtonNeuLaden" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="jButtonCheck" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jButtonCheck" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButtonClean" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jPanelSender" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -160,6 +167,11 @@
             <Component class="javax.swing.JButton" name="jButtonCheck">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Check Filmliste"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="jButtonClean">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Clean Filmliste"/>
               </Properties>
             </Component>
           </SubComponents>
