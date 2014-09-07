@@ -656,7 +656,7 @@ public class StarterClass {
                         melden = true;
                     }
                 }
-                aktBandwidth = start.mVInputStream.getBandwidth();
+                aktBandwidth = start.mVInputStream.getBandwidth(); // bytes per second
                 if (aktBandwidth != start.bandbreite) {
                     start.bandbreite = aktBandwidth;
                     melden = true;

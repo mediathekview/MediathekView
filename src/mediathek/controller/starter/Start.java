@@ -32,7 +32,7 @@ public class Start {
     public int startcounter = 0;
     public Process process = null; //Prozess des Download
     public int percent = -1; // Prozent fertiggestellt: -1=nix, 999=99,9%
-    public long bandbreite = -1; // Downloadbandbreite
+    public long bandbreite = -1; // Downloadbandbreite: bytes per second
     public boolean stoppen = false;
     public boolean beginnAnschauen = false;
     public Datum startZeit = null;

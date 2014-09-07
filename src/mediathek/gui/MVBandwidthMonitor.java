@@ -120,7 +120,7 @@ public class MVBandwidthMonitor {
                 timerTask = new TimerTask() {
                     @Override
                     public void run() {
-                        double bandwidth = 0.0;
+                        double bandwidth = 0.0; // bytes per second
                         //only count running/active downloads and calc accumulated progress..
                         LinkedList<DatenDownload> activeDownloadList = Daten.listeDownloads.getListOfStartsNotFinished(Start.QUELLE_ALLE);
                         for (DatenDownload download : activeDownloadList) {
@@ -128,7 +128,6 @@ public class MVBandwidthMonitor {
                                 bandwidth += download.start.bandbreite;
                             }
                         }
-                        activeDownloadList.clear();
 
                         if (bandwidth < 0.0) {
                             bandwidth = 0.0;
