@@ -45,6 +45,7 @@ import javax.swing.event.ChangeListener;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
+import mediathek.daten.DownloadInfos;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
@@ -195,46 +196,19 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
         try {
             if (menuItem.isSelected()) {
                 timerTask = new TimerTask() {
-                    long restzeit = 0;
-                    long sumDownloadSize = 0;
-                    long aktSize = 0;
-                    double bandwidth = 0.0;
-                    int anzDownoads = 0;
+                    DownloadInfos di = Daten.listeDownloads.getInfos();
 
                     @Override
                     public void run() {
-                        bandwidth = 0.0;
-                        //only count running/active downloads and calc accumulated progress..
-                        LinkedList<DatenDownload> activeDownloadList = Daten.listeDownloads.getListOfStartsNotFinished(Start.QUELLE_ALLE);
-                        restzeit = 0;
-                        sumDownloadSize = 0;
-                        aktSize = 0;
-                        anzDownoads = 0;
-                        for (DatenDownload download : activeDownloadList) {
-                            ++anzDownoads;
-                            sumDownloadSize += (download.mVFilmSize.getSize() > 0 ? download.mVFilmSize.getSize() : 0);
-                            if (download.start != null && download.start.status == Start.STATUS_RUN) {
-                                bandwidth += download.start.bandbreite;
-                                aktSize += (download.mVFilmSize.getAktSize() > 0 ? download.mVFilmSize.getAktSize() : 0);
-                                if (download.start.restSekunden > restzeit) {
-                                    // der längeste gibt die Restzeit vor
-                                    restzeit = download.start.restSekunden;
-                                }
-                            }
-                        }
-                        activeDownloadList.clear();
-
-                        if (bandwidth < 0.0) {
-                            bandwidth = 0.0;
-                        }
+                        Daten.listeDownloads.getInfos();
 
                         counter++;
-                        m_trace.addPoint(counter / 60, bandwidth); // minutes
-                        x_achse.getAxisTitle().setTitle(roundBandwidth(bandwidth, (long) counter));
+                        m_trace.addPoint(counter / 60, di.bandwidth); // minutes
+                        x_achse.getAxisTitle().setTitle(di.roundBandwidth((long) counter));
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                setInfoText(restzeit, sumDownloadSize, aktSize, bandwidth, anzDownoads);
+                                setInfoText(di);
                             }
                         });
                     }
@@ -251,62 +225,32 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
         }
     }
 
-    public String getRestzeit(long restzeit) {
-        if (restzeit > 0) {
-            if (restzeit < 60) {
-                return "< 1 Min";
-            } else {
-                return Long.toString(restzeit / 60) + " Min";
-            }
-        }
-        return "";
-    }
-
-    private String roundBandwidth(double bandw, long time) {
-        if (bandw > 1_000_000.0) {
-            return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + new DecimalFormat("####0.00").format(bandw / 1_000_000.0) + " MByte/s";
-        } else if (bandw > 1_000.0) {
-            return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + Math.round(bandw / 1_000.0) + " kByte/s";
-        } else {
-            return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + Math.round(bandw) + " Byte/s";
-        }
-    }
-
-    private void setInfoText(long restzeit, long sumDownoadSize, long sumAktSize, double bandwidth, int anzDownloads) {
+    private void setInfoText(DownloadInfos di) {
         final String HEAD = "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head>"
                 + "<style type=\"text/css\" .sans {font-family: Verdana, Geneva, sans-serif;}</style></head><body>";
         final String END = "</body></html>";
-        // Restzeit raten
-        long gesmtRestzeit = 0;
-        if (anzDownloads > 0 && sumDownoadSize > 0 && bandwidth > 1) {
-            gesmtRestzeit = sumDownoadSize - sumAktSize;
-            if (gesmtRestzeit <= 0) {
-                gesmtRestzeit = 0;
-            } else {
-                gesmtRestzeit = gesmtRestzeit / (long) bandwidth;
-            }
-        }
 
         String info = HEAD;
         info += Daten.listeDownloads.getInfo();
-        if (restzeit > gesmtRestzeit) {
-            gesmtRestzeit = 0; // falsch geraten oder es gibt nur einen
-        }
-        if (restzeit > 0 && gesmtRestzeit > 0) {
-            info += "<span class=\"sans\"><b>Restzeit: </b>" + "akt: " + getRestzeit(restzeit) + " Gesamt: " + getRestzeit(gesmtRestzeit) + "<br /></span>";
-        } else if (restzeit > 0) {
-            info += "<span class=\"sans\"><b>Restzeit: </b>" + getRestzeit(restzeit) + "<br /></span>";
-        } else if (gesmtRestzeit > 0) {
-            info += "<span class=\"sans\"><b>Restzeit: </b>" + getRestzeit(gesmtRestzeit) + "<br /></span>";
+        if (di.timeRestAktDownloads > 0 && di.timeRestAllDownloads > 0) {
+            info += "<span class=\"sans\"><b>Restzeit: </b>" + "laufende: " + di.getRestzeit() + ", alle: " + di.getGesamtRestzeit() + "<br /></span>";
+        } else if (di.timeRestAktDownloads > 0) {
+            info += "<span class=\"sans\"><b>Restzeit: </b>laufende: " + di.getRestzeit() + "<br /></span>";
+        } else if (di.timeRestAllDownloads > 0) {
+            info += "<span class=\"sans\"><b>Restzeit: </b>alle: " + di.getGesamtRestzeit() + "<br /></span>";
         }
 
-        if (sumDownoadSize > 0 || sumAktSize > 0) {
+        if (di.byteAlleDownloads > 0 || di.byteAktDownloads > 0) {
             info += "<span class=\"sans\"><b>Größe: </b>";
-            if (sumAktSize > 0) {
-                info += MVFilmSize.getGroesse(sumAktSize) + " von " + MVFilmSize.getGroesse(sumDownoadSize) + " MByte" + "<br /></span>";
+            if (di.byteAktDownloads > 0) {
+                info += MVFilmSize.getGroesse(di.byteAktDownloads) + " von " + MVFilmSize.getGroesse(di.byteAlleDownloads) + " MByte" + "<br /></span>";
             } else {
-                info += MVFilmSize.getGroesse(sumDownoadSize) + " MByte" + "<br /></span>";
+                info += MVFilmSize.getGroesse(di.byteAlleDownloads) + " MByte" + "<br /></span>";
             }
+        }
+        if (di.bandwidth > 0) {
+            info += "<span class=\"sans\"><b>Bandbreite: </b>";
+            info += di.roundBandwidth() + "<br /></span>";
         }
         info += END;
         jEditorPaneInfo.setText(info);

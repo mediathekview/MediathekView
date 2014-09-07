@@ -838,7 +838,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                             accumPercentage += download.start.percent / 10.0;
                         }
                     }
-                    activeDownloadList.clear();
 
                     final double percentage = accumPercentage / numOfDownloadsActive;
                     final int progressBarWidth = (int) ((appIconWidth / 100.0) * percentage);

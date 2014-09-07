@@ -42,6 +42,8 @@ import msearch.daten.DatenFilm;
 public class ListeDownloads extends LinkedList<DatenDownload> {
 
     private final Daten ddaten;
+    private final DownloadInfos downloadInfos = new DownloadInfos();
+    private final LinkedList<DatenDownload> aktivDownloads = new LinkedList<>();
 
     public ListeDownloads(Daten ddaten) {
         this.ddaten = ddaten;
@@ -90,6 +92,47 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         if (gefunden) {
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         }
+    }
+
+    public synchronized DownloadInfos getInfos() {
+        downloadInfos.clean();
+
+        LinkedList<DatenDownload> activeDownloadList = getListOfStartsNotFinished(Start.QUELLE_ALLE);
+        for (DatenDownload download : activeDownloadList) {
+            ++downloadInfos.anzDownloadsRun;
+            downloadInfos.byteAlleDownloads += (download.mVFilmSize.getSize() > 0 ? download.mVFilmSize.getSize() : 0);
+            if (download.start != null && download.start.status == Start.STATUS_RUN) {
+                // die Downlaods laufen gerade
+                downloadInfos.bandwidth += download.start.bandbreite; // bytes per second
+                downloadInfos.byteAktDownloads += (download.mVFilmSize.getAktSize() > 0 ? download.mVFilmSize.getAktSize() : 0);
+                if (download.start.restSekunden > downloadInfos.timeRestAktDownloads) {
+                    // der längeste gibt die aktuelle Restzeit vor
+                    downloadInfos.timeRestAktDownloads = download.start.restSekunden;
+                }
+            }
+        }
+
+        if (downloadInfos.bandwidth < 0) {
+            downloadInfos.bandwidth = 0;
+        }
+
+        if (downloadInfos.bandwidth > 0) {
+            // sonst macht die Restzeit keinen Sinn
+            final long b = downloadInfos.byteAlleDownloads - downloadInfos.byteAktDownloads;
+            if (b <= 0) {
+                downloadInfos.timeRestAllDownloads = 0;
+            } else {
+                downloadInfos.timeRestAllDownloads = b / downloadInfos.bandwidth;
+            }
+            if (downloadInfos.timeRestAllDownloads < downloadInfos.timeRestAktDownloads) {
+                downloadInfos.timeRestAllDownloads = downloadInfos.timeRestAktDownloads; // falsch geraten oder es gibt nur einen
+            }
+            if (downloadInfos.anzDownloadsRun == 1) {
+                downloadInfos.timeRestAllDownloads = 0; // gibt ja nur noch einen
+            }
+        }
+
+        return downloadInfos;
     }
 
     public synchronized void listePutzen(DatenDownload datenDownload) {
@@ -610,17 +653,17 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
      * @return A list with all download objects.
      */
     public synchronized LinkedList<DatenDownload> getListOfStartsNotFinished(int quelle) {
-        LinkedList<DatenDownload> ret = new LinkedList<>();
+        aktivDownloads.clear();
         for (DatenDownload download : this) {
             if (download.start != null) {
                 if (download.start.status < Start.STATUS_FERTIG) {
                     if (download.getQuelle() == quelle || quelle == Start.QUELLE_ALLE) {
-                        ret.add(download);
+                        aktivDownloads.add(download);
                     }
                 }
             }
         }
-        return ret;
+        return aktivDownloads;
     }
 
     public synchronized TModel getModelStarts(TModel model) {
