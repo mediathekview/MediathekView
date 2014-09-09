@@ -20,6 +20,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Frame;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -93,6 +94,13 @@ public class PanelEinstellungen extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Daten.mVConfig.add(MVConfig.SYSTEM_DOWNLOAD_BEEP, String.valueOf(jCheckBoxBeep.isSelected()));
+            }
+        });
+        jButtonBeep.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Toolkit.getDefaultToolkit().beep();
             }
         });
         jButtonSuchen.addActionListener(new BeobSuchen(false));
@@ -291,6 +299,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jCheckBoxBeep = new javax.swing.JCheckBox();
+        jButtonBeep = new javax.swing.JButton();
 
         setMinimumSize(getPreferredSize());
 
@@ -396,6 +405,8 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jCheckBoxBeep.setText("Nach jedem Download einen \"Beep\" ausgeben");
 
+        jButtonBeep.setText("Testen");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -423,7 +434,10 @@ public class PanelEinstellungen extends PanelVorlage {
                         .addContainerGap())
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBoxBeep)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jCheckBoxBeep)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButtonBeep))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addGap(6, 6, 6)
@@ -440,7 +454,9 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxNotification)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxBeep)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jCheckBoxBeep)
+                    .addComponent(jButtonBeep))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel3)
@@ -483,6 +499,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonBeep;
     private javax.swing.JButton jButtonHilfeAnzahl;
     private javax.swing.JButton jButtonInfos;
     private javax.swing.JButton jButtonRefresh;
