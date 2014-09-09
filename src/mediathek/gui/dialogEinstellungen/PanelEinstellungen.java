@@ -88,6 +88,13 @@ public class PanelEinstellungen extends PanelVorlage {
             }
         });
         jCheckBoxSuchen.addActionListener(new BeobCheckBoxSuchen());
+        jCheckBoxBeep.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_DOWNLOAD_BEEP, String.valueOf(jCheckBoxBeep.isSelected()));
+            }
+        });
         jButtonSuchen.addActionListener(new BeobSuchen(false));
         jButtonInfos.addActionListener(new BeobSuchen(true));
         jButtonRefresh.addActionListener(new ActionListener() {
@@ -161,7 +168,7 @@ public class PanelEinstellungen extends PanelVorlage {
         } catch (Exception ex) {
             Daten.mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
             Daten.mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, "");
-            Log.fehlerMeldung(829304789,  "PanelEinstellungen", ex);
+            Log.fehlerMeldung(829304789, "PanelEinstellungen", ex);
         }
     }
 
@@ -169,6 +176,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jCheckBoxNotification.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_NOTIFICATION)));
         jCheckBoxSuchen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_UPDATE_SUCHEN)));
         jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE)));
+        jCheckBoxBeep.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DOWNLOAD_BEEP)));
 
         if (Daten.mVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD).equals("")) {
             jSpinnerDownload.setValue(1);
@@ -247,7 +255,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(636875409,  "PanelEinstellungen", ex);
+            Log.fehlerMeldung(636875409, "PanelEinstellungen", ex);
         }
         DefaultComboBoxModel model = new DefaultComboBoxModel(iconList.toArray());
         jComboBoxIcons.setModel(model);
@@ -282,6 +290,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jSliderBandbreite = new javax.swing.JSlider();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        jCheckBoxBeep = new javax.swing.JCheckBox();
 
         setMinimumSize(getPreferredSize());
 
@@ -385,6 +394,8 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jLabel5.setText("(nur für direkte Downloads)");
 
+        jCheckBoxBeep.setText("Nach jedem Download einen \"Beep\" ausgeben");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -397,13 +408,6 @@ public class PanelEinstellungen extends PanelVorlage {
                             .addComponent(jCheckBoxEchtzeit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jCheckBoxNotification, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(64, 64, 64))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(6, 6, 6)
-                        .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButtonHilfeAnzahl)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -416,7 +420,17 @@ public class PanelEinstellungen extends PanelVorlage {
                                 .addComponent(jLabelBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jSliderBandbreite, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addContainerGap())))
+                        .addContainerGap())
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCheckBoxBeep)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(6, 6, 6)
+                                .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButtonHilfeAnzahl)))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -426,6 +440,8 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxNotification)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBoxBeep)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel3)
                     .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -457,11 +473,11 @@ public class PanelEinstellungen extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pnlProgramUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(138, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -471,6 +487,7 @@ public class PanelEinstellungen extends PanelVorlage {
     private javax.swing.JButton jButtonInfos;
     private javax.swing.JButton jButtonRefresh;
     private javax.swing.JButton jButtonSuchen;
+    private javax.swing.JCheckBox jCheckBoxBeep;
     private javax.swing.JCheckBox jCheckBoxEchtzeit;
     private javax.swing.JCheckBox jCheckBoxNotification;
     private javax.swing.JCheckBox jCheckBoxSuchen;
