@@ -34,6 +34,7 @@ import javax.script.ScriptEngineManager;
 import javax.swing.SwingUtilities;
 
 import com.jidesoft.utils.SystemInfo;
+import java.awt.Toolkit;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
@@ -165,7 +166,7 @@ public class StarterClass {
 
     private void fertigmeldung(final DatenDownload datenDownload, final Start start, boolean abgebrochen) {
         if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DOWNLOAD_BEEP))) {
-            java.awt.Toolkit.getDefaultToolkit().beep();
+            Toolkit.getDefaultToolkit().beep();
         }
         ArrayList<String> text = new ArrayList<>();
         if (abgebrochen) {
