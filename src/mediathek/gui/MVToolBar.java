@@ -165,7 +165,7 @@ public final class MVToolBar extends JToolBar {
         jButtonFilterPanel = new JButton();
 
         jTextFieldFilter = new org.jdesktop.swingx.JXSearchField();
-        
+
         this.add(filler__5);
         if (!extern) {
             this.add(jButtonFilmeLaden);
@@ -199,19 +199,6 @@ public final class MVToolBar extends JToolBar {
         }
         if (!extern) {
             this.add(filler__trenner);
-//            // Button Filter
-//            jButtonFilterPanel.setToolTipText("Erweiterte Suche / Filter anzeigen");
-//            jButtonFilterPanel.setBorder(null);
-//            jButtonFilterPanel.setBorderPainted(false);
-//            jButtonFilterPanel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-//            jButtonFilterPanel.setMaximumSize(new java.awt.Dimension(40, 40));
-//            jButtonFilterPanel.setMinimumSize(new java.awt.Dimension(40, 40));
-//            jButtonFilterPanel.setOpaque(false);
-//            jButtonFilterPanel.setPreferredSize(new java.awt.Dimension(40, 40));
-//            jButtonFilterPanel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-//            jButtonFilterPanel.setIcon(GetIcon.getIcon("filter_anzeigen_22.png"));
-//            this.add(jButtonFilterPanel);
-
             // Searchfield
             jTextFieldFilter.setBackground(new java.awt.Color(230, 230, 230));
             jTextFieldFilter.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -325,6 +312,7 @@ public final class MVToolBar extends JToolBar {
     }
 
     public void filterAnzeigen() {
+        jTextFieldFilter.setEnabled(state.equals(TOOLBAR_TAB_FILME));
         if (!extern) {
             jTextFieldFilter.setVisible(!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
         } else {
