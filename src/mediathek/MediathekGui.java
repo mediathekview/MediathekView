@@ -1317,8 +1317,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         // Dialog Einstellungen
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_EINSTELLUNGEN, dialogEinstellungen);
         // Infodialog/Bandwidth
-        GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, bandwidthInfo);
-        Daten.mVConfig.add(MVConfig.SYSTEM_DIVIDER_INFODIALOG, String.valueOf(bandwidthInfo.getDividerLocation()));
+        if (bandwidthInfo != null) {
+          GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, bandwidthInfo);
+          Daten.mVConfig.add(MVConfig.SYSTEM_DIVIDER_INFODIALOG, String.valueOf(bandwidthInfo.getDividerLocation()));
+        }
 
         Daten.mVConfig.add(MVConfig.SYSTEM_BREITE_MELDUNGEN, String.valueOf(splitPane.getDividerLocation()));
         // Frames
