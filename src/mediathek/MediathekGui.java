@@ -95,6 +95,11 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
      * The application proxy object into OS X´s native world.
      */
     final private DefaultApplication application = new DefaultApplication();
+    /**
+     * Bandwidth monitoring for downloads.
+     */
+    private MVBandwidthMonitor bandwidthMonitor = null;
+    private MVBandwidthInfo bandwidthInfo = null;
 
     /**
      * Return the currently used java native bridge object
@@ -330,13 +335,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         } else {
             bandwidthInfo = new MVBandwidthInfo(this, cbBandwidthDisplay);
             bandwidthInfo.toggleVisibility();
-            try {
-                int divider = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_DIVIDER_INFODIALOG));
-                if (divider > 0) {
-                    bandwidthInfo.setDividerLocation(divider);
-                }
-            } catch (NumberFormatException ignored) {
-            }
             cbBandwidthDisplay.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -771,12 +769,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             }
         });
     }
-
-    /**
-     * Bandwidth monitoring for downloads.
-     */
-    private MVBandwidthMonitor bandwidthMonitor = null;
-    private MVBandwidthInfo bandwidthInfo = null;
 
     /**
      * This thread will update the percentage drawn on the dock icon on OS X.
@@ -1312,15 +1304,15 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         } else {
             Daten.mVConfig.add(MVConfig.SYSTEM_FENSTER_MAX, Boolean.FALSE.toString());
         }
-        
+
         // Hauptfenster
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE, this);
         // Dialog Einstellungen
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_EINSTELLUNGEN, dialogEinstellungen);
         // Infodialog/Bandwidth
         if (bandwidthInfo != null) {
-          GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, bandwidthInfo);
-          Daten.mVConfig.add(MVConfig.SYSTEM_DIVIDER_INFODIALOG, String.valueOf(bandwidthInfo.getDividerLocation()));
+            GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, bandwidthInfo.getDialog());
+            Daten.mVConfig.add(MVConfig.SYSTEM_DIVIDER_INFODIALOG, String.valueOf(bandwidthInfo.getDividerLocation()));
         }
         Daten.mVConfig.add(MVConfig.SYSTEM_BREITE_MELDUNGEN, String.valueOf(splitPane.getDividerLocation()));
 

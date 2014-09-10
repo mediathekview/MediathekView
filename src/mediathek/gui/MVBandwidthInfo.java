@@ -19,6 +19,8 @@
  */
 package mediathek.gui;
 
+import com.explodingpixels.macwidgets.HudWindow;
+import com.jidesoft.utils.SystemInfo;
 import info.monitorenter.gui.chart.Chart2D;
 import info.monitorenter.gui.chart.IAxis;
 import info.monitorenter.gui.chart.labelformatters.LabelFormatterAutoUnits;
@@ -26,58 +28,55 @@ import info.monitorenter.gui.chart.rangepolicies.RangePolicyForcedPoint;
 import info.monitorenter.gui.chart.traces.Trace2DLtd;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.TimerTask;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.daten.Daten;
 import mediathek.daten.DownloadInfos;
+import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFilmSize;
 
-/**
- * This class will manage and display the download bandwidth chart display.
- */
-public class MVBandwidthInfo extends javax.swing.JDialog {
+public class MVBandwidthInfo extends javax.swing.JPanel {
 
     private double counter = 0; // double sonst "läuft" die Chart nicht
     private JCheckBoxMenuItem menuItem = null;
     private Trace2DLtd m_trace = new Trace2DLtd(300);
     private IAxis x_achse = null;
     private boolean stopBeob = false;
+    private HudWindow hudWindow = null;
     /**
      * Timer for collecting sample data.
      */
     private final java.util.Timer timer = new java.util.Timer(false);
     private TimerTask timerTask = null;
 
-    /** Creates new form MVBandwidthInfo
+    /** Creates new form MVBandwidthInfo_
      *
      * @param parent
      * @param menuItem */
     public MVBandwidthInfo(JFrame parent, final JCheckBoxMenuItem menuItem) {
-        //super((JFrame) null, false);
-        super(parent, false);
         initComponents();
-
         this.menuItem = menuItem;
-        setTitle("Bandbreite");
-        GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, this, parent);
+//        if (!SystemInfo.isMacOSX()) {
+//            parent = null;
+//        }
+        hudWindow = new HudWindow("Bandbreite", parent);
+        hudWindow.makeResizeable();
 
-        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
+        JDialog hudDialog = hudWindow.getJDialog();
+        hudDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        hudDialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 menuItem.setSelected(false);
@@ -89,6 +88,15 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
         chart.setPaintLabels(true);
         chart.setUseAntialiasing(true);
         chart.setToolTipType(Chart2D.ToolTipType.VALUE_SNAP_TO_TRACEPOINTS);
+        if (Funktionen.getOs() == Funktionen.OperatingSystemType.LINUX) {
+            hudDialog.setBackground(null);
+            chart.setOpaque(true);
+            this.setOpaque(true);
+        } else {
+            //a transparent chart is a HUGE GPU performance killer and will BURN GPU resources :(
+            //panel.setOpaque(false);
+            this.setBackground(Color.WHITE);
+        }
 
         x_achse = chart.getAxisX();
         x_achse.getAxisTitle().setTitle("Minuten");
@@ -137,20 +145,38 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
                     return;
                 }
                 int b = jSliderBandwidth.getValue() * 10;
-                jLabelBandwith.setText(b + " kByte/s");
+                jLabelBandwidth.setText(b + " kByte/s");
                 Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getName());
             }
         });
-        jSplitPane1.setOneTouchExpandable(true);
+
+        hudWindow.setContentPane(this);
+
+        if (GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, hudWindow.getJDialog(), parent)) {
+            try {
+                int divider = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_DIVIDER_INFODIALOG));
+                if (divider > 0) {
+                    jSplitPane1.setDividerLocation(divider);
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        } else {
+            // erster Programmstart
+            final Dimension dim = hudDialog.getSize();
+            dim.height = 170;
+            dim.width = 300;
+            hudDialog.setSize(dim);
+            jSplitPane1.setDividerLocation(170);
+        }
+    }
+
+    public JDialog getDialog() {
+        return hudWindow.getJDialog();
     }
 
     public int getDividerLocation() {
         return jSplitPane1.getDividerLocation();
-    }
-
-    public void setDividerLocation(int div) {
-        jSplitPane1.setDividerLocation(div);
     }
 
     private void setSliderBandwith() {
@@ -164,10 +190,10 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
         }
         jSliderBandwidth.setValue(bandbreite / 10);
         if (bandbreite == 0) {
-            jLabelBandwith.setText("aus");
+            jLabelBandwidth.setText("aus");
 
         } else {
-            jLabelBandwith.setText(bandbreite + " kByte/s");
+            jLabelBandwidth.setText(bandbreite + " kByte/s");
         }
         stopBeob = false;
     }
@@ -178,7 +204,7 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
     public void toggleVisibility() {
         final boolean isSelected = menuItem.isSelected();
         Daten.mVConfig.add(MVConfig.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(menuItem.isSelected()));
-        setVisible(isSelected);
+        hudWindow.getJDialog().setVisible(isSelected);
         try {
             if (menuItem.isSelected()) {
                 timerTask = new TimerTask() {
@@ -242,6 +268,12 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
         jEditorPaneInfo.setText(info);
     }
 
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -250,37 +282,30 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
         jPanelInfo = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jSliderBandwidth = new javax.swing.JSlider();
-        jLabelBandwith = new javax.swing.JLabel();
+        jLabelBandwidth = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jEditorPaneInfo = new javax.swing.JEditorPane();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
-        jSplitPane1.setDividerLocation(120);
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-
-        jPanelChart.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        jSplitPane1.setOneTouchExpandable(true);
 
         javax.swing.GroupLayout jPanelChartLayout = new javax.swing.GroupLayout(jPanelChart);
         jPanelChart.setLayout(jPanelChartLayout);
         jPanelChartLayout.setHorizontalGroup(
             jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 375, Short.MAX_VALUE)
+            .addGap(0, 398, Short.MAX_VALUE)
         );
         jPanelChartLayout.setVerticalGroup(
             jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 115, Short.MAX_VALUE)
+            .addGap(0, 100, Short.MAX_VALUE)
         );
 
         jSplitPane1.setTopComponent(jPanelChart);
 
-        jPanelInfo.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-
         jLabel1.setText("Max:");
 
-        jLabelBandwith.setText("10 kByte/s");
+        jLabelBandwidth.setText("10 kByte/s");
 
-        jEditorPaneInfo.setEditable(false);
         jScrollPane1.setViewportView(jEditorPaneInfo);
 
         javax.swing.GroupLayout jPanelInfoLayout = new javax.swing.GroupLayout(jPanelInfo);
@@ -294,9 +319,9 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
                     .addGroup(jPanelInfoLayout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSliderBandwidth, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
+                        .addComponent(jSliderBandwidth, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabelBandwith)))
+                        .addComponent(jLabelBandwidth)))
                 .addContainerGap())
         );
         jPanelInfoLayout.setVerticalGroup(
@@ -304,19 +329,19 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
             .addGroup(jPanelInfoLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabelBandwith)
+                    .addComponent(jLabelBandwidth)
                     .addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jSliderBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jSplitPane1.setRightComponent(jPanelInfo);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSplitPane1)
@@ -325,20 +350,17 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSplitPane1)
         );
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JEditorPane jEditorPaneInfo;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabelBandwith;
+    private javax.swing.JLabel jLabelBandwidth;
     private javax.swing.JPanel jPanelChart;
     private javax.swing.JPanel jPanelInfo;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSlider jSliderBandwidth;
     private javax.swing.JSplitPane jSplitPane1;
     // End of variables declaration//GEN-END:variables
-
 }
