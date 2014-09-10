@@ -32,8 +32,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.text.DecimalFormat;
-import java.util.LinkedList;
 import java.util.TimerTask;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
@@ -42,9 +40,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
-import mediathek.daten.DatenDownload;
 import mediathek.daten.DownloadInfos;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
@@ -94,12 +90,6 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
         chart.setUseAntialiasing(true);
         chart.setToolTipType(Chart2D.ToolTipType.VALUE_SNAP_TO_TRACEPOINTS);
 
-        chart.addMouseListener(new BeobMaus());
-        addMouseListener(new BeobMaus());
-        jPanelInfo.addMouseListener(new BeobMaus());
-        jSliderBandwidth.addMouseListener(new BeobMaus());
-        jPanelChart.setBackground(Color.WHITE);
-
         x_achse = chart.getAxisX();
         x_achse.getAxisTitle().setTitle("Minuten");
         x_achse.setPaintScale(true);
@@ -121,6 +111,7 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
         m_trace.setName("");
         m_trace.setColor(Color.RED);
         chart.addTrace(m_trace);
+        jPanelChart.setBackground(Color.WHITE);
         jPanelChart.setLayout(new BorderLayout(0, 0));
         jPanelChart.add(chart, BorderLayout.CENTER);
 
@@ -151,7 +142,6 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getName());
             }
         });
-        setSlider();
         jSplitPane1.setOneTouchExpandable(true);
     }
 
@@ -161,10 +151,6 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
 
     public void setDividerLocation(int div) {
         jSplitPane1.setDividerLocation(div);
-    }
-
-    private void setSlider() {
-        jPanelInfo.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BANDWIDTH_MONITOR_SLIDER)));
     }
 
     private void setSliderBandwith() {
@@ -354,39 +340,5 @@ public class MVBandwidthInfo extends javax.swing.JDialog {
     private javax.swing.JSlider jSliderBandwidth;
     private javax.swing.JSplitPane jSplitPane1;
     // End of variables declaration//GEN-END:variables
-    private class BeobMaus extends MouseAdapter {
-
-        private JCheckBoxMenuItem item;
-
-        @Override
-        public void mousePressed(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        private void showMenu(MouseEvent evt) {
-            JPopupMenu jPopupMenu = new JPopupMenu();
-            item = new JCheckBoxMenuItem("Einstellungen/Infos anzeigen");
-            item.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BANDWIDTH_MONITOR_SLIDER)));
-            item.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_BANDWIDTH_MONITOR_SLIDER, Boolean.toString(item.isSelected()));
-                    setSlider();
-                }
-            });
-            jPopupMenu.add(item);
-            //Menü anzeigen
-            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
-    }
 
 }

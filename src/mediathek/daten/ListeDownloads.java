@@ -534,9 +534,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // nicht gestarted, laufen, fertig OK, fertig fehler
         int[] starts = getStarts();
         if (starts[0] == 1) {
-            textLinks = "<span class=\"sans\"><b>Download: 1</b>";
+            textLinks = "<span class=\"sans\"><b>Download:</b> 1";
         } else {
-            textLinks = "<span class=\"sans\"><b>Downloads: " + starts[0] + "</b>";
+            textLinks = "<span class=\"sans\"><b>Downloads:</b> " + starts[0];
         }
         boolean print = false;
         for (int ii = 1; ii < starts.length; ++ii) {
@@ -546,7 +546,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (print) {
-            textLinks += " &nbsp;&nbsp;(";
+            textLinks += "&nbsp;&nbsp;( ";
             if (starts[4] == 1) {
                 textLinks += "1 läuft";
             } else {
@@ -571,7 +571,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     textLinks += ", " + starts[6] + " fehlerhaft";
                 }
             }
-            textLinks += ")";
+            textLinks += " )";
         }
         textLinks += "<br /></span>";
         return textLinks;
