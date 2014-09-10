@@ -96,7 +96,8 @@ public class GuiFunktionen extends Funktionen {
         }
     }
 
-    public static void setSize(String nr, JDialog jDialog, JFrame relativFrame) {
+    public static boolean setSize(String nr, JDialog jDialog, JFrame relativFrame) {
+        boolean ret = false;
         int breite, hoehe, posX, posY;
         breite = 0;
         hoehe = 0;
@@ -118,12 +119,14 @@ public class GuiFunktionen extends Funktionen {
         }
         if (breite > 0 && hoehe > 0) {
             jDialog.setSize(new Dimension(breite, hoehe));
+            ret = true;
         }
         if (posX > 0 && posY > 0) {
             jDialog.setLocation(posX, posY);
         } else if (relativFrame != null) {
             jDialog.setLocationRelativeTo(relativFrame);
         }
+        return ret;
     }
 
     public static String checkDateiname(String name, boolean pfad) {

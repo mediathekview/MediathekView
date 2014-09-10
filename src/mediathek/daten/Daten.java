@@ -273,6 +273,9 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_TAB_DOWNLOAD_ICON_KLEIN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_TAB_FILME_ICON_KLEIN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_TAB_ABO_ICON_KLEIN, Boolean.TRUE.toString());
+//        //MVBandwidthInfo
+//        mVConfig.add(MVConfig.SYSTEM_GROESSE_INFODIALOG, "300:170:0:0");
+//        mVConfig.add(MVConfig.SYSTEM_DIVIDER_INFODIALOG, "170");
 
         mVConfig.add(MVConfig.SYSTEM_FONT_SIZE, "0");
         // UserAgent
@@ -411,7 +414,7 @@ public class Daten {
                     Log.systemMeldung("Einstellungen wurden heute schon gesichert");
                 }
             } catch (Exception e) {
-                Log.fehlerMeldung(795623147,  Daten.class.getName(), e);
+                Log.fehlerMeldung(795623147, Daten.class.getName(), e);
             }
             if (!renameOk) {
                 Log.systemMeldung("Die Einstellungen konnten nicht komplett gesichert werden!");
