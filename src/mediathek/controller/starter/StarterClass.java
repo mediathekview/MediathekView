@@ -166,7 +166,10 @@ public class StarterClass {
 
     private void fertigmeldung(final DatenDownload datenDownload, final Start start, boolean abgebrochen) {
         if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DOWNLOAD_BEEP))) {
-            Toolkit.getDefaultToolkit().beep();
+            try {
+                Toolkit.getDefaultToolkit().beep();
+            } catch (Exception ignored) {
+            }
         }
         ArrayList<String> text = new ArrayList<>();
         if (abgebrochen) {

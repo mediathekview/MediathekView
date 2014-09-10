@@ -1312,6 +1312,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         } else {
             Daten.mVConfig.add(MVConfig.SYSTEM_FENSTER_MAX, Boolean.FALSE.toString());
         }
+        
         // Hauptfenster
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE, this);
         // Dialog Einstellungen
@@ -1321,8 +1322,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
           GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, bandwidthInfo);
           Daten.mVConfig.add(MVConfig.SYSTEM_DIVIDER_INFODIALOG, String.valueOf(bandwidthInfo.getDividerLocation()));
         }
-
         Daten.mVConfig.add(MVConfig.SYSTEM_BREITE_MELDUNGEN, String.valueOf(splitPane.getDividerLocation()));
+
         // Frames
         if (frames[0] != null) {
             GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_DOWNLOAD, frames[0]);
@@ -1333,6 +1334,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         if (frames[2] != null) {
             GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_MELDUNGEN, frames[2]);
         }
+
         // FilterFrame
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_FILTER, daten.guiFilme.mVFilterFrame);
         daten.allesSpeichern();
