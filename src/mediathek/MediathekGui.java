@@ -19,11 +19,19 @@
  */
 package mediathek;
 
-import mediathek.gui.MVStatusBar;
-import mediathek.gui.MVToolBar;
-import mediathek.gui.MVBandwidthInfo;
 import com.jidesoft.utils.SystemInfo;
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.SplashScreen;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -36,7 +44,23 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.InputMap;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JSpinner;
+import javax.swing.JSplitPane;
+import javax.swing.KeyStroke;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.controller.CheckUpdate;
@@ -45,7 +69,15 @@ import mediathek.controller.Log;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
-import mediathek.gui.*;
+import mediathek.gui.GuiAbo;
+import mediathek.gui.GuiDebug;
+import mediathek.gui.GuiDownloads;
+import mediathek.gui.GuiFilme;
+import mediathek.gui.MVBandwidthMonitor;
+import mediathek.gui.MVDownloadInfo;
+import mediathek.gui.MVStatusBar;
+import mediathek.gui.MVToolBar;
+import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialog.DialogOk;
@@ -99,7 +131,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
      * Bandwidth monitoring for downloads.
      */
     private MVBandwidthMonitor bandwidthMonitor = null;
-    private MVBandwidthInfo bandwidthInfo = null;
+    private MVDownloadInfo mvDownloadInfo = null;
 
     /**
      * Return the currently used java native bridge object
@@ -122,7 +154,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         js.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         js.setViewportView(statusBar.getComponent());
 
-        //jPanelInfo.add(statusBar.getComponent(), BorderLayout.CENTER);
         jPanelInfo.add(js, BorderLayout.CENTER);
     }
 
@@ -276,7 +307,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 Daten.filmeLaden.importFilmliste("");
             }
         }
-        duration.ping("FilmlisteZuAlt");
+        duration.ping("Filmliste laden");
 
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_ORG_TITEL, MediathekGui.class.getSimpleName()) {
             @Override
@@ -333,17 +364,16 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 }
             });
         } else {
-            bandwidthInfo = new MVBandwidthInfo(this, cbBandwidthDisplay);
-            bandwidthInfo.toggleVisibility();
+            mvDownloadInfo = new MVDownloadInfo(this, cbBandwidthDisplay);
+            mvDownloadInfo.toggleVisibility();
             cbBandwidthDisplay.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    bandwidthInfo.toggleVisibility();
+                    mvDownloadInfo.toggleVisibility();
                 }
             });
 
         }
-
         duration.ping("Gui steht!");
     }
 
@@ -1310,9 +1340,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         // Dialog Einstellungen
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_EINSTELLUNGEN, dialogEinstellungen);
         // Infodialog/Bandwidth
-        if (bandwidthInfo != null) {
-            GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, bandwidthInfo.getDialog());
-            Daten.mVConfig.add(MVConfig.SYSTEM_DIVIDER_INFODIALOG, String.valueOf(bandwidthInfo.getDividerLocation()));
+        if (mvDownloadInfo != null) {
+            GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, mvDownloadInfo.getDialog());
+            Daten.mVConfig.add(MVConfig.SYSTEM_DIVIDER_INFODIALOG, String.valueOf(mvDownloadInfo.getDividerLocation()));
         }
         Daten.mVConfig.add(MVConfig.SYSTEM_BREITE_MELDUNGEN, String.valueOf(splitPane.getDividerLocation()));
 

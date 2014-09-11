@@ -29,9 +29,12 @@ import info.monitorenter.gui.chart.traces.Trace2DLtd;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.TimerTask;
+import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -39,6 +42,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.plaf.basic.BasicSplitPaneDivider;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 import mediathek.daten.Daten;
 import mediathek.daten.DownloadInfos;
 import mediathek.tool.Funktionen;
@@ -47,7 +52,7 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFilmSize;
 
-public class MVBandwidthInfo extends javax.swing.JPanel {
+public class MVDownloadInfo extends javax.swing.JPanel {
 
     private double counter = 0; // double sonst "läuft" die Chart nicht
     private JCheckBoxMenuItem menuItem = null;
@@ -55,6 +60,7 @@ public class MVBandwidthInfo extends javax.swing.JPanel {
     private IAxis x_achse = null;
     private boolean stopBeob = false;
     private HudWindow hudWindow = null;
+    private JDialog jDialog = null;
     /**
      * Timer for collecting sample data.
      */
@@ -65,18 +71,21 @@ public class MVBandwidthInfo extends javax.swing.JPanel {
      *
      * @param parent
      * @param menuItem */
-    public MVBandwidthInfo(JFrame parent, final JCheckBoxMenuItem menuItem) {
+    public MVDownloadInfo(JFrame parent, final JCheckBoxMenuItem menuItem) {
         initComponents();
         this.menuItem = menuItem;
 //        if (!SystemInfo.isMacOSX()) {
 //            parent = null;
 //        }
-        hudWindow = new HudWindow("Bandbreite", parent);
-        hudWindow.makeResizeable();
-
-        JDialog hudDialog = hudWindow.getJDialog();
-        hudDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        hudDialog.addWindowListener(new WindowAdapter() {
+        if (!SystemInfo.isMacOSX()) {
+            jDialog = new JDialog(parent, "Bandbreite");
+        } else {
+            hudWindow = new HudWindow("Bandbreite", parent);
+            hudWindow.makeResizeable();
+            jDialog = hudWindow.getJDialog();
+        }
+        jDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        jDialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 menuItem.setSelected(false);
@@ -89,7 +98,7 @@ public class MVBandwidthInfo extends javax.swing.JPanel {
         chart.setUseAntialiasing(true);
         chart.setToolTipType(Chart2D.ToolTipType.VALUE_SNAP_TO_TRACEPOINTS);
         if (Funktionen.getOs() == Funktionen.OperatingSystemType.LINUX) {
-            hudDialog.setBackground(null);
+            jDialog.setBackground(null);
             chart.setOpaque(true);
             this.setOpaque(true);
         } else {
@@ -151,32 +160,72 @@ public class MVBandwidthInfo extends javax.swing.JPanel {
             }
         });
 
-        hudWindow.setContentPane(this);
+        if (!SystemInfo.isMacOSX()) {
+            jDialog.setContentPane(this);
+        } else {
+            hudWindow.setContentPane(this);
+        }
 
-        if (GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, hudWindow.getJDialog(), parent)) {
+        // size
+        jPanelChart.setMinimumSize(new Dimension());
+        jPanelInfo.setMinimumSize(new Dimension());
+        if (GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, jDialog, parent)) {
             try {
-                int divider = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_DIVIDER_INFODIALOG));
-                if (divider > 0) {
-                    jSplitPane1.setDividerLocation(divider);
-                }
-            } catch (NumberFormatException ignored) {
+                double divider = Double.parseDouble(Daten.mVConfig.get(MVConfig.SYSTEM_DIVIDER_INFODIALOG));
+                System.out.println("Divider: " + divider);
+                jSplitPane1.setDividerLocation(divider);
+                addHListener(divider);
+            } catch (Exception ignored) {
             }
         } else {
             // erster Programmstart
-            final Dimension dim = hudDialog.getSize();
+            final Dimension dim = jDialog.getSize();
             dim.height = 170;
             dim.width = 300;
-            hudDialog.setSize(dim);
-            jSplitPane1.setDividerLocation(170);
+            jDialog.setSize(dim);
+            jSplitPane1.setDividerLocation(190);
+            addHListener(1.0);
         }
     }
 
-    public JDialog getDialog() {
-        return hudWindow.getJDialog();
+    private void addHListener(double div) {
+        final double d = div;
+
+        jSplitPane1.addHierarchyListener(new HierarchyListener() {
+            @Override
+            public void hierarchyChanged(HierarchyEvent e) {
+                if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
+                    jSplitPane1.setDividerLocation(d);
+                    if (d > 0 && d < 1) {
+                        //jSplitPane1.setDividerLocation(d);
+                    } else {
+                        BasicSplitPaneUI ui = (BasicSplitPaneUI) jSplitPane1.getUI();
+                        BasicSplitPaneDivider divider = ui.getDivider();
+                        JButton button = (JButton) divider.getComponent(d == 0 ? 0 : 1);
+                        button.doClick();
+                    }
+                }
+            }
+        });
     }
 
-    public int getDividerLocation() {
-        return jSplitPane1.getDividerLocation();
+    public JDialog getDialog() {
+        return jDialog;
+    }
+
+    public double getDividerLocation() {
+        jPanelChart.setMinimumSize(new Dimension());
+        jPanelInfo.setMinimumSize(new Dimension()); // nur dann ist der Divider zwischen 1...MAX
+        final double MIN = jSplitPane1.getMinimumDividerLocation(); // 1
+        final double MAX = jSplitPane1.getMaximumDividerLocation(); // MAX
+        final double akt = jSplitPane1.getDividerLocation();        // akt Pos zwischen 1 .... MAX
+        double divider = (akt - MIN) / (MAX - MIN);
+        if (divider < 0) {
+            divider = 0.0;
+        } else if (divider > 1) {
+            divider = 1.0;
+        }
+        return divider;
     }
 
     private void setSliderBandwith() {
@@ -204,7 +253,7 @@ public class MVBandwidthInfo extends javax.swing.JPanel {
     public void toggleVisibility() {
         final boolean isSelected = menuItem.isSelected();
         Daten.mVConfig.add(MVConfig.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(menuItem.isSelected()));
-        hudWindow.getJDialog().setVisible(isSelected);
+        jDialog.setVisible(isSelected);
         try {
             if (menuItem.isSelected()) {
                 timerTask = new TimerTask() {
