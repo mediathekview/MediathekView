@@ -24,6 +24,9 @@
 	- Anzeige der Gesamtbandbreite: Menü: Ansicht
 	- OS X: Spotlight
 	- Anzeige laufender Downloads im Tab Download
+	- Bandbreitenmonitor
+	- Progressanzeige beim Laden der Filmliste
+	- Beep nach Download
 	
 	# Version 7
 	- "-auto" geht wieder

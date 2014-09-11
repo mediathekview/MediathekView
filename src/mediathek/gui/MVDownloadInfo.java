@@ -214,6 +214,8 @@ public class MVDownloadInfo extends javax.swing.JPanel {
                         BasicSplitPaneDivider divider = ui.getDivider();
                         JButton button = (JButton) divider.getComponent(d == 0 ? 0 : 1);
                         button.doClick();
+                        jSplitPane1.updateUI();
+                        jSplitPane1.doLayout();
                     }
                 }
             }
