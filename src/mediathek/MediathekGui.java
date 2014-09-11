@@ -374,7 +374,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             });
 
         }
-        pack();
         duration.ping("Gui steht!");
     }
 
