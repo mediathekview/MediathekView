@@ -29,6 +29,8 @@ import info.monitorenter.gui.chart.traces.Trace2DLtd;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.awt.event.WindowAdapter;
@@ -45,6 +47,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import mediathek.daten.Daten;
+import static mediathek.daten.Daten.mVConfig;
 import mediathek.daten.DownloadInfos;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
@@ -61,6 +64,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
     private boolean stopBeob = false;
     private HudWindow hudWindow = null;
     private JDialog jDialog = null;
+    private JFrame parent = null;
     /**
      * Timer for collecting sample data.
      */
@@ -73,6 +77,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
      * @param menuItem */
     public MVDownloadInfo(JFrame parent, final JCheckBoxMenuItem menuItem) {
         initComponents();
+        this.parent = parent;
         this.menuItem = menuItem;
 //        if (!SystemInfo.isMacOSX()) {
 //            parent = null;
@@ -166,15 +171,21 @@ public class MVDownloadInfo extends javax.swing.JPanel {
             hudWindow.setContentPane(this);
         }
 
+        jSplitPane1.setDividerSize(15);
         // size
         jPanelChart.setMinimumSize(new Dimension());
         jPanelInfo.setMinimumSize(new Dimension());
         if (GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, jDialog, parent)) {
             try {
-                double divider = Double.parseDouble(Daten.mVConfig.get(MVConfig.SYSTEM_DIVIDER_INFODIALOG));
-                System.out.println("Divider: " + divider);
-                jSplitPane1.setDividerLocation(divider);
-                addHListener(divider);
+                if (Daten.mVConfig.get(MVConfig.SYSTEM_DIVIDER_INFODIALOG_MIN_MAX).equals("max")) {
+                    addHListener(1.0);
+                } else if (Daten.mVConfig.get(MVConfig.SYSTEM_DIVIDER_INFODIALOG_MIN_MAX).equals("min")) {
+                    addHListener(0.0);
+                } else {
+                    int divider = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_DIVIDER_INFODIALOG));
+                    //System.out.println("Divider: " + divider);
+                    jSplitPane1.setDividerLocation(divider);
+                }
             } catch (Exception ignored) {
             }
         } else {
@@ -183,7 +194,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
             dim.height = 170;
             dim.width = 300;
             jDialog.setSize(dim);
-            jSplitPane1.setDividerLocation(190);
+            jSplitPane1.setDividerLocation(200);
             addHListener(1.0);
         }
     }
@@ -219,12 +230,23 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         final double MIN = jSplitPane1.getMinimumDividerLocation(); // 1
         final double MAX = jSplitPane1.getMaximumDividerLocation(); // MAX
         final double akt = jSplitPane1.getDividerLocation();        // akt Pos zwischen 1 .... MAX
+
         double divider = (akt - MIN) / (MAX - MIN);
         if (divider < 0) {
             divider = 0.0;
         } else if (divider > 1) {
             divider = 1.0;
         }
+
+        if (divider == 0) {
+            mVConfig.add(MVConfig.SYSTEM_DIVIDER_INFODIALOG_MIN_MAX, "min");
+        } else if (divider == 1) {
+            mVConfig.add(MVConfig.SYSTEM_DIVIDER_INFODIALOG_MIN_MAX, "max");
+        } else {
+            mVConfig.add(MVConfig.SYSTEM_DIVIDER_INFODIALOG_MIN_MAX, "");
+        }
+        Daten.mVConfig.add(MVConfig.SYSTEM_DIVIDER_INFODIALOG, String.valueOf(jSplitPane1.getDividerLocation()));
+
         return divider;
     }
 

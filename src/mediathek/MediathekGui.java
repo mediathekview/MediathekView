@@ -374,6 +374,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             });
 
         }
+        pack();
         duration.ping("Gui steht!");
     }
 
@@ -1342,7 +1343,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         // Infodialog/Bandwidth
         if (mvDownloadInfo != null) {
             GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, mvDownloadInfo.getDialog());
-            Daten.mVConfig.add(MVConfig.SYSTEM_DIVIDER_INFODIALOG, String.valueOf(mvDownloadInfo.getDividerLocation()));
+            mvDownloadInfo.getDividerLocation();
         }
         Daten.mVConfig.add(MVConfig.SYSTEM_BREITE_MELDUNGEN, String.valueOf(splitPane.getDividerLocation()));
 
