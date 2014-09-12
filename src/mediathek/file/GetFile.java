@@ -38,6 +38,7 @@ public class GetFile {
     public static String PFAD_HILFETEXT_GEO = "/mediathek/file/hilfetext_geo.txt";
     public static String PFAD_HILFETEXT_FILTER = "/mediathek/file/hilfetext_filter.txt";
     public static String PFAD_HILFETEXT_BLACKLIST = "/mediathek/file/hilfetext_blacklist.txt";
+    public static String PFAD_HILFETEXT_BEENDEN = "/mediathek/file/hilfetext_beenden.txt";
     public static String PFAD_HILFETEXT_PRGRAMME = "/mediathek/file/hilfetext_programme.txt";
     public static String PFAD_HILFETEXT_STANDARD_PSET = "hilfetext_standardPset.txt";
     public static String PFAD_HILFETEXT_UNICODE = "hilfetext_unicode.txt";
