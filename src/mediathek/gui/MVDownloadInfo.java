@@ -29,8 +29,6 @@ import info.monitorenter.gui.chart.traces.Trace2DLtd;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.awt.event.WindowAdapter;
@@ -172,6 +170,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         }
 
         jSplitPane1.setDividerSize(15);
+        jSplitPane1.setResizeWeight(1.0d);
         // size
         jPanelChart.setMinimumSize(new Dimension());
         jPanelInfo.setMinimumSize(new Dimension());
@@ -207,16 +206,10 @@ public class MVDownloadInfo extends javax.swing.JPanel {
             public void hierarchyChanged(HierarchyEvent e) {
                 if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
                     jSplitPane1.setDividerLocation(d);
-                    if (d > 0 && d < 1) {
-                        //jSplitPane1.setDividerLocation(d);
-                    } else {
-                        BasicSplitPaneUI ui = (BasicSplitPaneUI) jSplitPane1.getUI();
-                        BasicSplitPaneDivider divider = ui.getDivider();
-                        JButton button = (JButton) divider.getComponent(d == 0 ? 0 : 1);
-                        button.doClick();
-                        jSplitPane1.updateUI();
-                        jSplitPane1.doLayout();
-                    }
+                    BasicSplitPaneUI ui = (BasicSplitPaneUI) jSplitPane1.getUI();
+                    BasicSplitPaneDivider divider = ui.getDivider();
+                    JButton button = (JButton) divider.getComponent(d == 0 ? 0 : 1);
+                    button.doClick();
                 }
             }
         });
@@ -360,6 +353,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         jEditorPaneInfo = new javax.swing.JEditorPane();
 
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        jSplitPane1.setResizeWeight(1.0);
         jSplitPane1.setOneTouchExpandable(true);
 
         javax.swing.GroupLayout jPanelChartLayout = new javax.swing.GroupLayout(jPanelChart);
