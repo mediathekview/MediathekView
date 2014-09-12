@@ -21,6 +21,7 @@ package mediathek.gui.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JFrame;
 import javax.swing.text.DefaultCaret;
 import mediathek.tool.EscBeenden;
 
@@ -32,7 +33,7 @@ public class DialogHilfe extends javax.swing.JDialog {
      * @param modal
      * @param text
      */
-    public DialogHilfe(java.awt.Frame parent, boolean modal, String text) {
+    public DialogHilfe(JFrame parent, boolean modal, String text) {
         super(parent, modal);
         initComponents();
         this.setTitle("Hilfe");

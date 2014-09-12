@@ -20,22 +20,29 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
 import mediathek.daten.Daten;
+import mediathek.file.GetFile;
+import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import org.jdesktop.swingx.JXBusyLabel;
 
-import javax.swing.*;
-
 public class DialogBeenden extends JDialog {
+
     private static final String CANCEL_AND_TERMINATE_PROGRAM = "Downloads abbrechen und Programm beenden";
     private static final String WAIT_FOR_DOWNLOADS_AND_TERMINATE = "Auf Abschluß aller Downloads warten, danach beenden";
     private static final String DONT_TERMINATE = "Programm nicht beenden";
+    private final JFrame parent;
     /**
      * Indicates whether the application can terminate.
      */
@@ -55,15 +62,17 @@ public class DialogBeenden extends JDialog {
 
     /**
      * Return whether the user still wants to terminate the application.
+     *
      * @return true if the app should continue to terminate.
      */
     public boolean applicationCanTerminate() {
         return applicationCanTerminate;
     }
 
-    public DialogBeenden(Frame parent) {
-        super(parent, true);
+    public DialogBeenden(JFrame pparent) {
+        super(pparent, true);
         initComponents();
+        this.parent = pparent;
 
         if (parent != null) {
             setLocationRelativeTo(parent);
@@ -82,6 +91,14 @@ public class DialogBeenden extends JDialog {
             }
         });
 
+        jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonHilfe.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BEENDEN)).setVisible(true);
+            }
+        });
+        jButtonHilfe.setEnabled(false);
         cbShutdownComputer.setEnabled(false);
 
         comboActions.addActionListener(new ActionListener() {
@@ -90,12 +107,15 @@ public class DialogBeenden extends JDialog {
                 final String strSelectedItem = (String) comboActions.getSelectedItem();
                 switch (strSelectedItem) {
                     case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
+                        jButtonHilfe.setEnabled(true);
                         cbShutdownComputer.setEnabled(true);
                         break;
 
                     default:
+                        jButtonHilfe.setEnabled(false);
                         cbShutdownComputer.setEnabled(false);
                         //manually reset shutdown state
+                        jButtonHilfe.setEnabled(false);
                         cbShutdownComputer.setSelected(false);
                         shutdown = false;
                         break;
@@ -155,6 +175,7 @@ public class DialogBeenden extends JDialog {
 
     /**
      * Create the ComboBoxModel for user selection.
+     *
      * @return The model with all valid user actions.
      */
     private DefaultComboBoxModel<String> getComboBoxModel() {
@@ -165,11 +186,13 @@ public class DialogBeenden extends JDialog {
      * This will reset all necessary variables to default and cancel app termination.
      */
     private void escapeHandler() {
-        if (downloadMonitorWorker != null)
+        if (downloadMonitorWorker != null) {
             downloadMonitorWorker.cancel(true);
+        }
 
-        if (glassPane != null)
+        if (glassPane != null) {
             glassPane.setVisible(false);
+        }
 
         applicationCanTerminate = false;
         dispose();
@@ -177,12 +200,14 @@ public class DialogBeenden extends JDialog {
 
     /**
      * Create the glassPane which will be used as an overlay for the dialog while we are waiting for downloads.
+     *
      * @return The {@link javax.swing.JPanel} for the glassPane.
      */
     private JPanel createGlassPane() {
         String strMessage = "<html>Warte auf Abschluss der Downloads...";
-        if (isShutdownRequested())
+        if (isShutdownRequested()) {
             strMessage += "<br><b>Der Rechner wird danach heruntergefahren.</b>";
+        }
         strMessage += "<br>Sie können den Vorgang mit Escape abbrechen.</html>";
 
         JPanel panel = new JPanel();
@@ -240,6 +265,7 @@ public class DialogBeenden extends JDialog {
         btnContinue = new javax.swing.JButton();
         cbShutdownComputer = new javax.swing.JCheckBox();
         btnCancel = new javax.swing.JButton();
+        jButtonHilfe = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("MediathekView beenden");
@@ -255,6 +281,8 @@ public class DialogBeenden extends JDialog {
 
         btnCancel.setText("Abbrechen");
 
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -262,11 +290,12 @@ public class DialogBeenden extends JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
                     .addComponent(comboActions, 0, 0, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(cbShutdownComputer)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonHilfe))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnCancel)
@@ -282,8 +311,10 @@ public class DialogBeenden extends JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(comboActions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbShutdownComputer)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbShutdownComputer)
+                    .addComponent(jButtonHilfe))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnContinue)
                     .addComponent(btnCancel))
@@ -297,5 +328,6 @@ public class DialogBeenden extends JDialog {
     private javax.swing.JButton btnContinue;
     private javax.swing.JCheckBox cbShutdownComputer;
     private javax.swing.JComboBox<String> comboActions;
+    private javax.swing.JButton jButtonHilfe;
     // End of variables declaration//GEN-END:variables
 }

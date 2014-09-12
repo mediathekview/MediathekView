@@ -1,0 +1,6 @@
+
+Damit unter Linux das Herunterfahren des Rechners
+funktioniert, muss der User diesen Aufruf
+ausführen dürfen:
+
+shutdown -h now
