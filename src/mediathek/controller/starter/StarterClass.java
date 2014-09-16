@@ -562,6 +562,7 @@ public class StarterClass {
                     // kann nicht gelöscht werden, evtl. klappt ja das Überschreiben
                     Log.fehlerMeldung(795623145, "StartetClass.ExternalProgramDownloadThread", ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                 }
+                return false; //auf keinen Fall den Dialog starten :)
             }
 
             dialogAbbrechenIsVis = true;
@@ -875,8 +876,12 @@ public class StarterClass {
         }
 
         private boolean cancelDownload() {
-            if (Daten.auto) {
+            if (!file.exists()) {
+                // dann ist alles OK
                 return false;
+            }
+            if (Daten.auto) {
+                return false; // immer überschreiben, keine GUI!!!
             }
 
             dialogAbbrechenIsVis = true;
