@@ -44,22 +44,23 @@ public class DialogContinueDownload extends JDialog {
     private boolean isNewName = false;
     private MVPanelDownloadZiel mVPanelDownloadZiel;
     private Timer countdownTimer = null;
-    private final boolean weiterfuehren;
+    private final boolean direkterDownload;
     final private JFrame parent;
 
-    public DialogContinueDownload(JFrame pparent, DatenDownload datenDownload, boolean weiterfuehren) {
+    public DialogContinueDownload(JFrame pparent, DatenDownload datenDownload, boolean ddirekterDownload) {
         // "weiterführen"
         // true: dann kann der bereits gestartete Download weitergeführt werden, nur direkte Downloads
         // false: dann kann der Download nur neu gestartet werden, die existierende Datei wird gelöscht
         super(pparent, true);
         initComponents();
         this.parent = pparent;
-        this.weiterfuehren = weiterfuehren;
-        if (!weiterfuehren) {
+        this.direkterDownload = ddirekterDownload;
+        if (!direkterDownload) {
             jButtonWeiter.setText("Überschreiben");
-        }
-        if (!datenDownload.checkAufrufBauen()) {
-            jPanelNewName.setVisible(false);
+            if (!datenDownload.checkAufrufBauen()) {
+                // nur für Downloads mit Programm
+                jPanelNewName.setVisible(false);
+            }
         }
         mVPanelDownloadZiel = new MVPanelDownloadZiel(null, datenDownload, false);
         jPanelPath.setLayout(new BorderLayout(0, 0));
@@ -79,7 +80,8 @@ public class DialogContinueDownload extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 isNewName = mVPanelDownloadZiel.setPfadName_geaendert();
-                if (!isNewName) {
+                if (!direkterDownload && !isNewName) {
+                    // dann gibts es nur Überschreiben oder anderer Name, sonst zickt ffmpeg
                     MVMessageDialog.showMessageDialog(parent, "Der Dateiname wurde nicht geändert!",
                             "Datei existiert bereits!", JOptionPane.ERROR_MESSAGE);
                 } else {
@@ -263,7 +265,7 @@ public class DialogContinueDownload extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (w > 0) {
-                if (!weiterfuehren) {
+                if (!direkterDownload) {
                     jButtonWeiter.setText("Überschreiben in " + w + "s");
                 } else {
                     jButtonWeiter.setText("Weiterführen in " + w + "s");
