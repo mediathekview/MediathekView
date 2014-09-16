@@ -24,24 +24,43 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.*;
-
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.Timer;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.Konstanten;
+import mediathek.tool.MVMessageDialog;
 
 public class DialogContinueDownload extends JDialog {
 
-    public enum DownloadResult {CANCELLED, CONTINUE, RESTART_WITH_NEW_NAME}
+    public enum DownloadResult {
+
+        CANCELLED, CONTINUE, RESTART_WITH_NEW_NAME
+    }
     private DownloadResult result;
 
     private boolean isNewName = false;
     private MVPanelDownloadZiel mVPanelDownloadZiel;
     private Timer countdownTimer = null;
+    private final boolean weiterfuehren;
+    final private JFrame parent;
 
-    public DialogContinueDownload(JFrame parent, DatenDownload datenDownload) {
-        super(parent, true);
+    public DialogContinueDownload(JFrame pparent, DatenDownload datenDownload, boolean weiterfuehren) {
+        // "weiterführen"
+        // true: dann kann der bereits gestartete Download weitergeführt werden, nur direkte Downloads
+        // false: dann kann der Download nur neu gestartet werden, die existierende Datei wird gelöscht
+        super(pparent, true);
         initComponents();
+        this.parent = pparent;
+        this.weiterfuehren = weiterfuehren;
+        if (!weiterfuehren) {
+            jButtonWeiter.setText("Überschreiben");
+        }
+        if (!datenDownload.checkAufrufBauen()) {
+            jPanelNewName.setVisible(false);
+        }
         mVPanelDownloadZiel = new MVPanelDownloadZiel(null, datenDownload, false);
         jPanelPath.setLayout(new BorderLayout(0, 0));
         jPanelPath.add(mVPanelDownloadZiel, BorderLayout.CENTER);
@@ -59,9 +78,14 @@ public class DialogContinueDownload extends JDialog {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                result = DownloadResult.RESTART_WITH_NEW_NAME;
                 isNewName = mVPanelDownloadZiel.setPfadName_geaendert();
-                beenden();
+                if (!isNewName) {
+                    MVMessageDialog.showMessageDialog(parent, "Der Dateiname wurde nicht geändert!",
+                            "Datei existiert bereits!", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    result = DownloadResult.RESTART_WITH_NEW_NAME;
+                    beenden();
+                }
             }
         });
 
@@ -106,15 +130,16 @@ public class DialogContinueDownload extends JDialog {
 
     /**
      * Return the result of the user selection made in the dialog.
+     *
      * @return A {@link mediathek.gui.dialog.DialogContinueDownload.DownloadResult} result.
      */
-    public DownloadResult getResult()
-    {
+    public DownloadResult getResult() {
         return result;
     }
 
     /**
      * Check if a new name was specified.
+     *
      * @return A new name needs to be used.
      */
     public boolean isNewName() {
@@ -127,8 +152,9 @@ public class DialogContinueDownload extends JDialog {
     }
 
     private void beenden() {
-        if (countdownTimer != null)
+        if (countdownTimer != null) {
             countdownTimer.stop();
+        }
         mVPanelDownloadZiel.saveComboPfad();
         dispose();
     }
@@ -138,7 +164,7 @@ public class DialogContinueDownload extends JDialog {
 
         jButtonWeiter = new javax.swing.JButton();
         jButtonAbbrechen = new javax.swing.JButton();
-        javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
+        jPanelNewName = new javax.swing.JPanel();
         jButtonNeuerName = new javax.swing.JButton();
         jPanelPath = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -150,7 +176,7 @@ public class DialogContinueDownload extends JDialog {
 
         jButtonAbbrechen.setText("Abbrechen");
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 255), 2));
+        jPanelNewName.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 255), 2));
 
         jButtonNeuerName.setText("Mit diesem Namen neu Starten");
 
@@ -165,19 +191,19 @@ public class DialogContinueDownload extends JDialog {
             .addGap(0, 124, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanelNewNameLayout = new javax.swing.GroupLayout(jPanelNewName);
+        jPanelNewName.setLayout(jPanelNewNameLayout);
+        jPanelNewNameLayout.setHorizontalGroup(
+            jPanelNewNameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelNewNameLayout.createSequentialGroup()
                 .addContainerGap(285, Short.MAX_VALUE)
                 .addComponent(jButtonNeuerName)
                 .addContainerGap())
             .addComponent(jPanelPath, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        jPanelNewNameLayout.setVerticalGroup(
+            jPanelNewNameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelNewNameLayout.createSequentialGroup()
                 .addComponent(jPanelPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonNeuerName)
@@ -194,7 +220,7 @@ public class DialogContinueDownload extends JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanelNewName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonAbbrechen)
@@ -212,7 +238,7 @@ public class DialogContinueDownload extends JDialog {
                     .addComponent(jButtonWeiter)
                     .addComponent(jButtonAbbrechen))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanelNewName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(16, 16, 16))
         );
 
@@ -223,6 +249,7 @@ public class DialogContinueDownload extends JDialog {
     private javax.swing.JButton jButtonNeuerName;
     private javax.swing.JButton jButtonWeiter;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanelNewName;
     private javax.swing.JPanel jPanelPath;
     // End of variables declaration//GEN-END:variables
 
@@ -230,16 +257,21 @@ public class DialogContinueDownload extends JDialog {
      * Implements the countdown based on Swing Timer for automatic placement on EDT.
      */
     private class CountdownAction implements ActionListener {
+
         private int w = Konstanten.DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN;
 
         @Override
         public void actionPerformed(ActionEvent e) {
             if (w > 0) {
-                jButtonWeiter.setText("Weiterführen in " + w + "s");
-                if (countdownTimer != null)
+                if (!weiterfuehren) {
+                    jButtonWeiter.setText("Überschreiben in " + w + "s");
+                } else {
+                    jButtonWeiter.setText("Weiterführen in " + w + "s");
+                }
+                if (countdownTimer != null) {
                     countdownTimer.setDelay(1000);
-            }
-            else {
+                }
+            } else {
                 result = DownloadResult.CONTINUE;
                 beenden();
             }
