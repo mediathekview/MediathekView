@@ -137,44 +137,48 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public DatenFilm film = null;
     public MVFilmSize mVFilmSize = new MVFilmSize();
     public Start start = null;
+    public DatenPset pSet = null;
+    public DatenAbo abo = null;
     public int nr = 0;
 
     public DatenDownload() {
         makeArr();
     }
 
-    public DatenDownload(DatenPset pSet, DatenFilm ffilm, int quelle, DatenAbo abo, String name, String pfad, String aufloesung) {
+    public DatenDownload(DatenPset pSet, DatenFilm film, int quelle, DatenAbo abo, String name, String pfad, String aufloesung) {
         makeArr();
-        arr[DOWNLOAD_FILM_NR_NR] = ffilm.arr[DatenFilm.FILM_NR_NR];
-        arr[DOWNLOAD_SENDER_NR] = ffilm.arr[DatenFilm.FILM_SENDER_NR];
-        arr[DOWNLOAD_THEMA_NR] = ffilm.arr[DatenFilm.FILM_THEMA_NR];
-        arr[DOWNLOAD_TITEL_NR] = ffilm.arr[DatenFilm.FILM_TITEL_NR];
-        arr[DOWNLOAD_FILM_URL_NR] = ffilm.arr[DatenFilm.FILM_URL_NR];
-        arr[DOWNLOAD_URL_AUTH_NR] = ffilm.arr[DatenFilm.FILM_URL_AUTH_NR];
-        arr[DOWNLOAD_DATUM_NR] = ffilm.arr[DatenFilm.FILM_DATUM_NR];
-        arr[DOWNLOAD_ZEIT_NR] = ffilm.arr[DatenFilm.FILM_ZEIT_NR];
-        arr[DOWNLOAD_URL_RTMP_NR] = ffilm.arr[DatenFilm.FILM_URL_RTMP_NR];
-        arr[DOWNLOAD_DAUER_NR] = ffilm.arr[DatenFilm.FILM_DAUER_NR];
+        this.film = film;
+        this.pSet = pSet;
+        this.abo = abo;
+        arr[DOWNLOAD_FILM_NR_NR] = film.arr[DatenFilm.FILM_NR_NR];
+        arr[DOWNLOAD_SENDER_NR] = film.arr[DatenFilm.FILM_SENDER_NR];
+        arr[DOWNLOAD_THEMA_NR] = film.arr[DatenFilm.FILM_THEMA_NR];
+        arr[DOWNLOAD_TITEL_NR] = film.arr[DatenFilm.FILM_TITEL_NR];
+        arr[DOWNLOAD_FILM_URL_NR] = film.arr[DatenFilm.FILM_URL_NR];
+        arr[DOWNLOAD_URL_AUTH_NR] = film.arr[DatenFilm.FILM_URL_AUTH_NR];
+        arr[DOWNLOAD_DATUM_NR] = film.arr[DatenFilm.FILM_DATUM_NR];
+        arr[DOWNLOAD_ZEIT_NR] = film.arr[DatenFilm.FILM_ZEIT_NR];
+        arr[DOWNLOAD_URL_RTMP_NR] = film.arr[DatenFilm.FILM_URL_RTMP_NR];
+        arr[DOWNLOAD_DAUER_NR] = film.arr[DatenFilm.FILM_DAUER_NR];
         arr[DOWNLOAD_QUELLE_NR] = String.valueOf(quelle);
-        arr[DOWNLOAD_HISTORY_URL_NR] = ffilm.getUrlHistory();
+        arr[DOWNLOAD_HISTORY_URL_NR] = film.getUrlHistory();
         if (aufloesung.isEmpty()) {
-            arr[DOWNLOAD_URL_NR] = ffilm.getUrlFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR]);
-            arr[DOWNLOAD_URL_RTMP_NR] = ffilm.getUrlRtmpFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR]);
+            arr[DOWNLOAD_URL_NR] = film.getUrlFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR]);
+            arr[DOWNLOAD_URL_RTMP_NR] = film.getUrlRtmpFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR]);
         } else {
-            arr[DOWNLOAD_URL_NR] = ffilm.getUrlFuerAufloesung(aufloesung);
-            arr[DOWNLOAD_URL_RTMP_NR] = ffilm.getUrlRtmpFuerAufloesung(aufloesung);
+            arr[DOWNLOAD_URL_NR] = film.getUrlFuerAufloesung(aufloesung);
+            arr[DOWNLOAD_URL_RTMP_NR] = film.getUrlRtmpFuerAufloesung(aufloesung);
         }
         arr[DatenDownload.DOWNLOAD_INFODATEI_NR] = pSet.arr[DatenPset.PROGRAMMSET_INFODATEI_NR];
         arr[DatenDownload.DOWNLOAD_SPOTLIGHT_NR] = pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT_NR];
-        arr[DatenDownload.DOWNLOAD_GEO_NR] = ffilm.arr[DatenFilm.FILM_GEO_NR];
+        arr[DatenDownload.DOWNLOAD_GEO_NR] = film.arr[DatenFilm.FILM_GEO_NR];
         // und jetzt noch die Dateigröße für die entsp. URL
-        film = ffilm;
         if (film.arr[DatenFilm.FILM_URL_NR].equals(arr[DOWNLOAD_URL_NR])) {
             mVFilmSize.setSize(film.arr[DatenFilm.FILM_GROESSE_NR]);
         } else {
             mVFilmSize.setSize("");
         }
-        aufrufBauen(pSet, ffilm, abo, name, pfad);
+        aufrufBauen(pSet, film, abo, name, pfad);
         init();
     }
 
@@ -292,7 +296,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         try {
             return Integer.parseInt(arr[DOWNLOAD_QUELLE_NR]);
         } catch (Exception ex) {
-            Log.fehlerMeldung(649632580,  this.getClass().getName(), ex);
+            Log.fehlerMeldung(649632580, this.getClass().getName(), ex);
             return Start.QUELLE_BUTTON;
         }
     }
@@ -354,6 +358,14 @@ public class DatenDownload implements Comparable<DatenDownload> {
         return "";
     }
 
+    public boolean checkAufrufBauen() {
+        return (pSet != null && film != null);
+    }
+
+    public void aufrufBauen() {
+        aufrufBauen(pSet, film, abo, arr[DOWNLOAD_ZIEL_DATEINAME_NR], arr[DOWNLOAD_ZIEL_PFAD_NR]);
+    }
+
     private void aufrufBauen(DatenPset pSet, DatenFilm film, DatenAbo abo, String nname, String ppfad) {
         //zieldatei und pfad bauen und eintragen
         try {
@@ -383,7 +395,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             dateinamePfadBauen(pSet, film, abo, nname, ppfad);
             programmaufrufBauen(programm);
         } catch (Exception ex) {
-            Log.fehlerMeldung(825600145,  this.getClass().getName(), ex);
+            Log.fehlerMeldung(825600145, this.getClass().getName(), ex);
         }
     }
 
@@ -553,7 +565,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(775421006,  "DatenFilm.datumDrehen", ex, datum);
+                Log.fehlerMeldung(775421006, "DatenFilm.datumDrehen", ex, datum);
             }
         }
         return ret;
@@ -570,7 +582,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     ret = tmp;
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(775421006,  "DatenFilm.datumDrehen", ex, datum);
+                Log.fehlerMeldung(775421006, "DatenFilm.datumDrehen", ex, datum);
             }
         }
         return ret;
@@ -612,7 +624,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     tmp.setTime(sdf_datum.parse(arr[DatenDownload.DOWNLOAD_DATUM_NR]).getTime());
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(649897321,  "DatumZeit.getDatumForObject", ex,
+                Log.fehlerMeldung(649897321, "DatumZeit.getDatumForObject", ex,
                         new String[]{"Datum: " + arr[DatenDownload.DOWNLOAD_DATUM_NR], "Zeit: " + arr[DatenDownload.DOWNLOAD_ZEIT_NR]});
             }
         }
