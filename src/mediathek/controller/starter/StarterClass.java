@@ -283,7 +283,7 @@ public class StarterClass {
         }
         notifyStartEvent(datenDownload);
 
-        if (SystemInfo.isMacOSX()) {
+        if (SystemInfo.isMacOSX() && daten.mediathekGui != null) {
             daten.mediathekGui.getOsxApplicationAdapter().requestUserAttention(false);
         }
     }
