@@ -46,6 +46,10 @@ public class GetNewSet implements Runnable {
         if (listePsetStandard != null) {
             if (daten.listePset.size() > 0) {
                 // ansonsten ist die Liste leer und dann gibts immer was
+                if (listePsetStandard.version.isEmpty()) {
+                    // dann hat das Laden der aktuellen Standardversion nicht geklappt
+                    return;
+                }
                 if (version.equals(listePsetStandard.version)) {
                     // dann passt alles
                     return;
