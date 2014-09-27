@@ -42,10 +42,12 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogAddDownload;
+import mediathek.gui.dialog.DialogAddDownloadSmall;
 import mediathek.gui.dialog.DialogZiel;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVConfig;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVRun;
 import mediathek.tool.TModel;
@@ -321,8 +323,13 @@ public class PanelErledigteUrls extends PanelVorlage {
                     }
                 }
                 // weiter
-                DialogAddDownload dialog = new DialogAddDownload(daten.mediathekGui, daten, film, null, "");
-                dialog.setVisible(true);
+                if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM__DIALOG_DOWNLOAD__KLEIN))) {
+                    DialogAddDownloadSmall dialog = new DialogAddDownloadSmall(daten.mediathekGui, daten, film, null, "");
+                    dialog.setVisible(true);
+                } else {
+                    DialogAddDownload dialog = new DialogAddDownload(daten.mediathekGui, daten, film, null, "");
+                    dialog.setVisible(true);
+                }
             }
 
         }

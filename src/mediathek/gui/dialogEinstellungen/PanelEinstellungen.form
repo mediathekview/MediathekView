@@ -249,6 +249,7 @@
                       </Group>
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jCheckBoxDownloadDialog" min="-2" max="-2" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <Component id="jCheckBoxBeep" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -275,11 +276,13 @@
                   <Component id="jCheckBoxEchtzeit" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jCheckBoxNotification" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jCheckBoxBeep" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonBeep" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jCheckBoxDownloadDialog" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="jLabel3" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -372,6 +375,11 @@
         <Component class="javax.swing.JButton" name="jButtonBeep">
           <Properties>
             <Property name="text" type="java.lang.String" value="Testen"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="jCheckBoxDownloadDialog">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Download Dialog nur in &quot;Klein&quot; anzeigen"/>
           </Properties>
         </Component>
       </SubComponents>

@@ -140,6 +140,7 @@ public class MVConfig {
     public static final String SYSTEM_MAX_DOWNLOAD = "maxDownload";
     public static final String SYSTEM__DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN = "Pfade-zum-Speichern"; // gesammelten Downloadpfade im Downloaddialog
     public static final String SYSTEM__DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN = "Letzen-Pfad-anzeigen";
+    public static final String SYSTEM__DIALOG_DOWNLOAD__KLEIN = "Dialog-Download-klein";
 
     private final HashMap<String, String> hashmap = new HashMap<>();
 
