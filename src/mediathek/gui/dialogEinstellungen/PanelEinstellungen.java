@@ -89,6 +89,13 @@ public class PanelEinstellungen extends PanelVorlage {
             }
         });
         jCheckBoxSuchen.addActionListener(new BeobCheckBoxSuchen());
+        jCheckBoxDownloadDialog.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Daten.mVConfig.add(MVConfig.SYSTEM__DIALOG_DOWNLOAD__KLEIN, String.valueOf(jCheckBoxDownloadDialog.isSelected()));
+            }
+        });
         jCheckBoxBeep.addActionListener(new ActionListener() {
 
             @Override
@@ -300,6 +307,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jLabel5 = new javax.swing.JLabel();
         jCheckBoxBeep = new javax.swing.JCheckBox();
         jButtonBeep = new javax.swing.JButton();
+        jCheckBoxDownloadDialog = new javax.swing.JCheckBox();
 
         setMinimumSize(getPreferredSize());
 
@@ -407,6 +415,8 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jButtonBeep.setText("Testen");
 
+        jCheckBoxDownloadDialog.setText("Download Dialog nur in \"Klein\" anzeigen");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -434,6 +444,7 @@ public class PanelEinstellungen extends PanelVorlage {
                         .addContainerGap())
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCheckBoxDownloadDialog)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jCheckBoxBeep)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -453,10 +464,12 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jCheckBoxEchtzeit)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxNotification)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jCheckBoxBeep)
                     .addComponent(jButtonBeep))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jCheckBoxDownloadDialog)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel3)
@@ -505,6 +518,7 @@ public class PanelEinstellungen extends PanelVorlage {
     private javax.swing.JButton jButtonRefresh;
     private javax.swing.JButton jButtonSuchen;
     private javax.swing.JCheckBox jCheckBoxBeep;
+    private javax.swing.JCheckBox jCheckBoxDownloadDialog;
     private javax.swing.JCheckBox jCheckBoxEchtzeit;
     private javax.swing.JCheckBox jCheckBoxNotification;
     private javax.swing.JCheckBox jCheckBoxSuchen;
