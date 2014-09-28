@@ -273,10 +273,7 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_TAB_DOWNLOAD_ICON_KLEIN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_TAB_FILME_ICON_KLEIN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_TAB_ABO_ICON_KLEIN, Boolean.TRUE.toString());
-//        //MVBandwidthInfo
-//        mVConfig.add(MVConfig.SYSTEM_GROESSE_INFODIALOG, "300:170:0:0");
-//        mVConfig.add(MVConfig.SYSTEM_DIVIDER_INFODIALOG, "170");
-
+        mVConfig.add(MVConfig.SYSTEM__DIALOG_DOWNLOAD__ALLES, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_FONT_SIZE, "0");
         // UserAgent
         mVConfig.add(MVConfig.SYSTEM_USER_AGENT_AUTO, Boolean.TRUE.toString());

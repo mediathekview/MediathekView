@@ -68,7 +68,6 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialog.DialogAddDownload;
-import mediathek.gui.dialog.DialogAddDownloadSmall;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobTableHeader;
@@ -437,13 +436,8 @@ public class GuiFilme extends PanelVorlage {
                     if (mVFilter.get_jCheckBoxNurHd().isSelected()) {
                         aufloesung = DatenFilm.AUFLOESUNG_HD;
                     }
-                    if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM__DIALOG_DOWNLOAD__KLEIN))) {
-                        DialogAddDownloadSmall dialog = new DialogAddDownloadSmall(daten.mediathekGui, daten, film, pSet, aufloesung);
-                        dialog.setVisible(true);
-                    } else {
-                        DialogAddDownload dialog = new DialogAddDownload(daten.mediathekGui, daten, film, pSet, aufloesung);
-                        dialog.setVisible(true);
-                    }
+                    DialogAddDownload dialog = new DialogAddDownload(daten.mediathekGui, daten, film, pSet, aufloesung);
+                    dialog.setVisible(true);
                 }
             }
         }
