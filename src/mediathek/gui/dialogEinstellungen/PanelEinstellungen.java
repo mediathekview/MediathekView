@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import javax.swing.Action;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -54,8 +55,7 @@ public class PanelEinstellungen extends PanelVorlage {
         initComponents();
         jButtonInfos.setIcon(GetIcon.getProgramIcon("icons_refresh_16.png"));
         daten = d;
-        init();
-        jCheckBoxEchtzeit.addActionListener(new BeobCheckBox());
+        initSpinner();
         jSpinnerDownload.addChangeListener(new BeobSpinnerDownload());
         setupLookAndFeelComboBox();
         jButtonHilfeAnzahl.setIcon(GetIcon.getProgramIcon("help_16.png"));
@@ -73,7 +73,7 @@ public class PanelEinstellungen extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName()) {
             @Override
             public void ping() {
-                init();
+                initSpinner();
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelEinstellungen.class.getSimpleName()) {
@@ -82,13 +82,30 @@ public class PanelEinstellungen extends PanelVorlage {
                 setSliderBandwith();
             }
         });
+        jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE)));
+        jCheckBoxEchtzeit.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.toString(jCheckBoxEchtzeit.isSelected()));
+            }
+        });
+        jCheckBoxNotification.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_NOTIFICATION)));
         jCheckBoxNotification.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.mVConfig.add(MVConfig.SYSTEM_NOTIFICATION, Boolean.toString(jCheckBoxNotification.isSelected()));
             }
         });
-        jCheckBoxSuchen.addActionListener(new BeobCheckBoxSuchen());
+        jCheckBoxSuchen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_UPDATE_SUCHEN)));
+        jCheckBoxSuchen.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBoxSuchen.isSelected()));
+            }
+        });
+        jCheckBoxDownloadDialog.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM__DIALOG_DOWNLOAD__KLEIN)));
         jCheckBoxDownloadDialog.addActionListener(new ActionListener() {
 
             @Override
@@ -96,6 +113,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 Daten.mVConfig.add(MVConfig.SYSTEM__DIALOG_DOWNLOAD__KLEIN, String.valueOf(jCheckBoxDownloadDialog.isSelected()));
             }
         });
+        jCheckBoxBeep.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DOWNLOAD_BEEP)));
         jCheckBoxBeep.addActionListener(new ActionListener() {
 
             @Override
@@ -187,12 +205,7 @@ public class PanelEinstellungen extends PanelVorlage {
         }
     }
 
-    private void init() {
-        jCheckBoxNotification.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_NOTIFICATION)));
-        jCheckBoxSuchen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_UPDATE_SUCHEN)));
-        jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE)));
-        jCheckBoxBeep.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DOWNLOAD_BEEP)));
-
+    private void initSpinner() {
         if (Daten.mVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD).equals("")) {
             jSpinnerDownload.setValue(1);
             Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
@@ -540,22 +553,6 @@ public class PanelEinstellungen extends PanelVorlage {
             Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD,
                     String.valueOf(((Number) jSpinnerDownload.getModel().getValue()).intValue()));
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName());
-        }
-    }
-
-    private class BeobCheckBox implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Daten.mVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.toString(jCheckBoxEchtzeit.isSelected()));
-        }
-    }
-
-    private class BeobCheckBoxSuchen implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Daten.mVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBoxSuchen.isSelected()));
         }
     }
 
