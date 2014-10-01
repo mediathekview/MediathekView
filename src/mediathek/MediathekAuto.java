@@ -53,39 +53,40 @@ public class MediathekAuto {
         daten = new Daten(pfad, null);
         Daten.auto = true;
         Log.startMeldungen(this.getClass().getName());
-        if (IoXmlLesen.einstellungenExistieren()) {
-            daten.allesLaden();
-            
 
-        Path xmlFilePath = Daten.getMediathekXmlFilePath();
-        if (!IoXmlLesen.datenLesen( xmlFilePath)) {
-            // dann hat das Laden nicht geklappt
+        if (!IoXmlLesen.einstellungenExistieren()) {
+            // Programm erst mit der GuiVersion einrichten
+            Log.fehlerMeldung(834986137, "MediathekAuto", "Das Programm muss erst mit der Gui-Version eingerichtet werden!");
+            System.exit(0);
         }
 
+        // Einstellungen laden
+        Path xmlFilePath = Daten.getMediathekXmlFilePath();
+        Log.systemMeldung("Einstellungen laden: " + xmlFilePath.toString());
+        if (!IoXmlLesen.datenLesen(xmlFilePath)) {
+            // dann hat das Laden nicht geklappt
+            Log.fehlerMeldung(834986137, "MediathekAuto", "Einstellungen konnten nicht geladen werden: " + xmlFilePath.toString());
+            System.exit(0);
+        }
+
+        // Filmliste laden
         new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme);
         MVListeFilme.checkBlacklist();
-            
-            
-            
-            
-            
+
+        if (Daten.listeFilme.isTooOld()) {
+            // erst neue Filmliste laden
+            Log.systemMeldung("Neue Filmliste laden");
             Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
                 @Override
                 public void fertig(MSListenerFilmeLadenEvent event) {
                     download();
                 }
             });
-            if (Daten.listeFilme.isTooOld()) {
-                Log.systemMeldung("Neue Filmliste laden");
-                Daten.filmeLaden.importFilmliste("");
-            } else {
-                Log.systemMeldung("aktuelle Filmliste verwenden");
-                download();
-            }
+            Daten.filmeLaden.importFilmliste("");
         } else {
-            // Programm erst mit der GuiVersion einrichten
-            Log.fehlerMeldung(834986137,  "MediathekAuto", "Das Programm muss erst mit der Gui-Version eingerichtet werden!");
-            System.exit(0);
+            // mit aktueller Filmliste starten
+            Log.systemMeldung("aktuelle Filmliste verwenden");
+            download();
         }
     }
 
@@ -117,7 +118,7 @@ public class MediathekAuto {
                 this.wait(5000);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(769325469,  "MediathekAuto.filmeLaden", ex);
+            Log.fehlerMeldung(769325469, "MediathekAuto.filmeLaden", ex);
         }
         daten.allesSpeichern();
         Log.printEndeMeldung();

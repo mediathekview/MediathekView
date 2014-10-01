@@ -110,21 +110,6 @@ public class IoXmlSchreiben {
         }
     }
 
-//    private static OutputStream decompress(Path xmlFilePath) throws IOException {
-//        OutputStream outputStream = Files.newOutputStream(xmlFilePath);
-//        OutputStream decomp;
-//        if (xmlFilePath.endsWith(MSConst.FORMAT_BZ2)) {
-//            decomp = new BZip2CompressorOutputStream(outputStream, 2);
-//        } else if (xmlFilePath.endsWith(MSConst.FORMAT_ZIP)) {
-//            ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
-//            ZipEntry entry = new ZipEntry(Konstanten.PROGRAMMNAME);
-//            zipOutputStream.putNextEntry(entry);
-//            decomp = zipOutputStream;
-//        } else {
-//            decomp = outputStream;
-//        }
-//        return decomp;
-//    }
     private static void xmlSchreibenStart() throws IOException, XMLStreamException {
         Log.systemMeldung("Start Schreiben nach: " + xmlFilePath.toAbsolutePath());
         out = new OutputStreamWriter(Files.newOutputStream(xmlFilePath), MSConst.KODIERUNG_UTF);

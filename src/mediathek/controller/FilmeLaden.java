@@ -184,6 +184,7 @@ public class FilmeLaden {
             Log.systemMeldung("Filmliste geladen: " + Daten.listeFilme.size() + " Filme");
             Daten.filmlisteSpeichern();
         }
+        MVListeFilme.checkBlacklist();
         notifyFertig(event);
         System.gc();
     }
@@ -255,7 +256,6 @@ public class FilmeLaden {
                     break;
                 case FINISHED:
                     listenerFilmeLaden.fertig(event);
-                    MVListeFilme.checkBlacklist();
                     break;
             }
         }
