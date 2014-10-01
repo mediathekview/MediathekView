@@ -71,7 +71,6 @@ public class MediathekAuto {
 
         // Filmliste laden
         new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme);
-        MVListeFilme.checkBlacklist();
 
         if (Daten.listeFilme.isTooOld()) {
             // erst neue Filmliste laden
@@ -86,6 +85,9 @@ public class MediathekAuto {
         } else {
             // mit aktueller Filmliste starten
             Log.systemMeldung("aktuelle Filmliste verwenden");
+            // Liste erst mal aufbereiten
+            Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
+            MVListeFilme.checkBlacklist();
             download();
         }
     }
