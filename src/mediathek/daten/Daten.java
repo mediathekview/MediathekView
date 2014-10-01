@@ -83,12 +83,10 @@ public class Daten {
     public static ListeAbo listeAbo = null;
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis = "";
-    public ListePset listePset = null;
+    public static ListePset listePset = null;
     public MVUsedUrls history = null; // alle angesehenen Filme
     public MVUsedUrls erledigteAbos = null; // erfolgreich geladenen Abos
 
-    public IoXmlLesen ioXmlLesen = null; // Konfig laden
-    public IoXmlSchreiben ioXmlSchreiben = null; //Konfig speichern
     public StarterClass starterClass = null; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
 
     // Gui
@@ -128,11 +126,6 @@ public class Daten {
         updateSplashScreen("Lade erledigte Abos...");
         //erledigteAbos = new ErledigteAbos();
         erledigteAbos = new MVUsedUrls(Konstanten.FILE_ERLEDIGTE_ABOS, ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS);
-
-        //initialisieren
-        updateSplashScreen("Lade Filmliste...");
-        ioXmlLesen = new IoXmlLesen();
-        ioXmlSchreiben = new IoXmlSchreiben();
 
         updateSplashScreen("Lade History...");
         history = new MVUsedUrls(Konstanten.FILE_HISTORY, ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT);
@@ -304,7 +297,7 @@ public class Daten {
         updateSplashScreen("Lade Konfigurationsdaten...");
 
         Path xmlFilePath = Daten.getMediathekXmlFilePath();
-        if (!ioXmlLesen.datenLesen(this, xmlFilePath)) {
+        if (!IoXmlLesen.datenLesen( xmlFilePath)) {
             // dann hat das Laden nicht geklappt
             listePset.clear();
             GuiFunktionenProgramme.addSetVorlagen(mediathekGui, this, ListePsetVorlagen.getStandarset(mediathekGui, this), true /*auto*/, true /*setVersion*/);
@@ -324,7 +317,7 @@ public class Daten {
 
     public void allesSpeichern() {
         konfigCopy();
-        ioXmlSchreiben.datenSchreiben(this);
+        IoXmlSchreiben.datenSchreiben();
         if (Daten.RESET) {
             // das Programm soll beim nächsten Start mit den Standardeinstellungen gestartet werden
             // dazu wird den Ordner mit den Einstellungen umbenannt
@@ -354,21 +347,6 @@ public class Daten {
         }
     }
 
-//    public void allesSpeichern_() {
-//        new Thread(new Save()).start();
-//    }
-//
-//    private class Save implements Runnable {
-//
-//        @Override
-//        public synchronized void run() {
-//            try {
-//                allesSpeichern();
-//            } catch (Exception ex) {
-//                Log.fehlerMeldung(735320168, Log.FEHLER_ART_PROG, Daten.class.getName(), ex);
-//            }
-//        }
-//    }
     private void konfigCopy() {
         final int MAX_COPY = 5;
         boolean renameOk = true;

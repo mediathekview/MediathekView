@@ -47,7 +47,7 @@ import msearch.tool.MSConst;
 
 public class IoXmlLesen {
 
-    public boolean datenLesen(Daten daten, Path xmlFilePath) {
+    public static boolean datenLesen(Path xmlFilePath) {
         boolean ret = false;
         if (Files.exists(xmlFilePath)) {
             int event;
@@ -69,7 +69,7 @@ public class IoXmlLesen {
                                 //Programmgruppen
                                 datenPset = new DatenPset();
                                 if (get(parser, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr)) {
-                                    daten.listePset.add(datenPset);
+                                    Daten.listePset.add(datenPset);
                                 }
                                 break;
                             case DatenProg.PROGRAMM:
@@ -135,7 +135,7 @@ public class IoXmlLesen {
                 ret = true;
             } catch (Exception ex) {
                 ret = false;
-                Log.fehlerMeldung(392840096,"IoXml.xmlDatenLesen", ex);
+                Log.fehlerMeldung(392840096, "IoXml.xmlDatenLesen", ex);
             }
             Daten.listeDownloads.listeNummerieren();
             //ListeFilmUpdateServer aufbauen
@@ -185,7 +185,7 @@ public class IoXmlLesen {
             }
             in.close();
         } catch (Exception ex) {
-            Log.fehlerMeldung(302045698,  "IoXml.importAboBlacklist", ex);
+            Log.fehlerMeldung(302045698, "IoXml.importAboBlacklist", ex);
         }
         if (found[0] > 0) {
             Daten.listeAbo.aenderungMelden();
@@ -252,7 +252,7 @@ public class IoXmlLesen {
             in.close();
         } catch (Exception ex) {
             if (log) {
-                Log.fehlerMeldung(467810360,  "IoXml.importPset", ex);
+                Log.fehlerMeldung(467810360, "IoXml.importPset", ex);
             }
             return null;
         }
@@ -298,7 +298,7 @@ public class IoXmlLesen {
             }
         } catch (Exception ex) {
             if (log) {
-                Log.fehlerMeldung(100298325,  "IoXml.importPset", ex);
+                Log.fehlerMeldung(100298325, "IoXml.importPset", ex);
             }
             return null;
         }
@@ -372,7 +372,7 @@ public class IoXmlLesen {
         } catch (Exception ex) {
             ret = false;
             if (log) {
-                Log.fehlerMeldung(945120369,  "IoXmlLesen.getConfig", ex);
+                Log.fehlerMeldung(945120369, "IoXmlLesen.getConfig", ex);
             }
         }
         return ret;

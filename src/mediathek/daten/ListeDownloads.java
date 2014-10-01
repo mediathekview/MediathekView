@@ -41,12 +41,12 @@ import msearch.daten.DatenFilm;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
 
-    private final Daten ddaten;
+    private final Daten daten;
     private final DownloadInfos downloadInfos = new DownloadInfos();
     private final LinkedList<DatenDownload> aktivDownloads = new LinkedList<>();
 
-    public ListeDownloads(Daten ddaten) {
-        this.ddaten = ddaten;
+    public ListeDownloads(Daten daten) {
+        this.daten = daten;
     }
 
     //===================================
@@ -429,11 +429,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     continue;
                 }
             }
-            if (ddaten.erledigteAbos.urlPruefen(film.getUrlHistory())) {
+            if (daten.erledigteAbos.urlPruefen(film.getUrlHistory())) {
                 // ist schon mal geladen worden
                 continue;
             }
-            DatenPset pSet = ddaten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET_NR]);
+            DatenPset pSet = Daten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET_NR]);
             if (pSet != null) {
                 // mit der tatsächlichen URL prüfen, ob die URL schon in der Downloadliste ist
                 String urlDownload = film.getUrlFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR]);

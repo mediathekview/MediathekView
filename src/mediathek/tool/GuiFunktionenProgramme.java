@@ -249,7 +249,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             parent.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }
         if (auto) {
-            if (daten.listePset.addPset(pSet)) {
+            if (Daten.listePset.addPset(pSet)) {
                 if (setVersion) {
                     Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, pSet.version);
                 }
@@ -258,7 +258,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             DialogImportPset dialog = new DialogImportPset(parent, true, daten, pSet);
             dialog.setVisible(true);
             if (dialog.ok) {
-                if (daten.listePset.addPset(pSet)) {
+                if (Daten.listePset.addPset(pSet)) {
                     if (setVersion) {
                         Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, pSet.version);
                     }
@@ -448,7 +448,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         final String PFEIL = " -> ";
         boolean ret = true;
         String text = "";
-        Iterator<DatenPset> itPset = daten.listePset.iterator();
+        Iterator<DatenPset> itPset = Daten.listePset.iterator();
         DatenPset datenPset;
         DatenProg datenProg;
         while (itPset.hasNext()) {

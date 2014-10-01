@@ -42,7 +42,7 @@ public class MVInfoFile {
         String titel = film.arr[DatenFilm.FILM_TITEL_NR];
         titel = GuiFunktionen.replaceLeerDateiname(titel);
         String pfad = "";
-        ListePset lp = daten.listePset.getListeSpeichern();
+        ListePset lp = Daten.listePset.getListeSpeichern();
         if (lp.size() > 0) {
             DatenPset p = lp.get(0);
             pfad = p.getZielPfad();

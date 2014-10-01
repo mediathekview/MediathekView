@@ -37,7 +37,7 @@ import mediathek.tool.MVConfig;
 
 public class DialogStarteinstellungen extends javax.swing.JDialog {
 
-    Daten ddaten;
+    Daten daten;
     private final static int STAT_START = 1;
     private final static int STAT_PFAD = 2;
     private final static int STAT_PSET = 3;
@@ -50,7 +50,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         super(parent, modal);
         parentComponent = parent;
         initComponents();
-        ddaten = dd;
+        daten = dd;
         this.setTitle("Erster Start");
         jButtonStandard.addActionListener(new ActionListener() {
             @Override
@@ -133,7 +133,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         } else {
             // nur dann automatisch Standardprogramme einrichten, sonst fragen
             //ListePset pSet = GuiFunktionenProgramme.getStandardprogramme(ddaten);
-            if (addStandarSet(parentComponent, ddaten)) {
+            if (addStandarSet(parentComponent, daten)) {
                 status = STAT_FERTIG;
             } else {
                 status = STAT_PSET;
@@ -151,11 +151,11 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
             case WIN32:
             case WIN64:
                 // da wird nur der VLC gebraucht, der Rest wird mitgeliefert
-                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, ddaten, true /* vlc */, false /* flvstreamer */, false /* mplayer */, false /*ffmpeg*/));
+                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, daten, true /* vlc */, false /* flvstreamer */, false /* mplayer */, false /*ffmpeg*/));
                 break;
             default:
                 // da brauchs alles
-                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, ddaten, true /* vlc */, true /* flvstreamer */, false /* mplayer */, true /*ffmpeg*/));
+                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, daten, true /* vlc */, true /* flvstreamer */, false /* mplayer */, true /*ffmpeg*/));
         }
         status = STAT_PSET;
         jButtonStandard.setText("Weiter");
@@ -165,14 +165,14 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         // Einstellungen zum Ansehen und Speichern der Filme anpassen
         jCheckBoxAnpassen.setVisible(false);
         jCheckBoxAlleEinstellungen.setVisible(true);
-        if (ddaten.listePset.size() == 0) {
+        if (Daten.listePset.size() == 0) {
             // Standardset hinzufügen
-            addStandarSet(parentComponent, ddaten);
+            addStandarSet(parentComponent, daten);
         }
         if (jCheckBoxAlleEinstellungen.isSelected()) {
-            jScrollPane1.setViewportView(new PanelPsetLang(ddaten, parentComponent, ddaten.listePset));
+            jScrollPane1.setViewportView(new PanelPsetLang(daten, parentComponent, Daten.listePset));
         } else {
-            jScrollPane1.setViewportView(new PanelPsetKurz(ddaten, parentComponent, ddaten.listePset));
+            jScrollPane1.setViewportView(new PanelPsetKurz(daten, parentComponent, Daten.listePset));
         }
         status = STAT_FERTIG;
         jButtonStandard.setText("Weiter");
@@ -182,7 +182,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         boolean ret = false;
         ListePset pSet = ListePsetVorlagen.getStandarset(parent, daten);
         if (pSet != null) {
-            daten.listePset.addPset(pSet);
+            Daten.listePset.addPset(pSet);
             Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, pSet.version);
             ret = true;
         }
