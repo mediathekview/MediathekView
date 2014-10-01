@@ -89,8 +89,8 @@ public class ProgrammLog {
             bw.write("#####################################################");
             bw.newLine();
             bw.newLine();
-            for (int i = 0; i < ddaten.listePset.size(); ++i) {
-                bw.write(ddaten.listePset.get(i).toString());
+            for (int i = 0; i < Daten.listePset.size(); ++i) {
+                bw.write(Daten.listePset.get(i).toString());
                 bw.newLine();
             }
             bw.newLine();

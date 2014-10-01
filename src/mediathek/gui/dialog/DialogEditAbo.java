@@ -62,7 +62,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
         initComponents();
         daten = d;
         aktAbo = aktA;
-        comboboxPSet.setModel(new javax.swing.DefaultComboBoxModel<>(daten.listePset.getListeAbo().getObjectDataCombo()));
+        comboboxPSet.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listePset.getListeAbo().getObjectDataCombo()));
         comboboxSender.setModel(new javax.swing.DefaultComboBoxModel<>(GuiFunktionen.addLeerListe(Daten.filmeLaden.getSenderNamen())));
         // Zeilpfad ========================
         ArrayList<String> pfade = Daten.listeAbo.getPfade();

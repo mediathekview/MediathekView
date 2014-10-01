@@ -20,13 +20,16 @@
 package mediathek;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ListIterator;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.MVListeFilme;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
 import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import msearch.io.MSFilmlisteLesen;
 
 public class MediathekAuto {
 
@@ -52,6 +55,20 @@ public class MediathekAuto {
         Log.startMeldungen(this.getClass().getName());
         if (IoXmlLesen.einstellungenExistieren()) {
             daten.allesLaden();
+            
+
+        Path xmlFilePath = Daten.getMediathekXmlFilePath();
+        if (!IoXmlLesen.datenLesen( xmlFilePath)) {
+            // dann hat das Laden nicht geklappt
+        }
+
+        new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme);
+        MVListeFilme.checkBlacklist();
+            
+            
+            
+            
+            
             Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
                 @Override
                 public void fertig(MSListenerFilmeLadenEvent event) {

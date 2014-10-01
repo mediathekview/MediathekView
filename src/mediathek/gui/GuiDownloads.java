@@ -884,7 +884,7 @@ public class GuiDownloads extends PanelVorlage {
                 public void actionPerformed(ActionEvent e) {
                     int nr = tabelle.rowAtPoint(p);
                     if (nr >= 0) {
-                        DatenPset gruppe = daten.listePset.getPsetAbspielen();
+                        DatenPset gruppe = Daten.listePset.getPsetAbspielen();
                         if (gruppe != null) {
                             DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenDownload.DOWNLOAD_REF_NR);
                             if (datenDownload != null) {

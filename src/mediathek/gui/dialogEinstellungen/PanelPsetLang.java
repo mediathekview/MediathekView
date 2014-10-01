@@ -37,6 +37,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import mediathek.controller.IoXmlSchreiben;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
@@ -75,7 +76,7 @@ public class PanelPsetLang extends PanelVorlage {
         jScrollPane3.setViewportView(tabellePset);
         tabelleProgramme = new MVTable(MVTable.TABELLE_TAB_PROG);
         jScrollPane1.setViewportView(tabelleProgramme);
-        listePset = daten.listePset;
+        listePset = Daten.listePset;
         init();
     }
 
@@ -586,7 +587,7 @@ public class PanelPsetLang extends PanelVorlage {
                 if (dialogZiel.ziel.contains(File.separator)) {
                     exportPfad = dialogZiel.ziel.substring(0, dialogZiel.ziel.lastIndexOf(File.separator));
                 }
-                daten.ioXmlSchreiben.exportPset(liste.toArray(new DatenPset[liste.size()]), dialogZiel.ziel);
+                IoXmlSchreiben.exportPset(liste.toArray(new DatenPset[liste.size()]), dialogZiel.ziel);
             }
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);

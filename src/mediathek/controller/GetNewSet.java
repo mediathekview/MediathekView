@@ -44,7 +44,7 @@ public class GetNewSet implements Runnable {
     public synchronized void run() {
         String version = Daten.mVConfig.get(MVConfig.SYSTEM_VERSION_PROGRAMMSET);
         if (listePsetStandard != null) {
-            if (daten.listePset.size() > 0) {
+            if (Daten.listePset.size() > 0) {
                 // ansonsten ist die Liste leer und dann gibts immer was
                 if (listePsetStandard.version.isEmpty()) {
                     // dann hat das Laden der aktuellen Standardversion nicht geklappt
@@ -68,7 +68,7 @@ public class GetNewSet implements Runnable {
             }
             Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
             // die Zielpafade anpassen
-            ListePset listePsetOrgSpeichern = daten.listePset.getListeSpeichern();
+            ListePset listePsetOrgSpeichern = Daten.listePset.getListeSpeichern();
             if (listePsetOrgSpeichern.size() > 0) {
                 for (DatenPset psNew : listePsetStandard.getListeSpeichern()) {
                     psNew.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = listePsetOrgSpeichern.get(0).arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR];
@@ -77,7 +77,7 @@ public class GetNewSet implements Runnable {
                     psNew.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR] = listePsetOrgSpeichern.get(0).arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR];
                 }
             }
-            if (!daten.listePset.isEmpty()) {
+            if (!Daten.listePset.isEmpty()) {
                 // wenn leer, dann gibt immer die Neuen und die sind dann auch aktiv
                 for (DatenPset psNew : listePsetStandard) {
                     // die bestehenden Sets sollen nicht gestört werden

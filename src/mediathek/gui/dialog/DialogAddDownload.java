@@ -97,7 +97,7 @@ public class DialogAddDownload extends JDialog {
             }
         });
 
-        jComboBoxPset.setModel(new DefaultComboBoxModel<>(daten.listePset.getListeSpeichern().getObjectDataCombo()));
+        jComboBoxPset.setModel(new DefaultComboBoxModel<>(Daten.listePset.getListeSpeichern().getObjectDataCombo()));
 
         jCheckBoxStarten.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN)));
         jCheckBoxStarten.addActionListener(new ActionListener() {
@@ -107,7 +107,7 @@ public class DialogAddDownload extends JDialog {
             }
         });
         jButtonZiel.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
-        if (daten.listePset.getListeSpeichern().size() == 0) {
+        if (Daten.listePset.getListeSpeichern().size() == 0) {
             // Satz mit x, war wohl nix
             ok = false;
             beenden();
@@ -140,9 +140,9 @@ public class DialogAddDownload extends JDialog {
         if (pSet != null) {
             jComboBoxPset.setSelectedItem(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
         } else {
-            pSet = daten.listePset.getListeSpeichern().get(jComboBoxPset.getSelectedIndex());
+            pSet = Daten.listePset.getListeSpeichern().get(jComboBoxPset.getSelectedIndex());
         }
-        if (daten.listePset.getListeSpeichern().size() == 1) {
+        if (Daten.listePset.getListeSpeichern().size() == 1) {
             // macht dann keinen Sinn
             jPanelSet.setVisible(false);
             jComboBoxPset.setEnabled(false);
@@ -330,7 +330,7 @@ public class DialogAddDownload extends JDialog {
      * Setup the resolution radio buttons based on available download URLs.
      */
     private void setupResolutionButtons() {
-        pSet = daten.listePset.getListeSpeichern().get(jComboBoxPset.getSelectedIndex());
+        pSet = Daten.listePset.getListeSpeichern().get(jComboBoxPset.getSelectedIndex());
         if (aufloesung.equals(DatenFilm.AUFLOESUNG_HD) || pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR].equals(DatenFilm.AUFLOESUNG_HD)
                 && !datenFilm.arr[DatenFilm.FILM_URL_HD_NR].isEmpty()) {
             /* Dann wurde im Filter HD ausgewählt und wird voreingestellt */

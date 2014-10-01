@@ -153,8 +153,8 @@ public class DatenPset {
         return this.arr[PROGRAMMSET_NAME_NR].equals("");
     }
 
-    public void setAbspielen(Daten ddaten) {
-        for (DatenPset datenPset : ddaten.listePset) {
+    public void setAbspielen(Daten daten) {
+        for (DatenPset datenPset : Daten.listePset) {
             datenPset.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
         }
         arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.TRUE.toString();

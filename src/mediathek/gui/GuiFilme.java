@@ -395,7 +395,7 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private synchronized void playFilm() {
-        DatenPset pset = daten.listePset.getPsetAbspielen();
+        DatenPset pset = Daten.listePset.getPsetAbspielen();
         if (pset != null) {
             playerStarten(pset);
         } else {
@@ -409,7 +409,7 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private synchronized void saveFilm(DatenPset pSet) {
-        if (daten.listePset.getListeSpeichern().isEmpty()) {
+        if (Daten.listePset.getListeSpeichern().isEmpty()) {
             MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Einstellungen->Aufzeichnen und Abspielen\" ein Programm zum Aufzeichnen festlegen.",
                     "fehlende Einstellungen zum Speichern!", JOptionPane.INFORMATION_MESSAGE);
             // Satz mit x, war wohl nix
@@ -537,7 +537,7 @@ public class GuiFilme extends PanelVorlage {
         // sonst ein Button
         jPanelExtraInnen.removeAll();
         jPanelExtraInnen.updateUI();
-        ListePset listeButton = daten.listePset.getListeButton();
+        ListePset listeButton = Daten.listePset.getListeButton();
         int maxSpalten = 4; //Anzahl der Spalten der Schalter
         buttonArray = new JButton[listeButton.size()];
         GridBagLayout gridbag = new GridBagLayout();
@@ -1277,7 +1277,7 @@ public class GuiFilme extends PanelVorlage {
             //Programme einblenden
             JMenu submenue = new JMenu("Film mit Set starten");
             jPopupMenu.add(submenue);
-            ListePset liste = daten.listePset.getListeButton();
+            ListePset liste = Daten.listePset.getListeButton();
             for (DatenPset pset : liste) {
                 if (pset.getListeProg().isEmpty() && pset.arr[DatenPset.PROGRAMMSET_NAME_NR].equals("")) {
                     // ein "leeres" Pset, Platzhalter
@@ -1512,7 +1512,7 @@ public class GuiFilme extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (daten.listePset.getListeAbo().isEmpty()) {
+                if (Daten.listePset.getListeAbo().isEmpty()) {
                     MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
                             "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
                 } else {
@@ -1544,7 +1544,7 @@ public class GuiFilme extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (daten.listePset.getListeAbo().isEmpty()) {
+                if (Daten.listePset.getListeAbo().isEmpty()) {
                     MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
                             "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
                 } else {
