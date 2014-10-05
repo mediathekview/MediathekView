@@ -183,23 +183,11 @@ public class IoXmlSchreiben {
             datenUrlFilmliste.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR] = DatenFilmlisteUrl.SERVER_ART_AKT;
             xmlSchreibenDaten(DatenFilmlisteUrl.FILM_UPDATE_SERVER, DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
         }
-        writer.writeCharacters("\n");
-        writer.writeComment("Old-Filmliste");
-        writer.writeCharacters("\n");
 
-        Iterator<DatenFilmlisteUrl> iterator = Daten.filmeLaden.getDownloadUrlsFilmlisten_old().iterator();
-        while (iterator.hasNext()) {
-            DatenFilmlisteUrl datenUrlFilmliste = iterator.next();
-            datenUrlFilmliste.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR] = DatenFilmlisteUrl.SERVER_ART_OLD;
-            xmlSchreibenDaten(DatenFilmlisteUrl.FILM_UPDATE_SERVER, DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
-        }
         writer.writeCharacters("\n");
         writer.writeComment("Diff-Filmliste");
         writer.writeCharacters("\n");
-
-        iterator = Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().iterator();
-        while (iterator.hasNext()) {
-            DatenFilmlisteUrl datenUrlFilmliste = iterator.next();
+        for (DatenFilmlisteUrl datenUrlFilmliste : Daten.filmeLaden.getDownloadUrlsFilmlisten_diff()) {
             datenUrlFilmliste.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR] = DatenFilmlisteUrl.SERVER_ART_DIFF;
             xmlSchreibenDaten(DatenFilmlisteUrl.FILM_UPDATE_SERVER, DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
         }

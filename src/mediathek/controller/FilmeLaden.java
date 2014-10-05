@@ -145,16 +145,12 @@ public class FilmeLaden {
         return MSFilmeSuchen.getNamenSender();
     }
 
-    public void updateDownloadUrlsFilmlisten(boolean old, boolean akt, boolean diff) {
-        msImportFilmliste.updateDownloadUrlsFilmlisten(old, akt, diff);
+    public void updateDownloadUrlsFilmlisten(boolean akt, boolean diff) {
+        msImportFilmliste.updateDownloadUrlsFilmlisten(akt, diff);
     }
 
     public ListeFilmlistenUrls getDownloadUrlsFilmlisten_akt() {
         return msImportFilmliste.msFilmlistenSuchen.listeFilmlistenUrls_akt;
-    }
-
-    public ListeFilmlistenUrls getDownloadUrlsFilmlisten_old() {
-        return msImportFilmliste.msFilmlistenSuchen.listeFilmlistenUrls_old;
     }
 
     public ListeFilmlistenUrls getDownloadUrlsFilmlisten_diff() {

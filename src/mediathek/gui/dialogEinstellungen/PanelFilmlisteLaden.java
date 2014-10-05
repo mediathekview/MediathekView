@@ -86,16 +86,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         });
         jRadioButtonUpdateAus.addActionListener(new BeobOption());
         jRadioButtonAuto.addActionListener(new BeobOption());
-        // erster Schritt zum Entfernen
-        jRadioButtonOld.setVisible(Daten.debug);
-        jRadioButtonOld.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jCheckBoxUpdate.setSelected(jRadioButtonDiff.isSelected());
-                tabelleLaden();
-            }
-        });
         jRadioButtonAkt.addActionListener(new ActionListener() {
 
             @Override
@@ -142,11 +132,9 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     private void listeFilmlistenSuchen() {
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         if (jRadioButtonAkt.isSelected()) {
-            Daten.filmeLaden.updateDownloadUrlsFilmlisten(false, true, false);
-        } else if (jRadioButtonOld.isSelected()) {
-            Daten.filmeLaden.updateDownloadUrlsFilmlisten(true, false, false);
+            Daten.filmeLaden.updateDownloadUrlsFilmlisten(true, false);
         } else /*diff*/ {
-            Daten.filmeLaden.updateDownloadUrlsFilmlisten(false, false, true);
+            Daten.filmeLaden.updateDownloadUrlsFilmlisten(false, true);
         }
         stopBeob = true;
         tabelleLaden();
@@ -157,8 +145,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     private void tabelleLaden() {
         if (jRadioButtonAkt.isSelected()) {
             jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().getTableObjectData(), DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
-        } else if (jRadioButtonOld.isSelected()) {
-            jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten_old().getTableObjectData(), DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
         } else /*diff*/ {
             jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().getTableObjectData(), DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
         }
@@ -198,8 +184,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             String url = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), DatenFilmlisteUrl.FILM_UPDATE_SERVER_URL_NR).toString();
             if (jRadioButtonAkt.isSelected()) {
                 datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().getDatenUrlFilmliste(url);
-            } else if (jRadioButtonOld.isSelected()) {
-                datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten_old().getDatenUrlFilmliste(url);
             } else /*diff*/ {
                 datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().getDatenUrlFilmliste(url);
             }
@@ -258,7 +242,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jCheckBoxUpdate = new javax.swing.JCheckBox();
         jRadioButtonAkt = new javax.swing.JRadioButton();
         jRadioButtonDiff = new javax.swing.JRadioButton();
-        jRadioButtonOld = new javax.swing.JRadioButton();
         jRadioButtonAuto = new javax.swing.JRadioButton();
         jRadioButtonUpdateAus = new javax.swing.JRadioButton();
 
@@ -290,7 +273,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 255)), "Filmliste nur manuell laden"));
 
         jTable1.setAutoCreateRowSorter(true);
-        jTable1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jTable1.setModel(new TModel());
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(jTable1);
@@ -308,7 +290,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jTextAreaManuell.setEditable(false);
         jTextAreaManuell.setColumns(20);
         jTextAreaManuell.setRows(4);
-        jTextAreaManuell.setText("Die Filmliste wird nur manuell über den Button \"Neue Filmliste laden\"\ngeladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum\nLaden ausgewählt werden.\nIst die Filmliste nicht älter als 1 Tag, reicht eine Differenzliste (enthält nur die neuen Filme).");
+        jTextAreaManuell.setText("Die Filmliste wird nur manuell über den Button \"Neue Filmliste laden\"\ngeladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum\nLaden ausgewählt werden. Ist die Filmliste nicht älter als 1 Tag,\nreicht eine Differenzliste (enthält nur die neuen Filme).");
         jTextAreaManuell.setMargin(new java.awt.Insets(4, 4, 4, 4));
         jScrollPane3.setViewportView(jTextAreaManuell);
 
@@ -320,9 +302,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         buttonGroup2.add(jRadioButtonDiff);
         jRadioButtonDiff.setText("Differenzlisten");
-
-        buttonGroup2.add(jRadioButtonOld);
-        jRadioButtonOld.setText("alte Filmlisten");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -347,9 +326,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                         .addComponent(jRadioButtonAkt)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jRadioButtonDiff)
-                        .addGap(18, 18, 18)
-                        .addComponent(jRadioButtonOld)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 172, Short.MAX_VALUE)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonAkualisieren)))
@@ -363,11 +340,10 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jRadioButtonAkt)
                     .addComponent(jRadioButtonDiff)
-                    .addComponent(jRadioButtonOld)
                     .addComponent(jLabel2)
                     .addComponent(jButtonAkualisieren))
                 .addGap(9, 9, 9)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -425,7 +401,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     private javax.swing.JRadioButton jRadioButtonAkt;
     private javax.swing.JRadioButton jRadioButtonAuto;
     private javax.swing.JRadioButton jRadioButtonDiff;
-    private javax.swing.JRadioButton jRadioButtonOld;
     private javax.swing.JRadioButton jRadioButtonUpdateAus;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextAreaAuto;
