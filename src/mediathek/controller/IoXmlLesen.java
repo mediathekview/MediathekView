@@ -119,9 +119,6 @@ public class IoXmlLesen {
                                         case DatenFilmlisteUrl.SERVER_ART_AKT:
                                             Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().addWithCheck(datenFilmlisteUrl);
                                             break;
-                                        case DatenFilmlisteUrl.SERVER_ART_OLD:
-                                            Daten.filmeLaden.getDownloadUrlsFilmlisten_old().addWithCheck(datenFilmlisteUrl);
-                                            break;
                                         case DatenFilmlisteUrl.SERVER_ART_DIFF:
                                             Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().addWithCheck(datenFilmlisteUrl);
                                             break;
@@ -140,7 +137,6 @@ public class IoXmlLesen {
             Daten.listeDownloads.listeNummerieren();
             //ListeFilmUpdateServer aufbauen
             Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().sort();
-            Daten.filmeLaden.getDownloadUrlsFilmlisten_old().sort();
             Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().sort();
         }
         return ret;
