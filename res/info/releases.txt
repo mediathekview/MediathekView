@@ -28,7 +28,6 @@
 	- Progressanzeige beim Laden der Filmliste
 	- Beep nach Download
 	- "Datei existiert" Anfrage bei Downloads über ein Programm
-	- "Downloaddialog" auch in "klein" -> Einstellungen
 	
 	# Version 7
 	- "-auto" geht wieder
