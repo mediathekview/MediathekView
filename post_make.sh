@@ -26,7 +26,7 @@ echo MediathekView Buildnummer: $relNr >> dist/info/$relNr.build
 # zip erstellen
 cd dist/
 datum=$(date +%Y.%m.%d )
-zip -r MediathekView_7_$datum.zip .
+zip -r MediathekView_8_$datum.zip .
 cd ..
 
 fi
@@ -39,6 +39,7 @@ then
 # Programmsets ins www-verzeichnis kopieren
 cp src/mediathek/file/*.xml /home/emil/daten/www/online/ZDFMediathekView/programmgruppen4/
 # Dateien ins share-Verzeichnis von VmWare kopieren
+rm -r /mnt/lager/virtualbox/share/aktMed/*.zip
 cp -r dist/* /mnt/lager/virtualbox/share/aktMed
 fi
 
