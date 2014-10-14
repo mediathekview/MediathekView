@@ -39,6 +39,7 @@ import msearch.filmeLaden.MSImportFilmliste;
 import msearch.filmeSuchen.MSFilmeSuchen;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
 import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import msearch.io.MSFilmlisteLesen;
 
 public class FilmeLaden {
 
@@ -176,6 +177,9 @@ public class FilmeLaden {
         if (event.fehler) {
             Log.systemMeldung("Filmliste laden war fehlerhaft");
             MVMessageDialog.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
+            // dann die alte Liste wieder laden
+            Daten.listeFilme.clear();
+            new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme);
         } else {
             Log.systemMeldung("Filmliste geladen: " + Daten.listeFilme.size() + " Filme");
             Daten.filmlisteSpeichern();
