@@ -18,11 +18,12 @@
 
 PKG      := mediathekview
 PKG2     := msearch
-VER      := 7
-UURL     := git://git.code.sf.net/p/zdfmediathk/code
-UURL2    := git://git.code.sf.net/p/zdfmediathk/msearch/
-COMMIT   := 5aca9f0e8bdd7b7e9260b00892d00b0f51a0a0fc
-COMMIT2  := d59c7487c7f49ed61f7ae96917dd472682d000cf
+VER      := 8
+UURL     := https://github.com/xaverW/MediathekView.git
+UURL2    := https://github.com/xaverW/MSearch.git
+COMMIT   := c0eb28a9ce461fa793193be1188a9fea6a3a1e52
+COMMIT2  := 6b86cbc9ac915d6102723a2d3bd29ffa2b5a62f3
+
 
 .PHONY: make-orig-source
 make-orig-source: $(PKG)_$(VER).tar.xz
