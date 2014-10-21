@@ -30,7 +30,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import mediathek.MediathekGui;
-import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.PanelAbout;
@@ -58,11 +57,6 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private PanelPsetImport panelPsetVorlagen;
     // Infos
     private PanelAbout panelAbout;
-    //private PanelInfoStarts panelStarts;
-    private PanelMeldungenUbersicht panelMeldungenUbersicht;
-    private PanelMeldungen panelMeldungenFehler;
-    private PanelMeldungen panelMeldungenSystem;
-    private PanelMeldungen panelMeldungenPlayer;
     private final JPanel panelLeer = new JPanel();
     private final JFrame parentComponent;
 
@@ -111,11 +105,6 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         panelPsetVorlagen = new PanelPsetImport(ddaten, parentComponent);
         // Infos
         panelAbout = new PanelAbout(ddaten, parentComponent);
-        //panelStarts = new PanelInfoStarts(ddaten);
-        panelMeldungenUbersicht = new PanelMeldungenUbersicht(ddaten, parentComponent);
-        panelMeldungenFehler = new PanelMeldungen(ddaten, parentComponent, Log.textFehler, Log.LOG_FEHLER, "Fehlermeldungen");
-        panelMeldungenSystem = new PanelMeldungen(ddaten, parentComponent, Log.textSystem, Log.LOG_SYSTEM, "Systemmeldungen");
-        panelMeldungenPlayer = new PanelMeldungen(ddaten, parentComponent, Log.textProgramm, Log.LOG_PLAYER, "Meldungen Hilfsprogramme");
     }
 
     private void initTree() {
@@ -134,10 +123,6 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         final String NAME_programmInfos = "Programminfos";
         final String NAME_history = "History";
         final String NAME_logfile = "Erledigte Abos";
-        final String NAME_logdatei = "Logdatei erstellen";
-        final String NAME_systemmeldungen = "Systemmeldungen";
-        final String NAME_fehlermeldungen = "Fehlermeldungen";
-        final String NAME_meldungenProgramme = "Hilfsprogramme";
         //
         DefaultMutableTreeNode treeNodeStart = new DefaultMutableTreeNode(Konstanten.PROGRAMMNAME);
         // ===============================================================================
@@ -186,20 +171,6 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         DefaultMutableTreeNode treeNodeLogfile = new DefaultMutableTreeNode(NAME_logfile);
         treeNodeInfos.add(treeNodeLogfile);
         treeNodeStart.add(treeNodeInfos);
-        // ===============================================================================
-        // ############ Systemmeldungen ###############
-        DefaultMutableTreeNode treeNodeSystem = new DefaultMutableTreeNode("Meldungen");
-        DefaultMutableTreeNode treeNodeLogdatei = new DefaultMutableTreeNode(NAME_logdatei);
-        treeNodeSystem.add(treeNodeLogdatei);
-        DefaultMutableTreeNode treeNodeSystemmeldungen = new DefaultMutableTreeNode(NAME_systemmeldungen);
-        treeNodeSystem.add(treeNodeSystemmeldungen);
-        if (Daten.debug) {
-            DefaultMutableTreeNode treeNodeFehlermeldungen = new DefaultMutableTreeNode(NAME_fehlermeldungen);
-            treeNodeSystem.add(treeNodeFehlermeldungen);
-        }
-        DefaultMutableTreeNode treeNodeProgrammmeldungen = new DefaultMutableTreeNode(NAME_meldungenProgramme);
-        treeNodeSystem.add(treeNodeProgrammmeldungen);
-        treeNodeStart.add(treeNodeSystem);
 
         // Aufbauen
         jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNodeStart));
@@ -272,22 +243,6 @@ public class DialogEinstellungen extends javax.swing.JFrame {
                         case NAME_programmInfos:
                             jPanelExtra.removeAll();
                             jPanelExtra.add(panelAbout);
-                            break;
-                        case NAME_logdatei:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelMeldungenUbersicht);
-                            break;
-                        case NAME_systemmeldungen:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelMeldungenSystem);
-                            break;
-                        case NAME_fehlermeldungen:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelMeldungenFehler);
-                            break;
-                        case NAME_meldungenProgramme:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelMeldungenPlayer);
                             break;
                         default:
                             jPanelExtra.removeAll();

@@ -33,17 +33,13 @@ import mediathek.tool.MVConfig;
 public class PanelMeldungen extends PanelVorlage {
 
     private final StringBuffer text;
-    private int logArt;
-    private static int PANEL_NR_MAX = 0;
-    private int panelNr = 0;
+    private final int logArt;
     private int firstScroll = 25;
     private Color cGruen = new Color(0, 153, 51);
     private Color cRot = new Color(255, 0, 0);
 
     public PanelMeldungen(Daten d, JFrame parentComponent, StringBuffer ttext, int llogArt, String header) {
         super(d, parentComponent);
-        PANEL_NR_MAX++;
-        panelNr = PANEL_NR_MAX;
         initComponents();
         text = ttext;
         jLabelHeader.setText(header);
@@ -55,20 +51,6 @@ public class PanelMeldungen extends PanelVorlage {
         }
         jCheckBoxAuto.setForeground(jCheckBoxAuto.isSelected() ? cGruen : cRot);
         setText();
-        //init
-        ListenerMediathekView.addListener(new ListenerMediathekView(logArt, PanelMeldungen.class.getName() + panelNr) {
-            // + String.valueOf(PANEL_NR) damit die unterschiedlichen Panel unterschieden werden
-            @Override
-            public void ping() {
-                //if (jToggleButtonEinschalten.isSelected()) {
-                if (jCheckBoxAuto.isSelected() || firstScroll > 0) {
-                    if (firstScroll > 0) {
-                        --firstScroll;
-                    }
-                    setLineWrab(); //setText wir da auch gemacht
-                }
-            }
-        });
         jButtonLoeschen.addActionListener(new BeobLoeschen());
         jCheckBoxAuto.addActionListener(new ActionListener() {
             @Override
@@ -82,13 +64,21 @@ public class PanelMeldungen extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 if (!stopBeob) {
                     Daten.mVConfig.add(getNrSystem(), String.valueOf(jCheckBoxUmbrechen.isSelected()));
-                    ListenerMediathekView.notify(logArt, PanelMeldungen.class.getName() + panelNr);
                     setLineWrab();
                 }
             }
         });
         setAuto();
         setLineWrab();
+    }
+
+    public void notifyPanel() {
+        if (jCheckBoxAuto.isSelected() || firstScroll > 0) {
+            if (firstScroll > 0) {
+                --firstScroll;
+            }
+            setLineWrab(); //setText wir da auch gemacht
+        }
     }
 
     private void setAuto() {

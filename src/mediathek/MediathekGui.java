@@ -717,9 +717,14 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 }
             }
         };
+        PanelMeldungen panelMeldungenSystem = new PanelMeldungen(daten, daten.mediathekGui, Log.textSystem, ListenerMediathekView.EREIGNIS_LOG_SYSTEM, "Systemmeldungen");
+        PanelMeldungen panelMeldungenPlayer = new PanelMeldungen(daten, daten.mediathekGui, Log.textProgramm, ListenerMediathekView.EREIGNIS_LOG_PLAYER, "Meldungen Hilfsprogramme");
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                new PanelMeldungen(daten, daten.mediathekGui, Log.textSystem, ListenerMediathekView.EREIGNIS_LOG_SYSTEM, "Systemmeldungen"),
-                new PanelMeldungen(daten, daten.mediathekGui, Log.textProgramm, ListenerMediathekView.EREIGNIS_LOG_PLAYER, "Meldungen Hilfsprogramme"));
+                panelMeldungenSystem,
+                panelMeldungenPlayer);
+        Log.panelMeldungenPlayer = panelMeldungenPlayer;
+        Log.panelMeldungenSystem = panelMeldungenSystem;
+
         panelMeldungen.setLayout(new BorderLayout());
         panelMeldungen.add(splitPane, BorderLayout.CENTER);
         if (Daten.debug) {
