@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.daten.Daten;
+import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
@@ -49,6 +50,9 @@ public class Log {
     private static final boolean progress = false;
     private static final String progressText = "";
     private static final Date startZeit = new Date(System.currentTimeMillis());
+    public static PanelMeldungen panelMeldungenFehler = null; // unschön, gab aber sonst einen Deadlock mit notifyMediathekListener
+    public static PanelMeldungen panelMeldungenSystem = null;
+    public static PanelMeldungen panelMeldungenPlayer = null;
 
     public static synchronized void versionsMeldungen(String classname) {
         final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
@@ -159,7 +163,7 @@ public class Log {
         systemMeldung("###########################################################");
     }
 
-    public static void printFehlerMeldung() {
+    private static void printFehlerMeldung() {
         systemMeldung("");
         systemMeldung("###########################################################");
         if (fehlerListe.size() == 0) {
@@ -282,10 +286,10 @@ public class Log {
                 System.out.println(z + " Exception: " + ex.getMessage());
             }
             System.out.println(z + " " + FEHLER + klasse);
-            notifyMediathekListener(LOG_FEHLER, FEHLER + klasse);
+            notifyPanelMeldung(LOG_FEHLER, FEHLER + klasse);
             for (String text : texte) {
                 System.out.println(z + "           " + text);
-                notifyMediathekListener(LOG_FEHLER, text);
+                notifyPanelMeldung(LOG_FEHLER, text);
             }
             System.out.println("");
             if (progress) {
@@ -313,22 +317,22 @@ public class Log {
         final String z = ". ";
         if (texte.length <= 1) {
             System.out.println(z + " " + texte[0]);
-            notifyMediathekListener(LOG_SYSTEM, texte[0]);
+            notifyPanelMeldung(LOG_SYSTEM, texte[0]);
         } else {
             String zeile = "---------------------------------------";
             String txt;
             System.out.println(z + zeile);
-            notifyMediathekListener(LOG_SYSTEM, zeile);
+            notifyPanelMeldung(LOG_SYSTEM, zeile);
             for (int i = 0; i < texte.length; ++i) {
                 txt = "| " + texte[i];
                 System.out.println(z + txt);
                 if (i == 0) {
-                    notifyMediathekListener(LOG_SYSTEM, texte[i]);
+                    notifyPanelMeldung(LOG_SYSTEM, texte[i]);
                 } else {
-                    notifyMediathekListener(LOG_SYSTEM, "    " + texte[i]);
+                    notifyPanelMeldung(LOG_SYSTEM, "    " + texte[i]);
                 }
             }
-            notifyMediathekListener(LOG_SYSTEM, " ");
+            notifyPanelMeldung(LOG_SYSTEM, " ");
             System.out.println(z + zeile);
         }
         if (progress) {
@@ -343,10 +347,10 @@ public class Log {
         }
         final String z = "  >>";
         System.out.println(z + " " + texte[0]);
-        notifyMediathekListener(LOG_PLAYER, texte[0]);
+        notifyPanelMeldung(LOG_PLAYER, texte[0]);
         for (int i = 1; i < texte.length; ++i) {
             System.out.println(z + " " + texte[i]);
-            notifyMediathekListener(LOG_PLAYER, texte[i]);
+            notifyPanelMeldung(LOG_PLAYER, texte[i]);
         }
         if (progress) {
             System.out.print(progressText);
@@ -357,6 +361,9 @@ public class Log {
         if (art == LOG_FEHLER) {
             zeilenNrFehler = 0;
             textFehler.setLength(0);
+            if (panelMeldungenFehler != null) {
+                panelMeldungenFehler.notifyPanel();
+            }
         } else if (art == LOG_SYSTEM) {
             zeilenNrSystem = 0;
             textSystem.setLength(0);
@@ -364,10 +371,10 @@ public class Log {
             zeilenNrProgramm = 0;
             textProgramm.setLength(0);
         }
-        ListenerMediathekView.notify(art, Log.class.getName());
+        notifyPanel(art);
     }
 
-    private static void notifyMediathekListener(int art, String zeile) {
+    private static void notifyPanelMeldung(int art, String zeile) {
         if (art == LOG_FEHLER) {
             addText(textFehler, "[" + getNr(zeilenNrFehler++) + "]   " + zeile);
         } else if (art == LOG_SYSTEM) {
@@ -375,7 +382,17 @@ public class Log {
         } else if (art == LOG_PLAYER) {
             addText(textProgramm, "[" + getNr(zeilenNrProgramm++) + "]   " + zeile);
         }
-        ListenerMediathekView.notify(art, Log.class.getName());
+        notifyPanel(art);
+    }
+
+    private static void notifyPanel(int art) {
+        if (art == LOG_FEHLER && panelMeldungenFehler != null) {
+            panelMeldungenFehler.notifyPanel();
+        } else if (art == LOG_SYSTEM && panelMeldungenSystem != null) {
+            panelMeldungenSystem.notifyPanel();
+        } else if (art == LOG_PLAYER && panelMeldungenPlayer != null) {
+            panelMeldungenPlayer.notifyPanel();
+        }
     }
 
     private static String getStackTrace(Throwable t) {

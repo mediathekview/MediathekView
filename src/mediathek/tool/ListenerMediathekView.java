@@ -91,7 +91,7 @@ public class ListenerMediathekView implements EventListener {
                         try {
                             l.pingen();
                         } catch (Exception ex) {
-                            Log.fehlerMeldung(562314008, "ListenerMediathekView.notifyMediathekListener", ex);
+                            System.out.println("ListenerMediathekView.notifyMediathekListener: " + ex.getMessage());
                         }
                     }
                 }
