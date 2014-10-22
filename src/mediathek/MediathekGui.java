@@ -759,7 +759,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             BufferedImage appImage = ImageIO.read(url);
             application.setApplicationIconImage(appImage);
         } catch (IOException ex) {
-            Log.debugMeldung("OS X Application image could not be loaded");
+            Log.fehlerMeldung(165623698, "MediathekGui.setupUserInterfaceForOsx", "OS X Application image could not be loaded");
         }
 
         //Remove all menu items which don´t need to be displayed due to OS X´s native menu support

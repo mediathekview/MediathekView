@@ -92,12 +92,6 @@ public class Log {
         Log.systemMeldung("");
     }
 
-    public static synchronized void debugMeldung(String text) {
-        if (Daten.debug) {
-            debugmeldung(text);
-        }
-    }
-
     // Fehlermeldung mit Exceptions
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex) {
         fehlermeldung_(fehlerNummer, klasse, ex, new String[]{});
@@ -298,17 +292,6 @@ public class Log {
         }
     }
 
-    private static void debugmeldung(String texte) {
-        if (progress) {
-            // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
-            System.out.print("                                                                            \r");
-        }
-        System.out.println("|||| " + texte);
-        if (progress) {
-            System.out.print(progressText);
-        }
-    }
-
     private static void systemmeldung(String[] texte) {
         if (progress) {
             // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
@@ -361,9 +344,6 @@ public class Log {
         if (art == LOG_FEHLER) {
             zeilenNrFehler = 0;
             textFehler.setLength(0);
-            if (panelMeldungenFehler != null) {
-                panelMeldungenFehler.notifyPanel();
-            }
         } else if (art == LOG_SYSTEM) {
             zeilenNrSystem = 0;
             textSystem.setLength(0);
@@ -371,7 +351,6 @@ public class Log {
             zeilenNrProgramm = 0;
             textProgramm.setLength(0);
         }
-        notifyPanel(art);
     }
 
     private static void notifyPanelMeldung(int art, String zeile) {
