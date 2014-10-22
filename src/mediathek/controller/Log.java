@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
+import javax.swing.SwingUtilities;
 import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 import mediathek.tool.Funktionen;
@@ -365,12 +366,34 @@ public class Log {
     }
 
     private static void notifyPanel(int art) {
-        if (art == LOG_FEHLER && panelMeldungenFehler != null) {
-            panelMeldungenFehler.notifyPanel();
-        } else if (art == LOG_SYSTEM && panelMeldungenSystem != null) {
-            panelMeldungenSystem.notifyPanel();
-        } else if (art == LOG_PLAYER && panelMeldungenPlayer != null) {
-            panelMeldungenPlayer.notifyPanel();
+        final int a = art;
+        try {
+            if (SwingUtilities.isEventDispatchThread()) {
+                // notify
+                if (art == LOG_FEHLER && panelMeldungenFehler != null) {
+                    panelMeldungenFehler.notifyPanel();
+                } else if (art == LOG_SYSTEM && panelMeldungenSystem != null) {
+                    panelMeldungenSystem.notifyPanel();
+                } else if (art == LOG_PLAYER && panelMeldungenPlayer != null) {
+                    panelMeldungenPlayer.notifyPanel();
+                }
+            } else {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        // notify
+                        if (a == LOG_FEHLER && panelMeldungenFehler != null) {
+                            panelMeldungenFehler.notifyPanel();
+                        } else if (a == LOG_SYSTEM && panelMeldungenSystem != null) {
+                            panelMeldungenSystem.notifyPanel();
+                        } else if (a == LOG_PLAYER && panelMeldungenPlayer != null) {
+                            panelMeldungenPlayer.notifyPanel();
+                        }
+                    }
+                });
+            }
+        } catch (Exception ex) {
+            Log.fehlerMeldung(698989743, "ListenerMediathekView.pingen", ex);
         }
     }
 
