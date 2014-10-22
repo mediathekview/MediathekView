@@ -22,9 +22,7 @@ package mediathek.controller;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import mediathek.daten.Daten;
-import mediathek.daten.ListePsetVorlagen;
 import mediathek.tool.DatumZeit;
-import mediathek.tool.Funktionen;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 
