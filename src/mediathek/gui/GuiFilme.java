@@ -105,6 +105,8 @@ public class GuiFilme extends PanelVorlage {
         initComponents();
         tabelle = new MVTable(MVTable.TABELLE_TAB_FILME);
         jScrollPane1.setViewportView(tabelle);
+//        jScrollPane1.getVerticalScrollBar().setUnitIncrement(50);
+        jScrollPaneFilter.getVerticalScrollBar().setUnitIncrement(16);
         panelVideoplayerSetzen();
         panelBeschreibung = new PanelBeschreibung(daten.mediathekGui, daten);
         mVFilterPanel = new MVFilterPanel(parentComponent, daten) {
@@ -1023,7 +1025,7 @@ public class GuiFilme extends PanelVorlage {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
+            .addComponent(jSplitPane1)
         );
     }// </editor-fold>//GEN-END:initComponents
 
