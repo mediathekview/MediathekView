@@ -73,6 +73,8 @@ import mediathek.gui.GuiAbo;
 import mediathek.gui.GuiDebug;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
+import mediathek.gui.MVBandwidthMonitor;
+import mediathek.gui.MVDownloadInfo;
 import mediathek.gui.MVStatusBar;
 import mediathek.gui.MVToolBar;
 import mediathek.gui.PanelVorlage;
@@ -128,8 +130,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     /**
      * Bandwidth monitoring for downloads.
      */
-//    private MVBandwidthMonitor bandwidthMonitor = null;
-//    private MVDownloadInfo mvDownloadInfo = null;
+    private MVBandwidthMonitor bandwidthMonitor = null;
+    private MVDownloadInfo mvDownloadInfo = null;
 
     /**
      * Return the currently used java native bridge object
@@ -351,28 +353,27 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         setFocusSuchfeld();
 
-        cbBandwidthDisplay.setVisible(false);
-//        cbBandwidthDisplay.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BANDWIDTH_MONITOR_VISIBLE)));
-//        if (SystemInfo.isMacOSX()) {
-//            bandwidthMonitor = new MVBandwidthMonitor(this, cbBandwidthDisplay);
-//            bandwidthMonitor.toggleVisibility();
-//            cbBandwidthDisplay.addActionListener(new ActionListener() {
-//                @Override
-//                public void actionPerformed(ActionEvent e) {
-//                    bandwidthMonitor.toggleVisibility();
-//                }
-//            });
-//        } else {
-//            mvDownloadInfo = new MVDownloadInfo(this, cbBandwidthDisplay);
-//            mvDownloadInfo.toggleVisibility();
-//            cbBandwidthDisplay.addActionListener(new ActionListener() {
-//                @Override
-//                public void actionPerformed(ActionEvent e) {
-//                    mvDownloadInfo.toggleVisibility();
-//                }
-//            });
-//
-//        }
+        cbBandwidthDisplay.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BANDWIDTH_MONITOR_VISIBLE)));
+        if (SystemInfo.isMacOSX()) {
+            bandwidthMonitor = new MVBandwidthMonitor(this, cbBandwidthDisplay);
+            bandwidthMonitor.toggleVisibility();
+            cbBandwidthDisplay.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    bandwidthMonitor.toggleVisibility();
+                }
+            });
+        } else {
+            mvDownloadInfo = new MVDownloadInfo(this, cbBandwidthDisplay);
+            mvDownloadInfo.toggleVisibility();
+            cbBandwidthDisplay.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mvDownloadInfo.toggleVisibility();
+                }
+            });
+
+        }
         duration.ping("Gui steht!");
     }
 
@@ -1344,10 +1345,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         // Dialog Einstellungen
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_EINSTELLUNGEN, dialogEinstellungen);
         // Infodialog/Bandwidth
-//        if (mvDownloadInfo != null) {
-//            GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, mvDownloadInfo.getDialog());
-//            mvDownloadInfo.getDividerLocation();
-//        }
+        if (mvDownloadInfo != null) {
+            GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, mvDownloadInfo.getDialog());
+            mvDownloadInfo.getDividerLocation();
+        }
         Daten.mVConfig.add(MVConfig.SYSTEM_BREITE_MELDUNGEN, String.valueOf(splitPane.getDividerLocation()));
 
         // Frames
