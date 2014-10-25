@@ -26,7 +26,6 @@ public class Konstanten {
     public static final String USER_AGENT_DEFAULT = Funktionen.getProgVersionString();
     public static final String CONFIG_FILE = "mediathek.xml";
     public static final String CONFIG_FILE_COPY = "mediathek.xml_copy_";
-    public static final String DATEINAME_LISTE_FILMLISTEN = "filmlisten.xml";
     public static final String FILE_ERLEDIGTE_ABOS = "downloadAbos.txt";
     public static final String FILE_HISTORY = "history.txt";
 

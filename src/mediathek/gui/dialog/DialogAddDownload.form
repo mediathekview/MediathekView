@@ -32,22 +32,22 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+                  <Component id="jPanelFilm" alignment="0" max="32767" attributes="0"/>
+                  <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
+                  <Component id="jPanelSet" alignment="0" max="32767" attributes="0"/>
+                  <Component id="jPanel2" alignment="0" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
                       <Component id="jCheckBoxStarten" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jCheckBoxFilm" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="jButtonOk" linkSize="1" min="-2" pref="93" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonAbbrechen" linkSize="1" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="jPanelFilm" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jPanelSet" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jPanel2" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -64,14 +64,16 @@
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
-              <Group type="103" groupAlignment="2" attributes="0">
-                  <Component id="jButtonOk" alignment="2" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButtonAbbrechen" alignment="2" min="-2" max="-2" attributes="0"/>
-                  <Component id="jCheckBoxStarten" alignment="2" min="-2" max="-2" attributes="0"/>
-                  <Component id="jCheckBoxFilm" alignment="2" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jCheckBoxStarten" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jCheckBoxFilm" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" alignment="3" groupAlignment="3" attributes="0">
+                      <Component id="jButtonOk" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonAbbrechen" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -208,7 +210,7 @@
                                       <Component id="jCheckBoxInfodatei" min="-2" max="-2" attributes="0"/>
                                       <Component id="jCheckBoxPfadSpeichern" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace min="0" pref="214" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -364,7 +366,7 @@
                   <Component id="jRadioButtonAufloesungHoch" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="jRadioButtonAufloesungKlein" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="272" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -411,7 +413,7 @@
     </Container>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxFilm">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Film"/>
+        <Property name="text" type="java.lang.String" value="Film-Info einblenden"/>
       </Properties>
     </Component>
   </SubComponents>
