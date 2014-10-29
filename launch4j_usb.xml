@@ -3,9 +3,9 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>MediathekView.jar</jar>
-  <outfile>/home/emil/daten/software/Mediathek/Mediathek/res/MediathekView.exe</outfile>
+  <outfile>/home/emil/daten/software/Mediathek/Mediathek/res/info/MediathekView_usb.exe</outfile>
   <errTitle></errTitle>
-  <cmdLine></cmdLine>
+  <cmdLine>.mediathek3</cmdLine>
   <chdir></chdir>
   <priority>normal</priority>
   <downloadUrl>https://www.java.com/de/</downloadUrl>

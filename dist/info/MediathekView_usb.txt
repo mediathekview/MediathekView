@@ -1,0 +1,12 @@
+Damit kann das Programm mit einem USB-Stick benutzt werden.
+
+Wird das Programm mit "MediathekView_usb.exe" gestartet, werden alle
+Einstellungen im Programmordner gesichert und es gibt keine
+weiteren Abhängigkeiten auf dem PC.
+
+Die Datei "MediathekView_usb.exe" muss dazu in den Programmordner
+kopiert werden (wo auch schon "MediathekView.exe" liegt.
+
+
+
+
