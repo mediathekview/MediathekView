@@ -230,11 +230,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         }
     }
 
-    public MediathekGui(String[] ar) {
+    public MediathekGui(String[] ar, final boolean maximized) {
         initializeSplashScreen();
 
         String pfad = "";
-        boolean max = false;
         initComponents();
         if (ar != null) {
             if (ar.length > 0) {
@@ -243,11 +242,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                         ar[0] += File.separator;
                     }
                     pfad = ar[0];
-                }
-            }
-            for (String anAr : ar) {
-                if (anAr.equalsIgnoreCase(Main.STARTP_MAXIMIERT)) {
-                    max = true;
                 }
             }
         }
@@ -291,7 +285,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         duration.ping("LookAndFeel");
         init();
         duration.ping("init");
-        setSize(max);
+        setSize(maximized);
         duration.ping("setSize");
 
         // Dialog mit den Programmeinstellungen einrichten

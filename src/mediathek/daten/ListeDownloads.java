@@ -647,6 +647,24 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     }
 
     /**
+     * Return the maximum time of all running starts until finish.
+     * @return The time in SECONDS.
+     */
+    public synchronized long getMaximumFinishTimeOfRunningStarts() {
+        long rem = 0;
+        for (DatenDownload d : this) {
+            Start s = d.start;
+            if (s != null) {
+                if (s.status < Start.STATUS_FERTIG) {
+                    rem = Math.max(rem,s.restSekunden);
+                }
+            }
+        }
+
+        return rem;
+    }
+
+    /**
      * Return a List of all not yet finished downloads.
      *
      * @param quelle Use QUELLE_XXX constants from {@link mediathek.controller.starter.Start}.
