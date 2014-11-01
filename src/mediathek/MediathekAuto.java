@@ -21,7 +21,8 @@ package mediathek;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ListIterator;
+import java.util.concurrent.TimeUnit;
+
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
@@ -35,6 +36,8 @@ public class MediathekAuto {
 
     private Daten daten;
     private String pfad = "";
+    private boolean bFastAuto = false;
+
 
     public MediathekAuto(String[] ar) {
         if (ar != null) {
@@ -49,6 +52,16 @@ public class MediathekAuto {
         }
     }
 
+    /**
+     * Set fast auto mode for reading film list.
+     * In this mode no film descriptions will be stored in memory.
+     * Speeds up startup significantly on low power machines.
+     * @param bFastAuto if true, don´t read descriptions.
+     */
+    public void setFastAuto(boolean bFastAuto) {
+        this.bFastAuto = bFastAuto;
+    }
+
     public void starten() {
         daten = new Daten(pfad, null);
         Daten.auto = true;
@@ -57,7 +70,7 @@ public class MediathekAuto {
         if (!IoXmlLesen.einstellungenExistieren()) {
             // Programm erst mit der GuiVersion einrichten
             Log.fehlerMeldung(834986137, "MediathekAuto", "Das Programm muss erst mit der Gui-Version eingerichtet werden!");
-            System.exit(0);
+            System.exit(1);
         }
 
         // Einstellungen laden
@@ -66,11 +79,16 @@ public class MediathekAuto {
         if (!IoXmlLesen.datenLesen(xmlFilePath)) {
             // dann hat das Laden nicht geklappt
             Log.fehlerMeldung(834986137, "MediathekAuto", "Einstellungen konnten nicht geladen werden: " + xmlFilePath.toString());
-            System.exit(0);
+            System.exit(1);
         }
 
         // Filmliste laden
-        new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme);
+        MSFilmlisteLesen filmList = new MSFilmlisteLesen();
+        if (bFastAuto) {
+            //do not read film descriptions in FASTAUTO mode as they won´t be used...
+            filmList.setWorkMode(MSFilmlisteLesen.WorkMode.FASTAUTO);
+        }
+        filmList.readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme);
 
         if (Daten.listeFilme.isTooOld()) {
             // erst neue Filmliste laden
@@ -92,32 +110,45 @@ public class MediathekAuto {
         }
     }
 
+    final private static int SLEEP_VALUE = 2_000;
+    final private static int SLEEP_VALUE_TIMES_TWO = 2 * SLEEP_VALUE;
+
     private synchronized void download() {
         try {
             Log.playerMeldungenAus = true;
             Daten.listeDownloads.abosSuchen(null);
+
             Log.systemMeldung(Daten.listeDownloads.size() + " Filme zum Laden");
+            Log.systemMeldung("");
             // erst mal die Filme schreiben
-            int i = 0;
-            ListIterator<DatenDownload> it = Daten.listeDownloads.listIterator();
-            while (it.hasNext()) {
-                DatenDownload d = it.next();
+            int i = 1;
+            for (DatenDownload d : Daten.listeDownloads) {
                 Log.systemMeldung("Film " + (i++) + ": ");
-                Log.systemMeldung(" Sender: " + d.arr[DatenDownload.DOWNLOAD_SENDER_NR]);
-                Log.systemMeldung(" Thema: " + d.arr[DatenDownload.DOWNLOAD_THEMA_NR]);
-                Log.systemMeldung(" Titel: " + d.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
+                Log.systemMeldung("\tSender: " + d.arr[DatenDownload.DOWNLOAD_SENDER_NR]);
+                Log.systemMeldung("\tThema: " + d.arr[DatenDownload.DOWNLOAD_THEMA_NR]);
+                Log.systemMeldung("\tTitel: " + d.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
+                Log.systemMeldung("");
             }
             Log.systemMeldung("###########################################################");
             // und jetzt starten
-            it = Daten.listeDownloads.listIterator(0);
-            while (it.hasNext()) {
-                // alle 5 Sekungen einen Download starten
-                it.next().startDownload(daten);
-                this.wait(5000);
+            for (DatenDownload d : Daten.listeDownloads) {
+                d.startDownload(daten);
             }
+
             while (Daten.listeDownloads.getNumberOfStartsNotFinished() > 0) {
-                //alle 5 Sekunden nachschauen ob schon fertig
-                this.wait(5000);
+                long remTime = Daten.listeDownloads.getMaximumFinishTimeOfRunningStarts();
+                if (remTime == 0 || (remTime < 10))
+                    remTime = SLEEP_VALUE;
+                else
+                {
+                    //The following hack ensures that when we are close to the end we start polling faster...
+                    remTime = TimeUnit.MILLISECONDS.convert(remTime,TimeUnit.SECONDS);
+                    remTime /= 2;
+                    if (remTime < SLEEP_VALUE_TIMES_TWO)
+                        remTime = SLEEP_VALUE;
+                }
+
+                Thread.sleep(remTime);
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(769325469, "MediathekAuto.filmeLaden", ex);

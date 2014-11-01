@@ -21,40 +21,34 @@ package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
-import javax.swing.JOptionPane;
-import javax.swing.RepaintManager;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVSingleInstance;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Main {
+    public enum StartupMode {
 
-    public static final String STARTP_MAXIMIERT = "-M";
-
-    private enum StartupMode {
-
-        NORMAL, AUTO
+        GUI, AUTO, FASTAUTO
     }
 
     /**
      * Ensures that old film lists in .mediathek directory get deleted because they were moved to
      * ~/Library/Caches/MediathekView
      */
-    private static void cleanupOsxFiles()
-    {
-       try {
-           Path oldFilmList = Paths.get(Daten.getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME);
-           Files.deleteIfExists(oldFilmList);
-       }
-       catch (Exception ignored)
-       {
-       }
+    private static void cleanupOsxFiles() {
+        try {
+            Path oldFilmList = Paths.get(Daten.getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME);
+            Files.deleteIfExists(oldFilmList);
+        } catch (Exception ignored) {
+        }
     }
 
      /*
@@ -78,47 +72,70 @@ public class Main {
             cleanupOsxFiles();
         }
 
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                StartupMode state = StartupMode.NORMAL;
-                if (args != null) {
-                    for (String s : args) {
-                        if (s.equalsIgnoreCase("-auto")) {
-                            state = StartupMode.AUTO;
-                        }
+        StartupMode state = StartupMode.GUI;
+        boolean showWindowMaximized = false;
 
-                        if (s.equalsIgnoreCase("-v")) {
-                            Log.versionsMeldungen(this.getClass().getName());
-                            System.exit(0);
-                        }
-                        if (s.equalsIgnoreCase("-d")) {
-                            Daten.debug = true;
-                        }
-                    }
-                }
-                if (Daten.debug) {
-                    if (SystemInfo.isMacOSX()) {
-                        //prevent startup of multiple instances...useful during debugging :(
-                        MVSingleInstance singleInstanceWatcher = new MVSingleInstance();
-                        if (singleInstanceWatcher.isAppAlreadyActive()) {
-                            JOptionPane.showMessageDialog(null, "MediathekView is already running!");
-                            //System.exit(1);
-                        }
-                    }
-                    // use for debugging EDT violations
-                    RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
-                }
-
-                switch (state) {
-                    case AUTO:
-                        new MediathekAuto(args).starten();
+        if (args != null) {
+            for (String s : args) {
+                s = s.toLowerCase();
+                switch (s) {
+                    case "-auto":
+                        state = StartupMode.AUTO;
                         break;
-                    default:
-                        new MediathekGui(args).setVisible(true);
+
+                    case "-fastauto":
+                        state = StartupMode.FASTAUTO;
+                        break;
+
+                    case "-v":
+                        Log.versionsMeldungen(Main.class.getName());
+                        System.exit(0);
+                        break;
+
+                    case "-d":
+                        Daten.debug = true;
+                        break;
+
+                    case "-M":
+                        showWindowMaximized = true;
                         break;
                 }
             }
-        });
+        }
+
+        switch (state) {
+            case AUTO:
+                new MediathekAuto(args).starten();
+                break;
+
+            case FASTAUTO:
+                final MediathekAuto mvAuto = new MediathekAuto(args);
+                mvAuto.setFastAuto(true);
+                mvAuto.starten();
+                break;
+
+            case GUI:
+                final boolean finalShowWindowMaximized = showWindowMaximized;
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (Daten.debug) {
+                            // use for debugging EDT violations
+                            RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
+
+                            if (SystemInfo.isMacOSX()) {
+                                //prevent startup of multiple instances...useful during debugging :(
+                                MVSingleInstance singleInstanceWatcher = new MVSingleInstance();
+                                if (singleInstanceWatcher.isAppAlreadyActive()) {
+                                    JOptionPane.showMessageDialog(null, "MediathekView is already running!");
+                                    //System.exit(1);
+                                }
+                            }
+                        }
+                        new MediathekGui(args, finalShowWindowMaximized).setVisible(true);
+                    }
+                });
+                break;
+        }
     }
 }
