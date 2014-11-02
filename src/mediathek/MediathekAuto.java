@@ -22,7 +22,6 @@ package mediathek;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
-
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
