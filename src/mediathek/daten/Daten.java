@@ -268,6 +268,7 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_TAB_ABO_ICON_KLEIN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM__DIALOG_DOWNLOAD__ALLES, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_FONT_SIZE, "0");
+        mVConfig.add(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE, "0");
         // UserAgent
         mVConfig.add(MVConfig.SYSTEM_USER_AGENT_AUTO, Boolean.TRUE.toString());
         try {
@@ -297,7 +298,7 @@ public class Daten {
         updateSplashScreen("Lade Konfigurationsdaten...");
 
         Path xmlFilePath = Daten.getMediathekXmlFilePath();
-        if (!IoXmlLesen.datenLesen( xmlFilePath)) {
+        if (!IoXmlLesen.datenLesen(xmlFilePath)) {
             // dann hat das Laden nicht geklappt
             listePset.clear();
             GuiFunktionenProgramme.addSetVorlagen(mediathekGui, this, ListePsetVorlagen.getStandarset(mediathekGui, this), true /*auto*/, true /*setVersion*/);
@@ -309,7 +310,7 @@ public class Daten {
 
         // erst die Systemdaten, dann die Filmliste
         updateSplashScreen("Lade Filmliste...");
-        new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme);
+        new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
         Daten.listeFilme.themenLaden();
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
         MVListeFilme.checkBlacklist();

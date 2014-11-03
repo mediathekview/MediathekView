@@ -26,7 +26,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
-import javax.swing.Action;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -57,6 +56,15 @@ public class PanelEinstellungen extends PanelVorlage {
         daten = d;
         initSpinner();
         jSpinnerDownload.addChangeListener(new BeobSpinnerDownload());
+        jSpinnerDays.addChangeListener(new BeobSpinnerDays());
+        jButtonLoad.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Daten.listeFilme.clear(); // sonst wird evtl. nur eine Diff geladen
+                Daten.filmeLaden.importFilmliste("");
+            }
+        });
         setupLookAndFeelComboBox();
         jButtonHilfeAnzahl.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHilfeAnzahl.addActionListener(new ActionListener() {
@@ -68,6 +76,24 @@ public class PanelEinstellungen extends PanelVorlage {
                         + "Es gibt jedoch noch eine Begrenzung \n"
                         + "auf 2 Downloads pro Server,\n"
                         + "die trotzdem nicht überschritten wird.").setVisible(true);
+            }
+        });
+        jButtonHelpDays.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonHelpDays.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DialogHilfe(parentComponent, true, "\n"
+                        + "Es werden nur Filme der letzten\n"
+                        + "xx Tage geladen."
+                        + "\n"
+                        + "Bei \"0\" werden alle Filme geladen.\n"
+                        + "\n"
+                        + "(Eine kleinere Filmliste\n"
+                        + "kann bei Rechner mit wenig\n"
+                        + "Speicher hilfreich sein.)"
+                        + "\n\n"
+                        + "Auswirkung hat das erst nach dem\n"
+                        + "Neuladen der kompletten Filmliste.").setVisible(true);
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName()) {
@@ -199,11 +225,13 @@ public class PanelEinstellungen extends PanelVorlage {
 
     private void initSpinner() {
         if (Daten.mVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD).equals("")) {
-            jSpinnerDownload.setValue(1);
             Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
-        } else {
-            jSpinnerDownload.setValue(Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD)));
         }
+        jSpinnerDownload.setValue(Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD)));
+        if (Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE).equals("")) {
+            Daten.mVConfig.add(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE, "0");
+        }
+        jSpinnerDays.setValue(Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
     }
 
     @SuppressWarnings("unchecked")
@@ -312,6 +340,10 @@ public class PanelEinstellungen extends PanelVorlage {
         jLabel5 = new javax.swing.JLabel();
         jCheckBoxBeep = new javax.swing.JCheckBox();
         jButtonBeep = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        jSpinnerDays = new javax.swing.JSpinner();
+        jButtonHelpDays = new javax.swing.JButton();
+        jButtonLoad = new javax.swing.JButton();
 
         setMinimumSize(getPreferredSize());
 
@@ -402,7 +434,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jLabel3.setText("gleichzeitige Downloads laden:");
 
-        jSpinnerDownload.setModel(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
+        jSpinnerDownload.setModel(new javax.swing.SpinnerNumberModel(1, 1, 10, 1));
 
         jButtonHilfeAnzahl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
 
@@ -418,6 +450,14 @@ public class PanelEinstellungen extends PanelVorlage {
         jCheckBoxBeep.setText("Nach jedem Download einen \"Beep\" ausgeben");
 
         jButtonBeep.setText("Testen");
+
+        jLabel6.setText("nur die Filme der letzten Tage laden:");
+
+        jSpinnerDays.setModel(new javax.swing.SpinnerNumberModel(0, 0, 30, 1));
+
+        jButtonHelpDays.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+
+        jButtonLoad.setText("Filmliste jetzt neu laden");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -451,11 +491,21 @@ public class PanelEinstellungen extends PanelVorlage {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jButtonBeep))
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(6, 6, 6)
-                                .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButtonHilfeAnzahl)))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel3))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButtonHilfeAnzahl))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jSpinnerDays, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButtonHelpDays)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButtonLoad)))))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
@@ -474,7 +524,13 @@ public class PanelEinstellungen extends PanelVorlage {
                     .addComponent(jLabel3)
                     .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonHilfeAnzahl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel6)
+                    .addComponent(jSpinnerDays, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonHelpDays)
+                    .addComponent(jButtonLoad))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabelBandwidth)
                     .addComponent(jSliderBandbreite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -512,8 +568,10 @@ public class PanelEinstellungen extends PanelVorlage {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonBeep;
+    private javax.swing.JButton jButtonHelpDays;
     private javax.swing.JButton jButtonHilfeAnzahl;
     private javax.swing.JButton jButtonInfos;
+    private javax.swing.JButton jButtonLoad;
     private javax.swing.JButton jButtonRefresh;
     private javax.swing.JButton jButtonSuchen;
     private javax.swing.JCheckBox jCheckBoxBeep;
@@ -524,10 +582,12 @@ public class PanelEinstellungen extends PanelVorlage {
     private javax.swing.JComboBox<String> jComboBoxLookAndFeel;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabelBandwidth;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JSlider jSliderBandbreite;
+    private javax.swing.JSpinner jSpinnerDays;
     private javax.swing.JSpinner jSpinnerDownload;
     // End of variables declaration//GEN-END:variables
 
@@ -538,6 +598,15 @@ public class PanelEinstellungen extends PanelVorlage {
             Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD,
                     String.valueOf(((Number) jSpinnerDownload.getModel().getValue()).intValue()));
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName());
+        }
+    }
+
+    private class BeobSpinnerDays implements ChangeListener {
+
+        @Override
+        public void stateChanged(ChangeEvent arg0) {
+            Daten.mVConfig.add(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE,
+                    String.valueOf(((Number) jSpinnerDays.getModel().getValue()).intValue()));
         }
     }
 

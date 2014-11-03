@@ -26,6 +26,7 @@ import mediathek.controller.IoXmlLesen;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
 import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
@@ -36,7 +37,6 @@ public class MediathekAuto {
     private Daten daten;
     private String pfad = "";
     private boolean bFastAuto = false;
-
 
     public MediathekAuto(String[] ar) {
         if (ar != null) {
@@ -55,6 +55,7 @@ public class MediathekAuto {
      * Set fast auto mode for reading film list.
      * In this mode no film descriptions will be stored in memory.
      * Speeds up startup significantly on low power machines.
+     *
      * @param bFastAuto if true, don´t read descriptions.
      */
     public void setFastAuto(boolean bFastAuto) {
@@ -87,7 +88,7 @@ public class MediathekAuto {
             //do not read film descriptions in FASTAUTO mode as they won´t be used...
             filmList.setWorkMode(MSFilmlisteLesen.WorkMode.FASTAUTO);
         }
-        filmList.readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme);
+        filmList.readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
 
         if (Daten.listeFilme.isTooOld()) {
             // erst neue Filmliste laden
@@ -136,15 +137,15 @@ public class MediathekAuto {
 
             while (Daten.listeDownloads.getNumberOfStartsNotFinished() > 0) {
                 long remTime = Daten.listeDownloads.getMaximumFinishTimeOfRunningStarts();
-                if (remTime == 0 || (remTime < 10))
+                if (remTime == 0 || (remTime < 10)) {
                     remTime = SLEEP_VALUE;
-                else
-                {
+                } else {
                     //The following hack ensures that when we are close to the end we start polling faster...
-                    remTime = TimeUnit.MILLISECONDS.convert(remTime,TimeUnit.SECONDS);
+                    remTime = TimeUnit.MILLISECONDS.convert(remTime, TimeUnit.SECONDS);
                     remTime /= 2;
-                    if (remTime < SLEEP_VALUE_TIMES_TWO)
+                    if (remTime < SLEEP_VALUE_TIMES_TWO) {
                         remTime = SLEEP_VALUE;
+                    }
                 }
 
                 Thread.sleep(remTime);
