@@ -108,7 +108,7 @@ public class FilmeLaden {
             if (dateiUrl.equals("")) {
                 // Filme als Liste importieren, Url automatisch ermitteln
                 Log.systemMeldung("Aktuelle Filmliste laden");
-                msImportFilmliste.filmeImportierenAuto("", Daten.listeFilme, diffListe, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+                msImportFilmliste.filmeImportierenAuto(Daten.listeFilme, diffListe, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
             } else {
                 // Filme als Liste importieren, feste URL/Datei
                 Log.systemMeldung("Filmliste laden von: " + dateiUrl);
