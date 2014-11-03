@@ -29,6 +29,7 @@ import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.tool.Duration;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
+import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 import mediathek.tool.MVMessageDialog;
 import msearch.daten.DatenFilm;
@@ -107,12 +108,12 @@ public class FilmeLaden {
             if (dateiUrl.equals("")) {
                 // Filme als Liste importieren, Url automatisch ermitteln
                 Log.systemMeldung("Aktuelle Filmliste laden");
-                msImportFilmliste.filmeImportierenAuto("", Daten.listeFilme, diffListe);
+                msImportFilmliste.filmeImportierenAuto("", Daten.listeFilme, diffListe, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
             } else {
                 // Filme als Liste importieren, feste URL/Datei
                 Log.systemMeldung("Filmliste laden von: " + dateiUrl);
                 Daten.listeFilme.clear();
-                msImportFilmliste.filmeImportierenDatei(dateiUrl, "", Daten.listeFilme);
+                msImportFilmliste.filmeImportierenDatei(dateiUrl, Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
             }
         }
     }
@@ -132,7 +133,7 @@ public class FilmeLaden {
             System.gc();
             // Filme als Liste importieren, feste URL/Datei
             Log.systemMeldung("Filmliste laden von: " + dateiUrl);
-            msImportFilmliste.filmeImportierenDatei(dateiUrl, "", diffListe);
+            msImportFilmliste.filmeImportierenDatei(dateiUrl, diffListe, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
         }
     }
 
@@ -179,7 +180,7 @@ public class FilmeLaden {
             MVMessageDialog.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
             // dann die alte Liste wieder laden
             Daten.listeFilme.clear();
-            new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme);
+            new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
         } else {
             Log.systemMeldung("Filmliste geladen: " + Daten.listeFilme.size() + " Filme");
             Daten.filmlisteSpeichern();

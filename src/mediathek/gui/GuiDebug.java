@@ -31,6 +31,7 @@ import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.tool.Duration;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVConfig;
 import mediathek.tool.MVNotification;
 import msearch.io.MSFilmlisteLesen;
 
@@ -64,7 +65,7 @@ public class GuiDebug extends JPanel {
                 Daten.listeFilme.clear();
                 Duration duration = new Duration(MediathekGui.class.getSimpleName());
                 duration.ping("Start");
-                new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme);
+                new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
 //                    new FilmListReader().readFilmListe(new URI("http://www.wp11128329.server-he.de/filme/Filmliste-akt.xz"), Daten.listeFilme);
                 duration.ping("Fertig");
                 Daten.listeFilme.themenLaden();

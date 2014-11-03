@@ -104,6 +104,7 @@ public class MVConfig {
     public static final String SYSTEM_URL_FILMLISTEN = "system-url-filmlisten";
     public static final String SYSTEM_IMPORT_URL_MANUELL = "system-import-url-manuell";
     public static final String SYSTEM_EXPORT_DATEI = "system-export-datei";
+    public static final String SYSTEM_ANZ_TAGE_FILMLISTE = "system-anz-tage-filmilste"; // es werden nur die x letzten Tage geladen
     // Filter
     public static final String SYSTEM_FILTER_TAGE_START = "filter-tage-start"; // index im Array GuiFilme.COMBO_ZEIT_INT
     public static final String SYSTEM_FILTER_DAUER = "filter-dauer";

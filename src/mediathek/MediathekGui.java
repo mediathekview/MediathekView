@@ -297,7 +297,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO) {
             if (Daten.listeFilme.isTooOld()
-                    || Daten.listeFilme.size() < 50_000 /*dann stimmt auch was nicht*/) {
+//                    || Daten.listeFilme.size() < 50_000 /*dann stimmt auch was nicht*/) {
+                    ){
                 Log.systemMeldung("Neue Filmliste laden");
                 Daten.listeFilme.clear(); // sonst wird eine "zu kurze" Liste wieder nur mit einer Diff-Liste aufgefüllt, wenn das Alter noch passt
                 Daten.filmeLaden.importFilmliste("");
