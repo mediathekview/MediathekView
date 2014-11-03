@@ -33,6 +33,7 @@ import mediathek.tool.Duration;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVNotification;
+import msearch.filmeLaden.MSImportFilmliste;
 import msearch.io.MSFilmlisteLesen;
 
 public class GuiDebug extends JPanel {
@@ -142,6 +143,17 @@ public class GuiDebug extends JPanel {
                         + "</html>");
             }
         });
+        jToggleButtonFastAuto.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (jToggleButtonFastAuto.isSelected()) {
+                    MSFilmlisteLesen.setWorkMode(MSFilmlisteLesen.WorkMode.FASTAUTO);
+                } else {
+                    MSFilmlisteLesen.setWorkMode(MSFilmlisteLesen.WorkMode.NORMAL);
+                }
+            }
+        });
     }
 
     private void addSender() {
@@ -175,6 +187,7 @@ public class GuiDebug extends JPanel {
         jButtonNotify = new javax.swing.JButton();
         jButtonFehler = new javax.swing.JButton();
         jButtonAllesSpeichern = new javax.swing.JButton();
+        jToggleButtonFastAuto = new javax.swing.JToggleButton();
         jPanel3 = new javax.swing.JPanel();
 
         jPanelSender.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Sender löschen"));
@@ -267,6 +280,8 @@ public class GuiDebug extends JPanel {
 
         jButtonAllesSpeichern.setText("alles speichern");
 
+        jToggleButtonFastAuto.setText("-FASTAUTO");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -283,7 +298,8 @@ public class GuiDebug extends JPanel {
                             .addComponent(jButtonFehler, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButtonNotify, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButtonGc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButtonAllesSpeichern, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jButtonAllesSpeichern, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jToggleButtonFastAuto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -298,7 +314,9 @@ public class GuiDebug extends JPanel {
                 .addComponent(jButtonNotify)
                 .addGap(18, 18, 18)
                 .addComponent(jButtonFehler)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 282, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jToggleButtonFastAuto)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 239, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonCheckUrl)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -353,6 +371,7 @@ public class GuiDebug extends JPanel {
     private javax.swing.JPanel jPanelLoeschen;
     private javax.swing.JPanel jPanelSender;
     private javax.swing.JTextField jTextFieldUrl;
+    private javax.swing.JToggleButton jToggleButtonFastAuto;
     // End of variables declaration//GEN-END:variables
 
     private class BeobSenderLoeschen implements ActionListener {
