@@ -202,7 +202,7 @@ public class Daten {
         Path baseDirectoryPath = Paths.get(baseDirectoryString);
 
         if (Files.notExists(baseDirectoryPath)) {
-            Files.createDirectory(baseDirectoryPath);
+            Files.createDirectories(baseDirectoryPath);
         }
 
         return baseDirectoryPath;
