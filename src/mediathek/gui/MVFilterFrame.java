@@ -62,6 +62,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     Daten daten;
     static Point mouseDownCompCoords;
     JFrame f;
+    private int aktFilter = -1;
 
     public MVFilterFrame(Daten d) {
         initComponents();
@@ -129,11 +130,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 new DialogHilfe(f, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true);
             }
         });
-        resetIcon(0);
-        resetIcon(1);
-        resetIcon(2);
-        resetIcon(3);
-        resetIcon(4);
+        setIcon(false); // erst mal alle aus
         jRadioButtonF1.addActionListener(new BeobRadio(0));
         jRadioButtonF2.addActionListener(new BeobRadio(1));
         jRadioButtonF3.addActionListener(new BeobRadio(2));
@@ -170,7 +167,23 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jRadioButtonF5.setVisible(i == 5);
     }
 
-    private void setIcon(int filter) {
+    private void setIcon(boolean on) {
+        setIcon(on, -1);
+    }
+
+    private void setIcon(boolean on, int nr) {
+        for (int i = 0; i < 5; ++i) {
+            if (on && i == nr) {
+                setIconOn(i);
+            } else if (aktFilter == i) {
+                setAktIcon(i);
+            } else {
+                setIconOff(i);
+            }
+        }
+    }
+
+    private void setIconOn(int filter) {
         switch (filter) {
             case 0:
                 jRadioButtonF1.setIcon(GetIcon.getProgramIcon("filter_on_1.png"));
@@ -190,7 +203,27 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         }
     }
 
-    private void resetIcon(int filter) {
+    private void setAktIcon(int filter) {
+        switch (filter) {
+            case 0:
+                jRadioButtonF1.setIcon(GetIcon.getProgramIcon("filter_akt_1.png"));
+                break;
+            case 1:
+                jRadioButtonF2.setIcon(GetIcon.getProgramIcon("filter_akt_2.png"));
+                break;
+            case 2:
+                jRadioButtonF3.setIcon(GetIcon.getProgramIcon("filter_akt_3.png"));
+                break;
+            case 3:
+                jRadioButtonF4.setIcon(GetIcon.getProgramIcon("filter_akt_4.png"));
+                break;
+            case 4:
+                jRadioButtonF5.setIcon(GetIcon.getProgramIcon("filter_akt_5.png"));
+                break;
+        }
+    }
+
+    private void setIconOff(int filter) {
         switch (filter) {
             case 0:
                 jRadioButtonF1.setIcon(GetIcon.getProgramIcon("filter_off_1.png"));
@@ -220,6 +253,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            aktFilter = filter;
             mvFfilter(filter);
         }
     }
@@ -236,7 +270,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         @Override
         public void mousePressed(MouseEvent arg0) {
-            setIcon(filter);
+            setIcon(true, filter);
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
@@ -244,7 +278,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         @Override
         public void mouseReleased(MouseEvent arg0) {
-            resetIcon(filter);
+            setIcon(false);
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
@@ -301,12 +335,12 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
                 @Override
                 public void popupMenuCanceled(PopupMenuEvent popupMenuEvent) {
-                    resetIcon(filter);
+                    setIcon(false);
                 }
 
                 @Override
                 public void popupMenuWillBecomeInvisible(PopupMenuEvent popupMenuEvent) {
-                    resetIcon(filter);
+                    setIcon(false);
                 }
 
                 @Override
@@ -314,7 +348,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 }
             }
             );
-
             //anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
@@ -767,6 +800,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
     @Override
     public void removeAllListener() {
+        aktFilter = -1;
+        setIcon(false); // erst mal alle aus
         for (ActionListener a : jButtonFilterLoeschen.getActionListeners()) {
             jButtonFilterLoeschen.removeActionListener(a);
         }
