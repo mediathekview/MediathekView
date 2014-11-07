@@ -26,7 +26,7 @@ echo MediathekView Buildnummer: $relNr >> dist/info/$relNr.build
 # zip erstellen
 cd dist/
 datum=$(date +%Y.%m.%d )
-zip -r MediathekView_8_$datum.zip .
+zip -r MediathekView_9_$datum.zip .
 cd ..
 
 fi

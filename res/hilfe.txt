@@ -9,7 +9,7 @@ http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/
 	alle Dateien aus dem ZIP-Archiv in ein beliebiges Verzeichnis zu kopieren. Dort 
 	kann dann die Programmdatei "MediathekView.exe" doppelgeklickt werden.
 
-* Java ist nicht oder nicht in der richtigen Version installiert: zum 
+* Java ist nicht oder nicht in der richtigen Version installiert (Java7). Zum 
 	Java-Download: 
 	http://java.com/de/
 
