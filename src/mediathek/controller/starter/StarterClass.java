@@ -617,7 +617,7 @@ public class StarterClass {
                             datenDownload.aufrufBauen();
                             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
                             try {
-                                Files.createDirectory(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
+                                Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
                             } catch (IOException ignored) {
                             }
                             file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
@@ -928,7 +928,7 @@ public class StarterClass {
                         if (dialogContinueDownload.isNewName()) {
                             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
                             try {
-                                Files.createDirectory(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
+                                Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
                             } catch (IOException ignored) {
                             }
                             file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
