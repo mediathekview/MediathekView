@@ -99,7 +99,7 @@ public class MediathekAuto {
                     download();
                 }
             });
-            Daten.filmeLaden.importFilmliste("");
+            Daten.filmeLaden.importFilmliste("", true);
         } else {
             // mit aktueller Filmliste starten
             Log.systemMeldung("aktuelle Filmliste verwenden");

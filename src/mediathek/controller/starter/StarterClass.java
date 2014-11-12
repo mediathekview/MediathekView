@@ -19,6 +19,8 @@
  */
 package mediathek.controller.starter;
 
+import com.jidesoft.utils.SystemInfo;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,9 +34,6 @@ import java.util.ArrayList;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.swing.SwingUtilities;
-
-import com.jidesoft.utils.SystemInfo;
-import java.awt.Toolkit;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
@@ -53,7 +52,7 @@ import msearch.daten.DatenFilm;
 public class StarterClass {
     //Tags Filme
 
-    private Daten daten;
+    private final Daten daten;
     private Starten starten = null;
     private boolean pause = false;
 

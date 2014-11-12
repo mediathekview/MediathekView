@@ -299,7 +299,7 @@ public class PanelErledigteUrls extends PanelVorlage {
                 item.setEnabled(false);
             }
             // Download anlegen
-            item = new JMenuItem("Download anlegen");
+            item = new JMenuItem("Download noch einmal anlegen");
             item.addActionListener(new BeobDownload());
             jPopupMenu.add(item);
             if (film == null) {
@@ -315,7 +315,7 @@ public class PanelErledigteUrls extends PanelVorlage {
                 DatenDownload datenDownload = Daten.listeDownloads.getDownloadUrlFilm(film.arr[DatenFilm.FILM_URL_NR]);
                 if (datenDownload != null) {
                     int ret = JOptionPane.showConfirmDialog(parentComponent, "Download für den Film existiert bereits.\n"
-                            + "Nochmal anlegen?", "Anlegen?", JOptionPane.YES_NO_OPTION);
+                            + "Noch einmal anlegen?", "Anlegen?", JOptionPane.YES_NO_OPTION);
                     if (ret != JOptionPane.OK_OPTION) {
                         return;
                     }
