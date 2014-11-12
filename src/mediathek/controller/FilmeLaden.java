@@ -95,6 +95,10 @@ public class FilmeLaden {
     }
 
     public void importFilmliste(String dateiUrl) {
+        importFilmliste(dateiUrl, false);
+    }
+
+    public void importFilmliste(String dateiUrl, boolean immerNeuLaden) {
         // damit wird die Filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
         duration.start("Filme laden, start");
         if (!istAmLaufen) {
@@ -103,6 +107,10 @@ public class FilmeLaden {
             // Hash mit URLs füllen
             hashSet.clear();
             fillHash(Daten.listeFilme);
+            if (immerNeuLaden) {
+                // dann die alte löschen, damit immer komplett geladen wird, aber erst nach dem Hash!!
+                Daten.listeFilme.clear(); // sonst wird eine "zu kurze" Liste wieder nur mit einer Diff-Liste aufgefüllt, wenn das Alter noch passt
+            }
             Daten.listeFilmeNachBlackList.clear();
             System.gc();
             if (dateiUrl.equals("")) {
