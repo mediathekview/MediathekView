@@ -22,6 +22,7 @@ package mediathek.controller;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -134,7 +135,10 @@ public class Log {
         systemMeldung("");
         systemMeldung("");
         systemMeldung("");
-        printFehlerMeldung();
+        ArrayList<String> ret = printFehlerMeldung();
+        for (String s : ret) {
+            systemMeldung(s);
+        }
         // Laufzeit ausgeben
         Date stopZeit = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
@@ -158,11 +162,13 @@ public class Log {
         systemMeldung("###########################################################");
     }
 
-    private static void printFehlerMeldung() {
-        systemMeldung("");
-        systemMeldung("###########################################################");
+    public static ArrayList<String> printFehlerMeldung() {
+        ArrayList<String> retList = new ArrayList<>();
+
+        retList.add("");
+        retList.add("###########################################################");
         if (fehlerListe.size() == 0) {
-            systemMeldung(" Keine Fehler :)");
+            retList.add(" Keine Fehler :)");
         } else {
             // Fehler ausgeben
             int i_1;
@@ -188,57 +194,57 @@ public class Log {
                     strEx = "    ";
                 }
                 if (integers[0] < 0) {
-                    systemMeldung(strEx + " Fehlernummer: " + integers[0] + " Anzahl: " + integers[1]);
+                    retList.add(strEx + " Fehlernummer: " + integers[0] + " Anzahl: " + integers[1]);
                 } else {
-                    systemMeldung(strEx + " Fehlernummer:  " + integers[0] + " Anzahl: " + integers[1]);
+                    retList.add(strEx + " Fehlernummer:  " + integers[0] + " Anzahl: " + integers[1]);
                 }
             }
         }
-        systemMeldung("###########################################################");
-        systemMeldung("");
+        retList.add("###########################################################");
+        retList.add("");
+        return retList;
     }
 
-    public static String printFehlerMeldung_() {
-        String ret = "\n";
-        ret += "-----------------------------------------------------------\n";
-        if (fehlerListe.size() == 0) {
-            ret += " Keine Fehler :)\n";
-        } else {
-            // Fehler ausgeben
-            int i_1;
-            int i_2;
-            for (int i = 1; i < fehlerListe.size(); ++i) {
-                for (int k = i; k > 0; --k) {
-                    i_1 = fehlerListe.get(k - 1)[0];
-                    i_2 = fehlerListe.get(k)[0];
-                    // if (str1.compareToIgnoreCase(str2) > 0) {
-                    if (i_1 < i_2) {
-                        fehlerListe.add(k - 1, fehlerListe.remove(k));
-                    } else {
-                        break;
-                    }
-                }
-            }
-            for (Integer[] integers : fehlerListe) {
-                boolean ex = integers[2] == 1;
-                String strEx;
-                if (ex) {
-                    strEx = "Ex! ";
-                } else {
-                    strEx = "    ";
-                }
-                if (integers[0] < 0) {
-                    ret += strEx + " Fehlernummer: " + integers[0] + " Anzahl: " + integers[1] + "\n";
-                } else {
-                    ret += strEx + " Fehlernummer:  " + integers[0] + " Anzahl: " + integers[1] + "\n";
-                }
-            }
-        }
-        ret += "-----------------------------------------------------------\n";
-        ret += "\n";
-        return ret;
-    }
-
+//    public static String printFehlerMeldung_() {
+//        String ret = "\n";
+//        ret += "-----------------------------------------------------------\n";
+//        if (fehlerListe.size() == 0) {
+//            ret += " Keine Fehler :)\n";
+//        } else {
+//            // Fehler ausgeben
+//            int i_1;
+//            int i_2;
+//            for (int i = 1; i < fehlerListe.size(); ++i) {
+//                for (int k = i; k > 0; --k) {
+//                    i_1 = fehlerListe.get(k - 1)[0];
+//                    i_2 = fehlerListe.get(k)[0];
+//                    // if (str1.compareToIgnoreCase(str2) > 0) {
+//                    if (i_1 < i_2) {
+//                        fehlerListe.add(k - 1, fehlerListe.remove(k));
+//                    } else {
+//                        break;
+//                    }
+//                }
+//            }
+//            for (Integer[] integers : fehlerListe) {
+//                boolean ex = integers[2] == 1;
+//                String strEx;
+//                if (ex) {
+//                    strEx = "Ex! ";
+//                } else {
+//                    strEx = "    ";
+//                }
+//                if (integers[0] < 0) {
+//                    ret += strEx + " Fehlernummer: " + integers[0] + " Anzahl: " + integers[1] + "\n";
+//                } else {
+//                    ret += strEx + " Fehlernummer:  " + integers[0] + " Anzahl: " + integers[1] + "\n";
+//                }
+//            }
+//        }
+//        ret += "-----------------------------------------------------------\n";
+//        ret += "\n";
+//        return ret;
+//    }
     private static void addFehlerNummer(int nr, boolean exception) {
         Iterator<Integer[]> it = fehlerListe.iterator();
         int ex = exception ? 1 : 2;

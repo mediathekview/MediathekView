@@ -25,6 +25,7 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import mediathek.daten.Daten;
@@ -37,6 +38,8 @@ import mediathek.tool.MVMessageDialog;
 public class ProgrammLog {
 
     public static void LogDateiSchreiben(Daten ddaten, JFrame jFrame) {
+        ArrayList<String> retList;
+
         DialogZiel dialog = new DialogZiel(jFrame, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek.log", "Logdatei speichern");
         dialog.setVisible(true);
         if (!dialog.ok) {
@@ -126,20 +129,29 @@ public class ProgrammLog {
             //
             bw.write("#########################################################");
             bw.newLine();
-            bw.write("## Fehlermeldungen GUI ##################################");
+            bw.write("## Fehlermeldungen GUI                                   ");
             bw.newLine();
-            bw.write(Log.printFehlerMeldung_());
+            retList=Log.printFehlerMeldung();
+            for (String s : retList) {
+                bw.write(s);
+                bw.newLine();
+            }
+            bw.newLine();
+            bw.newLine();
             bw.write("#########################################################");
             bw.newLine();
-            bw.write("## Fehlermeldungen lib msearch ##########################");
+            bw.write("## Fehlermeldungen lib msearch                           ");
             bw.newLine();
-            bw.write(msearch.tool.MSLog.fehlerMeldungen_());
-            bw.newLine();
+            retList = msearch.tool.MSLog.fehlerMeldungen();
+            for (String s : retList) {
+                bw.write(s);
+                bw.newLine();
+            }
             //
             bw.flush();
             bw.close();
         } catch (Exception ex) {
-            Log.fehlerMeldung(319865493,  "ProgrammLog.zeileSchreiben-1", ex);
+            Log.fehlerMeldung(319865493, "ProgrammLog.zeileSchreiben-1", ex);
             MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
                     "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
         }
