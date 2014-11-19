@@ -42,7 +42,7 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVColor;
 import mediathek.tool.MVConfig;
 import mediathek.tool.TModel;
-import msearch.filmeLaden.DatenFilmlisteUrl;
+import msearch.filmlisten.DatenFilmlisteUrl;
 
 public class PanelFilmlisteLaden extends PanelVorlage {
 

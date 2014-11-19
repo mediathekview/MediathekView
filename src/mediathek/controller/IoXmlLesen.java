@@ -42,7 +42,7 @@ import mediathek.daten.ListePset;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVReplaceList;
-import msearch.filmeLaden.DatenFilmlisteUrl;
+import msearch.filmlisten.DatenFilmlisteUrl;
 import msearch.tool.MSConst;
 
 public class IoXmlLesen {

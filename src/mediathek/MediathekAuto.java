@@ -30,7 +30,7 @@ import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
 import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
-import msearch.io.MSFilmlisteLesen;
+import msearch.filmlisten.MSFilmlisteLesen;
 
 public class MediathekAuto {
 

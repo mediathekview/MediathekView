@@ -148,7 +148,6 @@ public class ProgrammLog {
                 bw.newLine();
             }
             //
-            bw.flush();
             bw.close();
         } catch (Exception ex) {
             Log.fehlerMeldung(319865493, "ProgrammLog.zeileSchreiben-1", ex);

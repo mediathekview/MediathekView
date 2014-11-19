@@ -37,7 +37,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.Duration;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVMessageDialog;
-import msearch.io.MSFilmlisteSchreiben;
+import msearch.filmlisten.MSFilmlisteSchreiben;
 
 public class PanelExportFilmliste extends PanelVorlage {
 
