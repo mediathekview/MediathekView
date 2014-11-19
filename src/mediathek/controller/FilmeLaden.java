@@ -34,13 +34,13 @@ import mediathek.tool.MVListeFilme;
 import mediathek.tool.MVMessageDialog;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
-import msearch.daten.MSConfig;
-import msearch.filmeLaden.ListeFilmlistenUrls;
-import msearch.filmeLaden.MSImportFilmliste;
+import msearch.tool.MSConfig;
+import msearch.filmlisten.ListeFilmlistenUrls;
+import msearch.filmlisten.MSImportFilmliste;
 import msearch.filmeSuchen.MSFilmeSuchen;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
 import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
-import msearch.io.MSFilmlisteLesen;
+import msearch.filmlisten.MSFilmlisteLesen;
 
 public class FilmeLaden {
 

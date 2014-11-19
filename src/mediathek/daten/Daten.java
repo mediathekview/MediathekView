@@ -56,8 +56,8 @@ import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVReplaceList;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
-import msearch.io.MSFilmlisteLesen;
-import msearch.io.MSFilmlisteSchreiben;
+import msearch.filmlisten.MSFilmlisteLesen;
+import msearch.filmlisten.MSFilmlisteSchreiben;
 
 public class Daten {
 

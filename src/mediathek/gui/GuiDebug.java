@@ -33,8 +33,8 @@ import mediathek.tool.Duration;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVNotification;
-import msearch.filmeLaden.MSImportFilmliste;
-import msearch.io.MSFilmlisteLesen;
+import msearch.filmlisten.MSImportFilmliste;
+import msearch.filmlisten.MSFilmlisteLesen;
 
 public class GuiDebug extends JPanel {
 
