@@ -1,0 +1,60 @@
+
+Mit den Portable-Startdateien kann das Programm auf einem USB-Stick benutzt
+werden. Es werden alle benötigen Dateien im Programmordner auf dem USB-Stick
+gesichert und es gibt keine weiteren Abhängigkeiten auf dem PC.
+
+
+Programmpaket laden (zip-Version, auch für OSX) und in einen beliebigen
+Ordner auf den USB-Stick entpacken.
+
+
+Die Einstellungen werden im "Programmordner\Einstellungen" gesichert.
+Wenn als Zielpfad für Downloads zB. nur "Filme" angegeben wird
+(und kein absoluter Pfad: c:\xxx\yyy oder /home/user/filme ),
+wird ein Ordner "Filme" auf dem USB-Stick im Programmordner angelegt 
+und für den Download verwendet.
+
+
+Sollen die Einstellungen von einer bestehenden Installation übernommen
+werden, muss vorher der Ordner "Einstellungen" im Programmordner angelegt
+werden.
+Der Ordner mit den alten Einstellungen im Homeverzeichnis ".mediathek3" 
+muss dann in den neu angelegten Ordner "Einstellungen" kopiert werden.
+(evtl. müssen dann die Pfade für den Download angepasst werden!)
+
+
+=======================
+Portable-Startdateien
+=======================
+
+* Windows:  MediathekView__Portable.exe
+* Linux:    MediathekView__Linux_Portable.sh
+* OSX:      MediathekView__Mac_Portable.command
+
+
+
+
+Windows
+=========
+Das Programm wird dann mit einem Doppelklick auf "MediathekView_Portable.exe"
+gestartet.
+
+
+Linux
+=======
+Die Linux-Startdatei im Programmordner starten:
+./MediathekView__Linux_Portable.sh
+
+oder der direkte Programmaufruf wäre:
+java -jar MediathekView.jar Einstellungen/.mediathek3
+
+
+
+OSX
+=====
+http://sourceforge.net/p/zdfmediathk/wiki/FAQ/#kann-man-mediathekview-von-einem-usb-stick-starten-mediathekview-portable
+
+Für den portablen Gebrauch muss die Nicht-App-Version (also die ZIP-Version) heruntergeladen werden.
+
+Die OSX-Startdatei im Programmordner starten.
+
