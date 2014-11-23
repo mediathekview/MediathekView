@@ -19,12 +19,16 @@
  */
 package mediathek.gui;
 
+import com.jidesoft.utils.SystemInfo;
+import java.awt.FileDialog;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.net.URL;
 import java.net.URLConnection;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import mediathek.MediathekGui;
 import mediathek.controller.Log;
@@ -154,6 +158,32 @@ public class GuiDebug extends JPanel {
                 }
             }
         });
+        jButtonDir.addActionListener(new BeobPfad());
+        jButtonSize.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String path = jTextFieldPath.getText();
+                try {
+                    System.out.println("");
+                    System.out.println("=============================");
+                    File file = new File(path);
+                    long i = file.getFreeSpace();
+                    System.out.println("getFreeSpace " + i);
+                    System.out.println(" " + i / 1024 / 1024 / 1024);
+                    i = file.getTotalSpace();
+                    System.out.println("=============================");
+                    System.out.println("getTotalSpace " + i);
+                    System.out.println(" " + i / 1024 / 1024 / 1024);
+                    i = file.getUsableSpace();
+                    System.out.println("=============================");
+                    System.out.println("getUsableSpace " + i);
+                    System.out.println(" " + i / 1024 / 1024 / 1024);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
 
     private void addSender() {
@@ -188,6 +218,9 @@ public class GuiDebug extends JPanel {
         jButtonFehler = new javax.swing.JButton();
         jButtonAllesSpeichern = new javax.swing.JButton();
         jToggleButtonFastAuto = new javax.swing.JToggleButton();
+        jButtonSize = new javax.swing.JButton();
+        jTextFieldPath = new javax.swing.JTextField();
+        jButtonDir = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
 
         jPanelSender.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Sender löschen"));
@@ -246,7 +279,7 @@ public class GuiDebug extends JPanel {
                                 .addComponent(jButtonCheck)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jButtonClean, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(0, 103, Short.MAX_VALUE)))
+                        .addGap(0, 134, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -282,6 +315,12 @@ public class GuiDebug extends JPanel {
 
         jToggleButtonFastAuto.setText("-FASTAUTO");
 
+        jButtonSize.setText("getTotalSpace");
+
+        jTextFieldPath.setText("/");
+
+        jButtonDir.setText(":::");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -292,15 +331,19 @@ public class GuiDebug extends JPanel {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jButtonCheckUrl)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldUrl, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE))
+                        .addComponent(jTextFieldUrl))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButtonFehler, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButtonNotify, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButtonGc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButtonAllesSpeichern, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jToggleButtonFastAuto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addComponent(jToggleButtonFastAuto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonSize, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldPath, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonDir)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -316,7 +359,12 @@ public class GuiDebug extends JPanel {
                 .addComponent(jButtonFehler)
                 .addGap(18, 18, 18)
                 .addComponent(jToggleButtonFastAuto)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 239, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonSize)
+                    .addComponent(jTextFieldPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonDir))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 196, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonCheckUrl)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -325,13 +373,15 @@ public class GuiDebug extends JPanel {
 
         jPanel5Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonCheckUrl, jTextFieldUrl});
 
+        jPanel5Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonDir, jTextFieldPath});
+
         jTabbedSender.addTab("Tool", jPanel5);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 671, Short.MAX_VALUE)
+            .addGap(0, 702, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -362,14 +412,17 @@ public class GuiDebug extends JPanel {
     private javax.swing.JButton jButtonCheck;
     private javax.swing.JButton jButtonCheckUrl;
     private javax.swing.JButton jButtonClean;
+    private javax.swing.JButton jButtonDir;
     private javax.swing.JButton jButtonFehler;
     private javax.swing.JButton jButtonFilmlisteLoeschen;
     private javax.swing.JButton jButtonGc;
     private javax.swing.JButton jButtonNeuLaden;
     private javax.swing.JButton jButtonNotify;
+    private javax.swing.JButton jButtonSize;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanelLoeschen;
     private javax.swing.JPanel jPanelSender;
+    private javax.swing.JTextField jTextFieldPath;
     private javax.swing.JTextField jTextFieldUrl;
     private javax.swing.JToggleButton jToggleButtonFastAuto;
     // End of variables declaration//GEN-END:variables
@@ -386,6 +439,43 @@ public class GuiDebug extends JPanel {
         public void actionPerformed(ActionEvent e) {
             Daten.listeFilme.deleteAllFilms(sender);
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
+        }
+    }
+
+    private class BeobPfad implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //we can use native chooser on Mac...
+            if (SystemInfo.isMacOSX()) {
+                FileDialog chooser = new FileDialog(daten.mediathekGui, "Pfad");
+                chooser.setMode(FileDialog.SAVE);
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    try {
+                        File destination = new File(chooser.getDirectory() + chooser.getFile());
+                        jTextFieldPath.setText(destination.getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(679890147, "GuiDebug.BeobPfad", ex);
+                    }
+                }
+            } else {
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                if (!jTextFieldPath.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(jTextFieldPath.getText()));
+                }
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                chooser.setFileHidingEnabled(false);
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        jTextFieldPath.setText(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(911025463, "GuiDebug.BeobPfad", ex);
+                    }
+                }
+            }
         }
     }
 }
