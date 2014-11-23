@@ -65,12 +65,14 @@
               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jCheckBoxStarten" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jCheckBoxFilm" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Group type="103" alignment="3" groupAlignment="3" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
                       <Component id="jButtonOk" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonAbbrechen" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jCheckBoxStarten" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jCheckBoxFilm" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -206,11 +208,13 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jTextFieldName" max="32767" attributes="2"/>
                               <Group type="102" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jCheckBoxInfodatei" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jCheckBoxPfadSpeichern" min="-2" max="-2" attributes="0"/>
-                                  </Group>
+                                  <Component id="jCheckBoxInfodatei" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jCheckBoxPfadSpeichern" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="jLabelSize" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -235,7 +239,10 @@
                       <Component id="jTextFieldName" linkSize="4" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="jCheckBoxPfadSpeichern" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jCheckBoxPfadSpeichern" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabelSize" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jCheckBoxInfodatei" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
@@ -301,6 +308,11 @@
         <Component class="javax.swing.JCheckBox" name="jCheckBoxInfodatei">
           <Properties>
             <Property name="text" type="java.lang.String" value="Infodatei anlegen: &quot;Filmname.txt&quot;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabelSize">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="jLabel5"/>
           </Properties>
         </Component>
       </SubComponents>
