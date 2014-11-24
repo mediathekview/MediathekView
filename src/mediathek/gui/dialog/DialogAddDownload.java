@@ -287,21 +287,24 @@ public class DialogAddDownload extends JDialog {
     }
 
     private void setSize() {
+        long size = 0;
+        jRadioButtonAufloesungHd.setForeground(Color.black);
+        jRadioButtonAufloesungHoch.setForeground(Color.black);
+        jRadioButtonAufloesungKlein.setForeground(Color.black);
+        jLabelSize.setText("");
         try {
             String s = ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).getText();
             if (!s.isEmpty()) {
-                String b = "kB";
+                String b;
                 File file = new File(s);
                 while (!file.exists() && file.getParentFile() != null) {
-                    // 
+                    // dann gibts den Ordner noch nicht
                     file = file.getParentFile();
                 }
                 long i = file.getUsableSpace();
-                if (i <= 0) {
-                    jLabelSize.setText("");
-                } else {
+                if (i > 0) {
                     i = i / 1000_000; //MB
-
+                    size = i;
                     if (i > 1_000_000 /*1 TB*/) {
                         i = i / 1000; //GB
                         if (i > 10_000) {
@@ -318,8 +321,34 @@ public class DialogAddDownload extends JDialog {
                     } else {
                         b = i + " MB";
                     }
+                    jLabelSize.setText("Noch frei: " + b);
                 }
-                jLabelSize.setText("Noch frei: " + b);
+            }
+
+            // jetzt noch prüfen, obs auf die Platte passt
+            if (size > 0) {
+                int sizeHd = 0;
+                int sizeHoch = 0;
+                int sizeKlein = 0;
+                if (!dateiGroesse_HD.isEmpty()) {
+                    sizeHd = Integer.parseInt(dateiGroesse_HD);
+                }
+                if (!dateiGroesse_Hoch.isEmpty()) {
+                    sizeHoch = Integer.parseInt(dateiGroesse_Hoch);
+                }
+                if (!dateiGroesse_Klein.isEmpty()) {
+                    sizeKlein = Integer.parseInt(dateiGroesse_Klein);
+                }
+                if (sizeHd > size) {
+                    jRadioButtonAufloesungHd.setForeground(Color.red);
+                }
+                if (sizeHoch > size) {
+                    jRadioButtonAufloesungHoch.setForeground(Color.red);
+                }
+                if (sizeKlein > size) {
+                    jRadioButtonAufloesungKlein.setForeground(Color.red);
+                }
+
             }
         } catch (Exception ex) {
             ex.printStackTrace();
