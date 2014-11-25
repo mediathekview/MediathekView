@@ -1113,7 +1113,6 @@ public class GuiFilme extends PanelVorlage {
     public class BeobMausTabelle extends MouseAdapter {
         //rechhte Maustaste in der Tabelle
 
-        private final BeobUrl beobUrl = new BeobUrl();
         private final BeobPrint beobPrint = new BeobPrint();
         private final BeobFilterLoeschen beobLoeschen = new BeobFilterLoeschen();
         private final BeobAbo beobAbo = new BeobAbo(false /* mit Titel */);
@@ -1126,6 +1125,7 @@ public class GuiFilme extends PanelVorlage {
         private final BeobBlacklist boeobBlacklistSender = new BeobBlacklist(true, false);
         private final BeobBlacklist boeobBlacklistSenderThema = new BeobBlacklist(true, true);
         private Point p;
+        private DatenFilm film = null;
 
         public BeobMausTabelle() {
         }
@@ -1193,7 +1193,7 @@ public class GuiFilme extends PanelVorlage {
                 tabelle.setRowSelectionInterval(nr, nr);
             }
             //int selectedModelRow = tabelle.convertRowIndexToModel(nr);
-            DatenFilm film = getFilm(nr);
+            film = getFilm(nr);
             JPopupMenu jPopupMenu = new JPopupMenu();
 
             //Thema laden
@@ -1316,9 +1316,58 @@ public class GuiFilme extends PanelVorlage {
             //##Trenner##
 
             //Url
-            item = new JMenuItem("URL kopieren");
-            item.addActionListener(beobUrl);
-            jPopupMenu.add(item);
+            if (film != null) {
+                String uNornal = film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL);
+                String uHd = film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD);
+                String uLow = film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN);
+                if (uHd.equals(uNornal)) {
+                    uHd = ""; // dann gibts keine
+                }
+                if (uLow.equals(uNornal)) {
+                    uLow = ""; // dann gibts keine
+                }
+                if (!uNornal.isEmpty()) {
+                    item = new JMenuItem("Film-URL kopieren");
+                    item.addActionListener(new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL));
+
+                        }
+                    });
+                    jPopupMenu.add(item);
+                }
+                if (!uHd.isEmpty()) {
+                    item = new JMenuItem("   -> in \"HD\" kopieren");
+                    item.addActionListener(new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD));
+
+                        }
+                    });
+                    jPopupMenu.add(item);
+                }
+                if (!uLow.isEmpty()) {
+                    item = new JMenuItem("   -> in \"Klein\" kopieren");
+                    item.addActionListener(new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN));
+
+                        }
+                    });
+                    jPopupMenu.add(item);
+                }
+            }
+
+            //##Trenner##
+            jPopupMenu.addSeparator();
+            //##Trenner##
+
             //Drucken
             item = new JMenuItem("Tabelle drucken");
             item.addActionListener(beobPrint);
@@ -1347,19 +1396,6 @@ public class GuiFilme extends PanelVorlage {
             }
             //anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
-
-        private class BeobUrl implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int nr = tabelle.rowAtPoint(p);
-                if (nr >= 0) {
-                    GuiFunktionen.copyToClipboard(
-                            tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr),
-                                    DatenFilm.FILM_URL_NR).toString());
-                }
-            }
         }
 
         private class BeobHistory implements ActionListener {

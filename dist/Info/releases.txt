@@ -20,7 +20,8 @@
 
 
 	# Version 9
-	- eigene exe fürs Starten vom USB-Stick
+	- Anzeige der Plattengröße (freier Platz)
+	- eigene exe (Skripte) fürs Starten vom USB-Stick
 	- neue Option: "-fastauto", wie "-auto" aber es werden keine Filmbeschreibungen mit 
 	geladen, spart Speicher und beschleunigt schwache Hardware
 	- neue Option: "nur Filme der letzten x Tage laden", (in den Einstellungen)
