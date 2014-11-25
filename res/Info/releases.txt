@@ -20,6 +20,7 @@
 
 
 	# Version 9
+	- Film-Url auch in HD und Klein in die Zwischenablage kopieren
 	- Anzeige der Plattengröße (freier Platz)
 	- eigene exe (Skripte) fürs Starten vom USB-Stick
 	- neue Option: "-fastauto", wie "-auto" aber es werden keine Filmbeschreibungen mit 

@@ -41,6 +41,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.res.GetIcon;
+import mediathek.tool.Duration;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
@@ -65,6 +66,7 @@ public class DialogAddDownload extends JDialog {
     private String dateiGroesse_Klein = "";
     private boolean nameGeaendert = false;
     private boolean stopBeob = false;
+    private final Duration duration = new Duration(DialogAddDownload.class.getName());
 
     public DialogAddDownload(Frame parent, Daten daten, DatenFilm film, DatenPset pSet, String aufloesung) {
         super(parent, true);
@@ -75,8 +77,13 @@ public class DialogAddDownload extends JDialog {
         this.pSet = pSet;
 
         // Felder init
+        duration.ping("===========================================");
+        duration.ping("===========================================");
+        duration.ping("vor init");
         init();
+        duration.ping("nach init");
         packIt();
+        duration.ping("nach packIt");
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
@@ -125,6 +132,7 @@ public class DialogAddDownload extends JDialog {
                 }
             }
         });
+        duration.ping("vor getRootPane");
         getRootPane().setDefaultButton(jButtonOk); //TH
         new EscBeenden(this) {
             @Override
@@ -189,6 +197,7 @@ public class DialogAddDownload extends JDialog {
 
             }
         });
+        duration.ping("vor jComboPfad");
         ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).setOpaque(true);
         ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentListener() {
 
@@ -233,6 +242,7 @@ public class DialogAddDownload extends JDialog {
                 jRadioButtonAufloesungHd.setText(jRadioButtonAufloesungHd.getText() + "   [ " + dateiGroesse_HD + " MB ]");
             }
         }
+        duration.ping("vor getDateiGroesse");
         dateiGroesse_Hoch = datenFilm.getDateigroesse(datenFilm.arr[DatenFilm.FILM_URL_NR]);
         if (!dateiGroesse_Hoch.isEmpty()) {
             jRadioButtonAufloesungHoch.setText(jRadioButtonAufloesungHoch.getText() + "   [ " + dateiGroesse_Hoch + " MB ]");
@@ -257,7 +267,9 @@ public class DialogAddDownload extends JDialog {
                 Daten.mVConfig.add(MVConfig.SYSTEM__DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN, Boolean.toString(jCheckBoxPfadSpeichern.isSelected()));
             }
         });
+        duration.ping("setupResolutionButtons");
         setupResolutionButtons();
+        duration.ping("setSize");
         setSize();
         nameGeaendert = false;
     }
@@ -292,6 +304,7 @@ public class DialogAddDownload extends JDialog {
         jRadioButtonAufloesungHoch.setForeground(Color.black);
         jRadioButtonAufloesungKlein.setForeground(Color.black);
         jLabelSize.setText("");
+        duration.ping("Start Size");
         try {
             String s = ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).getText();
             if (!s.isEmpty()) {
@@ -324,6 +337,7 @@ public class DialogAddDownload extends JDialog {
                     jLabelSize.setText("Noch frei: " + b);
                 }
             }
+            duration.ping("  -> Size");
 
             // jetzt noch prüfen, obs auf die Platte passt
             if (size > 0) {
@@ -350,6 +364,7 @@ public class DialogAddDownload extends JDialog {
                 }
 
             }
+            duration.ping("  -> RadioButton");
         } catch (Exception ex) {
             ex.printStackTrace();
         }

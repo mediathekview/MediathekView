@@ -108,8 +108,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private Daten daten;
     private final DialogEinstellungen dialogEinstellungen;
     private final JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
-    private JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
-    private JPanel jPanelAnzahl = new JPanel();
+    private final JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
+    private final JPanel jPanelAnzahl = new JPanel();
     private PanelVorlage panelMeldungen = new PanelVorlage(daten, this);
     private JSplitPane splitPane = null;
     private final MVToolBar mVToolBar;
