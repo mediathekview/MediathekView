@@ -52,6 +52,8 @@ public class DialogEditDownload extends javax.swing.JDialog {
         initComponents();
         datenDownload = ddownload;
         gestartet = ggestartet;
+        jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
+
         mVPanelDownloadZiel = new MVPanelDownloadZiel(parent, datenDownload, false);
         mVPanelDownloadZiel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jButtonBeenden.addActionListener(new ActionListener() {
@@ -220,7 +222,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
         jPanelExtra = new javax.swing.JPanel();
         jButtonBeenden = new javax.swing.JButton();
         jButtonAbbrechen = new javax.swing.JButton();
@@ -282,6 +284,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
     private javax.swing.JButton jButtonAbbrechen;
     private javax.swing.JButton jButtonBeenden;
     private javax.swing.JPanel jPanelExtra;
+    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 
     private class BeobachterDocumentTextfeld implements DocumentListener {
