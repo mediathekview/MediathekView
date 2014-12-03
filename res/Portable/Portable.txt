@@ -5,10 +5,13 @@ gesichert und es gibt keine weiteren Abhängigkeiten auf dem PC.
 
 
 Programmpaket laden (zip-Version, auch für OSX) und in einen beliebigen
-Ordner auf den USB-Stick entpacken.
+Ordner (das ist dann der Programmordner) auf den USB-Stick entpacken.
+
+Die Startdatei (für das entsprechende Betriebssystem) in den Programmordner
+kopieren.
 
 
-Die Einstellungen werden im "Programmordner\Einstellungen" gesichert.
+Die Einstellungen werden im Ordner "Programmordner\Einstellungen" gesichert.
 Wenn als Zielpfad für Downloads zB. nur "Filme" angegeben wird
 (und kein absoluter Pfad: c:\xxx\yyy oder /home/user/filme ),
 wird ein Ordner "Filme" auf dem USB-Stick im Programmordner angelegt 
@@ -17,8 +20,7 @@ und für den Download verwendet.
 
 Sollen die Einstellungen von einer bestehenden Installation übernommen
 werden, muss vorher der Ordner "Einstellungen" im Programmordner angelegt
-werden.
-Der Ordner mit den alten Einstellungen im Homeverzeichnis ".mediathek3" 
+werden. Der Ordner mit den alten Einstellungen im Homeverzeichnis ".mediathek3" 
 muss dann in den neu angelegten Ordner "Einstellungen" kopiert werden.
 (evtl. müssen dann die Pfade für den Download angepasst werden!)
 
@@ -37,7 +39,7 @@ Portable-Startdateien
 Windows
 =========
 Das Programm wird dann mit einem Doppelklick auf "MediathekView_Portable.exe"
-gestartet.
+(im Programmordner) gestartet.
 
 
 Linux
@@ -55,6 +57,5 @@ OSX
 http://sourceforge.net/p/zdfmediathk/wiki/FAQ/#kann-man-mediathekview-von-einem-usb-stick-starten-mediathekview-portable
 
 Für den portablen Gebrauch muss die Nicht-App-Version (also die ZIP-Version) heruntergeladen werden.
-
 Die OSX-Startdatei im Programmordner starten.
 
