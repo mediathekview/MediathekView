@@ -436,6 +436,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 jMenuItemDownloadsAufraeumen.setEnabled(true);
                 jMenuItemDownloadsLoeschen.setEnabled(true);
                 jMenuItemDownloadsAlleStarten.setEnabled(true);
+                jMenuItemDownloadStartTime.setEnabled(true);
                 jMenuItemDownloadAendern.setEnabled(true);
                 jMenuItemDownloadsZurueckstellen.setEnabled(true);
                 jMenuItemDownloadVorziehen.setEnabled(true);
@@ -483,6 +484,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemDownloadsAufraeumen.setEnabled(false);
         jMenuItemDownloadsLoeschen.setEnabled(false);
         jMenuItemDownloadsAlleStarten.setEnabled(false);
+        jMenuItemDownloadStartTime.setEnabled(false);
         jMenuItemDownloadStarten.setEnabled(false);
         jMenuItemDownloadStoppen.setEnabled(false);
         jMenuItemDownloadAlleStoppen.setEnabled(false);
@@ -523,6 +525,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemBlacklist.setIcon(GetIcon.getProgramIcon("blacklist_16.png"));
         jMenuItemFilterLoeschen.setIcon(GetIcon.getProgramIcon("clear_16.png"));
         jMenuItemDownloadsAlleStarten.setIcon(GetIcon.getProgramIcon("download_alleStarten_16.png"));
+        jMenuItemDownloadStartTime.setIcon(GetIcon.getProgramIcon("download_alleStarten_16.png"));
         jMenuItemDownloadAlleStoppen.setIcon(GetIcon.getProgramIcon("download_stop_16.png"));
         jMenuItemDownloadWartendeStoppen.setIcon(GetIcon.getProgramIcon("download_stop_16.png"));
         jMenuItemDownloadStarten.setIcon(GetIcon.getProgramIcon("download_start_16.png"));
@@ -995,6 +998,12 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 daten.guiDownloads.starten(true /* alle */);
             }
         });
+        jMenuItemDownloadStartTime.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                daten.guiDownloads.startAtTime(true);
+            }
+        });
         jMenuItemDownloadStarten.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1445,6 +1454,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemBlacklist = new javax.swing.JMenuItem();
         jMenuDownload = new javax.swing.JMenu();
         jMenuItemDownloadsAlleStarten = new javax.swing.JMenuItem();
+        jMenuItemDownloadStartTime = new javax.swing.JMenuItem();
         jMenuItemDownloadWartendeStoppen = new javax.swing.JMenuItem();
         jMenuItemDownloadAlleStoppen = new javax.swing.JMenuItem();
         javax.swing.JPopupMenu.Separator jSeparator1 = new javax.swing.JPopupMenu.Separator();
@@ -1553,6 +1563,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemDownloadsAlleStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/download_alleStarten_16.png"))); // NOI18N
         jMenuItemDownloadsAlleStarten.setText("alle Downloads starten");
         jMenuDownload.add(jMenuItemDownloadsAlleStarten);
+
+        jMenuItemDownloadStartTime.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/download_alleStarten_16.png"))); // NOI18N
+        jMenuItemDownloadStartTime.setText("alle Download um \"XX:xx\" starten");
+        jMenuDownload.add(jMenuItemDownloadStartTime);
 
         jMenuItemDownloadWartendeStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/download_stop_16.png"))); // NOI18N
         jMenuItemDownloadWartendeStoppen.setText("wartende stoppen");
@@ -1726,6 +1740,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JMenuItem jMenuItemDownloadAbspielen;
     private javax.swing.JMenuItem jMenuItemDownloadAendern;
     private javax.swing.JMenuItem jMenuItemDownloadAlleStoppen;
+    private javax.swing.JMenuItem jMenuItemDownloadStartTime;
     private javax.swing.JMenuItem jMenuItemDownloadStarten;
     private javax.swing.JMenuItem jMenuItemDownloadStoppen;
     private javax.swing.JMenuItem jMenuItemDownloadVorziehen;

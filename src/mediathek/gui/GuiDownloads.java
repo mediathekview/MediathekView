@@ -50,6 +50,8 @@ import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
+import mediathek.gui.dialog.DialogBeenden;
+import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.res.GetIcon;
@@ -134,6 +136,10 @@ public class GuiDownloads extends PanelVorlage {
 
     public void starten(boolean alle) {
         filmStartenWiederholenStoppen(alle, true /* starten */);
+    }
+
+    public void startAtTime(boolean alle) {
+        filmStartAtTime();
     }
 
     public void stoppen(boolean alle) {
@@ -443,6 +449,75 @@ public class GuiDownloads extends PanelVorlage {
         }
     }
 
+    private void filmStartAtTime() {
+        DialogBeendenZeit dialogBeenden = new DialogBeendenZeit(daten.mediathekGui);
+        dialogBeenden.setModal(true);
+        dialogBeenden.setVisible(true);
+        if (!dialogBeenden.applicationCanTerminate()) {
+            return;
+        }
+        // bezieht sich immer auf "alle"
+        // Film der noch keinen Starts hat wird gestartet
+        // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
+        // wird immer vom Benutzer aufgerufen
+        String[] urls;
+        ArrayList<String> listeUrlsDownloadLoeschen = new ArrayList<>();
+        ArrayList<DatenDownload> listeDownloadsStarten = new ArrayList<>();
+        // ==========================
+        // erst mal die Liste nach der Tabelle sortieren
+        if (tabelle.getRowCount() == 0) {
+            return;
+        }
+        for (int i = 0; i < tabelle.getRowCount(); ++i) {
+            DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF_NR);
+            Daten.listeDownloads.remove(datenDownload);
+            Daten.listeDownloads.add(datenDownload);
+        }
+        // ==========================
+        // erst mal die URLs sammeln
+        urls = new String[tabelle.getRowCount()];
+        for (int i = 0; i < tabelle.getRowCount(); ++i) {
+            urls[i] = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_URL_NR).toString();
+        }
+        // ========================
+        // und jetzt abarbeiten
+        for (String url : urls) {
+            DatenDownload download = Daten.listeDownloads.getDownloadByUrl(url);
+            // ==========================================
+            // starten
+            if (download.start != null) {
+                if (download.start.status == Start.STATUS_RUN) {
+                    // dann läuft er schon
+                    continue;
+                }
+                if (download.start.status > Start.STATUS_RUN) {
+                    // wenn er noch läuft gibts nix
+                    // wenn er schon fertig ist, erst mal fragen vor dem erneuten Starten
+                    //TODO in auto dialog umwandeln!
+                    int a = JOptionPane.showConfirmDialog(parentComponent, "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL_NR],
+                            "Fertiger Download", JOptionPane.YES_NO_OPTION);
+                    if (a != JOptionPane.YES_OPTION) {
+                        // weiter mit der nächsten URL
+                        continue;
+                    }
+                    listeUrlsDownloadLoeschen.add(url);
+                    if (download.istAbo()) {
+                        // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
+                        daten.erledigteAbos.urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
+                    }
+                }
+            }
+            listeDownloadsStarten.add(download);
+        }
+        // ========================
+        // jetzt noch die Starts stoppen
+        Daten.listeDownloads.downloadAbbrechen(listeUrlsDownloadLoeschen);
+        // und die Downloads starten oder stoppen
+        //alle Downloads starten/wiederstarten
+        DatenDownload.startenDownloads(daten, listeDownloadsStarten);
+        reloadTable();
+    }
+
     private void filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */) {
         // bezieht sich immer auf "alle" oder nur die markierten
         // Film der noch keinen Starts hat wird gestartet
@@ -600,12 +675,15 @@ public class GuiDownloads extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
         javax.swing.JPanel jPanelFilter = new javax.swing.JPanel();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         cbDisplayCategories = new javax.swing.JComboBox<String>();
         jPanelBeschreibung = new javax.swing.JPanel();
+
+        jLabel2.setText("jLabel2");
 
         setLayout(new java.awt.BorderLayout());
 
@@ -632,6 +710,7 @@ public class GuiDownloads extends PanelVorlage {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> cbDisplayCategories;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanelBeschreibung;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
