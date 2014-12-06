@@ -50,8 +50,6 @@ Die Linux-Startdatei im Programmordner starten:
 oder der direkte Programmaufruf wäre:
 java -jar MediathekView.jar Einstellungen/.mediathek3
 
-
-
 OSX
 =====
 http://sourceforge.net/p/zdfmediathk/wiki/FAQ/#kann-man-mediathekview-von-einem-usb-stick-starten-mediathekview-portable
