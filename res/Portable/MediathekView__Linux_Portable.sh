@@ -7,12 +7,12 @@ mediathekview="./MediathekView.jar"
 einstellungen="./Einstellungen/.mediathek3"
 
 if [ -f ../MediathekView.jar ]; then
-	mediathekview="../MediathekView.jar"
-	einstellungen="../Einstellungen/.mediathek3"
+	cd ..
 fi
 
 echo
 echo ============================================
+echo Programmverzeichnis: $PWD
 echo Programmdatei: $mediathekview
 echo Einstellungen: $einstellungen
 echo ============================================
@@ -23,6 +23,3 @@ if [ -n "$JAVA_HOME" ]; then
 else
   java -Xms128M -Xmx1G -jar $mediathekview $einstellungen "$@"
 fi
-
-cd $OLDPWD
-
