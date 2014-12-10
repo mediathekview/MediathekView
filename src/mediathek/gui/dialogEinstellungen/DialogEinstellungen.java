@@ -60,6 +60,47 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private final JPanel panelLeer = new JPanel();
     private final JFrame parentComponent;
 
+    private final String NAME_einstellungen = "Einstellungen";
+    private final String NAME_allgemeineEinstellungen = "Allgemein";
+    private final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
+    private final String NAME_allgemeineEinstellungenGeo = "Geo";
+    private final String NAME_allgemeineEinstellungenImport = "Import";
+    private final String NAME_allgemeineEinstellungenColor = "Farben";
+    private final String NAME_filmListe = "Filmliste";
+    private final String NAME_filmListeLaden = "Filmliste laden";
+    private final String NAME_filmListeExportieren = "Filmliste exportieren";
+    private final String NAME_blacklist = "Blacklist";
+    private final String NAME_aufzeichnen = "Aufzeichnen und Abspielen";
+    private final String NAME_dateiname = "Datei- und Pfadnamen";
+    private final String NAME_programmset = "Set bearbeiten";
+    private final String NAME_programmsetImportieren = "Set importieren";
+    private final String NAME_infos = "Infos";
+    private final String NAME_programmInfos = "Programminfos";
+    private final String NAME_history = "History";
+    private final String NAME_logfile = "Erledigte Abos";
+    // ######## Einstellulngen ############
+    private final DefaultMutableTreeNode treeNodeEinstellungen = new DefaultMutableTreeNode("Einstellungen");
+    private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungen = new DefaultMutableTreeNode(NAME_allgemeineEinstellungen);
+    private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenEreweitert = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenErweitert);
+    private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenGeo = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenGeo);
+    private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenImport = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenImport);
+    private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenColor = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenColor);
+    // ######## Filme ###############
+    private final DefaultMutableTreeNode treeNodeFilme = new DefaultMutableTreeNode("Filmliste");
+    private final DefaultMutableTreeNode treeNodeFilmliste = new DefaultMutableTreeNode(NAME_filmListeLaden);
+    private final DefaultMutableTreeNode treeNodeFilmlisteExport = new DefaultMutableTreeNode(NAME_filmListeExportieren);
+    private final DefaultMutableTreeNode treeNodeBlacklist = new DefaultMutableTreeNode(NAME_blacklist);
+    // ########### Programme ##############
+    private final DefaultMutableTreeNode treeNodeDownloads = new DefaultMutableTreeNode("Aufzeichnen und Abspielen");
+    private final DefaultMutableTreeNode treeNodeDateinamen = new DefaultMutableTreeNode(NAME_dateiname);
+    private final DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programmset);
+    private final DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmsetImportieren);
+    // ####### Infos #########
+    private final DefaultMutableTreeNode treeNodeInfos = new DefaultMutableTreeNode("Infos");
+    private final DefaultMutableTreeNode treeNodeProgrammInfos = new DefaultMutableTreeNode(NAME_programmInfos);
+    private final DefaultMutableTreeNode treeNodeHistory = new DefaultMutableTreeNode(NAME_history);
+    private final DefaultMutableTreeNode treeNodeLogfile = new DefaultMutableTreeNode(NAME_logfile);
+
     /**
      * @param parent
      * @param d
@@ -103,72 +144,36 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         panelDateinamen = new PanelDateinamen(ddaten, parentComponent);
         panelPset = new PanelPset(ddaten, parentComponent);
         panelPsetVorlagen = new PanelPsetImport(ddaten, parentComponent);
-        // Infos
         panelAbout = new PanelAbout(ddaten, parentComponent);
     }
 
     private void initTree() {
-        final String NAME_allgemeineEinstellungen = "Allgemein";
-        final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
-        final String NAME_allgemeineEinstellungenGeo = "Geo";
-        final String NAME_allgemeineEinstellungenImport = "Import";
-        final String NAME_allgemeineEinstellungenColor = "Farben";
-        final String NAME_filmListeLaden = "Filmliste laden";
-        final String NAME_filmListeExportieren = "Filmliste exportieren";
-        final String NAME_blacklist = "Blacklist";
-        final String NAME_dateiname = "Datei- und Pfadnamen";
-        final String NAME_programmset = "Set bearbeiten";
-        final String NAME_programmsetImportieren = "Set importieren";
-        // Infos
-        final String NAME_programmInfos = "Programminfos";
-        final String NAME_history = "History";
-        final String NAME_logfile = "Erledigte Abos";
         //
         DefaultMutableTreeNode treeNodeStart = new DefaultMutableTreeNode(Konstanten.PROGRAMMNAME);
         // ===============================================================================
         // ######## Einstellulngen ############
-        DefaultMutableTreeNode treeNodeEinstellungen = new DefaultMutableTreeNode("Einstellungen");
-        // allgemeine Einstellungen
-        DefaultMutableTreeNode treeNodeAllgemeineEinstellungen = new DefaultMutableTreeNode(NAME_allgemeineEinstellungen);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungen);
-        // erweiterte Einstellungen
-        DefaultMutableTreeNode treeNodeAllgemeineEinstellungenEreweitert = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenErweitert);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenEreweitert);
-        DefaultMutableTreeNode treeNodeAllgemeineEinstellungenGeo = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenGeo);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenGeo);
-        DefaultMutableTreeNode treeNodeAllgemeineEinstellungenImport = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenImport);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenImport);
-        DefaultMutableTreeNode treeNodeAllgemeineEinstellungenColor = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenColor);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenColor);
         treeNodeStart.add(treeNodeEinstellungen);
         // ===============================================================================
         // ######## Filme ###############
-        DefaultMutableTreeNode treeNodeFilme = new DefaultMutableTreeNode("Filmliste");
-        DefaultMutableTreeNode treeNodeFilmliste = new DefaultMutableTreeNode(NAME_filmListeLaden);
         treeNodeFilme.add(treeNodeFilmliste);
-        DefaultMutableTreeNode treeNodeFilmlisteExport = new DefaultMutableTreeNode(NAME_filmListeExportieren);
         treeNodeFilme.add(treeNodeFilmlisteExport);
-        DefaultMutableTreeNode treeNodeBlacklist = new DefaultMutableTreeNode(NAME_blacklist);
         treeNodeFilme.add(treeNodeBlacklist);
         treeNodeStart.add(treeNodeFilme);
         // ===============================================================================
         // ########### Programme ##############
-        DefaultMutableTreeNode treeNodeDownloads = new DefaultMutableTreeNode("Aufzeichnen und Abspielen");
-        DefaultMutableTreeNode treeNodeDateinamen = new DefaultMutableTreeNode(NAME_dateiname);
         treeNodeDownloads.add(treeNodeDateinamen);
-        DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programmset);
         treeNodeDownloads.add(treeNodeProgramme);
-        DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmsetImportieren);
         treeNodeDownloads.add(treeNodeImportProgramme);
         treeNodeStart.add(treeNodeDownloads);
         // ===============================================================================
         // ####### Infos #########
-        DefaultMutableTreeNode treeNodeInfos = new DefaultMutableTreeNode("Infos");
-        DefaultMutableTreeNode treeNodeProgrammInfos = new DefaultMutableTreeNode(NAME_programmInfos);
         treeNodeInfos.add(treeNodeProgrammInfos);
-        DefaultMutableTreeNode treeNodeHistory = new DefaultMutableTreeNode(NAME_history);
         treeNodeInfos.add(treeNodeHistory);
-        DefaultMutableTreeNode treeNodeLogfile = new DefaultMutableTreeNode(NAME_logfile);
         treeNodeInfos.add(treeNodeLogfile);
         treeNodeStart.add(treeNodeInfos);
 
@@ -188,6 +193,10 @@ public class DialogEinstellungen extends javax.swing.JFrame {
                     String name = node.getUserObject().toString();
                     setTitle(name);
                     switch (name) {
+                        //Einstellungen
+                        case NAME_einstellungen:
+                            jTree1.setSelectionPath(new TreePath(treeNodeAllgemeineEinstellungen.getPath()));
+                            break;
                         case NAME_allgemeineEinstellungen:
                             jPanelExtra.removeAll();
                             jPanelExtra.add(panelEinstellungen);
@@ -208,6 +217,10 @@ public class DialogEinstellungen extends javax.swing.JFrame {
                             jPanelExtra.removeAll();
                             jPanelExtra.add(panelEinstellungenColor);
                             break;
+                        //Filmliste
+                        case NAME_filmListe:
+                            jTree1.setSelectionPath(new TreePath(treeNodeFilmliste.getPath()));
+                            break;
                         case NAME_filmListeLaden:
                             jPanelExtra.removeAll();
                             jPanelExtra.add(panelImportFilme);
@@ -220,13 +233,9 @@ public class DialogEinstellungen extends javax.swing.JFrame {
                             jPanelExtra.removeAll();
                             jPanelExtra.add(panelBlacklist);
                             break;
-                        case NAME_history:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelHistory);
-                            break;
-                        case NAME_logfile:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelErledigteAbos);
+                        //Aufzeichnen, Abspielen
+                        case NAME_aufzeichnen:
+                            jTree1.setSelectionPath(new TreePath(treeNodeDateinamen.getPath()));
                             break;
                         case NAME_dateiname:
                             jPanelExtra.removeAll();
@@ -240,9 +249,21 @@ public class DialogEinstellungen extends javax.swing.JFrame {
                             jPanelExtra.removeAll();
                             jPanelExtra.add(panelPsetVorlagen);
                             break;
+                        //Infos
+                        case NAME_infos:
+                            jTree1.setSelectionPath(new TreePath(treeNodeProgrammInfos.getPath()));
+                            break;
                         case NAME_programmInfos:
                             jPanelExtra.removeAll();
                             jPanelExtra.add(panelAbout);
+                            break;
+                        case NAME_history:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelHistory);
+                            break;
+                        case NAME_logfile:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelErledigteAbos);
                             break;
                         default:
                             jPanelExtra.removeAll();
