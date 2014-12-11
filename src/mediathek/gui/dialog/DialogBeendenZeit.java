@@ -26,6 +26,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
@@ -38,6 +39,7 @@ import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.daten.Daten;
+import mediathek.daten.DatenDownload;
 import mediathek.file.GetFile;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
@@ -49,6 +51,8 @@ public class DialogBeendenZeit extends JDialog {
     private static final String WAIT_FOR_DOWNLOADS_AND_DONT_TERMINATE_PROGRAM = "Auf Abschluß aller Downloads warten, Programm danach NICHT beenden";
     private static final String DONT_START = "Downloads nicht starten";
     private final JFrame parent;
+    private final Daten daten;
+    private final ArrayList<DatenDownload> listeDownloadsStarten;
     /**
      * Indicates whether the application can terminate.
      */
@@ -61,6 +65,7 @@ public class DialogBeendenZeit extends JDialog {
      * JPanel for displaying the glassPane with the busy indicator label.
      */
     private JPanel glassPane = null;
+    private final JXBusyLabel lblGlassPane = new JXBusyLabel();
     /**
      * The download monitoring {@link javax.swing.SwingWorker}.
      */
@@ -75,10 +80,12 @@ public class DialogBeendenZeit extends JDialog {
         return applicationCanTerminate;
     }
 
-    public DialogBeendenZeit(JFrame pparent) {
+    public DialogBeendenZeit(JFrame pparent, final Daten daten_, final ArrayList<DatenDownload> listeDownloadsStarten_) {
         super(pparent, true);
         initComponents();
         this.parent = pparent;
+        daten = daten_;
+        listeDownloadsStarten = listeDownloadsStarten_;
 
         if (parent != null) {
             setLocationRelativeTo(parent);
@@ -109,11 +116,8 @@ public class DialogBeendenZeit extends JDialog {
 
         // set date format
         SimpleDateFormat format = ((JSpinner.DateEditor) jSpinnerTime.getEditor()).getFormat();
-        //format.setTimeZone(TimeZone.getTimeZone("Europe/London"));
-        format.applyPattern("HH:mm");
-
+        format.applyPattern("dd.MM.yyy HH:mm");
         model.setValue(new Date());
-
         jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
@@ -159,6 +163,7 @@ public class DialogBeendenZeit extends JDialog {
                 final String strSelectedItem = (String) comboActions.getSelectedItem();
                 switch (strSelectedItem) {
                     case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
+                        applicationCanTerminate = true;
                         waitUntilDownloadsHaveFinished();
                         break;
 
@@ -202,7 +207,7 @@ public class DialogBeendenZeit extends JDialog {
      * @return The model with all valid user actions.
      */
     private DefaultComboBoxModel<String> getComboBoxModel() {
-        return new DefaultComboBoxModel<>(new String[]{ WAIT_FOR_DOWNLOADS_AND_TERMINATE,WAIT_FOR_DOWNLOADS_AND_DONT_TERMINATE_PROGRAM, DONT_START});
+        return new DefaultComboBoxModel<>(new String[]{WAIT_FOR_DOWNLOADS_AND_TERMINATE, WAIT_FOR_DOWNLOADS_AND_DONT_TERMINATE_PROGRAM, DONT_START});
     }
 
     /**
@@ -235,14 +240,36 @@ public class DialogBeendenZeit extends JDialog {
 
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout(5, 5));
-        JXBusyLabel lbl = new JXBusyLabel();
-        lbl.setText(strMessage);
-        lbl.setBusy(true);
-        lbl.setVerticalAlignment(SwingConstants.CENTER);
-        lbl.setHorizontalAlignment(SwingConstants.CENTER);
-        panel.add(lbl, BorderLayout.CENTER);
+        lblGlassPane.setText(strMessage);
+        lblGlassPane.setBusy(true);
+        lblGlassPane.setVerticalAlignment(SwingConstants.CENTER);
+        lblGlassPane.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(lblGlassPane, BorderLayout.CENTER);
 
         return panel;
+    }
+
+    private void setTextWait() {
+        SimpleDateFormat format = ((JSpinner.DateEditor) jSpinnerTime.getEditor()).getFormat();
+        format.applyPattern("dd.MM.yyy  HH:mm");
+        Date sp = (Date) jSpinnerTime.getValue();
+        String strDate = format.format(sp);
+
+        String strMessage = "<html>Downloads starten:<br><br><b>" + strDate + "</b><br>";
+        if (isShutdownRequested()) {
+            strMessage += "<br><b>Der Rechner wird danach heruntergefahren.</b>";
+        }
+        strMessage += "<br>Sie können den Vorgang mit Escape abbrechen.</html>";
+        lblGlassPane.setText(strMessage);
+    }
+
+    private void setTextDownload() {
+        String strMessage = "<html>Warte auf Abschluss der Downloads...";
+        if (isShutdownRequested()) {
+            strMessage += "<br><b>Der Rechner wird danach heruntergefahren.</b>";
+        }
+        strMessage += "<br>Sie können den Vorgang mit Escape abbrechen.</html>";
+        lblGlassPane.setText(strMessage);
     }
 
     /**
@@ -252,11 +279,18 @@ public class DialogBeendenZeit extends JDialog {
     private void waitUntilDownloadsHaveFinished() {
         glassPane = createGlassPane();
         setGlassPane(glassPane);
+        setTextWait();
         glassPane.setVisible(true);
 
         downloadMonitorWorker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
+                while ((((Date) jSpinnerTime.getValue())).after(new Date())) {
+                    Thread.sleep(1000);
+                }
+                setTextDownload();
+                DatenDownload.startenDownloads(daten, listeDownloadsStarten);
+
                 while ((Daten.listeDownloads.nochNichtFertigeDownloads() > 0) && !isCancelled()) {
                     Thread.sleep(1000);
                 }
@@ -266,7 +300,6 @@ public class DialogBeendenZeit extends JDialog {
 
             @Override
             protected void done() {
-                applicationCanTerminate = true;
                 glassPane.setVisible(false);
                 dispose();
                 downloadMonitorWorker = null;
@@ -275,15 +308,10 @@ public class DialogBeendenZeit extends JDialog {
         downloadMonitorWorker.execute();
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         comboActions = new javax.swing.JComboBox<String>();
         btnContinue = new javax.swing.JButton();
         cbShutdownComputer = new javax.swing.JCheckBox();
@@ -323,20 +351,21 @@ public class DialogBeendenZeit extends JDialog {
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 616, Short.MAX_VALUE)
                     .addComponent(comboActions, 0, 0, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(cbShutdownComputer)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonHilfe))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonHilfe)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCancel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnContinue))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jSpinnerTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbShutdownComputer)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jSpinnerTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel3)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -350,16 +379,17 @@ public class DialogBeendenZeit extends JDialog {
                     .addComponent(jLabel3))
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(comboActions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbShutdownComputer)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(cbShutdownComputer)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnContinue)
+                            .addComponent(btnCancel)))
                     .addComponent(jButtonHilfe))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnContinue)
-                    .addComponent(btnCancel))
                 .addContainerGap())
         );
 
@@ -372,7 +402,6 @@ public class DialogBeendenZeit extends JDialog {
     private javax.swing.JCheckBox cbShutdownComputer;
     private javax.swing.JComboBox<String> comboActions;
     private javax.swing.JButton jButtonHilfe;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JSpinner jSpinnerTime;

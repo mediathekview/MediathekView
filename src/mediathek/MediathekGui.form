@@ -123,7 +123,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/programm/download_alleStarten_16.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="alle Download um &quot;XX:xx&quot; starten"/>
+                <Property name="text" type="java.lang.String" value="alle Downloads um xx:yy Uhr starten"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadWartendeStoppen">

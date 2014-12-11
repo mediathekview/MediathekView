@@ -1565,7 +1565,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuDownload.add(jMenuItemDownloadsAlleStarten);
 
         jMenuItemDownloadStartTime.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/download_alleStarten_16.png"))); // NOI18N
-        jMenuItemDownloadStartTime.setText("alle Download um \"XX:xx\" starten");
+        jMenuItemDownloadStartTime.setText("alle Downloads um xx:yy Uhr starten");
         jMenuDownload.add(jMenuItemDownloadStartTime);
 
         jMenuItemDownloadWartendeStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/download_stop_16.png"))); // NOI18N

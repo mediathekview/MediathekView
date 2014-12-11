@@ -450,12 +450,6 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void filmStartAtTime() {
-        DialogBeendenZeit dialogBeenden = new DialogBeendenZeit(daten.mediathekGui);
-        dialogBeenden.setModal(true);
-        dialogBeenden.setVisible(true);
-        if (!dialogBeenden.applicationCanTerminate()) {
-            return;
-        }
         // bezieht sich immer auf "alle"
         // Film der noch keinen Starts hat wird gestartet
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
@@ -469,6 +463,7 @@ public class GuiDownloads extends PanelVorlage {
             return;
         }
         for (int i = 0; i < tabelle.getRowCount(); ++i) {
+            // um in der Reihenfolge zu starten
             DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF_NR);
             Daten.listeDownloads.remove(datenDownload);
             Daten.listeDownloads.add(datenDownload);
@@ -512,9 +507,17 @@ public class GuiDownloads extends PanelVorlage {
         // ========================
         // jetzt noch die Starts stoppen
         Daten.listeDownloads.downloadAbbrechen(listeUrlsDownloadLoeschen);
+
         // und die Downloads starten oder stoppen
         //alle Downloads starten/wiederstarten
-        DatenDownload.startenDownloads(daten, listeDownloadsStarten);
+        DialogBeendenZeit dialogBeenden = new DialogBeendenZeit(daten.mediathekGui, daten, listeDownloadsStarten);
+        //dialogBeenden.setModal(true);
+        dialogBeenden.setVisible(true);
+        if (dialogBeenden.applicationCanTerminate()) {
+            // fertig und beenden
+            daten.mediathekGui.beenden();
+        }
+
         reloadTable();
     }
 
