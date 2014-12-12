@@ -28,7 +28,7 @@ import msearch.daten.DatenFilm;
 public class Filter {
 
     public static boolean aboExistiertBereits(DatenAbo aboExistiert, DatenAbo aboPruefen) {
-        // prüfen ob aboExistiert das aboPrüfen mit abdeckt, also die gleichen (oder mehr)
+        // prüfen ob "aboExistiert" das "aboPrüfen" mit abdeckt, also die gleichen (oder mehr)
         // Filme findet, dann wäre das neue Abo hinfällig
 
         String senderExistiert = aboExistiert.arr[DatenAbo.ABO_SENDER_NR];
@@ -84,8 +84,8 @@ public class Filter {
                         if (irgendwoSuchen.length == 0
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_THEMA_NR])
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_TITEL_NR])
-                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_BESCHREIBUNG_NR])){
-                                // || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_WEBSEITE_NR])) { kostet 25% Zeit zusätzlich!
+                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_BESCHREIBUNG_NR])) {
+                            // || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_WEBSEITE_NR])) { kostet 25% Zeit zusätzlich!
                             if (mitLaenge) {
                                 // die Länge soll mit gefrüft werden
                                 if (laengePruefen(laengeMinutenSuchen, film.dauerL)) {
@@ -108,17 +108,25 @@ public class Filter {
 
     private static boolean pruefen(String[] filter, String im) {
         // wenn einer passt, dann ists gut
+        Pattern p;
         if (filter.length == 1) {
-            Pattern p = makePattern(filter[0]);
-            if (p != null) {
+            if (filter[0].isEmpty()) {
+                // Filter ist leer, das wars
+                return true;
+            } else if ((p = makePattern(filter[0])) != null) {
+                // dann ists eine RegEx
                 return (p.matcher(im).matches());
             }
         }
+
         for (String s : filter) {
+            // dann jeden Suchbegriff checken
             if (im.toLowerCase().contains(s)) {
                 return true;
             }
         }
+
+        // nix wars
         return false;
     }
 
