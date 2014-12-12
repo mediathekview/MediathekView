@@ -50,6 +50,7 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
@@ -97,6 +98,7 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVFrame;
+import mediathek.tool.MVMessageDialog;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
 import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
 import org.simplericity.macify.eawt.ApplicationEvent;
@@ -440,6 +442,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 jMenuItemDownloadAendern.setEnabled(true);
                 jMenuItemDownloadsZurueckstellen.setEnabled(true);
                 jMenuItemDownloadVorziehen.setEnabled(true);
+                jMenuItemDownloadShutDown.setEnabled(true);
                 jSpinnerAnzahl.setEnabled(true);
                 jLabelAnzahl.setEnabled(true);
                 break;
@@ -492,6 +495,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemDownloadAendern.setEnabled(false);
         jMenuItemDownloadsZurueckstellen.setEnabled(false);
         jMenuItemDownloadVorziehen.setEnabled(false);
+        jMenuItemDownloadShutDown.setEnabled(false);
         jSpinnerAnzahl.setEnabled(false);
         jLabelAnzahl.setEnabled(false);
         jMenuItemAbosEinschalten.setEnabled(false);
@@ -537,6 +541,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemDownloadsAktualisieren.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
         jMenuItemDownloadAbspielen.setIcon(GetIcon.getProgramIcon("film_start_16.png"));
         jMenuItemDownloadsAufraeumen.setIcon(GetIcon.getProgramIcon("download_clear_16.png"));
+        jMenuItemDownloadShutDown.setIcon(GetIcon.getProgramIcon("beenden_16.png"));
         jMenuItemAbosEinschalten.setIcon(GetIcon.getProgramIcon("ja_16.png"));
         jMenuItemAbosAusschalten.setIcon(GetIcon.getProgramIcon("nein_16.png"));
         jMenuItemAbosLoeschen.setIcon(GetIcon.getProgramIcon("del_16.png"));
@@ -1046,6 +1051,19 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 daten.guiDownloads.stoppen(false /* alle */);
             }
         });
+        jMenuItemDownloadShutDown.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (Daten.listeDownloads.nochNichtFertigeDownloads() > 0) {
+                    // ansonsten gibts keine laufenden Downloads auf die man warten sollte
+                    beenden(true);
+                } else {
+                    MVMessageDialog.showMessageDialog(daten.mediathekGui, "Die Downloads müssen zuerst gestartet werden.",
+                            "Keine laufenden Downloads!", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
 
         // Abo
         jMenuItemAbosEinschalten.addActionListener(new ActionListener() {
@@ -1314,10 +1332,17 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     public void beenden() {
+        beenden(false);
+    }
+
+    public void beenden(boolean showTerminate) {
         DialogBeenden dialogBeenden = null;
         if (Daten.listeDownloads.nochNichtFertigeDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
             dialogBeenden = new DialogBeenden(this);
+            if (showTerminate) {
+                dialogBeenden.setComboWaitAndTerminate();
+            }
             dialogBeenden.setModal(true);
             dialogBeenden.setVisible(true);
             if (!dialogBeenden.applicationCanTerminate()) {
@@ -1468,6 +1493,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemDownloadAbspielen = new javax.swing.JMenuItem();
         jMenuItemDownloadsAktualisieren = new javax.swing.JMenuItem();
         jMenuItemDownloadsAufraeumen = new javax.swing.JMenuItem();
+        jMenuItemDownloadShutDown = new javax.swing.JMenuItem();
         javax.swing.JMenu jMenuAbos = new javax.swing.JMenu();
         jMenuItemAbosEinschalten = new javax.swing.JMenuItem();
         jMenuItemAbosAusschalten = new javax.swing.JMenuItem();
@@ -1619,6 +1645,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemDownloadsAufraeumen.setText("Downloads aufräumen");
         jMenuDownload.add(jMenuItemDownloadsAufraeumen);
 
+        jMenuItemDownloadShutDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/beenden_16.png"))); // NOI18N
+        jMenuItemDownloadShutDown.setText("Rechner nach Downloads herunterfahren");
+        jMenuDownload.add(jMenuItemDownloadShutDown);
+
         jMenuBar.add(jMenuDownload);
 
         jMenuAbos.setMnemonic('b');
@@ -1740,6 +1770,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JMenuItem jMenuItemDownloadAbspielen;
     private javax.swing.JMenuItem jMenuItemDownloadAendern;
     private javax.swing.JMenuItem jMenuItemDownloadAlleStoppen;
+    private javax.swing.JMenuItem jMenuItemDownloadShutDown;
     private javax.swing.JMenuItem jMenuItemDownloadStartTime;
     private javax.swing.JMenuItem jMenuItemDownloadStarten;
     private javax.swing.JMenuItem jMenuItemDownloadStoppen;
