@@ -237,6 +237,14 @@
                 <Property name="text" type="java.lang.String" value="Downloads aufr&#xe4;umen"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadShutDown">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mediathek/res/programm/beenden_16.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Rechner nach Downloads herunterfahren"/>
+              </Properties>
+            </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenuAbos">

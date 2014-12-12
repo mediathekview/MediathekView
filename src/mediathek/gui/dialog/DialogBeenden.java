@@ -38,7 +38,7 @@ import mediathek.tool.EscBeenden;
 import org.jdesktop.swingx.JXBusyLabel;
 
 public class DialogBeenden extends JDialog {
-
+    
     private static final String CANCEL_AND_TERMINATE_PROGRAM = "Downloads abbrechen und Programm beenden";
     private static final String WAIT_FOR_DOWNLOADS_AND_TERMINATE = "Auf Abschluß aller Downloads warten, danach beenden";
     private static final String DONT_TERMINATE = "Programm nicht beenden";
@@ -68,12 +68,12 @@ public class DialogBeenden extends JDialog {
     public boolean applicationCanTerminate() {
         return applicationCanTerminate;
     }
-
+    
     public DialogBeenden(JFrame pparent) {
         super(pparent, true);
         initComponents();
         this.parent = pparent;
-
+        
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
@@ -83,14 +83,14 @@ public class DialogBeenden extends JDialog {
                 escapeHandler();
             }
         };
-
+        
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 escapeHandler();
             }
         });
-
+        
         jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
@@ -100,7 +100,7 @@ public class DialogBeenden extends JDialog {
         });
         jButtonHilfe.setEnabled(false);
         cbShutdownComputer.setEnabled(false);
-
+        
         comboActions.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -110,7 +110,7 @@ public class DialogBeenden extends JDialog {
                         jButtonHilfe.setEnabled(true);
                         cbShutdownComputer.setEnabled(true);
                         break;
-
+                    
                     default:
                         jButtonHilfe.setEnabled(false);
                         cbShutdownComputer.setEnabled(false);
@@ -122,14 +122,14 @@ public class DialogBeenden extends JDialog {
                 }
             }
         });
-
+        
         cbShutdownComputer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 shutdown = cbShutdownComputer.isSelected();
             }
         });
-
+        
         btnContinue.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -138,12 +138,12 @@ public class DialogBeenden extends JDialog {
                     case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
                         waitUntilDownloadsHaveFinished();
                         break;
-
+                    
                     case CANCEL_AND_TERMINATE_PROGRAM:
                         applicationCanTerminate = true;
                         dispose();
                         break;
-
+                    
                     case DONT_TERMINATE:
                         applicationCanTerminate = false;
                         dispose();
@@ -151,16 +151,16 @@ public class DialogBeenden extends JDialog {
                 }
             }
         });
-
+        
         btnCancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 escapeHandler();
             }
         });
-
+        
         pack();
-
+        
         getRootPane().setDefaultButton(btnContinue);
     }
 
@@ -171,6 +171,11 @@ public class DialogBeenden extends JDialog {
      */
     public boolean isShutdownRequested() {
         return shutdown;
+    }
+    
+    public void setComboWaitAndTerminate() {
+        comboActions.setSelectedItem(WAIT_FOR_DOWNLOADS_AND_TERMINATE);
+        cbShutdownComputer.setSelected(true);
     }
 
     /**
@@ -189,11 +194,11 @@ public class DialogBeenden extends JDialog {
         if (downloadMonitorWorker != null) {
             downloadMonitorWorker.cancel(true);
         }
-
+        
         if (glassPane != null) {
             glassPane.setVisible(false);
         }
-
+        
         applicationCanTerminate = false;
         dispose();
     }
@@ -209,7 +214,7 @@ public class DialogBeenden extends JDialog {
             strMessage += "<br><b>Der Rechner wird danach heruntergefahren.</b>";
         }
         strMessage += "<br>Sie können den Vorgang mit Escape abbrechen.</html>";
-
+        
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout(5, 5));
         JXBusyLabel lbl = new JXBusyLabel();
@@ -218,7 +223,7 @@ public class DialogBeenden extends JDialog {
         lbl.setVerticalAlignment(SwingConstants.CENTER);
         lbl.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(lbl, BorderLayout.CENTER);
-
+        
         return panel;
     }
 
@@ -230,17 +235,17 @@ public class DialogBeenden extends JDialog {
         glassPane = createGlassPane();
         setGlassPane(glassPane);
         glassPane.setVisible(true);
-
+        
         downloadMonitorWorker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
                 while ((Daten.listeDownloads.nochNichtFertigeDownloads() > 0) && !isCancelled()) {
                     Thread.sleep(1000);
                 }
-
+                
                 return null;
             }
-
+            
             @Override
             protected void done() {
                 applicationCanTerminate = true;
