@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
-import mediathek.gui.MVMemoryUsageButton;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
@@ -27,7 +26,7 @@ import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
 public final class MVStatusBar extends JPanel {
 
     private boolean stopTimer = false;
-    private EnumMap<MVStatusBar.StatusbarIndex, String> displayListForLeftLabel = new EnumMap<>(MVStatusBar.StatusbarIndex.class);
+    private final EnumMap<MVStatusBar.StatusbarIndex, String> displayListForLeftLabel = new EnumMap<>(MVStatusBar.StatusbarIndex.class);
     private MVStatusBar.StatusbarIndex currentIndex = MVStatusBar.StatusbarIndex.NONE;
 
     private final JLabel lblCenter;
@@ -59,7 +58,6 @@ public final class MVStatusBar extends JPanel {
         progressPanel.add(progress);
 
         stopButton = new JButton();
-        //stopButton.setIcon(new ImageIcon(getClass().getResource("/com/explodingpixels/macwidgets/images/close.png")));
         stopButton.setIcon(GetIcon.getProgramIcon("close.png"));
 
         stopButton.setToolTipText("Abbrechen");

@@ -43,20 +43,20 @@ import msearch.filmlisten.MSImportFilmliste;
 import msearch.tool.MSConfig;
 
 public class FilmeLaden {
-
+    
     private Duration duration = new Duration(FilmeLaden.class.getSimpleName());
     private final HashSet<String> hashSet = new HashSet<>();
     private final ListeFilme diffListe = new ListeFilme();
-
+    
     private enum ListenerMelden {
-
+        
         START, PROGRESS, FINISHED
     }
     // private
     private final MSImportFilmliste msImportFilmliste;
     private final EventListenerList listeners = new EventListenerList();
     private boolean istAmLaufen = false;
-
+    
     public FilmeLaden() {
         msImportFilmliste = new MSImportFilmliste();
         msImportFilmliste.addAdListener(new MSListenerFilmeLaden() {
@@ -64,12 +64,12 @@ public class FilmeLaden {
             public synchronized void start(MSListenerFilmeLadenEvent event) {
                 notifyStart(event);
             }
-
+            
             @Override
             public synchronized void progress(MSListenerFilmeLadenEvent event) {
                 notifyProgress(event);
             }
-
+            
             @Override
             public synchronized void fertig(MSListenerFilmeLadenEvent event) {
                 // Ergebnisliste listeFilme eintragen -> Feierabend!
@@ -93,11 +93,11 @@ public class FilmeLaden {
             importFilmliste("");
         }
     }
-
+    
     public void importFilmliste(String dateiUrl) {
         importFilmliste(dateiUrl, false);
     }
-
+    
     public void importFilmliste(String dateiUrl, boolean immerNeuLaden) {
         // damit wird die Filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
         duration.start("Filme laden, start");
@@ -125,7 +125,7 @@ public class FilmeLaden {
             }
         }
     }
-
+    
     public void updateFilmliste(String dateiUrl) {
         // damit wird die Filmliste mit einer weiteren aktualisiert (die bestehende bleibt
         // erhalten) UND auch gleich im Konfig-Ordner gespeichert
@@ -150,23 +150,23 @@ public class FilmeLaden {
     public synchronized void setStop(boolean set) {
         MSConfig.setStop(set);
     }
-
+    
     public String[] getSenderNamen() {
         return MSFilmeSuchen.getNamenSender();
     }
-
+    
     public void updateDownloadUrlsFilmlisten(boolean akt, boolean diff) {
         msImportFilmliste.updateDownloadUrlsFilmlisten(akt, diff);
     }
-
+    
     public ListeFilmlistenUrls getDownloadUrlsFilmlisten_akt() {
         return msImportFilmliste.msFilmlistenSuchen.listeFilmlistenUrls_akt;
     }
-
+    
     public ListeFilmlistenUrls getDownloadUrlsFilmlisten_diff() {
         return msImportFilmliste.msFilmlistenSuchen.listeFilmlistenUrls_diff;
     }
-
+    
     private void undEnde(MSListenerFilmeLadenEvent event) {
         // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
         // beim Ändern von Abos gemacht wird
@@ -178,7 +178,7 @@ public class FilmeLaden {
             Daten.listeFilme.sort(); // jetzt sollte alles passen
             diffListe.clear();
         }
-
+        
         searchHash(Daten.listeFilme);
         Daten.listeFilme.themenLaden();
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false/*aboLoeschen*/);
@@ -188,6 +188,7 @@ public class FilmeLaden {
             MVMessageDialog.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
             // dann die alte Liste wieder laden
             Daten.listeFilme.clear();
+            MSConfig.setStop(false);
             new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
         } else {
             Log.systemMeldung("Filmliste geladen: " + Daten.listeFilme.size() + " Filme");
@@ -197,13 +198,13 @@ public class FilmeLaden {
         notifyFertig(event);
         System.gc();
     }
-
+    
     private void fillHash(ListeFilme listeFilme) {
         for (DatenFilm film : listeFilme) {
             hashSet.add(film.getUrlHistory());
         }
     }
-
+    
     private void searchHash(ListeFilme listeFilme) {
         listeFilme.neueFilme = false;
         for (DatenFilm film : listeFilme) {
@@ -223,37 +224,37 @@ public class FilmeLaden {
     public void addAdListener(MSListenerFilmeLaden listener) {
         listeners.add(MSListenerFilmeLaden.class, listener);
     }
-
+    
     private void notifyStart(MSListenerFilmeLadenEvent event) {
         for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
             run_(new Start(l, event, ListenerMelden.START));
         }
     }
-
+    
     private void notifyProgress(MSListenerFilmeLadenEvent event) {
         for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
             run_(new Start(l, event, ListenerMelden.PROGRESS));
         }
     }
-
+    
     private void notifyFertig(MSListenerFilmeLadenEvent event) {
         for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
             run_(new Start(l, event, ListenerMelden.FINISHED));
         }
     }
-
+    
     private class Start implements Runnable {
-
+        
         private final MSListenerFilmeLaden listenerFilmeLaden;
         private final MSListenerFilmeLadenEvent event;
         private final ListenerMelden listenerMelden;
-
+        
         public Start(MSListenerFilmeLaden llistenerFilmeLaden, MSListenerFilmeLadenEvent eevent, ListenerMelden lliListenerMelden) {
             listenerFilmeLaden = llistenerFilmeLaden;
             event = eevent;
             listenerMelden = lliListenerMelden;
         }
-
+        
         @Override
         public synchronized void run() {
             switch (listenerMelden) {
@@ -269,7 +270,7 @@ public class FilmeLaden {
             }
         }
     }
-
+    
     private void run_(Runnable r) {
         try {
             if (SwingUtilities.isEventDispatchThread()) {
