@@ -155,7 +155,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/programm/download_start_16.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Download starten"/>
+                <Property name="text" type="java.lang.String" value="Downloads starten"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadStoppen">
@@ -163,7 +163,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/programm/download_stop_16.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Download stoppen"/>
+                <Property name="text" type="java.lang.String" value="Downloads stoppen"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadVorziehen">
@@ -171,7 +171,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/programm/move_up_16.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Download vorziehen"/>
+                <Property name="text" type="java.lang.String" value="Downloads vorziehen"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadsZurueckstellen">
@@ -182,7 +182,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/programm/undo_16.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Download zur&#xfc;ckstellen"/>
+                <Property name="text" type="java.lang.String" value="Downloads zur&#xfc;ckstellen"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadsLoeschen">
@@ -193,7 +193,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/programm/download_del_16.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Download dauerhaft l&#xf6;schen"/>
+                <Property name="text" type="java.lang.String" value="Downloads dauerhaft l&#xf6;schen"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadAendern">
