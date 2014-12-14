@@ -1606,25 +1606,25 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuDownload.add(jSeparator1);
 
         jMenuItemDownloadStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/download_start_16.png"))); // NOI18N
-        jMenuItemDownloadStarten.setText("Download starten");
+        jMenuItemDownloadStarten.setText("Downloads starten");
         jMenuDownload.add(jMenuItemDownloadStarten);
 
         jMenuItemDownloadStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/download_stop_16.png"))); // NOI18N
-        jMenuItemDownloadStoppen.setText("Download stoppen");
+        jMenuItemDownloadStoppen.setText("Downloads stoppen");
         jMenuDownload.add(jMenuItemDownloadStoppen);
 
         jMenuItemDownloadVorziehen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/move_up_16.png"))); // NOI18N
-        jMenuItemDownloadVorziehen.setText("Download vorziehen");
+        jMenuItemDownloadVorziehen.setText("Downloads vorziehen");
         jMenuDownload.add(jMenuItemDownloadVorziehen);
 
         jMenuItemDownloadsZurueckstellen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_BACK_SPACE, 0));
         jMenuItemDownloadsZurueckstellen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/undo_16.png"))); // NOI18N
-        jMenuItemDownloadsZurueckstellen.setText("Download zurückstellen");
+        jMenuItemDownloadsZurueckstellen.setText("Downloads zurückstellen");
         jMenuDownload.add(jMenuItemDownloadsZurueckstellen);
 
         jMenuItemDownloadsLoeschen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
         jMenuItemDownloadsLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/download_del_16.png"))); // NOI18N
-        jMenuItemDownloadsLoeschen.setText("Download dauerhaft löschen");
+        jMenuItemDownloadsLoeschen.setText("Downloads dauerhaft löschen");
         jMenuDownload.add(jMenuItemDownloadsLoeschen);
 
         jMenuItemDownloadAendern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/configure_16.png"))); // NOI18N
