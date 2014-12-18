@@ -24,7 +24,6 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import mediathek.controller.Log;
 import mediathek.gui.GuiFilme;
-import mediathek.tool.DatumZeit;
 import mediathek.tool.Filter;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
@@ -152,7 +151,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         tage = 0; // soll nur im TabFilme ausgewertet werden (Filter: Tage)
         blacklistAusgeschaltet = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET));
         zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
-        jetzt = DatumZeit.Morgen_0_Uhr;
+        jetzt = getZeitZukunftBlacklist();
         return checkFilm(film);
     }
 
@@ -175,7 +174,17 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         }
         blacklistAusgeschaltet = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET));
         zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
-        jetzt = DatumZeit.Morgen_0_Uhr;
+        jetzt = getZeitZukunftBlacklist();
+    }
+    private static long getZeitZukunftBlacklist() {
+//        try {
+//            SimpleDateFormat sdfIn = new SimpleDateFormat("dd.MM.yyyy");
+//            Date filmDate = sdfIn.parse(new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
+//            return filmDate.getTime() + (1000 * 60 * 60 * 24);
+//        } catch (ParseException ex) {
+//            return new Date().getTime();
+//        }
+        return new Date().getTime();
     }
 
     private boolean checkFilm(DatenFilm film) {

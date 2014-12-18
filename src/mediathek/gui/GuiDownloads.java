@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -50,7 +51,6 @@ import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
-import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.dialog.MVFilmInformation;
@@ -58,7 +58,6 @@ import mediathek.res.GetIcon;
 import mediathek.tool.BeobTableHeader;
 import mediathek.tool.CellRendererDownloads;
 import mediathek.tool.Datum;
-import mediathek.tool.DatumZeit;
 import mediathek.tool.DirOpenAction;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.HinweisKeineAuswahl;
@@ -406,7 +405,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void downloadLoeschen(boolean dauerhaft) {
-        String zeit = DatumZeit.getHeute_dd_MM_yyyy();
+        String zeit = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
         int rows[] = tabelle.getSelectedRows();
         if (rows.length > 0) {
             ArrayList<String> arrayUrls = new ArrayList<>();

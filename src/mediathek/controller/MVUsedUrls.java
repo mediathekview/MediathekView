@@ -27,12 +27,13 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.daten.Daten;
-import mediathek.tool.DatumZeit;
 import mediathek.tool.ListenerMediathekView;
 
 public class MVUsedUrls {
@@ -145,7 +146,7 @@ public class MVUsedUrls {
     public synchronized boolean zeileSchreiben(String thema, String titel, String url) {
         boolean ret = false;
         String text;
-        String datum = DatumZeit.getHeute_dd_MM_yyyy();
+        String datum = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
         listeUrls.add(url);
         listeUrlsSortDate.add(new MVUsedUrl(datum, thema, titel, url));
 

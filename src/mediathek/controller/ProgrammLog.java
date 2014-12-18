@@ -25,12 +25,13 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogZiel;
-import mediathek.tool.DatumZeit;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
@@ -51,7 +52,7 @@ public class ProgrammLog {
             // Programminfos
             bw.write("#####################################################");
             bw.newLine();
-            bw.write("Erstellt: " + DatumZeit.getJetzt_ddMMyyyy_HHmm());
+            bw.write("Erstellt: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
             bw.newLine();
             bw.write("#####################################################");
             bw.newLine();
@@ -131,7 +132,7 @@ public class ProgrammLog {
             bw.newLine();
             bw.write("## Fehlermeldungen GUI                                   ");
             bw.newLine();
-            retList=Log.printFehlerMeldung();
+            retList = Log.printFehlerMeldung();
             for (String s : retList) {
                 bw.write(s);
                 bw.newLine();

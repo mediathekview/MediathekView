@@ -29,6 +29,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import mediathek.MediathekGui;
@@ -43,7 +47,6 @@ import mediathek.gui.GuiDebug;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
 import mediathek.gui.dialog.MVFilmInformation;
-import mediathek.tool.DatumZeit;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Konstanten;
@@ -135,8 +138,6 @@ public class Daten {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_TIMER, Daten.class.getName());
-                DatumZeit.set(); // die Zeitkonstanten setzen
-
             }
         });
         timer.setInitialDelay(4000); // damit auch alles geladen ist
@@ -326,7 +327,7 @@ public class Daten {
             if (dir1.endsWith(File.separator)) {
                 dir1 = dir1.substring(0, dir1.length() - 1);
             }
-            String dir2 = dir1 + "--" + DatumZeit.getJetzt_yyyy_MM_dd__HH_mm_ss();
+            String dir2 = dir1 + "--" + new SimpleDateFormat("yyyy.MM.dd__HH.mm.ss").format(new Date());
             try {
                 if (new File(dir1).renameTo(new File(dir2))) {
                     // erster Versuch
@@ -366,7 +367,7 @@ public class Daten {
                     FileTime d = attrs.lastModifiedTime();
                     creatTime = d.toMillis();
                 }
-                if (creatTime == -1 || creatTime < DatumZeit.getHeute_0Uhr()) {
+                if (creatTime == -1 || creatTime < getHeute_0Uhr()) {
                     // nur dann ist die letzte Kopie älter als einen Tag
                     xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + MAX_COPY);
 
@@ -398,5 +399,19 @@ public class Daten {
             configCopy = true;
             Log.systemMeldung("-------------------------------------------------------");
         }
+    }
+
+    public static long getHeute_0Uhr() {
+        Date date = new Date();
+//        System.out.println(date);
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        date = cal.getTime();
+//        System.out.println(date);
+        return date.getTime();
     }
 }
