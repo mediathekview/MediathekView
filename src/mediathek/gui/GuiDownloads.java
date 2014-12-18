@@ -57,7 +57,6 @@ import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobTableHeader;
 import mediathek.tool.CellRendererDownloads;
-import mediathek.tool.Datum;
 import mediathek.tool.DirOpenAction;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.HinweisKeineAuswahl;
@@ -71,6 +70,7 @@ import mediathek.tool.TModelDownload;
 import msearch.daten.DatenFilm;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
 import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import msearch.tool.Datum;
 
 public class GuiDownloads extends PanelVorlage {
 

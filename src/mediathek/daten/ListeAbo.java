@@ -27,7 +27,6 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import javax.swing.JOptionPane;
 import mediathek.gui.dialog.DialogEditAbo;
-import mediathek.tool.Datum;
 import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
@@ -35,6 +34,7 @@ import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelAbo;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
+import msearch.tool.Datum;
 import msearch.tool.GermanStringSorter;
 
 public class ListeAbo extends LinkedList<DatenAbo> {

@@ -41,11 +41,11 @@ import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobTableHeader;
 import mediathek.tool.CellRendererAbo;
-import mediathek.tool.Datum;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVTable;
 import mediathek.tool.TModelAbo;
+import msearch.tool.Datum;
 
 public class GuiAbo extends PanelVorlage {
 

@@ -20,6 +20,7 @@
 package mediathek.tool;
 
 import mediathek.daten.DatenDownload;
+import msearch.tool.Datum;
 
 public class TModelDownload extends TModel {
 
