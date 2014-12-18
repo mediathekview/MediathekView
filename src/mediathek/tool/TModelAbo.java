@@ -20,6 +20,7 @@
 package mediathek.tool;
 
 import mediathek.daten.DatenAbo;
+import msearch.tool.Datum;
 
 public class TModelAbo extends TModel {
 
