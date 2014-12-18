@@ -19,13 +19,15 @@
  */
 package mediathek.daten;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import javax.swing.JOptionPane;
 import mediathek.gui.dialog.DialogEditAbo;
-import mediathek.tool.DatumZeit;
+import mediathek.tool.Datum;
 import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
@@ -119,7 +121,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 if (m == DatenAbo.ABO_NR_NR) {
                     object[m] = datenAbo.nr;
                 } else if (m == DatenAbo.ABO_DOWN_DATUM_NR) {
-                    object[m] = DatumZeit.getDatumForObject(datenAbo.arr[DatenAbo.ABO_DOWN_DATUM_NR]);
+                    object[m] = getDatumForObject(datenAbo.arr[DatenAbo.ABO_DOWN_DATUM_NR]);
                 } else if (m == DatenAbo.ABO_EINGESCHALTET_NR) {
                     object[m] = ""; //Boolean.valueOf(datenAbo.aboIstEingeschaltet());
                 } else if (m != DatenAbo.ABO_NAME_NR && !DatenAbo.anzeigen(m)) {
@@ -131,6 +133,17 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             }
             model.addRow(object);
         }
+    }
+
+    public Datum getDatumForObject(String datum) {
+        Datum tmp = new Datum(0);
+        if (!datum.equals("")) {
+            try {
+                tmp.setTime(new SimpleDateFormat("dd.MM.yyyy").parse(datum).getTime());
+            } catch (ParseException ex) {
+            }
+        }
+        return tmp;
     }
 
     public ArrayList<String> getPfade() {

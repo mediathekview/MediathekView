@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import javax.swing.SwingUtilities;
 import javax.xml.stream.XMLInputFactory;
@@ -31,7 +33,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogHinweisUpdate;
-import mediathek.tool.DatumZeit;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVConfig;
 import msearch.tool.MSConst;
@@ -76,7 +77,7 @@ public class ProgrammUpdateSuchen {
                     release = ret[1];
                     downloadUrlProgramm = ret[2];
                     if (!version.equals("")) {
-                        Daten.mVConfig.add(MVConfig.SYSTEM_UPDATE_DATUM, DatumZeit.getHeute_yyyyMMdd());
+                        Daten.mVConfig.add(MVConfig.SYSTEM_UPDATE_DATUM, new SimpleDateFormat("yyyyMMdd").format(new Date()));
                         if (checkObNeueVersion(version, Konstanten.VERSION)) {
                             neueVersion = true;
                             // DialogHinweisUpdate(java.awt.Frame parent, boolean modal, String ttext, String dialogTitel, Daten ddaten) {

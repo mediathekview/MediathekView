@@ -22,13 +22,13 @@ package mediathek.daten;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import mediathek.controller.Log;
 import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
 import mediathek.tool.AsxLesen;
 import mediathek.tool.Datum;
-import mediathek.tool.DatumZeit;
 import mediathek.tool.GermanStringSorter;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
@@ -253,7 +253,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     public static void startenDownloads(Daten ddaten, ArrayList<DatenDownload> downloads) {
         // Start erstellen und zur Liste hinzufügen
-        String zeit = DatumZeit.getHeute_dd_MM_yyyy();
+        String zeit = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
         LinkedList<MVUsedUrl> urlList = new LinkedList<>();
         for (DatenDownload d : downloads) {
             d.start = new Start();
@@ -421,7 +421,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             // ##############################
             // Name sinnvoll belegen
             if (name.equals("")) {
-                name = DatumZeit.Heute_yyyyMMdd + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
+                name = getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
             }
             name = replaceString(name, film); // %D ... ersetzen
             name = GuiFunktionen.replaceLeerDateiname(name);
@@ -487,7 +487,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             pfad = GuiFunktionen.getStandardDownloadPath();
         }
         if (name.equals("")) {
-            name = DatumZeit.Heute_yyyyMMdd + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
+            name = getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
         }
 
         arr[DOWNLOAD_ZIEL_DATEINAME_NR] = name;
@@ -522,24 +522,31 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     private String replaceString(String s, DatenFilm film) {
-        s = s.replace("%D", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? DatumZeit.Heute_yyyyMMdd : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM_NR])));
-        s = s.replace("%d", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? DatumZeit.Jetzt_HHMMSS : datumDatumZeitReinigen(film.arr[DatenFilm.FILM_ZEIT_NR]));
+        s = s.replace("%D", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM_NR])));
+        s = s.replace("%d", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? getJetzt_HHMMSS() : datumDatumZeitReinigen(film.arr[DatenFilm.FILM_ZEIT_NR]));
 
-        s = s.replace("%1", getDMY("%1", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? DatumZeit.Heute_yyyyMMdd : film.arr[DatenFilm.FILM_DATUM_NR]));
-        s = s.replace("%2", getDMY("%2", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? DatumZeit.Heute_yyyyMMdd : film.arr[DatenFilm.FILM_DATUM_NR]));
-        s = s.replace("%3", getDMY("%3", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? DatumZeit.Heute_yyyyMMdd : film.arr[DatenFilm.FILM_DATUM_NR]));
+        s = s.replace("%1", getDMY("%1", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyyMMdd() : film.arr[DatenFilm.FILM_DATUM_NR]));
+        s = s.replace("%2", getDMY("%2", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyyMMdd() : film.arr[DatenFilm.FILM_DATUM_NR]));
+        s = s.replace("%3", getDMY("%3", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyyMMdd() : film.arr[DatenFilm.FILM_DATUM_NR]));
 
         s = s.replace("%t", film.arr[DatenFilm.FILM_THEMA_NR]);
         s = s.replace("%T", film.arr[DatenFilm.FILM_TITEL_NR]);
         s = s.replace("%s", film.arr[DatenFilm.FILM_SENDER_NR]);
         s = s.replace("%i", String.valueOf(film.nr));
 
-        s = s.replace("%H", DatumZeit.Heute_yyyyMMdd);
-        s = s.replace("%h", DatumZeit.Jetzt_HHMMSS);
+        s = s.replace("%H", getHeute_yyyyMMdd());
+        s = s.replace("%h", getJetzt_HHMMSS());
 
         s = s.replace("%N", GuiFunktionen.getDateiName(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
         s = s.replace("%S", GuiFunktionen.getDateiSuffix(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
         return s;
+    }
+
+    private String getJetzt_HHMMSS() {
+        return new SimpleDateFormat("HHmmss").format(new Date());
+    }
+    private String getHeute_yyyyMMdd() {
+        return new SimpleDateFormat("yyyyMMdd").format(new Date());
     }
 
     private static String getDMY(String s, String datum) {

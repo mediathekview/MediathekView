@@ -19,10 +19,11 @@
  */
 package mediathek.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import mediathek.daten.Daten;
-import mediathek.tool.DatumZeit;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 
@@ -46,7 +47,7 @@ public class CheckUpdate {
         public synchronized void run() {
             try {
                 if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_UPDATE_SUCHEN))) {
-                    if (!Daten.mVConfig.get(MVConfig.SYSTEM_UPDATE_DATUM).equals(DatumZeit.getHeute_yyyyMMdd())) {
+                    if (!Daten.mVConfig.get(MVConfig.SYSTEM_UPDATE_DATUM).equals(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
                         final ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
                         if (pgrUpdate.checkVersion(daten, false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
                             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, CheckUpdate.class.getSimpleName());

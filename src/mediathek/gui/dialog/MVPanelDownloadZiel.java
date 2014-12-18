@@ -25,8 +25,10 @@ import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -37,7 +39,6 @@ import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
-import mediathek.tool.DatumZeit;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVColor;
@@ -222,7 +223,7 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
             pfad = GuiFunktionen.getStandardDownloadPath();
         }
         if (name.equals("")) {
-            name = DatumZeit.Heute_yyyyMMdd + "_" + datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
+            name = new SimpleDateFormat("yyyyMMdd").format(new Date()) + "_" + datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
         }
         String orgPfad = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR];
         //##############################################
@@ -337,7 +338,7 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
                         jComboBoxPath.addItem(chooser.getDirectory() + chooser.getFile());
                         jComboBoxPath.setSelectedItem(chooser.getDirectory() + chooser.getFile());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(356871087,  "DialogAddDownload.ZielBeobachter", ex);
+                        Log.fehlerMeldung(356871087, "DialogAddDownload.ZielBeobachter", ex);
                     }
                 }
                 System.setProperty("apple.awt.fileDialogForDirectories", "false");
@@ -355,7 +356,7 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
                         jComboBoxPath.addItem(chooser.getSelectedFile().getAbsolutePath());
                         jComboBoxPath.setSelectedItem(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(356871087,  "DialogAddDownload.ZielBeobachter", ex);
+                        Log.fehlerMeldung(356871087, "DialogAddDownload.ZielBeobachter", ex);
                     }
                 }
             }
