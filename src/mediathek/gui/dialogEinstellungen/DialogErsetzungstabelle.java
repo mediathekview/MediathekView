@@ -66,11 +66,11 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
         jButtonUp.setIcon(GetIcon.getProgramIcon("move_up_16.png"));
         jButtonDown.setIcon(GetIcon.getProgramIcon("move_down_16.png"));
         jButtonOk.addActionListener(new OkBeobachter());
-        jButtonReset.addActionListener(new ActionListener() {
+        jButtonClear.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVReplaceList.liste.clear();
+                Daten.mVReplaceList.list.clear();
                 Daten.mVReplaceList.init();
                 tabelleLaden();
                 setTextfelder();
@@ -80,7 +80,7 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVReplaceList.liste.add(new String[]{"von", "nach"});
+                Daten.mVReplaceList.list.add(new String[]{"von", "nach"});
                 tabelleLaden();
                 setTextfelder();
             }
@@ -91,7 +91,7 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
             public void actionPerformed(ActionEvent e) {
                 int selectedTableRow = tabelle.getSelectedRow();
                 if (selectedTableRow >= 0) {
-                    Daten.mVReplaceList.liste.remove(selectedTableRow);
+                    Daten.mVReplaceList.list.remove(selectedTableRow);
                     tabelleLaden();
                     setTextfelder();
                 }
@@ -153,7 +153,7 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
         if (!stopBeob) {
             int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow >= 0) {
-                Daten.mVReplaceList.liste.get(tabelle.convertRowIndexToModel(selectedTableRow))[MVReplaceList.VON_NR]
+                Daten.mVReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[MVReplaceList.VON_NR]
                         = jTextFieldVon.getText().isEmpty() ? " " : jTextFieldVon.getText(); // nicht nach nix suchen
                 tabelleLaden();
             }
@@ -164,7 +164,7 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
         if (!stopBeob) {
             int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow >= 0) {
-                Daten.mVReplaceList.liste.get(tabelle.convertRowIndexToModel(selectedTableRow))[MVReplaceList.NACH_NR] = jTextFieldNach.getText();
+                Daten.mVReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[MVReplaceList.NACH_NR] = jTextFieldNach.getText();
                 tabelleLaden();
             }
         }
@@ -174,7 +174,7 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
         int rows = tabelle.getSelectedRow();
         if (rows != -1) {
             int row = tabelle.convertRowIndexToModel(rows);
-            int neu = Daten.mVReplaceList.auf(row, auf);
+            int neu = Daten.mVReplaceList.up(row, auf);
             tabelleLaden();
             tabelle.setRowSelectionInterval(neu, neu);
             tabelle.scrollRectToVisible(tabelle.getCellRect(neu, 0, true));
@@ -199,7 +199,7 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
         Object[] object;
         model.setRowCount(0);
         Daten.mVReplaceList.init();
-        Iterator<String[]> iterator = Daten.mVReplaceList.liste.iterator();
+        Iterator<String[]> iterator = Daten.mVReplaceList.list.iterator();
         object = new Object[MVReplaceList.MAX_ELEM];
         while (iterator.hasNext()) {
             String[] s = iterator.next();
@@ -230,7 +230,7 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
     }
 
     private void beenden() {
-        Iterator<String[]> iterator = Daten.mVReplaceList.liste.iterator();
+        Iterator<String[]> iterator = Daten.mVReplaceList.list.iterator();
         while (iterator.hasNext()) {
             String[] s = iterator.next();
             if (s[0].isEmpty() && s[1].isEmpty()) {
@@ -252,7 +252,7 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
         jTextFieldNach = new javax.swing.JTextField();
         jButtonMinus = new javax.swing.JButton();
         jButtonPlus = new javax.swing.JButton();
-        jButtonReset = new javax.swing.JButton();
+        jButtonClear = new javax.swing.JButton();
         jButtonDown = new javax.swing.JButton();
         jButtonUp = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -283,7 +283,7 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
 
         jButtonPlus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/add_16.png"))); // NOI18N
 
-        jButtonReset.setText("Reset Tabelle");
+        jButtonClear.setText("Tabelle löschen");
 
         jButtonDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/move_down_16.png"))); // NOI18N
 
@@ -309,7 +309,7 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButtonReset)
+                        .addComponent(jButtonClear)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonOk, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -361,18 +361,18 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonOk)
-                    .addComponent(jButtonReset))
+                    .addComponent(jButtonClear))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonClear;
     private javax.swing.JButton jButtonDown;
     private javax.swing.JButton jButtonMinus;
     private javax.swing.JButton jButtonOk;
     private javax.swing.JButton jButtonPlus;
-    private javax.swing.JButton jButtonReset;
     private javax.swing.JButton jButtonUp;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

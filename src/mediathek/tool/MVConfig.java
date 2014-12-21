@@ -40,7 +40,7 @@ public class MVConfig {
     public static final String SYSTEM_UPDATE_DATUM = "update-datum";
     public static final String SYSTEM_ABOS_SOFORT_SUCHEN = "Abos-sofort-suchen";
     public static final String SYSTEM_ZIELNAMEN_ANPASSEN = "Zielnamen-anpassen";
-    public static final String SYSTEM_ZIELNAMEN_UNICODE = "Zielnamen-Unicode";
+    public static final String SYSTEM_USE_REPLACETABLE = "Ersetzungstabelle-verwenden";
     public static final String SYSTEM_HINWEIS_NR_ANGEZEIGT = "Hinweis-Nr-angezeigt";
     public static final String SYSTEM_ORDNER_OEFFNEN = "Download-Ordner-oeffnen";
     public static final String SYSTEM_URL_OEFFNEN = "Programm-Url-oeffnen";

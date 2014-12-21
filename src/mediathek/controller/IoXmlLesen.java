@@ -85,7 +85,7 @@ public class IoXmlLesen {
                                 // Ersetzungstabelle
                                 String[] sa = new String[MVReplaceList.MAX_ELEM];
                                 if (get(parser, MVReplaceList.REPLACELIST, MVReplaceList.COLUMN_NAMES, sa)) {
-                                    Daten.mVReplaceList.liste.add(sa);
+                                    Daten.mVReplaceList.list.add(sa);
                                 }
                                 break;
                             case DatenAbo.ABO:

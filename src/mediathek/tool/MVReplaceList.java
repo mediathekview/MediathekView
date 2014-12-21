@@ -33,30 +33,20 @@ public final class MVReplaceList {
     public final static String[] COLUMN_NAMES = {VON, NACH};
     public static final int MAX_ELEM = 2;
 
-    public LinkedList<String[]> liste = new LinkedList<>();
+    public LinkedList<String[]> list = new LinkedList<>();
 
     public void init() {
-        if (liste.isEmpty()) {
+        if (list.isEmpty()) {
             // wenn leer:
-            liste.add(new String[]{" ", "_"});
-            liste.add(new String[]{"/", "_"});
-            liste.add(new String[]{"\\", "_"});
-            liste.add(new String[]{"\"", "_"});
-            liste.add(new String[]{"*", "_"});
-            liste.add(new String[]{"?", "_"});
-            liste.add(new String[]{"<", "_"});
-            liste.add(new String[]{">", "_"});
-            liste.add(new String[]{":", "_"});
-            liste.add(new String[]{"'", "_"});
-            liste.add(new String[]{"|", "_"});
+            list.add(new String[]{" ", "_"});
         }
     }
 
     public String replace(String str, boolean pfad) {
-        if (liste.isEmpty()) {
+        if (list.isEmpty()) {
             init();
         }
-        Iterator<String[]> it = liste.iterator();
+        Iterator<String[]> it = list.iterator();
         while (it.hasNext()) {
             String[] sa = it.next();
             if (pfad && sa[0].equals(File.separator)) {
@@ -69,10 +59,10 @@ public final class MVReplaceList {
     }
 
     public boolean check() {
-        for (int i = 0; i < liste.size(); ++i) {
-            String[] is = liste.get(i);
-            for (int k = i + 1; k < liste.size(); ++k) {
-                String[] ks = liste.get(k);
+        for (int i = 0; i < list.size(); ++i) {
+            String[] is = list.get(i);
+            for (int k = i + 1; k < list.size(); ++k) {
+                String[] ks = list.get(k);
                 if (is[1].contains(ks[0])) {
                     return true;
                 }
@@ -81,19 +71,19 @@ public final class MVReplaceList {
         return false;
     }
 
-    public int auf(int idx, boolean auf) {
-        String[] replace = liste.remove(idx);
+    public int up(int idx, boolean up) {
+        String[] replace = list.remove(idx);
         int neu = idx;
-        if (auf) {
+        if (up) {
             if (neu > 0) {
                 --neu;
             }
         } else {
-            if (neu < liste.size()) {
+            if (neu < list.size()) {
                 ++neu;
             }
         }
-        liste.add(neu, replace);
+        list.add(neu, replace);
         return neu;
     }
 
