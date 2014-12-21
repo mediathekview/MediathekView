@@ -122,7 +122,7 @@ public class IoXmlSchreiben {
     }
 
     private static void xmlSchreibenErsetzungstabelle() {
-        for (String[] sa : Daten.mVReplaceList.liste) {
+        for (String[] sa : Daten.mVReplaceList.list) {
             xmlSchreibenDaten(MVReplaceList.REPLACELIST, MVReplaceList.COLUMN_NAMES, sa, false);
         }
     }
