@@ -1,4 +1,8 @@
 #!/bin/sh
+#
+# Wenn der Arbeitsspeicher knapp ist, kann das helfen:
+# java -Xms128M -Xmx1G -jar ./MediathekView.jar "$@"
+
 
 dir=$(dirname $(readlink -f "$0"))
 cd "$dir"
@@ -19,7 +23,7 @@ echo ============================================
 echo
 
 if [ -n "$JAVA_HOME" ]; then
-  $JAVA_HOME/bin/java -Xms128M -Xmx1G -jar $mediathekview $einstellungen "$@"
+  $JAVA_HOME/bin/java -jar $mediathekview $einstellungen "$@"
 else
-  java -Xms128M -Xmx1G -jar $mediathekview $einstellungen "$@"
+  java -jar $mediathekview $einstellungen "$@"
 fi
