@@ -193,11 +193,10 @@ public class GuiFunktionen extends Funktionen {
         // zuerst die Ersetzungstabelle mit den Wünschen des Users
         if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE))) {
             ret = Daten.mVReplaceList.replace(ret, false /*path*/);
-
-            // und wenn gewünscht: "NUR Asccii-Zeichen"
-            if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ONLY_ASCII))) {
-                ret = getAscii(ret);
-            }
+        }
+        // und wenn gewünscht: "NUR Asccii-Zeichen"
+        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ONLY_ASCII))) {
+            ret = getAscii(ret);
         }
 
         //==============================================
@@ -331,7 +330,7 @@ public class GuiFunktionen extends Funktionen {
                 r += "-";
             } else if (c == '\n') {
             } else {
-                r += "_";
+//                r += "_";
             }
         }
         return r;
