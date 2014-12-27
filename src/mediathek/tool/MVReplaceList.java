@@ -36,16 +36,11 @@ public final class MVReplaceList {
     public LinkedList<String[]> list = new LinkedList<>();
 
     public void init() {
-        if (list.isEmpty()) {
-            // wenn leer:
-            list.add(new String[]{" ", "_"});
-        }
+        list.clear();
+        list.add(new String[]{" ", "_"});
     }
 
     public String replace(String str, boolean pfad) {
-        if (list.isEmpty()) {
-            init();
-        }
         Iterator<String[]> it = list.iterator();
         while (it.hasNext()) {
             String[] sa = it.next();

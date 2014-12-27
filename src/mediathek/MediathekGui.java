@@ -277,6 +277,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             updateSplashScreenText("GUI Initialisieren...");
         } else {
             // erster Start
+            Daten.mVReplaceList.init(); // einmal ein Muster anlegen, für Linux ist es bereits aktiv!
             new DialogStarteinstellungen(this, true, daten).setVisible(true);
             this.pack();
         }

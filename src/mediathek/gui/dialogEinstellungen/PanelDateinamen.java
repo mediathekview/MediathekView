@@ -24,10 +24,9 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
-import mediathek.tool.MVConfig;
 
 public class PanelDateinamen extends PanelVorlage {
-    
+
     public PanelDateinamen(Daten d, JFrame pparentComponent) {
         super(d, pparentComponent);
         initComponents();
@@ -41,26 +40,15 @@ public class PanelDateinamen extends PanelVorlage {
                 + "</head><body>"
                 + "<p>Die Dateinamen werden für jedes Betriebssystem passend aufbereitet.<br />"
                 + "<br />"
-                + "Wer will kann darüber hinaus weitere Einstellungen mit der Ersetzungstabelle<br />"
+                + "Wer will kann darüber hinaus weitere Einstellungen mit einer Ersetzungstabelle<br />"
                 + "vornehmen: zB. Leerzeichen durch \"_\" ersetzen.</p>"
                 + "</body></html>");
-        
-        jCheckBoxErsTab.addActionListener(new ActionListener() {
-            
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxErsTab.isSelected()));
-                jButtonBearbeiten.setEnabled(jCheckBoxErsTab.isSelected());
-            }
-        });
-        jCheckBoxErsTab.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)));
-        
-        jButtonBearbeiten.setEnabled(jCheckBoxErsTab.isSelected());
+
         jButtonBearbeiten.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogErsetzungstabelle(parentComponent, true, daten).setVisible(true);
+                new DialogErsetzungstabelle(parentComponent).setVisible(true);
             }
         });
     }
@@ -74,13 +62,10 @@ public class PanelDateinamen extends PanelVorlage {
     private void initComponents() {
 
         jButtonBearbeiten = new javax.swing.JButton();
-        jCheckBoxErsTab = new javax.swing.JCheckBox();
         jScrollPane2 = new javax.swing.JScrollPane();
         jEditorPane = new javax.swing.JEditorPane();
 
-        jButtonBearbeiten.setText("bearbeiten");
-
-        jCheckBoxErsTab.setText("Ersetzungstabelle verwenden");
+        jButtonBearbeiten.setText("eigene Einstellungen vornehmen");
 
         jScrollPane2.setViewportView(jEditorPane);
 
@@ -91,12 +76,10 @@ public class PanelDateinamen extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jCheckBoxErsTab)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonBearbeiten)
-                        .addGap(0, 111, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -105,15 +88,12 @@ public class PanelDateinamen extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBoxErsTab)
-                    .addComponent(jButtonBearbeiten))
+                .addComponent(jButtonBearbeiten)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonBearbeiten;
-    private javax.swing.JCheckBox jCheckBoxErsTab;
     private javax.swing.JEditorPane jEditorPane;
     private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
