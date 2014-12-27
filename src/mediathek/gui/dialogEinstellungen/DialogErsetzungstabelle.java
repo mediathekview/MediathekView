@@ -19,10 +19,13 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
+import javax.swing.JCheckBox;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -31,6 +34,7 @@ import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.HinweisKeineAuswahl;
+import mediathek.tool.MVConfig;
 import mediathek.tool.MVReplaceList;
 import mediathek.tool.TModel;
 
@@ -39,19 +43,17 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
     public boolean ok = false;
     public String ziel = "";
     private Frame parentComponent = null;
-    private Daten ddaten = null;
     private boolean stopBeob = false;
+    private final Color cGruen = new Color(0, 153, 51);
+    private final Color cRot = new Color(255, 0, 0);
 
     /**
      *
      * @param parent
-     * @param modal
-     * @param dd
      */
-    public DialogErsetzungstabelle(java.awt.Frame parent, boolean modal, Daten dd) {
-        super(parent, modal);
+    public DialogErsetzungstabelle(java.awt.Frame parent) {
+        super(parent, true);
         parentComponent = parent;
-        ddaten = dd;
         initComponents();
         new EscBeenden(this) {
             @Override
@@ -66,11 +68,10 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
         jButtonUp.setIcon(GetIcon.getProgramIcon("move_up_16.png"));
         jButtonDown.setIcon(GetIcon.getProgramIcon("move_down_16.png"));
         jButtonOk.addActionListener(new OkBeobachter());
-        jButtonClear.addActionListener(new ActionListener() {
+        jButtonReset.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVReplaceList.list.clear();
                 Daten.mVReplaceList.init();
                 tabelleLaden();
                 setTextfelder();
@@ -82,6 +83,7 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
             public void actionPerformed(ActionEvent e) {
                 Daten.mVReplaceList.list.add(new String[]{"von", "nach"});
                 tabelleLaden();
+                tabelle.setRowSelectionInterval(tabelle.getRowCount() - 1, tabelle.getRowCount() - 1);
                 setTextfelder();
             }
         });
@@ -112,6 +114,7 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
             }
         });
         tabelleLaden();
+        setTextfelder();
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
         jTextFieldVon.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -147,6 +150,32 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
                 setNach();
             }
         });
+
+        jCheckBoxTable.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected()));
+                setColor(jCheckBoxTable, jCheckBoxTable.isSelected());
+            }
+        });
+        jCheckBoxTable.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)));
+        setColor(jCheckBoxTable, jCheckBoxTable.isSelected());
+
+        jCheckBoxAscii.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_ONLY_ASCII, Boolean.toString(jCheckBoxAscii.isSelected()));
+                setColor(jCheckBoxAscii, jCheckBoxAscii.isSelected());
+            }
+        });
+        jCheckBoxAscii.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ONLY_ASCII)));
+        setColor(jCheckBoxAscii, jCheckBoxAscii.isSelected());
+    }
+
+    private void setColor(JCheckBox cb, boolean en) {
+        cb.setForeground(cb.isSelected() ? cGruen : cRot);
     }
 
     private void setVon() {
@@ -184,13 +213,8 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
 
     }
 
-    private void check() {
-        jLabelAlert.setVisible(Daten.mVReplaceList.check());
-    }
-
     private void tabelleLaden() {
         stopBeob = true;
-        int rows = tabelle.getRowCount();
         int selectedTableRow = tabelle.getSelectedRow();
         if (selectedTableRow >= 0) {
             selectedTableRow = tabelle.convertRowIndexToModel(selectedTableRow);
@@ -198,7 +222,6 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
         TModel model = new TModel(new Object[][]{}, MVReplaceList.COLUMN_NAMES);
         Object[] object;
         model.setRowCount(0);
-        Daten.mVReplaceList.init();
         Iterator<String[]> iterator = Daten.mVReplaceList.list.iterator();
         object = new Object[MVReplaceList.MAX_ELEM];
         while (iterator.hasNext()) {
@@ -210,16 +233,23 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
         }
         tabelle.setModel(model);
         if (selectedTableRow >= 0) {
-            if (rows == tabelle.getRowCount()) {
-                tabelle.addRowSelectionInterval(selectedTableRow, selectedTableRow);
+            if (tabelle.getRowCount() > 0 && selectedTableRow < tabelle.getRowCount()) {
+                tabelle.setRowSelectionInterval(selectedTableRow, selectedTableRow);
+            } else if (tabelle.getRowCount() > 0 && selectedTableRow > 0) {
+                tabelle.setRowSelectionInterval(tabelle.getRowCount() - 1, tabelle.getRowCount() - 1);
+            } else if (tabelle.getRowCount() > 0) {
+                tabelle.setRowSelectionInterval(0, 0);
             }
+        } else if (tabelle.getRowCount() > 0) {
+            tabelle.setRowSelectionInterval(0, 0);
         }
-        check();
+        jLabelAlert.setVisible(Daten.mVReplaceList.check());
         stopBeob = false;
     }
 
     private void setTextfelder() {
         int selectedTableRow = tabelle.getSelectedRow();
+
         if (selectedTableRow >= 0) {
             jTextFieldVon.setText(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), MVReplaceList.VON_NR).toString());
             jTextFieldNach.setText(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), MVReplaceList.NACH_NR).toString());
@@ -227,6 +257,13 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
             jTextFieldVon.setText("");
             jTextFieldNach.setText("");
         }
+
+        jTextFieldNach.setEnabled(selectedTableRow >= 0);
+        jTextFieldVon.setEnabled(selectedTableRow >= 0);
+        jButtonUp.setEnabled(selectedTableRow >= 0);
+        jButtonDown.setEnabled(selectedTableRow >= 0);
+        jLabelNach.setEnabled(selectedTableRow >= 0);
+        jLabelVon.setEnabled(selectedTableRow >= 0);
     }
 
     private void beenden() {
@@ -244,24 +281,58 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
     private void initComponents() {
 
         jButtonOk = new javax.swing.JButton();
+        jPanelAscii = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextArea2 = new javax.swing.JTextArea();
+        jPanelTable = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabelle = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
+        jLabelVon = new javax.swing.JLabel();
         jTextFieldVon = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        jLabelNach = new javax.swing.JLabel();
         jTextFieldNach = new javax.swing.JTextField();
-        jButtonMinus = new javax.swing.JButton();
-        jButtonPlus = new javax.swing.JButton();
-        jButtonClear = new javax.swing.JButton();
-        jButtonDown = new javax.swing.JButton();
         jButtonUp = new javax.swing.JButton();
+        jButtonDown = new javax.swing.JButton();
+        jButtonPlus = new javax.swing.JButton();
+        jButtonMinus = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jLabelAlert = new javax.swing.JLabel();
+        jButtonReset = new javax.swing.JButton();
+        jCheckBoxTable = new javax.swing.JCheckBox();
+        jCheckBoxAscii = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jButtonOk.setText("Ok");
+
+        jPanelAscii.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jScrollPane3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+
+        jTextArea2.setEditable(false);
+        jTextArea2.setBackground(javax.swing.UIManager.getDefaults().getColor("Label.background"));
+        jTextArea2.setText("Es werden alle Zeichen \"über 127\" ersetzt. Auch Umlaute \"ö -> oe\" werden ersetzt.\nWenn die Ersetzungstabelle aktiv ist, wird sie vorher abgearbeitet.");
+        jTextArea2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jScrollPane3.setViewportView(jTextArea2);
+
+        javax.swing.GroupLayout jPanelAsciiLayout = new javax.swing.GroupLayout(jPanelAscii);
+        jPanelAscii.setLayout(jPanelAsciiLayout);
+        jPanelAsciiLayout.setHorizontalGroup(
+            jPanelAsciiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelAsciiLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3)
+                .addGap(37, 37, 37))
+        );
+        jPanelAsciiLayout.setVerticalGroup(
+            jPanelAsciiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelAsciiLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        jPanelTable.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         tabelle.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -275,19 +346,17 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
         ));
         jScrollPane1.setViewportView(tabelle);
 
-        jLabel1.setText("von:");
+        jLabelVon.setText("von:");
 
-        jLabel2.setText("nach:");
+        jLabelNach.setText("nach:");
 
-        jButtonMinus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/remove_16.png"))); // NOI18N
-
-        jButtonPlus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/add_16.png"))); // NOI18N
-
-        jButtonClear.setText("Tabelle löschen");
+        jButtonUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/move_up_16.png"))); // NOI18N
 
         jButtonDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/move_down_16.png"))); // NOI18N
 
-        jButtonUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/move_up_16.png"))); // NOI18N
+        jButtonPlus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/add_16.png"))); // NOI18N
+
+        jButtonMinus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/remove_16.png"))); // NOI18N
 
         jScrollPane2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
@@ -301,85 +370,132 @@ public class DialogErsetzungstabelle extends javax.swing.JDialog {
 
         jLabelAlert.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/alert_32.png"))); // NOI18N
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        jButtonReset.setText("Tabelle zurücksetzen");
+
+        javax.swing.GroupLayout jPanelTableLayout = new javax.swing.GroupLayout(jPanelTable);
+        jPanelTable.setLayout(jPanelTableLayout);
+        jPanelTableLayout.setHorizontalGroup(
+            jPanelTableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelTableLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButtonClear)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonOk, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabelAlert)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                .addGroup(jPanelTableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                    .addGroup(jPanelTableLayout.createSequentialGroup()
+                        .addComponent(jLabelVon)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldVon, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
+                        .addComponent(jLabelNach)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldNach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                         .addComponent(jButtonUp)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonDown)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonPlus)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonMinus)))
+                        .addComponent(jButtonMinus))
+                    .addGroup(jPanelTableLayout.createSequentialGroup()
+                        .addGroup(jPanelTableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelTableLayout.createSequentialGroup()
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabelAlert))
+                            .addComponent(jButtonReset))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jTextFieldNach, jTextFieldVon});
+        jPanelTableLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jTextFieldNach, jTextFieldVon});
 
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+        jPanelTableLayout.setVerticalGroup(
+            jPanelTableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelTableLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 376, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel1)
+                .addGroup(jPanelTableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabelVon)
                     .addComponent(jTextFieldVon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
+                    .addComponent(jLabelNach)
                     .addComponent(jTextFieldNach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonUp)
                     .addComponent(jButtonDown)
                     .addComponent(jButtonPlus)
                     .addComponent(jButtonMinus))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                .addGroup(jPanelTableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabelAlert)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonOk)
-                    .addComponent(jButtonClear))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonReset)
+                .addContainerGap(48, Short.MAX_VALUE))
+        );
+
+        jCheckBoxTable.setText("Ersetzungstabelle");
+
+        jCheckBoxAscii.setText("\"nur ASCII-Zeichen erlauben\"");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCheckBoxAscii)
+                            .addComponent(jCheckBoxTable))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonOk, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jPanelTable, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanelAscii, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jCheckBoxTable)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelTable, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBoxAscii)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelAscii, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButtonOk)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonClear;
     private javax.swing.JButton jButtonDown;
     private javax.swing.JButton jButtonMinus;
     private javax.swing.JButton jButtonOk;
     private javax.swing.JButton jButtonPlus;
+    private javax.swing.JButton jButtonReset;
     private javax.swing.JButton jButtonUp;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JCheckBox jCheckBoxAscii;
+    private javax.swing.JCheckBox jCheckBoxTable;
     private javax.swing.JLabel jLabelAlert;
+    private javax.swing.JLabel jLabelNach;
+    private javax.swing.JLabel jLabelVon;
+    private javax.swing.JPanel jPanelAscii;
+    private javax.swing.JPanel jPanelTable;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextField jTextFieldNach;
     private javax.swing.JTextField jTextFieldVon;
     private javax.swing.JTable tabelle;

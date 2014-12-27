@@ -581,7 +581,7 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
             String name = liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME_NR].equals("") ? "Name.xml" : liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME_NR] + ".xml";
-            DialogZielExportPset dialogZiel = new DialogZielExportPset(null, daten, true, exportPfad, GuiFunktionen.checkDateiname(name, false /*pfad*/));
+            DialogZielExportPset dialogZiel = new DialogZielExportPset(null, daten, true, exportPfad, GuiFunktionen.replaceLeerDateiname(name));
             dialogZiel.setVisible(true);
             if (dialogZiel.ok) {
                 if (dialogZiel.ziel.contains(File.separator)) {
@@ -1544,7 +1544,7 @@ public class PanelPsetLang extends PanelVorlage {
                     try {
                         jTextFieldProgPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(369047894,  "PanelPsetLang.BeobDateiDialogProg", ex);
+                        Log.fehlerMeldung(369047894, "PanelPsetLang.BeobDateiDialogProg", ex);
                     }
                 }
             } else {
@@ -1560,7 +1560,7 @@ public class PanelPsetLang extends PanelVorlage {
                         String str = chooser.getSelectedFile().getPath();
                         jTextFieldProgPfad.setText(str);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(825630443,  "PanelPsetLang.BeobDateiDialogProg", ex);
+                        Log.fehlerMeldung(825630443, "PanelPsetLang.BeobDateiDialogProg", ex);
                     }
                 }
             }
@@ -1582,7 +1582,7 @@ public class PanelPsetLang extends PanelVorlage {
                     try {
                         jTextFieldGruppeZielPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(392847589,  "DialogZielPset.ZielBeobachter", ex);
+                        Log.fehlerMeldung(392847589, "DialogZielPset.ZielBeobachter", ex);
                     }
                 }
                 System.setProperty("apple.awt.fileDialogForDirectories", "false");
