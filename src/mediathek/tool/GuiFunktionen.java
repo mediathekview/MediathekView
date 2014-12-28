@@ -416,12 +416,15 @@ public class GuiFunktionen extends Funktionen {
         return System.getProperty("user.home");
     }
 
+    /**
+     * Liefert den Standardpfad für Downloads.
+     * @return  Standardpfad zu den Downloads.
+     */
     public static String getStandardDownloadPath() {
-        //lifert den Standardpfad für Downloads
         if (getOs() == OperatingSystemType.MAC) {
-            return addsPfad(getHomePath(), "Desktop");
-        }
-        return addsPfad(getHomePath(), Konstanten.VERZEICHNIS_DOWNLOADS);
+            return addsPfad(getHomePath(), "Downloads");
+        } else
+            return addsPfad(getHomePath(), Konstanten.VERZEICHNIS_DOWNLOADS);
     }
 
     public static String[] addLeerListe(String[] str) {
