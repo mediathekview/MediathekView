@@ -39,10 +39,7 @@ import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Konstanten;
-import mediathek.tool.MVColor;
-import mediathek.tool.MVConfig;
+import mediathek.tool.*;
 
 public class MVPanelDownloadZiel extends javax.swing.JPanel {
 
@@ -97,7 +94,7 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
             private void tus() {
                 nameGeaendert = true;
                 checkPfadName();
-                if (!jTextFieldName.getText().equals(GuiFunktionen.checkDateiname(jTextFieldName.getText(), true /*pfad*/))) {
+                if (!jTextFieldName.getText().equals(FilenameUtils.checkDateiname(jTextFieldName.getText(), true /*pfad*/))) {
                     jTextFieldName.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                 } else {
                     jTextFieldName.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
@@ -126,7 +123,7 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
                 nameGeaendert = true;
                 checkPfadName();
                 String s = ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getText();
-                if (!s.equals(GuiFunktionen.checkDateiname(s, true /*pfad*/))) {
+                if (!s.equals(FilenameUtils.checkDateiname(s, true /*pfad*/))) {
                     jComboBoxPath.getEditor().getEditorComponent().setBackground(MVColor.DOWNLOAD_FEHLER.color);
                 } else {
                     jComboBoxPath.getEditor().getEditorComponent().setBackground(Color.WHITE);

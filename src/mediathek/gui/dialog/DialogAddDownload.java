@@ -41,15 +41,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.res.GetIcon;
-import mediathek.tool.Duration;
-import mediathek.tool.EscBeenden;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.Konstanten;
-import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVColor;
-import mediathek.tool.MVConfig;
-import mediathek.tool.MVMessageDialog;
+import mediathek.tool.*;
 import msearch.daten.DatenFilm;
 
 public class DialogAddDownload extends JDialog {
@@ -188,7 +180,7 @@ public class DialogAddDownload extends JDialog {
             private void tus() {
                 if (!stopBeob) {
                     nameGeaendert = true;
-                    if (!jTextFieldName.getText().equals(GuiFunktionen.checkDateiname(jTextFieldName.getText(), false /*pfad*/))) {
+                    if (!jTextFieldName.getText().equals(FilenameUtils.checkDateiname(jTextFieldName.getText(), false /*pfad*/))) {
                         jTextFieldName.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                     } else {
                         jTextFieldName.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
@@ -220,7 +212,7 @@ public class DialogAddDownload extends JDialog {
                 if (!stopBeob) {
                     nameGeaendert = true;
                     String s = ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent()).getText();
-                    if (!s.equals(GuiFunktionen.checkDateiname(s, true /*pfad*/))) {
+                    if (!s.equals(FilenameUtils.checkDateiname(s, true /*pfad*/))) {
                         jComboBoxPfad.getEditor().getEditorComponent().setBackground(MVColor.DOWNLOAD_FEHLER.color);
                     } else {
                         jComboBoxPfad.getEditor().getEditorComponent().setBackground(Color.WHITE);

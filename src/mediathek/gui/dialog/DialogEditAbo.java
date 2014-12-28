@@ -41,12 +41,12 @@ import javax.swing.text.JTextComponent;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.tool.EscBeenden;
+import mediathek.tool.FilenameUtils;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVColor;
 
 public class DialogEditAbo extends javax.swing.JDialog {
 
-    private final Daten daten;
     private final DatenAbo aktAbo;
     private JTextField[] textfeldListe;
     private final JComboBox<String> comboboxPSet = new JComboBox<>();
@@ -60,7 +60,6 @@ public class DialogEditAbo extends javax.swing.JDialog {
     public DialogEditAbo(java.awt.Frame parent, boolean modal, Daten d, DatenAbo aktA) {
         super(parent, modal);
         initComponents();
-        daten = d;
         aktAbo = aktA;
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
         comboboxPSet.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listePset.getListeAbo().getObjectDataCombo()));
@@ -118,10 +117,10 @@ public class DialogEditAbo extends javax.swing.JDialog {
 
     private void checkPfad() {
         String s = ((JTextComponent) comboboxPfad.getEditor().getEditorComponent()).getText();
-        if (!s.equals(GuiFunktionen.checkDateiname(s, false /*pfad*/))) {
-            ((JTextComponent) comboboxPfad.getEditor().getEditorComponent()).setBackground(MVColor.DOWNLOAD_FEHLER.color);
+        if (!s.equals(FilenameUtils.checkDateiname(s, false /*pfad*/))) {
+            comboboxPfad.getEditor().getEditorComponent().setBackground(MVColor.DOWNLOAD_FEHLER.color);
         } else {
-            ((JTextComponent) comboboxPfad.getEditor().getEditorComponent()).setBackground(Color.WHITE);
+            comboboxPfad.getEditor().getEditorComponent().setBackground(Color.WHITE);
         }
     }
 

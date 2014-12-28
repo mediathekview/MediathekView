@@ -40,7 +40,7 @@ public class MVInfoFile {
 
     public static void writeInfoFile(JFrame paFrame, Daten daten, DatenFilm film) {
         String titel = film.arr[DatenFilm.FILM_TITEL_NR];
-        titel = GuiFunktionen.replaceLeerDateiname(titel);
+        titel = FilenameUtils.replaceLeerDateiname(titel);
         String pfad = "";
         ListePset lp = Daten.listePset.getListeSpeichern();
         if (lp.size() > 0) {
@@ -60,29 +60,28 @@ public class MVInfoFile {
         if (!dialog.ok) {
             return;
         }
-        try {
-            Path path = Paths.get(dialog.ziel);
-            BufferedWriter br = new BufferedWriter(new OutputStreamWriter(new DataOutputStream(Files.newOutputStream(path))));
-            if (film != null) {
-                br.write(DatenFilm.FILM_SENDER + ":      " + film.arr[DatenFilm.FILM_SENDER_NR]);
-                br.write("\n");
-                br.write(DatenFilm.FILM_THEMA + ":       " + film.arr[DatenFilm.FILM_THEMA_NR]);
-                br.write("\n\n");
-                br.write(DatenFilm.FILM_TITEL + ":       " + film.arr[DatenFilm.FILM_TITEL_NR]);
-                br.write("\n\n");
-                br.write(DatenFilm.FILM_DATUM + ":       " + film.arr[DatenFilm.FILM_DATUM_NR]);
-                br.write("\n");
-                br.write(DatenFilm.FILM_ZEIT + ":        " + film.arr[DatenFilm.FILM_ZEIT_NR]);
-                br.write("\n");
-                br.write(DatenFilm.FILM_DAUER + ":       " + film.arr[DatenFilm.FILM_DAUER_NR]);
-                br.write("\n");
-                br.write(DatenDownload.DOWNLOAD_GROESSE + ":  " + film.arr[DatenFilm.FILM_GROESSE_NR]);
-                br.write("\n\n");
 
-                br.write(DatenFilm.FILM_WEBSEITE + "\n");
-                br.write(film.arr[DatenFilm.FILM_WEBSEITE_NR]);
-                br.write("\n\n");
-            }
+        Path path = Paths.get(dialog.ziel);
+        try (BufferedWriter br = new BufferedWriter(new OutputStreamWriter(new DataOutputStream(Files.newOutputStream(path)))))
+        {
+            br.write(DatenFilm.FILM_SENDER + ":      " + film.arr[DatenFilm.FILM_SENDER_NR]);
+            br.write("\n");
+            br.write(DatenFilm.FILM_THEMA + ":       " + film.arr[DatenFilm.FILM_THEMA_NR]);
+            br.write("\n\n");
+            br.write(DatenFilm.FILM_TITEL + ":       " + film.arr[DatenFilm.FILM_TITEL_NR]);
+            br.write("\n\n");
+            br.write(DatenFilm.FILM_DATUM + ":       " + film.arr[DatenFilm.FILM_DATUM_NR]);
+            br.write("\n");
+            br.write(DatenFilm.FILM_ZEIT + ":        " + film.arr[DatenFilm.FILM_ZEIT_NR]);
+            br.write("\n");
+            br.write(DatenFilm.FILM_DAUER + ":       " + film.arr[DatenFilm.FILM_DAUER_NR]);
+            br.write("\n");
+            br.write(DatenDownload.DOWNLOAD_GROESSE + ":  " + film.arr[DatenFilm.FILM_GROESSE_NR]);
+            br.write("\n\n");
+
+            br.write(DatenFilm.FILM_WEBSEITE + "\n");
+            br.write(film.arr[DatenFilm.FILM_WEBSEITE_NR]);
+            br.write("\n\n");
 
             br.write(DatenFilm.FILM_URL + "\n");
             br.write(film.arr[DatenFilm.FILM_URL_NR]);
@@ -93,22 +92,19 @@ public class MVInfoFile {
                 br.write("\n\n");
             }
 
-            if (film != null) {
-                int anz = 0;
-                for (String s : film.arr[DatenFilm.FILM_BESCHREIBUNG_NR].split(" ")) {
-                    anz += s.length();
-                    br.write(s + " ");
-                    if (anz > 50) {
-                        br.write("\n");
-                        anz = 0;
-                    }
+            int anz = 0;
+            for (String s : film.arr[DatenFilm.FILM_BESCHREIBUNG_NR].split(" ")) {
+                anz += s.length();
+                br.write(s + " ");
+                if (anz > 50) {
+                    br.write("\n");
+                    anz = 0;
                 }
             }
             br.write("\n\n");
             br.flush();
-            br.close();
         } catch (IOException ex) {
-            Log.fehlerMeldung(632656214,  "MVInfoFile.writeInfoFile", dialog.ziel);
+            Log.fehlerMeldung(632656214, "MVInfoFile.writeInfoFile", dialog.ziel);
         }
     }
 

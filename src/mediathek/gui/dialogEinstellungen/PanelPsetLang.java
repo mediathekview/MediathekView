@@ -47,16 +47,7 @@ import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
-import mediathek.tool.CellRendererProgramme;
-import mediathek.tool.CellRendererPset;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.HinweisKeineAuswahl;
-import mediathek.tool.Konstanten;
-import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVColor;
-import mediathek.tool.MVTable;
-import mediathek.tool.TModel;
+import mediathek.tool.*;
 import msearch.daten.DatenFilm;
 
 public class PanelPsetLang extends PanelVorlage {
@@ -581,7 +572,7 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
             String name = liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME_NR].equals("") ? "Name.xml" : liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME_NR] + ".xml";
-            DialogZielExportPset dialogZiel = new DialogZielExportPset(null, daten, true, exportPfad, GuiFunktionen.replaceLeerDateiname(name));
+            DialogZielExportPset dialogZiel = new DialogZielExportPset(null, daten, true, exportPfad, FilenameUtils.replaceLeerDateiname(name));
             dialogZiel.setVisible(true);
             if (dialogZiel.ok) {
                 if (dialogZiel.ziel.contains(File.separator)) {
