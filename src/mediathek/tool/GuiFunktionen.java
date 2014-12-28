@@ -204,8 +204,11 @@ public class GuiFunktionen extends Funktionen {
         return ret;
     }
 
+    /**
+     * Return the path to the user´s home directory.
+     * @return String to the user´s home directory.
+     */
     public static String getHomePath() {
-        //lifert den Pfad zum Homeverzeichnis
         return System.getProperty("user.home");
     }
 
