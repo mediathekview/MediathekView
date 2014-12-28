@@ -19,83 +19,534 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Iterator;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
+import mediathek.res.GetIcon;
+import mediathek.tool.HinweisKeineAuswahl;
+import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVConfig;
+import mediathek.tool.MVReplaceList;
+import mediathek.tool.TModel;
 
 public class PanelDateinamen extends PanelVorlage {
+
+    public boolean ok = false;
+    public String ziel = "";
+    private final Color cGruen = new Color(0, 153, 51);
+    private final Color cRot = new Color(255, 0, 0);
 
     public PanelDateinamen(Daten d, JFrame pparentComponent) {
         super(d, pparentComponent);
         initComponents();
         daten = d;
-        jEditorPane.setEditable(false);
-        jEditorPane.setFocusable(false);
-        jEditorPane.setContentType("text/html");
-        jEditorPane.setText("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-                + "<head><style type=\"text/css\">"
-                + ".sans { font-family: Verdana, Geneva, sans-serif;}</style>\n"
-                + "</head><body>"
-                + "<p>Die Dateinamen werden für jedes Betriebssystem passend aufbereitet.<br />"
-                + "<br />"
-                + "Wer will kann darüber hinaus weitere Einstellungen mit einer Ersetzungstabelle<br />"
-                + "vornehmen: zB. Leerzeichen durch \"_\" ersetzen.</p>"
-                + "</body></html>");
-
-        jButtonBearbeiten.addActionListener(new ActionListener() {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_REPLACELIST_CHANGED, PanelDateinamen.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                tabelleLaden();
+                setTextfelder();
+            }
+        });
+        jLabelAlert.setVisible(false);
+        jButtonPlus.setIcon(GetIcon.getProgramIcon("add_16.png"));
+        jButtonMinus.setIcon(GetIcon.getProgramIcon("remove_16.png"));
+        jButtonUp.setIcon(GetIcon.getProgramIcon("move_up_16.png"));
+        jButtonDown.setIcon(GetIcon.getProgramIcon("move_down_16.png"));
+        jButtonReset.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogErsetzungstabelle(parentComponent).setVisible(true);
+                Daten.mVReplaceList.init();
+                tabelleLaden();
+                setTextfelder();
             }
         });
+        jButtonPlus.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.mVReplaceList.list.add(new String[]{"von", "nach"});
+                tabelleLaden();
+                tabelle.setRowSelectionInterval(tabelle.getRowCount() - 1, tabelle.getRowCount() - 1);
+                setTextfelder();
+            }
+        });
+        jButtonMinus.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedTableRow = tabelle.getSelectedRow();
+                if (selectedTableRow >= 0) {
+                    Daten.mVReplaceList.list.remove(selectedTableRow);
+                    tabelleLaden();
+                    setTextfelder();
+                }
+            }
+        });
+        jButtonUp.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                upDown(true);
+            }
+        });
+        jButtonDown.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                upDown(false);
+            }
+        });
+        tabelleLaden();
+        setTextfelder();
+        tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
+        jTextFieldVon.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                setVon();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                setVon();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                setVon();
+            }
+        });
+        jTextFieldNach.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                setNach();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                setNach();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                setNach();
+            }
+        });
+
+        jCheckBoxTable.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected()));
+                setColor(jCheckBoxTable, jCheckBoxTable.isSelected());
+            }
+        });
+        jCheckBoxTable.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)));
+        setColor(jCheckBoxTable, jCheckBoxTable.isSelected());
+
+        jCheckBoxAscii.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_ONLY_ASCII, Boolean.toString(jCheckBoxAscii.isSelected()));
+                setColor(jCheckBoxAscii, jCheckBoxAscii.isSelected());
+            }
+        });
+        jCheckBoxAscii.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ONLY_ASCII)));
+        setColor(jCheckBoxAscii, jCheckBoxAscii.isSelected());
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
+    private void setColor(JCheckBox cb, boolean en) {
+        cb.setForeground(cb.isSelected() ? cGruen : cRot);
+    }
+
+    private void setVon() {
+        if (!stopBeob) {
+            int selectedTableRow = tabelle.getSelectedRow();
+            if (selectedTableRow >= 0) {
+//                Daten.mVReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[MVReplaceList.VON_NR]
+//                        = jTextFieldVon.getText().isEmpty() ? " " : jTextFieldVon.getText(); // nicht nach nix suchen
+                Daten.mVReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[MVReplaceList.VON_NR] = jTextFieldVon.getText(); // leer wird beim suchen aussortiert
+                tabelleLaden();
+            }
+        }
+    }
+
+    private void setNach() {
+        if (!stopBeob) {
+            int selectedTableRow = tabelle.getSelectedRow();
+            if (selectedTableRow >= 0) {
+                Daten.mVReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[MVReplaceList.NACH_NR] = jTextFieldNach.getText();
+                tabelleLaden();
+            }
+        }
+    }
+
+    private void upDown(boolean auf) {
+        int rows = tabelle.getSelectedRow();
+        if (rows != -1) {
+            int row = tabelle.convertRowIndexToModel(rows);
+            int neu = Daten.mVReplaceList.up(row, auf);
+            tabelleLaden();
+            tabelle.setRowSelectionInterval(neu, neu);
+            tabelle.scrollRectToVisible(tabelle.getCellRect(neu, 0, true));
+        } else {
+            new HinweisKeineAuswahl().zeigen(parentComponent);
+        }
+
+    }
+
+    private void tabelleLaden() {
+        stopBeob = true;
+        int selectedTableRow = tabelle.getSelectedRow();
+        if (selectedTableRow >= 0) {
+            selectedTableRow = tabelle.convertRowIndexToModel(selectedTableRow);
+        }
+        TModel model = new TModel(new Object[][]{}, MVReplaceList.COLUMN_NAMES);
+        Object[] object;
+        model.setRowCount(0);
+        Iterator<String[]> iterator = Daten.mVReplaceList.list.iterator();
+        object = new Object[MVReplaceList.MAX_ELEM];
+        while (iterator.hasNext()) {
+            String[] s = iterator.next();
+            //object[i] = datenAbo.arr;
+            object[0] = s[0];
+            object[1] = s[1];
+            model.addRow(object);
+        }
+        tabelle.setModel(model);
+        if (selectedTableRow >= 0) {
+            if (tabelle.getRowCount() > 0 && selectedTableRow < tabelle.getRowCount()) {
+                tabelle.setRowSelectionInterval(selectedTableRow, selectedTableRow);
+            } else if (tabelle.getRowCount() > 0 && selectedTableRow > 0) {
+                tabelle.setRowSelectionInterval(tabelle.getRowCount() - 1, tabelle.getRowCount() - 1);
+            } else if (tabelle.getRowCount() > 0) {
+                tabelle.setRowSelectionInterval(0, 0);
+            }
+        } else if (tabelle.getRowCount() > 0) {
+            tabelle.setRowSelectionInterval(0, 0);
+        }
+        jLabelAlert.setVisible(Daten.mVReplaceList.check());
+        stopBeob = false;
+    }
+
+    private void setTextfelder() {
+        int selectedTableRow = tabelle.getSelectedRow();
+
+        if (selectedTableRow >= 0) {
+            jTextFieldVon.setText(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), MVReplaceList.VON_NR).toString());
+            jTextFieldNach.setText(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), MVReplaceList.NACH_NR).toString());
+        } else {
+            jTextFieldVon.setText("");
+            jTextFieldNach.setText("");
+        }
+
+        jTextFieldNach.setEnabled(selectedTableRow >= 0);
+        jTextFieldVon.setEnabled(selectedTableRow >= 0);
+        jButtonUp.setEnabled(selectedTableRow >= 0);
+        jButtonDown.setEnabled(selectedTableRow >= 0);
+        jLabelNach.setEnabled(selectedTableRow >= 0);
+        jLabelVon.setEnabled(selectedTableRow >= 0);
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButtonBearbeiten = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jEditorPane = new javax.swing.JEditorPane();
+        jLabel3 = new javax.swing.JLabel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTextArea3 = new javax.swing.JTextArea();
+        jPanel2 = new javax.swing.JPanel();
+        jCheckBoxTable = new javax.swing.JCheckBox();
+        jPanel3 = new javax.swing.JPanel();
+        jButtonReset = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextArea2 = new javax.swing.JTextArea();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tabelle = new javax.swing.JTable();
+        jLabelAlert = new javax.swing.JLabel();
+        jLabelVon = new javax.swing.JLabel();
+        jTextFieldVon = new javax.swing.JTextField();
+        jLabelNach = new javax.swing.JLabel();
+        jTextFieldNach = new javax.swing.JTextField();
+        jButtonMinus = new javax.swing.JButton();
+        jButtonPlus = new javax.swing.JButton();
+        jButtonDown = new javax.swing.JButton();
+        jButtonUp = new javax.swing.JButton();
+        jCheckBoxAscii = new javax.swing.JCheckBox();
+        jPanel4 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
 
-        jButtonBearbeiten.setText("eigene Einstellungen vornehmen");
+        jLabel3.setText("jLabel3");
 
-        jScrollPane2.setViewportView(jEditorPane);
+        jTextArea3.setEditable(false);
+        jTextArea3.setColumns(20);
+        jTextArea3.setRows(5);
+        jTextArea3.setText("\nDie Dateinamen werden für jedes Betriebssystem passend aufbereitet.\n\nWer will kann darüber hinaus weitere Einstellungen mit einer Ersetzungstabelle\nvornehmen: zB. Leerzeichen durch \"_\" ersetzen.");
+        jTextArea3.setMargin(new java.awt.Insets(3, 3, 3, 3));
+        jScrollPane5.setViewportView(jTextArea3);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Dateinamen", jPanel1);
+
+        jCheckBoxTable.setText("Ersetzungstabelle");
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jButtonReset.setText("Tabelle zurücksetzen");
+
+        jScrollPane3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+
+        jTextArea2.setEditable(false);
+        jTextArea2.setBackground(javax.swing.UIManager.getDefaults().getColor("Label.background"));
+        jTextArea2.setColumns(20);
+        jTextArea2.setRows(4);
+        jTextArea2.setText("Die Tabelle wird von oben nach unten abgearbeitet.\nEs ist also möglich, dass eine Ersetzung durch eine weitere\nwieder ersetzt wird!");
+        jTextArea2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jScrollPane3.setViewportView(jTextArea2);
+
+        tabelle.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane4.setViewportView(tabelle);
+
+        jLabelAlert.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/alert_32.png"))); // NOI18N
+
+        jLabelVon.setText("von:");
+
+        jLabelNach.setText("nach:");
+
+        jButtonMinus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/remove_16.png"))); // NOI18N
+
+        jButtonPlus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/add_16.png"))); // NOI18N
+
+        jButtonDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/move_down_16.png"))); // NOI18N
+
+        jButtonUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/move_up_16.png"))); // NOI18N
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jScrollPane3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabelAlert))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jButtonReset)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabelVon)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldVon, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabelNach)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldNach, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonUp)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonDown)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonPlus)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonMinus)))
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabelVon)
+                    .addComponent(jTextFieldVon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelNach)
+                    .addComponent(jTextFieldNach, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonUp)
+                    .addComponent(jButtonDown)
+                    .addComponent(jButtonPlus)
+                    .addComponent(jButtonMinus))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelAlert))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonReset)
+                .addContainerGap())
+        );
+
+        jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonDown, jButtonMinus, jButtonPlus, jButtonUp, jLabelNach, jLabelVon, jTextFieldNach, jTextFieldVon});
+
+        jCheckBoxAscii.setText("\"nur ASCII-Zeichen erlauben\"");
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+
+        jTextArea1.setEditable(false);
+        jTextArea1.setBackground(javax.swing.UIManager.getDefaults().getColor("Label.background"));
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(3);
+        jTextArea1.setText("Es werden alle Zeichen \"über 127\" ersetzt. Auch Umlaute \"ö -> oe\" werden ersetzt.\nWenn die Ersetzungstabelle aktiv ist, wird sie vorher abgearbeitet.");
+        jTextArea1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jScrollPane1.setViewportView(jTextArea1);
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(13, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jCheckBoxTable)
+                                    .addComponent(jCheckBoxAscii))
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jCheckBoxTable)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBoxAscii)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Eigene Einstellungen", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButtonBearbeiten)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addComponent(jTabbedPane1)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButtonBearbeiten)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jTabbedPane1)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonBearbeiten;
-    private javax.swing.JEditorPane jEditorPane;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton jButtonDown;
+    private javax.swing.JButton jButtonMinus;
+    private javax.swing.JButton jButtonPlus;
+    private javax.swing.JButton jButtonReset;
+    private javax.swing.JButton jButtonUp;
+    private javax.swing.JCheckBox jCheckBoxAscii;
+    private javax.swing.JCheckBox jCheckBoxTable;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabelAlert;
+    private javax.swing.JLabel jLabelNach;
+    private javax.swing.JLabel jLabelVon;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextArea jTextArea3;
+    private javax.swing.JTextField jTextFieldNach;
+    private javax.swing.JTextField jTextFieldVon;
+    private javax.swing.JTable tabelle;
     // End of variables declaration//GEN-END:variables
+
+    private class BeobachterTableSelect implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent event) {
+            if (!stopBeob) {
+                if (!event.getValueIsAdjusting()) {
+                    stopBeob = true;
+                    setTextfelder();
+                    stopBeob = false;
+                }
+            }
+        }
+    }
 
 }
