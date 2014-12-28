@@ -27,12 +27,7 @@ import java.util.LinkedList;
 import mediathek.controller.Log;
 import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
-import mediathek.tool.AsxLesen;
-import mediathek.tool.GermanStringSorter;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Konstanten;
-import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVFilmSize;
+import mediathek.tool.*;
 import msearch.daten.DatenFilm;
 import msearch.tool.Datum;
 
@@ -424,7 +419,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 name = getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
             }
             name = replaceString(name, film); // %D ... ersetzen
-            name = GuiFunktionen.replaceLeerDateiname(name);
+            name = FilenameUtils.replaceLeerDateiname(name);
             // prüfen ob das Suffix 2x vorkommt
             if (name.length() > 8) {
                 String suf1 = name.substring(name.length() - 8, name.length() - 4);
@@ -472,7 +467,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 }
             } else if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
                 // bei Downloads den Namen des Themas an den Zielpfad anhängen
-                pfad = GuiFunktionen.addsPfad(pfad, GuiFunktionen.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA_NR]));
+                pfad = GuiFunktionen.addsPfad(pfad, FilenameUtils.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA_NR]));
             }
             pfad = replaceString(pfad, film); // %D ... ersetzen
             // der vorgegebenen Pfad des Sets wird so genommen wie er ist
