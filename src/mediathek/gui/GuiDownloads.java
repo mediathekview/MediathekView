@@ -90,6 +90,21 @@ public class GuiDownloads extends PanelVorlage {
     public GuiDownloads(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();
+
+        if (SystemInfo.isWindows()) {
+            // zum Abfangen der Win-F4 für comboboxen
+            InputMap im = cbDisplayCategories.getInputMap();
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), "einstellungen");
+            ActionMap am = cbDisplayCategories.getActionMap();
+            am.put("einstellungen", new AbstractAction() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    daten.mediathekGui.showDialogPreferences();
+                }
+            });
+        }
+
         tabelle = new MVTable(MVTable.TABELLE_TAB_DOWNLOADS);
         jScrollPane1.setViewportView(tabelle);
         filmInfoHud = daten.filmInfoHud;

@@ -19,17 +19,22 @@
  */
 package mediathek.gui;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -43,6 +48,7 @@ import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -68,6 +74,41 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         initComponents();
         f = this;
         daten = d;
+
+        if (SystemInfo.isWindows()) {
+            // zum Abfangen der Win-F4 für comboboxen
+            InputMap im = jComboBoxFilterSender.getInputMap();
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), "einstellungen");
+            ActionMap am = jComboBoxFilterSender.getActionMap();
+            am.put("einstellungen", new AbstractAction() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    daten.mediathekGui.showDialogPreferences();
+                }
+            });
+            im = jComboBoxFilterThema.getInputMap();
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), "einstellungen");
+            am = jComboBoxFilterThema.getActionMap();
+            am.put("einstellungen", new AbstractAction() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    daten.mediathekGui.showDialogPreferences();
+                }
+            });
+            im = jComboBoxZeitraum.getInputMap();
+            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), "einstellungen");
+            am = jComboBoxZeitraum.getActionMap();
+            am.put("einstellungen", new AbstractAction() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    daten.mediathekGui.showDialogPreferences();
+                }
+            });
+        }
+
         mouseDownCompCoords = null;
         setBounds(0, 0, 400, 400);
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
