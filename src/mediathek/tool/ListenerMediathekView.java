@@ -61,6 +61,7 @@ public class ListenerMediathekView implements EventListener {
     //public static final int EREIGNIS_FILTER_AKT = 35;
     public static final int EREIGNIS_FONT = 36;
     public static final int EREIGNIS_BLACKLIST_GEFILTERT = 37;
+    public static final int EREIGNIS_REPLACELIST_CHANGED = 38;
     public int[] mvEreignis = {-1};
     public String klasse = "";
     private static EventListenerList listeners = new EventListenerList();

@@ -40,17 +40,26 @@ public final class MVReplaceList {
         list.add(new String[]{" ", "_"});
     }
 
-    public String replace(String str, boolean pfad) {
+    public String replace(String strCheck, boolean pfad) {
         Iterator<String[]> it = list.iterator();
         while (it.hasNext()) {
-            String[] sa = it.next();
-            if (pfad && sa[0].equals(File.separator)) {
-                // dann kann er nicht entfernt werden :(
+            String[] strReplace = it.next();
+
+            // hat der Nutzer als Suchbegriff "leer" eingegeben, dann weg damit
+            if (strReplace[0].isEmpty()) {
+                it.remove();
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_REPLACELIST_CHANGED, MVReplaceList.class.getSimpleName());
                 continue;
             }
-            str = str.replace(sa[0], sa[1]);
+
+            // bei Pfaden darf / oder \ natürlich nicht entfernt werden
+            if (pfad && strReplace[0].equals(File.separator)) {
+                continue;
+            }
+
+            strCheck = strCheck.replace(strReplace[0], strReplace[1]);
         }
-        return str;
+        return strCheck;
     }
 
     public boolean check() {
