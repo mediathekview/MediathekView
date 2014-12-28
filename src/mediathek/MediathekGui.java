@@ -1275,6 +1275,9 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         }
     }
 
+    public void showDialogPreferences(){
+        dialogEinstellungen.setVisible(true);
+    }
     /**
      * Keyboard shortcuts for some actions need to be changed for OS X
      */
