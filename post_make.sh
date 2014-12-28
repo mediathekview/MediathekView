@@ -20,8 +20,8 @@ rm dist/README.TXT
 # release
 relNr=$(cat src/version.properties | grep BUILD | sed 's#BUILD=##g')
 datum=$(date +%d.%m.%Y )
-echo Datum: $datum >> dist/info/$relNr.build
-echo MediathekView Buildnummer: $relNr >> dist/info/$relNr.build
+echo Datum: $datum >> dist/Info/$relNr.build
+echo MediathekView Buildnummer: $relNr >> dist/Info/$relNr.build
 
 # zip erstellen
 cd dist/
