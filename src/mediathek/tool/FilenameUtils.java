@@ -9,6 +9,8 @@ import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CoderResult;
+import java.nio.charset.CodingErrorAction;
 
 /**
  * User: crystalpalace1977
@@ -16,6 +18,7 @@ import java.nio.charset.CharsetEncoder;
  * Time: 16:02
  */
 public class FilenameUtils {
+
     /**
      * Valid characters for Windows in file names:
      * Based on http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx
@@ -30,8 +33,9 @@ public class FilenameUtils {
         boolean isWindowsPath = false;
         String ret = name;
 
-        if (SystemInfo.isWindows())
+        if (SystemInfo.isWindows()) {
             ret = removeWindowsTrailingDots(ret);
+        }
 
         if (isPath) {
             if (File.separator.equals("/")) {
@@ -93,8 +97,9 @@ public class FilenameUtils {
         try {
             final CharsetEncoder charsetEncoder = Charset.defaultCharset().newEncoder();
             final ByteBuffer buf = charsetEncoder.encode(CharBuffer.wrap(ret));
-            if (buf.hasArray())
+            if (buf.hasArray()) {
                 ret = new String(buf.array());
+            }
 
             //remove NUL character from conversion...
             ret = ret.replaceAll("\\u0000", "");
@@ -137,12 +142,24 @@ public class FilenameUtils {
 
         ret = removeIllegalCharacters(ret);
 
+        ret = ret.replace("ä", "ae");
+        ret = ret.replace("ö", "oe");
+        ret = ret.replace("ü", "ue");
+        ret = ret.replace("Ä", "Ae");
+        ret = ret.replace("Ö", "Oe");
+        ret = ret.replace("Ü", "Ue");
+
         //convert our filename to OS encoding...
         try {
             final CharsetEncoder charsetEncoder = Charset.forName("US-ASCII").newEncoder();
+            charsetEncoder.onMalformedInput(CodingErrorAction.REPLACE); // otherwise breaks on first unconvertable char
+            charsetEncoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
+            charsetEncoder.replaceWith(new byte[]{'_'});
+
             final ByteBuffer buf = charsetEncoder.encode(CharBuffer.wrap(ret));
-            if (buf.hasArray())
+            if (buf.hasArray()) {
                 ret = new String(buf.array());
+            }
 
             //remove NUL character from conversion...
             ret = ret.replaceAll("\\u0000", "");
@@ -155,6 +172,7 @@ public class FilenameUtils {
 
     /**
      * Entferne verbotene Zeichen aus Dateiname.
+     *
      * @param name Dateiname
      * @return Bereinigte Fassung
      */
@@ -167,10 +185,11 @@ public class FilenameUtils {
         }
 
         // und wenn gewünscht: "NUR Ascii-Zeichen"
-        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ONLY_ASCII)))
+        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ONLY_ASCII))) {
             return convertToASCIIEncoding(ret);
-        else
+        } else {
             return convertToNativeEncoding(ret);
+        }
     }
 
 }
