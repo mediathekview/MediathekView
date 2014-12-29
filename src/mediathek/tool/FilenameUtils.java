@@ -37,25 +37,28 @@ public class FilenameUtils {
             ret = removeWindowsTrailingDots(ret);
         }
 
-        if (isPath) {
-            if (File.separator.equals("/")) {
-                ret = ret.replace("\\", "-");
-            } else {
-                ret = ret.replace("/", "-");
+        if (isPath && SystemInfo.isWindows()) {
+            if (ret.length() > 1 && ret.charAt(1) == ':') {
+                // damit auch "d:" und nicht nur "d:\" als Pfad geht
+                isWindowsPath = true;
+                ret = ret.replaceFirst(":", ""); // muss zum Schluss wieder rein, kann aber so nicht ersetzt werden
             }
-
-            if (SystemInfo.isWindows()) {
-                if (ret.length() > 1 && ret.charAt(1) == ':') {
-                    // damit auch "d:" und nicht nur "d:\" als Pfad geht
-                    isWindowsPath = true;
-                    ret = ret.replaceFirst(":", ""); // muss zum Schluss wieder rein, kann aber so nicht ersetzt werden
-                }
-            }
-        } else {
-            ret = ret.replaceAll("[\\/]", "-");
         }
 
-        ret = convertToNativeEncoding(ret);
+        if (isPath) {
+            String str = "";
+            for (String s : ret.split(File.separator)) {
+                if (!s.isEmpty()) {
+                    str += File.separator + convertToNativeEncoding(s);
+                }
+            }
+            if (ret.endsWith(File.separator)) {
+                str += File.separator;
+            }
+            ret = str;
+        } else {
+            ret = convertToNativeEncoding(ret);
+        }
 
         if (isWindowsPath) {
             // c: wieder herstellen
