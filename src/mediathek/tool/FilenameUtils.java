@@ -9,6 +9,8 @@ import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CoderResult;
+import java.nio.charset.CodingErrorAction;
 
 /**
  * User: crystalpalace1977
@@ -16,6 +18,7 @@ import java.nio.charset.CharsetEncoder;
  * Time: 16:02
  */
 public class FilenameUtils {
+
     /**
      * Valid characters for Windows in file names:
      * Based on http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx
@@ -30,28 +33,32 @@ public class FilenameUtils {
         boolean isWindowsPath = false;
         String ret = name;
 
-        if (SystemInfo.isWindows())
+        if (SystemInfo.isWindows()) {
             ret = removeWindowsTrailingDots(ret);
-
-        if (isPath) {
-            if (File.separator.equals("/")) {
-                ret = ret.replace("\\", "-");
-            } else {
-                ret = ret.replace("/", "-");
-            }
-
-            if (SystemInfo.isWindows()) {
-                if (ret.length() > 1 && ret.charAt(1) == ':') {
-                    // damit auch "d:" und nicht nur "d:\" als Pfad geht
-                    isWindowsPath = true;
-                    ret = ret.replaceFirst(":", ""); // muss zum Schluss wieder rein, kann aber so nicht ersetzt werden
-                }
-            }
-        } else {
-            ret = ret.replaceAll("[\\/]", "-");
         }
 
-        ret = convertToNativeEncoding(ret);
+        if (isPath && SystemInfo.isWindows()) {
+            if (ret.length() > 1 && ret.charAt(1) == ':') {
+                // damit auch "d:" und nicht nur "d:\" als Pfad geht
+                isWindowsPath = true;
+                ret = ret.replaceFirst(":", ""); // muss zum Schluss wieder rein, kann aber so nicht ersetzt werden
+            }
+        }
+
+        if (isPath) {
+            String str = "";
+            for (String s : ret.split(File.separator)) {
+                if (!s.isEmpty()) {
+                    str += File.separator + convertToNativeEncoding(s);
+                }
+            }
+            if (ret.endsWith(File.separator)) {
+                str += File.separator;
+            }
+            ret = str;
+        } else {
+            ret = convertToNativeEncoding(ret);
+        }
 
         if (isWindowsPath) {
             // c: wieder herstellen
@@ -92,9 +99,14 @@ public class FilenameUtils {
         //convert our filename to OS encoding...
         try {
             final CharsetEncoder charsetEncoder = Charset.defaultCharset().newEncoder();
+            charsetEncoder.onMalformedInput(CodingErrorAction.REPLACE); // otherwise breaks on first unconvertable char
+            charsetEncoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
+            charsetEncoder.replaceWith(new byte[]{'_'});
+
             final ByteBuffer buf = charsetEncoder.encode(CharBuffer.wrap(ret));
-            if (buf.hasArray())
+            if (buf.hasArray()) {
                 ret = new String(buf.array());
+            }
 
             //remove NUL character from conversion...
             ret = ret.replaceAll("\\u0000", "");
@@ -135,14 +147,29 @@ public class FilenameUtils {
     private static String convertToASCIIEncoding(String fileName) {
         String ret = fileName;
 
+        ret = ret.replace("ä", "ae");
+        ret = ret.replace("ö", "oe");
+        ret = ret.replace("ü", "ue");
+        ret = ret.replace("Ä", "Ae");
+        ret = ret.replace("Ö", "Oe");
+        ret = ret.replace("Ü", "Ue");
+
+        // ein Versuch zu vereinfachen
+        ret = cleanUnicode(ret);
+
         ret = removeIllegalCharacters(ret);
 
         //convert our filename to OS encoding...
         try {
             final CharsetEncoder charsetEncoder = Charset.forName("US-ASCII").newEncoder();
+            charsetEncoder.onMalformedInput(CodingErrorAction.REPLACE); // otherwise breaks on first unconvertable char
+            charsetEncoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
+            charsetEncoder.replaceWith(new byte[]{'_'});
+
             final ByteBuffer buf = charsetEncoder.encode(CharBuffer.wrap(ret));
-            if (buf.hasArray())
+            if (buf.hasArray()) {
                 ret = new String(buf.array());
+            }
 
             //remove NUL character from conversion...
             ret = ret.replaceAll("\\u0000", "");
@@ -153,8 +180,90 @@ public class FilenameUtils {
         return ret;
     }
 
+    private static String cleanUnicode(String ret) {
+        String r = "";
+        char c;
+        for (int i = 0; i < ret.length(); ++i) {
+            c = ret.charAt(i);
+            //char hex = ret.charAt(i);
+            if (Character.UnicodeBlock.of(c) == Character.UnicodeBlock.BASIC_LATIN) {
+                r += c;
+            } else if (c == 'ß') {
+                r += "ß";
+            } else // Buchstaben
+            if (c == 'Â' || c == 'À' || c == 'Å' || c == 'Á') {
+                r += "A";
+            } else if (c == 'å' || c == 'á' || c == 'à' || c == 'â') {
+                r += "a";
+            } else if (c == 'Č' || c == 'Č') {
+                r += "C";
+            } else if (c == 'ć' || c == 'č' || c == 'ç') {
+                r += "c";
+            } else if (c == 'Đ') {
+                r += "D";
+            } else if (c == 'É' || c == 'È') {
+                r += "E";
+            } else if (c == 'é' || c == 'è' || c == 'ê' || c == 'ě' || c == 'ë') {
+                r += "e";
+            } else if (c == 'í') {
+                r += "i";
+            } else if (c == 'ñ') {
+                r += "n";
+            } else if (c == 'ó' || c == 'ô' || c == 'ø') {
+                r += "o";
+            } else if (c == 'Š') {
+                r += "S";
+            } else if (c == 'ś' || c == 'š' || c == 'ş') {
+                r += "s";
+            } else if (c == 'ł' || c == 'Ł') {
+                r += "t";
+            } else if (c == 'û' || c == 'ù') {
+                r += "u";
+            } else if (c == 'ý') {
+                r += "y";
+            } else if (c == 'Ž' || c == 'Ź') {
+                r += "Z";
+            } else if (c == 'ž' || c == 'ź') {
+                r += "z";
+            } else if (c == 'æ') {
+                r += "ae";
+            } else if (c == '–') {
+                r += "-";
+            } else if (c == '„') {
+                r += "\"";
+            } else if (c == '„' || c == '”' || c == '“' || c == '«' || c == '»') {
+                r += "\"";
+            } else if (c == '?') {
+                r += "?";
+            } else if (c == '°' || c == '™') {
+            } else if (c == '…') {
+                r += "...";
+            } else if (c == '€') {
+                r += "€";
+            } else if (c == '´' || c == '’' || c == '‘' || c == '¿') {
+                r += "'";
+            } else if (c == '\u003F') {
+                r += "?";
+            } else if (c == '\u0096') {
+                r += "-";
+            } else if (c == '\u0085') {
+            } else if (c == '\u0080') {
+            } else if (c == '\u0084') {
+            } else if (c == '\u0092') {
+            } else if (c == '\u0093') {
+            } else if (c == '\u0091') {
+                r += "-";
+            } else if (c == '\n') {
+            } else {
+                r += "_";
+            }
+        }
+        return r;
+    }
+
     /**
      * Entferne verbotene Zeichen aus Dateiname.
+     *
      * @param name Dateiname
      * @return Bereinigte Fassung
      */
@@ -167,10 +276,11 @@ public class FilenameUtils {
         }
 
         // und wenn gewünscht: "NUR Ascii-Zeichen"
-        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ONLY_ASCII)))
+        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ONLY_ASCII))) {
             return convertToASCIIEncoding(ret);
-        else
+        } else {
             return convertToNativeEncoding(ret);
+        }
     }
 
 }
