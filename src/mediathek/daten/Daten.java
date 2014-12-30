@@ -267,7 +267,6 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_TAB_DOWNLOAD_ICON_KLEIN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_TAB_FILME_ICON_KLEIN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_TAB_ABO_ICON_KLEIN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM__DIALOG_DOWNLOAD__ALLES, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_FONT_SIZE, "0");
         mVConfig.add(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE, "0");
         // UserAgent
