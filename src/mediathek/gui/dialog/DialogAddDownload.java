@@ -32,7 +32,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import javax.swing.*;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -43,7 +46,14 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.res.GetIcon;
-import mediathek.tool.*;
+import mediathek.tool.EscBeenden;
+import mediathek.tool.FilenameUtils;
+import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.Konstanten;
+import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVColor;
+import mediathek.tool.MVConfig;
+import mediathek.tool.MVMessageDialog;
 import msearch.daten.DatenFilm;
 
 public class DialogAddDownload extends JDialog {
@@ -61,13 +71,12 @@ public class DialogAddDownload extends JDialog {
     private boolean nameGeaendert = false;
     private boolean stopBeob = false;
     private JTextComponent cbPathTextComponent = null;
-//    private final Duration duration = new Duration(DialogAddDownload.class.getName());
 
     public DialogAddDownload(Frame parent, Daten daten, DatenFilm film, DatenPset pSet, String aufloesung) {
         super(parent, true);
         initComponents();
 
-        filmBorder = (TitledBorder)jPanelSize.getBorder();
+        filmBorder = (TitledBorder) jPanelSize.getBorder();
         cbPathTextComponent = ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent());
 
         this.aufloesung = aufloesung;
@@ -75,14 +84,8 @@ public class DialogAddDownload extends JDialog {
         datenFilm = film;
         this.pSet = pSet;
 
-        // Felder init
-//        duration.ping("===========================================");
-//        duration.ping("===========================================");
-//        duration.ping("vor init");
         init();
-//        duration.ping("nach init");
         packIt();
-//        duration.ping("nach packIt");
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
@@ -119,7 +122,6 @@ public class DialogAddDownload extends JDialog {
                 }
             }
         });
-//        duration.ping("vor getRootPane");
         getRootPane().setDefaultButton(jButtonOk); //TH
         new EscBeenden(this) {
             @Override
@@ -155,7 +157,6 @@ public class DialogAddDownload extends JDialog {
             });
         }
         jTextFieldSender.setText(" " + datenFilm.arr[DatenFilm.FILM_SENDER_NR] + ":   " + datenFilm.arr[DatenFilm.FILM_TITEL_NR]);
-        //jTextFieldTitel.setText(datenFilm.arr[DatenFilm.FILM_TITEL_NR]);
         jTextFieldName.getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
@@ -185,7 +186,6 @@ public class DialogAddDownload extends JDialog {
 
             }
         });
-//        duration.ping("vor jComboPfad");
         cbPathTextComponent.setOpaque(true);
         cbPathTextComponent.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -230,7 +230,6 @@ public class DialogAddDownload extends JDialog {
                 jRadioButtonAufloesungHd.setText(jRadioButtonAufloesungHd.getText() + "   [ " + dateiGroesse_HD + " MB ]");
             }
         }
-//        duration.ping("vor getDateiGroesse");
         dateiGroesse_Hoch = datenFilm.getDateigroesse(datenFilm.arr[DatenFilm.FILM_URL_NR]);
         if (!dateiGroesse_Hoch.isEmpty()) {
             jRadioButtonAufloesungHoch.setText(jRadioButtonAufloesungHoch.getText() + "   [ " + dateiGroesse_Hoch + " MB ]");
@@ -255,9 +254,7 @@ public class DialogAddDownload extends JDialog {
                 Daten.mVConfig.add(MVConfig.SYSTEM__DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN, Boolean.toString(jCheckBoxPfadSpeichern.isSelected()));
             }
         });
-//        duration.ping("setupResolutionButtons");
         setupResolutionButtons();
-//        duration.ping("calculateAndCheckDiskSpace");
         calculateAndCheckDiskSpace();
         nameGeaendert = false;
     }
@@ -288,10 +285,10 @@ public class DialogAddDownload extends JDialog {
 
     /**
      * Get the free disk space for a selected path.
+     *
      * @return Free disk space in bytes.
      */
-    private long getFreeDiskSpace(final String strPath)
-    {
+    private long getFreeDiskSpace(final String strPath) {
         long usableSpace = 0;
         if (!strPath.isEmpty()) {
             try {
@@ -309,14 +306,16 @@ public class DialogAddDownload extends JDialog {
 
     /**
      * Convert a byte count into a human readable string.
+     *
      * @param bytes The number of bytes to convert.
      * @param si Use International System of Units (SI)?
      * @return The string representation
      */
     private String humanReadableByteCount(final long bytes, final boolean si) {
         final int unit = si ? 1000 : 1024;
-        if (bytes < unit)
+        if (bytes < unit) {
             return bytes + " B";
+        }
 
         final int exp = (int) (Math.log(bytes) / Math.log(unit));
 
@@ -339,8 +338,7 @@ public class DialogAddDownload extends JDialog {
             long usableSpace = getFreeDiskSpace(cbPathTextComponent.getText());
             if (usableSpace > 0) {
                 filmBorder.setTitle(TITLED_BORDER_STRING + " [ noch frei: " + humanReadableByteCount(usableSpace, true) + " ]");
-            }
-            else {
+            } else {
                 filmBorder.setTitle(TITLED_BORDER_STRING);
             }
             //border needs to be repainted after update...
@@ -369,7 +367,6 @@ public class DialogAddDownload extends JDialog {
                     }
                 }
             }
-//            duration.ping("  -> RadioButton");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -502,11 +499,6 @@ public class DialogAddDownload extends JDialog {
         this.dispose();
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -720,39 +712,6 @@ public class DialogAddDownload extends JDialog {
     private javax.swing.JTextField jTextFieldSender;
     // End of variables declaration//GEN-END:variables
 
-//    private class BeobCheckNamen implements DocumentListener {
-//
-//        @Override
-//        public void insertUpdate(DocumentEvent e) {
-//            checkPfadName();
-//        }
-//
-//        @Override
-//        public void removeUpdate(DocumentEvent e) {
-//            checkPfadName();
-//        }
-//
-//        @Override
-//        public void changedUpdate(DocumentEvent e) {
-//            checkPfadName();
-//        }
-//
-//        private void checkPfadName() {
-//            if (!stopBeob) {
-//                nameGeaendert = true;
-//                if (!jTextFieldName.getText().equals(GuiFunktionen.checkDateiname(jTextFieldName.getText()))) {
-//                    jTextFieldName.setBackground(MVColor.DOWNLOAD_FEHLER.color);
-//                } else {
-//                    jTextFieldName.setBackground(null);
-//                }
-//                if (!jComboBoxPfad.getSelectedItem().toString().equals(GuiFunktionen.checkDateiname(jComboBoxPfad.getSelectedItem().toString()))) {
-//                    jComboBoxPfad.setBackground(MVColor.DOWNLOAD_FEHLER.color);
-//                } else {
-//                    jComboBoxPfad.setBackground(null);
-//                }
-//            }
-//        }
-//    }
     private class BeobRadio implements ActionListener {
 
         @Override
