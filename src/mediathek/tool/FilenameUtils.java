@@ -30,30 +30,40 @@ public class FilenameUtils {
     private static final String REGEXP_ILLEGAL_CHARACTERS_OTHERS = "[:\\\\/*|<>]";
 
     public static String checkDateiname(final String name, final boolean isPath) {
-        boolean isWindowsPath = false;
         String ret = name;
+        boolean isWindowsPath = false;
+        final String splitChar;
+
+        if (SystemInfo.isWindows()) {
+            splitChar = "\\\\";
+        } else {
+            splitChar = "/";
+        }
 
         if (SystemInfo.isWindows()) {
             ret = removeWindowsTrailingDots(ret);
-        }
-
-        if (isPath && SystemInfo.isWindows()) {
-            if (ret.length() > 1 && ret.charAt(1) == ':') {
-                // damit auch "d:" und nicht nur "d:\" als Pfad geht
-                isWindowsPath = true;
-                ret = ret.replaceFirst(":", ""); // muss zum Schluss wieder rein, kann aber so nicht ersetzt werden
+            if (isPath) {
+                if (ret.length() > 1 && ret.charAt(1) == ':') {
+                    // damit auch "d:" und nicht nur "d:\" als Pfad geht
+                    isWindowsPath = true;
+                    ret = ret.replaceFirst(":", ""); // muss zum Schluss wieder rein, kann aber so nicht ersetzt werden
+                }
             }
         }
 
-        if (isPath) {
+        if (isPath && ret.contains(File.separator)) {
             String str = "";
-            for (String s : ret.split(File.separator)) {
+            final String[] sa = ret.split(splitChar); // Regex
+            for (String s : sa) {
                 if (!s.isEmpty()) {
                     str += File.separator + convertToNativeEncoding(s);
                 }
             }
+            if (!ret.startsWith(File.separator)) {
+                str = str.replaceFirst(splitChar, ""); // wieder Regex
+            }
             if (ret.endsWith(File.separator)) {
-                str += File.separator;
+                str = str + File.separator;
             }
             ret = str;
         } else {

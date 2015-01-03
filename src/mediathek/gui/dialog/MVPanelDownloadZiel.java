@@ -94,7 +94,9 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
             private void tus() {
                 nameGeaendert = true;
                 checkPfadName();
-                if (!jTextFieldName.getText().equals(FilenameUtils.checkDateiname(jTextFieldName.getText(), true /*pfad*/))) {
+                final String n1 = jTextFieldName.getText();
+                final String n2 = FilenameUtils.checkDateiname(n1, false /*pfad*/);
+                if (!n1.equals(n2)) {
                     jTextFieldName.setBackground(MVColor.DOWNLOAD_FEHLER.color);
                 } else {
                     jTextFieldName.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
