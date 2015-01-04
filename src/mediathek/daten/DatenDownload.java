@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import com.jidesoft.utils.SystemInfo;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -437,9 +438,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 if (!pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR].equals("")) {
                     laenge = Integer.parseInt(pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR]);
                 }
-                if (name.length() > laenge) {
-                    name = name.substring(0, laenge - 4) + name.substring(name.length() - 4);
-                }
+                name = cutName(name, laenge);
             }
         }
         // ##############################################
@@ -485,9 +484,26 @@ public class DatenDownload implements Comparable<DatenDownload> {
             name = getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
         }
 
+        // in Win dürfen die Pfade nicht länger als 255 Zeichen haben (für die Infodatei kommen noch ".txt" dazu)
+        if (SystemInfo.isWindows()) {
+        final int pathL = pfad.length();
+        final int maxNameL = 250 - pathL;
+        if (maxNameL < 10) {
+            // Meldung
+        } else {
+            name = cutName(name, maxNameL);
+        }
+        }
         arr[DOWNLOAD_ZIEL_DATEINAME_NR] = name;
         arr[DOWNLOAD_ZIEL_PFAD_NR] = pfad;
         arr[DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pfad, name);
+    }
+
+    private String cutName(String name, int length) {
+        if (name.length() > length) {
+            name = name.substring(0, length - 4) + name.substring(name.length() - 4);
+        }
+        return name;
     }
 
     private void programmaufrufBauen(DatenProg programm) {
@@ -540,6 +556,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
     private String getJetzt_HHMMSS() {
         return new SimpleDateFormat("HHmmss").format(new Date());
     }
+
     private String getHeute_yyyyMMdd() {
         return new SimpleDateFormat("yyyyMMdd").format(new Date());
     }
