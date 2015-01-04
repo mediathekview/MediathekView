@@ -163,6 +163,7 @@ public class FilenameUtils {
         ret = ret.replace("Ä", "Ae");
         ret = ret.replace("Ö", "Oe");
         ret = ret.replace("Ü", "Ue");
+        ret = ret.replace("ß", "ss");
 
         // ein Versuch zu vereinfachen
         ret = cleanUnicode(ret);
