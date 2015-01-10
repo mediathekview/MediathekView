@@ -132,9 +132,9 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     private void listeFilmlistenSuchen() {
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         if (jRadioButtonAkt.isSelected()) {
-            Daten.filmeLaden.updateDownloadUrlsFilmlisten(true, false);
+            Daten.filmeLaden.updateDownloadUrlsFilmlisten(true);
         } else /*diff*/ {
-            Daten.filmeLaden.updateDownloadUrlsFilmlisten(false, true);
+            Daten.filmeLaden.updateDownloadUrlsFilmlisten(false);
         }
         stopBeob = true;
         tabelleLaden();
