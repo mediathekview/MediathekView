@@ -155,8 +155,8 @@ public class FilmeLaden {
         return MSFilmeSuchen.getNamenSender();
     }
     
-    public void updateDownloadUrlsFilmlisten(boolean akt, boolean diff) {
-        msImportFilmliste.updateDownloadUrlsFilmlisten(akt, diff);
+    public void updateDownloadUrlsFilmlisten(boolean akt) {
+        msImportFilmliste.updateDownloadUrlsFilmlisten(akt);
     }
     
     public ListeFilmlistenUrls getDownloadUrlsFilmlisten_akt() {
