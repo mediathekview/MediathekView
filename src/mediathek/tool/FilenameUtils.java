@@ -26,13 +26,7 @@ public class FilenameUtils {
     /**
      * Valid characters for all UNIX-like OS.
      */
-    // use the same as Win, problem is, when a film should be copied to a usb-stick with
-    // fat32 (has the same illegal characters as WIN) or when the program runs as "portable"
-    // on a usb-stick (with fat32) and stores the films also on it
-    // maybe there comes a better solution in future :)
-    
-    //private static final String REGEXP_ILLEGAL_CHARACTERS_OTHERS = "[:\\\\/*|<>]";
-    private static final String REGEXP_ILLEGAL_CHARACTERS_OTHERS = "[:\\\\/*?|<>\"]";
+    private static final String REGEXP_ILLEGAL_CHARACTERS_OTHERS = "[:\\\\/*|<>]";
 
     public static String checkDateiname(final String name, final boolean isPath) {
         String ret = name;
@@ -141,13 +135,19 @@ public class FilenameUtils {
     private static String removeIllegalCharacters(final String input) {
         String ret = input;
 
-        if (SystemInfo.isWindows()) {
-            ret = removeWindowsTrailingDots(ret);
-            ret = ret.replaceAll(REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
-        } else {
-            //not on windows should be a UNIX equivalent, so we are safe :)
-            //we can handle double quotes and whitespaces...
-            ret = ret.replaceAll(REGEXP_ILLEGAL_CHARACTERS_OTHERS, "_");
+        switch (Funktionen.getOs()) {
+            case MAC:
+                //On OSX the VFS take care of writing correct filenames to FAT filesystems...
+                //Just remove the default illegal characters
+                ret = ret.replaceAll(REGEXP_ILLEGAL_CHARACTERS_OTHERS, "_");
+                break;
+
+            default:
+                //we need to be more careful on Linux and Windows when using e.g. FAT32
+                //Therefore be more conservative by default and replace more characters.
+                ret = removeWindowsTrailingDots(ret);
+                ret = ret.replaceAll(REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
+                break;
         }
 
         return ret;
@@ -211,7 +211,7 @@ public class FilenameUtils {
                 r += "A";
             } else if (c == 'å' || c == 'á' || c == 'à' || c == 'â') {
                 r += "a";
-            } else if (c == 'Č' || c == 'Č') {
+            } else if (c == 'Č') {
                 r += "C";
             } else if (c == 'ć' || c == 'č' || c == 'ç') {
                 r += "c";
@@ -247,7 +247,7 @@ public class FilenameUtils {
                 r += "-";
             } else if (c == '„') {
                 r += "\"";
-            } else if (c == '„' || c == '”' || c == '“' || c == '«' || c == '»') {
+            } else if (c == '”' || c == '“' || c == '«' || c == '»') {
                 r += "\"";
             } else if (c == '?') {
                 r += "?";
