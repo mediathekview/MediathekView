@@ -1,16 +1,14 @@
 package mediathek.tool;
 
 import com.jidesoft.utils.SystemInfo;
-import mediathek.daten.Daten;
-
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
-import java.nio.charset.CoderResult;
 import java.nio.charset.CodingErrorAction;
+import mediathek.daten.Daten;
 
 /**
  * User: crystalpalace1977
@@ -24,10 +22,17 @@ public class FilenameUtils {
      * Based on http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx
      */
     private static final String REGEXP_ILLEGAL_CHARACTERS_WINDOWS = "[:\\\\/*?|<>\"]";
+
     /**
      * Valid characters for all UNIX-like OS.
      */
-    private static final String REGEXP_ILLEGAL_CHARACTERS_OTHERS = "[:\\\\/*|<>]";
+    // use the same as Win, problem is, when a film should be copied to a usb-stick with
+    // fat32 (has the same illegal characters as WIN) or when the program runs as "portable"
+    // on a usb-stick (with fat32) and stores the films also on it
+    // maybe there comes a better solution in future :)
+    
+    //private static final String REGEXP_ILLEGAL_CHARACTERS_OTHERS = "[:\\\\/*|<>]";
+    private static final String REGEXP_ILLEGAL_CHARACTERS_OTHERS = "[:\\\\/*?|<>\"]";
 
     public static String checkDateiname(final String name, final boolean isPath) {
         String ret = name;
