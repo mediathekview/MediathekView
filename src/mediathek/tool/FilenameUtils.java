@@ -142,10 +142,17 @@ public class FilenameUtils {
                 ret = ret.replaceAll(REGEXP_ILLEGAL_CHARACTERS_OTHERS, "_");
                 break;
 
-            default:
-                //we need to be more careful on Linux and Windows when using e.g. FAT32
+            case WIN64:
+            case WIN32:
+                //we need to be more careful on Windows when using e.g. FAT32
                 //Therefore be more conservative by default and replace more characters.
                 ret = removeWindowsTrailingDots(ret);
+                ret = ret.replaceAll(REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
+                break;
+
+            default:
+                //we need to be more careful on Linux when using e.g. FAT32
+                //Therefore be more conservative by default and replace more characters.
                 ret = ret.replaceAll(REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
                 break;
         }
