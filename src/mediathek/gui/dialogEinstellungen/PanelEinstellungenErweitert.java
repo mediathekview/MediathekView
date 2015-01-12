@@ -106,7 +106,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                             File destination = new File(chooser.getDirectory() + chooser.getFile());
                             jTextFieldProgrammDateimanager.setText(destination.getAbsolutePath());
                         } catch (Exception ex) {
-                            Log.fehlerMeldung(798963047,  "PanelEinstellungenErweitert.ZielBeobachter", ex);
+                            Log.fehlerMeldung(798963047, "PanelEinstellungenErweitert.ZielBeobachter", ex);
                         }
                     }
                 } else {
@@ -123,7 +123,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         try {
                             jTextFieldProgrammDateimanager.setText(chooser.getSelectedFile().getAbsolutePath());
                         } catch (Exception ex) {
-                            Log.fehlerMeldung(963299647,  "PanelEinstellungenErweitert.ZielBeobachter", ex);
+                            Log.fehlerMeldung(963299647, "PanelEinstellungenErweitert.ZielBeobachter", ex);
                         }
                     }
                 }
@@ -156,7 +156,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                             File destination = new File(chooser.getDirectory() + chooser.getFile());
                             jTextFieldVideoplayer.setText(destination.getAbsolutePath());
                         } catch (Exception ex) {
-                            Log.fehlerMeldung(821036489,  "PanelEinstellungenErweitert.ZielBeobachter", ex);
+                            Log.fehlerMeldung(821036489, "PanelEinstellungenErweitert.ZielBeobachter", ex);
                         }
                     }
                 } else {
@@ -173,7 +173,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         try {
                             jTextFieldVideoplayer.setText(chooser.getSelectedFile().getAbsolutePath());
                         } catch (Exception ex) {
-                            Log.fehlerMeldung(732656980,  "PanelEinstellungenErweitert.ZielBeobachter", ex);
+                            Log.fehlerMeldung(732656980, "PanelEinstellungenErweitert.ZielBeobachter", ex);
                         }
                     }
                 }
@@ -206,7 +206,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                             File destination = new File(chooser.getDirectory() + chooser.getFile());
                             jTextFieldProgrammUrl.setText(destination.getAbsolutePath());
                         } catch (Exception ex) {
-                            Log.fehlerMeldung(369874598,  "PanelEinstellungenErweitert.ZielBeobachter", ex);
+                            Log.fehlerMeldung(369874598, "PanelEinstellungenErweitert.ZielBeobachter", ex);
                         }
                     }
                 } else {
@@ -223,7 +223,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         try {
                             jTextFieldProgrammUrl.setText(chooser.getSelectedFile().getAbsolutePath());
                         } catch (Exception ex) {
-                            Log.fehlerMeldung(469012789,  "PanelEinstellungenErweitert.ZielBeobachter", ex);
+                            Log.fehlerMeldung(469012789, "PanelEinstellungenErweitert.ZielBeobachter", ex);
                         }
                     }
                 }
@@ -289,10 +289,12 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new DialogHilfe(parentComponent, true, "\n"
-                        + "Wenn das Programm versucht, eine URL zu öffnen\n"
-                        + "und die Standardanwendung nicht startet,\n"
-                        + "kann man damit ein Programm auswählen, mit\n"
-                        + "dem URLs geöffnet werden sollen.").setVisible(true);
+                        + "Wenn das Programm versucht, einen Link zu öffnen\n"
+                        + "(z.B. der Link im Menüpukt \"Hilfe\" zu den \"Hilfeseiten\")\n"
+                        + "und die Standardanwendung (z.B. \"Firefox\") startet nicht,\n"
+                        + "kann damit ein Programm auswählt und\n"
+                        + "fest zugeordnert werden.\n"
+                        + "z.B. der Browser \"Firefox\"").setVisible(true);
             }
         });
         jTextFieldProgrammDateimanager.setText(Daten.mVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN));
@@ -364,7 +366,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         // UserAgent
         jRadioButtonAuto.setSelected(Daten.isUserAgentAuto());
         jRadioButtonManuel.setSelected(!Daten.isUserAgentAuto());
-        
+
         jTextFieldUserAgent.setEditable(!Daten.isUserAgentAuto());
         jTextFieldUserAgent.setText(Daten.mVConfig.get(MVConfig.SYSTEM_USER_AGENT));
         jTextFieldAuto.setText(Konstanten.USER_AGENT_DEFAULT);
