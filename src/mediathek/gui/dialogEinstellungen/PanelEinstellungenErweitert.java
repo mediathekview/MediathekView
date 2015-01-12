@@ -565,7 +565,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeVideoplayer, jButtonProgrammVideoplayer, jTextFieldVideoplayer});
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Programm zum Öffnen von URLs"));
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Webbrowser zum Öffnen von URLs"));
 
         jButtonProgrammUrl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
 
