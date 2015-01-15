@@ -10,14 +10,13 @@ import javax.swing.ImageIcon;
  */
 public class MVSenderIconCache {
 
-    private static Map<String, ImageIcon> iconCache = null;
-    private static Map<String, ImageIcon> iconCache_small = null;
+    private final static Map<String, ImageIcon> iconCache = new HashMap<>();
+    private final static Map<String, ImageIcon> iconCache_small = new HashMap<>();
     private final static String PFAD = "/mediathek/res/sender/";
     final static int height = 32;
     final static int height_small = 15;
 
     static {
-        iconCache = new HashMap<>();
         iconCache.put("3Sat", scaleImage(PFAD + "3sat.png", height));
         iconCache.put("ARD", scaleImage(PFAD + "ard.png", height));
         iconCache.put("ARD.Podcast", scaleImage(PFAD + "ard.png", height));
@@ -36,11 +35,10 @@ public class MVSenderIconCache {
         iconCache.put("WDR", scaleImage(PFAD + "wdr.png", height));
         iconCache.put("ZDF", scaleImage(PFAD + "zdf.png", height));
         iconCache.put("ZDF-tivi", scaleImage(PFAD + "zdf-tivi.png", height));
-
+        iconCache.put("PHOENIX", scaleImage(PFAD + "phoenix.png", height));
     }
 
     static {
-        iconCache_small = new HashMap<>();
         iconCache_small.put("3Sat", scaleImage(PFAD + "3sat.png", height_small));
         iconCache_small.put("ARD", scaleImage(PFAD + "ard.png", height_small));
         iconCache_small.put("ARD.Podcast", scaleImage(PFAD + "ard.png", height_small));
@@ -59,6 +57,7 @@ public class MVSenderIconCache {
         iconCache_small.put("WDR", scaleImage(PFAD + "wdr.png", height_small));
         iconCache_small.put("ZDF", scaleImage(PFAD + "zdf.png", height_small));
         iconCache_small.put("ZDF-tivi", scaleImage(PFAD + "zdf-tivi.png", height_small));
+        iconCache_small.put("PHOENIX", scaleImage(PFAD + "phoenix.png", height_small));
     }
 
     /**
@@ -78,8 +77,7 @@ public class MVSenderIconCache {
 
     private static ImageIcon scaleImage(String source, int maxHeight) {
 
-        int newWidth = 0;        // Variables for the new height and width
-        int priorHeight = 0, priorWidth = 0;
+        int newWidth, priorHeight, priorWidth; // Variables for the old - new height and width
         Image image;
         ImageIcon sizeImage;
 
