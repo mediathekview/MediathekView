@@ -194,6 +194,15 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     }
                     break;
 
+                case DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR:
+                    setHorizontalAlignment(SwingConstants.CENTER);
+                    if (datenDownload.istZurueckgestellt()) {
+                        setIcon(ja_16);
+                    } else {
+                        setIcon(nein_12);
+                    }
+                    break;
+
                 case DatenDownload.DOWNLOAD_INFODATEI_NR:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (datenDownload.isInfoFile()) {
@@ -246,7 +255,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             setColor(this, datenDownload.start, isSelected);
             handleGeoBlocking(datenDownload, isSelected);
         } catch (Exception ex) {
-            Log.fehlerMeldung(758200166,  this.getClass().getName(), ex);
+            Log.fehlerMeldung(758200166, this.getClass().getName(), ex);
         }
         return this;
     }
