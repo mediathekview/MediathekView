@@ -327,7 +327,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR
                             || i == DatenDownload.DOWNLOAD_UNTERBROCHEN_NR
                             || i == DatenDownload.DOWNLOAD_SPOTLIGHT_NR
-                            || i == DatenDownload.DOWNLOAD_INFODATEI_NR) {
+                            || i == DatenDownload.DOWNLOAD_INFODATEI_NR
+                            || i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR) {
                         object[i] = "";
                     } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
                         object[i] = download.datumFilm;
@@ -648,6 +649,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     /**
      * Return the maximum time of all running starts until finish.
+     *
      * @return The time in SECONDS.
      */
     public synchronized long getMaximumFinishTimeOfRunningStarts() {
@@ -656,7 +658,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             Start s = d.start;
             if (s != null) {
                 if (s.status < Start.STATUS_FERTIG) {
-                    rem = Math.max(rem,s.restSekunden);
+                    rem = Math.max(rem, s.restSekunden);
                 }
             }
         }
