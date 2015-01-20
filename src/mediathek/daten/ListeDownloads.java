@@ -161,6 +161,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         while (it.hasNext()) {
             DatenDownload d = it.next();
             if (d.isInterrupted()) {
+                // guter Rat teuer was da besser wäre??
+                // wird auch nach dem Neuladen der Filmliste aufgerufen: also Finger weg
                 continue;
             }
             if (!d.istAbo()) {

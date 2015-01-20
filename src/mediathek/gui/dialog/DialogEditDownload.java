@@ -41,6 +41,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
     private JTextField[] textfeldListe;
     private JLabel[] labelListe;
     private final JCheckBox jCheckBoxRestart = new JCheckBox();
+    private final JCheckBox jCheckBoxUnterbrochen = new JCheckBox();
     private final JCheckBox jCheckBoxInfodatei = new JCheckBox();
     private final JCheckBox jCheckBoxSpotlight = new JCheckBox();
     public boolean ok = false;
@@ -105,7 +106,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
         //Label
         c.gridx = 0;
         c.weightx = 0;
-        if (i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR || i == DatenDownload.DOWNLOAD_UNTERBROCHEN_NR
+        if (i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR
                 || i == DatenDownload.DOWNLOAD_URL_AUTH_NR || i == DatenDownload.DOWNLOAD_URL_RTMP_NR
                 || i == DatenDownload.DOWNLOAD_BUTTON_DEL_NR || i == DatenDownload.DOWNLOAD_BUTTON_START_NR) {
             // ist eigentlich Unsinn, es anzuzeigen
@@ -135,6 +136,22 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 c.weightx = 10;
                 gridbag.setConstraints(jCheckBoxRestart, c);
                 jPanelExtra.add(jCheckBoxRestart);
+            } else if (i == DatenDownload.DOWNLOAD_UNTERBROCHEN_NR) {
+                // das macht nur Sinn, wenn der Download unterbrochen ist um "es" auszuschalten
+                // Unterbrechung einschalten macht keinen Sinn
+                if (!datenDownload.isInterrupted()) {
+                    return;
+                }
+                labelListe[i].setForeground(Color.BLUE);
+                jCheckBoxUnterbrochen.setSelected(datenDownload.isInterrupted());
+                jCheckBoxUnterbrochen.addActionListener(new BeobCheckbox());
+                jCheckBoxUnterbrochen.setEnabled(!gestartet);
+                gridbag.setConstraints(labelListe[i], c);
+                jPanelExtra.add(labelListe[i]);
+                c.gridx = 1;
+                c.weightx = 10;
+                gridbag.setConstraints(jCheckBoxUnterbrochen, c);
+                jPanelExtra.add(jCheckBoxUnterbrochen);
             } else if (i == DatenDownload.DOWNLOAD_INFODATEI_NR) {
                 labelListe[i].setForeground(Color.BLUE);
                 jCheckBoxInfodatei.setSelected(Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR]));
@@ -320,6 +337,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR] = Boolean.toString(jCheckBoxRestart.isSelected());
+            datenDownload.arr[DatenDownload.DOWNLOAD_UNTERBROCHEN_NR] = Boolean.toString(jCheckBoxUnterbrochen.isSelected());
             datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR] = Boolean.toString(jCheckBoxInfodatei.isSelected());
             datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT_NR] = Boolean.toString(jCheckBoxSpotlight.isSelected());
         }
