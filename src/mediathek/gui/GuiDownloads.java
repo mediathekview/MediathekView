@@ -342,7 +342,7 @@ public class GuiDownloads extends PanelVorlage {
         reloadTable();
         if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN))) {
             // und wenn gewollt auch gleich starten
-            filmStartenWiederholenStoppen(true /*alle*/, true /*starten*/);
+            filmStartenWiederholenStoppen(true /*alle*/, true /*starten*/, false /*fertige wieder starten*/);
         }
     }
 
@@ -536,6 +536,10 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */) {
+        filmStartenWiederholenStoppen(alle, starten, true /*auch fertige wieder starten*/);
+    }
+
+    private void filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */, boolean fertige /*auch fertige wieder starten*/) {
         // bezieht sich immer auf "alle" oder nur die markierten
         // Film der noch keinen Starts hat wird gestartet
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
@@ -581,23 +585,35 @@ public class GuiDownloads extends PanelVorlage {
         }
         // ========================
         // und jetzt abarbeiten
+        int antwort = -1;
         for (String url : urls) {
             DatenDownload download = Daten.listeDownloads.getDownloadByUrl(url);
             if (starten) {
                 // ==========================================
                 // starten
                 if (download.start != null) {
-                    if (download.start.status == Start.STATUS_RUN) {
-                        // dann läuft er schon
+                    if (download.start.status == Start.STATUS_RUN
+                            || !fertige && download.start.status > Start.STATUS_RUN) {
+                        // wenn er noch läuft gibts nix
+                        // fertige bleiben auch unverändert
                         continue;
                     }
                     if (download.start.status > Start.STATUS_RUN) {
-                        // wenn er noch läuft gibts nix
                         // wenn er schon fertig ist, erst mal fragen vor dem erneuten Starten
                         //TODO in auto dialog umwandeln!
-                        int a = JOptionPane.showConfirmDialog(parentComponent, "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL_NR],
-                                "Fertiger Download", JOptionPane.YES_NO_OPTION);
-                        if (a != JOptionPane.YES_OPTION) {
+                        if (antwort == -1) {
+                            // nur einmal fragen
+                            String text;
+                            if (urls.length > 1) {
+                                text = "Es sind bereits fertige Filme dabei,\n"
+                                        + "diese nochmal starten?";
+                            } else {
+                                text = "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL_NR];
+                            }
+                            antwort = JOptionPane.showConfirmDialog(parentComponent, text,
+                                    "Fertiger Download", JOptionPane.YES_NO_OPTION);
+                        }
+                        if (antwort != JOptionPane.YES_OPTION) {
                             // weiter mit der nächsten URL
                             continue;
                         }
