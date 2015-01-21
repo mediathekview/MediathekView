@@ -301,8 +301,8 @@ public class GuiDownloads extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                if (lastUpdate < (new Date().getTime() - 250)) {
-                    // nur alle 250ms aufrufen
+                if (lastUpdate < (new Date().getTime() - 500)) {
+                    // nur alle 500ms aufrufen
                     lastUpdate = new Date().getTime();
                     Daten.listeDownloads.setModelProgress(model);
                     // ist ein Kompromiss: beim Sortieren nach Progress wird die Tabelle nicht neu sortiert!
