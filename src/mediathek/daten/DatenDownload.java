@@ -19,7 +19,6 @@
  */
 package mediathek.daten;
 
-import com.jidesoft.utils.SystemInfo;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,6 +43,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
     private static GermanStringSorter sorter = GermanStringSorter.getInstance();
     private static SimpleDateFormat sdf_datum_zeit = new SimpleDateFormat("dd.MM.yyyyHH:mm:ss");
     private static SimpleDateFormat sdf_datum = new SimpleDateFormat("dd.MM.yyyy");
+
     public static final String DOWNLOAD_NR = "Nr";
     public static final int DOWNLOAD_NR_NR = 0;
     public static final String DOWNLOAD_FILM_NR = "Filmnr";
@@ -404,7 +404,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
     private void dateinamePfadBauen(DatenPset pSet, DatenFilm film, DatenAbo abo, String nname, String ppfad) {
         // nname und ppfad sind nur belegt, wenn der Download über den DialogAddDownload gestartet wurde (aus TabFilme)
         String name;
-        String pfad;
+        String path;
         if (!pSet.progsContainPath()) {
             // dann können wir uns das sparen
             arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR] = "";
@@ -444,7 +444,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 if (!pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR].equals("")) {
                     laenge = Integer.parseInt(pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR]);
                 }
-                name = cutName(name, laenge);
+                name = GuiFunktionen.cutName(name, laenge);
             }
         }
         // ##############################################
@@ -452,15 +452,15 @@ public class DatenDownload implements Comparable<DatenDownload> {
         // ##############################################
         if (!ppfad.equals("")) {
             // wenn vorgegeben, dann den nehmen
-            pfad = ppfad;
+            path = ppfad;
         } else {
             arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR] = pSet.getZielPfad();
-            pfad = arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
+            path = arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
             // ##############################
             // Pfad sinnvoll belegen
-            if (pfad.equals("")) {
+            if (path.equals("")) {
                 // wenn leer, vorbelegen
-                pfad = GuiFunktionen.getStandardDownloadPath();
+                path = GuiFunktionen.getStandardDownloadPath();
             }
             if (abo != null) {
                 // Bei Abos: den Namen des Abos eintragen
@@ -468,48 +468,34 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
                     // und Abopfad an den Pfad anhängen
                     //pfad = GuiFunktionen.addsPfad(pfad, GuiFunktionen.replaceLeerDateiname(abo.arr[DatenAbo.ABO_ZIELPFAD_NR], true/* istDatei */));
-                    pfad = GuiFunktionen.addsPfad(pfad, abo.arr[DatenAbo.ABO_ZIELPFAD_NR]);
+                    path = GuiFunktionen.addsPfad(path, abo.arr[DatenAbo.ABO_ZIELPFAD_NR]);
                 }
             } else if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
                 // bei Downloads den Namen des Themas an den Zielpfad anhängen
-                pfad = GuiFunktionen.addsPfad(pfad, FilenameUtils.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA_NR]));
+                path = GuiFunktionen.addsPfad(path, FilenameUtils.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA_NR]));
             }
-            pfad = replaceString(pfad, film); // %D ... ersetzen
+            path = replaceString(path, film); // %D ... ersetzen
             // der vorgegebenen Pfad des Sets wird so genommen wie er ist
             //pfad = GuiFunktionen.replaceLeerDateiname(pfad, false/* istDatei */, false /* leerEntfernen */); 
         }
-        if (pfad.endsWith(File.separator)) {
-            pfad = pfad.substring(0, pfad.length() - 1);
+        if (path.endsWith(File.separator)) {
+            path = path.substring(0, path.length() - 1);
         }
         //###########################################################
         // zur Sicherheit bei Unsinn im Set
-        if (pfad.equals("")) {
-            pfad = GuiFunktionen.getStandardDownloadPath();
+        if (path.equals("")) {
+            path = GuiFunktionen.getStandardDownloadPath();
         }
         if (name.equals("")) {
             name = getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
         }
 
         // in Win dürfen die Pfade nicht länger als 255 Zeichen haben (für die Infodatei kommen noch ".txt" dazu)
-        if (SystemInfo.isWindows()) {
-        final int pathL = pfad.length();
-        final int maxNameL = 250 - pathL;
-        if (maxNameL < 10) {
-            // Meldung
-        } else {
-            name = cutName(name, maxNameL);
-        }
-        }
-        arr[DOWNLOAD_ZIEL_DATEINAME_NR] = name;
-        arr[DOWNLOAD_ZIEL_PFAD_NR] = pfad;
-        arr[DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pfad, name);
-    }
+        String[] pathName = GuiFunktionen.checkLengthPath(new String[]{path, name});
 
-    private String cutName(String name, int length) {
-        if (name.length() > length) {
-            name = name.substring(0, length - 4) + name.substring(name.length() - 4);
-        }
-        return name;
+        arr[DOWNLOAD_ZIEL_DATEINAME_NR] = pathName[1];
+        arr[DOWNLOAD_ZIEL_PFAD_NR] = pathName[0];
+        arr[DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pathName[0], pathName[1]);
     }
 
     private void programmaufrufBauen(DatenProg programm) {

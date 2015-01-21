@@ -156,6 +156,32 @@ public class GuiFunktionen extends Funktionen {
         return ret;
     }
 
+    private final static int WIN_MAX_PATH_LENGTH = 250;
+
+    public static String[] checkLengthPath(String[] pathName) {
+        // in Win dürfen die Pfade nicht länger als 255 Zeichen haben (für die Infodatei kommen noch ".txt" dazu)
+//        if (SystemInfo.isWindows()) {
+        if ((pathName[0].length() + 10) > WIN_MAX_PATH_LENGTH) {
+            // es sollen für den Dateinamen mind. 10 Zeichen bleiben
+            Log.fehlerMeldung(102036598, "GuiFunktionen.checkLengthPath", "Pfad zu lange: " + pathName[0]);
+            pathName[0] = GuiFunktionen.getHomePath();
+        }
+        if ((pathName[0].length() + pathName[1].length()) > WIN_MAX_PATH_LENGTH) {
+            Log.fehlerMeldung(902367369, "GuiFunktionen.checkLengthPath", "Name zu lange: " + pathName[0]);
+            int maxNameL = WIN_MAX_PATH_LENGTH - pathName[0].length();
+            pathName[1] = cutName(pathName[1], maxNameL);
+        }
+//        }
+        return pathName;
+    }
+
+    public static String cutName(String name, int length) {
+        if (name.length() > length) {
+            name = name.substring(0, length - 4) + name.substring(name.length() - 4);
+        }
+        return name;
+    }
+
     public static boolean istUrl(String dateiUrl) {
         //return dateiUrl.startsWith("http") ? true : false || dateiUrl.startsWith("www") ? true : false;
         return dateiUrl.startsWith("http") || dateiUrl.startsWith("www");
@@ -206,6 +232,7 @@ public class GuiFunktionen extends Funktionen {
 
     /**
      * Return the path to the user´s home directory.
+     *
      * @return String to the user´s home directory.
      */
     public static String getHomePath() {
@@ -214,13 +241,15 @@ public class GuiFunktionen extends Funktionen {
 
     /**
      * Liefert den Standardpfad für Downloads.
-     * @return  Standardpfad zu den Downloads.
+     *
+     * @return Standardpfad zu den Downloads.
      */
     public static String getStandardDownloadPath() {
         if (getOs() == OperatingSystemType.MAC) {
             return addsPfad(getHomePath(), "Downloads");
-        } else
+        } else {
             return addsPfad(getHomePath(), Konstanten.VERZEICHNIS_DOWNLOADS);
+        }
     }
 
     public static String[] addLeerListe(String[] str) {
