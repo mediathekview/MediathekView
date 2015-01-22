@@ -491,7 +491,8 @@ public class DatenDownload implements Comparable<DatenDownload> {
         }
 
         // in Win dürfen die Pfade nicht länger als 255 Zeichen haben (für die Infodatei kommen noch ".txt" dazu)
-        String[] pathName = GuiFunktionen.checkLengthPath(new String[]{path, name});
+        String[] pathName = {path, name};
+        GuiFunktionen.checkLengthPath(pathName);
 
         arr[DOWNLOAD_ZIEL_DATEINAME_NR] = pathName[1];
         arr[DOWNLOAD_ZIEL_PFAD_NR] = pathName[0];
