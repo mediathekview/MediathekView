@@ -32,6 +32,7 @@ import java.util.Date;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
@@ -223,6 +224,14 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
         }
         if (name.equals("")) {
             name = new SimpleDateFormat("yyyyMMdd").format(new Date()) + "_" + datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
+        }
+        String[] pathName = {pfad, name};
+        GuiFunktionen.checkLengthPath(pathName);
+        if (!pathName[0].equals(pfad) || !pathName[1].equals(name)) {
+            MVMessageDialog.showMessageDialog(parent, "Dateiname war zu lang und wurde gekürzt!",
+                    "Pfad zu lang!", JOptionPane.ERROR_MESSAGE);
+            pfad = pathName[0];
+            name = pathName[1];
         }
         String orgPfad = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR];
         //##############################################

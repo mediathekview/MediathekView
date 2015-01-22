@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
@@ -160,18 +161,18 @@ public class GuiFunktionen extends Funktionen {
 
     public static String[] checkLengthPath(String[] pathName) {
         // in Win dürfen die Pfade nicht länger als 255 Zeichen haben (für die Infodatei kommen noch ".txt" dazu)
-//        if (SystemInfo.isWindows()) {
-        if ((pathName[0].length() + 10) > WIN_MAX_PATH_LENGTH) {
-            // es sollen für den Dateinamen mind. 10 Zeichen bleiben
-            Log.fehlerMeldung(102036598, "GuiFunktionen.checkLengthPath", "Pfad zu lange: " + pathName[0]);
-            pathName[0] = GuiFunktionen.getHomePath();
+        if (SystemInfo.isWindows()) {
+            if ((pathName[0].length() + 10) > WIN_MAX_PATH_LENGTH) {
+                // es sollen für den Dateinamen mind. 10 Zeichen bleiben
+                Log.fehlerMeldung(102036598, "GuiFunktionen.checkLengthPath", "Pfad zu lange: " + pathName[0]);
+                pathName[0] = GuiFunktionen.getHomePath();
+            }
+            if ((pathName[0].length() + pathName[1].length()) > WIN_MAX_PATH_LENGTH) {
+                Log.fehlerMeldung(902367369, "GuiFunktionen.checkLengthPath", "Name zu lange: " + pathName[0]);
+                int maxNameL = WIN_MAX_PATH_LENGTH - pathName[0].length();
+                pathName[1] = cutName(pathName[1], maxNameL);
+            }
         }
-        if ((pathName[0].length() + pathName[1].length()) > WIN_MAX_PATH_LENGTH) {
-            Log.fehlerMeldung(902367369, "GuiFunktionen.checkLengthPath", "Name zu lange: " + pathName[0]);
-            int maxNameL = WIN_MAX_PATH_LENGTH - pathName[0].length();
-            pathName[1] = cutName(pathName[1], maxNameL);
-        }
-//        }
         return pathName;
     }
 
