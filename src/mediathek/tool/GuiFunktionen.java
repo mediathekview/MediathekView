@@ -158,10 +158,11 @@ public class GuiFunktionen extends Funktionen {
     }
 
     private final static int WIN_MAX_PATH_LENGTH = 250;
+    private final static int X_MAX_NAME_LENGTH = 255;
 
     public static String[] checkLengthPath(String[] pathName) {
-        // in Win dürfen die Pfade nicht länger als 255 Zeichen haben (für die Infodatei kommen noch ".txt" dazu)
         if (SystemInfo.isWindows()) {
+            // in Win dürfen die Pfade nicht länger als 255 Zeichen haben (für die Infodatei kommen noch ".txt" dazu)
             if ((pathName[0].length() + 10) > WIN_MAX_PATH_LENGTH) {
                 // es sollen für den Dateinamen mind. 10 Zeichen bleiben
                 Log.fehlerMeldung(102036598, "GuiFunktionen.checkLengthPath", "Pfad zu lange: " + pathName[0]);
@@ -171,6 +172,12 @@ public class GuiFunktionen extends Funktionen {
                 Log.fehlerMeldung(902367369, "GuiFunktionen.checkLengthPath", "Name zu lange: " + pathName[0]);
                 int maxNameL = WIN_MAX_PATH_LENGTH - pathName[0].length();
                 pathName[1] = cutName(pathName[1], maxNameL);
+            }
+        } else {
+            // für X-Systeme
+            if ((pathName[1].length()) > X_MAX_NAME_LENGTH) {
+                Log.fehlerMeldung(823012012, "GuiFunktionen.checkLengthPath", "Name zu lange: " + pathName[1]);
+                pathName[1] = cutName(pathName[1], X_MAX_NAME_LENGTH);
             }
         }
         return pathName;
