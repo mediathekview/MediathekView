@@ -5,19 +5,10 @@ import com.explodingpixels.macwidgets.HudWindow;
 import com.explodingpixels.macwidgets.plaf.HudPaintingUtils;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.net.URISyntaxException;
-import java.net.URL;
-import javax.imageio.ImageIO;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -29,7 +20,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.UrlHyperlinkAction;
@@ -44,13 +34,10 @@ public class MVFilmInformation implements ChangeListener {
     private HudWindow hud = null;
     private JDialog dialog = null;
     private JXHyperlink lblUrlThemaField;
-    private JXHyperlink lblUrlPicture;
     private JTextArea textAreaBeschreibung;
     private final Daten ddaten;
     private final JLabel[] labelArrNames = new JLabel[DatenFilm.MAX_ELEM];
     private final JTextField[] txtArrCont = new JTextField[DatenFilm.MAX_ELEM];
-    private final ViewImage viewImage = new ViewImage();
-    private final JButton buttonBild = new JButton("Bild laden");
     private final Color foreground, background;
     private DatenFilm aktFilm = new DatenFilm();
     private final JFrame parent;
@@ -77,18 +64,10 @@ public class MVFilmInformation implements ChangeListener {
         content.setOpaque(false);
         hud.setContentPane(content);
         dialog = hud.getJDialog();
-        viewImage.setDoubleBuffered(true);
-        buttonBild.setOpaque(false);
-        buttonBild.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                setAktFilm(true);
-            }
-        });
         // dialog.pack(); --> Exception in thread "AWT-EventQueue-0" sun.awt.X11.XException: Cannot write XdndAware property
         Dimension size = dialog.getSize();
         size.width = 600;
-        size.height = 600;
+        size.height = 400;
         dialog.setSize(size);
         calculateHudPosition();
 
@@ -113,14 +92,6 @@ public class MVFilmInformation implements ChangeListener {
         } catch (URISyntaxException ignored) {
         }
         lblUrlThemaField.setFont(HudPaintingUtils.getHudFont());
-        lblUrlPicture = new JXHyperlink();
-        lblUrlPicture.setDoubleBuffered(true);
-        lblUrlPicture.setForeground(foreground);
-        try {
-            lblUrlPicture.setAction(new UrlHyperlinkAction(parent, ddaten, ""));
-        } catch (URISyntaxException ignored) {
-        }
-        lblUrlPicture.setFont(HudPaintingUtils.getHudFont());
         textAreaBeschreibung = new JTextArea();
         textAreaBeschreibung.setDoubleBuffered(true);
         textAreaBeschreibung.setLineWrap(true);
@@ -145,6 +116,7 @@ public class MVFilmInformation implements ChangeListener {
                     || i == DatenFilm.FILM_AUFZEICHNEN_NR
                     || i == DatenFilm.FILM_DATUM_LONG_NR
                     || i == DatenFilm.FILM_URL_HISTORY_NR
+                    || i == DatenFilm.FILM_IMAGE_URL_NR
                     || i == DatenFilm.FILM_REF_NR) {
                 continue;
             }
@@ -152,15 +124,6 @@ public class MVFilmInformation implements ChangeListener {
             addLable(i, gridbag, c, panel);
             ++zeile;
         }
-        // Bild einfügen
-        c.weightx = 0;
-        c.gridx = 1;
-        c.gridy = zeile++;
-        gridbag.setConstraints(buttonBild, c);
-        panel.add(buttonBild);
-        c.gridy = zeile++;
-        gridbag.setConstraints(viewImage, c);
-        panel.add(viewImage);
 
         // zum zusammenschieben
         c.weightx = 0;
@@ -183,9 +146,6 @@ public class MVFilmInformation implements ChangeListener {
         if (i == DatenFilm.FILM_WEBSEITE_NR) {
             gridbag.setConstraints(lblUrlThemaField, c);
             panel.add(lblUrlThemaField);
-        } else if (i == DatenFilm.FILM_IMAGE_URL_NR) {
-            gridbag.setConstraints(lblUrlPicture, c);
-            panel.add(lblUrlPicture);
         } else if (i == DatenFilm.FILM_BESCHREIBUNG_NR) {
             gridbag.setConstraints(textAreaBeschreibung, c);
             panel.add(textAreaBeschreibung);
@@ -200,7 +160,7 @@ public class MVFilmInformation implements ChangeListener {
     }
 
     public void show() {
-        setAktFilm(false);
+        setAktFilm();
         dialog.setVisible(true);
     }
 
@@ -211,11 +171,11 @@ public class MVFilmInformation implements ChangeListener {
     public void updateCurrentFilm(DatenFilm film) {
         aktFilm = film;
         if (this.isVisible()) {
-            setAktFilm(false);
+            setAktFilm();
         }
     }
 
-    private void setAktFilm(boolean bild) {
+    private void setAktFilm() {
         if (aktFilm == null) {
             for (int i = 0; i < txtArrCont.length; ++i) {
                 txtArrCont[i].setText("");
@@ -223,12 +183,6 @@ public class MVFilmInformation implements ChangeListener {
             textAreaBeschreibung.setText(" ");
             lblUrlThemaField.setText("");
             lblUrlThemaField.setForeground(foreground);
-            // bei den Bildern wird nur eins gesetzt
-            lblUrlPicture.setText("");
-            lblUrlPicture.setForeground(foreground);
-            // wenns kein Bild gibt brauchts auch nichts zum Anzeigen
-            buttonBild.setVisible(false);
-            viewImage.setImage(""); // zum löschen
         } else {
             for (int i = 0; i < txtArrCont.length; ++i) {
                 txtArrCont[i].setText(aktFilm.arr[i]);
@@ -241,28 +195,6 @@ public class MVFilmInformation implements ChangeListener {
             }
             lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
             lblUrlThemaField.setForeground(foreground);
-            // bei den Bildern wird nur eins gesetzt
-            lblUrlPicture.setText(aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR]);
-            lblUrlPicture.setForeground(foreground);
-            if (aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR].equals("")) {
-                // wenns kein Bild gibt brauchts auch nichts zum Anzeigen
-                buttonBild.setVisible(false);
-                viewImage.setImage(""); // zum löschen
-            } else {
-                if (aktFilm.arr[DatenFilm.FILM_SENDER_NR].equals("")) {
-                    buttonBild.setText("Bild laden");
-                } else {
-                    buttonBild.setText("Bild vom Sender  " + aktFilm.arr[DatenFilm.FILM_SENDER_NR] + "  laden");
-                }
-                buttonBild.setVisible(true);
-                if (bild) {
-                    if (!aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR].equals("")) {
-                        viewImage.setImage(aktFilm.arr[DatenFilm.FILM_IMAGE_URL_NR]);
-                    }
-                } else {
-                    viewImage.setImage(""); // zum löschen
-                }
-            }
         }
         dialog.repaint();
     }
@@ -274,57 +206,4 @@ public class MVFilmInformation implements ChangeListener {
         updateCurrentFilm(emptyFilm);
     }
 
-    private class ViewImage extends JComponent {
-
-        private BufferedImage image = null;
-
-        public void setImage(String urlStr) {
-            if (urlStr.equals("")) {
-                image = null;
-                this.setMinimumSize(new Dimension(10, 10));
-                this.setPreferredSize(new Dimension(10, 10));
-                return;
-            }
-            try {
-                image = ImageIO.read(new URL(urlStr));
-                image = scale(image, new Dimension(250, 250));
-                this.setMinimumSize(new Dimension(image.getWidth(), image.getHeight()));
-                this.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
-                this.setSize(new Dimension(image.getWidth(), image.getHeight()));
-            } catch (Exception ex) {
-                Log.fehlerMeldung(919302497, MVFilmInformation.class.getName(), ex);
-            }
-            repaint();
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            if (image != null) {
-                g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), this);
-                super.paintComponent(g);
-            } else {
-                super.paintComponent(g);
-            }
-        }
-
-        private BufferedImage scale(BufferedImage img, Dimension d) {
-            float factor = getFactor(img.getWidth(), img.getHeight(), d);
-            // create the image
-            int w = (int) (img.getWidth() * factor);
-            int h = (int) (img.getHeight() * factor);
-            BufferedImage scaled = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-
-            Graphics2D g = scaled.createGraphics();
-            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            g.drawImage(img, 0, 0, w, h, null);
-            g.dispose();
-            return scaled;
-        }
-
-        float getFactor(int width, int height, Dimension dim) {
-            float sx = dim.width / (float) width;
-            float sy = dim.height / (float) height;
-            return Math.min(sx, sy);
-        }
-    }
 }
