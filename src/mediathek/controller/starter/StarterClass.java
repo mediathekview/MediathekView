@@ -677,7 +677,7 @@ public class StarterClass {
                     ret = conn.getContentLengthLong();
                 }
                 // alles unter 300k sind Playlisten, ...
-                if (ret < 300 * 1024) {
+                if (ret < 300 * 1000) {
                     ret = -1;
                 }
             } catch (Exception ex) {

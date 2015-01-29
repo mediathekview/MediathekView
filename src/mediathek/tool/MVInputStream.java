@@ -37,7 +37,7 @@ public class MVInputStream extends InputStream {
 
     public MVInputStream(InputStream in, java.util.Timer calculationTimer) {
         iStream = in;
-        bucket = MVBandwidthTokenBucket.getInstance();
+        bucket =new  MVBandwidthTokenBucket();
         bucket.ensureBucketThreadIsRunning();
 
         //start bandwidth calculation
