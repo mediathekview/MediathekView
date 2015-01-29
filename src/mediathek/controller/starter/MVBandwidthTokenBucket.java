@@ -11,15 +11,15 @@ import mediathek.tool.MVConfig;
  * Bandwidth throttling based on http://en.wikipedia.org/wiki/Token_bucket
  */
 public class MVBandwidthTokenBucket {
-    public static final int DEFAULT_BUFFER_SIZE = 64*1024; // default byte buffer size
-    private static final MVBandwidthTokenBucket ourInstance = new MVBandwidthTokenBucket();
-    private volatile int bucketCapacity = 1*1000*1000; // 1MByte in bytes
-    private final Semaphore bucketSize = new Semaphore(0, false);
 
+    public static final int DEFAULT_BUFFER_SIZE = 4 * 1024; // default byte buffer size
+//    private final MVBandwidthTokenBucket ourInstance = new MVBandwidthTokenBucket();
+    private volatile int bucketCapacity = 1 * 1000 * 1000; // 1MByte in bytes
+    private final Semaphore bucketSize = new Semaphore(0, false);
 
     private MVBandwidthTokenBucketFillerThread fillerThread = null;
 
-    private MVBandwidthTokenBucket() {
+    public MVBandwidthTokenBucket() {
         setBucketCapacity(getBandwidth());
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BANDBREITE, MVBandwidthTokenBucket.class.getSimpleName()) {
             @Override
@@ -30,10 +30,9 @@ public class MVBandwidthTokenBucket {
 
     }
 
-    public static MVBandwidthTokenBucket getInstance() {
-        return ourInstance;
-    }
-
+//    public static MVBandwidthTokenBucket getInstance() {
+//        return ourInstance;
+//    }
     /**
      * Ensure that bucket filler thread is running.
      * If it running, nothing will happen.
@@ -47,6 +46,7 @@ public class MVBandwidthTokenBucket {
 
     /**
      * Take number of byte tickets from bucket.
+     *
      * @param howMany The number of bytes to acquire.
      */
     public void takeBlocking(final int howMany) {
@@ -62,13 +62,13 @@ public class MVBandwidthTokenBucket {
     /**
      * Acquire one byte ticket from bucket.
      */
-    public void takeBlocking()
-    {
-         takeBlocking(1);
+    public void takeBlocking() {
+        takeBlocking(1);
     }
 
     /**
      * Get the capacity of the Token Bucket.
+     *
      * @return Maximum number of tokens in the bucket.
      */
     public synchronized int getBucketCapacity() {
@@ -78,8 +78,7 @@ public class MVBandwidthTokenBucket {
     /**
      * Kill the semaphore filling thread.
      */
-    private void terminateFillerThread()
-    {
+    private void terminateFillerThread() {
         if (fillerThread != null) {
             fillerThread.interrupt();
             fillerThread = null;
@@ -92,8 +91,9 @@ public class MVBandwidthTokenBucket {
             terminateFillerThread();
 
             //if we have waiting callers, release them by releasing buckets in the semaphore...
-            while (bucketSize.hasQueuedThreads())
+            while (bucketSize.hasQueuedThreads()) {
                 bucketSize.release();
+            }
 
             //reset semaphore
             bucketSize.drainPermits();
@@ -109,6 +109,7 @@ public class MVBandwidthTokenBucket {
 
     /**
      * Read bandwidth settings from config.
+     *
      * @return The maximum bandwidth in bytes set or zero for unlimited speed.
      */
     private int getBandwidth() {
@@ -129,6 +130,7 @@ public class MVBandwidthTokenBucket {
      * Fills the bucket semaphore with available download buckets for speed management.
      */
     private class MVBandwidthTokenBucketFillerThread extends Thread {
+
         public MVBandwidthTokenBucketFillerThread() {
             setName("MVBandwidthTokenBucket Filler Thread");
         }
@@ -137,16 +139,18 @@ public class MVBandwidthTokenBucket {
         public void run() {
             try {
                 while (!isInterrupted()) {
-                    final int bucketCapacity = getBucketCapacity();
+                    final int bucketCapacity = getBucketCapacity() / 2;
                     //for unlimited speed we dont need the thread
-                    if (bucketCapacity == 0)
+                    if (bucketCapacity == 0) {
                         break;
+                    }
 
                     final int releaseCount = bucketCapacity - bucketSize.availablePermits();
-                    if (releaseCount > 0)
+                    if (releaseCount > 0) {
                         bucketSize.release(releaseCount);
+                    }
 
-                    sleep(1000);
+                    sleep(500);
                 }
             } catch (Exception ignored) {
             }
