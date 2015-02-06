@@ -1122,8 +1122,9 @@ public class GuiFilme extends PanelVorlage {
         private final BeobFilterSender beobSender = new BeobFilterSender();
         private final BeobFilterSenderThema beobSenderThema = new BeobFilterSenderThema();
         private final BeobFilterSenderThemaTitel beobSenderThemaTitel = new BeobFilterSenderThemaTitel();
-        private final BeobBlacklist boeobBlacklistSender = new BeobBlacklist(true, false);
-        private final BeobBlacklist boeobBlacklistSenderThema = new BeobBlacklist(true, true);
+        private final BeobBlacklist beobBlacklistSender = new BeobBlacklist(true, false);
+        private final BeobBlacklist beobBlacklistSenderThema = new BeobBlacklist(true, true);
+        private final BeobBlacklist beobBlacklistThema = new BeobBlacklist(false, true);
         private Point p;
         private DatenFilm film = null;
 
@@ -1304,11 +1305,15 @@ public class GuiFilme extends PanelVorlage {
             //anlegen
             JMenuItem itemBlackSender;
             JMenuItem itemBlackSenderThema;
+            JMenuItem itemBlackThema;
             itemBlackSender = new JMenuItem("Sender in die Blacklist einfügen");
+            itemBlackThema = new JMenuItem("Thema in die Blacklist einfügen");
             itemBlackSenderThema = new JMenuItem("Sender und Thema in die Blacklist einfügen");
-            itemBlackSender.addActionListener(boeobBlacklistSender);
-            itemBlackSenderThema.addActionListener(boeobBlacklistSenderThema);
+            itemBlackSender.addActionListener(beobBlacklistSender);
+            itemBlackThema.addActionListener(beobBlacklistThema);
+            itemBlackSenderThema.addActionListener(beobBlacklistSenderThema);
             submenueBlack.add(itemBlackSender);
+            submenueBlack.add(itemBlackThema);
             submenueBlack.add(itemBlackSenderThema);
 
             //##Trenner##
