@@ -243,15 +243,15 @@ public class DialogAddDownload extends JDialog {
         jButtonDelHistory.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM__DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
+                Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
                 jComboBoxPfad.setModel(new DefaultComboBoxModel<>(new String[]{orgPfad}));
             }
         });
-        jCheckBoxPfadSpeichern.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM__DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)));
+        jCheckBoxPfadSpeichern.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)));
         jCheckBoxPfadSpeichern.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM__DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN, Boolean.toString(jCheckBoxPfadSpeichern.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN, Boolean.toString(jCheckBoxPfadSpeichern.isSelected()));
             }
         });
         setupResolutionButtons();
@@ -375,19 +375,19 @@ public class DialogAddDownload extends JDialog {
     private void setModelPfad(String pfad) {
         ArrayList<String> pfade = new ArrayList<>();
         // wenn gewünscht, den letzten verwendeten Pfad an den Anfang setzen
-        if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM__DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN))) {
+        if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN))) {
             // sonst kommt der Pfad des Sets an den Anfang
             if (!pfad.isEmpty()) {
                 pfade.add(pfad);
             }
         }
-        if (!Daten.mVConfig.get(MVConfig.SYSTEM__DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).isEmpty()) {
-            String[] p = Daten.mVConfig.get(MVConfig.SYSTEM__DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).split("<>");
+        if (!Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).isEmpty()) {
+            String[] p = Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).split("<>");
             if (p.length != 0) {
                 pfade.addAll(Arrays.asList(p));
             }
         }
-        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM__DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN))) {
+        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN))) {
             if (!pfad.isEmpty()) {
                 pfade.add(pfad);
             }
@@ -415,7 +415,7 @@ public class DialogAddDownload extends JDialog {
                 }
             }
         }
-        Daten.mVConfig.add(MVConfig.SYSTEM__DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, s);
+        Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, s);
     }
 
     /**
