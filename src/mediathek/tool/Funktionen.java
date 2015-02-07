@@ -27,7 +27,9 @@ import mediathek.Main;
 import mediathek.controller.Log;
 
 public class Funktionen {
+
     public enum OperatingSystemType {
+
         UNKNOWN(""), WIN32("Windows"), WIN64("Windows"), LINUX("Linux"), MAC("Mac");
         private final String name;
 
@@ -50,12 +52,12 @@ public class Funktionen {
         OperatingSystemType os = OperatingSystemType.UNKNOWN;
 
         if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            if (System.getenv("ProgramFiles") != null) {
-                // win 32Bit
-                os = OperatingSystemType.WIN32;
-            } else if (System.getenv("ProgramFiles(x86)") != null) {
+            if (System.getenv("ProgramFiles(x86)") != null) {
                 // win 64Bit
                 os = OperatingSystemType.WIN64;
+            } else if (System.getenv("ProgramFiles") != null) {
+                // win 32Bit
+                os = OperatingSystemType.WIN32;
             }
         } else if (SystemInfo.isLinux()) {
             os = OperatingSystemType.LINUX;
@@ -72,6 +74,7 @@ public class Funktionen {
 
     /**
      * Retrieve the path to the program jar file.
+     *
      * @return The program jar file path with a separator added.
      */
     public static String getPathJar() {
@@ -124,7 +127,7 @@ public class Funktionen {
             rb = ResourceBundle.getBundle("version");
             msg = rb.getString(propToken);
         } catch (Exception e) {
-            Log.fehlerMeldung(807293847,  Funktionen.class.getName(), e);
+            Log.fehlerMeldung(807293847, Funktionen.class.getName(), e);
         }
         return msg;
     }
