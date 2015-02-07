@@ -40,7 +40,12 @@ import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
-import mediathek.tool.*;
+import mediathek.tool.FilenameUtils;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Konstanten;
+import mediathek.tool.MVColor;
+import mediathek.tool.MVConfig;
+import mediathek.tool.MVMessageDialog;
 
 public class MVPanelDownloadZiel extends javax.swing.JPanel {
 
