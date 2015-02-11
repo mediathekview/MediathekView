@@ -195,17 +195,7 @@ public class GuiAbo extends PanelVorlage {
     }
 
     private void aboNeu() {
-        Daten.listeAbo.addAbo("" /*sender*/, "" /*thema*/, ""/*titel*/, "" /*themaTitel*/, "" /*irgendwo*/, 0, "neu" /*ziel*/);
-
-//        DatenAbo akt = new DatenAbo("Neu", "", "" /*thema*/, ""/*titel*/, "" /*themaTitel*/, "" /*irgendwo*/, 0, "neu" /*ziel*/, "");
-//        DialogEditAbo dialog = new DialogEditAbo(null, true, daten, akt);
-//        dialog.setVisible(true);
-//        if (dialog.ok) {
-//            Daten.listeAbo.addAbo(akt);
-//            tabelleLaden();
-//            Daten.listeAbo.aenderungMelden();
-//        }
-//        setInfo();
+        Daten.listeAbo.addAbo("" /*sender*/, "Thema" /*thema*/, ""/*titel*/);
     }
 
     private void aboEinAus(boolean ein) {

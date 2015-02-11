@@ -157,40 +157,17 @@ public class DialogEditAbo extends javax.swing.JDialog {
         c.gridx = 1;
         c.weightx = 10;
         if (i == DatenAbo.ABO_PSET_NR) {
-//            if (ddaten.listePset.getListeAbo().size() <= 1) {
-//                // dann nur ein Texfeld und nicht veränderbar
-//                DatenPset pset = ddaten.listePset.getListeAbo().getFirst();
-//                JTextField textfeld = new JTextField();
-//                textfeldListe[i] = textfeld;
-//                if (aktAbo.arr[i].equals("")) {
-//                    if (pset != null) {
-//                        aktAbo.arr[DatenAbo.ABO_PSET_NR] = pset.arr[DatenPset.PROGRAMMSET_NAME_NR];
-//                    }
-//                }
-//                textfeld.setText(aktAbo.arr[i]);
-//                textfeld.setEditable(false);
-//                gridbag.setConstraints(textfeld, c);
-//                panel.add(textfeld);
-//            } else {
             comboboxPSet.setSelectedItem(aktAbo.arr[i]);
             //falls das Feld leer war, wird es jetzt auf den ersten Eintrag gesetzt
             aktAbo.arr[DatenAbo.ABO_PSET_NR] = comboboxPSet.getSelectedItem().toString(); // damit immer eine Set eingetragen ist!
-//                comboboxPSet.addActionListener(new BeobComboProgramm());
             gridbag.setConstraints(comboboxPSet, c);
             panel.add(comboboxPSet);
-//            }
         } else if (i == DatenAbo.ABO_SENDER_NR) {
             comboboxSender.setSelectedItem(aktAbo.arr[i]);
-            //falls das Feld leer war, wird es jetzt auf den ersten Eintrag gesetzt
-//            aktAbo.arr[DatenAbo.ABO_SENDER_NR] = comboboxSender.getSelectedItem().toString();
-//            comboboxSender.addActionListener(new BeobComboSender());
             gridbag.setConstraints(comboboxSender, c);
             panel.add(comboboxSender);
         } else if (i == DatenAbo.ABO_ZIELPFAD_NR) {
             comboboxPfad.setSelectedItem(aktAbo.arr[i]);
-            //falls das Feld leer war, wird es jetzt auf den ersten Eintrag gesetzt
-//            aktAbo.arr[DatenAbo.ABO_ZIELPFAD_NR] = comboboxPfad.getSelectedItem().toString();
-//            comboboxPfad.addActionListener(new BeobComboPfad());
             gridbag.setConstraints(comboboxPfad, c);
             panel.add(comboboxPfad);
         } else if (i == DatenAbo.ABO_MINDESTDAUER_NR) {
@@ -200,9 +177,6 @@ public class DialogEditAbo extends javax.swing.JDialog {
                 @Override
                 public void stateChanged(ChangeEvent e) {
                     labelDauer.setText("  " + sliderDauer.getValue() + " ");
-//                    if (!sliderDauer.getValueIsAdjusting()) {
-//                        aktAbo.setMindestDauerMinuten(sliderDauer.getValue());
-//                    }
                 }
             });
             JPanel p = new JPanel(new BorderLayout());
@@ -212,7 +186,6 @@ public class DialogEditAbo extends javax.swing.JDialog {
             panel.add(p);
         } else if (i == DatenAbo.ABO_EINGESCHALTET_NR) {
             checkBoxEingeschaltet.setSelected(Boolean.parseBoolean(aktAbo.arr[i]));
-//            checkBoxEingeschaltet.addActionListener(new BeobCheckbox());
             gridbag.setConstraints(checkBoxEingeschaltet, c);
             panel.add(checkBoxEingeschaltet);
         } else {
@@ -221,8 +194,6 @@ public class DialogEditAbo extends javax.swing.JDialog {
             if (i == DatenAbo.ABO_NR_NR
                     || i == DatenAbo.ABO_DOWN_DATUM_NR) {
                 textfeld.setEditable(false);
-//            } else {
-//                textfeld.getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
             }
             textfeld.setText(aktAbo.arr[i]);
             gridbag.setConstraints(textfeld, c);
@@ -234,7 +205,6 @@ public class DialogEditAbo extends javax.swing.JDialog {
         for (int i = 0; i < DatenAbo.MAX_ELEM; ++i) {
             switch (i) {
                 case (DatenAbo.ABO_ZIELPFAD_NR):
-                    // aktAbo.arr[DatenAbo.ABO_ZIELPFAD_NR] = GuiFunktionen.replaceLeerDateiname(aktAbo.arr[DatenAbo.ABO_ZIELPFAD_NR], true /* istDatei */);
                     aktAbo.arr[DatenAbo.ABO_ZIELPFAD_NR] = comboboxPfad.getSelectedItem().toString();
                     break;
                 case (DatenAbo.ABO_PSET_NR):
@@ -330,62 +300,4 @@ public class DialogEditAbo extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 
-//    private class BeobachterDocumentTextfeld implements DocumentListener {
-//
-//        int nr;
-//
-//        public BeobachterDocumentTextfeld(int n) {
-//            nr = n;
-//        }
-//
-//        @Override
-//        public void insertUpdate(DocumentEvent arg0) {
-//            eingabe();
-//        }
-//
-//        @Override
-//        public void removeUpdate(DocumentEvent arg0) {
-//            eingabe();
-//        }
-//
-//        @Override
-//        public void changedUpdate(DocumentEvent arg0) {
-//            eingabe();
-//        }
-//
-//        private void eingabe() {
-//            aktAbo.arr[nr] = textfeldListe[nr].getText().trim();
-//        }
-//    }
-//    private class BeobComboProgramm implements ActionListener {
-//
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            aktAbo.arr[DatenAbo.ABO_PSET_NR] = comboboxPSet.getSelectedItem().toString();
-//        }
-//    }
-//
-//    private class BeobComboSender implements ActionListener {
-//
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            aktAbo.arr[DatenAbo.ABO_SENDER_NR] = comboboxSender.getSelectedItem().toString();
-//        }
-//    }
-//
-//    private class BeobComboPfad implements ActionListener {
-//
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            aktAbo.arr[DatenAbo.ABO_ZIELPFAD_NR] = comboboxPfad.getSelectedItem().toString();
-//        }
-//    }
-//
-//    private class BeobCheckbox implements ActionListener {
-//
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            aktAbo.arr[DatenAbo.ABO_EINGESCHALTET_NR] = Boolean.toString(checkBoxEingeschaltet.isSelected());
-//        }
-//    }
 }
