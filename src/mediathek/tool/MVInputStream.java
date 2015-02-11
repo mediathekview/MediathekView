@@ -37,7 +37,7 @@ public class MVInputStream extends InputStream {
 
     public MVInputStream(InputStream in, java.util.Timer calculationTimer) {
         iStream = in;
-        bucket =new  MVBandwidthTokenBucket();
+        bucket = new MVBandwidthTokenBucket();
         bucket.ensureBucketThreadIsRunning();
 
         //start bandwidth calculation
@@ -57,8 +57,9 @@ public class MVInputStream extends InputStream {
     public int read() throws IOException {
         bucket.takeBlocking();
         final int bytesRead = iStream.read();
-        if (bytesRead != -1)
+        if (bytesRead != -1) {
             calculationTask.incrementBytesRead(1);
+        }
 
         return bytesRead;
     }
@@ -67,8 +68,9 @@ public class MVInputStream extends InputStream {
     public int read(byte[] b) throws IOException {
         bucket.takeBlocking(b.length);
         final int bytesRead = iStream.read(b);
-        if (bytesRead != -1)
+        if (bytesRead != -1) {
             calculationTask.incrementBytesRead(bytesRead);
+        }
 
         return bytesRead;
     }
@@ -97,6 +99,7 @@ public class MVInputStream extends InputStream {
      * until termination.
      */
     private class BandwidthCalculationTask extends TimerTask {
+
         private long oldTotalBytes = 0;
         private long totalBytesRead = 0;
         private long bandwidth = 0;
