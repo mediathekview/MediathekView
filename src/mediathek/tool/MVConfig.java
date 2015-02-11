@@ -138,7 +138,7 @@ public class MVConfig {
     public static final String SYSTEM_DIALOG_DOWNLOAD_D_STARTEN = "Dialog-Download-D-Starten"; // DialogDownload: Download sofort starten
     public static final String SYSTEM_DOWNLOAD_SOFORT_STARTEN = "Download-sofort-starten";
     public static final String SYSTEM_DOWNLOAD_BEEP = "Download-Beep";
-    public static final String SYSTEM_BANDBREITE_KBYTE = "Bandbreite";
+    public static final String SYSTEM_BANDBREITE_KBYTE = "maxBandbreite";
     public static final String SYSTEM_MAX_DOWNLOAD = "maxDownload";
     public static final String SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN = "Pfade-zum-Speichern"; // gesammelten Downloadpfade im Downloaddialog
     public static final String SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN = "Letzen-Pfad-anzeigen";
