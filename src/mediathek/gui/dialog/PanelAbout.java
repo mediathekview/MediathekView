@@ -23,7 +23,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.Timer;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.Funktionen;
@@ -31,12 +32,13 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.UrlHyperlinkAction;
 
 public class PanelAbout extends PanelVorlage {
+
     private final static long BYTES_TO_MBYTE = (1024L * 1024L);
 
     public PanelAbout(Daten dd, JFrame parentComponent) {
         super(dd, parentComponent);
         initComponents();
-        
+
         try {
             lblProgrammversion.setText(Funktionen.getProgVersionString() + " vom: " + Funktionen.getCompileDate());
         } catch (Exception ignored) {
@@ -54,8 +56,6 @@ public class PanelAbout extends PanelVorlage {
             jXHyperlinkAnleitung.addActionListener(new UrlHyperlinkAction(parentComponent, daten, Konstanten.ADRESSE_ANLEITUNG));
             jXHyperlinkForum.setText(Konstanten.ADRESSE_FORUM);
             jXHyperlinkForum.addActionListener(new UrlHyperlinkAction(parentComponent, daten, Konstanten.ADRESSE_FORUM));
-            jXHyperlinkSpende.setText(Konstanten.ADRESSE_DONATION);
-            jXHyperlinkSpende.addActionListener(new UrlHyperlinkAction(parentComponent, daten, Konstanten.ADRESSE_DONATION));
         } catch (URISyntaxException ignored) {
         }
 
@@ -102,8 +102,6 @@ public class PanelAbout extends PanelVorlage {
         jXHyperlinkWebsite = new org.jdesktop.swingx.JXHyperlink();
         jXHyperlinkAnleitung = new org.jdesktop.swingx.JXHyperlink();
         jXHyperlinkForum = new org.jdesktop.swingx.JXHyperlink();
-        javax.swing.JLabel jLabel8 = new javax.swing.JLabel();
-        jXHyperlinkSpende = new org.jdesktop.swingx.JXHyperlink();
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
@@ -165,7 +163,7 @@ public class PanelAbout extends PanelVorlage {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelSpeicher3)
                     .addComponent(lblFreeMemory))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -185,11 +183,6 @@ public class PanelAbout extends PanelVorlage {
 
         jXHyperlinkForum.setText("http://zdfmediathk.sourceforge.net/forum/");
 
-        jLabel8.setFont(jLabel8.getFont().deriveFont(jLabel8.getFont().getStyle() | java.awt.Font.BOLD));
-        jLabel8.setText("Spende:");
-
-        jXHyperlinkSpende.setText("http://zdfmediathk.sourceforge.net/index.html#donate");
-
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -199,15 +192,13 @@ public class PanelAbout extends PanelVorlage {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
                     .addComponent(jLabel7)
-                    .addComponent(jLabel9)
-                    .addComponent(jLabel8))
+                    .addComponent(jLabel9))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jXHyperlinkSpende, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jXHyperlinkWebsite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jXHyperlinkAnleitung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jXHyperlinkForum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(253, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -216,11 +207,7 @@ public class PanelAbout extends PanelVorlage {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jXHyperlinkWebsite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(jXHyperlinkSpende, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(jXHyperlinkForum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -283,7 +270,7 @@ public class PanelAbout extends PanelVorlage {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(lblSettingsPath))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -333,7 +320,7 @@ public class PanelAbout extends PanelVorlage {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
-                        .addGap(0, 237, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -341,7 +328,6 @@ public class PanelAbout extends PanelVorlage {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.jdesktop.swingx.JXHyperlink jXHyperlinkAnleitung;
     private org.jdesktop.swingx.JXHyperlink jXHyperlinkForum;
-    private org.jdesktop.swingx.JXHyperlink jXHyperlinkSpende;
     private org.jdesktop.swingx.JXHyperlink jXHyperlinkWebsite;
     private javax.swing.JLabel lblFilmlistpath;
     private javax.swing.JLabel lblFreeMemory;
