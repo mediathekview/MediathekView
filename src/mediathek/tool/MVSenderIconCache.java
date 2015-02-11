@@ -29,6 +29,7 @@ public class MVSenderIconCache {
         iconCache.put("NDR", scaleImage(PFAD + "ndr.png", height));
         iconCache.put("ORF", scaleImage(PFAD + "orf.png", height));
         iconCache.put("RBB", scaleImage(PFAD + "rbb.png", height));
+        iconCache.put("SR", scaleImage(PFAD + "sr.png", height));
         iconCache.put("SRF", scaleImage(PFAD + "srf.png", height));
         iconCache.put("SRF.Podcast", scaleImage(PFAD + "srf-podcast.png", height));
         iconCache.put("SWR", scaleImage(PFAD + "swr.png", height));
@@ -51,6 +52,7 @@ public class MVSenderIconCache {
         iconCache_small.put("NDR", scaleImage(PFAD + "ndr.png", height_small));
         iconCache_small.put("ORF", scaleImage(PFAD + "orf.png", height_small));
         iconCache_small.put("RBB", scaleImage(PFAD + "rbb.png", height_small));
+        iconCache_small.put("SR", scaleImage(PFAD + "sr.png", height_small));
         iconCache_small.put("SRF", scaleImage(PFAD + "srf.png", height_small));
         iconCache_small.put("SRF.Podcast", scaleImage(PFAD + "srf-podcast.png", height_small));
         iconCache_small.put("SWR", scaleImage(PFAD + "swr.png", height_small));

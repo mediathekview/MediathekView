@@ -27,7 +27,12 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import javax.swing.JOptionPane;
 import mediathek.gui.dialog.DialogEditAbo;
-import mediathek.tool.*;
+import mediathek.tool.FilenameUtils;
+import mediathek.tool.Filter;
+import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVConfig;
+import mediathek.tool.MVMessageDialog;
+import mediathek.tool.TModelAbo;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 import msearch.tool.Datum;
@@ -45,8 +50,14 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     private int nr = 0;
 
     public boolean addAbo(String filmSender, String filmThema, String filmTitel) {
-        return addAbo(filmSender, filmThema, filmTitel, "", "", 0, filmThema);
-
+        int min;
+        try {
+            min = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ABO_MIN_SIZE));
+        } catch (Exception ex) {
+            min = 0;
+            Daten.mVConfig.add(MVConfig.SYSTEM_ABO_MIN_SIZE, "0");
+        }
+        return addAbo(filmSender, filmThema, filmTitel, "", "", min, filmThema);
     }
 
     public boolean addAbo(String filmSender, String filmThema, String filmTitel, String filmThemaTitel, String irgendwo, int mindestdauer, String namePfad) {
@@ -58,6 +69,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         dialogEditAbo.setVisible(true);
         if (dialogEditAbo.ok) {
             if (!aboExistiertBereits(datenAbo)) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_ABO_MIN_SIZE, datenAbo.arr[DatenAbo.ABO_MINDESTDAUER_NR]); // als Vorgabe merken
                 addAbo(datenAbo);
                 aenderungMelden();
                 ret = true;
@@ -73,11 +85,6 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         // für das Lesen der Konfig-Datei beim Programmstart
         ++nr;
         datenAbo.nr = nr;
-//        String str = String.valueOf(nr);
-//        while (str.length() < 3) {
-//            str = "0" + str;
-//        }
-//        datenAbo.arr[DatenAbo.ABO_NR_NR] = str;
         datenAbo.setMindestDauerMinuten();
         super.add(datenAbo);
         sort();

@@ -140,8 +140,10 @@ public class MVConfig {
     public static final String SYSTEM_DOWNLOAD_BEEP = "Download-Beep";
     public static final String SYSTEM_BANDBREITE_KBYTE = "Bandbreite";
     public static final String SYSTEM_MAX_DOWNLOAD = "maxDownload";
-    public static final String SYSTEM__DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN = "Pfade-zum-Speichern"; // gesammelten Downloadpfade im Downloaddialog
-    public static final String SYSTEM__DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN = "Letzen-Pfad-anzeigen";
+    public static final String SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN = "Pfade-zum-Speichern"; // gesammelten Downloadpfade im Downloaddialog
+    public static final String SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN = "Letzen-Pfad-anzeigen";
+    // Abo
+    public static final String SYSTEM_ABO_MIN_SIZE = "Abo-Mindestdauer-Minuten";
 
     private final HashMap<String, String> hashmap = new HashMap<>();
 
