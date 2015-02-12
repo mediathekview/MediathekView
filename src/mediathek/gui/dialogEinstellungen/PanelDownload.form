@@ -231,7 +231,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel5">
           <Properties>
-            <Property name="text" type="java.lang.String" value="(nur f&#xfc;r direkte Downloads)"/>
+            <Property name="text" type="java.lang.String" value="(max. Bandbreite pro Download, nur f&#xfc;r direkte Downloads)"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextFieldWarnung">

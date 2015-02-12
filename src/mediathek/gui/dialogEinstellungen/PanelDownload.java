@@ -226,7 +226,7 @@ public class PanelDownload extends PanelVorlage {
         jSliderBandbreite.setMinorTickSpacing(5);
         jSliderBandbreite.setToolTipText("");
 
-        jLabel5.setText("(nur für direkte Downloads)");
+        jLabel5.setText("(max. Bandbreite pro Download, nur für direkte Downloads)");
 
         jTextFieldWarnung.setEditable(false);
         jTextFieldWarnung.setText("jTextField1");
