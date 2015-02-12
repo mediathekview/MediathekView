@@ -88,7 +88,7 @@
                           <Component id="jLabelBandwidth" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="135" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="125" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -97,7 +97,10 @@
           <SubComponents>
             <Component class="javax.swing.JSlider" name="jSliderBandwidth">
               <Properties>
-                <Property name="minimum" type="int" value="5"/>
+                <Property name="maximum" type="int" value="1000"/>
+                <Property name="minimum" type="int" value="50"/>
+                <Property name="paintTicks" type="boolean" value="true"/>
+                <Property name="snapToTicks" type="boolean" value="true"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabelBandwidth">

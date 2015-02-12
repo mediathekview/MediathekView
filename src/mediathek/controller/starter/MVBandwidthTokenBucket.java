@@ -13,14 +13,13 @@ import mediathek.tool.MVConfig;
 public class MVBandwidthTokenBucket {
 
     public static final int DEFAULT_BUFFER_SIZE = 4 * 1024; // default byte buffer size
-//    private final MVBandwidthTokenBucket ourInstance = new MVBandwidthTokenBucket();
     private final Semaphore bucketSize = new Semaphore(0, false);
 
-    public static final int BANDWIDTH_MAX_RED_KBYTE = 500; // 500 kByte
-    public static final int BANDWIDTH_MAX_BYTE = 1_000_000; // 1.000 kByte
+    public static final int BANDWIDTH_MAX_RED_KBYTE = 500; // 500 kByte/s
+    public static final int BANDWIDTH_MAX_BYTE = 1_000_000; // 1.000 kByte/s
+    public static final int BANDWIDTH_MAX_KBYTE = 1_000; // 1.000 kByte/s
 
-    private volatile int bucketCapacity = BANDWIDTH_MAX_RED_KBYTE; // 500kByte
-
+    private volatile int bucketCapacity = BANDWIDTH_MAX_RED_KBYTE * 1_000; // 500kByte/s
     private MVBandwidthTokenBucketFillerThread fillerThread = null;
 
     public MVBandwidthTokenBucket() {
@@ -34,9 +33,6 @@ public class MVBandwidthTokenBucket {
 
     }
 
-//    public static MVBandwidthTokenBucket getInstance() {
-//        return ourInstance;
-//    }
     /**
      * Ensure that bucket filler thread is running.
      * If it running, nothing will happen.
@@ -54,8 +50,8 @@ public class MVBandwidthTokenBucket {
      * @param howMany The number of bytes to acquire.
      */
     public void takeBlocking(final int howMany) {
-        //if bucket size equals 0 then unlimited speed...
-        if (getBucketCapacity() > 0) {
+        //if bucket size equals BANDWIDTH_MAX_BYTE then unlimited speed...
+        if (getBucketCapacity() < BANDWIDTH_MAX_BYTE) {
             try {
                 bucketSize.acquire(howMany);
             } catch (Exception ignored) {
@@ -103,7 +99,6 @@ public class MVBandwidthTokenBucket {
             bucketSize.drainPermits();
         } else {
             terminateFillerThread();
-
             bucketSize.drainPermits();
 
             //restart filler thread with new settings...
@@ -121,11 +116,11 @@ public class MVBandwidthTokenBucket {
 
         try {
             final int maxKBytePerSec = (int) Long.parseLong(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
-            bytesPerSecond = maxKBytePerSec * 1000;
+            bytesPerSecond = maxKBytePerSec * 1_000;
 
         } catch (Exception ex) {
-            bytesPerSecond = BANDWIDTH_MAX_RED_KBYTE;
-            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, BANDWIDTH_MAX_RED_KBYTE + "");
+            bytesPerSecond = BANDWIDTH_MAX_RED_KBYTE * 1_000;
+            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, BANDWIDTH_MAX_RED_KBYTE * 1_000 + "");
         }
         return bytesPerSecond;
     }
@@ -143,13 +138,14 @@ public class MVBandwidthTokenBucket {
         public void run() {
             try {
                 while (!isInterrupted()) {
-                    final int bucketCapacity = getBucketCapacity() / 2;
+                    // run 2times per second, its more regular
+                    final int bucketCapacity = getBucketCapacity();
                     //for unlimited speed we dont need the thread
                     if (bucketCapacity == MVBandwidthTokenBucket.BANDWIDTH_MAX_BYTE) {
                         break;
                     }
 
-                    final int releaseCount = bucketCapacity - bucketSize.availablePermits();
+                    final int releaseCount = bucketCapacity / 2 - bucketSize.availablePermits();
                     if (releaseCount > 0) {
                         bucketSize.release(releaseCount);
                     }
