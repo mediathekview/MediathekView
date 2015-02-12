@@ -44,11 +44,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
+import mediathek.controller.starter.MVBandwidthTokenBucket;
 import mediathek.daten.Daten;
 import static mediathek.daten.Daten.mVConfig;
 import mediathek.daten.DownloadInfos;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFilmSize;
@@ -251,15 +253,20 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         try {
             bandbreite = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
         } catch (Exception ex) {
-            bandbreite = 0;
-            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, "0");
+            bandbreite = MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE;
+            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE + "");
         }
         jSliderBandwidth.setValue(bandbreite / 10);
-        if (bandbreite == 0) {
-            jLabelBandwidth.setText("aus");
+        if (bandbreite == 1000) {
+            jLabelBandwidth.setText("MAX");
 
         } else {
             jLabelBandwidth.setText(bandbreite + " kByte/s");
+        }
+        if (bandbreite > MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE) {
+            jLabelBandwidth.setForeground(Color.red);
+        } else {
+            jLabelBandwidth.setForeground(Color.black);
         }
         stopBeob = false;
     }
@@ -346,7 +353,6 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         jSplitPane1 = new javax.swing.JSplitPane();
         jPanelChart = new javax.swing.JPanel();
         jPanelInfo = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         jSliderBandwidth = new javax.swing.JSlider();
         jLabelBandwidth = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -369,9 +375,10 @@ public class MVDownloadInfo extends javax.swing.JPanel {
 
         jSplitPane1.setTopComponent(jPanelChart);
 
-        jLabel1.setText("Max:");
+        jSliderBandwidth.setMinimum(5);
 
-        jLabelBandwidth.setText("10 kByte/s");
+        jLabelBandwidth.setText("100 kByte/s");
+        jLabelBandwidth.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
         jScrollPane1.setViewportView(jEditorPaneInfo);
 
@@ -381,27 +388,23 @@ public class MVDownloadInfo extends javax.swing.JPanel {
             jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelInfoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                .addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(jPanelInfoLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addComponent(jLabelBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSliderBandwidth, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabelBandwidth)))
+                        .addComponent(jSliderBandwidth, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanelInfoLayout.setVerticalGroup(
             jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelInfoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabelBandwidth)
-                    .addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jSliderBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel1)))
+                .addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSliderBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelBandwidth))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -422,7 +425,6 @@ public class MVDownloadInfo extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JEditorPane jEditorPaneInfo;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabelBandwidth;
     private javax.swing.JPanel jPanelChart;
     private javax.swing.JPanel jPanelInfo;

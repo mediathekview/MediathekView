@@ -14,8 +14,12 @@ public class MVBandwidthTokenBucket {
 
     public static final int DEFAULT_BUFFER_SIZE = 4 * 1024; // default byte buffer size
 //    private final MVBandwidthTokenBucket ourInstance = new MVBandwidthTokenBucket();
-    private volatile int bucketCapacity = 1 * 1000 * 1000; // 1MByte in bytes
     private final Semaphore bucketSize = new Semaphore(0, false);
+
+    public static final int BANDWIDTH_MAX_RED_KBYTE = 500; // 500 kByte
+    public static final int BANDWIDTH_MAX_BYTE = 1_000_000; // 1.000 kByte
+
+    private volatile int bucketCapacity = BANDWIDTH_MAX_RED_KBYTE; // 500kByte
 
     private MVBandwidthTokenBucketFillerThread fillerThread = null;
 
@@ -87,7 +91,7 @@ public class MVBandwidthTokenBucket {
 
     public synchronized void setBucketCapacity(int bucketCapacity) {
         this.bucketCapacity = bucketCapacity;
-        if (bucketCapacity == 0) {
+        if (bucketCapacity == BANDWIDTH_MAX_BYTE) {
             terminateFillerThread();
 
             //if we have waiting callers, release them by releasing buckets in the semaphore...
@@ -120,8 +124,8 @@ public class MVBandwidthTokenBucket {
             bytesPerSecond = maxKBytePerSec * 1000;
 
         } catch (Exception ex) {
-            bytesPerSecond = 0;
-            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, "0");
+            bytesPerSecond = BANDWIDTH_MAX_RED_KBYTE;
+            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, BANDWIDTH_MAX_RED_KBYTE + "");
         }
         return bytesPerSecond;
     }
@@ -141,7 +145,7 @@ public class MVBandwidthTokenBucket {
                 while (!isInterrupted()) {
                     final int bucketCapacity = getBucketCapacity() / 2;
                     //for unlimited speed we dont need the thread
-                    if (bucketCapacity == 0) {
+                    if (bucketCapacity == MVBandwidthTokenBucket.BANDWIDTH_MAX_BYTE) {
                         break;
                     }
 
