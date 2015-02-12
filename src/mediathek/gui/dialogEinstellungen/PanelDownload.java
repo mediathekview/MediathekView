@@ -89,6 +89,8 @@ public class PanelDownload extends PanelVorlage {
                 Toolkit.getDefaultToolkit().beep();
             }
         });
+        jSliderBandbreite.setMinimum(5); //50 kByte/s
+        jSliderBandbreite.setMaximum(100); //1.000 kByte/s
         setSliderBandwith();
         jSliderBandbreite.addChangeListener(new ChangeListener() {
             @Override
@@ -114,7 +116,7 @@ public class PanelDownload extends PanelVorlage {
             Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE + "");
         }
         jSliderBandbreite.setValue(bandbreite / 10);
-        if (bandbreite == 1000) {
+        if (bandbreite == MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE) {
             jLabelBandwidth.setText("MAX");
         } else {
             jLabelBandwidth.setText(bandbreite + " kByte/s");
@@ -219,7 +221,8 @@ public class PanelDownload extends PanelVorlage {
         jLabelBandwidth.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
         jSliderBandbreite.setMajorTickSpacing(10);
-        jSliderBandbreite.setMinimum(5);
+        jSliderBandbreite.setMaximum(1000);
+        jSliderBandbreite.setMinimum(50);
         jSliderBandbreite.setMinorTickSpacing(5);
         jSliderBandbreite.setToolTipText("");
 

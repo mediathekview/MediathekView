@@ -223,7 +223,8 @@
         <Component class="javax.swing.JSlider" name="jSliderBandbreite">
           <Properties>
             <Property name="majorTickSpacing" type="int" value="10"/>
-            <Property name="minimum" type="int" value="5"/>
+            <Property name="maximum" type="int" value="1000"/>
+            <Property name="minimum" type="int" value="50"/>
             <Property name="minorTickSpacing" type="int" value="5"/>
             <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>

@@ -148,8 +148,8 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         jEditorPaneInfo.setEditable(false);
         jEditorPaneInfo.setFocusable(false);
         jEditorPaneInfo.setContentType("text/html");
-        jSliderBandwidth.setMajorTickSpacing(10);
-        jSliderBandwidth.setMinorTickSpacing(5);
+        jSliderBandwidth.setMinimum(5); //50 kByte/s
+        jSliderBandwidth.setMaximum(100); //1_000 kByte/s
         jSliderBandwidth.setToolTipText("");
         setSliderBandwith();
         jSliderBandwidth.addChangeListener(new ChangeListener() {
@@ -257,7 +257,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
             Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE + "");
         }
         jSliderBandwidth.setValue(bandbreite / 10);
-        if (bandbreite == 1000) {
+        if (bandbreite == MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE) {
             jLabelBandwidth.setText("MAX");
 
         } else {
@@ -375,7 +375,10 @@ public class MVDownloadInfo extends javax.swing.JPanel {
 
         jSplitPane1.setTopComponent(jPanelChart);
 
-        jSliderBandwidth.setMinimum(5);
+        jSliderBandwidth.setMaximum(1000);
+        jSliderBandwidth.setMinimum(50);
+        jSliderBandwidth.setPaintTicks(true);
+        jSliderBandwidth.setSnapToTicks(true);
 
         jLabelBandwidth.setText("100 kByte/s");
         jLabelBandwidth.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
@@ -404,7 +407,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
                     .addComponent(jSliderBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabelBandwidth))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
