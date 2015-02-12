@@ -50,7 +50,6 @@ import static mediathek.daten.Daten.mVConfig;
 import mediathek.daten.DownloadInfos;
 import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFilmSize;
