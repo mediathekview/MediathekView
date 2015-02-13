@@ -3,7 +3,7 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>MediathekView.jar</jar>
-  <outfile>/home/emil/daten/software/Mediathek/Mediathek/res/MediathekView.exe</outfile>
+  <outfile>/home/emil/daten/software/Mediathek/Mediathek/res/MediathekView__Start.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir></chdir>
