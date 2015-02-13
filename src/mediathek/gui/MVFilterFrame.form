@@ -263,7 +263,7 @@
             </Component>
             <Component class="javax.swing.JCheckBox" name="jCheckBoxNurNeue">
               <Properties>
-                <Property name="text" type="java.lang.String" value="nur Neue"/>
+                <Property name="text" type="java.lang.String" value="nur neue"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -404,7 +404,7 @@
                 <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                   <ComponentRef name="buttonGroup2"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Irgendwo:"/>
+                <Property name="text" type="java.lang.String" value="irgendwo:"/>
               </Properties>
             </Component>
           </SubComponents>

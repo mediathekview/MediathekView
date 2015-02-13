@@ -59,7 +59,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane5" pref="580" max="32767" attributes="0"/>
+                      <Component id="jScrollPane5" pref="608" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -68,8 +68,8 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane5" min="-2" pref="113" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="jScrollPane5" min="-2" pref="233" max="-2" attributes="0"/>
+                      <EmptySpace pref="256" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -87,7 +87,7 @@
                     <Property name="editable" type="boolean" value="false"/>
                     <Property name="columns" type="int" value="20"/>
                     <Property name="rows" type="int" value="5"/>
-                    <Property name="text" type="java.lang.String" value="&#xa;Die Dateinamen werden f&#xfc;r jedes Betriebssystem passend aufbereitet.&#xa;&#xa;Wer will kann dar&#xfc;ber hinaus weitere Einstellungen mit einer Ersetzungstabelle&#xa;vornehmen: zB. Leerzeichen durch &quot;_&quot; ersetzen."/>
+                    <Property name="text" type="java.lang.String" value="&#xa;Die Dateinamen werden f&#xfc;r jedes Betriebssystem passend aufbereitet.&#xa;&#xa;Wer will kann dar&#xfc;ber hinaus weitere Einstellungen mit einer Ersetzungstabelle&#xa;vornehmen: z.B. &quot;&#xdf;&quot; durch &quot;ss&quot; ersetzen.&#xa;&#xa;&#xa;Unter OS X und Linux ist die Ersetzungstabelle default aktiviert:&#xa;(einziger Eintrag: &quot; &quot; -&gt; &quot;&quot;). Unter OS X und Linux f&#xfc;hren Leerzeichen zu&#xa;fehlerhaften DLs mit FFmpeg (SRF, WDR Rockpalast).&#xa;"/>
                     <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                       <Insets value="[3, 3, 3, 3]"/>
                     </Property>
@@ -111,6 +111,15 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
+                              <Component id="jPanel4" max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jCheckBoxAscii" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -118,18 +127,11 @@
                                       <EmptySpace min="21" pref="21" max="-2" attributes="0"/>
                                       <Component id="jPanel3" max="32767" attributes="0"/>
                                   </Group>
-                                  <Group type="102" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="jCheckBoxTable" min="-2" max="-2" attributes="0"/>
-                                          <Component id="jCheckBoxAscii" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jCheckBoxTable" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
-                          </Group>
-                          <Group type="102" attributes="0">
-                              <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
-                              <Component id="jPanel4" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -145,7 +147,7 @@
                       <Component id="jPanel3" max="32767" attributes="0"/>
                       <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                       <Component id="jCheckBoxAscii" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -170,7 +172,7 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jScrollPane4" max="32767" attributes="0"/>
@@ -201,7 +203,7 @@
                                   <Component id="jButtonMinus" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -209,8 +211,8 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="jScrollPane4" pref="244" max="32767" attributes="0"/>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <Component id="jScrollPane4" pref="162" max="32767" attributes="0"/>
+                          <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="2" attributes="0">
                               <Component id="jLabelVon" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
                               <Component id="jTextFieldVon" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -221,12 +223,12 @@
                               <Component id="jButtonPlus" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
                               <Component id="jButtonMinus" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="2" attributes="0">
                               <Component id="jScrollPane3" alignment="2" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabelAlert" alignment="2" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Component id="jButtonReset" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -345,7 +347,7 @@
             </Container>
             <Component class="javax.swing.JCheckBox" name="jCheckBoxAscii">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&quot;nur ASCII-Zeichen erlauben&quot;"/>
+                <Property name="text" type="java.lang.String" value="nur ASCII-Zeichen erlauben"/>
               </Properties>
             </Component>
             <Container class="javax.swing.JPanel" name="jPanel4">
@@ -400,7 +402,7 @@
                         </Property>
                         <Property name="columns" type="int" value="20"/>
                         <Property name="rows" type="int" value="3"/>
-                        <Property name="text" type="java.lang.String" value="Es werden alle Zeichen &quot;&#xfc;ber 127&quot; ersetzt. Auch Umlaute &quot;&#xf6; -&gt; oe&quot; werden ersetzt.&#xa;Wenn die Ersetzungstabelle aktiv ist, wird sie vorher abgearbeitet."/>
+                        <Property name="text" type="java.lang.String" value="Es werden alle Zeichen &quot;&#xfc;ber 127&quot; ersetzt. &#xa;Auch Umlaute wie &quot;&#xf6; -&gt; oe&quot; werden ersetzt.&#xa;Wenn die Ersetzungstabelle aktiv ist, wird sie vorher abgearbeitet."/>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
                             <EmptyBorder/>

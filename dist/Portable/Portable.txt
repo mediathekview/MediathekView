@@ -22,7 +22,13 @@ Ordner wie die Datei "MediathekView.jar" befinden.
 * OS X:     MediathekView__Mac_Portable.command
 
 (4) Beim Einrichtungsdialog kann optional auf VLC Portable (sofern vorhanden)
-anstelle von einer lokalen VLC-Installation verwiesen werden .
+anstelle von einer lokalen VLC-Installation verwiesen werden.
+
+Mac-User müssen im Einrichtungsdialog die Pfade für den "flvstreamer", "ffmpg" 
+(Set "Mac Speichern") und das "skript" (Set "Mac Abspielen") anpassen und zwar jeweils:
+bin/
+statt
+/Applications/MediathekView.app/Contents/Resources/
 
 Wenn als Zielpfad für Downloads z.B. nur "Filme" angegeben wird
 (und kein absoluter Pfad: C:\xxx\yyy oder /home/user/filme ), dann
