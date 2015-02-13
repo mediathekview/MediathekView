@@ -1,8 +1,9 @@
-Bei der Funktion "Blacklist" werden Filme, die auf die
-Zeilen in der Tabelle passen, nicht angezeigt.
+Bei der Funktion "Blacklist" werden Filme, die den
+Angaben in einer Zeile in der Tabelle entsprechen,
+nicht angezeigt.
 
-Die Funktion "Whitelist" zeigt nur die Filme an,
-die zu einer Zeile in der Tabelle passen.
+Die Funktion "Whitelist" zeigt nur die Filme an, die
+den Angaben in einer Zeile in der Tabelle entsprechen.
 
 Beim Umschalten "Blacklist - Whitelist" werden genau
 die vorher nicht angezeigten Filme jetzt angezeigt.

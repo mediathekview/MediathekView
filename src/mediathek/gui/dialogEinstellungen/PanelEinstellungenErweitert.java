@@ -264,7 +264,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         + "Abos automatisch suchen:\n"
                         + "Nach dem Neuladen einer Filmliste wird dann\n"
                         + "sofort nach neuen Abos gesucht. Ansonsten muss man\n"
-                        + "im Tab Download auf \"Auffrischen\" klicken.\n"
+                        + "im Tab Download auf \"Downloads aktualisieren\" klicken.\n"
                         + "\n"
                         + "Downloads sofort starten:\n"
                         + "Neu angelegte Downloads (aus Abos) werden\n"
@@ -290,11 +290,10 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 new DialogHilfe(parentComponent, true, "\n"
                         + "Wenn das Programm versucht, einen Link zu öffnen\n"
-                        + "(z.B. der Link im Menüpukt \"Hilfe\" zu den \"Hilfeseiten\")\n"
-                        + "und die Standardanwendung (z.B. \"Firefox\") startet nicht,\n"
-                        + "kann damit ein Programm auswählt und\n"
-                        + "fest zugeordnert werden.\n"
-                        + "z.B. der Browser \"Firefox\"").setVisible(true);
+                        + "(z.B. den Link im Menüpunkt \"Hilfe\" zu den \"Hilfeseiten\")\n"
+                        + "und die Standardanwendung (z.B. \"Firefox\") nicht startet,\n"
+                        + "kann damit ein Programm ausgewählt und\n"
+                        + "fest zugeordnet werden (z.B. der Browser \"Firefox\").").setVisible(true);
             }
         });
         jTextFieldProgrammDateimanager.setText(Daten.mVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN));

@@ -89,12 +89,13 @@ zwei Sterne ** werden durch den Zieldateinamen mit Pfad ersetzt.
 
 Beispiel für den VLC:
 Programm: "/usr/bin/vlc"
-Schalter: "%f :sout=#standard{access=file,mux=asf,dst=**} -I dummy --play-and-exit"
-Dateiname: "%t-%T.mp4"
+Schalter: "%f :sout=#standard{access=file,mux=ts,dst=**} -I dummy --play-and-exit"
+Dateiname: "%t-%T.ts"
 
 Hier wird %f durch die URL des Films ersetzt.
 %t und %T werden durch einen Pfad und Dateinamen 
 ersetzt und in den Programmschalter anstatt der "**" eingesetzt.
-(C:\Pfad\Thema-Titel.mp4)
+Als Downloaddatei resultiert Volumes/Pfad/Thema-Titel.ts 
+bzw. C:\Pfad\Thema-Titel.ts.
 
 

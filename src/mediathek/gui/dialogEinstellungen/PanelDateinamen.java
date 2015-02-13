@@ -295,7 +295,7 @@ public class PanelDateinamen extends PanelVorlage {
         jTextArea3.setEditable(false);
         jTextArea3.setColumns(20);
         jTextArea3.setRows(5);
-        jTextArea3.setText("\nDie Dateinamen werden für jedes Betriebssystem passend aufbereitet.\n\nWer will kann darüber hinaus weitere Einstellungen mit einer Ersetzungstabelle\nvornehmen: zB. Leerzeichen durch \"_\" ersetzen.");
+        jTextArea3.setText("\nDie Dateinamen werden für jedes Betriebssystem passend aufbereitet.\n\nWer will kann darüber hinaus weitere Einstellungen mit einer Ersetzungstabelle\nvornehmen: z.B. \"ß\" durch \"ss\" ersetzen.\n\n\nUnter OS X und Linux ist die Ersetzungstabelle default aktiviert:\n(einziger Eintrag: \" \" -> \"\"). Unter OS X und Linux führen Leerzeichen zu\nfehlerhaften DLs mit FFmpeg (SRF, WDR Rockpalast).\n");
         jTextArea3.setMargin(new java.awt.Insets(3, 3, 3, 3));
         jScrollPane5.setViewportView(jTextArea3);
 
@@ -305,15 +305,15 @@ public class PanelDateinamen extends PanelVorlage {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 608, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(256, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Dateinamen", jPanel1);
@@ -392,14 +392,14 @@ public class PanelDateinamen extends PanelVorlage {
                         .addComponent(jButtonPlus)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonMinus)))
-                .addContainerGap())
+                .addGap(15, 15, 15))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabelVon)
                     .addComponent(jTextFieldVon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -420,7 +420,7 @@ public class PanelDateinamen extends PanelVorlage {
 
         jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonDown, jButtonMinus, jButtonPlus, jButtonUp, jLabelNach, jLabelVon, jTextFieldNach, jTextFieldVon});
 
-        jCheckBoxAscii.setText("\"nur ASCII-Zeichen erlauben\"");
+        jCheckBoxAscii.setText("nur ASCII-Zeichen erlauben");
 
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -430,7 +430,7 @@ public class PanelDateinamen extends PanelVorlage {
         jTextArea1.setBackground(javax.swing.UIManager.getDefaults().getColor("Label.background"));
         jTextArea1.setColumns(20);
         jTextArea1.setRows(3);
-        jTextArea1.setText("Es werden alle Zeichen \"über 127\" ersetzt. Auch Umlaute \"ö -> oe\" werden ersetzt.\nWenn die Ersetzungstabelle aktiv ist, wird sie vorher abgearbeitet.");
+        jTextArea1.setText("Es werden alle Zeichen \"über 127\" ersetzt. \nAuch Umlaute wie \"ö -> oe\" werden ersetzt.\nWenn die Ersetzungstabelle aktiv ist, wird sie vorher abgearbeitet.");
         jTextArea1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jScrollPane1.setViewportView(jTextArea1);
 
@@ -458,19 +458,21 @@ public class PanelDateinamen extends PanelVorlage {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jCheckBoxAscii)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(21, 21, 21)
                                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jCheckBoxTable)
-                                    .addComponent(jCheckBoxAscii))
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addComponent(jCheckBoxTable)
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -482,7 +484,7 @@ public class PanelDateinamen extends PanelVorlage {
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jCheckBoxAscii)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );

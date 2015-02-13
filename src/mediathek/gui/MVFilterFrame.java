@@ -466,7 +466,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         jToggleButtonHistory.setText("aktuelle History");
 
-        jCheckBoxNurNeue.setText("nur Neue");
+        jCheckBoxNurNeue.setText("nur neue");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -545,7 +545,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jRadioButtonTT.setText("Thema / Titel:");
 
         buttonGroup2.add(jRadioButtonIrgendwo);
-        jRadioButtonIrgendwo.setText("Irgendwo:");
+        jRadioButtonIrgendwo.setText("irgendwo:");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);

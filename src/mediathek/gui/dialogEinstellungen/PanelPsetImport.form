@@ -360,10 +360,10 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane4" min="-2" pref="131" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="jScrollPane4" min="-2" pref="172" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonImportStandard" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="321" max="32767" attributes="0"/>
+                      <EmptySpace pref="288" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -391,7 +391,7 @@
                     </Property>
                     <Property name="columns" type="int" value="20"/>
                     <Property name="rows" type="int" value="5"/>
-                    <Property name="text" type="java.lang.String" value="Die Standardsets, die beim ersten Programmstart&#xa;angelegt wurden, nochmals anlegen.&#xa;&#xa;Die bestehenden Sets bleiben unver&#xe4;ndert erhalten.&#xa;&#xa;Soll aber der Ursprungszustand wieder hergestellt werden,&#xa;m&#xfc;ssen vorher alle bestehenden Sets gel&#xf6;scht werden."/>
+                    <Property name="text" type="java.lang.String" value="Die Standardsets, die beim ersten Programmstart&#xa;angelegt wurden, nochmals anlegen.&#xa;&#xa;Die bestehenden Sets bleiben unver&#xe4;ndert erhalten,&#xa;sollten jedoch vorher unter &quot;Set bearbeiten&quot; umbenannt&#xa;werden, z.B. von &quot;Speichern&quot; zu &quot;Speichern alt&quot;.&#xa;&#xa;Soll aber der Ursprungszustand wieder hergestellt werden,&#xa;m&#xfc;ssen vorher alle bestehenden Sets gel&#xf6;scht werden."/>
                     <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                       <Insets value="[5, 5, 5, 5]"/>
                     </Property>

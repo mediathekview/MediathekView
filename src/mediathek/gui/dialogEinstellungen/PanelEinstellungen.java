@@ -76,7 +76,7 @@ public class PanelEinstellungen extends PanelVorlage {
                         + "Bei \"0\" werden alle Filme geladen.\n"
                         + "\n"
                         + "(Eine kleinere Filmliste\n"
-                        + "kann bei Rechner mit wenig\n"
+                        + "kann bei Rechnern mit wenig\n"
                         + "Speicher hilfreich sein.)"
                         + "\n\n"
                         + "Auswirkung hat das erst nach dem\n"

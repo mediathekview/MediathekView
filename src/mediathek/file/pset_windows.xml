@@ -51,13 +51,6 @@
     <Programm>
         <Programmname>flvstreamer</Programmname>
         <Programmpfad>cmd /c</Programmpfad>
-        <Programmschalter>bin\flvstreamer_win32_latest.exe -r "%f" --quiet | "PFAD_VLC" -</Programmschalter>
-        <Praefix>rtmp://arte</Praefix>
-        <Restart>false</Restart>
-    </Programm>
-    <Programm>
-        <Programmname>flvstreamer</Programmname>
-        <Programmpfad>cmd /c</Programmpfad>
         <Programmschalter>bin\flvstreamer_win32_latest.exe %F --quiet | "PFAD_VLC" -</Programmschalter>
         <Praefix>rtmp</Praefix>
         <Restart>false</Restart>

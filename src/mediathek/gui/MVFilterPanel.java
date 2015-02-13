@@ -398,7 +398,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jRadioButtonTT.setText("Thema / Titel:");
 
         buttonGroup2.add(jRadioButtonIrgendwo);
-        jRadioButtonIrgendwo.setText("Irgendwo:");
+        jRadioButtonIrgendwo.setText("irgendwo:");
 
         jLabel1.setText("Zeitraum:");
 
@@ -412,7 +412,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
         jCheckBoxNurHd.setText("nur HD anzeigen");
 
-        jCheckBoxNurNeue.setText("nur Neue");
+        jCheckBoxNurNeue.setText("nur neue");
 
         jToggleButtonLivestram.setText("Livestreams");
 

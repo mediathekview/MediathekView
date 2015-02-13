@@ -79,9 +79,9 @@ public class GuiDownloads extends PanelVorlage {
     private long lastUpdate = 0;
     private boolean showAbos = true;
     private boolean showDownloads = true;
-    private static final String COMBO_DISPLAY_ALL = "Alles";
-    private static final String COMBO_DISPLAY_DOWNLOADS_ONLY = "Nur Downloads";
-    private static final String COMBO_DISPLAY_ABOS_ONLY = "Nur Abos";
+    private static final String COMBO_DISPLAY_ALL = "alles";
+    private static final String COMBO_DISPLAY_DOWNLOADS_ONLY = "nur Downloads";
+    private static final String COMBO_DISPLAY_ABOS_ONLY = "nur Abos";
     /**
      * The internally used model.
      */
