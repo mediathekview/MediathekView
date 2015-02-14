@@ -135,7 +135,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             }
             if (vorlage != null) {
                 if (!vorlage[PGR_URL_NR].equals("")) {
-                    pSet = IoXmlLesen.importPset(parent, ddaten, vorlage[ListePsetVorlagen.PGR_URL_NR], true);
+                    pSet = IoXmlLesen.importPset(parent, vorlage[ListePsetVorlagen.PGR_URL_NR], true);
                     if (pSet != null) {
                         pSet.version = vorlage[PGR_VERSION_NR];
                     }
@@ -144,12 +144,12 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         }
         if (pSet == null) {
             // dann nehmen wir halt die im jar-File
-            pSet = getStandardprogramme(parent, ddaten);
+            pSet = getStandardprogramme(parent);
         }
         return pSet;
     }
 
-    private static ListePset getStandardprogramme(JFrame parent, Daten ddaten) {
+    private static ListePset getStandardprogramme(JFrame parent) {
         // liefert das Standard Programmset für das entsprechende BS
         ListePset pSet;
         InputStream datei;
@@ -165,7 +165,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                 datei = new GetFile().getPsetVorlageWindows();
         }
         // Standardgruppen laden
-        pSet = IoXmlLesen.importPset(parent, ddaten, datei, true);
+        pSet = IoXmlLesen.importPset(parent, datei, true);
         return pSet;
     }
 

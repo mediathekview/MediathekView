@@ -88,7 +88,7 @@ public class MVFilmInformation implements ChangeListener {
         lblUrlThemaField.setDoubleBuffered(true);
         lblUrlThemaField.setForeground(foreground);
         try {
-            lblUrlThemaField.setAction(new UrlHyperlinkAction(parent, ddaten, ""));
+            lblUrlThemaField.setAction(new UrlHyperlinkAction(parent, ""));
         } catch (URISyntaxException ignored) {
         }
         lblUrlThemaField.setFont(HudPaintingUtils.getHudFont());

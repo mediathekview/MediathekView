@@ -58,7 +58,7 @@ public class PanelBeschreibung extends JPanel {
         });
         jXHyperlinkWebsite.setText("");
         try {
-            jXHyperlinkWebsite.setAction(new UrlHyperlinkAction(parent, daten, ""));
+            jXHyperlinkWebsite.setAction(new UrlHyperlinkAction(parent, ""));
         } catch (URISyntaxException ignored) {
         }
         jXHyperlinkWebsite.addMouseListener(new BeobMausUrl(jXHyperlinkWebsite));

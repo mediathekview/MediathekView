@@ -51,11 +51,11 @@ public class PanelAbout extends PanelVorlage {
             lblSettingsPath.setText(xmlFilePath.toAbsolutePath().toString());
             lblFilmlistpath.setText(Daten.getDateiFilmliste());
             jXHyperlinkWebsite.setText(Konstanten.ADRESSE_WEBSITE);
-            jXHyperlinkWebsite.addActionListener(new UrlHyperlinkAction(parentComponent, daten, Konstanten.ADRESSE_WEBSITE));
+            jXHyperlinkWebsite.addActionListener(new UrlHyperlinkAction(parentComponent, Konstanten.ADRESSE_WEBSITE));
             jXHyperlinkAnleitung.setText(Konstanten.ADRESSE_ANLEITUNG);
-            jXHyperlinkAnleitung.addActionListener(new UrlHyperlinkAction(parentComponent, daten, Konstanten.ADRESSE_ANLEITUNG));
+            jXHyperlinkAnleitung.addActionListener(new UrlHyperlinkAction(parentComponent, Konstanten.ADRESSE_ANLEITUNG));
             jXHyperlinkForum.setText(Konstanten.ADRESSE_FORUM);
-            jXHyperlinkForum.addActionListener(new UrlHyperlinkAction(parentComponent, daten, Konstanten.ADRESSE_FORUM));
+            jXHyperlinkForum.addActionListener(new UrlHyperlinkAction(parentComponent, Konstanten.ADRESSE_FORUM));
         } catch (URISyntaxException ignored) {
         }
 

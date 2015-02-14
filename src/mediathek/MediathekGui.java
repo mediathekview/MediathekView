@@ -277,8 +277,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             updateSplashScreenText("GUI Initialisieren...");
         } else {
             // erster Start
-            Daten.mVReplaceList.init(); // einmal ein Muster anlegen, für Linux ist es bereits aktiv!
-            new DialogStarteinstellungen(this, true, daten).setVisible(true);
+            Daten.mVReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
+            new DialogStarteinstellungen(this, daten).setVisible(true);
             this.pack();
         }
         duration.ping("Alles laden");
@@ -1275,9 +1275,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         }
     }
 
-    public void showDialogPreferences(){
+    public void showDialogPreferences() {
         dialogEinstellungen.setVisible(true);
     }
+
     /**
      * Keyboard shortcuts for some actions need to be changed for OS X
      */

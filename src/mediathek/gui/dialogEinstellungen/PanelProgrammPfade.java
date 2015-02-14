@@ -48,12 +48,10 @@ public class PanelProgrammPfade extends JPanel {
 
     public JDialog dialog = null;
     private final boolean vlc, flvstreamer, mplayer, ffmpeg;
-    private final Daten ddaten;
     private final JFrame parentComponent;
 
-    public PanelProgrammPfade(JFrame parentFrame, Daten dd, boolean vvlc, boolean fflvstreamer, boolean mmplayer, boolean fffmpeg) {
+    public PanelProgrammPfade(JFrame parentFrame, boolean vvlc, boolean fflvstreamer, boolean mmplayer, boolean fffmpeg) {
         initComponents();
-        ddaten = dd;
         vlc = vvlc;
         flvstreamer = fflvstreamer;
         ffmpeg = fffmpeg;
@@ -97,13 +95,13 @@ public class PanelProgrammPfade extends JPanel {
         jTextFieldMplayer.getDocument().addDocumentListener(new BeobDoc());
         try {
             jXHyperlinkVlc.setText(Konstanten.ADRESSE_WEBSITE_VLC);
-            jXHyperlinkVlc.setAction(new UrlHyperlinkAction(parentComponent, ddaten, Konstanten.ADRESSE_WEBSITE_VLC));
+            jXHyperlinkVlc.setAction(new UrlHyperlinkAction(parentComponent, Konstanten.ADRESSE_WEBSITE_VLC));
             jXHyperlinkflvstreamer.setText(Konstanten.ADRESSE_WEBSITE_FLVSTREAMER);
-            jXHyperlinkflvstreamer.setAction(new UrlHyperlinkAction(parentComponent, ddaten, Konstanten.ADRESSE_WEBSITE_FLVSTREAMER));
+            jXHyperlinkflvstreamer.setAction(new UrlHyperlinkAction(parentComponent, Konstanten.ADRESSE_WEBSITE_FLVSTREAMER));
             jXHyperlinkSmplayer.setText(Konstanten.ADRESSE_WEBSITE_MPLAYER);
-            jXHyperlinkSmplayer.setAction(new UrlHyperlinkAction(parentComponent, ddaten, Konstanten.ADRESSE_WEBSITE_MPLAYER));
+            jXHyperlinkSmplayer.setAction(new UrlHyperlinkAction(parentComponent, Konstanten.ADRESSE_WEBSITE_MPLAYER));
             jXHyperlinkFFmpeg.setText(Konstanten.ADRESSE_WEBSITE_FFMPEG);
-            jXHyperlinkFFmpeg.setAction(new UrlHyperlinkAction(parentComponent, ddaten, Konstanten.ADRESSE_WEBSITE_FFMPEG));
+            jXHyperlinkFFmpeg.setAction(new UrlHyperlinkAction(parentComponent, Konstanten.ADRESSE_WEBSITE_FFMPEG));
         } catch (URISyntaxException ignored) {
         }
         jButtonMplayerPfad.addActionListener(new BeobPfad(jTextFieldMplayer));
@@ -532,7 +530,7 @@ public class PanelProgrammPfade extends JPanel {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Programmdatei auswählen");
+                FileDialog chooser = new FileDialog(parentComponent, "Programmdatei auswählen");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
