@@ -116,7 +116,7 @@ public class PanelDownload extends PanelVorlage {
         }
         jSliderBandbreite.setValue(bandbreiteKByte / 10);
         if (bandbreiteKByte == MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE) {
-            jLabelBandwidth.setText("MAX");
+            jLabelBandwidth.setText("aus");
         } else {
             jLabelBandwidth.setText(bandbreiteKByte + " kByte/s");
         }
