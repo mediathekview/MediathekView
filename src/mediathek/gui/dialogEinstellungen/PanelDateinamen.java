@@ -295,7 +295,7 @@ public class PanelDateinamen extends PanelVorlage {
         jTextArea3.setEditable(false);
         jTextArea3.setColumns(20);
         jTextArea3.setRows(5);
-        jTextArea3.setText("\nDie Dateinamen werden für jedes Betriebssystem passend aufbereitet.\n\nWer will kann darüber hinaus weitere Einstellungen mit einer Ersetzungstabelle\nvornehmen: z.B. \"ß\" durch \"ss\" ersetzen.\n\n\nUnter OS X und Linux ist die Ersetzungstabelle default aktiviert:\n(einziger Eintrag: \" \" -> \"\"). Unter OS X und Linux führen Leerzeichen zu\nfehlerhaften DLs mit FFmpeg (SRF, WDR Rockpalast).\n");
+        jTextArea3.setText("\nDie Dateinamen werden für jedes Betriebssystem passend aufbereitet.\n\nWer will, kann darüber hinaus weitere Einstellungen mit einer Ersetzungstabelle\nvornehmen: z.B. \"ß\" durch \"ss\" ersetzen.\n\n\nUnter OS X und Linux ist die Ersetzungstabelle default aktiviert:\n(einziger Eintrag: \" \" -> \"\"). Unter OS X und Linux führen Leerzeichen zu\nfehlerhaften Downloads mit FFmpeg (SRF, WDR Rockpalast).\n");
         jTextArea3.setMargin(new java.awt.Insets(3, 3, 3, 3));
         jScrollPane5.setViewportView(jTextArea3);
 
@@ -312,8 +312,8 @@ public class PanelDateinamen extends PanelVorlage {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(256, Short.MAX_VALUE))
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(371, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Dateinamen", jPanel1);
@@ -398,7 +398,7 @@ public class PanelDateinamen extends PanelVorlage {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabelVon)

@@ -262,7 +262,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         pnlProgramUpdate.setBorder(javax.swing.BorderFactory.createTitledBorder("Programmupdate"));
 
-        jCheckBoxSuchen.setText("Einmal am Tag nach einer neuen Programmversion suchen");
+        jCheckBoxSuchen.setText("einmal am Tag nach einer neuen Programmversion suchen");
 
         jButtonSuchen.setText("Jetzt suchen");
 

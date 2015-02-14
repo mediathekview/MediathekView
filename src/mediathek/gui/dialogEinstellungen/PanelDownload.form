@@ -136,7 +136,7 @@
         </Component>
         <Component class="javax.swing.JCheckBox" name="jCheckBoxBeep">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Nach jedem Download einen &quot;Beep&quot; ausgeben"/>
+            <Property name="text" type="java.lang.String" value="nach jedem Download einen &quot;Beep&quot; ausgeben"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonBeep">
@@ -168,7 +168,7 @@
                       </Group>
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jTextFieldWarnung" max="32767" attributes="0"/>
+                              <Component id="jTextFieldWarnung" pref="0" max="32767" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -237,7 +237,7 @@
         <Component class="javax.swing.JTextField" name="jTextFieldWarnung">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
-            <Property name="text" type="java.lang.String" value="jTextField1"/>
+            <Property name="text" type="java.lang.String" value="Bei zu hoher Bandbreite kann es zum Ausbremsen des Downloads durch den Server kommen."/>
           </Properties>
         </Component>
       </SubComponents>

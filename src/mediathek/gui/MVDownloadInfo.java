@@ -248,21 +248,20 @@ public class MVDownloadInfo extends javax.swing.JPanel {
 
     private void setSliderBandwith() {
         stopBeob = true;
-        int bandbreite;
+        int bandbreiteKByte;
         try {
-            bandbreite = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
+            bandbreiteKByte = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
         } catch (Exception ex) {
-            bandbreite = MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE;
-            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE + "");
+            bandbreiteKByte = MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE;
+            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE + "");
         }
-        jSliderBandwidth.setValue(bandbreite / 10);
-        if (bandbreite == MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE) {
+        jSliderBandwidth.setValue(bandbreiteKByte / 10);
+        if (bandbreiteKByte == MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE) {
             jLabelBandwidth.setText("MAX");
-
         } else {
-            jLabelBandwidth.setText(bandbreite + " kByte/s");
+            jLabelBandwidth.setText(bandbreiteKByte + " kByte/s");
         }
-        if (bandbreite > MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE) {
+        if (bandbreiteKByte > MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE) {
             jLabelBandwidth.setForeground(Color.red);
         } else {
             jLabelBandwidth.setForeground(Color.black);
