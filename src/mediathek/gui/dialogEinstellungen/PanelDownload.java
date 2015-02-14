@@ -40,7 +40,6 @@ public class PanelDownload extends PanelVorlage {
         super(d, parent);
         initComponents();
         daten = d;
-        jTextFieldWarnung.setText("Bei zu hoher Bandbreite kann es zum Ausbremsen des Download durch den Server kommen");
         initSpinner();
         jSpinnerDownload.addChangeListener(new BeobSpinnerDownload());
         jButtonHilfeAnzahl.setIcon(GetIcon.getProgramIcon("help_16.png"));
@@ -98,9 +97,9 @@ public class PanelDownload extends PanelVorlage {
                 if (stopBeob) {
                     return;
                 }
-                int b = jSliderBandbreite.getValue() * 10;
-                jLabelBandwidth.setText(b + " kByte/s");
-                Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
+                int bandbreiteKByte = jSliderBandbreite.getValue() * 10;
+                jLabelBandwidth.setText(bandbreiteKByte + " kByte/s");
+                Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(bandbreiteKByte));
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelDownload.class.getName());
             }
         });
@@ -108,20 +107,20 @@ public class PanelDownload extends PanelVorlage {
 
     private void setSliderBandwith() {
         stopBeob = true;
-        int bandbreite;
+        int bandbreiteKByte;
         try {
-            bandbreite = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
+            bandbreiteKByte = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
         } catch (Exception ex) {
-            bandbreite = MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE;
-            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE + "");
+            bandbreiteKByte = MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE;
+            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE + "");
         }
-        jSliderBandbreite.setValue(bandbreite / 10);
-        if (bandbreite == MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE) {
+        jSliderBandbreite.setValue(bandbreiteKByte / 10);
+        if (bandbreiteKByte == MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE) {
             jLabelBandwidth.setText("MAX");
         } else {
-            jLabelBandwidth.setText(bandbreite + " kByte/s");
+            jLabelBandwidth.setText(bandbreiteKByte + " kByte/s");
         }
-        if (bandbreite > MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE) {
+        if (bandbreiteKByte > MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE) {
             jTextFieldWarnung.setForeground(Color.red);
             jLabelBandwidth.setForeground(Color.red);
         } else {
@@ -167,7 +166,7 @@ public class PanelDownload extends PanelVorlage {
 
         jButtonHilfeAnzahl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
 
-        jCheckBoxBeep.setText("Nach jedem Download einen \"Beep\" ausgeben");
+        jCheckBoxBeep.setText("nach jedem Download einen \"Beep\" ausgeben");
 
         jButtonBeep.setText("Testen");
 
@@ -229,7 +228,7 @@ public class PanelDownload extends PanelVorlage {
         jLabel5.setText("(max. Bandbreite pro Download, nur für direkte Downloads)");
 
         jTextFieldWarnung.setEditable(false);
-        jTextFieldWarnung.setText("jTextField1");
+        jTextFieldWarnung.setText("Bei zu hoher Bandbreite kann es zum Ausbremsen des Downloads durch den Server kommen.");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -244,7 +243,7 @@ public class PanelDownload extends PanelVorlage {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldWarnung)
+                            .addComponent(jTextFieldWarnung, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)

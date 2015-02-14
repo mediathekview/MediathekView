@@ -117,10 +117,9 @@ public class MVBandwidthTokenBucket {
         try {
             final int maxKBytePerSec = (int) Long.parseLong(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
             bytesPerSecond = maxKBytePerSec * 1_000;
-
         } catch (Exception ex) {
-            bytesPerSecond = BANDWIDTH_MAX_RED_KBYTE * 1_000;
-            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, BANDWIDTH_MAX_RED_KBYTE * 1_000 + "");
+            bytesPerSecond = BANDWIDTH_MAX_KBYTE * 1_000;
+            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, BANDWIDTH_MAX_KBYTE + "");
         }
         return bytesPerSecond;
     }

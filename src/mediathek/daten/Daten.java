@@ -252,7 +252,7 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET, Boolean.toString(true));
         mVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, "0");
         mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, Funktionen.getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss");
-        mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE));
+        mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE));
         mVConfig.add(MVConfig.SYSTEM_NOTIFICATION, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.TRUE.toString());

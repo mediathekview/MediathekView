@@ -94,7 +94,7 @@
       <SubComponents>
         <Component class="javax.swing.JCheckBox" name="jCheckBoxSuchen">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Einmal am Tag nach einer neuen Programmversion suchen"/>
+            <Property name="text" type="java.lang.String" value="einmal am Tag nach einer neuen Programmversion suchen"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonSuchen">
