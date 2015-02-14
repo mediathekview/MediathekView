@@ -27,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.zip.ZipEntry;
@@ -46,14 +47,37 @@ import msearch.tool.MSConst;
 
 public class GuiFunktionenProgramme extends GuiFunktionen {
 
+    private static ArrayList<String> winPfade = new ArrayList<>();
+
+    private static void setWinProgPade() {
+        String pfad;
+        if (System.getenv("ProgramFiles") != null) {
+            pfad = System.getenv("ProgramFiles");
+            if (new File(pfad).exists() && !winPfade.contains(pfad)) {
+                winPfade.add(pfad);
+            }
+        }
+        if (System.getenv("ProgramFiles(x86)") != null) {
+            pfad = System.getenv("ProgramFiles(x86)");
+            if (new File(pfad).exists() && !winPfade.contains(pfad)) {
+                winPfade.add(pfad);
+            }
+        }
+        String[] PFAD = {"C:\\Program Files", "C:\\Programme", "C:\\Program Files (x86)"};
+        for (String s : PFAD) {
+            if (new File(s).exists() && !winPfade.contains(s)) {
+                winPfade.add(s);
+            }
+        }
+    }
+
     public static String getMusterPfadMplayer() {
         // liefert den Standardpfad für das entsprechende BS 
         // Programm muss auf dem Rechner instelliert sein
         final String PFAD_LINUX = "/usr/bin/mplayer";
         final String PFAD_MAC = "/opt/local/bin/mplayer";
-        final String PFAD_WIN_DEFAULT = "C:\\Program Files\\SMPlayer\\mplayer\\mplayer.exe";
         final String PFAD_WIN = "\\SMPlayer\\mplayer\\mplayer.exe";
-        String pfad;
+        String pfad = "";
         switch (getOs()) {
             case LINUX:
                 pfad = PFAD_LINUX;
@@ -61,14 +85,13 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             case MAC:
                 pfad = PFAD_MAC;
                 break;
-
             default:
-                if (System.getenv("ProgramFiles") != null) {
-                    pfad = System.getenv("ProgramFiles") + PFAD_WIN;
-                } else if (System.getenv("ProgramFiles(x86)") != null) {
-                    pfad = System.getenv("ProgramFiles(x86)") + PFAD_WIN;
-                } else {
-                    pfad = PFAD_WIN_DEFAULT;
+                setWinProgPade();
+                for (String s : winPfade) {
+                    pfad = s + PFAD_WIN;
+                    if (new File(pfad).exists()) {
+                        break;
+                    }
                 }
         }
         if (!new File(pfad).exists()) {
@@ -82,9 +105,8 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         // Programm muss auf dem Rechner instelliert sein
         final String PFAD_LINUX_VLC = "/usr/bin/vlc";
         final String PFAD_MAC_VLC = "/Applications/VLC.app/Contents/MacOS/VLC";
-        final String PFAD_WIN_DEFAULT = "C:\\Programme\\VideoLAN\\VLC\\vlc.exe";
         final String PFAD_WIN = "\\VideoLAN\\VLC\\vlc.exe";
-        String pfad;
+        String pfad = "";
         switch (getOs()) {
             case LINUX:
                 pfad = PFAD_LINUX_VLC;
@@ -92,22 +114,13 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             case MAC:
                 pfad = PFAD_MAC_VLC;
                 break;
-
             default:
-                pfad = PFAD_WIN_DEFAULT;
-                if (new File(pfad).exists()) {
-                    break;
-                }
-                if (System.getenv("ProgramFiles") != null) {
-                    // für 32/64Bit Win und 32Bit VLC
-                    // oder 64Bit Win und 64Bit VLC
-                    pfad = System.getenv("ProgramFiles") + PFAD_WIN;
-                }
-                if (new File(pfad).exists()) {
-                    break;
-                }
-                if (System.getenv("ProgramFiles(x86)") != null) {
-                    pfad = System.getenv("ProgramFiles(x86)") + PFAD_WIN;
+                setWinProgPade();
+                for (String s : winPfade) {
+                    pfad = s + PFAD_WIN;
+                    if (new File(pfad).exists()) {
+                        break;
+                    }
                 }
         }
         if (!new File(pfad).exists()) {
@@ -128,19 +141,17 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         switch (getOs()) {
             case LINUX:
                 pfad = PFAD_LINUX_FLV;
+                if (!new File(pfad).exists()) {
+                    pfad = "";
+                }
                 break;
             case MAC:
                 pfad = Funktionen.getPathJar() + PFAD_MAC_FLV;
                 break;
-
             default:
-                pfad = Funktionen.getPathJar() + PFAD_WINDOWS_FLV;
+                pfad = PFAD_WINDOWS_FLV;
         }
-        if (new File(pfad).exists()) {
-            return pfad;
-        } else {
-            return "";
-        }
+        return pfad;
     }
 
     public static String getMusterPfadFFmpeg() {
@@ -155,19 +166,17 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         switch (getOs()) {
             case LINUX:
                 pfad = PFAD_LINUX_FFMPEG;
+                if (!new File(pfad).exists()) {
+                    pfad = "";
+                }
                 break;
             case MAC:
                 pfad = Funktionen.getPathJar() + PFAD_MAC_FFMPEG;
                 break;
-
             default:
-                pfad = Funktionen.getPathJar() + PFAD_WINDOWS_FFMPEG;
+                pfad = PFAD_WINDOWS_FFMPEG;
         }
-        if (new File(pfad).exists()) {
-            return pfad;
-        } else {
-            return "";
-        }
+        return pfad;
     }
 
     public static String getPfadScript() {
@@ -183,9 +192,8 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             case MAC:
                 pfadScript = getPathJar() + PFAD_LINUX_SCRIPT;
                 break;
-
             default:
-                pfadScript = getPathJar() + PFAD_WINDOWS_SCRIPT;
+                pfadScript = PFAD_WINDOWS_SCRIPT;
         }
         return pfadScript;
     }

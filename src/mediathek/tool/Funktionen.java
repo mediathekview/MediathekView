@@ -66,6 +66,7 @@ public class Funktionen {
         }
 
         return os;
+        //return OperatingSystemType.WIN32;
     }
 
     public static String getOsString() {
@@ -78,6 +79,7 @@ public class Funktionen {
      * @return The program jar file path with a separator added.
      */
     public static String getPathJar() {
+        // macht Probleme bei Win und Netzwerkpfaden, liefert dann Absolute Pfade zB. \\VBOXSVR\share\Mediathek\...
         String pFilePath = "pFile";
         File propFile = new File(pFilePath);
         if (!propFile.exists()) {
