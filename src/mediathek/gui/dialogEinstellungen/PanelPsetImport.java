@@ -117,7 +117,7 @@ public class PanelPsetImport extends PanelVorlage {
 
         jXHyperlinkInfos.setText("");
         try {
-            jXHyperlinkInfos.setAction(new UrlHyperlinkAction(parentComponent, daten, ""));
+            jXHyperlinkInfos.setAction(new UrlHyperlinkAction(parentComponent, ""));
         } catch (URISyntaxException ignored) {
         }
         setHyperLink(""); // zum löschen
@@ -125,7 +125,7 @@ public class PanelPsetImport extends PanelVorlage {
 
     private void importDatei(String datei) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        ListePset pSet = IoXmlLesen.importPset(parentComponent, daten, datei, true);
+        ListePset pSet = IoXmlLesen.importPset(parentComponent, datei, true);
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, pSet, false /*auto*/, false /*setVersion*/);
     }
@@ -547,7 +547,7 @@ public class PanelPsetImport extends PanelVorlage {
             if (jTextFieldDatei.getText().equals("")) {
                 jTextFieldDatei.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
             } else {
-                if (IoXmlLesen.importPset(parentComponent, daten, jTextFieldDatei.getText(), false) != null) {
+                if (IoXmlLesen.importPset(parentComponent, jTextFieldDatei.getText(), false) != null) {
                     jTextFieldDatei.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
                 } else {
                     jTextFieldDatei.setBackground(new Color(255, 200, 200));

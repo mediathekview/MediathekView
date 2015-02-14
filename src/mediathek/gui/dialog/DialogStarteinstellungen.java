@@ -46,8 +46,8 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
     private final JFrame parentComponent;
     JCheckBox jCheckBox = new JCheckBox("Einmal am Tag nach einer neuen Programmversion suchen");
 
-    public DialogStarteinstellungen(JFrame parent, boolean modal, Daten dd) {
-        super(parent, modal);
+    public DialogStarteinstellungen(JFrame parent, Daten dd) {
+        super(parent, true);
         parentComponent = parent;
         initComponents();
         daten = dd;
@@ -151,11 +151,11 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
             case WIN32:
             case WIN64:
                 // da wird nur der VLC gebraucht, der Rest wird mitgeliefert
-                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, daten, true /* vlc */, false /* flvstreamer */, false /* mplayer */, false /*ffmpeg*/));
+                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, true /* vlc */, false /* flvstreamer */, false /* mplayer */, false /*ffmpeg*/));
                 break;
             default:
                 // da brauchs alles
-                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, daten, true /* vlc */, true /* flvstreamer */, false /* mplayer */, true /*ffmpeg*/));
+                jScrollPane1.setViewportView(new PanelProgrammPfade(parentComponent, true /* vlc */, true /* flvstreamer */, false /* mplayer */, true /*ffmpeg*/));
         }
         status = STAT_PSET;
         jButtonStandard.setText("Weiter");

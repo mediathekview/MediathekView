@@ -184,10 +184,10 @@ public class ListePset extends LinkedList<DatenPset> {
         return ret;
     }
 
-    public boolean progMusterErsetzen(JFrame parent, Daten dd, ListePset liste) {
+    public boolean progMusterErsetzen(JFrame parent, ListePset liste) {
         boolean ret = true;
         for (DatenPset pSet : liste) {
-            if (!ListePset.this.progMusterErsetzen(parent, dd, pSet)) {
+            if (!ListePset.this.progMusterErsetzen(parent, pSet)) {
                 ret = false;
             }
         }
@@ -195,7 +195,7 @@ public class ListePset extends LinkedList<DatenPset> {
         return ret;
     }
 
-    private boolean progMusterErsetzen(JFrame parent, Daten dd, DatenPset pSet) {
+    private boolean progMusterErsetzen(JFrame parent, DatenPset pSet) {
         pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace(MUSTER_PFAD_ZIEL, GuiFunktionen.getStandardDownloadPath());
         String mplayer = "";
         String vlc = "";
@@ -206,28 +206,28 @@ public class ListePset extends LinkedList<DatenPset> {
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
             if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(MUSTER_PFAD_MPLAYER) || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains(MUSTER_PFAD_MPLAYER)) {
-                mplayer = GuiFunktionenProgramme.getPfadMplayer(parent, dd);
+                mplayer = GuiFunktionenProgramme.getPfadMplayer(parent);
                 break;
             }
         }
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
             if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(MUSTER_PFAD_VLC) || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains(MUSTER_PFAD_VLC)) {
-                vlc = GuiFunktionenProgramme.getPfadVlc(parent, dd);
+                vlc = GuiFunktionenProgramme.getPfadVlc(parent);
                 break;
             }
         }
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
             if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(MUSTER_PFAD_FLV) || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains(MUSTER_PFAD_FLV)) {
-                flvstreamer = GuiFunktionenProgramme.getPfadFlv(parent, dd);
+                flvstreamer = GuiFunktionenProgramme.getPfadFlv(parent);
                 break;
             }
         }
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
             if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(MUSTER_PFAD_FFMPEG) || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains(MUSTER_PFAD_FFMPEG)) {
-                ffmpeg = GuiFunktionenProgramme.getPfadFFmpeg(parent, dd);
+                ffmpeg = GuiFunktionenProgramme.getPfadFFmpeg(parent);
                 break;
             }
         }

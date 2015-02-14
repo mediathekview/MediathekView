@@ -75,7 +75,7 @@ public class DialogNewSet extends javax.swing.JDialog {
             }
         });
         try {
-            jXHyperlinkAnleitung.setAction(new UrlHyperlinkAction(pparent, ddaten, Konstanten.ADRESSE_ANLEITUNG));
+            jXHyperlinkAnleitung.setAction(new UrlHyperlinkAction(pparent, Konstanten.ADRESSE_ANLEITUNG));
         } catch (URISyntaxException ignored) {
         }
         jButtonInstall.addActionListener(new ActionListener() {
