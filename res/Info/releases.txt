@@ -29,7 +29,9 @@
 	spart Speicher und beschleunigt schwache Hardware, muss in der GUI gesetzt werden und
 	ist dann auch in "-auto" aktiv
 	- "Downloads um XX:YY Uhr starten", neue Option in den Downloads
-	- neuer Sender: Phoenix
+	- neuer Sender: Phoenix, SR
+	- Kontrolle der max. Pfadlänge unter Windows
+	- Umstellung der Kontrolle der Bandbreite, jetzt gilt die Vorgabe für JEDEN Download nicht mehr als Summe für alle
 	
 	# Version 8
 	- Sendericons

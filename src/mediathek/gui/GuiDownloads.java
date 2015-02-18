@@ -529,7 +529,7 @@ public class GuiDownloads extends PanelVorlage {
         dialogBeenden.setVisible(true);
         if (dialogBeenden.applicationCanTerminate()) {
             // fertig und beenden
-            daten.mediathekGui.beenden();
+            daten.mediathekGui.beenden(false /*Dialog auf "sofort beenden" einstellen*/, dialogBeenden.isShutdownRequested());
         }
 
         reloadTable();

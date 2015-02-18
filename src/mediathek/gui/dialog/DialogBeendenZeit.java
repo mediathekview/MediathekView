@@ -35,6 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -80,6 +81,15 @@ public class DialogBeendenZeit extends JDialog {
         return applicationCanTerminate;
     }
 
+    /**
+     * Does the user want to shutdown the computer?
+     *
+     * @return true if shutdown is wanted.
+     */
+    public boolean isShutdownRequested() {
+        return shutdown;
+    }
+
     public DialogBeendenZeit(JFrame pparent, final Daten daten_, final ArrayList<DatenDownload> listeDownloadsStarten_) {
         super(pparent, true);
         initComponents();
@@ -118,6 +128,14 @@ public class DialogBeendenZeit extends JDialog {
         SimpleDateFormat format = ((JSpinner.DateEditor) jSpinnerTime.getEditor()).getFormat();
         format.applyPattern("dd.MM.yyy HH:mm");
         model.setValue(new Date());
+        comboActions.setModel(getComboBoxModel());
+        comboActions.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setCbShutdownCoputer();
+            }
+        });
+
         jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
@@ -125,30 +143,7 @@ public class DialogBeendenZeit extends JDialog {
                 new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BEENDEN)).setVisible(true);
             }
         });
-        jButtonHilfe.setEnabled(false);
-        cbShutdownComputer.setEnabled(false);
-
-        comboActions.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final String strSelectedItem = (String) comboActions.getSelectedItem();
-                switch (strSelectedItem) {
-                    case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
-                        jButtonHilfe.setEnabled(true);
-                        cbShutdownComputer.setEnabled(true);
-                        break;
-
-                    default:
-                        jButtonHilfe.setEnabled(false);
-                        cbShutdownComputer.setEnabled(false);
-                        //manually reset shutdown state
-                        jButtonHilfe.setEnabled(false);
-                        cbShutdownComputer.setSelected(false);
-                        shutdown = false;
-                        break;
-                }
-            }
-        });
+        setCbShutdownCoputer();
 
         cbShutdownComputer.addActionListener(new ActionListener() {
             @Override
@@ -192,13 +187,21 @@ public class DialogBeendenZeit extends JDialog {
         getRootPane().setDefaultButton(btnContinue);
     }
 
-    /**
-     * Does the user want to shutdown the computer?
-     *
-     * @return true if shutdown is wanted.
-     */
-    public boolean isShutdownRequested() {
-        return shutdown;
+    private void setCbShutdownCoputer() {
+        final String strSelectedItem = (String) comboActions.getSelectedItem();
+        switch (strSelectedItem) {
+            case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
+                jButtonHilfe.setEnabled(true);
+                cbShutdownComputer.setEnabled(true);
+                break;
+            default:
+                //manually reset shutdown state
+                jButtonHilfe.setEnabled(false);
+                cbShutdownComputer.setEnabled(false);
+                cbShutdownComputer.setSelected(false);
+                shutdown = false;
+                break;
+        }
     }
 
     /**
@@ -263,13 +266,29 @@ public class DialogBeendenZeit extends JDialog {
         lblGlassPane.setText(strMessage);
     }
 
-    private void setTextDownload() {
+    private void setTextDownload_() {
         String strMessage = "<html>Warte auf Abschluss der Downloads...";
         if (isShutdownRequested()) {
             strMessage += "<br><b>Der Rechner wird danach heruntergefahren.</b>";
         }
         strMessage += "<br>Sie können den Vorgang mit Escape abbrechen.</html>";
         lblGlassPane.setText(strMessage);
+    }
+
+    private void setTextDownload() {
+        try {
+            if (SwingUtilities.isEventDispatchThread()) {
+                setTextDownload_();
+            } else {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        setTextDownload_();
+                    }
+                });
+            }
+        } catch (Exception ex) {
+        }
     }
 
     /**
@@ -327,8 +346,6 @@ public class DialogBeendenZeit extends JDialog {
 
         jLabel1.setText("<html>Wie möchten Sie fortfahren<br>\nwenn alle Downloads fertig sind?</html>");
 
-        comboActions.setModel(getComboBoxModel());
-
         btnContinue.setText("Weiter");
 
         cbShutdownComputer.setText("Rechner herunterfahren");
@@ -348,7 +365,7 @@ public class DialogBeendenZeit extends JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 616, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
                     .addComponent(comboActions, 0, 0, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -363,7 +380,7 @@ public class DialogBeendenZeit extends JDialog {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jSpinnerTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jSpinnerTime, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel3)))
                         .addGap(0, 0, Short.MAX_VALUE)))
