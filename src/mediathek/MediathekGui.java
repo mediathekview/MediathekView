@@ -1058,7 +1058,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             public void actionPerformed(ActionEvent e) {
                 if (Daten.listeDownloads.nochNichtFertigeDownloads() > 0) {
                     // ansonsten gibts keine laufenden Downloads auf die man warten sollte
-                    beenden(true);
+                    beenden(true /*Dialog auf "warten" einstellen*/, false /*shutdown computer*/);
                 } else {
                     MVMessageDialog.showMessageDialog(daten.mediathekGui, "Die Downloads müssen zuerst gestartet werden.",
                             "Keine laufenden Downloads!", JOptionPane.ERROR_MESSAGE);
@@ -1337,15 +1337,15 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     public void beenden() {
-        beenden(false);
+        beenden(false /*Dialog auf "sofort beenden" einstellen*/, false /*shutdown*/);
     }
 
-    public void beenden(boolean showTerminate) {
+    public void beenden(boolean showOptionTerminate, boolean shutDown) {
         DialogBeenden dialogBeenden = null;
         if (Daten.listeDownloads.nochNichtFertigeDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
             dialogBeenden = new DialogBeenden(this);
-            if (showTerminate) {
+            if (showOptionTerminate) {
                 dialogBeenden.setComboWaitAndTerminate();
             }
             dialogBeenden.setModal(true);
@@ -1353,6 +1353,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             if (!dialogBeenden.applicationCanTerminate()) {
                 return;
             }
+            shutDown = dialogBeenden.isShutdownRequested();
         }
         // Tabelleneinstellungen merken
         daten.guiFilme.tabelleSpeichern();
@@ -1400,10 +1401,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         daten.allesSpeichern();
         Log.printEndeMeldung();
 
-        if (dialogBeenden != null) {
-            if (dialogBeenden.isShutdownRequested()) {
-                shutdownComputer();
-            }
+        if (shutDown) {
+            shutdownComputer();
         }
 
         dispose();

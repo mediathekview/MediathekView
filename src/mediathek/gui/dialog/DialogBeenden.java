@@ -176,6 +176,7 @@ public class DialogBeenden extends JDialog {
     public void setComboWaitAndTerminate() {
         comboActions.setSelectedItem(WAIT_FOR_DOWNLOADS_AND_TERMINATE);
         cbShutdownComputer.setSelected(true);
+        shutdown=true;
     }
 
     /**
