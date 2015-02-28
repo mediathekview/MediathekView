@@ -48,16 +48,7 @@ import mediathek.gui.GuiDebug;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
 import mediathek.gui.dialog.MVFilmInformation;
-import mediathek.tool.Funktionen;
-import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.Konstanten;
-import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVColor;
-import mediathek.tool.MVConfig;
-import mediathek.tool.MVFont;
-import mediathek.tool.MVListeFilme;
-import mediathek.tool.MVMessageDialog;
-import mediathek.tool.MVReplaceList;
+import mediathek.tool.*;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 import msearch.filmlisten.MSFilmlisteLesen;
@@ -178,7 +169,7 @@ public class Daten {
 
         if (SystemInfo.isMacOSX()) {
             //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
-            strFile = System.getProperty("user.home") + File.separator + "Library/Caches/MediathekView" + File.separator + Konstanten.JSON_DATEI_FILME;
+            strFile = GuiFunktionen.getHomePath() + File.separator + "Library/Caches/MediathekView" + File.separator + Konstanten.JSON_DATEI_FILME;
         } else {
             strFile = getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME;
         }
