@@ -103,6 +103,17 @@ public class Main {
             }
         }
 
+        /*
+        If user tries to start MV from command-line without proper options,
+        instead of crashing while trying to open Swing windows, just change to CLI mode and warn the user.
+         */
+        if (GraphicsEnvironment.isHeadless()) {
+            System.err.println("MediathekView wurde nicht als Kommandozeilenprogramm gestartet.");
+            System.err.println("Startmodus wurde auf -auto geändert.");
+            System.err.println();
+            state = StartupMode.AUTO;
+        }
+
         switch (state) {
             case AUTO:
                 new MediathekAuto(args).starten();
