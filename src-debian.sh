@@ -18,11 +18,11 @@
 
 PKG      := mediathekview
 PKG2     := msearch
-VER      := 8
+VER      := 9
 UURL     := https://github.com/xaverW/MediathekView.git
 UURL2    := https://github.com/xaverW/MSearch.git
-COMMIT   := c0eb28a9ce461fa793193be1188a9fea6a3a1e52
-COMMIT2  := 6b86cbc9ac915d6102723a2d3bd29ffa2b5a62f3
+COMMIT   := 6216176243971a3c33c83aa23ddc015ae0abeff2
+COMMIT2  := 0459c77cb35401afb9a25dff8c6dbfd0a03e9d5b
 
 
 .PHONY: make-orig-source
@@ -40,10 +40,10 @@ $(PKG)_$(VER).tar.xz:
 	do touch --no-dereference -d "$$(git log -1 --format="%ai" -- $$F)" "$$F"; done \
 	&& echo "# Cleaning-up..." \
 	&& mv -v \
-		dist/info/MediathekView.png \
-		dist/info/MediathekView.svg \
-		dist/info/MediathekView.xpm \
-		dist/info/releases.txt \
+		dist/Info/MediathekView.png \
+		dist/Info/MediathekView.svg \
+		dist/Info/MediathekView.xpm \
+		dist/Info/releases.txt \
 		dist/bin/flv.sh \
 		dist/Anleitung . \
 	&& mv -v \

@@ -7,7 +7,10 @@ http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/
 * ZIP-Datei nicht entpackt (Windows): Die Programmdatei wurde direkt im 
 	ZIP-Archiv doppelgeklickt. Die ZIP-Datei muss erst entpackt werden, dazu sind 
 	alle Dateien aus dem ZIP-Archiv in ein beliebiges Verzeichnis zu kopieren. Dort 
-	kann dann die Programmdatei "MediathekView.exe" doppelgeklickt werden.
+	kann dann die Programmdatei "MediathekView__Start.exe" doppelgeklickt werden.
+
+* "MediathekView-ipv4__Start.exe" kann als Startdatei für Windows bei Problemen mit 
+	IPv6 verwendet werden.
 
 * Java ist nicht oder nicht in der richtigen Version installiert (Java7). Zum 
 	Java-Download: 
