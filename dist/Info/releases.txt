@@ -18,6 +18,8 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+	# Version 10
+	- Status "Film neu" bleibt nach Neustart erhalten
 
 	# Version 9
 	- Film-Url auch in HD und Klein in die Zwischenablage kopieren
