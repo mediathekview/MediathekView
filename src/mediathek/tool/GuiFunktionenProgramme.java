@@ -200,6 +200,9 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
 
     public static String getPfadMplayer(JFrame parent) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
+        if (System.getenv("PATH_MPLAYER") != null) {
+            return System.getenv("PATH_MPLAYER");
+        }
         if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_MPLAYER).equals("")) {
             new DialogOk(null, true, new PanelProgrammPfade(parent, false /* vlc */, false /* flvstreamer */, true /* mplayer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
@@ -208,6 +211,9 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
 
     public static String getPfadVlc(JFrame parent) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
+        if (System.getenv("PATH_VLC") != null) {
+            return System.getenv("PATH_VLC");
+        }
         if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_VLC).equals("")) {
             new DialogOk(null, true, new PanelProgrammPfade(parent, true /* vlc */, false /* flvstreamer */, false /* mplayer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
@@ -216,6 +222,9 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
 
     public static String getPfadFlv(JFrame parent) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
+        if (System.getenv("PATH_FLVSTREAMER") != null) {
+            return System.getenv("PATH_FLVSTREAMER");
+        }
         if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FLVSTREAMER).equals("")) {
             new DialogOk(null, true, new PanelProgrammPfade(parent, false /* vlc */, true /* flvstreamer */, false /* mplayer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
@@ -224,6 +233,9 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
 
     public static String getPfadFFmpeg(JFrame parent) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
+        if (System.getenv("PATH_FFMPEG") != null) {
+            return System.getenv("PATH_FFMPEG");
+        }
         if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FFMPEG).equals("")) {
             new DialogOk(null, true, new PanelProgrammPfade(parent, false /* vlc */, false /* flvstreamer */, false /* mplayer */, true /*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
