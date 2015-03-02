@@ -236,9 +236,8 @@ public class MVListeFilme {
                 object[m] = film.dateigroesseL;
             } else if (m == DatenFilm.FILM_REF_NR) {
                 object[m] = film;
-//            } else if (m != DatenFilm.FILM_URL_NR && m != DatenFilm.FILM_NR_NR && !DatenFilm.anzeigen(m)) {
-//                // Url und Nr immer füllen, egal ob angezeigt
-//                object[m] = "";
+            } else if (m == DatenFilm.FILM_NEU_NR) {
+                object[m] = "";
             } else {
                 object[m] = film.arr[m];
             }

@@ -47,8 +47,12 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
     private boolean geoMelden = false;
     private MVUsedUrls history = null;
     private final MVSenderIconCache senderIconCache;
+    private static ImageIcon ja_16 = null;
+    private static ImageIcon nein_12 = null;
 
     public CellRendererFilme(Daten d) {
+        ja_16 = GetIcon.getProgramIcon("ja_16.png");
+        nein_12 = GetIcon.getProgramIcon("nein_12.png");
         history = d.history;
         film_start_tab = GetIcon.getProgramIcon("film_start_tab.png");
         film_start_sw_tab = GetIcon.getProgramIcon("film_start_sw_tab.png");
@@ -95,15 +99,15 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
              * On OS X do not change font sizes as it violates HIG...
              */
             if (isSelected) {
-                if (SystemInfo.isMacOSX())
+                if (SystemInfo.isMacOSX()) {
                     setFont(getFont().deriveFont(Font.BOLD));
-                else {
+                } else {
                     setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
                 }
             } else {
-                if (SystemInfo.isMacOSX())
+                if (SystemInfo.isMacOSX()) {
                     setFont(getFont().deriveFont(Font.PLAIN));
-                else {
+                } else {
                     setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
                 }
             }
@@ -127,6 +131,14 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 case DatenFilm.FILM_SENDER_NR:
                     if (((MVTable) table).iconAnzeigen) {
                         handleSenderColumn((String) value, ((MVTable) table).iconKlein);
+                    }
+                    break;
+                case DatenFilm.FILM_NEU_NR:
+                    setHorizontalAlignment(SwingConstants.CENTER);
+                    if (datenFilm.neuerFilm) {
+                        setIcon(ja_16);
+                    } else {
+                        setIcon(nein_12);
                     }
                     break;
             }
