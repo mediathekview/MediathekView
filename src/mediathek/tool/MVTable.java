@@ -566,7 +566,7 @@ public final class MVTable extends JTable {
     private void spaltenAusschaltenFilme(int i) {
         if (i == DatenFilm.FILM_BESCHREIBUNG_NR
                 || i == DatenFilm.FILM_WEBSEITE_NR
-                || i == DatenFilm.FILM_IMAGE_URL_NR
+                || i == DatenFilm.FILM_NEU_NR
                 || i == DatenFilm.FILM_URL_RTMP_NR
                 || i == DatenFilm.FILM_URL_AUTH_NR
                 || i == DatenFilm.FILM_URL_HD_NR

@@ -9,6 +9,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.net.URISyntaxException;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -21,6 +23,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.daten.Daten;
+import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.UrlHyperlinkAction;
 import msearch.daten.DatenFilm;
@@ -35,18 +38,19 @@ public class MVFilmInformation implements ChangeListener {
     private JDialog dialog = null;
     private JXHyperlink lblUrlThemaField;
     private JTextArea textAreaBeschreibung;
-    private final Daten ddaten;
+    private JLabel jLabelFilmNeu;
     private final JLabel[] labelArrNames = new JLabel[DatenFilm.MAX_ELEM];
     private final JTextField[] txtArrCont = new JTextField[DatenFilm.MAX_ELEM];
     private final Color foreground, background;
     private DatenFilm aktFilm = new DatenFilm();
     private final JFrame parent;
+    private static ImageIcon ja_sw_16 = null;
 
     public MVFilmInformation(JFrame owner, JTabbedPane tabbedPane, Daten ddaten) {
-        this.ddaten = ddaten;
         parent = owner;
         foreground = Color.WHITE;
         background = Color.BLACK;
+        ja_sw_16 = GetIcon.getProgramIcon("ja_sw_16.png");
         hud = new HudWindow("Filminformation", owner);
         hud.makeResizeable();
         for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {
@@ -67,7 +71,7 @@ public class MVFilmInformation implements ChangeListener {
         // dialog.pack(); --> Exception in thread "AWT-EventQueue-0" sun.awt.X11.XException: Cannot write XdndAware property
         Dimension size = dialog.getSize();
         size.width = 600;
-        size.height = 400;
+        size.height = 450;
         dialog.setSize(size);
         calculateHudPosition();
 
@@ -100,6 +104,10 @@ public class MVFilmInformation implements ChangeListener {
         textAreaBeschreibung.setForeground(foreground);
         textAreaBeschreibung.setOpaque(false);
         textAreaBeschreibung.setRows(4);
+        jLabelFilmNeu = new JLabel();
+        jLabelFilmNeu.setOpaque(false);
+        jLabelFilmNeu.setVisible(false);
+        jLabelFilmNeu.setIcon(ja_sw_16);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(4, 10, 4, 10);
         c.weighty = 0;
@@ -116,7 +124,6 @@ public class MVFilmInformation implements ChangeListener {
                     || i == DatenFilm.FILM_AUFZEICHNEN_NR
                     || i == DatenFilm.FILM_DATUM_LONG_NR
                     || i == DatenFilm.FILM_URL_HISTORY_NR
-                    || i == DatenFilm.FILM_IMAGE_URL_NR
                     || i == DatenFilm.FILM_REF_NR) {
                 continue;
             }
@@ -149,6 +156,9 @@ public class MVFilmInformation implements ChangeListener {
         } else if (i == DatenFilm.FILM_BESCHREIBUNG_NR) {
             gridbag.setConstraints(textAreaBeschreibung, c);
             panel.add(textAreaBeschreibung);
+        } else if (i == DatenFilm.FILM_NEU_NR) {
+            gridbag.setConstraints(jLabelFilmNeu, c);
+            panel.add(jLabelFilmNeu);
         } else {
             gridbag.setConstraints(txtArrCont[i], c);
             panel.add(txtArrCont[i]);
@@ -176,13 +186,14 @@ public class MVFilmInformation implements ChangeListener {
     }
 
     private void setAktFilm() {
+        lblUrlThemaField.setForeground(foreground);
         if (aktFilm == null) {
             for (int i = 0; i < txtArrCont.length; ++i) {
                 txtArrCont[i].setText("");
             }
             textAreaBeschreibung.setText(" ");
             lblUrlThemaField.setText("");
-            lblUrlThemaField.setForeground(foreground);
+            jLabelFilmNeu.setVisible(false);
         } else {
             for (int i = 0; i < txtArrCont.length; ++i) {
                 txtArrCont[i].setText(aktFilm.arr[i]);
@@ -194,7 +205,7 @@ public class MVFilmInformation implements ChangeListener {
                 textAreaBeschreibung.setText(aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR]);
             }
             lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
-            lblUrlThemaField.setForeground(foreground);
+            jLabelFilmNeu.setVisible(aktFilm.neuerFilm);
         }
         dialog.repaint();
     }
