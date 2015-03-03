@@ -34,6 +34,8 @@
 	- neuer Sender: Phoenix, SR
 	- Kontrolle der max. Pfadlänge unter Windows
 	- Umstellung der Kontrolle der Bandbreite, jetzt gilt die Vorgabe für JEDEN Download nicht mehr als Summe für alle
+	- Beim Anlegen eines neuen Abos dient "Mindestdauer" als Vorgabe des nächsten Abos
+	- Der zuletzt angeklickte (aktive) Filter wird markiert	
 	
 	# Version 8
 	- Sendericons
