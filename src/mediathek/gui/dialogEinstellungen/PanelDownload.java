@@ -158,7 +158,7 @@ public class PanelDownload extends PanelVorlage {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        jCheckBoxNotification.setText("Benachrichtigungen anzeigen");
+        jCheckBoxNotification.setText("Benachrichtigung wenn abgeschlossen");
 
         jLabel3.setText("gleichzeitige Downloads laden:");
 
