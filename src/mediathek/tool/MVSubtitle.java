@@ -87,7 +87,6 @@ public class MVSubtitle {
             final byte[] buffer = new byte[1024];
             int n;
             while ((n = in.read(buffer)) != -1) {
-                // hier wird andlich geladen
                 fos.write(buffer, 0, n);
             }
         } catch (IOException ex) {
