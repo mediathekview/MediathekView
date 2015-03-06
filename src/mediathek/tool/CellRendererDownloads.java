@@ -212,6 +212,15 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     }
                     break;
 
+                case DatenDownload.DOWNLOAD_SUBTITLE_NR:
+                    setHorizontalAlignment(SwingConstants.CENTER);
+                    if (datenDownload.isSubtitle()) {
+                        setIcon(ja_16);
+                    } else {
+                        setIcon(nein_12);
+                    }
+                    break;
+
                 case DatenDownload.DOWNLOAD_SPOTLIGHT_NR:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (datenDownload.isSpotlight()) {
