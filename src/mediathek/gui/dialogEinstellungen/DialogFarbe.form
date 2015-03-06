@@ -7,6 +7,7 @@
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -26,7 +27,7 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jColorChooser1" alignment="0" min="-2" max="-2" attributes="1"/>
+                  <Component id="jColorChooser" alignment="0" min="-2" max="-2" attributes="1"/>
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="jButtonOk" linkSize="2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -41,7 +42,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jColorChooser1" min="-2" max="-2" attributes="0"/>
+              <Component id="jColorChooser" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jButtonAbbrechen" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -53,7 +54,7 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JColorChooser" name="jColorChooser1">
+    <Component class="javax.swing.JColorChooser" name="jColorChooser">
     </Component>
     <Component class="javax.swing.JButton" name="jButtonAbbrechen">
       <Properties>
