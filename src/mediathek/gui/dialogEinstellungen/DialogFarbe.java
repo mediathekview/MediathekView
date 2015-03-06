@@ -22,6 +22,7 @@ package mediathek.gui.dialogEinstellungen;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JFrame;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.tool.EscBeenden;
@@ -30,13 +31,13 @@ public class DialogFarbe extends javax.swing.JDialog {
 
     public Color farbe = null;
 
-    /** Creates new form HilfeDialog
+    /** Creates new form DialogFarbe
      *
      * @param parent
      * @param modal
      * @param color
      */
-    public DialogFarbe(java.awt.Frame parent, boolean modal, Color color) {
+    public DialogFarbe(JFrame parent, boolean modal, Color color) {
         super(parent, modal);
         initComponents();
         if (color != null) {

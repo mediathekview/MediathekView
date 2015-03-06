@@ -55,7 +55,7 @@ public class PanelEinstellungenColor extends PanelVorlage {
     }
 
     private void getColor(MVC mvc) {
-        DialogFarbe dialog = new DialogFarbe(null, true, mvc.color);
+        DialogFarbe dialog = new DialogFarbe(parentComponent, true, mvc.color);
         dialog.setVisible(true);
         if (dialog.farbe != null) {
             if (!dialog.farbe.equals(mvc.color)) {
