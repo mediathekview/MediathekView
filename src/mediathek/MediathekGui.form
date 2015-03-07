@@ -9,6 +9,9 @@
             <Property name="mnemonic" type="int" value="100"/>
             <Property name="text" type="java.lang.String" value="Datei"/>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+          </AuxValues>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemFilmlisteLaden">
               <Properties>
@@ -32,8 +35,14 @@
                 <Property name="text" type="java.lang.String" value="Einstellungen"/>
                 <Property name="toolTipText" type="java.lang.String" value="allgemeine Programmeinstellungen"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+              </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator2">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+              </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemBeenden">
               <Properties>
@@ -45,6 +54,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Beenden"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+              </AuxValues>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -68,6 +80,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Film abspielen"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+              </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemFilmAufzeichnen">
               <Properties>
@@ -79,6 +94,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Film aufzeichnen"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+              </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemFilterLoeschen">
               <Properties>
@@ -90,6 +108,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Filter l&#xf6;schen"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+              </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemBlacklist">
               <Properties>
@@ -101,6 +122,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Blacklist &#xf6;ffnen"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+              </AuxValues>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -324,6 +348,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Beschreibung anzeigen"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+              </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCheckBoxMenuItemVideoplayer">
               <Properties>
@@ -332,6 +359,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Buttons anzeigen"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+              </AuxValues>
             </MenuItem>
             <Menu class="javax.swing.JMenu" name="jMenu1">
               <Properties>
@@ -386,6 +416,9 @@
             <Property name="mnemonic" type="int" value="104"/>
             <Property name="text" type="java.lang.String" value="Hilfe"/>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+          </AuxValues>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAnleitung">
               <Properties>
@@ -396,11 +429,17 @@
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator4">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+              </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAbout">
               <Properties>
                 <Property name="text" type="java.lang.String" value="&#xdc;ber MediathekView"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+              </AuxValues>
             </MenuItem>
           </SubComponents>
         </Menu>
