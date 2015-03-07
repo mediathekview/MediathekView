@@ -43,6 +43,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
     private final JCheckBox jCheckBoxRestart = new JCheckBox();
     private final JCheckBox jCheckBoxUnterbrochen = new JCheckBox();
     private final JCheckBox jCheckBoxInfodatei = new JCheckBox();
+    private final JCheckBox jCheckBoxSubtitle = new JCheckBox();
     private final JCheckBox jCheckBoxSpotlight = new JCheckBox();
     public boolean ok = false;
     private final MVPanelDownloadZiel mVPanelDownloadZiel;
@@ -163,6 +164,17 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 c.weightx = 10;
                 gridbag.setConstraints(jCheckBoxInfodatei, c);
                 jPanelExtra.add(jCheckBoxInfodatei);
+            } else if (i == DatenDownload.DOWNLOAD_SUBTITLE_NR) {
+                labelListe[i].setForeground(Color.BLUE);
+                jCheckBoxSubtitle.setSelected(Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE_NR]));
+                jCheckBoxSubtitle.addActionListener(new BeobCheckbox());
+                jCheckBoxSubtitle.setEnabled(!gestartet);
+                gridbag.setConstraints(labelListe[i], c);
+                jPanelExtra.add(labelListe[i]);
+                c.gridx = 1;
+                c.weightx = 10;
+                gridbag.setConstraints(jCheckBoxSubtitle, c);
+                jPanelExtra.add(jCheckBoxSubtitle);
             } else if (i == DatenDownload.DOWNLOAD_SPOTLIGHT_NR) {
                 labelListe[i].setForeground(Color.BLUE);
                 jCheckBoxSpotlight.setSelected(Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT_NR]));
@@ -339,6 +351,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
             datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR] = Boolean.toString(jCheckBoxRestart.isSelected());
             datenDownload.arr[DatenDownload.DOWNLOAD_UNTERBROCHEN_NR] = Boolean.toString(jCheckBoxUnterbrochen.isSelected());
             datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR] = Boolean.toString(jCheckBoxInfodatei.isSelected());
+            datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE_NR] = Boolean.toString(jCheckBoxSubtitle.isSelected());
             datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT_NR] = Boolean.toString(jCheckBoxSpotlight.isSelected());
         }
     }

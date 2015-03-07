@@ -10,7 +10,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.net.URISyntaxException;
 import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -24,6 +23,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
+import mediathek.tool.BeobMausUrl;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.UrlHyperlinkAction;
 import msearch.daten.DatenFilm;
@@ -37,6 +37,7 @@ public class MVFilmInformation implements ChangeListener {
     private HudWindow hud = null;
     private JDialog dialog = null;
     private JXHyperlink lblUrlThemaField;
+    private JXHyperlink lblUrlSubtitle;
     private JTextArea textAreaBeschreibung;
     private JLabel jLabelFilmNeu;
     private final JLabel[] labelArrNames = new JLabel[DatenFilm.MAX_ELEM];
@@ -95,7 +96,19 @@ public class MVFilmInformation implements ChangeListener {
             lblUrlThemaField.setAction(new UrlHyperlinkAction(parent, ""));
         } catch (URISyntaxException ignored) {
         }
+        lblUrlThemaField.addMouseListener(new BeobMausUrl(lblUrlThemaField));
+
         lblUrlThemaField.setFont(HudPaintingUtils.getHudFont());
+
+        lblUrlSubtitle = new JXHyperlink();
+        lblUrlSubtitle.setDoubleBuffered(true);
+        lblUrlSubtitle.setForeground(foreground);
+        try {
+            lblUrlSubtitle.setAction(new UrlHyperlinkAction(parent, ""));
+        } catch (URISyntaxException ignored) {
+        }
+        lblUrlSubtitle.addMouseListener(new BeobMausUrl(lblUrlSubtitle));
+        lblUrlSubtitle.setFont(HudPaintingUtils.getHudFont());
         textAreaBeschreibung = new JTextArea();
         textAreaBeschreibung.setDoubleBuffered(true);
         textAreaBeschreibung.setLineWrap(true);
@@ -153,6 +166,9 @@ public class MVFilmInformation implements ChangeListener {
         if (i == DatenFilm.FILM_WEBSEITE_NR) {
             gridbag.setConstraints(lblUrlThemaField, c);
             panel.add(lblUrlThemaField);
+        } else if (i == DatenFilm.FILM_URL_SUBTITLE_NR) {
+            gridbag.setConstraints(lblUrlSubtitle, c);
+            panel.add(lblUrlSubtitle);
         } else if (i == DatenFilm.FILM_BESCHREIBUNG_NR) {
             gridbag.setConstraints(textAreaBeschreibung, c);
             panel.add(textAreaBeschreibung);
@@ -187,12 +203,14 @@ public class MVFilmInformation implements ChangeListener {
 
     private void setAktFilm() {
         lblUrlThemaField.setForeground(foreground);
+        lblUrlSubtitle.setForeground(foreground);
         if (aktFilm == null) {
             for (int i = 0; i < txtArrCont.length; ++i) {
                 txtArrCont[i].setText("");
             }
             textAreaBeschreibung.setText(" ");
             lblUrlThemaField.setText("");
+            lblUrlSubtitle.setText("");
             jLabelFilmNeu.setVisible(false);
         } else {
             for (int i = 0; i < txtArrCont.length; ++i) {
@@ -205,6 +223,7 @@ public class MVFilmInformation implements ChangeListener {
                 textAreaBeschreibung.setText(aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR]);
             }
             lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
+            lblUrlSubtitle.setText(aktFilm.arr[DatenFilm.FILM_URL_SUBTITLE_NR]);
             jLabelFilmNeu.setVisible(aktFilm.neuerFilm);
         }
         dialog.repaint();

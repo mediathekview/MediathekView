@@ -27,6 +27,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
@@ -114,20 +115,19 @@ public class DialogBeendenZeit extends JDialog {
             }
         });
 
-        SpinnerDateModel model = new SpinnerDateModel();
-        jSpinnerTime.setModel(model);
-        jSpinnerTime.addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-
-            }
-        });
-
         // set date format
-        SimpleDateFormat format = ((JSpinner.DateEditor) jSpinnerTime.getEditor()).getFormat();
-        format.applyPattern("dd.MM.yyy HH:mm");
-        model.setValue(new Date());
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MINUTE, 1);
+        Date startDate = cal.getTime();
+        cal.add(Calendar.MINUTE, 60); // würde sagen, das ist ein Bug, geht sonst nicht
+        Date now = cal.getTime();
+        cal.add(Calendar.DATE, 2);
+        Date endDate = cal.getTime();
+        SpinnerDateModel model = new SpinnerDateModel(now, startDate, endDate, Calendar.MINUTE);
+        jSpinnerTime.setModel(model);
+        JSpinner.DateEditor dEditor = new JSpinner.DateEditor(jSpinnerTime, "dd.MM.yyy  HH:mm");
+        jSpinnerTime.setEditor(dEditor);
+
         comboActions.setModel(getComboBoxModel());
         comboActions.addActionListener(new ActionListener() {
             @Override
@@ -379,8 +379,8 @@ public class DialogBeendenZeit extends JDialog {
                             .addComponent(cbShutdownComputer)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jSpinnerTime, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jSpinnerTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel3)))
                         .addGap(0, 0, Short.MAX_VALUE)))

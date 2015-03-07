@@ -109,18 +109,6 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <Component id="jCheckBoxInfodatei" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="143" max="32767" attributes="0"/>
-                                  <Component id="jCheckBoxPfadSpeichern" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Component id="jTextFieldName" max="32767" attributes="2"/>
-                          </Group>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jLabelSet" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -135,6 +123,22 @@
                                   <Component id="jButtonDelHistory" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Component id="jComboBoxPset" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Component id="jCheckBoxSubtitle" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              </Group>
+                              <Group type="102" attributes="0">
+                                  <Component id="jCheckBoxInfodatei" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace pref="143" max="32767" attributes="0"/>
+                                  <Component id="jCheckBoxPfadSpeichern" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="jTextFieldName" max="32767" attributes="2"/>
                           </Group>
                       </Group>
                   </Group>
@@ -167,6 +171,8 @@
                       <Component id="jCheckBoxPfadSpeichern" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jCheckBoxInfodatei" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="jCheckBoxSubtitle" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -240,6 +246,11 @@
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>
         </Component>
+        <Component class="javax.swing.JCheckBox" name="jCheckBoxSubtitle">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Untertitel speichern: &quot;Filmname.xxx&quot;"/>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="jPanelSize">
@@ -309,9 +320,6 @@
     <Component class="javax.swing.JTextField" name="jTextFieldSender">
       <Properties>
         <Property name="editable" type="boolean" value="false"/>
-        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="ee" green="ee" red="ee" type="rgb"/>
-        </Property>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Dialog" size="12" style="1"/>
         </Property>

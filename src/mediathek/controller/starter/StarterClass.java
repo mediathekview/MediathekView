@@ -46,6 +46,7 @@ import mediathek.tool.MVConfig;
 import mediathek.tool.MVInfoFile;
 import mediathek.tool.MVInputStream;
 import mediathek.tool.MVNotification;
+import mediathek.tool.MVSubtitle;
 import msearch.daten.DatenFilm;
 import msearch.tool.Datum;
 
@@ -403,6 +404,9 @@ public class StarterClass {
                 if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR])) {
                     MVInfoFile.writeInfoFile(datenDownload);
                 }
+                if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE_NR])) {
+                    MVSubtitle.writeSubtitle(datenDownload);
+                }
 
                 Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
             } catch (IOException ignored) {
@@ -711,6 +715,9 @@ public class StarterClass {
         private void downloadContent() throws Exception {
             if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR])) {
                 MVInfoFile.writeInfoFile(datenDownload);
+            }
+            if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE_NR])) {
+                MVSubtitle.writeSubtitle(datenDownload);
             }
             datenDownload.interruptRestart();
             start.mVInputStream = new MVInputStream(conn.getInputStream(), bandwidthCalculationTimer);
