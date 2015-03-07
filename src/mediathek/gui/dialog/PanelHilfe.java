@@ -101,7 +101,7 @@ public class PanelHilfe extends PanelVorlage {
                     // damit wird vor dem Beenden das Konfig-Verzeichnis umbenannt und so startet das
                     // Programm wie beim ersten Start
                     Daten.RESET = true;
-                    daten.mediathekGui.beenden();
+                    daten.mediathekGui.beenden(false,false);
                 }
             }
         });

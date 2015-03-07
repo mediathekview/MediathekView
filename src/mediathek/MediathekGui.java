@@ -19,19 +19,10 @@
  */
 package mediathek;
 
+import com.apple.eawt.*;
 import com.jidesoft.utils.SystemInfo;
-import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.SplashScreen;
-import java.awt.Toolkit;
-import java.awt.Window;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -101,11 +92,8 @@ import mediathek.tool.MVFrame;
 import mediathek.tool.MVMessageDialog;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
 import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
-import org.simplericity.macify.eawt.ApplicationEvent;
-import org.simplericity.macify.eawt.ApplicationListener;
-import org.simplericity.macify.eawt.DefaultApplication;
 
-public final class MediathekGui extends javax.swing.JFrame implements ApplicationListener {
+public final class MediathekGui extends JFrame {
 
     private Daten daten;
     private final DialogEinstellungen dialogEinstellungen;
@@ -126,23 +114,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private final JCheckBoxMenuItem jCheckBoxMeldungenAnzeigen = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxMeldungenExtrafenster = new JCheckBoxMenuItem();
     /**
-     * The application proxy object into OS X´s native world.
-     */
-    final private DefaultApplication application = new DefaultApplication();
-    /**
      * Bandwidth monitoring for downloads.
      */
     private MVBandwidthMonitor bandwidthMonitor = null;
     private MVDownloadInfo mvDownloadInfo = null;
-
-    /**
-     * Return the currently used java native bridge object
-     *
-     * @return The object into the native OSX world.
-     */
-    public DefaultApplication getOsxApplicationAdapter() {
-        return application;
-    }
 
     /**
      * Legt die statusbar an.
@@ -573,7 +548,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
-                beenden();
+                beenden(false,false);
             }
         });
 ////        systemTray();
@@ -750,23 +725,41 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
      * Setup the UI for OS X
      */
     private void setupUserInterfaceForOsx() {
-        application.addApplicationListener(this);
-        application.addAboutMenuItem();
-        application.addPreferencesMenuItem();
-        application.setEnabledAboutMenu(true);
-        application.setEnabledPreferencesMenu(true);
+        final Application application = Application.getApplication();
+        application.disableSuddenTermination();
+        application.setAboutHandler(new AboutHandler() {
+            @Override
+            public void handleAbout(AppEvent.AboutEvent aboutEvent) {
+                showAboutDialog();
+            }
+        });
+        application.setPreferencesHandler(new PreferencesHandler() {
+            @Override
+            public void handlePreferences(AppEvent.PreferencesEvent preferencesEvent) {
+                dialogEinstellungen.setVisible(true);
+            }
+        });
+        application.setQuitHandler(new QuitHandler() {
+            @Override
+            public void handleQuitRequestWith(AppEvent.QuitEvent quitEvent, QuitResponse quitResponse) {
+                if (!beenden(false, false))
+                    quitResponse.cancelQuit();
+                else
+                    quitResponse.performQuit();
+            }
+        });
 
         //setup the MediathekView Dock Icon
         try {
             URL url = this.getClass().getResource("res/MediathekView.png");
             BufferedImage appImage = ImageIO.read(url);
-            application.setApplicationIconImage(appImage);
+            application.setDockIconImage(appImage);
         } catch (IOException ex) {
             Log.fehlerMeldung(165623698, "MediathekGui.setupUserInterfaceForOsx", "OS X Application image could not be loaded");
         }
 
         //Remove all menu items which don´t need to be displayed due to OS X´s native menu support
-        if (application.isMac()) {
+        if (SystemInfo.isMacOSX()) {
             //Datei->Beenden
             jMenuDatei.remove(jSeparator2);
             jMenuDatei.remove(jMenuItemBeenden);
@@ -791,14 +784,14 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             public void ping() {
                 final int activeDownloads = Daten.listeDownloads.getActiveDownloads();
                 if (activeDownloads > 0) {
-                    application.setDockIconBadge(String.valueOf(activeDownloads));
+                    Application.getApplication().setDockIconBadge(String.valueOf(activeDownloads));
 
                     if (osxProgressIndicatorThread == null) {
                         osxProgressIndicatorThread = new OsxIndicatorThread();
                         osxProgressIndicatorThread.start();
                     }
                 } else {
-                    application.setDockIconBadge("");
+                    Application.getApplication().setDockIconBadge("");
                     if (osxProgressIndicatorThread != null) {
                         osxProgressIndicatorThread.interrupt();
                         osxProgressIndicatorThread = null;
@@ -816,7 +809,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         /**
          * The BufferedImage of the OS X application icon.
          */
-        private BufferedImage OsxApplicationIconImage = null;
+        private Image OsxApplicationIconImage = null;
         /**
          * Stores the application image with the progress drawn on it
          */
@@ -830,9 +823,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         public OsxIndicatorThread() {
             setName("OSX dock icon update thread");
-            OsxApplicationIconImage = application.getApplicationIconImage();
-            appIconWidth = OsxApplicationIconImage.getWidth();
-            appIconHeight = OsxApplicationIconImage.getHeight();
+
+            OsxApplicationIconImage = Application.getApplication().getDockIconImage();
+            appIconWidth = OsxApplicationIconImage.getWidth(null);
+            appIconHeight = OsxApplicationIconImage.getHeight(null);
             newApplicationIcon = new BufferedImage(appIconWidth, appIconHeight, BufferedImage.TYPE_INT_ARGB);
         }
 
@@ -849,8 +843,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             g.setColor(Color.GREEN);
             g.fillRect(0, appIconHeight - 20, progressBarWidth, 20);
             g.dispose();
-
-            application.setApplicationIconImage(newApplicationIcon);
+            Application.getApplication().setDockIconImage(newApplicationIcon);
         }
 
         @Override
@@ -891,7 +884,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
             } catch (Exception ignored) {
             } finally {
                 //reset the application dock icon
-                application.setApplicationIconImage(OsxApplicationIconImage);
+                Application.getApplication().setDockIconImage(OsxApplicationIconImage);
             }
         }
     }
@@ -934,7 +927,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemBeenden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                beenden();
+                beenden(false,false);
             }
         });
         // Filme
@@ -1300,58 +1293,17 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         aboutDialog.dispose();
     }
 
-    @Override
-    public void handleQuit(ApplicationEvent event) {
-        beenden();
-    }
-
-    @Override
-    public void handleReOpenApplication(ApplicationEvent event) {
-        //unused
-    }
-
-    @Override
-    public void handlePrintFile(ApplicationEvent event) {
-        //unused
-    }
-
-    @Override
-    public void handlePreferences(ApplicationEvent event) {
-        dialogEinstellungen.setVisible(true);
-    }
-
-    @Override
-    public void handleOpenFile(ApplicationEvent event) {
-        //unused
-    }
-
-    @Override
-    public void handleOpenApplication(ApplicationEvent event) {
-        //unused
-    }
-
-    @Override
-    public void handleAbout(ApplicationEvent event) {
-        showAboutDialog();
-        event.setHandled(true);
-    }
-
-    public void beenden() {
-        beenden(false /*Dialog auf "sofort beenden" einstellen*/, false /*shutdown*/);
-    }
-
-    public void beenden(boolean showOptionTerminate, boolean shutDown) {
-        DialogBeenden dialogBeenden = null;
+    public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
         if (Daten.listeDownloads.nochNichtFertigeDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
-            dialogBeenden = new DialogBeenden(this);
+            DialogBeenden dialogBeenden = new DialogBeenden(this);
             if (showOptionTerminate) {
                 dialogBeenden.setComboWaitAndTerminate();
             }
             dialogBeenden.setModal(true);
             dialogBeenden.setVisible(true);
             if (!dialogBeenden.applicationCanTerminate()) {
-                return;
+                return false;
             }
             shutDown = dialogBeenden.isShutdownRequested();
         }
@@ -1407,6 +1359,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         dispose();
         System.exit(0);
+
+        return false;
     }
 
     /**
