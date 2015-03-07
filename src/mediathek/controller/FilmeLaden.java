@@ -147,6 +147,10 @@ public class FilmeLaden {
 
     // #######################################
     // #######################################
+    public void addAdListener(MSListenerFilmeLaden listener) {
+        listeners.add(MSListenerFilmeLaden.class, listener);
+    }
+
     public synchronized void setStop(boolean set) {
         MSConfig.setStop(set);
     }
@@ -167,6 +171,8 @@ public class FilmeLaden {
         return msImportFilmliste.msFilmlistenSuchen.listeFilmlistenUrls_diff;
     }
 
+    // #######################################
+    // #######################################
     private void undEnde(MSListenerFilmeLadenEvent event) {
         // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
         // beim Ändern von Abos gemacht wird
@@ -220,69 +226,119 @@ public class FilmeLaden {
         hashSet.clear();
     }
 
-    // ###########################
-    // Listener
-    // ###########################
-    public void addAdListener(MSListenerFilmeLaden listener) {
-        listeners.add(MSListenerFilmeLaden.class, listener);
-    }
-
     private void notifyStart(MSListenerFilmeLadenEvent event) {
-        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
-            run_(new Start(l, event, ListenerMelden.START));
+        final MSListenerFilmeLadenEvent e = event;
+        try {
+            if (SwingUtilities.isEventDispatchThread()) {
+                for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
+                    l.start(event);
+                }
+            } else {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
+                            l.start(e);
+                        }
+                    }
+                });
+            }
+        } catch (Exception ex) {
+            Log.fehlerMeldung(765213654, "ListenerFilmeLaden.notifyStart", ex);
         }
+//        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
+//            run_(new Start(l, event, ListenerMelden.START));
+//        }
     }
 
     private void notifyProgress(MSListenerFilmeLadenEvent event) {
-        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
-            run_(new Start(l, event, ListenerMelden.PROGRESS));
+        final MSListenerFilmeLadenEvent e = event;
+        try {
+            if (SwingUtilities.isEventDispatchThread()) {
+                for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
+                    l.progress(e);
+                }
+            } else {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
+                            l.progress(e);
+                        }
+                    }
+                });
+            }
+        } catch (Exception ex) {
+            Log.fehlerMeldung(201020369, "ListenerFilmeLaden.notifyProgress", ex);
         }
+//        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
+//            run_(new Start(l, event, ListenerMelden.PROGRESS));
+//        }
     }
 
     private void notifyFertig(MSListenerFilmeLadenEvent event) {
-        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
-            run_(new Start(l, event, ListenerMelden.FINISHED));
-        }
-    }
-
-    private class Start implements Runnable {
-
-        private final MSListenerFilmeLaden listenerFilmeLaden;
-        private final MSListenerFilmeLadenEvent event;
-        private final ListenerMelden listenerMelden;
-
-        public Start(MSListenerFilmeLaden llistenerFilmeLaden, MSListenerFilmeLadenEvent eevent, ListenerMelden lliListenerMelden) {
-            listenerFilmeLaden = llistenerFilmeLaden;
-            event = eevent;
-            listenerMelden = lliListenerMelden;
-        }
-
-        @Override
-        public synchronized void run() {
-            switch (listenerMelden) {
-                case START:
-                    listenerFilmeLaden.start(event);
-                    break;
-                case PROGRESS:
-                    listenerFilmeLaden.progress(event);
-                    break;
-                case FINISHED:
-                    listenerFilmeLaden.fertig(event);
-                    break;
-            }
-        }
-    }
-
-    private void run_(Runnable r) {
+        final MSListenerFilmeLadenEvent e = event;
         try {
             if (SwingUtilities.isEventDispatchThread()) {
-                // entweder hier
-                r.run();
+                for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
+                    l.fertig(e);
+                }
             } else {
-                SwingUtilities.invokeLater(r);
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
+                            l.fertig(e);
+                        }
+                    }
+                });
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(926369741, ex);
+            Log.fehlerMeldung(945120303, "ListenerFilmeLaden.notifyFertig", ex);
         }
+//        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
+//            run_(new Start(l, event, ListenerMelden.FINISHED));
+//        }
     }
+
+//    private class Start implements Runnable {
+//
+//        private final MSListenerFilmeLaden listenerFilmeLaden;
+//        private final MSListenerFilmeLadenEvent event;
+//        private final ListenerMelden listenerMelden;
+//
+//        public Start(MSListenerFilmeLaden llistenerFilmeLaden, MSListenerFilmeLadenEvent eevent, ListenerMelden lliListenerMelden) {
+//            listenerFilmeLaden = llistenerFilmeLaden;
+//            event = eevent;
+//            listenerMelden = lliListenerMelden;
+//        }
+//
+//        @Override
+//        public synchronized void run() {
+//            switch (listenerMelden) {
+//                case START:
+//                    listenerFilmeLaden.start(event);
+//                    break;
+//                case PROGRESS:
+//                    listenerFilmeLaden.progress(event);
+//                    break;
+//                case FINISHED:
+//                    listenerFilmeLaden.fertig(event);
+//                    break;
+//            }
+//        }
+//    }
+//
+//    private void run_(Runnable r) {
+//        try {
+//            if (SwingUtilities.isEventDispatchThread()) {
+//                // entweder hier
+//                r.run();
+//            } else {
+//                SwingUtilities.invokeLater(r);
+//            }
+//        } catch (Exception ex) {
+//            Log.fehlerMeldung(926369741, "ListenerFilmeLaden.run_", ex);
+//        }
+//    }
 }

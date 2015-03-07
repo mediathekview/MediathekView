@@ -22,6 +22,7 @@ package mediathek.gui.dialogEinstellungen;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JFrame;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.tool.EscBeenden;
@@ -30,14 +31,19 @@ public class DialogFarbe extends javax.swing.JDialog {
 
     public Color farbe = null;
 
-    /** Creates new form HilfeDialog
+    /** Creates new form DialogFarbe
+     *
      * @param parent
-     * @param modal 
+     * @param modal
+     * @param color
      */
-    public DialogFarbe(java.awt.Frame parent, boolean modal) {
+    public DialogFarbe(JFrame parent, boolean modal, Color color) {
         super(parent, modal);
         initComponents();
-        jColorChooser1.getSelectionModel().addChangeListener(new BeobachterFarbe());
+        if (color != null) {
+            jColorChooser.setColor(color);
+        }
+        jColorChooser.getSelectionModel().addChangeListener(new BeobachterFarbe());
         jButtonOk.addActionListener(new BeobachterOk());
         jButtonAbbrechen.addActionListener(new BeobachterAbbrechen());
         new EscBeenden(this) {
@@ -66,7 +72,7 @@ public class DialogFarbe extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jColorChooser1 = new javax.swing.JColorChooser();
+        jColorChooser = new javax.swing.JColorChooser();
         jButtonAbbrechen = new javax.swing.JButton();
         jButtonOk = new javax.swing.JButton();
 
@@ -84,7 +90,7 @@ public class DialogFarbe extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jColorChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jColorChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jButtonOk)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -98,12 +104,12 @@ public class DialogFarbe extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jColorChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jColorChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonAbbrechen)
                     .addComponent(jButtonOk))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         pack();
@@ -111,14 +117,14 @@ public class DialogFarbe extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAbbrechen;
     private javax.swing.JButton jButtonOk;
-    private javax.swing.JColorChooser jColorChooser1;
+    private javax.swing.JColorChooser jColorChooser;
     // End of variables declaration//GEN-END:variables
 
     private class BeobachterFarbe implements ChangeListener {
 
         @Override
         public void stateChanged(ChangeEvent arg0) {
-            farbe = jColorChooser1.getColor();
+            farbe = jColorChooser.getColor();
         }
     }
 

@@ -31,7 +31,6 @@ import java.util.zip.InflaterInputStream;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
-import msearch.daten.DatenFilm;
 
 public class MVSubtitle {
 
@@ -46,12 +45,11 @@ public class MVSubtitle {
         FileOutputStream fos;
         String encoding;
 
-        if (datenDownload.film.arr[DatenFilm.FILM_URL_SUBTITLE_NR].isEmpty()) {
+        if (datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE_NR].isEmpty()) {
             return;
         }
         try {
-
-            url = datenDownload.film.arr[DatenFilm.FILM_URL_SUBTITLE_NR];
+            url = datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE_NR];
             new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
             String suff = "txt";
             if (url.contains(".")) {
