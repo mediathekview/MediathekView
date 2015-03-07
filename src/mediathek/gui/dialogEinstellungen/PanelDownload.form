@@ -108,7 +108,7 @@
       <SubComponents>
         <Component class="javax.swing.JCheckBox" name="jCheckBoxNotification">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Benachrichtigungen anzeigen"/>
+            <Property name="text" type="java.lang.String" value="Benachrichtigung wenn abgeschlossen"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel3">

@@ -330,6 +330,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                             || i == DatenDownload.DOWNLOAD_UNTERBROCHEN_NR
                             || i == DatenDownload.DOWNLOAD_SPOTLIGHT_NR
                             || i == DatenDownload.DOWNLOAD_INFODATEI_NR
+                            || i == DatenDownload.DOWNLOAD_SUBTITLE_NR
                             || i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR) {
                         object[i] = "";
                     } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {

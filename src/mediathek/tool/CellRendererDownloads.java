@@ -184,7 +184,32 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                         setIcon(nein_12);
                     }
                     break;
-
+                case DatenDownload.DOWNLOAD_ART_NR:
+                    switch (datenDownload.getArt()) {
+                        case Start.ART_DOWNLOAD:
+                            setText(Start.ART_DOWNLOAD_TXT);
+                            break;
+                        case Start.ART_PROGRAMM:
+                            setText(Start.ART_PROGRAMM_TXT);
+                            break;
+                    }
+                    break;
+                case DatenDownload.DOWNLOAD_QUELLE_NR:
+                    switch (datenDownload.getQuelle()) {
+                        case Start.QUELLE_ALLE:
+                            setText(Start.QUELLE_ALLE_TXT);
+                            break;
+                        case Start.QUELLE_ABO:
+                            setText(Start.QUELLE_ABO_TXT);
+                            break;
+                        case Start.QUELLE_BUTTON:
+                            setText(Start.QUELLE_BUTTON_TXT);
+                            break;
+                        case Start.QUELLE_DOWNLOAD:
+                            setText(Start.QUELLE_DOWNLOAD_TXT);
+                            break;
+                    }
+                    break;
                 case DatenDownload.DOWNLOAD_UNTERBROCHEN_NR:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (datenDownload.isInterrupted()) {
@@ -206,6 +231,15 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 case DatenDownload.DOWNLOAD_INFODATEI_NR:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (datenDownload.isInfoFile()) {
+                        setIcon(ja_16);
+                    } else {
+                        setIcon(nein_12);
+                    }
+                    break;
+
+                case DatenDownload.DOWNLOAD_SUBTITLE_NR:
+                    setHorizontalAlignment(SwingConstants.CENTER);
+                    if (datenDownload.isSubtitle()) {
                         setIcon(ja_16);
                     } else {
                         setIcon(nein_12);

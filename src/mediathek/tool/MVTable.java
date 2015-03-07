@@ -507,6 +507,7 @@ public final class MVTable extends JTable {
                 || i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR
                 || i == DatenDownload.DOWNLOAD_UNTERBROCHEN_NR
                 || i == DatenDownload.DOWNLOAD_SPOTLIGHT_NR
+                || i == DatenDownload.DOWNLOAD_SUBTITLE_NR
                 || i == DatenDownload.DOWNLOAD_INFODATEI_NR) {
             breite[i] = 50;
         } else if (i == DatenDownload.DOWNLOAD_TITEL_NR) {
@@ -596,6 +597,7 @@ public final class MVTable extends JTable {
                 || i == DatenDownload.DOWNLOAD_REF_NR
                 || i == DatenDownload.DOWNLOAD_SPOTLIGHT_NR
                 || i == DatenDownload.DOWNLOAD_INFODATEI_NR
+                || i == DatenDownload.DOWNLOAD_SUBTITLE_NR
                 || i == DatenDownload.DOWNLOAD_UNTERBROCHEN_NR) {
             breite[i] = 0;
         }
