@@ -854,7 +854,7 @@ public class GuiFilme extends PanelVorlage {
                 loadTable();
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(558965421, "GuiFilme.tabelleBauen", ex);
+            Log.fehlerMeldung(558965421, ex);
         }
     }
 
@@ -1433,7 +1433,7 @@ public class GuiFilme extends PanelVorlage {
                 try {
                     tabelle.print();
                 } catch (PrinterException ex) {
-                    Log.fehlerMeldung(688542239, "GuiFilme.BeobPrint", ex);
+                    Log.fehlerMeldung(688542239, ex);
                 }
             }
         }

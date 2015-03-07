@@ -336,7 +336,7 @@ public class Daten {
                         + "von Hand löschen und dann das Programm wieder starten.\n\n"
                         + "Im Forum finden Sie weitere Hilfe.", "Fehler", JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
-                Log.fehlerMeldung(465690123, Daten.class.getName(), e);
+                Log.fehlerMeldung(465690123, e);
             }
         }
     }
@@ -383,7 +383,7 @@ public class Daten {
                     Log.systemMeldung("Einstellungen wurden heute schon gesichert");
                 }
             } catch (Exception e) {
-                Log.fehlerMeldung(795623147, Daten.class.getName(), e);
+                Log.fehlerMeldung(795623147, e);
             }
             if (!renameOk) {
                 Log.systemMeldung("Die Einstellungen konnten nicht komplett gesichert werden!");

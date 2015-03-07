@@ -121,7 +121,7 @@ public class MVUsedUrls {
             }
             in.close();
         } catch (Exception ex) {
-            Log.fehlerMeldung(281006874, "LogDownload.urlAusLogfileLoeschen-1", ex);
+            Log.fehlerMeldung(281006874, ex);
         }
 
         //und jetzt wieder schreiben, wenn nötig
@@ -133,7 +133,7 @@ public class MVUsedUrls {
                 bufferedWriter.flush();
                 bufferedWriter.close();
             } catch (Exception ex) {
-                Log.fehlerMeldung(566277080,  "LogDownload.urlAusLogfileLoeschen-3", ex);
+                Log.fehlerMeldung(566277080, ex);
             }
         }
         listeUrls.clear();
@@ -158,7 +158,7 @@ public class MVUsedUrls {
             bufferedWriter.close();
             ret = true;
         } catch (Exception ex) {
-            Log.fehlerMeldung(945258023, "LogDownload.zeileSchreiben-1", ex);
+            Log.fehlerMeldung(945258023, ex);
         }
 
         ListenerMediathekView.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
@@ -199,7 +199,7 @@ public class MVUsedUrls {
                 bufferedWriter.close();
             } catch (Exception ex) {
                 ret = false;
-                Log.fehlerMeldung(945258023,  "LogDownload.zeileSchreiben-1", ex);
+                Log.fehlerMeldung(945258023, ex);
             }
             ListenerMediathekView.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
             return ret;
@@ -235,7 +235,7 @@ public class MVUsedUrls {
             }
             in.close();
         } catch (Exception ex) {
-            Log.fehlerMeldung(926362547, MVUsedUrls.class.getName(), ex);
+            Log.fehlerMeldung(926362547, ex);
         }
     }
 

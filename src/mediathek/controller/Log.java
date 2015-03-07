@@ -101,7 +101,7 @@ public class Log {
     }
 
     // Fehlermeldung mit Exceptions
-    public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex) {
+    public static synchronized void fehlerMeldung(int fehlerNummer, Exception ex) {
         fehlermeldung_(fehlerNummer, ex, new String[]{});
     }
 
@@ -408,7 +408,7 @@ public class Log {
                 });
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(698989743, "ListenerMediathekView.pingen", ex);
+            Log.fehlerMeldung(698989743, ex);
         }
     }
 

@@ -82,7 +82,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(464589201,"PanelExportImportDateiUrl.filmeExportieren", ex);
+                Log.fehlerMeldung(464589201, ex);
             }
         }
         this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -213,7 +213,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldPfad.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(679890147,  "PanelExportImportDateiUrl.BeobImport", ex);
+                        Log.fehlerMeldung(679890147, ex);
                     }
                 }
             } else {
@@ -229,7 +229,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                     try {
                         jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(911025463,  "PanelExportImportDateiUrl.BeobImport", ex);
+                        Log.fehlerMeldung(911025463, ex);
                     }
                 }
             }

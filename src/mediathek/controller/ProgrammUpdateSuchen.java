@@ -101,7 +101,7 @@ public class ProgrammUpdateSuchen {
                 }
             });
         } catch (Exception ex) {
-            Log.fehlerMeldung(159002583,  "ProgrammUpdateSuchen.checkVersion", ex);
+            Log.fehlerMeldung(159002583, ex);
         }
         return neueVersion;
     }
@@ -129,7 +129,7 @@ public class ProgrammUpdateSuchen {
                     Daten.mVConfig.add(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(listInfos.size()));
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(693298731, "ProgrammUpdateSuchen.checkVersion", ex);
+                Log.fehlerMeldung(693298731, ex);
             }
         } else if (alleAnzeigen) {
             // dann wenigstens einen Hinweis, dass es keine gibt
@@ -137,17 +137,23 @@ public class ProgrammUpdateSuchen {
         }
     }
 
-    private boolean checkObNeueVersion(String infoVersion, String ichVersion) {
-        // liefert true, wenn es eine neue Version gibt
+    /**
+     * Check if a newer version exists.
+     * @param infoVersion
+     * @param currentVersion
+     * @return true if there is a newer version
+     */
+    private boolean checkObNeueVersion(String infoVersion, String currentVersion) {
+        //FIXME Get rid of the strings as we are converting to int anyway!!!!
         try {
             // erste stelle
             int info = Integer.parseInt(infoVersion);
-            int ich = Integer.parseInt(ichVersion);
+            int ich = Integer.parseInt(currentVersion);
             if (info > ich) {
                 return true;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(683021193, "ProgrammUpdateSuchen.checkObNeueVersion", ex);
+            Log.fehlerMeldung(683021193, ex);
         }
         return false;
     }

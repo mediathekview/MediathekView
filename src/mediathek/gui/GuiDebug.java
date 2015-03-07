@@ -456,7 +456,7 @@ public class GuiDebug extends JPanel {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldPath.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(679890147, "GuiDebug.BeobPfad", ex);
+                        Log.fehlerMeldung(679890147, ex);
                     }
                 }
             } else {
@@ -472,7 +472,7 @@ public class GuiDebug extends JPanel {
                     try {
                         jTextFieldPath.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(911025463, "GuiDebug.BeobPfad", ex);
+                        Log.fehlerMeldung(911025463, ex);
                     }
                 }
             }

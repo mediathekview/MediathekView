@@ -1458,7 +1458,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 Log.systemMeldung("Shutdown: " + strShutdownCommand);
                 Runtime.getRuntime().exec(strShutdownCommand);
             } catch (IOException ex) {
-                Log.fehlerMeldung(915263047, "MediathekGui.shutdownComputer", ex);
+                Log.fehlerMeldung(915263047, ex);
             }
         }
     }

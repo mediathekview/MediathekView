@@ -129,7 +129,7 @@ public class Funktionen {
             rb = ResourceBundle.getBundle("version");
             msg = rb.getString(propToken);
         } catch (Exception e) {
-            Log.fehlerMeldung(807293847, Funktionen.class.getName(), e);
+            Log.fehlerMeldung(807293847, e);
         }
         return msg;
     }
@@ -143,7 +143,7 @@ public class Funktionen {
             rb = ResourceBundle.getBundle("version");
             msg = rb.getString(propToken);
         } catch (Exception e) {
-            Log.fehlerMeldung(134679898, Funktionen.class.getName(), e);
+            Log.fehlerMeldung(134679898, e);
         }
         return msg;
     }
