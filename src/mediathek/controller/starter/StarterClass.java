@@ -559,11 +559,11 @@ public class StarterClass {
             if (Daten.auto) {
                 // dann mit gleichem Namen und Datei vorher löschen
                 try {
-                    file.delete();
+                    Files.deleteIfExists(file.toPath());
                     file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-                } catch (Exception ex) {
+                } catch (IOException ex) {
                     // kann nicht gelöscht werden, evtl. klappt ja das Überschreiben
-                    Log.fehlerMeldung(795623145, "StartetClass.ExternalProgramDownloadThread", ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                    Log.fehlerMeldung(795623145, "StarterClass.ExternalProgramDownloadThread", ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                 }
                 return false; //auf keinen Fall den Dialog starten :)
             }
