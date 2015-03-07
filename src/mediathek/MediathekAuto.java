@@ -65,7 +65,7 @@ public class MediathekAuto {
     public void starten() {
         daten = new Daten(pfad, null);
         Daten.auto = true;
-        Log.startMeldungen(this.getClass().getName());
+        Log.startMeldungen();
 
         if (!IoXmlLesen.einstellungenExistieren()) {
             // Programm erst mit der GuiVersion einrichten
