@@ -105,7 +105,7 @@ public class IoXmlSchreiben {
             writer.writeCharacters("\n\n");
             xmlSchreibenEnde();
         } catch (Exception ex) {
-            Log.fehlerMeldung(656328109, "IoXml.xmlDatenSchreiben", ex);
+            Log.fehlerMeldung(656328109, ex);
         }
     }
 
@@ -215,7 +215,7 @@ public class IoXmlSchreiben {
             writer.writeEndElement();
             writer.writeCharacters("\n"); //neue Zeile
         } catch (Exception ex) {
-            Log.fehlerMeldung(198325017, "IoXmlSchreiben.xmlSchreibenDaten", ex);
+            Log.fehlerMeldung(198325017, ex);
         }
     }
 
@@ -241,7 +241,7 @@ public class IoXmlSchreiben {
             writer.writeEndElement();
             writer.writeCharacters("\n"); //neue Zeile
         } catch (Exception ex) {
-            Log.fehlerMeldung(951230478, "IoXmlSchreiben.xmlSchreibenConfig", ex);
+            Log.fehlerMeldung(951230478, ex);
         }
     }
 

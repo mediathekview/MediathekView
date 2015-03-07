@@ -196,7 +196,7 @@ public class DialogZielExportPset extends javax.swing.JDialog {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldPfad.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(639874637,  "DialogZielDatei.ZielBeobachter", ex);
+                        Log.fehlerMeldung(639874637, ex);
                     }
                 }
             } else {
@@ -218,7 +218,7 @@ public class DialogZielExportPset extends javax.swing.JDialog {
                     try {
                         jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(362259105, "DialogZielDatei.ZielBeobachter", ex);
+                        Log.fehlerMeldung(362259105, ex);
                     }
                 }
             }

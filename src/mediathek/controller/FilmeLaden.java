@@ -282,7 +282,7 @@ public class FilmeLaden {
                 SwingUtilities.invokeLater(r);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(926369741, "ListenerFilmeLaden.run_", ex);
+            Log.fehlerMeldung(926369741, ex);
         }
     }
 }

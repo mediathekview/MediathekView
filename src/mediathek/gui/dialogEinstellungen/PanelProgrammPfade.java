@@ -537,7 +537,7 @@ public class PanelProgrammPfade extends JPanel {
                     try {
                         textField.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(306087945, "PanelImportStandardProgramme.BeobPfad", ex);
+                        Log.fehlerMeldung(306087945, ex);
                     }
                 }
             } else {
@@ -555,7 +555,7 @@ public class PanelProgrammPfade extends JPanel {
                     try {
                         textField.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(643289561, "PanelImportStandardProgramme.BeobPfad", ex);
+                        Log.fehlerMeldung(643289561, ex);
                     }
                 }
             }

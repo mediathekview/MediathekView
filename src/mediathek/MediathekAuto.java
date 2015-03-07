@@ -151,7 +151,7 @@ public class MediathekAuto {
                 Thread.sleep(remTime);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(769325469, "MediathekAuto.filmeLaden", ex);
+            Log.fehlerMeldung(769325469, ex);
         }
         daten.allesSpeichern();
         Log.printEndeMeldung();
