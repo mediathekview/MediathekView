@@ -244,7 +244,7 @@ public class FilmeLaden {
                 });
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(765213654, "ListenerFilmeLaden.notifyStart", ex);
+            Log.fehlerMeldung(765213654, ex);
         }
 //        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
 //            run_(new Start(l, event, ListenerMelden.START));
@@ -269,7 +269,7 @@ public class FilmeLaden {
                 });
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(201020369, "ListenerFilmeLaden.notifyProgress", ex);
+            Log.fehlerMeldung(201020369, ex);
         }
 //        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
 //            run_(new Start(l, event, ListenerMelden.PROGRESS));
@@ -294,7 +294,7 @@ public class FilmeLaden {
                 });
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(945120303, "ListenerFilmeLaden.notifyFertig", ex);
+            Log.fehlerMeldung(945120303, ex);
         }
 //        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
 //            run_(new Start(l, event, ListenerMelden.FINISHED));
