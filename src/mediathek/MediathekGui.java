@@ -261,7 +261,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         daten = new Daten(pfad, this);
         duration.ping("Daten");
 
-        Log.startMeldungen(this.getClass().getName());
+        Log.startMeldungen();
         createStatusBar();
         mVToolBar = new MVToolBar(daten);
         jPanelToolBar.setLayout(new BorderLayout());
