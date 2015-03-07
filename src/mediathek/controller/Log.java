@@ -102,24 +102,24 @@ public class Log {
 
     // Fehlermeldung mit Exceptions
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex) {
-        fehlermeldung_(fehlerNummer, klasse, ex, new String[]{});
+        fehlermeldung_(fehlerNummer, ex, new String[]{});
     }
 
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex, String text) {
-        fehlermeldung_(fehlerNummer, klasse, ex, new String[]{text});
+        fehlermeldung_(fehlerNummer, ex, new String[]{text});
     }
 
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex, String text[]) {
-        fehlermeldung_(fehlerNummer, klasse, ex, text);
+        fehlermeldung_(fehlerNummer, ex, text);
     }
 
     // Fehlermeldungen
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, String text) {
-        fehlermeldung_(fehlerNummer, klasse, null, new String[]{text});
+        fehlermeldung_(fehlerNummer, null, new String[]{text});
     }
 
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, String[] text) {
-        fehlermeldung_(fehlerNummer, klasse, null, text);
+        fehlermeldung_(fehlerNummer, null, text);
     }
 
     public static synchronized void systemMeldung(String[] text) {
@@ -265,11 +265,11 @@ public class Log {
         fehlerListe.add(new Integer[]{nr, 1, ex});
     }
 
-    private static void fehlermeldung_(int fehlerNummer, String klasse, Exception ex, String[] texte) {
+    private static void fehlermeldung_(int fehlerNummer, Exception ex, String[] texte) {
         addFehlerNummer(fehlerNummer, ex != null);
         final Throwable t = new Throwable();
         final StackTraceElement methodCaller = t.getStackTrace()[2];
-        klasse = methodCaller.getClassName() + "." + methodCaller.getMethodName();
+        final String klasse = methodCaller.getClassName() + "." + methodCaller.getMethodName();
 
         if (ex != null || Daten.debug) {
             try {
