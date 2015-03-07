@@ -1,4 +1,4 @@
-package mediathek;
+package mediathek.mac;
 
 import com.apple.eawt.Application;
 import mediathek.controller.starter.Start;

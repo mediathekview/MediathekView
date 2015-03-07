@@ -19,21 +19,16 @@
  */
 package mediathek;
 
-import com.apple.eawt.*;
 import com.jidesoft.utils.SystemInfo;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.InputMap;
 import javax.swing.JCheckBoxMenuItem;
@@ -92,10 +87,10 @@ import mediathek.tool.MVMessageDialog;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
 import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
 
-public final class MediathekGui extends JFrame {
+public class MediathekGui extends JFrame {
 
     private Daten daten;
-    private final DialogEinstellungen dialogEinstellungen;
+    protected final DialogEinstellungen dialogEinstellungen;
     private final JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
     private final JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
     private final JPanel jPanelAnzahl = new JPanel();
@@ -721,92 +716,7 @@ public final class MediathekGui extends JFrame {
         }
     }
 
-    /**
-     * Setup the UI for OS X
-     */
-    private void setupUserInterfaceForOsx() {
-        final Application application = Application.getApplication();
-        application.disableSuddenTermination();
-        application.setAboutHandler(new AboutHandler() {
-            @Override
-            public void handleAbout(AppEvent.AboutEvent aboutEvent) {
-                showAboutDialog();
-            }
-        });
-        application.setPreferencesHandler(new PreferencesHandler() {
-            @Override
-            public void handlePreferences(AppEvent.PreferencesEvent preferencesEvent) {
-                dialogEinstellungen.setVisible(true);
-            }
-        });
-        application.setQuitHandler(new QuitHandler() {
-            @Override
-            public void handleQuitRequestWith(AppEvent.QuitEvent quitEvent, QuitResponse quitResponse) {
-                if (!beenden(false, false))
-                    quitResponse.cancelQuit();
-                else
-                    quitResponse.performQuit();
-            }
-        });
-
-        //setup the MediathekView Dock Icon
-        try {
-            URL url = this.getClass().getResource("res/MediathekView.png");
-            BufferedImage appImage = ImageIO.read(url);
-            application.setDockIconImage(appImage);
-        } catch (IOException ex) {
-            Log.fehlerMeldung(165623698, "MediathekGui.setupUserInterfaceForOsx", "OS X Application image could not be loaded");
-        }
-
-        //Remove all menu items which don´t need to be displayed due to OS X´s native menu support
-        if (SystemInfo.isMacOSX()) {
-            //Datei->Beenden
-            jMenuDatei.remove(jSeparator2);
-            jMenuDatei.remove(jMenuItemBeenden);
-            //Datei->Einstellungen
-            jMenuDatei.remove(jMenuItemEinstellungen);
-            //Hilfe->Über
-            jMenuHilfe.remove(jSeparator4);
-            jMenuHilfe.remove(jMenuItemAbout);
-        }
-
-        setupOsxDockIconBadge();
-    }
-
-    /**
-     * Setup the OS X dock icon badge handler.
-     */
-    private void setupOsxDockIconBadge() {
-        //setup the badge support for displaying active downloads
-        ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{
-            ListenerMediathekView.EREIGNIS_START_EVENT, ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS}, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                final int activeDownloads = Daten.listeDownloads.getActiveDownloads();
-                if (activeDownloads > 0) {
-                    Application.getApplication().setDockIconBadge(String.valueOf(activeDownloads));
-
-                    if (osxProgressIndicatorThread == null) {
-                        osxProgressIndicatorThread = new OsxIndicatorThread();
-                        osxProgressIndicatorThread.start();
-                    }
-                } else {
-                    Application.getApplication().setDockIconBadge("");
-                    if (osxProgressIndicatorThread != null) {
-                        osxProgressIndicatorThread.interrupt();
-                        osxProgressIndicatorThread = null;
-                    }
-                }
-            }
-        });
-    }
-
-    /**
-     * Repaint-Thread for progress indicator on OS X.
-     */
-    private Thread osxProgressIndicatorThread = null;
-
-    private void initMenue() {
+    protected void initMenue() {
         initSpinner();
         // Anzahl gleichzeitiger Downlaods
         jPanelAnzahl.setLayout(new BorderLayout());
@@ -1173,11 +1083,6 @@ public final class MediathekGui extends JFrame {
                 showAboutDialog();
             }
         });
-        if (SystemInfo.isMacOSX()) {
-            // sonst gibts eine Exception
-            setupUserInterfaceForOsx();
-            setupAcceleratorsForOsx();
-        }
     }
 
     public void showDialogPreferences() {
@@ -1185,21 +1090,9 @@ public final class MediathekGui extends JFrame {
     }
 
     /**
-     * Keyboard shortcuts for some actions need to be changed for OS X
-     */
-    private void setupAcceleratorsForOsx() {
-        jMenuItemFilmAbspielen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F6, InputEvent.META_MASK));
-        jMenuItemFilmAufzeichnen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F7, InputEvent.META_MASK));
-        jMenuItemFilterLoeschen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F8, InputEvent.META_MASK));
-        jMenuItemBlacklist.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F9, InputEvent.META_MASK));
-        jCheckBoxMenuItemBeschreibung.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F10, InputEvent.META_MASK));
-        jCheckBoxMenuItemVideoplayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, InputEvent.META_MASK));
-    }
-
-    /**
      * Display the About Box
      */
-    private void showAboutDialog() {
+    protected void showAboutDialog() {
         MVAboutDialog aboutDialog = new MVAboutDialog(this, SystemInfo.isMacOSX());
         aboutDialog.setVisible(true);
         aboutDialog.dispose();
@@ -1620,23 +1513,23 @@ public final class MediathekGui extends JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem cbBandwidthDisplay;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemBeschreibung;
+    protected javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemBeschreibung;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemToolBar;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
+    protected javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
     private javax.swing.JMenu jMenuAnsicht;
     private javax.swing.JMenuBar jMenuBar;
-    private javax.swing.JMenu jMenuDatei;
+    protected javax.swing.JMenu jMenuDatei;
     private javax.swing.JMenu jMenuDownload;
-    private javax.swing.JMenu jMenuHilfe;
+    protected javax.swing.JMenu jMenuHilfe;
     private javax.swing.JMenuItem jMenuItemAboNeu;
     private javax.swing.JMenuItem jMenuItemAbosAendern;
     private javax.swing.JMenuItem jMenuItemAbosAusschalten;
     private javax.swing.JMenuItem jMenuItemAbosEinschalten;
     private javax.swing.JMenuItem jMenuItemAbosLoeschen;
-    private javax.swing.JMenuItem jMenuItemAbout;
+    protected javax.swing.JMenuItem jMenuItemAbout;
     private javax.swing.JMenuItem jMenuItemAnleitung;
-    private javax.swing.JMenuItem jMenuItemBeenden;
-    private javax.swing.JMenuItem jMenuItemBlacklist;
+    protected javax.swing.JMenuItem jMenuItemBeenden;
+    protected javax.swing.JMenuItem jMenuItemBlacklist;
     private javax.swing.JMenuItem jMenuItemDownloadAbspielen;
     private javax.swing.JMenuItem jMenuItemDownloadAendern;
     private javax.swing.JMenuItem jMenuItemDownloadAlleStoppen;
@@ -1651,18 +1544,18 @@ public final class MediathekGui extends JFrame {
     private javax.swing.JMenuItem jMenuItemDownloadsAufraeumen;
     private javax.swing.JMenuItem jMenuItemDownloadsLoeschen;
     private javax.swing.JMenuItem jMenuItemDownloadsZurueckstellen;
-    private javax.swing.JMenuItem jMenuItemEinstellungen;
-    private javax.swing.JMenuItem jMenuItemFilmAbspielen;
-    private javax.swing.JMenuItem jMenuItemFilmAufzeichnen;
+    protected javax.swing.JMenuItem jMenuItemEinstellungen;
+    protected javax.swing.JMenuItem jMenuItemFilmAbspielen;
+    protected javax.swing.JMenuItem jMenuItemFilmAufzeichnen;
     private javax.swing.JMenuItem jMenuItemFilmlisteLaden;
-    private javax.swing.JMenuItem jMenuItemFilterLoeschen;
+    protected javax.swing.JMenuItem jMenuItemFilterLoeschen;
     private javax.swing.JMenuItem jMenuItemSchriftGr;
     private javax.swing.JMenuItem jMenuItemSchriftKl;
     private javax.swing.JMenuItem jMenuItemSchriftNormal;
     private javax.swing.JPanel jPanelInfo;
     private javax.swing.JPanel jPanelToolBar;
-    private javax.swing.JPopupMenu.Separator jSeparator2;
-    private javax.swing.JPopupMenu.Separator jSeparator4;
+    protected javax.swing.JPopupMenu.Separator jSeparator2;
+    protected javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JTabbedPane jTabbedPane;
     // End of variables declaration//GEN-END:variables
 
