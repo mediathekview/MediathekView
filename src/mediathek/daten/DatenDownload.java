@@ -88,42 +88,44 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_URL_RTMP_NR = 20;
     public static final String DOWNLOAD_URL_AUTH = "URL-Auth";
     public static final int DOWNLOAD_URL_AUTH_NR = 21;
+    public static final String DOWNLOAD_URL_SUBTITLE = "URL-Untertitel";
+    public static final int DOWNLOAD_URL_SUBTITLE_NR = 22;
     public static final String DOWNLOAD_PROGRAMMSET = "Programmset";
-    public static final int DOWNLOAD_PROGRAMMSET_NR = 22;
+    public static final int DOWNLOAD_PROGRAMMSET_NR = 23;
     public static final String DOWNLOAD_PROGRAMM = "Programm";
-    public static final int DOWNLOAD_PROGRAMM_NR = 23;
+    public static final int DOWNLOAD_PROGRAMM_NR = 24;
     public static final String DOWNLOAD_PROGRAMM_AUFRUF = "Programmaufruf";
-    public static final int DOWNLOAD_PROGRAMM_AUFRUF_NR = 24;
+    public static final int DOWNLOAD_PROGRAMM_AUFRUF_NR = 25;
     public static final String DOWNLOAD_PROGRAMM_RESTART = "Restart";
-    public static final int DOWNLOAD_PROGRAMM_RESTART_NR = 25;
+    public static final int DOWNLOAD_PROGRAMM_RESTART_NR = 26;
     public static final String DOWNLOAD_ZIEL_DATEINAME = "Dateiname";
-    public static final int DOWNLOAD_ZIEL_DATEINAME_NR = 26;
+    public static final int DOWNLOAD_ZIEL_DATEINAME_NR = 27;
     public static final String DOWNLOAD_ZIEL_PFAD = "Pfad";
-    public static final int DOWNLOAD_ZIEL_PFAD_NR = 27;
+    public static final int DOWNLOAD_ZIEL_PFAD_NR = 28;
     public static final String DOWNLOAD_ZIEL_PFAD_DATEINAME = "Pfad-Dateiname";
-    public static final int DOWNLOAD_ZIEL_PFAD_DATEINAME_NR = 28;
+    public static final int DOWNLOAD_ZIEL_PFAD_DATEINAME_NR = 29;
     public static final String DOWNLOAD_ART = "Art"; //Art des Downloads: direkter Dateidownload oder über ein Programm
-    public static final int DOWNLOAD_ART_NR = 29;
+    public static final int DOWNLOAD_ART_NR = 30;
     public static final String DOWNLOAD_QUELLE = "Quelle"; //Quelle: gestartet über einen Button, Download, Abo
-    public static final int DOWNLOAD_QUELLE_NR = 30;
+    public static final int DOWNLOAD_QUELLE_NR = 31;
     public static final String DOWNLOAD_ZURUECKGESTELLT = "Zurueckgestellt";
-    public static final int DOWNLOAD_ZURUECKGESTELLT_NR = 31;
+    public static final int DOWNLOAD_ZURUECKGESTELLT_NR = 32;
     public static final String DOWNLOAD_INFODATEI = "Infodatei";
-    public static final int DOWNLOAD_INFODATEI_NR = 32;
+    public static final int DOWNLOAD_INFODATEI_NR = 33;
     public static final String DOWNLOAD_SPOTLIGHT = "Spotlight";
-    public static final int DOWNLOAD_SPOTLIGHT_NR = 33;
-    public static final String DOWNLOAD_SUBTITLE = "Untertitel";
-    public static final int DOWNLOAD_SUBTITLE_NR = 34;
+    public static final int DOWNLOAD_SPOTLIGHT_NR = 34;
+    public static final String DOWNLOAD_SUBTITLE = "Untertitel"; // Untertitel anlegen ja/nein
+    public static final int DOWNLOAD_SUBTITLE_NR = 35;
     public static final String DOWNLOAD_REF = "Ref";
-    public static final int DOWNLOAD_REF_NR = 35;
+    public static final int DOWNLOAD_REF_NR = 36;
     //
     public static final String DOWNLOAD = "Downlad";
-    public static final int MAX_ELEM = 36;
+    public static final int MAX_ELEM = 37;
     public static final String[] COLUMN_NAMES = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
         DOWNLOAD_BUTTON_START, DOWNLOAD_BUTTON_DEL,
         DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT, DOWNLOAD_BANDBREITE, DOWNLOAD_GROESSE,
         DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER, DOWNLOAD_UNTERBROCHEN, DOWNLOAD_GEO,
-        DOWNLOAD_FILM_URL, DOWNLOAD_HISTORY_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_AUTH,
+        DOWNLOAD_FILM_URL, DOWNLOAD_HISTORY_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_AUTH, DOWNLOAD_URL_SUBTITLE,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE,
         DOWNLOAD_ZURUECKGESTELLT, DOWNLOAD_INFODATEI, DOWNLOAD_SPOTLIGHT, DOWNLOAD_SUBTITLE, DOWNLOAD_REF};
@@ -131,7 +133,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         "Button-Start"/*DOWNLOAD_BUTTON_START*/, "Button-Del"/*DOWNLOAD_BUTTON_DEL*/,
         DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT, DOWNLOAD_BANDBREITE, "Groesse"/*DOWNLOAD_GROESSE*/,
         DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER, DOWNLOAD_UNTERBROCHEN, DOWNLOAD_GEO,
-        DOWNLOAD_FILM_URL, DOWNLOAD_HISTORY_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_AUTH,
+        DOWNLOAD_FILM_URL, DOWNLOAD_HISTORY_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_AUTH, DOWNLOAD_URL_SUBTITLE,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE,
         DOWNLOAD_ZURUECKGESTELLT, DOWNLOAD_INFODATEI, DOWNLOAD_SPOTLIGHT, DOWNLOAD_SUBTITLE, DOWNLOAD_REF};
@@ -160,6 +162,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_TITEL_NR] = film.arr[DatenFilm.FILM_TITEL_NR];
         arr[DOWNLOAD_FILM_URL_NR] = film.arr[DatenFilm.FILM_URL_NR];
         arr[DOWNLOAD_URL_AUTH_NR] = film.arr[DatenFilm.FILM_URL_AUTH_NR];
+        arr[DOWNLOAD_URL_SUBTITLE_NR] = film.arr[DatenFilm.FILM_URL_SUBTITLE_NR];
         arr[DOWNLOAD_DATUM_NR] = film.arr[DatenFilm.FILM_DATUM_NR];
         arr[DOWNLOAD_ZEIT_NR] = film.arr[DatenFilm.FILM_ZEIT_NR];
         arr[DOWNLOAD_URL_RTMP_NR] = film.arr[DatenFilm.FILM_URL_RTMP_NR];
