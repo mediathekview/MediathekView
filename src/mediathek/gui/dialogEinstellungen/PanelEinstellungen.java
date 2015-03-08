@@ -212,24 +212,24 @@ public class PanelEinstellungen extends PanelVorlage {
     }
 
     private void fillIconList() {
-        ArrayList<String> iconList = new ArrayList<>();
-        iconList.add(ICONSET_STANDARD);
+        final DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        model.addElement(ICONSET_STANDARD);
         try {
             File[] files = new File(Funktionen.pathProgramIcons()).listFiles();
             if (files != null) {
                 for (File file : files) {
                     // System.out.print(files[i].getAbsolutePath());
                     if (file.isDirectory()) {
-                        // iconList.add(files[i].getAbsolutePath());
-                        iconList.add(file.getName());
+                        model.addElement(file.getName());
                     }
                 }
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(636875409, "PanelEinstellungen", ex);
         }
-        DefaultComboBoxModel model = new DefaultComboBoxModel(iconList.toArray());
+
         jComboBoxIcons.setModel(model);
+
         if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ICON_STANDARD))) {
             if (!Daten.mVConfig.get(MVConfig.SYSTEM_ICON_PFAD).equals("")) {
                 File f = new File(Daten.mVConfig.get(MVConfig.SYSTEM_ICON_PFAD));
