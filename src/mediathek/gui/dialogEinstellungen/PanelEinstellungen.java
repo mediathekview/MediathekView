@@ -245,15 +245,15 @@ public class PanelEinstellungen extends PanelVorlage {
         jCheckBoxSuchen = new javax.swing.JCheckBox();
         jButtonSuchen = new javax.swing.JButton();
         jButtonInfos = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jComboBoxLookAndFeel = new javax.swing.JComboBox<String>();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jComboBoxIcons = new javax.swing.JComboBox<String>();
         jButtonRefresh = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         jCheckBoxEchtzeit = new javax.swing.JCheckBox();
-        jLabel6 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
         jSpinnerDays = new javax.swing.JSpinner();
         jButtonHelpDays = new javax.swing.JButton();
         jButtonLoad = new javax.swing.JButton();
@@ -417,9 +417,6 @@ public class PanelEinstellungen extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxSuchen;
     private javax.swing.JComboBox<String> jComboBoxIcons;
     private javax.swing.JComboBox<String> jComboBoxLookAndFeel;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JSpinner jSpinnerDays;
     // End of variables declaration//GEN-END:variables
 
