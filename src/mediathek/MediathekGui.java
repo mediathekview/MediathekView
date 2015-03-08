@@ -1341,7 +1341,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     public void beenden(boolean showOptionTerminate, boolean shutDown) {
-        DialogBeenden dialogBeenden = null;
+        DialogBeenden dialogBeenden;
         if (Daten.listeDownloads.nochNichtFertigeDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
             dialogBeenden = new DialogBeenden(this);

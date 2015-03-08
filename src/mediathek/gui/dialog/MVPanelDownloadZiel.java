@@ -249,11 +249,11 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jComboBoxPath = new javax.swing.JComboBox<String>();
         jButtonPath = new javax.swing.JButton();
         jButtonDelPath = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jTextFieldName = new javax.swing.JTextField();
         jLabelExists = new javax.swing.JLabel();
         jCheckBoxPath = new javax.swing.JCheckBox();
@@ -261,7 +261,6 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
         jLabel1.setText("Zielpfad:");
 
         jComboBoxPath.setEditable(true);
-        jComboBoxPath.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jButtonPath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
 
@@ -329,8 +328,6 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
     private javax.swing.JButton jButtonPath;
     private javax.swing.JCheckBox jCheckBoxPath;
     private javax.swing.JComboBox<String> jComboBoxPath;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabelExists;
     private javax.swing.JTextField jTextFieldName;
     // End of variables declaration//GEN-END:variables
