@@ -405,13 +405,13 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        buttonGroup2 = new javax.swing.ButtonGroup();
-        jPanel3 = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jComboBoxZeitraum = new javax.swing.JComboBox();
-        jLabel3 = new javax.swing.JLabel();
+        javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
+        javax.swing.ButtonGroup buttonGroup2 = new javax.swing.ButtonGroup();
+        javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
+        jComboBoxZeitraum = new javax.swing.JComboBox<String>();
+        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jTextFieldFilterMinuten = new javax.swing.JTextField();
         jSliderMinuten = new javax.swing.JSlider();
         jToggleButtonLivestram = new javax.swing.JToggleButton();
@@ -420,12 +420,12 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jCheckBoxNurHd = new javax.swing.JCheckBox();
         jToggleButtonHistory = new javax.swing.JToggleButton();
         jCheckBoxNurNeue = new javax.swing.JCheckBox();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jComboBoxFilterSender = new javax.swing.JComboBox();
-        jLabel4 = new javax.swing.JLabel();
-        jComboBoxFilterThema = new javax.swing.JComboBox();
-        jLabel5 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
+        jComboBoxFilterSender = new javax.swing.JComboBox<String>();
+        javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
+        jComboBoxFilterThema = new javax.swing.JComboBox<String>();
+        javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
         jTextFieldFilterTitel = new javax.swing.JTextField();
         jTextFieldFilterThemaTitel = new javax.swing.JTextField();
         jRadioButtonTT = new javax.swing.JRadioButton();
@@ -437,7 +437,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jRadioButtonF3 = new javax.swing.JRadioButton();
         jRadioButtonF4 = new javax.swing.JRadioButton();
         jRadioButtonF5 = new javax.swing.JRadioButton();
-        jLabel6 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
         jButtonFilterLoeschen = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -449,8 +449,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
         jLabel1.setText("Zeitraum:");
-
-        jComboBoxZeitraum.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel3.setText("Mindestlänge [min]:");
 
@@ -531,12 +529,10 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jLabel2.setText("Sender:");
 
         jComboBoxFilterSender.setMaximumRowCount(20);
-        jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel4.setText("Thema:");
 
         jComboBoxFilterThema.setMaximumRowCount(20);
-        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel5.setText("Titel:");
 
@@ -691,8 +687,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.ButtonGroup buttonGroup2;
     public javax.swing.JButton jButtonFilterLoeschen;
     public javax.swing.JButton jButtonHilfe;
     private javax.swing.JButton jButtonOk;
@@ -700,18 +694,9 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     public javax.swing.JCheckBox jCheckBoxKeineGesehenen;
     public javax.swing.JCheckBox jCheckBoxNurHd;
     private javax.swing.JCheckBox jCheckBoxNurNeue;
-    public javax.swing.JComboBox jComboBoxFilterSender;
-    public javax.swing.JComboBox jComboBoxFilterThema;
-    public javax.swing.JComboBox jComboBoxZeitraum;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
+    public javax.swing.JComboBox<String> jComboBoxFilterSender;
+    public javax.swing.JComboBox<String> jComboBoxFilterThema;
+    public javax.swing.JComboBox<String> jComboBoxZeitraum;
     private javax.swing.JRadioButton jRadioButtonF1;
     private javax.swing.JRadioButton jRadioButtonF2;
     private javax.swing.JRadioButton jRadioButtonF3;

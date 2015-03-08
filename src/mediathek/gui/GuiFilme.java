@@ -913,7 +913,7 @@ public class GuiFilme extends PanelVorlage {
     private void initComponents() {
 
         jSplitPane1 = new javax.swing.JSplitPane();
-        jPanel1 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
         jPanelBeschreibung = new javax.swing.JPanel();
@@ -1031,7 +1031,6 @@ public class GuiFilme extends PanelVorlage {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox jCheckBoxProgamme;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelBeschreibung;
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JPanel jPanelExtraInnen;

@@ -212,24 +212,24 @@ public class PanelEinstellungen extends PanelVorlage {
     }
 
     private void fillIconList() {
-        ArrayList<String> iconList = new ArrayList<>();
-        iconList.add(ICONSET_STANDARD);
+        final DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        model.addElement(ICONSET_STANDARD);
         try {
             File[] files = new File(Funktionen.pathProgramIcons()).listFiles();
             if (files != null) {
                 for (File file : files) {
                     // System.out.print(files[i].getAbsolutePath());
                     if (file.isDirectory()) {
-                        // iconList.add(files[i].getAbsolutePath());
-                        iconList.add(file.getName());
+                        model.addElement(file.getName());
                     }
                 }
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(636875409, "PanelEinstellungen", ex);
         }
-        DefaultComboBoxModel model = new DefaultComboBoxModel(iconList.toArray());
+
         jComboBoxIcons.setModel(model);
+
         if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ICON_STANDARD))) {
             if (!Daten.mVConfig.get(MVConfig.SYSTEM_ICON_PFAD).equals("")) {
                 File f = new File(Daten.mVConfig.get(MVConfig.SYSTEM_ICON_PFAD));
@@ -245,15 +245,15 @@ public class PanelEinstellungen extends PanelVorlage {
         jCheckBoxSuchen = new javax.swing.JCheckBox();
         jButtonSuchen = new javax.swing.JButton();
         jButtonInfos = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jComboBoxLookAndFeel = new javax.swing.JComboBox<String>();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jComboBoxIcons = new javax.swing.JComboBox<String>();
         jButtonRefresh = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         jCheckBoxEchtzeit = new javax.swing.JCheckBox();
-        jLabel6 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
         jSpinnerDays = new javax.swing.JSpinner();
         jButtonHelpDays = new javax.swing.JButton();
         jButtonLoad = new javax.swing.JButton();
@@ -417,9 +417,6 @@ public class PanelEinstellungen extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxSuchen;
     private javax.swing.JComboBox<String> jComboBoxIcons;
     private javax.swing.JComboBox<String> jComboBoxLookAndFeel;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JSpinner jSpinnerDays;
     // End of variables declaration//GEN-END:variables
 

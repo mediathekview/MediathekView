@@ -51,7 +51,7 @@ public class MacButtonFactory {
             new ImagePainter(GRADIENT_BACKGROUND_URL);
 
     private static final MacWidgetsPainter<Component> PRESSED_AND_SELECTED_GRADIENT_PAINTER =
-            new CompoundPainter<Component>(GRADIENT_BUTTON_IMAGE_PAINTER,
+            new CompoundPainter<>(GRADIENT_BUTTON_IMAGE_PAINTER,
                     new RectanglePainter(new Color(0, 0, 0, 89)));
 
     private static final ButtonStatePainter<AbstractButton> GRADIENT_BUTTON_PAINTER =
