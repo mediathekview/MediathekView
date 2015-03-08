@@ -410,7 +410,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jPanel3 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jComboBoxZeitraum = new javax.swing.JComboBox();
+        jComboBoxZeitraum = new javax.swing.JComboBox<String>();
         jLabel3 = new javax.swing.JLabel();
         jTextFieldFilterMinuten = new javax.swing.JTextField();
         jSliderMinuten = new javax.swing.JSlider();
@@ -422,9 +422,9 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jCheckBoxNurNeue = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jComboBoxFilterSender = new javax.swing.JComboBox();
+        jComboBoxFilterSender = new javax.swing.JComboBox<String>();
         jLabel4 = new javax.swing.JLabel();
-        jComboBoxFilterThema = new javax.swing.JComboBox();
+        jComboBoxFilterThema = new javax.swing.JComboBox<String>();
         jLabel5 = new javax.swing.JLabel();
         jTextFieldFilterTitel = new javax.swing.JTextField();
         jTextFieldFilterThemaTitel = new javax.swing.JTextField();
@@ -449,8 +449,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
         jLabel1.setText("Zeitraum:");
-
-        jComboBoxZeitraum.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel3.setText("Mindestlänge [min]:");
 
@@ -531,12 +529,10 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jLabel2.setText("Sender:");
 
         jComboBoxFilterSender.setMaximumRowCount(20);
-        jComboBoxFilterSender.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel4.setText("Thema:");
 
         jComboBoxFilterThema.setMaximumRowCount(20);
-        jComboBoxFilterThema.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel5.setText("Titel:");
 
@@ -700,9 +696,9 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     public javax.swing.JCheckBox jCheckBoxKeineGesehenen;
     public javax.swing.JCheckBox jCheckBoxNurHd;
     private javax.swing.JCheckBox jCheckBoxNurNeue;
-    public javax.swing.JComboBox jComboBoxFilterSender;
-    public javax.swing.JComboBox jComboBoxFilterThema;
-    public javax.swing.JComboBox jComboBoxZeitraum;
+    public javax.swing.JComboBox<String> jComboBoxFilterSender;
+    public javax.swing.JComboBox<String> jComboBoxFilterThema;
+    public javax.swing.JComboBox<String> jComboBoxZeitraum;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
