@@ -115,6 +115,10 @@
                   </Border>
                 </Property>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
 
               <Layout>
                 <DimensionLayout dim="0">
@@ -203,7 +207,6 @@
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="jButtonFehler" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="jButtonNotify" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jButtonGc" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jButtonAllesSpeichern" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jToggleButtonFastAuto" max="32767" attributes="0"/>
@@ -227,12 +230,10 @@
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jButtonGc" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="jButtonNotify" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jButtonFehler" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jToggleButtonFastAuto" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="65" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jButtonSize" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jTextFieldPath" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -259,11 +260,6 @@
             <Component class="javax.swing.JButton" name="jButtonGc">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Gc"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JButton" name="jButtonNotify">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Notify"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="jButtonFehler">

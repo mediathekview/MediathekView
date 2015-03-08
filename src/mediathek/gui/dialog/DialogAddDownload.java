@@ -46,14 +46,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.res.GetIcon;
-import mediathek.tool.EscBeenden;
-import mediathek.tool.FilenameUtils;
-import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.Konstanten;
-import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVColor;
-import mediathek.tool.MVConfig;
-import mediathek.tool.MVMessageDialog;
+import mediathek.tool.*;
 import msearch.daten.DatenFilm;
 
 public class DialogAddDownload extends JDialog {
@@ -304,25 +297,6 @@ public class DialogAddDownload extends JDialog {
         return usableSpace;
     }
 
-    /**
-     * Convert a byte count into a human readable string.
-     *
-     * @param bytes The number of bytes to convert.
-     * @param si Use International System of Units (SI)?
-     * @return The string representation
-     */
-    private String humanReadableByteCount(final long bytes, final boolean si) {
-        final int unit = si ? 1000 : 1024;
-        if (bytes < unit) {
-            return bytes + " B";
-        }
-
-        final int exp = (int) (Math.log(bytes) / Math.log(unit));
-
-        final String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
-        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
-    }
-
     private final TitledBorder filmBorder;
     private static final String TITLED_BORDER_STRING = "Film laden";
 
@@ -337,7 +311,7 @@ public class DialogAddDownload extends JDialog {
         try {
             long usableSpace = getFreeDiskSpace(cbPathTextComponent.getText());
             if (usableSpace > 0) {
-                filmBorder.setTitle(TITLED_BORDER_STRING + " [ noch frei: " + humanReadableByteCount(usableSpace, true) + " ]");
+                filmBorder.setTitle(TITLED_BORDER_STRING + " [ noch frei: " + Funktionen.humanReadableByteCount(usableSpace, true) + " ]");
             } else {
                 filmBorder.setTitle(TITLED_BORDER_STRING);
             }
