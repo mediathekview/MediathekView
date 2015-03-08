@@ -19,77 +19,50 @@
  */
 package mediathek.tool;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import javax.swing.JLabel;
-import javax.swing.JWindow;
-import javax.swing.SwingConstants;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
 import net.sf.jcarrierpigeon.Notification;
 import net.sf.jcarrierpigeon.NotificationQueue;
 import net.sf.jcarrierpigeon.WindowPosition;
-import org.jdesktop.swingx.JXLabel;
-import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.GlossPainter;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class MVNotification {
-
-    public static void addNotification(Daten daten, String titel, String meldung) {
-        if (daten.mediathekGui == null) {
-            return; // dann gibts keine GUI
-        }
-        add(titel, new String[]{meldung});
-    }
-
     public static void addNotification(Daten daten, DatenDownload datenDownload, boolean erfolgreich) {
         if (daten.mediathekGui == null) {
             return; // dann gibts keine GUI
         }
-        String[] m = {
-            "Film:   " + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR],
-            "Sender: " + datenDownload.arr[DatenDownload.DOWNLOAD_SENDER_NR],
-            "Größe:  " + datenDownload.mVFilmSize.toString() + " MB",
-            (erfolgreich ? "Download war erfolgreich" : "Download war fehlerhaft")
+        final String[] m = {
+                "Film:   " + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR],
+                "Sender: " + datenDownload.arr[DatenDownload.DOWNLOAD_SENDER_NR],
+                "Größe:  " + Funktionen.humanReadableByteCount(datenDownload.mVFilmSize.getSize(), true),
+                (erfolgreich ? "Download war erfolgreich" : "Download war fehlerhaft")
         };
-        add("Download beendet", m, erfolgreich);
+        add(m, erfolgreich);
     }
 
-    private static void add(String titel, String[] mmeldung) {
-        add(titel, mmeldung, false);
-    }
-
-    private static void add(String titel, String[] mmeldung, boolean fehler) {
+    private static void add(String[] mmeldung, boolean fehler) {
         if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_NOTIFICATION))) {
             String meldung = "<html><head></head><body><p>";
             for (String s : mmeldung) {
                 meldung += s + "<br />";
             }
             meldung += "</p></body></html>";
-//            Telegraph telegraph = new Telegraph(titel, meldung, fehler ? TelegraphType.MEDIATHEK_VIEW : TelegraphType.MEDIATHEK_VIEW_ERROR, WindowPosition.BOTTOMRIGHT, 6000);
-//            TelegraphQueue queue = new TelegraphQueue();
-//            queue.add(telegraph);
 
-            JWindow messageFrame = new JWindow();
-//            JFrame messageFrame = new JFrame();
-//            messageFrame.setUndecorated(true);
+            final JWindow messageFrame = new JWindow();
             messageFrame.setLayout(new BorderLayout());
-            JXPanel panel = new JXPanel();
+            final JPanel panel = new JPanel();
             panel.setBackground(Color.BLACK);
-
-            Color whiteTransparant = new Color(1.0f, 1.0f, 1.0f, 0.3f);
-            GlossPainter gp = new GlossPainter(whiteTransparant, GlossPainter.GlossPosition.TOP);
-            panel.setBackgroundPainter(gp);
 
             messageFrame.setContentPane(panel);
 
-            JLabel iconLabel = new JLabel(GetIcon.getIcon(fehler ? "mv-notification.png" : "mv-notification-fehler.png", GetIcon.PFAD_RES));
+            final JLabel iconLabel = new JLabel(GetIcon.getIcon(fehler ? "mv-notification.png" : "mv-notification-fehler.png", GetIcon.PFAD_RES));
             iconLabel.setVerticalAlignment(SwingConstants.TOP);
             messageFrame.getContentPane().add(iconLabel, BorderLayout.WEST);
-            JXLabel meldungsLabel = new JXLabel(meldung);
+            final JLabel meldungsLabel = new JLabel(meldung);
             meldungsLabel.setForeground(Color.WHITE);
-            // set the background painter
 
             messageFrame.getContentPane().add(meldungsLabel, BorderLayout.CENTER);
             messageFrame.pack();
