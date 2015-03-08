@@ -19,6 +19,7 @@
  */
 package mediathek.controller.starter;
 
+import com.apple.eawt.Application;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Toolkit;
 import java.io.File;
@@ -284,7 +285,7 @@ public class StarterClass {
         notifyStartEvent(datenDownload);
 
         if (SystemInfo.isMacOSX() && daten.mediathekGui != null) {
-            daten.mediathekGui.getOsxApplicationAdapter().requestUserAttention(false);
+            Application.getApplication().requestUserAttention(false);
         }
     }
 

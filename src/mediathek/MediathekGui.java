@@ -20,30 +20,15 @@
 package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.SplashScreen;
-import java.awt.Toolkit;
-import java.awt.Window;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.util.LinkedList;
-import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.InputMap;
 import javax.swing.JCheckBoxMenuItem;
@@ -101,14 +86,11 @@ import mediathek.tool.MVFrame;
 import mediathek.tool.MVMessageDialog;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
 import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
-import org.simplericity.macify.eawt.ApplicationEvent;
-import org.simplericity.macify.eawt.ApplicationListener;
-import org.simplericity.macify.eawt.DefaultApplication;
 
-public final class MediathekGui extends javax.swing.JFrame implements ApplicationListener {
+public class MediathekGui extends JFrame {
 
     private Daten daten;
-    private final DialogEinstellungen dialogEinstellungen;
+    protected final DialogEinstellungen dialogEinstellungen;
     private final JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
     private final JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
     private final JPanel jPanelAnzahl = new JPanel();
@@ -126,23 +108,10 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private final JCheckBoxMenuItem jCheckBoxMeldungenAnzeigen = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxMeldungenExtrafenster = new JCheckBoxMenuItem();
     /**
-     * The application proxy object into OS X´s native world.
-     */
-    final private DefaultApplication application = new DefaultApplication();
-    /**
      * Bandwidth monitoring for downloads.
      */
     private MVBandwidthMonitor bandwidthMonitor = null;
     private MVDownloadInfo mvDownloadInfo = null;
-
-    /**
-     * Return the currently used java native bridge object
-     *
-     * @return The object into the native OSX world.
-     */
-    public DefaultApplication getOsxApplicationAdapter() {
-        return application;
-    }
 
     /**
      * Legt die statusbar an.
@@ -233,6 +202,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     public MediathekGui(String[] ar, final boolean maximized) {
+        super();
         initializeSplashScreen();
 
         String pfad = "";
@@ -573,7 +543,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
-                beenden();
+                beenden(false,false);
             }
         });
 ////        systemTray();
@@ -746,162 +716,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         }
     }
 
-    /**
-     * Setup the UI for OS X
-     */
-    private void setupUserInterfaceForOsx() {
-        application.addApplicationListener(this);
-        application.addAboutMenuItem();
-        application.addPreferencesMenuItem();
-        application.setEnabledAboutMenu(true);
-        application.setEnabledPreferencesMenu(true);
-
-        //setup the MediathekView Dock Icon
-        try {
-            URL url = this.getClass().getResource("res/MediathekView.png");
-            BufferedImage appImage = ImageIO.read(url);
-            application.setApplicationIconImage(appImage);
-        } catch (IOException ex) {
-            Log.fehlerMeldung(165623698, "MediathekGui.setupUserInterfaceForOsx", "OS X Application image could not be loaded");
-        }
-
-        //Remove all menu items which don´t need to be displayed due to OS X´s native menu support
-        if (application.isMac()) {
-            //Datei->Beenden
-            jMenuDatei.remove(jSeparator2);
-            jMenuDatei.remove(jMenuItemBeenden);
-            //Datei->Einstellungen
-            jMenuDatei.remove(jMenuItemEinstellungen);
-            //Hilfe->Über
-            jMenuHilfe.remove(jSeparator4);
-            jMenuHilfe.remove(jMenuItemAbout);
-        }
-
-        setupOsxDockIconBadge();
-    }
-
-    /**
-     * Setup the OS X dock icon badge handler.
-     */
-    private void setupOsxDockIconBadge() {
-        //setup the badge support for displaying active downloads
-        ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{
-            ListenerMediathekView.EREIGNIS_START_EVENT, ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS}, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                final int activeDownloads = Daten.listeDownloads.getActiveDownloads();
-                if (activeDownloads > 0) {
-                    application.setDockIconBadge(String.valueOf(activeDownloads));
-
-                    if (osxProgressIndicatorThread == null) {
-                        osxProgressIndicatorThread = new OsxIndicatorThread();
-                        osxProgressIndicatorThread.start();
-                    }
-                } else {
-                    application.setDockIconBadge("");
-                    if (osxProgressIndicatorThread != null) {
-                        osxProgressIndicatorThread.interrupt();
-                        osxProgressIndicatorThread = null;
-                    }
-                }
-            }
-        });
-    }
-
-    /**
-     * This thread will update the percentage drawn on the dock icon on OS X.
-     */
-    private class OsxIndicatorThread extends Thread {
-
-        /**
-         * The BufferedImage of the OS X application icon.
-         */
-        private BufferedImage OsxApplicationIconImage = null;
-        /**
-         * Stores the application image with the progress drawn on it
-         */
-        private BufferedImage newApplicationIcon = null;
-        private final int appIconWidth;
-        private final int appIconHeight;
-        private int numOfDownloadsActive;
-        private double accumPercentage;
-        private double oldPercentage;
-        private boolean bFirstUpdate = true;
-
-        public OsxIndicatorThread() {
-            setName("OSX dock icon update thread");
-            OsxApplicationIconImage = application.getApplicationIconImage();
-            appIconWidth = OsxApplicationIconImage.getWidth();
-            appIconHeight = OsxApplicationIconImage.getHeight();
-            newApplicationIcon = new BufferedImage(appIconWidth, appIconHeight, BufferedImage.TYPE_INT_ARGB);
-        }
-
-        /**
-         * Draw the progress bar into the application icon and set dock icon.
-         *
-         * @param progressBarWidth width of the bar.
-         */
-        private void drawAndSetApplicationIconWithProgress(int progressBarWidth) {
-            Graphics g = newApplicationIcon.getGraphics();
-            g.drawImage(OsxApplicationIconImage, 0, 0, null);
-            g.setColor(Color.RED);
-            g.fillRect(0, appIconHeight - 20, appIconWidth, 20);
-            g.setColor(Color.GREEN);
-            g.fillRect(0, appIconHeight - 20, progressBarWidth, 20);
-            g.dispose();
-
-            application.setApplicationIconImage(newApplicationIcon);
-        }
-
-        @Override
-        public void run() {
-            try {
-                while (!isInterrupted()) {
-                    numOfDownloadsActive = 0;
-                    accumPercentage = 0.0;
-
-                    //only count running/active downloads and calc accumulated progress..
-                    LinkedList<DatenDownload> activeDownloadList = Daten.listeDownloads.getListOfStartsNotFinished(Start.QUELLE_ALLE);
-                    for (DatenDownload download : activeDownloadList) {
-                        if (download.start != null && download.start.status == Start.STATUS_RUN) {
-                            numOfDownloadsActive++;
-                            accumPercentage += download.start.percent / 10.0;
-                        }
-                    }
-
-                    final double percentage = accumPercentage / numOfDownloadsActive;
-                    final int progressBarWidth = (int) ((appIconWidth / 100.0) * percentage);
-
-                    if (bFirstUpdate) {
-                        drawAndSetApplicationIconWithProgress(progressBarWidth);
-                        bFirstUpdate = false;
-                    }
-
-                    //update in 1pct steps...
-                    if (percentage % 1 == 0) {
-                        //if icon was already drawn, don´ do it again
-                        if (oldPercentage != percentage) {
-                            drawAndSetApplicationIconWithProgress(progressBarWidth);
-                        }
-
-                        oldPercentage = percentage;
-                    }
-                    sleep(500);
-                }
-            } catch (Exception ignored) {
-            } finally {
-                //reset the application dock icon
-                application.setApplicationIconImage(OsxApplicationIconImage);
-            }
-        }
-    }
-
-    /**
-     * Repaint-Thread for progress indicator on OS X.
-     */
-    private Thread osxProgressIndicatorThread = null;
-
-    private void initMenue() {
+    protected void initMenue() {
         initSpinner();
         // Anzahl gleichzeitiger Downlaods
         jPanelAnzahl.setLayout(new BorderLayout());
@@ -934,7 +749,7 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
         jMenuItemBeenden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                beenden();
+                beenden(false,false);
             }
         });
         // Filme
@@ -1268,11 +1083,6 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
                 showAboutDialog();
             }
         });
-        if (SystemInfo.isMacOSX()) {
-            // sonst gibts eine Exception
-            setupUserInterfaceForOsx();
-            setupAcceleratorsForOsx();
-        }
     }
 
     public void showDialogPreferences() {
@@ -1280,78 +1090,25 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     }
 
     /**
-     * Keyboard shortcuts for some actions need to be changed for OS X
-     */
-    private void setupAcceleratorsForOsx() {
-        jMenuItemFilmAbspielen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F6, InputEvent.META_MASK));
-        jMenuItemFilmAufzeichnen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F7, InputEvent.META_MASK));
-        jMenuItemFilterLoeschen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F8, InputEvent.META_MASK));
-        jMenuItemBlacklist.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F9, InputEvent.META_MASK));
-        jCheckBoxMenuItemBeschreibung.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F10, InputEvent.META_MASK));
-        jCheckBoxMenuItemVideoplayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, InputEvent.META_MASK));
-    }
-
-    /**
      * Display the About Box
      */
-    private void showAboutDialog() {
+    protected void showAboutDialog() {
         MVAboutDialog aboutDialog = new MVAboutDialog(this, SystemInfo.isMacOSX());
         aboutDialog.setVisible(true);
         aboutDialog.dispose();
     }
 
-    @Override
-    public void handleQuit(ApplicationEvent event) {
-        beenden();
-    }
-
-    @Override
-    public void handleReOpenApplication(ApplicationEvent event) {
-        //unused
-    }
-
-    @Override
-    public void handlePrintFile(ApplicationEvent event) {
-        //unused
-    }
-
-    @Override
-    public void handlePreferences(ApplicationEvent event) {
-        dialogEinstellungen.setVisible(true);
-    }
-
-    @Override
-    public void handleOpenFile(ApplicationEvent event) {
-        //unused
-    }
-
-    @Override
-    public void handleOpenApplication(ApplicationEvent event) {
-        //unused
-    }
-
-    @Override
-    public void handleAbout(ApplicationEvent event) {
-        showAboutDialog();
-        event.setHandled(true);
-    }
-
-    public void beenden() {
-        beenden(false /*Dialog auf "sofort beenden" einstellen*/, false /*shutdown*/);
-    }
-
-    public void beenden(boolean showOptionTerminate, boolean shutDown) {
-        DialogBeenden dialogBeenden;
+    public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
         if (Daten.listeDownloads.nochNichtFertigeDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
-            dialogBeenden = new DialogBeenden(this);
+            DialogBeenden dialogBeenden = new DialogBeenden(this);
             if (showOptionTerminate) {
                 dialogBeenden.setComboWaitAndTerminate();
             }
             dialogBeenden.setModal(true);
             dialogBeenden.setVisible(true);
             if (!dialogBeenden.applicationCanTerminate()) {
-                return;
+                return false;
             }
             shutDown = dialogBeenden.isShutdownRequested();
         }
@@ -1407,6 +1164,8 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
         dispose();
         System.exit(0);
+
+        return false;
     }
 
     /**
@@ -1754,23 +1513,23 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem cbBandwidthDisplay;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemBeschreibung;
+    protected javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemBeschreibung;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemToolBar;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
+    protected javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
     private javax.swing.JMenu jMenuAnsicht;
     private javax.swing.JMenuBar jMenuBar;
-    private javax.swing.JMenu jMenuDatei;
+    protected javax.swing.JMenu jMenuDatei;
     private javax.swing.JMenu jMenuDownload;
-    private javax.swing.JMenu jMenuHilfe;
+    protected javax.swing.JMenu jMenuHilfe;
     private javax.swing.JMenuItem jMenuItemAboNeu;
     private javax.swing.JMenuItem jMenuItemAbosAendern;
     private javax.swing.JMenuItem jMenuItemAbosAusschalten;
     private javax.swing.JMenuItem jMenuItemAbosEinschalten;
     private javax.swing.JMenuItem jMenuItemAbosLoeschen;
-    private javax.swing.JMenuItem jMenuItemAbout;
+    protected javax.swing.JMenuItem jMenuItemAbout;
     private javax.swing.JMenuItem jMenuItemAnleitung;
-    private javax.swing.JMenuItem jMenuItemBeenden;
-    private javax.swing.JMenuItem jMenuItemBlacklist;
+    protected javax.swing.JMenuItem jMenuItemBeenden;
+    protected javax.swing.JMenuItem jMenuItemBlacklist;
     private javax.swing.JMenuItem jMenuItemDownloadAbspielen;
     private javax.swing.JMenuItem jMenuItemDownloadAendern;
     private javax.swing.JMenuItem jMenuItemDownloadAlleStoppen;
@@ -1785,18 +1544,18 @@ public final class MediathekGui extends javax.swing.JFrame implements Applicatio
     private javax.swing.JMenuItem jMenuItemDownloadsAufraeumen;
     private javax.swing.JMenuItem jMenuItemDownloadsLoeschen;
     private javax.swing.JMenuItem jMenuItemDownloadsZurueckstellen;
-    private javax.swing.JMenuItem jMenuItemEinstellungen;
-    private javax.swing.JMenuItem jMenuItemFilmAbspielen;
-    private javax.swing.JMenuItem jMenuItemFilmAufzeichnen;
+    protected javax.swing.JMenuItem jMenuItemEinstellungen;
+    protected javax.swing.JMenuItem jMenuItemFilmAbspielen;
+    protected javax.swing.JMenuItem jMenuItemFilmAufzeichnen;
     private javax.swing.JMenuItem jMenuItemFilmlisteLaden;
-    private javax.swing.JMenuItem jMenuItemFilterLoeschen;
+    protected javax.swing.JMenuItem jMenuItemFilterLoeschen;
     private javax.swing.JMenuItem jMenuItemSchriftGr;
     private javax.swing.JMenuItem jMenuItemSchriftKl;
     private javax.swing.JMenuItem jMenuItemSchriftNormal;
     private javax.swing.JPanel jPanelInfo;
     private javax.swing.JPanel jPanelToolBar;
-    private javax.swing.JPopupMenu.Separator jSeparator2;
-    private javax.swing.JPopupMenu.Separator jSeparator4;
+    protected javax.swing.JPopupMenu.Separator jSeparator2;
+    protected javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JTabbedPane jTabbedPane;
     // End of variables declaration//GEN-END:variables
 
