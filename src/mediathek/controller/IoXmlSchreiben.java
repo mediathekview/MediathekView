@@ -57,7 +57,7 @@ public class IoXmlSchreiben {
             xmlSchreibenPset(pSet);
             xmlSchreibenEnde();
         } catch (Exception ex) {
-            Log.fehlerMeldung(392846204, "IoXmlSchreiben.exportPset", ex, "nach: " + datei);
+            Log.fehlerMeldung(392846204, ex, "nach: " + datei);
         }
     }
 

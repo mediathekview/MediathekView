@@ -43,7 +43,7 @@ public class AsxLesen {
         int timeout = 20000; //10 Sekunden
         char[] zeichen = new char[1];
         URLConnection conn;
-        InputStream in = null;
+        InputStream in;
         InputStreamReader inReader = null;
         try {
             conn = new URL(datei).openConnection();
@@ -61,13 +61,13 @@ public class AsxLesen {
                 url = datei;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(946201406, "AsxLesen.lesen", ex, datei);
+            Log.fehlerMeldung(946201406, ex, datei);
         } finally {
             try {
-                if (in != null) {
+                if (inReader != null) {
                     inReader.close();
                 }
-            } catch (IOException ex) {
+            } catch (IOException ignored) {
             }
         }
         return url;

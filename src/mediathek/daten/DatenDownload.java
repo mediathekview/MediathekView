@@ -590,7 +590,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(775421006, "DatenFilm.datumDrehen", ex, datum);
+                Log.fehlerMeldung(775421006, ex, datum);
             }
         }
         return ret;
@@ -607,7 +607,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     ret = tmp;
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(775421006, "DatenFilm.datumDrehen", ex, datum);
+                Log.fehlerMeldung(775421006, ex, datum);
             }
         }
         return ret;

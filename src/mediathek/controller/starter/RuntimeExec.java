@@ -72,7 +72,7 @@ public class RuntimeExec {
             clearIn.start();
             clearOut.start();
         } catch (Exception ex) {
-            Log.fehlerMeldung(450028932, "RuntimeExec.exec", ex, "Fehler beim Starten");
+            Log.fehlerMeldung(450028932, ex, "Fehler beim Starten");
         }
         return process;
     }
