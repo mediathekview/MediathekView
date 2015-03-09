@@ -151,7 +151,7 @@ public class ProgrammLog {
             //
             bw.close();
         } catch (Exception ex) {
-            Log.fehlerMeldung(319865493, "ProgrammLog.zeileSchreiben-1", ex);
+            Log.fehlerMeldung(319865493, ex);
             MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
                     "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
         }

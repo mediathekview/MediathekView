@@ -55,9 +55,15 @@ public class Log {
     public static PanelMeldungen panelMeldungenFehler = null; // unschön, gab aber sonst einen Deadlock mit notifyMediathekListener
     public static PanelMeldungen panelMeldungenSystem = null;
     public static PanelMeldungen panelMeldungenPlayer = null;
+    private final static long BYTES_TO_MBYTE = (1024L * 1024L);
+    private final static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
-    public static synchronized void versionsMeldungen(String classname) {
-        final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    public static synchronized void versionsMeldungen() {
+        final Runtime rt = Runtime.getRuntime();
+        final long totalMem = rt.totalMemory();
+        final long maxMem = rt.maxMemory();
+        final long freeMem = rt.freeMemory();
+
         Log.systemMeldung("");
         Log.systemMeldung("");
         Log.systemMeldung("###########################################################");
@@ -65,19 +71,19 @@ public class Log {
         Log.systemMeldung("Programmstart: " + sdf.format(startZeit));
         Log.systemMeldung("###########################################################");
         Log.systemMeldung("###########################################################");
-        long totalMem = Runtime.getRuntime().totalMemory();
-        Log.systemMeldung("totalMemory: " + totalMem / (1024L * 1024L) + " MiB");
-        long maxMem = Runtime.getRuntime().maxMemory();
-        Log.systemMeldung("maxMemory: " + maxMem / (1024L * 1024L) + " MiB");
-        long freeMem = Runtime.getRuntime().freeMemory();
-        Log.systemMeldung("freeMemory: " + freeMem / (1024L * 1024L) + " MiB");
+        Log.systemMeldung("totalMemory: " + totalMem / BYTES_TO_MBYTE + " MiB");
+        Log.systemMeldung("maxMemory: " + maxMem / BYTES_TO_MBYTE + " MiB");
+        Log.systemMeldung("freeMemory: " + freeMem / BYTES_TO_MBYTE + " MiB");
         Log.systemMeldung("###########################################################");
         //Version
         Log.systemMeldung(Funktionen.getProgVersionString());
         Log.systemMeldung("Compiled: " + Funktionen.getCompileDate());
         Log.systemMeldung("###########################################################");
-        Log.systemMeldung("Java");
-        Log.systemMeldung("Classname: " + classname);
+        //dynamically get caller class name...
+        final Throwable t = new Throwable();
+        final StackTraceElement methodCaller = t.getStackTrace()[2];
+        systemMeldung("Classname: " + methodCaller.getClassName());
+
         String[] java = Funktionen.getJavaVersion();
         for (String ja : java) {
             Log.systemMeldung(ja);
@@ -85,8 +91,8 @@ public class Log {
         Log.systemMeldung("###########################################################");
     }
 
-    public static synchronized void startMeldungen(String classname) {
-        versionsMeldungen(classname);
+    public static synchronized void startMeldungen() {
+        versionsMeldungen();
         Log.systemMeldung("Programmpfad: " + Funktionen.getPathJar());
         Log.systemMeldung("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
         Log.systemMeldung("###########################################################");
@@ -95,25 +101,25 @@ public class Log {
     }
 
     // Fehlermeldung mit Exceptions
-    public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex) {
-        fehlermeldung_(fehlerNummer, klasse, ex, new String[]{});
+    public static synchronized void fehlerMeldung(int fehlerNummer, Exception ex) {
+        fehlermeldung_(fehlerNummer, ex, new String[]{});
     }
 
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex, String text) {
-        fehlermeldung_(fehlerNummer, klasse, ex, new String[]{text});
+        fehlermeldung_(fehlerNummer, ex, new String[]{text});
     }
 
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex, String text[]) {
-        fehlermeldung_(fehlerNummer, klasse, ex, text);
+        fehlermeldung_(fehlerNummer, ex, text);
     }
 
     // Fehlermeldungen
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, String text) {
-        fehlermeldung_(fehlerNummer, klasse, null, new String[]{text});
+        fehlermeldung_(fehlerNummer, null, new String[]{text});
     }
 
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, String[] text) {
-        fehlermeldung_(fehlerNummer, klasse, null, text);
+        fehlermeldung_(fehlerNummer, null, text);
     }
 
     public static synchronized void systemMeldung(String[] text) {
@@ -140,8 +146,7 @@ public class Log {
             systemMeldung(s);
         }
         // Laufzeit ausgeben
-        Date stopZeit = new Date(System.currentTimeMillis());
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        final Date stopZeit = new Date(System.currentTimeMillis());
         int minuten;
         try {
             minuten = Math.round((stopZeit.getTime() - startZeit.getTime()) / (1000 * 60));
@@ -260,8 +265,12 @@ public class Log {
         fehlerListe.add(new Integer[]{nr, 1, ex});
     }
 
-    private static void fehlermeldung_(int fehlerNummer, String klasse, Exception ex, String[] texte) {
+    private static void fehlermeldung_(int fehlerNummer, Exception ex, String[] texte) {
         addFehlerNummer(fehlerNummer, ex != null);
+        final Throwable t = new Throwable();
+        final StackTraceElement methodCaller = t.getStackTrace()[2];
+        final String klasse = methodCaller.getClassName() + "." + methodCaller.getMethodName();
+
         if (ex != null || Daten.debug) {
             try {
                 String s = getStackTrace(ex);
@@ -399,7 +408,7 @@ public class Log {
                 });
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(698989743, "ListenerMediathekView.pingen", ex);
+            Log.fehlerMeldung(698989743, ex);
         }
     }
 

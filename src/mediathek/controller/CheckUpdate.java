@@ -65,7 +65,7 @@ public class CheckUpdate {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(794612801,  CheckUpdate.class.getName(), ex);
+                Log.fehlerMeldung(794612801, ex);
             }
         }
     }

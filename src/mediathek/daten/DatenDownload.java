@@ -295,7 +295,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         try {
             return Integer.parseInt(arr[DOWNLOAD_ART_NR]);
         } catch (Exception ex) {
-            Log.fehlerMeldung(946325800, this.getClass().getName(), ex);
+            Log.fehlerMeldung(946325800, ex);
             return Start.ART_PROGRAMM;
         }
     }
@@ -304,7 +304,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         try {
             return Integer.parseInt(arr[DOWNLOAD_QUELLE_NR]);
         } catch (Exception ex) {
-            Log.fehlerMeldung(649632580, this.getClass().getName(), ex);
+            Log.fehlerMeldung(649632580, ex);
             return Start.QUELLE_BUTTON;
         }
     }
@@ -410,7 +410,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             dateinamePfadBauen(pSet, film, abo, nname, ppfad);
             programmaufrufBauen(programm);
         } catch (Exception ex) {
-            Log.fehlerMeldung(825600145, this.getClass().getName(), ex);
+            Log.fehlerMeldung(825600145, ex);
         }
     }
 

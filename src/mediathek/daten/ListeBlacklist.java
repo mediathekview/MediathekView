@@ -232,7 +232,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(462558700,  "ListeBlacklist.checkDate: ", ex);
+            Log.fehlerMeldung(462558700, ex);
         }
         return true;
     }
@@ -247,7 +247,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(696987123,  "ListeBlacklist.checkZukunft: ", ex);
+            Log.fehlerMeldung(696987123, ex);
         }
         return true;
     }
@@ -259,7 +259,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 return false;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(912304894, "ListeBlacklist.checkFilmlänge: ", ex);
+            Log.fehlerMeldung(912304894, ex);
         }
         return true;
     }
