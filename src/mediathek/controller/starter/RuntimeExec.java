@@ -46,8 +46,8 @@ public class RuntimeExec {
     private final Pattern patternSize = Pattern.compile("(?<=size=)[^k]*");  // frame=  147 fps= 17 q=-1.0 size=    1588kB time=00:00:05.84 bitrate=2226.0kbits/s   
 
     private double totalSecs = 0;
-    private long aktSize = 0, oldSize = 0, oldSecs = 0;
-    private double aktSecs = 0; // bezogen auf die Filmspieldauer!! nicht auf die Downloadszeit
+    private long oldSize = 0;
+    private long oldSecs = 0;
     private DatenDownload datenDownload = null;
 
     public RuntimeExec(DatenDownload d) {
@@ -169,7 +169,7 @@ public class RuntimeExec {
                     String s = matcher.group().trim();
                     if (!s.isEmpty()) {
                         try {
-                            aktSize = Integer.parseInt(s.replace("kB", ""));
+                            final long aktSize = Integer.parseInt(s.replace("kB", ""));
                             datenDownload.mVFilmSize.setAktSize(aktSize * 1_000);
                             long akt = start.startZeit.diffInSekunden();
                             if (oldSecs < akt - 5) {
@@ -191,7 +191,7 @@ public class RuntimeExec {
                     String zeit = matcher.group();
                     if (zeit.contains(":")) {
                         String[] hms = zeit.split(":");
-                        aktSecs = Integer.parseInt(hms[0]) * 3600
+                        final double aktSecs = Integer.parseInt(hms[0]) * 3600
                                 + Integer.parseInt(hms[1]) * 60
                                 + Double.parseDouble(hms[2]);
                         double d = aktSecs / totalSecs * 100;
