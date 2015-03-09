@@ -649,7 +649,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     tmp.setTime(sdf_datum.parse(arr[DatenDownload.DOWNLOAD_DATUM_NR]).getTime());
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(649897321, "DatumZeit.getDatumForObject", ex,
+                Log.fehlerMeldung(649897321, ex,
                         new String[]{"Datum: " + arr[DatenDownload.DOWNLOAD_DATUM_NR], "Zeit: " + arr[DatenDownload.DOWNLOAD_ZEIT_NR]});
             }
         }
