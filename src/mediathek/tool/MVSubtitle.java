@@ -68,17 +68,22 @@ public class MVSubtitle {
                 in = conn.getInputStream();
             } else {
                 // dann wars das
-                Log.fehlerMeldung(752301248, "VorlageProgrammgruppen.getListe", "url: " + url);
+                Log.fehlerMeldung(752301248, "url: " + url);
             }
 
             if (in == null) {
                 return;
             }
-            if (encoding == null) {
-            } else if (encoding.equalsIgnoreCase("gzip")) {
-                in = new GZIPInputStream(in);
-            } else if (encoding.equalsIgnoreCase("deflate")) {
-                in = new InflaterInputStream(in, new Inflater(true));
+
+            if (encoding != null) {
+                switch(encoding.toLowerCase()) {
+                    case "gzip":
+                        in = new GZIPInputStream(in);
+                        break;
+                    case "deflate":
+                        in = new InflaterInputStream(in, new Inflater(true));
+                        break;
+                }
             }
 
             fos = new FileOutputStream(file);
@@ -97,16 +102,16 @@ public class MVSubtitle {
                     if (in != null) {
                         in.close();
                     }
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         } finally {
             try {
                 if (in != null) {
                     in.close();
                 }
-            } catch (Exception ex) {
+            } catch (Exception ignored) {
             }
         }
     }

@@ -69,7 +69,7 @@ public class MediathekAuto {
 
         if (!IoXmlLesen.einstellungenExistieren()) {
             // Programm erst mit der GuiVersion einrichten
-            Log.fehlerMeldung(834986137, "MediathekAuto", "Das Programm muss erst mit der Gui-Version eingerichtet werden!");
+            Log.fehlerMeldung(834986137, "Das Programm muss erst mit der Gui-Version eingerichtet werden!");
             System.exit(1);
         }
 
@@ -78,7 +78,7 @@ public class MediathekAuto {
         Log.systemMeldung("Einstellungen laden: " + xmlFilePath.toString());
         if (!IoXmlLesen.datenLesen(xmlFilePath)) {
             // dann hat das Laden nicht geklappt
-            Log.fehlerMeldung(834986137, "MediathekAuto", "Einstellungen konnten nicht geladen werden: " + xmlFilePath.toString());
+            Log.fehlerMeldung(834986137, "Einstellungen konnten nicht geladen werden: " + xmlFilePath.toString());
             System.exit(1);
         }
 
@@ -86,7 +86,7 @@ public class MediathekAuto {
         MSFilmlisteLesen filmList = new MSFilmlisteLesen();
         if (bFastAuto) {
             //do not read film descriptions in FASTAUTO mode as they won´t be used...
-            filmList.setWorkMode(MSFilmlisteLesen.WorkMode.FASTAUTO);
+            MSFilmlisteLesen.setWorkMode(MSFilmlisteLesen.WorkMode.FASTAUTO);
         }
         filmList.readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
 

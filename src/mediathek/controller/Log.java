@@ -113,8 +113,7 @@ public class Log {
         fehlermeldung_(fehlerNummer, ex, text);
     }
 
-    @Deprecated
-    public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, String text) {
+    public static synchronized void fehlerMeldung(int fehlerNummer, String text) {
         fehlermeldung_(fehlerNummer, null, new String[]{text});
     }
 

@@ -138,7 +138,7 @@ public class RuntimeExec {
                     meldenDouble(d);
                 } catch (Exception ex) {
                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
-                    Log.fehlerMeldung(912036780, "RuntimeExec.GetPercentageFromErrorStream-1", input);
+                    Log.fehlerMeldung(912036780, input);
                 }
                 return;
             }
@@ -204,7 +204,7 @@ public class RuntimeExec {
                 }
             } catch (Exception ex) {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
-                Log.fehlerMeldung(912036780, "RuntimeExec.GetPercentageFromErrorStream-2", input);
+                Log.fehlerMeldung(912036780, input);
             }
         }
 

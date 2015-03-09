@@ -1185,7 +1185,7 @@ public class MediathekGui extends JFrame {
                 break;
 
             default:
-                Log.fehlerMeldung(465321789, MediathekGui.class.getSimpleName(), "Shutdown unsupported operating system ...");
+                Log.fehlerMeldung(465321789, "Shutdown unsupported operating system ...");
                 break;
         }
 
