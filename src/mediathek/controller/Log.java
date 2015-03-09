@@ -85,7 +85,7 @@ public class Log {
         systemMeldung("Classname: " + methodCaller.getClassName());
 
         String[] java = Funktionen.getJavaVersion();
-        for (String ja : java) {
+        for (final String ja : java) {
             Log.systemMeldung(ja);
         }
         Log.systemMeldung("###########################################################");
@@ -105,19 +105,22 @@ public class Log {
         fehlermeldung_(fehlerNummer, ex, new String[]{});
     }
 
+    @Deprecated
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex, String text) {
         fehlermeldung_(fehlerNummer, ex, new String[]{text});
     }
 
+    @Deprecated
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, Exception ex, String text[]) {
         fehlermeldung_(fehlerNummer, ex, text);
     }
 
-    // Fehlermeldungen
+    @Deprecated
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, String text) {
         fehlermeldung_(fehlerNummer, null, new String[]{text});
     }
 
+    @Deprecated
     public static synchronized void fehlerMeldung(int fehlerNummer, String klasse, String[] text) {
         fehlermeldung_(fehlerNummer, null, text);
     }
