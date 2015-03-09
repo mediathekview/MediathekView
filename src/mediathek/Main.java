@@ -23,6 +23,7 @@ import com.jidesoft.utils.SystemInfo;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
+import mediathek.mac.MediathekGuiMac;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVSingleInstance;
 
@@ -143,7 +144,11 @@ public class Main {
                                 }
                             }
                         }
-                        new MediathekGui(args, finalShowWindowMaximized).setVisible(true);
+                        if (SystemInfo.isMacOSX()) {
+                            new MediathekGuiMac(args,finalShowWindowMaximized).setVisible(true);
+                        }
+                        else
+                            new MediathekGui(args, finalShowWindowMaximized).setVisible(true);
                     }
                 });
                 break;

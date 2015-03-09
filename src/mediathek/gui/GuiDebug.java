@@ -36,8 +36,6 @@ import mediathek.daten.Daten;
 import mediathek.tool.Duration;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
-import mediathek.tool.MVNotification;
-import msearch.filmlisten.MSImportFilmliste;
 import msearch.filmlisten.MSFilmlisteLesen;
 
 public class GuiDebug extends JPanel {
@@ -131,22 +129,6 @@ public class GuiDebug extends JPanel {
                 Daten.listeFilme.cleanList();
             }
         });
-        jButtonNotify.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MVNotification.addNotification(daten, "Titel", "<html>"
-                        + "<head>"
-                        + "</head>"
-                        + "<body>"
-                        + "<p>"
-                        + "<b>Autoren:</b><br />"
-                        + "Xaver W. (W.Xaver [at] googlemail [dot] com)<br />"
-                        + "Christian F. (crystalpalace1977 [at] googlemail [dot] com)"
-                        + "</p>"
-                        + "</body>"
-                        + "</html>");
-            }
-        });
         jToggleButtonFastAuto.addActionListener(new ActionListener() {
 
             @Override
@@ -204,7 +186,7 @@ public class GuiDebug extends JPanel {
 
         javax.swing.JTabbedPane jTabbedSender = new javax.swing.JTabbedPane();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
-        jPanelSender = new javax.swing.JPanel();
+        javax.swing.JPanel jPanelSender = new javax.swing.JPanel();
         jPanelLoeschen = new javax.swing.JPanel();
         jButtonFilmlisteLoeschen = new javax.swing.JButton();
         jButtonNeuLaden = new javax.swing.JButton();
@@ -214,7 +196,6 @@ public class GuiDebug extends JPanel {
         jButtonCheckUrl = new javax.swing.JButton();
         jTextFieldUrl = new javax.swing.JTextField();
         jButtonGc = new javax.swing.JButton();
-        jButtonNotify = new javax.swing.JButton();
         jButtonFehler = new javax.swing.JButton();
         jButtonAllesSpeichern = new javax.swing.JButton();
         jToggleButtonFastAuto = new javax.swing.JToggleButton();
@@ -307,8 +288,6 @@ public class GuiDebug extends JPanel {
 
         jButtonGc.setText("Gc");
 
-        jButtonNotify.setText("Notify");
-
         jButtonFehler.setText("Fehler ausgeben");
 
         jButtonAllesSpeichern.setText("alles speichern");
@@ -335,7 +314,6 @@ public class GuiDebug extends JPanel {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButtonFehler, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButtonNotify, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButtonGc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButtonAllesSpeichern, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jToggleButtonFastAuto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -354,12 +332,10 @@ public class GuiDebug extends JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(jButtonGc)
                 .addGap(18, 18, 18)
-                .addComponent(jButtonNotify)
-                .addGap(18, 18, 18)
                 .addComponent(jButtonFehler)
                 .addGap(18, 18, 18)
                 .addComponent(jToggleButtonFastAuto)
-                .addGap(18, 18, 18)
+                .addGap(65, 65, 65)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonSize)
                     .addComponent(jTextFieldPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -417,11 +393,9 @@ public class GuiDebug extends JPanel {
     private javax.swing.JButton jButtonFilmlisteLoeschen;
     private javax.swing.JButton jButtonGc;
     private javax.swing.JButton jButtonNeuLaden;
-    private javax.swing.JButton jButtonNotify;
     private javax.swing.JButton jButtonSize;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanelLoeschen;
-    private javax.swing.JPanel jPanelSender;
     private javax.swing.JTextField jTextFieldPath;
     private javax.swing.JTextField jTextFieldUrl;
     private javax.swing.JToggleButton jToggleButtonFastAuto;
