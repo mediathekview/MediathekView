@@ -72,7 +72,7 @@ public class MVUsedUrl implements Comparable<MVUsedUrl> {
                 url = zeile;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(398853224,"ErledigteAbos.getUrlAusZeile: " + zeile, ex);
+            Log.fehlerMeldung(398853224, ex);
         }
         return new MVUsedUrl(datum, thema, titel, url);
     }

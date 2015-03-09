@@ -39,15 +39,15 @@ public class RuntimeExec {
     private Process process = null;
     Start start;
     private static int procnr = 0; //TH
-    private final Pattern patternFlvstreamer = Pattern.compile("([0-9]*.[0-9]{1}%)");
-    private final Pattern patternFlvstreamerComplete = Pattern.compile("Download complete");
-    private final Pattern patternFfmpeg = Pattern.compile("(?<=  Duration: )[^,]*"); // Duration: 00:00:30.28, start: 0.000000, bitrate: N/A
-    private final Pattern patternZeit = Pattern.compile("(?<=time=)[^ ]*");  // frame=  147 fps= 17 q=-1.0 size=    1588kB time=00:00:05.84 bitrate=2226.0kbits/s   
-    private final Pattern patternSize = Pattern.compile("(?<=size=)[^k]*");  // frame=  147 fps= 17 q=-1.0 size=    1588kB time=00:00:05.84 bitrate=2226.0kbits/s   
+    private static final Pattern patternFlvstreamer = Pattern.compile("([0-9]*.[0-9]{1}%)");
+    private static final Pattern patternFlvstreamerComplete = Pattern.compile("Download complete");
+    private static final Pattern patternFfmpeg = Pattern.compile("(?<=  Duration: )[^,]*"); // Duration: 00:00:30.28, start: 0.000000, bitrate: N/A
+    private static final Pattern patternZeit = Pattern.compile("(?<=time=)[^ ]*");  // frame=  147 fps= 17 q=-1.0 size=    1588kB time=00:00:05.84 bitrate=2226.0kbits/s
+    private static final Pattern patternSize = Pattern.compile("(?<=size=)[^k]*");  // frame=  147 fps= 17 q=-1.0 size=    1588kB time=00:00:05.84 bitrate=2226.0kbits/s
 
     private double totalSecs = 0;
-    private long aktSize = 0, oldSize = 0, oldSecs = 0;
-    private double aktSecs = 0; // bezogen auf die Filmspieldauer!! nicht auf die Downloadszeit
+    private long oldSize = 0;
+    private long oldSecs = 0;
     private DatenDownload datenDownload = null;
 
     public RuntimeExec(DatenDownload d) {
@@ -72,7 +72,7 @@ public class RuntimeExec {
             clearIn.start();
             clearOut.start();
         } catch (Exception ex) {
-            Log.fehlerMeldung(450028932, "RuntimeExec.exec", ex, "Fehler beim Starten");
+            Log.fehlerMeldung(450028932, ex, "Fehler beim Starten");
         }
         return process;
     }
@@ -138,7 +138,7 @@ public class RuntimeExec {
                     meldenDouble(d);
                 } catch (Exception ex) {
                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
-                    Log.fehlerMeldung(912036780, "RuntimeExec.GetPercentageFromErrorStream-1", input);
+                    Log.fehlerMeldung(912036780, input);
                 }
                 return;
             }
@@ -169,7 +169,7 @@ public class RuntimeExec {
                     String s = matcher.group().trim();
                     if (!s.isEmpty()) {
                         try {
-                            aktSize = Integer.parseInt(s.replace("kB", ""));
+                            final long aktSize = Integer.parseInt(s.replace("kB", ""));
                             datenDownload.mVFilmSize.setAktSize(aktSize * 1_000);
                             long akt = start.startZeit.diffInSekunden();
                             if (oldSecs < akt - 5) {
@@ -191,7 +191,7 @@ public class RuntimeExec {
                     String zeit = matcher.group();
                     if (zeit.contains(":")) {
                         String[] hms = zeit.split(":");
-                        aktSecs = Integer.parseInt(hms[0]) * 3600
+                        final double aktSecs = Integer.parseInt(hms[0]) * 3600
                                 + Integer.parseInt(hms[1]) * 60
                                 + Double.parseDouble(hms[2]);
                         double d = aktSecs / totalSecs * 100;
@@ -204,7 +204,7 @@ public class RuntimeExec {
                 }
             } catch (Exception ex) {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
-                Log.fehlerMeldung(912036780, "RuntimeExec.GetPercentageFromErrorStream-2", input);
+                Log.fehlerMeldung(912036780, input);
             }
         }
 

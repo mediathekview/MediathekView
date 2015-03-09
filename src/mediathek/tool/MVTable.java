@@ -470,7 +470,7 @@ public final class MVTable extends JTable {
             }
             this.validate();
         } catch (Exception ex) {
-            Log.fehlerMeldung(965001463,  "JTableMed.setSpalten", ex);
+            Log.fehlerMeldung(965001463, ex);
         }
     }
 
