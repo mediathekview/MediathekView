@@ -335,7 +335,7 @@ public class StarterClass {
                     Daten.listeDownloadsButton.buttonStartsPutzen(); // Button Starts aus der Liste löschen
                     sleep(3 * 1000);
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(613822015, "StarterClass.Starten.run", ex);
+                    Log.fehlerMeldung(613822015, ex);
                 }
             } //while(true)
         }
@@ -412,7 +412,7 @@ public class StarterClass {
                 Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
             } catch (IOException ignored) {
             } catch (Exception ex) {
-                Log.fehlerMeldung(469365281, "StarterClass.StartenProgramm-1", ex);
+                Log.fehlerMeldung(469365281, ex);
             }
         }
 
@@ -528,7 +528,7 @@ public class StarterClass {
                 }
             } catch (Exception ex) {
                 exMessage = ex.getLocalizedMessage();
-                Log.fehlerMeldung(395623710, "StarterClass.StartenProgramm-2", ex);
+                Log.fehlerMeldung(395623710, ex);
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -687,7 +687,7 @@ public class StarterClass {
                 }
             } catch (Exception ex) {
                 ret = -1;
-                Log.fehlerMeldung(643298301, "StarterClass.StartenDownload.getContentLength", ex);
+                Log.fehlerMeldung(643298301, ex);
             } finally {
                 if (conn != null) {
                     conn.disconnect();

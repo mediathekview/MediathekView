@@ -178,7 +178,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(630098552, this.getClass().getName(), ex);
+            Log.fehlerMeldung(630098552, ex);
         }
         return this;
     }

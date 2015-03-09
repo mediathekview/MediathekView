@@ -401,7 +401,7 @@ public class PanelPsetKurz extends PanelVorlage {
                             arr[idx] = textField.getText();
                         }
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(392847589,  "DialogZielPset.ZielBeobachter", ex);
+                        Log.fehlerMeldung(392847589, ex);
                     }
                 }
                 if (!file) {
@@ -423,7 +423,7 @@ public class PanelPsetKurz extends PanelVorlage {
                             arr[idx] = textField.getText();
                         }
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(613986500,  "DialogZielPset.ZielBeobachter", ex);
+                        Log.fehlerMeldung(613986500, ex);
                     }
                 }
             }

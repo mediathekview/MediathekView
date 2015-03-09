@@ -231,7 +231,7 @@ public class MediathekGui extends JFrame {
         daten = new Daten(pfad, this);
         duration.ping("Daten");
 
-        Log.startMeldungen(this.getClass().getName());
+        Log.startMeldungen();
         createStatusBar();
         mVToolBar = new MVToolBar(daten);
         jPanelToolBar.setLayout(new BorderLayout());
@@ -1195,7 +1195,7 @@ public class MediathekGui extends JFrame {
                 Log.systemMeldung("Shutdown: " + strShutdownCommand);
                 Runtime.getRuntime().exec(strShutdownCommand);
             } catch (IOException ex) {
-                Log.fehlerMeldung(915263047, "MediathekGui.shutdownComputer", ex);
+                Log.fehlerMeldung(915263047, ex);
             }
         }
     }
