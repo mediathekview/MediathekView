@@ -52,3 +52,10 @@ jchart2d-3.2.2.jar
 http://jchart2d.sourceforge.net/
 JChart2D is an minimalistic realtime charting library
 
+================================================================
+OrangeExtensions
+orange-extensions-1.3.0.jar
+http://ymasory.github.io/OrangeExtensions/
+A pluggable jar containing stubs for the Apple Java Extensions, updated for Java 5 & 6 
+
+
