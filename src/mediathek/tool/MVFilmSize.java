@@ -52,7 +52,7 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
                 sizeL = sizeL * 1000 * 1000;
                 sizeStr = size;
             } catch (Exception ex) {
-                Log.fehlerMeldung(978745320, MVFilmSize.class.getName(), ex, "String: " + size);
+                Log.fehlerMeldung(978745320, ex, "String: " + size);
                 sizeL = 0L;
                 sizeStr = "";
             }

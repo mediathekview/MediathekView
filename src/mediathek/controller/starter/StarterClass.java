@@ -564,7 +564,7 @@ public class StarterClass {
                     file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                 } catch (IOException ex) {
                     // kann nicht gelöscht werden, evtl. klappt ja das Überschreiben
-                    Log.fehlerMeldung(795623145, "StarterClass.ExternalProgramDownloadThread", ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                    Log.fehlerMeldung(795623145, ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                 }
                 return false; //auf keinen Fall den Dialog starten :)
             }
@@ -607,11 +607,11 @@ public class StarterClass {
                     case CONTINUE:
                         // dann mit gleichem Namen und Datei vorher löschen
                         try {
-                            file.delete();
+                            Files.deleteIfExists(file.toPath());
                             file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                         } catch (Exception ex) {
                             // kann nicht gelöscht werden, evtl. klappt ja das Überschreiben
-                            Log.fehlerMeldung(945120398, "StartetClass.ExternalProgramDownloadThread", ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                            Log.fehlerMeldung(945120398, ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                         }
                         break;
 
@@ -856,7 +856,7 @@ public class StarterClass {
                 }
             } catch (Exception ex) {
                 exMessage = ex.getLocalizedMessage();
-                Log.fehlerMeldung(316598941, "StartetClass.StartenDownload", ex, "Fehler");
+                Log.fehlerMeldung(316598941, ex, "Fehler");
                 start.status = Start.STATUS_ERR;
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
