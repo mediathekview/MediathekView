@@ -9,7 +9,13 @@ then
 
 # Dateien ins dist-Verzeichnis kopieren
 cp -r res/* dist
+
+# libs-Verzeichnis füllen
+rm libs/*.jar
 cp -r dist/lib/* libs
+
+# orange-extensions-1.3.0.jar entfernen, ist nur für OS X und da ists eh schon dabei
+rm dist/lib/orange-extensions-1.3.0.jar
 
 # für Netbeans nochmal
 cp -r res/* build
