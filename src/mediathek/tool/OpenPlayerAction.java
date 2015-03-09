@@ -32,7 +32,7 @@ public class OpenPlayerAction {
 
     public static void filmAbspielen(Frame parent, String datei) {
         boolean gut = false;
-        File sFile = null;
+        File sFile;
         if (datei.isEmpty()) {
             return;
         }
@@ -66,14 +66,12 @@ public class OpenPlayerAction {
                 if (dialog.ok) {
                     programm = dialog.ziel;
                 }
-                if (sFile != null) {
-                    Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
-                    Daten.mVConfig.add(MVConfig.SYSTEM_PLAYER_ABSPIELEN, programm);
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
-                    gut = true;
-                }
+                Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
+                Daten.mVConfig.add(MVConfig.SYSTEM_PLAYER_ABSPIELEN, programm);
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
+                gut = true;
             } catch (Exception eex) {
-                Log.fehlerMeldung(959632369, GuiDownloads.class.getName(), ex, "Ordner öffnen: " + datei);
+                Log.fehlerMeldung(959632369, ex, "Ordner öffnen: " + datei);
             }
         } finally {
             if (!gut) {

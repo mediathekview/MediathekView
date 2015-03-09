@@ -133,7 +133,7 @@ public class GuiFunktionen extends Funktionen {
     public static String addsPfad(String pfad1, String pfad2) {
         String ret = concatPaths(pfad1, pfad2);
         if (ret.equals("")) {
-            Log.fehlerMeldung(283946015, "GuiFunktionen.addsPfad", pfad1 + " - " + pfad2);
+            Log.fehlerMeldung(283946015, pfad1 + " - " + pfad2);
         }
         return ret;
     }
@@ -165,18 +165,18 @@ public class GuiFunktionen extends Funktionen {
             // in Win dürfen die Pfade nicht länger als 255 Zeichen haben (für die Infodatei kommen noch ".txt" dazu)
             if ((pathName[0].length() + 10) > WIN_MAX_PATH_LENGTH) {
                 // es sollen für den Dateinamen mind. 10 Zeichen bleiben
-                Log.fehlerMeldung(102036598, "GuiFunktionen.checkLengthPath", "Pfad zu lange: " + pathName[0]);
+                Log.fehlerMeldung(102036598, "Pfad zu lang: " + pathName[0]);
                 pathName[0] = GuiFunktionen.getHomePath();
             }
             if ((pathName[0].length() + pathName[1].length()) > WIN_MAX_PATH_LENGTH) {
-                Log.fehlerMeldung(902367369, "GuiFunktionen.checkLengthPath", "Name zu lange: " + pathName[0]);
+                Log.fehlerMeldung(902367369, "Name zu lang: " + pathName[0]);
                 int maxNameL = WIN_MAX_PATH_LENGTH - pathName[0].length();
                 pathName[1] = cutName(pathName[1], maxNameL);
             }
         } else {
             // für X-Systeme
             if ((pathName[1].length()) > X_MAX_NAME_LENGTH) {
-                Log.fehlerMeldung(823012012, "GuiFunktionen.checkLengthPath", "Name zu lange: " + pathName[1]);
+                Log.fehlerMeldung(823012012, "Name zu lang: " + pathName[1]);
                 pathName[1] = cutName(pathName[1], X_MAX_NAME_LENGTH);
             }
         }
@@ -210,7 +210,7 @@ public class GuiFunktionen extends Funktionen {
             ret = ret.substring(0, ret.indexOf('&'));
         }
         if (ret.equals("")) {
-            Log.fehlerMeldung(395019631, "GuiFunktionen.getDateiName", pfad);
+            Log.fehlerMeldung(395019631, pfad);
         }
         return ret;
     }
@@ -225,7 +225,7 @@ public class GuiFunktionen extends Funktionen {
             }
         }
         if (ret.equals("")) {
-            Log.fehlerMeldung(969871236, "GuiFunktionen.getDateiSuffix", pfad);
+            Log.fehlerMeldung(969871236, pfad);
         }
         if (ret.contains("?")) {
             ret = ret.substring(0, ret.indexOf('?'));
@@ -233,7 +233,7 @@ public class GuiFunktionen extends Funktionen {
         if (ret.length() > 5) {
             // dann ist was faul
             ret = "---";
-            Log.fehlerMeldung(821397046, "GuiFunktionen.getDateiSuffix", pfad);
+            Log.fehlerMeldung(821397046, pfad);
         }
         return ret;
     }

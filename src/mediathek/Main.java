@@ -89,7 +89,7 @@ public class Main {
                         break;
 
                     case "-v":
-                        Log.versionsMeldungen(Main.class.getName());
+                        Log.versionsMeldungen();
                         System.exit(0);
                         break;
 

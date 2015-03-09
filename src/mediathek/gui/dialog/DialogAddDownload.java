@@ -720,7 +720,7 @@ public class DialogAddDownload extends JDialog {
                         jComboBoxPfad.addItem(chooser.getDirectory() + chooser.getFile());
                         jComboBoxPfad.setSelectedItem(chooser.getDirectory() + chooser.getFile());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(356871087, "DialogAddDownload.ZielBeobachter", ex);
+                        Log.fehlerMeldung(356871087, ex);
                     }
                 }
                 System.setProperty("apple.awt.fileDialogForDirectories", "false");
@@ -738,7 +738,7 @@ public class DialogAddDownload extends JDialog {
                         jComboBoxPfad.addItem(chooser.getSelectedFile().getAbsolutePath());
                         jComboBoxPfad.setSelectedItem(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(356871087, "DialogAddDownload.ZielBeobachter", ex);
+                        Log.fehlerMeldung(356871087, ex);
                     }
                 }
             }

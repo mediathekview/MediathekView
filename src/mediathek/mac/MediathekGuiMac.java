@@ -115,7 +115,7 @@ public class MediathekGuiMac extends MediathekGui {
             final BufferedImage appImage = ImageIO.read(url);
             application.setDockIconImage(appImage);
         } catch (IOException ex) {
-            Log.fehlerMeldung(165623698, "MediathekGuiMac.setupUserInterfaceForOsx", "OS X Application image could not be loaded");
+            Log.fehlerMeldung(165623698, "OS X Application image could not be loaded");
         }
 
         //Remove all menu items which don´t need to be displayed due to OS X´s native menu support
