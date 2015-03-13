@@ -55,15 +55,15 @@ public class MVInfoFile {
         } else {
             titel = titel + ".txt";
         }
-        DialogZiel dialog = new DialogZiel(paFrame, true, pfad + File.separator + titel, "Infos speichern");
+        pfad = GuiFunktionen.addsPfad(pfad, titel);
+        DialogZiel dialog = new DialogZiel(paFrame, true, pfad, "Infos speichern");
         dialog.setVisible(true);
         if (!dialog.ok) {
             return;
         }
 
         Path path = Paths.get(dialog.ziel);
-        try (BufferedWriter br = new BufferedWriter(new OutputStreamWriter(new DataOutputStream(Files.newOutputStream(path)))))
-        {
+        try (BufferedWriter br = new BufferedWriter(new OutputStreamWriter(new DataOutputStream(Files.newOutputStream(path))))) {
             br.write(DatenFilm.FILM_SENDER + ":      " + film.arr[DatenFilm.FILM_SENDER_NR]);
             br.write("\n");
             br.write(DatenFilm.FILM_THEMA + ":       " + film.arr[DatenFilm.FILM_THEMA_NR]);
@@ -159,7 +159,7 @@ public class MVInfoFile {
             br.flush();
             br.close();
         } catch (IOException ex) {
-            Log.fehlerMeldung(975410369,  datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.fehlerMeldung(975410369, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
     }
 
