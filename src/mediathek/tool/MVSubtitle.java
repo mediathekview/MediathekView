@@ -42,7 +42,7 @@ public class MVSubtitle {
         File file;
         HttpURLConnection conn = null;
         InputStream in = null;
-        FileOutputStream fos;
+        FileOutputStream fos = null;
         String encoding;
 
         if (datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE_NR].isEmpty()) {
@@ -76,7 +76,7 @@ public class MVSubtitle {
             }
 
             if (encoding != null) {
-                switch(encoding.toLowerCase()) {
+                switch (encoding.toLowerCase()) {
                     case "gzip":
                         in = new GZIPInputStream(in);
                         break;
@@ -108,6 +108,9 @@ public class MVSubtitle {
         } catch (Exception ignored) {
         } finally {
             try {
+                if (fos != null) {
+                    fos.close();
+                }
                 if (in != null) {
                     in.close();
                 }

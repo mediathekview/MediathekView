@@ -246,9 +246,6 @@ public class FilmeLaden {
         } catch (Exception ex) {
             Log.fehlerMeldung(765213654, ex);
         }
-//        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
-//            run_(new Start(l, event, ListenerMelden.START));
-//        }
     }
 
     private void notifyProgress(MSListenerFilmeLadenEvent event) {
@@ -271,9 +268,6 @@ public class FilmeLaden {
         } catch (Exception ex) {
             Log.fehlerMeldung(201020369, ex);
         }
-//        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
-//            run_(new Start(l, event, ListenerMelden.PROGRESS));
-//        }
     }
 
     private void notifyFertig(MSListenerFilmeLadenEvent event) {
@@ -296,49 +290,5 @@ public class FilmeLaden {
         } catch (Exception ex) {
             Log.fehlerMeldung(945120303, ex);
         }
-//        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
-//            run_(new Start(l, event, ListenerMelden.FINISHED));
-//        }
     }
-
-//    private class Start implements Runnable {
-//
-//        private final MSListenerFilmeLaden listenerFilmeLaden;
-//        private final MSListenerFilmeLadenEvent event;
-//        private final ListenerMelden listenerMelden;
-//
-//        public Start(MSListenerFilmeLaden llistenerFilmeLaden, MSListenerFilmeLadenEvent eevent, ListenerMelden lliListenerMelden) {
-//            listenerFilmeLaden = llistenerFilmeLaden;
-//            event = eevent;
-//            listenerMelden = lliListenerMelden;
-//        }
-//
-//        @Override
-//        public synchronized void run() {
-//            switch (listenerMelden) {
-//                case START:
-//                    listenerFilmeLaden.start(event);
-//                    break;
-//                case PROGRESS:
-//                    listenerFilmeLaden.progress(event);
-//                    break;
-//                case FINISHED:
-//                    listenerFilmeLaden.fertig(event);
-//                    break;
-//            }
-//        }
-//    }
-//
-//    private void run_(Runnable r) {
-//        try {
-//            if (SwingUtilities.isEventDispatchThread()) {
-//                // entweder hier
-//                r.run();
-//            } else {
-//                SwingUtilities.invokeLater(r);
-//            }
-//        } catch (Exception ex) {
-//            Log.fehlerMeldung(926369741, "ListenerFilmeLaden.run_", ex);
-//        }
-//    }
 }
