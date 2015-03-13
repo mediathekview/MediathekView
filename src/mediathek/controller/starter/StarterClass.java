@@ -638,18 +638,18 @@ public class StarterClass {
      */
     private class DirectHttpDownloadThread extends Thread {
 
-        private DatenDownload datenDownload;
-        private Start start;
+        private final DatenDownload datenDownload;
+        private final Start start;
         private HttpURLConnection conn = null;
         private HttpDownloadState state = HttpDownloadState.DOWNLOAD;
-        private int downloaded = 0;
+        private long downloaded = 0;
         private File file = null;
         private String responseCode;
         private String exMessage;
 
         private FileOutputStream fos = null;
 
-        private java.util.Timer bandwidthCalculationTimer;
+        private final java.util.Timer bandwidthCalculationTimer;
         private boolean retAbbrechen;
         private boolean dialogAbbrechenIsVis;
 
@@ -672,14 +672,14 @@ public class StarterClass {
         private long getContentLength(final URL url) {
             final int TIMEOUT = 5000; //ms, beim Start eines Downloads
             long ret = -1;
-            HttpURLConnection conn = null;
+            HttpURLConnection connection = null;
             try {
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-                conn.setReadTimeout(TIMEOUT);
-                conn.setConnectTimeout(TIMEOUT);
-                if (conn.getResponseCode() < 400) {
-                    ret = conn.getContentLengthLong();
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestProperty("User-Agent", Daten.getUserAgent());
+                connection.setReadTimeout(TIMEOUT);
+                connection.setConnectTimeout(TIMEOUT);
+                if (connection.getResponseCode() < 400) {
+                    ret = connection.getContentLengthLong();
                 }
                 // alles unter 300k sind Playlisten, ...
                 if (ret < 300 * 1000) {
@@ -689,8 +689,8 @@ public class StarterClass {
                 ret = -1;
                 Log.fehlerMeldung(643298301, ex);
             } finally {
-                if (conn != null) {
-                    conn.disconnect();
+                if (connection != null) {
+                    connection.disconnect();
                 }
             }
             return ret;
@@ -928,7 +928,7 @@ public class StarterClass {
                         break;
 
                     case CONTINUE:
-                        downloaded = (int) file.length();
+                        downloaded = file.length();
                         break;
 
                     case RESTART_WITH_NEW_NAME:
