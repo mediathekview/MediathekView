@@ -39,6 +39,7 @@ import msearch.daten.DatenFilm;
 public class DialogEditDownload extends javax.swing.JDialog {
 
     private final DatenDownload datenDownload;
+    public boolean ok = false;
     private final JTextField[] textfeldListe = new JTextField[DatenDownload.MAX_ELEM];
     private final JLabel[] labelListe = new JLabel[DatenDownload.MAX_ELEM];
     private final JCheckBox jCheckBoxRestart = new JCheckBox();
@@ -46,7 +47,6 @@ public class DialogEditDownload extends javax.swing.JDialog {
     private final JCheckBox jCheckBoxInfodatei = new JCheckBox();
     private final JCheckBox jCheckBoxSubtitle = new JCheckBox();
     private final JCheckBox jCheckBoxSpotlight = new JCheckBox();
-    public boolean ok = false;
     private final MVPanelDownloadZiel mVPanelDownloadZiel;
     private final boolean gestartet;
     private String dateiGroesse_HD = "";
@@ -107,14 +107,11 @@ public class DialogEditDownload extends javax.swing.JDialog {
         setExtra();
     }
 
-    /**
-     * Setup the resolution radio buttons based on available download URLs.
-     */
     private void setupResolutionButtons() {
         jRadioButtonResHd.setEnabled(false);
         jRadioButtonResHi.setEnabled(false);
         jRadioButtonResLo.setEnabled(false);
-        if (datenDownload.getArt() != Start.ART_DOWNLOAD) {
+        if (datenDownload.getArt() != Start.ART_DOWNLOAD && datenDownload.pSet == null) {
             // ansonsten muss erst noch der Programmaufruf neu gebaut werden
             jPanelRes.setVisible(false);
             return;
@@ -168,16 +165,23 @@ public class DialogEditDownload extends javax.swing.JDialog {
         } else {
             size = dateiGroesse_Hoch;
         }
-//        datenDownload = new DatenDownload(datenDownload.pSet, datenDownload.film, datenDownload.getQuelle(), datenDownload.abo, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR],
-//                datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR], res);
+        if (datenDownload.getArt() == Start.ART_PROGRAMM && datenDownload.pSet != null) {
+            // ansonsten muss erst noch der Programmaufruf neu gebaut werden
+            DatenDownload d = new DatenDownload(datenDownload.pSet, datenDownload.film, datenDownload.getQuelle(), datenDownload.abo, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR],
+                    datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR], res);
+            datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR] = d.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
+            textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR].setText(datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
+        }
         datenDownload.setGroesse(size);
     }
 
     private void setExtra() {
+        jPanelExtra.removeAll();
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5, 10, 10, 5);
+
         jPanelExtra.setLayout(gridbag);
         int zeile = 0;
         for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
@@ -191,6 +195,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
             ++zeile;
             c.gridy = zeile;
         }
+        jPanelExtra.validate();
     }
 
     private void addExtraFeld(int i, GridBagLayout gridbag, GridBagConstraints c) {
@@ -405,7 +410,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 .addComponent(jRadioButtonResHi)
                 .addGap(18, 18, 18)
                 .addComponent(jRadioButtonResLo)
-                .addContainerGap(214, Short.MAX_VALUE))
+                .addContainerGap(237, Short.MAX_VALUE))
         );
         jPanelResLayout.setVerticalGroup(
             jPanelResLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -442,7 +447,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanelRes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
