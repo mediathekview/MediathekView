@@ -51,7 +51,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="255" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="577" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="jPanelRes" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -117,7 +117,7 @@
                   <Component id="jRadioButtonResHi" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="jRadioButtonResLo" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="214" max="32767" attributes="0"/>
+                  <EmptySpace pref="237" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

@@ -283,11 +283,17 @@ public class DatenDownload implements Comparable<DatenDownload> {
         ret.datumFilm = this.datumFilm;
         ret.film = this.film;
         ret.nr = this.nr;
+        ret.pSet = this.pSet;
+        ret.mVFilmSize = this.mVFilmSize;
         return ret;
     }
 
     public void aufMichKopieren(DatenDownload datenDownload) {
         System.arraycopy(datenDownload.arr, 0, arr, 0, arr.length);
+        datumFilm = datenDownload.datumFilm;
+        film = datenDownload.film;
+        nr = datenDownload.nr;
+        pSet = datenDownload.pSet;
         mVFilmSize = datenDownload.mVFilmSize; // die Auflösung des Films kann sich ändern
     }
 
