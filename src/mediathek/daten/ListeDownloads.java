@@ -69,6 +69,18 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
+    public void filmEintragen() {
+        // bei einmal Downloads nach einem Programmstart/Neuladen der Filmliste
+        // den Film wieder eintragen
+        Iterator<DatenDownload> it = this.iterator();
+        while (it.hasNext()) {
+            DatenDownload d = it.next();
+            if (d.film == null) {
+                d.film = Daten.listeFilme.getFilmByUrl_klein_hoch_hd(d.arr[DatenDownload.DOWNLOAD_URL_NR]);
+            }
+        }
+    }
+
     public synchronized void listePutzen() {
         // fertige Downloads löschen
         // fehlerhafte zurücksetzen
