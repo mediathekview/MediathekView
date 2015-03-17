@@ -112,13 +112,13 @@ public class DialogEditDownload extends javax.swing.JDialog {
         jRadioButtonResHi.setEnabled(false);
         jRadioButtonResLo.setEnabled(false);
         if (datenDownload.getArt() != Start.ART_DOWNLOAD && datenDownload.pSet == null) {
-            // ansonsten muss erst noch der Programmaufruf neu gebaut werden
+            // ansonsten müsste erst der Programmaufruf neu gebaut werden
             jPanelRes.setVisible(false);
             return;
         }
         if (datenDownload.film != null) {
             jRadioButtonResHi.setEnabled(true);
-
+            jRadioButtonResHi.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL)));
             dateiGroesse_Hoch = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL));
             if (!dateiGroesse_Hoch.isEmpty()) {
                 jRadioButtonResHi.setText(jRadioButtonResHi.getText() + "   [ " + dateiGroesse_Hoch + " MB ]");
@@ -126,6 +126,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
 
             if (!datenDownload.film.arr[DatenFilm.FILM_URL_HD_NR].isEmpty()) {
                 jRadioButtonResHd.setEnabled(true);
+                jRadioButtonResHd.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD)));
                 dateiGroesse_HD = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD));
                 if (!dateiGroesse_HD.isEmpty()) {
                     jRadioButtonResHd.setText(jRadioButtonResHd.getText() + "   [ " + dateiGroesse_HD + " MB ]");
@@ -134,6 +135,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
 
             if (!datenDownload.film.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty()) {
                 jRadioButtonResLo.setEnabled(true);
+                jRadioButtonResLo.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN)));
                 dateiGroesse_Klein = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN));
                 if (!dateiGroesse_Klein.isEmpty()) {
                     jRadioButtonResLo.setText(jRadioButtonResLo.getText() + "   [ " + dateiGroesse_Klein + " MB ]");
@@ -204,7 +206,9 @@ public class DialogEditDownload extends javax.swing.JDialog {
         c.weightx = 0;
         if (i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR
                 || i == DatenDownload.DOWNLOAD_URL_AUTH_NR || i == DatenDownload.DOWNLOAD_URL_RTMP_NR
-                || i == DatenDownload.DOWNLOAD_BUTTON_DEL_NR || i == DatenDownload.DOWNLOAD_BUTTON_START_NR) {
+                || i == DatenDownload.DOWNLOAD_BUTTON_DEL_NR || i == DatenDownload.DOWNLOAD_BUTTON_START_NR
+                || i == DatenDownload.DOWNLOAD_REF_NR
+                || i == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
             // ist eigentlich Unsinn, es anzuzeigen
             return;
         }
@@ -294,6 +298,8 @@ public class DialogEditDownload extends javax.swing.JDialog {
                         textfeldListe[i].setEditable(!gestartet);
                         textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
                     }
+                } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
+                    textfeldListe[i].setText(datenDownload.mVFilmSize.toString());
                 } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
                     textfeldListe[i].setText(Start.getTextProgress(datenDownload.start));
                 } else if (i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
@@ -436,7 +442,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonOk, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonAbbrechen)))
                 .addContainerGap())
         );
