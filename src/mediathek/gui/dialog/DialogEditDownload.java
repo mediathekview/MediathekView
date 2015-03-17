@@ -34,20 +34,24 @@ import javax.swing.event.DocumentListener;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscBeenden;
+import msearch.daten.DatenFilm;
 
 public class DialogEditDownload extends javax.swing.JDialog {
 
     private final DatenDownload datenDownload;
-    private JTextField[] textfeldListe;
-    private JLabel[] labelListe;
+    public boolean ok = false;
+    private final JTextField[] textfeldListe = new JTextField[DatenDownload.MAX_ELEM];
+    private final JLabel[] labelListe = new JLabel[DatenDownload.MAX_ELEM];
     private final JCheckBox jCheckBoxRestart = new JCheckBox();
     private final JCheckBox jCheckBoxUnterbrochen = new JCheckBox();
     private final JCheckBox jCheckBoxInfodatei = new JCheckBox();
     private final JCheckBox jCheckBoxSubtitle = new JCheckBox();
     private final JCheckBox jCheckBoxSpotlight = new JCheckBox();
-    public boolean ok = false;
     private final MVPanelDownloadZiel mVPanelDownloadZiel;
     private final boolean gestartet;
+    private String dateiGroesse_HD = "";
+    private String dateiGroesse_Hoch = "";
+    private String dateiGroesse_Klein = "";
 
     public DialogEditDownload(JFrame parent, boolean modal, DatenDownload ddownload, boolean ggestartet) {
         super(parent, modal);
@@ -58,7 +62,28 @@ public class DialogEditDownload extends javax.swing.JDialog {
 
         mVPanelDownloadZiel = new MVPanelDownloadZiel(parent, datenDownload, false);
         mVPanelDownloadZiel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        jButtonBeenden.addActionListener(new ActionListener() {
+        jRadioButtonResHd.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                changeRes();
+            }
+        });
+        jRadioButtonResHi.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                changeRes();
+            }
+        });
+        jRadioButtonResLo.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                changeRes();
+            }
+        });
+        jButtonOk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 check();
@@ -71,23 +96,94 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 beenden();
             }
         });
-        getRootPane().setDefaultButton(jButtonBeenden);
+        getRootPane().setDefaultButton(jButtonOk);
         new EscBeenden(this) {
             @Override
             public void beenden_() {
                 beenden();
             }
         };
+        setupResolutionButtons();
         setExtra();
     }
 
+    private void setupResolutionButtons() {
+        jRadioButtonResHd.setEnabled(false);
+        jRadioButtonResHi.setEnabled(false);
+        jRadioButtonResLo.setEnabled(false);
+        if (datenDownload.getArt() != Start.ART_DOWNLOAD && datenDownload.pSet == null) {
+            // ansonsten müsste erst der Programmaufruf neu gebaut werden
+            jPanelRes.setVisible(false);
+            return;
+        }
+        if (datenDownload.film != null) {
+            jRadioButtonResHi.setEnabled(true);
+            jRadioButtonResHi.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL)));
+            dateiGroesse_Hoch = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL));
+            if (!dateiGroesse_Hoch.isEmpty()) {
+                jRadioButtonResHi.setText(jRadioButtonResHi.getText() + "   [ " + dateiGroesse_Hoch + " MB ]");
+            }
+
+            if (!datenDownload.film.arr[DatenFilm.FILM_URL_HD_NR].isEmpty()) {
+                jRadioButtonResHd.setEnabled(true);
+                jRadioButtonResHd.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD)));
+                dateiGroesse_HD = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD));
+                if (!dateiGroesse_HD.isEmpty()) {
+                    jRadioButtonResHd.setText(jRadioButtonResHd.getText() + "   [ " + dateiGroesse_HD + " MB ]");
+                }
+            }
+
+            if (!datenDownload.film.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty()) {
+                jRadioButtonResLo.setEnabled(true);
+                jRadioButtonResLo.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN)));
+                dateiGroesse_Klein = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN));
+                if (!dateiGroesse_Klein.isEmpty()) {
+                    jRadioButtonResLo.setText(jRadioButtonResLo.getText() + "   [ " + dateiGroesse_Klein + " MB ]");
+                }
+            }
+
+        }
+    }
+
+    private void changeRes() {
+        final String res;
+        if (jRadioButtonResHd.isSelected()) {
+            res = DatenFilm.AUFLOESUNG_HD;
+        } else if (jRadioButtonResLo.isSelected()) {
+            res = DatenFilm.AUFLOESUNG_KLEIN;
+        } else {
+            res = DatenFilm.AUFLOESUNG_NORMAL;
+        }
+        datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR] = datenDownload.film.getUrlFuerAufloesung(res);
+        datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP_NR] = datenDownload.film.getUrlRtmpFuerAufloesung(res);
+        textfeldListe[DatenDownload.DOWNLOAD_URL_NR].setText(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+        textfeldListe[DatenDownload.DOWNLOAD_URL_RTMP_NR].setText(datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP_NR]);
+
+        final String size;
+        if (jRadioButtonResHd.isSelected()) {
+            size = dateiGroesse_HD;
+        } else if (jRadioButtonResLo.isSelected()) {
+            size = dateiGroesse_Klein;
+        } else {
+            size = dateiGroesse_Hoch;
+        }
+        if (datenDownload.getArt() == Start.ART_PROGRAMM && datenDownload.pSet != null) {
+            // ansonsten muss erst noch der Programmaufruf neu gebaut werden
+            DatenDownload d = new DatenDownload(datenDownload.pSet, datenDownload.film, datenDownload.getQuelle(), datenDownload.abo, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR],
+                    datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR], res);
+            datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR] = d.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
+            textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR].setText(datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
+        }
+        datenDownload.setGroesse(size);
+    }
+
     private void setExtra() {
-        textfeldListe = new JTextField[DatenDownload.MAX_ELEM];
-        labelListe = new JLabel[DatenDownload.MAX_ELEM];
+        jPanelExtra.removeAll();
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5, 10, 10, 5);
+
         jPanelExtra.setLayout(gridbag);
         int zeile = 0;
         for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
@@ -101,6 +197,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
             ++zeile;
             c.gridy = zeile;
         }
+        jPanelExtra.validate();
     }
 
     private void addExtraFeld(int i, GridBagLayout gridbag, GridBagConstraints c) {
@@ -109,7 +206,9 @@ public class DialogEditDownload extends javax.swing.JDialog {
         c.weightx = 0;
         if (i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR
                 || i == DatenDownload.DOWNLOAD_URL_AUTH_NR || i == DatenDownload.DOWNLOAD_URL_RTMP_NR
-                || i == DatenDownload.DOWNLOAD_BUTTON_DEL_NR || i == DatenDownload.DOWNLOAD_BUTTON_START_NR) {
+                || i == DatenDownload.DOWNLOAD_BUTTON_DEL_NR || i == DatenDownload.DOWNLOAD_BUTTON_START_NR
+                || i == DatenDownload.DOWNLOAD_REF_NR
+                || i == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
             // ist eigentlich Unsinn, es anzuzeigen
             return;
         }
@@ -187,12 +286,20 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 gridbag.setConstraints(jCheckBoxSpotlight, c);
                 jPanelExtra.add(jCheckBoxSpotlight);
             } else {
-                if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR) {
+                if (i == DatenDownload.DOWNLOAD_NR_NR) {
+                    textfeldListe[i].setText(datenDownload.nr + "");
+                } else if (i == DatenDownload.DOWNLOAD_FILM_NR_NR) {
+                    if (datenDownload.film != null) {
+                        textfeldListe[i].setText(datenDownload.film.nr + "");
+                    }
+                } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR) {
                     labelListe[i].setForeground(Color.BLUE);
                     if (datenDownload.getArt() != Start.ART_DOWNLOAD) {
                         textfeldListe[i].setEditable(!gestartet);
                         textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
                     }
+                } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
+                    textfeldListe[i].setText(datenDownload.mVFilmSize.toString());
                 } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
                     textfeldListe[i].setText(Start.getTextProgress(datenDownload.start));
                 } else if (i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
@@ -251,10 +358,16 @@ public class DialogEditDownload extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanelExtra = new javax.swing.JPanel();
-        jButtonBeenden = new javax.swing.JButton();
+        jButtonOk = new javax.swing.JButton();
         jButtonAbbrechen = new javax.swing.JButton();
+        jPanelRes = new javax.swing.JPanel();
+        jLabelRes = new javax.swing.JLabel();
+        jRadioButtonResHd = new javax.swing.JRadioButton();
+        jRadioButtonResHi = new javax.swing.JRadioButton();
+        jRadioButtonResLo = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Download editieren");
@@ -264,18 +377,58 @@ public class DialogEditDownload extends javax.swing.JDialog {
         jPanelExtra.setLayout(jPanelExtraLayout);
         jPanelExtraLayout.setHorizontalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 648, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         jPanelExtraLayout.setVerticalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 392, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         jScrollPane1.setViewportView(jPanelExtra);
 
-        jButtonBeenden.setText("Ok");
+        jButtonOk.setText("Ok");
 
         jButtonAbbrechen.setText("Abbrechen");
+
+        jPanelRes.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        jLabelRes.setText("Auflösung ändern:");
+
+        buttonGroup1.add(jRadioButtonResHd);
+        jRadioButtonResHd.setText("HD");
+
+        buttonGroup1.add(jRadioButtonResHi);
+        jRadioButtonResHi.setText("hoher Auflösung");
+
+        buttonGroup1.add(jRadioButtonResLo);
+        jRadioButtonResLo.setText("niedriger Auflösung");
+
+        javax.swing.GroupLayout jPanelResLayout = new javax.swing.GroupLayout(jPanelRes);
+        jPanelRes.setLayout(jPanelResLayout);
+        jPanelResLayout.setHorizontalGroup(
+            jPanelResLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelResLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabelRes)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jRadioButtonResHd)
+                .addGap(18, 18, 18)
+                .addComponent(jRadioButtonResHi)
+                .addGap(18, 18, 18)
+                .addComponent(jRadioButtonResLo)
+                .addContainerGap(237, Short.MAX_VALUE))
+        );
+        jPanelResLayout.setVerticalGroup(
+            jPanelResLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelResLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelResLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelRes)
+                    .addComponent(jRadioButtonResHd)
+                    .addComponent(jRadioButtonResHi)
+                    .addComponent(jRadioButtonResLo))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -284,35 +437,44 @@ public class DialogEditDownload extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanelRes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButtonBeenden, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonOk, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonAbbrechen)))
                 .addContainerGap())
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonAbbrechen, jButtonBeenden});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonAbbrechen, jButtonOk});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 577, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanelRes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonAbbrechen)
-                    .addComponent(jButtonBeenden))
+                    .addComponent(jButtonOk)
+                    .addComponent(jButtonAbbrechen))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButtonAbbrechen;
-    private javax.swing.JButton jButtonBeenden;
+    private javax.swing.JButton jButtonOk;
+    private javax.swing.JLabel jLabelRes;
     private javax.swing.JPanel jPanelExtra;
+    private javax.swing.JPanel jPanelRes;
+    private javax.swing.JRadioButton jRadioButtonResHd;
+    private javax.swing.JRadioButton jRadioButtonResHi;
+    private javax.swing.JRadioButton jRadioButtonResLo;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 

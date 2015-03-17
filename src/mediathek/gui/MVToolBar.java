@@ -312,6 +312,7 @@ public final class MVToolBar extends JToolBar {
     }
 
     public void filterAnzeigen() {
+        jButtonFilterPanel.setEnabled(state.equals(TOOLBAR_TAB_FILME));
         jTextFieldFilter.setEnabled(state.equals(TOOLBAR_TAB_FILME));
         if (!extern) {
             jTextFieldFilter.setVisible(!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
