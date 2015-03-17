@@ -137,9 +137,10 @@ public class DatenDownload implements Comparable<DatenDownload> {
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE,
         DOWNLOAD_ZURUECKGESTELLT, DOWNLOAD_INFODATEI, DOWNLOAD_SPOTLIGHT, DOWNLOAD_SUBTITLE, DOWNLOAD_REF};
-    public Datum datumFilm = new Datum(0);
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
+
+    public Datum datumFilm = new Datum(0);
     public DatenFilm film = null;
     public MVFilmSize mVFilmSize = new MVFilmSize();
     public Start start = null;
@@ -280,11 +281,20 @@ public class DatenDownload implements Comparable<DatenDownload> {
         DatenDownload ret = new DatenDownload();
         System.arraycopy(this.arr, 0, ret.arr, 0, arr.length);
         ret.datumFilm = this.datumFilm;
+        ret.film = this.film;
+        ret.nr = this.nr;
+        ret.pSet = this.pSet;
+        ret.mVFilmSize = this.mVFilmSize;
         return ret;
     }
 
     public void aufMichKopieren(DatenDownload datenDownload) {
         System.arraycopy(datenDownload.arr, 0, arr, 0, arr.length);
+        datumFilm = datenDownload.datumFilm;
+        film = datenDownload.film;
+        nr = datenDownload.nr;
+        pSet = datenDownload.pSet;
+        mVFilmSize = datenDownload.mVFilmSize; // die Auflösung des Films kann sich ändern
     }
 
     public boolean istAbo() {

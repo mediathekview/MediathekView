@@ -125,6 +125,7 @@ public class GuiDownloads extends PanelVorlage {
             @Override
             public void run() {
                 // erst wenn das Programm geladen ist
+                Daten.listeDownloads.filmEintragen();
                 downloadsAktualisieren();
             }
         });
@@ -248,6 +249,7 @@ public class GuiDownloads extends PanelVorlage {
         Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
             @Override
             public void fertig(MSListenerFilmeLadenEvent event) {
+//                Daten.listeDownloads.filmEintragen();
                 if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN))) {
                     downloadsAktualisieren();
                 }
@@ -1002,16 +1004,18 @@ public class GuiDownloads extends PanelVorlage {
                             if (datenDownload != null) {
                                 if (datenDownload.film == null) {
                                     // bei Einmaldownload nach Programmstart
-                                    datenDownload.film = Daten.listeFilme.getFilmByUrl(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                                    datenDownload.film = Daten.listeFilme.getFilmByUrl_klein_hoch_hd(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
                                 }
-                                DatenFilm filmDownload = datenDownload.film.getCopy();
-                                // und jetzt die tatsächlichen URLs des Downloads eintragen
-                                filmDownload.arr[DatenFilm.FILM_URL_NR] = datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR];
-                                filmDownload.arr[DatenFilm.FILM_URL_RTMP_NR] = datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP_NR];
-                                filmDownload.arr[DatenFilm.FILM_URL_KLEIN_NR] = "";
-                                filmDownload.arr[DatenFilm.FILM_URL_RTMP_KLEIN_NR] = "";
-                                // und starten
-                                daten.starterClass.urlMitProgrammStarten(gruppe, filmDownload, "" /*Auflösung*/);
+                                if (datenDownload.film != null) {
+                                    DatenFilm filmDownload = datenDownload.film.getCopy();
+                                    // und jetzt die tatsächlichen URLs des Downloads eintragen
+                                    filmDownload.arr[DatenFilm.FILM_URL_NR] = datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR];
+                                    filmDownload.arr[DatenFilm.FILM_URL_RTMP_NR] = datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP_NR];
+                                    filmDownload.arr[DatenFilm.FILM_URL_KLEIN_NR] = "";
+                                    filmDownload.arr[DatenFilm.FILM_URL_RTMP_KLEIN_NR] = "";
+                                    // und starten
+                                    daten.starterClass.urlMitProgrammStarten(gruppe, filmDownload, "" /*Auflösung*/);
+                                }
                             }
                         } else {
                             String menuPath;
