@@ -44,11 +44,7 @@ public class Duration {
     public final void start(String text) {
         startZeit = new Date(System.currentTimeMillis());
         if (!text.isEmpty()) {
-            System.out.println("");
-            System.out.println("======================================");
             System.out.println(" Start: " + text);
-            System.out.println("======================================");
-            System.out.println("");
         }
     }
 
@@ -59,10 +55,6 @@ public class Duration {
         } catch (Exception ex) {
             sekunden = -1;
         }
-        System.out.println("");
-        System.out.println("======================================");
         System.out.println(" " + text + " [ms]: " + sekunden);
-        System.out.println("======================================");
-        System.out.println("");
     }
 }
