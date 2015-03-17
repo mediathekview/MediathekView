@@ -64,40 +64,18 @@ public class Log {
         final long maxMem = rt.maxMemory();
         final long freeMem = rt.freeMemory();
 
-        Log.systemMeldung("");
-        Log.systemMeldung("");
-        Log.systemMeldung("###########################################################");
-        Log.systemMeldung("###########################################################");
-        Log.systemMeldung("Programmstart: " + sdf.format(startZeit));
-        Log.systemMeldung("###########################################################");
-        Log.systemMeldung("###########################################################");
-        Log.systemMeldung("totalMemory: " + totalMem / BYTES_TO_MBYTE + " MiB");
-        Log.systemMeldung("maxMemory: " + maxMem / BYTES_TO_MBYTE + " MiB");
-        Log.systemMeldung("freeMemory: " + freeMem / BYTES_TO_MBYTE + " MiB");
-        Log.systemMeldung("###########################################################");
         //Version
         Log.systemMeldung(Funktionen.getProgVersionString());
-        Log.systemMeldung("Compiled: " + Funktionen.getCompileDate());
-        Log.systemMeldung("###########################################################");
         //dynamically get caller class name...
         final Throwable t = new Throwable();
         final StackTraceElement methodCaller = t.getStackTrace()[2];
         systemMeldung("Classname: " + methodCaller.getClassName());
-
-        String[] java = Funktionen.getJavaVersion();
-        for (final String ja : java) {
-            Log.systemMeldung(ja);
-        }
-        Log.systemMeldung("###########################################################");
     }
 
     public static synchronized void startMeldungen() {
         versionsMeldungen();
         Log.systemMeldung("Programmpfad: " + Funktionen.getPathJar());
         Log.systemMeldung("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
-        Log.systemMeldung("###########################################################");
-        Log.systemMeldung("");
-        Log.systemMeldung("");
     }
 
     // Fehlermeldung mit Exceptions
@@ -152,25 +130,11 @@ public class Log {
         } catch (Exception ex) {
             minuten = -1;
         }
-        systemMeldung("");
-        systemMeldung("");
-        systemMeldung("###########################################################");
-        systemMeldung("   --> Beginn: " + sdf.format(startZeit));
-        systemMeldung("   --> Fertig: " + sdf.format(stopZeit));
-        systemMeldung("   --> Dauer[Min]: " + (minuten == 0 ? "<1" : minuten));
-        systemMeldung("###########################################################");
-        systemMeldung("");
-        systemMeldung("   und Tschuess");
-        systemMeldung("");
-        systemMeldung("");
-        systemMeldung("###########################################################");
     }
 
     public static ArrayList<String> printFehlerMeldung() {
         ArrayList<String> retList = new ArrayList<>();
 
-        retList.add("");
-        retList.add("###########################################################");
         if (fehlerListe.size() == 0) {
             retList.add(" Keine Fehler :)");
         } else {
@@ -204,8 +168,6 @@ public class Log {
                 }
             }
         }
-        retList.add("###########################################################");
-        retList.add("");
         return retList;
     }
 
