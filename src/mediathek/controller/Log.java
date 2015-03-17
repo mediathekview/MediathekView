@@ -51,7 +51,6 @@ public class Log {
     private static final LinkedList<Integer[]> fehlerListe = new LinkedList<>(); // [Fehlernummer, Anzahl, Exception(0,1 für ja, nein)]
     private static final boolean progress = false;
     private static final String progressText = "";
-    private static final Date startZeit = new Date(System.currentTimeMillis());
     public static PanelMeldungen panelMeldungenFehler = null; // unschön, gab aber sonst einen Deadlock mit notifyMediathekListener
     public static PanelMeldungen panelMeldungenSystem = null;
     public static PanelMeldungen panelMeldungenPlayer = null;
@@ -114,21 +113,9 @@ public class Log {
     }
 
     public static void printEndeMeldung() {
-        systemMeldung("");
-        systemMeldung("");
-        systemMeldung("");
-        systemMeldung("");
         ArrayList<String> ret = printFehlerMeldung();
         for (String s : ret) {
             systemMeldung(s);
-        }
-        // Laufzeit ausgeben
-        final Date stopZeit = new Date(System.currentTimeMillis());
-        int minuten;
-        try {
-            minuten = Math.round((stopZeit.getTime() - startZeit.getTime()) / (1000 * 60));
-        } catch (Exception ex) {
-            minuten = -1;
         }
     }
 
