@@ -146,6 +146,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
     }
 
     private void changeRes() {
+        // RadioButton sind nur enabled wenn "datenDownload.film" vorhanden
         final String res;
         if (jRadioButtonResHd.isSelected()) {
             res = DatenFilm.AUFLOESUNG_HD;
@@ -168,7 +169,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
             size = dateiGroesse_Hoch;
         }
         if (datenDownload.getArt() == Start.ART_PROGRAMM && datenDownload.pSet != null) {
-            // ansonsten muss erst noch der Programmaufruf neu gebaut werden
+            // muss noch der Programmaufruf neu gebaut werden
             DatenDownload d = new DatenDownload(datenDownload.pSet, datenDownload.film, datenDownload.getQuelle(), datenDownload.abo, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR],
                     datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR], res);
             datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR] = d.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];

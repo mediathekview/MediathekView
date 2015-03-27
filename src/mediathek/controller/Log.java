@@ -209,46 +209,6 @@ public class Log {
         return retList;
     }
 
-//    public static String printFehlerMeldung_() {
-//        String ret = "\n";
-//        ret += "-----------------------------------------------------------\n";
-//        if (fehlerListe.size() == 0) {
-//            ret += " Keine Fehler :)\n";
-//        } else {
-//            // Fehler ausgeben
-//            int i_1;
-//            int i_2;
-//            for (int i = 1; i < fehlerListe.size(); ++i) {
-//                for (int k = i; k > 0; --k) {
-//                    i_1 = fehlerListe.get(k - 1)[0];
-//                    i_2 = fehlerListe.get(k)[0];
-//                    // if (str1.compareToIgnoreCase(str2) > 0) {
-//                    if (i_1 < i_2) {
-//                        fehlerListe.add(k - 1, fehlerListe.remove(k));
-//                    } else {
-//                        break;
-//                    }
-//                }
-//            }
-//            for (Integer[] integers : fehlerListe) {
-//                boolean ex = integers[2] == 1;
-//                String strEx;
-//                if (ex) {
-//                    strEx = "Ex! ";
-//                } else {
-//                    strEx = "    ";
-//                }
-//                if (integers[0] < 0) {
-//                    ret += strEx + " Fehlernummer: " + integers[0] + " Anzahl: " + integers[1] + "\n";
-//                } else {
-//                    ret += strEx + " Fehlernummer:  " + integers[0] + " Anzahl: " + integers[1] + "\n";
-//                }
-//            }
-//        }
-//        ret += "-----------------------------------------------------------\n";
-//        ret += "\n";
-//        return ret;
-//    }
     private static void addFehlerNummer(int nr, boolean exception) {
         Iterator<Integer[]> it = fehlerListe.iterator();
         int ex = exception ? 1 : 2;
@@ -269,6 +229,19 @@ public class Log {
         final Throwable t = new Throwable();
         final StackTraceElement methodCaller = t.getStackTrace()[2];
         final String klasse = methodCaller.getClassName() + "." + methodCaller.getMethodName();
+        String kl;
+        try {
+            kl = klasse;
+            while (kl.contains(".")) {
+                if (Character.isUpperCase(kl.charAt(0))) {
+                    break;
+                } else {
+                    kl = kl.substring(kl.indexOf(".") + 1);
+                }
+            }
+        } catch (Exception ignored) {
+            kl = klasse;
+        }
 
         if (ex != null || Daten.debug) {
             try {
@@ -294,8 +267,8 @@ public class Log {
             if (ex != null) {
                 System.out.println(z + " Exception: " + ex.getMessage());
             }
-            System.out.println(z + " " + FEHLER + klasse);
-            notifyPanelMeldung(LOG_FEHLER, FEHLER + klasse);
+            System.out.println(z + " " + FEHLER + kl);
+            notifyPanelMeldung(LOG_FEHLER, FEHLER + kl);
             for (String text : texte) {
                 System.out.println(z + "           " + text);
                 notifyPanelMeldung(LOG_FEHLER, text);
