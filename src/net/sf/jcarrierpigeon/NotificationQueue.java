@@ -90,7 +90,7 @@ import javax.swing.Timer;
 public class NotificationQueue implements ActionListener {
 
     // a queue, a timer and a notification
-    private Queue queue;
+    private Queue<Notification> queue;
     private Timer timer;
     private Notification current;
 
@@ -99,7 +99,7 @@ public class NotificationQueue implements ActionListener {
      * the local attributes.
      */
     public NotificationQueue() {
-        queue = new LinkedList();
+        queue = new LinkedList<>();
         timer = new Timer(50, this);
         current = null;
     }
@@ -131,8 +131,7 @@ public class NotificationQueue implements ActionListener {
             queue.offer(notification);
 
             // check if timer is not running
-            if (timer.isRunning() == false) {
-
+            if (!timer.isRunning()) {
                 // start the timer
                 timer.start();
             }
@@ -154,7 +153,7 @@ public class NotificationQueue implements ActionListener {
             if ((!queue.isEmpty()) && (!current.isRunning())) {
 
                 // poll a notification from the queue
-                current = (Notification) queue.poll();
+                current = queue.poll();
 
                 // animate
                 current.animate();
