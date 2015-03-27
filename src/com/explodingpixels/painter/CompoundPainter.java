@@ -15,6 +15,7 @@ public class CompoundPainter<T> implements MacWidgetsPainter<T> {
      * {@link #paint(java.awt.Graphics2D, Object, int, int)} is called.
      * @param painters the {@code Painter}s to delegate to.
      */
+    @SafeVarargs
     public CompoundPainter(MacWidgetsPainter<T>... painters) {
         fPainters = painters;
     }
