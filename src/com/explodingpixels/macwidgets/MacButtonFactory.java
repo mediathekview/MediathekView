@@ -25,6 +25,7 @@ import com.explodingpixels.widgets.PopupMenuCustomizer;
 /**
  * A factory for creating Mac-style buttons.
  */
+@SuppressWarnings("unchecked")
 public class MacButtonFactory {
 
     // Unified toolbar button methods. ////////////////////////////////////////////////////////////
