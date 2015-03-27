@@ -230,7 +230,10 @@ public class StarterClass {
         if (wasCancelled || (!SystemInfo.isMacOSX())) {
             return;
         }
-
+        if (datenDownload.film == null) {
+            // kann bei EinmalDownloads nach einem Neuladen der Filmliste/Programmneustart der Fall sein
+            return;
+        }
         final Path filmPath = Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         if (Files.exists(filmPath)) {
             final String strFilePath = filmPath.toString();

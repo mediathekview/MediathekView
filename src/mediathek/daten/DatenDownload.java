@@ -46,7 +46,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     public static final String DOWNLOAD_NR = "Nr";
     public static final int DOWNLOAD_NR_NR = 0;
-    public static final String DOWNLOAD_FILM_NR = "Filmnr";
+    public static final String DOWNLOAD_FILM_NR = "Filmnr"; // nur ein Platzhalter für: "film.nr"
     public static final int DOWNLOAD_FILM_NR_NR = 1;
     public static final String DOWNLOAD_ABO = "Abo"; // wenn das Feld gefüllt ist, ist der Download ein Abo
     public static final int DOWNLOAD_ABO_NR = 2;
