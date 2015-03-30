@@ -24,15 +24,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import mediathek.MediathekGui;
@@ -92,7 +89,7 @@ public class Daten {
     public static GuiDebug guiDebug = null;
     public MVFilmInformation filmInfoHud = null; // Infos zum Film
 
-    private boolean configCopy = false;
+    private boolean alreadyMadeBackup = false;
 
     public Daten(String basis, MediathekGui gui) {
         basisverzeichnis = basis;
@@ -342,69 +339,68 @@ public class Daten {
         }
     }
 
+    /**
+     * Maximum number of backup files to be stored.
+     */
+    private final static int MAX_COPY = 5;
+
+    /**
+     * Create backup copies of settings file.
+     */
     private void konfigCopy() {
-        final int MAX_COPY = 5;
-        boolean renameOk = true;
-        long creatTime = -1;
-        if (!configCopy) {
+        if (!alreadyMadeBackup) {
             // nur einmal pro Programmstart machen
             Log.systemMeldung("-------------------------------------------------------");
             Log.systemMeldung("Einstellungen sichern");
+
             try {
-                Path xmlFilePath = Daten.getMediathekXmlFilePath();
-                Path xmlFilePathCopy_1;
-                Path xmlFilePathCopy_2;
-                xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1);
-                if (xmlFilePathCopy_1.toFile().exists()) {
+                final Path xmlFilePath = Daten.getMediathekXmlFilePath();
+                long creatTime = -1;
+
+                Path xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1);
+                if (Files.exists(xmlFilePathCopy_1)) {
                     BasicFileAttributes attrs = Files.readAttributes(xmlFilePathCopy_1, BasicFileAttributes.class);
                     FileTime d = attrs.lastModifiedTime();
                     creatTime = d.toMillis();
                 }
+
                 if (creatTime == -1 || creatTime < getHeute_0Uhr()) {
                     // nur dann ist die letzte Kopie älter als einen Tag
-                    xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + MAX_COPY);
-
-                    // das letzte File löschen, sonst klappt das umbenenen unter Win nicht
-                    Files.deleteIfExists(xmlFilePathCopy_1);
-
                     for (int i = MAX_COPY; i > 1; --i) {
                         xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + (i - 1));
-                        xmlFilePathCopy_2 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
-                        if (xmlFilePathCopy_1.toFile().exists()) {
-                            if (!xmlFilePathCopy_1.toFile().renameTo(xmlFilePathCopy_2.toFile())) {
-                                renameOk = false;
-                            }
+                        final Path xmlFilePathCopy_2 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
+                        if (Files.exists(xmlFilePathCopy_1)) {
+                            Files.move(xmlFilePathCopy_1,xmlFilePathCopy_2, StandardCopyOption.REPLACE_EXISTING);
                         }
                     }
-                    if (xmlFilePath.toFile().exists()) {
-                        xmlFilePath.toFile().renameTo(Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1).toFile());
+                    if (Files.exists(xmlFilePath)) {
+                        Files.move(xmlFilePath, Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1),StandardCopyOption.REPLACE_EXISTING);
                     }
                     Log.systemMeldung("Einstellungen wurden gesichert");
                 } else {
                     Log.systemMeldung("Einstellungen wurden heute schon gesichert");
                 }
-            } catch (Exception e) {
+            } catch (IOException e) {
+                Log.systemMeldung("Die Einstellungen konnten nicht komplett gesichert werden!");
                 Log.fehlerMeldung(795623147, e);
             }
-            if (!renameOk) {
-                Log.systemMeldung("Die Einstellungen konnten nicht komplett gesichert werden!");
-            }
-            configCopy = true;
+
+            alreadyMadeBackup = true;
             Log.systemMeldung("-------------------------------------------------------");
         }
     }
 
+    /**
+     * Return the number of milliseconds from today´s midnight.
+     * @return Number of milliseconds from today´s midnight.
+     */
     public static long getHeute_0Uhr() {
-        Date date = new Date();
-//        System.out.println(date);
-        Calendar cal = new GregorianCalendar();
-        cal.setTime(date);
+        final Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
-        date = cal.getTime();
-//        System.out.println(date);
-        return date.getTime();
+
+        return cal.getTimeInMillis();
     }
 }
