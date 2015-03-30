@@ -306,6 +306,7 @@ public class Daten {
         listeFilme.setFilmNew();
         Daten.listeFilme.themenLaden();
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
+        Daten.listeDownloads.filmEintragen(); // Filme bei einmalDownloads eingragen
         MVListeFilme.checkBlacklist();
     }
 
