@@ -125,7 +125,6 @@ public class GuiDownloads extends PanelVorlage {
             @Override
             public void run() {
                 // erst wenn das Programm geladen ist
-                Daten.listeDownloads.filmEintragen();
                 downloadsAktualisieren();
             }
         });
@@ -249,9 +248,13 @@ public class GuiDownloads extends PanelVorlage {
         Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
             @Override
             public void fertig(MSListenerFilmeLadenEvent event) {
-//                Daten.listeDownloads.filmEintragen();
+                Daten.listeDownloads.filmEintragen();
                 if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN))) {
                     downloadsAktualisieren();
+                } else {
+                    reloadTable(); // damit die Filmnummern richtig angezeigt werden
+                    // ToDo beim Neuladen ändert sich die Filmnummer aber der Link datenDonwnload.film existiert ja
+                    // noch, funktioniert auch damit, stimmt nur die FilmNr nicht
                 }
             }
         });
@@ -686,12 +689,6 @@ public class GuiDownloads extends PanelVorlage {
             if (selectedTableRow >= 0) {
                 DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), DatenDownload.DOWNLOAD_REF_NR);
                 if (datenDownload != null) {
-                    // wenn beim Löschen aufgerufen, ist der Download schon weg
-                    if (datenDownload.film == null) {
-                        // geladener Einmaldownload nach Programmstart
-                        datenDownload.film = Daten.listeFilme.getFilmByUrl_klein_hoch_hd(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
-                        // vielleicht klappts ja damit
-                    }
                     aktFilm = datenDownload.film;
                 }
             }
@@ -1002,10 +999,6 @@ public class GuiDownloads extends PanelVorlage {
                         if (gruppe != null) {
                             DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenDownload.DOWNLOAD_REF_NR);
                             if (datenDownload != null) {
-                                if (datenDownload.film == null) {
-                                    // bei Einmaldownload nach Programmstart
-                                    datenDownload.film = Daten.listeFilme.getFilmByUrl_klein_hoch_hd(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
-                                }
                                 if (datenDownload.film != null) {
                                     DatenFilm filmDownload = datenDownload.film.getCopy();
                                     // und jetzt die tatsächlichen URLs des Downloads eintragen
