@@ -393,6 +393,7 @@ public final class MVTable extends JTable {
     }
 
     public void spaltenEinAus() {
+        getSpalten(); // die aktuelle Breite holen
         for (int i = 0; i < breite.length && i < this.getColumnCount(); ++i) {
             if (!anzeigen(i, spaltenAnzeigen)) {
                 // geänderte Ansicht der Spalten abfragen
@@ -436,7 +437,6 @@ public final class MVTable extends JTable {
 
     public void setSpalten() {
         // gemerkte Einstellungen der Tabelle wieder setzten
-////        spaltenAusschalten();
         setSelected();
         try {
             for (int i = 0; i < breite.length && i < this.getColumnCount(); ++i) {
@@ -787,4 +787,4 @@ public final class MVTable extends JTable {
         }
     }
 
-}
+        }

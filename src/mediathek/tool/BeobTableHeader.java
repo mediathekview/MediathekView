@@ -162,15 +162,11 @@ public class BeobTableHeader extends MouseAdapter {
             }
         }
         tabelle.spaltenEinAus();
-        tabelleLaden_();
     }
 
     private void setSpalten(int k, boolean anz) {
         spaltenAnzeigen[k] = anz;
         tabelle.spaltenEinAus();
-        tabelleLaden_();
     }
 
-    public void tabelleLaden_() {
-    }
 }
