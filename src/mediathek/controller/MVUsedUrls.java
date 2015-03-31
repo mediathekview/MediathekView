@@ -60,11 +60,9 @@ public class MVUsedUrls {
 
     public synchronized void alleLoeschen() {
         listeUrls.clear();
-        try {
             Path urlPath = getUrlFilePath();
-            if (Files.exists(urlPath)) {
-                Files.delete(urlPath);
-            }
+        try {
+            Files.deleteIfExists(urlPath);
         } catch (IOException ignored) {
         }
 
@@ -90,9 +88,8 @@ public class MVUsedUrls {
 
     public synchronized LinkedList<MVUsedUrl> getSortList() {
         LinkedList<MVUsedUrl> ret = new LinkedList<>();
-        Iterator<MVUsedUrl> iterator = listeUrlsSortDate.iterator();
-        while (iterator.hasNext()) {
-            ret.add(iterator.next());
+        for (MVUsedUrl aListeUrlsSortDate : listeUrlsSortDate) {
+            ret.add(aListeUrlsSortDate);
         }
         Collections.sort(ret);
         return ret;

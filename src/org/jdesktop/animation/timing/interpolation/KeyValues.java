@@ -31,8 +31,6 @@
 
 package org.jdesktop.animation.timing.interpolation;
 
-import java.awt.Point;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -60,9 +58,10 @@ import java.util.List;
  * 
  * @author Chet
  */
+@SuppressWarnings("unchecked")
 public class KeyValues<T> {
 
-    private final List<T> values = new ArrayList<T>();
+    private final List<T> values = new ArrayList<>();
     private final Evaluator<T> evaluator;
     private final Class<?> type;
     private T startValue;
@@ -179,9 +178,8 @@ public class KeyValues<T> {
             // trivial case
             value = lowerValue;
         } else {
-            T v0 = lowerValue;
             T v1 = values.get(i1);
-            value = evaluator.evaluate(v0, v1, fraction);
+            value = evaluator.evaluate(lowerValue, v1, fraction);
         }
         return value;
     }

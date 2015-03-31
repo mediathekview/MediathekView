@@ -23,6 +23,7 @@ import com.explodingpixels.macwidgets.plaf.HudTextFieldUI;
  * A factory for creating HUD style widgets. These widgets should be added to a
  * {@link com.explodingpixels.macwidgets.HudWindow}.
  */
+@SuppressWarnings("unchecked")
 public class HudWidgetFactory {
 
     private HudWidgetFactory() {
