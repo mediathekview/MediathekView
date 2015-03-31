@@ -108,12 +108,7 @@ public class GuiAbo extends PanelVorlage {
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenAbo.COLUMN_NAMES, DatenAbo.spaltenAnzeigen,
                 new int[]{DatenAbo.ABO_EINGESCHALTET_NR},
                 new int[]{},
-                true /*Icon*/) {
-            @Override
-            public void tabelleLaden_() {
-                tabelleLaden();
-            }
-        });
+                true /*Icon*/));
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "tabelle");
         this.getActionMap().put("tabelle", new AbstractAction() {
             @Override

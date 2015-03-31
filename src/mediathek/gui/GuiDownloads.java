@@ -238,12 +238,7 @@ public class GuiDownloads extends PanelVorlage {
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenDownload.COLUMN_NAMES, DatenDownload.spaltenAnzeigen,
                 new int[]{DatenDownload.DOWNLOAD_BUTTON_START_NR, DatenDownload.DOWNLOAD_BUTTON_DEL_NR, DatenDownload.DOWNLOAD_REF_NR},
                 new int[]{DatenDownload.DOWNLOAD_BUTTON_START_NR, DatenDownload.DOWNLOAD_BUTTON_DEL_NR},
-                true /*Icon*/) {
-            @Override
-            public void tabelleLaden_() {
-                reloadTable();
-            }
-        });
+                true /*Icon*/));
 
         Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
             @Override
