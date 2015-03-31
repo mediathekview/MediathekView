@@ -110,7 +110,8 @@ public abstract class Evaluator<T> {
     private static void deregister(Class<?> type) {
         impls.remove(type);
     }
-    
+
+    @SuppressWarnings("unchecked")
     static <T> Evaluator<T> create(Class<?> type) {
         Class<? extends Evaluator> interpClass = null;
         for (Class<?> klass : impls.keySet()) {

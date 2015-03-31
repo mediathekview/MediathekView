@@ -270,7 +270,6 @@ public class PropertySetter extends TimingTargetAdapter {
         try {
             String firstChar = propertyName.substring(0, 1);
             String remainder = propertyName.substring(1);
-            Class propertyType = getType();
             String propertySetterName = "set" + firstChar.toUpperCase(Locale.ENGLISH) + remainder;
 
             PropertyDescriptor prop = new PropertyDescriptor(propertyName, object.getClass(),
@@ -339,6 +338,7 @@ public class PropertySetter extends TimingTargetAdapter {
      * Called during begin() if this is a "to" animation, to set the start
      * value of the animation to whatever the current value is.
      */
+    @SuppressWarnings("unchecked")
     private void setStartValue(Object object) {
         keyFrames.getKeyValues().setStartValue(object);
     }
