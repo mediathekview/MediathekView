@@ -673,6 +673,7 @@ public class PanelPsetLang extends PanelVorlage {
         jCheckBoxLaenge = new javax.swing.JCheckBox();
         jSpinnerLaenge = new javax.swing.JSpinner();
         javax.swing.JLabel jLabel12 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
         javax.swing.JPanel jPanel11 = new javax.swing.JPanel();
         javax.swing.JPanel jPanel8 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel10 = new javax.swing.JLabel();
@@ -929,7 +930,7 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppePfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
         jButtonGruppePfad.setToolTipText("Pfad auswählen");
 
-        jCheckBoxThema.setText("einen Unterordner mit dem Thema anlegen");
+        jCheckBoxThema.setText("einen Unterordner mit dem Thema / Abo-Zielpfad anlegen");
         jCheckBoxThema.setToolTipText("im Zielverzeichnis wird ein Unterordner mit dem Namen des Themas zum Speichern der Filme angelegt");
 
         jLabel8.setText("Zieldateiname:");
@@ -941,6 +942,8 @@ public class PanelPsetLang extends PanelVorlage {
 
         jLabel12.setText("Zeichen");
 
+        jLabel15.setText("(ist der Abo-Zielpfad leer, wird das Thema verwendet)");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -948,6 +951,10 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jLabel15)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -958,7 +965,7 @@ public class PanelPsetLang extends PanelVorlage {
                                 .addComponent(jButtonGruppePfad))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jCheckBoxThema)
-                                .addGap(0, 264, Short.MAX_VALUE)))
+                                .addGap(0, 156, Short.MAX_VALUE)))
                         .addGap(16, 16, 16))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel8)
@@ -979,7 +986,9 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jCheckBoxThema)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel15)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel7)
                     .addComponent(jTextFieldGruppeZielPfad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1012,7 +1021,7 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(355, Short.MAX_VALUE))
+                .addContainerGap(328, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Speicherziel", jPanel9);
@@ -1451,6 +1460,7 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxSpotlight;
     private javax.swing.JCheckBox jCheckBoxSubtitle;
     private javax.swing.JCheckBox jCheckBoxThema;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabelMeldungAbspielen;
     private javax.swing.JLabel jLabelMeldungSeichern;
     private javax.swing.JRadioButton jRadioButtonAufloesungHD;
