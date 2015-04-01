@@ -484,7 +484,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="355" max="32767" attributes="0"/>
+                          <EmptySpace pref="328" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -506,9 +506,14 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <EmptySpace min="21" pref="21" max="-2" attributes="0"/>
+                                      <Component id="jLabel15" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Group type="102" alignment="0" attributes="0">
@@ -520,7 +525,7 @@
                                           </Group>
                                           <Group type="102" alignment="0" attributes="0">
                                               <Component id="jCheckBoxThema" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace min="0" pref="264" max="32767" attributes="0"/>
+                                              <EmptySpace min="0" pref="156" max="32767" attributes="0"/>
                                           </Group>
                                       </Group>
                                       <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
@@ -550,7 +555,9 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jCheckBoxThema" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jLabel15" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="2" attributes="0">
                                   <Component id="jLabel7" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="jTextFieldGruppeZielPfad" linkSize="3" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -594,7 +601,7 @@
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="jCheckBoxThema">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="einen Unterordner mit dem Thema anlegen"/>
+                        <Property name="text" type="java.lang.String" value="einen Unterordner mit dem Thema / Abo-Zielpfad anlegen"/>
                         <Property name="toolTipText" type="java.lang.String" value="im Zielverzeichnis wird ein Unterordner mit dem Namen des Themas zum Speichern der Filme angelegt"/>
                       </Properties>
                     </Component>
@@ -630,6 +637,11 @@
                         <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
                         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
                       </AuxValues>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel15">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="(ist der Abo-Zielpfad leer, wird das Thema verwendet)"/>
+                      </Properties>
                     </Component>
                   </SubComponents>
                 </Container>
