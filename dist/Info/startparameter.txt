@@ -5,9 +5,8 @@ http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/#starten
 
 
 ===========================================================    
-===========================================================    
 Starten
-===========================================================    
+---------------------------------------------------------
 Für Windows (MediathekView.exe), Linux (MediathekView.sh) sind eigene 
 Startdateien enthalten, mit welchen MediathekView direkt gestartet werden kann. 
 Für OS X 10.7.3 und neuer besteht eine eigenständige Applikation (MediathekView.app);
@@ -23,10 +22,10 @@ OS X: Doppelklick auf die separate Startdatei "MediathekView__Mac_Start.command"
     Angabe "OSX" im Dateinamen heruntergeladen hat)
 
 
-===========================================================    
+
 ===========================================================    
 Starten mit zusätzlichen Parametern
-===========================================================    
+---------------------------------------------------------
 
 java -jar MediathekView.jar [Pfad] [Parameter]
 java -jar MediathekView.jar c:\temp
@@ -45,18 +44,18 @@ java -jar MediathekView.jar -v
 Das Programm gibt nur die Versionsnummer aus.
 
 
-===========================================================    
+
 ===========================================================    
 Starten im portablen Modus (MediathekView Portable)
-===========================================================    
+---------------------------------------------------------
 Weitere Infos im Wiki:
 http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/#starten
 
 
-===========================================================    
+
 ===========================================================    
 Auto
-===========================================================    
+---------------------------------------------------------
 
 java -jar MediathekView.jar [Pfad] -auto
 java -jar MediathekView.jar -auto
