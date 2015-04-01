@@ -76,6 +76,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             public void ping() {
                 if (jToggleButtonLaden.isSelected()) {
                     jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), MVUsedUrl.title));
+                    setsum();
                 }
             }
         });
@@ -91,9 +92,11 @@ public class PanelErledigteUrls extends PanelVorlage {
                 if (jToggleButtonLaden.isSelected()) {
                     jButtonLoeschen.setEnabled(true);
                     jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), MVUsedUrl.title));
+                    setsum();
                 } else {
                     jButtonLoeschen.setEnabled(false);
                     jTable1.setModel(new TModel(null, MVUsedUrl.title));
+                    setsum();
                 }
             }
         });
@@ -106,6 +109,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             public void ping() {
                 if (jToggleButtonLaden.isSelected()) {
                     jTable1.setModel(new TModel(daten.history.getObjectData(), MVUsedUrl.title));
+                    setsum();
                 }
             }
         });
@@ -121,12 +125,22 @@ public class PanelErledigteUrls extends PanelVorlage {
                 if (jToggleButtonLaden.isSelected()) {
                     jButtonLoeschen.setEnabled(true);
                     jTable1.setModel(new TModel(daten.history.getObjectData(), MVUsedUrl.title));
+                    setsum();
                 } else {
                     jButtonLoeschen.setEnabled(false);
                     jTable1.setModel(new TModel(null, MVUsedUrl.title));
+                    setsum();
                 }
             }
         });
+    }
+
+    private void setsum() {
+        if (jTable1.getRowCount() <= 0) {
+            jLabelSum.setText("");
+        } else {
+            jLabelSum.setText("Anzahl: " + jTable1.getRowCount());
+        }
     }
 
     private void export() {
@@ -203,6 +217,7 @@ public class PanelErledigteUrls extends PanelVorlage {
         jButtonLoeschen = new javax.swing.JButton();
         jToggleButtonLaden = new javax.swing.JToggleButton();
         jButtonExport = new javax.swing.JButton();
+        jLabelSum = new javax.swing.JLabel();
 
         jTable1.setModel(new TModel());
         jScrollPane1.setViewportView(jTable1);
@@ -220,9 +235,11 @@ public class PanelErledigteUrls extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jToggleButtonLaden)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabelSum)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonExport)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -236,18 +253,20 @@ public class PanelErledigteUrls extends PanelVorlage {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonLoeschen)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jToggleButtonLaden)
-                    .addComponent(jButtonExport))
+                    .addComponent(jLabelSum)
+                    .addComponent(jButtonExport)
+                    .addComponent(jButtonLoeschen))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonExport;
     private javax.swing.JButton jButtonLoeschen;
+    private javax.swing.JLabel jLabelSum;
     private javax.swing.JTable jTable1;
     private javax.swing.JToggleButton jToggleButtonLaden;
     // End of variables declaration//GEN-END:variables
