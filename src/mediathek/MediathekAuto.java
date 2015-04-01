@@ -19,6 +19,7 @@
  */
 package mediathek;
 
+import java.awt.SplashScreen;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
@@ -48,6 +49,10 @@ public class MediathekAuto {
                     pfad = ar[0];
                 }
             }
+        }
+        final SplashScreen splash = SplashScreen.getSplashScreen();
+        if (splash != null) {
+            splash.close();
         }
     }
 
