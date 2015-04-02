@@ -241,6 +241,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                         if (!Filter.laengePruefen(datenAbo.mindestdauerMinuten, datenFilm.dauerL)) {
                             // dann ist der Film zu kurz
                             datenFilm.arr[DatenFilm.FILM_ABO_NAME_NR] = datenAbo.arr[DatenAbo.ABO_NAME_NR] + " [zu kurz]";
+                            datenFilm.abo = datenAbo;
                         } else {
                             datenFilm.arr[DatenFilm.FILM_ABO_NAME_NR] = datenAbo.arr[DatenAbo.ABO_NAME_NR];
                             datenFilm.abo = datenAbo;
