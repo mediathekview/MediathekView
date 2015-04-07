@@ -85,6 +85,10 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         // für das Lesen der Konfig-Datei beim Programmstart
         ++nr;
         datenAbo.nr = nr;
+        if (datenAbo.arr[DatenAbo.ABO_NAME_NR].isEmpty()) {
+            // Downloads ohne "Aboname" sind manuelle Downloads
+            datenAbo.arr[DatenAbo.ABO_NAME_NR] = "Abo_" + nr;
+        }
         datenAbo.setMindestDauerMinuten();
         super.add(datenAbo);
         sort();

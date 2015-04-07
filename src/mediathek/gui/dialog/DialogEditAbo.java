@@ -195,6 +195,27 @@ public class DialogEditAbo extends javax.swing.JDialog {
                     || i == DatenAbo.ABO_DOWN_DATUM_NR) {
                 textfeld.setEditable(false);
             }
+            if (i == DatenAbo.ABO_NAME_NR) {
+                textfeld.getDocument().addDocumentListener(new DocumentListener() {
+                    @Override
+                    public void insertUpdate(DocumentEvent e) {
+                        textfeldListe[DatenAbo.ABO_NAME_NR].setBackground(textfeldListe[DatenAbo.ABO_NAME_NR].getText().isEmpty() ? Color.red : Color.white);
+                        jButtonBeenden.setEnabled(!textfeldListe[DatenAbo.ABO_NAME_NR].getText().isEmpty());
+                    }
+
+                    @Override
+                    public void removeUpdate(DocumentEvent e) {
+                        textfeldListe[DatenAbo.ABO_NAME_NR].setBackground(textfeldListe[DatenAbo.ABO_NAME_NR].getText().isEmpty() ? Color.red : Color.white);
+                        jButtonBeenden.setEnabled(!textfeldListe[DatenAbo.ABO_NAME_NR].getText().isEmpty());
+                    }
+
+                    @Override
+                    public void changedUpdate(DocumentEvent e) {
+                        textfeldListe[DatenAbo.ABO_NAME_NR].setBackground(textfeldListe[DatenAbo.ABO_NAME_NR].getText().isEmpty() ? Color.red : Color.white);
+                        jButtonBeenden.setEnabled(!textfeldListe[DatenAbo.ABO_NAME_NR].getText().isEmpty());
+                    }
+                });
+            }
             textfeld.setText(aktAbo.arr[i]);
             gridbag.setConstraints(textfeld, c);
             panel.add(textfeld);
