@@ -353,7 +353,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 if (start.restSekunden < 60) {
                     return "< 1 Min.";
                 } else {
-                    return Long.toString(start.restSekunden / 60) + " Min.";
+                    return Long.toString(Math.round(start.restSekunden / 60.0)) + " Min.";
                 }
             }
         }
