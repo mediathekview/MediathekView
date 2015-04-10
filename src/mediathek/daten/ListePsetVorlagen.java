@@ -87,7 +87,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         }
     }
 
-    public boolean getListe() {
+    public boolean loadAllSetMuster() {
         try {
             this.clear();
             int event;
@@ -126,7 +126,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         ListePset pSet = null;
         String[] vorlage = null;
         ListePsetVorlagen lv = new ListePsetVorlagen();
-        if (lv.getListe()) {
+        if (lv.loadAllSetMuster()) {
             for (String[] ar : lv) {
                 if (ar[PGR_NAME_NR].equalsIgnoreCase("Standardset " + Funktionen.getOsString())) {
                     vorlage = ar;

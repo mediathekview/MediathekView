@@ -350,7 +350,11 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public String getTextRestzeit() {
         if (start != null) {
             if (start.status < Start.STATUS_FERTIG && start.status >= Start.STATUS_RUN && start.restSekunden > 0) {
-                if (start.restSekunden < 25) {
+                if (start.restSekunden < 10) {
+                    return "10 s";
+                } else if (start.restSekunden < 20) {
+                    return "20 s";
+                } else if (start.restSekunden < 30) {
                     return "30 s";
                 } else if (start.restSekunden < 50) { // sicher ist sicher
                     return "1 Min.";

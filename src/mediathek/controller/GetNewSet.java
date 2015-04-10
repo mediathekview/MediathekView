@@ -66,6 +66,7 @@ public class GetNewSet implements Runnable {
                     }
                 }
             }
+            // gibt keine Sets oder aktualisieren
             Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
             // die Zielpafade anpassen
             ListePset listePsetOrgSpeichern = Daten.listePset.getListeSpeichern();

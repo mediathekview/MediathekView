@@ -95,7 +95,7 @@ public class PanelPsetImport extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                listeVorlagen.getListe();
+                listeVorlagen.loadAllSetMuster();
                 setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                 tabelleLaden();
             }
