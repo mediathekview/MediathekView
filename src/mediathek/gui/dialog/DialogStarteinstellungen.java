@@ -180,7 +180,7 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
 
     private boolean addStandarSet(JFrame parent, Daten daten) {
         boolean ret = false;
-        ListePset pSet = ListePsetVorlagen.getStandarset(parent, daten);
+        ListePset pSet = ListePsetVorlagen.getStandarset(parent, daten, true /*replaceMuster*/);
         if (pSet != null) {
             Daten.listePset.addPset(pSet);
             Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, pSet.version);

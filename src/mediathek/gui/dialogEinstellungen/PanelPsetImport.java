@@ -48,7 +48,7 @@ import mediathek.tool.UrlHyperlinkAction;
 
 public class PanelPsetImport extends PanelVorlage {
 
-    ListePsetVorlagen listeVorlagen = new ListePsetVorlagen();
+    ListePsetVorlagen listePsetVorlagen = new ListePsetVorlagen();
 
     public PanelPsetImport(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
@@ -95,7 +95,7 @@ public class PanelPsetImport extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                listeVorlagen.loadAllSetMuster();
+                listePsetVorlagen.loadListOfSets();
                 setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                 tabelleLaden();
             }
@@ -111,7 +111,7 @@ public class PanelPsetImport extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
-                GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, ListePsetVorlagen.getStandarset(parentComponent, daten), false /*auto*/, true /*setVersion*/);
+                GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, ListePsetVorlagen.getStandarset(parentComponent, daten, true /*replaceMuster*/), false /*auto*/, true /*setVersion*/);
             }
         });
 
@@ -125,18 +125,27 @@ public class PanelPsetImport extends PanelVorlage {
 
     private void importDatei(String datei) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        ListePset pSet = IoXmlLesen.importPset(parentComponent, datei, true);
+        ListePset listePset = ListePsetVorlagen.importPsetFile(parentComponent, datei, true);
+        if (listePset != null) {
+            // damit die Variablen ersetzt werden
+            ListePset.progMusterErsetzen(parentComponent, listePset);
+        }
+
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, pSet, false /*auto*/, false /*setVersion*/);
+        GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, listePset, false /*auto*/, false /*setVersion*/);
     }
 
     private void importText() {
-        ListePset pSet = IoXmlLesen.importPsetText(parentComponent, daten, jTextAreaImport.getText(), true);
-        GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, pSet, false /*auto*/, false /*setVersion*/);
+        ListePset listePset = ListePsetVorlagen.importPsetText( daten, jTextAreaImport.getText(), true);
+        if (listePset != null) {
+            // damit die Variablen ersetzt werden
+            ListePset.progMusterErsetzen(parentComponent, listePset);
+        }
+        GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, listePset, false /*auto*/, false /*setVersion*/);
     }
 
     private void tabelleLaden() {
-        jTableVorlagen.setModel(listeVorlagen.getTModel(jComboBoxBs.getSelectedItem().toString()));
+        jTableVorlagen.setModel(listePsetVorlagen.getTModel(jComboBoxBs.getSelectedItem().toString()));
         if (!Daten.debug) {
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMinWidth(0);
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setPreferredWidth(0);
@@ -547,7 +556,7 @@ public class PanelPsetImport extends PanelVorlage {
             if (jTextFieldDatei.getText().equals("")) {
                 jTextFieldDatei.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
             } else {
-                if (IoXmlLesen.importPset(parentComponent, jTextFieldDatei.getText(), false) != null) {
+                if (ListePsetVorlagen.importPsetFile(parentComponent, jTextFieldDatei.getText(), false) != null) {
                     jTextFieldDatei.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
                 } else {
                     jTextFieldDatei.setBackground(new Color(255, 200, 200));
@@ -578,7 +587,7 @@ public class PanelPsetImport extends PanelVorlage {
             if (jTextAreaImport.getText().equals("")) {
                 jTextAreaImport.setBackground(javax.swing.UIManager.getDefaults().getColor("TextArea.background"));
             } else {
-                if (IoXmlLesen.importPsetText(parentComponent, daten, jTextAreaImport.getText(), false) != null) {
+                if (ListePsetVorlagen.importPsetText( daten, jTextAreaImport.getText(), false) != null) {
                     jTextAreaImport.setBackground(javax.swing.UIManager.getDefaults().getColor("TextArea.background"));
                     jButtonImportText.setEnabled(true);
                 } else {

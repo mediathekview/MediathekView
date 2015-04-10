@@ -19,15 +19,10 @@
  */
 package mediathek.controller;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import javax.swing.JFrame;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
@@ -38,8 +33,6 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListeBlacklist;
-import mediathek.daten.ListePset;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVReplaceList;
 import msearch.filmlisten.DatenFilmlisteUrl;
@@ -189,123 +182,6 @@ public class IoXmlLesen {
         return found;
     }
 
-    public static ListePset importPset(JFrame parent, String dateiUrl, boolean log) {
-        int timeout = 10000; //10 Sekunden
-        try {
-            if (GuiFunktionen.istUrl(dateiUrl)) {
-                URLConnection conn;
-                conn = new URL(dateiUrl).openConnection();
-                conn.setConnectTimeout(timeout);
-                conn.setReadTimeout(timeout);
-                conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-                return importPset(parent, conn.getInputStream(), log);
-            } else {
-                return importPset(parent, new FileInputStream(dateiUrl), log);
-            }
-        } catch (Exception ex) {
-            if (log) {
-                Log.fehlerMeldung(630048926, ex);
-            }
-            return null;
-        }
-    }
-
-    public static ListePset importPset(JFrame parent, InputStream inStream, boolean log) {
-        DatenPset datenPset = null;
-        ListePset liste = new ListePset();
-        try {
-            int event;
-            XMLInputFactory inFactory = XMLInputFactory.newInstance();
-            inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
-            XMLStreamReader parser;
-            InputStreamReader in;
-            in = new InputStreamReader(inStream, MSConst.KODIERUNG_UTF);
-            parser = inFactory.createXMLStreamReader(in);
-            while (parser.hasNext()) {
-                event = parser.next();
-                if (event == XMLStreamConstants.START_ELEMENT) {
-                    //String t = parser.getLocalName();
-                    switch (parser.getLocalName()) {
-                        case DatenPset.PROGRAMMSET:
-                            datenPset = new DatenPset();
-                            if (!get(parser, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr, false)) {
-                                datenPset = null;
-                            } else {
-                                liste.add(datenPset);
-                            }
-                            break;
-                        case DatenProg.PROGRAMM:
-                            if (datenPset != null) {
-                                DatenProg datenProg = new DatenProg();
-                                if (get(parser, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr, false)) {
-                                    datenPset.addProg(datenProg);
-                                }
-                            }
-                            break;
-                    }
-                }
-            }
-            in.close();
-        } catch (Exception ex) {
-            if (log) {
-                Log.fehlerMeldung(467810360, ex);
-            }
-            return null;
-        }
-        if (liste.isEmpty()) {
-            return null;
-        } else {
-            // damit die Variablen ersetzt werden
-            ListePset ll = new ListePset();
-            ll.progMusterErsetzen(parent, liste);
-            return ll;
-        }
-    }
-
-    public static ListePset importPsetText(JFrame parent, Daten dd, String text, boolean log) {
-        DatenPset datenPset;
-        ListePset liste = new ListePset();
-        try {
-            int event;
-            XMLInputFactory inFactory = XMLInputFactory.newInstance();
-            inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
-            XMLStreamReader parser;
-            InputStreamReader in = new InputStreamReader(new ByteArrayInputStream(text.getBytes()));
-            parser = inFactory.createXMLStreamReader(in);
-            while (parser.hasNext()) {
-                event = parser.next();
-                if (event == XMLStreamConstants.START_ELEMENT) {
-                    //String t = parser.getLocalName();
-                    if (parser.getLocalName().equals(DatenPset.PROGRAMMSET)) {
-                        datenPset = new DatenPset();
-                        if (!get(parser, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr, false)) {
-                            datenPset = null;
-                        } else {
-                            liste.add(datenPset);
-                        }
-                        if (datenPset != null) {
-                            DatenProg datenProg = new DatenProg();
-                            if (get(parser, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr, false)) {
-                                datenPset.addProg(datenProg);
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            if (log) {
-                Log.fehlerMeldung(100298325, ex);
-            }
-            return null;
-        }
-        if (liste.isEmpty()) {
-            return null;
-        } else {
-            ListePset ll = new ListePset();
-            ll.progMusterErsetzen(parent, liste);
-            return ll;
-        }
-    }
 
     // ##############################
     // private
