@@ -78,7 +78,7 @@ public class DialogNewSet extends javax.swing.JDialog {
             jXHyperlinkAnleitung.setAction(new UrlHyperlinkAction(pparent, Konstanten.ADRESSE_ANLEITUNG));
         } catch (URISyntaxException ignored) {
         }
-        jButtonInstall.addActionListener(new ActionListener() {
+        jButtonAdd.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -94,7 +94,7 @@ public class DialogNewSet extends javax.swing.JDialog {
                 beenden();
             }
         });
-        jButtonSetReset.addActionListener(new ActionListener() {
+        jButtonReplace.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int ret = JOptionPane.showConfirmDialog(parent, "Alle Sets zurücksetzen?", "Alle Sets zurücksetzen!", JOptionPane.YES_NO_OPTION);
@@ -141,9 +141,9 @@ public class DialogNewSet extends javax.swing.JDialog {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jButtonInstall = new javax.swing.JButton();
+        jButtonAdd = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
-        jButtonSetReset = new javax.swing.JButton();
+        jButtonReplace = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -184,14 +184,14 @@ public class DialogNewSet extends javax.swing.JDialog {
         jCheckBoxMorgen.setSelected(true);
         jCheckBoxMorgen.setText("Morgen wieder fragen");
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Entweder", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, new java.awt.Color(0, 102, 204)));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Entweder", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 12), new java.awt.Color(0, 102, 204))); // NOI18N
 
         jTextArea1.setColumns(20);
         jTextArea1.setEditable(false);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
-        jButtonInstall.setText("Neue Sets hinzufügen");
+        jButtonAdd.setText("Neue Sets hinzufügen");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -202,7 +202,7 @@ public class DialogNewSet extends javax.swing.JDialog {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jButtonInstall)
+                        .addComponent(jButtonAdd)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -212,13 +212,13 @@ public class DialogNewSet extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonInstall)
+                .addComponent(jButtonAdd)
                 .addContainerGap())
         );
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Oder", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, new java.awt.Color(0, 102, 204)));
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Oder", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 12), new java.awt.Color(0, 102, 204))); // NOI18N
 
-        jButtonSetReset.setText("Bestehende Sets durch die Neuen ersetzen");
+        jButtonReplace.setText("Bestehende Sets durch die Neuen ersetzen");
 
         jTextArea2.setEditable(false);
         jTextArea2.setColumns(20);
@@ -233,7 +233,7 @@ public class DialogNewSet extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jButtonSetReset)
+                        .addComponent(jButtonReplace)
                         .addGap(0, 187, Short.MAX_VALUE))
                     .addComponent(jScrollPane2))
                 .addContainerGap())
@@ -244,7 +244,7 @@ public class DialogNewSet extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jScrollPane2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonSetReset)
+                .addComponent(jButtonReplace)
                 .addGap(13, 13, 13))
         );
 
@@ -299,9 +299,9 @@ public class DialogNewSet extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAbbrechen;
-    private javax.swing.JButton jButtonInstall;
+    private javax.swing.JButton jButtonAdd;
+    private javax.swing.JButton jButtonReplace;
     private javax.swing.JButton jButtonSetHelp;
-    private javax.swing.JButton jButtonSetReset;
     private javax.swing.JCheckBox jCheckBoxMorgen;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;

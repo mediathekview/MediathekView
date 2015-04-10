@@ -83,7 +83,7 @@ public class PanelHilfe extends PanelVorlage {
                 new DialogHilfe(daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET)).setVisible(true);
             }
         });
-        jButtonSets.addActionListener(new ActionListener() {
+        jButtonResetSets.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -93,7 +93,7 @@ public class PanelHilfe extends PanelVorlage {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelHilfe.class.getSimpleName());
             }
         });
-        jButtonReset.addActionListener(new ActionListener() {
+        jButtonResetAll.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int ret = JOptionPane.showConfirmDialog(parentComponent, "Alle Einstellungen zurücksetzen?", "Alle Einstellungen zurücksetzen!", JOptionPane.YES_NO_OPTION);
@@ -127,11 +127,11 @@ public class PanelHilfe extends PanelVorlage {
         javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
         jXHyperlinkSpende = new org.jdesktop.swingx.JXHyperlink();
         javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
-        jButtonReset = new javax.swing.JButton();
+        jButtonResetAll = new javax.swing.JButton();
         jButtonHilfeReset = new javax.swing.JButton();
         javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
-        jButtonSets = new javax.swing.JButton();
+        jButtonResetSets = new javax.swing.JButton();
         javax.swing.JLabel jLabel8 = new javax.swing.JLabel();
         javax.swing.JLabel jLabel10 = new javax.swing.JLabel();
         javax.swing.JSeparator jSeparator1 = new javax.swing.JSeparator();
@@ -241,7 +241,7 @@ public class PanelHilfe extends PanelVorlage {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jButtonReset.setText("Alle Einstellungen zurücksetzen!");
+        jButtonResetAll.setText("Alle Einstellungen zurücksetzen!");
 
         jButtonHilfeReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
         jButtonHilfeReset.setToolTipText("Hilfe");
@@ -250,7 +250,7 @@ public class PanelHilfe extends PanelVorlage {
 
         jLabel4.setText("Buttons, Abos und die Blacklists gelöscht.");
 
-        jButtonSets.setText("Einstellungen zum Abspielen/Aufzeichnen zurücksetzen");
+        jButtonResetSets.setText("Einstellungen zum Abspielen/Aufzeichnen zurücksetzen");
 
         jLabel8.setText("Es werden alle Programmsets (auch eigene) zum Abspielen");
 
@@ -269,12 +269,12 @@ public class PanelHilfe extends PanelVorlage {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSeparator1)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButtonSets)
+                        .addComponent(jButtonResetSets)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonHilfeReset))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButtonReset)
+                            .addComponent(jButtonResetAll)
                             .addComponent(jLabel3)
                             .addComponent(jLabel8)
                             .addComponent(jLabel10)
@@ -289,7 +289,7 @@ public class PanelHilfe extends PanelVorlage {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonSets)
+                    .addComponent(jButtonResetSets)
                     .addComponent(jButtonHilfeReset))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel8)
@@ -300,7 +300,7 @@ public class PanelHilfe extends PanelVorlage {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonReset)
+                .addComponent(jButtonResetAll)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -345,8 +345,8 @@ public class PanelHilfe extends PanelVorlage {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonHilfeReset;
     private javax.swing.JButton jButtonLogErstellen;
-    private javax.swing.JButton jButtonReset;
-    private javax.swing.JButton jButtonSets;
+    private javax.swing.JButton jButtonResetAll;
+    private javax.swing.JButton jButtonResetSets;
     private javax.swing.JTextField jTextFieldPfad;
     private javax.swing.JTextField jTextFieldVersion;
     private org.jdesktop.swingx.JXHyperlink jXHyperlinkAnleitung;

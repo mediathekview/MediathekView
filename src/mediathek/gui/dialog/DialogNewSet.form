@@ -148,7 +148,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jScrollPane1" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jButtonInstall" linkSize="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButtonAdd" linkSize="3" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -162,7 +162,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jScrollPane1" pref="127" max="32767" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="jButtonInstall" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonAdd" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -185,7 +185,7 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="jButtonInstall">
+        <Component class="javax.swing.JButton" name="jButtonAdd">
           <Properties>
             <Property name="text" type="java.lang.String" value="Neue Sets hinzuf&#xfc;gen"/>
           </Properties>
@@ -210,7 +210,7 @@
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jButtonSetReset" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButtonReplace" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="187" max="32767" attributes="0"/>
                       </Group>
                       <Component id="jScrollPane2" max="32767" attributes="0"/>
@@ -225,14 +225,14 @@
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="jScrollPane2" max="32767" attributes="0"/>
                   <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButtonSetReset" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonReplace" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JButton" name="jButtonSetReset">
+        <Component class="javax.swing.JButton" name="jButtonReplace">
           <Properties>
             <Property name="text" type="java.lang.String" value="Bestehende Sets durch die Neuen ersetzen"/>
           </Properties>
