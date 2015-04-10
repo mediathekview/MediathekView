@@ -89,7 +89,7 @@ public class PanelHilfe extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 Daten.listePset.clear();
                 //GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
-                GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, ListePsetVorlagen.getStandarset(parentComponent, daten), false /*auto*/, true /*setVersion*/);
+                GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, ListePsetVorlagen.getStandarset(parentComponent, daten, true /*replaceMuster*/), false /*auto*/, true /*setVersion*/);
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelHilfe.class.getSimpleName());
             }
         });

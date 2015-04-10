@@ -19,7 +19,8 @@
  */
 package mediathek.daten;
 
-import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -28,10 +29,10 @@ import javax.swing.JFrame;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
-import mediathek.controller.IoXmlLesen;
 import mediathek.controller.Log;
 import mediathek.file.GetFile;
 import mediathek.tool.Funktionen;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.TModel;
 import msearch.tool.MSConst;
@@ -87,7 +88,53 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         }
     }
 
-    public boolean loadAllSetMuster() {
+    public static ListePset getStandarset(JFrame parent, Daten ddaten, boolean replaceMuster) {
+        ListePset listePset = null;
+        String[] vorlage = null;
+        ListePsetVorlagen listePsetVorlagen = new ListePsetVorlagen();
+        if (listePsetVorlagen.loadListOfSets()) {
+            for (String[] ar : listePsetVorlagen) {
+                if (ar[PGR_NAME_NR].equalsIgnoreCase("Standardset " + Funktionen.getOsString())) {
+                    vorlage = ar;
+                    break;
+                }
+            }
+            if (vorlage != null) {
+                if (!vorlage[PGR_URL_NR].equals("")) {
+                    listePset = ListePsetVorlagen.importPsetFile(parent, vorlage[ListePsetVorlagen.PGR_URL_NR], true);
+                    if (listePset != null) {
+                        listePset.version = vorlage[PGR_VERSION_NR];
+                    }
+                }
+            }
+        }
+        if (listePset == null) {
+            // dann nehmen wir halt die im jar-File
+            // liefert das Standard Programmset für das entsprechende BS
+            InputStreamReader inReader;
+            switch (Funktionen.getOs()) {
+                case LINUX:
+                    inReader = new GetFile().getPsetVorlageLinux();
+                    break;
+                case MAC:
+                    inReader = new GetFile().getPsetVorlageMac();
+                    break;
+
+                default:
+                    inReader = new GetFile().getPsetVorlageWindows();
+            }
+            // Standardgruppen laden
+            listePset = ListePsetVorlagen.importPset(inReader, true);
+        }
+
+        if (replaceMuster && listePset != null) {
+            // damit die Variablen ersetzt werden
+            ListePset.progMusterErsetzen(parent, listePset);
+        }
+        return listePset;
+    }
+
+    public boolean loadListOfSets() {
         try {
             this.clear();
             int event;
@@ -122,54 +169,79 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         return true;
     }
 
-    public static ListePset getStandarset(JFrame parent, Daten ddaten) {
-        ListePset pSet = null;
-        String[] vorlage = null;
-        ListePsetVorlagen lv = new ListePsetVorlagen();
-        if (lv.loadAllSetMuster()) {
-            for (String[] ar : lv) {
-                if (ar[PGR_NAME_NR].equalsIgnoreCase("Standardset " + Funktionen.getOsString())) {
-                    vorlage = ar;
-                    break;
-                }
+    public static ListePset importPsetFile(JFrame parent, String dateiUrl, boolean log) {
+        int timeout = 10_000; //10 Sekunden
+        try {
+            if (GuiFunktionen.istUrl(dateiUrl)) {
+                URLConnection conn;
+                conn = new URL(dateiUrl).openConnection();
+                conn.setConnectTimeout(timeout);
+                conn.setReadTimeout(timeout);
+                conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+                return ListePsetVorlagen.importPset(new InputStreamReader(conn.getInputStream(), MSConst.KODIERUNG_UTF), log);
+            } else {
+                return ListePsetVorlagen.importPset(new InputStreamReader(new FileInputStream(dateiUrl), MSConst.KODIERUNG_UTF), log);
             }
-            if (vorlage != null) {
-                if (!vorlage[PGR_URL_NR].equals("")) {
-                    pSet = IoXmlLesen.importPset(parent, vorlage[ListePsetVorlagen.PGR_URL_NR], true);
-                    if (pSet != null) {
-                        pSet.version = vorlage[PGR_VERSION_NR];
+        } catch (Exception ex) {
+            if (log) {
+                Log.fehlerMeldung(630048926, ex);
+            }
+            return null;
+        }
+    }
+
+    public static ListePset importPsetText(Daten dd, String text, boolean log) {
+        return ListePsetVorlagen.importPset(new InputStreamReader(new ByteArrayInputStream(text.getBytes())), log);
+    }
+
+    private static ListePset importPset(InputStreamReader in, boolean log) {
+        DatenPset datenPset = null;
+        ListePset liste = new ListePset();
+        try {
+            int event;
+            XMLInputFactory inFactory = XMLInputFactory.newInstance();
+            inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
+            XMLStreamReader parser;
+            parser = inFactory.createXMLStreamReader(in);
+            while (parser.hasNext()) {
+                event = parser.next();
+                if (event == XMLStreamConstants.START_ELEMENT) {
+                    //String t = parser.getLocalName();
+                    switch (parser.getLocalName()) {
+                        case DatenPset.PROGRAMMSET:
+                            datenPset = new DatenPset();
+                            if (!get(parser, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr)) {
+                                datenPset = null;
+                            } else {
+                                liste.add(datenPset);
+                            }
+                            break;
+                        case DatenProg.PROGRAMM:
+                            if (datenPset != null) {
+                                DatenProg datenProg = new DatenProg();
+                                if (get(parser, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr)) {
+                                    datenPset.addProg(datenProg);
+                                }
+                            }
+                            break;
                     }
                 }
             }
+            in.close();
+        } catch (Exception ex) {
+            if (log) {
+                Log.fehlerMeldung(467810360, ex);
+            }
+            return null;
         }
-        if (pSet == null) {
-            // dann nehmen wir halt die im jar-File
-            pSet = getStandardprogramme(parent);
+        if (liste.isEmpty()) {
+            return null;
+        } else {
+            return liste;
         }
-        return pSet;
     }
 
-    private static ListePset getStandardprogramme(JFrame parent) {
-        // liefert das Standard Programmset für das entsprechende BS
-        ListePset pSet;
-        InputStream datei;
-        switch (Funktionen.getOs()) {
-            case LINUX:
-                datei = new GetFile().getPsetVorlageLinux();
-                break;
-            case MAC:
-                datei = new GetFile().getPsetVorlageMac();
-                break;
-
-            default:
-                datei = new GetFile().getPsetVorlageWindows();
-        }
-        // Standardgruppen laden
-        pSet = IoXmlLesen.importPset(parent, datei, true);
-        return pSet;
-    }
-
-    private boolean get(XMLStreamReader parser, String xmlElem, String[] xmlNames, String[] strRet) {
+    private static boolean get(XMLStreamReader parser, String xmlElem, String[] xmlNames, String[] strRet) {
         boolean ret = true;
         int maxElem = strRet.length;
         for (int i = 0; i < maxElem; ++i) {
@@ -198,4 +270,5 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         }
         return ret;
     }
+
 }

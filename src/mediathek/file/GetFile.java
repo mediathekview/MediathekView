@@ -21,7 +21,6 @@ package mediathek.file;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import mediathek.controller.Log;
 import msearch.tool.MSConst;
@@ -62,27 +61,27 @@ public class GetFile {
         return ret;
     }
 
-    public InputStream getPsetVorlageLinux() {
+    public InputStreamReader getPsetVorlageLinux() {
         try {
-            return getClass().getResource(PFAD_PSET_LINUX).openStream();
+            return new InputStreamReader(getClass().getResource(PFAD_PSET_LINUX).openStream(), MSConst.KODIERUNG_UTF);
         } catch (IOException ex) {
             Log.fehlerMeldung(469691002, ex);
         }
         return null;
     }
 
-    public InputStream getPsetVorlageWindows() {
+    public InputStreamReader getPsetVorlageWindows() {
         try {
-            return getClass().getResource(PFAD_PSET_WINDOWS).openStream();
+            return new InputStreamReader(getClass().getResource(PFAD_PSET_WINDOWS).openStream(), MSConst.KODIERUNG_UTF);
         } catch (IOException ex) {
             Log.fehlerMeldung(842306087, ex);
         }
         return null;
     }
 
-    public InputStream getPsetVorlageMac() {
+    public InputStreamReader getPsetVorlageMac() {
         try {
-            return getClass().getResource(PFAD_PSET_MAC).openStream();
+            return new InputStreamReader(getClass().getResource(PFAD_PSET_MAC).openStream(), MSConst.KODIERUNG_UTF);
         } catch (IOException ex) {
             Log.fehlerMeldung(496532180, ex);
         }

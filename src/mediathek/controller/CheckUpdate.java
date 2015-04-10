@@ -22,8 +22,12 @@ package mediathek.controller;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 import mediathek.daten.Daten;
+import mediathek.daten.DatenPset;
+import mediathek.daten.ListePset;
+import mediathek.daten.ListePsetVorlagen;
+import mediathek.gui.dialog.DialogNewSet;
+import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 
@@ -55,7 +59,7 @@ public class CheckUpdate {
                             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_PROGRAMM_AKTUELL, CheckUpdate.class.getSimpleName());
                         }
 
-                        SwingUtilities.invokeLater(new GetNewSet(parent, daten));
+                        checkSet();
 
                         try {
                             this.wait(10 * 1000); // 10 Sekunden den Titel anzeigen
@@ -69,4 +73,63 @@ public class CheckUpdate {
             }
         }
     }
+
+    public synchronized void checkSet() {
+        ListePset listePsetStandard = ListePsetVorlagen.getStandarset(parent, daten, false /*replaceMuster*/);;
+        String version = Daten.mVConfig.get(MVConfig.SYSTEM_VERSION_PROGRAMMSET);
+        if (listePsetStandard != null) {
+            if (Daten.listePset.size() > 0) {
+                // ansonsten ist die Liste leer und dann gibts immer was
+                if (listePsetStandard.version.isEmpty()) {
+                    // dann hat das Laden der aktuellen Standardversion nicht geklappt
+                    return;
+                }
+                if (version.equals(listePsetStandard.version)) {
+                    // dann passt alles
+                    return;
+                } else {
+                    DialogNewSet dialogNewSet = new DialogNewSet(parent, daten);
+                    dialogNewSet.setVisible(true);
+                    if (!dialogNewSet.ok) {
+                        if (!dialogNewSet.morgen) {
+                            // dann auch die Versionsnummer aktualisieren
+                            Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
+                        }
+                        // dann halt nicht
+                        return;
+                    }
+                }
+            }
+
+            //========================================
+            // gibt keine Sets oder aktualisieren
+
+            // damit die Variablen ersetzt werden
+            ListePset.progMusterErsetzen(parent, listePsetStandard);
+
+            Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
+            // die Zielpafade anpassen
+            ListePset listePsetOrgSpeichern = Daten.listePset.getListeSpeichern();
+            if (listePsetOrgSpeichern.size() > 0) {
+                for (DatenPset psNew : listePsetStandard.getListeSpeichern()) {
+                    psNew.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = listePsetOrgSpeichern.get(0).arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR];
+                    psNew.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR] = listePsetOrgSpeichern.get(0).arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR];
+                    psNew.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR] = listePsetOrgSpeichern.get(0).arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR];
+                    psNew.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR] = listePsetOrgSpeichern.get(0).arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR];
+                }
+            }
+            if (!Daten.listePset.isEmpty()) {
+                // wenn leer, dann gibt immer die Neuen und die sind dann auch aktiv
+                for (DatenPset psNew : listePsetStandard) {
+                    // die bestehenden Sets sollen nicht gestört werden
+                    psNew.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
+                    psNew.arr[DatenPset.PROGRAMMSET_IST_ABO_NR] = Boolean.FALSE.toString();
+                    psNew.arr[DatenPset.PROGRAMMSET_IST_BUTTON_NR] = Boolean.FALSE.toString();
+                    psNew.arr[DatenPset.PROGRAMMSET_IST_SPEICHERN_NR] = Boolean.FALSE.toString();
+                }
+            }
+            GuiFunktionenProgramme.addSetVorlagen(daten.mediathekGui, daten, listePsetStandard, true /*auto*/, true /*setVersion*/); // damit auch AddOns geladen werden
+        }
+    }
+
 }

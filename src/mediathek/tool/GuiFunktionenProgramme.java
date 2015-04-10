@@ -198,38 +198,6 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         return pfadScript;
     }
 
-    public static String getPfadMplayer(JFrame parent) {
-        // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
-        if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_MPLAYER).equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(parent, false /* vlc */, false /* flvstreamer */, true /* mplayer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
-        }
-        return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_MPLAYER);
-    }
-
-    public static String getPfadVlc(JFrame parent) {
-        // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
-        if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_VLC).equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(parent, true /* vlc */, false /* flvstreamer */, false /* mplayer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
-        }
-        return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_VLC);
-    }
-
-    public static String getPfadFlv(JFrame parent) {
-        // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
-        if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FLVSTREAMER).equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(parent, false /* vlc */, true /* flvstreamer */, false /* mplayer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
-        }
-        return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FLVSTREAMER);
-    }
-
-    public static String getPfadFFmpeg(JFrame parent) {
-        // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
-        if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FFMPEG).equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(parent, false /* vlc */, false /* flvstreamer */, false /* mplayer */, true /*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
-        }
-        return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FFMPEG);
-    }
-
     public static void addSetVorlagen(JFrame parent, Daten daten, ListePset pSet, boolean auto, boolean setVersion) {
         if (pSet == null) {
             if (!auto) {
