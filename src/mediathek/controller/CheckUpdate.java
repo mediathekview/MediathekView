@@ -74,7 +74,7 @@ public class CheckUpdate {
         }
     }
 
-    public synchronized void checkSet() {
+    private void checkSet() {
         ListePset listePsetStandard = ListePsetVorlagen.getStandarset(parent, daten, false /*replaceMuster*/);;
         String version = Daten.mVConfig.get(MVConfig.SYSTEM_VERSION_PROGRAMMSET);
         if (listePsetStandard != null) {
@@ -103,7 +103,6 @@ public class CheckUpdate {
 
             //========================================
             // gibt keine Sets oder aktualisieren
-
             // damit die Variablen ersetzt werden
             ListePset.progMusterErsetzen(parent, listePsetStandard);
 
