@@ -34,7 +34,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import mediathek.controller.IoXmlLesen;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
