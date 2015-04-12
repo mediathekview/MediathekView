@@ -27,6 +27,7 @@ import javax.swing.JOptionPane;
 import mediathek.controller.Log;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.MVMessageDialog;
+import msearch.daten.DatenFilm;
 
 public class DatenPset {
 
@@ -290,12 +291,15 @@ public class DatenPset {
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = "";
         }
+        arr[PROGRAMMSET_THEMA_ANLEGEN_NR] = Boolean.toString(true);
         arr[PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.toString(false);
         arr[PROGRAMMSET_IST_SPEICHERN_NR] = Boolean.toString(false);
         arr[PROGRAMMSET_IST_BUTTON_NR] = Boolean.toString(false);
         arr[PROGRAMMSET_IST_ABO_NR] = Boolean.toString(false);
-        arr[PROGRAMMSET_THEMA_ANLEGEN_NR] = Boolean.toString(true);
+        arr[PROGRAMMSET_LAENGE_BESCHRAENKEN_NR] = Boolean.toString(false);
         arr[PROGRAMMSET_INFODATEI_NR] = Boolean.toString(false);
         arr[PROGRAMMSET_SPOTLIGHT_NR] = Boolean.toString(SystemInfo.isMacOSX());
+        arr[PROGRAMMSET_SUBTITLE_NR] = Boolean.toString(false);
+        arr[PROGRAMMSET_AUFLOESUNG_NR] = DatenFilm.AUFLOESUNG_NORMAL;
     }
 }
