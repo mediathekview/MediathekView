@@ -426,8 +426,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         DatenAbo abo;
         ListIterator<DatenFilm> itFilm;
         // prüfen ob in "alle Filme" oder nur "nach Blacklist" gesucht werden soll
-        boolean checkWithBlackList = !Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET))
-                && Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO));
+//        boolean checkWithBlackList = !Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET))
+//                && Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO));
+        boolean checkWithBlackList = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO));
         itFilm = Daten.listeFilme.listIterator();
         while (itFilm.hasNext()) {
             film = itFilm.next();

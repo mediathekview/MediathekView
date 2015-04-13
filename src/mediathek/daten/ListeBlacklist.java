@@ -149,7 +149,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         // ob die Blackliste dafür verwendet werden soll, ist schon geklärt
         setFilter();
         tage = 0; // soll nur im TabFilme ausgewertet werden (Filter: Tage)
-        blacklistAusgeschaltet = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET));
+        blacklistAusgeschaltet = false; // Blacklist nur wenn "auch für Abos" geklickt, egal ob ein- oder ausgeschaltet
         zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
         jetzt = getZeitZukunftBlacklist();
         return checkFilm(film);

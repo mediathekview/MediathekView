@@ -58,6 +58,8 @@ import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.gui.dialog.DialogLeer;
+import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
@@ -67,12 +69,12 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
     Daten daten;
     static Point mouseDownCompCoords;
-    JFrame f;
+    JFrame parent;
     private int aktFilter = -1;
 
     public MVFilterFrame(Daten d) {
         initComponents();
-        f = this;
+        parent = this;
         daten = d;
 
         if (SystemInfo.isWindows()) {
@@ -144,7 +146,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
             @Override
             public void mouseDragged(MouseEvent e) {
                 Point currCoords = e.getLocationOnScreen();
-                f.setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
+                parent.setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
             }
         });
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
@@ -164,11 +166,29 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 dispose();
             }
         });
+        
+        setIconBlacklist();
+        jButtonBlacklist.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DialogLeer dialog = new DialogLeer(parent, true);
+                dialog.init("Blacklist", new PanelBlacklist(daten, parent, PanelBlacklist.class.getName() + "_4"));
+                dialog.setVisible(true);
+            }
+        });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterPanel.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setIconBlacklist();
+            }
+        });
+
         jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(f, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true);
+                new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true);
             }
         });
         setIcon(false); // erst mal alle aus
@@ -192,6 +212,16 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         });
 
         pack();
+    }
+
+    private void setIconBlacklist() {
+        if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET))) {
+            //ein
+            jButtonBlacklist.setIcon(GetIcon.getProgramIcon("blacklist_ein_16.png"));
+        } else {
+            //aus
+            jButtonBlacklist.setIcon(GetIcon.getProgramIcon("blacklist_aus_16.png"));
+        }
     }
 
     private void setFilterAnzahl() {
@@ -439,6 +469,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jRadioButtonF5 = new javax.swing.JRadioButton();
         javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
         jButtonFilterLoeschen = new javax.swing.JButton();
+        jButtonBlacklist = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setUndecorated(true);
@@ -619,6 +650,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jButtonFilterLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/clear_16.png"))); // NOI18N
         jButtonFilterLoeschen.setToolTipText("Filter löschen");
 
+        jButtonBlacklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/blacklist_16.png"))); // NOI18N
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -645,6 +678,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonHilfe)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonBlacklist)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonFilterLoeschen)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonOk)))
@@ -667,7 +702,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                     .addComponent(jRadioButtonF5)
                     .addComponent(jButtonOk)
                     .addComponent(jButtonFilterLoeschen)
-                    .addComponent(jButtonHilfe))
+                    .addComponent(jButtonHilfe)
+                    .addComponent(jButtonBlacklist))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -687,6 +723,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonBlacklist;
     public javax.swing.JButton jButtonFilterLoeschen;
     public javax.swing.JButton jButtonHilfe;
     private javax.swing.JButton jButtonOk;
