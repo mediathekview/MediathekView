@@ -720,11 +720,17 @@ public class GuiFilme extends PanelVorlage {
             mVFilter.get_jCheckBoxNeue().setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_NUR_NEUE, filter)));
             mVFilter.get_jComboBoxZeitraum().setSelectedIndex(Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE, filter)));
             // Blackliste
+            if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_BLACKLIST, filter).isEmpty()) {
+                // wegen neuem Feld, Status Blacklist übernehmen
+                Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_BLACKLIST, String.valueOf(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET))), filter, MVFilter.MAX_FILTER);
+            }
             if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_BLACKLIST, filter))
                     != Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET))) {
                 geändert = true;
                 Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET, Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_BLACKLIST, filter));
             }
+            String s = Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET); // ToDo
+            String ss = Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET); // ToDo
 
         } catch (NumberFormatException ex) {
             mVFilter.get_jComboBoxZeitraum().setSelectedIndex(5);
