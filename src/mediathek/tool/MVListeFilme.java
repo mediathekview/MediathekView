@@ -20,7 +20,6 @@
 package mediathek.tool;
 
 import mediathek.daten.Daten;
-import mediathek.daten.ListeBlacklist;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 
@@ -28,7 +27,6 @@ public class MVListeFilme {
 
     public static void checkBlacklist() {
         Daten.listeBlacklist.filterListe(Daten.listeFilme, Daten.listeFilmeNachBlackList);
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEFILTERT, ListeBlacklist.class.getSimpleName());
     }
 
     public static synchronized void getModelTabFilme(ListeFilme listeFilme, Daten ddaten, MVTable table,
