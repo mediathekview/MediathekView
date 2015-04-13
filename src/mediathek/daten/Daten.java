@@ -304,7 +304,7 @@ public class Daten {
         Daten.listeFilme.themenLaden();
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
         Daten.listeDownloads.filmEintragen(); // Filme bei einmalDownloads eingragen
-        MVListeFilme.checkBlacklist();
+        MVListeFilme.checkBlacklist(); // ToDo brauchts das??
     }
 
     public void allesSpeichern() {

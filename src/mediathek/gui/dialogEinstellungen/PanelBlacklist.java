@@ -84,19 +84,8 @@ public class PanelBlacklist extends PanelVorlage {
                 comboThemaLaden();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEFILTERT, PanelBlacklist.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setAnzahlGefiltert();
-            }
-        });
-        setAnzahlGefiltert();
     }
 
-    private void setAnzahlGefiltert() {
-        jTextFieldGefiltert.setText(" " + (Daten.listeFilme.size() - Daten.listeFilmeNachBlackList.size()) + " ");
-        this.doLayout();
-    }
 
     private void init_() {
         jCheckBoxAbo.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO)));
@@ -370,8 +359,6 @@ public class PanelBlacklist extends PanelVorlage {
         jLabel10 = new javax.swing.JLabel();
         jButtonTabelleLoeschen = new javax.swing.JButton();
         jCheckBoxBlacklistEingeschaltet = new javax.swing.JCheckBox();
-        jTextFieldGefiltert = new javax.swing.JTextField();
-        jLabel14 = new javax.swing.JLabel();
         jCheckBoxAbo = new javax.swing.JCheckBox();
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -484,7 +471,7 @@ public class PanelBlacklist extends PanelVorlage {
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(234, Short.MAX_VALUE))
+                .addContainerGap(238, Short.MAX_VALUE))
         );
 
         jTabbedPaneBlacklist.addTab("Blacklist allgemein", jPanel3);
@@ -624,7 +611,7 @@ public class PanelBlacklist extends PanelVorlage {
                         .addComponent(jRadioButtonWhitelist))
                     .addComponent(jButtonHilfe))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel10)
@@ -638,11 +625,6 @@ public class PanelBlacklist extends PanelVorlage {
 
         jCheckBoxBlacklistEingeschaltet.setText("Blacklist im Tab Filme ist eingeschaltet");
 
-        jTextFieldGefiltert.setEditable(false);
-        jTextFieldGefiltert.setText("0");
-
-        jLabel14.setText("Anzahl gefilterter Filme:");
-
         jCheckBoxAbo.setText("Die Blacklist beim Suchen der Abos berücksichtigen (sonst komplette Filmliste)");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -652,31 +634,23 @@ public class PanelBlacklist extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPaneBlacklist)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jCheckBoxAbo)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jCheckBoxBlacklistEingeschaltet)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel14)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldGefiltert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jTabbedPaneBlacklist))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCheckBoxAbo)
+                            .addComponent(jCheckBoxBlacklistEingeschaltet))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jCheckBoxBlacklistEingeschaltet)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextFieldGefiltert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel14)))
+                .addComponent(jCheckBoxBlacklistEingeschaltet)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxAbo)
                 .addGap(18, 18, 18)
-                .addComponent(jTabbedPaneBlacklist, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
+                .addComponent(jTabbedPaneBlacklist)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -696,7 +670,6 @@ public class PanelBlacklist extends PanelVorlage {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
@@ -714,7 +687,6 @@ public class PanelBlacklist extends PanelVorlage {
     private javax.swing.JSlider jSliderMinuten;
     private javax.swing.JTabbedPane jTabbedPaneBlacklist;
     private javax.swing.JTable jTableBlacklist;
-    private javax.swing.JTextField jTextFieldGefiltert;
     private javax.swing.JTextField jTextFieldMinuten;
     private javax.swing.JTextField jTextFieldThemaTitel;
     private javax.swing.JTextField jTextFieldTitel;

@@ -59,14 +59,14 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
     }
 
-    public boolean change(String idx, DatenBlacklist b) {
-        boolean ret;
-        remove(idx);
-        b.arr[DatenBlacklist.BLACKLIST_NR_NR] = getNr(nr++);
-        ret = super.add(b);
-        notifyBlack();
-        return ret;
-    }
+//    public boolean change(String idx, DatenBlacklist b) {
+//        boolean ret;
+//        remove(idx);
+//        b.arr[DatenBlacklist.BLACKLIST_NR_NR] = getNr(nr++);
+//        ret = super.add(b);
+//        notifyBlack();
+//        return ret;
+//    }
 
     @Override
     public boolean remove(Object b) {
