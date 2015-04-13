@@ -114,6 +114,7 @@ public class MVConfig {
     public static final String SYSTEM_FILTER_KEINE_GESEHENE = "filter-keineGesehen";
     public static final String SYSTEM_FILTER_NUR_HD = "filter-nurHd";
     public static final String SYSTEM_FILTER_NUR_NEUE = "filter-nurNeue";
+    public static final String SYSTEM_FILTER_BLACKLIST = "filter-blacklist";
     //
     public static final String SYSTEM_FILTER_SENDER = "filter-sender";
     public static final String SYSTEM_FILTER_THEMA = "filter-thema";

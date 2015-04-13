@@ -100,7 +100,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
         jButtonFilterLoeschen.setIcon(GetIcon.getProgramIcon("clear_16.png"));
         jButtonFilterLoeschen.setMnemonic(KeyEvent.VK_F8);
-        jButtonBlacklist.setIcon(GetIcon.getProgramIcon("blacklist_16.png"));
+        setIconBlacklist();
         jButtonBlacklist.addActionListener(new ActionListener() {
 
             @Override
@@ -108,6 +108,12 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                 DialogLeer dialog = new DialogLeer(parent, true);
                 dialog.init("Blacklist", new PanelBlacklist(daten, parent, PanelBlacklist.class.getName() + "_3"));
                 dialog.setVisible(true);
+            }
+        });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterPanel.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setIconBlacklist();
             }
         });
 
@@ -137,6 +143,16 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
             }
         });
         setVisible(true);
+    }
+
+    private void setIconBlacklist() {
+        if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET))) {
+            //ein
+            jButtonBlacklist.setIcon(GetIcon.getProgramIcon("blacklist_ein_16.png"));
+        } else {
+            //aus
+            jButtonBlacklist.setIcon(GetIcon.getProgramIcon("blacklist_aus_16.png"));
+        }
     }
 
     private void setFilterAnzahl() {
