@@ -107,21 +107,21 @@ public class MVConfig {
     public static final String SYSTEM_EXPORT_DATEI = "system-export-datei";
     public static final String SYSTEM_ANZ_TAGE_FILMLISTE = "system-anz-tage-filmilste"; // es werden nur die x letzten Tage geladen
     // Filter
-    public static final String SYSTEM_FILTER_TAGE_START = "filter-tage-start"; // index im Array GuiFilme.COMBO_ZEIT_INT
-    public static final String SYSTEM_FILTER_DAUER = "filter-dauer";
-    public static final String SYSTEM_FILTER_TAGE = "filter-tage"; // index im Array GuiFilme.COMBO_ZEIT_INT
-    public static final String SYSTEM_FILTER_KEINE_ABO = "filter-keineAbo";
-    public static final String SYSTEM_FILTER_KEINE_GESEHENE = "filter-keineGesehen";
-    public static final String SYSTEM_FILTER_NUR_HD = "filter-nurHd";
-    public static final String SYSTEM_FILTER_NUR_NEUE = "filter-nurNeue";
-    public static final String SYSTEM_FILTER_BLACKLIST = "filter-blacklist";
+    public static final String SYSTEM_FILTER__TAGE = "filter-tage-start"; // index im Array GuiFilme.COMBO_ZEIT_INT
+    public static final String SYSTEM_FILTER_PROFILE__DAUER = "filter-dauer";
+    public static final String SYSTEM_FILTER_PROFILE__TAGE = "filter-tage"; // index im Array GuiFilme.COMBO_ZEIT_INT
+    public static final String SYSTEM_FILTER_PROFILE_KEINE_ABO = "filter-keineAbo";
+    public static final String SYSTEM_FILTER_PROFILE_KEINE_GESEHENE = "filter-keineGesehen";
+    public static final String SYSTEM_FILTER_PROFILE__NUR_HD = "filter-nurHd";
+    public static final String SYSTEM_FILTER_PROFILE__NUR_NEUE = "filter-nurNeue";
+    public static final String SYSTEM_FILTER_PROFILE__BLACKLIST_AUS = "filter-blacklist-aus";
     //
-    public static final String SYSTEM_FILTER_SENDER = "filter-sender";
-    public static final String SYSTEM_FILTER_THEMA = "filter-thema";
-    public static final String SYSTEM_FILTER_TITEL = "filter-titel";
-    public static final String SYSTEM_FILTER_THEMA_TITEL = "filter-themaTitel";
-    public static final String SYSTEM_FILTER_TT = "filter-TT-oder-irgendwo";
-    public static final String SYSTEM_FILTER_ANZAHL = "filter-anzahl";
+    public static final String SYSTEM_FILTER_PROFILE__SENDER = "filter-sender";
+    public static final String SYSTEM_FILTER_PROFILE__THEMA = "filter-thema";
+    public static final String SYSTEM_FILTER_PROFILE__TITEL = "filter-titel";
+    public static final String SYSTEM_FILTER_PROFILE__THEMA_TITEL = "filter-themaTitel";
+    public static final String SYSTEM_FILTER_PROFILE__TT = "filter-TT-oder-irgendwo";
+    public static final String SYSTEM_FILTER_PROFILE__ANZAHL_FILTER = "filter-anzahl";
 
     // Programmpfade
     public static final String SYSTEM_PFAD_VLC = "pfad-vlc";
