@@ -115,6 +115,7 @@ public class MVConfig {
     public static final String SYSTEM_FILTER_PROFILE__NUR_HD = "filter-nurHd";
     public static final String SYSTEM_FILTER_PROFILE__NUR_NEUE = "filter-nurNeue";
     public static final String SYSTEM_FILTER_PROFILE__BLACKLIST_AUS = "filter-blacklist-aus";
+    public static final String SYSTEM_FILTER_PROFILE__NAME = "filter-name";
     //
     public static final String SYSTEM_FILTER_PROFILE__SENDER = "filter-sender";
     public static final String SYSTEM_FILTER_PROFILE__THEMA = "filter-thema";
