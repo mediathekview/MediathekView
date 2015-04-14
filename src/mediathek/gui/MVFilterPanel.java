@@ -20,6 +20,7 @@
 package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -48,6 +49,8 @@ import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import mediathek.daten.Daten;
@@ -144,7 +147,47 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                 setFilterAnzahl();
             }
         });
-        setVisible(true);
+        setToolTip();
+        super.setVisible(true);
+    }
+
+    @Override
+    public void setVisible(boolean setvisible) {
+        super.setVisible(setvisible);
+        setToolTip();
+    }
+
+    private void setToolTip() {
+        if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 0).isEmpty()) {
+            jRadioButtonF1.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 1 speichern");
+        } else {
+            String s = Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 0);
+            jRadioButtonF1.setToolTipText(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 0));
+        }
+
+        if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 1).isEmpty()) {
+            jRadioButtonF2.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 1 speichern");
+        } else {
+            jRadioButtonF2.setToolTipText(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 1));
+        }
+
+        if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 2).isEmpty()) {
+            jRadioButtonF3.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 2 speichern");
+        } else {
+            jRadioButtonF3.setToolTipText(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 2));
+        }
+
+        if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 3).isEmpty()) {
+            jRadioButtonF4.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 3 speichern");
+        } else {
+            jRadioButtonF4.setToolTipText(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 3));
+        }
+
+        if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 4).isEmpty()) {
+            jRadioButtonF5.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 4 speichern");
+        } else {
+            jRadioButtonF5.setToolTipText(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 4));
+        }
     }
 
     private void setIconBlacklist() {
@@ -264,8 +307,6 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
     public class BeobMaus extends MouseAdapter {
 
-        //rechhte Maustaste
-        JSpinner jSpinner;
         int filter;
         JRadioButtonMenuItem r1 = new JRadioButtonMenuItem("Blacklist einschalten");
         JRadioButtonMenuItem r2 = new JRadioButtonMenuItem("Blacklist ausschalten");
@@ -312,7 +353,44 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         }
 
         private void showMenu(MouseEvent evt) {
-            JPopupMenu jPopupMenu = new JPopupMenu();
+            final JPopupMenu jPopupMenu = new JPopupMenu();
+            final JTextField name = new JTextField("");
+            final JSpinner jSpinner;
+            JPanel pName = new JPanel(new FlowLayout());
+            JLabel lbl = new JLabel("Name: ");
+            name.setMinimumSize(new Dimension(100, name.getPreferredSize().height));
+            name.setPreferredSize(new Dimension(150, name.getPreferredSize().height));
+            name.setText(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, filter));
+            name.getDocument().addDocumentListener(new DocumentListener() {
+
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_PROFILE__NAME, name.getText(), filter, MVFilter.MAX_FILTER);
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_PROFILE__NAME, name.getText(), filter, MVFilter.MAX_FILTER);
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_PROFILE__NAME, name.getText(), filter, MVFilter.MAX_FILTER);
+                }
+            });
+            name.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    jPopupMenu.setVisible(false);
+                }
+            });
+            pName.add(lbl);
+            pName.add(name);
+            jPopupMenu.add(pName);
+            //##Trenner##
+            jPopupMenu.addSeparator();
+
             JMenuItem item = new JMenuItem("Filterprofil speichern");
             item.setIcon(GetIcon.getProgramIcon("filter_speichern_16.png"));
             item.addActionListener(new ActionListener() {
