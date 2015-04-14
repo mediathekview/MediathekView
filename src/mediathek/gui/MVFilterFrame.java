@@ -230,30 +230,29 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 0).isEmpty()) {
             jRadioButtonF1.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 1 speichern");
         } else {
-            String s = Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 0);
             jRadioButtonF1.setToolTipText(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 0));
         }
 
         if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 1).isEmpty()) {
-            jRadioButtonF2.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 1 speichern");
+            jRadioButtonF2.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 2 speichern");
         } else {
             jRadioButtonF2.setToolTipText(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 1));
         }
 
         if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 2).isEmpty()) {
-            jRadioButtonF3.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 2 speichern");
+            jRadioButtonF3.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 3 speichern");
         } else {
             jRadioButtonF3.setToolTipText(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 2));
         }
 
         if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 3).isEmpty()) {
-            jRadioButtonF4.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 3 speichern");
+            jRadioButtonF4.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 4 speichern");
         } else {
             jRadioButtonF4.setToolTipText(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 3));
         }
 
         if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 4).isEmpty()) {
-            jRadioButtonF5.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 4 speichern");
+            jRadioButtonF5.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 5 speichern");
         } else {
             jRadioButtonF5.setToolTipText(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, 4));
         }
@@ -427,7 +426,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
             final JSpinner jSpinner;
             JPanel pName = new JPanel(new FlowLayout());
             JLabel lbl = new JLabel("Name: ");
-            name.setMinimumSize(new Dimension(100, name.getPreferredSize().height));
+            name.setMinimumSize(new Dimension(100, name.getMinimumSize().height));
             name.setPreferredSize(new Dimension(150, name.getPreferredSize().height));
             name.setText(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NAME, filter));
             name.getDocument().addDocumentListener(new DocumentListener() {
