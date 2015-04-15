@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,6 +47,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import mediathek.controller.Log;
 import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
@@ -60,6 +62,7 @@ import mediathek.tool.CellRendererDownloads;
 import mediathek.tool.DirOpenAction;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.HinweisKeineAuswahl;
+import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFilmSize;
@@ -416,6 +419,43 @@ public class GuiDownloads extends PanelVorlage {
             OpenPlayerAction.filmAbspielen(parentComponent, s);
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
+        }
+    }
+
+    private void filmLoeschen_() {
+        int row = tabelle.getSelectedRow();
+        if (row < 0) {
+            new HinweisKeineAuswahl().zeigen(parentComponent);
+            return;
+        }
+        DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
+        // Download nur löschen wenn er nicht läuft
+        if (datenDownload.start != null) {
+            if (datenDownload.start.status < Start.STATUS_FERTIG) {
+                MVMessageDialog.showMessageDialog(parentComponent, "Download erst stoppen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+        try {
+            File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            if (!file.exists()) {
+                MVMessageDialog.showMessageDialog(parentComponent, "Die Datei existiert nicht!", "Film löschen", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int ret = JOptionPane.showConfirmDialog(parentComponent,
+                    datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR], "Film Löschen?", JOptionPane.YES_NO_OPTION);
+            if (ret != JOptionPane.OK_OPTION) {
+                return;
+            }
+
+            // und jetzt die Datei löschen
+            Log.systemMeldung(new String[]{"Datei löschen: ", file.getAbsolutePath()});
+            if (!file.delete()) {
+                throw new Exception();
+            }
+        } catch (Exception ex) {
+            MVMessageDialog.showMessageDialog(parentComponent, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
+            Log.fehlerMeldung(915236547, "Fehler beim löschen: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
     }
 
@@ -982,6 +1022,21 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             jPopupMenu.add(itemPlayerDownload);
+            // Film löschen
+            JMenuItem itemDeleteDownload = new JMenuItem("gespeicherten Film löschen");
+            itemDeleteDownload.setIcon(GetIcon.getProgramIcon("film_del_16.png"));
+
+            itemDeleteDownload.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    filmLoeschen_();
+                }
+            });
+            jPopupMenu.add(itemDeleteDownload);
+
+            //#######################################
+            jPopupMenu.addSeparator();
+            //#######################################
 
             // URL abspielen
             JMenuItem itemPlayer = new JMenuItem("Film (URL) abspielen");
