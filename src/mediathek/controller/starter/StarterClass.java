@@ -797,7 +797,7 @@ public class StarterClass {
         }
 
         @Override
-        public void run() {
+        public synchronized void run() {
             startmeldung(datenDownload, start);
             try {
                 Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
