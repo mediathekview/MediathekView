@@ -46,7 +46,15 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.res.GetIcon;
-import mediathek.tool.*;
+import mediathek.tool.EscBeenden;
+import mediathek.tool.FilenameUtils;
+import mediathek.tool.Funktionen;
+import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.Konstanten;
+import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVColor;
+import mediathek.tool.MVConfig;
+import mediathek.tool.MVMessageDialog;
 import msearch.daten.DatenFilm;
 
 public class DialogAddDownload extends JDialog {
@@ -259,11 +267,12 @@ public class DialogAddDownload extends JDialog {
             stopBeob = true;
             datenDownload = new DatenDownload(pSet, datenFilm, Start.QUELLE_DOWNLOAD, null, "", "", getFilmResolution());
             if (datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR].equals("")) {
+                // dann wird nicht gespeichert ==> eigenntlich falsche Seteinstellungen??
                 jTextFieldName.setEnabled(false);
                 jComboBoxPfad.setEnabled(false);
                 jButtonZiel.setEnabled(false);
                 jTextFieldName.setText("");
-                setModelPfad("");
+                jComboBoxPfad.setModel(new DefaultComboBoxModel<>(new String[]{""}));
             } else {
                 jTextFieldName.setEnabled(true);
                 jComboBoxPfad.setEnabled(true);
@@ -349,20 +358,22 @@ public class DialogAddDownload extends JDialog {
     private void setModelPfad(String pfad) {
         ArrayList<String> pfade = new ArrayList<>();
         // wenn gewünscht, den letzten verwendeten Pfad an den Anfang setzen
-        if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN))) {
-            // sonst kommt der Pfad des Sets an den Anfang
-            if (!pfad.isEmpty()) {
-                pfade.add(pfad);
-            }
+        if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)) && !pfad.isEmpty()) {
+            // aktueller Pfad an Platz 1
+            pfade.add(pfad);
+
         }
         if (!Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).isEmpty()) {
             String[] p = Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).split("<>");
-            if (p.length != 0) {
-                pfade.addAll(Arrays.asList(p));
+            for (String s : p) {
+                if (!pfade.contains(s)) {
+                    pfade.add(s);
+                }
             }
         }
-        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN))) {
-            if (!pfad.isEmpty()) {
+        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)) && !pfad.isEmpty()) {
+            // aktueller Pfad zum Schluss
+            if (!pfade.contains(pfad)) {
                 pfade.add(pfad);
             }
         }
