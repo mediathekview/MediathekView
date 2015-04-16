@@ -343,7 +343,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
 
     private void check() {
         mVPanelDownloadZiel.setPfadName_geaendert();
-        mVPanelDownloadZiel.saveComboPfad();
+//        mVPanelDownloadZiel.saveComboPfad();
         ok = true;
     }
 

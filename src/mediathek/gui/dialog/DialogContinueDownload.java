@@ -157,7 +157,7 @@ public class DialogContinueDownload extends JDialog {
         if (countdownTimer != null) {
             countdownTimer.stop();
         }
-        mVPanelDownloadZiel.saveComboPfad();
+//        mVPanelDownloadZiel.saveComboPfad();
         dispose();
     }
 
