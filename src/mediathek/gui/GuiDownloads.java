@@ -903,17 +903,6 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
 
-            // Zielordner öffnen
-            JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
-            itemOeffnen.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
-            jPopupMenu.add(itemOeffnen);
-            itemOeffnen.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent arg0) {
-                    zielordnerOeffnen();
-                }
-            });
-
             //#######################################
             jPopupMenu.addSeparator();
             //#######################################
@@ -937,7 +926,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             //dauerhaft löschen
-            JMenuItem itemDauerhaftLoeschen = new JMenuItem("Download dauerhaft löschen");
+            JMenuItem itemDauerhaftLoeschen = new JMenuItem("Download aus Liste entfernen");
             itemDauerhaftLoeschen.setIcon(GetIcon.getProgramIcon("download_del_16.png"));
             jPopupMenu.add(itemDauerhaftLoeschen);
             itemDauerhaftLoeschen.addActionListener(new ActionListener() {
@@ -1010,8 +999,9 @@ public class GuiDownloads extends PanelVorlage {
             //#######################################
             jPopupMenu.addSeparator();
             //#######################################
+
             // Film abspielen
-            JMenuItem itemPlayerDownload = new JMenuItem("gespeicherten Film abspielen");
+            JMenuItem itemPlayerDownload = new JMenuItem("gespeicherten Film (Datei) abspielen");
             itemPlayerDownload.setIcon(GetIcon.getProgramIcon("film_start_16.png"));
 
             itemPlayerDownload.addActionListener(new ActionListener() {
@@ -1022,7 +1012,7 @@ public class GuiDownloads extends PanelVorlage {
             });
             jPopupMenu.add(itemPlayerDownload);
             // Film löschen
-            JMenuItem itemDeleteDownload = new JMenuItem("gespeicherten Film löschen");
+            JMenuItem itemDeleteDownload = new JMenuItem("gespeicherten Film (Datei) löschen");
             itemDeleteDownload.setIcon(GetIcon.getProgramIcon("film_del_16.png"));
 
             itemDeleteDownload.addActionListener(new ActionListener() {
@@ -1032,6 +1022,16 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             jPopupMenu.add(itemDeleteDownload);
+            // Zielordner öffnen
+            JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
+            itemOeffnen.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+            jPopupMenu.add(itemOeffnen);
+            itemOeffnen.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    zielordnerOeffnen();
+                }
+            });
 
             //#######################################
             jPopupMenu.addSeparator();
@@ -1100,6 +1100,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             jPopupMenu.add(itemInfo);
+
             // ######################
             // Menü anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
