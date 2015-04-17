@@ -12,10 +12,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import mediathek.controller.Log;
+import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
+import mediathek.daten.DatenAbo;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
+import msearch.filmeSuchen.MSListenerFilmeLaden;
 import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
 
 /**
@@ -34,8 +37,10 @@ public final class MVStatusBar extends JPanel {
     private final JProgressBar progress;
     private final JButton stopButton;
     private final BottomBar bottomBar;
+    private final Daten daten;
 
-    public MVStatusBar() {
+    public MVStatusBar(Daten daten) {
+        this.daten = daten;
         bottomBar = new BottomBar(BottomBarSize.LARGE);
 
         lblCenter = new JLabel();
@@ -75,6 +80,7 @@ public final class MVStatusBar extends JPanel {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_TIMER, MVStatusBar.class.getSimpleName()) {
             @Override
             public void ping() {
+                setIndexForCenterDisplay(currentIndex);
                 try {
                     if (!stopTimer) {
                         setInfoRechts();
@@ -82,6 +88,21 @@ public final class MVStatusBar extends JPanel {
                 } catch (Exception ex) {
                     Log.fehlerMeldung(936251087, ex);
                 }
+            }
+        });
+        Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
+            @Override
+            public void start(MSListenerFilmeLadenEvent event) {
+            }
+
+            @Override
+            public void progress(MSListenerFilmeLadenEvent event) {
+                updateProgressBar(event);
+            }
+
+            @Override
+            public void fertig(MSListenerFilmeLadenEvent event) {
+                hideProgressIndicators();
             }
         });
     }
@@ -98,7 +119,7 @@ public final class MVStatusBar extends JPanel {
     /**
      * Hide the progress bar indicator and stop button
      */
-    public void hideProgressIndicators() {
+    private void hideProgressIndicators() {
         stopTimer = false;
         progress.setVisible(false);
         stopButton.setVisible(false);
@@ -106,7 +127,7 @@ public final class MVStatusBar extends JPanel {
         setInfoRechts();
     }
 
-    public void updateProgressBar(MSListenerFilmeLadenEvent event) {
+    private void updateProgressBar(MSListenerFilmeLadenEvent event) {
         stopTimer = true;
         if (!progress.isVisible()) {
             progress.setVisible(true);
@@ -178,4 +199,70 @@ public final class MVStatusBar extends JPanel {
         String displayString = displayListForLeftLabel.get(i);
         lblCenter.setText(displayString);
     }
+
+    public void setInfoFilme() {
+        String textLinks;
+        final String TRENNER = "  ||  ";
+        int gesamt = Daten.listeFilme.size();
+        int anzListe = daten.guiFilme.getTableRowCount();
+        int runs = Daten.listeDownloadsButton.getListOfStartsNotFinished(Start.QUELLE_BUTTON).size();
+        // Anzahl der Filme
+        if (gesamt == anzListe) {
+            if (anzListe == 1) {
+                textLinks = "1 Film";
+            } else {
+                textLinks = anzListe + " Filme";
+            }
+        } else {
+            if (anzListe == 1) {
+                textLinks = "1 Film";
+            } else {
+                textLinks = anzListe + " Filme";
+            }
+            textLinks += " (Insgesamt: " + gesamt + " )";
+        }
+        // laufende Programme
+        if (runs == 1) {
+            textLinks += TRENNER;
+            textLinks += (runs + " laufender Film");
+        } else if (runs > 1) {
+            textLinks += TRENNER;
+            textLinks += (runs + " laufende Filme");
+        }
+        // auch die Downloads anzeigen
+        textLinks += TRENNER;
+        textLinks += Daten.listeDownloads.getInfo(false /*mitAbo*/);
+
+        setTextLeft(MVStatusBar.StatusbarIndex.FILME, textLinks);
+    }
+
+    public void setInfoDownload() {
+        String textLinks = Daten.listeDownloads.getInfo(true /*mitAbo*/);
+
+        setTextLeft(MVStatusBar.StatusbarIndex.DOWNLOAD, textLinks);
+    }
+
+    public void setInfoAbo() {
+
+        String textLinks;
+        int ein = 0;
+        int aus = 0;
+        int gesamt = Daten.listeAbo.size();
+        for (DatenAbo abo : Daten.listeAbo) {
+            if (abo.aboIstEingeschaltet()) {
+                ++ein;
+            } else {
+                ++aus;
+            }
+        }
+        if (gesamt == 1) {
+            textLinks = "1 Abo, ";
+        } else {
+            textLinks = gesamt + " Abos, ";
+        }
+        textLinks += "(" + ein + " eingeschaltet, " + aus + " ausgeschaltet)";
+
+        setTextLeft(MVStatusBar.StatusbarIndex.ABO, textLinks);
+    }
+
 }
