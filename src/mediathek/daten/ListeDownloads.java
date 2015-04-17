@@ -45,8 +45,16 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     private final DownloadInfos downloadInfos = new DownloadInfos();
     private final LinkedList<DatenDownload> aktivDownloads = new LinkedList<>();
 
-    public ListeDownloads(Daten daten) {
-        this.daten = daten;
+    public ListeDownloads(Daten daten_) {
+        this.daten = daten_;
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_TIMER, ListeDownloads.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                makeDownloadInfos();
+                daten.mediathekGui.getStatusBar().setInfoDownload();
+                daten.mediathekGui.getStatusBar().setInfoFilme();
+            }
+        });
     }
 
     //===================================
@@ -106,11 +114,15 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    public synchronized DownloadInfos getInfos() {
+    public synchronized DownloadInfos getDownloadInfos() {
+        return downloadInfos;
+    }
+
+    private synchronized void makeDownloadInfos() {
         downloadInfos.clean();
 
-        LinkedList<DatenDownload> activeDownloadList = getListOfStartsNotFinished(Start.QUELLE_ALLE);
-        for (DatenDownload download : activeDownloadList) {
+        getListOfStartsNotFinished(Start.QUELLE_ALLE);
+        for (DatenDownload download : aktivDownloads) {
             ++downloadInfos.anzDownloadsRun;
             downloadInfos.byteAlleDownloads += (download.mVFilmSize.getSize() > 0 ? download.mVFilmSize.getSize() : 0);
             if (download.start != null && download.start.status == Start.STATUS_RUN) {
@@ -143,8 +155,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 downloadInfos.timeRestAllDownloads = 0; // gibt ja nur noch einen
             }
         }
-
-        return downloadInfos;
+        downloadInfos.roundBandwidth();
     }
 
     public synchronized void listePutzen(DatenDownload datenDownload) {
@@ -522,6 +533,12 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             } else {
                 textLinks += starts[4] + " laufen";
             }
+
+            if (starts[4] > 0) {
+                DownloadInfos di = getDownloadInfos();
+                textLinks += " (" + di.bandwidthStr + ")";
+            }
+
             if (starts[3] == 1) {
                 textLinks += ", 1 wartet";
             } else {

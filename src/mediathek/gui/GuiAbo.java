@@ -215,27 +215,8 @@ public class GuiAbo extends PanelVorlage {
     }
 
     private void setInfo() {
-        String textLinks;
-        int ein = 0;
-        int aus = 0;
-        int gesamt = tabelle.getModel().getRowCount();
-        for (int i = 0; i < tabelle.getModel().getRowCount(); ++i) {
-            int modelRow = tabelle.convertRowIndexToModel(i);
-            DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
-            if (akt.aboIstEingeschaltet()) {
-                ++ein;
-            } else {
-                ++aus;
-            }
-        }
-        if (gesamt == 1) {
-            textLinks = "1 Abo, ";
-        } else {
-            textLinks = gesamt + " Abos, ";
-        }
-        textLinks += "(" + ein + " eingeschaltet, " + aus + " ausgeschaltet)";
         // Infopanel setzen
-        daten.mediathekGui.getStatusBar().setTextLeft(MVStatusBar.StatusbarIndex.ABO, textLinks);
+        daten.mediathekGui.getStatusBar().setInfoAbo();;
     }
 
     /**

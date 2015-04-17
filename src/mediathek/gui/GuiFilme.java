@@ -291,6 +291,14 @@ public class GuiFilme extends PanelVorlage {
         addMVListener();
     }
 
+    public int getTableRowCount() {
+        if (tabelle != null) {
+            return tabelle.getModel().getRowCount();
+        } else {
+            return 0;
+        }
+    }
+
     //===================================
     // Private
     //===================================
@@ -485,39 +493,8 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void setInfo() {
-        String textLinks;
-        final String TRENNER = "  ||  ";
-        int gesamt = Daten.listeFilme.size();
-        int anzListe = tabelle.getModel().getRowCount();
-        int runs = Daten.listeDownloadsButton.getListOfStartsNotFinished(Start.QUELLE_BUTTON).size();
-        // Anzahl der Filme
-        if (gesamt == anzListe) {
-            if (anzListe == 1) {
-                textLinks = "1 Film";
-            } else {
-                textLinks = anzListe + " Filme";
-            }
-        } else {
-            if (anzListe == 1) {
-                textLinks = "1 Film";
-            } else {
-                textLinks = anzListe + " Filme";
-            }
-            textLinks += " (Insgesamt: " + gesamt + " )";
-        }
-        // laufende Programme
-        if (runs == 1) {
-            textLinks += TRENNER;
-            textLinks += (runs + " laufender Film");
-        } else if (runs > 1) {
-            textLinks += TRENNER;
-            textLinks += (runs + " laufende Filme");
-        }
-        // auch die Downloads anzeigen
-        textLinks += TRENNER;
-        textLinks += Daten.listeDownloads.getInfo(false /*mitAbo*/);
         // Infopanel setzen
-        daten.mediathekGui.getStatusBar().setTextLeft(MVStatusBar.StatusbarIndex.FILME, textLinks);
+        daten.mediathekGui.getStatusBar().setInfoFilme();
     }
 
     // ############################################

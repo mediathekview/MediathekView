@@ -78,9 +78,6 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         initComponents();
         this.parent = parent;
         this.menuItem = menuItem;
-//        if (!SystemInfo.isMacOSX()) {
-//            parent = null;
-//        }
         if (!SystemInfo.isMacOSX()) {
             jDialog = new JDialog(parent, "Bandbreite");
         } else {
@@ -279,11 +276,11 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         try {
             if (menuItem.isSelected()) {
                 timerTask = new TimerTask() {
-                    DownloadInfos di = Daten.listeDownloads.getInfos();
+                    DownloadInfos di = Daten.listeDownloads.getDownloadInfos();
 
                     @Override
                     public void run() {
-                        Daten.listeDownloads.getInfos();
+                        Daten.listeDownloads.getDownloadInfos();
 
                         counter++;
                         m_trace.addPoint(counter / 60, di.bandwidth); // minutes
@@ -333,7 +330,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         }
         if (di.bandwidth > 0) {
             info += "<span class=\"sans\"><b>Bandbreite: </b>";
-            info += di.roundBandwidth() + "<br /></span>";
+            info += di.bandwidthStr + "<br /></span>";
         }
         info += END;
         jEditorPaneInfo.setText(info);

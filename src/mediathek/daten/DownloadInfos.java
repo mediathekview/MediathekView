@@ -33,6 +33,7 @@ public class DownloadInfos {
     public long timeRestAllDownloads = 0; // Restzeit aller gestarteten Downloads
     // Bandbreite
     public long bandwidth = 0; //Bandbreite: bytes per second
+    public String bandwidthStr = "";
 
     public void clean() {
         anzDownloadsRun = 0;
@@ -44,23 +45,25 @@ public class DownloadInfos {
     }
 
     public String roundBandwidth(long time) {
+        roundBandwidth();
         if (bandwidth > 1_000_000.0) {
-            return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + new DecimalFormat("####0.00").format(bandwidth / 1_000_000.0) + " MByte/s";
+            return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + bandwidthStr;
         } else if (bandwidth > 1_000.0) {
-            return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + Math.round(bandwidth / 1_000.0) + " kByte/s";
+            return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + bandwidthStr;
         } else {
-            return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + Math.round(bandwidth) + " Byte/s";
+            return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + bandwidthStr;
         }
     }
 
     public String roundBandwidth() {
         if (bandwidth > 1_000_000.0) {
-            return new DecimalFormat("####0.00").format(bandwidth / 1_000_000.0) + " MByte/s";
+            bandwidthStr = new DecimalFormat("####0.00").format(bandwidth / 1_000_000.0) + " MByte/s";
         } else if (bandwidth > 1_000.0) {
-            return Math.round(bandwidth / 1_000.0) + " kByte/s";
+            bandwidthStr = Math.round(bandwidth / 1_000.0) + " kByte/s";
         } else {
-            return Math.round(bandwidth) + " Byte/s";
+            bandwidthStr = Math.round(bandwidth) + " Byte/s";
         }
+        return bandwidthStr;
     }
 
     public String getGesamtRestzeit() {

@@ -117,7 +117,7 @@ public class MediathekGui extends JFrame {
      * Legt die statusbar an.
      */
     private void createStatusBar() {
-        statusBar = new MVStatusBar();
+        statusBar = new MVStatusBar(daten);
 
         JScrollPane js = new JScrollPane();
         js.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -530,12 +530,10 @@ public class MediathekGui extends JFrame {
 
             @Override
             public void progress(MSListenerFilmeLadenEvent event) {
-                getStatusBar().updateProgressBar(event);
             }
 
             @Override
             public void fertig(MSListenerFilmeLadenEvent event) {
-                getStatusBar().hideProgressIndicators();
                 jMenuItemFilmlisteLaden.setEnabled(true);
                 daten.allesSpeichern(); // damit nichts verlorengeht
             }
@@ -543,7 +541,7 @@ public class MediathekGui extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
-                beenden(false,false);
+                beenden(false, false);
             }
         });
 ////        systemTray();
@@ -749,7 +747,7 @@ public class MediathekGui extends JFrame {
         jMenuItemBeenden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                beenden(false,false);
+                beenden(false, false);
             }
         });
         // Filme
