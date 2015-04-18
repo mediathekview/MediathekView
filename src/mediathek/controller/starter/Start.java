@@ -28,7 +28,7 @@ public class Start {
     public static final int PROGRESS_WARTEN = 0;
     public static final int PROGRESS_GESTARTET = 1;
     public static final int PROGRESS_FERTIG = 1000;
-    public int status = STATUS_INIT;
+    public byte status = STATUS_INIT;
     public int startcounter = 0;
     public Process process = null; //Prozess des Download
     public int percent = -1; // Prozent fertiggestellt: -1=nix, 999=99,9%
@@ -38,24 +38,11 @@ public class Start {
     public Datum startZeit = null;
     public long restSekunden = -1;
     public MVInputStream mVInputStream = null;
-    // Quelle - start über einen Button - Download - Abo
-    public static final int QUELLE_ALLE = -1;
-    public static final int QUELLE_BUTTON = 1;
-    public static final int QUELLE_DOWNLOAD = 2;
-    public static final int QUELLE_ABO = 3;
-    public static final String QUELLE_ALLE_TXT = "Alle";
-    public static final String QUELLE_BUTTON_TXT = "Button";
-    public static final String QUELLE_DOWNLOAD_TXT = "Download";
-    public static final String QUELLE_ABO_TXT = "Abo";
-    public static final int ART_DOWNLOAD = 1; // direkter Download
-    public static final int ART_PROGRAMM = 2; // Download über ein Programm
-    public static final String ART_DOWNLOAD_TXT = "direkter Download";
-    public static final String ART_PROGRAMM_TXT = "Programm";
     // Stati
-    public static final int STATUS_INIT = 1;
-    public static final int STATUS_RUN = 2;
-    public static final int STATUS_FERTIG = 3;
-    public static final int STATUS_ERR = 4;
+    public static final byte STATUS_INIT = 1;
+    public static final byte STATUS_RUN = 2;
+    public static final byte STATUS_FERTIG = 3;
+    public static final byte STATUS_ERR = 4;
     //Download wird so oft gestartet, falls er beim ersten Mal nicht anspringt
     public static final int STARTCOUNTER_MAX = 3;
 

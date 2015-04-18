@@ -15,6 +15,7 @@ import mediathek.controller.Log;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
+import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
@@ -205,7 +206,7 @@ public final class MVStatusBar extends JPanel {
         final String TRENNER = "  ||  ";
         int gesamt = Daten.listeFilme.size();
         int anzListe = daten.guiFilme.getTableRowCount();
-        int runs = Daten.listeDownloadsButton.getListOfStartsNotFinished(Start.QUELLE_BUTTON).size();
+        int runs = Daten.listeDownloadsButton.getListOfStartsNotFinished(DatenDownload.QUELLE_BUTTON).size();
         // Anzahl der Filme
         if (gesamt == anzListe) {
             if (anzListe == 1) {
@@ -231,13 +232,13 @@ public final class MVStatusBar extends JPanel {
         }
         // auch die Downloads anzeigen
         textLinks += TRENNER;
-        textLinks += Daten.listeDownloads.getInfo(false /*mitAbo*/);
+        textLinks += getInfoText(false /*mitAbo*/);
 
         setTextLeft(MVStatusBar.StatusbarIndex.FILME, textLinks);
     }
 
     public void setInfoDownload() {
-        String textLinks = Daten.listeDownloads.getInfo(true /*mitAbo*/);
+        String textLinks = getInfoText(true /*mitAbo*/);
 
         setTextLeft(MVStatusBar.StatusbarIndex.DOWNLOAD, textLinks);
     }
@@ -263,6 +264,70 @@ public final class MVStatusBar extends JPanel {
         textLinks += "(" + ein + " eingeschaltet, " + aus + " ausgeschaltet)";
 
         setTextLeft(MVStatusBar.StatusbarIndex.ABO, textLinks);
+    }
+
+    private String getInfoText(boolean mitAbo) {
+        String textLinks;
+        // Text links: Zeilen Tabelle
+        // nicht gestarted, laufen, fertig OK, fertig fehler
+        int[] starts = Daten.listeDownloads.getStarts();
+        if (starts[0] == 1) {
+            textLinks = "1 Download";
+        } else {
+            textLinks = starts[0] + " Downloads";
+        }
+        if (mitAbo) {
+            if (starts[1] == 1) {
+                textLinks += " (1 Abo, ";
+            } else {
+                textLinks += " (" + starts[1] + " Abos, ";
+            }
+            if (starts[2] == 1) {
+                textLinks += "1 Download)";
+            } else {
+                textLinks += starts[2] + " Downloads)";
+            }
+        }
+        boolean print = false;
+        for (int ii = 1; ii < starts.length; ++ii) {
+            if (starts[ii] > 0) {
+                print = true;
+                break;
+            }
+        }
+        if (print) {
+            textLinks += ": ";
+            if (starts[4] == 1) {
+                textLinks += "1 läuft";
+            } else {
+                textLinks += starts[4] + " laufen";
+            }
+
+            if (starts[4] > 0) {
+                textLinks += " (" + Daten.downloadInfos.bandwidthStr + ")";
+            }
+
+            if (starts[3] == 1) {
+                textLinks += ", 1 wartet";
+            } else {
+                textLinks += ", " + starts[3] + " warten";
+            }
+            if (starts[5] > 0) {
+                if (starts[5] == 1) {
+                    textLinks += ", 1 fertig";
+                } else {
+                    textLinks += ", " + starts[5] + " fertig";
+                }
+            }
+            if (starts[6] > 0) {
+                if (starts[6] == 1) {
+                    textLinks += ", 1 fehlerhaft";
+                } else {
+                    textLinks += ", " + starts[6] + " fehlerhaft";
+                }
+            }
+        }
+        return textLinks;
     }
 
 }

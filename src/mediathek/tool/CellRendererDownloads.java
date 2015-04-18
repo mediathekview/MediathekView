@@ -185,28 +185,28 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     }
                     break;
                 case DatenDownload.DOWNLOAD_ART_NR:
-                    switch (datenDownload.getArt()) {
-                        case Start.ART_DOWNLOAD:
-                            setText(Start.ART_DOWNLOAD_TXT);
+                    switch (datenDownload.art) {
+                        case DatenDownload.ART_DOWNLOAD:
+                            setText(DatenDownload.ART_DOWNLOAD_TXT);
                             break;
-                        case Start.ART_PROGRAMM:
-                            setText(Start.ART_PROGRAMM_TXT);
+                        case DatenDownload.ART_PROGRAMM:
+                            setText(DatenDownload.ART_PROGRAMM_TXT);
                             break;
                     }
                     break;
                 case DatenDownload.DOWNLOAD_QUELLE_NR:
-                    switch (datenDownload.getQuelle()) {
-                        case Start.QUELLE_ALLE:
-                            setText(Start.QUELLE_ALLE_TXT);
+                    switch (datenDownload.quelle) {
+                        case DatenDownload.QUELLE_ALLE:
+                            setText(DatenDownload.QUELLE_ALLE_TXT);
                             break;
-                        case Start.QUELLE_ABO:
-                            setText(Start.QUELLE_ABO_TXT);
+                        case DatenDownload.QUELLE_ABO:
+                            setText(DatenDownload.QUELLE_ABO_TXT);
                             break;
-                        case Start.QUELLE_BUTTON:
-                            setText(Start.QUELLE_BUTTON_TXT);
+                        case DatenDownload.QUELLE_BUTTON:
+                            setText(DatenDownload.QUELLE_BUTTON_TXT);
                             break;
-                        case Start.QUELLE_DOWNLOAD:
-                            setText(Start.QUELLE_DOWNLOAD_TXT);
+                        case DatenDownload.QUELLE_DOWNLOAD:
+                            setText(DatenDownload.QUELLE_DOWNLOAD_TXT);
                             break;
                     }
                     break;

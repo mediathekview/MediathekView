@@ -38,7 +38,22 @@ import msearch.daten.DatenFilm;
 import msearch.tool.Datum;
 
 public class DatenDownload implements Comparable<DatenDownload> {
-    //
+
+    // Quelle - start über einen Button - Download - Abo
+    public static final byte QUELLE_ALLE = -1;
+    public static final byte QUELLE_BUTTON = 1;
+    public static final byte QUELLE_DOWNLOAD = 2;
+    public static final byte QUELLE_ABO = 3;
+    public static final String QUELLE_ALLE_TXT = "Alle";
+    public static final String QUELLE_BUTTON_TXT = "Button";
+    public static final String QUELLE_DOWNLOAD_TXT = "Download";
+    public static final String QUELLE_ABO_TXT = "Abo";
+
+    // Art: direkter Download: http... oder über ein externes Programm: rtmp...
+    public static final byte ART_DOWNLOAD = 1; // direkter Download
+    public static final byte ART_PROGRAMM = 2; // Download über ein Programm
+    public static final String ART_DOWNLOAD_TXT = "direkter Download";
+    public static final String ART_PROGRAMM_TXT = "Programm";
 
     private static GermanStringSorter sorter = GermanStringSorter.getInstance();
     private static SimpleDateFormat sdf_datum_zeit = new SimpleDateFormat("dd.MM.yyyyHH:mm:ss");
@@ -147,12 +162,14 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public DatenPset pSet = null;
     public DatenAbo abo = null;
     public int nr = 0;
+    public byte quelle = QUELLE_ALLE;
+    public byte art = ART_DOWNLOAD;
 
     public DatenDownload() {
         makeArr();
     }
 
-    public DatenDownload(DatenPset pSet, DatenFilm film, int quelle, DatenAbo abo, String name, String pfad, String aufloesung) {
+    public DatenDownload(DatenPset pSet, DatenFilm film, byte quelle, DatenAbo abo, String name, String pfad, String aufloesung) {
         makeArr();
         this.film = film;
         this.pSet = pSet;
@@ -208,8 +225,15 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     public final void init() {
-        // Datum
         datumFilm = getDatumForObject();
+        try {
+            art = Byte.parseByte(arr[DOWNLOAD_ART_NR]);
+            quelle = Byte.parseByte(arr[DOWNLOAD_QUELLE_NR]);
+        } catch (Exception ex) {
+            Log.fehlerMeldung(649632580, ex, "Art: " + arr[DOWNLOAD_ART_NR] + " Quelle: " + arr[DOWNLOAD_QUELLE_NR]);
+            art = ART_PROGRAMM;
+            quelle = QUELLE_BUTTON;
+        }
     }
 
     public boolean istZurueckgestellt() {
@@ -298,25 +322,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     public boolean istAbo() {
-        return !arr[DatenDownload.DOWNLOAD_ABO_NR].equals("");
-    }
-
-    public int getArt() {
-        try {
-            return Integer.parseInt(arr[DOWNLOAD_ART_NR]);
-        } catch (Exception ex) {
-            Log.fehlerMeldung(946325800, ex);
-            return Start.ART_PROGRAMM;
-        }
-    }
-
-    public int getQuelle() {
-        try {
-            return Integer.parseInt(arr[DOWNLOAD_QUELLE_NR]);
-        } catch (Exception ex) {
-            Log.fehlerMeldung(649632580, ex);
-            return Start.QUELLE_BUTTON;
-        }
+        return !arr[DatenDownload.DOWNLOAD_ABO_NR].isEmpty();
     }
 
     public boolean isRestart() {
@@ -350,24 +356,25 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public String getTextRestzeit() {
         if (start != null) {
             if (start.status < Start.STATUS_FERTIG && start.status >= Start.STATUS_RUN && start.restSekunden > 0) {
-                if (start.restSekunden < 10) {
-                    return "10 s";
-                } else if (start.restSekunden < 20) {
-                    return "20 s";
-                } else if (start.restSekunden < 30) {
-                    return "30 s";
-                } else if (start.restSekunden < 50) { // sicher ist sicher
-                    return "1 Min.";
-                } else if (start.restSekunden < 100) {
-                    return "2 Min.";
-                } else if (start.restSekunden < 160) {
-                    return "3 Min.";
-                } else if (start.restSekunden < 220) {
-                    return "4 Min.";
-                } else if (start.restSekunden < 300) {
-                    return "5 Min.";
-                } else {
+
+                if (start.restSekunden > 300) {
                     return Long.toString(Math.round(start.restSekunden / 60.0)) + " Min.";
+                } else if (start.restSekunden > 230) {
+                    return "5 Min.";
+                } else if (start.restSekunden > 170) {
+                    return "4 Min.";
+                } else if (start.restSekunden > 110) {
+                    return "3 Min.";
+                } else if (start.restSekunden > 60) {
+                    return "2 Min.";
+                } else if (start.restSekunden > 30) {
+                    return "1 Min.";
+                } else if (start.restSekunden > 20) {
+                    return "30 s";
+                } else if (start.restSekunden > 10) {
+                    return "20 s";
+                } else {
+                    return "10 s";
                 }
             }
         }
@@ -422,14 +429,16 @@ public class DatenDownload implements Comparable<DatenDownload> {
             // ##############################################
             // pSet und ... eintragen
             arr[DOWNLOAD_PROGRAMMSET_NR] = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
+
             // Direkter Download nur wenn url passt und wenn im Programm ein Zielpfad ist sonst Abspielen
-            int art = (pSet.checkDownloadDirekt(arr[DOWNLOAD_URL_NR]) && pSet.progsContainPath()) ? Start.ART_DOWNLOAD : Start.ART_PROGRAMM;
+            art = (pSet.checkDownloadDirekt(arr[DOWNLOAD_URL_NR]) && pSet.progsContainPath()) ? ART_DOWNLOAD : ART_PROGRAMM;
             arr[DOWNLOAD_ART_NR] = String.valueOf(art);
-            if (art == Start.ART_DOWNLOAD) {
-                arr[DatenDownload.DOWNLOAD_PROGRAMM_NR] = Start.ART_DOWNLOAD_TXT;
+            if (art == ART_DOWNLOAD) {
+                arr[DatenDownload.DOWNLOAD_PROGRAMM_NR] = ART_DOWNLOAD_TXT;
             } else {
                 arr[DatenDownload.DOWNLOAD_PROGRAMM_NR] = programm.arr[DatenProg.PROGRAMM_NAME_NR];
             }
+
             arr[DOWNLOAD_PROGRAMM_RESTART_NR] = String.valueOf(programm.isRestart());
             dateinamePfadBauen(pSet, film, abo, nname, ppfad);
             programmaufrufBauen(programm);
@@ -555,7 +564,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             befehlsString = befehlsString.replace("%a", arr[DOWNLOAD_URL_AUTH_NR]);
             befehlsString = befehlsString.replace("%A", "-W " + arr[DOWNLOAD_URL_AUTH_NR]);
         }
-        if (getArt() == Start.ART_DOWNLOAD) {
+        if (art == ART_DOWNLOAD) {
             arr[DOWNLOAD_PROGRAMM_AUFRUF_NR] = "";
         } else {
             arr[DOWNLOAD_PROGRAMM_AUFRUF_NR] = befehlsString;

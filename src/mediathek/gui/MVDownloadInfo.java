@@ -276,19 +276,17 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         try {
             if (menuItem.isSelected()) {
                 timerTask = new TimerTask() {
-                    DownloadInfos di = Daten.listeDownloads.getDownloadInfos();
 
                     @Override
                     public void run() {
-                        Daten.listeDownloads.getDownloadInfos();
 
                         counter++;
-                        m_trace.addPoint(counter / 60, di.bandwidth); // minutes
-                        x_achse.getAxisTitle().setTitle(di.roundBandwidth((long) counter));
+                        m_trace.addPoint(counter / 60, Daten.downloadInfos.bandwidth); // minutes
+                        x_achse.getAxisTitle().setTitle(Daten.downloadInfos.roundBandwidth((long) counter));
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                setInfoText(di);
+                                setInfoText(Daten.downloadInfos);
                             }
                         });
                     }
@@ -311,7 +309,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         final String END = "</body></html>";
 
         String info = HEAD;
-        info += Daten.listeDownloads.getInfo();
+        info += getInfoText();
         if (di.timeRestAktDownloads > 0 && di.timeRestAllDownloads > 0) {
             info += "<span class=\"sans\"><b>Restzeit: </b>" + "laufende: " + di.getRestzeit() + ", alle: " + di.getGesamtRestzeit() + "<br /></span>";
         } else if (di.timeRestAktDownloads > 0) {
@@ -334,6 +332,55 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         }
         info += END;
         jEditorPaneInfo.setText(info);
+    }
+
+    private String getInfoText() {
+        String textLinks;
+        // Text links: Zeilen Tabelle
+        // nicht gestarted, laufen, fertig OK, fertig fehler
+        int[] starts = Daten.listeDownloads.getStarts();
+        if (starts[0] == 1) {
+            textLinks = "<span class=\"sans\"><b>Download:</b> 1";
+        } else {
+            textLinks = "<span class=\"sans\"><b>Downloads:</b> " + starts[0];
+        }
+        boolean print = false;
+        for (int ii = 1; ii < starts.length; ++ii) {
+            if (starts[ii] > 0) {
+                print = true;
+                break;
+            }
+        }
+        if (print) {
+            textLinks += "&nbsp;&nbsp;( ";
+            if (starts[4] == 1) {
+                textLinks += "1 läuft";
+            } else {
+                textLinks += starts[4] + " laufen";
+            }
+            if (starts[3] == 1) {
+                textLinks += ", 1 wartet";
+            } else {
+                textLinks += ", " + starts[3] + " warten";
+            }
+            if (starts[5] > 0) {
+                if (starts[5] == 1) {
+                    textLinks += ", 1 fertig";
+                } else {
+                    textLinks += ", " + starts[5] + " fertig";
+                }
+            }
+            if (starts[6] > 0) {
+                if (starts[6] == 1) {
+                    textLinks += ", 1 fehlerhaft";
+                } else {
+                    textLinks += ", " + starts[6] + " fehlerhaft";
+                }
+            }
+            textLinks += " )";
+        }
+        textLinks += "<br /></span>";
+        return textLinks;
     }
 
     /** This method is called from within the constructor to
