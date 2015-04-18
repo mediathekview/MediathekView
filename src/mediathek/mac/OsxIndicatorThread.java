@@ -61,7 +61,7 @@ class OsxIndicatorThread extends Thread {
                 double accumPercentage = 0.0;
 
                 //only count running/active downloads and calc accumulated progress..
-                LinkedList<DatenDownload> activeDownloadList = Daten.listeDownloads.getListOfStartsNotFinished(Start.QUELLE_ALLE);
+                LinkedList<DatenDownload> activeDownloadList = Daten.listeDownloads.getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
                 for (DatenDownload download : activeDownloadList) {
                     if (download.start != null && download.start.status == Start.STATUS_RUN) {
                         numOfDownloadsActive++;

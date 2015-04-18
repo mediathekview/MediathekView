@@ -72,7 +72,7 @@ public class StarterClass {
         // Quelle "Button" ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
         String url = ersterFilm.arr[DatenFilm.FILM_URL_NR];
         if (!url.equals("")) {
-            DatenDownload d = new DatenDownload(pSet, ersterFilm, Start.QUELLE_BUTTON, null, "", "", aufloesung);
+            DatenDownload d = new DatenDownload(pSet, ersterFilm, DatenDownload.QUELLE_BUTTON, null, "", "", aufloesung);
             d.start = new Start();
             starten.startStarten(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
@@ -143,7 +143,7 @@ public class StarterClass {
 
     private void startmeldung(DatenDownload datenDownload, Start start) {
         ArrayList<String> text = new ArrayList<>();
-        boolean abspielen = datenDownload.getQuelle() == Start.QUELLE_BUTTON;
+        boolean abspielen = datenDownload.quelle == DatenDownload.QUELLE_BUTTON;
         if (abspielen) {
             text.add("Film abspielen");
         } else {
@@ -157,8 +157,8 @@ public class StarterClass {
         }
         text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
         text.add("Startzeit: " + new SimpleDateFormat("HH:mm:ss").format(start.startZeit));
-        if (datenDownload.getArt() == Start.ART_DOWNLOAD) {
-            text.add(Start.ART_DOWNLOAD_TXT);
+        if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
+            text.add(DatenDownload.ART_DOWNLOAD_TXT);
         } else {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
         }
@@ -175,7 +175,7 @@ public class StarterClass {
         ArrayList<String> text = new ArrayList<>();
         if (abgebrochen) {
             text.add("Download wurde abgebrochen");
-        } else if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
+        } else if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON) {
             text.add("Film fertig");
         } else {
             if (start.stoppen) {
@@ -199,14 +199,14 @@ public class StarterClass {
             text.add("Dauer: " + start.startZeit.diffInMinuten() + " Min");
         }
         text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
-        if (datenDownload.getArt() == Start.ART_DOWNLOAD) {
-            text.add(Start.ART_DOWNLOAD_TXT);
+        if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
+            text.add(DatenDownload.ART_DOWNLOAD_TXT);
         } else {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
         }
         Log.systemMeldung(text.toArray(new String[text.size()]));
         if (!start.stoppen && !abgebrochen) {
-            if (datenDownload.getQuelle() != Start.QUELLE_BUTTON) {
+            if (datenDownload.quelle != DatenDownload.QUELLE_BUTTON) {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -295,7 +295,7 @@ public class StarterClass {
     private void notifyStartEvent(DatenDownload datenDownload) {
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, StarterClass.class.getSimpleName());
         if (datenDownload != null) {
-            if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
+            if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON) {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT_BUTTON, StarterClass.class.getSimpleName());
             }
         }
@@ -365,12 +365,12 @@ public class StarterClass {
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
             Thread downloadThread;
 
-            switch (datenDownload.getArt()) {
-                case Start.ART_PROGRAMM:
+            switch (datenDownload.art) {
+                case DatenDownload.ART_PROGRAMM:
                     downloadThread = new ExternalProgramDownloadThread(datenDownload);
                     downloadThread.start();
                     break;
-                case Start.ART_DOWNLOAD:
+                case DatenDownload.ART_DOWNLOAD:
                     downloadThread = new DirectHttpDownloadThread(datenDownload, bandwidthCalculationTimer);
                     downloadThread.start();
                     break;
@@ -507,7 +507,7 @@ public class StarterClass {
                                 }
                                 break;
                             case stat_pruefen:
-                                if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
+                                if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON) {
                                     //für die direkten Starts mit dem Button wars das dann
                                     stat = stat_fertig_ok;
                                 } else if (pruefen(datenDownload, start)) {
@@ -783,7 +783,7 @@ public class StarterClass {
             }
             Log.systemMeldung(start.mVInputStream.toString());
             if (!start.stoppen) {
-                if (datenDownload.getQuelle() == Start.QUELLE_BUTTON) {
+                if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON) {
                     // direkter Start mit dem Button
                     start.status = Start.STATUS_FERTIG;
                 } else if (pruefen(datenDownload, start)) {

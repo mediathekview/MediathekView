@@ -111,7 +111,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
         jRadioButtonResHd.setEnabled(false);
         jRadioButtonResHi.setEnabled(false);
         jRadioButtonResLo.setEnabled(false);
-        if (datenDownload.getArt() != Start.ART_DOWNLOAD && datenDownload.pSet == null) {
+        if (datenDownload.art != DatenDownload.ART_DOWNLOAD && datenDownload.pSet == null) {
             // ansonsten müsste erst der Programmaufruf neu gebaut werden
             jPanelRes.setVisible(false);
             return;
@@ -168,9 +168,9 @@ public class DialogEditDownload extends javax.swing.JDialog {
         } else {
             size = dateiGroesse_Hoch;
         }
-        if (datenDownload.getArt() == Start.ART_PROGRAMM && datenDownload.pSet != null) {
+        if (datenDownload.art == DatenDownload.ART_PROGRAMM && datenDownload.pSet != null) {
             // muss noch der Programmaufruf neu gebaut werden
-            DatenDownload d = new DatenDownload(datenDownload.pSet, datenDownload.film, datenDownload.getQuelle(), datenDownload.abo, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR],
+            DatenDownload d = new DatenDownload(datenDownload.pSet, datenDownload.film, datenDownload.quelle, datenDownload.abo, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR],
                     datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR], res);
             datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR] = d.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
             textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR].setText(datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
@@ -213,7 +213,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
             // ist eigentlich Unsinn, es anzuzeigen
             return;
         }
-        if (datenDownload.getArt() == Start.ART_DOWNLOAD
+        if (datenDownload.art == DatenDownload.ART_DOWNLOAD
                 && (i == DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR
                 || i == DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR
                 || i == DatenDownload.DOWNLOAD_ZIEL_PFAD_NR)
@@ -295,7 +295,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
                     }
                 } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR) {
                     labelListe[i].setForeground(Color.BLUE);
-                    if (datenDownload.getArt() != Start.ART_DOWNLOAD) {
+                    if (datenDownload.art != DatenDownload.ART_DOWNLOAD) {
                         textfeldListe[i].setEditable(!gestartet);
                         textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
                     }
@@ -306,27 +306,27 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 } else if (i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
                     textfeldListe[i].setText(datenDownload.getTextRestzeit());
                 } else if (i == DatenDownload.DOWNLOAD_ART_NR) {
-                    switch (datenDownload.getArt()) {
-                        case Start.ART_DOWNLOAD:
-                            textfeldListe[i].setText(Start.ART_DOWNLOAD_TXT);
+                    switch (datenDownload.art) {
+                        case DatenDownload.ART_DOWNLOAD:
+                            textfeldListe[i].setText(DatenDownload.ART_DOWNLOAD_TXT);
                             break;
-                        case Start.ART_PROGRAMM:
-                            textfeldListe[i].setText(Start.ART_PROGRAMM_TXT);
+                        case DatenDownload.ART_PROGRAMM:
+                            textfeldListe[i].setText(DatenDownload.ART_PROGRAMM_TXT);
                             break;
                     }
                 } else if (i == DatenDownload.DOWNLOAD_QUELLE_NR) {
-                    switch (datenDownload.getQuelle()) {
-                        case Start.QUELLE_ALLE:
-                            textfeldListe[i].setText(Start.QUELLE_ALLE_TXT);
+                    switch (datenDownload.quelle) {
+                        case DatenDownload.QUELLE_ALLE:
+                            textfeldListe[i].setText(DatenDownload.QUELLE_ALLE_TXT);
                             break;
-                        case Start.QUELLE_ABO:
-                            textfeldListe[i].setText(Start.QUELLE_ABO_TXT);
+                        case DatenDownload.QUELLE_ABO:
+                            textfeldListe[i].setText(DatenDownload.QUELLE_ABO_TXT);
                             break;
-                        case Start.QUELLE_BUTTON:
-                            textfeldListe[i].setText(Start.QUELLE_BUTTON_TXT);
+                        case DatenDownload.QUELLE_BUTTON:
+                            textfeldListe[i].setText(DatenDownload.QUELLE_BUTTON_TXT);
                             break;
-                        case Start.QUELLE_DOWNLOAD:
-                            textfeldListe[i].setText(Start.QUELLE_DOWNLOAD_TXT);
+                        case DatenDownload.QUELLE_DOWNLOAD:
+                            textfeldListe[i].setText(DatenDownload.QUELLE_DOWNLOAD_TXT);
                             break;
                     }
                 }

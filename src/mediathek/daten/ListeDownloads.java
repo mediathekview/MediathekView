@@ -42,19 +42,10 @@ import msearch.daten.DatenFilm;
 public class ListeDownloads extends LinkedList<DatenDownload> {
 
     private final Daten daten;
-    private final DownloadInfos downloadInfos = new DownloadInfos();
     private final LinkedList<DatenDownload> aktivDownloads = new LinkedList<>();
 
     public ListeDownloads(Daten daten_) {
         this.daten = daten_;
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_TIMER, ListeDownloads.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                makeDownloadInfos();
-                daten.mediathekGui.getStatusBar().setInfoDownload();
-                daten.mediathekGui.getStatusBar().setInfoFilme();
-            }
-        });
     }
 
     //===================================
@@ -114,50 +105,45 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    public synchronized DownloadInfos getDownloadInfos() {
-        return downloadInfos;
-    }
-
-    private synchronized void makeDownloadInfos() {
-        downloadInfos.clean();
-
-        getListOfStartsNotFinished(Start.QUELLE_ALLE);
-        for (DatenDownload download : aktivDownloads) {
-            ++downloadInfos.anzDownloadsRun;
-            downloadInfos.byteAlleDownloads += (download.mVFilmSize.getSize() > 0 ? download.mVFilmSize.getSize() : 0);
-            if (download.start != null && download.start.status == Start.STATUS_RUN) {
-                // die Downlaods laufen gerade
-                downloadInfos.bandwidth += download.start.bandbreite; // bytes per second
-                downloadInfos.byteAktDownloads += (download.mVFilmSize.getAktSize() > 0 ? download.mVFilmSize.getAktSize() : 0);
-                if (download.start.restSekunden > downloadInfos.timeRestAktDownloads) {
-                    // der längeste gibt die aktuelle Restzeit vor
-                    downloadInfos.timeRestAktDownloads = download.start.restSekunden;
-                }
-            }
-        }
-
-        if (downloadInfos.bandwidth < 0) {
-            downloadInfos.bandwidth = 0;
-        }
-
-        if (downloadInfos.bandwidth > 0) {
-            // sonst macht die Restzeit keinen Sinn
-            final long b = downloadInfos.byteAlleDownloads - downloadInfos.byteAktDownloads;
-            if (b <= 0) {
-                downloadInfos.timeRestAllDownloads = 0;
-            } else {
-                downloadInfos.timeRestAllDownloads = b / downloadInfos.bandwidth;
-            }
-            if (downloadInfos.timeRestAllDownloads < downloadInfos.timeRestAktDownloads) {
-                downloadInfos.timeRestAllDownloads = downloadInfos.timeRestAktDownloads; // falsch geraten oder es gibt nur einen
-            }
-            if (downloadInfos.anzDownloadsRun == 1) {
-                downloadInfos.timeRestAllDownloads = 0; // gibt ja nur noch einen
-            }
-        }
-        downloadInfos.roundBandwidth();
-    }
-
+//    private synchronized void makeDownloadInfos() {
+//      Daten.downloadInfos.clean();
+//
+//        getListOfStartsNotFinished(Start.QUELLE_ALLE);
+//        for (DatenDownload download : aktivDownloads) {
+//            ++     Daten.downloadInfos.anzDownloadsRun;
+//            Daten.downloadInfos.byteAlleDownloads += (download.mVFilmSize.getSize() > 0 ? download.mVFilmSize.getSize() : 0);
+//            if (download.start != null && download.start.status == Start.STATUS_RUN) {
+//                // die Downlaods laufen gerade
+//                Daten.downloadInfos.bandwidth += download.start.bandbreite; // bytes per second
+//                Daten.downloadInfos.byteAktDownloads += (download.mVFilmSize.getAktSize() > 0 ? download.mVFilmSize.getAktSize() : 0);
+//                if (download.start.restSekunden > Daten.downloadInfos.timeRestAktDownloads) {
+//                    // der längeste gibt die aktuelle Restzeit vor
+//                    Daten.downloadInfos.timeRestAktDownloads = download.start.restSekunden;
+//                }
+//            }
+//        }
+//
+//        if (Daten.downloadInfos.bandwidth < 0) {
+//            Daten.downloadInfos.bandwidth = 0;
+//        }
+//
+//        if (Daten.downloadInfos.bandwidth > 0) {
+//            // sonst macht die Restzeit keinen Sinn
+//            final long b = Daten.downloadInfos.byteAlleDownloads - Daten.downloadInfos.byteAktDownloads;
+//            if (b <= 0) {
+//                Daten.downloadInfos.timeRestAllDownloads = 0;
+//            } else {
+//                Daten.downloadInfos.timeRestAllDownloads = b / Daten.downloadInfos.bandwidth;
+//            }
+//            if (Daten.downloadInfos.timeRestAllDownloads < Daten.downloadInfos.timeRestAktDownloads) {
+//                Daten.downloadInfos.timeRestAllDownloads = Daten.downloadInfos.timeRestAktDownloads; // falsch geraten oder es gibt nur einen
+//            }
+//            if (Daten.downloadInfos.anzDownloadsRun == 1) {
+//                Daten.downloadInfos.timeRestAllDownloads = 0; // gibt ja nur noch einen
+//            }
+//        }
+//        Daten.downloadInfos.roundBandwidth();
+//    }
     public synchronized void listePutzen(DatenDownload datenDownload) {
         // fertigen Download löschen
         boolean gefunden = false;
@@ -476,7 +462,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     abo.arr[DatenAbo.ABO_PSET_NR] = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
                 }
                 //dann in die Liste schreiben
-                add(new DatenDownload(pSet, film, Start.QUELLE_ABO, abo, "", "", "" /*Aufloesung*/));
+                add(new DatenDownload(pSet, film, DatenDownload.QUELLE_ABO, abo, "", "", "" /*Aufloesung*/));
                 gefunden = true;
             } else if (parent != null) {
                 // sonst sind wir evtl. nur in einer Konsole ohne X
@@ -497,120 +483,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    public String getInfo(boolean mitAbo) {
-        String textLinks;
-        // Text links: Zeilen Tabelle
-        // nicht gestarted, laufen, fertig OK, fertig fehler
-        int[] starts = getStarts();
-        if (starts[0] == 1) {
-            textLinks = "1 Download";
-        } else {
-            textLinks = starts[0] + " Downloads";
-        }
-        if (mitAbo) {
-            if (starts[1] == 1) {
-                textLinks += " (1 Abo, ";
-            } else {
-                textLinks += " (" + starts[1] + " Abos, ";
-            }
-            if (starts[2] == 1) {
-                textLinks += "1 Download)";
-            } else {
-                textLinks += starts[2] + " Downloads)";
-            }
-        }
-        boolean print = false;
-        for (int ii = 1; ii < starts.length; ++ii) {
-            if (starts[ii] > 0) {
-                print = true;
-                break;
-            }
-        }
-        if (print) {
-            textLinks += ": ";
-            if (starts[4] == 1) {
-                textLinks += "1 läuft";
-            } else {
-                textLinks += starts[4] + " laufen";
-            }
-
-            if (starts[4] > 0) {
-                DownloadInfos di = getDownloadInfos();
-                textLinks += " (" + di.bandwidthStr + ")";
-            }
-
-            if (starts[3] == 1) {
-                textLinks += ", 1 wartet";
-            } else {
-                textLinks += ", " + starts[3] + " warten";
-            }
-            if (starts[5] > 0) {
-                if (starts[5] == 1) {
-                    textLinks += ", 1 fertig";
-                } else {
-                    textLinks += ", " + starts[5] + " fertig";
-                }
-            }
-            if (starts[6] > 0) {
-                if (starts[6] == 1) {
-                    textLinks += ", 1 fehlerhaft";
-                } else {
-                    textLinks += ", " + starts[6] + " fehlerhaft";
-                }
-            }
-        }
-        return textLinks;
-    }
-
-    public String getInfo() {
-        String textLinks;
-        // Text links: Zeilen Tabelle
-        // nicht gestarted, laufen, fertig OK, fertig fehler
-        int[] starts = getStarts();
-        if (starts[0] == 1) {
-            textLinks = "<span class=\"sans\"><b>Download:</b> 1";
-        } else {
-            textLinks = "<span class=\"sans\"><b>Downloads:</b> " + starts[0];
-        }
-        boolean print = false;
-        for (int ii = 1; ii < starts.length; ++ii) {
-            if (starts[ii] > 0) {
-                print = true;
-                break;
-            }
-        }
-        if (print) {
-            textLinks += "&nbsp;&nbsp;( ";
-            if (starts[4] == 1) {
-                textLinks += "1 läuft";
-            } else {
-                textLinks += starts[4] + " laufen";
-            }
-            if (starts[3] == 1) {
-                textLinks += ", 1 wartet";
-            } else {
-                textLinks += ", " + starts[3] + " warten";
-            }
-            if (starts[5] > 0) {
-                if (starts[5] == 1) {
-                    textLinks += ", 1 fertig";
-                } else {
-                    textLinks += ", " + starts[5] + " fertig";
-                }
-            }
-            if (starts[6] > 0) {
-                if (starts[6] == 1) {
-                    textLinks += ", 1 fehlerhaft";
-                } else {
-                    textLinks += ", " + starts[6] + " fehlerhaft";
-                }
-            }
-            textLinks += " )";
-        }
-        textLinks += "<br /></span>";
-        return textLinks;
-    }
-
     /**
      * Get the number of all currently active downloads.
      *
@@ -621,7 +493,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return starts[4];
     }
 
-    private synchronized int[] getStarts() {
+    public synchronized int[] getStarts() {
         // liefert die Anzahl Starts die:
         // Anzahl, Anz-Abo, Anz-Down, nicht gestarted sind, die laufen, die fertig sind: OK, die fertig sind: fehler
         // Downloads und Abos
@@ -637,8 +509,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 ++ret[2];
             }
             if (download.start != null) {
-                final int quelle = download.getQuelle();
-                if (quelle == Start.QUELLE_ABO || quelle == Start.QUELLE_DOWNLOAD) {
+                //final int quelle = download.getQuelle();
+                if (download.quelle == DatenDownload.QUELLE_ABO || download.quelle == DatenDownload.QUELLE_DOWNLOAD) {
                     switch (download.start.status) {
                         case Start.STATUS_INIT:
                             ++ret[3];
@@ -710,7 +582,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         for (DatenDownload download : this) {
             if (download.start != null) {
                 if (download.start.status < Start.STATUS_FERTIG) {
-                    if (download.getQuelle() == quelle || quelle == Start.QUELLE_ALLE) {
+                    if (quelle == DatenDownload.QUELLE_ALLE || download.quelle == quelle) {
                         aktivDownloads.add(download);
                     }
                 }
@@ -755,7 +627,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         while (it.hasNext()) {
             DatenDownload d = it.next();
             if (d.start != null) {
-                if (d.getQuelle() == Start.QUELLE_BUTTON) {
+                if (d.quelle == DatenDownload.QUELLE_BUTTON) {
                     if (d.start.status >= Start.STATUS_FERTIG) {
                         // dann ist er fertig oder abgebrochen
                         it.remove();

@@ -73,6 +73,7 @@ public class Daten {
     public static ListeDownloads listeDownloadsButton = null; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
     public static ListeBlacklist listeBlacklist = null;
     public static ListeAbo listeAbo = null;
+    public static DownloadInfos downloadInfos = null;
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis = "";
     public static ListePset listePset = null;
@@ -122,10 +123,15 @@ public class Daten {
         updateSplashScreen("Lade History...");
         history = new MVUsedUrls(Konstanten.FILE_HISTORY, ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT);
 
+        downloadInfos = new DownloadInfos();
+
         starterClass = new StarterClass(this);
         Timer timer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                downloadInfos.makeDownloadInfos();
+                mediathekGui.getStatusBar().setInfoDownload();
+                mediathekGui.getStatusBar().setInfoFilme();
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_TIMER, Daten.class.getName());
             }
         });
@@ -370,11 +376,11 @@ public class Daten {
                         xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + (i - 1));
                         final Path xmlFilePathCopy_2 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
                         if (Files.exists(xmlFilePathCopy_1)) {
-                            Files.move(xmlFilePathCopy_1,xmlFilePathCopy_2, StandardCopyOption.REPLACE_EXISTING);
+                            Files.move(xmlFilePathCopy_1, xmlFilePathCopy_2, StandardCopyOption.REPLACE_EXISTING);
                         }
                     }
                     if (Files.exists(xmlFilePath)) {
-                        Files.move(xmlFilePath, Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1),StandardCopyOption.REPLACE_EXISTING);
+                        Files.move(xmlFilePath, Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1), StandardCopyOption.REPLACE_EXISTING);
                     }
                     Log.systemMeldung("Einstellungen wurden gesichert");
                 } else {
@@ -392,6 +398,7 @@ public class Daten {
 
     /**
      * Return the number of milliseconds from today´s midnight.
+     *
      * @return Number of milliseconds from today´s midnight.
      */
     public static long getHeute_0Uhr() {
