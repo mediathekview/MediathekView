@@ -31,8 +31,6 @@
 
 package org.jdesktop.animation.timing.interpolation;
 
-import org.jdesktop.animation.timing.*;
-
 /**
  * This class implements the Interpolator interface by providing a
  * simple interpolate function that simply returns the value that

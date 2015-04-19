@@ -32,7 +32,6 @@
 package org.jdesktop.animation.timing.interpolation;
 
 import java.util.ArrayList;
-import org.jdesktop.animation.timing.*;
 
 /**
  * Stores a list of times from 0 to 1 (the elapsed fraction of an animation

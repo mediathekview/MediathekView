@@ -11,7 +11,6 @@ import javax.swing.JComponent;
 import javax.swing.plaf.basic.BasicButtonUI;
 import javax.swing.plaf.basic.BasicGraphicsUtils;
 
-import com.explodingpixels.macwidgets.WidgetBaseColors;
 import com.explodingpixels.macwidgets.plaf.HudPaintingUtils.Roundedness;
 
 /**

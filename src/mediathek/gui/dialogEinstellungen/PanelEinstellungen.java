@@ -20,7 +20,6 @@
 package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Frame;
-import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
