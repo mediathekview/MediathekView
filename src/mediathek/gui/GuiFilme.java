@@ -155,7 +155,7 @@ public class GuiFilme extends PanelVorlage {
     public void isShown() {
         super.isShown();
         daten.mediathekGui.setToolbar(MVToolBar.TOOLBAR_TAB_FILME);
-        daten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar.StatusbarIndex.FILME);
+        daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.FILME);
         aktFilmSetzen();
         setInfo();
     }
@@ -494,7 +494,7 @@ public class GuiFilme extends PanelVorlage {
 
     private void setInfo() {
         // Infopanel setzen
-        daten.mediathekGui.getStatusBar().setInfoFilme();
+        daten.mediathekGui.getStatusBar().setTextForLeftDisplay();
     }
 
     // ############################################

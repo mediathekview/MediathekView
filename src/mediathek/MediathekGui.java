@@ -684,7 +684,7 @@ public class MediathekGui extends JFrame {
             public void isShown() {
                 if (!solo) {
                     setToolbar(MVToolBar.TOOLBAR_NIX);
-                    statusBar.setIndexForCenterDisplay(MVStatusBar.StatusbarIndex.FILME);
+                    statusBar.setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.FILME);
                 }
             }
         };

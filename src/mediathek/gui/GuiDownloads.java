@@ -137,7 +137,7 @@ public class GuiDownloads extends PanelVorlage {
         super.isShown();
         if (!solo) {
             daten.mediathekGui.setToolbar(MVToolBar.TOOLBAR_TAB_DOWNLOADS);
-            daten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar.StatusbarIndex.DOWNLOAD);
+            daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.DOWNLOAD);
         }
         aktFilmSetzen();
     }
@@ -702,7 +702,8 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void setInfo() {
-        daten.mediathekGui.getStatusBar().setInfoDownload();
+        // Infopanel setzen
+        daten.mediathekGui.getStatusBar().setTextForLeftDisplay();
     }
 
     /**

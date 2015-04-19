@@ -130,8 +130,6 @@ public class Daten {
             @Override
             public void actionPerformed(ActionEvent e) {
                 downloadInfos.makeDownloadInfos();
-                mediathekGui.getStatusBar().setInfoDownload();
-                mediathekGui.getStatusBar().setInfoFilme();
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_TIMER, Daten.class.getName());
             }
         });

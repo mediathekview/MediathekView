@@ -12,7 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import mediathek.controller.Log;
-import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
@@ -33,8 +32,8 @@ public final class MVStatusBar extends JPanel {
     private final EnumMap<MVStatusBar.StatusbarIndex, String> displayListForLeftLabel = new EnumMap<>(MVStatusBar.StatusbarIndex.class);
     private MVStatusBar.StatusbarIndex currentIndex = MVStatusBar.StatusbarIndex.NONE;
 
-    private final JLabel lblCenter;
-    private final JLabel lblRechts;
+    private final JLabel lblLeft;
+    private final JLabel lblRight;
     private final JProgressBar progress;
     private final JButton stopButton;
     private final BottomBar bottomBar;
@@ -44,8 +43,8 @@ public final class MVStatusBar extends JPanel {
         this.daten = daten;
         bottomBar = new BottomBar(BottomBarSize.LARGE);
 
-        lblCenter = new JLabel();
-        bottomBar.addComponentToLeft(lblCenter);
+        lblLeft = new JLabel();
+        bottomBar.addComponentToLeft(lblLeft);
 
         if (Daten.debug) {
             bottomBar.addComponentToCenter(new MVMemoryUsageButton());
@@ -57,8 +56,8 @@ public final class MVStatusBar extends JPanel {
         progressPanel.setLayout(new FlowLayout());
         progressPanel.setOpaque(false);
 
-        lblRechts = new JLabel();
-        progressPanel.add(lblRechts);
+        lblRight = new JLabel();
+        progressPanel.add(lblRight);
 
         progress = new JProgressBar();
         progressPanel.add(progress);
@@ -81,10 +80,10 @@ public final class MVStatusBar extends JPanel {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_TIMER, MVStatusBar.class.getSimpleName()) {
             @Override
             public void ping() {
-                setIndexForCenterDisplay(currentIndex);
+                setTextForLeftDisplay();
                 try {
                     if (!stopTimer) {
-                        setInfoRechts();
+                        setTextForRightDisplay();
                     }
                 } catch (Exception ex) {
                     Log.fehlerMeldung(936251087, ex);
@@ -124,8 +123,8 @@ public final class MVStatusBar extends JPanel {
         stopTimer = false;
         progress.setVisible(false);
         stopButton.setVisible(false);
-        lblRechts.setVisible(true);
-        setInfoRechts();
+        lblRight.setVisible(true);
+        setTextForRightDisplay();
     }
 
     private void updateProgressBar(MSListenerFilmeLadenEvent event) {
@@ -150,44 +149,10 @@ public final class MVStatusBar extends JPanel {
             progress.setString(event.text);
         }
         if (Daten.debug) {
-            lblRechts.setText(GuiFunktionen.textLaenge(60, event.senderUrl, true /* mitte */, true /*addVorne*/));
+            lblRight.setText(GuiFunktionen.textLaenge(60, event.senderUrl, true /* mitte */, true /*addVorne*/));
         } else {
-            lblRechts.setVisible(false);
+            lblRight.setVisible(false);
         }
-    }
-
-    private void setInfoRechts() {
-        // Text rechts: alter/neuladenIn anzeigen
-        String strText = "Filmliste erstellt: ";
-        strText += Daten.listeFilme.genDate();
-        strText += " Uhr  ";
-
-        final int sekunden = Daten.listeFilme.getAge();
-
-        if (sekunden != 0) {
-            strText += "||  Alter: ";
-            final int minuten = sekunden / 60;
-            String strSekunde = String.valueOf(sekunden % 60);
-            String strMinute = String.valueOf(minuten % 60);
-            String strStunde = String.valueOf(minuten / 60);
-            if (strSekunde.length() < 2) {
-                strSekunde = "0" + strSekunde;
-            }
-            if (strMinute.length() < 2) {
-                strMinute = "0" + strMinute;
-            }
-            if (strStunde.length() < 2) {
-                strStunde = "0" + strStunde;
-            }
-            strText += strStunde + ":" + strMinute + ":" + strSekunde + " ";
-        }
-        // Infopanel setzen
-        lblRechts.setText(strText);
-    }
-
-    public void setTextLeft(StatusbarIndex i, String text) {
-        displayListForLeftLabel.put(i, text);
-        setIndexForCenterDisplay(currentIndex);
     }
 
     /**
@@ -195,13 +160,30 @@ public final class MVStatusBar extends JPanel {
      *
      * @param i Index, für den ein Text dargestellt werden soll.
      */
-    public void setIndexForCenterDisplay(StatusbarIndex i) {
+    public void setIndexForLeftDisplay(StatusbarIndex i) {
         currentIndex = i;
         String displayString = displayListForLeftLabel.get(i);
-        lblCenter.setText(displayString);
+        lblLeft.setText(displayString);
     }
 
-    public void setInfoFilme() {
+    public void setTextForLeftDisplay() {
+        switch (currentIndex) {
+            case FILME:
+                setInfoFilme(); // muss laufen, wegen der Anzeige der Bandbreite
+                break;
+            case DOWNLOAD:
+                setInfoDownload(); // muss laufen, wegen der Anzeige der Bandbreite
+                break;
+            case ABO:
+                setInfoAbo();
+                break;
+            default:
+        }
+        String displayString = displayListForLeftLabel.get(currentIndex);
+        lblLeft.setText(displayString);
+    }
+
+    private void setInfoFilme() {
         String textLinks;
         final String TRENNER = "  ||  ";
         int gesamt = Daten.listeFilme.size();
@@ -232,18 +214,18 @@ public final class MVStatusBar extends JPanel {
         }
         // auch die Downloads anzeigen
         textLinks += TRENNER;
-        textLinks += getInfoText(false /*mitAbo*/);
+        textLinks += getInfoTextDownloads(false /*mitAbo*/);
 
-        setTextLeft(MVStatusBar.StatusbarIndex.FILME, textLinks);
+        displayListForLeftLabel.put(MVStatusBar.StatusbarIndex.FILME, textLinks);
     }
 
-    public void setInfoDownload() {
-        String textLinks = getInfoText(true /*mitAbo*/);
+    private void setInfoDownload() {
+        String textLinks = getInfoTextDownloads(true /*mitAbo*/);
 
-        setTextLeft(MVStatusBar.StatusbarIndex.DOWNLOAD, textLinks);
+        displayListForLeftLabel.put(MVStatusBar.StatusbarIndex.DOWNLOAD, textLinks);
     }
 
-    public void setInfoAbo() {
+    private void setInfoAbo() {
 
         String textLinks;
         int ein = 0;
@@ -263,10 +245,10 @@ public final class MVStatusBar extends JPanel {
         }
         textLinks += "(" + ein + " eingeschaltet, " + aus + " ausgeschaltet)";
 
-        setTextLeft(MVStatusBar.StatusbarIndex.ABO, textLinks);
+        displayListForLeftLabel.put(MVStatusBar.StatusbarIndex.ABO, textLinks);
     }
 
-    private String getInfoText(boolean mitAbo) {
+    private String getInfoTextDownloads(boolean mitAbo) {
         String textLinks;
         // Text links: Zeilen Tabelle
         // nicht gestarted, laufen, fertig OK, fertig fehler
@@ -328,6 +310,35 @@ public final class MVStatusBar extends JPanel {
             }
         }
         return textLinks;
+    }
+
+    private void setTextForRightDisplay() {
+        // Text rechts: alter/neuladenIn anzeigen
+        String strText = "Filmliste erstellt: ";
+        strText += Daten.listeFilme.genDate();
+        strText += " Uhr  ";
+
+        final int sekunden = Daten.listeFilme.getAge();
+
+        if (sekunden != 0) {
+            strText += "||  Alter: ";
+            final int minuten = sekunden / 60;
+            String strSekunde = String.valueOf(sekunden % 60);
+            String strMinute = String.valueOf(minuten % 60);
+            String strStunde = String.valueOf(minuten / 60);
+            if (strSekunde.length() < 2) {
+                strSekunde = "0" + strSekunde;
+            }
+            if (strMinute.length() < 2) {
+                strMinute = "0" + strMinute;
+            }
+            if (strStunde.length() < 2) {
+                strStunde = "0" + strStunde;
+            }
+            strText += strStunde + ":" + strMinute + ":" + strSekunde + " ";
+        }
+        // Infopanel setzen
+        lblRight.setText(strText);
     }
 
 }

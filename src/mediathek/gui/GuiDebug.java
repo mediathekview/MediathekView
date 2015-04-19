@@ -166,6 +166,13 @@ public class GuiDebug extends JPanel {
                 }
             }
         });
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                daten.mediathekGui.setToolbar(MVToolBar.TOOLBAR_NIX);
+                daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.FILME);
+            }
+        });
     }
 
     private void addSender() {

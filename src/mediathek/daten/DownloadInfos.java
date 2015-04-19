@@ -37,7 +37,7 @@ public class DownloadInfos {
     public long bandwidth = 0; //Bandbreite: bytes per second
     public String bandwidthStr = "";
 
-    private LinkedList<DatenDownload> aktivDownloads;
+    private LinkedList<DatenDownload> aktivDownloads; // Liste gestarteter Downloads
 
     public String roundBandwidth(long time) {
         roundBandwidth();
