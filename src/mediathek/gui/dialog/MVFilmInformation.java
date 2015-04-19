@@ -205,8 +205,8 @@ public class MVFilmInformation implements ChangeListener {
         lblUrlThemaField.setForeground(foreground);
         lblUrlSubtitle.setForeground(foreground);
         if (aktFilm == null) {
-            for (int i = 0; i < txtArrCont.length; ++i) {
-                txtArrCont[i].setText("");
+            for (JTextField aTxtArrCont : txtArrCont) {
+                aTxtArrCont.setText("");
             }
             textAreaBeschreibung.setText(" ");
             lblUrlThemaField.setText("");

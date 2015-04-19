@@ -38,8 +38,7 @@ import javax.swing.SpinnerDateModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.file.GetFile;
@@ -287,7 +286,7 @@ public class DialogBeendenZeit extends JDialog {
                     }
                 });
             }
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
     }
 

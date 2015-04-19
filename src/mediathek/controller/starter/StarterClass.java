@@ -681,7 +681,7 @@ public class StarterClass {
                 connection.setRequestProperty("User-Agent", Daten.getUserAgent());
                 connection.setReadTimeout(TIMEOUT);
                 connection.setConnectTimeout(TIMEOUT);
-                if (connection.getResponseCode() < 400) {
+                if (connection.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST) {
                     ret = connection.getContentLengthLong();
                 }
                 // alles unter 300k sind Playlisten, ...
@@ -734,6 +734,7 @@ public class StarterClass {
             int len;
             long aktBandwidth, aktSize = 0;
             boolean melden = false;
+
             while ((len = start.mVInputStream.read(buffer)) != -1 && (!start.stoppen)) {
                 downloaded += len;
                 fos.write(buffer, 0, len);
@@ -814,7 +815,7 @@ public class StarterClass {
                     setupHttpConnection(conn);
                     conn.connect();
                     final int httpResponseCode = conn.getResponseCode();
-                    if (httpResponseCode >= 400) {
+                    if (httpResponseCode >= HttpURLConnection.HTTP_BAD_REQUEST) {
                         //Range passt nicht, also neue Verbindung versuchen...
                         if (httpResponseCode == 416) {
                             conn.disconnect();
@@ -824,7 +825,7 @@ public class StarterClass {
                             setupHttpConnection(conn);
                             conn.connect();
                             //hier war es dann nun wirklich...
-                            if (conn.getResponseCode() >= 400) {
+                            if (conn.getResponseCode() >= HttpURLConnection.HTTP_BAD_REQUEST) {
                                 state = HttpDownloadState.ERROR;
                             } else {
                                 state = HttpDownloadState.DOWNLOAD;
@@ -956,7 +957,7 @@ public class StarterClass {
                         && datenDownload.mVFilmSize.getAktSize() > 0
                         && datenDownload.mVFilmSize.getSize() > 0) {
                     // macht nur dann Sinn
-                    long zeitGeladen = datenDownload.film.dauerL * datenDownload.mVFilmSize.getAktSize() / datenDownload.mVFilmSize.getSize();
+                    final long zeitGeladen = datenDownload.film.dauerL * datenDownload.mVFilmSize.getAktSize() / datenDownload.mVFilmSize.getSize();
                     if (zeitGeladen > (datenDownload.start.restSekunden * 1.1 /* plus 10% zur Sicherheit*/)) {
                         datenDownload.start.beginnAnschauen = true;
                     }

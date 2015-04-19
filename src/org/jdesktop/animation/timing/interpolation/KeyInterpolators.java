@@ -32,6 +32,7 @@
 package org.jdesktop.animation.timing.interpolation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -54,9 +55,7 @@ class KeyInterpolators {
                 this.interpolators.add(interpolators[0]);
             }
         } else {
-            for (int i = 0; i < numIntervals; ++i) {
-                this.interpolators.add(interpolators[i]);
-            }
+            this.interpolators.addAll(Arrays.asList(interpolators).subList(0, numIntervals));
         }
     }
     

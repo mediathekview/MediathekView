@@ -321,23 +321,20 @@ public class Daten {
             if (dir1.endsWith(File.separator)) {
                 dir1 = dir1.substring(0, dir1.length() - 1);
             }
-            String dir2 = dir1 + "--" + new SimpleDateFormat("yyyy.MM.dd__HH.mm.ss").format(new Date());
+
             try {
-                if (new File(dir1).renameTo(new File(dir2))) {
-                    // erster Versuch
-                    return;
-                }
-                // für Win weitere Versuche
-                if (new File(dir1).delete()) {
-                    return;
-                }
+                final Path path1 = Paths.get(dir1);
+                final String dir2 = dir1 + "--" + new SimpleDateFormat("yyyy.MM.dd__HH.mm.ss").format(new Date());
+
+                Files.move(path1,Paths.get(dir2),StandardCopyOption.REPLACE_EXISTING);
+                Files.deleteIfExists(path1);
+            } catch (IOException e) {
                 Log.systemMeldung("Die Einstellungen konnten nicht zurückgesetzt werden.");
                 MVMessageDialog.showMessageDialog(this.mediathekGui, "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
                         + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
                         + getSettingsDirectory_String() + "\n"
                         + "von Hand löschen und dann das Programm wieder starten.\n\n"
                         + "Im Forum finden Sie weitere Hilfe.", "Fehler", JOptionPane.ERROR_MESSAGE);
-            } catch (Exception e) {
                 Log.fehlerMeldung(465690123, e);
             }
         }
