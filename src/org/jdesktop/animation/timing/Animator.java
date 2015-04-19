@@ -85,7 +85,7 @@ public final class Animator {
     private TimingSource swingTimer;
     private TimingSourceTarget timingSourceTarget;
     
-    private ArrayList<TimingTarget> targets = new ArrayList<TimingTarget>();    // Animators may have 
+    private final ArrayList<TimingTarget> targets = new ArrayList<TimingTarget>();    // Animators may have
                                                     // multiple targets
 
     private long startTime;	    // Tracks original Animator start time
