@@ -126,8 +126,7 @@ public class TelegraphQueue implements ActionListener {
             queue.offer(telegraph);
 
             // check if timer is not running
-            if (timer.isRunning() == false) {
-
+            if (!timer.isRunning()) {
                 // start the timer
                 timer.start();
             }

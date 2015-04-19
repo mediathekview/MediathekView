@@ -429,13 +429,9 @@ public class Notification implements TimingTarget {
      * otherwise.
      */
     public boolean isRunning() {
-        if ((animatorHandlerOnShow.isRunning())
+        return (animatorHandlerOnShow.isRunning())
                 || (animatorHandlerOnDisplay.isRunning())
-                || (animatorHandlerOnClose).isRunning()) {
-            return true;
-        } else {
-            return false;
-        }
+                || (animatorHandlerOnClose).isRunning();
     }
 
     /**

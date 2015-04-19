@@ -31,9 +31,6 @@
 
 package org.jdesktop.animation.timing.interpolation;
 
-import java.lang.reflect.Method;
-import org.jdesktop.animation.timing.*;
-
 /**
  *
  * KeyFrames holds information about the times at which values are sampled
