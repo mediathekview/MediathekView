@@ -129,8 +129,6 @@ public class CarrierPigeon implements TimingTarget {
     // animators, each one representing one state
     // on AnimationFrame class
     private Animator animatorHandlerOnShow;
-    private Animator animatorHandlerOnDisplay;
-    private Animator animatorHandlerOnClose;
 
     // time in milliseconds to animate windows
     // on show and close events
@@ -477,7 +475,7 @@ public class CarrierPigeon implements TimingTarget {
         if (animationFrame == AnimationFrame.ONSHOW) {
 
             // create a new animation handler
-            animatorHandlerOnDisplay = new Animator(duration, 1, Animator.RepeatBehavior.LOOP, this);
+            Animator animatorHandlerOnDisplay = new Animator(duration, 1, Animator.RepeatBehavior.LOOP, this);
 
             // sets the current animation state
             animationFrame = AnimationFrame.ONDISPLAY;
@@ -491,7 +489,7 @@ public class CarrierPigeon implements TimingTarget {
             if (animationFrame == AnimationFrame.ONDISPLAY) {
 
                 // create a new animation handler
-                animatorHandlerOnClose = new Animator(timeToAnimate, 1, Animator.RepeatBehavior.LOOP, this);
+                Animator animatorHandlerOnClose = new Animator(timeToAnimate, 1, Animator.RepeatBehavior.LOOP, this);
 
                 // sets the current animation state
                 animationFrame = AnimationFrame.ONCLOSE;

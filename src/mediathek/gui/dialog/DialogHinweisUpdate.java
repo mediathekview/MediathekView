@@ -55,7 +55,7 @@ public class DialogHinweisUpdate extends javax.swing.JDialog {
         try {
             jXHyperlinkWebsite.setText(Konstanten.ADRESSE_DOWNLAD);
             jXHyperlinkWebsite.setAction(new UrlHyperlinkAction(parent, Konstanten.ADRESSE_DOWNLAD));
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
         jButtonOk.addActionListener(new BeobBeenden());
         jTextArea1.setText(text);
