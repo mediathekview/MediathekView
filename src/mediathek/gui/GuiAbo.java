@@ -70,7 +70,7 @@ public class GuiAbo extends PanelVorlage {
         super.isShown();
         if (!solo) {
             daten.mediathekGui.setToolbar(MVToolBar.TOOLBAR_TAB_ABOS);
-            daten.mediathekGui.getStatusBar().setIndexForCenterDisplay(MVStatusBar.StatusbarIndex.ABO);
+            daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.ABO);
         }
     }
 
@@ -216,7 +216,7 @@ public class GuiAbo extends PanelVorlage {
 
     private void setInfo() {
         // Infopanel setzen
-        daten.mediathekGui.getStatusBar().setInfoAbo();;
+        daten.mediathekGui.getStatusBar().setTextForLeftDisplay();
     }
 
     /**
