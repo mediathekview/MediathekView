@@ -286,7 +286,7 @@ public class DialogBeendenZeit extends JDialog {
                     }
                 });
             }
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
     }
 

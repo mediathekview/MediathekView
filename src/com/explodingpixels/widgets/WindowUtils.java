@@ -9,6 +9,7 @@ import javax.swing.FocusManager;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 
 /**
  * Utility methods for dealing with {@link Window}s.

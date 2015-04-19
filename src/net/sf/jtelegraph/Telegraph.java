@@ -78,9 +78,6 @@ import net.sf.jcarrierpigeon.WindowPosition;
  */
 public class Telegraph {
 
-    // window itself
-    private TelegraphEnvelope window;
-
     // the notification framework
     private Notification notification;
 
@@ -157,7 +154,7 @@ public class Telegraph {
     public synchronized void animate() {
 
         // create a new telegraph envelope, which is our window
-        window = new TelegraphEnvelope();
+        TelegraphEnvelope window = new TelegraphEnvelope();
 
         // set the title and body for the message
         window.setMessage(title, message);
