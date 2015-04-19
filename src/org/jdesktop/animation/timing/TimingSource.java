@@ -59,7 +59,7 @@ import java.util.ArrayList;
 public abstract class TimingSource {
 
     // listeners that will receive timing events
-    private ArrayList<TimingEventListener> listeners = 
+    private final ArrayList<TimingEventListener> listeners =
             new ArrayList<TimingEventListener>();
     
     /**

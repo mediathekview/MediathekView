@@ -85,7 +85,7 @@ public final class Animator {
     private TimingSource swingTimer;
     private TimingSourceTarget timingSourceTarget;
     
-    private ArrayList<TimingTarget> targets = new ArrayList<TimingTarget>();    // Animators may have 
+    private final ArrayList<TimingTarget> targets = new ArrayList<TimingTarget>();    // Animators may have
                                                     // multiple targets
 
     private long startTime;	    // Tracks original Animator start time
@@ -724,8 +724,7 @@ public final class Animator {
      */
     private void timingEvent(float fraction) {
         synchronized (targets) {
-            for (int i = 0; i < targets.size(); ++i) {
-                TimingTarget target = targets.get(i);
+            for (TimingTarget target : targets) {
                 target.timingEvent(fraction);
             }
         }
@@ -739,8 +738,7 @@ public final class Animator {
      */
     private void begin() {
         synchronized (targets) {
-            for (int i = 0; i < targets.size(); ++i) {
-                TimingTarget target = targets.get(i);
+            for (TimingTarget target : targets) {
                 target.begin();
             }
         }
@@ -751,8 +749,7 @@ public final class Animator {
      */
     private void end() {
         synchronized (targets) {
-            for (int i = 0; i < targets.size(); ++i) {
-                TimingTarget target = targets.get(i);
+            for (TimingTarget target : targets) {
                 target.end();
             }
         }
@@ -763,8 +760,7 @@ public final class Animator {
      */
     private void repeat() {
         synchronized (targets) {
-            for (int i = 0; i < targets.size(); ++i) {
-                TimingTarget target = targets.get(i);
+            for (TimingTarget target : targets) {
                 target.repeat();
             }
         }

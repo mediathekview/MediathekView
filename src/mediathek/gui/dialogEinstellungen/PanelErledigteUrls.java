@@ -186,9 +186,8 @@ public class PanelErledigteUrls extends PanelVorlage {
                 bw.write(MVUsedUrl.getHeaderString());
                 bw.newLine();
                 bw.newLine();
-                Iterator<MVUsedUrl> it = liste.iterator();
-                while (it.hasNext()) {
-                    bw.write(it.next().getString());
+                for (MVUsedUrl entry : liste) {
+                    bw.write(entry.getString());
                     bw.newLine();
                 }
                 bw.newLine();
