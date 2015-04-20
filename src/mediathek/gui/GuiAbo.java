@@ -323,7 +323,7 @@ public class GuiAbo extends PanelVorlage {
             });
             jPopupMenu.add(itemEinschalten);
             // Abo deaktivieren
-            JMenuItem itemDeaktivieren = new JMenuItem("Abo deaktivieren");
+            JMenuItem itemDeaktivieren = new JMenuItem("Abo ausschalten");
             itemDeaktivieren.setIcon(GetIcon.getProgramIcon("nein_16.png"));
             itemDeaktivieren.setEnabled(ein);
             itemDeaktivieren.addActionListener(new ActionListener() {
