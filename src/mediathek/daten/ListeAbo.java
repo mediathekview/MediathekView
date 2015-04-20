@@ -65,7 +65,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         boolean ret = false;
         namePfad = FilenameUtils.replaceLeerDateiname(namePfad);
         DatenAbo datenAbo = new DatenAbo(namePfad /* name */, filmSender, filmThema, filmTitel, filmThemaTitel, irgendwo, mindestdauer, namePfad, "");
-        DialogEditAbo dialogEditAbo = new DialogEditAbo(null, true, daten, datenAbo);
+        DialogEditAbo dialogEditAbo = new DialogEditAbo(daten.mediathekGui, true, daten, datenAbo);
         dialogEditAbo.setVisible(true);
         if (dialogEditAbo.ok) {
             if (!aboExistiertBereits(datenAbo)) {

@@ -68,6 +68,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialog.DialogAddDownload;
+import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobTableHeader;
@@ -1223,14 +1224,11 @@ public class GuiFilme extends PanelVorlage {
             JMenu submenueAbo = new JMenu("Abo");
             jPopupMenu.add(submenueAbo);
             //Abo anlegen
-            JMenuItem itemAboLoeschen;
-            JMenuItem itemAbo;
-            JMenuItem itemAboMitTitel;
-            JMenuItem itemAboFilter;
-            itemAboLoeschen = new JMenuItem("Abo Löschen");
-            itemAbo = new JMenuItem("Abo mit Sender und Thema anlegen");
-            itemAboMitTitel = new JMenuItem("Abo mit Sender und Thema und Titel anlegen");
-            itemAboFilter = new JMenuItem("Abo aus Filter anlegen");
+            JMenuItem itemAboLoeschen = new JMenuItem("Abo Löschen");
+            JMenuItem itemAbo = new JMenuItem("Abo mit Sender und Thema anlegen");
+            JMenuItem itemAboMitTitel = new JMenuItem("Abo mit Sender und Thema und Titel anlegen");
+            JMenuItem itemAboFilter = new JMenuItem("Abo aus Filter anlegen");
+            JMenuItem itemChangeAboFilter = new JMenuItem("Abo ändern");
             if (film != null) {
                 if ((Daten.listeAbo.getAboFuerFilm_schnell(film, false /*die Länge nicht prüfen*/)) != null) {
                     //gibts schon, dann löschen
@@ -1238,8 +1236,12 @@ public class GuiFilme extends PanelVorlage {
                     itemAboMitTitel.setEnabled(false);
                     itemAboFilter.setEnabled(false);
                     itemAboLoeschen.addActionListener(beobAbo);
+
+                    // dann können wir auch ändern
+                    itemChangeAboFilter.addActionListener(new BeobChangeAbo());
                 } else {
                     itemAboLoeschen.setEnabled(false);
+                    itemChangeAboFilter.setEnabled(false);
                     //neues Abo anlegen
                     itemAbo.addActionListener(beobAbo);
                     itemAboMitTitel.addActionListener(beobAboMitTitel);
@@ -1247,10 +1249,11 @@ public class GuiFilme extends PanelVorlage {
                 }
             }
             submenueAbo.add(itemAboLoeschen);
+            submenueAbo.add(itemChangeAboFilter);
             submenueAbo.add(itemAbo);
             submenueAbo.add(itemAboMitTitel);
             submenueAbo.add(itemAboFilter);
-
+            
             //Programme einblenden
             JMenu submenue = new JMenu("Film mit Set starten");
             jPopupMenu.add(submenue);
@@ -1516,6 +1519,35 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 guiFilmeFilterLoeschen();
+            }
+        }
+
+        private class BeobChangeAbo implements ActionListener {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (Daten.listePset.getListeAbo().isEmpty()) {
+                    MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
+                            "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    int nr = tabelle.rowAtPoint(p);
+                    if (nr >= 0) {
+                        stopBeob = true;
+                        DatenFilm film = getFilm(nr);
+                        DatenAbo datenAbo;
+                        if (film != null) {
+                            if ((datenAbo = Daten.listeAbo.getAboFuerFilm_schnell(film, false /*ohne Länge*/)) != null) {
+                                //gibts schon, dann löschen
+                                DialogEditAbo dialog = new DialogEditAbo(daten.mediathekGui, true, daten, datenAbo);
+                                dialog.setVisible(true);
+                                if (dialog.ok) {
+                                    Daten.listeAbo.aenderungMelden();
+                                }
+                            }
+                        }
+                        stopBeob = false;
+                    }
+                }
             }
         }
 
