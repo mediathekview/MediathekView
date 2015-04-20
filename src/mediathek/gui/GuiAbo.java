@@ -177,7 +177,7 @@ public class GuiAbo extends PanelVorlage {
         if (row >= 0) {
             int modelRow = tabelle.convertRowIndexToModel(row);
             DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
-            DialogEditAbo dialog = new DialogEditAbo(null, true, daten, akt);
+            DialogEditAbo dialog = new DialogEditAbo(daten.mediathekGui, true, daten, akt);
             dialog.setVisible(true);
             if (dialog.ok) {
                 tabelleLaden();

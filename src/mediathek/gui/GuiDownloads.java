@@ -51,9 +51,11 @@ import mediathek.controller.Log;
 import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
+import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.gui.dialog.DialogBeendenZeit;
+import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.res.GetIcon;
@@ -793,6 +795,7 @@ public class GuiDownloads extends PanelVorlage {
     public class BeobMausTabelle extends MouseAdapter {
 
         private Point p;
+        DatenDownload datenDownload = null;
 
         @Override
         public void mouseClicked(MouseEvent arg0) {
@@ -812,6 +815,11 @@ public class GuiDownloads extends PanelVorlage {
 
         @Override
         public void mousePressed(MouseEvent arg0) {
+            p = arg0.getPoint();
+            int row = tabelle.rowAtPoint(p);
+            if (row >= 0) {
+                datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
+            }
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
@@ -819,6 +827,11 @@ public class GuiDownloads extends PanelVorlage {
 
         @Override
         public void mouseReleased(MouseEvent arg0) {
+            p = arg0.getPoint();
+            int row = tabelle.rowAtPoint(p);
+            if (row >= 0) {
+                datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
+            }
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
@@ -826,7 +839,7 @@ public class GuiDownloads extends PanelVorlage {
 
         private void buttonTable(int row, int column) {
             if (row != -1) {
-                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
+                datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
                 if (tabelle.convertColumnIndexToModel(column) == DatenDownload.DOWNLOAD_BUTTON_START_NR) {
                     // filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */)
                     if (datenDownload.start != null) {
@@ -934,7 +947,7 @@ public class GuiDownloads extends PanelVorlage {
                     downloadLoeschen(true /* dauerhaft */);
                 }
             });
-            //ändern
+            //Download ändern
             JMenuItem itemAendern = new JMenuItem("Download ändern");
             itemAendern.setIcon(GetIcon.getProgramIcon("configure_16.png"));
             jPopupMenu.add(itemAendern);
@@ -1099,6 +1112,33 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             jPopupMenu.add(itemInfo);
+
+            //Abo ändern
+            JMenuItem itemChangeAboFilter = new JMenuItem("Abo ändern");
+            if (datenDownload == null) {
+                itemChangeAboFilter.setEnabled(false);
+            } else if (datenDownload.film == null) {
+                itemChangeAboFilter.setEnabled(false);
+            } else {
+                // dann können wir auch ändern
+                final DatenAbo datenAbo = Daten.listeAbo.getAboFuerFilm_schnell(datenDownload.film, false /*die Länge nicht prüfen*/);
+                if (datenAbo != null) {
+                    itemChangeAboFilter.addActionListener(new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            stopBeob = true;
+                            DialogEditAbo dialog = new DialogEditAbo(daten.mediathekGui, true, daten, datenAbo);
+                            dialog.setVisible(true);
+                            if (dialog.ok) {
+                                Daten.listeAbo.aenderungMelden();
+                            }
+                            stopBeob = false;
+                        }
+                    });
+                }
+            }
+            jPopupMenu.add(itemChangeAboFilter);
 
             // ######################
             // Menü anzeigen
