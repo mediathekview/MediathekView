@@ -153,7 +153,7 @@ public final class MVToolBar extends JToolBar {
         jButtonAbosEinschalten = new MVButton(new String[]{TOOLBAR_TAB_ABOS}, "Abos einschalten", "Abos einschalten", "ja_32.png", "ja_16.png");
         buttonListAlles.add(jButtonAbosEinschalten);
         buttonListAbos.add(jButtonAbosEinschalten);
-        jButtonAbosAusschalten = new MVButton(new String[]{TOOLBAR_TAB_ABOS}, "Abos deaktivieren", "Abos deaktivieren", "nein_32.png", "nein_16.png");
+        jButtonAbosAusschalten = new MVButton(new String[]{TOOLBAR_TAB_ABOS}, "Abos ausschalten", "Abos ausschalten", "nein_32.png", "nein_16.png");
         buttonListAlles.add(jButtonAbosAusschalten);
         buttonListAbos.add(jButtonAbosAusschalten);
         jButtonAbosLoeschen = new MVButton(new String[]{TOOLBAR_TAB_ABOS}, "Abos löschen", "Abos löschen", "del_32.png", "del_16.png");
