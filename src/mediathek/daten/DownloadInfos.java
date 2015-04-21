@@ -37,6 +37,9 @@ public class DownloadInfos {
     public long bandwidth = 0; //Bandbreite: bytes per second
     public String bandwidthStr = "";
 
+    // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
+    public int[] downloadStarts = new int[]{0, 0, 0, 0, 0, 0, 0};
+
     private LinkedList<DatenDownload> aktivDownloads; // Liste gestarteter Downloads
 
     public String roundBandwidth(long time) {
@@ -85,6 +88,8 @@ public class DownloadInfos {
 
     public synchronized void makeDownloadInfos() {
         clean();
+
+        downloadStarts = Daten.listeDownloads.getStarts();
 
         aktivDownloads = Daten.listeDownloads.getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
         for (DatenDownload download : aktivDownloads) {

@@ -19,7 +19,6 @@
  */
 package mediathek.res;
 
-import java.awt.Image;
 import java.io.File;
 import javax.swing.ImageIcon;
 import mediathek.controller.Log;
@@ -33,8 +32,8 @@ public class GetIcon {
     private final static String PFAD_SENDER = "/mediathek/res/sender/";
     public final static String PFAD_RES = "/mediathek/res/";
 
-    public static Image getImage(String strIcon) {
-        return getProgramIcon(strIcon).getImage();
+    public static ImageIcon getIcon(String strIcon) {
+        return getIcon(strIcon, PFAD_RES);
     }
 
     public static ImageIcon getSenderIcon(String strIcon) {
@@ -52,7 +51,6 @@ public class GetIcon {
             ImageIcon icon;
             try {
                 String pfad = GuiFunktionen.addsPfad(Daten.mVConfig.get(MVConfig.SYSTEM_ICON_PFAD), strIcon);
-//                System.out.println(new File(pfad).getAbsolutePath());
                 if (new File(pfad).exists()) {
                     icon = new ImageIcon(pfad);
                 } else {

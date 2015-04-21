@@ -61,7 +61,7 @@ public class MediathekGuiMac extends MediathekGui {
                 ListenerMediathekView.EREIGNIS_START_EVENT, ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS}, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
-                final int activeDownloads = Daten.listeDownloads.getActiveDownloads();
+                final int activeDownloads = Daten.downloadInfos.downloadStarts[4];
                 final Application application = Application.getApplication();
                 if (activeDownloads > 0) {
                     application.setDockIconBadge(String.valueOf(activeDownloads));

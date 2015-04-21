@@ -338,7 +338,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         String textLinks;
         // Text links: Zeilen Tabelle
         // nicht gestarted, laufen, fertig OK, fertig fehler
-        int[] starts = Daten.listeDownloads.getStarts();
+        int[] starts = Daten.downloadInfos.downloadStarts;
         if (starts[0] == 1) {
             textLinks = "<span class=\"sans\"><b>Download:</b> 1";
         } else {
