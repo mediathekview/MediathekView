@@ -483,19 +483,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    /**
-     * Get the number of all currently active downloads.
-     *
-     * @return number of active downloads.
-     */
-    public int getActiveDownloads() {
-        int[] starts = getStarts();
-        return starts[4];
-    }
-
     public synchronized int[] getStarts() {
         // liefert die Anzahl Starts die:
-        // Anzahl, Anz-Abo, Anz-Down, nicht gestarted sind, die laufen, die fertig sind: OK, die fertig sind: fehler
+        // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
         // Downloads und Abos
 
         int[] ret = new int[]{0, 0, 0, 0, 0, 0, 0};

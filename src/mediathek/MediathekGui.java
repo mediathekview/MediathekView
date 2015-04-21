@@ -20,8 +20,17 @@
 package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
-
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.SplashScreen;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -63,6 +72,7 @@ import mediathek.gui.MVBandwidthMonitor;
 import mediathek.gui.MVDownloadInfo;
 import mediathek.gui.MVStatusBar;
 import mediathek.gui.MVToolBar;
+import mediathek.gui.MVTray;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.DialogLeer;
@@ -544,30 +554,10 @@ public class MediathekGui extends JFrame {
                 beenden(false, false);
             }
         });
-////        systemTray();
+        if (!SystemInfo.isMacOSX()) {
+            new MVTray(daten).systemTray();
+        }
     }
-//
-//    private void systemTray() {
-//        if (SystemTray.isSupported()) {
-//            // anlegen
-//            final PopupMenu popup = new PopupMenu();
-//            final TrayIcon trayIcon = new TrayIcon(GetIcon.getImage("mv-tray.png"));
-//            trayIcon.setImageAutoSize(true);
-//            final SystemTray tray = SystemTray.getSystemTray();
-//
-//            MenuItem aboutItem = new MenuItem("About");
-//            popup.add(aboutItem);
-//            popup.addSeparator();
-//            trayIcon.setPopupMenu(popup);
-//            try {
-//                tray.add(trayIcon);
-//            } catch (AWTException e) {
-//                Log.systemMeldung("Tray konnte nicht geladen werden!");
-//            }
-//        } else {
-//            Log.systemMeldung("Tray wird nicht unterstützt!");
-//        }
-//    }
 
     public void hideFrame(String state) {
         switch (state) {

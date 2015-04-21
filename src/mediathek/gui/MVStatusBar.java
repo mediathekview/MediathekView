@@ -252,7 +252,7 @@ public final class MVStatusBar extends JPanel {
         String textLinks;
         // Text links: Zeilen Tabelle
         // nicht gestarted, laufen, fertig OK, fertig fehler
-        int[] starts = Daten.listeDownloads.getStarts();
+        int[] starts = Daten.downloadInfos.downloadStarts;
         if (starts[0] == 1) {
             textLinks = "1 Download";
         } else {
