@@ -19,15 +19,18 @@
  */
 package mediathek.tool;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JWindow;
+import javax.swing.SwingConstants;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
 import net.sf.jcarrierpigeon.Notification;
 import net.sf.jcarrierpigeon.NotificationQueue;
 import net.sf.jcarrierpigeon.WindowPosition;
-
-import javax.swing.*;
-import java.awt.*;
 
 public class MVNotification {
     public static void addNotification(Daten daten, DatenDownload datenDownload, boolean erfolgreich) {
