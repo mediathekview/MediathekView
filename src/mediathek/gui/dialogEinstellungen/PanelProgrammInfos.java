@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.gui.dialog;
+package mediathek.gui.dialogEinstellungen;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,11 +31,11 @@ import mediathek.tool.Funktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.UrlHyperlinkAction;
 
-public class PanelAbout extends PanelVorlage {
+public class PanelProgrammInfos extends PanelVorlage {
 
     private final static long BYTES_TO_MBYTE = (1024L * 1024L);
 
-    public PanelAbout(Daten dd, JFrame parentComponent) {
+    public PanelProgrammInfos(Daten dd, JFrame parentComponent) {
         super(dd, parentComponent);
         initComponents();
 

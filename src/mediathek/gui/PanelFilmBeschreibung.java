@@ -25,7 +25,7 @@ import java.net.URISyntaxException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import mediathek.daten.Daten;
-import mediathek.gui.dialog.DialogBeschreibung;
+import mediathek.gui.dialog.DialogFilmBeschreibung;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.ListenerMediathekView;
@@ -38,13 +38,13 @@ import msearch.daten.DatenFilm;
  *
  * @author emil
  */
-public class PanelBeschreibung extends JPanel {
+public class PanelFilmBeschreibung extends JPanel {
 
     Daten daten;
     DatenFilm aktFilm = null;
     JFrame parent;
 
-    public PanelBeschreibung(JFrame pparent, Daten dd) {
+    public PanelFilmBeschreibung(JFrame pparent, Daten dd) {
         initComponents();
         parent = pparent;
         daten = dd;
@@ -53,7 +53,7 @@ public class PanelBeschreibung extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.FALSE.toString());
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, PanelBeschreibung.class.getSimpleName());
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
             }
         });
         jXHyperlinkWebsite.setText("");
@@ -71,17 +71,17 @@ public class PanelBeschreibung extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 if (aktFilm != null) {
                     String akt = aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR];
-                    new DialogBeschreibung(parent, daten, aktFilm).setVisible(true);
+                    new DialogFilmBeschreibung(parent, daten, aktFilm).setVisible(true);
                     if (!aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].equals(akt)) {
                         // dann hat sich die Beschreibung geändert
                         setText();
                         Daten.filmlisteSpeichern();
-                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BESCHREIBUNG, PanelBeschreibung.class.getSimpleName());
+                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BESCHREIBUNG, PanelFilmBeschreibung.class.getSimpleName());
                     }
                 }
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FONT, PanelBeschreibung.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FONT, PanelFilmBeschreibung.class.getSimpleName()) {
             @Override
             public void ping() {
                 setText();

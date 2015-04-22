@@ -32,7 +32,6 @@ import javax.swing.tree.TreeSelectionModel;
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
-import mediathek.gui.dialog.PanelAbout;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
@@ -57,7 +56,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private PanelVorlage panelPset;
     private PanelPsetImport panelPsetVorlagen;
     // Infos
-    private PanelAbout panelAbout;
+    private PanelProgrammInfos panelAbout;
     private final JPanel panelLeer = new JPanel();
     private final JFrame parentComponent;
 
@@ -148,7 +147,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         panelDateinamen = new PanelDateinamen(ddaten, parentComponent);
         panelPset = new PanelPset(ddaten, parentComponent);
         panelPsetVorlagen = new PanelPsetImport(ddaten, parentComponent);
-        panelAbout = new PanelAbout(ddaten, parentComponent);
+        panelAbout = new PanelProgrammInfos(ddaten, parentComponent);
     }
 
     private void initTree() {

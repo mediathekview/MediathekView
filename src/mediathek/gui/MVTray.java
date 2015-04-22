@@ -36,7 +36,6 @@ import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
-import mediathek.gui.dialogEinstellungen.PanelDownload;
 import mediathek.res.GetIcon;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;

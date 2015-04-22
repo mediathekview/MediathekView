@@ -98,7 +98,7 @@ public class GuiFilme extends PanelVorlage {
     private static final int FILTER_ZEIT_STARTWERT = 5;
     private static final int FILTER_DAUER_STARTWERT = 0;
     private final MVFilmInformation filmInfoHud;
-    private final PanelBeschreibung panelBeschreibung;
+    private final PanelFilmBeschreibung panelBeschreibung;
     private MVFilter mVFilter;
     public MVFilterFrame mVFilterFrame;
     private final MVFilterPanel mVFilterPanel;
@@ -110,7 +110,7 @@ public class GuiFilme extends PanelVorlage {
         jScrollPane1.setViewportView(tabelle);
         jScrollPaneFilter.getVerticalScrollBar().setUnitIncrement(16);
         panelVideoplayerSetzen();
-        panelBeschreibung = new PanelBeschreibung(daten.mediathekGui, daten);
+        panelBeschreibung = new PanelFilmBeschreibung(daten.mediathekGui, daten);
         mVFilterPanel = new MVFilterPanel(parentComponent, daten) {
             @Override
             public void mvFfilter(int i) {

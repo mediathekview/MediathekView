@@ -16,7 +16,7 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.gui.dialog;
+package mediathek.gui;
 
 import com.jidesoft.swing.MarqueePane;
 import java.awt.BorderLayout;
@@ -80,28 +80,17 @@ public class MVAboutDialog extends JDialog {
         messagePane.setFocusable(false);
         messagePane.setContentType("text/html");
         messagePane.setText("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-                + "<head>\n"
-                + "<style type=\"text/css\">\n"
-                + ".sans {\n"
-                + "\tfont-family: Verdana, Geneva, sans-serif;\n"
-                + "}\n"
-                + "</style>\n"
-                + "</head>\n"
-                + "\n"
+                + "<head><style type=\"text/css\"> .sans { font-family: Verdana, Geneva, sans-serif; }</style></head>\n"
                 + "<body>\n"
-                + "<span class=\"sans\"><b>http://zdfmediathk.sourceforge.net</b><br />\n"
-                + "</span>\n"
-                + "<p>\n"
-                + "  <span class=\"sans\"><b>Autoren:</b><br />\n"
+                + "<span class=\"sans\"><b>http://zdfmediathk.sourceforge.net</b><br /></span>\n"
+                + "<p><span class=\"sans\"><b>Autoren:</b><br />\n"
                 + "Xaver W. (W.Xaver [at] googlemail [dot] com)<br />\n"
                 + "Christian F. (crystalpalace1977 [at] googlemail [dot] com)<br />\n"
                 + "Patrick<br />\n"
                 + "thausherr<br />\n"
                 + "Andreas M.<br />\n"
-                + "siedlerchr<br />\n"
-                + "  </span>\n"
-                + "<p>\n"
-                + "  <span class=\"sans\"><b>Dokumentation / Test:</b><br />\n"
+                + "siedlerchr<br /></span><p>\n"
+                + "<span class=\"sans\"><b>Dokumentation / Test:</b><br />\n"
                 + "styrol<br />\n"
                 + "hostis<br />\n"
                 + "pmshell<br />\n"
@@ -110,10 +99,10 @@ public class MVAboutDialog extends JDialog {
                 + "siedlerchr<br />\n"
                 + "werner252<br />\n"
                 + "thomas5<br />\n"
-                + "frankypsilon</span>\n"
-                + "<p>\n"
-                + "  <span class=\"sans\"><b>Ein Dankeschön an alle, die zu dieser Software beigetragen haben.</b></span>\n"
-                + "<p><p><p><p><p><p>\n" + "</body>\n" + "</html>\n");
+                + "frankypsilon</span><p>\n"
+                + "<span class=\"sans\"><b>Ein Dankeschön an alle, die zu dieser Software beigetragen haben.</b></span>\n"
+                + "<br /><br /><br /></body></html>");
+
         marqueePane = new MarqueePane(messagePane);
         marqueePane.setStayDelay(3000);
         marqueePane.setScrollDirection(MarqueePane.SCROLL_DIRECTION_UP);

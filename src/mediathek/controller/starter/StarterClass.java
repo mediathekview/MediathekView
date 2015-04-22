@@ -40,7 +40,7 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.gui.dialog.DialogContinueDownload;
-import mediathek.gui.dialog.DialogDownloadfehler;
+import mediathek.gui.dialog.MeldungDownloadfehler;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
@@ -535,7 +535,7 @@ public class StarterClass {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        new DialogDownloadfehler(daten.mediathekGui, exMessage, datenDownload).setVisible(true);
+                        new MeldungDownloadfehler(daten.mediathekGui, exMessage, datenDownload).setVisible(true);
                     }
                 });
             }
@@ -838,7 +838,7 @@ public class StarterClass {
                             SwingUtilities.invokeLater(new Runnable() {
                                 @Override
                                 public void run() {
-                                    new DialogDownloadfehler(daten.mediathekGui, "URL des Films:\n"
+                                    new MeldungDownloadfehler(daten.mediathekGui, "URL des Films:\n"
                                             + datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR] + "\n\n"
                                             + responseCode + "\n", datenDownload).setVisible(true);
                                 }
@@ -865,7 +865,7 @@ public class StarterClass {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        new DialogDownloadfehler(daten.mediathekGui, exMessage, datenDownload).setVisible(true);
+                        new MeldungDownloadfehler(daten.mediathekGui, exMessage, datenDownload).setVisible(true);
                     }
                 });
             }

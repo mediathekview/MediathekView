@@ -29,7 +29,6 @@ import java.awt.Frame;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.SplashScreen;
-import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -77,11 +76,10 @@ import mediathek.gui.MVTray;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.DialogLeer;
-import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialog.DialogStarteinstellungen;
-import mediathek.gui.dialog.MVAboutDialog;
+import mediathek.gui.MVAboutDialog;
 import mediathek.gui.dialog.MVFilmInformation;
-import mediathek.gui.dialog.PanelHilfe;
+import mediathek.gui.MVHelpDialog;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
@@ -1074,7 +1072,7 @@ public class MediathekGui extends JFrame {
         jMenuItemAnleitung.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DialogOk dialogOk = new DialogOk(daten.mediathekGui, true, new PanelHilfe(daten, daten.mediathekGui), "Hilfe zum Programm");
+                MVHelpDialog dialogOk = new MVHelpDialog(daten.mediathekGui, true, daten, "Hilfe zum Programm");
                 dialogOk.setVisible(true);
             }
         });
