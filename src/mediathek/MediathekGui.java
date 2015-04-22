@@ -29,6 +29,7 @@ import java.awt.Frame;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.SplashScreen;
+import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -117,6 +118,8 @@ public class MediathekGui extends JFrame {
     private final JCheckBoxMenuItem jCheckBoxAboExtrafenster = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxMeldungenAnzeigen = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxMeldungenExtrafenster = new JCheckBoxMenuItem();
+    private MVTray tray = null;
+
     /**
      * Bandwidth monitoring for downloads.
      */
@@ -551,11 +554,22 @@ public class MediathekGui extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
-                beenden(false, false);
+                if (tray != null && !SystemInfo.isMacOSX() && Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_TRAY))) {
+                    daten.mediathekGui.setVisible(false);
+                } else {
+                    beenden(false, false);
+                }
             }
         });
-        if (!SystemInfo.isMacOSX()) {
-            new MVTray(daten).systemTray();
+        setTray();
+    }
+
+    public void setTray() {
+        if (tray == null && Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_TRAY))) {
+            tray = new MVTray(daten).systemTray();
+        } else if (tray != null && !Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_TRAY))) {
+            tray.beenden();
+            tray = null;
         }
     }
 

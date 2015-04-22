@@ -252,6 +252,7 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_USE_REPLACETABLE, SystemInfo.isLinux() || SystemInfo.isMacOSX() ? Boolean.TRUE.toString() : Boolean.FALSE.toString()); // wegen des Problems mit ext. Programmaufrufen und Leerzeichen
         mVConfig.add(MVConfig.SYSTEM_ONLY_ASCII, Boolean.FALSE.toString());
         mVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.FALSE.toString());
         mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET, Boolean.toString(true));
@@ -339,7 +340,7 @@ public class Daten {
                 final Path path1 = Paths.get(dir1);
                 final String dir2 = dir1 + "--" + new SimpleDateFormat("yyyy.MM.dd__HH.mm.ss").format(new Date());
 
-                Files.move(path1,Paths.get(dir2),StandardCopyOption.REPLACE_EXISTING);
+                Files.move(path1, Paths.get(dir2), StandardCopyOption.REPLACE_EXISTING);
                 Files.deleteIfExists(path1);
             } catch (IOException e) {
                 Log.systemMeldung("Die Einstellungen konnten nicht zurückgesetzt werden.");

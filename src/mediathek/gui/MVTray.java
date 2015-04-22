@@ -20,6 +20,8 @@
 package mediathek.gui;
 
 import java.awt.AWTException;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
@@ -28,50 +30,63 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JWindow;
+import javax.swing.SwingConstants;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.ListenerMediathekView;
-import msearch.filmeSuchen.MSListenerFilmeLaden;
-import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import mediathek.tool.MVConfig;
+import net.sf.jcarrierpigeon.Notification;
+import net.sf.jcarrierpigeon.NotificationQueue;
+import net.sf.jcarrierpigeon.WindowPosition;
 
 public final class MVTray {
 
     private final Daten daten;
     private int trayState = 0; // 0, 1=Download, 2=Download mit Fehler
+    private SystemTray tray = null;
+    private TrayIcon trayIcon = null;
+    private String helptext = "";
 
     public MVTray(Daten daten) {
         this.daten = daten;
     }
 
-    public void systemTray() {
-        if (SystemTray.isSupported()) {
-            // anlegen
-            final SystemTray tray = SystemTray.getSystemTray();
-            MenuItem itemBeenden = new MenuItem("Programm beenden");
-            final TrayIcon trayIcon = new TrayIcon(GetIcon.getIcon("mv-tray.png").getImage());
-            final PopupMenu popup = new PopupMenu();
+    public void beenden() {
+        if (tray != null && trayIcon != null) {
+            tray.remove(trayIcon);
+        }
+    }
 
+    public MVTray systemTray() {
+        if (!SystemTray.isSupported()) {
+            Log.systemMeldung("Tray wird nicht unterstützt!");
+            return null;
+        } else {
+            tray = SystemTray.getSystemTray();
+            trayIcon = new TrayIcon(GetIcon.getIcon("mv-tray.png").getImage());
             trayIcon.setImageAutoSize(true);
+            trayIcon.setToolTip(getInfoTextDownloads());
+            addListener();
 
+            final PopupMenu popup = new PopupMenu();
             trayIcon.setPopupMenu(popup);
-            trayIcon.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (e.getClickCount() == 1) {
-                        trayIcon.displayMessage(null, getTextInfo(), TrayIcon.MessageType.INFO);
 
-//                        daten.mediathekGui.setVisible(!daten.mediathekGui.isVisible());
-//                        if (daten.mediathekGui.isVisible()) {
-//                            daten.mediathekGui.toFront();
-//                            daten.mediathekGui.requestFocus();
-//                        }
-                    }
+            MenuItem itemInfo = new MenuItem("Infos anzeigen");
+            itemInfo.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    addNotification(getTextInfos());
                 }
             });
-
+            popup.add(itemInfo);
             popup.addSeparator();
+
+            MenuItem itemBeenden = new MenuItem("Programm beenden");
             itemBeenden.addActionListener(new ActionListener() {
 
                 @Override
@@ -80,154 +95,89 @@ public final class MVTray {
                 }
             });
             popup.add(itemBeenden);
-            popup.addSeparator();
+
             trayIcon.setPopupMenu(popup);
-
-//            trayIcon.addActionListener(new ActionListener() {
-//                
-//                @Override
-//                public void actionPerformed(ActionEvent e) {
-//                    daten.mediathekGui.setVisible(!daten.mediathekGui.isVisible());
-//                }
-//            });
-            trayIcon.setToolTip(getTextToolTip());
-            Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
-                @Override
-                public void start(MSListenerFilmeLadenEvent event) {
-                }
-
-                @Override
-                public void progress(MSListenerFilmeLadenEvent event) {
-                }
-
-                @Override
-                public void fertig(MSListenerFilmeLadenEvent event) {
-                    trayIcon.setToolTip(getTextToolTip());
-                }
-            });
-
-            ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_TIMER, MVStatusBar.class.getSimpleName()) {
-                boolean trayIconCount = true;
-
-                @Override
-                public void ping() {
-                    // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
-                    int[] starts = Daten.downloadInfos.downloadStarts;
-                    if (starts[6] > 0) {
-                        // es gibt welche mit Fehler
-                        if (trayState != 2) {
-                            trayState = 2;
-                            trayIcon.setImage(GetIcon.getIcon("mv-tray-fehler.png").getImage());
-                        }
-                    } else if (starts[4] > 0) {
-                        // es laufen welche
-                        if (trayState != 1) {
-                            trayState = 1;
-                            trayIcon.setImage(GetIcon.getIcon("mv-tray-download.png").getImage());
-                        }
-                    } else {
-                        if (trayState != 0) {
-                            trayState = 0;
-                            trayIcon.setImage(GetIcon.getIcon("mv-tray.png").getImage());
-                        }
-                    }
-                }
-            });
             try {
                 tray.add(trayIcon);
+                return this;
             } catch (AWTException e) {
                 Log.systemMeldung("Tray konnte nicht geladen werden!");
             }
 
-        } else {
-            Log.systemMeldung("Tray wird nicht unterstützt!");
         }
+        return null;
     }
 
-    private String getTextInfo() {
-        // Text rechts: alter/neuladenIn anzeigen
-        String strText = "";
-        strText += "Filmliste erstellt: ";
-        strText += Daten.listeFilme.genDate() + " Uhr \n";
-        strText+="\n";
-        strText+="\n";
+    private void addListener() {
+        trayIcon.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 1) {
+                    daten.mediathekGui.setVisible(!daten.mediathekGui.isVisible());
+                    if (daten.mediathekGui.isVisible()) {
+                        daten.mediathekGui.toFront();
+                        daten.mediathekGui.requestFocus();
+                    }
+                }
+            }
+        });
 
-        final int sekunden = Daten.listeFilme.getAge();
-        if (sekunden != 0) {
-            strText += "Alter: ";
-            final int minuten = sekunden / 60;
-            String strSekunde = String.valueOf(sekunden % 60);
-            String strMinute = String.valueOf(minuten % 60);
-            String strStunde = String.valueOf(minuten / 60);
-            if (strSekunde.length() < 2) {
-                strSekunde = "0" + strSekunde;
-            }
-            if (strMinute.length() < 2) {
-                strMinute = "0" + strMinute;
-            }
-            if (strStunde.length() < 2) {
-                strStunde = "0" + strStunde;
-            }
-            strText += strStunde + ":" + strMinute + ":" + strSekunde + "\n ";
-        }
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_TIMER, MVStatusBar.class.getSimpleName()) {
+            int count = 0;
 
-        strText+="\n";
-        strText+="\n";
-        strText += "Anz. Filme: " + Daten.listeFilme.size();
-        return strText;
+            @Override
+            public void ping() {
+                ++count;
+                if (count > 3) {
+                    // nur alle 3s ändern
+                    trayIcon.setToolTip(getInfoTextDownloads());
+                }
+
+                // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
+                int[] starts = Daten.downloadInfos.downloadStarts;
+                if (starts[6] > 0) {
+                    // es gibt welche mit Fehler
+                    if (trayState != 2) {
+                        trayState = 2;
+                        trayIcon.setImage(GetIcon.getIcon("mv-tray-fehler.png").getImage());
+                    }
+                } else if (starts[4] > 0) {
+                    // es laufen welche
+                    if (trayState != 1) {
+                        trayState = 1;
+                        trayIcon.setImage(GetIcon.getIcon("mv-tray-download.png").getImage());
+                    }
+                } else {
+                    if (trayState != 0) {
+                        trayState = 0;
+                        trayIcon.setImage(GetIcon.getIcon("mv-tray.png").getImage());
+                    }
+                }
+            }
+        });
     }
 
-    private String getTextToolTip() {
-        // Text rechts: alter/neuladenIn anzeigen
-        String strText = "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-                + "<head><style type=\"text/css\"> .sans { font-family: Verdana, Geneva, sans-serif; }</style></head>\n"
-                + "<body><p>\n";
+    private String getTextInfos() {
+        String strText = "<html><head></head><body><p>";
 
-        strText += "<span class=\"sans\"><b>";
-        strText += "Filmliste erstellt: ";
-        strText += "</b></span>";
-        strText += Daten.listeFilme.genDate();
-        strText += " Uhr  ";
-
-        final int sekunden = Daten.listeFilme.getAge();
-        if (sekunden != 0) {
-            strText += "<br />";
-            strText += "<span class=\"sans\"><b>";
-            strText += "Alter: ";
-            strText += "</b></span>";
-            final int minuten = sekunden / 60;
-            String strSekunde = String.valueOf(sekunden % 60);
-            String strMinute = String.valueOf(minuten % 60);
-            String strStunde = String.valueOf(minuten / 60);
-            if (strSekunde.length() < 2) {
-                strSekunde = "0" + strSekunde;
-            }
-            if (strMinute.length() < 2) {
-                strMinute = "0" + strMinute;
-            }
-            if (strStunde.length() < 2) {
-                strStunde = "0" + strStunde;
-            }
-            strText += strStunde + ":" + strMinute + ":" + strSekunde + " ";
-        }
+        strText += "Filmliste erstellt: " + Daten.listeFilme.genDate() + " Uhr  ";
 
         strText += "<br />";
-        strText += "<span class=\"sans\"><b>";
         strText += "Anz. Filme: " + Daten.listeFilme.size();
-        strText += "</b></span>";
-        strText += "\n</p></body></html>";
+
+        strText += "<br />";
+        strText += getInfoTextDownloads();
+
+        strText += "</p></body></html>";
         return strText;
     }
 
     private String getInfoTextDownloads() {
-        String textLinks;
+        String text;
         // nicht gestarted, laufen, fertig OK, fertig fehler
         int[] starts = Daten.downloadInfos.downloadStarts;
-        if (starts[0] == 1) {
-            textLinks = "1 Download";
-        } else {
-            textLinks = starts[0] + " Downloads";
-        }
+        text = "Downloads: " + starts[0];
+
         boolean print = false;
         for (int ii = 1; ii < starts.length; ++ii) {
             if (starts[ii] > 0) {
@@ -236,38 +186,65 @@ public final class MVTray {
             }
         }
         if (print) {
-            textLinks += ": ";
+            text += "   [ ";
             if (starts[4] == 1) {
-                textLinks += "1 läuft";
+                text += "1 läuft";
             } else {
-                textLinks += starts[4] + " laufen";
+                text += starts[4] + " laufen";
             }
 
             if (starts[4] > 0) {
-                textLinks += " (" + Daten.downloadInfos.bandwidthStr + ")";
+                text += " (" + Daten.downloadInfos.bandwidthStr + ")";
             }
 
             if (starts[3] == 1) {
-                textLinks += ", 1 wartet";
+                text += ", 1 wartet";
             } else {
-                textLinks += ", " + starts[3] + " warten";
+                text += ", " + starts[3] + " warten";
             }
             if (starts[5] > 0) {
                 if (starts[5] == 1) {
-                    textLinks += ", 1 fertig";
+                    text += ", 1 fertig";
                 } else {
-                    textLinks += ", " + starts[5] + " fertig";
+                    text += ", " + starts[5] + " fertig";
                 }
             }
             if (starts[6] > 0) {
                 if (starts[6] == 1) {
-                    textLinks += ", 1 fehlerhaft";
+                    text += ", 1 fehlerhaft";
                 } else {
-                    textLinks += ", " + starts[6] + " fehlerhaft";
+                    text += ", " + starts[6] + " fehlerhaft";
                 }
             }
+            text += " ]";
         }
-        return textLinks;
+        return text;
+    }
+
+    private void addNotification(String meldung) {
+        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_NOTIFICATION))) {
+
+            final JWindow messageFrame = new JWindow();
+            messageFrame.setLayout(new BorderLayout());
+            final JPanel panel = new JPanel();
+            panel.setBackground(Color.BLACK);
+
+            messageFrame.setContentPane(panel);
+
+            final JLabel iconLabel = new JLabel(GetIcon.getIcon("mv-notification.png", GetIcon.PFAD_RES));
+            iconLabel.setVerticalAlignment(SwingConstants.TOP);
+            messageFrame.getContentPane().add(iconLabel, BorderLayout.WEST);
+            final JLabel meldungsLabel = new JLabel(meldung);
+            meldungsLabel.setForeground(Color.WHITE);
+
+            messageFrame.getContentPane().add(meldungsLabel, BorderLayout.CENTER);
+            messageFrame.pack();
+            messageFrame.setFocusableWindowState(false);
+
+            Notification notification = new Notification(messageFrame, WindowPosition.BOTTOMRIGHT, 20, 20, 6000);
+            NotificationQueue q = new NotificationQueue();
+            q.add(notification);
+        }
     }
 
 }
