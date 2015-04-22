@@ -24,6 +24,7 @@
 	- Status der Blacklist (ein-aus) wird im Filterprofil gespeichert
 	- Tab Download: Rechte Maus auf einen Download: Der gespeicherte Film kann gelöscht werden
 	- Tab Filme, Tab Download: Rechte Maus auf einen Film/Downoad: Abo ändern
+	- TrayIcon: kann in den Einstellungen aktiviert werden
 
 	# Version 9
 	- Film-Url auch in HD und Klein in die Zwischenablage kopieren

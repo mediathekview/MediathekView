@@ -36,6 +36,7 @@ import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
+import mediathek.gui.dialogEinstellungen.PanelDownload;
 import mediathek.res.GetIcon;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
@@ -49,7 +50,6 @@ public final class MVTray {
     private int trayState = 0; // 0, 1=Download, 2=Download mit Fehler
     private SystemTray tray = null;
     private TrayIcon trayIcon = null;
-    private String helptext = "";
 
     public MVTray(Daten daten) {
         this.daten = daten;
@@ -84,8 +84,21 @@ public final class MVTray {
                 }
             });
             popup.add(itemInfo);
-            popup.addSeparator();
 
+            MenuItem itemRemoveTray = new MenuItem("Trayicon ausblenden");
+            itemRemoveTray.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    daten.mediathekGui.setVisible(true); // WICHTIG!!
+                    Daten.mVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.toString(false));
+                    daten.mediathekGui.setTray();
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_TRAYICON, MVTray.class.getSimpleName());
+                }
+            });
+            popup.add(itemRemoveTray);
+
+            popup.addSeparator();
             MenuItem itemBeenden = new MenuItem("Programm beenden");
             itemBeenden.addActionListener(new ActionListener() {
 

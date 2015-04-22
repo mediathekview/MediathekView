@@ -89,6 +89,12 @@ public class PanelEinstellungen extends PanelVorlage {
                 initSpinner();
             }
         });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_TRAYICON, PanelEinstellungen.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                jCheckBoxTray.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_TRAY)));
+            }
+        });
         jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE)));
         jCheckBoxEchtzeit.addActionListener(new ActionListener() {
 
