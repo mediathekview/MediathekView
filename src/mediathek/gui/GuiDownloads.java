@@ -79,7 +79,7 @@ import msearch.tool.Datum;
 public class GuiDownloads extends PanelVorlage {
 
     private final MVFilmInformation filmInfoHud;
-    private final PanelBeschreibung panelBeschreibung;
+    private final PanelFilmBeschreibung panelBeschreibung;
     private long lastUpdate = 0;
     private boolean showAbos = true;
     private boolean showDownloads = true;
@@ -113,7 +113,7 @@ public class GuiDownloads extends PanelVorlage {
         jScrollPane1.setViewportView(tabelle);
         filmInfoHud = daten.filmInfoHud;
 
-        panelBeschreibung = new PanelBeschreibung(daten.mediathekGui, daten);
+        panelBeschreibung = new PanelFilmBeschreibung(daten.mediathekGui, daten);
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
 
         init();

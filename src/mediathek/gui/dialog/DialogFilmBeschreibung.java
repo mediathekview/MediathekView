@@ -28,7 +28,7 @@ import mediathek.tool.EscBeenden;
 import mediathek.tool.MVInfoFile;
 import msearch.daten.DatenFilm;
 
-public class DialogBeschreibung extends javax.swing.JDialog {
+public class DialogFilmBeschreibung extends javax.swing.JDialog {
 
     DatenFilm datenFilm;
     JFrame paFrame;
@@ -40,7 +40,7 @@ public class DialogBeschreibung extends javax.swing.JDialog {
      * @param ddaten
      * @param ddatenFilm
      */
-    public DialogBeschreibung(JFrame parent, Daten ddaten, DatenFilm ddatenFilm) {
+    public DialogFilmBeschreibung(JFrame parent, Daten ddaten, DatenFilm ddatenFilm) {
         super(parent, true);
         paFrame = parent;
         daten = ddaten;

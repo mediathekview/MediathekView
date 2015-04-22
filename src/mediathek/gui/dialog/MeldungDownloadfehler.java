@@ -24,7 +24,7 @@ import java.awt.event.ActionListener;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscBeenden;
 
-public class DialogDownloadfehler extends javax.swing.JDialog {
+public class MeldungDownloadfehler extends javax.swing.JDialog {
 
     /**
      *
@@ -32,7 +32,7 @@ public class DialogDownloadfehler extends javax.swing.JDialog {
      * @param text
      * @param datenDownload
      */
-    public DialogDownloadfehler(java.awt.Frame parent, String text, DatenDownload datenDownload) {
+    public MeldungDownloadfehler(java.awt.Frame parent, String text, DatenDownload datenDownload) {
         super(parent, false);
         initComponents();
         setFocusableWindowState(false);
