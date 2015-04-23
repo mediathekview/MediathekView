@@ -127,6 +127,8 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             for (int m = 0; m < DatenAbo.MAX_ELEM; ++m) {
                 if (m == DatenAbo.ABO_NR_NR) {
                     object[m] = datenAbo.nr;
+                } else if (m == DatenAbo.ABO_MINDESTDAUER_NR) {
+                    object[m] = datenAbo.mindestdauerMinuten;
                 } else if (m == DatenAbo.ABO_DOWN_DATUM_NR) {
                     object[m] = getDatumForObject(datenAbo.arr[DatenAbo.ABO_DOWN_DATUM_NR]);
                 } else if (m == DatenAbo.ABO_EINGESCHALTET_NR) {
