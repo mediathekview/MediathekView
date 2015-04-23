@@ -68,6 +68,9 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
             if (c == DatenAbo.ABO_NR_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
             }
+            if (c == DatenAbo.ABO_MINDESTDAUER_NR) {
+                setHorizontalAlignment(SwingConstants.CENTER);
+            }
             if (!eingeschaltet) {
                 setFont(new java.awt.Font("Dialog", Font.ITALIC, getFont().getSize()));
                 //setFont(new java.awt.Font("Dialog", Font.ITALIC, 12));
