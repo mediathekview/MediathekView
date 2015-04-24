@@ -124,11 +124,13 @@ public final class MVTray {
         trayIcon.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 1) {
-                    daten.mediathekGui.setVisible(!daten.mediathekGui.isVisible());
-                    if (daten.mediathekGui.isVisible()) {
-                        daten.mediathekGui.toFront();
-                        daten.mediathekGui.requestFocus();
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    if (e.getClickCount() == 1) {
+                        daten.mediathekGui.setVisible(!daten.mediathekGui.isVisible());
+                        if (daten.mediathekGui.isVisible()) {
+                            daten.mediathekGui.toFront();
+                            daten.mediathekGui.requestFocus();
+                        }
                     }
                 }
             }
