@@ -25,6 +25,7 @@ import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.LinkedList;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -57,6 +58,7 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVColor;
 import mediathek.tool.MVTable;
 import mediathek.tool.TModel;
+import mediathek.tool.UrlHyperlinkAction;
 import msearch.daten.DatenFilm;
 
 public class PanelPsetLang extends PanelVorlage {
@@ -298,6 +300,24 @@ public class PanelPsetLang extends PanelVorlage {
             tabellePset.setRowSelectionInterval(0, 0);
             tabellePset.scrollRectToVisible(tabellePset.getCellRect(0, 0, false));
         }
+        jXHyperlinkInfo.setText("");
+        try {
+            jXHyperlinkInfo.setAction(new UrlHyperlinkAction(parentComponent, ""));
+        } catch (URISyntaxException ignored) {
+        }
+        setHyperLink(""); // zum löschen
+
+    }
+
+    private void setHyperLink(String uurl) {
+        if (!uurl.equals("")) {
+            jLabelInfo.setVisible(true);
+            jXHyperlinkInfo.setVisible(true);
+            jXHyperlinkInfo.setText(uurl);
+        } else {
+            jLabelInfo.setVisible(false);
+            jXHyperlinkInfo.setVisible(false);
+        }
 
     }
 
@@ -367,6 +387,7 @@ public class PanelPsetLang extends PanelVorlage {
         jTextFieldGruppeZielName.setEnabled(pSet != null);
         jTextFieldGruppeZielPfad.setEnabled(pSet != null);
         jTextAreaSetBeschreibung.setEnabled(pSet != null);
+        jXHyperlinkInfo.setEnabled(pSet != null);
         jButtonGruppePfad.setEnabled(pSet != null);
         jButtonAbspielen.setEnabled(pSet != null);
         jButtonAbspielen.setBackground(null);
@@ -399,6 +420,8 @@ public class PanelPsetLang extends PanelVorlage {
             jTextFieldGruppeZielName.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR]);
             jTextFieldGruppeZielPfad.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR]);
             jTextAreaSetBeschreibung.setText(pSet.arr[DatenPset.PROGRAMMSET_BESCHREIBUNG_NR]);
+            setHyperLink(pSet.arr[DatenPset.PROGRAMMSET_INFO_URL_NR]);
+
             jCheckBoxSpeichern.setSelected(pSet.istSpeichern());
             jCheckBoxButton.setSelected(pSet.istButton());
             jCheckBoxAbo.setSelected(pSet.istAbo());
@@ -429,6 +452,7 @@ public class PanelPsetLang extends PanelVorlage {
             jTextFieldGruppeZielName.setText("");
             jTextFieldGruppeZielPfad.setText("");
             jTextAreaSetBeschreibung.setText("");
+            setHyperLink("");
         }
         if (pSet != null) {
             tabelleProgramme.setModel(pSet.getListeProg().getModel());
@@ -649,6 +673,8 @@ public class PanelPsetLang extends PanelVorlage {
         javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
         javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
         jTextAreaSetBeschreibung = new javax.swing.JTextArea();
+        jLabelInfo = new javax.swing.JLabel();
+        jXHyperlinkInfo = new org.jdesktop.swingx.JXHyperlink();
         javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
         jCheckBoxSpeichern = new javax.swing.JCheckBox();
         jCheckBoxButton = new javax.swing.JCheckBox();
@@ -744,19 +770,32 @@ public class PanelPsetLang extends PanelVorlage {
         jTextAreaSetBeschreibung.setRows(8);
         jScrollPane2.setViewportView(jTextAreaSetBeschreibung);
 
+        jLabelInfo.setText("Infos:");
+
+        jXHyperlinkInfo.setText("jXHyperlink1");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabelInfo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jXHyperlinkInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelInfo)
+                    .addComponent(jXHyperlinkInfo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -783,7 +822,7 @@ public class PanelPsetLang extends PanelVorlage {
                 .addComponent(jCheckBoxButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxAbo)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1461,6 +1500,7 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxSubtitle;
     private javax.swing.JCheckBox jCheckBoxThema;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabelInfo;
     private javax.swing.JLabel jLabelMeldungAbspielen;
     private javax.swing.JLabel jLabelMeldungSeichern;
     private javax.swing.JRadioButton jRadioButtonAufloesungHD;
@@ -1482,6 +1522,7 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JTextField jTextFieldProgSuffix;
     private javax.swing.JTextField jTextFieldProgZielDateiName;
     private javax.swing.JTextField jTextFieldSetName;
+    private org.jdesktop.swingx.JXHyperlink jXHyperlinkInfo;
     // End of variables declaration//GEN-END:variables
 
     private class BeobProgRestart implements ActionListener {
