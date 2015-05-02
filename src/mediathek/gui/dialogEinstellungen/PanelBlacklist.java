@@ -72,6 +72,13 @@ public class PanelBlacklist extends PanelVorlage {
                 init_();
             }
         });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_START_GEAENDERT, name) {
+            @Override
+            public void ping() {
+                jCheckBoxStart.setSelected(!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_AUSGESCHALTET)));
+                setCheckBlacklist();
+            }
+        });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name) {
             @Override
             public void ping() {
@@ -142,6 +149,7 @@ public class PanelBlacklist extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 setCheckBlacklist();
                 Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_START_AUSGESCHALTET, Boolean.toString(!jCheckBoxStart.isSelected()));
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_START_GEAENDERT, name);
             }
         });
         jCheckBoxBlacklistEingeschaltet.addActionListener(new ActionListener() {
