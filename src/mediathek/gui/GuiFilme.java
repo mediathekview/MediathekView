@@ -703,8 +703,8 @@ public class GuiFilme extends PanelVorlage {
                     Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET, Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__BLACKLIST_AUS, filter));
                 }
             }
-            String s = Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET); // ToDo
-            String ss = Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET); // ToDo
+//            String s = Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET); // ToDo
+//            String ss = Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET); // ToDo
 
         } catch (NumberFormatException ex) {
             mVFilter.get_jComboBoxZeitraum().setSelectedIndex(FILTER_ZEIT_STARTWERT);

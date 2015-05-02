@@ -43,16 +43,25 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jTabbedPaneBlacklist" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <EmptySpace min="21" pref="21" max="-2" attributes="0"/>
+                      <Component id="jCheckBoxStart" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                  </Group>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jCheckBoxAbo" min="-2" max="-2" attributes="0"/>
-                          <Component id="jCheckBoxBlacklistEingeschaltet" min="-2" max="-2" attributes="0"/>
+                          <Component id="jTabbedPaneBlacklist" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jCheckBoxAbo" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jCheckBoxBlacklistEingeschaltet" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -61,7 +70,9 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jCheckBoxBlacklistEingeschaltet" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jCheckBoxStart" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
               <Component id="jCheckBoxAbo" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
               <Component id="jTabbedPaneBlacklist" max="32767" attributes="0"/>
@@ -529,6 +540,11 @@
     <Component class="javax.swing.JCheckBox" name="jCheckBoxAbo">
       <Properties>
         <Property name="text" type="java.lang.String" value="Die Blacklist beim Suchen der Abos ber&#xfc;cksichtigen (sonst komplette Filmliste)"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="jCheckBoxStart">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Blacklist beim Programmstart einschalten"/>
       </Properties>
     </Component>
   </SubComponents>
