@@ -134,6 +134,7 @@ public class MVConfig {
     // Blacklist
     public static final String SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN = "Blacklist-Zukunft-nicht-anzeigen";
     public static final String SYSTEM_BLACKLIST_AUCH_ABO = "Blacklist-auch-Abo";
+    public static final String SYSTEM_BLACKLIST_START_AUSGESCHALTET = "Blacklist-Start-ausgeschaltet";
     public static final String SYSTEM_BLACKLIST_AUSGESCHALTET = "Blacklist-ausgeschaltet";
     public static final String SYSTEM_BLACKLIST_IST_WHITELIST = "Blacklist-ist-Whitelist";
     public static final String SYSTEM_BLACKLIST_FILMLAENGE = "Blacklist-Filmlaenge";
