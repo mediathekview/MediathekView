@@ -26,7 +26,7 @@ import mediathek.controller.Log;
 
 public class ListenerMediathekView implements EventListener {
 
-    public static final int EREIGNIS_BLACKLIST_GEAENDERT = 1;
+    //public static final int EREIGNIS_BLACKLIST_GEAENDERT = 1;
     public static final int EREIGNIS_LISTE_HISTORY_GEAENDERT = 2;
     public static final int EREIGNIS_LISTE_PSET = 3;
     public static final int EREIGNIS_FILMLISTE_GEAENDERT = 5;
@@ -62,6 +62,8 @@ public class ListenerMediathekView implements EventListener {
     public static final int EREIGNIS_FONT = 36;
     //public static final int EREIGNIS_BLACKLIST_GEFILTERT = 37;
     public static final int EREIGNIS_REPLACELIST_CHANGED = 38;
+    public static final int EREIGNIS_BLACKLIST_GEAENDERT = 39;
+    public static final int EREIGNIS_BLACKLIST_START_GEAENDERT = 40;
     public int[] mvEreignis = {-1};
     public String klasse = "";
     private static EventListenerList listeners = new EventListenerList();
