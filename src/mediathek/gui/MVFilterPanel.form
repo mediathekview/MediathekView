@@ -360,7 +360,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonHilfe" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
-                      <Component id="jButtonBlacklist" min="-2" max="-2" attributes="0"/>
+                      <Component id="jToggleButtonBlacklist" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonFilterLoeschen" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -374,7 +374,7 @@
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="jButtonFilterLoeschen" alignment="1" min="-2" max="-2" attributes="0"/>
                           <Component id="jButtonHilfe" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButtonBlacklist" min="-2" max="-2" attributes="0"/>
+                          <Component id="jToggleButtonBlacklist" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
@@ -393,14 +393,6 @@
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
               </AuxValues>
             </Component>
-            <Component class="javax.swing.JButton" name="jButtonBlacklist">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/blacklist_16.png"/>
-                </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Blacklist &#xf6;ffnen"/>
-              </Properties>
-            </Component>
             <Component class="javax.swing.JButton" name="jButtonFilterLoeschen">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
@@ -411,6 +403,13 @@
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
               </AuxValues>
+            </Component>
+            <Component class="javax.swing.JToggleButton" name="jToggleButtonBlacklist">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mediathek/res/programm/blacklist_aus_16.png"/>
+                </Property>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>

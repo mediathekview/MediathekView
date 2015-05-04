@@ -255,7 +255,8 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.FALSE.toString());
         mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET, Boolean.toString(true));
+        mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.FALSE.toString());
+        mVConfig.add(MVConfig.SYSTEM_BLACKLIST_START_ON, Boolean.FALSE.toString());
         mVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, "0");
         mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, Funktionen.getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss");
         mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE));
@@ -321,7 +322,8 @@ public class Daten {
         listeFilme.setFilmNew();
         Daten.listeFilme.themenLaden();
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
-        Daten.listeDownloads.filmEintragen(); // Filme bei einmalDownloads eingragen
+        Daten.listeDownloads.filmEintragen(); // Filme bei einmalDownloads eintragen
+        Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
         MVListeFilme.checkBlacklist(); // ToDo brauchts das??
     }
 

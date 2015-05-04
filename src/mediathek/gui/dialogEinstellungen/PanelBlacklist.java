@@ -72,6 +72,13 @@ public class PanelBlacklist extends PanelVorlage {
                 init_();
             }
         });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_START_GEAENDERT, name) {
+            @Override
+            public void ping() {
+                jCheckBoxStart.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)));
+                setCheckBlacklist();
+            }
+        });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name) {
             @Override
             public void ping() {
@@ -88,8 +95,9 @@ public class PanelBlacklist extends PanelVorlage {
 
     private void init_() {
         jCheckBoxAbo.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO)));
-        String s = Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET); // ToDo
-        jCheckBoxBlacklistEingeschaltet.setSelected(!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET)));
+        jCheckBoxStart.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)));
+        jCheckBoxBlacklistEingeschaltet.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ON)));
+
         setCheckBlacklist();
         jCheckBoxZukunftNichtAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN)));
         try {
@@ -98,7 +106,6 @@ public class PanelBlacklist extends PanelVorlage {
             jSliderMinuten.setValue(0);
             Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, "0");
         }
-        setPanelBlacklist();
         tabelleLaden();
     }
 
@@ -137,14 +144,20 @@ public class PanelBlacklist extends PanelVorlage {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name);
             }
         });
+        jCheckBoxStart.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setCheckBlacklist();
+                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_START_ON, Boolean.toString(jCheckBoxStart.isSelected()));
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_START_GEAENDERT, name);
+            }
+        });
         jCheckBoxBlacklistEingeschaltet.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setCheckBlacklist();
-                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET, Boolean.toString(!jCheckBoxBlacklistEingeschaltet.isSelected()));
-                String s = Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET); // ToDo
+                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.toString(jCheckBoxBlacklistEingeschaltet.isSelected()));
                 notifyBlack();
-                setPanelBlacklist();
             }
         });
         jButtonHinzufuegen.addActionListener(new ActionListener() {
@@ -225,11 +238,11 @@ public class PanelBlacklist extends PanelVorlage {
         });
         initCombo();
         comboThemaLaden();
-        setPanelBlacklist();
     }
 
     private void setCheckBlacklist() {
         jCheckBoxBlacklistEingeschaltet.setForeground(jCheckBoxBlacklistEingeschaltet.isSelected() ? cGruen : cRot);
+        jCheckBoxStart.setForeground(jCheckBoxStart.isSelected() ? cGruen : cRot);
         jCheckBoxAbo.setForeground(jCheckBoxAbo.isSelected() ? cGruen : cRot);
     }
 
@@ -262,30 +275,10 @@ public class PanelBlacklist extends PanelVorlage {
         // der erste Sender ist ""
         sender = GuiFunktionen.addLeerListe(Daten.filmeLaden.getSenderNamen());
         jComboBoxSender.setModel(new javax.swing.DefaultComboBoxModel<>(sender));
-        //für den Sender "" sind alle Themen im themenPerSender[0]
-//        themenPerSender = new String[sender.length][];
-//        for (int i = 0; i < sender.length; ++i) {
-//            themenPerSender[i] = MViewListeFilme.getModelOfFieldThema(Daten.listeFilme, sender[i]);
-//        }
     }
 
     private void tabelleLaden() {
         jTableBlacklist.setModel(new TModel(Daten.listeBlacklist.getObjectData(), DatenBlacklist.BLACKLIST_COLUMN_NAMES_ANZEIGE));
-    }
-
-    private void setPanelBlacklist() {
-//        jTabbedPaneBlacklist.setEnabled(jCheckBoxBlacklistEingeschaltet.isSelected());
-//        setComponentsEnabled(jTabbedPaneBlacklist, jCheckBoxBlacklistEingeschaltet.isSelected());
-//    }
-//
-//    private void setComponentsEnabled(java.awt.Container c, boolean en) {
-//        Component[] components = c.getComponents();
-//        for (Component comp : components) {
-//            if (comp instanceof java.awt.Container) {
-//                setComponentsEnabled((java.awt.Container) comp, en);
-//            }
-//            comp.setEnabled(en);
-//        }
     }
 
     private void tableSelect() {
@@ -361,6 +354,7 @@ public class PanelBlacklist extends PanelVorlage {
         jButtonTabelleLoeschen = new javax.swing.JButton();
         jCheckBoxBlacklistEingeschaltet = new javax.swing.JCheckBox();
         jCheckBoxAbo = new javax.swing.JCheckBox();
+        jCheckBoxStart = new javax.swing.JCheckBox();
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -628,6 +622,8 @@ public class PanelBlacklist extends PanelVorlage {
 
         jCheckBoxAbo.setText("Die Blacklist beim Suchen der Abos berücksichtigen (sonst komplette Filmliste)");
 
+        jCheckBoxStart.setText("Blacklist beim Programmstart einschalten");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -635,19 +631,27 @@ public class PanelBlacklist extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPaneBlacklist)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jCheckBoxStart)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBoxAbo)
-                            .addComponent(jCheckBoxBlacklistEingeschaltet))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                            .addComponent(jTabbedPaneBlacklist)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jCheckBoxAbo)
+                                    .addComponent(jCheckBoxBlacklistEingeschaltet))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jCheckBoxBlacklistEingeschaltet)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jCheckBoxStart)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxAbo)
                 .addGap(18, 18, 18)
@@ -663,6 +667,7 @@ public class PanelBlacklist extends PanelVorlage {
     private javax.swing.JButton jButtonTabelleLoeschen;
     private javax.swing.JCheckBox jCheckBoxAbo;
     private javax.swing.JCheckBox jCheckBoxBlacklistEingeschaltet;
+    private javax.swing.JCheckBox jCheckBoxStart;
     private javax.swing.JCheckBox jCheckBoxZukunftNichtAnzeigen;
     private javax.swing.JComboBox<String> jComboBoxSender;
     private javax.swing.JComboBox<String> jComboBoxThema;
