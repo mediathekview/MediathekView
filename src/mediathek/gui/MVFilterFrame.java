@@ -387,8 +387,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     public class BeobMaus extends MouseAdapter {
 
         int filter;
-        JRadioButtonMenuItem r1 = new JRadioButtonMenuItem("Blacklist einschalten");
-        JRadioButtonMenuItem r2 = new JRadioButtonMenuItem("Blacklist ausschalten");
+        JRadioButtonMenuItem r1 = new JRadioButtonMenuItem("Blacklist für Filter einschalten");
+        JRadioButtonMenuItem r2 = new JRadioButtonMenuItem("Blacklist für Filter ausschalten");
 
         public BeobMaus(int f) {
             filter = f;
