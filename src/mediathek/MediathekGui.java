@@ -1365,7 +1365,7 @@ public class MediathekGui extends JFrame {
 
         jMenuItemDownloadsLoeschen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
         jMenuItemDownloadsLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/download_del_16.png"))); // NOI18N
-        jMenuItemDownloadsLoeschen.setText("Downloads dauerhaft löschen");
+        jMenuItemDownloadsLoeschen.setText("Download aus Liste entfernen");
         jMenuDownload.add(jMenuItemDownloadsLoeschen);
 
         jMenuItemDownloadAendern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/configure_16.png"))); // NOI18N

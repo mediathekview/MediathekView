@@ -144,7 +144,7 @@ public final class MVToolBar extends JToolBar {
         jButtonDownloadZurueckstellen = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Download zurückstellen", "Download zurückstellen", "undo_32.png", "undo_16.png");
         buttonListAlles.add(jButtonDownloadZurueckstellen);
         buttonListDownloads.add(jButtonDownloadZurueckstellen);
-        jButtonDownloadLoeschen = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Download dauerhaft löschen", "Download dauerhaft löschen", "download_del_32.png", "download_del_16.png");
+        jButtonDownloadLoeschen = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Download aus Liste entfernen", "Download aus Liste entfernen", "download_del_32.png", "download_del_16.png");
         buttonListAlles.add(jButtonDownloadLoeschen);
         buttonListDownloads.add(jButtonDownloadLoeschen);
         jButtonDownloadAufraeumen = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Downloads aufräumen", "Liste der Downloads aufräumen", "download_clear_32.png", "download_clear_16.png");
