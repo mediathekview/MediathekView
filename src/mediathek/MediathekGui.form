@@ -217,7 +217,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/programm/download_del_16.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Downloads dauerhaft l&#xf6;schen"/>
+                <Property name="text" type="java.lang.String" value="Download aus Liste entfernen"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadAendern">
