@@ -75,7 +75,7 @@ public class PanelBlacklist extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_START_GEAENDERT, name) {
             @Override
             public void ping() {
-                jCheckBoxStart.setSelected(!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_AUSGESCHALTET)));
+                jCheckBoxStart.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)));
                 setCheckBlacklist();
             }
         });
@@ -95,8 +95,8 @@ public class PanelBlacklist extends PanelVorlage {
 
     private void init_() {
         jCheckBoxAbo.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO)));
-        jCheckBoxStart.setSelected(!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_AUSGESCHALTET)));
-        jCheckBoxBlacklistEingeschaltet.setSelected(!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET)));
+        jCheckBoxStart.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)));
+        jCheckBoxBlacklistEingeschaltet.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ON)));
 
         setCheckBlacklist();
         jCheckBoxZukunftNichtAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN)));
@@ -148,7 +148,7 @@ public class PanelBlacklist extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setCheckBlacklist();
-                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_START_AUSGESCHALTET, Boolean.toString(!jCheckBoxStart.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_START_ON, Boolean.toString(jCheckBoxStart.isSelected()));
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_START_GEAENDERT, name);
             }
         });
@@ -156,7 +156,7 @@ public class PanelBlacklist extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setCheckBlacklist();
-                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET, Boolean.toString(!jCheckBoxBlacklistEingeschaltet.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.toString(jCheckBoxBlacklistEingeschaltet.isSelected()));
                 notifyBlack();
             }
         });

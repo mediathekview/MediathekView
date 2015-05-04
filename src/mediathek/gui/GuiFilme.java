@@ -695,13 +695,10 @@ public class GuiFilme extends PanelVorlage {
             mVFilter.get_jCheckBoxNeue().setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__NUR_NEUE, filter)));
             mVFilter.get_jComboBoxZeitraum().setSelectedIndex(Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__TAGE, filter)));
             // Blackliste
-            if (!Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__BLACKLIST_AUS, filter).isEmpty()) {
-                // sonst Finger weg von der Blacklist
-                if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__BLACKLIST_AUS, filter))
-                        != Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET))) {
-                    geändert = true;
-                    Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET, Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__BLACKLIST_AUS, filter));
-                }
+            if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__BLACKLIST_ON, filter))
+                    != Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ON))) {
+                geändert = true;
+                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__BLACKLIST_ON, filter));
             }
 //            String s = Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET); // ToDo
 //            String ss = Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET); // ToDo
@@ -760,7 +757,7 @@ public class GuiFilme extends PanelVorlage {
 
         Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_PROFILE__TAGE, FILTER_ZEIT_STARTWERT + "", filter, MVFilter.MAX_FILTER);
         Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_PROFILE__DAUER, FILTER_DAUER_STARTWERT + "", filter, MVFilter.MAX_FILTER);
-        Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_PROFILE__BLACKLIST_AUS, "", filter, MVFilter.MAX_FILTER);
+        Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_PROFILE__BLACKLIST_ON, Boolean.FALSE.toString(), filter, MVFilter.MAX_FILTER);
     }
 
     private void saveFilterProfile(int filter) {
@@ -1253,7 +1250,7 @@ public class GuiFilme extends PanelVorlage {
             submenueAbo.add(itemAbo);
             submenueAbo.add(itemAboMitTitel);
             submenueAbo.add(itemAboFilter);
-            
+
             //Programme einblenden
             JMenu submenue = new JMenu("Film mit Set starten");
             jPopupMenu.add(submenue);
@@ -1634,7 +1631,7 @@ public class GuiFilme extends PanelVorlage {
                     String th = film.arr[DatenFilm.FILM_THEMA_NR];
                     String se = film.arr[DatenFilm.FILM_SENDER_NR];
                     // Blackliste für alle Fälle einschalten, notify kommt beim add()
-                    Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET, Boolean.toString(false));
+                    Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.TRUE.toString());
                     if (!sender) {
                         Daten.listeBlacklist.add(new DatenBlacklist("", th, "" /*Titel*/, "" /*Thema-Titel*/));
                     } else if (!thema) {

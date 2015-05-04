@@ -37,7 +37,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     private long tage = 0;
     private long jetzt;
     private boolean zukunftNichtAnzeigen;
-    private boolean blacklistAusgeschaltet;
+    private boolean blacklistOn;
     private long filmlaengeSoll = 0;
     private int nr = 0;
     private final Daten daten;
@@ -67,7 +67,6 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 //        notifyBlack();
 //        return ret;
 //    }
-
     @Override
     public boolean remove(Object b) {
         boolean ret = super.remove(b);
@@ -149,7 +148,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         // ob die Blackliste dafür verwendet werden soll, ist schon geklärt
         setFilter();
         tage = 0; // soll nur im TabFilme ausgewertet werden (Filter: Tage)
-        blacklistAusgeschaltet = false; // Blacklist nur wenn "auch für Abos" geklickt, egal ob ein- oder ausgeschaltet
+        blacklistOn = true; // Blacklist nur wenn "auch für Abos" geklickt, egal ob ein- oder ausgeschaltet
         zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
         jetzt = getZeitZukunftBlacklist();
         return checkFilm(film);
@@ -158,7 +157,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     private void setFilter() {
         try {
             //if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE).equals("") || Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE).equals("0")) {
-            if ( daten.guiFilme.getFilterTage()==0) {
+            if (daten.guiFilme.getFilterTage() == 0) {
                 tage = 0;
             } else {
                 long max = 1000L * 60L * 60L * 24L * GuiFilme.COMBO_ZEIT_INT[daten.guiFilme.getFilterTage()];
@@ -172,10 +171,11 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         } catch (Exception ex) {
             filmlaengeSoll = 0;
         }
-        blacklistAusgeschaltet = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET));
+        blacklistOn = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ON));
         zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
         jetzt = getZeitZukunftBlacklist();
     }
+
     private static long getZeitZukunftBlacklist() {
 //        try {
 //            SimpleDateFormat sdfIn = new SimpleDateFormat("dd.MM.yyyy");
@@ -194,7 +194,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             return false;
         }
         // dann die Blacklist, nur wenn eingeschaltet
-        if (blacklistAusgeschaltet) {
+        if (!blacklistOn) {
             return true;
         }
         if (!checkZukunft(film)) {
@@ -210,9 +210,9 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         for (DatenBlacklist blacklistEntry : this) {
             if (Filter.filterAufFilmPruefen(blacklistEntry.arr[DatenBlacklist.BLACKLIST_SENDER_NR], blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_NR],
                     Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR])
-                    ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR].toLowerCase()} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR].toLowerCase().split(","),
+                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR].toLowerCase()} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR].toLowerCase().split(","),
                     Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR])
-                    ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase()} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase().split(","),
+                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase()} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase().split(","),
                     new String[]{""}, 0, film, true /*auch die Länge prüfen*/
             )) {
                 return Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST));
