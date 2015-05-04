@@ -178,20 +178,20 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET, Boolean.toString(!jToggleButtonBlacklist.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.toString(jToggleButtonBlacklist.isSelected()));
                 MVListeFilme.checkBlacklist();
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterPanel.class.getSimpleName());
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterFrame.class.getSimpleName());
                 setIconBlacklist();
             }
         });
         jToggleButtonBlacklist.addMouseListener(new BeobMausBlacklist());
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterPanel.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterFrame.class.getSimpleName()) {
             @Override
             public void ping() {
                 setIconBlacklist();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterPanel.class.getSimpleName()) {
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterFrame.class.getSimpleName()) {
             @Override
             public void ping() {
                 setIconBlacklist();
@@ -268,7 +268,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     }
 
     private void setIconBlacklist() {
-        if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET))) {
+        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ON))) {
             //ein
             jToggleButtonBlacklist.setIcon(GetIcon.getProgramIcon("blacklist_ein_16.png"));
             jToggleButtonBlacklist.setSelected(true);
@@ -389,7 +389,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         int filter;
         JRadioButtonMenuItem r1 = new JRadioButtonMenuItem("Blacklist einschalten");
         JRadioButtonMenuItem r2 = new JRadioButtonMenuItem("Blacklist ausschalten");
-        JRadioButtonMenuItem r3 = new JRadioButtonMenuItem("Blacklist nicht verändern");
 
         public BeobMaus(int f) {
             filter = f;
@@ -422,11 +421,9 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (r1.isSelected()) {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_PROFILE__BLACKLIST_AUS, Boolean.FALSE.toString(), filter, MVFilter.MAX_FILTER);
+                    Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_PROFILE__BLACKLIST_ON, Boolean.TRUE.toString(), filter, MVFilter.MAX_FILTER);
                 } else if (r2.isSelected()) {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_PROFILE__BLACKLIST_AUS, Boolean.TRUE.toString(), filter, MVFilter.MAX_FILTER);
-                } else {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_PROFILE__BLACKLIST_AUS, "", filter, MVFilter.MAX_FILTER);
+                    Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_PROFILE__BLACKLIST_ON, Boolean.FALSE.toString(), filter, MVFilter.MAX_FILTER);
                 }
             }
         }
@@ -495,20 +492,15 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
             ButtonGroup bG = new ButtonGroup();
             bG.add(r1);
             bG.add(r2);
-            bG.add(r3);
             jPopupMenu.add(r1);
             jPopupMenu.add(r2);
-            jPopupMenu.add(r3);
-            if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__BLACKLIST_AUS, filter).isEmpty()) {
-                r3.setSelected(true);
-            } else if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__BLACKLIST_AUS, filter))) {
-                r2.setSelected(true);
-            } else {
+            if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__BLACKLIST_ON, filter))) {
                 r1.setSelected(true);
+            } else {
+                r2.setSelected(true);
             }
             r1.addActionListener(new BeobRa(filter));
             r2.addActionListener(new BeobRa(filter));
-            r3.addActionListener(new BeobRa(filter));
             //##Trenner##
             jPopupMenu.addSeparator();
 
@@ -528,7 +520,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 public void stateChanged(ChangeEvent e) {
                     Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_PROFILE__ANZAHL_FILTER, String.valueOf(((Number) jSpinner.getModel().getValue()).intValue()));
                     setFilterAnzahl();
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILTER_ANZAHL, MVFilterPanel.class.getSimpleName());
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILTER_ANZAHL, MVFilterFrame.class.getSimpleName());
                 }
             });
             JLabel label = new JLabel("Anzahl Filter anzeigen:");

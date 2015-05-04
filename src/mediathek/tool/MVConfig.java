@@ -115,7 +115,7 @@ public class MVConfig {
     public static final String SYSTEM_FILTER_PROFILE_KEINE_GESEHENE = "filter-keineGesehen";
     public static final String SYSTEM_FILTER_PROFILE__NUR_HD = "filter-nurHd";
     public static final String SYSTEM_FILTER_PROFILE__NUR_NEUE = "filter-nurNeue";
-    public static final String SYSTEM_FILTER_PROFILE__BLACKLIST_AUS = "filter-blacklist-aus";
+    public static final String SYSTEM_FILTER_PROFILE__BLACKLIST_ON = "filter-blacklist-aus";
     public static final String SYSTEM_FILTER_PROFILE__NAME = "filter-name";
     //
     public static final String SYSTEM_FILTER_PROFILE__SENDER = "filter-sender";
@@ -134,8 +134,8 @@ public class MVConfig {
     // Blacklist
     public static final String SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN = "Blacklist-Zukunft-nicht-anzeigen";
     public static final String SYSTEM_BLACKLIST_AUCH_ABO = "Blacklist-auch-Abo";
-    public static final String SYSTEM_BLACKLIST_START_AUSGESCHALTET = "Blacklist-Start-ausgeschaltet";
-    public static final String SYSTEM_BLACKLIST_AUSGESCHALTET = "Blacklist-ausgeschaltet";
+    public static final String SYSTEM_BLACKLIST_START_ON = "Blacklist-Start-ausgeschaltet";
+    public static final String SYSTEM_BLACKLIST_ON = "Blacklist-ausgeschaltet";
     public static final String SYSTEM_BLACKLIST_IST_WHITELIST = "Blacklist-ist-Whitelist";
     public static final String SYSTEM_BLACKLIST_FILMLAENGE = "Blacklist-Filmlaenge";
     // Download
