@@ -117,7 +117,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
             return;
         }
         if (datenDownload.film != null) {
-            jRadioButtonResHi.setEnabled(true);
+            jRadioButtonResHi.setEnabled(!gestartet);
             jRadioButtonResHi.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL)));
             dateiGroesse_Hoch = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL));
             if (!dateiGroesse_Hoch.isEmpty()) {
@@ -125,7 +125,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
             }
 
             if (!datenDownload.film.arr[DatenFilm.FILM_URL_HD_NR].isEmpty()) {
-                jRadioButtonResHd.setEnabled(true);
+                jRadioButtonResHd.setEnabled(!gestartet);
                 jRadioButtonResHd.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD)));
                 dateiGroesse_HD = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD));
                 if (!dateiGroesse_HD.isEmpty()) {
@@ -134,7 +134,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
             }
 
             if (!datenDownload.film.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty()) {
-                jRadioButtonResLo.setEnabled(true);
+                jRadioButtonResLo.setEnabled(!gestartet);
                 jRadioButtonResLo.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN)));
                 dateiGroesse_Klein = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN));
                 if (!dateiGroesse_Klein.isEmpty()) {
@@ -294,9 +294,17 @@ public class DialogEditDownload extends javax.swing.JDialog {
                         textfeldListe[i].setText(datenDownload.film.nr + "");
                     }
                 } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR) {
-                    labelListe[i].setForeground(Color.BLUE);
-                    if (datenDownload.art != DatenDownload.ART_DOWNLOAD) {
-                        textfeldListe[i].setEditable(!gestartet);
+                    if (datenDownload.art == DatenDownload.ART_PROGRAMM) {
+                        // nur bei Downloads über ein Programm
+                        labelListe[i].setForeground(Color.BLUE);
+                        textfeldListe[i].setEditable(!gestartet);// und wenn noch nicht gestartet
+                        textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
+                    }
+                } else if (i == DatenDownload.DOWNLOAD_URL_NR) {
+                    if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
+                        // nur bei direkten Downloads
+                        labelListe[i].setForeground(Color.BLUE);
+                        textfeldListe[i].setEditable(!gestartet);// und wenn noch nicht gestartet
                         textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
                     }
                 } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
