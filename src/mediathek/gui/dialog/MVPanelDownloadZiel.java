@@ -51,17 +51,15 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
     private DatenDownload datenDownload;
     private JFrame parent = null;
     boolean letztenPfadAnzeigen = false;
-    String orgPfad;
 
     public MVPanelDownloadZiel(JFrame p, DatenDownload download, boolean letzterPfad) {
         initComponents();
         parent = p;
         datenDownload = download;
-        orgPfad = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
         letztenPfadAnzeigen = letzterPfad;
         jButtonPath.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         jButtonDelPath.setIcon(GetIcon.getProgramIcon("del_16.png"));
-        jLabelExists.setText("Dateiname wird noch nicht verwendet.");
+        jLabelExists.setText("");
 //        jCheckBoxPath.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)));
 //        jCheckBoxPath.addActionListener(new ActionListener() {
 //            @Override
@@ -107,6 +105,7 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
                 }
             }
         });
+        setModelPfad(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]);
         ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).setOpaque(true);
         ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentListener() {
 
@@ -136,7 +135,7 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
                 }
             }
         });
-        setModelPfad(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]);
+        checkPfadName();
     }
 
     private void setModelPfad(String pfad) {
@@ -208,7 +207,8 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
                 jLabelExists.setText("Neuer Name");
             } else {
                 jLabelExists.setForeground(MVColor.DOWNLOAD_DATEINAME_ALT.color);
-                jLabelExists.setText("Alter Name");
+//                jLabelExists.setText("Alter Name");
+                jLabelExists.setText("");
             }
         } catch (Exception ignored) {
         }
