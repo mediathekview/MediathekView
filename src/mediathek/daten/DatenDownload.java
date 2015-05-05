@@ -306,9 +306,13 @@ public class DatenDownload implements Comparable<DatenDownload> {
         System.arraycopy(this.arr, 0, ret.arr, 0, arr.length);
         ret.datumFilm = this.datumFilm;
         ret.film = this.film;
-        ret.nr = this.nr;
-        ret.pSet = this.pSet;
         ret.mVFilmSize = this.mVFilmSize;
+        ret.start = this.start;
+        ret.pSet = this.pSet;
+        ret.abo = this.abo;
+        ret.nr = this.nr;
+        ret.quelle = this.quelle;
+        ret.art = this.art;
         return ret;
     }
 
@@ -316,9 +320,13 @@ public class DatenDownload implements Comparable<DatenDownload> {
         System.arraycopy(datenDownload.arr, 0, arr, 0, arr.length);
         datumFilm = datenDownload.datumFilm;
         film = datenDownload.film;
-        nr = datenDownload.nr;
+        mVFilmSize = datenDownload.mVFilmSize;// die Auflösung des Films kann sich ändern
+        start = datenDownload.start;
         pSet = datenDownload.pSet;
-        mVFilmSize = datenDownload.mVFilmSize; // die Auflösung des Films kann sich ändern
+        abo = datenDownload.abo;
+        nr = datenDownload.nr;
+        quelle = datenDownload.quelle;
+        art = datenDownload.art;
     }
 
     public boolean istAbo() {
