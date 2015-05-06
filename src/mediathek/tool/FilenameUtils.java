@@ -135,7 +135,7 @@ public class FilenameUtils {
     private static String removeIllegalCharacters(final String input) {
         String ret = input;
 
-        switch (Funktionen.getOs()) {
+        switch (MVFunctionSys.getOs()) {
             case MAC:
                 //On OSX the VFS take care of writing correct filenames to FAT filesystems...
                 //Just remove the default illegal characters

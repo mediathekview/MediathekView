@@ -46,7 +46,7 @@ import javax.swing.border.TitledBorder;
 import mediathek.daten.Daten;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.EscBeenden;
-import mediathek.tool.Funktionen;
+import mediathek.tool.MVFunctionSys;
 import mediathek.tool.Konstanten;
 import mediathek.tool.UrlHyperlinkAction;
 import org.jdesktop.swingx.JXHyperlink;
@@ -68,7 +68,7 @@ public class MVAboutDialog extends JDialog {
         String strVersion = "Version ";
         strVersion += Konstanten.VERSION;
         strVersion += " (";
-        strVersion += Funktionen.getBuildNr();
+        strVersion += MVFunctionSys.getBuildNr();
         strVersion += ")";
 
         lblVersion.setText(strVersion);

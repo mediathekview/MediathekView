@@ -50,6 +50,7 @@ public class MVConfig {
     public static final String SYSTEM_PLAYER_ABSPIELEN = "Player-zum-Abspielen";
     public static final String SYSTEM_GEO_MELDEN = "Geo-melden";
     public static final String SYSTEM_GEO_STANDORT = "Geo-Standort";
+    public static final String SYSTEM_PATH_MEDIA = "Pfade-Medien";
     // Fenstereinstellungen
     public static final String SYSTEM_GROESSE = "Groesse";
     public static final String SYSTEM_GROESSE_EINSTELLUNGEN = "Groesse-Einstellungen";

@@ -33,7 +33,7 @@ import mediathek.MediathekGui;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 
-public class GuiFunktionen extends Funktionen {
+public class GuiFunktionen extends MVFunctionSys {
 
     public static void updateGui(MediathekGui mediathekGui) {
         try {

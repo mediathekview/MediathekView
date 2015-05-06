@@ -26,7 +26,7 @@ import java.util.ResourceBundle;
 import mediathek.Main;
 import mediathek.controller.Log;
 
-public class Funktionen {
+public class MVFunctionSys {
 
     public enum OperatingSystemType {
 
@@ -148,46 +148,4 @@ public class Funktionen {
         return msg;
     }
 
-    /**
-     * Convert a byte count into a human readable string.
-     *
-     * @param bytes The number of bytes to convert.
-     * @param si Use International System of Units (SI)?
-     * @return The string representation
-     */
-    public static String humanReadableByteCount(final long bytes, final boolean si) {
-        final int unit = si ? 1000 : 1024;
-        if (bytes < unit) {
-            return bytes + " B";
-        }
-
-        final int exp = (int) (Math.log(bytes) / Math.log(unit));
-
-        final String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
-        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
-    }
-//    public enum ReleaseType { DEBUG, RELEASE}
-//    public static ReleaseType getReleaseType()
-//    {
-//        ReleaseType releaseType;
-//        try {
-//            ResourceBundle.clearCache();
-//            ResourceBundle rb = ResourceBundle.getBundle("version");
-//            String msg = rb.getString("TYPE");
-//            switch(msg) {
-//                case "DEBUG":
-//                    releaseType = ReleaseType.DEBUG;
-//                    break;
-//                default:
-//                    releaseType = ReleaseType.RELEASE;
-//                    break;
-//            }
-//        } catch (Exception ex) {
-//            //in case of an exception always pretend we are in Release mode...
-//            ex.printStackTrace();
-//            releaseType = ReleaseType.DEBUG;////////////////
-//        }
-//
-//        return releaseType;
-//    }
 }

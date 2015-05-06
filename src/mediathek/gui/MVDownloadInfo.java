@@ -48,7 +48,7 @@ import mediathek.controller.starter.MVBandwidthTokenBucket;
 import mediathek.daten.Daten;
 import static mediathek.daten.Daten.mVConfig;
 import mediathek.daten.DownloadInfos;
-import mediathek.tool.Funktionen;
+import mediathek.tool.MVFunctionSys;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
@@ -98,7 +98,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         chart.setPaintLabels(true);
         chart.setUseAntialiasing(true);
         chart.setToolTipType(Chart2D.ToolTipType.VALUE_SNAP_TO_TRACEPOINTS);
-        if (Funktionen.getOs() == Funktionen.OperatingSystemType.LINUX) {
+        if (MVFunctionSys.getOs() == MVFunctionSys.OperatingSystemType.LINUX) {
             jDialog.setBackground(null);
             chart.setOpaque(true);
             this.setOpaque(true);

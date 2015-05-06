@@ -85,7 +85,7 @@ import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 import mediathek.res.GetIcon;
 import mediathek.tool.Duration;
-import mediathek.tool.Funktionen;
+import mediathek.tool.MVFunctionSys;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
@@ -372,7 +372,7 @@ public class MediathekGui extends JFrame {
             String laf = Daten.mVConfig.get(MVConfig.SYSTEM_LOOK);
             //if we have the old values, reset to System LAF
             if (laf.equals("") || laf.length() == 1) {
-                if (Funktionen.getOs() != Funktionen.OperatingSystemType.LINUX) {
+                if (MVFunctionSys.getOs() != MVFunctionSys.OperatingSystemType.LINUX) {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 }
             } else {
@@ -1174,7 +1174,7 @@ public class MediathekGui extends JFrame {
     protected void shutdownComputer() {
         String strShutdownCommand = "";
 
-        switch (Funktionen.getOs()) {
+        switch (MVFunctionSys.getOs()) {
             case LINUX:
                 strShutdownCommand = "shutdown -h now";
                 break;
