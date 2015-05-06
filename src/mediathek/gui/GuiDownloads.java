@@ -1051,7 +1051,7 @@ public class GuiDownloads extends PanelVorlage {
             //#######################################
 
             // Film in der MediaDB suchen
-            JMenuItem itemDb = new JMenuItem("Film in den gespeicherten Filmen suchen");
+            JMenuItem itemDb = new JMenuItem("Titel in den gespeicherten Filmen suchen");
             itemDb.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
