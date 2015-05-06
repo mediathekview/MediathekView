@@ -69,6 +69,7 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogEditAbo;
+import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobTableHeader;
@@ -1346,6 +1347,18 @@ public class GuiFilme extends PanelVorlage {
             //##Trenner##
             jPopupMenu.addSeparator();
             //##Trenner##
+
+            // Film in der MediaDB suchen
+            if (film != null) {
+                JMenuItem itemDb = new JMenuItem("Film in den gespeicherten Filmen suchen");
+                itemDb.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        new DialogMediaDB(parentComponent, film.arr[DatenFilm.FILM_TITEL_NR]).setVisible(true);
+                    }
+                });
+                jPopupMenu.add(itemDb);
+            }
 
             //Drucken
             item = new JMenuItem("Tabelle drucken");

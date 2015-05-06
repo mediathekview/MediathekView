@@ -127,7 +127,9 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
                     private void tus() {
                         Filter.checkPattern1(jTextFieldTitle);
-                        search();
+                        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE))) {
+                            search();
+                        }
                     }
                 }
                 );
@@ -188,7 +190,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
             // dann mit RegEx prüfen
             for (String s : fileArray) {
                 if (p.matcher(s).matches()) {
-                    erg.add(title);
+                    erg.add(s);
                 }
             }
         } else {

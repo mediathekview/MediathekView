@@ -1065,6 +1065,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             jPopupMenu.add(itemDb);
+
             // URL abspielen
             JMenuItem itemPlayer = new JMenuItem("Film (URL) abspielen");
             itemPlayer.addActionListener(new ActionListener() {
