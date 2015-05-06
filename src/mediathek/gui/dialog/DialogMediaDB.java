@@ -63,18 +63,21 @@ public class DialogMediaDB extends javax.swing.JDialog {
             public void actionPerformed(ActionEvent e) {
                 String db = Daten.mVConfig.get(MVConfig.SYSTEM_PATH_MEDIA);
                 String add = jTextFieldPath.getText();
-//                for (String s : db.split(FILE_TRENNER)) {
-//                    if (s.equals(add)) {
-//                        return; // dann gibts den schon
-//                    }
-//                }
+                if (add.isEmpty()) {
+                    return;
+                }
+                for (String s : db.split(FILE_TRENNER)) {
+                    if (s.equals(add)) {
+                        return; // dann gibts den schon
+                    }
+                }
                 if (db.isEmpty()) {
                     db = add;
                 } else {
                     db += FILE_TRENNER + add;
                 }
                 Daten.mVConfig.add(MVConfig.SYSTEM_PATH_MEDIA, db);
-                setTablePath();// neu aufbauen
+                setTablePath(); //neu aufbauen
             }
         });
         jButtonRemove.addActionListener(new ActionListener() {
@@ -86,7 +89,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
                     String p = jTablePath.getModel().getValueAt(jTablePath.convertRowIndexToModel(row), 0).toString();
                     String db = Daten.mVConfig.get(MVConfig.SYSTEM_PATH_MEDIA);
                     String dbNew = "";
-                    if (p.isEmpty() || db.isEmpty()) {
+                    if ( db.isEmpty()) {
                         return;
                     }
                     for (String s : db.split(FILE_TRENNER)) {
@@ -96,7 +99,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
                         dbNew += dbNew.isEmpty() ? s : FILE_TRENNER + s;
                     }
                     Daten.mVConfig.add(MVConfig.SYSTEM_PATH_MEDIA, dbNew);
-                    setTablePath();// neu aufbauen
+                    setTablePath(); //neu aufbauen
                 } else {
                     new HinweisKeineAuswahl().zeigen(parent);
                 }
@@ -156,7 +159,6 @@ public class DialogMediaDB extends javax.swing.JDialog {
         jTableFilm.setModel(modelFilm);
         jTablePath.setModel(modelPath);
         setTablePath();
-        jLabelCount.setText("0");
     }
 
     private void setFileArray() {
@@ -179,6 +181,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
             }
         }
         setFileArray();
+        search();
     }
 
     private void search() {
@@ -216,6 +219,9 @@ public class DialogMediaDB extends javax.swing.JDialog {
     }
 
     private void searchFile(File dir) {
+        if (dir == null) {
+            return;
+        }
         File[] files = dir.listFiles();
         if (files != null) {
             for (File file : files) {
