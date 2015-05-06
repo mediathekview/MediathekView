@@ -31,7 +31,7 @@ import mediathek.gui.dialogEinstellungen.PanelEinstellungenGeo;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.gui.dialogEinstellungen.PanelPsetKurz;
 import mediathek.gui.dialogEinstellungen.PanelPsetLang;
-import static mediathek.tool.Funktionen.getOs;
+import static mediathek.tool.MVFunctionSys.getOs;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.MVConfig;
 

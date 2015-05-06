@@ -27,7 +27,7 @@ import javax.swing.JFrame;
 import javax.swing.Timer;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
-import mediathek.tool.Funktionen;
+import mediathek.tool.MVFunctionSys;
 import mediathek.tool.Konstanten;
 import mediathek.tool.UrlHyperlinkAction;
 
@@ -40,12 +40,12 @@ public class PanelProgrammInfos extends PanelVorlage {
         initComponents();
 
         try {
-            lblProgrammversion.setText(Funktionen.getProgVersionString() + " vom: " + Funktionen.getCompileDate());
+            lblProgrammversion.setText(MVFunctionSys.getProgVersionString() + " vom: " + MVFunctionSys.getCompileDate());
         } catch (Exception ignored) {
             lblProgrammversion.setText(Konstanten.VERSION);
         }
 
-        lblProgramPath.setText(Funktionen.getPathJar());
+        lblProgramPath.setText(MVFunctionSys.getPathJar());
         try {
             final Path xmlFilePath = Daten.getMediathekXmlFilePath();
             lblSettingsPath.setText(xmlFilePath.toAbsolutePath().toString());

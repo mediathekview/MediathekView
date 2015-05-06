@@ -57,6 +57,7 @@ import mediathek.daten.DatenPset;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
+import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobTableHeader;
@@ -1049,6 +1050,21 @@ public class GuiDownloads extends PanelVorlage {
             jPopupMenu.addSeparator();
             //#######################################
 
+            // Film in der MediaDB suchen
+            JMenuItem itemDb = new JMenuItem("Film in den gespeicherten Filmen suchen");
+            itemDb.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int nr = tabelle.rowAtPoint(p);
+                    if (nr >= 0) {
+                        DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenDownload.DOWNLOAD_REF_NR);
+                        if (datenDownload != null) {
+                                new DialogMediaDB(parentComponent, datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]).setVisible(true);
+                        }
+                    }
+                }
+            });
+            jPopupMenu.add(itemDb);
             // URL abspielen
             JMenuItem itemPlayer = new JMenuItem("Film (URL) abspielen");
             itemPlayer.addActionListener(new ActionListener() {

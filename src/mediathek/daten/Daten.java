@@ -48,7 +48,7 @@ import mediathek.gui.GuiDebug;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
 import mediathek.gui.dialog.MVFilmInformation;
-import mediathek.tool.Funktionen;
+import mediathek.tool.MVFunctionSys;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Konstanten;
@@ -258,7 +258,7 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.FALSE.toString());
         mVConfig.add(MVConfig.SYSTEM_BLACKLIST_START_ON, Boolean.FALSE.toString());
         mVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, "0");
-        mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, Funktionen.getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss");
+        mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, MVFunctionSys.getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss");
         mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE));
         mVConfig.add(MVConfig.SYSTEM_NOTIFICATION, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, Boolean.TRUE.toString());

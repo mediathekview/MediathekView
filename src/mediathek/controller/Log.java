@@ -29,7 +29,7 @@ import java.util.LinkedList;
 import javax.swing.SwingUtilities;
 import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
-import mediathek.tool.Funktionen;
+import mediathek.tool.MVFunctionSys;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 
@@ -76,15 +76,15 @@ public class Log {
         Log.systemMeldung("freeMemory: " + freeMem / BYTES_TO_MBYTE + " MiB");
         Log.systemMeldung("###########################################################");
         //Version
-        Log.systemMeldung(Funktionen.getProgVersionString());
-        Log.systemMeldung("Compiled: " + Funktionen.getCompileDate());
+        Log.systemMeldung(MVFunctionSys.getProgVersionString());
+        Log.systemMeldung("Compiled: " + MVFunctionSys.getCompileDate());
         Log.systemMeldung("###########################################################");
         //dynamically get caller class name...
         final Throwable t = new Throwable();
         final StackTraceElement methodCaller = t.getStackTrace()[2];
         systemMeldung("Classname: " + methodCaller.getClassName());
 
-        String[] java = Funktionen.getJavaVersion();
+        String[] java = MVFunctionSys.getJavaVersion();
         for (final String ja : java) {
             Log.systemMeldung(ja);
         }
@@ -93,7 +93,7 @@ public class Log {
 
     public static synchronized void startMeldungen() {
         versionsMeldungen();
-        Log.systemMeldung("Programmpfad: " + Funktionen.getPathJar());
+        Log.systemMeldung("Programmpfad: " + MVFunctionSys.getPathJar());
         Log.systemMeldung("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
         Log.systemMeldung("###########################################################");
         Log.systemMeldung("");

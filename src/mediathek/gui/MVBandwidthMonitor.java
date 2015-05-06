@@ -23,7 +23,7 @@ import javax.swing.WindowConstants;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.Funktionen;
+import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVConfig;
 
 /**
@@ -67,7 +67,7 @@ public class MVBandwidthMonitor {
         chart.setToolTipType(Chart2D.ToolTipType.VALUE_SNAP_TO_TRACEPOINTS);
 
         JPanel panel = new JPanel();
-        if (Funktionen.getOs() == Funktionen.OperatingSystemType.LINUX) {
+        if (MVFunctionSys.getOs() == MVFunctionSys.OperatingSystemType.LINUX) {
             hudDialog.setBackground(null);
             chart.setOpaque(true);
             panel.setOpaque(true);

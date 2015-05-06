@@ -40,7 +40,7 @@ import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
-import mediathek.tool.Funktionen;
+import mediathek.tool.MVFunctionSys;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVMessageDialog;
@@ -154,7 +154,7 @@ public class PanelEinstellungen extends PanelVorlage {
             Daten.mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.FALSE.toString());
         }
         try {
-            File[] files = new File(Funktionen.pathProgramIcons()).listFiles();
+            File[] files = new File(MVFunctionSys.pathProgramIcons()).listFiles();
             if (files != null) {
                 for (File file : files) {
                     if (file.isDirectory() && file.getName().equals(iconName)) {
@@ -235,7 +235,7 @@ public class PanelEinstellungen extends PanelVorlage {
         final DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
         model.addElement(ICONSET_STANDARD);
         try {
-            File[] files = new File(Funktionen.pathProgramIcons()).listFiles();
+            File[] files = new File(MVFunctionSys.pathProgramIcons()).listFiles();
             if (files != null) {
                 for (File file : files) {
                     // System.out.print(files[i].getAbsolutePath());

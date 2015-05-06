@@ -32,7 +32,7 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.EscBeenden;
-import mediathek.tool.Funktionen;
+import mediathek.tool.MVFunctionSys;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
@@ -60,11 +60,11 @@ public class MVHelpDialog extends javax.swing.JDialog {
         }
 
         try {
-            jTextFieldVersion.setText(Funktionen.getProgVersionString() + " vom: " + Funktionen.getCompileDate());
+            jTextFieldVersion.setText(MVFunctionSys.getProgVersionString() + " vom: " + MVFunctionSys.getCompileDate());
         } catch (Exception e) {
             jTextFieldVersion.setText(Konstanten.VERSION);
         }
-        jTextFieldPfad.setText(Funktionen.getPathJar());
+        jTextFieldPfad.setText(MVFunctionSys.getPathJar());
         try {
             jXHyperlinkWebsite.setText(Konstanten.ADRESSE_WEBSITE);
             jXHyperlinkWebsite.addActionListener(new UrlHyperlinkAction(parent, Konstanten.ADRESSE_WEBSITE));

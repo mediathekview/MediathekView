@@ -31,7 +31,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -41,19 +40,18 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import mediathek.controller.Log;
-import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.FilenameUtils;
-import mediathek.tool.Funktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVColor;
 import mediathek.tool.MVConfig;
+import mediathek.tool.MVFunction;
 import mediathek.tool.MVMessageDialog;
 import msearch.daten.DatenFilm;
 
@@ -320,7 +318,7 @@ public class DialogAddDownload extends JDialog {
         try {
             long usableSpace = getFreeDiskSpace(cbPathTextComponent.getText());
             if (usableSpace > 0) {
-                filmBorder.setTitle(TITLED_BORDER_STRING + " [ noch frei: " + Funktionen.humanReadableByteCount(usableSpace, true) + " ]");
+                filmBorder.setTitle(TITLED_BORDER_STRING + " [ noch frei: " + MVFunction.humanReadableByteCount(usableSpace, true) + " ]");
             } else {
                 filmBorder.setTitle(TITLED_BORDER_STRING);
             }

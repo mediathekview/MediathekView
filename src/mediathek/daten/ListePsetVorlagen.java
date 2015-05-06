@@ -31,7 +31,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import mediathek.controller.Log;
 import mediathek.file.GetFile;
-import mediathek.tool.Funktionen;
+import mediathek.tool.MVFunctionSys;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.TModel;
@@ -94,7 +94,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         ListePsetVorlagen listePsetVorlagen = new ListePsetVorlagen();
         if (listePsetVorlagen.loadListOfSets()) {
             for (String[] ar : listePsetVorlagen) {
-                if (ar[PGR_NAME_NR].equalsIgnoreCase("Standardset " + Funktionen.getOsString())) {
+                if (ar[PGR_NAME_NR].equalsIgnoreCase("Standardset " + MVFunctionSys.getOsString())) {
                     vorlage = ar;
                     break;
                 }
@@ -112,7 +112,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             // dann nehmen wir halt die im jar-File
             // liefert das Standard Programmset für das entsprechende BS
             InputStreamReader inReader;
-            switch (Funktionen.getOs()) {
+            switch (MVFunctionSys.getOs()) {
                 case LINUX:
                     inReader = new GetFile().getPsetVorlageLinux();
                     break;

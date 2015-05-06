@@ -32,7 +32,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogZiel;
-import mediathek.tool.Funktionen;
+import mediathek.tool.MVFunctionSys;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 
@@ -57,15 +57,15 @@ public class ProgrammLog {
             bw.write("#####################################################");
             bw.newLine();
             bw.newLine();
-            bw.write(Funktionen.getProgVersionString());
+            bw.write(MVFunctionSys.getProgVersionString());
             bw.newLine();
-            bw.write("Compiled: " + Funktionen.getCompileDate());
+            bw.write("Compiled: " + MVFunctionSys.getCompileDate());
             bw.newLine();
             bw.write("=====================================================");
             bw.newLine();
             bw.write("Java");
             bw.newLine();
-            String[] java = Funktionen.getJavaVersion();
+            String[] java = MVFunctionSys.getJavaVersion();
             for (String ja : java) {
                 bw.write(ja);
                 bw.newLine();
@@ -79,7 +79,7 @@ public class ProgrammLog {
             bw.write("Bs-Architektur: " + System.getProperty("os.arch"));
             bw.newLine();
             bw.newLine();
-            bw.write("Programmpfad: " + Funktionen.getPathJar());
+            bw.write("Programmpfad: " + MVFunctionSys.getPathJar());
             bw.newLine();
             bw.write("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory());
             bw.newLine();

@@ -11,7 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.Timer;
-import mediathek.tool.Funktionen;
+import mediathek.tool.MVFunctionSys;
 
 public class MVMemoryUsageButton extends JButton {
 
@@ -53,7 +53,7 @@ public class MVMemoryUsageButton extends JButton {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         final long maxMem;
-        if (Funktionen.getOs() == Funktionen.OperatingSystemType.LINUX) {
+        if (MVFunctionSys.getOs() == MVFunctionSys.OperatingSystemType.LINUX) {
             maxMem = rt.totalMemory();
         } else {
             maxMem = rt.maxMemory();

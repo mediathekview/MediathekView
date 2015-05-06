@@ -146,7 +146,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 }
                 break;
             case MAC:
-                pfad = Funktionen.getPathJar() + PFAD_MAC_FLV;
+                pfad = MVFunctionSys.getPathJar() + PFAD_MAC_FLV;
                 break;
             default:
                 pfad = PFAD_WINDOWS_FLV;
@@ -171,7 +171,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 }
                 break;
             case MAC:
-                pfad = Funktionen.getPathJar() + PFAD_MAC_FFMPEG;
+                pfad = MVFunctionSys.getPathJar() + PFAD_MAC_FFMPEG;
                 break;
             default:
                 pfad = PFAD_WINDOWS_FFMPEG;
