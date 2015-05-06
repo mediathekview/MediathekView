@@ -20,6 +20,7 @@
 package mediathek.gui.dialog;
 
 import com.jidesoft.utils.SystemInfo;
+import java.awt.Cursor;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,9 +43,9 @@ import mediathek.tool.TModel;
 
 public class DialogMediaDB extends javax.swing.JDialog {
 
-    private final ArrayList<String> fileArray = new ArrayList<>();
-    private final ArrayList<String> erg = new ArrayList<>();
-    private final TModel modelFilm = new TModel(new Object[][]{}, new String[]{"Titel"});
+    private final ArrayList<String[]> fileArray = new ArrayList<>();//name-path
+    private final ArrayList<String[]> erg = new ArrayList<>();//name-path
+    private final TModel modelFilm = new TModel(new Object[][]{}, new String[]{"Name", "Pfad"});
     private final TModel modelPath = new TModel(new Object[][]{}, new String[]{"Pfad"});
     private final JFrame parent;
     private final String FILE_TRENNER = "<>";
@@ -53,6 +54,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
         super(pparent, true);
         initComponents();
         this.parent = pparent;
+        parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         jButtonPath.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         jButtonAdd.setIcon(GetIcon.getProgramIcon("add_16.png"));
         jButtonRemove.setIcon(GetIcon.getProgramIcon("remove_16.png"));
@@ -89,7 +91,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
                     String p = jTablePath.getModel().getValueAt(jTablePath.convertRowIndexToModel(row), 0).toString();
                     String db = Daten.mVConfig.get(MVConfig.SYSTEM_PATH_MEDIA);
                     String dbNew = "";
-                    if ( db.isEmpty()) {
+                    if (db.isEmpty()) {
                         return;
                     }
                     for (String s : db.split(FILE_TRENNER)) {
@@ -159,6 +161,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
         jTableFilm.setModel(modelFilm);
         jTablePath.setModel(modelPath);
         setTablePath();
+        parent.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     private void setFileArray() {
@@ -172,7 +175,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
         }
     }
 
-    private void setTablePath() {
+    private synchronized void setTablePath() {
         String db = Daten.mVConfig.get(MVConfig.SYSTEM_PATH_MEDIA);
         modelPath.setRowCount(0);
         if (!db.isEmpty()) {
@@ -191,23 +194,23 @@ public class DialogMediaDB extends javax.swing.JDialog {
         Pattern p = makePattern(title);
         if (p != null) {
             // dann mit RegEx prüfen
-            for (String s : fileArray) {
-                if (p.matcher(s).matches()) {
+            for (String[] s : fileArray) {
+                if (p.matcher(s[0]).matches()) {
                     erg.add(s);
                 }
             }
         } else {
             title = title.toLowerCase();
-            for (String s : fileArray) {
-                if (s.toLowerCase().contains(title)) {
+            for (String[] s : fileArray) {
+                if (s[0].toLowerCase().contains(title)) {
                     erg.add(s);
                 }
             }
         }
         if (erg.size() > 0) {
-            Object[] o = new Object[1];
+            Object[] o;
             for (int i = 0; i < erg.size(); ++i) {
-                o[0] = erg.get(i);
+                o = erg.get(i);
                 modelFilm.addRow(o);
             }
         }
@@ -228,7 +231,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
                 if (file.isDirectory()) {
                     searchFile(file);
                 } else {
-                    fileArray.add(file.getName());
+                    fileArray.add(new String[]{file.getName(), file.getParent()});
                 }
             }
         }
