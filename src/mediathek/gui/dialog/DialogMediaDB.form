@@ -163,6 +163,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
                 </Property>
+                <Property name="toolTipText" type="java.lang.String" value="Pfad ausw&#xe4;hlen"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="jButtonAdd">
@@ -170,6 +171,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/programm/add_16.png"/>
                 </Property>
+                <Property name="toolTipText" type="java.lang.String" value="Pfad hinzuf&#xfc;gen"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="jButtonRemove">
@@ -177,6 +179,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/programm/remove_16.png"/>
                 </Property>
+                <Property name="toolTipText" type="java.lang.String" value="Markierten Pfad l&#xf6;schen"/>
               </Properties>
             </Component>
           </SubComponents>

@@ -214,7 +214,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
                 modelFilm.addRow(o);
             }
         }
-        jLabelCount.setText(modelFilm.getRowCount() + "");
+        jLabelCount.setText(modelFilm.getRowCount() + " von " + fileArray.size());
     }
 
     private void beenden() {
@@ -282,10 +282,13 @@ public class DialogMediaDB extends javax.swing.JDialog {
         jScrollPane2.setViewportView(jTablePath);
 
         jButtonPath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
+        jButtonPath.setToolTipText("Pfad auswählen");
 
         jButtonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/add_16.png"))); // NOI18N
+        jButtonAdd.setToolTipText("Pfad hinzufügen");
 
         jButtonRemove.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/remove_16.png"))); // NOI18N
+        jButtonRemove.setToolTipText("Markierten Pfad löschen");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

@@ -398,6 +398,7 @@ public class PanelPsetImport extends PanelVorlage {
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Set aus Datei importieren"));
 
         jButtonPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
+        jButtonPfad.setToolTipText("Datei auswählen");
 
         jButtonImportDatei.setText("Set importieren");
 
