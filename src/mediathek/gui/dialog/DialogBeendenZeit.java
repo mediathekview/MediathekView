@@ -38,12 +38,12 @@ import javax.swing.SpinnerDateModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.file.GetFile;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
+import mediathek.tool.MVConfig;
 import org.jdesktop.swingx.JXBusyLabel;
 
 public class DialogBeendenZeit extends JDialog {
@@ -123,6 +123,25 @@ public class DialogBeendenZeit extends JDialog {
         cal.add(Calendar.DATE, 2);
         Date endDate = cal.getTime();
         SpinnerDateModel model = new SpinnerDateModel(now, startDate, endDate, Calendar.MINUTE);
+
+        if (!Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT).isEmpty()) {
+            try {
+                String heute = new SimpleDateFormat("yyyyMMdd").format(new Date());
+                heute = heute + Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT);
+                Date start = new SimpleDateFormat("yyyyMMddHH:mm").parse(heute);
+
+                if (start.after(startDate)) {
+                    // nur wenn start nach "jetzt" kommt
+                    model = new SpinnerDateModel(start, startDate, endDate, Calendar.MINUTE);
+                } else {
+                    // sonst 24h dazuzählen
+                    start = new Date(start.getTime() + 24 * 60 * 60 * 1000);
+                    model = new SpinnerDateModel(start, startDate, endDate, Calendar.MINUTE);
+                }
+            } catch (Exception ignored) {
+            }
+        }
+
         jSpinnerTime.setModel(model);
         JSpinner.DateEditor dEditor = new JSpinner.DateEditor(jSpinnerTime, "dd.MM.yyy  HH:mm");
         jSpinnerTime.setEditor(dEditor);
@@ -150,11 +169,21 @@ public class DialogBeendenZeit extends JDialog {
                 shutdown = cbShutdownComputer.isSelected();
             }
         });
+        cbShutdownComputer.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN)));
 
         btnContinue.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                final String strSelectedItem = (String) comboActions.getSelectedItem();
+                final String strSelectedItem = comboActions.getSelectedItem().toString();
+                Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN, String.valueOf(cbShutdownComputer.isSelected()));
+
+                SimpleDateFormat format = ((JSpinner.DateEditor) jSpinnerTime.getEditor()).getFormat();
+                format.applyPattern("HH:mm");
+                Date sp = (Date) jSpinnerTime.getValue();
+                String strDate = format.format(sp);
+
+                Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT, strDate);
+
                 switch (strSelectedItem) {
                     case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
                         applicationCanTerminate = true;
