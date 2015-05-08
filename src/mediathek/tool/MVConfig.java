@@ -141,6 +141,8 @@ public class MVConfig {
     public static final String SYSTEM_BLACKLIST_FILMLAENGE = "Blacklist-Filmlaenge";
     // Download
     public static final String SYSTEM_DIALOG_DOWNLOAD_D_STARTEN = "Dialog-Download-D-Starten"; // DialogDownload: Download sofort starten
+    public static final String SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT = "Dialog-Download-Starten-Zeit";
+    public static final String SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN = "Dialog-Download-Shutdown";
     public static final String SYSTEM_DOWNLOAD_SOFORT_STARTEN = "Download-sofort-starten";
     public static final String SYSTEM_DOWNLOAD_BEEP = "Download-Beep";
     public static final String SYSTEM_BANDBREITE_KBYTE = "maxBandbreite";
