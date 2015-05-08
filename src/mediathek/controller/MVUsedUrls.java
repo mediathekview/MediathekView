@@ -60,7 +60,7 @@ public class MVUsedUrls {
 
     public synchronized void alleLoeschen() {
         listeUrls.clear();
-            Path urlPath = getUrlFilePath();
+        Path urlPath = getUrlFilePath();
         try {
             Files.deleteIfExists(urlPath);
         } catch (IOException ignored) {
@@ -75,10 +75,9 @@ public class MVUsedUrls {
     }
 
     public synchronized Object[][] getObjectData() {
-        Object[][] object;
         int i = 0;
         Iterator<MVUsedUrl> iterator = listeUrlsSortDate.iterator();
-        object = new Object[listeUrlsSortDate.size()][];
+        final Object[][] object = new Object[listeUrlsSortDate.size()][];
         while (iterator.hasNext()) {
             object[i] = iterator.next().uUrl;
             ++i;
@@ -103,7 +102,7 @@ public class MVUsedUrls {
         LinkedList<String> liste = new LinkedList<>();
 
         //Use Automatic Resource Management
-        Path urlPath = getUrlFilePath();
+        final Path urlPath = getUrlFilePath();
         if (Files.notExists(urlPath)) {
             return false;
         }
@@ -116,7 +115,6 @@ public class MVUsedUrls {
                     liste.add(zeile);
                 }
             }
-            in.close();
         } catch (Exception ex) {
             Log.fehlerMeldung(281006874, ex);
         }
@@ -127,8 +125,6 @@ public class MVUsedUrls {
                 for (String entry : liste) {
                     bufferedWriter.write(entry + "\n");
                 }
-                bufferedWriter.flush();
-                bufferedWriter.close();
             } catch (Exception ex) {
                 Log.fehlerMeldung(566277080, ex);
             }
@@ -151,8 +147,6 @@ public class MVUsedUrls {
         try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getUrlFilePath(), StandardOpenOption.APPEND)))) {
             text = MVUsedUrl.getUsedUrl(datum, thema, titel, url);
             bufferedWriter.write(text);
-            bufferedWriter.flush();
-            bufferedWriter.close();
             ret = true;
         } catch (Exception ex) {
             Log.fehlerMeldung(945258023, ex);
@@ -192,8 +186,6 @@ public class MVUsedUrls {
                     bufferedWriter.write(text);
                     ret = true;
                 }
-                bufferedWriter.flush();
-                bufferedWriter.close();
             } catch (Exception ex) {
                 ret = false;
                 Log.fehlerMeldung(945258023, ex);
@@ -230,7 +222,6 @@ public class MVUsedUrls {
                 listeUrls.add(mvuu.getUrl());
                 listeUrlsSortDate.add(mvuu);
             }
-            in.close();
         } catch (Exception ex) {
             Log.fehlerMeldung(926362547, ex);
         }
