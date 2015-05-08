@@ -112,6 +112,13 @@ public class DialogMediaDB extends javax.swing.JDialog {
         // =====================
         titel = FilenameUtils.replaceLeerDateiname(titel); // mit den eingestellten Ersetzungen bearbeiten
         jTextFieldTitle.setText(titel);
+        jTextFieldTitle.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                search();
+            }
+        });
         jTextFieldTitle.getDocument()
                 .addDocumentListener(new DocumentListener() {
                     @Override
@@ -153,7 +160,6 @@ public class DialogMediaDB extends javax.swing.JDialog {
                 beenden();
             }
         });
-        getRootPane().setDefaultButton(jButtonBeenden);
         new EscBeenden(this) {
             @Override
             public void beenden_() {
