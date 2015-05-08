@@ -583,9 +583,13 @@ public class DatenDownload implements Comparable<DatenDownload> {
         s = s.replace("%D", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM_NR])));
         s = s.replace("%d", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? getJetzt_HHMMSS() : datumDatumZeitReinigen(film.arr[DatenFilm.FILM_ZEIT_NR]));
 
-        s = s.replace("%1", getDMY("%1", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyyMMdd() : film.arr[DatenFilm.FILM_DATUM_NR]));
-        s = s.replace("%2", getDMY("%2", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyyMMdd() : film.arr[DatenFilm.FILM_DATUM_NR]));
-        s = s.replace("%3", getDMY("%3", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyyMMdd() : film.arr[DatenFilm.FILM_DATUM_NR]));
+        s = s.replace("%1", getDMY("%1", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM_NR]));
+        s = s.replace("%2", getDMY("%2", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM_NR]));
+        s = s.replace("%3", getDMY("%3", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM_NR]));
+
+        s = s.replace("%4", getHMS("%4", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT_NR]));
+        s = s.replace("%5", getHMS("%5", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT_NR]));
+        s = s.replace("%6", getHMS("%6", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT_NR]));
 
         s = s.replace("%t", film.arr[DatenFilm.FILM_THEMA_NR]);
         s = s.replace("%T", film.arr[DatenFilm.FILM_TITEL_NR]);
@@ -604,12 +608,20 @@ public class DatenDownload implements Comparable<DatenDownload> {
         return new SimpleDateFormat("HHmmss").format(new Date());
     }
 
+    private String getJetzt_HH_MM_SS() {
+        return new SimpleDateFormat("HH:mm:ss").format(new Date());
+    }
+
     private String getHeute_yyyyMMdd() {
         return new SimpleDateFormat("yyyyMMdd").format(new Date());
     }
 
+    private String getHeute_yyyy_MM_dd() {
+        return new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+    }
+
     private static String getDMY(String s, String datum) {
-        // liefert das Datum: Jahr - Monat - Tag
+        // liefert das Datum: Jahr - Monat - Tag aus dd.MM.yyyy
         // %1 - Tag
         // %2 - Monat
         // %3 - Jahr
@@ -619,7 +631,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 if (datum.length() == 10) {
                     switch (s) {
                         case "%1":
-                            ret = datum.substring(0, 2); // Tag
+                            ret = datum.substring(0,2); // Tag
                             break;
                         case "%2":
                             ret = datum.substring(3, 5); // Monat
@@ -632,6 +644,35 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldung(775421006, ex, datum);
+            }
+        }
+        return ret;
+    }
+
+    private static String getHMS(String s, String zeit) {
+        // liefert die Zeit: Stunde, Minute, Sekunde aus "HH:mm:ss"
+        // %4 - Stunde
+        // %5 - Minute
+        // %6 - Sekunde
+        String ret = "";
+        if (!zeit.equals("")) {
+            try {
+                if (zeit.length() == 8) {
+                    switch (s) {
+                        case "%4":
+                            ret = zeit.substring(0, 2); // Stunde
+                            break;
+                        case "%5":
+                            ret = zeit.substring(3, 5); // Minute
+                            break;
+                        case "%6":
+                            ret = zeit.substring(6); // Sekunde
+                            break;
+
+                    }
+                }
+            } catch (Exception ex) {
+                Log.fehlerMeldung(775421006, ex, zeit);
             }
         }
         return ret;

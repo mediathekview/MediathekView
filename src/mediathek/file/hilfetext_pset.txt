@@ -31,14 +31,20 @@ Soll ein Film mit einem Set aufgezeichnet werden, ist die Angabe des
 "Zielpfads" und des "Zieldateinamens" wichtig. Beim Namen sind diese Parameter
 möglich:
 
-%D Sendedatum des Films oder aktuelles Datum, wenn Sendedatum leer
+%D Sendedatum des Films oder "heute", wenn Sendedatum leer
 %d Sendezeit des Films oder "jetzt", wenn Sendezeit leer
-%H "heute", aktuelles Datum der Form JJJJMMTT z.B. 20090815 (15.08.2009)
-%h "jetzt", aktuelle Uhrzeit der Form SSMMss z.B. 152059 (15:20:59)
+%H "heute", aktuelles Datum
+%h "jetzt", aktuelle Uhrzeit
+Datum in der Form: JJJJMMTT z.B. 20090815 (15.08.2009)
+Zeit in der Form: SSMMss z.B. 152059 (15:20:59)
 
 %1 Tag,
 %2 Monat,
 %3 Jahr vom Sendedatum des Films oder aktuellem Datum, wenn Sendedatum leer
+
+%4 Stunde,
+%5 Minute,
+%6 Sekunde von der Sendezeit des Films oder "jetzt", wenn Sendezeit leer
 
 %s Sender des Films
 %T Titel des Films
