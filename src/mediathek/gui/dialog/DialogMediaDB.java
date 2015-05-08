@@ -35,6 +35,7 @@ import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
+import mediathek.tool.FilenameUtils;
 import mediathek.tool.Filter;
 import static mediathek.tool.Filter.makePattern;
 import mediathek.tool.HinweisKeineAuswahl;
@@ -109,6 +110,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
         }
         );
         // =====================
+        titel = FilenameUtils.replaceLeerDateiname(titel); // mit den eingestellten Ersetzungen bearbeiten
         jTextFieldTitle.setText(titel);
         jTextFieldTitle.getDocument()
                 .addDocumentListener(new DocumentListener() {
