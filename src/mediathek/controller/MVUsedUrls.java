@@ -60,7 +60,7 @@ public class MVUsedUrls {
 
     public synchronized void alleLoeschen() {
         listeUrls.clear();
-        Path urlPath = getUrlFilePath();
+            Path urlPath = getUrlFilePath();
         try {
             Files.deleteIfExists(urlPath);
         } catch (IOException ignored) {
@@ -75,9 +75,10 @@ public class MVUsedUrls {
     }
 
     public synchronized Object[][] getObjectData() {
+        Object[][] object;
         int i = 0;
         Iterator<MVUsedUrl> iterator = listeUrlsSortDate.iterator();
-        final Object[][] object = new Object[listeUrlsSortDate.size()][];
+        object = new Object[listeUrlsSortDate.size()][];
         while (iterator.hasNext()) {
             object[i] = iterator.next().uUrl;
             ++i;
@@ -122,21 +123,14 @@ public class MVUsedUrls {
 
         //und jetzt wieder schreiben, wenn nötig
         if (gefunden) {
-            BufferedWriter bufferedWriter = null;
-            try {
-                bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getUrlFilePath())));
+            try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getUrlFilePath())))) {
                 for (String entry : liste) {
                     bufferedWriter.write(entry + "\n");
                 }
+                bufferedWriter.flush();
+                bufferedWriter.close();
             } catch (Exception ex) {
                 Log.fehlerMeldung(566277080, ex);
-            } finally {
-                try {
-                    if (bufferedWriter != null) {
-                        bufferedWriter.close();
-                    }
-                } catch (Exception ignored) {
-                }
             }
         }
         listeUrls.clear();
@@ -154,21 +148,14 @@ public class MVUsedUrls {
         listeUrlsSortDate.add(new MVUsedUrl(datum, thema, titel, url));
 
         //Automatic Resource Management
-        BufferedWriter bufferedWriter = null;
-        try {
-            bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getUrlFilePath(), StandardOpenOption.APPEND)));
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getUrlFilePath(), StandardOpenOption.APPEND)))) {
             text = MVUsedUrl.getUsedUrl(datum, thema, titel, url);
             bufferedWriter.write(text);
+            bufferedWriter.flush();
+            bufferedWriter.close();
             ret = true;
         } catch (Exception ex) {
             Log.fehlerMeldung(945258023, ex);
-        } finally {
-            try {
-                if (bufferedWriter != null) {
-                    bufferedWriter.close();
-                }
-            } catch (Exception ignored) {
-            }
         }
 
         ListenerMediathekView.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
@@ -197,9 +184,7 @@ public class MVUsedUrls {
 
             boolean ret = false;
             String text;
-            BufferedWriter bufferedWriter = null;
-            try {
-                bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getUrlFilePath(), StandardOpenOption.APPEND)));
+            try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getUrlFilePath(), StandardOpenOption.APPEND)))) {
                 for (MVUsedUrl mvuu : mvuuList) {
                     listeUrls.add(mvuu.getUrl());
                     listeUrlsSortDate.add(mvuu);
@@ -207,16 +192,11 @@ public class MVUsedUrls {
                     bufferedWriter.write(text);
                     ret = true;
                 }
+                bufferedWriter.flush();
+                bufferedWriter.close();
             } catch (Exception ex) {
                 ret = false;
                 Log.fehlerMeldung(945258023, ex);
-            } finally {
-                try {
-                    if (bufferedWriter != null) {
-                        bufferedWriter.close();
-                    }
-                } catch (Exception ignore) {
-                }
             }
             ListenerMediathekView.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
             return ret;
