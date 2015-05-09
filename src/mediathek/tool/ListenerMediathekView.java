@@ -60,7 +60,7 @@ public class ListenerMediathekView implements EventListener {
     public static final int EREIGNIS_FILTER_ANZAHL = 34;
     public static final int EREIGNIS_TRAYICON = 35;
     public static final int EREIGNIS_FONT = 36;
-    //public static final int EREIGNIS_BLACKLIST_GEFILTERT = 37;
+    public static final int EREIGNIS_DIALOG_MEDIA_DB = 37;
     public static final int EREIGNIS_REPLACELIST_CHANGED = 38;
     public static final int EREIGNIS_BLACKLIST_GEAENDERT = 39;
     public static final int EREIGNIS_BLACKLIST_START_GEAENDERT = 40;

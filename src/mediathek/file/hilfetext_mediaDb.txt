@@ -1,0 +1,26 @@
+
+Ein Filterwort kann auch Leerzeichen enthalten,
+z.B.: "Hallo ich". Es wird dann nach Dateien
+gesucht, die im Namen "Hallo ich" 
+an beliebiger Stelle enthalten.
+Man sollte den Suchbegriff also so formulieren,
+dass die eigenen Vorgaben bei Dateinamen erfüllt
+sind.
+
+Groß- und Kleinschreibung wird beim Suchen
+nicht beachtet.
+
+In dem Filter kann auch mit regulären Ausdrücken
+gesucht werden. Diese müssen mit "#:" eingeleitet
+werden.
+
+#:Abend.*
+Das bedeutet z.B.: Es werden alle Dateien gefunden, die 
+im mit "Abend" beginnen.
+
+Auch bei den regulären Ausdrücken spielt Groß- und 
+Kleinschreibung keine Rolle.
+
+https://de.wikipedia.org/wiki/Regul%C3%A4rer_Ausdruck
+
+

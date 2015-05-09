@@ -47,6 +47,7 @@ import mediathek.gui.GuiAbo;
 import mediathek.gui.GuiDebug;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
+import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.GuiFunktionen;
@@ -102,6 +103,7 @@ public class Daten {
     public GuiAbo guiAbo = null; // Tab mit den Abos
     public static GuiDebug guiDebug = null;
     public MVFilmInformation filmInfoHud = null; // Infos zum Film
+    public DialogMediaDB dialogMediaDB = null;
 
     private boolean alreadyMadeBackup = false;
 
