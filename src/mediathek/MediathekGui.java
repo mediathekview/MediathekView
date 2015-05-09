@@ -276,9 +276,8 @@ public class MediathekGui extends JFrame {
         // Dialog mit den Programmeinstellungen einrichten
         dialogEinstellungen = new DialogEinstellungen(this, daten);
 
-        //create dialog mediaDB
-        daten.dialogMediaDB = new DialogMediaDB(this, "");
-        duration.ping("DialogMediaDb");
+        daten.dialogMediaDB = new DialogMediaDB(this);
+        daten.dialogMediaDB.setVis();
 
         // Prüfen obs ein Programmupdate gibt
         new CheckUpdate(this, daten).suchen();
