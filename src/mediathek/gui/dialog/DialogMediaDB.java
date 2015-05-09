@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.controller.Log;
@@ -47,33 +48,34 @@ import mediathek.tool.MVConfig;
 import mediathek.tool.TModel;
 
 public class DialogMediaDB extends javax.swing.JDialog {
-
+    
     private final ArrayList<String[]> fileArray = new ArrayList<>();//name-path
     private final ArrayList<String[]> erg = new ArrayList<>();//name-path
     private final TModel modelFilm = new TModel(new Object[][]{}, new String[]{"Name", "Pfad"});
     private final TModel modelPath = new TModel(new Object[][]{}, new String[]{"Pfad"});
     private final JFrame parent;
     private final String FILE_TRENNER = "<>";
-
-    public DialogMediaDB(JFrame pparent, String titel) {
+    private boolean init = false;
+    private boolean makeIndex = false;
+    
+    public DialogMediaDB(JFrame pparent) {
         super(pparent, false);
         initComponents();
         this.parent = pparent;
-        parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 beenden();
             }
         });
-
+        
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_DIALOG_MEDIA_DB, DialogMediaDB.class.getName()) {
             @Override
             public void ping() {
                 setVis();
             }
         });
-
+        
         jButtonHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHelp.addActionListener(new ActionListener() {
             @Override
@@ -82,7 +84,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
             }
         });
         jButtonMakeIndex.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 makeIndex();
@@ -93,14 +95,14 @@ public class DialogMediaDB extends javax.swing.JDialog {
         jButtonRemove.setIcon(GetIcon.getProgramIcon("remove_16.png"));
         jButtonPath.addActionListener(new BeobPfad());
         jButtonAdd.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 addPath();
             }
         });
         jButtonRemove.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 removePath();
@@ -108,10 +110,8 @@ public class DialogMediaDB extends javax.swing.JDialog {
         }
         );
         // =====================
-        titel = FilenameUtils.replaceLeerDateiname(titel); // mit den eingestellten Ersetzungen bearbeiten
-        jTextFieldTitle.setText(titel);
         jTextFieldTitle.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 search();
@@ -123,19 +123,19 @@ public class DialogMediaDB extends javax.swing.JDialog {
             ) {
                 tus();
             }
-
+            
             @Override
             public void removeUpdate(DocumentEvent e
             ) {
                 tus();
             }
-
+            
             @Override
             public void changedUpdate(DocumentEvent e
             ) {
                 tus();
             }
-
+            
             private void tus() {
                 Filter.checkPattern1(jTextFieldTitle);
                 if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE))) {
@@ -145,7 +145,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
         }
         );
         jButtonSearch.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 search();
@@ -165,14 +165,29 @@ public class DialogMediaDB extends javax.swing.JDialog {
         };
         jTableFilm.setModel(modelFilm);
         jTablePath.setModel(modelPath);
-        setTablePath();
+    }
+    
+    @Override
+    public void setVisible(boolean vis) {
+        super.setVisible(vis);
+        if (!init) {
+            // beim ersten anzeigen den Index bauen
+            setTablePath();
+            init = true;
+        }
+    }
+    
+    public final void setVis() {
+        parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        this.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_MEDIA_DB_ANZEIGEN)));
         parent.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
-
-    public void setFilter(String s) {
-        jTextFieldTitle.setText(s);
+    
+    public void setFilter(String titel) {
+        titel = FilenameUtils.replaceLeerDateiname(titel); // mit den eingestellten Ersetzungen bearbeiten
+        jTextFieldTitle.setText(titel);
     }
-
+    
     private void addPath() {
         String db = Daten.mVConfig.get(MVConfig.SYSTEM_PATH_MEDIA);
         String add = jTextFieldPath.getText();
@@ -192,7 +207,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
         Daten.mVConfig.add(MVConfig.SYSTEM_PATH_MEDIA, db);
         setTablePath(); //neu aufbauen
     }
-
+    
     private void removePath() {
         int row = jTablePath.getSelectedRow();
         if (row >= 0) {
@@ -214,8 +229,11 @@ public class DialogMediaDB extends javax.swing.JDialog {
             new HinweisKeineAuswahl().zeigen(parent);
         }
     }
-
+    
     private synchronized void setTablePath() {
+        // Tabelle mit den Pfaden bauen
+        // den Index erstellen
+        // und gleich suchen
         String db = Daten.mVConfig.get(MVConfig.SYSTEM_PATH_MEDIA);
         modelPath.setRowCount(0);
         if (!db.isEmpty()) {
@@ -226,11 +244,17 @@ public class DialogMediaDB extends javax.swing.JDialog {
         makeIndex();
         search();
     }
-
+    
     private void search() {
+        if (makeIndex) {
+            return; // dann gibts nix
+        }
         String title = jTextFieldTitle.getText();
         modelFilm.setRowCount(0);
         erg.clear();
+        if (title.isEmpty()) {
+            return;
+        }
         Pattern p = makePattern(title);
         if (p != null) {
             // dann mit RegEx prüfen
@@ -256,44 +280,59 @@ public class DialogMediaDB extends javax.swing.JDialog {
         }
         jLabelSizeFound.setText(modelFilm.getRowCount() + "");
     }
-
+    
     private void makeIndex() {
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        makeIndex = true;
+        jButtonMakeIndex.setEnabled(false);
         jLabelSizeIndex.setText("0");
         fileArray.clear();
-
-        String db = Daten.mVConfig.get(MVConfig.SYSTEM_PATH_MEDIA);
-        if (!db.isEmpty()) {
-            for (String s : db.split(FILE_TRENNER)) {
-                File f = new File(s);
-                searchFile(f);
-            }
-        }
-
-        jLabelSizeIndex.setText(fileArray.size() + "");
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        new Thread(new Index()).start();
     }
+    
+    private class Index implements Runnable {
+        
+        @Override
+        public synchronized void run() {
+            try {
+                
+                String db = Daten.mVConfig.get(MVConfig.SYSTEM_PATH_MEDIA);
+                if (!db.isEmpty()) {
+                    for (String s : db.split(FILE_TRENNER)) {
+                        File f = new File(s);
+                        searchFile(f);
+                    }
+                }
+            } catch (Exception ex) {
+                Log.fehlerMeldung(120321254, ex);
+            }
 
-    private void searchFile(File dir) {
-        if (dir == null) {
-            return;
+            makeIndex = false;
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    jButtonMakeIndex.setEnabled(true);
+                    jLabelSizeIndex.setText(fileArray.size() + "");
+                }
+            });
         }
-        File[] files = dir.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    searchFile(file);
-                } else {
-                    fileArray.add(new String[]{file.getName(), file.getParent()});
+        
+        private void searchFile(File dir) {
+            if (dir == null) {
+                return;
+            }
+            File[] files = dir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        searchFile(file);
+                    } else {
+                        fileArray.add(new String[]{file.getName(), file.getParent()});
+                    }
                 }
             }
         }
     }
-
-    private void setVis() {
-        this.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_MEDIA_DB_ANZEIGEN)));
-    }
-
+    
     private void beenden() {
         Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_MEDIA_DB_ANZEIGEN, Boolean.FALSE.toString());
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_DIALOG_MEDIA_DB, DialogMediaDB.class.getName());
@@ -541,7 +580,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private class BeobPfad implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native directory chooser on Mac...
@@ -578,5 +617,5 @@ public class DialogMediaDB extends javax.swing.JDialog {
             }
         }
     }
-
+    
 }
