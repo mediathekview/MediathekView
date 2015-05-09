@@ -80,6 +80,7 @@ import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.gui.MVAboutDialog;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.gui.MVHelpDialog;
+import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
@@ -275,6 +276,10 @@ public class MediathekGui extends JFrame {
         // Dialog mit den Programmeinstellungen einrichten
         dialogEinstellungen = new DialogEinstellungen(this, daten);
 
+        //create dialog mediaDB
+        daten.dialogMediaDB = new DialogMediaDB(this, "");
+        duration.ping("DialogMediaDb");
+
         // Prüfen obs ein Programmupdate gibt
         new CheckUpdate(this, daten).suchen();
         duration.ping("CheckUpdate");
@@ -309,6 +314,12 @@ public class MediathekGui extends JFrame {
             @Override
             public void ping() {
                 jCheckBoxMenuItemBeschreibung.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
+            }
+        });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_DIALOG_MEDIA_DB, MediathekGui.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                jCheckBoxMenuItemMediaDb.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_MEDIA_DB_ANZEIGEN)));
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName()) {
@@ -939,6 +950,14 @@ public class MediathekGui extends JFrame {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName());
             }
         });
+        jCheckBoxMenuItemMediaDb.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_MEDIA_DB_ANZEIGEN)));
+        jCheckBoxMenuItemMediaDb.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_MEDIA_DB_ANZEIGEN, String.valueOf(jCheckBoxMenuItemMediaDb.isSelected()));
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_DIALOG_MEDIA_DB, MediathekGui.class.getSimpleName());
+            }
+        });
         jMenuItemSchriftGr.addActionListener(new ActionListener() {
 
             @Override
@@ -1251,6 +1270,7 @@ public class MediathekGui extends JFrame {
         jMenuItemSchriftNormal = new javax.swing.JMenuItem();
         javax.swing.JPopupMenu.Separator jSeparator5 = new javax.swing.JPopupMenu.Separator();
         cbBandwidthDisplay = new javax.swing.JCheckBoxMenuItem();
+        jCheckBoxMenuItemMediaDb = new javax.swing.JCheckBoxMenuItem();
         jMenuHilfe = new javax.swing.JMenu();
         jMenuItemAnleitung = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -1454,6 +1474,9 @@ public class MediathekGui extends JFrame {
         cbBandwidthDisplay.setText("Bandbreitennutzung");
         jMenuAnsicht.add(cbBandwidthDisplay);
 
+        jCheckBoxMenuItemMediaDb.setText("eigene Medien durchsuchen");
+        jMenuAnsicht.add(jCheckBoxMenuItemMediaDb);
+
         jMenuBar.add(jMenuAnsicht);
 
         jMenuHilfe.setMnemonic('h');
@@ -1492,6 +1515,7 @@ public class MediathekGui extends JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem cbBandwidthDisplay;
     protected javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemBeschreibung;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemMediaDb;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemToolBar;
     protected javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
     private javax.swing.JMenu jMenuAnsicht;

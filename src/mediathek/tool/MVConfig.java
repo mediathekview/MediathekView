@@ -63,6 +63,7 @@ public class MVConfig {
     public static final String SYSTEM_PANEL_FILME_DIVIDER = "system-panel-filme-divider";
     public static final String SYSTEM_FONT_SIZE = "system-font-size"; // -5 ... 0 .... 5
 
+    public static final String SYSTEM_DIALOG_MEDIA_DB_ANZEIGEN = "system-panel-mediaDb-anzeigen";
     public static final String SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN = "system-panel-beschreibung-anzeigen";
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_FILME = "Eigenschaften-Tabellen-Filme";
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS = "Eigenschaften-Tabellen-Downloads";

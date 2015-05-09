@@ -24,6 +24,8 @@ import java.awt.Cursor;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -33,12 +35,14 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
+import mediathek.file.GetFile;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.FilenameUtils;
 import mediathek.tool.Filter;
 import static mediathek.tool.Filter.makePattern;
 import mediathek.tool.HinweisKeineAuswahl;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.TModel;
 
@@ -52,10 +56,38 @@ public class DialogMediaDB extends javax.swing.JDialog {
     private final String FILE_TRENNER = "<>";
 
     public DialogMediaDB(JFrame pparent, String titel) {
-        super(pparent, true);
+        super(pparent, false);
         initComponents();
         this.parent = pparent;
         parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                beenden();
+            }
+        });
+
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_DIALOG_MEDIA_DB, DialogMediaDB.class.getName()) {
+            @Override
+            public void ping() {
+                setVis();
+            }
+        });
+
+        jButtonHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonHelp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_MEDIA_DB)).setVisible(true);
+            }
+        });
+        jButtonMakeIndex.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                makeIndex();
+            }
+        });
         jButtonPath.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         jButtonAdd.setIcon(GetIcon.getProgramIcon("add_16.png"));
         jButtonRemove.setIcon(GetIcon.getProgramIcon("remove_16.png"));
@@ -64,48 +96,14 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                String db = Daten.mVConfig.get(MVConfig.SYSTEM_PATH_MEDIA);
-                String add = jTextFieldPath.getText();
-                if (add.isEmpty()) {
-                    return;
-                }
-                for (String s : db.split(FILE_TRENNER)) {
-                    if (s.equals(add)) {
-                        return; // dann gibts den schon
-                    }
-                }
-                if (db.isEmpty()) {
-                    db = add;
-                } else {
-                    db += FILE_TRENNER + add;
-                }
-                Daten.mVConfig.add(MVConfig.SYSTEM_PATH_MEDIA, db);
-                setTablePath(); //neu aufbauen
+                addPath();
             }
         });
         jButtonRemove.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int row = jTablePath.getSelectedRow();
-                if (row >= 0) {
-                    String p = jTablePath.getModel().getValueAt(jTablePath.convertRowIndexToModel(row), 0).toString();
-                    String db = Daten.mVConfig.get(MVConfig.SYSTEM_PATH_MEDIA);
-                    String dbNew = "";
-                    if (db.isEmpty()) {
-                        return;
-                    }
-                    for (String s : db.split(FILE_TRENNER)) {
-                        if (s.equals(p)) {
-                            continue;
-                        }
-                        dbNew += dbNew.isEmpty() ? s : FILE_TRENNER + s;
-                    }
-                    Daten.mVConfig.add(MVConfig.SYSTEM_PATH_MEDIA, dbNew);
-                    setTablePath(); //neu aufbauen
-                } else {
-                    new HinweisKeineAuswahl().zeigen(parent);
-                }
+                removePath();
             }
         }
         );
@@ -119,34 +117,33 @@ public class DialogMediaDB extends javax.swing.JDialog {
                 search();
             }
         });
-        jTextFieldTitle.getDocument()
-                .addDocumentListener(new DocumentListener() {
-                    @Override
-                    public void insertUpdate(DocumentEvent e
-                    ) {
-                        tus();
-                    }
+        jTextFieldTitle.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e
+            ) {
+                tus();
+            }
 
-                    @Override
-                    public void removeUpdate(DocumentEvent e
-                    ) {
-                        tus();
-                    }
+            @Override
+            public void removeUpdate(DocumentEvent e
+            ) {
+                tus();
+            }
 
-                    @Override
-                    public void changedUpdate(DocumentEvent e
-                    ) {
-                        tus();
-                    }
+            @Override
+            public void changedUpdate(DocumentEvent e
+            ) {
+                tus();
+            }
 
-                    private void tus() {
-                        Filter.checkPattern1(jTextFieldTitle);
-                        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE))) {
-                            search();
-                        }
-                    }
+            private void tus() {
+                Filter.checkPattern1(jTextFieldTitle);
+                if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE))) {
+                    search();
                 }
-                );
+            }
+        }
+        );
         jButtonSearch.addActionListener(new ActionListener() {
 
             @Override
@@ -172,14 +169,49 @@ public class DialogMediaDB extends javax.swing.JDialog {
         parent.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
-    private void setFileArray() {
-        fileArray.clear();
+    public void setFilter(String s) {
+        jTextFieldTitle.setText(s);
+    }
+
+    private void addPath() {
         String db = Daten.mVConfig.get(MVConfig.SYSTEM_PATH_MEDIA);
-        if (!db.isEmpty()) {
-            for (String s : db.split(FILE_TRENNER)) {
-                File f = new File(s);
-                searchFile(f);
+        String add = jTextFieldPath.getText();
+        if (add.isEmpty()) {
+            return;
+        }
+        for (String s : db.split(FILE_TRENNER)) {
+            if (s.equals(add)) {
+                return; // dann gibts den schon
             }
+        }
+        if (db.isEmpty()) {
+            db = add;
+        } else {
+            db += FILE_TRENNER + add;
+        }
+        Daten.mVConfig.add(MVConfig.SYSTEM_PATH_MEDIA, db);
+        setTablePath(); //neu aufbauen
+    }
+
+    private void removePath() {
+        int row = jTablePath.getSelectedRow();
+        if (row >= 0) {
+            String p = jTablePath.getModel().getValueAt(jTablePath.convertRowIndexToModel(row), 0).toString();
+            String db = Daten.mVConfig.get(MVConfig.SYSTEM_PATH_MEDIA);
+            String dbNew = "";
+            if (db.isEmpty()) {
+                return;
+            }
+            for (String s : db.split(FILE_TRENNER)) {
+                if (s.equals(p)) {
+                    continue;
+                }
+                dbNew += dbNew.isEmpty() ? s : FILE_TRENNER + s;
+            }
+            Daten.mVConfig.add(MVConfig.SYSTEM_PATH_MEDIA, dbNew);
+            setTablePath(); //neu aufbauen
+        } else {
+            new HinweisKeineAuswahl().zeigen(parent);
         }
     }
 
@@ -191,7 +223,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
                 modelPath.addRow(new Object[]{s});
             }
         }
-        setFileArray();
+        makeIndex();
         search();
     }
 
@@ -222,11 +254,24 @@ public class DialogMediaDB extends javax.swing.JDialog {
                 modelFilm.addRow(o);
             }
         }
-        jLabelCount.setText(modelFilm.getRowCount() + " von " + fileArray.size());
+        jLabelSizeFound.setText(modelFilm.getRowCount() + "");
     }
 
-    private void beenden() {
-        this.dispose();
+    private void makeIndex() {
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        jLabelSizeIndex.setText("0");
+        fileArray.clear();
+
+        String db = Daten.mVConfig.get(MVConfig.SYSTEM_PATH_MEDIA);
+        if (!db.isEmpty()) {
+            for (String s : db.split(FILE_TRENNER)) {
+                File f = new File(s);
+                searchFile(f);
+            }
+        }
+
+        jLabelSizeIndex.setText(fileArray.size() + "");
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     private void searchFile(File dir) {
@@ -245,6 +290,16 @@ public class DialogMediaDB extends javax.swing.JDialog {
         }
     }
 
+    private void setVis() {
+        this.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_MEDIA_DB_ANZEIGEN)));
+    }
+
+    private void beenden() {
+        Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_MEDIA_DB_ANZEIGEN, Boolean.FALSE.toString());
+        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_DIALOG_MEDIA_DB, DialogMediaDB.class.getName());
+        this.setVisible(false);
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -260,13 +315,17 @@ public class DialogMediaDB extends javax.swing.JDialog {
         jButtonPath = new javax.swing.JButton();
         jButtonAdd = new javax.swing.JButton();
         jButtonRemove = new javax.swing.JButton();
+        jButtonMakeIndex = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        jLabelSizeIndex = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTableFilm = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
-        jLabelCount = new javax.swing.JLabel();
+        jLabelSizeFound = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jButtonBeenden = new javax.swing.JButton();
+        jButtonHelp = new javax.swing.JButton();
 
         jLabel2.setText("jLabel2");
 
@@ -274,7 +333,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
         jButtonSearch.setText("suchen");
 
-        jSplitPane1.setDividerLocation(200);
+        jSplitPane1.setDividerLocation(250);
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
         jLabel3.setText("In den Pfaden suchen:");
@@ -298,6 +357,12 @@ public class DialogMediaDB extends javax.swing.JDialog {
         jButtonRemove.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/remove_16.png"))); // NOI18N
         jButtonRemove.setToolTipText("Markierten Pfad löschen");
 
+        jButtonMakeIndex.setText("Index aufbauen");
+
+        jLabel5.setText("Anzahl Dateien im Index:");
+
+        jLabelSizeIndex.setText("0");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -305,18 +370,26 @@ public class DialogMediaDB extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabelSizeIndex)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jTextFieldPath)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonPath)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonAdd)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonRemove))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jButtonMakeIndex, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jButtonPath)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonAdd)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonRemove)))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -324,9 +397,14 @@ public class DialogMediaDB extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabelSizeIndex)
+                    .addComponent(jButtonMakeIndex))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonAdd)
@@ -355,7 +433,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
         jLabel1.setText("Anzahl:");
 
-        jLabelCount.setText("0");
+        jLabelSizeFound.setText("0");
 
         jLabel4.setText("Filme:");
 
@@ -366,13 +444,13 @@ public class DialogMediaDB extends javax.swing.JDialog {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabelCount))
+                                .addComponent(jLabelSizeFound))
                             .addComponent(jLabel4))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -383,17 +461,19 @@ public class DialogMediaDB extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel1)
-                    .addComponent(jLabelCount))
+                    .addComponent(jLabelSizeFound))
                 .addContainerGap())
         );
 
         jSplitPane1.setRightComponent(jPanel2);
 
         jButtonBeenden.setText("Ok");
+
+        jButtonHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -409,6 +489,8 @@ public class DialogMediaDB extends javax.swing.JDialog {
                     .addComponent(jSplitPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonHelp)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonBeenden, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -419,10 +501,12 @@ public class DialogMediaDB extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonSearch))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jSplitPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonBeenden)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonBeenden)
+                    .addComponent(jButtonHelp))
                 .addContainerGap())
         );
 
@@ -433,6 +517,8 @@ public class DialogMediaDB extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAdd;
     private javax.swing.JButton jButtonBeenden;
+    private javax.swing.JButton jButtonHelp;
+    private javax.swing.JButton jButtonMakeIndex;
     private javax.swing.JButton jButtonPath;
     private javax.swing.JButton jButtonRemove;
     private javax.swing.JButton jButtonSearch;
@@ -440,7 +526,9 @@ public class DialogMediaDB extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabelCount;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabelSizeFound;
+    private javax.swing.JLabel jLabelSizeIndex;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
