@@ -604,6 +604,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jButtonFilterLoeschen.setToolTipText("Filter löschen");
 
         jToggleButtonBlacklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/blacklist_aus_16.png"))); // NOI18N
+        jToggleButtonBlacklist.setToolTipText("Blacklist ein/aus (Rechtsklick um Blacklist zu bearbeiten)");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

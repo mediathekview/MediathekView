@@ -43,7 +43,7 @@ import mediathek.res.GetIcon;
 public class CellRendererDownloads extends DefaultTableCellRenderer {
 
     private final static String DOWNLOAD_STARTEN = "Download starten";
-    private final static String DOWNLOAD_LOESCHEN = "Download löschen";
+    private final static String DOWNLOAD_LOESCHEN = "Download aus Liste entfernen";
     private final static String DOWNLOAD_STOPPEN = "Download stoppen";
     private final static String DOWNLOAD_ENTFERNEN = "Download entfernen";
     private final static String PLAY_DOWNLOADED_FILM = "gespeicherten Film abspielen";
