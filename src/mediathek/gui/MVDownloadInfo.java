@@ -38,6 +38,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
@@ -166,7 +167,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         } else {
             hudWindow.setContentPane(this);
         }
-
+        
         jSplitPane1.setDividerSize(15);
         jSplitPane1.setResizeWeight(1.0d);
         // size
@@ -175,8 +176,10 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         if (GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, jDialog, parent)) {
             try {
                 if (Daten.mVConfig.get(MVConfig.SYSTEM_DIVIDER_INFODIALOG_MIN_MAX).equals("max")) {
+                    jSplitPane1.setDividerLocation(1.0);
                     addHListener(1.0);
                 } else if (Daten.mVConfig.get(MVConfig.SYSTEM_DIVIDER_INFODIALOG_MIN_MAX).equals("min")) {
+                    jSplitPane1.setDividerLocation(0.0);
                     addHListener(0.0);
                 } else {
                     int divider = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_DIVIDER_INFODIALOG));
@@ -196,17 +199,15 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         }
     }
 
-    private void addHListener(double div) {
-        final double d = div;
+    private void addHListener(final double div) {
 
         jSplitPane1.addHierarchyListener(new HierarchyListener() {
             @Override
             public void hierarchyChanged(HierarchyEvent e) {
                 if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
-                    jSplitPane1.setDividerLocation(d);
                     BasicSplitPaneUI ui = (BasicSplitPaneUI) jSplitPane1.getUI();
                     BasicSplitPaneDivider divider = ui.getDivider();
-                    JButton button = (JButton) divider.getComponent(d == 0 ? 0 : 1);
+                    JButton button = (JButton) divider.getComponent(div == 0 ? 0 : 1);
                     button.doClick();
                 }
             }
