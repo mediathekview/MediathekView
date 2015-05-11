@@ -4,8 +4,12 @@ z.B.: "Hallo ich". Es wird dann nach Dateien
 gesucht, die im Namen "Hallo ich" 
 an beliebiger Stelle enthalten.
 Man sollte den Suchbegriff also so formulieren,
-dass die eigenen Vorgaben bei Dateinamen erfüllt
+dass die eigenen Vorgaben für Dateinamen erfüllt
 sind.
+
+Das Verhalten ist genauso wie für die Filter eingestellt:
+"Suchen bei jeder Änderung im Feld Titel" oder 
+nur beim Klick auf "Suchen"
 
 Groß- und Kleinschreibung wird beim Suchen
 nicht beachtet.

@@ -501,7 +501,7 @@ public class MediathekGui extends JFrame {
         if (max || Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_MAX))) {
             this.setExtendedState(Frame.MAXIMIZED_BOTH);
         } else {
-            GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE, this, null);
+            GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_GUI, this, null);
         }
         try {
             int divider = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_BREITE_MELDUNGEN));
@@ -1150,7 +1150,7 @@ public class MediathekGui extends JFrame {
         }
 
         // Hauptfenster
-        GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE, this);
+        GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_GUI, this);
         // Dialog Einstellungen
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_EINSTELLUNGEN, dialogEinstellungen);
         // Infodialog/Bandwidth
@@ -1158,6 +1158,10 @@ public class MediathekGui extends JFrame {
             GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, mvDownloadInfo.getDialog());
             mvDownloadInfo.getDividerLocation();
         }
+        // MediaDB
+        GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_MEDIA_DB, daten.dialogMediaDB);
+        daten.dialogMediaDB.getDividerLocation();
+        
         Daten.mVConfig.add(MVConfig.SYSTEM_BREITE_MELDUNGEN, String.valueOf(splitPane.getDividerLocation()));
 
         // Frames
