@@ -525,6 +525,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/mediathek/res/programm/blacklist_aus_16.png"/>
             </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Blacklist ein/aus (Rechtsklick um Blacklist zu bearbeiten)"/>
           </Properties>
         </Component>
       </SubComponents>
