@@ -33,6 +33,7 @@ public class MVConfig {
     public static final String SYSTEM = "system";
     // allgemein
     public static final String SYSTEM_ECHTZEITSUCHE = "Echtzeitsuche";
+    public static final String SYSTEM_ECHTZEITSUCHE_MEDIA_DB = "Echtzeitsuche-Mediensammlung";
     public static final String SYSTEM_USE_TRAY = "Tray-anzeigen";
     public static final String SYSTEM_LOOK = "System-look";
     public static final String SYSTEM_USER_AGENT_AUTO = "User-Agent-Auto";

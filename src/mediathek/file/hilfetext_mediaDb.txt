@@ -7,7 +7,8 @@ Man sollte den Suchbegriff also so formulieren,
 dass die eigenen Vorgaben für Dateinamen erfüllt
 sind.
 
-Das Verhalten ist genauso wie für die Filter eingestellt:
+Das Suchverhalten ist in den Einstellungen konfigurierbar
+(Datei -> Einstellungen -> Allgemein):
 "Suchen bei jeder Änderung im Feld Titel" oder 
 nur beim Klick auf "Suchen"
 

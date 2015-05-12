@@ -411,7 +411,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCheckBoxMenuItemMediaDb">
               <Properties>
-                <Property name="text" type="java.lang.String" value="eigene Medien durchsuchen"/>
+                <Property name="text" type="java.lang.String" value="Mediensammlung durchsuchen"/>
               </Properties>
             </MenuItem>
           </SubComponents>
