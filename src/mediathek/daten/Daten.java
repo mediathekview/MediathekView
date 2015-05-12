@@ -49,7 +49,6 @@ import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.MVFilmInformation;
-import mediathek.tool.MVFunctionSys;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Konstanten;
@@ -57,6 +56,7 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVColor;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFont;
+import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVListeFilme;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVReplaceList;
@@ -254,6 +254,7 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_USE_REPLACETABLE, SystemInfo.isLinux() || SystemInfo.isMacOSX() ? Boolean.TRUE.toString() : Boolean.FALSE.toString()); // wegen des Problems mit ext. Programmaufrufen und Leerzeichen
         mVConfig.add(MVConfig.SYSTEM_ONLY_ASCII, Boolean.FALSE.toString());
         mVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE_MEDIA_DB, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.FALSE.toString());
         mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.TRUE.toString());

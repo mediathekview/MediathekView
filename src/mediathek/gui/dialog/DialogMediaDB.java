@@ -35,7 +35,6 @@ import java.util.regex.Pattern;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -59,7 +58,6 @@ import mediathek.tool.TModel;
 public class DialogMediaDB extends javax.swing.JDialog {
 
     private final ArrayList<String[]> fileArray = new ArrayList<>();//name-path
-    private final ArrayList<String[]> erg = new ArrayList<>();//name-path
     private final TModel modelFilm = new TModel(new Object[][]{}, new String[]{"Name", "Pfad"});
     private final TModel modelPath = new TModel(new Object[][]{}, new String[]{"Pfad"});
     private final JFrame parent;
@@ -77,7 +75,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
                 beenden();
             }
         });
-        this.setTitle("Lokale Mediensammlung");
+        this.setTitle("Mediensammlung durchsuchen");
 
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_DIALOG_MEDIA_DB, DialogMediaDB.class.getName()) {
             @Override
@@ -90,8 +88,8 @@ public class DialogMediaDB extends javax.swing.JDialog {
         progress.setMaximum(0);
         progress.setMinimum(0);
         progress.setValue(0);
-        jTableFilm.setModel(modelFilm);
         jTablePath.setModel(modelPath);
+        jTableFilm.setModel(modelFilm);
 
         // =====================
         jTextFieldTitle.addActionListener(new ActionListener() {
@@ -303,36 +301,24 @@ public class DialogMediaDB extends javax.swing.JDialog {
     }
 
     private void search() {
-        if (makeIndex) {
-            return; // dann gibts nix
-        }
         String title = jTextFieldTitle.getText();
         modelFilm.setRowCount(0);
-        erg.clear();
-        if (title.isEmpty()) {
-            return;
-        }
-        Pattern p = makePattern(title);
-        if (p != null) {
-            // dann mit RegEx prüfen
-            for (String[] s : fileArray) {
-                if (p.matcher(s[0]).matches()) {
-                    erg.add(s);
+        if (!makeIndex && !title.isEmpty()) {
+            Pattern p = makePattern(title);
+            if (p != null) {
+                // dann mit RegEx prüfen
+                for (String[] s : fileArray) {
+                    if (p.matcher(s[1]).matches()) {
+                        modelFilm.addRow(s);
+                    }
                 }
-            }
-        } else {
-            title = title.toLowerCase();
-            for (String[] s : fileArray) {
-                if (s[0].toLowerCase().contains(title)) {
-                    erg.add(s);
+            } else {
+                title = title.toLowerCase();
+                for (String[] s : fileArray) {
+                    if (s[0].toLowerCase().contains(title)) {
+                        modelFilm.addRow(s);
+                    }
                 }
-            }
-        }
-        if (erg.size() > 0) {
-            Object[] o;
-            for (int i = 0; i < erg.size(); ++i) {
-                o = erg.get(i);
-                modelFilm.addRow(o);
             }
         }
         jLabelSizeFound.setText(modelFilm.getRowCount() + "");
@@ -395,7 +381,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
                     if (file.isDirectory()) {
                         searchFile(file);
                     } else {
-                        fileArray.add(new String[]{file.getName(), file.getParent()});
+                        fileArray.add(new String[]{file.getName(), file.getParent().intern()});
                     }
                 }
             }
@@ -440,10 +426,10 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jButtonSearch.setText("suchen");
+        jButtonSearch.setText("Suchen");
 
         jSplitPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153), 2));
-        jSplitPane1.setDividerLocation(250);
+        jSplitPane1.setDividerLocation(300);
         jSplitPane1.setDividerSize(15);
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         jSplitPane1.setOneTouchExpandable(true);
@@ -469,7 +455,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
         jButtonRemove.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/remove_16.png"))); // NOI18N
         jButtonRemove.setToolTipText("Markierten Pfad löschen");
 
-        jButtonMakeIndex.setText("Index aufbauen");
+        jButtonMakeIndex.setText("Index neu aufbauen");
 
         jLabel5.setText("Anzahl Dateien im Index:");
 
@@ -482,44 +468,42 @@ public class DialogMediaDB extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabelSizeIndex)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jTextFieldPath)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButtonMakeIndex, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jButtonPath)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonAdd)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonRemove))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonPath)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonAdd)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonRemove)
+                        .addGap(1, 1, 1))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabelSizeIndex))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(progress, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(progress, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonMakeIndex)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel3)
-                    .addComponent(progress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(progress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonMakeIndex))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel5)
-                    .addComponent(jButtonMakeIndex)
                     .addComponent(jLabelSizeIndex))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -561,7 +545,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -578,7 +562,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel1)
@@ -603,7 +587,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
                         .addComponent(jTextFieldTitle)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonSearch))
-                    .addComponent(jSplitPane1)
+                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonHelp)
@@ -719,7 +703,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
         private void tus() {
             Filter.checkPattern1(jTextFieldTitle);
-            if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE))) {
+            if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE_MEDIA_DB))) {
                 search();
             }
         }

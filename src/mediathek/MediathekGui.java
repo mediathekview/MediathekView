@@ -1477,7 +1477,7 @@ public class MediathekGui extends JFrame {
         cbBandwidthDisplay.setText("Bandbreitennutzung");
         jMenuAnsicht.add(cbBandwidthDisplay);
 
-        jCheckBoxMenuItemMediaDb.setText("eigene Medien durchsuchen");
+        jCheckBoxMenuItemMediaDb.setText("Mediensammlung durchsuchen");
         jMenuAnsicht.add(jCheckBoxMenuItemMediaDb);
 
         jMenuBar.add(jMenuAnsicht);

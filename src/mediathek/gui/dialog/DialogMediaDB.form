@@ -38,7 +38,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonSearch" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="jSplitPane1" max="32767" attributes="0"/>
+                  <Component id="jSplitPane1" pref="472" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       <Component id="jButtonHelp" min="-2" max="-2" attributes="0"/>
@@ -75,7 +75,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="jButtonSearch">
       <Properties>
-        <Property name="text" type="java.lang.String" value="suchen"/>
+        <Property name="text" type="java.lang.String" value="Suchen"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JSplitPane" name="jSplitPane1">
@@ -87,7 +87,7 @@
             </LineBorder>
           </Border>
         </Property>
-        <Property name="dividerLocation" type="int" value="250"/>
+        <Property name="dividerLocation" type="int" value="300"/>
         <Property name="dividerSize" type="int" value="15"/>
         <Property name="orientation" type="int" value="0"/>
         <Property name="oneTouchExpandable" type="boolean" value="true"/>
@@ -108,38 +108,32 @@
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane2" alignment="1" pref="437" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" alignment="1" pref="0" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
-                              <Component id="jTextFieldPath" max="32767" attributes="0"/>
-                              <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="jButtonMakeIndex" alignment="1" max="32767" attributes="0"/>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jButtonPath" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jButtonAdd" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jButtonRemove" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
-                          </Group>
-                          <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" attributes="0">
-                                      <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jLabelSizeIndex" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="progress" min="-2" pref="93" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
+                              <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jLabelSizeIndex" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jTextFieldPath" max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jButtonPath" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jButtonAdd" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jButtonRemove" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="progress" min="-2" pref="93" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="jButtonMakeIndex" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -147,24 +141,24 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="progress" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="2" attributes="0">
+                          <Component id="jLabel3" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="progress" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButtonMakeIndex" alignment="2" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" pref="135" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" pref="184" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="2" attributes="0">
                           <Component id="jLabel5" alignment="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButtonMakeIndex" alignment="2" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabelSizeIndex" alignment="2" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jTextFieldPath" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButtonAdd" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButtonPath" linkSize="3" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButtonRemove" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButtonAdd" linkSize="3" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButtonPath" linkSize="3" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButtonRemove" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -223,7 +217,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButtonMakeIndex">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Index aufbauen"/>
+                <Property name="text" type="java.lang.String" value="Index neu aufbauen"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel5">
@@ -253,7 +247,7 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane3" alignment="0" pref="437" max="32767" attributes="0"/>
+                          <Component id="jScrollPane3" alignment="0" pref="444" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
@@ -276,7 +270,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane3" pref="276" max="32767" attributes="0"/>
+                      <Component id="jScrollPane3" pref="226" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="2" attributes="0">
                           <Component id="jLabel1" alignment="2" min="-2" max="-2" attributes="0"/>
