@@ -58,6 +58,7 @@ import mediathek.tool.MVConfig;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVListeFilme;
+import mediathek.tool.MVMediaDB;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVReplaceList;
 import msearch.daten.DatenFilm;
@@ -79,6 +80,7 @@ public class Daten {
     // zentrale Klassen
     public static MVColor mVColor = new MVColor(); // verwendete Farben
     public static MVReplaceList mVReplaceList = new MVReplaceList(); // Ersetzungsliste für die Namen der Downloads
+    public static MVMediaDB mVMediaDB = new MVMediaDB();
     public static FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
     public static ListeFilme listeFilme = null;
     public static ListeFilme listeFilmeNachBlackList = null; // ist DIE Filmliste

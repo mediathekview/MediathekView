@@ -55,10 +55,7 @@ public class MVConfig {
     // Fenstereinstellungen
     public static final String SYSTEM_GROESSE_GUI = "Groesse";
     public static final String SYSTEM_GROESSE_EINSTELLUNGEN = "Groesse-Einstellungen";
-
     public static final String SYSTEM_GROESSE_MEDIA_DB = "Groesse-MediaDB";
-    public static final String SYSTEM_DIVIDER_MEDIA_DB = "Divider-MediaDB";
-    public static final String SYSTEM_DIVIDER_MEDIA_DB_MIN_MAX = "Divider-MediaDB-min-max";
     
     public static final String SYSTEM_GROESSE_INFODIALOG = "Groesse-Infodialog";
     public static final String SYSTEM_DIVIDER_INFODIALOG = "Divider-Infodialog";

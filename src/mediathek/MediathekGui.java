@@ -1160,7 +1160,6 @@ public class MediathekGui extends JFrame {
         }
         // MediaDB
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_MEDIA_DB, daten.dialogMediaDB);
-        daten.dialogMediaDB.getDividerLocation();
         
         Daten.mVConfig.add(MVConfig.SYSTEM_BREITE_MELDUNGEN, String.valueOf(splitPane.getDividerLocation()));
 

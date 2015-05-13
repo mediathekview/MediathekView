@@ -103,14 +103,6 @@ public class PanelEinstellungen extends PanelVorlage {
                 Daten.mVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.toString(jCheckBoxEchtzeit.isSelected()));
             }
         });
-        jCheckBoxMediaDB.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE_MEDIA_DB)));
-        jCheckBoxMediaDB.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE_MEDIA_DB, Boolean.toString(jCheckBoxMediaDB.isSelected()));
-            }
-        });
         if (SystemInfo.isMacOSX()) {
             jCheckBoxTray.setSelected(false);
             jCheckBoxTray.setEnabled(false);
@@ -286,7 +278,6 @@ public class PanelEinstellungen extends PanelVorlage {
         jButtonHelpDays = new javax.swing.JButton();
         jButtonLoad = new javax.swing.JButton();
         jCheckBoxTray = new javax.swing.JCheckBox();
-        jCheckBoxMediaDB = new javax.swing.JCheckBox();
 
         setMinimumSize(getPreferredSize());
 
@@ -379,8 +370,6 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jCheckBoxTray.setText("Programme ins Tray minimieren");
 
-        jCheckBoxMediaDB.setText("Echtzeitsuche in der Mediensammlung");
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -393,7 +382,6 @@ public class PanelEinstellungen extends PanelVorlage {
                         .addGap(64, 64, 64))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBoxMediaDB)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -410,8 +398,6 @@ public class PanelEinstellungen extends PanelVorlage {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(jCheckBoxEchtzeit)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBoxMediaDB)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxTray)
                 .addGap(5, 5, 5)
@@ -456,7 +442,6 @@ public class PanelEinstellungen extends PanelVorlage {
     private javax.swing.JButton jButtonRefresh;
     private javax.swing.JButton jButtonSuchen;
     private javax.swing.JCheckBox jCheckBoxEchtzeit;
-    private javax.swing.JCheckBox jCheckBoxMediaDB;
     private javax.swing.JCheckBox jCheckBoxSuchen;
     private javax.swing.JCheckBox jCheckBoxTray;
     private javax.swing.JComboBox<String> jComboBoxIcons;

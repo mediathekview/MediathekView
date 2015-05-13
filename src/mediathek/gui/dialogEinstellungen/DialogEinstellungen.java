@@ -43,6 +43,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     public boolean ok = false;
     private PanelEinstellungen panelEinstellungen;
     private PanelDownload panelDownload;
+    private PanelMediaDB panelMediaDB;
     private PanelEinstellungenErweitert panelEinstellungenErweitert;
     private PanelEinstellungenGeo panelEinstellungenGeo;
     private PanelImport panelImport;
@@ -63,6 +64,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private final String NAME_einstellungen = "Einstellungen";
     private final String NAME_allgemeineEinstellungen = "Allgemein";
     private final String NAME_bandwidth = "Download";
+    private final String NAME_mediaDB = "Mediensammlung";
     private final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
     private final String NAME_allgemeineEinstellungenGeo = "Geo";
     private final String NAME_allgemeineEinstellungenImport = "Import";
@@ -94,6 +96,8 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     // ########### Programme ##############
     private final DefaultMutableTreeNode treeNodeDownload = new DefaultMutableTreeNode("Aufzeichnen und Abspielen");
     private final DefaultMutableTreeNode treeNodeBandwidth = new DefaultMutableTreeNode(NAME_bandwidth);
+    private final DefaultMutableTreeNode treeNodeMediaDB = new DefaultMutableTreeNode(NAME_mediaDB);
+
     private final DefaultMutableTreeNode treeNodeDateinamen = new DefaultMutableTreeNode(NAME_dateiname);
     private final DefaultMutableTreeNode treeNodeProgramme = new DefaultMutableTreeNode(NAME_programmset);
     private final DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmsetImportieren);
@@ -133,6 +137,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private void init() {
         panelEinstellungen = new PanelEinstellungen(ddaten, parentComponent);
         panelDownload = new PanelDownload(ddaten, parentComponent);
+        panelMediaDB = new PanelMediaDB(ddaten, parentComponent);
         panelEinstellungenErweitert = new PanelEinstellungenErweitert(ddaten, parentComponent);
         panelEinstellungenGeo = new PanelEinstellungenGeo(ddaten, parentComponent);
         panelImport = new PanelImport(ddaten, parentComponent);
@@ -170,6 +175,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         // ===============================================================================
         // ########### Programme ##############
         treeNodeDownload.add(treeNodeDateinamen);
+        treeNodeDownload.add(treeNodeMediaDB);
         treeNodeDownload.add(treeNodeBandwidth);
         treeNodeDownload.add(treeNodeProgramme);
         treeNodeDownload.add(treeNodeImportProgramme);
@@ -204,6 +210,10 @@ public class DialogEinstellungen extends javax.swing.JFrame {
                         case NAME_bandwidth:
                             jPanelExtra.removeAll();
                             jPanelExtra.add(panelDownload);
+                            break;
+                        case NAME_mediaDB:
+                            jPanelExtra.removeAll();
+                            jPanelExtra.add(panelMediaDB);
                             break;
                         case NAME_allgemeineEinstellungen:
                             jPanelExtra.removeAll();
