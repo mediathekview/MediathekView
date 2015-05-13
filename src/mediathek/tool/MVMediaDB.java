@@ -119,13 +119,11 @@ public class MVMediaDB {
         //wenn str leer dann false
         boolean ret = false;
         final String url = uurl.toLowerCase();
-        if (str.length != 0) {
-            for (String s : str) {
-                //Suffix prüfen
-                if (url.endsWith(s)) {
-                    ret = true;
-                    break;
-                }
+        for (String s : str) {
+            //Suffix prüfen
+            if (!s.isEmpty() && url.endsWith(s)) {
+                ret = true;
+                break;
             }
         }
         return ret;
