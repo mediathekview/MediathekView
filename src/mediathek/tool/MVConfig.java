@@ -33,7 +33,6 @@ public class MVConfig {
     public static final String SYSTEM = "system";
     // allgemein
     public static final String SYSTEM_ECHTZEITSUCHE = "Echtzeitsuche";
-    public static final String SYSTEM_ECHTZEITSUCHE_MEDIA_DB = "Echtzeitsuche-Mediensammlung";
     public static final String SYSTEM_USE_TRAY = "Tray-anzeigen";
     public static final String SYSTEM_LOOK = "System-look";
     public static final String SYSTEM_USER_AGENT_AUTO = "User-Agent-Auto";
@@ -51,12 +50,10 @@ public class MVConfig {
     public static final String SYSTEM_PLAYER_ABSPIELEN = "Player-zum-Abspielen";
     public static final String SYSTEM_GEO_MELDEN = "Geo-melden";
     public static final String SYSTEM_GEO_STANDORT = "Geo-Standort";
-    public static final String SYSTEM_PATH_MEDIA = "Pfade-Medien";
     // Fenstereinstellungen
     public static final String SYSTEM_GROESSE_GUI = "Groesse";
     public static final String SYSTEM_GROESSE_EINSTELLUNGEN = "Groesse-Einstellungen";
-    public static final String SYSTEM_GROESSE_MEDIA_DB = "Groesse-MediaDB";
-    
+
     public static final String SYSTEM_GROESSE_INFODIALOG = "Groesse-Infodialog";
     public static final String SYSTEM_DIVIDER_INFODIALOG = "Divider-Infodialog";
     public static final String SYSTEM_DIVIDER_INFODIALOG_MIN_MAX = "Divider-Infodialog-min-max";
@@ -67,7 +64,6 @@ public class MVConfig {
     public static final String SYSTEM_PANEL_FILME_DIVIDER = "system-panel-filme-divider";
     public static final String SYSTEM_FONT_SIZE = "system-font-size"; // -5 ... 0 .... 5
 
-    public static final String SYSTEM_DIALOG_MEDIA_DB_ANZEIGEN = "system-panel-mediaDb-anzeigen";
     public static final String SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN = "system-panel-beschreibung-anzeigen";
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_FILME = "Eigenschaften-Tabellen-Filme";
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS = "Eigenschaften-Tabellen-Downloads";
@@ -156,6 +152,12 @@ public class MVConfig {
     public static final String SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN = "Letzen-Pfad-anzeigen";
     // Abo
     public static final String SYSTEM_ABO_MIN_SIZE = "Abo-Mindestdauer-Minuten";
+    // MediaDB
+    public static final String SYSTEM_MEDIA_DB_DIALOG_GROESSE = "Media_DB_Dialog-Groesse";
+    public static final String SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN = "Media_DB_Dialog-anzeigen";
+    public static final String SYSTEM_MEDIA_DB_ECHTZEITSUCHE = "Media_DB_Echtzeitsuche";
+    public static final String SYSTEM_MEDIA_DB_PATH_MEDIA = "Media_DB_Pfade-Medien";
+    public static final String SYSTEM_MEDIA_DB_SUFFIX = "Media_DB_Suffix";
 
     private final HashMap<String, String> hashmap = new HashMap<>();
 

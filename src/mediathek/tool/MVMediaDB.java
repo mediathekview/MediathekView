@@ -31,6 +31,7 @@ public class MVMediaDB {
     public final ArrayList<String[]> fileArray = new ArrayList<>(); //name-path
     public final String FILE_TRENNER = "<>";
     private boolean makeIndex = false;
+    String[] suffix = {""};
 
     public MVMediaDB() {
     }
@@ -64,6 +65,10 @@ public class MVMediaDB {
 
     public synchronized void makeIndex() {
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIA_DB_START, MVMediaDB.class.getSimpleName());
+        suffix = Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX).split(",");
+        for (int i = 0; i < suffix.length; ++i) {
+            suffix[i] = suffix[i].toLowerCase();
+        }
         makeIndex = true;
         fileArray.clear();
         new Thread(new Index()).start();
@@ -74,7 +79,7 @@ public class MVMediaDB {
         @Override
         public synchronized void run() {
             try {
-                String db = Daten.mVConfig.get(MVConfig.SYSTEM_PATH_MEDIA);
+                String db = Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA);
                 if (!db.isEmpty()) {
                     for (String s : db.split(FILE_TRENNER)) {
                         File f = new File(s);
@@ -98,11 +103,32 @@ public class MVMediaDB {
                     if (file.isDirectory()) {
                         searchFile(file);
                     } else {
-                        fileArray.add(new String[]{file.getName(), file.getParent().intern()});
+                        if (!checkSuffix(suffix, file.getName())) {
+                            fileArray.add(new String[]{file.getName(), file.getParent().intern()});
+                        } else {
+                            System.out.println("geht nicht: " + file.getName());
+                        }
                     }
                 }
             }
         }
+    }
+
+    public static boolean checkSuffix(String[] str, String uurl) {
+        //prüfen ob url mit einem Argument in str endet
+        //wenn str leer dann false
+        boolean ret = false;
+        final String url = uurl.toLowerCase();
+        if (str.length != 0) {
+            for (String s : str) {
+                //Suffix prüfen
+                if (url.endsWith(s)) {
+                    ret = true;
+                    break;
+                }
+            }
+        }
+        return ret;
     }
 
 }

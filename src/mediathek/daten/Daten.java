@@ -256,7 +256,7 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_USE_REPLACETABLE, SystemInfo.isLinux() || SystemInfo.isMacOSX() ? Boolean.TRUE.toString() : Boolean.FALSE.toString()); // wegen des Problems mit ext. Programmaufrufen und Leerzeichen
         mVConfig.add(MVConfig.SYSTEM_ONLY_ASCII, Boolean.FALSE.toString());
         mVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE_MEDIA_DB, Boolean.TRUE.toString());
+        mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.FALSE.toString());
         mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.TRUE.toString());
@@ -282,6 +282,7 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_TAB_ABO_ICON_KLEIN, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_FONT_SIZE, "0");
         mVConfig.add(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE, "0");
+        mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX, "txt,xml");
         // UserAgent
         mVConfig.add(MVConfig.SYSTEM_USER_AGENT_AUTO, Boolean.TRUE.toString());
         try {
