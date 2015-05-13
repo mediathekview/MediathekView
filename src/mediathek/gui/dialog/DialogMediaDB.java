@@ -101,7 +101,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
         jButtonHelp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_MEDIA_DB)).setVisible(true);
+                new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_MEDIA_DB)).setVisible(true);
             }
         });
         jButtonSearch.addActionListener(new ActionListener() {
@@ -124,7 +124,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
             }
         };
 
-        GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_MEDIA_DB, this, parent);
+        GuiFunktionen.setSize(MVConfig.SYSTEM_MEDIA_DB_DIALOG_GROESSE, this, parent);
     }
 
     @Override
@@ -138,7 +138,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
     }
 
     public final void setVis() {
-        this.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_MEDIA_DB_ANZEIGEN)));
+        this.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
     }
 
     public void setFilter(String titel) {
@@ -164,7 +164,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
     }
 
     private void beenden() {
-        Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_MEDIA_DB_ANZEIGEN, Boolean.FALSE.toString());
+        Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.FALSE.toString());
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_DIALOG_MEDIA_DB, DialogMediaDB.class.getName());
         this.setVisible(false);
     }
@@ -317,7 +317,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
         private void tus() {
             Filter.checkPattern1(jTextFieldTitle);
-            if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE_MEDIA_DB))) {
+            if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE))) {
                 search();
             }
         }

@@ -318,7 +318,7 @@ public class MediathekGui extends JFrame {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_DIALOG_MEDIA_DB, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
-                jCheckBoxMenuItemMediaDb.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_MEDIA_DB_ANZEIGEN)));
+                jCheckBoxMenuItemMediaDb.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName()) {
@@ -949,11 +949,11 @@ public class MediathekGui extends JFrame {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName());
             }
         });
-        jCheckBoxMenuItemMediaDb.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_MEDIA_DB_ANZEIGEN)));
+        jCheckBoxMenuItemMediaDb.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
         jCheckBoxMenuItemMediaDb.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_MEDIA_DB_ANZEIGEN, String.valueOf(jCheckBoxMenuItemMediaDb.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, String.valueOf(jCheckBoxMenuItemMediaDb.isSelected()));
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_DIALOG_MEDIA_DB, MediathekGui.class.getSimpleName());
             }
         });
@@ -1159,7 +1159,7 @@ public class MediathekGui extends JFrame {
             mvDownloadInfo.getDividerLocation();
         }
         // MediaDB
-        GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_MEDIA_DB, daten.dialogMediaDB);
+        GuiFunktionen.getSize(MVConfig.SYSTEM_MEDIA_DB_DIALOG_GROESSE, daten.dialogMediaDB);
         
         Daten.mVConfig.add(MVConfig.SYSTEM_BREITE_MELDUNGEN, String.valueOf(splitPane.getDividerLocation()));
 

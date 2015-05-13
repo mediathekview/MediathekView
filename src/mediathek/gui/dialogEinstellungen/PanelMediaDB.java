@@ -26,9 +26,13 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
+import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
+import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.ListenerMediathekView;
@@ -55,6 +59,7 @@ public class PanelMediaDB extends PanelVorlage {
             @Override
             public void ping() {
                 // neue DB liegt vor
+                jLabelSizeIndex.setText(Daten.mVMediaDB.getSizeFileArray() + "");
                 setIndex(true);
             }
         });
@@ -65,12 +70,30 @@ public class PanelMediaDB extends PanelVorlage {
         progress.setMinimum(0);
         progress.setValue(0);
         jTablePath.setModel(modelPath);
-        jCheckBoxMediaDB.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE_MEDIA_DB)));
+        jTextFieldSuffix.setText(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX));
+        jTextFieldSuffix.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
+            }
+        });
+        jCheckBoxMediaDB.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE)));
         jCheckBoxMediaDB.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE_MEDIA_DB, Boolean.toString(jCheckBoxMediaDB.isSelected()));
+                Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE, Boolean.toString(jCheckBoxMediaDB.isSelected()));
             }
         });
 
@@ -78,6 +101,7 @@ public class PanelMediaDB extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                jLabelSizeIndex.setText("0");
                 Daten.mVMediaDB.makeIndex();
             }
         });
@@ -100,6 +124,13 @@ public class PanelMediaDB extends PanelVorlage {
             }
         }
         );
+        jButtonHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonHelp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DialogHilfe(daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_MEDIA_DB)).setVisible(true);
+            }
+        });
         setTablePath();
     }
 
@@ -113,7 +144,7 @@ public class PanelMediaDB extends PanelVorlage {
     }
 
     private void addPath() {
-        String db = Daten.mVConfig.get(MVConfig.SYSTEM_PATH_MEDIA);
+        String db = Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA);
         String add = jTextFieldPath.getText();
         if (add.isEmpty()) {
             return;
@@ -128,7 +159,7 @@ public class PanelMediaDB extends PanelVorlage {
         } else {
             db += Daten.mVMediaDB.FILE_TRENNER + add;
         }
-        Daten.mVConfig.add(MVConfig.SYSTEM_PATH_MEDIA, db);
+        Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA, db);
         setTablePath(); //neu aufbauen
     }
 
@@ -136,7 +167,7 @@ public class PanelMediaDB extends PanelVorlage {
         int row = jTablePath.getSelectedRow();
         if (row >= 0) {
             String p = jTablePath.getModel().getValueAt(jTablePath.convertRowIndexToModel(row), 0).toString();
-            String db = Daten.mVConfig.get(MVConfig.SYSTEM_PATH_MEDIA);
+            String db = Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA);
             String dbNew = "";
             if (db.isEmpty()) {
                 return;
@@ -147,7 +178,7 @@ public class PanelMediaDB extends PanelVorlage {
                 }
                 dbNew += dbNew.isEmpty() ? s : Daten.mVMediaDB.FILE_TRENNER + s;
             }
-            Daten.mVConfig.add(MVConfig.SYSTEM_PATH_MEDIA, dbNew);
+            Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA, dbNew);
             setTablePath(); //neu aufbauen
         } else {
             new HinweisKeineAuswahl().zeigen(daten.mediathekGui);
@@ -156,7 +187,7 @@ public class PanelMediaDB extends PanelVorlage {
 
     private synchronized void setTablePath() {
         // Tabelle mit den Pfaden bauen
-        String db = Daten.mVConfig.get(MVConfig.SYSTEM_PATH_MEDIA);
+        String db = Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA);
         modelPath.setRowCount(0);
         if (!db.isEmpty()) {
             for (String s : db.split(Daten.mVMediaDB.FILE_TRENNER)) {
@@ -181,6 +212,9 @@ public class PanelMediaDB extends PanelVorlage {
         jButtonAdd = new javax.swing.JButton();
         jButtonPath = new javax.swing.JButton();
         jCheckBoxMediaDB = new javax.swing.JCheckBox();
+        jLabel3 = new javax.swing.JLabel();
+        jTextFieldSuffix = new javax.swing.JTextField();
+        jButtonHelp = new javax.swing.JButton();
 
         setMinimumSize(getPreferredSize());
 
@@ -211,6 +245,12 @@ public class PanelMediaDB extends PanelVorlage {
 
         jCheckBoxMediaDB.setText("Echtzeitsuche in der Mediensammlung");
 
+        jLabel3.setText("Suffix ausnehmen ( z.B. txt,xml):");
+
+        jTextFieldSuffix.setText("txt,xml");
+
+        jButtonHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -218,20 +258,17 @@ public class PanelMediaDB extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 568, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jTextFieldPath)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonPath)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonAdd)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonRemove))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jCheckBoxMediaDB))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(jButtonRemove)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonHelp))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -239,7 +276,16 @@ public class PanelMediaDB extends PanelVorlage {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(progress, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonMakeIndex)))
+                        .addComponent(jButtonMakeIndex))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jCheckBoxMediaDB))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldSuffix)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -247,22 +293,29 @@ public class PanelMediaDB extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jCheckBoxMediaDB)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jTextFieldSuffix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabelSizeIndex)
-                    .addComponent(progress, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonMakeIndex))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextFieldPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonRemove)
-                    .addComponent(jButtonAdd)
-                    .addComponent(jButtonPath))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabelSizeIndex)
+                            .addComponent(progress, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonMakeIndex))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextFieldPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonRemove)
+                            .addComponent(jButtonAdd)
+                            .addComponent(jButtonPath)))
+                    .addComponent(jButtonHelp, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
 
@@ -273,16 +326,19 @@ public class PanelMediaDB extends PanelVorlage {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAdd;
+    private javax.swing.JButton jButtonHelp;
     private javax.swing.JButton jButtonMakeIndex;
     private javax.swing.JButton jButtonPath;
     private javax.swing.JButton jButtonRemove;
     private javax.swing.JCheckBox jCheckBoxMediaDB;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabelSizeIndex;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTablePath;
     private javax.swing.JTextField jTextFieldPath;
+    private javax.swing.JTextField jTextFieldSuffix;
     private javax.swing.JProgressBar progress;
     // End of variables declaration//GEN-END:variables
 

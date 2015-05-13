@@ -1,0 +1,12 @@
+
+Das Suchverhalten im "Dialog: Mediensammlung" kann hier
+geändert werden: "Suchen bei jeder Änderung im Feld Titel" oder 
+nur beim Klick auf "Suchen"
+
+"Suffix ausnehmen": Dateien mit einem dort angegebenen
+Suffix werden nicht in die Mediensammlung aufgenommen.
+Suffixe können durch "Komma" getrennt angegeben werden:
+
+"txt,xml" besagt, Dateien die mit ".txt" oder ".xml" enden
+werden nicht in die Mediensammlung aufgenommen.
+

@@ -1055,7 +1055,7 @@ public class GuiDownloads extends PanelVorlage {
             itemDb.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_MEDIA_DB_ANZEIGEN, Boolean.TRUE.toString());
+                    Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_DIALOG_MEDIA_DB, GuiDownloads.class.getSimpleName());
                     
                     int nr = tabelle.rowAtPoint(p);
