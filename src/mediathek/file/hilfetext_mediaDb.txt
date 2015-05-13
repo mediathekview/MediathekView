@@ -8,7 +8,7 @@ dass die eigenen Vorgaben für Dateinamen erfüllt
 sind.
 
 Das Suchverhalten ist in den Einstellungen konfigurierbar
-(Datei -> Einstellungen -> Allgemein):
+(Datei -> Einstellungen -> Mediensammlung):
 "Suchen bei jeder Änderung im Feld Titel" oder 
 nur beim Klick auf "Suchen"
 
