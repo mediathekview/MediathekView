@@ -3,10 +3,17 @@ Das Suchverhalten im "Dialog: Mediensammlung" kann hier
 geändert werden: "Suchen bei jeder Änderung im Feld Titel" oder 
 nur beim Klick auf "Suchen"
 
-"Suffix ausnehmen": Dateien mit einem dort angegebenen
-Suffix werden nicht in die Mediensammlung aufgenommen.
+"Keine Dateien mit diesem Suffix": Dateien mit einem dort
+angegebenen Suffix werden nicht in die Mediensammlung aufgenommen.
+
+"Nur Dateien mit diesem Suffix": Da werden dann geneu die Dateien
+genommen, auf die das zutrifft.
+
 Suffixe können durch "Komma" getrennt angegeben werden:
 
 "txt,xml" besagt, Dateien die mit ".txt" oder ".xml" enden
-werden nicht in die Mediensammlung aufgenommen.
+werden nicht - oder nur diese werden - in die Mediensammlung 
+aufgenommen.
 
+Mit "Export Index" kann man die Liste aller Dateien in
+der Mediensammlung in eine Datei schreiben.
