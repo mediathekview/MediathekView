@@ -20,18 +20,23 @@
 package mediathek.tool;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import static mediathek.tool.Filter.makePattern;
+import msearch.tool.MSConst;
+import msearch.tool.MSLog;
 
 public class MVMediaDB {
 
     public final ArrayList<String[]> fileArray = new ArrayList<>(); //name-path
     public final String FILE_TRENNER = "<>";
     private boolean makeIndex = false;
-    String[] suffix = {""};
+    private String[] suffix = {""};
+    private boolean ohneSuffix = true;
 
     public MVMediaDB() {
     }
@@ -72,6 +77,8 @@ public class MVMediaDB {
                 suffix[i] = "." + suffix[i];
             }
         }
+        ohneSuffix = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE));
+
         makeIndex = true;
         fileArray.clear();
         new Thread(new Index()).start();
@@ -106,7 +113,7 @@ public class MVMediaDB {
                     if (file.isDirectory()) {
                         searchFile(file);
                     } else {
-                        if (!checkSuffix(suffix, file.getName())) {
+                        if (checkSuffix(suffix, file.getName())) {
                             fileArray.add(new String[]{file.getName(), file.getParent().intern()});
 //                        } else {
 //                            System.out.println("geht nicht: " + file.getName());
@@ -117,19 +124,62 @@ public class MVMediaDB {
         }
     }
 
-    public static boolean checkSuffix(String[] str, String uurl) {
-        //prüfen ob url mit einem Argument in str endet
-        //wenn str leer dann false
-        boolean ret = false;
+    private boolean checkSuffix(String[] str, String uurl) {
+        // liefert TRUE wenn die Datei in die Mediensammlung kommt
+        // prüfen ob url mit einem Argument in str endet
+        // wenn str leer dann true
+        if (str.length == 1 && str[0].isEmpty()) {
+            return true;
+        }
+
+        boolean ret = true;
         final String url = uurl.toLowerCase();
         for (String s : str) {
             //Suffix prüfen
-            if (!s.isEmpty() && url.endsWith(s)) {
-                ret = true;
-                break;
+            if (ohneSuffix) {
+                if (url.endsWith(s)) {
+                    ret = false;
+                    break;
+                }
+            } else {
+                ret = false;
+                if (url.endsWith(s)) {
+                    ret = true;
+                    break;
+                }
             }
         }
         return ret;
+    }
+
+    public synchronized void writeFileArray(String datei) {
+        OutputStreamWriter out = null;
+        try {
+            MSLog.systemMeldung("MediaDB schreiben (" + fileArray.size() + " Dateien) :");
+            File file = new File(datei);
+            File dir = new File(file.getParent());
+            if (!dir.exists()) {
+                if (!dir.mkdirs()) {
+                    MSLog.fehlerMeldung(945120365, "Kann den Pfad nicht anlegen: " + dir.toString());
+                }
+            }
+            MSLog.systemMeldung("   --> Start Schreiben nach: " + datei);
+            out = new OutputStreamWriter(new FileOutputStream(datei), MSConst.KODIERUNG_UTF);
+
+            for (String[] s : fileArray) {
+                out.write(s[0] + "\n");
+            }
+            MSLog.systemMeldung("   --> geschrieben!");
+        } catch (Exception ex) {
+            MSLog.fehlerMeldung(102035478, ex, "nach: " + datei);
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (Exception e) {
+            }
+        }
     }
 
 }

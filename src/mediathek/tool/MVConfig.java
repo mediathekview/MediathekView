@@ -158,6 +158,8 @@ public class MVConfig {
     public static final String SYSTEM_MEDIA_DB_ECHTZEITSUCHE = "Media_DB_Echtzeitsuche";
     public static final String SYSTEM_MEDIA_DB_PATH_MEDIA = "Media_DB_Pfade-Medien";
     public static final String SYSTEM_MEDIA_DB_SUFFIX = "Media_DB_Suffix";
+    public static final String SYSTEM_MEDIA_DB_SUFFIX_OHNE = "Media_DB_ohne-Suffix";
+    public static final String SYSTEM_MEDIA_DB_EXPORT_DATEI = "Media_DB_export-datei";
 
     private final HashMap<String, String> hashmap = new HashMap<>();
 
