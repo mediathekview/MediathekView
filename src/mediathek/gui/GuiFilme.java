@@ -1355,7 +1355,7 @@ public class GuiFilme extends PanelVorlage {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_DIALOG_MEDIA_DB, GuiFilme.class.getSimpleName());
+                        daten.dialogMediaDB.setVis();
                         daten.dialogMediaDB.setFilter(film.arr[DatenFilm.FILM_TITEL_NR]);
                     }
                 });
