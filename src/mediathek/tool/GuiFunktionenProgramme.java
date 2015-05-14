@@ -40,9 +40,7 @@ import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialog.DialogHilfe;
-import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.DialogImportPset;
-import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import msearch.tool.MSConst;
 
 public class GuiFunktionenProgramme extends GuiFunktionen {

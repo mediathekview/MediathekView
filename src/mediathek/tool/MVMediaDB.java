@@ -68,6 +68,9 @@ public class MVMediaDB {
         suffix = Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX).split(",");
         for (int i = 0; i < suffix.length; ++i) {
             suffix[i] = suffix[i].toLowerCase();
+            if (!suffix[i].startsWith(".")) {
+                suffix[i] = "." + suffix[i];
+            }
         }
         makeIndex = true;
         fileArray.clear();
@@ -105,8 +108,8 @@ public class MVMediaDB {
                     } else {
                         if (!checkSuffix(suffix, file.getName())) {
                             fileArray.add(new String[]{file.getName(), file.getParent().intern()});
-                        } else {
-                            System.out.println("geht nicht: " + file.getName());
+//                        } else {
+//                            System.out.println("geht nicht: " + file.getName());
                         }
                     }
                 }
