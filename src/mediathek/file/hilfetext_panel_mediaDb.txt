@@ -6,7 +6,7 @@ nur beim Klick auf "Suchen"
 "Keine Dateien mit diesem Suffix": Dateien mit einem dort
 angegebenen Suffix werden nicht in die Mediensammlung aufgenommen.
 
-"Nur Dateien mit diesem Suffix": Da werden dann geneu die Dateien
+"Nur Dateien mit diesem Suffix": Da werden dann genau die Dateien
 genommen, auf die das zutrifft.
 
 Suffixe können durch "Komma" getrennt angegeben werden:

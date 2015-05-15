@@ -32,7 +32,7 @@ import msearch.tool.MSLog;
 
 public class MVMediaDB {
 
-    public final ArrayList<String[]> fileArray = new ArrayList<>(); //name-path
+    private final ArrayList<String[]> fileArray = new ArrayList<>(); //name-path
     public final String FILE_TRENNER = "<>";
     private boolean makeIndex = false;
     private String[] suffix = {""};
@@ -45,7 +45,14 @@ public class MVMediaDB {
         return fileArray.size();
     }
 
-    public synchronized void search(TModel modelFilm, String title) {
+    public synchronized void getModelMediaDB(TModel modelMediaDB) {
+        modelMediaDB.setRowCount(0);
+        for (String[] s : fileArray) {
+            modelMediaDB.addRow(s);
+        }
+    }
+
+    public synchronized void searchFiles(TModel modelFilm, String title) {
 
         modelFilm.setRowCount(0);
         if (!makeIndex && !title.isEmpty()) {
@@ -73,7 +80,7 @@ public class MVMediaDB {
         suffix = Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX).split(",");
         for (int i = 0; i < suffix.length; ++i) {
             suffix[i] = suffix[i].toLowerCase();
-            if (!suffix[i].startsWith(".")) {
+            if (!suffix[i].isEmpty() && !suffix[i].startsWith(".")) {
                 suffix[i] = "." + suffix[i];
             }
         }
