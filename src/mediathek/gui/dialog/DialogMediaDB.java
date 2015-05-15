@@ -19,7 +19,6 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -85,7 +84,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
             
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVMediaDB.search(modelFilm, jTextFieldTitle.getText());
+                Daten.mVMediaDB.searchFiles(modelFilm, jTextFieldTitle.getText());
             }
         });
         jTextFieldTitle.getDocument().addDocumentListener(new BeobDoc());
@@ -151,7 +150,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
     }
     
     private void search() {
-        Daten.mVMediaDB.search(modelFilm, jTextFieldTitle.getText());
+        Daten.mVMediaDB.searchFiles(modelFilm, jTextFieldTitle.getText());
         jLabelSizeFound.setText(modelFilm.getRowCount() + "");
     }
     
@@ -212,7 +211,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
         jLabelSizeFound.setText("0");
 
-        jLabel4.setText("Filme gesamt:");
+        jLabel4.setText("Anzahl Medien gesamt:");
 
         jButtonIndex.setText("Index neu aufbauen");
 
