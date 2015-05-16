@@ -35,7 +35,6 @@ public class ListePset extends LinkedList<DatenPset> {
     // Liste aller Programmsets
 
     public static final String MUSTER_PFAD_ZIEL = "ZIELPFAD";
-    public static final String MUSTER_PFAD_MPLAYER = "PFAD_MPLAYER";
     public static final String MUSTER_PFAD_VLC = "PFAD_VLC";
     public static final String MUSTER_PFAD_FLV = "PFAD_FLVSTREAMER";
     public static final String MUSTER_PFAD_FFMPEG = "PFAD_FFMPEG";
@@ -189,19 +188,11 @@ public class ListePset extends LinkedList<DatenPset> {
 
     private static boolean progMusterErsetzen(JFrame parent, DatenPset pSet) {
         pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace(MUSTER_PFAD_ZIEL, GuiFunktionen.getStandardDownloadPath());
-        String mplayer = "";
         String vlc = "";
         String flvstreamer = "";
         String ffmpeg = "";
         String skript = GuiFunktionenProgramme.getPfadScript();
         // damit nur die Variablen abgefragt werden, die auch verwendet werden
-        for (int p = 0; p < pSet.getListeProg().size(); ++p) {
-            DatenProg prog = pSet.getProg(p);
-            if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(MUSTER_PFAD_MPLAYER) || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains(MUSTER_PFAD_MPLAYER)) {
-                mplayer = getPfadMplayer(parent);
-                break;
-            }
-        }
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
             if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(MUSTER_PFAD_VLC) || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains(MUSTER_PFAD_VLC)) {
@@ -225,11 +216,6 @@ public class ListePset extends LinkedList<DatenPset> {
         }
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
-            // mplayer
-            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]
-                    = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_MPLAYER, Matcher.quoteReplacement(mplayer));
-            prog.arr[DatenProg.PROGRAMM_SCHALTER_NR]
-                    = prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_MPLAYER, Matcher.quoteReplacement(mplayer));
             // VLC
             prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]
                     = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_VLC, Matcher.quoteReplacement(vlc));
@@ -254,18 +240,10 @@ public class ListePset extends LinkedList<DatenPset> {
         return true;
     }
 
-    private static String getPfadMplayer(JFrame parent) {
-        // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
-        if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_MPLAYER).equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(parent, false /* vlc */, false /* flvstreamer */, true /* mplayer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
-        }
-        return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_MPLAYER);
-    }
-
     private static String getPfadVlc(JFrame parent) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
         if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_VLC).equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(parent, true /* vlc */, false /* flvstreamer */, false /* mplayer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
+            new DialogOk(null, true, new PanelProgrammPfade(parent, true /* vlc */, false /* flvstreamer */,  false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
         return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_VLC);
     }
@@ -273,7 +251,7 @@ public class ListePset extends LinkedList<DatenPset> {
     private static String getPfadFlv(JFrame parent) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
         if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FLVSTREAMER).equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(parent, false /* vlc */, true /* flvstreamer */, false /* mplayer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
+            new DialogOk(null, true, new PanelProgrammPfade(parent, false /* vlc */, true /* flvstreamer */,  false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
         return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FLVSTREAMER);
     }
@@ -281,7 +259,7 @@ public class ListePset extends LinkedList<DatenPset> {
     private static String getPfadFFmpeg(JFrame parent) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
         if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FFMPEG).equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(parent, false /* vlc */, false /* flvstreamer */, false /* mplayer */, true /*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
+            new DialogOk(null, true, new PanelProgrammPfade(parent, false /* vlc */, false /* flvstreamer */,  true /*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
         return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FFMPEG);
     }

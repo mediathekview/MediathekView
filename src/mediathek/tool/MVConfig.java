@@ -131,7 +131,6 @@ public class MVConfig {
     public static final String SYSTEM_PFAD_VLC = "pfad-vlc";
     public static final String SYSTEM_PFAD_FLVSTREAMER = "pfad-flvstreamer";
     public static final String SYSTEM_PFAD_FFMPEG = "pfad-ffmpeg";
-    public static final String SYSTEM_PFAD_MPLAYER = "pfad-mplayer";
     public static final String SYSTEM_VERSION_PROGRAMMSET = "Version-Programmset";
     // Blacklist
     public static final String SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN = "Blacklist-Zukunft-nicht-anzeigen";

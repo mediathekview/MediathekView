@@ -264,7 +264,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
                     .addComponent(jLabel4)
                     .addComponent(jLabelSum))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
@@ -277,7 +277,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonSearch, jTextFieldTitle});
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHelp, jButtonSearch, jTextFieldTitle});
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

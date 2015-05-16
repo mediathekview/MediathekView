@@ -45,7 +45,7 @@ import msearch.tool.MSConst;
 
 public class GuiFunktionenProgramme extends GuiFunktionen {
 
-    private static ArrayList<String> winPfade = new ArrayList<>();
+    private static final ArrayList<String> winPfade = new ArrayList<>();
 
     private static void setWinProgPade() {
         String pfad;
@@ -67,35 +67,6 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 winPfade.add(s);
             }
         }
-    }
-
-    public static String getMusterPfadMplayer() {
-        // liefert den Standardpfad für das entsprechende BS 
-        // Programm muss auf dem Rechner instelliert sein
-        final String PFAD_LINUX = "/usr/bin/mplayer";
-        final String PFAD_MAC = "/opt/local/bin/mplayer";
-        final String PFAD_WIN = "\\SMPlayer\\mplayer\\mplayer.exe";
-        String pfad = "";
-        switch (getOs()) {
-            case LINUX:
-                pfad = PFAD_LINUX;
-                break;
-            case MAC:
-                pfad = PFAD_MAC;
-                break;
-            default:
-                setWinProgPade();
-                for (String s : winPfade) {
-                    pfad = s + PFAD_WIN;
-                    if (new File(pfad).exists()) {
-                        break;
-                    }
-                }
-        }
-        if (!new File(pfad).exists()) {
-            pfad = "";
-        }
-        return pfad;
     }
 
     public static String getMusterPfadVlc() {
@@ -251,7 +222,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
     private static boolean addOnZip(String datei) {
         String zielPfad = addsPfad(getPathJar(), "bin");
         File zipFile;
-        int timeout = 10000; //10 Sekunden
+        int timeout = 10_000; //10 Sekunden
         int n;
         URLConnection conn;
         try {
@@ -285,28 +256,28 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
 
                     File tmpFile = File.createTempFile("mediathek", null);
                     tmpFile.deleteOnExit();
-                    BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
-                    FileOutputStream fOut = new FileOutputStream(tmpFile);
-                    final byte[] buffer = new byte[1024];
-                    while ((n = in.read(buffer)) != -1) {
-                        fOut.write(buffer, 0, n);
+                    try (BufferedInputStream in = new BufferedInputStream(conn.getInputStream())) {
+                        FileOutputStream fOut = new FileOutputStream(tmpFile);
+                        final byte[] buffer = new byte[1024];
+                        while ((n = in.read(buffer)) != -1) {
+                            fOut.write(buffer, 0, n);
+                        }
+                        fOut.close();
                     }
-                    fOut.close();
-                    in.close();
                     if (!entpacken(tmpFile, new File(zielPfad))) {
                         // und Tschüss
                         return false;
                     }
 
                 } else {
-                    BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
-                    FileOutputStream fOut = new FileOutputStream(GuiFunktionen.addsPfad(zielPfad, datei));
-                    final byte[] buffer = new byte[1024];
-                    while ((n = in.read(buffer)) != -1) {
-                        fOut.write(buffer, 0, n);
+                    try (BufferedInputStream in = new BufferedInputStream(conn.getInputStream())) {
+                        FileOutputStream fOut = new FileOutputStream(GuiFunktionen.addsPfad(zielPfad, datei));
+                        final byte[] buffer = new byte[1024];
+                        while ((n = in.read(buffer)) != -1) {
+                            fOut.write(buffer, 0, n);
+                        }
+                        fOut.close();
                     }
-                    fOut.close();
-                    in.close();
                 }
             }
         } catch (Exception ignored) {
@@ -335,18 +306,15 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             }
 
             if (!entry.isDirectory()) {
-                BufferedOutputStream bos = new BufferedOutputStream(
-                        new FileOutputStream(new File(destDir, entryFileName)));
-
-                BufferedInputStream bis = new BufferedInputStream(zipFile
-                        .getInputStream(entry));
-
-                while ((len = bis.read(buffer)) > 0) {
-                    bos.write(buffer, 0, len);
+                BufferedInputStream bis;
+                try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(new File(destDir, entryFileName)))) {
+                    bis = new BufferedInputStream(zipFile
+                            .getInputStream(entry));
+                    while ((len = bis.read(buffer)) > 0) {
+                        bos.write(buffer, 0, len);
+                    }
+                    bos.flush();
                 }
-
-                bos.flush();
-                bos.close();
                 bis.close();
             }
         }

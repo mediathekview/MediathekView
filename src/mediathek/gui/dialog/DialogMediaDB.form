@@ -77,7 +77,7 @@
                       <Component id="jTextFieldTitle" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonSearch" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="jButtonHelp" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonHelp" linkSize="2" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -85,7 +85,7 @@
                   <Component id="jLabelSum" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane3" max="32767" attributes="0"/>
+              <Component id="jScrollPane3" pref="421" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
