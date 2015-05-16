@@ -39,7 +39,6 @@ public class Konstanten {
     public static final String ADRESSE_FORUM = "http://zdfmediathk.sourceforge.net/forum/";
     public static final String ADRESSE_DONATION = "http://zdfmediathk.sourceforge.net/index.html#donate";
     // ProgrammUrls
-    public static final String ADRESSE_WEBSITE_MPLAYER = "http://sourceforge.net/projects/smplayer";
     public static final String ADRESSE_WEBSITE_VLC = "http://www.videolan.org";
     public static final String ADRESSE_WEBSITE_FLVSTREAMER = "https://savannah.nongnu.org/projects/flvstreamer";
     public static final String ADRESSE_WEBSITE_FFMPEG = "http://ffmpeg.org";
