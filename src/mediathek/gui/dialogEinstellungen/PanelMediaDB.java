@@ -36,16 +36,18 @@ import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
+import mediathek.tool.CellRendererMediaDB;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
+import mediathek.tool.MVMediaDB;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModel;
 
 public class PanelMediaDB extends PanelVorlage {
 
     private final TModel modelPath = new TModel(new Object[][]{}, new String[]{"Pfad"});
-    private final TModel modelMediaDB = new TModel(new Object[][]{}, new String[]{"Name", "Pfad"});
+    private final TModel modelFilm = MVMediaDB.getModel();
 
     public PanelMediaDB(Daten d, JFrame parent) {
         super(d, parent);
@@ -57,7 +59,7 @@ public class PanelMediaDB extends PanelVorlage {
             public void ping() {
                 // neue DB suchen
                 setIndex(false);
-                modelMediaDB.setRowCount(0);
+                modelFilm.setRowCount(0);
                 jToggleButtonLoad.setSelected(false);
             }
         });
@@ -75,7 +77,10 @@ public class PanelMediaDB extends PanelVorlage {
         progress.setMinimum(0);
         progress.setValue(0);
         jTablePath.setModel(modelPath);
-        jTableMediaDB.setModel(modelMediaDB);
+
+        final CellRendererMediaDB cellRenderer = new CellRendererMediaDB();
+        jTableMediaDB.setDefaultRenderer(Object.class, cellRenderer);
+        jTableMediaDB.setModel(modelFilm);
         jTextFieldSuffix.setText(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX));
         jTextFieldSuffix.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -164,9 +169,9 @@ public class PanelMediaDB extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (jToggleButtonLoad.isSelected()) {
-                    Daten.mVMediaDB.getModelMediaDB(modelMediaDB);
+                    Daten.mVMediaDB.getModelMediaDB(modelFilm);
                 } else {
-                    modelMediaDB.setRowCount(0);
+                    modelFilm.setRowCount(0);
                 }
             }
         });

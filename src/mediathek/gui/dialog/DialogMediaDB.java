@@ -19,31 +19,44 @@
  */
 package mediathek.gui.dialog;
 
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import javax.swing.JFrame;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.res.GetIcon;
+import mediathek.tool.CellRendererMediaDB;
+import mediathek.tool.DirOpenAction;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.FilenameUtils;
 import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
+import mediathek.tool.MVMediaDB;
+import mediathek.tool.MVMessageDialog;
+import mediathek.tool.OpenPlayerAction;
 import mediathek.tool.TModel;
 
 public class DialogMediaDB extends javax.swing.JDialog {
-    
-    private final TModel modelFilm = new TModel(new Object[][]{}, new String[]{"Name", "Pfad"});
+
+    private final TModel modelFilm = MVMediaDB.getModel();
     private final JFrame parent;
     private boolean init = false;
-    
+
     public DialogMediaDB(JFrame pparent) {
         super(pparent, false);
         initComponents();
@@ -72,31 +85,34 @@ public class DialogMediaDB extends javax.swing.JDialog {
                 search();
             }
         });
+        final CellRendererMediaDB cellRenderer = new CellRendererMediaDB();
+        jTableFilm.setDefaultRenderer(Object.class, cellRenderer);
         jTableFilm.setModel(modelFilm);
-        
+        jTableFilm.addMouseListener(new BeobMausTabelle());
+
         progress.setVisible(false);
         progress.setIndeterminate(true);
         progress.setMaximum(0);
         progress.setMinimum(0);
         progress.setValue(0);
-        
+
         jTextFieldTitle.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.mVMediaDB.searchFiles(modelFilm, jTextFieldTitle.getText());
             }
         });
         jTextFieldTitle.getDocument().addDocumentListener(new BeobDoc());
-        
+
         jButtonIndex.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.mVMediaDB.makeIndex();
             }
         });
-        
+
         jButtonHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHelp.addActionListener(new ActionListener() {
             @Override
@@ -105,7 +121,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
             }
         });
         jButtonSearch.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 search();
@@ -125,7 +141,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
         };
         GuiFunktionen.setSize(MVConfig.SYSTEM_MEDIA_DB_DIALOG_GROESSE, this, parent);
     }
-    
+
     @Override
     public void setVisible(boolean vis) {
         super.setVisible(vis);
@@ -138,29 +154,82 @@ public class DialogMediaDB extends javax.swing.JDialog {
             init = true;
         }
     }
-    
+
     public final void setVis() {
         this.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_DIALOG_MEDIA_DB, DialogMediaDB.class.getName());
     }
-    
+
     public void setFilter(String titel) {
         titel = FilenameUtils.replaceLeerDateiname(titel); // mit den eingestellten Ersetzungen bearbeiten
         jTextFieldTitle.setText(titel);
     }
-    
+
     private void search() {
         Daten.mVMediaDB.searchFiles(modelFilm, jTextFieldTitle.getText());
         jLabelSizeFound.setText(modelFilm.getRowCount() + "");
     }
-    
+
     private void setIndex(boolean noIndex) {
         progress.setVisible(!noIndex);
         jTextFieldTitle.setEnabled(noIndex);
         jButtonSearch.setEnabled(noIndex);
         jButtonIndex.setEnabled(noIndex);
     }
-    
+
+    private void zielordnerOeffnen() {
+        int row = jTableFilm.getSelectedRow();
+        if (row >= 0) {
+            String s = (String) jTableFilm.getModel().getValueAt(jTableFilm.convertRowIndexToModel(row), MVMediaDB.MEDIA_DB_PATH_NR);
+            DirOpenAction.zielordnerOeffnen(parent, s);
+        } else {
+            new HinweisKeineAuswahl().zeigen(parent);
+        }
+    }
+
+    private void filmAbspielen_() {
+        int row = jTableFilm.getSelectedRow();
+        if (row >= 0) {
+            String file = (String) jTableFilm.getModel().getValueAt(jTableFilm.convertRowIndexToModel(row), MVMediaDB.MEDIA_DB_NAME_NR);
+            String path = (String) jTableFilm.getModel().getValueAt(jTableFilm.convertRowIndexToModel(row), MVMediaDB.MEDIA_DB_PATH_NR);
+            OpenPlayerAction.filmAbspielen(parent, path + File.separator + file);
+        } else {
+            new HinweisKeineAuswahl().zeigen(parent);
+        }
+    }
+
+    private void filmLoeschen_() {
+        String del = "";
+        int row = jTableFilm.getSelectedRow();
+        if (row < 0) {
+            new HinweisKeineAuswahl().zeigen(parent);
+            return;
+        }
+        try {
+            String file = (String) jTableFilm.getModel().getValueAt(jTableFilm.convertRowIndexToModel(row), MVMediaDB.MEDIA_DB_NAME_NR);
+            String path = (String) jTableFilm.getModel().getValueAt(jTableFilm.convertRowIndexToModel(row), MVMediaDB.MEDIA_DB_PATH_NR);
+            del = path + File.separator + file;
+            File delFile = new File(del);
+            if (!delFile.exists()) {
+                MVMessageDialog.showMessageDialog(parent, "Die Datei existiert nicht!", "Film löschen", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int ret = JOptionPane.showConfirmDialog(parent, delFile.getAbsolutePath(), "Film Löschen?", JOptionPane.YES_NO_OPTION);
+            if (ret != JOptionPane.OK_OPTION) {
+                return;
+            }
+
+            // und jetzt die Datei löschen
+            Log.systemMeldung(new String[]{"Datei löschen: ", delFile.getAbsolutePath()});
+            if (!delFile.delete()) {
+                throw new Exception();
+            }
+        } catch (Exception ex) {
+            MVMessageDialog.showMessageDialog(parent, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
+            Log.fehlerMeldung(984512036, "Fehler beim löschen: " + del);
+        }
+    }
+
     private void beenden() {
         Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.FALSE.toString());
         setVis();
@@ -298,25 +367,25 @@ public class DialogMediaDB extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private class BeobDoc implements DocumentListener {
-        
+
         @Override
         public void insertUpdate(DocumentEvent e
         ) {
             tus();
         }
-        
+
         @Override
         public void removeUpdate(DocumentEvent e
         ) {
             tus();
         }
-        
+
         @Override
         public void changedUpdate(DocumentEvent e
         ) {
             tus();
         }
-        
+
         private void tus() {
             Filter.checkPattern1(jTextFieldTitle);
             if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE))) {
@@ -324,5 +393,71 @@ public class DialogMediaDB extends javax.swing.JDialog {
             }
         }
     }
-    
+
+    public class BeobMausTabelle extends MouseAdapter {
+
+        private Point p;
+
+        @Override
+        public void mousePressed(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        private void showMenu(MouseEvent evt) {
+            p = evt.getPoint();
+            int nr = jTableFilm.rowAtPoint(p);
+            if (nr >= 0) {
+                jTableFilm.setRowSelectionInterval(nr, nr);
+            }
+            JPopupMenu jPopupMenu = new JPopupMenu();
+
+            // Film abspielen
+            JMenuItem itemPlayerDownload = new JMenuItem("gespeicherten Film (Datei) abspielen");
+            itemPlayerDownload.setIcon(GetIcon.getProgramIcon("film_start_16.png"));
+            itemPlayerDownload.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    filmAbspielen_();
+                }
+            });
+            jPopupMenu.add(itemPlayerDownload);
+
+            // Film löschen
+            JMenuItem itemDeleteDownload = new JMenuItem("gespeicherten Film (Datei) löschen");
+            itemDeleteDownload.setIcon(GetIcon.getProgramIcon("film_del_16.png"));
+            itemDeleteDownload.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    filmLoeschen_();
+                }
+            });
+            jPopupMenu.add(itemDeleteDownload);
+
+            // Zielordner öffnen
+            JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
+            itemOeffnen.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+            jPopupMenu.add(itemOeffnen);
+            itemOeffnen.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    zielordnerOeffnen();
+                }
+            });
+
+            // ######################
+            // Menü anzeigen
+            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+
+    }
+
 }

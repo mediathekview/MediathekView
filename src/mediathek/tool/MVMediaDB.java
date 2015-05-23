@@ -32,11 +32,21 @@ import msearch.tool.MSLog;
 
 public class MVMediaDB {
 
-    private final ArrayList<String[]> fileArray = new ArrayList<>(); //name-path
+    private final ArrayList<String[]> fileArray = new ArrayList<>(); //name-path-size
     public final String FILE_TRENNER = "<>";
     private boolean makeIndex = false;
     private String[] suffix = {""};
     private boolean ohneSuffix = true;
+    public static String MEDIA_DB_NAME = "Name";
+    public static int MEDIA_DB_NAME_NR = 0;
+    public static String MEDIA_DB_PATH = "Pfad";
+    public static int MEDIA_DB_PATH_NR = 1;
+    public static String MEDIA_DB_SIZE = "Größe [MB]";
+    public static int MEDIA_DB_SIZE_NR = 2;
+
+    public static TModel getModel() {
+        return new TModel(new Object[][]{}, new String[]{MEDIA_DB_NAME, MEDIA_DB_PATH, MEDIA_DB_SIZE});
+    }
 
     public MVMediaDB() {
     }
@@ -60,14 +70,14 @@ public class MVMediaDB {
             if (p != null) {
                 // dann mit RegEx prüfen
                 for (String[] s : fileArray) {
-                    if (p.matcher(s[1]).matches()) {
+                    if (p.matcher(s[MEDIA_DB_NAME_NR]).matches()) {
                         modelFilm.addRow(s);
                     }
                 }
             } else {
                 title = title.toLowerCase();
                 for (String[] s : fileArray) {
-                    if (s[0].toLowerCase().contains(title)) {
+                    if (s[MEDIA_DB_NAME_NR].toLowerCase().contains(title)) {
                         modelFilm.addRow(s);
                     }
                 }
@@ -121,14 +131,26 @@ public class MVMediaDB {
                         searchFile(file);
                     } else {
                         if (checkSuffix(suffix, file.getName())) {
-                            fileArray.add(new String[]{file.getName(), file.getParent().intern()});
-//                        } else {
-//                            System.out.println("geht nicht: " + file.getName());
+                            fileArray.add(getItem(file.getName(), file.getParent().intern(), getGroesse(file.length())));
                         }
                     }
                 }
             }
         }
+    }
+    private String[] getItem(String name, String path, String size) {
+        return new String[]{name, path, size};
+    }
+
+    private String getGroesse(long l) {
+        String ret = "";
+        if (l > 1000 * 1000) {
+            // größer als 1MB sonst kann ich mirs sparen
+            ret = String.valueOf(l / (1000 * 1000));
+        } else if (l > 0) {
+            ret = "1";
+        }
+        return ret;
     }
 
     private boolean checkSuffix(String[] str, String uurl) {
@@ -174,7 +196,7 @@ public class MVMediaDB {
             out = new OutputStreamWriter(new FileOutputStream(datei), MSConst.KODIERUNG_UTF);
 
             for (String[] s : fileArray) {
-                out.write(s[0] + "\n");
+                out.write(s[MEDIA_DB_NAME_NR] + "\n");
             }
             MSLog.systemMeldung("   --> geschrieben!");
         } catch (Exception ex) {
