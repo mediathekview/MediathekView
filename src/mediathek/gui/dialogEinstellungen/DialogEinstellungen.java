@@ -165,6 +165,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenGeo);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenImport);
         treeNodeEinstellungen.add(treeNodeAllgemeineEinstellungenColor);
+        treeNodeEinstellungen.add(treeNodeMediaDB);
         treeNodeStart.add(treeNodeEinstellungen);
         // ===============================================================================
         // ######## Filme ###############
@@ -175,7 +176,6 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         // ===============================================================================
         // ########### Programme ##############
         treeNodeDownload.add(treeNodeDateinamen);
-        treeNodeDownload.add(treeNodeMediaDB);
         treeNodeDownload.add(treeNodeBandwidth);
         treeNodeDownload.add(treeNodeProgramme);
         treeNodeDownload.add(treeNodeImportProgramme);

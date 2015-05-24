@@ -287,10 +287,6 @@ public class PanelMediaDB extends PanelVorlage {
         jButtonPath = new javax.swing.JButton();
         jButtonAdd = new javax.swing.JButton();
         jButtonRemove = new javax.swing.JButton();
-        jPanel5 = new javax.swing.JPanel();
-        jToggleButtonLoad = new javax.swing.JToggleButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTableMediaDB = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jCheckBoxMediaDB = new javax.swing.JCheckBox();
@@ -305,6 +301,10 @@ public class PanelMediaDB extends PanelVorlage {
         jTextFieldExportPath = new javax.swing.JTextField();
         jButtonExportPath = new javax.swing.JButton();
         jButtonExport = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
+        jToggleButtonLoad = new javax.swing.JToggleButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTableMediaDB = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
         jLabelSizeIndex = new javax.swing.JLabel();
 
@@ -398,43 +398,6 @@ public class PanelMediaDB extends PanelVorlage {
 
         jTabbedPane1.addTab("Pfade", jPanel6);
 
-        jToggleButtonLoad.setText("Laden");
-
-        jTableMediaDB.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null}
-            },
-            new String [] {
-                "Title 1"
-            }
-        ));
-        jScrollPane2.setViewportView(jTableMediaDB);
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jToggleButtonLoad))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jToggleButtonLoad)
-                .addContainerGap())
-        );
-
-        jTabbedPane1.addTab("Mediensammlung", jPanel5);
-
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
         jCheckBoxMediaDB.setText("Echtzeitsuche in der Mediensammlung");
@@ -467,7 +430,7 @@ public class PanelMediaDB extends PanelVorlage {
 
         jTextFieldSuffix.setText("txt,xml");
 
-        jLabel6.setText("(z.B.: txt,xm,jpg)");
+        jLabel6.setText("(z.B.: txt,xml,jpg)");
 
         jLabel7.setText("(z.B.: mp4,flv,m4v)");
 
@@ -485,7 +448,7 @@ public class PanelMediaDB extends PanelVorlage {
                         .addComponent(jLabel7))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jRadioButtonOhneSuffix)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
                         .addComponent(jLabel6)))
                 .addContainerGap())
         );
@@ -572,6 +535,41 @@ public class PanelMediaDB extends PanelVorlage {
 
         jTabbedPane1.addTab("Einrichten", jPanel4);
 
+        jToggleButtonLoad.setText("Laden");
+
+        jTableMediaDB.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null}
+            },
+            new String [] {
+                "Title 1"
+            }
+        ));
+        jScrollPane2.setViewportView(jTableMediaDB);
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jToggleButtonLoad)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jToggleButtonLoad)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Dateiliste", jPanel5);
+
         jLabel2.setText("Anzahl Medien:");
 
         jLabelSizeIndex.setText("0");
@@ -600,7 +598,7 @@ public class PanelMediaDB extends PanelVorlage {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(progress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
