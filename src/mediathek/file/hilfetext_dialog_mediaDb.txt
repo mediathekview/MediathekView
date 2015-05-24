@@ -1,21 +1,20 @@
-
 Ein Filterwort kann auch Leerzeichen enthalten,
 z.B.: "Hallo ich". Es wird dann nach Dateien
-gesucht, die im Namen "Hallo ich" 
-an beliebiger Stelle enthalten.
-Man sollte den Suchbegriff also so formulieren,
-dass die eigenen Vorgaben für Dateinamen erfüllt
-sind.
+gesucht, die im Namen "Hallo ich" an beliebiger
+Stelle enthalten. Man sollte den Suchbegriff
+also so formulieren, dass die eigenen Vorgaben
+für Dateinamen erfüllt sind.
 
 Das Suchverhalten ist in den Einstellungen konfigurierbar
 (Datei -> Einstellungen -> Mediensammlung):
-"Suchen bei jeder Änderung im Feld Titel" oder 
-nur beim Klick auf "Suchen"
+"Echtzeitsuche" bedeutet, sofortiges Suchen
+bei jeder Änderung im Feld Titel, sonst nur beim Klick
+auf "Suchen."
 
 Groß- und Kleinschreibung wird beim Suchen
 nicht beachtet.
 
-In dem Filter kann auch mit regulären Ausdrücken
+In dem Filter kann auch mit regulären Ausdrücken (RegExp)
 gesucht werden. Diese müssen mit "#:" eingeleitet
 werden.
 
@@ -27,5 +26,3 @@ Auch bei den regulären Ausdrücken spielt Groß- und
 Kleinschreibung keine Rolle.
 
 https://de.wikipedia.org/wiki/Regul%C3%A4rer_Ausdruck
-
-
