@@ -45,7 +45,8 @@ public class OpenPlayerAction {
         try {
             if (!Daten.mVConfig.get(MVConfig.SYSTEM_PLAYER_ABSPIELEN).isEmpty()) {
                 String programm = Daten.mVConfig.get(MVConfig.SYSTEM_PLAYER_ABSPIELEN);
-                Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
+                String[] cmd = {programm, sFile.getAbsolutePath()};
+                Runtime.getRuntime().exec(cmd);
                 gut = true;
             } else {
                 if (Desktop.isDesktopSupported()) {
