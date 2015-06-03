@@ -64,7 +64,7 @@ import mediathek.tool.MVReplaceList;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 import msearch.filmlisten.MSFilmlisteLesen;
-import msearch.filmlisten.MSFilmlisteSchreiben;
+import msearch.filmlisten.WriteFilmlistJson;
 
 public class Daten {
 
@@ -243,7 +243,7 @@ public class Daten {
     }
 
     public static void filmlisteSpeichern() {
-        new MSFilmlisteSchreiben().filmlisteSchreibenJson(getDateiFilmliste(), listeFilme);
+        new WriteFilmlistJson().filmlisteSchreibenJson(getDateiFilmliste(), listeFilme);
     }
 
     private void init() {

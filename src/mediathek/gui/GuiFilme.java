@@ -356,8 +356,8 @@ public class GuiFilme extends PanelVorlage {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_GEO, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                tabelle.fireTableDataChanged(true /*setSpalten*/);
-                setInfo();
+                MVListeFilme.checkBlacklist();
+                loadTable();
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{/*ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT,*/
