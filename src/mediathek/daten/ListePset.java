@@ -243,7 +243,7 @@ public class ListePset extends LinkedList<DatenPset> {
     private static String getPfadVlc(JFrame parent) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
         if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_VLC).equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(parent, true /* vlc */, false /* flvstreamer */,  false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
+            new DialogOk(null, true, new PanelProgrammPfade(parent, true /* vlc */, false /* flvstreamer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
         return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_VLC);
     }
@@ -251,7 +251,7 @@ public class ListePset extends LinkedList<DatenPset> {
     private static String getPfadFlv(JFrame parent) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
         if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FLVSTREAMER).equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(parent, false /* vlc */, true /* flvstreamer */,  false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
+            new DialogOk(null, true, new PanelProgrammPfade(parent, false /* vlc */, true /* flvstreamer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
         return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FLVSTREAMER);
     }
@@ -259,7 +259,7 @@ public class ListePset extends LinkedList<DatenPset> {
     private static String getPfadFFmpeg(JFrame parent) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
         if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FFMPEG).equals("")) {
-            new DialogOk(null, true, new PanelProgrammPfade(parent, false /* vlc */, false /* flvstreamer */,  true /*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
+            new DialogOk(null, true, new PanelProgrammPfade(parent, false /* vlc */, false /* flvstreamer */, true /*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
         return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FFMPEG);
     }
@@ -283,23 +283,4 @@ public class ListePset extends LinkedList<DatenPset> {
         }
         return model;
     }
-//    public TModel getModel() {
-//        TModel model;
-//        Object[][] object;
-//        DatenPset datenPset;
-//        int i = 0;
-//        if (this.size() > 0) {
-//            ListIterator<DatenPset> iterator = this.listIterator(0);
-//            object = new Object[this.size()][1];
-//            while (iterator.hasNext()) {
-//                datenPset = iterator.next();
-//                object[i][0] = datenPset.arr[DatenPset.PROGRAMMSET_NAME_NR];
-//                ++i;
-//            }
-//            model = new TModel(object, new String[]{DatenPset.PROGRAMMSET_COLUMN_NAMES_[DatenPset.PROGRAMMSET_NAME_NR]});
-//        } else {
-//            model = new TModel(new Object[0][1], new String[]{DatenPset.PROGRAMMSET_COLUMN_NAMES_[DatenPset.PROGRAMMSET_NAME_NR]});
-//        }
-//        return model;
-//    }
 }

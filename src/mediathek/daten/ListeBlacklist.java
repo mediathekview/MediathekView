@@ -36,7 +36,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     private long tage = 0;
     private long jetzt;
-    private boolean zukunftNichtAnzeigen;
+    private boolean zukunftNichtAnzeigen, geoNichtAnzeigen;
     private boolean blacklistOn;
     private long filmlaengeSoll = 0;
     private int nr = 0;
@@ -150,6 +150,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         tage = 0; // soll nur im TabFilme ausgewertet werden (Filter: Tage)
         blacklistOn = true; // Blacklist nur wenn "auch für Abos" geklickt, egal ob ein- oder ausgeschaltet
         zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
+        geoNichtAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN));
         jetzt = getZeitZukunftBlacklist();
         return checkFilm(film);
     }
@@ -173,6 +174,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         }
         blacklistOn = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ON));
         zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
+        geoNichtAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN));
         jetzt = getZeitZukunftBlacklist();
     }
 
@@ -196,6 +198,12 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         // dann die Blacklist, nur wenn eingeschaltet
         if (!blacklistOn) {
             return true;
+        }
+        // keine Geo-gesperrten Filme
+        if (geoNichtAnzeigen) {
+            if (!film.arr[DatenFilm.FILM_GEO_NR].isEmpty() && !film.arr[DatenFilm.FILM_GEO_NR].contains(Daten.mVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
+                return false;
+            }
         }
         if (!checkZukunft(film)) {
             return false;
