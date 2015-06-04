@@ -325,10 +325,10 @@ public class Daten {
         new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
         int c = listeFilme.setFilmNew();
         // Meldungen sind zwar doppelt, aber damit sie auch im Meldungsfenser erscheinen..
-        Log.systemMeldung("Liste Filme gelesen am:  " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-        Log.systemMeldung("  Liste Filme erstellt am: " + Daten.listeFilme.genDate());
+        Log.systemMeldung("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+        Log.systemMeldung("  erstellt am: " + Daten.listeFilme.genDate());
         Log.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
-        Log.systemMeldung("  Anzahl Neue:  " + c);
+        Log.systemMeldung("  Anzahl Neue: " + c);
 
         Daten.listeFilme.themenLaden();
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);

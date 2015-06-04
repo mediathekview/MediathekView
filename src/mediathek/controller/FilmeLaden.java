@@ -103,6 +103,7 @@ public class FilmeLaden {
     public void importFilmliste(String dateiUrl, boolean immerNeuLaden) {
         // damit wird die Filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
         duration.start("Filme laden, start");
+        Log.systemMeldung("");
         Log.systemMeldung("Alte Liste erstellt am: " + Daten.listeFilme.genDate());
         Log.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
         Log.systemMeldung("  Anzahl Neue: " + Daten.listeFilme.countFilmNew());
@@ -135,6 +136,7 @@ public class FilmeLaden {
         // damit wird die Filmliste mit einer weiteren aktualisiert (die bestehende bleibt
         // erhalten) UND auch gleich im Konfig-Ordner gespeichert
         duration.start("Filme laden (Update), start");
+        Log.systemMeldung("");
         Log.systemMeldung("Alte Liste erstellt am: " + Daten.listeFilme.genDate());
         Log.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
         Log.systemMeldung("  Anzahl Neue: " + Daten.listeFilme.countFilmNew());
@@ -185,9 +187,11 @@ public class FilmeLaden {
         // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
         // beim Ändern von Abos gemacht wird
 
+        Log.systemMeldung("");
+
         // wenn nur ein Update
         if (!diffListe.isEmpty()) {
-            Log.systemMeldung("Liste Diff gelesen am:  " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+            Log.systemMeldung("Liste Diff gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
             Log.systemMeldung("  Liste Diff erstellt am: " + diffListe.genDate());
             Log.systemMeldung("  Anzahl Filme: " + diffListe.size());
 
@@ -195,6 +199,10 @@ public class FilmeLaden {
             Daten.listeFilme.metaDaten = diffListe.metaDaten;
             Daten.listeFilme.sort(); // jetzt sollte alles passen
             diffListe.clear();
+        } else {
+            Log.systemMeldung("Liste Kompl. gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+            Log.systemMeldung("  Liste Kompl erstellt am: " + Daten.listeFilme.genDate());
+            Log.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
         }
 
         searchHash(Daten.listeFilme);
@@ -212,13 +220,13 @@ public class FilmeLaden {
             Daten.listeFilme.setFilmNew();
             Log.systemMeldung("");
         } else {
-            Log.systemMeldung("Filmliste geladen: " + Daten.listeFilme.size() + " Filme");
             Daten.filmlisteSpeichern();
         }
+        Log.systemMeldung("");
 
-        Log.systemMeldung("Neue Liste erstellt am: " + Daten.listeFilme.genDate());
+        Log.systemMeldung("Jetzige Liste erstellt am: " + Daten.listeFilme.genDate());
         Log.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
-        Log.systemMeldung("  Anzahl Neue: " + Daten.listeFilme.countFilmNew());
+        Log.systemMeldung("  Anzahl Neue:  " + Daten.listeFilme.countFilmNew());
         Log.systemMeldung("");
 
         MVListeFilme.checkBlacklist();
