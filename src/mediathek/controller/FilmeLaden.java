@@ -19,6 +19,8 @@
  */
 package mediathek.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -101,6 +103,9 @@ public class FilmeLaden {
     public void importFilmliste(String dateiUrl, boolean immerNeuLaden) {
         // damit wird die Filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
         duration.start("Filme laden, start");
+        Log.systemMeldung("Alte Liste erstellt am: " + Daten.listeFilme.genDate());
+        Log.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
+        Log.systemMeldung("  Anzahl Neue: " + Daten.listeFilme.countFilmNew());
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
@@ -130,6 +135,9 @@ public class FilmeLaden {
         // damit wird die Filmliste mit einer weiteren aktualisiert (die bestehende bleibt
         // erhalten) UND auch gleich im Konfig-Ordner gespeichert
         duration.start("Filme laden (Update), start");
+        Log.systemMeldung("Alte Liste erstellt am: " + Daten.listeFilme.genDate());
+        Log.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
+        Log.systemMeldung("  Anzahl Neue: " + Daten.listeFilme.countFilmNew());
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
@@ -179,6 +187,10 @@ public class FilmeLaden {
 
         // wenn nur ein Update
         if (!diffListe.isEmpty()) {
+            Log.systemMeldung("Liste Diff gelesen am:  " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+            Log.systemMeldung("  Liste Diff erstellt am: " + diffListe.genDate());
+            Log.systemMeldung("  Anzahl Filme: " + diffListe.size());
+
             Daten.listeFilme.updateListe(diffListe, true/* Vergleich über Index, sonst nur URL */, true /*ersetzen*/);
             Daten.listeFilme.metaDaten = diffListe.metaDaten;
             Daten.listeFilme.sort(); // jetzt sollte alles passen
@@ -190,16 +202,25 @@ public class FilmeLaden {
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false/*aboLoeschen*/);
         istAmLaufen = false;
         if (event.fehler) {
-            Log.systemMeldung("Filmliste laden war fehlerhaft");
+            Log.systemMeldung("");
+            Log.systemMeldung("Filmliste laden war fehlerhaft, alte Liste wird wieder geladen");
             MVMessageDialog.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
             // dann die alte Liste wieder laden
             Daten.listeFilme.clear();
             MSConfig.setStop(false);
             new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+            Daten.listeFilme.setFilmNew();
+            Log.systemMeldung("");
         } else {
             Log.systemMeldung("Filmliste geladen: " + Daten.listeFilme.size() + " Filme");
             Daten.filmlisteSpeichern();
         }
+
+        Log.systemMeldung("Neue Liste erstellt am: " + Daten.listeFilme.genDate());
+        Log.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
+        Log.systemMeldung("  Anzahl Neue: " + Daten.listeFilme.countFilmNew());
+        Log.systemMeldung("");
+
         MVListeFilme.checkBlacklist();
         notifyFertig(event);
         System.gc();
