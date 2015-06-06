@@ -595,6 +595,21 @@ public class DatenDownload implements Comparable<DatenDownload> {
         s = s.replace("%T", film.arr[DatenFilm.FILM_TITEL_NR]);
         s = s.replace("%s", film.arr[DatenFilm.FILM_SENDER_NR]);
         s = s.replace("%i", String.valueOf(film.nr));
+        String res = "";
+        if (arr[DOWNLOAD_URL_NR].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL))) {
+            res = "H";
+        } else if (arr[DOWNLOAD_URL_NR].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD))) {
+            res = "HD";
+        } else if (arr[DOWNLOAD_URL_NR].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN))) {
+            res = "L";
+        } else if (arr[DOWNLOAD_URL_NR].equals(film.getUrlRtmpFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL))) {
+            res = "H";
+        } else if (arr[DOWNLOAD_URL_NR].equals(film.getUrlRtmpFuerAufloesung(DatenFilm.AUFLOESUNG_HD))) {
+            res = "HD";
+        } else if (arr[DOWNLOAD_URL_NR].equals(film.getUrlRtmpFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN))) {
+            res = "L";
+        }
+        s = s.replace("%q", res); //%q Qualität des Films ("HD", "H", "L")
 
         s = s.replace("%H", getHeute_yyyyMMdd());
         s = s.replace("%h", getJetzt_HHMMSS());
@@ -631,7 +646,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 if (datum.length() == 10) {
                     switch (s) {
                         case "%1":
-                            ret = datum.substring(0,2); // Tag
+                            ret = datum.substring(0, 2); // Tag
                             break;
                         case "%2":
                             ret = datum.substring(3, 5); // Monat

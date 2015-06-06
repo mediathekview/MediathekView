@@ -60,13 +60,6 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
         jButtonPath.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         jButtonDelPath.setIcon(GetIcon.getProgramIcon("del_16.png"));
         jLabelExists.setText("");
-//        jCheckBoxPath.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)));
-//        jCheckBoxPath.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN, Boolean.toString(jCheckBoxPath.isSelected()));
-//            }
-//        });
         jButtonPath.addActionListener(new ZielBeobachter());
         jButtonDelPath.addActionListener(new ActionListener() {
             @Override
@@ -163,29 +156,6 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
         jComboBoxPath.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[pfade.size()])));
     }
 
-// nur die Pfade beim Start manueller Downloads speichern    
-//    public void saveComboPfad() {
-//        ArrayList<String> pfade = new ArrayList<>();
-//        String s = jComboBoxPath.getSelectedItem().toString();
-//        if (!s.equals(orgPfad) || jCheckBoxPath.isSelected()) {
-//            pfade.add(s);
-//        }
-//        for (int i = 0; i < jComboBoxPath.getItemCount(); ++i) {
-//            s = jComboBoxPath.getItemAt(i);
-//            if (!s.equals(orgPfad) && !pfade.contains(s)) {
-//                pfade.add(s);
-//            }
-//        }
-//        if (!pfade.isEmpty()) {
-//            s = pfade.get(0);
-//            for (int i = 1; i < Konstanten.MAX_PFADE_DIALOG_DOWNLOAD && i < pfade.size(); ++i) {
-//                if (!pfade.get(i).isEmpty()) {
-//                    s += "<>" + pfade.get(i);
-//                }
-//            }
-//        }
-//        Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, s);
-//    }
     private void checkPfadName() {
         String pfad = ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getText();
         String name = jTextFieldName.getText();
@@ -207,7 +177,6 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
                 jLabelExists.setText("Neuer Name");
             } else {
                 jLabelExists.setForeground(MVColor.DOWNLOAD_DATEINAME_ALT.color);
-//                jLabelExists.setText("Alter Name");
                 jLabelExists.setText("");
             }
         } catch (Exception ignored) {
