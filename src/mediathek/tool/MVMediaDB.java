@@ -138,17 +138,22 @@ public class MVMediaDB {
             }
         }
     }
+
     private String[] getItem(String name, String path, String size) {
         return new String[]{name, path, size};
     }
 
     private String getGroesse(long l) {
+        // l: Anzahl Bytes
         String ret = "";
         if (l > 1000 * 1000) {
             // größer als 1MB sonst kann ich mirs sparen
             ret = String.valueOf(l / (1000 * 1000));
         } else if (l > 0) {
-            ret = "1";
+            //0<....<1M
+            ret = "< 1";
+        } else if (l == 0) {
+            ret = "0";
         }
         return ret;
     }

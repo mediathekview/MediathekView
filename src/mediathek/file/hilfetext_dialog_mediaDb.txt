@@ -20,7 +20,7 @@ werden.
 
 #:Abend.*
 Das bedeutet z.B.: Es werden alle Dateien gefunden, die 
-im mit "Abend" beginnen.
+mit "Abend" beginnen.
 
 Auch bei den regulären Ausdrücken spielt Groß- und 
 Kleinschreibung keine Rolle.

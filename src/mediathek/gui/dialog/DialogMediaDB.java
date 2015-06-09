@@ -33,6 +33,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
@@ -52,11 +54,11 @@ import mediathek.tool.OpenPlayerAction;
 import mediathek.tool.TModel;
 
 public class DialogMediaDB extends javax.swing.JDialog {
-
+    
     private final TModel modelFilm = MVMediaDB.getModel();
     private final JFrame parent;
     private boolean init = false;
-
+    
     public DialogMediaDB(JFrame pparent) {
         super(pparent, false);
         initComponents();
@@ -89,30 +91,31 @@ public class DialogMediaDB extends javax.swing.JDialog {
         jTableFilm.setDefaultRenderer(Object.class, cellRenderer);
         jTableFilm.setModel(modelFilm);
         jTableFilm.addMouseListener(new BeobMausTabelle());
-
+        jTableFilm.getSelectionModel().addListSelectionListener(new BeobTableSelect());
+        
         progress.setVisible(false);
         progress.setIndeterminate(true);
         progress.setMaximum(0);
         progress.setMinimum(0);
         progress.setValue(0);
-
+        
         jTextFieldTitle.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.mVMediaDB.searchFiles(modelFilm, jTextFieldTitle.getText());
             }
         });
         jTextFieldTitle.getDocument().addDocumentListener(new BeobDoc());
-
+        
         jButtonIndex.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.mVMediaDB.makeIndex();
             }
         });
-
+        
         jButtonHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHelp.addActionListener(new ActionListener() {
             @Override
@@ -121,7 +124,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
             }
         });
         jButtonSearch.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 search();
@@ -141,7 +144,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
         };
         GuiFunktionen.setSize(MVConfig.SYSTEM_MEDIA_DB_DIALOG_GROESSE, this, parent);
     }
-
+    
     @Override
     public void setVisible(boolean vis) {
         super.setVisible(vis);
@@ -154,29 +157,29 @@ public class DialogMediaDB extends javax.swing.JDialog {
             init = true;
         }
     }
-
+    
     public final void setVis() {
         this.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_DIALOG_MEDIA_DB, DialogMediaDB.class.getName());
     }
-
+    
     public void setFilter(String titel) {
         titel = FilenameUtils.replaceLeerDateiname(titel); // mit den eingestellten Ersetzungen bearbeiten
         jTextFieldTitle.setText(titel);
     }
-
+    
     private void search() {
         Daten.mVMediaDB.searchFiles(modelFilm, jTextFieldTitle.getText());
         jLabelSizeFound.setText(modelFilm.getRowCount() + "");
     }
-
+    
     private void setIndex(boolean noIndex) {
         progress.setVisible(!noIndex);
         jTextFieldTitle.setEnabled(noIndex);
         jButtonSearch.setEnabled(noIndex);
         jButtonIndex.setEnabled(noIndex);
     }
-
+    
     private void zielordnerOeffnen() {
         int row = jTableFilm.getSelectedRow();
         if (row >= 0) {
@@ -186,7 +189,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
             new HinweisKeineAuswahl().zeigen(parent);
         }
     }
-
+    
     private void filmAbspielen_() {
         int row = jTableFilm.getSelectedRow();
         if (row >= 0) {
@@ -197,7 +200,20 @@ public class DialogMediaDB extends javax.swing.JDialog {
             new HinweisKeineAuswahl().zeigen(parent);
         }
     }
-
+    
+    private void aktFilmSetzen() {
+        int row = jTableFilm.getSelectedRow();
+        if (row >= 0) {
+            String file = (String) jTableFilm.getModel().getValueAt(jTableFilm.convertRowIndexToModel(row), MVMediaDB.MEDIA_DB_NAME_NR);
+            String path = (String) jTableFilm.getModel().getValueAt(jTableFilm.convertRowIndexToModel(row), MVMediaDB.MEDIA_DB_PATH_NR);
+            jTextFieldFilmTitle.setText(file);
+            jTextFieldFilmPfad.setText(path);
+        } else {
+            jTextFieldFilmTitle.setText("");
+            jTextFieldFilmPfad.setText("");
+        }
+    }
+    
     private void filmLoeschen_() {
         String del = "";
         int row = jTableFilm.getSelectedRow();
@@ -229,7 +245,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
             Log.fehlerMeldung(984512036, "Fehler beim löschen: " + del);
         }
     }
-
+    
     private void beenden() {
         Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.FALSE.toString());
         setVis();
@@ -251,6 +267,10 @@ public class DialogMediaDB extends javax.swing.JDialog {
         jButtonIndex = new javax.swing.JButton();
         jLabelSum = new javax.swing.JLabel();
         progress = new javax.swing.JProgressBar();
+        jLabel3 = new javax.swing.JLabel();
+        jTextFieldFilmTitle = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jTextFieldFilmPfad = new javax.swing.JTextField();
 
         jLabel2.setText("jLabel2");
 
@@ -286,6 +306,14 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
         jLabelSum.setText("0");
 
+        jLabel3.setText("Titel:");
+
+        jTextFieldFilmTitle.setEditable(false);
+
+        jLabel5.setText("Pfad:");
+
+        jTextFieldFilmPfad.setEditable(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -293,7 +321,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jTextFieldTitle)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -307,16 +335,21 @@ public class DialogMediaDB extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonBeenden, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabelSizeFound))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabelSum)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabelSum)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabelSizeFound))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldFilmTitle))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldFilmPfad)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -329,15 +362,23 @@ public class DialogMediaDB extends javax.swing.JDialog {
                         .addComponent(jButtonSearch))
                     .addComponent(jButtonHelp))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabelSum))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel4)
+                        .addComponent(jLabelSum))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(jLabelSizeFound)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabelSizeFound))
+                    .addComponent(jLabel3)
+                    .addComponent(jTextFieldFilmTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jTextFieldFilmPfad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(progress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -357,35 +398,49 @@ public class DialogMediaDB extends javax.swing.JDialog {
     private javax.swing.JButton jButtonSearch;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabelSizeFound;
     private javax.swing.JLabel jLabelSum;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTableFilm;
+    private javax.swing.JTextField jTextFieldFilmPfad;
+    private javax.swing.JTextField jTextFieldFilmTitle;
     private javax.swing.JTextField jTextFieldTitle;
     private javax.swing.JProgressBar progress;
     // End of variables declaration//GEN-END:variables
 
+    private class BeobTableSelect implements ListSelectionListener {
+        
+        @Override
+        public void valueChanged(ListSelectionEvent event) {
+            if (!event.getValueIsAdjusting()) {
+                aktFilmSetzen();
+            }
+        }
+    }
+    
     private class BeobDoc implements DocumentListener {
-
+        
         @Override
         public void insertUpdate(DocumentEvent e
         ) {
             tus();
         }
-
+        
         @Override
         public void removeUpdate(DocumentEvent e
         ) {
             tus();
         }
-
+        
         @Override
         public void changedUpdate(DocumentEvent e
         ) {
             tus();
         }
-
+        
         private void tus() {
             Filter.checkPattern1(jTextFieldTitle);
             if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE))) {
@@ -393,25 +448,25 @@ public class DialogMediaDB extends javax.swing.JDialog {
             }
         }
     }
-
+    
     public class BeobMausTabelle extends MouseAdapter {
-
+        
         private Point p;
-
+        
         @Override
         public void mousePressed(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
         }
-
+        
         @Override
         public void mouseReleased(MouseEvent arg0) {
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
             }
         }
-
+        
         private void showMenu(MouseEvent evt) {
             p = evt.getPoint();
             int nr = jTableFilm.rowAtPoint(p);
@@ -457,7 +512,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
             // Menü anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
-
+        
     }
-
+    
 }
