@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenMediaDB;
@@ -98,6 +99,23 @@ public class MVMediaDB {
             try {
                 String db = Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA);
                 if (!db.isEmpty()) {
+                    String error = "";
+                    boolean more = false;
+                    for (String s : db.split(FILE_TRENNER)) {
+                        File f = new File(s);
+                        if (!f.canRead()) {
+                            if (!error.isEmpty()) {
+                                error = error + "\n";
+                                more = true;
+                            }
+                            error = error + f.getPath();
+                        }
+                    }
+                    if (!error.isEmpty()) {
+                        // Verzeichnisse können nicht durchsucht werden
+                        MVMessageDialog.showMessageDialog(null, (more ? "Die Pfade der Mediensammlung können nicht gelesen werden:\n" : "Der Pfad der Mediensammlung kann nicht gelesen werden:\n")
+                                + error, "Fehler beim Erstellen der Mediensammlung", JOptionPane.ERROR_MESSAGE);
+                    }
                     for (String s : db.split(FILE_TRENNER)) {
                         File f = new File(s);
                         searchFile(f);
