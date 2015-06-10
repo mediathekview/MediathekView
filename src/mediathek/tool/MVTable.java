@@ -43,6 +43,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenMediaDB;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
+import static mediathek.daten.DatenPset.MAX_ELEM;
 import msearch.daten.DatenFilm;
 
 public final class MVTable extends JTable {
@@ -135,9 +136,9 @@ public final class MVTable extends JTable {
             case TABELLE_MEDIA_DB:
                 spaltenTitel = DatenMediaDB.COLUMN_NAMES;
                 maxSpalten = DatenMediaDB.MAX_ELEM;
-                spaltenAnzeigen = getSpaltenEinAus(DatenProg.spaltenAnzeigen, DatenMediaDB.MAX_ELEM);
+                spaltenAnzeigen = getSpaltenEinAus(new boolean[DatenMediaDB.MAX_ELEM], DatenMediaDB.MAX_ELEM);
                 indexSpalte = 0;
-                nrDatenSystem = "";
+                nrDatenSystem = MVConfig.SYSTEM_EIGENSCHAFTEN_TABELLE_MEDIA_DB;
                 this.setModel(new TModel(new Object[][]{}, spaltenTitel));
                 break;
         }
@@ -566,6 +567,10 @@ public final class MVTable extends JTable {
                     break;
                 case TABELLE_TAB_ABOS:
                     resetAbosTab(i);
+                    break;
+                case TABELLE_MEDIA_DB:
+                    reihe[i] = i;
+                    breite[i] = 200;
                     break;
             }
         }
