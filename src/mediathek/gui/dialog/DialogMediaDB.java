@@ -50,14 +50,15 @@ import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVMessageDialog;
+import mediathek.tool.MVTable;
 import mediathek.tool.OpenPlayerAction;
 import mediathek.tool.TModelMediaDB;
 
 public class DialogMediaDB extends javax.swing.JDialog {
 
-    private final TModelMediaDB modelFilm;
     private final JFrame parent;
     private boolean init = false;
+    private MVTable tabelleFilme;
 
     public DialogMediaDB(JFrame pparent) {
         super(pparent, false);
@@ -87,12 +88,17 @@ public class DialogMediaDB extends javax.swing.JDialog {
                 search();
             }
         });
-        modelFilm = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
+
+        tabelleFilme = new MVTable(MVTable.TABELLE_MEDIA_DB);
+        jScrollPane3.setViewportView(tabelleFilme);
+
+        TModelMediaDB modelFilm = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
         final CellRendererMediaDB cellRenderer = new CellRendererMediaDB();
-        jTableFilm.setDefaultRenderer(Object.class, cellRenderer);
-        jTableFilm.setModel(modelFilm);
-        jTableFilm.addMouseListener(new BeobMausTabelle());
-        jTableFilm.getSelectionModel().addListSelectionListener(new BeobTableSelect());
+        tabelleFilme.setDefaultRenderer(Object.class, cellRenderer);
+        tabelleFilme.setModel(modelFilm);
+        tabelleFilme.addMouseListener(new BeobMausTabelle());
+        tabelleFilme.getSelectionModel().addListSelectionListener(new BeobTableSelect());
+        tabelleFilme.setAutoResizeMode(MVTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
 
         progress.setVisible(false);
         progress.setIndeterminate(true);
@@ -104,7 +110,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVMediaDB.searchFiles(modelFilm, jTextFieldSearch.getText());
+                search();
             }
         });
         jTextFieldSearch.getDocument().addDocumentListener(new BeobDoc());
@@ -170,8 +176,12 @@ public class DialogMediaDB extends javax.swing.JDialog {
     }
 
     private void search() {
-        Daten.mVMediaDB.searchFiles(modelFilm, jTextFieldSearch.getText());
-        jLabelSizeFound.setText(modelFilm.getRowCount() + "");
+        TModelMediaDB m = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
+        Daten.mVMediaDB.searchFiles(m, jTextFieldSearch.getText());
+        tabelleFilme.getSpalten();
+        tabelleFilme.setModel(m);
+        tabelleFilme.setSpalten();
+        jLabelSizeFound.setText(m.getRowCount() + "");
     }
 
     private void setIndex(boolean noIndex) {
@@ -182,9 +192,9 @@ public class DialogMediaDB extends javax.swing.JDialog {
     }
 
     private void zielordnerOeffnen() {
-        int row = jTableFilm.getSelectedRow();
+        int row = tabelleFilme.getSelectedRow();
         if (row >= 0) {
-            String s = (String) jTableFilm.getModel().getValueAt(jTableFilm.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH_NR);
+            String s = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH_NR);
             DirOpenAction.zielordnerOeffnen(parent, s);
         } else {
             new HinweisKeineAuswahl().zeigen(parent);
@@ -192,10 +202,10 @@ public class DialogMediaDB extends javax.swing.JDialog {
     }
 
     private void filmAbspielen_() {
-        int row = jTableFilm.getSelectedRow();
+        int row = tabelleFilme.getSelectedRow();
         if (row >= 0) {
-            String file = (String) jTableFilm.getModel().getValueAt(jTableFilm.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_NAME_NR);
-            String path = (String) jTableFilm.getModel().getValueAt(jTableFilm.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH_NR);
+            String file = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_NAME_NR);
+            String path = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH_NR);
             OpenPlayerAction.filmAbspielen(parent, path + File.separator + file);
         } else {
             new HinweisKeineAuswahl().zeigen(parent);
@@ -203,10 +213,10 @@ public class DialogMediaDB extends javax.swing.JDialog {
     }
 
     private void aktFilmSetzen() {
-        int row = jTableFilm.getSelectedRow();
+        int row = tabelleFilme.getSelectedRow();
         if (row >= 0) {
-            String file = (String) jTableFilm.getModel().getValueAt(jTableFilm.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_NAME_NR);
-            String path = (String) jTableFilm.getModel().getValueAt(jTableFilm.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH_NR);
+            String file = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_NAME_NR);
+            String path = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH_NR);
             jTextFieldFilmTitle.setText(file);
             jTextFieldFilmPfad.setText(path);
         } else {
@@ -217,14 +227,14 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
     private void filmLoeschen_() {
         String del = "";
-        int row = jTableFilm.getSelectedRow();
+        int row = tabelleFilme.getSelectedRow();
         if (row < 0) {
             new HinweisKeineAuswahl().zeigen(parent);
             return;
         }
         try {
-            String file = (String) jTableFilm.getModel().getValueAt(jTableFilm.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_NAME_NR);
-            String path = (String) jTableFilm.getModel().getValueAt(jTableFilm.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH_NR);
+            String file = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_NAME_NR);
+            String path = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH_NR);
             del = path + File.separator + file;
             File delFile = new File(del);
             if (!delFile.exists()) {
@@ -470,9 +480,9 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
         private void showMenu(MouseEvent evt) {
             p = evt.getPoint();
-            int nr = jTableFilm.rowAtPoint(p);
+            int nr = tabelleFilme.rowAtPoint(p);
             if (nr >= 0) {
-                jTableFilm.setRowSelectionInterval(nr, nr);
+                tabelleFilme.setRowSelectionInterval(nr, nr);
             }
             JPopupMenu jPopupMenu = new JPopupMenu();
 

@@ -40,6 +40,7 @@ import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
+import mediathek.daten.DatenMediaDB;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import msearch.daten.DatenFilm;
@@ -53,6 +54,7 @@ public final class MVTable extends JTable {
     public static final int TABELLE_TAB_ABOS = 2;
     public static final int TABELLE_TAB_PSET = 3;
     public static final int TABELLE_TAB_PROG = 4;
+    public static final int TABELLE_MEDIA_DB = 5;
     public static final String FELDTRENNER = "|";
     public static final String SORT_ASCENDING = "ASCENDING";
     public static final String SORT_DESCENDING = "DESCENDING";
@@ -126,6 +128,14 @@ public final class MVTable extends JTable {
                 spaltenTitel = DatenProg.COLUMN_NAMES;
                 maxSpalten = DatenProg.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenProg.spaltenAnzeigen, DatenProg.MAX_ELEM);
+                indexSpalte = 0;
+                nrDatenSystem = "";
+                this.setModel(new TModel(new Object[][]{}, spaltenTitel));
+                break;
+            case TABELLE_MEDIA_DB:
+                spaltenTitel = DatenMediaDB.COLUMN_NAMES;
+                maxSpalten = DatenMediaDB.MAX_ELEM;
+                spaltenAnzeigen = getSpaltenEinAus(DatenProg.spaltenAnzeigen, DatenMediaDB.MAX_ELEM);
                 indexSpalte = 0;
                 nrDatenSystem = "";
                 this.setModel(new TModel(new Object[][]{}, spaltenTitel));
@@ -341,6 +351,8 @@ public final class MVTable extends JTable {
                     selIndexes = null;
                 }
                 break;
+            case TABELLE_MEDIA_DB:
+                break;
             default:
                 if (selRows != null) {
                     if (selRows.length > 0) {
@@ -375,6 +387,8 @@ public final class MVTable extends JTable {
                     this.selectionModel.setValueIsAdjusting(false);
                 }
                 indexWertSelection = null;
+                break;
+            case TABELLE_MEDIA_DB:
                 break;
             default:
                 if (selRows != null) {
@@ -787,4 +801,4 @@ public final class MVTable extends JTable {
         }
     }
 
-        }
+}

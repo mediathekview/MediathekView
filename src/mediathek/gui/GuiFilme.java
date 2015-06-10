@@ -69,7 +69,6 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogEditAbo;
-import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobTableHeader;
