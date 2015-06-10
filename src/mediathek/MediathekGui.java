@@ -1134,6 +1134,8 @@ public class MediathekGui extends JFrame {
         daten.guiFilme.tabelleSpeichern();
         daten.guiDownloads.tabelleSpeichern();
         daten.guiAbo.tabelleSpeichern();
+        daten.dialogMediaDB.tabelleSpeichern();
+        
         if (Daten.listeDownloads != null) {
             // alle laufenden Downloads/Programme stoppen
             for (DatenDownload download : Daten.listeDownloads) {

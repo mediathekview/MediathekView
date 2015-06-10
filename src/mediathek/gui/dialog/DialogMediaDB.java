@@ -99,6 +99,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
         tabelleFilme.addMouseListener(new BeobMausTabelle());
         tabelleFilme.getSelectionModel().addListSelectionListener(new BeobTableSelect());
         tabelleFilme.setAutoResizeMode(MVTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+        tabelleFilme.initTabelle();
 
         progress.setVisible(false);
         progress.setIndeterminate(true);
@@ -168,6 +169,12 @@ public class DialogMediaDB extends javax.swing.JDialog {
     public final void setVis() {
         this.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_DIALOG_MEDIA_DB, DialogMediaDB.class.getName());
+    }
+
+    public void tabelleSpeichern() {
+        if (tabelleFilme != null) {
+            tabelleFilme.tabelleNachDatenSchreiben();
+        }
     }
 
     public void setFilter(String titel) {
@@ -516,6 +523,17 @@ public class DialogMediaDB extends javax.swing.JDialog {
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     zielordnerOeffnen();
+                }
+            });
+
+            jPopupMenu.addSeparator();
+            // Reset Tabelle
+            JMenuItem itemResetTab = new JMenuItem("Tabelle zurücksetzen");
+            jPopupMenu.add(itemResetTab);
+            itemResetTab.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    tabelleFilme.resetTabelle();
                 }
             });
 
