@@ -26,27 +26,17 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
-import static mediathek.tool.Filter.makePattern;
+import mediathek.daten.DatenMediaDB;
 import msearch.tool.MSConst;
 import msearch.tool.MSLog;
 
 public class MVMediaDB {
 
-    private final ArrayList<String[]> fileArray = new ArrayList<>(); //name-path-size
+    private final ArrayList<DatenMediaDB> fileArray = new ArrayList<>(); //name-path-size
     public final String FILE_TRENNER = "<>";
     private boolean makeIndex = false;
     private String[] suffix = {""};
     private boolean ohneSuffix = true;
-    public static String MEDIA_DB_NAME = "Name";
-    public static int MEDIA_DB_NAME_NR = 0;
-    public static String MEDIA_DB_PATH = "Pfad";
-    public static int MEDIA_DB_PATH_NR = 1;
-    public static String MEDIA_DB_SIZE = "Größe [MB]";
-    public static int MEDIA_DB_SIZE_NR = 2;
-
-    public static TModel getModel() {
-        return new TModel(new Object[][]{}, new String[]{MEDIA_DB_NAME, MEDIA_DB_PATH, MEDIA_DB_SIZE});
-    }
 
     public MVMediaDB() {
     }
@@ -55,30 +45,30 @@ public class MVMediaDB {
         return fileArray.size();
     }
 
-    public synchronized void getModelMediaDB(TModel modelMediaDB) {
+    public synchronized void getModelMediaDB(TModelMediaDB modelMediaDB) {
         modelMediaDB.setRowCount(0);
-        for (String[] s : fileArray) {
-            modelMediaDB.addRow(s);
+        for (DatenMediaDB s : fileArray) {
+            modelMediaDB.addRow(s.getRow());
         }
     }
 
-    public synchronized void searchFiles(TModel modelFilm, String title) {
+    public synchronized void searchFiles(TModelMediaDB modelFilm, String title) {
 
         modelFilm.setRowCount(0);
         if (!makeIndex && !title.isEmpty()) {
-            Pattern p = makePattern(title);
+            Pattern p = Filter.makePattern(title);
             if (p != null) {
                 // dann mit RegEx prüfen
-                for (String[] s : fileArray) {
-                    if (p.matcher(s[MEDIA_DB_NAME_NR]).matches()) {
-                        modelFilm.addRow(s);
+                for (DatenMediaDB s : fileArray) {
+                    if (p.matcher(s.arr[DatenMediaDB.MEDIA_DB_NAME_NR]).matches()) {
+                        modelFilm.addRow(s.getRow());
                     }
                 }
             } else {
                 title = title.toLowerCase();
-                for (String[] s : fileArray) {
-                    if (s[MEDIA_DB_NAME_NR].toLowerCase().contains(title)) {
-                        modelFilm.addRow(s);
+                for (DatenMediaDB s : fileArray) {
+                    if (s.arr[DatenMediaDB.MEDIA_DB_NAME_NR].toLowerCase().contains(title)) {
+                        modelFilm.addRow(s.getRow());
                     }
                 }
             }
@@ -131,31 +121,12 @@ public class MVMediaDB {
                         searchFile(file);
                     } else {
                         if (checkSuffix(suffix, file.getName())) {
-                            fileArray.add(getItem(file.getName(), file.getParent().intern(), getGroesse(file.length())));
+                            fileArray.add(new DatenMediaDB(file.getName(), file.getParent().intern(), file.length()));
                         }
                     }
                 }
             }
         }
-    }
-
-    private String[] getItem(String name, String path, String size) {
-        return new String[]{name, path, size};
-    }
-
-    private String getGroesse(long l) {
-        // l: Anzahl Bytes
-        String ret = "";
-        if (l > 1000 * 1000) {
-            // größer als 1MB sonst kann ich mirs sparen
-            ret = String.valueOf(l / (1000 * 1000));
-        } else if (l > 0) {
-            //0<....<1M
-            ret = "< 1";
-        } else if (l == 0) {
-            ret = "0";
-        }
-        return ret;
     }
 
     private boolean checkSuffix(String[] str, String uurl) {
@@ -200,8 +171,8 @@ public class MVMediaDB {
             MSLog.systemMeldung("   --> Start Schreiben nach: " + datei);
             out = new OutputStreamWriter(new FileOutputStream(datei), MSConst.KODIERUNG_UTF);
 
-            for (String[] s : fileArray) {
-                out.write(s[MEDIA_DB_NAME_NR] + "\n");
+            for (DatenMediaDB s : fileArray) {
+                out.write(s.arr[DatenMediaDB.MEDIA_DB_NAME_NR] + "\n");
             }
             MSLog.systemMeldung("   --> geschrieben!");
         } catch (Exception ex) {

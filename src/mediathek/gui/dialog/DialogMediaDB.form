@@ -35,7 +35,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jScrollPane3" pref="536" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="jTextFieldTitle" max="32767" attributes="0"/>
+                      <Component id="jTextFieldSearch" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonSearch" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -78,7 +78,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jTextFieldTitle" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jTextFieldSearch" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonSearch" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="jButtonHelp" linkSize="2" min="-2" max="-2" attributes="0"/>
@@ -130,7 +130,7 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextFieldTitle">
+    <Component class="javax.swing.JTextField" name="jTextFieldSearch">
     </Component>
     <Component class="javax.swing.JButton" name="jButtonSearch">
       <Properties>

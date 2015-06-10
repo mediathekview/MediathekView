@@ -24,6 +24,7 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import mediathek.controller.Log;
+import mediathek.daten.DatenMediaDB;
 
 public class CellRendererMediaDB extends DefaultTableCellRenderer {
 
@@ -44,11 +45,11 @@ public class CellRendererMediaDB extends DefaultTableCellRenderer {
                 table, value, isSelected, hasFocus, row, column);
         try {
             int c = table.convertColumnIndexToModel(column);
-            if (c == MVMediaDB.MEDIA_DB_SIZE_NR) {
+            if (c == DatenMediaDB.MEDIA_DB_SIZE_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(976432158, ex);
+            Log.fehlerMeldung(912034567, ex);
         }
         return this;
     }

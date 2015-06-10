@@ -32,6 +32,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
+import mediathek.daten.DatenMediaDB;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
@@ -40,14 +41,14 @@ import mediathek.tool.CellRendererMediaDB;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
-import mediathek.tool.MVMediaDB;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModel;
+import mediathek.tool.TModelMediaDB;
 
 public class PanelMediaDB extends PanelVorlage {
 
     private final TModel modelPath = new TModel(new Object[][]{}, new String[]{"Pfad"});
-    private final TModel modelFilm = MVMediaDB.getModel();
+    private final TModelMediaDB modelFilm = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
 
     public PanelMediaDB(Daten d, JFrame parent) {
         super(d, parent);
