@@ -88,6 +88,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.Duration;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
@@ -366,6 +367,10 @@ public class MediathekGui extends JFrame {
         duration.ping("Gui steht!");
         if (Daten.delSets) {
             // die Sets sollen neu angelegt werden
+            // setzt die Standardpfade für die wichtigsten Programme
+            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
+            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
+            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
             new CheckUpdate(this, daten).checkSet();
         }
     }
