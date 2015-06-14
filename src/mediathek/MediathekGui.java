@@ -213,7 +213,7 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    public MediathekGui(String[] ar, final boolean maximized) {
+    public MediathekGui(String[] ar) {
         super();
         initializeSplashScreen();
 
@@ -259,6 +259,7 @@ public class MediathekGui extends JFrame {
             updateSplashScreenText("GUI Initialisieren...");
         } else {
             // erster Start
+            Daten.delSets = false; // hat sich dann erledigt
             Daten.mVReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
             new DialogStarteinstellungen(this, daten).setVisible(true);
             this.pack();
@@ -270,7 +271,7 @@ public class MediathekGui extends JFrame {
         duration.ping("LookAndFeel");
         init();
         duration.ping("init");
-        setSize(maximized);
+        setSize();
         duration.ping("setSize");
 
         // Dialog mit den Programmeinstellungen einrichten
@@ -280,7 +281,7 @@ public class MediathekGui extends JFrame {
         daten.dialogMediaDB.setVis();
 
         // Prüfen obs ein Programmupdate gibt
-        new CheckUpdate(this, daten).suchen();
+        new CheckUpdate(this, daten).checkProgUpdate();
         duration.ping("CheckUpdate");
 
         if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO) {
@@ -363,6 +364,10 @@ public class MediathekGui extends JFrame {
 
         }
         duration.ping("Gui steht!");
+        if (Daten.delSets) {
+            // die Sets sollen neu angelegt werden
+            new CheckUpdate(this, daten).checkSet();
+        }
     }
 
     private void setFocusSuchfeld() {
@@ -497,8 +502,8 @@ public class MediathekGui extends JFrame {
         jMenuItemAboNeu.setEnabled(false);
     }
 
-    private void setSize(boolean max) {
-        if (max || Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_MAX))) {
+    private void setSize() {
+        if (Daten.startMaximized || Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_MAX))) {
             this.setExtendedState(Frame.MAXIMIZED_BOTH);
         } else {
             GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_GUI, this, null);
@@ -1135,7 +1140,7 @@ public class MediathekGui extends JFrame {
         daten.guiDownloads.tabelleSpeichern();
         daten.guiAbo.tabelleSpeichern();
         daten.dialogMediaDB.tabelleSpeichern();
-        
+
         if (Daten.listeDownloads != null) {
             // alle laufenden Downloads/Programme stoppen
             for (DatenDownload download : Daten.listeDownloads) {

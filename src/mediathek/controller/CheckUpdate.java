@@ -22,6 +22,7 @@ package mediathek.controller;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
@@ -35,46 +36,97 @@ public class CheckUpdate {
 
     private final Daten daten;
     private final JFrame parent;
+    private static boolean run = false;
 
     public CheckUpdate(JFrame pparent, Daten dd) {
         daten = dd;
         parent = pparent;
     }
 
-    public void suchen() {
-        new Thread(new Pruefen()).start();
+    public void checkProgUpdate() {
+        new Thread(new ProgPruefen()).start();
     }
 
-    private class Pruefen implements Runnable {
+    private class ProgPruefen implements Runnable {
 
         @Override
         public synchronized void run() {
+            // Sets auf Update prüfen
             try {
-                if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_UPDATE_SUCHEN))) {
-                    if (!Daten.mVConfig.get(MVConfig.SYSTEM_UPDATE_DATUM).equals(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
-                        final ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
-                        if (pgrUpdate.checkVersion(daten, false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
-                            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, CheckUpdate.class.getSimpleName());
-                        } else {
-                            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_PROGRAMM_AKTUELL, CheckUpdate.class.getSimpleName());
+                if (SwingUtilities.isEventDispatchThread()) {
+                    prog();
+                } else {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            prog();
                         }
-
-                        checkSet();
-
-                        try {
-                            this.wait(10 * 1000); // 10 Sekunden den Titel anzeigen
-                        } catch (Exception ignored) {
-                        }
-                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_ORG_TITEL, CheckUpdate.class.getSimpleName());
-                    }
+                    });
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(794612801, ex);
+                Log.fehlerMeldung(794510101, ex);
             }
         }
     }
 
-    private void checkSet() {
+    private void prog() {
+        try {
+            if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_UPDATE_SUCHEN))) {
+                if (!Daten.mVConfig.get(MVConfig.SYSTEM_UPDATE_DATUM).equals(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
+                    final ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
+                    if (pgrUpdate.checkVersion(false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
+                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, CheckUpdate.class.getSimpleName());
+                    } else {
+                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_PROGRAMM_AKTUELL, CheckUpdate.class.getSimpleName());
+                    }
+
+                    //==============================================
+                    // Sets auf Update prüfen
+                    set();
+
+                    try {
+                        this.wait(10 * 1000); // 10 Sekunden den Titel anzeigen
+                    } catch (Exception ignored) {
+                    }
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_ORG_TITEL, CheckUpdate.class.getSimpleName());
+                }
+            }
+        } catch (Exception ex) {
+            Log.fehlerMeldung(794612801, ex);
+        }
+    }
+
+    public void checkSet() {
+        new Thread(new SetPruefen()).start();
+    }
+
+    private class SetPruefen implements Runnable {
+
+        @Override
+        public synchronized void run() {
+            // Sets auf Update prüfen
+            try {
+                if (SwingUtilities.isEventDispatchThread()) {
+                    set();
+                } else {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            set();
+                        }
+                    });
+                }
+            } catch (Exception ex) {
+                Log.fehlerMeldung(794510101, ex);
+            }
+        }
+    }
+
+    private void set() {
+        if (run) {
+            return;// nur einmal laufen
+        }
+        run = true;
         ListePset listePsetStandard = ListePsetVorlagen.getStandarset(parent, daten, false /*replaceMuster*/);;
         String version = Daten.mVConfig.get(MVConfig.SYSTEM_VERSION_PROGRAMMSET);
         if (listePsetStandard != null) {
@@ -84,11 +136,11 @@ public class CheckUpdate {
                     // dann hat das Laden der aktuellen Standardversion nicht geklappt
                     return;
                 }
-                if (version.equals(listePsetStandard.version)) {
+                if (!Daten.delSets && version.equals(listePsetStandard.version)) {
                     // dann passt alles
                     return;
                 } else {
-                    DialogNewSet dialogNewSet = new DialogNewSet(parent, daten);
+                    DialogNewSet dialogNewSet = new DialogNewSet(parent);
                     dialogNewSet.setVisible(true);
                     if (!dialogNewSet.ok) {
                         if (!dialogNewSet.morgen) {

@@ -36,29 +36,45 @@ public class DialogNewSet extends javax.swing.JDialog {
     public boolean ok = false;
     public boolean morgen = true;
     private JFrame parent;
-    private Daten daten;
 
     /**
      *
      * @param pparent
-     * @param ddaten
      */
-    public DialogNewSet(JFrame pparent, Daten ddaten) {
+    public DialogNewSet(JFrame pparent) {
         super(pparent, true);
         initComponents();
         parent = pparent;
-        daten = ddaten;
-        if (pparent != null) {
-            pparent = ddaten.mediathekGui;
-            setLocationRelativeTo(pparent);
+        if (parent != null) {
+            setLocationRelativeTo(parent);
         }
-        setTitle("Das Standardset wurde aktualisert");
-        jTextArea3.setText("\n"
-                + "   Es gibt ein neues Standardset der Videoplayer\n"
-                + "   für den Download und das Abspielen der Filme.\n"
-                + "   \n"
-                + "   Wenn bei Ihnen das Abspielen und Speichern aller Filme\n"
-                + "   klappt, brauchen Sie nichts ändern.\n");
+        if (Daten.delSets) {
+            // Sets sollen wegen Änderungen der Pfade neu angelegt werden
+            jCheckBoxMorgen.setVisible(false);
+            jCheckBoxMorgen.setSelected(false);
+            setTitle("Pfade der Standardset haben sich geändert");
+            jTextArea3.setText("\n"
+                    + "   Pfade zu Hilfsprogrammen haben sich geändert.\n"
+                    + "   Das Standardset der Videoplayer\n"
+                    + "   für den Download und das Abspielen der Filme\n"
+                    + "   wird neu angelegt."
+                    + "   \n");
+        } else {
+            setTitle("Das Standardset wurde aktualisert");
+            jTextArea3.setText("\n"
+                    + "   Es gibt ein neues Standardset der Videoplayer\n"
+                    + "   für den Download und das Abspielen der Filme.\n"
+                    + "   \n"
+                    + "   Wenn bei Ihnen das Abspielen und Speichern aller Filme\n"
+                    + "   klappt, brauchen Sie nichts ändern.\n");
+            jCheckBoxMorgen.setSelected(true);
+            jCheckBoxMorgen.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    morgen = jCheckBoxMorgen.isSelected();
+                }
+            });
+        }
         jTextArea1.setText("\n"
                 + "   Die bestehenden Einstellungen werden nicht verändert.\n"
                 + "   Das neue Set wird nur angefügt und muss dann erst noch in den\n"
@@ -68,12 +84,6 @@ public class DialogNewSet extends javax.swing.JDialog {
         jTextArea2.setText("\n"
                 + "   Es werden alle Programmsets (auch eigene) \n"
                 + "   gelöscht und die neuen Standardsets wieder angelegt.");
-        jCheckBoxMorgen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                morgen = jCheckBoxMorgen.isSelected();
-            }
-        });
         try {
             jXHyperlinkAnleitung.setAction(new UrlHyperlinkAction(pparent, Konstanten.ADRESSE_ANLEITUNG));
         } catch (URISyntaxException ignored) {
@@ -109,7 +119,7 @@ public class DialogNewSet extends javax.swing.JDialog {
         jButtonSetHelp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET_SET)).setVisible(true);
+                new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET_SET)).setVisible(true);
             }
         });
         new EscBeenden(this) {

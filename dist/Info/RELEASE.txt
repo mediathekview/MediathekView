@@ -22,10 +22,15 @@
 	- Status "Film neu" bleibt nach Neustart erhalten
 	- Es könne Untertitel zu Filmen geladen werden (wo verfügbar)
 	- Status der Blacklist (ein-aus) wird im Filterprofil gespeichert
+	- Filterprofilen kann man Namen geben
 	- Tab Download: Rechte Maus auf einen Download: Der gespeicherte Film kann gelöscht werden
 	- Tab Filme, Tab Download: Rechte Maus auf einen Film/Downoad: Abo ändern
 	- TrayIcon: kann in den Einstellungen aktiviert werden
-
+	- Die eigene Mediensammlung kann vor einem Download durchsucht werden, ob schon vorhanden
+	(Einstellungen zur Mediensammlung in den Programmeinstellungen)
+	- Neue Schalter für die Namen der Downloads (Tag, Monat, Jahr, Uhrzeit, Filmqualität)
+	- Geogeblockte Filme können in die Blacklist aufgenommen werden
+	
 	# Version 9
 	- Film-Url auch in HD und Klein in die Zwischenablage kopieren
 	- Anzeige der Plattengröße (freier Platz) beim Anlegen eines Downloads

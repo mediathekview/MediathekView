@@ -35,6 +35,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Main {
+
     public enum StartupMode {
 
         GUI, AUTO, FASTAUTO
@@ -52,7 +53,7 @@ public class Main {
         }
     }
 
-     /*
+    /*
      * Aufruf:
      * java -jar Mediathek [Pfad zur Konfigdatei, sonst homeverzeichnis] [Schalter]
      *
@@ -63,7 +64,6 @@ public class Main {
      * -noGui ohne GUI starten und die Filmliste laden
      *
      * */
-
     /**
      * @param args the command line arguments
      */
@@ -74,7 +74,6 @@ public class Main {
         }
 
         StartupMode state = StartupMode.GUI;
-        boolean showWindowMaximized = false;
 
         if (args != null) {
             for (String s : args) {
@@ -97,16 +96,20 @@ public class Main {
                         Daten.debug = true;
                         break;
 
-                    case "-M":
-                        showWindowMaximized = true;
+                    case "-delset":
+                        Daten.delSets = true;
+                        break;
+
+                    case "-m":
+                        Daten.startMaximized = true;
                         break;
                 }
             }
         }
 
         /*
-        If user tries to start MV from command-line without proper options,
-        instead of crashing while trying to open Swing windows, just change to CLI mode and warn the user.
+         If user tries to start MV from command-line without proper options,
+         instead of crashing while trying to open Swing windows, just change to CLI mode and warn the user.
          */
         if (GraphicsEnvironment.isHeadless() && (state == StartupMode.GUI)) {
             System.err.println("MediathekView wurde nicht als Kommandozeilenprogramm gestartet.");
@@ -127,7 +130,6 @@ public class Main {
                 break;
 
             case GUI:
-                final boolean finalShowWindowMaximized = showWindowMaximized;
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -145,10 +147,10 @@ public class Main {
                             }
                         }
                         if (SystemInfo.isMacOSX()) {
-                            new MediathekGuiMac(args,finalShowWindowMaximized).setVisible(true);
+                            new MediathekGuiMac(args).setVisible(true);
+                        } else {
+                            new MediathekGui(args).setVisible(true);
                         }
-                        else
-                            new MediathekGui(args, finalShowWindowMaximized).setVisible(true);
                     }
                 });
                 break;

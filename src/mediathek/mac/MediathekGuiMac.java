@@ -21,13 +21,14 @@ import java.net.URL;
  * Time: 23:12
  */
 public class MediathekGuiMac extends MediathekGui {
+
     /**
      * Repaint-Thread for progress indicator on OS X.
      */
     private Thread osxProgressIndicatorThread = null;
 
-    public MediathekGuiMac(String[] ar, boolean maximized) {
-        super(ar, maximized);
+    public MediathekGuiMac(String[] ar) {
+        super(ar);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class MediathekGuiMac extends MediathekGui {
     private void setupOsxDockIconBadge() {
         //setup the badge support for displaying active downloads
         ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{
-                ListenerMediathekView.EREIGNIS_START_EVENT, ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS}, MediathekGui.class.getSimpleName()) {
+            ListenerMediathekView.EREIGNIS_START_EVENT, ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS}, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 final int activeDownloads = Daten.downloadInfos.downloadStarts[4];
@@ -102,10 +103,11 @@ public class MediathekGuiMac extends MediathekGui {
         application.setQuitHandler(new QuitHandler() {
             @Override
             public void handleQuitRequestWith(AppEvent.QuitEvent quitEvent, QuitResponse quitResponse) {
-                if (!beenden(false, false))
+                if (!beenden(false, false)) {
                     quitResponse.cancelQuit();
-                else
+                } else {
                     quitResponse.performQuit();
+                }
             }
         });
 
