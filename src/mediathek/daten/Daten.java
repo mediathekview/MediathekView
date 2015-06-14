@@ -71,6 +71,8 @@ public class Daten {
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     // flags
     public static boolean debug = false; // Debugmodus
+    public static boolean startMaximized = false; // Fenster maximieren
+    public static boolean delSets = false; // Programmsets löschen und neu anlegen
     public static boolean auto = false; // Version: MediathekAuto
     public static boolean RESET = false; // Programm auf Starteinstellungen zurücksetzen
     //alle Programmeinstellungen

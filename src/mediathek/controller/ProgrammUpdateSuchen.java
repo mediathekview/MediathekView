@@ -53,11 +53,9 @@ public class ProgrammUpdateSuchen {
     private boolean hinweis;
     private boolean hinweiseAlleAnzeigen;
     private boolean neueVersion = false;
-    private Daten daten;
 
-    public boolean checkVersion(Daten dd, boolean aanzeigen, boolean hhinweis, boolean hhinweiseAlleAnzeigen) {
+    public boolean checkVersion(boolean aanzeigen, boolean hhinweis, boolean hhinweiseAlleAnzeigen) {
         // prüft auf neue Version, aneigen: wenn true, dann AUCH wenn es keine neue Version gibt ein Fenster
-        daten = dd;
         anzeigen = aanzeigen;
         hinweis = hhinweis;
         hinweiseAlleAnzeigen = hhinweiseAlleAnzeigen;
@@ -81,7 +79,7 @@ public class ProgrammUpdateSuchen {
                         if (checkObNeueVersion(version, Konstanten.VERSION)) {
                             neueVersion = true;
                             // DialogHinweisUpdate(java.awt.Frame parent, boolean modal, String ttext, String dialogTitel, Daten ddaten) {
-                            new DialogHinweisUpdate(null, true, daten, "Eine neue Version liegt vor",
+                            new DialogHinweisUpdate(null, true, "Eine neue Version liegt vor",
                                     "   ==================================================\n"
                                     + "   Neue Version:\n" + "   " + version + "\n\n"
                                     + "   ==================================================\n"
@@ -90,13 +88,13 @@ public class ProgrammUpdateSuchen {
                                     + "   URL:\n"
                                     + "   " + downloadUrlProgramm + "\n\n").setVisible(true);
                         } else {
-                            DialogHinweisUpdate dialog = new DialogHinweisUpdate(null, true, daten, "Update suchen", "Alles aktuell!");
+                            DialogHinweisUpdate dialog = new DialogHinweisUpdate(null, true, "Update suchen", "Alles aktuell!");
                             if (anzeigen) {
                                 dialog.setVisible(true);
                             }
                         }
                     } else {
-                        new DialogHinweisUpdate(null, true, daten, "Fehler bei der Versionsprüfung!", "Es ist ein Fehler aufgetreten!" + "\n\n" + "").setVisible(true);
+                        new DialogHinweisUpdate(null, true, "Fehler bei der Versionsprüfung!", "Es ist ein Fehler aufgetreten!" + "\n\n" + "").setVisible(true);
                     }
                 }
             });
@@ -112,7 +110,7 @@ public class ProgrammUpdateSuchen {
                 StringBuilder text = new StringBuilder();
                 int angezeigt = 0;
                 if (Daten.mVConfig.get(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT).equals("")) {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT,Integer.toString(-1));
+                    Daten.mVConfig.add(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(-1));
                 } else {
                     angezeigt = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT));
                 }
@@ -125,7 +123,7 @@ public class ProgrammUpdateSuchen {
                     }
                 }
                 if (text.length() > 0) {
-                    new DialogHinweisUpdate(null, true, daten, "Infos", text.toString()).setVisible(true);
+                    new DialogHinweisUpdate(null, true, "Infos", text.toString()).setVisible(true);
                     Daten.mVConfig.add(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(listInfos.size()));
                 }
             } catch (Exception ex) {
@@ -133,12 +131,13 @@ public class ProgrammUpdateSuchen {
             }
         } else if (alleAnzeigen) {
             // dann wenigstens einen Hinweis, dass es keine gibt
-            new DialogHinweisUpdate(null, true, daten, "Infos", "keine vorhanden").setVisible(true);
+            new DialogHinweisUpdate(null, true, "Infos", "keine vorhanden").setVisible(true);
         }
     }
 
     /**
      * Check if a newer version exists.
+     *
      * @param infoVersion
      * @param currentVersion
      * @return true if there is a newer version
