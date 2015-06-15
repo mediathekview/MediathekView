@@ -402,7 +402,7 @@ public class GuiFilme extends PanelVorlage {
         if (pset != null) {
             playerStarten(pset);
         } else {
-            MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Einstellungen->Aufzeichnen und Abspielen\" ein Programm zum Abspielen festlegen.",
+            MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Einstellungen->Aufzeichnen und Abspielen->Set bearbeiten\" ein Programm zum Abspielen festlegen.",
                     "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
         }
     }
@@ -413,7 +413,7 @@ public class GuiFilme extends PanelVorlage {
 
     private synchronized void saveFilm(DatenPset pSet) {
         if (Daten.listePset.getListeSpeichern().isEmpty()) {
-            MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Einstellungen->Aufzeichnen und Abspielen\" ein Programm zum Aufzeichnen festlegen.",
+            MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Einstellungen->Aufzeichnen und Abspielen->Set bearbeiten\" ein Programm zum Aufzeichnen festlegen.",
                     "fehlende Einstellungen zum Speichern!", JOptionPane.INFORMATION_MESSAGE);
             // Satz mit x, war wohl nix
         } else {
