@@ -221,6 +221,13 @@ public class MediathekGui extends JFrame {
         String pfad = "";
         initComponents();
         if (ar != null) {
+            Log.systemMeldung("");
+            Log.systemMeldung("==========================================");
+            for (String s : ar) {
+                Log.systemMeldung("Startparameter: " + s);
+            }
+            Log.systemMeldung("==========================================");
+            Log.systemMeldung("");
             if (ar.length > 0) {
                 if (!ar[0].startsWith("-")) {
                     if (!ar[0].endsWith(File.separator)) {
@@ -366,6 +373,9 @@ public class MediathekGui extends JFrame {
         }
         duration.ping("Gui steht!");
         if (Daten.delSets) {
+            Log.systemMeldung("==========================================");
+            Log.systemMeldung("Sets neu anlegen");
+            Log.systemMeldung("");
             // die Sets sollen neu angelegt werden
             // setzt die Standardpfade für die wichtigsten Programme
             Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());

@@ -143,10 +143,13 @@ public class CheckUpdate {
                     DialogNewSet dialogNewSet = new DialogNewSet(parent);
                     dialogNewSet.setVisible(true);
                     if (!dialogNewSet.ok) {
+                        Log.systemMeldung("Setanlegen: Abbruch");
                         if (!dialogNewSet.morgen) {
                             // dann auch die Versionsnummer aktualisieren
+                            Log.systemMeldung("Setanlegen: Nicht wieder nachfragen");
                             Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
                         }
+                        Log.systemMeldung("==========================================");
                         // dann halt nicht
                         return;
                     }
@@ -180,6 +183,8 @@ public class CheckUpdate {
                 }
             }
             GuiFunktionenProgramme.addSetVorlagen(daten.mediathekGui, daten, listePsetStandard, true /*auto*/, true /*setVersion*/); // damit auch AddOns geladen werden
+            Log.systemMeldung("Setanlegen: OK");
+            Log.systemMeldung("==========================================");
         }
     }
 
