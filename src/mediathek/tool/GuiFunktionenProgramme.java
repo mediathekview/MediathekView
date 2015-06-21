@@ -91,9 +91,9 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                         break;
                     }
                 }
-                if (!new File(pfad).exists() && System.getenv("PATH_VLC") != null) {
-                    pfad = System.getenv("PATH_VLC");
-                }
+        }
+        if (!new File(pfad).exists() && System.getenv("PATH_VLC") != null) {
+            pfad = System.getenv("PATH_VLC");
         }
         if (!new File(pfad).exists()) {
             pfad = "";
@@ -122,9 +122,12 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 break;
             default:
                 pfad = PFAD_WINDOWS_FLV;
-                if (!new File(pfad).exists() && System.getenv("PATH_FLVSTREAMER") != null) {
-                    pfad = System.getenv("PATH_FLVSTREAMER");
-                }
+        }
+        if (!new File(pfad).exists() && System.getenv("PATH_FLVSTREAMER") != null) {
+            pfad = System.getenv("PATH_FLVSTREAMER");
+        }
+        if (!new File(pfad).exists()) {
+            pfad = "";
         }
         return pfad;
     }
@@ -150,9 +153,12 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 break;
             default:
                 pfad = PFAD_WINDOWS_FFMPEG;
-                if (!new File(pfad).exists() && System.getenv("PATH_FFMPEG") != null) {
-                    pfad = System.getenv("PATH_FFMPEG");
-                }
+        }
+        if (!new File(pfad).exists() && System.getenv("PATH_FFMPEG") != null) {
+            pfad = System.getenv("PATH_FFMPEG");
+        }
+        if (!new File(pfad).exists()) {
+            pfad = "";
         }
         return pfad;
     }
