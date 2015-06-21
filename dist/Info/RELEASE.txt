@@ -31,7 +31,7 @@
 	- Neue Schalter für die Namen der Downloads (Tag, Monat, Jahr, Uhrzeit, Filmqualität)
 	- Geogeblockte Filme können in die Blacklist aufgenommen werden
 	- Win: beim Suchen der Hilfsprogramme der Sets können Umgebungsvariablen benutzt werden:
-	(PATH_VLC, PATH_FLVSTREAMER,PATH_FFMPEG)
+	(PATH_VLC, PATH_FLVSTREAMER, PATH_FFMPEG)
 	- Mit dem Startschalter "-delset" werden die Sets neu angelegt
 	
 	# Version 9
