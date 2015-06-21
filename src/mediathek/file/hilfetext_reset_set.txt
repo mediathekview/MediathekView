@@ -7,7 +7,7 @@ verändert. Die neuen Sets werden an die Liste der
 bestehenden Sets angehängt und sind danach noch 
 nicht aktiv. Das muss dann noch in den
 
-"Einstellungen->Aufzeichnen und Abspielen->Set bearbeiten"
+"Datei->Einstellungen->Set bearbeiten"
 
 geschehen.
 
