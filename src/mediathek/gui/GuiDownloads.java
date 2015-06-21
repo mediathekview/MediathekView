@@ -1096,7 +1096,7 @@ public class GuiDownloads extends PanelVorlage {
                             if (SystemInfo.isMacOSX()) {
                                 menuPath = "MediathekView->Einstellungen…->Aufzeichnen und Abspielen->Set bearbeiten";
                             } else {
-                                menuPath = "Datei->Einstellungen->Aufzeichnen und Abspielen->Set bearbeiten";
+                                menuPath = "Datei->Einstellungen->Set bearbeiten";
                             }
                             MVMessageDialog.showMessageDialog(parentComponent, "Bitte legen Sie im Menü \"" + menuPath + "\" ein Programm zum Abspielen fest.",
                                     "Kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);

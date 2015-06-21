@@ -466,7 +466,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 gefunden = true;
             } else if (parent != null) {
                 // sonst sind wir evtl. nur in einer Konsole ohne X
-                MVMessageDialog.showMessageDialog(parent, "Im Menü unter \"Datei->Einstellungen->Aufzeichnen und Abspielen->Set bearbeiten\" ein Programm zum Aufzeichnen für Abos festlegen.",
+                MVMessageDialog.showMessageDialog(parent, "Im Menü unter \"Datei->Einstellungen->Set bearbeiten\" ein Programm zum Aufzeichnen für Abos festlegen.",
                         "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
                 break;
             }

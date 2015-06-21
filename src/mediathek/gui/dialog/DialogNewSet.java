@@ -78,7 +78,7 @@ public class DialogNewSet extends javax.swing.JDialog {
         jTextArea1.setText("\n"
                 + "   Die bestehenden Einstellungen werden nicht verändert.\n"
                 + "   Das neue Set wird nur angefügt und muss dann erst noch in den\n"
-                + "   \"Einstellungen->Aufzeichnen und Abspielen->Set bearbeiten\"\n"
+                + "   \"Datei->Einstellungen->Set bearbeiten\"\n"
                 + "   aktiviert werden.\n");
 
         jTextArea2.setText("\n"
