@@ -29,6 +29,7 @@ public class FilenameUtils {
     private static final String REGEXP_ILLEGAL_CHARACTERS_OTHERS = "[:\\\\/*|<>]";
 
     public static String checkDateiname(final String name, final boolean isPath) {
+        // dient nur zur Anzeige für Probleme (Textfeld wird rot)
         String ret = name;
         boolean isWindowsPath = false;
         final String splitChar;
@@ -88,7 +89,9 @@ public class FilenameUtils {
      * @return Cleanup string with no dots anymore.
      */
     private static String removeWindowsTrailingDots(String fileName) {
-        while (!fileName.isEmpty() && fileName.endsWith(".")) {
+        // machte unter Wind noch Probleme: "betrifft: ..."
+        // "." und " " am Ende machen Probleme
+        while (!fileName.isEmpty() && (fileName.endsWith(".") || fileName.endsWith(" "))) {
             fileName = fileName.substring(0, fileName.length() - 1);
         }
         return fileName;
