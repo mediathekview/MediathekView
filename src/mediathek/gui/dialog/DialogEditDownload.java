@@ -20,19 +20,25 @@
 package mediathek.gui.dialog;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
+import mediathek.file.GetFile;
+import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import msearch.daten.DatenFilm;
 
@@ -52,10 +58,12 @@ public class DialogEditDownload extends javax.swing.JDialog {
     private String dateiGroesse_HD = "";
     private String dateiGroesse_Hoch = "";
     private String dateiGroesse_Klein = "";
+    private JFrame parent = null;
 
     public DialogEditDownload(JFrame parent, boolean modal, DatenDownload ddownload, boolean ggestartet) {
         super(parent, modal);
         initComponents();
+        this.parent = parent;
         datenDownload = ddownload;
         gestartet = ggestartet;
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
@@ -289,19 +297,47 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 c.weightx = 10;
                 gridbag.setConstraints(jCheckBoxSpotlight, c);
                 jPanelExtra.add(jCheckBoxSpotlight);
+            } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR) {
+                if (datenDownload.art == DatenDownload.ART_PROGRAMM) {
+                    // nur bei Downloads über ein Programm
+                    labelListe[i].setForeground(Color.BLUE);
+                    textfeldListe[i].setEditable(!gestartet);// und wenn noch nicht gestartet
+                    textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
+                    gridbag.setConstraints(labelListe[i], c);
+                    jPanelExtra.add(labelListe[i]);
+
+                    JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                    jp.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+                    JButton jButtonHelp = new JButton("");
+                    jButtonHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
+                    jButtonHelp.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG)).setVisible(true);
+                        }
+                    });
+
+                    jp.add(jButtonHelp);
+                    jp.add(textfeldListe[i]);
+                    c.gridx = 1;
+                    c.weightx = 10;
+                    gridbag.setConstraints(jp, c);
+                    jPanelExtra.add(jp);
+                } else {
+                    gridbag.setConstraints(labelListe[i], c);
+                    jPanelExtra.add(labelListe[i]);
+                    //Textfeld
+                    c.gridx = 1;
+                    c.weightx = 10;
+                    gridbag.setConstraints(textfeldListe[i], c);
+                    jPanelExtra.add(textfeldListe[i]);
+                }
             } else {
                 if (i == DatenDownload.DOWNLOAD_NR_NR) {
                     textfeldListe[i].setText(datenDownload.nr + "");
                 } else if (i == DatenDownload.DOWNLOAD_FILM_NR_NR) {
                     if (datenDownload.film != null) {
                         textfeldListe[i].setText(datenDownload.film.nr + "");
-                    }
-                } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR) {
-                    if (datenDownload.art == DatenDownload.ART_PROGRAMM) {
-                        // nur bei Downloads über ein Programm
-                        labelListe[i].setForeground(Color.BLUE);
-                        textfeldListe[i].setEditable(!gestartet);// und wenn noch nicht gestartet
-                        textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
                     }
                 } else if (i == DatenDownload.DOWNLOAD_URL_NR) {
                     if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
