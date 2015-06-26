@@ -157,7 +157,7 @@
                 <Property name="columns" type="int" value="20"/>
                 <Property name="lineWrap" type="boolean" value="true"/>
                 <Property name="rows" type="int" value="5"/>
-                <Property name="text" type="java.lang.String" value="Damit k&#xf6;nnen Abos/Blacklist aus einer alten gesicherten Konfigurationsdatei&#xa;importiert werden.&#xa;&#xa;Sollen die aktuellen Abos/Blacklist durch die importierten ersetzt werden,&#xa;sollten die aktuellen zuerst gel&#xf6;scht werden.&#xa;&#xa;Die importierten Abos/Blacklist werden an die vorhandenen angeh&#xe4;ngt.&#xa;"/>
+                <Property name="text" type="java.lang.String" value="Damit k&#xf6;nnen Abos/Blacklist aus einer alten gesicherten Konfigurationsdatei&#xa;importiert werden.&#xa;(mediathek.xml oder mediathek.xml_copy_1, mediathek.xml_copy_2, ..)&#xa;&#xa;&#xa;Sollen die aktuellen Abos/Blacklist durch die importierten ersetzt werden,&#xa;sollten die aktuellen zuerst gel&#xf6;scht werden.&#xa;&#xa;Die importierten Abos/Blacklist werden an die vorhandenen angeh&#xe4;ngt.&#xa;"/>
               </Properties>
             </Component>
           </SubComponents>

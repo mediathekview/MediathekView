@@ -119,7 +119,7 @@ public class PanelImport extends PanelVorlage {
         jTextArea1.setColumns(20);
         jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
-        jTextArea1.setText("Damit können Abos/Blacklist aus einer alten gesicherten Konfigurationsdatei\nimportiert werden.\n\nSollen die aktuellen Abos/Blacklist durch die importierten ersetzt werden,\nsollten die aktuellen zuerst gelöscht werden.\n\nDie importierten Abos/Blacklist werden an die vorhandenen angehängt.\n");
+        jTextArea1.setText("Damit können Abos/Blacklist aus einer alten gesicherten Konfigurationsdatei\nimportiert werden.\n(mediathek.xml oder mediathek.xml_copy_1, mediathek.xml_copy_2, ..)\n\n\nSollen die aktuellen Abos/Blacklist durch die importierten ersetzt werden,\nsollten die aktuellen zuerst gelöscht werden.\n\nDie importierten Abos/Blacklist werden an die vorhandenen angehängt.\n");
         jScrollPane1.setViewportView(jTextArea1);
 
         jCheckBoxAbo.setText("Abos importieren");

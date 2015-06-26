@@ -65,8 +65,31 @@ public class RuntimeExec {
     //===================================
     public Process exec() {
         try {
-            //process = new ProcessBuilder(prog).start();
-            process = Runtime.getRuntime().exec(prog);
+            if (!datenDownload.progExecArray.isEmpty()) {
+                Log.systemMeldung("=====================");
+                Log.systemMeldung("Start Array: ");
+                String[] arrStr = datenDownload.progExecArray.toArray(new String[]{});
+                String execStr = "";
+                for (String s : arrStr) {
+                    execStr += s;
+                    Log.systemMeldung(" ->" + s);
+                }
+                if (execStr.equals(prog)) {
+                    process = Runtime.getRuntime().exec(arrStr);
+                } else {
+                    Log.systemMeldung("Der Aufruf wurde verändert, es wird das verwendet:");
+                    Log.systemMeldung(" -> " + prog);
+                    process = Runtime.getRuntime().exec(prog);
+                }
+                Log.systemMeldung("=====================");
+            } else {
+                Log.systemMeldung("=====================");
+                Log.systemMeldung("Der Aufruf nicht als Array:");
+                Log.systemMeldung(" -> " + prog);
+                Log.systemMeldung("=====================");
+                process = Runtime.getRuntime().exec(prog);
+            }
+
             clearIn = new Thread(new ClearInOut(INPUT, process));
             clearOut = new Thread(new ClearInOut(ERROR, process));
             clearIn.start();

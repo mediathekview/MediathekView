@@ -603,7 +603,6 @@ public final class MVTable extends JTable {
     private void spaltenAusschaltenDownloads(int i) {
         if (i == DatenDownload.DOWNLOAD_FILM_URL_NR
                 || i == DatenDownload.DOWNLOAD_URL_RTMP_NR
-                || i == DatenDownload.DOWNLOAD_URL_AUTH_NR
                 || i == DatenDownload.DOWNLOAD_URL_SUBTITLE_NR
                 || i == DatenDownload.DOWNLOAD_PROGRAMM_NR
                 || i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR

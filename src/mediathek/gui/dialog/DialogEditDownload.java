@@ -170,9 +170,12 @@ public class DialogEditDownload extends javax.swing.JDialog {
         }
         if (datenDownload.art == DatenDownload.ART_PROGRAMM && datenDownload.pSet != null) {
             // muss noch der Programmaufruf neu gebaut werden
-            DatenDownload d = new DatenDownload(datenDownload.pSet, datenDownload.film, datenDownload.quelle, datenDownload.abo, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR],
+            DatenDownload d = new DatenDownload(datenDownload.pSet, datenDownload.film, datenDownload.quelle, datenDownload.abo,
+                    datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR],
                     datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR], res);
+
             datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR] = d.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
+            datenDownload.progExecArray = d.progExecArray;
             textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR].setText(datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
         }
         datenDownload.setGroesse(size);
@@ -206,7 +209,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
         c.gridx = 0;
         c.weightx = 0;
         if (i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR
-                || i == DatenDownload.DOWNLOAD_URL_AUTH_NR || i == DatenDownload.DOWNLOAD_URL_RTMP_NR
+                || i == DatenDownload.DOWNLOAD_URL_RTMP_NR
                 || i == DatenDownload.DOWNLOAD_BUTTON_DEL_NR || i == DatenDownload.DOWNLOAD_BUTTON_START_NR
                 || i == DatenDownload.DOWNLOAD_REF_NR
                 || i == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
