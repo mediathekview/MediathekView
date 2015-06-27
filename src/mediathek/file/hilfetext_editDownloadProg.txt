@@ -1,6 +1,15 @@
 
-Bei geänderte Programmaufrufe kann es zu
-Problemen mit Leerzeichen in Pfadangaben kommen.
+Der Programmaufruf wird vom Programm in die einzelnen
+Teile zerlegt. Die einzelnen Programmschalter müssen 
+durch "<>" getrennt angegeben werden. Dadurch ist es 
+möglich, auch Pfade mit Leerzeichen zu verwenden.
 
-Geänderte Programmaufrufe werden vom Programm
-anders abgearbeitet.
+Diese Form ist nur notwendig, wenn man in diesem Dialog
+den Aufruf nachträglich verändern will.
+
+der Aufruf:
+PFAD/ffmpeg -i URL -c copy -bsf:a aac_adtstoasc ZIELPFAD/DATEI.mp4
+
+wird so angegeben:
+Pfad/ffmpeg<>-i<>URL<>-c<>copy<>-bsf:a<>aac_adtstoasc<>ZIELPFAD/DATEI.mp4
+

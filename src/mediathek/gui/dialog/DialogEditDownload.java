@@ -58,6 +58,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
     private String dateiGroesse_Hoch = "";
     private String dateiGroesse_Klein = "";
     private JFrame parent = null;
+    private String orgProgArray = "";
 
     public DialogEditDownload(JFrame parent, boolean modal, DatenDownload ddownload, boolean ggestartet) {
         super(parent, modal);
@@ -67,6 +68,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
         gestartet = ggestartet;
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
 
+        orgProgArray = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR];
         mVPanelDownloadZiel = new MVPanelDownloadZiel(parent, datenDownload, false);
         mVPanelDownloadZiel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jRadioButtonResHd.addActionListener(new ActionListener() {
@@ -316,6 +318,14 @@ public class DialogEditDownload extends javax.swing.JDialog {
                     gc.insets = new Insets(2, 2, 2, 2);
                     jp.setLayout(gb);
 
+                    JButton jButtonReset = new JButton("");
+                    jButtonReset.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
+                    jButtonReset.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR].setText(orgProgArray);
+                        }
+                    });
                     JButton jButtonHelp = new JButton("");
                     jButtonHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
                     jButtonHelp.addActionListener(new ActionListener() {
@@ -326,6 +336,10 @@ public class DialogEditDownload extends javax.swing.JDialog {
                     });
 
                     gc.gridy = 0;
+                    gc.gridx = 0;
+                    gc.weightx = 1;
+                    gb.setConstraints(jButtonHelp, gc);
+                    jp.add(jButtonHelp);
                     gc.gridx = 1;
                     gc.weightx = 10;
                     gb.setConstraints(textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR], gc);
@@ -334,9 +348,8 @@ public class DialogEditDownload extends javax.swing.JDialog {
                     gc.gridy = 1;
                     gc.gridx = 0;
                     gc.weightx = 1;
-                    gb.setConstraints(jButtonHelp, gc);
-                    jp.add(jButtonHelp);
-
+                    gb.setConstraints(jButtonReset, gc);
+                    jp.add(jButtonReset);
                     gc.gridx = 1;
                     gc.weightx = 10;
                     gb.setConstraints(textfeldListe[i], gc);
