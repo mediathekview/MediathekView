@@ -90,6 +90,26 @@ public class DatenProg {
         return arr[PROGRAMM_PROGRAMMPFAD_NR] + " " + arr[PROGRAMM_SCHALTER_NR];
     }
 
+    public String getProgrammAufrufArray() {
+        String ret = "";
+        ret = arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR];
+        String[] ar = arr[DatenProg.PROGRAMM_SCHALTER_NR].split(" ");
+        for (String s : ar) {
+            ret = ret + DatenDownload.TRENNER_PROG_ARRAY + s;
+        }
+        return ret;
+    }
+
+    public static String makeProgAufrufArray(String pArray) {
+        String[] progArray = pArray.split(DatenDownload.TRENNER_PROG_ARRAY);
+        String execStr = "";
+        for (String s : progArray) {
+            execStr = execStr + s + " ";
+        }
+        execStr = execStr.trim(); // letztes Leerzeichen wieder entfernen
+        return execStr;
+    }
+
     @Override
     public String toString() {
         String ret = "";
