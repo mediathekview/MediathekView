@@ -27,6 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import mediathek.controller.Log;
 import mediathek.daten.DatenDownload;
+import mediathek.daten.DatenProg;
 import mediathek.tool.ListenerMediathekView;
 
 public class RuntimeExec {
@@ -34,6 +35,7 @@ public class RuntimeExec {
     private static final int INPUT = 1;
     private static final int ERROR = 2;
     private final String prog;
+    private String[] progArray = null;
     Thread clearIn;
     Thread clearOut;
     private Process process = null;
@@ -49,11 +51,23 @@ public class RuntimeExec {
     private long oldSize = 0;
     private long oldSecs = 0;
     private DatenDownload datenDownload = null;
+    String execArray = "";
 
     public RuntimeExec(DatenDownload d) {
         datenDownload = d;
-        start = d.start;
-        prog = d.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
+        start = datenDownload.start;
+        prog = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
+        progArray = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR].split(DatenDownload.TRENNER_PROG_ARRAY);
+        execArray = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR];
+        String execStr = DatenProg.makeProgAufrufArray(execArray);
+        if (!execStr.equals(prog)) {
+            // dann wurde der Progaufruf geändert
+            progArray = null;
+            Log.systemMeldung("=====================");
+            Log.systemMeldung("Array: ");
+            Log.systemMeldung("Der Aufruf wurde verändert, nicht als Array starten");
+            Log.systemMeldung("=====================");
+        }
     }
 
     public RuntimeExec(String p) {
@@ -65,26 +79,15 @@ public class RuntimeExec {
     //===================================
     public Process exec() {
         try {
-            if (!datenDownload.progExecArray.isEmpty()) {
+            if (progArray != null) {
                 Log.systemMeldung("=====================");
-                Log.systemMeldung("Start Array: ");
-                String[] arrStr = datenDownload.progExecArray.toArray(new String[]{});
-                String execStr = "";
-                for (String s : arrStr) {
-                    execStr += s;
-                    Log.systemMeldung(" ->" + s);
-                }
-                if (execStr.equals(prog)) {
-                    process = Runtime.getRuntime().exec(arrStr);
-                } else {
-                    Log.systemMeldung("Der Aufruf wurde verändert, es wird das verwendet:");
-                    Log.systemMeldung(" -> " + prog);
-                    process = Runtime.getRuntime().exec(prog);
-                }
+                Log.systemMeldung("Starte Array: ");
+                Log.systemMeldung(" -> " + execArray);
                 Log.systemMeldung("=====================");
+                process = Runtime.getRuntime().exec(progArray);
             } else {
                 Log.systemMeldung("=====================");
-                Log.systemMeldung("Der Aufruf nicht als Array:");
+                Log.systemMeldung("Starte nicht als Array:");
                 Log.systemMeldung(" -> " + prog);
                 Log.systemMeldung("=====================");
                 process = Runtime.getRuntime().exec(prog);

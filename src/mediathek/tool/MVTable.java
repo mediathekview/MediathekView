@@ -606,6 +606,7 @@ public final class MVTable extends JTable {
                 || i == DatenDownload.DOWNLOAD_URL_SUBTITLE_NR
                 || i == DatenDownload.DOWNLOAD_PROGRAMM_NR
                 || i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR
+                || i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR
                 || i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR
                 || i == DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR
                 || i == DatenDownload.DOWNLOAD_ZIEL_PFAD_NR

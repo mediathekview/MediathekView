@@ -161,6 +161,7 @@ public class StarterClass {
             text.add(DatenDownload.ART_DOWNLOAD_TXT);
         } else {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
+            text.add("Programmaufruf[]: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR]);
         }
         Log.systemMeldung(text.toArray(new String[text.size()]));
     }
@@ -203,6 +204,7 @@ public class StarterClass {
             text.add(DatenDownload.ART_DOWNLOAD_TXT);
         } else {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
+            text.add("Programmaufruf[]: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR]);
         }
         Log.systemMeldung(text.toArray(new String[text.size()]));
         if (!start.stoppen && !abgebrochen) {
