@@ -51,9 +51,18 @@ public class MVSubtitle {
         try {
             url = datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE_NR];
             new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
-            String suff = "txt";
+            String suff = ".xml"; // txt käme dem Infofile in die Quere
             if (url.contains(".")) {
                 suff = url.substring(url.lastIndexOf("."));
+
+                // erstmal putzen
+                String newSuff;
+                newSuff = suff.replaceAll(FilenameUtils.REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "--");
+                newSuff = newSuff.replaceAll(FilenameUtils.REGEXP_ILLEGAL_CHARACTERS_OTHERS, "--");
+
+                if (!newSuff.equals(suff) || suff.length() > 6 /* zur Sicherheit: .ttml, ..*/) {
+                    suff = ".xml";
+                }
             }
             file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] + suff);
 
