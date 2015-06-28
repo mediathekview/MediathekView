@@ -21,12 +21,12 @@ public class FilenameUtils {
      * Valid characters for Windows in file names:
      * Based on http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx
      */
-    private static final String REGEXP_ILLEGAL_CHARACTERS_WINDOWS = "[:\\\\/*?|<>\"]";
+    public static final String REGEXP_ILLEGAL_CHARACTERS_WINDOWS = "[:\\\\/*?|<>\"]";
 
     /**
      * Valid characters for all UNIX-like OS.
      */
-    private static final String REGEXP_ILLEGAL_CHARACTERS_OTHERS = "[:\\\\/*|<>]";
+    public static final String REGEXP_ILLEGAL_CHARACTERS_OTHERS = "[:\\\\/*|<>]";
 
     public static String checkDateiname(final String name, final boolean isPath) {
         // dient nur zur Anzeige für Probleme (Textfeld wird rot)
