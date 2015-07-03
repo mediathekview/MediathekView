@@ -27,15 +27,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import mediathek.controller.Log;
 import mediathek.daten.DatenDownload;
-import mediathek.daten.DatenProg;
 import mediathek.tool.ListenerMediathekView;
 
 public class RuntimeExec {
 
     private static final int INPUT = 1;
     private static final int ERROR = 2;
-    private final String prog;
-    private String[] progArray = null;
     Thread clearIn;
     Thread clearOut;
     private Process process = null;
@@ -51,27 +48,23 @@ public class RuntimeExec {
     private long oldSize = 0;
     private long oldSecs = 0;
     private DatenDownload datenDownload = null;
-    String execArray = "";
+    private final String strProgCall;
+    private String[] arrProgCallArray = null;
+    private String strProgCallArray = "";
 
     public RuntimeExec(DatenDownload d) {
         datenDownload = d;
         start = datenDownload.start;
-        prog = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
-        progArray = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR].split(DatenDownload.TRENNER_PROG_ARRAY);
-        execArray = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR];
-        String execStr = DatenProg.makeProgAufrufArray(execArray);
-        if (!execStr.equals(prog)) {
-            // dann wurde der Progaufruf geändert
-            progArray = null;
-            Log.systemMeldung("=====================");
-            Log.systemMeldung("Array: ");
-            Log.systemMeldung("Der Aufruf wurde verändert, nicht als Array starten");
-            Log.systemMeldung("=====================");
+        strProgCall = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
+        arrProgCallArray = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR].split(DatenDownload.TRENNER_PROG_ARRAY);
+        strProgCallArray = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR];
+        if (arrProgCallArray.length <= 1) {
+            arrProgCallArray = null;
         }
     }
 
     public RuntimeExec(String p) {
-        prog = p;
+        strProgCall = p;
     }
 
     //===================================
@@ -79,18 +72,18 @@ public class RuntimeExec {
     //===================================
     public Process exec() {
         try {
-            if (progArray != null) {
+            if (arrProgCallArray != null) {
                 Log.systemMeldung("=====================");
                 Log.systemMeldung("Starte Array: ");
-                Log.systemMeldung(" -> " + execArray);
+                Log.systemMeldung(" -> " + strProgCallArray);
                 Log.systemMeldung("=====================");
-                process = Runtime.getRuntime().exec(progArray);
+                process = Runtime.getRuntime().exec(arrProgCallArray);
             } else {
                 Log.systemMeldung("=====================");
                 Log.systemMeldung("Starte nicht als Array:");
-                Log.systemMeldung(" -> " + prog);
+                Log.systemMeldung(" -> " + strProgCall);
                 Log.systemMeldung("=====================");
-                process = Runtime.getRuntime().exec(prog);
+                process = Runtime.getRuntime().exec(strProgCall);
             }
 
             clearIn = new Thread(new ClearInOut(INPUT, process));
@@ -108,10 +101,10 @@ public class RuntimeExec {
     //===================================
     private class ClearInOut implements Runnable {
 
-        private int art;
+        private final int art;
         private BufferedReader buff;
         private InputStream in;
-        private Process process;
+        private final Process process;
         private int percent = 0;
         private int percent_start = -1;
 
@@ -200,8 +193,6 @@ public class RuntimeExec {
                             long akt = start.startZeit.diffInSekunden();
                             if (oldSecs < akt - 5) {
                                 start.bandbreite = (aktSize - oldSize) * 1_000 / (akt - oldSecs);
-//                                    long si = aktSize - oldSize;
-//                                    long ti = (akt - oldSecs);
                                 oldSecs = akt;
                                 oldSize = aktSize;
                             }

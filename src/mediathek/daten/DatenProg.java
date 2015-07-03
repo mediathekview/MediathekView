@@ -91,7 +91,7 @@ public class DatenProg {
     }
 
     public String getProgrammAufrufArray() {
-        String ret = "";
+        String ret;
         ret = arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR];
         String[] ar = arr[DatenProg.PROGRAMM_SCHALTER_NR].split(" ");
         for (String s : ar) {
