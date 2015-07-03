@@ -319,6 +319,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
                     jp.setLayout(gb);
 
                     JButton jButtonReset = new JButton("");
+                    jButtonReset.setToolTipText("Reset");
                     jButtonReset.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
                     jButtonReset.addActionListener(new ActionListener() {
                         @Override
@@ -327,6 +328,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
                         }
                     });
                     JButton jButtonHelp = new JButton("");
+                    jButtonHelp.setToolTipText("Hilfe");
                     jButtonHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
                     jButtonHelp.addActionListener(new ActionListener() {
                         @Override
@@ -359,14 +361,14 @@ public class DialogEditDownload extends javax.swing.JDialog {
                     c.weightx = 10;
                     gridbag.setConstraints(jp, c);
                     jPanelExtra.add(jp);
-                } else {
-                    gridbag.setConstraints(labelListe[i], c);
-                    jPanelExtra.add(labelListe[i]);
-                    //Textfeld
-                    c.gridx = 1;
-                    c.weightx = 10;
-                    gridbag.setConstraints(textfeldListe[i], c);
-                    jPanelExtra.add(textfeldListe[i]);
+//                } else {
+//                    gridbag.setConstraints(labelListe[i], c);
+//                    jPanelExtra.add(labelListe[i]);
+//                    //Textfeld
+//                    c.gridx = 1;
+//                    c.weightx = 10;
+//                    gridbag.setConstraints(textfeldListe[i], c);
+//                    jPanelExtra.add(textfeldListe[i]);
                 }
             } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR) {
 //                if (datenDownload.art == DatenDownload.ART_PROGRAMM) {
