@@ -33,6 +33,7 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVFilmSize;
+import mediathek.tool.MVFunctionSys;
 import msearch.daten.DatenFilm;
 import msearch.tool.Datum;
 
@@ -562,9 +563,12 @@ public class DatenDownload implements Comparable<DatenDownload> {
             befehlsString = replaceExec(befehlsString);
             arr[DOWNLOAD_PROGRAMM_AUFRUF_NR] = befehlsString;
 
-            String progArray = programm.getProgrammAufrufArray();
-            progArray = replaceExec(progArray);
-            arr[DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR] = progArray;
+            if (MVFunctionSys.getOs() == MVFunctionSys.OperatingSystemType.LINUX) {
+                // klappt nur bei Linux gut :), Win verwendet Programmpfade mit LEERZEICHEN!!
+                String progArray = programm.getProgrammAufrufArray();
+                progArray = replaceExec(progArray);
+                arr[DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR] = progArray;
+            }
         }
     }
 
@@ -572,7 +576,9 @@ public class DatenDownload implements Comparable<DatenDownload> {
         befehlsString = befehlsString.replace("**", arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         befehlsString = befehlsString.replace("%f", arr[DOWNLOAD_URL_NR]);
         befehlsString = befehlsString.replace("%F", arr[DOWNLOAD_URL_RTMP_NR]);
-        //==========================brauchts eigentlich nicht mehr
+
+        // ================
+        // brauchts eigentlich nicht mehr
 //        befehlsString = befehlsString.replace("%k", arr[DOWNLOAD_URL_NR]); // ehemals kleine Auflösung
 //        befehlsString = befehlsString.replace("%K", arr[DOWNLOAD_URL_RTMP_NR]); // ehemals kleine Auflösung
 //            befehlsString = befehlsString.replace("%x", AsxLesen.lesen(arr[DOWNLOAD_URL_NR]));
