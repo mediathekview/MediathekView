@@ -300,111 +300,80 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 gridbag.setConstraints(jCheckBoxSpotlight, c);
                 jPanelExtra.add(jCheckBoxSpotlight);
             } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR) {
-                // da passiert nix
             } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR) {
                 if (datenDownload.art == DatenDownload.ART_PROGRAMM) {
                     // nur bei Downloads über ein Programm
-                    labelListe[i].setForeground(Color.BLUE);
-                    textfeldListe[i].setEditable(!gestartet);// und wenn noch nicht gestartet
-                    textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
-                    gridbag.setConstraints(labelListe[i], c);
-                    jPanelExtra.add(labelListe[i]);
+                    if (datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR].isEmpty()) {
+                        // Aufruf über Array ist leer -> Win, Mac
+                        labelListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR].setForeground(Color.BLUE);
+                        textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR].setEditable(!gestartet);// und wenn noch nicht gestartet
+                        textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR));
+                        gridbag.setConstraints(labelListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR], c);
+                        jPanelExtra.add(labelListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR]);
+                        c.gridx = 1;
+                        c.weightx = 10;
+                        gridbag.setConstraints(textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR], c);
+                        jPanelExtra.add(textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
+                    } else {
+                        // dann ist ein Array vorhanden -> Linux
+                        labelListe[i].setForeground(Color.BLUE);
+                        textfeldListe[i].setEditable(!gestartet);// und wenn noch nicht gestartet
+                        textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
+                        gridbag.setConstraints(labelListe[i], c);
+                        jPanelExtra.add(labelListe[i]);
+                        JPanel jp = new JPanel();
+                        jp.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+                        GridBagLayout gb = new GridBagLayout();
+                        GridBagConstraints gc = new GridBagConstraints();
+                        gc.fill = GridBagConstraints.HORIZONTAL;
+                        gc.insets = new Insets(2, 2, 2, 2);
+                        jp.setLayout(gb);
 
-                    JPanel jp = new JPanel();
-                    jp.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-                    GridBagLayout gb = new GridBagLayout();
-                    GridBagConstraints gc = new GridBagConstraints();
-                    gc.fill = GridBagConstraints.HORIZONTAL;
-                    gc.insets = new Insets(2, 2, 2, 2);
-                    jp.setLayout(gb);
+                        JButton jButtonReset = new JButton("");
+                        jButtonReset.setToolTipText("Reset");
+                        jButtonReset.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
+                        jButtonReset.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR].setText(orgProgArray);
+                            }
+                        });
+                        JButton jButtonHelp = new JButton("");
+                        jButtonHelp.setToolTipText("Hilfe");
+                        jButtonHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
+                        jButtonHelp.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG)).setVisible(true);
+                            }
+                        });
 
-                    JButton jButtonReset = new JButton("");
-                    jButtonReset.setToolTipText("Reset");
-                    jButtonReset.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
-                    jButtonReset.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR].setText(orgProgArray);
-                        }
-                    });
-                    JButton jButtonHelp = new JButton("");
-                    jButtonHelp.setToolTipText("Hilfe");
-                    jButtonHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
-                    jButtonHelp.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG)).setVisible(true);
-                        }
-                    });
+                        gc.gridy = 0;
+                        gc.gridx = 0;
+                        gc.weightx = 1;
+                        gb.setConstraints(jButtonHelp, gc);
+                        jp.add(jButtonHelp);
+                        gc.gridx = 1;
+                        gc.weightx = 10;
+                        gb.setConstraints(textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR], gc);
+                        jp.add(textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
 
-                    gc.gridy = 0;
-                    gc.gridx = 0;
-                    gc.weightx = 1;
-                    gb.setConstraints(jButtonHelp, gc);
-                    jp.add(jButtonHelp);
-                    gc.gridx = 1;
-                    gc.weightx = 10;
-                    gb.setConstraints(textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR], gc);
-                    jp.add(textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
+                        gc.gridy = 1;
+                        gc.gridx = 0;
+                        gc.weightx = 1;
+                        gb.setConstraints(jButtonReset, gc);
+                        jp.add(jButtonReset);
+                        gc.gridx = 1;
+                        gc.weightx = 10;
+                        gb.setConstraints(textfeldListe[i], gc);
+                        jp.add(textfeldListe[i]);
 
-                    gc.gridy = 1;
-                    gc.gridx = 0;
-                    gc.weightx = 1;
-                    gb.setConstraints(jButtonReset, gc);
-                    jp.add(jButtonReset);
-                    gc.gridx = 1;
-                    gc.weightx = 10;
-                    gb.setConstraints(textfeldListe[i], gc);
-                    jp.add(textfeldListe[i]);
-
-                    c.gridx = 1;
-                    c.weightx = 10;
-                    gridbag.setConstraints(jp, c);
-                    jPanelExtra.add(jp);
-//                } else {
-//                    gridbag.setConstraints(labelListe[i], c);
-//                    jPanelExtra.add(labelListe[i]);
-//                    //Textfeld
-//                    c.gridx = 1;
-//                    c.weightx = 10;
-//                    gridbag.setConstraints(textfeldListe[i], c);
-//                    jPanelExtra.add(textfeldListe[i]);
+                        c.gridx = 1;
+                        c.weightx = 10;
+                        gridbag.setConstraints(jp, c);
+                        jPanelExtra.add(jp);
+                    }
                 }
-            } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR) {
-//                if (datenDownload.art == DatenDownload.ART_PROGRAMM) {
-//                    // nur bei Downloads über ein Programm
-//                    labelListe[i].setForeground(Color.BLUE);
-//                    textfeldListe[i].setEditable(!gestartet);// und wenn noch nicht gestartet
-//                    textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
-//                    gridbag.setConstraints(labelListe[i], c);
-//                    jPanelExtra.add(labelListe[i]);
-//
-//                    JPanel jp = new JPanel(new FlowLayout(FlowLayout.LEFT));
-//                    jp.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-//                    JButton jButtonHelp = new JButton("");
-//                    jButtonHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
-//                    jButtonHelp.addActionListener(new ActionListener() {
-//                        @Override
-//                        public void actionPerformed(ActionEvent e) {
-//                            new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG)).setVisible(true);
-//                        }
-//                    });
-//
-//                    jp.add(textfeldListe[i]);
-//                    jp.add(jButtonHelp);
-//                    c.gridx = 1;
-//                    c.weightx = 10;
-//                    gridbag.setConstraints(jp, c);
-//                    jPanelExtra.add(jp);
-//                } else {
-                gridbag.setConstraints(labelListe[i], c);
-                jPanelExtra.add(labelListe[i]);
-                //Textfeld
-                c.gridx = 1;
-                c.weightx = 10;
-                gridbag.setConstraints(textfeldListe[i], c);
-                jPanelExtra.add(textfeldListe[i]);
-//                }
             } else {
                 if (i == DatenDownload.DOWNLOAD_NR_NR) {
                     textfeldListe[i].setText(datenDownload.nr + "");
