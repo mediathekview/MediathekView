@@ -39,18 +39,18 @@ import mediathek.tool.MVConfig;
 import msearch.filmlisten.MSFilmlisteLesen;
 
 public class GuiDebug extends JPanel {
-
+    
     private final JButton[] buttonSender;
     private final String[] sender;
     private Daten daten;
-
+    
     public GuiDebug(Daten d) {
         super();
         initComponents();
         daten = d;
         sender = Daten.filmeLaden.getSenderNamen();
         buttonSender = new JButton[sender.length];
-
+        
         jPanel3.setLayout(new GridLayout(1, 1));
         jPanel3.add(new PanelInfoStarts());
         jPanel3.repaint();
@@ -62,7 +62,7 @@ public class GuiDebug extends JPanel {
         }
         addSender();
         jButtonNeuLaden.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Daten.listeFilme.clear();
@@ -102,7 +102,7 @@ public class GuiDebug extends JPanel {
                 Daten.listeFilme.check();
             }
         });
-
+        
         jButtonCheckUrl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -123,14 +123,14 @@ public class GuiDebug extends JPanel {
             }
         });
         jButtonClean.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Daten.listeFilme.cleanList();
             }
         });
         jToggleButtonFastAuto.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent ae) {
                 if (jToggleButtonFastAuto.isSelected()) {
@@ -142,7 +142,7 @@ public class GuiDebug extends JPanel {
         });
         jButtonDir.addActionListener(new BeobPfad());
         jButtonSize.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 String path = jTextFieldPath.getText();
@@ -166,6 +166,15 @@ public class GuiDebug extends JPanel {
                 }
             }
         });
+        jButtonSearchUrl.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!jTextFieldSearchUrl.getText().isEmpty()) {
+                    daten.guiFilme.searchUrl(jTextFieldSearchUrl.getText());
+                }
+            }
+        });
         addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -174,7 +183,7 @@ public class GuiDebug extends JPanel {
             }
         });
     }
-
+    
     private void addSender() {
         jPanelLoeschen.removeAll();
         jPanelLoeschen.setLayout(new GridLayout(0, 5));
@@ -209,6 +218,8 @@ public class GuiDebug extends JPanel {
         jButtonSize = new javax.swing.JButton();
         jTextFieldPath = new javax.swing.JTextField();
         jButtonDir = new javax.swing.JButton();
+        jButtonSearchUrl = new javax.swing.JButton();
+        jTextFieldSearchUrl = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
 
         jPanelSender.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Sender löschen"));
@@ -307,6 +318,8 @@ public class GuiDebug extends JPanel {
 
         jButtonDir.setText(":::");
 
+        jButtonSearchUrl.setText("URL suchen");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -324,11 +337,15 @@ public class GuiDebug extends JPanel {
                             .addComponent(jButtonGc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButtonAllesSpeichern, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jToggleButtonFastAuto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButtonSize, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jButtonSize, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonSearchUrl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldPath, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonDir)))
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jTextFieldPath, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonDir))
+                            .addComponent(jTextFieldSearchUrl))))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -347,7 +364,11 @@ public class GuiDebug extends JPanel {
                     .addComponent(jButtonSize)
                     .addComponent(jTextFieldPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonDir))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 196, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonSearchUrl)
+                    .addComponent(jTextFieldSearchUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 153, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonCheckUrl)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -357,6 +378,8 @@ public class GuiDebug extends JPanel {
         jPanel5Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonCheckUrl, jTextFieldUrl});
 
         jPanel5Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonDir, jTextFieldPath});
+
+        jPanel5Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonSearchUrl, jTextFieldSearchUrl});
 
         jTabbedSender.addTab("Tool", jPanel5);
 
@@ -400,31 +423,33 @@ public class GuiDebug extends JPanel {
     private javax.swing.JButton jButtonFilmlisteLoeschen;
     private javax.swing.JButton jButtonGc;
     private javax.swing.JButton jButtonNeuLaden;
+    private javax.swing.JButton jButtonSearchUrl;
     private javax.swing.JButton jButtonSize;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanelLoeschen;
     private javax.swing.JTextField jTextFieldPath;
+    private javax.swing.JTextField jTextFieldSearchUrl;
     private javax.swing.JTextField jTextFieldUrl;
     private javax.swing.JToggleButton jToggleButtonFastAuto;
     // End of variables declaration//GEN-END:variables
 
     private class BeobSenderLoeschen implements ActionListener {
-
+        
         private final String sender;
-
+        
         public BeobSenderLoeschen(String ssender) {
             sender = ssender;
         }
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             Daten.listeFilme.deleteAllFilms(sender);
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
         }
     }
-
+    
     private class BeobPfad implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...

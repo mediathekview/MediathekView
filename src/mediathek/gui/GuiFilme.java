@@ -36,6 +36,7 @@ import java.awt.print.PrinterException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.LinkedList;
+import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
@@ -175,6 +176,10 @@ public class GuiFilme extends PanelVorlage {
 
     public void guiFilmeFiltern() {
         loadTable();
+    }
+
+    public void searchUrl(String url) {
+        searchUrl_(url);
     }
 
     public void init() {
@@ -573,6 +578,18 @@ public class GuiFilme extends PanelVorlage {
     // ############################################
     // Filter
     // ############################################
+    private void searchUrl_(String url) {
+        // nur für Tests
+        url = url.trim();
+        TModelFilm m = (TModelFilm) tabelle.getModel();
+        for (int i = 0; i < m.getRowCount(); ++i) {
+            if (!url.equals(m.getValueAt(i, DatenFilm.FILM_URL_NR).toString())) {
+                m.removeRow(i);
+                --i;
+            }
+        }
+    }
+
     private void setFilterPanel() {
         boolean history = false;
         if (mVFilter != null) {
