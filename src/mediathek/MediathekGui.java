@@ -162,10 +162,12 @@ public class MediathekGui extends JFrame {
     private int splashScreenProgress = 0;
 
     /**
-     * Update the {@link java.awt.SplashScreen} with the given text
-     *
-     * @param text The text which is to be displayed.
+     * wegeb der möglichen Abfrage: "Backup laden.."
      */
+    public void closeSplashScreen() {
+        splashScreenContext = null;
+    }
+
     public void updateSplashScreenText(final String text) {
         //bail out when we don´ have a splash screen...
         if (splashScreenContext == null) {
@@ -261,9 +263,8 @@ public class MediathekGui extends JFrame {
         daten.filmInfoHud = new MVFilmInformation(this, jTabbedPane, daten);
         duration.ping("HUD");
 
-        if (IoXmlLesen.einstellungenExistieren()) {
-            // gibt schon Programmeinstellungen, dann damit starten
-            daten.allesLaden();
+        if (daten.allesLaden()) {
+            // alles geladen
             updateSplashScreenText("GUI Initialisieren...");
         } else {
             // erster Start
