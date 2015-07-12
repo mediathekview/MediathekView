@@ -49,6 +49,8 @@ public class MVSubtitle {
             return;
         }
         try {
+            Log.systemMeldung(new String[]{"Untertitel: ", datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE_NR],
+                "schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]});
             url = datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE_NR];
             new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
             String suff = ".xml"; // txt käme dem Infofile in die Quere
@@ -101,6 +103,7 @@ public class MVSubtitle {
             while ((n = in.read(buffer)) != -1) {
                 fos.write(buffer, 0, n);
             }
+            Log.systemMeldung(new String[]{"Untertitel", "  geschrieben"});
         } catch (IOException ex) {
             if (conn != null) {
                 try {

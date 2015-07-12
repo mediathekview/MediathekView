@@ -563,12 +563,12 @@ public class DatenDownload implements Comparable<DatenDownload> {
             befehlsString = replaceExec(befehlsString);
             arr[DOWNLOAD_PROGRAMM_AUFRUF_NR] = befehlsString;
 
-            if (MVFunctionSys.getOs() == MVFunctionSys.OperatingSystemType.LINUX) {
+//            if (MVFunctionSys.getOs() == MVFunctionSys.OperatingSystemType.LINUX) {
                 // klappt nur bei Linux gut :), Win verwendet Programmpfade mit LEERZEICHEN!!
                 String progArray = programm.getProgrammAufrufArray();
                 progArray = replaceExec(progArray);
                 arr[DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR] = progArray;
-            }
+//            }
         }
     }
 
