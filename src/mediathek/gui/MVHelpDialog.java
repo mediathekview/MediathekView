@@ -32,10 +32,10 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.EscBeenden;
-import mediathek.tool.MVFunctionSys;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVFunctionSys;
 import mediathek.tool.UrlHyperlinkAction;
 
 public class MVHelpDialog extends javax.swing.JDialog {

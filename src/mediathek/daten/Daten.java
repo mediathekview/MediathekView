@@ -31,6 +31,7 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JOptionPane;
@@ -244,6 +245,27 @@ public class Daten {
         return xmlFilePath;
     }
 
+    /**
+     * Return the path to "mediathek.xml_copy_"
+     * first copy exists
+     *
+     * @return Path object to mediathek.xml_copy_? file
+     */
+    public static ArrayList<Path> getMediathekXmlCopyFilePath() {
+        ArrayList<Path> xmlFilePath = new ArrayList<>();
+        try {
+            for (int i = 1; i <= MAX_COPY; ++i) {
+                Path path = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
+                if (Files.exists(path)) {
+                    xmlFilePath.add(path);
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return xmlFilePath;
+    }
+
     public static void filmlisteSpeichern() {
         new WriteFilmlistJson().filmlisteSchreibenJson(getDateiFilmliste(), listeFilme);
     }
@@ -308,15 +330,14 @@ public class Daten {
         }
     }
 
-    public void allesLaden() {
+    public boolean allesLaden() {
         updateSplashScreen("Lade Konfigurationsdaten...");
 
-        Path xmlFilePath = Daten.getMediathekXmlFilePath();
-        if (!IoXmlLesen.datenLesen(xmlFilePath)) {
-            // dann hat das Laden nicht geklappt
-            listePset.clear();
-            GuiFunktionenProgramme.addSetVorlagen(mediathekGui, this, ListePsetVorlagen.getStandarset(mediathekGui, this, true /*replaceMuster*/), true /*auto*/, true /*setVersion*/);
-            init();
+        if (!load()) {
+            Log.systemMeldung("Konfig konnte nicht gelesen werden!");
+            // teils geladene Reste entfernen
+            clearKonfig();
+            return false;
         }
 
         mVColor.load(); // Farben einrichten
@@ -337,6 +358,71 @@ public class Daten {
         Daten.listeDownloads.filmEintragen(); // Filme bei einmalDownloads eintragen
         Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
         MVListeFilme.checkBlacklist(); // ToDo brauchts das??
+        return true;
+    }
+
+    private void clearKonfig() {
+        init();
+        listePset.clear();
+        mVReplaceList.list.clear();
+        listeAbo.clear();
+        listeDownloads.clear();
+        listeBlacklist.clear();
+    }
+
+    private boolean load() {
+        boolean ret = false;
+        Path xmlFilePath = Daten.getMediathekXmlFilePath();
+
+        if (Files.exists(xmlFilePath)) {
+            if (IoXmlLesen.datenLesen(xmlFilePath)) {
+                return true;
+            }
+        }
+
+        // dann hat das Laden nicht geklappt
+        Log.systemMeldung("Konfig konnte nicht gelesen werden!");
+        if (loadBackup()) {
+            ret = true;
+        }
+        return ret;
+    }
+
+    private boolean loadBackup() {
+        boolean ret = false;
+        ArrayList<Path> path = Daten.getMediathekXmlCopyFilePath();
+        if (path == null) {
+            Log.systemMeldung("gibt kein Backup");
+            return false;
+        }
+
+        // dann gibts ein Backup
+        Log.systemMeldung("gibt aber ein Backup");
+        mediathekGui.closeSplashScreen();
+        int r = JOptionPane.showConfirmDialog(null, "Die Einstellungen sind beschädigt\n"
+                + "und können nicht geladen werden.\n"
+                + "Soll versucht werden, mit gesicherten\n"
+                + "Einstellungen zu starten?\n\n"
+                + "(ansonsten startet das Programm mit\n"
+                + "Standardeinstellungen)", "Gesicherte Einstellungen laden?", JOptionPane.YES_NO_OPTION);
+
+        if (r != JOptionPane.OK_OPTION) {
+            Log.systemMeldung("User wills Backup nicht");
+            return false;
+        }
+
+        for (Path p : path) {
+            // teils geladene Reste entfernen
+            clearKonfig();
+
+            if (IoXmlLesen.datenLesen(p)) {
+                Log.systemMeldung(new String[]{"Backup: ", p.toString(), "  geladen"});
+                ret = true;
+                break;
+            }
+
+        }
+        return ret;
     }
 
     public void allesSpeichern() {
