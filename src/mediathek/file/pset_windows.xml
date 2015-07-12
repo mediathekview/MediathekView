@@ -35,8 +35,8 @@
     <Programm>
         <Programmname>vlc ( &lt;#&gt; )</Programmname>
         <Zieldateiname>%t-%T-%N.ts</Zieldateiname>
-        <Programmpfad>cmd /c</Programmpfad>
-        <Programmschalter>"PFAD_VLC" %f :sout=#standard{access=file,mux=ts,dst="**"} -I "dummy" --play-and-exit</Programmschalter>
+        <Programmpfad>cmd</Programmpfad>
+        <Programmschalter>/c "PFAD_VLC" %f :sout=#standard{access=file,mux=ts,dst="**"} -I "dummy" --play-and-exit</Programmschalter>
     </Programm>
     
     <Programmset>
@@ -49,16 +49,9 @@
         <Beschreibung>Standardset zum direkten Abspielen der Filme</Beschreibung>
     </Programmset>
     <Programm>
-        <Programmname>flvstreamer</Programmname>
-        <Programmpfad>cmd /c</Programmpfad>
-        <Programmschalter>bin\flvstreamer_win32_latest.exe %F --quiet | "PFAD_VLC" -</Programmschalter>
-        <Praefix>rtmp</Praefix>
-        <Restart>false</Restart>
-    </Programm>
-    <Programm>
         <Programmname>Vlc</Programmname>
-        <Programmpfad>cmd /c</Programmpfad>
-        <Programmschalter>"PFAD_VLC" %f --play-and-exit</Programmschalter>
+        <Programmpfad>PFAD_VLC</Programmpfad>
+        <Programmschalter>%f --play-and-exit</Programmschalter>
     </Programm>
     
 </Mediathek>
