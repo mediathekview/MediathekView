@@ -110,6 +110,8 @@ public class MVInfoFile {
 
     public static void writeInfoFile(DatenDownload datenDownload) {
         try {
+            Log.systemMeldung(new String[]{"Infofile schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]});
+
             new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
             Path path = Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] + ".txt");
             BufferedWriter br = new BufferedWriter(new OutputStreamWriter(new DataOutputStream(Files.newOutputStream(path))));
@@ -158,6 +160,7 @@ public class MVInfoFile {
             br.write("\n\n");
             br.flush();
             br.close();
+            Log.systemMeldung(new String[]{"Infofile", "  geschrieben"});
         } catch (IOException ex) {
             Log.fehlerMeldung(975410369, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
