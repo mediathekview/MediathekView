@@ -48,13 +48,6 @@
         <Beschreibung>Standardset zum direkten Abspielen der Filme</Beschreibung>
     </Programmset>
     <Programm>
-        <Programmname>skript</Programmname>
-        <Programmpfad>PFAD_SCRIPT</Programmpfad>
-        <Programmschalter>PFAD_FLVSTREAMER PFAD_VLC %F</Programmschalter>
-        <Praefix>rtmp</Praefix>
-        <Restart>false</Restart>
-    </Programm>
-    <Programm>
         <Programmname>Vlc</Programmname>
         <Programmpfad>PFAD_VLC</Programmpfad>
         <Programmschalter>%f --play-and-exit</Programmschalter>
