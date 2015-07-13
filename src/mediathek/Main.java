@@ -30,6 +30,8 @@ import mediathek.tool.MVSingleInstance;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -74,6 +76,26 @@ public class Main {
         }
 
         StartupMode state = StartupMode.GUI;
+
+        try {
+            String tmp = System.getProperty("http.proxyUser", System.getProperty("https.proxyUser"));
+            if (tmp != null) {
+                Authenticator.setDefault(new Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        String proxyUser = System.getProperty("http.proxyUser");
+                        String proxyPassword = System.getProperty("http.proxyPassword");
+                        return new PasswordAuthentication(proxyUser, proxyPassword.toCharArray());
+                    }
+                });
+                Log.systemMeldung("Proxy Authentication: (" + System.getProperty("http.proxyUser") + ")");
+            } else {
+                Log.systemMeldung("Proxy Authentication: not configured");
+            }
+
+        } catch (SecurityException se) {
+            Log.systemMeldung("Proxy Authentication: cannot access proxyUser / proxyPassword" + se.toString());
+        }
 
         if (args != null) {
             for (String s : args) {
