@@ -249,10 +249,10 @@ public class Daten {
      * Return the path to "mediathek.xml_copy_"
      * first copy exists
      *
+     * @param xmlFilePath
      * @return Path object to mediathek.xml_copy_? file
      */
-    public static ArrayList<Path> getMediathekXmlCopyFilePath() {
-        ArrayList<Path> xmlFilePath = new ArrayList<>();
+    public static void getMediathekXmlCopyFilePath(ArrayList<Path> xmlFilePath) {
         try {
             for (int i = 1; i <= MAX_COPY; ++i) {
                 Path path = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
@@ -263,7 +263,6 @@ public class Daten {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return xmlFilePath;
     }
 
     public static void filmlisteSpeichern() {
@@ -334,12 +333,13 @@ public class Daten {
         updateSplashScreen("Lade Konfigurationsdaten...");
 
         if (!load()) {
-            Log.systemMeldung("Konfig konnte nicht gelesen werden!");
+            Log.systemMeldung("Weder Konfig noch Backup konnte geladen werden!");
             // teils geladene Reste entfernen
             clearKonfig();
             return false;
         }
 
+        Log.systemMeldung("Konfig wurde gelesen!");
         mVColor.load(); // Farben einrichten
         MVFont.initFont(); // Fonts einrichten
 
@@ -377,11 +377,16 @@ public class Daten {
         if (Files.exists(xmlFilePath)) {
             if (IoXmlLesen.datenLesen(xmlFilePath)) {
                 return true;
+            } else {
+                // dann hat das Laden nicht geklappt
+                Log.systemMeldung("Konfig konnte nicht gelesen werden!");
             }
+        } else {
+            // dann hat das Laden nicht geklappt
+            Log.systemMeldung("Konfig existiert nicht!");
         }
 
-        // dann hat das Laden nicht geklappt
-        Log.systemMeldung("Konfig konnte nicht gelesen werden!");
+        // versuchen das Backup zu laden
         if (loadBackup()) {
             ret = true;
         }
@@ -390,14 +395,15 @@ public class Daten {
 
     private boolean loadBackup() {
         boolean ret = false;
-        ArrayList<Path> path = Daten.getMediathekXmlCopyFilePath();
-        if (path == null) {
-            Log.systemMeldung("gibt kein Backup");
+        ArrayList<Path> path = new ArrayList<>();
+        Daten.getMediathekXmlCopyFilePath(path);
+        if (path.isEmpty()) {
+            Log.systemMeldung("Es gibt kein Backup");
             return false;
         }
 
         // dann gibts ein Backup
-        Log.systemMeldung("gibt aber ein Backup");
+        Log.systemMeldung("Es gibt ein Backup");
         mediathekGui.closeSplashScreen();
         int r = JOptionPane.showConfirmDialog(null, "Die Einstellungen sind beschädigt\n"
                 + "und können nicht geladen werden.\n"
@@ -407,16 +413,16 @@ public class Daten {
                 + "Standardeinstellungen)", "Gesicherte Einstellungen laden?", JOptionPane.YES_NO_OPTION);
 
         if (r != JOptionPane.OK_OPTION) {
-            Log.systemMeldung("User wills Backup nicht");
+            Log.systemMeldung("User will kein Backup laden.");
             return false;
         }
 
         for (Path p : path) {
             // teils geladene Reste entfernen
             clearKonfig();
-
+            Log.systemMeldung(new String[]{"Versuch Backup zu laden:", p.toString()});
             if (IoXmlLesen.datenLesen(p)) {
-                Log.systemMeldung(new String[]{"Backup: ", p.toString(), "  geladen"});
+                Log.systemMeldung(new String[]{"Backup hat geklappt:", p.toString()});
                 ret = true;
                 break;
             }
