@@ -25,20 +25,25 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import mediathek.controller.Log;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenProg;
 import mediathek.file.GetFile;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
+import mediathek.tool.MVMessageDialog;
 import msearch.daten.DatenFilm;
 
 public class DialogEditDownload extends javax.swing.JDialog {
@@ -59,6 +64,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
     private String dateiGroesse_Klein = "";
     private JFrame parent = null;
     private String orgProgArray = "";
+    private String resolution = DatenFilm.AUFLOESUNG_NORMAL;
 
     public DialogEditDownload(JFrame parent, boolean modal, DatenDownload ddownload, boolean ggestartet) {
         super(parent, modal);
@@ -95,8 +101,9 @@ public class DialogEditDownload extends javax.swing.JDialog {
         jButtonOk.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                check();
-                beenden();
+                if (check()) {
+                    beenden();
+                }
             }
         });
         jButtonAbbrechen.addActionListener(new ActionListener() {
@@ -151,6 +158,13 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 }
             }
 
+        }
+        if (jRadioButtonResHd.isSelected()) {
+            resolution = DatenFilm.AUFLOESUNG_HD;
+        } else if (jRadioButtonResLo.isSelected()) {
+            resolution = DatenFilm.AUFLOESUNG_KLEIN;
+        } else {
+            resolution = DatenFilm.AUFLOESUNG_NORMAL;
         }
     }
 
@@ -430,10 +444,43 @@ public class DialogEditDownload extends javax.swing.JDialog {
         }
     }
 
-    private void check() {
+    private boolean downloadDateiLoeschen(DatenDownload datenDownload) {
+        try {
+            File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            if (!file.exists()) {
+                return true; // gibt nichts zu löschen
+            }
+
+            int ret = JOptionPane.showConfirmDialog(parent,
+                    "Die Auflösung wurde geändert, der Film kann nicht weitergeführt werden.\n"
+                    + "Datei muss zuerst gelöscht werden.", "Film Löschen?", JOptionPane.YES_NO_OPTION);
+            if (ret != JOptionPane.OK_OPTION) {
+                return false; // user will nicht
+            }
+
+            // und jetzt die Datei löschen
+            Log.systemMeldung(new String[]{"Datei löschen: ", file.getAbsolutePath()});
+            if (!file.delete()) {
+                throw new Exception();
+            }
+        } catch (Exception ex) {
+            MVMessageDialog.showMessageDialog(parent, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
+            Log.fehlerMeldung(812036789, "Fehler beim löschen: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+        }
+        return true;
+    }
+
+    private boolean check() {
         mVPanelDownloadZiel.setPfadName_geaendert();
-//        mVPanelDownloadZiel.saveComboPfad();
-        ok = true;
+        if ((jRadioButtonResHd.isSelected() && !resolution.equals(DatenFilm.AUFLOESUNG_HD))
+                || (jRadioButtonResLo.isSelected() && !resolution.equals(DatenFilm.AUFLOESUNG_KLEIN))
+                || (jRadioButtonResHi.isSelected() && !resolution.equals(DatenFilm.AUFLOESUNG_NORMAL))) {
+            // dann wurde die Auflösung geändert -> Film kann nicht weitergeführt werden
+            ok = downloadDateiLoeschen(datenDownload);
+        } else {
+            ok = true;
+        }
+        return ok;
     }
 
     private void beenden() {
