@@ -362,74 +362,82 @@ public class GuiDownloads extends PanelVorlage {
         Daten.listeDownloads.listePutzen(datenDownload);
     }
 
-    private synchronized void downloadAendern() {
-        int row = tabelle.getSelectedRow();
-        if (row != -1) {
-            DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
-            boolean gestartet = false;
-            if (datenDownload.start != null) {
-                if (datenDownload.start.status >= Start.STATUS_RUN) {
-                    gestartet = true;
-                }
-            }
-            DatenDownload datenDownloadKopy = datenDownload.getCopy();
-            DialogEditDownload dialog = new DialogEditDownload(parentComponent, true, datenDownloadKopy, gestartet);
-            dialog.setVisible(true);
-            if (dialog.ok) {
-                datenDownload.aufMichKopieren(datenDownloadKopy);
-                reloadTable();
+    private ArrayList<DatenDownload> getSelDownloads() {
+        ArrayList<DatenDownload> arrayDownloads = new ArrayList<>();
+        int rows[] = tabelle.getSelectedRows();
+        if (rows.length > 0) {
+            for (int row : rows) {
+                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
+                arrayDownloads.add(datenDownload);
             }
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
+        }
+        return arrayDownloads;
+    }
+
+    private DatenDownload getSelDownload() {
+        DatenDownload datenDownload = null;
+        int row = tabelle.getSelectedRow();
+        if (row >= 0) {
+            datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
+        } else {
+            new HinweisKeineAuswahl().zeigen(parentComponent);
+        }
+        return datenDownload;
+    }
+
+    private synchronized void downloadAendern() {
+        DatenDownload datenDownload = getSelDownload();
+        if (datenDownload == null) {
+            return;
+        }
+        boolean gestartet = false;
+        if (datenDownload.start != null) {
+            if (datenDownload.start.status >= Start.STATUS_RUN) {
+                gestartet = true;
+            }
+        }
+        DatenDownload datenDownloadKopy = datenDownload.getCopy();
+        DialogEditDownload dialog = new DialogEditDownload(parentComponent, true, datenDownloadKopy, gestartet);
+        dialog.setVisible(true);
+        if (dialog.ok) {
+            datenDownload.aufMichKopieren(datenDownloadKopy);
+            reloadTable();
         }
     }
 
     private void downloadsVorziehen() {
-        String[] urls;
-        // ==========================
-        // erst mal die URLs sammeln
-        int[] rows = tabelle.getSelectedRows();
-        urls = new String[rows.length];
-        if (rows.length >= 0) {
-            for (int i = 0; i < rows.length; i++) {
-                int row = tabelle.convertRowIndexToModel(rows[i]);
-                urls[i] = tabelle.getModel().getValueAt(row, DatenDownload.DOWNLOAD_URL_NR).toString();
-            }
-            Daten.listeDownloads.downloadsVorziehen(urls);
-        } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+        ArrayList<DatenDownload> arrayDownloads = getSelDownloads();
+        if (arrayDownloads.isEmpty()) {
+            return;
         }
+        Daten.listeDownloads.downloadsVorziehen(arrayDownloads);
     }
 
     private void zielordnerOeffnen() {
-        int row = tabelle.getSelectedRow();
-        if (row >= 0) {
-            DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
-            String s = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
-            DirOpenAction.zielordnerOeffnen(parentComponent, s);
-        } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+        DatenDownload datenDownload = getSelDownload();
+        if (datenDownload == null) {
+            return;
         }
+        String s = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
+        DirOpenAction.zielordnerOeffnen(parentComponent, s);
     }
 
     private void filmAbspielen_() {
-        int row = tabelle.getSelectedRow();
-        if (row >= 0) {
-            DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
-            String s = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR];
-            OpenPlayerAction.filmAbspielen(parentComponent, s);
-        } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+        DatenDownload datenDownload = getSelDownload();
+        if (datenDownload == null) {
+            return;
         }
+        String s = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR];
+        OpenPlayerAction.filmAbspielen(parentComponent, s);
     }
 
     private void filmLoeschen_() {
-        int row = tabelle.getSelectedRow();
-        if (row < 0) {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+        DatenDownload datenDownload = getSelDownload();
+        if (datenDownload == null) {
             return;
         }
-        DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
         // Download nur löschen wenn er nicht läuft
         if (datenDownload.start != null) {
             if (datenDownload.start.status < Start.STATUS_FERTIG) {
@@ -445,14 +453,13 @@ public class GuiDownloads extends PanelVorlage {
             }
             int ret = JOptionPane.showConfirmDialog(parentComponent,
                     datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR], "Film Löschen?", JOptionPane.YES_NO_OPTION);
-            if (ret != JOptionPane.OK_OPTION) {
-                return;
-            }
+            if (ret == JOptionPane.OK_OPTION) {
 
-            // und jetzt die Datei löschen
-            Log.systemMeldung(new String[]{"Datei löschen: ", file.getAbsolutePath()});
-            if (!file.delete()) {
-                throw new Exception();
+                // und jetzt die Datei löschen
+                Log.systemMeldung(new String[]{"Datei löschen: ", file.getAbsolutePath()});
+                if (!file.delete()) {
+                    throw new Exception();
+                }
             }
         } catch (Exception ex) {
             MVMessageDialog.showMessageDialog(parentComponent, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
@@ -461,46 +468,47 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void downloadLoeschen(boolean dauerhaft) {
+        ArrayList<DatenDownload> arrayDownloads = getSelDownloads();
+        if (arrayDownloads.isEmpty()) {
+            return;
+        }
+        int[] rows = tabelle.getSelectedRows();
         String zeit = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
-        int rows[] = tabelle.getSelectedRows();
-        if (rows.length > 0) {
-            ArrayList<String> arrayUrls = new ArrayList<>();
-            LinkedList<MVUsedUrl> urlAboList = new LinkedList<>();
-            for (int row : rows) {
-                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
-                if (dauerhaft) {
-                    arrayUrls.add(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
-                    if (datenDownload.istAbo()) {
-                        // ein Abo wird zusätzlich ins Logfile geschrieben
-                        urlAboList.add(new MVUsedUrl(zeit,
-                                datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],
-                                datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR],
-                                datenDownload.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]));
-                    }
-                } else {
-                    // wenn nicht dauerhaft
-                    datenDownload.zurueckstellen();
+
+        ArrayList<DatenDownload> arrayDownloadsLoeschen = new ArrayList<>();
+        LinkedList<MVUsedUrl> urlAboList = new LinkedList<>();
+
+        for (DatenDownload datenDownload : arrayDownloads) {
+            if (dauerhaft) {
+                arrayDownloadsLoeschen.add(datenDownload);
+                if (datenDownload.istAbo()) {
+                    // ein Abo wird zusätzlich ins Logfile geschrieben
+                    urlAboList.add(new MVUsedUrl(zeit,
+                            datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],
+                            datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR],
+                            datenDownload.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]));
+                }
+            } else {
+                // wenn nicht dauerhaft
+                datenDownload.zurueckstellen();
+            }
+        }
+        if (!urlAboList.isEmpty()) {
+            daten.erledigteAbos.zeilenSchreiben(urlAboList);
+        }
+        Daten.listeDownloads.downloadLoeschen(arrayDownloadsLoeschen);
+        reloadTable();
+        // ausrichten
+        if (tabelle.getRowCount() > 0 && rows.length >= 1) {
+            int s = rows[0];
+            if (s >= tabelle.getRowCount()) {
+                s = tabelle.getRowCount() - 1;
+                if (s < 0) {
+                    s = 0;
                 }
             }
-            if (!urlAboList.isEmpty()) {
-                daten.erledigteAbos.zeilenSchreiben(urlAboList);
-            }
-            Daten.listeDownloads.downloadLoeschen(arrayUrls);
-            reloadTable();
-            // ausrichten
-            if (tabelle.getRowCount() > 0 && rows.length >= 1) {
-                int s = rows[0];
-                if (s >= tabelle.getRowCount()) {
-                    s = tabelle.getRowCount() - 1;
-                    if (s < 0) {
-                        s = 0;
-                    }
-                }
-                tabelle.setRowSelectionInterval(s, s);
-                tabelle.scrollToCenter(s);
-            }
-        } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
+            tabelle.setRowSelectionInterval(s, s);
+            tabelle.scrollToCenter(s);
         }
     }
 
@@ -509,8 +517,8 @@ public class GuiDownloads extends PanelVorlage {
         // Film der noch keinen Starts hat wird gestartet
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
         // wird immer vom Benutzer aufgerufen
-        String[] urls;
-        ArrayList<String> listeUrlsDownloadLoeschen = new ArrayList<>();
+        ArrayList<DatenDownload> listeAllDownloads = new ArrayList<>();
+        ArrayList<DatenDownload> listeUrlsDownloadsAbbrechen = new ArrayList<>();
         ArrayList<DatenDownload> listeDownloadsStarten = new ArrayList<>();
         // ==========================
         // erst mal die Liste nach der Tabelle sortieren
@@ -520,19 +528,13 @@ public class GuiDownloads extends PanelVorlage {
         for (int i = 0; i < tabelle.getRowCount(); ++i) {
             // um in der Reihenfolge zu starten
             DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF_NR);
+            listeAllDownloads.add(datenDownload);
             Daten.listeDownloads.remove(datenDownload);
             Daten.listeDownloads.add(datenDownload);
         }
-        // ==========================
-        // erst mal die URLs sammeln
-        urls = new String[tabelle.getRowCount()];
-        for (int i = 0; i < tabelle.getRowCount(); ++i) {
-            urls[i] = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_URL_NR).toString();
-        }
         // ========================
         // und jetzt abarbeiten
-        for (String url : urls) {
-            DatenDownload download = Daten.listeDownloads.getDownloadByUrl(url);
+        for (DatenDownload download : listeAllDownloads) {
             // ==========================================
             // starten
             if (download.start != null) {
@@ -550,7 +552,7 @@ public class GuiDownloads extends PanelVorlage {
                         // weiter mit der nächsten URL
                         continue;
                     }
-                    listeUrlsDownloadLoeschen.add(url);
+                    listeUrlsDownloadsAbbrechen.add(download);
                     if (download.istAbo()) {
                         // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
                         daten.erledigteAbos.urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
@@ -561,12 +563,11 @@ public class GuiDownloads extends PanelVorlage {
         }
         // ========================
         // jetzt noch die Starts stoppen
-        Daten.listeDownloads.downloadAbbrechen(listeUrlsDownloadLoeschen);
+        Daten.listeDownloads.downloadAbbrechen(listeUrlsDownloadsAbbrechen);
 
         // und die Downloads starten oder stoppen
         //alle Downloads starten/wiederstarten
         DialogBeendenZeit dialogBeenden = new DialogBeendenZeit(daten.mediathekGui, daten, listeDownloadsStarten);
-        //dialogBeenden.setModal(true);
         dialogBeenden.setVisible(true);
         if (dialogBeenden.applicationCanTerminate()) {
             // fertig und beenden
@@ -586,39 +587,34 @@ public class GuiDownloads extends PanelVorlage {
         // Film dessen Start schon auf fertig/fehler steht wird wieder gestartet
         // bei !starten wird der Film gestoppt
         // wird immer vom Benutzer aufgerufen
-        String[] urls;
-        ArrayList<String> listeUrlsDownloadLoeschen = new ArrayList<>();
+        ArrayList<DatenDownload> listeDownloadsLoeschen = new ArrayList<>();
         ArrayList<DatenDownload> listeDownloadsStarten = new ArrayList<>();
+        ArrayList<DatenDownload> listeDownloadsMarkiert = new ArrayList<>();
+
+        if (tabelle.getRowCount() == 0) {
+            return;
+        }
+
         // ==========================
         // erst mal die Liste nach der Tabelle sortieren
         if (starten && alle) {
-            if (tabelle.getRowCount() == 0) {
-                return;
-            }
+            //Liste in der Reihenfolge wie in der Tabelle sortieren
             for (int i = 0; i < tabelle.getRowCount(); ++i) {
                 DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF_NR);
                 Daten.listeDownloads.remove(datenDownload);
                 Daten.listeDownloads.add(datenDownload);
             }
         }
+
         // ==========================
-        // erst mal die URLs sammeln
+        // die URLs sammeln
         if (alle) {
-            urls = new String[tabelle.getRowCount()];
             for (int i = 0; i < tabelle.getRowCount(); ++i) {
-                urls[i] = tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_URL_NR).toString();
+                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF_NR);
+                listeDownloadsMarkiert.add(datenDownload);
             }
         } else {
-            int[] rows = tabelle.getSelectedRows();
-            urls = new String[rows.length];
-            if (rows.length > 0) {
-                for (int i = 0; i < rows.length; i++) {
-                    int row = tabelle.convertRowIndexToModel(rows[i]);
-                    urls[i] = tabelle.getModel().getValueAt(row, DatenDownload.DOWNLOAD_URL_NR).toString();
-                }
-            } else {
-                new HinweisKeineAuswahl().zeigen(parentComponent);
-            }
+            listeDownloadsMarkiert = getSelDownloads();
         }
         if (!starten) {
             // dann das Starten von neuen Downloads etwas Pausieren
@@ -627,8 +623,7 @@ public class GuiDownloads extends PanelVorlage {
         // ========================
         // und jetzt abarbeiten
         int antwort = -1;
-        for (String url : urls) {
-            DatenDownload download = Daten.listeDownloads.getDownloadByUrl(url);
+        for (DatenDownload download : listeDownloadsMarkiert) {
             if (starten) {
                 // ==========================================
                 // starten
@@ -645,7 +640,7 @@ public class GuiDownloads extends PanelVorlage {
                         if (antwort == -1) {
                             // nur einmal fragen
                             String text;
-                            if (urls.length > 1) {
+                            if (listeDownloadsMarkiert.size() > 1) {
                                 text = "Es sind bereits fertige Filme dabei,\n"
                                         + "diese nochmal starten?";
                             } else {
@@ -658,7 +653,7 @@ public class GuiDownloads extends PanelVorlage {
                             // weiter mit der nächsten URL
                             continue;
                         }
-                        listeUrlsDownloadLoeschen.add(url);
+                        listeDownloadsLoeschen.add(download);
                         if (download.istAbo()) {
                             // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
                             daten.erledigteAbos.urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
@@ -673,14 +668,14 @@ public class GuiDownloads extends PanelVorlage {
                     // wenn kein s -> dann gibts auch nichts zum stoppen oder wieder-starten
                     if (download.start.status <= Start.STATUS_RUN) {
                         // löschen -> nur wenn noch läuft, sonst gibts nichts mehr zum löschen
-                        listeUrlsDownloadLoeschen.add(url);
+                        listeDownloadsLoeschen.add(download);
                     }
                 }
             }
         }
         // ========================
         // jetzt noch die Starts stoppen
-        Daten.listeDownloads.downloadAbbrechen(listeUrlsDownloadLoeschen);
+        Daten.listeDownloads.downloadAbbrechen(listeDownloadsLoeschen);
         // und die Downloads starten oder stoppen
         if (starten) {
             //alle Downloads starten/wiederstarten
@@ -691,16 +686,16 @@ public class GuiDownloads extends PanelVorlage {
 
     private void wartendeDownloadsStoppen() {
         // es werden alle noch nicht gestarteten Downloads gelöscht
-        ArrayList<String> urls = new ArrayList<>();
+        ArrayList<DatenDownload> listeStopDownload = new ArrayList<>();
         for (int i = 0; i < tabelle.getRowCount(); ++i) {
             DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF_NR);
             if (datenDownload.start != null) {
                 if (datenDownload.start.status < Start.STATUS_RUN) {
-                    urls.add(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                    listeStopDownload.add(datenDownload);
                 }
             }
         }
-        Daten.listeDownloads.downloadAbbrechen(urls);
+        Daten.listeDownloads.downloadAbbrechen(listeStopDownload);
     }
 
     private void setInfo() {
@@ -884,9 +879,9 @@ public class GuiDownloads extends PanelVorlage {
             int row = tabelle.getSelectedRow();
             boolean wartenOderLaufen = false;
             if (row >= 0) {
-                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
-                if (datenDownload.start != null) {
-                    if (datenDownload.start.status <= Start.STATUS_RUN) {
+                DatenDownload download = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
+                if (download.start != null) {
+                    if (download.start.status <= Start.STATUS_RUN) {
                         wartenOderLaufen = true;
                     }
                 }

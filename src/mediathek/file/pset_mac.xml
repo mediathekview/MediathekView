@@ -48,13 +48,6 @@
         <Beschreibung>Standardset zum direkten Abspielen der Filme</Beschreibung>
     </Programmset>
     <Programm>
-        <Programmname>skript</Programmname>
-        <Programmpfad>/Applications/MediathekView.app/Contents/Resources/flv.sh</Programmpfad>
-        <Programmschalter>/Applications/MediathekView.app/Contents/Resources/flvstreamer_macosx_intel_32bit_latest /Applications/VLC.app/Contents/MacOS/VLC %F</Programmschalter>
-        <Praefix>rtmp</Praefix>
-        <Restart>false</Restart>
-    </Programm>
-    <Programm>
         <Programmname>Vlc</Programmname>
         <Programmpfad>PFAD_VLC</Programmpfad>
         <Programmschalter>%f --play-and-exit</Programmschalter>

@@ -105,45 +105,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-//    private synchronized void makeDownloadInfos() {
-//      Daten.downloadInfos.clean();
-//
-//        getListOfStartsNotFinished(Start.QUELLE_ALLE);
-//        for (DatenDownload download : aktivDownloads) {
-//            ++     Daten.downloadInfos.anzDownloadsRun;
-//            Daten.downloadInfos.byteAlleDownloads += (download.mVFilmSize.getSize() > 0 ? download.mVFilmSize.getSize() : 0);
-//            if (download.start != null && download.start.status == Start.STATUS_RUN) {
-//                // die Downlaods laufen gerade
-//                Daten.downloadInfos.bandwidth += download.start.bandbreite; // bytes per second
-//                Daten.downloadInfos.byteAktDownloads += (download.mVFilmSize.getAktSize() > 0 ? download.mVFilmSize.getAktSize() : 0);
-//                if (download.start.restSekunden > Daten.downloadInfos.timeRestAktDownloads) {
-//                    // der längeste gibt die aktuelle Restzeit vor
-//                    Daten.downloadInfos.timeRestAktDownloads = download.start.restSekunden;
-//                }
-//            }
-//        }
-//
-//        if (Daten.downloadInfos.bandwidth < 0) {
-//            Daten.downloadInfos.bandwidth = 0;
-//        }
-//
-//        if (Daten.downloadInfos.bandwidth > 0) {
-//            // sonst macht die Restzeit keinen Sinn
-//            final long b = Daten.downloadInfos.byteAlleDownloads - Daten.downloadInfos.byteAktDownloads;
-//            if (b <= 0) {
-//                Daten.downloadInfos.timeRestAllDownloads = 0;
-//            } else {
-//                Daten.downloadInfos.timeRestAllDownloads = b / Daten.downloadInfos.bandwidth;
-//            }
-//            if (Daten.downloadInfos.timeRestAllDownloads < Daten.downloadInfos.timeRestAktDownloads) {
-//                Daten.downloadInfos.timeRestAllDownloads = Daten.downloadInfos.timeRestAktDownloads; // falsch geraten oder es gibt nur einen
-//            }
-//            if (Daten.downloadInfos.anzDownloadsRun == 1) {
-//                Daten.downloadInfos.timeRestAllDownloads = 0; // gibt ja nur noch einen
-//            }
-//        }
-//        Daten.downloadInfos.roundBandwidth();
-//    }
     public synchronized void listePutzen(DatenDownload datenDownload) {
         // fertigen Download löschen
         boolean gefunden = false;
@@ -205,22 +166,29 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return ret;
     }
 
-    public synchronized void downloadsVorziehen(String[] urls) {
-        DatenDownload d;
-        ListIterator<DatenDownload> it;
-        for (String url : urls) {
-            it = this.listIterator();
-            while (it.hasNext()) {
-                d = it.next();
-                if (d.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
-                    it.remove();
-                    this.addFirst(d);
-                    break;
-                }
-            }
+    public synchronized void downloadsVorziehen(ArrayList<DatenDownload> download) {
+        for (DatenDownload datenDownload : download) {
+            this.remove(datenDownload);
+            this.addFirst(datenDownload);
         }
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, this.getClass().getSimpleName());
     }
+//    public synchronized void downloadsVorziehen(String[] urls) {
+//        DatenDownload d;
+//        ListIterator<DatenDownload> it;
+//        for (String url : urls) {
+//            it = this.listIterator();
+//            while (it.hasNext()) {
+//                d = it.next();
+//                if (d.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
+//                    it.remove();
+//                    this.addFirst(d);
+//                    break;
+//                }
+//            }
+//        }
+//        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, this.getClass().getSimpleName());
+//    }
 
     public synchronized DatenDownload getDownloadByUrl(String url) {
         DatenDownload ret = null;
@@ -252,27 +220,50 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    public synchronized void downloadAbbrechen(ArrayList<String> url) {
-        ListIterator<DatenDownload> it;
+//    public synchronized void downloadAbbrechen(ArrayList<String> url) {
+//        ListIterator<DatenDownload> it;
+//        boolean gefunden = false;
+//        if (url != null) {
+//            for (String u : url) {
+//                it = this.listIterator();
+//                while (it.hasNext()) {
+//                    DatenDownload datenDownload = it.next();
+//                    if (datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(u)) {
+//                        if (datenDownload.start != null) {
+//                            if (datenDownload.start.status < Start.STATUS_FERTIG) {
+//                                datenDownload.start.stoppen = true;
+//                            }
+//                            if (datenDownload.start.status == Start.STATUS_RUN) {
+//                                datenDownload.interrupt();
+//                            }
+//                        }
+//                        datenDownload.resetDownload();
+//                        gefunden = true;
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//        if (gefunden) {
+//            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
+//        }
+//    }
+    public synchronized void downloadAbbrechen(ArrayList<DatenDownload> download) {
         boolean gefunden = false;
-        if (url != null) {
-            for (String u : url) {
-                it = this.listIterator();
-                while (it.hasNext()) {
-                    DatenDownload datenDownload = it.next();
-                    if (datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(u)) {
-                        if (datenDownload.start != null) {
-                            if (datenDownload.start.status < Start.STATUS_FERTIG) {
-                                datenDownload.start.stoppen = true;
-                            }
-                            if (datenDownload.start.status == Start.STATUS_RUN) {
-                                datenDownload.interrupt();
-                            }
+        if (download != null) {
+            for (DatenDownload down : download) {
+                if (this.contains(down)) {
+                    // nur dann ist er in der Liste
+                    if (down.start != null) {
+                        if (down.start.status < Start.STATUS_FERTIG) {
+                            down.start.stoppen = true;
                         }
-                        datenDownload.resetDownload();
-                        gefunden = true;
-                        break;
+                        if (down.start.status == Start.STATUS_RUN) {
+                            down.interrupt();
+                        }
                     }
+                    down.resetDownload();
+                    gefunden = true;
                 }
             }
         }
@@ -281,24 +272,42 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    public synchronized void downloadLoeschen(ArrayList<String> url) {
-        ListIterator<DatenDownload> it;
+//    public synchronized void downloadLoeschen(ArrayList<String> url) {
+//        ListIterator<DatenDownload> it;
+//        boolean gefunden = false;
+//        if (url != null) {
+//            for (String u : url) {
+//                it = this.listIterator();
+//                while (it.hasNext()) {
+//                    DatenDownload datenDownload = it.next();
+//                    if (datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(u)) {
+//                        if (datenDownload.start != null) {
+//                            if (datenDownload.start.status < Start.STATUS_FERTIG) {
+//                                datenDownload.start.stoppen = true;
+//                            }
+//                        }
+//                        it.remove();
+//                        gefunden = true;
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//        if (gefunden) {
+//            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+//        }
+//    }
+    public synchronized void downloadLoeschen(ArrayList<DatenDownload> download) {
         boolean gefunden = false;
-        if (url != null) {
-            for (String u : url) {
-                it = this.listIterator();
-                while (it.hasNext()) {
-                    DatenDownload datenDownload = it.next();
-                    if (datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(u)) {
-                        if (datenDownload.start != null) {
-                            if (datenDownload.start.status < Start.STATUS_FERTIG) {
-                                datenDownload.start.stoppen = true;
-                            }
-                        }
-                        it.remove();
-                        gefunden = true;
-                        break;
+        if (download != null) {
+            for (DatenDownload down : download) {
+                if (down.start != null) {
+                    if (down.start.status < Start.STATUS_FERTIG) {
+                        down.start.stoppen = true;
                     }
+                }
+                if (remove(down)) {
+                    gefunden = true;
                 }
             }
         }
