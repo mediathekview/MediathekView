@@ -40,6 +40,7 @@ import javax.swing.InputMap;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -1044,6 +1045,56 @@ public class GuiDownloads extends PanelVorlage {
             jPopupMenu.addSeparator();
             //#######################################
 
+            //Abo ändern
+            JMenu submenueAbo = new JMenu("Abo");
+            JMenuItem itemChangeAbo = new JMenuItem("Abo ändern");
+            JMenuItem itemDelAbo = new JMenuItem("Abo Löschen");
+            if (datenDownload == null) {
+                submenueAbo.setEnabled(false);
+                itemChangeAbo.setEnabled(false);
+                itemDelAbo.setEnabled(false);
+            } else if (datenDownload.film == null) {
+                submenueAbo.setEnabled(false);
+                itemChangeAbo.setEnabled(false);
+                itemDelAbo.setEnabled(false);
+            } else {
+                final DatenAbo datenAbo = Daten.listeAbo.getAboFuerFilm_schnell(datenDownload.film, false /*die Länge nicht prüfen*/);
+                if (datenAbo == null) {
+                    submenueAbo.setEnabled(false);
+                    itemChangeAbo.setEnabled(false);
+                    itemDelAbo.setEnabled(false);
+                } else {
+                    // dann können wir auch ändern
+                    itemDelAbo.addActionListener(new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            Daten.listeAbo.aboLoeschen(datenAbo);
+                        }
+                    });
+                    itemChangeAbo.addActionListener(new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            stopBeob = true;
+                            DialogEditAbo dialog = new DialogEditAbo(daten.mediathekGui, true, daten, datenAbo);
+                            dialog.setVisible(true);
+                            if (dialog.ok) {
+                                Daten.listeAbo.aenderungMelden();
+                            }
+                            stopBeob = false;
+                        }
+                    });
+                }
+            }
+            submenueAbo.add(itemDelAbo);
+            submenueAbo.add(itemChangeAbo);
+            jPopupMenu.add(submenueAbo);
+
+            //#######################################
+            jPopupMenu.addSeparator();
+            //#######################################
+
             // Film in der MediaDB suchen
             JMenuItem itemDb = new JMenuItem("Titel in der Mediensammlung suchen");
             itemDb.addActionListener(new ActionListener() {
@@ -1126,33 +1177,6 @@ public class GuiDownloads extends PanelVorlage {
                 }
             });
             jPopupMenu.add(itemInfo);
-
-            //Abo ändern
-            JMenuItem itemChangeAboFilter = new JMenuItem("Abo ändern");
-            if (datenDownload == null) {
-                itemChangeAboFilter.setEnabled(false);
-            } else if (datenDownload.film == null) {
-                itemChangeAboFilter.setEnabled(false);
-            } else {
-                // dann können wir auch ändern
-                final DatenAbo datenAbo = Daten.listeAbo.getAboFuerFilm_schnell(datenDownload.film, false /*die Länge nicht prüfen*/);
-                if (datenAbo != null) {
-                    itemChangeAboFilter.addActionListener(new ActionListener() {
-
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            stopBeob = true;
-                            DialogEditAbo dialog = new DialogEditAbo(daten.mediathekGui, true, daten, datenAbo);
-                            dialog.setVisible(true);
-                            if (dialog.ok) {
-                                Daten.listeAbo.aenderungMelden();
-                            }
-                            stopBeob = false;
-                        }
-                    });
-                }
-            }
-            jPopupMenu.add(itemChangeAboFilter);
 
             // ######################
             // Menü anzeigen
