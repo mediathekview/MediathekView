@@ -42,6 +42,7 @@ import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.InputMap;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -1291,6 +1292,7 @@ public class GuiFilme extends PanelVorlage {
                 }
                 submenue.add(item);
             }
+
             JMenu submenueBlack = new JMenu("Blacklist");
             jPopupMenu.add(submenueBlack);
             //anlegen
@@ -1307,6 +1309,35 @@ public class GuiFilme extends PanelVorlage {
             submenueBlack.add(itemBlackThema);
             submenueBlack.add(itemBlackSenderThema);
 
+            //##Trenner##
+            submenueBlack.addSeparator();
+            //##Trenner##
+
+            final JCheckBoxMenuItem jCheckBoxBlackBoxOn = new JCheckBoxMenuItem("Blacklist ist eingeschaltet");
+            jCheckBoxBlackBoxOn.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ON)));
+            jCheckBoxBlackBoxOn.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.toString(jCheckBoxBlackBoxOn.isSelected()));
+                    MVListeFilme.checkBlacklist();
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getName());
+                }
+            });
+            submenueBlack.add(jCheckBoxBlackBoxOn);
+
+            final JCheckBoxMenuItem jCheckBoxBlackBoxStart = new JCheckBoxMenuItem("Blacklist ist beim Programmstart eingeschaltet");
+            jCheckBoxBlackBoxStart.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)));
+            jCheckBoxBlackBoxStart.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_START_ON, Boolean.toString(jCheckBoxBlackBoxStart.isSelected()));
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_START_GEAENDERT, GuiFilme.class.getName());
+                }
+            });
+            submenueBlack.add(jCheckBoxBlackBoxStart);
+            
             //##Trenner##
             jPopupMenu.addSeparator();
             //##Trenner##
