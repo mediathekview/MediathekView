@@ -1057,7 +1057,6 @@ public class GuiDownloads extends PanelVorlage {
                         DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenDownload.DOWNLOAD_REF_NR);
                         if (datenDownload != null) {
                             daten.dialogMediaDB.setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
-//                            new DialogMediaDB(parentComponent, datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]).setVisible(true);
                         }
                     }
                 }
