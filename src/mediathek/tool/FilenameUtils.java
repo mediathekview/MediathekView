@@ -89,7 +89,7 @@ public class FilenameUtils {
      * @return Cleanup string with no dots anymore.
      */
     private static String removeWindowsTrailingDots(String fileName) {
-        // machte unter Wind noch Probleme: "betrifft: ..."
+        // machte unter Win noch Probleme, zB. bei dem Titel: "betrifft: ..."
         // "." und " " am Ende machen Probleme
         while (!fileName.isEmpty() && (fileName.endsWith(".") || fileName.endsWith(" "))) {
             fileName = fileName.substring(0, fileName.length() - 1);
