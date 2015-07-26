@@ -162,7 +162,7 @@ public class GuiFunktionen extends MVFunctionSys {
 
     public static String[] checkLengthPath(String[] pathName) {
         if (SystemInfo.isWindows()) {
-            // in Win dürfen die Pfade nicht länger als 255 Zeichen haben (für die Infodatei kommen noch ".txt" dazu)
+            // in Win dürfen die Pfade nicht länger als 260 Zeichen haben (für die Infodatei kommen noch ".txt" dazu)
             if ((pathName[0].length() + 10) > WIN_MAX_PATH_LENGTH) {
                 // es sollen für den Dateinamen mind. 10 Zeichen bleiben
                 Log.fehlerMeldung(102036598, "Pfad zu lang: " + pathName[0]);
