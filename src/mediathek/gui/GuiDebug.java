@@ -25,32 +25,45 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import mediathek.MediathekGui;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
+import mediathek.daten.DatenDownload;
 import mediathek.tool.Duration;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
+import msearch.daten.DatenFilm;
+import msearch.daten.ListeFilme;
 import msearch.filmlisten.MSFilmlisteLesen;
+import msearch.tool.MSConst;
 
 public class GuiDebug extends JPanel {
-    
+
     private final JButton[] buttonSender;
     private final String[] sender;
     private Daten daten;
-    
+
     public GuiDebug(Daten d) {
         super();
         initComponents();
         daten = d;
         sender = Daten.filmeLaden.getSenderNamen();
         buttonSender = new JButton[sender.length];
-        
+
         jPanel3.setLayout(new GridLayout(1, 1));
         jPanel3.add(new PanelInfoStarts());
         jPanel3.repaint();
@@ -62,7 +75,7 @@ public class GuiDebug extends JPanel {
         }
         addSender();
         jButtonNeuLaden.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Daten.listeFilme.clear();
@@ -102,7 +115,7 @@ public class GuiDebug extends JPanel {
                 Daten.listeFilme.check();
             }
         });
-        
+
         jButtonCheckUrl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -123,14 +136,14 @@ public class GuiDebug extends JPanel {
             }
         });
         jButtonClean.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Daten.listeFilme.cleanList();
             }
         });
         jToggleButtonFastAuto.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent ae) {
                 if (jToggleButtonFastAuto.isSelected()) {
@@ -142,7 +155,7 @@ public class GuiDebug extends JPanel {
         });
         jButtonDir.addActionListener(new BeobPfad());
         jButtonSize.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 String path = jTextFieldPath.getText();
@@ -167,7 +180,7 @@ public class GuiDebug extends JPanel {
             }
         });
         jButtonSearchUrl.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!jTextFieldSearchUrl.getText().isEmpty()) {
@@ -182,8 +195,122 @@ public class GuiDebug extends JPanel {
                 daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.FILME);
             }
         });
+        jButtonGetName.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+//                int count = 0;
+//                OutputStreamWriter out = null;
+//                ArrayList<String> list = new ArrayList<>();
+//                ArrayList<String> listUrl = new ArrayList<>();
+//                ListeFilme listeFilme = new ListeFilme();
+//                try {
+//                    System.out.println("---------------------");
+//                    File file = new File("/tmp/name");
+//                    out = new OutputStreamWriter(new FileOutputStream(file), MSConst.KODIERUNG_UTF);
+//                    for (DatenFilm film : Daten.listeFilme) {
+//                        if (!listUrl.contains(film.arr[DatenFilm.FILM_URL_NR])) {
+//                            listeFilme.add(film);
+//                            listUrl.add(film.arr[DatenFilm.FILM_URL_NR]);
+//                        }
+//                    }
+//
+//                    for (DatenFilm film : listeFilme) {
+//                        String s = GuiFunktionen.getDateiName(film.arr[DatenFilm.FILM_URL_NR]);
+//                        String te = film.arr[DatenFilm.FILM_THEMA_NR];
+//                        String ti = film.arr[DatenFilm.FILM_TITEL_NR];
+//                        list.add(te + "--" + ti + "--" + s);
+//                    }
+//                    Collections.sort(list);
+//                    String old = "";
+//                    for (String s : list) {
+//                        if (old.equals(s)) {
+//                            ++count;
+//                            out.write("\n\n\n");
+//                            out.write("============ doppelt ================\n");
+//                            out.write(s + "\n");
+//                            out.write("============================\n");
+//                        } else {
+////                            out.write(s + "\n");
+//                        }
+//                        old = s;
+//                    }
+//                    out.write("\n");
+//                    out.write("\n");
+//                    out.write("===============================" + "\n");
+//                    out.write("Doppelte: " + count + "\n");
+//                } catch (Exception ex) {
+//                } finally {
+//                    try {
+//                        out.close();
+//                    } catch (IOException ex) {
+//                        Logger.getLogger(GuiDebug.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                }
+
+                int count = 0;
+                OutputStreamWriter out = null;
+                ArrayList<String> list = new ArrayList<>();
+                try {
+                    System.out.println("---------------------");
+                    File file = new File("/tmp/name");
+                    out = new OutputStreamWriter(new FileOutputStream(file), MSConst.KODIERUNG_UTF);
+
+                    for (DatenFilm film : Daten.listeFilme) {
+                        String s = GuiFunktionen.getDateiName(film.arr[DatenFilm.FILM_URL_NR]);
+                        String se = film.arr[DatenFilm.FILM_SENDER_NR];
+                        String te = film.arr[DatenFilm.FILM_THEMA_NR];
+                        String ti = film.arr[DatenFilm.FILM_TITEL_NR];
+                        list.add(s);
+//                        list.add(se + "--" + te + "--" + ti + "------" + s);
+//                        list.add(te + "--" + ti + "------" + s);
+                    }
+                    Collections.sort(list);
+                    String old = "";
+                    for (String s : list) {
+                        if (old.equals(s)) {
+                            ++count;
+                            out.write(s + "\n");
+                        } else {
+                            out.write(s.substring(s.lastIndexOf("-") + 1) + "\n");
+                        }
+                        old = s;
+                    }
+                    out.write("\n");
+                    out.write("\n");
+                    out.write("===============================" + "\n");
+                    out.write("Doppelte: " + count + "\n");
+                } catch (Exception ex) {
+                } finally {
+                    try {
+                        out.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(GuiDebug.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+            }
+        });
+        jButtonDoppelteUrls.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ListeFilme listeFilme = new ListeFilme();
+                ArrayList<String> listUrl = new ArrayList<>();
+                for (DatenFilm film : Daten.listeFilme) {
+                    if (!listUrl.contains(film.arr[DatenFilm.FILM_URL_NR])) {
+                        listeFilme.add(film);
+                        listUrl.add(film.arr[DatenFilm.FILM_URL_NR]);
+                    }
+                }
+                System.out.println("---------------------");
+                System.out.println("vorher: " + Daten.listeFilme.size());
+                Daten.listeFilme = listeFilme;
+                System.out.println("danach: " + Daten.listeFilme.size());
+            }
+        });
     }
-    
+
     private void addSender() {
         jPanelLoeschen.removeAll();
         jPanelLoeschen.setLayout(new GridLayout(0, 5));
@@ -220,6 +347,8 @@ public class GuiDebug extends JPanel {
         jButtonDir = new javax.swing.JButton();
         jButtonSearchUrl = new javax.swing.JButton();
         jTextFieldSearchUrl = new javax.swing.JTextField();
+        jButtonGetName = new javax.swing.JButton();
+        jButtonDoppelteUrls = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
 
         jPanelSender.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Sender löschen"));
@@ -320,6 +449,10 @@ public class GuiDebug extends JPanel {
 
         jButtonSearchUrl.setText("URL suchen");
 
+        jButtonGetName.setText("getName");
+
+        jButtonDoppelteUrls.setText("doppelte URLs löschen");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -332,20 +465,24 @@ public class GuiDebug extends JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldUrl))
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButtonFehler, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButtonGc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButtonAllesSpeichern, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jToggleButtonFastAuto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButtonSize, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButtonSearchUrl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jButtonGetName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonFehler, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonGc, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonAllesSpeichern, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jToggleButtonFastAuto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonSize, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonSearchUrl, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jTextFieldPath, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonDir))
-                            .addComponent(jTextFieldSearchUrl))))
+                            .addComponent(jTextFieldSearchUrl)))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jButtonDoppelteUrls)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -368,7 +505,11 @@ public class GuiDebug extends JPanel {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonSearchUrl)
                     .addComponent(jTextFieldSearchUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 153, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jButtonGetName)
+                .addGap(18, 18, 18)
+                .addComponent(jButtonDoppelteUrls)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonCheckUrl)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -419,9 +560,11 @@ public class GuiDebug extends JPanel {
     private javax.swing.JButton jButtonCheckUrl;
     private javax.swing.JButton jButtonClean;
     private javax.swing.JButton jButtonDir;
+    private javax.swing.JButton jButtonDoppelteUrls;
     private javax.swing.JButton jButtonFehler;
     private javax.swing.JButton jButtonFilmlisteLoeschen;
     private javax.swing.JButton jButtonGc;
+    private javax.swing.JButton jButtonGetName;
     private javax.swing.JButton jButtonNeuLaden;
     private javax.swing.JButton jButtonSearchUrl;
     private javax.swing.JButton jButtonSize;
@@ -434,22 +577,22 @@ public class GuiDebug extends JPanel {
     // End of variables declaration//GEN-END:variables
 
     private class BeobSenderLoeschen implements ActionListener {
-        
+
         private final String sender;
-        
+
         public BeobSenderLoeschen(String ssender) {
             sender = ssender;
         }
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             Daten.listeFilme.deleteAllFilms(sender);
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
         }
     }
-    
+
     private class BeobPfad implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
