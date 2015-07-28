@@ -205,13 +205,14 @@
                               <Component id="jTextFieldUrl" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="jButtonGetName" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jButtonFehler" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jButtonGc" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jButtonAllesSpeichern" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="jToggleButtonFastAuto" max="32767" attributes="0"/>
-                                  <Component id="jButtonSize" max="32767" attributes="0"/>
-                                  <Component id="jButtonSearchUrl" max="32767" attributes="0"/>
+                                  <Component id="jToggleButtonFastAuto" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="jButtonSize" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="jButtonSearchUrl" alignment="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -222,6 +223,10 @@
                                   </Group>
                                   <Component id="jTextFieldSearchUrl" max="32767" attributes="0"/>
                               </Group>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jButtonDoppelteUrls" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -250,7 +255,11 @@
                           <Component id="jButtonSearchUrl" linkSize="5" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jTextFieldSearchUrl" linkSize="5" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="153" max="32767" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="jButtonGetName" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="jButtonDoppelteUrls" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="67" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jButtonCheckUrl" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jTextFieldUrl" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -309,6 +318,16 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="jTextFieldSearchUrl">
+            </Component>
+            <Component class="javax.swing.JButton" name="jButtonGetName">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="getName"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="jButtonDoppelteUrls">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="doppelte URLs l&#xf6;schen"/>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>

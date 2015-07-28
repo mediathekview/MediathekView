@@ -195,25 +195,66 @@ public class GuiFunktionen extends MVFunctionSys {
         return dateiUrl.startsWith("http") || dateiUrl.startsWith("www");
     }
 
+//    public static String getDateiName(String pfad) {
+//        //Dateinamen einer URL extrahieren
+//        //Probleme machen die URLs:
+//        //http://srfvodhd-vh.akamaihd.net/i/vod/dok/2015/07/dok_20150726_152004_v_webcast_h264_,q10,q20,q30,q40,.mp4.csmil/master.m3u8
+//        //und Sednder/Thema/Titel gleich
+//        //-> DOK-DOK_am_Sonntag_vom_26.07.2015-master.m3u8.mp4
+//        String ret = "";
+//        String tmp;
+//        if (pfad != null) {
+//            if (!pfad.equals("")) {
+//                ret = pfad.substring(pfad.lastIndexOf('/') + 1);
+//                tmp = pfad.substring(0, pfad.lastIndexOf('/'));
+//                if (tmp.contains("/")) {
+//                    tmp = tmp.substring(tmp.lastIndexOf("/") + 1);
+//                }
+//                if (ret.length() < 15) {
+//                    //dann noch den Pfad darüber anhängen
+//                    ret = tmp + "-" + ret;
+//                    System.out.println(ret);
+//                }
+//            }
+//        }
+//        if (ret.contains("?")) {
+//            ret = ret.substring(0, ret.indexOf('?'));
+//        }
+//        if (ret.contains("&")) {
+//            ret = ret.substring(0, ret.indexOf('&'));
+//        }
+//        if (ret.equals("")) {
+//            Log.fehlerMeldung(395019631, pfad);
+//        }
+//        return ret;
+//    }
     public static String getDateiName(String pfad) {
         //Dateinamen einer URL extrahieren
-        String ret = "";
-        if (pfad != null) {
-            if (!pfad.equals("")) {
-                ret = pfad.substring(pfad.lastIndexOf('/') + 1);
-            }
-        }
-        if (ret.contains("?")) {
-            ret = ret.substring(0, ret.indexOf('?'));
-        }
-        if (ret.contains("&")) {
-            ret = ret.substring(0, ret.indexOf('&'));
-        }
-        if (ret.equals("")) {
-            Log.fehlerMeldung(395019631, pfad);
-        }
-        return ret;
+        int h = pfad.hashCode();
+        String suffix = getDateiSuffix(pfad);
+        return h + "." + suffix;
     }
+
+//    public static String getDateiName(String pfad) {
+//        //Dateinamen einer URL extrahieren
+//        String ret = "";
+//        if (pfad != null) {
+//            if (!pfad.equals("")) {
+//                ret = pfad.substring(pfad.lastIndexOf('/') + 1);
+//            }
+//        }
+//        if (ret.contains("?")) {
+//            ret = ret.substring(0, ret.indexOf('?'));
+//        }
+//        if (ret.contains("&")) {
+//            ret = ret.substring(0, ret.indexOf('&'));
+//        }
+//        if (ret.equals("")) {
+//            Log.fehlerMeldung(395019631, pfad);
+//        }
+//        return ret;
+//    }
+    private static final String NO_SUFFIX = "---";
 
     public static String getDateiSuffix(String pfad) {
         // Suffix einer URL extrahieren
@@ -232,7 +273,7 @@ public class GuiFunktionen extends MVFunctionSys {
         }
         if (ret.length() > 5) {
             // dann ist was faul
-            ret = "---";
+            ret = NO_SUFFIX;
             Log.fehlerMeldung(821397046, pfad);
         }
         return ret;
