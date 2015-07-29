@@ -257,11 +257,19 @@ public class GuiDebug extends JPanel {
                     out = new OutputStreamWriter(new FileOutputStream(file), MSConst.KODIERUNG_UTF);
 
                     for (DatenFilm film : Daten.listeFilme) {
+//                        if ((film.arr[DatenFilm.FILM_URL_NR].hashCode() + "").equals("1183061251")) {
+//                            System.out.println(film.arr[DatenFilm.FILM_URL_NR]);
+//                        }
+//                        if ((film.arr[DatenFilm.FILM_URL_NR].hashCode() + "").equals("-1183061251")) {
+//                            System.out.println(film.arr[DatenFilm.FILM_URL_NR]);
+//                        }
+
                         String s = GuiFunktionen.getDateiName(film.arr[DatenFilm.FILM_URL_NR]);
+                        String h = GuiFunktionen.getHash(film.arr[DatenFilm.FILM_URL_NR]);
                         String se = film.arr[DatenFilm.FILM_SENDER_NR];
                         String te = film.arr[DatenFilm.FILM_THEMA_NR];
                         String ti = film.arr[DatenFilm.FILM_TITEL_NR];
-                        list.add(s);
+                        list.add(h);
 //                        list.add(se + "--" + te + "--" + ti + "------" + s);
 //                        list.add(te + "--" + ti + "------" + s);
                     }
@@ -270,9 +278,10 @@ public class GuiDebug extends JPanel {
                     for (String s : list) {
                         if (old.equals(s)) {
                             ++count;
+                            out.write("===============================" + "\n");
                             out.write(s + "\n");
                         } else {
-                            out.write(s.substring(s.lastIndexOf("-") + 1) + "\n");
+                            out.write(s + "\n");
                         }
                         old = s;
                     }
@@ -307,6 +316,7 @@ public class GuiDebug extends JPanel {
                 System.out.println("vorher: " + Daten.listeFilme.size());
                 Daten.listeFilme = listeFilme;
                 System.out.println("danach: " + Daten.listeFilme.size());
+                Daten.filmlisteSpeichern();
             }
         });
     }

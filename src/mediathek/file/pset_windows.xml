@@ -6,7 +6,7 @@
         <Praefix>http</Praefix>
         <Suffix>mp4,mp3,m4v,flv,m4a</Suffix>
         <Zielpfad>ZIELPFAD</Zielpfad>
-        <Zieldateiname>%t-%T-%N</Zieldateiname>
+        <Zieldateiname>%t-%T-%z</Zieldateiname>
         <Abspielen>false</Abspielen>
         <Speichern>true</Speichern>
         <Button>true</Button>
@@ -17,7 +17,7 @@
     </Programmset>
     <Programm>
         <Programmname>flvstreamer (rtmp &lt;#&gt; )</Programmname>
-        <Zieldateiname>%t-%T-%N.flv</Zieldateiname>
+        <Zieldateiname>%t-%T-%Z.flv</Zieldateiname>
         <Programmpfad>bin\flvstreamer_win32_latest.exe</Programmpfad>
         <Programmschalter>%F --resume -o "**"</Programmschalter>
         <Praefix>rtmp</Praefix>
@@ -25,7 +25,7 @@
     </Programm>
     <Programm>
         <Programmname>ffmpeg</Programmname>
-        <Zieldateiname>%t-%T-%N.mp4</Zieldateiname>
+        <Zieldateiname>%t-%T-%Z.mp4</Zieldateiname>
         <Programmpfad>bin\ffmpeg.exe</Programmpfad>
 		<Programmschalter>-i %f -c copy -bsf:a aac_adtstoasc "**"</Programmschalter>
         <Praefix>http</Praefix>
@@ -34,7 +34,7 @@
     </Programm>
     <Programm>
         <Programmname>vlc ( &lt;#&gt; )</Programmname>
-        <Zieldateiname>%t-%T-%N.ts</Zieldateiname>
+        <Zieldateiname>%t-%T-%Z.ts</Zieldateiname>
         <Programmpfad>cmd</Programmpfad>
         <Programmschalter>/c "PFAD_VLC" %f :sout=#standard{access=file,mux=ts,dst="**"} -I "dummy" --play-and-exit</Programmschalter>
     </Programm>
