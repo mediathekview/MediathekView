@@ -6,7 +6,7 @@
         <Praefix>http</Praefix>
         <Suffix>mp4,mp3,m4v,flv,m4a</Suffix>
         <Zielpfad>ZIELPFAD</Zielpfad>
-        <Zieldateiname>%t-%T-%N</Zieldateiname>
+        <Zieldateiname>%t-%T-%z</Zieldateiname>
         <Abspielen>false</Abspielen>
         <Speichern>true</Speichern>
         <Button>true</Button>
@@ -16,7 +16,7 @@
     </Programmset>
     <Programm>
         <Programmname>flvstreamer</Programmname>
-        <Zieldateiname>%t-%T-%N.flv</Zieldateiname>
+        <Zieldateiname>%t-%T-%Z.flv</Zieldateiname>
         <Programmpfad>PFAD_FLVSTREAMER</Programmpfad>
         <Programmschalter>%F --resume -o **</Programmschalter>
         <Praefix>rtmp</Praefix>
@@ -24,7 +24,7 @@
     </Programm>
     <Programm>
         <Programmname>ffmpeg</Programmname>
-        <Zieldateiname>%t-%T-%N.mp4</Zieldateiname>
+        <Zieldateiname>%t-%T-%Z.mp4</Zieldateiname>
         <Programmpfad>PFAD_FFMPEG</Programmpfad>
         <Programmschalter>-i %f -c copy -bsf:a aac_adtstoasc **</Programmschalter>
         <Praefix>http</Praefix>
@@ -33,7 +33,7 @@
     </Programm>
     <Programm>
         <Programmname>VLC</Programmname>
-        <Zieldateiname>%t-%T-%N.ts</Zieldateiname>
+        <Zieldateiname>%t-%T-%Z.ts</Zieldateiname>
         <Programmpfad>PFAD_VLC</Programmpfad>
         <Programmschalter>%f :sout=#standard{access=file,mux=ts,dst=**} -I dummy --play-and-exit</Programmschalter>
     </Programm>

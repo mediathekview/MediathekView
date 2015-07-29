@@ -564,10 +564,10 @@ public class DatenDownload implements Comparable<DatenDownload> {
             arr[DOWNLOAD_PROGRAMM_AUFRUF_NR] = befehlsString;
 
 //            if (MVFunctionSys.getOs() == MVFunctionSys.OperatingSystemType.LINUX) {
-                // klappt nur bei Linux gut :), Win verwendet Programmpfade mit LEERZEICHEN!!
-                String progArray = programm.getProgrammAufrufArray();
-                progArray = replaceExec(progArray);
-                arr[DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR] = progArray;
+            // klappt nur bei Linux gut :), Win verwendet Programmpfade mit LEERZEICHEN!!
+            String progArray = programm.getProgrammAufrufArray();
+            progArray = replaceExec(progArray);
+            arr[DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR] = progArray;
 //            }
         }
     }
@@ -635,6 +635,10 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
         s = s.replace("%N", GuiFunktionen.getDateiName(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
         s = s.replace("%S", GuiFunktionen.getDateiSuffix(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
+        s = s.replace("%Z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
+        s = s.replace("%z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL_NR])
+                + "." + GuiFunktionen.getDateiSuffix(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
+
         return s;
     }
 
