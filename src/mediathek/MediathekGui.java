@@ -257,11 +257,12 @@ public class MediathekGui extends JFrame {
         Log.startMeldungen();
         createStatusBar();
         mVToolBar = new MVToolBar(daten);
-//        jPanelToolBar.setLayout(new BorderLayout());
-//        jPanelToolBar.add(mVToolBar, BorderLayout.CENTER);
-        jPanelToolBar.setLayout(new FlowLayout());
-        jPanelToolBar.add(mVToolBar);
+        jPanelToolBar.setLayout(new BorderLayout());
+        jPanelToolBar.add(mVToolBar, BorderLayout.CENTER);
 
+//        // TEST für OS X
+//        jPanelToolBar.setLayout(new FlowLayout());
+//        jPanelToolBar.add(mVToolBar);
         //create the Film Information HUD
         daten.filmInfoHud = new MVFilmInformation(this, jTabbedPane, daten);
         duration.ping("HUD");
