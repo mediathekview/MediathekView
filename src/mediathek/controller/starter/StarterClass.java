@@ -261,14 +261,26 @@ public class StarterClass {
                     Log.fehlerMeldung(915263987, "Fehler beim Spotlight schreiben" + filmPath.toString());
                     //AppleScript may not be available if user does not use the official MacApp.
                     //We need to log that as well if there are error reports.
-                    if (!System.getProperty("OSX_OFFICIAL_APP").equalsIgnoreCase("true")) {
-                        Log.fehlerMeldung(915263987, "MV wird NICHT über die offizielle Mac App genutzt.");
+                    try {
+                        if (!System.getProperty("OSX_OFFICIAL_APP").equalsIgnoreCase("true")) {
+                            logUnofficialMacAppUse();
+                        }
+                    }
+                    catch (NullPointerException ignored) {
+                        logUnofficialMacAppUse();
                     }
                 }
             }
         }
     }
 
+    /**
+     * Log that MV wasn´t used via the official mac app.
+     * This is relevant to know for bug reports.
+     */
+    private void logUnofficialMacAppUse() {
+        Log.fehlerMeldung(915263987, "MV wird NICHT über die offizielle Mac App genutzt.");
+    }
     private void finalizeDownload(DatenDownload datenDownload, Start start /* wegen "datenDownload.start=null" beim stoppen */, HttpDownloadState state) {
         deleteIfEmpty(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]));
 
