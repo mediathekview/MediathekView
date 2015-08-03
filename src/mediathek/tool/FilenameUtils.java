@@ -49,6 +49,8 @@ public class FilenameUtils {
                     ret = ret.replaceFirst(":", ""); // muss zum Schluss wieder rein, kann aber so nicht ersetzt werden
                 }
             }
+        } else {
+            ret = removeStartingDots(ret);
         }
 
         if (isPath && ret.contains(File.separator)) {
@@ -98,6 +100,20 @@ public class FilenameUtils {
     }
 
     /**
+     * Remove dots from string when we are on Linux/OS X
+     *
+     * @param fileName A filename string that might start with dots.
+     * @return Cleanup string with no dots anymore.
+     */
+    private static String removeStartingDots(String fileName) {
+        // machte unter OS X/Linux Probleme, zB. bei dem Titel: "....Paula"
+        while (!fileName.isEmpty() && (fileName.startsWith("."))) {
+            fileName = fileName.substring(1, fileName.length());
+        }
+        return fileName;
+    }
+
+    /**
      * Convert a filename from Java´s native UTF-16 to OS native character encoding.
      *
      * @param fileName The UTF-16 filename string.
@@ -142,6 +158,7 @@ public class FilenameUtils {
             case MAC:
                 //On OSX the VFS take care of writing correct filenames to FAT filesystems...
                 //Just remove the default illegal characters
+                ret = removeStartingDots(ret);
                 ret = ret.replaceAll(REGEXP_ILLEGAL_CHARACTERS_OTHERS, "_");
                 break;
 
@@ -156,6 +173,7 @@ public class FilenameUtils {
             default:
                 //we need to be more careful on Linux when using e.g. FAT32
                 //Therefore be more conservative by default and replace more characters.
+                ret = removeStartingDots(ret);
                 ret = ret.replaceAll(REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
                 break;
         }
