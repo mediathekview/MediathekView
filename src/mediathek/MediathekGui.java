@@ -24,7 +24,6 @@ import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics2D;
@@ -108,7 +107,7 @@ public class MediathekGui extends JFrame {
     private final JPanel jPanelAnzahl = new JPanel();
     private PanelVorlage panelMeldungen = new PanelVorlage(daten, this);
     private JSplitPane splitPane = null;
-//    private final MVToolBar mVToolBar;
+    private final MVToolBar mVToolBar;
     private MVStatusBar statusBar;
     private final MVFrame[] frames = new MVFrame[3]; // Downloads, Abos, Meldungen
     private JCheckBoxMenuItem jCheckBoxFilterAnzeigen = new JCheckBoxMenuItem();
@@ -147,8 +146,7 @@ public class MediathekGui extends JFrame {
     }
 
     public String getFilterTextFromSearchField() {
-        return "";
-//        return mVToolBar.jTextFieldFilter.getText();
+        return mVToolBar.jTextFieldFilter.getText();
     }
     /**
      * The JVM {@link java.awt.SplashScreen} storage
@@ -257,13 +255,10 @@ public class MediathekGui extends JFrame {
 
         Log.startMeldungen();
         createStatusBar();
-//        mVToolBar = new MVToolBar(daten);
-//        jPanelToolBar.setLayout(new BorderLayout());
-//        jPanelToolBar.add(mVToolBar, BorderLayout.CENTER);
+        mVToolBar = new MVToolBar(daten);
+        jPanelToolBar.setLayout(new BorderLayout());
+        jPanelToolBar.add(mVToolBar, BorderLayout.CENTER);
 
-//        // TEST für OS X
-//        jPanelToolBar.setLayout(new FlowLayout());
-//        jPanelToolBar.add(mVToolBar);
         //create the Film Information HUD
         daten.filmInfoHud = new MVFilmInformation(this, jTabbedPane, daten);
         duration.ping("HUD");
@@ -394,8 +389,8 @@ public class MediathekGui extends JFrame {
     private void setFocusSuchfeld() {
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_SUCHFELD_FOCUS_SETZEN, MediathekGui.class.getName());
         if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER))) {
-//            mVToolBar.jTextFieldFilter.requestFocus();
-//            mVToolBar.jTextFieldFilter.setCaretPosition(0);
+            mVToolBar.jTextFieldFilter.requestFocus();
+            mVToolBar.jTextFieldFilter.setCaretPosition(0);
         }
     }
 
@@ -433,7 +428,7 @@ public class MediathekGui extends JFrame {
     // public
     //===================================
     public void setToolbar(String state) {
-//        mVToolBar.setToolbar(state);
+        mVToolBar.setToolbar(state);
         switch (state) {
             case "":
                 buttonAus();
@@ -568,7 +563,7 @@ public class MediathekGui extends JFrame {
         jMenuItemAnleitung.setIcon(GetIcon.getProgramIcon("help_16.png"));
         initTabs();
         initMenue();
-//        mVToolBar.loadVisible(); // erst jetzt sind die Einstellungen geladen!
+        mVToolBar.loadVisible(); // erst jetzt sind die Einstellungen geladen!
         Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
             @Override
             public void start(MSListenerFilmeLadenEvent event) {
@@ -657,7 +652,7 @@ public class MediathekGui extends JFrame {
                 setTab(2, panelMeldungen, "Meldungen", nr);
             }
         }
-//        mVToolBar.loadVisible(); // die können sich im externen Fenster geändert haben
+        mVToolBar.loadVisible(); // die können sich im externen Fenster geändert haben
         jTabbedPane.setSelectedIndex(0);
         daten.guiFilme.isShown();
     }
@@ -951,12 +946,12 @@ public class MediathekGui extends JFrame {
 
         // Ansicht
         jCheckBoxMenuItemToolBar.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
-//        mVToolBar.setVisible(jCheckBoxMenuItemToolBar.isSelected());
+        mVToolBar.setVisible(jCheckBoxMenuItemToolBar.isSelected());
         jCheckBoxMenuItemToolBar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.mVConfig.add(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.toString(jCheckBoxMenuItemToolBar.isSelected()));
-//                mVToolBar.setVisible(jCheckBoxMenuItemToolBar.isSelected());
+                mVToolBar.setVisible(jCheckBoxMenuItemToolBar.isSelected());
             }
         });
         jCheckBoxMenuItemVideoplayer.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
