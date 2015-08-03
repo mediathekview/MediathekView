@@ -31,7 +31,7 @@ import mediathek.gui.PanelVorlage;
 
 public class MVFrame extends javax.swing.JFrame {
 
-    private final MVToolBar mVToolBar;
+//    private final MVToolBar mVToolBar;
     private final Daten daten;
     private final String state;
     private String nrGroesse = "";
@@ -45,11 +45,11 @@ public class MVFrame extends javax.swing.JFrame {
         jPanelExtra.setLayout(new BorderLayout());
         jPanelExtra.add(jPanel, BorderLayout.CENTER);
         if (!state.equals(MVToolBar.TOOLBAR_TAB_MELDUNGEN)) {
-            mVToolBar = new MVToolBar(daten, state);
-            jPanelToolBar.setLayout(new BorderLayout());
-            jPanelToolBar.add(mVToolBar, BorderLayout.CENTER);
-        } else {
-            mVToolBar = null;
+//            mVToolBar = new MVToolBar(daten, state);
+//            jPanelToolBar.setLayout(new BorderLayout());
+//            jPanelToolBar.add(mVToolBar, BorderLayout.CENTER);
+//        } else {
+//            mVToolBar = null;
         }
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
