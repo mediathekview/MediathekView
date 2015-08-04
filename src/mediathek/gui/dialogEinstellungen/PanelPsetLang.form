@@ -233,7 +233,7 @@
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jScrollPane2" pref="194" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane2" pref="258" max="32767" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="jLabelInfo" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -389,7 +389,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="405" max="32767" attributes="0"/>
+                          <EmptySpace pref="469" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -506,7 +506,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="328" max="32767" attributes="0"/>
+                          <EmptySpace pref="366" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -552,17 +552,28 @@
                                       </Group>
                                       <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
                                   </Group>
-                                  <Group type="102" alignment="1" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
                                       <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="jTextFieldGruppeZielName" alignment="0" max="32767" attributes="0"/>
-                                          <Group type="102" alignment="0" attributes="0">
-                                              <Component id="jCheckBoxLaenge" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="jSpinnerLaenge" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace max="-2" attributes="0"/>
-                                              <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
+                                          <Group type="102" attributes="0">
+                                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                                  <Group type="102" attributes="0">
+                                                      <Component id="jCheckBoxLaenge" min="-2" max="-2" attributes="0"/>
+                                                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                                                      <Component id="jSpinnerLaenge" min="-2" max="-2" attributes="0"/>
+                                                      <EmptySpace max="-2" attributes="0"/>
+                                                      <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
+                                                  </Group>
+                                                  <Group type="102" attributes="0">
+                                                      <Component id="jCheckBoxField" min="-2" max="-2" attributes="0"/>
+                                                      <EmptySpace max="32767" attributes="0"/>
+                                                      <Component id="jSpinnerField" min="-2" max="-2" attributes="0"/>
+                                                      <EmptySpace max="-2" attributes="0"/>
+                                                      <Component id="jLabel16" min="-2" max="-2" attributes="0"/>
+                                                  </Group>
+                                              </Group>
                                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                           </Group>
                                       </Group>
@@ -595,6 +606,12 @@
                                   <Component id="jCheckBoxLaenge" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jSpinnerLaenge" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="jCheckBoxField" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jSpinnerField" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel16" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
                           </Group>
@@ -640,14 +657,14 @@
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="jCheckBoxLaenge">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Dateiname beschr&#xe4;nken auf:"/>
+                        <Property name="text" type="java.lang.String" value="ganzen Dateiname beschr&#xe4;nken auf:"/>
                         <Property name="toolTipText" type="java.lang.String" value="die L&#xe4;nge des Dateinamens wird auf die Anzahl Zeichen beschr&#xe4;nkt"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JSpinner" name="jSpinnerLaenge">
                       <Properties>
                         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                          <SpinnerModel initial="25" maximum="200" minimum="12" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                          <SpinnerModel initial="25" maximum="200" minimum="10" numberType="java.lang.Integer" stepSize="1" type="number"/>
                         </Property>
                       </Properties>
                     </Component>
@@ -663,6 +680,23 @@
                     <Component class="javax.swing.JLabel" name="jLabel15">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="(ist der Abo-Zielpfad leer, wird das Thema verwendet)"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JCheckBox" name="jCheckBoxField">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="einzelne Felder beschr&#xe4;nken auf:"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JSpinner" name="jSpinnerField">
+                      <Properties>
+                        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+                          <SpinnerModel initial="10" maximum="100" minimum="3" numberType="java.lang.Integer" stepSize="1" type="number"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel16">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Zeichen"/>
                       </Properties>
                     </Component>
                   </SubComponents>
@@ -973,7 +1007,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" pref="219" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" pref="283" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -1323,7 +1357,7 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="jScrollPane3" pref="389" max="32767" attributes="0"/>
+                      <Component id="jScrollPane3" pref="453" max="32767" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="jButtonGruppeAuf" min="-2" max="-2" attributes="0"/>
