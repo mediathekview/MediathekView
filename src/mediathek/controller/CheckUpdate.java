@@ -175,7 +175,7 @@ public class CheckUpdate {
                 }
             }
             if (!Daten.listePset.isEmpty()) {
-                // wenn leer, dann gibt immer die Neuen und die sind dann auch aktiv
+                // wenn leer, dann gibts immer die neuen und die sind dann auch aktiv
                 for (DatenPset psNew : listePsetStandard) {
                     // die bestehenden Sets sollen nicht gestört werden
                     psNew.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
