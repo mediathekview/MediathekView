@@ -15,7 +15,7 @@ Abspielen gestartet wird, das Set "Speichern" ist dann für das Speichern
 eines Films zuständig. Sind mehrere Sets zum Speichern angelegt, wird das
 Set zum Speichern für jeden Film in einem Dialog abgefragt.
 
-Werden Abos genutzt, muss auch dafür eine Set angelegt sein. Meist
+Werden Abos genutzt, muss auch dafür ein Set angelegt sein. Meist
 eignet sich dafür das Set "Speichern", bei diesem ist also "Speichern"
 und "Abo" eingeschaltet.
 
@@ -49,10 +49,13 @@ Zeit in der Form: SSMMss z.B. 152059 (15:20:59)
 %s Sender des Films
 %T Titel des Films
 %t Thema des Films
+
 %N Originaldateiname des Films (der kann sehr kryptisch und lang sein)
 %S Suffix des Originaldateinamens des Films (z.B. "mp4")
+
 %i Filmnummer (die ändert sich beim Neuladen der Filmliste!)
 %q Qualität des Films ("HD", "H", "L")
+
 %Z Hashwert der URL, z.B.: 1433245578
 %z Hashwert der URL + Suffix, entspricht also: %Z.%S, z.B.: 1433245578.mp4
 
@@ -70,6 +73,15 @@ Die Auflösung kann ebenfalls vorgegeben werden. Existiert für den Film die ang
 Auflösung nicht, wird die nächstkleinere verwendet.
 
 
+Die Länge eines Dateinamens eines Downloads kann mit:
+"ganzen Dateiname beschränken auf:"
+"einzelne Felder beschränken auf:"
+begrenzt werden. Das erste bezieht sich auf den gesamten Dateinamen. Der wird ermittelt
+und dann evtl. gekürzt. Mit dem zweiten Wert kann man die Länge eins Feldes/Parameters
+eines Namens begrenzen. Das bezieht sich nur auf Felder mit variabler Länge:
+%t, %T, %s, %N -> Thema, Titel, Sender, Originaldateiname
+
+
 ====================
 Hilfsprogramme:
 ===
@@ -82,7 +94,7 @@ für welche URL ein Programm zuständig ist.
 werden. Ist das Feld leer, wird der Zieldateiname des Sets verwendet. Meist muss
 nichts angegeben werden.
 
-"Programm": In dem Feld steht der Pfad zur Programmdatei.
+"Programm": In dem Feld steht NUR!! das Programm: "Pfad/Programmdatei"
 
 "Schalter": In diesem Feld werden die Programmschalter angegeben, die das Programm
 zum Start braucht. Mögliche Parameter sind:
@@ -95,7 +107,6 @@ zwei Sterne ** werden durch den Zieldateinamen mit Pfad ersetzt.
 
 
 ==================================================
-
 Beispiel für den VLC:
 Programm: "/usr/bin/vlc"
 Schalter: "%f :sout=#standard{access=file,mux=ts,dst=**} -I dummy --play-and-exit"
@@ -107,4 +118,19 @@ ersetzt und in den Programmschalter anstatt der "**" eingesetzt.
 Als Downloaddatei resultiert Volumes/Pfad/Thema-Titel.ts 
 bzw. C:\Pfad\Thema-Titel.ts.
 
+==================================================
+Beispiel für den ffmpeg:
+Programm: "bin\ffmpeg.exe"
+Schalter: "-i %f -c copy -bsf:a aac_adtstoasc "**""
+Dateiname: "%t-%T.mp4"
+
+Hier wird %f durch die URL des Films ersetzt.
+%t und %T werden durch einen Pfad und Dateinamen 
+ersetzt und in den Programmschalter anstatt der "**" eingesetzt.
+Als Downloaddatei resultiert Volumes/Pfad/Thema-Titel.mp4 
+bzw. C:\Pfad\Thema-Titel.mp4.
+
+Der Pfad wird hier relativ zur Programmdatei von MediathekView angegeben.
+Es wird als Programm ffmpeg verwendet, das MediathekView
+im Ordner "bin" mitbringt.
 
