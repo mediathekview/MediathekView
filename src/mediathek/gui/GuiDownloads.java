@@ -157,7 +157,7 @@ public class GuiDownloads extends PanelVorlage {
         filmStartenWiederholenStoppen(alle, true /* starten */);
     }
 
-    public void startAtTime(boolean alle) {
+    public void startAtTime() {
         filmStartAtTime();
     }
 
@@ -994,7 +994,7 @@ public class GuiDownloads extends PanelVorlage {
                     downloadsAktualisieren();
                 }
             });
-            JMenuItem itemAufraeumen = new JMenuItem("Liste aufräumen");
+            JMenuItem itemAufraeumen = new JMenuItem("Liste der Downloads aufräumen");
             itemAufraeumen.setIcon(GetIcon.getProgramIcon("download_clear_16.png"));
             jPopupMenu.add(itemAufraeumen);
             itemAufraeumen.addActionListener(new ActionListener() {
