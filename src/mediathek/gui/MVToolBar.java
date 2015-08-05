@@ -132,7 +132,7 @@ public final class MVToolBar extends JToolBar {
         buttonListAlles.add(jButtonFilmAbspielen);
         jButtonFilmSpeichern = new MVButton(new String[]{TOOLBAR_TAB_FILME}, "Film aufzeichnen", "Film aufzeichnen", "film_rec_32.png", "film_rec_16.png");
         buttonListAlles.add(jButtonFilmSpeichern);
-        jButtonDownloadAktualisieren = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Downloads aktualisieren", "Downloads aktualisieren", "view-refresh_32.png", "view-refresh_16.png");
+        jButtonDownloadAktualisieren = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Liste der Downloads aktualisieren", "Liste der Downloads aktualisieren", "view-refresh_32.png", "view-refresh_16.png");
         buttonListAlles.add(jButtonDownloadAktualisieren);
         buttonListDownloads.add(jButtonDownloadAktualisieren);
         jButtonDownloadAlleStarten = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "alle Downloads starten", "alle Downloads starten", "download_alleStarten_32.png", "download_alleStarten_16.png");
@@ -141,13 +141,13 @@ public final class MVToolBar extends JToolBar {
         jButtonDownloadFilmStarten = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Film Starten", "gespeicherten Film abspielen", "film_start_32.png", "film_start_16.png");
         buttonListAlles.add(jButtonDownloadFilmStarten);
         buttonListDownloads.add(jButtonDownloadFilmStarten);
-        jButtonDownloadZurueckstellen = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Download zurückstellen", "Download zurückstellen", "undo_32.png", "undo_16.png");
+        jButtonDownloadZurueckstellen = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Downloads zurückstellen", "Downloads zurückstellen", "undo_32.png", "undo_16.png");
         buttonListAlles.add(jButtonDownloadZurueckstellen);
         buttonListDownloads.add(jButtonDownloadZurueckstellen);
-        jButtonDownloadLoeschen = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Download aus Liste entfernen", "Download aus Liste entfernen", "download_del_32.png", "download_del_16.png");
+        jButtonDownloadLoeschen = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Downloads aus Liste entfernen", "Downloads aus Liste entfernen", "download_del_32.png", "download_del_16.png");
         buttonListAlles.add(jButtonDownloadLoeschen);
         buttonListDownloads.add(jButtonDownloadLoeschen);
-        jButtonDownloadAufraeumen = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Downloads aufräumen", "Liste der Downloads aufräumen", "download_clear_32.png", "download_clear_16.png");
+        jButtonDownloadAufraeumen = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Liste der Downloads aufräumen", "Liste der Downloads aufräumen", "download_clear_32.png", "download_clear_16.png");
         buttonListAlles.add(jButtonDownloadAufraeumen);
         buttonListDownloads.add(jButtonDownloadAufraeumen);
         jButtonAbosEinschalten = new MVButton(new String[]{TOOLBAR_TAB_ABOS}, "Abos einschalten", "Abos einschalten", "ja_32.png", "ja_16.png");
