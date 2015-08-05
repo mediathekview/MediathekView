@@ -68,8 +68,8 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane5" min="-2" pref="186" max="-2" attributes="0"/>
-                      <EmptySpace pref="371" max="32767" attributes="0"/>
+                      <Component id="jScrollPane5" min="-2" pref="119" max="-2" attributes="0"/>
+                      <EmptySpace pref="472" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -87,7 +87,7 @@
                     <Property name="editable" type="boolean" value="false"/>
                     <Property name="columns" type="int" value="20"/>
                     <Property name="rows" type="int" value="5"/>
-                    <Property name="text" type="java.lang.String" value="&#xa;Die Dateinamen werden f&#xfc;r jedes Betriebssystem passend aufbereitet.&#xa;&#xa;Wer will, kann dar&#xfc;ber hinaus weitere Einstellungen mit einer Ersetzungstabelle&#xa;vornehmen: z.B. &quot;&#xdf;&quot; durch &quot;ss&quot; ersetzen.&#xa;&#xa;&#xa;Unter OS X und Linux ist die Ersetzungstabelle default aktiviert:&#xa;(einziger Eintrag: &quot; &quot; -&gt; &quot;&quot;). Unter OS X und Linux f&#xfc;hren Leerzeichen zu&#xa;fehlerhaften Downloads mit FFmpeg (SRF, WDR Rockpalast).&#xa;"/>
+                    <Property name="text" type="java.lang.String" value="&#xa;Die Dateinamen werden f&#xfc;r jedes Betriebssystem passend aufbereitet.&#xa;&#xa;Wer will, kann dar&#xfc;ber hinaus weitere Einstellungen mit einer Ersetzungstabelle&#xa;vornehmen: z.B. &quot;&#xdf;&quot; durch &quot;ss&quot; ersetzen.&#xa;"/>
                     <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                       <Insets value="[3, 3, 3, 3]"/>
                     </Property>
@@ -211,7 +211,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="jScrollPane4" pref="230" max="32767" attributes="0"/>
+                          <Component id="jScrollPane4" pref="264" max="32767" attributes="0"/>
                           <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="2" attributes="0">
                               <Component id="jLabelVon" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>

@@ -24,7 +24,6 @@ import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics2D;
@@ -257,10 +256,8 @@ public class MediathekGui extends JFrame {
         Log.startMeldungen();
         createStatusBar();
         mVToolBar = new MVToolBar(daten);
-//        jPanelToolBar.setLayout(new BorderLayout());
-//        jPanelToolBar.add(mVToolBar, BorderLayout.CENTER);
-        jPanelToolBar.setLayout(new FlowLayout());
-        jPanelToolBar.add(mVToolBar);
+        jPanelToolBar.setLayout(new BorderLayout());
+        jPanelToolBar.add(mVToolBar, BorderLayout.CENTER);
 
         //create the Film Information HUD
         daten.filmInfoHud = new MVFilmInformation(this, jTabbedPane, daten);

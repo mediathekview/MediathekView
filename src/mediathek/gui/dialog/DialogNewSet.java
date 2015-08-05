@@ -57,16 +57,12 @@ public class DialogNewSet extends javax.swing.JDialog {
                     + "   Pfade zu Hilfsprogrammen haben sich geändert.\n"
                     + "   Das Standardset der Videoplayer\n"
                     + "   für den Download und das Abspielen der Filme\n"
-                    + "   wird neu angelegt."
-                    + "   \n");
+                    + "   wird neu angelegt.");
         } else {
-            setTitle("Das Standardset wurde aktualisert");
+            setTitle("Das Standardset wurde aktualisiert");
             jTextArea3.setText("\n"
                     + "   Es gibt ein neues Standardset der Videoplayer\n"
-                    + "   für den Download und das Abspielen der Filme.\n"
-                    + "   \n"
-                    + "   Wenn bei Ihnen das Abspielen und Speichern aller Filme\n"
-                    + "   klappt, brauchen Sie nichts ändern.\n");
+                    + "   für den Download und das Abspielen der Filme.\n");
             jCheckBoxMorgen.setSelected(true);
             jCheckBoxMorgen.addActionListener(new ActionListener() {
                 @Override
@@ -83,7 +79,10 @@ public class DialogNewSet extends javax.swing.JDialog {
 
         jTextArea2.setText("\n"
                 + "   Es werden alle Programmsets (auch eigene) \n"
-                + "   gelöscht und die neuen Standardsets wieder angelegt.");
+                + "   gelöscht und die neuen Standardsets wieder angelegt.\n"
+                + "\n"
+                + "   (Wenn Sie die Einstellungen nicht verändert haben\n"
+                + "    ist das die Empfehlung)");
         try {
             jXHyperlinkAnleitung.setAction(new UrlHyperlinkAction(pparent, Konstanten.ADRESSE_ANLEITUNG));
         } catch (URISyntaxException ignored) {
@@ -196,8 +195,8 @@ public class DialogNewSet extends javax.swing.JDialog {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Entweder", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 12), new java.awt.Color(0, 102, 204))); // NOI18N
 
-        jTextArea1.setColumns(20);
         jTextArea1.setEditable(false);
+        jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
@@ -220,7 +219,7 @@ public class DialogNewSet extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonAdd)
                 .addContainerGap())
@@ -228,7 +227,7 @@ public class DialogNewSet extends javax.swing.JDialog {
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Oder", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 12), new java.awt.Color(0, 102, 204))); // NOI18N
 
-        jButtonReplace.setText("Bestehende Sets durch die Neuen ersetzen");
+        jButtonReplace.setText("Bestehende Sets durch die neuen ersetzen");
 
         jTextArea2.setEditable(false);
         jTextArea2.setColumns(20);
@@ -244,7 +243,7 @@ public class DialogNewSet extends javax.swing.JDialog {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jButtonReplace)
-                        .addGap(0, 187, Short.MAX_VALUE))
+                        .addGap(0, 247, Short.MAX_VALUE))
                     .addComponent(jScrollPane2))
                 .addContainerGap())
         );
@@ -252,7 +251,7 @@ public class DialogNewSet extends javax.swing.JDialog {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonReplace)
                 .addGap(13, 13, 13))
@@ -261,7 +260,7 @@ public class DialogNewSet extends javax.swing.JDialog {
         jTextArea3.setEditable(false);
         jTextArea3.setBackground(new java.awt.Color(244, 244, 244));
         jTextArea3.setColumns(20);
-        jTextArea3.setRows(5);
+        jTextArea3.setRows(3);
         jScrollPane3.setViewportView(jTextArea3);
 
         jButtonSetHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
@@ -291,7 +290,7 @@ public class DialogNewSet extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)

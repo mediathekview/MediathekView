@@ -58,6 +58,7 @@ public class Konstanten {
     public static final String GUIFILME_DIVIDER_LOCATION = "260";
 
     public static final int LAENGE_DATEINAME = 25; // Standardwert für die Länge des Zieldateinamens
+    public static final int LAENGE_FELD = 10; // Standardwert für die Länge des Feldes des Zieldateinamens zB. %T
 
     public static final int UPDATE_FILME_AUS = 0; // nur manuell + URL manuell wählen
     public static final int UPDATE_FILME_AUTO = 2; // beim Start automatisch + manuell, Url automatisch wählen

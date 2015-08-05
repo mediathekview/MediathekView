@@ -57,32 +57,36 @@ public class DatenPset {
     public static final int PROGRAMMSET_IST_ABO_NR = 10;
     public static final String PROGRAMMSET_LAENGE_BESCHRAENKEN = "Laenge";
     public static final int PROGRAMMSET_LAENGE_BESCHRAENKEN_NR = 11;
+    public static final String PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN = "Laenge-Feld";
+    public static final int PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN_NR = 12;
     public static final String PROGRAMMSET_MAX_LAENGE = "max-Laenge";
-    public static final int PROGRAMMSET_MAX_LAENGE_NR = 12;
+    public static final int PROGRAMMSET_MAX_LAENGE_NR = 13;
+    public static final String PROGRAMMSET_MAX_LAENGE_FIELD = "max-Laenge-Feld";
+    public static final int PROGRAMMSET_MAX_LAENGE_FIELD_NR = 14;
     public static final String PROGRAMMSET_AUFLOESUNG = "Aufloesung";
-    public static final int PROGRAMMSET_AUFLOESUNG_NR = 13;
+    public static final int PROGRAMMSET_AUFLOESUNG_NR = 15;
     public static final String PROGRAMMSET_ADD_ON = "AddOn";
-    public static final int PROGRAMMSET_ADD_ON_NR = 14;
+    public static final int PROGRAMMSET_ADD_ON_NR = 16;
     public static final String PROGRAMMSET_BESCHREIBUNG = "Beschreibung";
-    public static final int PROGRAMMSET_BESCHREIBUNG_NR = 15;
+    public static final int PROGRAMMSET_BESCHREIBUNG_NR = 17;
     public static final String PROGRAMMSET_INFO_URL = "Info-URL";
-    public static final int PROGRAMMSET_INFO_URL_NR = 16;
+    public static final int PROGRAMMSET_INFO_URL_NR = 18;
     public static final String PROGRAMMSET_INFODATEI = "Infodatei";
-    public static final int PROGRAMMSET_INFODATEI_NR = 17;
+    public static final int PROGRAMMSET_INFODATEI_NR = 19;
     public static final String PROGRAMMSET_SPOTLIGHT = "Spotlight";
-    public static final int PROGRAMMSET_SPOTLIGHT_NR = 18;
+    public static final int PROGRAMMSET_SPOTLIGHT_NR = 20;
     public static final String PROGRAMMSET_SUBTITLE = "Untertitel";
-    public static final int PROGRAMMSET_SUBTITLE_NR = 19;
-    public static final int MAX_ELEM = 20;
+    public static final int PROGRAMMSET_SUBTITLE_NR = 21;
+    public static final int MAX_ELEM = 22;
     public static final String[] COLUMN_NAMES = {"Setname", "Präfix", PROGRAMMSET_SUFFIX_DIREKT,
         PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME, PROGRAMMSET_THEMA_ANLEGEN,
         PROGRAMMSET_IST_ABSPIELEN, PROGRAMMSET_IST_SPEICHERN, PROGRAMMSET_IST_BUTTON, PROGRAMMSET_IST_ABO,
-        PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, "Auflösung", PROGRAMMSET_ADD_ON,
+        PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, PROGRAMMSET_MAX_LAENGE_FIELD, "Auflösung", PROGRAMMSET_ADD_ON,
         PROGRAMMSET_BESCHREIBUNG, PROGRAMMSET_INFO_URL, PROGRAMMSET_INFODATEI, PROGRAMMSET_SPOTLIGHT, PROGRAMMSET_SUBTITLE};
     public static final String[] COLUMN_NAMES_ = {PROGRAMMSET_NAME, PROGRAMMSET_PRAEFIX_DIREKT, PROGRAMMSET_SUFFIX_DIREKT,
         PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME, PROGRAMMSET_THEMA_ANLEGEN,
         PROGRAMMSET_IST_ABSPIELEN, PROGRAMMSET_IST_SPEICHERN, PROGRAMMSET_IST_BUTTON, PROGRAMMSET_IST_ABO,
-        PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, PROGRAMMSET_AUFLOESUNG, PROGRAMMSET_ADD_ON,
+        PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, PROGRAMMSET_MAX_LAENGE_FIELD, PROGRAMMSET_AUFLOESUNG, PROGRAMMSET_ADD_ON,
         PROGRAMMSET_BESCHREIBUNG, PROGRAMMSET_INFO_URL, PROGRAMMSET_INFODATEI, PROGRAMMSET_SPOTLIGHT, PROGRAMMSET_SUBTITLE};
     private ListeProg listeProg = new ListeProg();
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
@@ -299,6 +303,7 @@ public class DatenPset {
         arr[PROGRAMMSET_IST_BUTTON_NR] = Boolean.toString(false);
         arr[PROGRAMMSET_IST_ABO_NR] = Boolean.toString(false);
         arr[PROGRAMMSET_LAENGE_BESCHRAENKEN_NR] = Boolean.toString(false);
+        arr[PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN_NR] = Boolean.toString(false);
         arr[PROGRAMMSET_INFODATEI_NR] = Boolean.toString(false);
         arr[PROGRAMMSET_SPOTLIGHT_NR] = Boolean.toString(SystemInfo.isMacOSX());
         arr[PROGRAMMSET_SUBTITLE_NR] = Boolean.toString(false);
