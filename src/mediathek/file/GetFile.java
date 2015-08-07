@@ -46,6 +46,7 @@ public class GetFile {
     public static String PFAD_HILFETEXT_RESET_SET = "hilfetext_reset_set.txt";
     public static String PFAD_HILFETEXT_DIALOG_MEDIA_DB = "hilfetext_dialog_mediaDb.txt";
     public static String PFAD_HILFETEXT_PANEL_MEDIA_DB = "hilfetext_panel_mediaDb.txt";
+    public static String PFAD_HILFETEXT_DIALOG_ADD_ABO = "hilfetext_dialog_add_abo.txt";
 
     public String getHilfeSuchen(String pfad) {
         String ret = "";
