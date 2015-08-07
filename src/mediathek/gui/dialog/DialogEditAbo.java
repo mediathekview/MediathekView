@@ -29,6 +29,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -40,6 +41,8 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
+import mediathek.file.GetFile;
+import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.FilenameUtils;
 import mediathek.tool.GuiFunktionen;
@@ -57,7 +60,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
     private final JLabel labelDauer = new JLabel("0");
     public boolean ok = false;
 
-    public DialogEditAbo(java.awt.Frame parent, boolean modal, Daten d, DatenAbo aktA) {
+    public DialogEditAbo(final JFrame parent, boolean modal, Daten d, DatenAbo aktA) {
         super(parent, modal);
         initComponents();
         aktAbo = aktA;
@@ -113,6 +116,13 @@ public class DialogEditAbo extends javax.swing.JDialog {
             }
         };
         setExtra();
+        jButtonHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonHelp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_ADD_ABO)).setVisible(true);
+            }
+        });
     }
 
     private void checkPfad() {
@@ -262,6 +272,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
         jPanelExtra = new javax.swing.JPanel();
         jButtonAbbrechen = new javax.swing.JButton();
         jButtonBeenden = new javax.swing.JButton();
+        jButtonHelp = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -282,6 +293,8 @@ public class DialogEditAbo extends javax.swing.JDialog {
 
         jButtonBeenden.setText("Ok");
 
+        jButtonHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -294,7 +307,9 @@ public class DialogEditAbo extends javax.swing.JDialog {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonBeenden, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonAbbrechen)))
+                        .addComponent(jButtonAbbrechen)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonHelp)))
                 .addContainerGap())
         );
 
@@ -308,7 +323,8 @@ public class DialogEditAbo extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonBeenden)
-                    .addComponent(jButtonAbbrechen))
+                    .addComponent(jButtonAbbrechen)
+                    .addComponent(jButtonHelp))
                 .addContainerGap())
         );
 
@@ -317,6 +333,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAbbrechen;
     private javax.swing.JButton jButtonBeenden;
+    private javax.swing.JButton jButtonHelp;
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
