@@ -853,7 +853,7 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadStartTime.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.startAtTime(true);
+                daten.guiDownloads.startAtTime();
             }
         });
         jMenuItemDownloadStarten.addActionListener(new ActionListener() {
@@ -1265,19 +1265,19 @@ public class MediathekGui extends JFrame {
         jMenuDownload = new javax.swing.JMenu();
         jMenuItemDownloadsAlleStarten = new javax.swing.JMenuItem();
         jMenuItemDownloadStartTime = new javax.swing.JMenuItem();
-        jMenuItemDownloadWartendeStoppen = new javax.swing.JMenuItem();
         jMenuItemDownloadAlleStoppen = new javax.swing.JMenuItem();
-        javax.swing.JPopupMenu.Separator jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        jMenuItemDownloadWartendeStoppen = new javax.swing.JMenuItem();
+        jMenuItemDownloadsAktualisieren = new javax.swing.JMenuItem();
+        jMenuItemDownloadsAufraeumen = new javax.swing.JMenuItem();
+        javax.swing.JPopupMenu.Separator jSeparator3 = new javax.swing.JPopupMenu.Separator();
         jMenuItemDownloadStarten = new javax.swing.JMenuItem();
         jMenuItemDownloadStoppen = new javax.swing.JMenuItem();
         jMenuItemDownloadVorziehen = new javax.swing.JMenuItem();
         jMenuItemDownloadsZurueckstellen = new javax.swing.JMenuItem();
         jMenuItemDownloadsLoeschen = new javax.swing.JMenuItem();
         jMenuItemDownloadAendern = new javax.swing.JMenuItem();
-        javax.swing.JPopupMenu.Separator jSeparator3 = new javax.swing.JPopupMenu.Separator();
+        javax.swing.JPopupMenu.Separator jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenuItemDownloadAbspielen = new javax.swing.JMenuItem();
-        jMenuItemDownloadsAktualisieren = new javax.swing.JMenuItem();
-        jMenuItemDownloadsAufraeumen = new javax.swing.JMenuItem();
         jMenuItemDownloadShutDown = new javax.swing.JMenuItem();
         javax.swing.JMenu jMenuAbos = new javax.swing.JMenu();
         jMenuItemAbosEinschalten = new javax.swing.JMenuItem();
@@ -1380,16 +1380,25 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadStartTime.setText("alle Downloads um xx:yy Uhr starten");
         jMenuDownload.add(jMenuItemDownloadStartTime);
 
+        jMenuItemDownloadAlleStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/download_stop_16.png"))); // NOI18N
+        jMenuItemDownloadAlleStoppen.setText("alle stoppen");
+        jMenuItemDownloadAlleStoppen.setToolTipText("alle Downloads stoppen");
+        jMenuDownload.add(jMenuItemDownloadAlleStoppen);
+
         jMenuItemDownloadWartendeStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/download_stop_16.png"))); // NOI18N
         jMenuItemDownloadWartendeStoppen.setText("wartende stoppen");
         jMenuItemDownloadWartendeStoppen.setToolTipText("wartende Downloads stoppen");
         jMenuDownload.add(jMenuItemDownloadWartendeStoppen);
 
-        jMenuItemDownloadAlleStoppen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/download_stop_16.png"))); // NOI18N
-        jMenuItemDownloadAlleStoppen.setText("alle stoppen");
-        jMenuItemDownloadAlleStoppen.setToolTipText("alle Downloads stoppen");
-        jMenuDownload.add(jMenuItemDownloadAlleStoppen);
-        jMenuDownload.add(jSeparator1);
+        jMenuItemDownloadsAktualisieren.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_SPACE, 0));
+        jMenuItemDownloadsAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/view-refresh_16.png"))); // NOI18N
+        jMenuItemDownloadsAktualisieren.setText("Liste der Downloads aktualisieren");
+        jMenuDownload.add(jMenuItemDownloadsAktualisieren);
+
+        jMenuItemDownloadsAufraeumen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/download_clear_16.png"))); // NOI18N
+        jMenuItemDownloadsAufraeumen.setText("Liste der Downloads aufräumen");
+        jMenuDownload.add(jMenuItemDownloadsAufraeumen);
+        jMenuDownload.add(jSeparator3);
 
         jMenuItemDownloadStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/download_start_16.png"))); // NOI18N
         jMenuItemDownloadStarten.setText("Downloads starten");
@@ -1410,26 +1419,17 @@ public class MediathekGui extends JFrame {
 
         jMenuItemDownloadsLoeschen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
         jMenuItemDownloadsLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/download_del_16.png"))); // NOI18N
-        jMenuItemDownloadsLoeschen.setText("Download aus Liste entfernen");
+        jMenuItemDownloadsLoeschen.setText("Downloads aus Liste entfernen");
         jMenuDownload.add(jMenuItemDownloadsLoeschen);
 
         jMenuItemDownloadAendern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/configure_16.png"))); // NOI18N
         jMenuItemDownloadAendern.setText("Download ändern");
         jMenuDownload.add(jMenuItemDownloadAendern);
-        jMenuDownload.add(jSeparator3);
+        jMenuDownload.add(jSeparator1);
 
         jMenuItemDownloadAbspielen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/film_start_16.png"))); // NOI18N
         jMenuItemDownloadAbspielen.setText("gespeicherten Film abspielen");
         jMenuDownload.add(jMenuItemDownloadAbspielen);
-
-        jMenuItemDownloadsAktualisieren.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_SPACE, 0));
-        jMenuItemDownloadsAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/view-refresh_16.png"))); // NOI18N
-        jMenuItemDownloadsAktualisieren.setText("Downloads aktualisieren");
-        jMenuDownload.add(jMenuItemDownloadsAktualisieren);
-
-        jMenuItemDownloadsAufraeumen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/download_clear_16.png"))); // NOI18N
-        jMenuItemDownloadsAufraeumen.setText("Downloads aufräumen");
-        jMenuDownload.add(jMenuItemDownloadsAufraeumen);
 
         jMenuItemDownloadShutDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/beenden_16.png"))); // NOI18N
         jMenuItemDownloadShutDown.setText("Rechner nach Downloads herunterfahren");
