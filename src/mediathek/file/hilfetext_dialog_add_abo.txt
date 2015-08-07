@@ -1,0 +1,42 @@
+Beim Abo müssen der "Sender" und das "Thema" exakt
+passen. Beim "Titel" muss die Eingabe im Filmtitel
+nur enthalten sein.
+
+Beim Feld "Thema/Titel" muss das Feld im
+"Thema" ODER "Titel" vorkommen. Bei "Irgendwo" 
+wird zusätzlich auch noch in der Beschreibung
+gesucht.
+
+======================================
+Ein Filterwort kann auch Leerzeichen enthalten,
+mehrere Filterwörter werden durch "," getrennt,
+angeben z.B.: "Hallo ich,Tatort". Es wird dann
+nach Filmen gesucht, die im entsprechenden Feld 
+"Hallo ich" ODER "Tatort" enthalten.
+
+Groß- und Kleinschreibung wird beim Filtern
+nicht beachtet.
+
+======================================
+In den Filtern können auch reguläre Ausdrücken
+verwendet werden. Diese müssen mit "#:" eingeleitet
+werden und werden dann auf die entsprechenden
+Felder des Films angewandt.
+
+#:Abend.*
+Das bedeutet z.B.: Es werden alle Filme gefunden, die 
+im jeweiligen Feld mit "Abend" beginnen.
+
+Auch bei den regulären Ausdrücken spielt Groß- und 
+Kleinschreibung keine Rolle.
+
+https://de.wikipedia.org/wiki/Regul%C3%A4rer_Ausdruck
+
+======================================
+Abos arbeiten genauso wie die Filter im Tab Filme.
+Mit dem Filter kann man im Tab Filme die Suche soweit
+einschränken, dass das Ergebnis dem gewünschten
+Suchergebnis entspricht. Mit einem Rechtsklick auf einen
+Film kann man dann mit den Filtereinstellungen ein
+Abo anlegen.
+

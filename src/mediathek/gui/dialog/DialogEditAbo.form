@@ -32,6 +32,8 @@
                       <Component id="jButtonBeenden" linkSize="1" min="-2" pref="93" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonAbbrechen" linkSize="1" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jButtonHelp" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -47,6 +49,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jButtonBeenden" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonAbbrechen" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonHelp" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
@@ -83,6 +86,13 @@
     <Component class="javax.swing.JButton" name="jButtonBeenden">
       <Properties>
         <Property name="text" type="java.lang.String" value="Ok"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButtonHelp">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/mediathek/res/programm/help_16.png"/>
+        </Property>
       </Properties>
     </Component>
   </SubComponents>
