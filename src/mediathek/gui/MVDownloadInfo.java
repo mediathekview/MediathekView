@@ -29,22 +29,16 @@ import info.monitorenter.gui.chart.traces.Trace2DLtd;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.TimerTask;
-import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.plaf.basic.BasicSplitPaneDivider;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
 import mediathek.controller.starter.MVBandwidthTokenBucket;
 import mediathek.daten.Daten;
 import static mediathek.daten.Daten.mVConfig;
@@ -167,7 +161,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         } else {
             hudWindow.setContentPane(this);
         }
-        
+
         jSplitPane1.setDividerSize(15);
         jSplitPane1.setResizeWeight(1.0d);
         // size
@@ -176,13 +170,29 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         if (GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, jDialog, parent)) {
             try {
                 if (Daten.mVConfig.get(MVConfig.SYSTEM_DIVIDER_INFODIALOG_MIN_MAX).equals("max")) {
-                    jSplitPane1.setDividerLocation(1.0);
-                    addHListener(1.0);
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            // erst wenn das Programm geladen ist
+                            jSplitPane1.setDividerLocation(1.0);
+                            int setDividerLocation = ((int) ((double) (getHeight() - jSplitPane1.getDividerSize()) * 1.0));
+                            jSplitPane1.setDividerLocation(setDividerLocation);
+                        }
+                    });
+//                    addHListener(1.0);
                 } else if (Daten.mVConfig.get(MVConfig.SYSTEM_DIVIDER_INFODIALOG_MIN_MAX).equals("min")) {
-                    jSplitPane1.setDividerLocation(0.0);
-                    addHListener(0.0);
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            // erst wenn das Programm geladen ist
+                            jSplitPane1.setDividerLocation(0.0);
+                            int setDividerLocation = ((int) ((double) (getHeight() - jSplitPane1.getDividerSize()) * 0.0));
+                            jSplitPane1.setDividerLocation(setDividerLocation);
+                        }
+                    });
+//                    addHListener(0.0);
                 } else {
-                    int divider = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_DIVIDER_INFODIALOG));
+                    final int divider = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_DIVIDER_INFODIALOG));
                     //System.out.println("Divider: " + divider);
                     jSplitPane1.setDividerLocation(divider);
                 }
@@ -194,26 +204,53 @@ public class MVDownloadInfo extends javax.swing.JPanel {
             dim.height = 170;
             dim.width = 300;
             jDialog.setSize(dim);
-            jSplitPane1.setDividerLocation(200);
-            addHListener(1.0);
+            jSplitPane1.setDividerLocation(100);
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    // erst wenn das Programm geladen ist
+                    jSplitPane1.setDividerLocation(1.0);
+                }
+            });
         }
     }
 
-    private void addHListener(final double div) {
-
-        jSplitPane1.addHierarchyListener(new HierarchyListener() {
-            @Override
-            public void hierarchyChanged(HierarchyEvent e) {
-                if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
-                    BasicSplitPaneUI ui = (BasicSplitPaneUI) jSplitPane1.getUI();
-                    BasicSplitPaneDivider divider = ui.getDivider();
-                    JButton button = (JButton) divider.getComponent(div == 0 ? 0 : 1);
-                    button.doClick();
-                }
-            }
-        });
-    }
-
+//    private void addHListener(final double div) {
+//
+//        jSplitPane1.addHierarchyListener(new HierarchyListener() {
+//            @Override
+//            public void hierarchyChanged(HierarchyEvent e) {
+//                if ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
+//                    int last = jSplitPane1.getDividerLocation();
+//                    if (div == 0) {
+//                        jSplitPane1.setLastDividerLocation(0);
+//                        jSplitPane1.setDividerLocation(0.0);
+//                        jSplitPane1.setDividerLocation(0);
+//                        int i = jSplitPane1.getMinimumDividerLocation();
+//                        jSplitPane1.setDividerLocation(i);
+//                    } else {
+//                        jSplitPane1.setDividerLocation(1.0);
+//                        int i = jSplitPane1.getMaximumDividerLocation();
+//                        jSplitPane1.setDividerLocation(i);
+//                    }
+//                    jSplitPane1.setLastDividerLocation(last);
+//
+//////                    BasicSplitPaneUI ui = (BasicSplitPaneUI) jSplitPane1.getUI();
+//////                    BasicSplitPaneDivider divider = ui.getDivider();
+//////                    try {
+//////                        //todo -> beim gtk lookAndFeel gibts die Button nicht!!
+//////                        Object o = divider.getComponent(div == 0 ? 0 : 1);
+//////                        if (o != null) {
+//////                            JButton button = (JButton) divider.getComponent(div == 0 ? 0 : 1);
+//////                            button.doClick();
+//////                        }
+//////                    } catch (Exception ignored) {
+//////                        System.out.println("Schon wieder");
+//////                    }
+//                }
+//            }
+//        });
+//    }
     public JDialog getDialog() {
         return jDialog;
     }
@@ -226,9 +263,9 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         final double akt = jSplitPane1.getDividerLocation();        // akt Pos zwischen 1 .... MAX
 
         double divider = (akt - MIN) / (MAX - MIN);
-        if (divider < 0) {
+        if (divider < 0.05) {
             divider = 0.0;
-        } else if (divider > 1) {
+        } else if (divider > 0.95) {
             divider = 1.0;
         }
 
@@ -403,7 +440,6 @@ public class MVDownloadInfo extends javax.swing.JPanel {
 
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         jSplitPane1.setResizeWeight(1.0);
-        jSplitPane1.setOneTouchExpandable(true);
 
         javax.swing.GroupLayout jPanelChartLayout = new javax.swing.GroupLayout(jPanelChart);
         jPanelChart.setLayout(jPanelChartLayout);
