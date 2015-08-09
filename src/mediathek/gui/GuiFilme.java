@@ -1337,7 +1337,7 @@ public class GuiFilme extends PanelVorlage {
                 }
             });
             submenueBlack.add(jCheckBoxBlackBoxStart);
-            
+
             //##Trenner##
             jPopupMenu.addSeparator();
             //##Trenner##
@@ -1354,7 +1354,11 @@ public class GuiFilme extends PanelVorlage {
                     uLow = ""; // dann gibts keine
                 }
                 if (!uNornal.isEmpty()) {
-                    item = new JMenuItem("Film-URL kopieren");
+                    if (!uHd.isEmpty() || !uLow.isEmpty()) {
+                        item = new JMenuItem("Film-URL in hoher Auflösung kopieren");
+                    } else {
+                        item = new JMenuItem("Film-URL kopieren");
+                    }
                     item.addActionListener(new ActionListener() {
 
                         @Override
@@ -1366,7 +1370,7 @@ public class GuiFilme extends PanelVorlage {
                     jPopupMenu.add(item);
                 }
                 if (!uHd.isEmpty()) {
-                    item = new JMenuItem("   -> in \"HD\" kopieren");
+                    item = new JMenuItem("  in \"HD\" kopieren");
                     item.addActionListener(new ActionListener() {
 
                         @Override
@@ -1378,7 +1382,7 @@ public class GuiFilme extends PanelVorlage {
                     jPopupMenu.add(item);
                 }
                 if (!uLow.isEmpty()) {
-                    item = new JMenuItem("   -> in \"Klein\" kopieren");
+                    item = new JMenuItem("  in \"Klein\" kopieren");
                     item.addActionListener(new ActionListener() {
 
                         @Override
