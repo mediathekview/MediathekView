@@ -56,7 +56,7 @@ public class MVConfig {
 
     public static final String SYSTEM_GROESSE_INFODIALOG = "Groesse-Infodialog";
     public static final String SYSTEM_DIVIDER_INFODIALOG = "Divider-Infodialog";
-    public static final String SYSTEM_DIVIDER_INFODIALOG_MIN_MAX = "Divider-Infodialog-min-max";
+//    public static final String SYSTEM_DIVIDER_INFODIALOG_MIN_MAX = "Divider-Infodialog-min-max";
 
     public static final String SYSTEM_FENSTER_MAX = "programmfenster-maximieren";
     public static final String SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN = "system-panel-videoplayer-anzeigen";
