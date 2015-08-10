@@ -1337,10 +1337,6 @@ public class GuiFilme extends PanelVorlage {
             });
             submenueBlack.add(jCheckBoxBlackBoxStart);
 
-            //##Trenner##
-            jPopupMenu.addSeparator();
-            //##Trenner##
-
             //Url
             if (film != null) {
                 String uNornal = film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL);
@@ -1353,44 +1349,63 @@ public class GuiFilme extends PanelVorlage {
                     uLow = ""; // dann gibts keine
                 }
                 if (!uNornal.isEmpty()) {
+                    //##Trenner##
+                    jPopupMenu.addSeparator();
+                    //##Trenner##
                     if (!uHd.isEmpty() || !uLow.isEmpty()) {
-                        item = new JMenuItem("Film-URL in hoher Auflösung kopieren");
+                        JMenu submenueURL = new JMenu("Film-URL kopieren");
+                        // HD
+                        if (!uHd.isEmpty()) {
+                            item = new JMenuItem("in HD-Auflösung");
+                            item.addActionListener(new ActionListener() {
+
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD));
+
+                                }
+                            });
+                            submenueURL.add(item);
+                        }
+
+                        // normale Auflösung, gibts immer
+                        item = new JMenuItem("in hoher Auflösung");
+                        item.addActionListener(new ActionListener() {
+
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL));
+
+                            }
+                        });
+                        submenueURL.add(item);
+
+                        // kleine Auflösung
+                        if (!uLow.isEmpty()) {
+                            item = new JMenuItem("in geringer Auflösung");
+                            item.addActionListener(new ActionListener() {
+
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN));
+
+                                }
+                            });
+                            submenueURL.add(item);
+                        }
+                        jPopupMenu.add(submenueURL);
                     } else {
                         item = new JMenuItem("Film-URL kopieren");
+                        item.addActionListener(new ActionListener() {
+
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL));
+
+                            }
+                        });
+                        jPopupMenu.add(item);
                     }
-                    item.addActionListener(new ActionListener() {
-
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL));
-
-                        }
-                    });
-                    jPopupMenu.add(item);
-                }
-                if (!uHd.isEmpty()) {
-                    item = new JMenuItem("  in \"HD\" kopieren");
-                    item.addActionListener(new ActionListener() {
-
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD));
-
-                        }
-                    });
-                    jPopupMenu.add(item);
-                }
-                if (!uLow.isEmpty()) {
-                    item = new JMenuItem("  in \"Klein\" kopieren");
-                    item.addActionListener(new ActionListener() {
-
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN));
-
-                        }
-                    });
-                    jPopupMenu.add(item);
                 }
             }
 
