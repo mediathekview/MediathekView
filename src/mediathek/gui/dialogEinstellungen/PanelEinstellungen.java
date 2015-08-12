@@ -183,19 +183,23 @@ public class PanelEinstellungen extends PanelVorlage {
             //query all installed LAFs
             final UIManager.LookAndFeelInfo info[];
             info = UIManager.getInstalledLookAndFeels();
+            LookAndFeel aktLaf = UIManager.getLookAndFeel();
+            String classNameAktLaf = aktLaf.getClass().getName();
+            int idx = 0;
 
             //fill in the combobox model
-            ArrayList<String> themeList = new ArrayList<>();
-            for (UIManager.LookAndFeelInfo i : info) {
-                themeList.add(i.getName());
+            ArrayList<String> themeList = new ArrayList<>(); // list of "UIManager.LookAndFeelInfo" names
+            for (int i = 0; i < info.length; ++i) {
+                themeList.add(info[i].getName());
+                // LookAndFeelInfo.getName und LookAndFeel.getName sind beim GTK LF nicht gleich??
+                if (info[i].getClassName().equals(classNameAktLaf)) {
+                    idx = i;
+                }
             }
-
-            DefaultComboBoxModel model = new DefaultComboBoxModel(themeList.toArray());
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel(themeList.toArray());
             jComboBoxLookAndFeel.setModel(model);
-            //select the current
-            LookAndFeel laf = UIManager.getLookAndFeel();
-            int index = model.getIndexOf(laf.getName());
-            jComboBoxLookAndFeel.setSelectedIndex(index);
+            jComboBoxLookAndFeel.setSelectedIndex(idx);
+
             ActionListener lst = new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
