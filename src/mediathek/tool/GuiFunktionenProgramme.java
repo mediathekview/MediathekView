@@ -34,6 +34,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import mediathek.controller.Log;
 import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
@@ -438,7 +439,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                     if (!new File(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]).canExecute()) {
                         // dann noch mit RuntimeExec versuchen
                         RuntimeExec r = new RuntimeExec(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]);
-                        Process pr = r.exec();
+                        Process pr = r.exec(false /*log*/);
                         if (pr != null) {
                             // dann passts ja
                             pr.destroy();

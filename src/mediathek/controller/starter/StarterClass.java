@@ -562,7 +562,7 @@ public class StarterClass {
             start.startcounter++;
             startmeldung(datenDownload, start);
             runtimeExec = new RuntimeExec(datenDownload);
-            start.process = runtimeExec.exec();
+            start.process = runtimeExec.exec(true /*log*/);
             if (start.process != null) {
                 ret = true;
             }
