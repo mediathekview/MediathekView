@@ -309,7 +309,7 @@
         </Component>
         <Component class="javax.swing.JCheckBox" name="jCheckBoxTray">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Programme ins Tray minimieren"/>
+            <Property name="text" type="java.lang.String" value="Programm ins Tray minimieren"/>
           </Properties>
         </Component>
       </SubComponents>
