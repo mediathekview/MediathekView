@@ -372,7 +372,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jButtonLoad.setText("Filmliste jetzt neu laden");
 
-        jCheckBoxTray.setText("Programme ins Tray minimieren");
+        jCheckBoxTray.setText("Programm ins Tray minimieren");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
