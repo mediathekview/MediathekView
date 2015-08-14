@@ -268,7 +268,7 @@ public class MediathekGui extends JFrame {
             updateSplashScreenText("GUI Initialisieren...");
         } else {
             // erster Start
-            Daten.delSets = false; // hat sich dann erledigt
+//            Daten.delSets = false; // hat sich dann erledigt
             Daten.mVReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
             new DialogStarteinstellungen(this, daten).setVisible(true);
             this.pack();
@@ -373,17 +373,17 @@ public class MediathekGui extends JFrame {
 
         }
         duration.ping("Gui steht!");
-        if (Daten.delSets) {
-            Log.systemMeldung("==========================================");
-            Log.systemMeldung("Sets neu anlegen");
-            Log.systemMeldung("");
-            // die Sets sollen neu angelegt werden
-            // setzt die Standardpfade für die wichtigsten Programme
-            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
-            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
-            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
-            new CheckUpdate(this, daten).checkSet();
-        }
+//        if (Daten.delSets) {
+//            Log.systemMeldung("==========================================");
+//            Log.systemMeldung("Sets neu anlegen");
+//            Log.systemMeldung("");
+//            // die Sets sollen neu angelegt werden
+//            // setzt die Standardpfade für die wichtigsten Programme
+//            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
+//            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
+//            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
+//            new CheckUpdate(this, daten).checkSet();
+//        }
     }
 
     private void setFocusSuchfeld() {

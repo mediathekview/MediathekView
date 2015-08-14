@@ -136,7 +136,7 @@ public class CheckUpdate {
                     // dann hat das Laden der aktuellen Standardversion nicht geklappt
                     return;
                 }
-                if (!Daten.delSets && version.equals(listePsetStandard.version)) {
+                if (/*!Daten.delSets &&*/version.equals(listePsetStandard.version)) {
                     // dann passt alles
                     return;
                 } else {

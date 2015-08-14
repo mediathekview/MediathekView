@@ -48,29 +48,29 @@ public class DialogNewSet extends javax.swing.JDialog {
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
-        if (Daten.delSets) {
-            // Sets sollen wegen Änderungen der Pfade neu angelegt werden
-            jCheckBoxMorgen.setVisible(false);
-            jCheckBoxMorgen.setSelected(false);
-            setTitle("Pfade der Standardset haben sich geändert");
-            jTextArea3.setText("\n"
-                    + "   Pfade zu Hilfsprogrammen haben sich geändert.\n"
-                    + "   Das Standardset der Videoplayer\n"
-                    + "   für den Download und das Abspielen der Filme\n"
-                    + "   wird neu angelegt.");
-        } else {
-            setTitle("Das Standardset wurde aktualisiert");
-            jTextArea3.setText("\n"
-                    + "   Es gibt ein neues Standardset der Videoplayer\n"
-                    + "   für den Download und das Abspielen der Filme.\n");
-            jCheckBoxMorgen.setSelected(true);
-            jCheckBoxMorgen.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    morgen = jCheckBoxMorgen.isSelected();
-                }
-            });
-        }
+//        if (Daten.delSets) {
+//            // Sets sollen wegen Änderungen der Pfade neu angelegt werden
+//            jCheckBoxMorgen.setVisible(false);
+//            jCheckBoxMorgen.setSelected(false);
+//            setTitle("Pfade der Standardset haben sich geändert");
+//            jTextArea3.setText("\n"
+//                    + "   Pfade zu Hilfsprogrammen haben sich geändert.\n"
+//                    + "   Das Standardset der Videoplayer\n"
+//                    + "   für den Download und das Abspielen der Filme\n"
+//                    + "   wird neu angelegt.");
+//        } else {
+        setTitle("Das Standardset wurde aktualisiert");
+        jTextArea3.setText("\n"
+                + "   Es gibt ein neues Standardset der Videoplayer\n"
+                + "   für den Download und das Abspielen der Filme.\n");
+        jCheckBoxMorgen.setSelected(true);
+        jCheckBoxMorgen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                morgen = jCheckBoxMorgen.isSelected();
+            }
+        });
+//        }
         jTextArea1.setText("\n"
                 + "   Die bestehenden Einstellungen werden nicht verändert.\n"
                 + "   Das neue Set wird nur angefügt und muss dann erst noch in den\n"

@@ -21,20 +21,21 @@ package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
-import mediathek.controller.Log;
-import mediathek.daten.Daten;
-import mediathek.mac.MediathekGuiMac;
-import mediathek.tool.Konstanten;
-import mediathek.tool.MVSingleInstance;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.EventQueue;
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javax.swing.JOptionPane;
+import javax.swing.RepaintManager;
+import mediathek.controller.Log;
+import mediathek.daten.Daten;
+import mediathek.mac.MediathekGuiMac;
+import mediathek.tool.Konstanten;
+import mediathek.tool.MVSingleInstance;
 
 public class Main {
 
@@ -118,9 +119,9 @@ public class Main {
                         Daten.debug = true;
                         break;
 
-                    case "-delset":
-                        Daten.delSets = true;
-                        break;
+//                    case "-delset":
+//                        Daten.delSets = true;
+//                        break;
 
                     case "-m":
                         Daten.startMaximized = true;
