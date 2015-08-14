@@ -35,6 +35,7 @@ import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogHinweisUpdate;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVConfig;
+import mediathek.tool.MVFunctionSys;
 import msearch.tool.MSConst;
 
 public class ProgrammUpdateSuchen {
@@ -75,6 +76,7 @@ public class ProgrammUpdateSuchen {
                     release = ret[1];
                     downloadUrlProgramm = ret[2];
                     if (!version.equals("")) {
+                        Daten.mVConfig.add(MVConfig.SYSTEM_BUILD_NR, MVFunctionSys.getBuildNr());
                         Daten.mVConfig.add(MVConfig.SYSTEM_UPDATE_DATUM, new SimpleDateFormat("yyyyMMdd").format(new Date()));
                         if (checkObNeueVersion(version, Konstanten.VERSION)) {
                             neueVersion = true;

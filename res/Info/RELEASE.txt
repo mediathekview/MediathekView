@@ -38,7 +38,7 @@
 	- GuiFilme: Kontextmenü Maus: Blacklist ein-/ausschalten
 	- GuiDownload: Kontextmenü Maus: Abo ändern
 	- Dateiname/Pfad eines Downoads bei Linux/OS X: führende Punkte werden entfernt
-	- Dateiname eins Downloads: Die maximale Länge eines Feldes (z.B.: %T oder %t für Titel oder Thema) kann
+	- Dateiname eines Downloads: Die maximale Länge eines Feldes (z.B.: %T oder %t für Titel oder Thema) kann
 	vorgegeben werden
 	
 	# Version 9
