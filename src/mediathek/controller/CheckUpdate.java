@@ -183,6 +183,11 @@ public class CheckUpdate {
                     psNew.arr[DatenPset.PROGRAMMSET_IST_BUTTON_NR] = Boolean.FALSE.toString();
                     psNew.arr[DatenPset.PROGRAMMSET_IST_SPEICHERN_NR] = Boolean.FALSE.toString();
                 }
+                // damit man sie auch findet :)
+                String date = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+                for (DatenPset psNew : listePsetStandard) {
+                    psNew.arr[DatenPset.PROGRAMMSET_NAME_NR] = psNew.arr[DatenPset.PROGRAMMSET_NAME_NR] + ", neu: " + date;
+                }
             }
             GuiFunktionenProgramme.addSetVorlagen(daten.mediathekGui, daten, listePsetStandard, true /*auto*/, true /*setVersion*/); // damit auch AddOns geladen werden
             Log.systemMeldung("Setanlegen: OK");
