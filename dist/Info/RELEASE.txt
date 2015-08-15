@@ -32,7 +32,6 @@
 	- Geogeblockte Filme können in die Blacklist aufgenommen werden
 	- Beim Suchen der Hilfsprogramme der Sets können Umgebungsvariablen benutzt werden:
 	(PATH_VLC, PATH_FLVSTREAMER, PATH_FFMPEG)
-	- Mit dem Startschalter "-delset" werden die Sets neu angelegt
 	- Beim Download kommt das Programm jetzt besser mit Leerzeichen im Pfad (auch Linux/OS X) zurecht
 	- Bei Lesefehlern der Konfigdatei kann auch auf die Backups zurückgefriffen werden
 	- GuiFilme: Kontextmenü Maus: Blacklist ein-/ausschalten

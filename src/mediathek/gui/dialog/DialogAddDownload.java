@@ -416,7 +416,12 @@ public class DialogAddDownload extends JDialog {
             jRadioButtonAufloesungHoch.setSelected(true);
         }
         jCheckBoxInfodatei.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_INFODATEI_NR]));
-        jCheckBoxSubtitle.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE_NR]));
+        if (datenFilm.arr[DatenFilm.FILM_URL_SUBTITLE_NR].isEmpty()) {
+            // dann gibts keinen Subtitle
+            jCheckBoxSubtitle.setEnabled(false);
+        } else {
+            jCheckBoxSubtitle.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE_NR]));
+        }
         setNameFilm();
     }
 
