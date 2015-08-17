@@ -24,21 +24,22 @@
 	- Status der Blacklist (ein-aus) wird im Filterprofil gespeichert
 	- Filterprofilen kann man Namen geben
 	- Tab Download: Rechte Maus auf einen Download: Der gespeicherte Film kann gelöscht werden
-	- Tab Filme, Tab Download: Rechte Maus auf einen Film/Downoad: Abo ändern
+	- Tab Filme, Tab Download: Rechte Maus auf einen Film/Download: Abo löschen und ändern
 	- TrayIcon: kann in den Einstellungen aktiviert werden
-	- Die eigene Mediensammlung kann vor einem Download durchsucht werden, ob schon vorhanden
+	- Die eigene Mediensammlung kann vor einem Download durchsucht werden, ob Titel schon vorhanden
 	(Einstellungen zur Mediensammlung in den Programmeinstellungen)
 	- Neue Schalter für die Namen der Downloads (Tag, Monat, Jahr, Uhrzeit, Filmqualität, Hash der URL)
 	- Geogeblockte Filme können in die Blacklist aufgenommen werden
 	- Beim Suchen der Hilfsprogramme der Sets können Umgebungsvariablen benutzt werden:
 	(PATH_VLC, PATH_FLVSTREAMER, PATH_FFMPEG)
 	- Beim Download kommt das Programm jetzt besser mit Leerzeichen im Pfad (auch Linux/OS X) zurecht
-	- Bei Lesefehlern der Konfigdatei kann auch auf die Backups zurückgefriffen werden
-	- GuiFilme: Kontextmenü Maus: Blacklist ein-/ausschalten
-	- GuiDownload: Kontextmenü Maus: Abo ändern
-	- Dateiname/Pfad eines Downoads bei Linux/OS X: führende Punkte werden entfernt
+	- Bei Lesefehlern der Konfigdatei kann auch auf die Backups zurückgegriffen werden
+	- Tab Filme: Kontextmenü Maus: Blacklist ein-/ausschalten
+	- Dateiname/Pfad eines Downloads bei Linux/OS X: führende Punkte werden entfernt
 	- Dateiname eines Downloads: Die maximale Länge eines Feldes (z.B.: %T oder %t für Titel oder Thema) kann
 	vorgegeben werden
+	- Durch die Umstellung beim Abspielen/Speichern sind geänderte Sets notwendig, die sollten auch beim ersten Start
+	eingespielt werden
 	
 	# Version 9
 	- Film-Url auch in HD und Klein in die Zwischenablage kopieren
