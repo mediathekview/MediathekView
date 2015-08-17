@@ -1048,7 +1048,7 @@ public class GuiDownloads extends PanelVorlage {
             //Abo ändern
             JMenu submenueAbo = new JMenu("Abo");
             JMenuItem itemChangeAbo = new JMenuItem("Abo ändern");
-            JMenuItem itemDelAbo = new JMenuItem("Abo Löschen");
+            JMenuItem itemDelAbo = new JMenuItem("Abo löschen");
             if (datenDownload == null) {
                 submenueAbo.setEnabled(false);
                 itemChangeAbo.setEnabled(false);
