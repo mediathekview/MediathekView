@@ -76,9 +76,6 @@ Die Programmeinstellungen (Filmliste, Einstellungen, gesehene Filme) werden
 standardmässig im Home-Verzeichnis (Benutzer-Verzeichnis) in einem Ordner ".mediathek3" 
 gespeichert (beim Start ohne die Angabe eines Pfades).
 
-java -jar MediathekView.jar -M
-Das Programm startet mit einem maximierten Fenster:
-
 java -jar MediathekView.jar -v
 Das Programm gibt nur die Versionsnummer aus.
 
