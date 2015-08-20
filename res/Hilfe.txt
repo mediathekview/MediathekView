@@ -1,5 +1,34 @@
+============================================================
+Änderungen in der Version 10:
+-------------------------------
 
+Die Sets zum Abspielen und Aufzeichnen der Sendungen haben sich
+geändert! Das Abspielen oder Aufzeichnen klappt mit den alten
+Einstellungen nicht mehr.
+
+Beim ersten Start der neuen Version wird der Update der Sets
+angeboten und sollte auch vorgenommen werden.
+
+In den Einstellungen->"Set bearbeiten" oder Einstellungen->"Set importieren"
+kann man das Update auch von Hand vornehmen.
+
+Geändert:
+Im Feld Programm darf NUR noch "PFAD/PROGRAMM" stehen, die Parameter müssen
+im Feld Schalter stehen. Z.B.:
+
+Aufzeichnen mit dem VLC
+Programm: cmd
+Schalter: /c "C:\Program Files\VideoLAN\VLC\vlc.exe" %f :sout=#standard{access=file,mux=ts,dst="**"} -I "dummy" --play-and-exit
+
+oder Abspielen mit dem VLC
+Programm: C:\Program Files\VideoLAN\VLC\vlc.exe
+Schalter: %f --play-and-exit
+============================================================
+
+
+============================================================
 MediathekView startet nicht:
+-------------------------------
 
 http://sourceforge.net/p/zdfmediathk/wiki/FAQ/
 http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/
@@ -21,5 +50,5 @@ http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/
 	benötigten Java-Bibliotheken (libs) oder die Hilfsprogramm (im Ordner "bin") 
 	fehlen, da Dateien aus dem MediathekView-Programmordner gelöscht oder verschoben 
 	wurden, ->dann eine Neuinstallation.
-
+============================================================
 
