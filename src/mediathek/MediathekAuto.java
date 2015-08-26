@@ -50,9 +50,12 @@ public class MediathekAuto {
                 }
             }
         }
-        final SplashScreen splash = SplashScreen.getSplashScreen();
-        if (splash != null) {
-            splash.close();
+        try {
+            final SplashScreen splash = SplashScreen.getSplashScreen();
+            if (splash != null) {
+                splash.close();
+            }
+        } catch (Exception ignored) {
         }
     }
 
