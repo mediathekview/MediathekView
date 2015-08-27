@@ -265,8 +265,7 @@ public class StarterClass {
                         if (!System.getProperty("OSX_OFFICIAL_APP").equalsIgnoreCase("true")) {
                             logUnofficialMacAppUse();
                         }
-                    }
-                    catch (NullPointerException ignored) {
+                    } catch (NullPointerException ignored) {
                         logUnofficialMacAppUse();
                     }
                 }
@@ -281,6 +280,7 @@ public class StarterClass {
     private void logUnofficialMacAppUse() {
         Log.fehlerMeldung(915263987, "MV wird NICHT über die offizielle Mac App genutzt.");
     }
+
     private void finalizeDownload(DatenDownload datenDownload, Start start /* wegen "datenDownload.start=null" beim stoppen */, HttpDownloadState state) {
         deleteIfEmpty(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]));
 
@@ -549,7 +549,9 @@ public class StarterClass {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        new MeldungDownloadfehler(daten.mediathekGui, exMessage, datenDownload).setVisible(true);
+                        if (!Daten.auto) {
+                            new MeldungDownloadfehler(daten.mediathekGui, exMessage, datenDownload).setVisible(true);
+                        }
                     }
                 });
             }
@@ -852,9 +854,11 @@ public class StarterClass {
                             SwingUtilities.invokeLater(new Runnable() {
                                 @Override
                                 public void run() {
-                                    new MeldungDownloadfehler(daten.mediathekGui, "URL des Films:\n"
-                                            + datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR] + "\n\n"
-                                            + responseCode + "\n", datenDownload).setVisible(true);
+                                    if (!Daten.auto) {
+                                        new MeldungDownloadfehler(daten.mediathekGui, "URL des Films:\n"
+                                                + datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR] + "\n\n"
+                                                + responseCode + "\n", datenDownload).setVisible(true);
+                                    }
                                 }
                             });
                             state = HttpDownloadState.ERROR;
@@ -879,7 +883,9 @@ public class StarterClass {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        new MeldungDownloadfehler(daten.mediathekGui, exMessage, datenDownload).setVisible(true);
+                        if (!Daten.auto) {
+                            new MeldungDownloadfehler(daten.mediathekGui, exMessage, datenDownload).setVisible(true);
+                        }
                     }
                 });
             }

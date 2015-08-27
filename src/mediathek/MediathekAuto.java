@@ -56,6 +56,7 @@ public class MediathekAuto {
                 splash.close();
             }
         } catch (Exception ignored) {
+            Log.systemMeldung("NoSplashscreen");
         }
     }
 
