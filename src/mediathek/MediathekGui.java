@@ -59,7 +59,6 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.controller.CheckUpdate;
-import mediathek.controller.IoXmlLesen;
 import mediathek.controller.Log;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
@@ -78,9 +77,11 @@ import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.gui.MVAboutDialog;
-import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.gui.MVHelpDialog;
 import mediathek.gui.dialog.DialogMediaDB;
+import mediathek.gui.dialog.MVFilmInfo;
+import mediathek.gui.dialog.MVFilmInformation;
+import mediathek.gui.dialog.MVFilmInformationLinux;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
@@ -88,7 +89,6 @@ import mediathek.res.GetIcon;
 import mediathek.tool.Duration;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
@@ -260,7 +260,11 @@ public class MediathekGui extends JFrame {
         jPanelToolBar.add(mVToolBar, BorderLayout.CENTER);
 
         //create the Film Information HUD
-        daten.filmInfoHud = new MVFilmInformation(this, jTabbedPane, daten);
+        if (SystemInfo.isMacOSX()) {
+            daten.filmInfo = new MVFilmInformation(this, jTabbedPane, daten);
+        } else {
+            daten.filmInfo = new MVFilmInformationLinux(this, jTabbedPane, daten);
+        }
         duration.ping("HUD");
 
         if (daten.allesLaden()) {
