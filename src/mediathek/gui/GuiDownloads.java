@@ -58,7 +58,7 @@ import mediathek.daten.DatenPset;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
-import mediathek.gui.dialog.MVFilmInformation;
+import mediathek.gui.dialog.MVFilmInfo;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobTableHeader;
 import mediathek.tool.CellRendererDownloads;
@@ -79,7 +79,7 @@ import msearch.tool.Datum;
 
 public class GuiDownloads extends PanelVorlage {
 
-    private final MVFilmInformation filmInfoHud;
+    private final MVFilmInfo filmInfoHud;
     private final PanelFilmBeschreibung panelBeschreibung;
     private long lastUpdate = 0;
     private boolean showAbos = true;
@@ -112,7 +112,7 @@ public class GuiDownloads extends PanelVorlage {
 
         tabelle = new MVTable(MVTable.TABELLE_TAB_DOWNLOADS);
         jScrollPane1.setViewportView(tabelle);
-        filmInfoHud = daten.filmInfoHud;
+        filmInfoHud = daten.filmInfo;
 
         panelBeschreibung = new PanelFilmBeschreibung(daten.mediathekGui, daten);
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
@@ -224,7 +224,7 @@ public class GuiDownloads extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!filmInfoHud.isVisible()) {
-                    filmInfoHud.show();
+                    filmInfoHud.showInfo();
                 }
             }
         });
@@ -1172,7 +1172,7 @@ public class GuiDownloads extends PanelVorlage {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (!filmInfoHud.isVisible()) {
-                        filmInfoHud.show();
+                        filmInfoHud.showInfo();
                     }
                 }
             });

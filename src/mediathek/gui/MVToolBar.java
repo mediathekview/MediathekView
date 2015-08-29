@@ -415,7 +415,7 @@ public final class MVToolBar extends JToolBar {
         jButtonInfo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                daten.filmInfoHud.show();
+                daten.filmInfo.showInfo();
             }
         });
         // Tab Downloads

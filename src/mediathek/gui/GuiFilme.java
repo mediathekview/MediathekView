@@ -70,7 +70,7 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogEditAbo;
-import mediathek.gui.dialog.MVFilmInformation;
+import mediathek.gui.dialog.MVFilmInfo;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobTableHeader;
 import mediathek.tool.CellRendererFilme;
@@ -98,7 +98,7 @@ public class GuiFilme extends PanelVorlage {
     public static final int[] COMBO_ZEIT_INT = {0, 1, 2, 3, 7, 15, 20, 30};
     private static final int FILTER_ZEIT_STARTWERT = 5;
     private static final int FILTER_DAUER_STARTWERT = 0;
-    private final MVFilmInformation filmInfoHud;
+    private final MVFilmInfo filmInfo;
     private final PanelFilmBeschreibung panelBeschreibung;
     private MVFilter mVFilter;
     public MVFilterFrame mVFilterFrame;
@@ -147,7 +147,7 @@ public class GuiFilme extends PanelVorlage {
         jPanelBeschreibung.setLayout(new BorderLayout());
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
         jPanelFilter.setLayout(new BorderLayout());
-        filmInfoHud = daten.filmInfoHud;
+        filmInfo = daten.filmInfo;
     }
 
     //===================================
@@ -234,8 +234,8 @@ public class GuiFilme extends PanelVorlage {
         this.getActionMap().put("info", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!filmInfoHud.isVisible()) {
-                    filmInfoHud.show();
+                if (!filmInfo.isVisible()) {
+                    filmInfo.showInfo();
                 }
             }
         });
@@ -477,7 +477,7 @@ public class GuiFilme extends PanelVorlage {
             if (film != null) {
                 aktFilm = film;
             }
-            filmInfoHud.updateCurrentFilm(aktFilm);
+            filmInfo.updateCurrentFilm(aktFilm);
             // Beschreibung setzen
             panelBeschreibung.setAktFilm(aktFilm);
         }
@@ -1132,8 +1132,8 @@ public class GuiFilme extends PanelVorlage {
                     }
                 } else if (arg0.getClickCount() > 1) {
                     //filmAbspielen_();
-                    if (!filmInfoHud.isVisible()) {
-                        filmInfoHud.show();
+                    if (!filmInfo.isVisible()) {
+                        filmInfo.showInfo();
                     }
                 }
             }
@@ -1436,8 +1436,8 @@ public class GuiFilme extends PanelVorlage {
             item.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
-                    if (!filmInfoHud.isVisible()) {
-                        filmInfoHud.show();
+                    if (!filmInfo.isVisible()) {
+                        filmInfo.showInfo();
                     }
                 }
             });
