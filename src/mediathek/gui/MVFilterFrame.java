@@ -191,12 +191,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 setIconBlacklist();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterFrame.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setIconBlacklist();
-            }
-        });
 
         jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHilfe.addActionListener(new ActionListener() {
