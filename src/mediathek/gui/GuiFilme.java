@@ -694,10 +694,10 @@ public class GuiFilme extends PanelVorlage {
         stopBeob = true;
         boolean geändert = false;
         try {
-            mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
-            mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
-            mVFilter.get_jComboBoxFilterSender().setSelectedItem(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__SENDER, filter));
-            mVFilter.get_jComboBoxFilterThema().setSelectedItem(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__THEMA, filter));
+//            mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
+//            mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
+//            mVFilter.get_jComboBoxFilterSender().setSelectedItem(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__SENDER, filter));
+//            mVFilter.get_jComboBoxFilterThema().setSelectedItem(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__THEMA, filter));
 
             mVFilter.get_jTextFieldFilterTitel().setText(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__TITEL, filter));
             mVFilter.get_jTextFieldFilterThemaTitel().setText(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__THEMA_TITEL, filter));
@@ -717,8 +717,6 @@ public class GuiFilme extends PanelVorlage {
                 geändert = true;
                 Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__BLACKLIST_ON, filter));
             }
-//            String s = Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET); // ToDo
-//            String ss = Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUSGESCHALTET); // ToDo
 
         } catch (NumberFormatException ex) {
             mVFilter.get_jComboBoxZeitraum().setSelectedIndex(FILTER_ZEIT_STARTWERT);
@@ -731,10 +729,18 @@ public class GuiFilme extends PanelVorlage {
             Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_PROFILE__DAUER, FILTER_DAUER_STARTWERT + "", filter, MVFilter.MAX_FILTER);
         }
         mVFilter.get_jTextFieldFilterMinuten().setText(String.valueOf(mVFilter.get_jSliderMinuten().getValue()));
-        stopBeob = false;
 
         // und jetzt wieder laden
         MVListeFilme.checkBlacklist();
+
+        // erst jetzt da Sender/Thema evtl. in der Blacklist
+        mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
+        mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
+        mVFilter.get_jComboBoxFilterSender().setSelectedItem(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__SENDER, filter));
+        mVFilter.get_jComboBoxFilterThema().setSelectedItem(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__THEMA, filter));
+
+        stopBeob = false;
+
         if (geändert) {
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getSimpleName());
         }
