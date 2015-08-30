@@ -21,6 +21,8 @@ package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -396,29 +398,23 @@ public class PanelPsetLang extends PanelVorlage {
         }
     }
 
+    private void enableComponents(Container container, boolean enable) {
+        Component[] components = container.getComponents();
+        for (Component component : components) {
+            component.setEnabled(enable);
+            if (component instanceof Container) {
+                enableComponents((Container) component, enable);
+            }
+        }
+    }
+
     private void tabelleProgramme() {
         //Tabelle mit den Programmen füllen
         DatenPset pSet = getPset();
         stopBeob = true;
-        jTextFieldSetName.setEnabled(pSet != null);
-        jTextFieldGruppeDirektSuffix.setEnabled(pSet != null);
-        jTextFieldGruppeDirektPraefix.setEnabled(pSet != null);
-        jTextFieldGruppeZielName.setEnabled(pSet != null);
-        jTextFieldGruppeZielPfad.setEnabled(pSet != null);
-        jTextAreaSetBeschreibung.setEnabled(pSet != null);
-        jXHyperlinkInfo.setEnabled(pSet != null);
-        jButtonGruppePfad.setEnabled(pSet != null);
-        jButtonAbspielen.setEnabled(pSet != null);
+
+        enableComponents(jTabbedPane, pSet != null);
         jButtonAbspielen.setBackground(null);
-        jCheckBoxSpeichern.setEnabled(pSet != null);
-        jCheckBoxButton.setEnabled(pSet != null);
-        jCheckBoxAbo.setEnabled(pSet != null);
-        jCheckBoxLaenge.setEnabled(pSet != null);
-        jCheckBoxThema.setEnabled(pSet != null);
-        jSpinnerLaenge.setEnabled(pSet != null);
-        jCheckBoxInfodatei.setEnabled(pSet != null);
-        jCheckBoxSubtitle.setEnabled(pSet != null);
-        jCheckBoxSpotlight.setEnabled(pSet != null && (SystemInfo.isMacOSX() || Daten.debug));
         if (pSet != null) {
             jTabbedPane.setTitleAt(0, "Set Name: " + pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
             if (pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR].equals("")) {
@@ -438,6 +434,7 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxThema.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR]));
             jCheckBoxInfodatei.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_INFODATEI_NR]));
             jCheckBoxSubtitle.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE_NR]));
+            jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX() || Daten.debug);
             jCheckBoxSpotlight.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT_NR]));
             jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Set Name: " + pSet.arr[DatenPset.PROGRAMMSET_NAME_NR], javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
             jTextFieldSetName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
@@ -463,6 +460,12 @@ public class PanelPsetLang extends PanelVorlage {
                     jRadioButtonAufloesungNormal.setSelected(true);
                     break;
             }
+            tabelleProgramme.setModel(pSet.getListeProg().getModel());
+            if (tabelleProgramme.getRowCount() > 0) {
+                spaltenSetzenProgramme();
+                tabelleProgramme.setRowSelectionInterval(0, 0);
+                tabelleProgramme.scrollRectToVisible(tabelleProgramme.getCellRect(0, 0, true));
+            }
         } else {
             jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
             jTabbedPane.setTitleAt(0, "Sets");
@@ -479,15 +482,6 @@ public class PanelPsetLang extends PanelVorlage {
             jTextFieldGruppeZielPfad.setText("");
             jTextAreaSetBeschreibung.setText("");
             setHyperLink("");
-        }
-        if (pSet != null) {
-            tabelleProgramme.setModel(pSet.getListeProg().getModel());
-            if (tabelleProgramme.getRowCount() > 0) {
-                spaltenSetzenProgramme();
-                tabelleProgramme.setRowSelectionInterval(0, 0);
-                tabelleProgramme.scrollRectToVisible(tabelleProgramme.getCellRect(0, 0, true));
-            }
-        } else {
             tabelleProgramme.setModel(new TModel(new Object[0][DatenProg.MAX_ELEM], DatenProg.COLUMN_NAMES));
         }
         stopBeob = false;
@@ -590,7 +584,6 @@ public class PanelPsetLang extends PanelVorlage {
         if (row != -1) {
             int neu = listePset.auf(tabellePset.convertRowIndexToModel(row), auf);
             neu = tabellePset.convertRowIndexToView(neu);
-//            tabellePset();
             tabellePset.setRowSelectionInterval(neu, neu);
             tabellePset.scrollRectToVisible(tabellePset.getCellRect(neu, 0, false));
             notifyPset();

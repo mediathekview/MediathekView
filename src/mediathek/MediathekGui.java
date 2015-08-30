@@ -263,6 +263,7 @@ public class MediathekGui extends JFrame {
         if (SystemInfo.isMacOSX()) {
             daten.filmInfo = new MVFilmInformation(this, jTabbedPane, daten);
         } else {
+            //klappte nicht auf allen Desktops
             daten.filmInfo = new MVFilmInformationLinux(this, jTabbedPane, daten);
         }
         duration.ping("HUD");
@@ -272,7 +273,6 @@ public class MediathekGui extends JFrame {
             updateSplashScreenText("GUI Initialisieren...");
         } else {
             // erster Start
-//            Daten.delSets = false; // hat sich dann erledigt
             Daten.mVReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
             new DialogStarteinstellungen(this, daten).setVisible(true);
             this.pack();
