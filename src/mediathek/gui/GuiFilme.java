@@ -523,14 +523,15 @@ public class GuiFilme extends PanelVorlage {
                 Daten.listeFilmeHistory.remove(film);
             }
         } else {
+            ArrayList<DatenFilm> neueFilme = new ArrayList<>();
             for (DatenFilm film : arrayFilms) {
                 if (!daten.history.urlPruefen(film.getUrlHistory())) {
-                    daten.history.zeileSchreiben(film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR], film.getUrlHistory());
+                    neueFilme.add(film);
                     Daten.listeFilmeHistory.add(film);
                 }
             }
+            daten.history.zeileSchreiben(neueFilme);
         }
-//        loadTable();
     }
 
     private ArrayList<DatenFilm> getSelFilme() {
