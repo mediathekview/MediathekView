@@ -20,6 +20,7 @@
 package mediathek.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import javax.swing.JOptionPane;
@@ -179,6 +180,10 @@ public class FilmeLaden {
 
     public ListeFilmlistenUrls getDownloadUrlsFilmlisten_diff() {
         return msImportFilmliste.msFilmlistenSuchen.listeFilmlistenUrls_diff;
+    }
+
+    public String getDownloadUrl_akt() {
+        return msImportFilmliste.msFilmlistenSuchen.suchenAkt(new ArrayList<String>());
     }
 
     // #######################################
