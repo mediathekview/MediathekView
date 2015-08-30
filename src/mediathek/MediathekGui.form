@@ -126,6 +126,16 @@
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
               </AuxValues>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemFilmGesehen">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Film als gesehen markieren"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemFilmUngesehen">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Film als ungesehen markieren"/>
+              </Properties>
+            </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenuDownload">

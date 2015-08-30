@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -35,6 +36,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.daten.Daten;
 import mediathek.tool.ListenerMediathekView;
+import msearch.daten.DatenFilm;
 
 public class MVUsedUrls {
 
@@ -123,6 +125,57 @@ public class MVUsedUrls {
         if (gefunden) {
             try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getUrlFilePath())))) {
                 for (String entry : liste) {
+                    bufferedWriter.write(entry + "\n");
+                }
+            } catch (Exception ex) {
+                Log.fehlerMeldung(566277080, ex);
+            }
+        }
+        listeUrls.clear();
+        listeBauen();
+
+        ListenerMediathekView.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
+        return gefunden;
+    }
+
+    public synchronized boolean urlAusLogfileLoeschen(ArrayList<DatenFilm> filme) {
+        //Logfile einlesen, entsprechende Zeile Filtern und dann Logfile überschreiben
+        //wenn die URL im Logfiel ist, dann true zurück
+        String zeile;
+        boolean gefunden = false, gef = false;
+        LinkedList<String> newListe = new LinkedList<>();
+
+        //Use Automatic Resource Management
+        final Path urlPath = getUrlFilePath();
+        if (Files.notExists(urlPath)) {
+            return false;
+        }
+
+        try (LineNumberReader in = new LineNumberReader(new InputStreamReader(Files.newInputStream(urlPath)))) {
+            while ((zeile = in.readLine()) != null) {
+                gef = false;
+                String url = MVUsedUrl.getUrlAusZeile(zeile).getUrl();
+
+                for (DatenFilm film : filme) {
+                    if (url.equals(film.getUrlHistory())) {
+                        gefunden = true; //nur dann muss das Logfile auch geschrieben werden
+                        gef = true; // und die Zeile wird verworfen
+                        break;
+                    }
+                }
+                if (!gef) {
+                    newListe.add(zeile);
+                }
+
+            }
+        } catch (Exception ex) {
+            Log.fehlerMeldung(281006874, ex);
+        }
+
+        //und jetzt wieder schreiben, wenn nötig
+        if (gefunden) {
+            try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getUrlFilePath())))) {
+                for (String entry : newListe) {
                     bufferedWriter.write(entry + "\n");
                 }
             } catch (Exception ex) {

@@ -35,6 +35,7 @@ import java.awt.event.MouseEvent;
 import java.awt.print.PrinterException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -180,6 +181,14 @@ public class GuiFilme extends PanelVorlage {
 
     public void searchUrl(String url) {
         searchUrl_(url);
+    }
+
+    public void filmGesehen() {
+        setGesehen(true);
+    }
+
+    public void filmUngesehen() {
+        setGesehen(false);
     }
 
     public void init() {
@@ -501,6 +510,41 @@ public class GuiFilme extends PanelVorlage {
     private void setInfo() {
         // Infopanel setzen
         daten.mediathekGui.getStatusBar().setTextForLeftDisplay();
+    }
+
+    private void setGesehen(boolean gesehen) {
+        ArrayList<DatenFilm> arrayFilms = getSelFilme();
+        if (arrayFilms.isEmpty()) {
+            return;
+        }
+        if (!gesehen) {
+            daten.history.urlAusLogfileLoeschen(arrayFilms);
+            for (DatenFilm film : arrayFilms) {
+                Daten.listeFilmeHistory.remove(film);
+            }
+        } else {
+            for (DatenFilm film : arrayFilms) {
+                if (!daten.history.urlPruefen(film.getUrlHistory())) {
+                    daten.history.zeileSchreiben(film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR], film.getUrlHistory());
+                    Daten.listeFilmeHistory.add(film);
+                }
+            }
+        }
+//        loadTable();
+    }
+
+    private ArrayList<DatenFilm> getSelFilme() {
+        ArrayList<DatenFilm> arrayFilme = new ArrayList<>();
+        int rows[] = tabelle.getSelectedRows();
+        if (rows.length > 0) {
+            for (int row : rows) {
+                DatenFilm datenFilm = (DatenFilm) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenFilm.FILM_REF_NR);
+                arrayFilme.add(datenFilm);
+            }
+        } else {
+            new HinweisKeineAuswahl().zeigen(parentComponent);
+        }
+        return arrayFilme;
     }
 
     // ############################################
@@ -1481,6 +1525,7 @@ public class GuiFilme extends PanelVorlage {
                         Daten.listeFilmeHistory.add(film);
                     } else {
                         daten.history.urlAusLogfileLoeschen(film.getUrlHistory());
+                        Daten.listeFilmeHistory.remove(film);
                     }
                 }
             }
