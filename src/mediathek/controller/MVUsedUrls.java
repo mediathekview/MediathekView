@@ -169,7 +169,7 @@ public class MVUsedUrls {
 
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(281006874, ex);
+            Log.fehlerMeldung(401020398, ex);
         }
 
         //und jetzt wieder schreiben, wenn nötig
@@ -179,7 +179,7 @@ public class MVUsedUrls {
                     bufferedWriter.write(entry + "\n");
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(566277080, ex);
+                Log.fehlerMeldung(784512067, ex);
             }
         }
         listeUrls.clear();
@@ -203,6 +203,31 @@ public class MVUsedUrls {
             ret = true;
         } catch (Exception ex) {
             Log.fehlerMeldung(945258023, ex);
+        }
+
+        ListenerMediathekView.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
+        return ret;
+    }
+
+    public synchronized boolean zeileSchreiben(ArrayList<DatenFilm> arrayFilms) {
+        boolean ret = false;
+        String text;
+        String datum = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getUrlFilePath(), StandardOpenOption.APPEND)))) {
+
+            for (DatenFilm film : arrayFilms) {
+               // film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR], film.getUrlHistory()
+                listeUrls.add(film.getUrlHistory());
+                listeUrlsSortDate.add(new MVUsedUrl(datum, film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR], film.getUrlHistory()));
+                text = MVUsedUrl.getUsedUrl(datum, film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR], film.getUrlHistory());
+                bufferedWriter.write(text);
+            }
+
+            //Automatic Resource Management
+            ret = true;
+        } catch (Exception ex) {
+            Log.fehlerMeldung(420312459, ex);
         }
 
         ListenerMediathekView.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
