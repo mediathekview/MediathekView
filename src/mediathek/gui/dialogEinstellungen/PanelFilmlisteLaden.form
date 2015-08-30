@@ -34,12 +34,12 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jRadioButtonAuto" min="-2" max="-2" attributes="0"/>
-                  <Component id="jRadioButtonUpdateAus" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="jRadioButtonManuell" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jPanel3" max="32767" attributes="2"/>
-                  <Component id="jPanel2" max="32767" attributes="2"/>
+                  <Component id="jPanelAuto" max="32767" attributes="2"/>
+                  <Component id="jPanelManuel" max="32767" attributes="2"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -51,13 +51,13 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jRadioButtonAuto" min="-2" max="-2" attributes="0"/>
-                  <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jPanelAuto" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jPanel2" max="32767" attributes="0"/>
+                  <Component id="jPanelManuel" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
-                      <Component id="jRadioButtonUpdateAus" min="-2" max="-2" attributes="0"/>
+                      <Component id="jRadioButtonManuell" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -67,7 +67,7 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JPanel" name="jPanel3">
+    <Container class="javax.swing.JPanel" name="jPanelAuto">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -81,17 +81,19 @@
           </Border>
         </Property>
       </Properties>
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
-        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
-      </AuxValues>
 
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
+              <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane2" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <Component id="jButtonLoad" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -100,7 +102,9 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <Component id="jScrollPane2" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="0" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="jButtonLoad" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -128,9 +132,14 @@
             </Component>
           </SubComponents>
         </Container>
+        <Component class="javax.swing.JButton" name="jButtonLoad">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Filme jetzt laden"/>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="jPanel2">
+    <Container class="javax.swing.JPanel" name="jPanelManuel">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -144,10 +153,6 @@
           </Border>
         </Property>
       </Properties>
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
-        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
-      </AuxValues>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -161,6 +166,8 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jTextFieldUrl" max="32767" attributes="1"/>
                           <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jButtonUrl" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButtonDateiAuswaehlen" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="jScrollPane3" alignment="0" max="32767" attributes="0"/>
@@ -173,8 +180,8 @@
                           <Component id="jRadioButtonAkt" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jRadioButtonDiff" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="172" max="32767" attributes="0"/>
-                          <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="348" max="32767" attributes="0"/>
+                          <Component id="jLabelAktListe" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButtonAkualisieren" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -191,16 +198,17 @@
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="jRadioButtonAkt" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="jRadioButtonDiff" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel2" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabelAktListe" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonAkualisieren" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="258" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="260" max="32767" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jTextFieldUrl" linkSize="1" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel1" linkSize="1" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonDateiAuswaehlen" linkSize="1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonUrl" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -215,8 +223,6 @@
       <SubComponents>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
 
@@ -233,14 +239,10 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JLabel" name="jLabel2">
+        <Component class="javax.swing.JLabel" name="jLabelAktListe">
           <Properties>
             <Property name="text" type="java.lang.String" value="Liste aktualisieren:"/>
           </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
-          </AuxValues>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonAkualisieren">
           <Properties>
@@ -265,6 +267,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
             </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Lokale Filmliste ausw&#xe4;hlen"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonFilmeLaden">
@@ -286,7 +289,7 @@
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="columns" type="int" value="20"/>
                 <Property name="rows" type="int" value="4"/>
-                <Property name="text" type="java.lang.String" value="Die Filmliste wird nur manuell &#xfc;ber den Button &quot;Neue Filmliste laden&quot;&#xa;geladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum&#xa;Laden ausgew&#xe4;hlt werden. Ist die Filmliste nicht &#xe4;lter als 1 Tag,&#xa;reicht eine Differenzliste (enth&#xe4;lt nur die neuen Filme)."/>
+                <Property name="text" type="java.lang.String" value="Die Filmliste wird nur manuell &#xfc;ber den Button &quot;Neue Filmliste laden&quot;&#xa;geladen. Es wird dann dieser Dialog angezeigt und es kann eine URL/Datei zum&#xa;Laden angegeben werden."/>
                 <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                   <Insets value="[4, 4, 4, 4]"/>
                 </Property>
@@ -316,6 +319,14 @@
             <Property name="text" type="java.lang.String" value="Differenzlisten"/>
           </Properties>
         </Component>
+        <Component class="javax.swing.JButton" name="jButtonUrl">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mediathek/res/programm/icons_refresh_16.png"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Neue URL suchen"/>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
     <Component class="javax.swing.JRadioButton" name="jRadioButtonAuto">
@@ -325,7 +336,7 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JRadioButton" name="jRadioButtonUpdateAus">
+    <Component class="javax.swing.JRadioButton" name="jRadioButtonManuell">
       <Properties>
         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
           <ComponentRef name="buttonGroup1"/>
