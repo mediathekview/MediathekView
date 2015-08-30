@@ -47,22 +47,22 @@ import mediathek.tool.TModel;
 import msearch.filmlisten.DatenFilmlisteUrl;
 
 public class PanelFilmlisteLaden extends PanelVorlage {
-    
+
     private JDialog dialog = null;
-    
+
     public PanelFilmlisteLaden(Daten d, JFrame parentComponent, JDialog ddialog) {
         super(d, parentComponent);
         dialog = ddialog;
         initComponents();
         init();
     }
-    
+
     public PanelFilmlisteLaden(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();
         init();
     }
-    
+
     private void init() {
         if (!Daten.debug) {
             jScrollPane1.setVisible(false);
@@ -78,21 +78,21 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         initRadio();
         tabelleLaden();
         jButtonUrl.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 jTextFieldUrl.setText(Daten.filmeLaden.getDownloadUrl_akt());
             }
         });
         jButtonLoad.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Daten.filmeLaden.importFilmliste("");
             }
         });
         jButtonAkualisieren.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 listeFilmlistenSuchen();
@@ -112,7 +112,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jRadioButtonManuell.addActionListener(new BeobOption());
         jRadioButtonAuto.addActionListener(new BeobOption());
         jRadioButtonAkt.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 jCheckBoxUpdate.setSelected(jRadioButtonDiff.isSelected());
@@ -120,7 +120,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             }
         });
         jRadioButtonDiff.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 jCheckBoxUpdate.setSelected(jRadioButtonDiff.isSelected());
@@ -143,7 +143,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             }
         });
     }
-    
+
     private void initRadio() {
         if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUS) {
             jRadioButtonManuell.setSelected(true);
@@ -153,7 +153,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jTextFieldUrl.setText(Daten.mVConfig.get(MVConfig.SYSTEM_IMPORT_URL_MANUELL));
         setPanelTabelle(jRadioButtonManuell.isSelected());
     }
-    
+
     private void listeFilmlistenSuchen() {
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         if (jRadioButtonAkt.isSelected()) {
@@ -166,7 +166,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         stopBeob = false;
         this.setCursor(Cursor.getDefaultCursor());
     }
-    
+
     private void tabelleLaden() {
         if (jRadioButtonAkt.isSelected()) {
             jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().getTableObjectData(), DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
@@ -200,7 +200,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_PRIO_NR)).setMaxWidth(0);
         }
     }
-    
+
     private void table1Select(boolean doppel) {
         stopBeob = true;
         DatenFilmlisteUrl datenUrlFilmliste = null;
@@ -229,7 +229,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             dialog.dispose();
         }
     }
-    
+
     private void setPanelTabelle(boolean manuell) {
         if (manuell) {
             jTextAreaManuell.setBackground(MVColor.FILMLISTE_LADEN_AKTIV.color);
@@ -238,25 +238,20 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             jTextAreaManuell.setBackground(null);
             jTextAreaAuto.setBackground(MVColor.FILMLISTE_LADEN_AKTIV.color);
         }
-        enableComponents(jPanelAuto, !manuell);
-        enableComponents(jPanelManuel, manuell);
-    }
-    
-    private void enableComponents(Container container, boolean enable) {
-        Component[] components = container.getComponents();
-        for (Component component : components) {
-            component.setEnabled(enable);
-            if (component instanceof Container) {
-                enableComponents((Container) component, enable);
-            }
-        }
+//        enableComponents(jPanelAuto, !manuell);
+//        enableComponents(jPanelManuel, manuell);
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
+//    private void enableComponents(Container container, boolean enable) {
+//        Component[] components = container.getComponents();
+//        for (Component component : components) {
+//            component.setEnabled(enable);
+//            if (component instanceof Container) {
+//                enableComponents((Container) component, enable);
+//            }
+//        }
+//    }
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -469,7 +464,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     // End of variables declaration//GEN-END:variables
 
     private class BeobOption implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             if (!stopBeob) {
@@ -482,9 +477,9 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             }
         }
     }
-    
+
     private class BeobachterTableSelect implements MouseListener {
-        
+
         @Override
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 2) {
@@ -493,26 +488,26 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                 table1Select(false);
             }
         }
-        
+
         @Override
         public void mousePressed(MouseEvent e) {
         }
-        
+
         @Override
         public void mouseReleased(MouseEvent e) {
         }
-        
+
         @Override
         public void mouseEntered(MouseEvent e) {
         }
-        
+
         @Override
         public void mouseExited(MouseEvent e) {
         }
     }
-    
+
     private class BeobPfad implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
@@ -547,24 +542,24 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             }
         }
     }
-    
+
     private class BeobDateiUrl implements DocumentListener {
-        
+
         @Override
         public void insertUpdate(DocumentEvent e) {
             tus();
         }
-        
+
         @Override
         public void removeUpdate(DocumentEvent e) {
             tus();
         }
-        
+
         @Override
         public void changedUpdate(DocumentEvent e) {
             tus();
         }
-        
+
         private void tus() {
             Daten.mVConfig.add(MVConfig.SYSTEM_IMPORT_URL_MANUELL, jTextFieldUrl.getText());
         }

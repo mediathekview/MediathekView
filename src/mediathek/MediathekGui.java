@@ -822,7 +822,20 @@ public class MediathekGui extends JFrame {
                 dialog.setVisible(true);
             }
         });
+        jMenuItemFilmGesehen.addActionListener(new ActionListener() {
 
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                daten.guiFilme.filmGesehen();
+            }
+        });
+        jMenuItemFilmUngesehen.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                daten.guiFilme.filmUngesehen();
+            }
+        });
         // Downloads
         jMenuItemDownloadsAktualisieren.addActionListener(new ActionListener() {
             @Override
@@ -1266,6 +1279,8 @@ public class MediathekGui extends JFrame {
         jMenuItemFilmAufzeichnen = new javax.swing.JMenuItem();
         jMenuItemFilterLoeschen = new javax.swing.JMenuItem();
         jMenuItemBlacklist = new javax.swing.JMenuItem();
+        jMenuItemFilmGesehen = new javax.swing.JMenuItem();
+        jMenuItemFilmUngesehen = new javax.swing.JMenuItem();
         jMenuDownload = new javax.swing.JMenu();
         jMenuItemDownloadsAlleStarten = new javax.swing.JMenuItem();
         jMenuItemDownloadStartTime = new javax.swing.JMenuItem();
@@ -1370,6 +1385,12 @@ public class MediathekGui extends JFrame {
         jMenuItemBlacklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/blacklist_16.png"))); // NOI18N
         jMenuItemBlacklist.setText("Blacklist öffnen");
         jMenuFilme.add(jMenuItemBlacklist);
+
+        jMenuItemFilmGesehen.setText("Film als gesehen markieren");
+        jMenuFilme.add(jMenuItemFilmGesehen);
+
+        jMenuItemFilmUngesehen.setText("Film als ungesehen markieren");
+        jMenuFilme.add(jMenuItemFilmUngesehen);
 
         jMenuBar.add(jMenuFilme);
 
@@ -1578,6 +1599,8 @@ public class MediathekGui extends JFrame {
     protected javax.swing.JMenuItem jMenuItemEinstellungen;
     protected javax.swing.JMenuItem jMenuItemFilmAbspielen;
     protected javax.swing.JMenuItem jMenuItemFilmAufzeichnen;
+    private javax.swing.JMenuItem jMenuItemFilmGesehen;
+    private javax.swing.JMenuItem jMenuItemFilmUngesehen;
     private javax.swing.JMenuItem jMenuItemFilmlisteLaden;
     protected javax.swing.JMenuItem jMenuItemFilterLoeschen;
     private javax.swing.JMenuItem jMenuItemSchriftGr;
