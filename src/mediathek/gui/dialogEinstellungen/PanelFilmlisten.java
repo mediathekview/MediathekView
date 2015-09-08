@@ -27,7 +27,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.event.DocumentEvent;
@@ -42,15 +41,6 @@ import mediathek.tool.TModel;
 import msearch.filmlisten.DatenFilmlisteUrl;
 
 public class PanelFilmlisten extends PanelVorlage {
-
-    private JDialog dialog = null;
-
-    public PanelFilmlisten(Daten d, JFrame parentComponent, JDialog ddialog) {
-        super(d, parentComponent);
-        dialog = ddialog;
-        initComponents();
-        init();
-    }
 
     public PanelFilmlisten(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
@@ -112,7 +102,6 @@ public class PanelFilmlisten extends PanelVorlage {
                 tabelleLaden();
             }
         });
-        //jTable1.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
         jTable1.addMouseListener(new BeobachterTableSelect());
         jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_URL_FILMLISTEN, PanelFilmlisten.class.getSimpleName()) {
@@ -194,9 +183,6 @@ public class PanelFilmlisten extends PanelVorlage {
             }
         }
         stopBeob = false;
-        if (doppel && dialog != null) {
-            dialog.dispose();
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
