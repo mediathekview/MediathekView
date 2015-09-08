@@ -19,11 +19,15 @@
  */
 package mediathek.tool;
 
+import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DragSource;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
 import javax.activation.DataHandler;
@@ -36,6 +40,11 @@ import javax.swing.RowSorter;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
 import javax.swing.TransferHandler;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableRowSorter;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
@@ -43,7 +52,6 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenMediaDB;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
-import static mediathek.daten.DatenPset.MAX_ELEM;
 import msearch.daten.DatenFilm;
 
 public final class MVTable extends JTable {
@@ -91,6 +99,7 @@ public final class MVTable extends JTable {
                 iconAnzeigenStr = MVConfig.SYSTEM_TAB_FILME_ICON_ANZEIGEN;
                 iconKleinStr = MVConfig.SYSTEM_TAB_FILME_ICON_KLEIN;
                 this.setModel(new TModelFilm(new Object[][]{}, spaltenTitel));
+                this.getTableHeader().addMouseListener(new WidthAdjuster(this));
                 break;
             case TABELLE_TAB_DOWNLOADS:
                 spaltenTitel = DatenDownload.COLUMN_NAMES;
@@ -806,4 +815,80 @@ public final class MVTable extends JTable {
         }
     }
 
+    public class WidthAdjuster extends MouseAdapter {
+
+        private List<? extends RowSorter.SortKey> listeSortKeys = null;
+
+        private final JTable table;
+        private static final int EPSILON = 5;   //boundary sensitivity
+        private final Cursor EAST = Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR);
+        private final Cursor WEST = Cursor.getPredefinedCursor(Cursor.W_RESIZE_CURSOR);
+
+        public WidthAdjuster(final JTable table) {
+            this.table = table;
+        }
+
+        @Override
+        public void mousePressed(final MouseEvent evt) {
+            int c = getLeftColumn(evt.getPoint());
+            if (evt.getClickCount() == 1) {
+                if (table.getRowSorter() != null) {
+                    listeSortKeys = table.getRowSorter().getSortKeys();
+                } else {
+                    listeSortKeys = null;
+                }
+            }
+            if (evt.getClickCount() > 1 && usingResizeCursor()) {
+                resize(getLeftColumn(evt.getPoint()));
+            }
+        }
+
+        private JTableHeader getTableHeader() {
+            return table.getTableHeader();
+        }
+
+        private boolean usingResizeCursor() {
+            Cursor cursor = getTableHeader().getCursor();
+            return cursor.equals(EAST) || cursor.equals(WEST);
+        }
+
+        //if near the boundary, will choose left column
+        private int getLeftColumn(final Point pt) {
+            pt.x -= EPSILON;
+            return getTableHeader().columnAtPoint(pt);
+        }
+
+        private void resize(final int col) {
+
+            TableColumnModel tcm = table.getColumnModel();
+            TableColumn tc = tcm.getColumn(col);
+            TableCellRenderer tcr = tc.getHeaderRenderer();
+            if (tcr == null) {
+                tcr = table.getTableHeader().getDefaultRenderer();
+            }
+            Object obj = tc.getHeaderValue();
+            Component comp = tcr.getTableCellRendererComponent(table, obj, false, false, 0, 0);
+            int maxWidth = comp.getPreferredSize().width;
+
+            for (int i = 0, ub = table.getRowCount(); i != ub; ++i) {
+                tcr = table.getCellRenderer(i, col);
+                obj = table.getValueAt(i, col);
+                comp = tcr.getTableCellRendererComponent(table, obj, false, false, i, col);
+                int w = comp.getPreferredSize().width;
+                if (w > maxWidth) {
+                    maxWidth = w;
+                }
+            }
+            maxWidth += 10; //and room to grow...
+            tc.setPreferredWidth(maxWidth); //remembers the value
+            tc.setWidth(maxWidth);          //forces layout, repaint
+
+            if (listeSortKeys != null) {
+                if (!listeSortKeys.isEmpty()) {
+                    table.getRowSorter().setSortKeys(listeSortKeys);
+                }
+            }
+        }
+
+    }
 }

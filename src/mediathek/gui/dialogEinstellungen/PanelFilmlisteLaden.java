@@ -20,16 +20,10 @@
 package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Cursor;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.event.DocumentEvent;
@@ -43,19 +37,8 @@ import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVColor;
 import mediathek.tool.MVConfig;
-import mediathek.tool.TModel;
-import msearch.filmlisten.DatenFilmlisteUrl;
 
 public class PanelFilmlisteLaden extends PanelVorlage {
-
-    private JDialog dialog = null;
-
-    public PanelFilmlisteLaden(Daten d, JFrame parentComponent, JDialog ddialog) {
-        super(d, parentComponent);
-        dialog = ddialog;
-        initComponents();
-        init();
-    }
 
     public PanelFilmlisteLaden(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
@@ -64,19 +47,9 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     }
 
     private void init() {
-        if (!Daten.debug) {
-            jScrollPane1.setVisible(false);
-            jTable1.setVisible(false);
-            jLabelAktListe.setVisible(false);
-            jRadioButtonAkt.setVisible(false);
-            jRadioButtonDiff.setVisible(false);
-            jButtonAkualisieren.setVisible(false);
-        }
-        jButtonAkualisieren.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
         jButtonDateiAuswaehlen.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         jButtonUrl.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
         initRadio();
-        tabelleLaden();
         jButtonUrl.addActionListener(new ActionListener() {
 
             @Override
@@ -89,13 +62,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Daten.filmeLaden.importFilmliste("");
-            }
-        });
-        jButtonAkualisieren.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                listeFilmlistenSuchen();
             }
         });
         jButtonDateiAuswaehlen.addActionListener(new BeobPfad());
@@ -111,31 +77,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         });
         jRadioButtonManuell.addActionListener(new BeobOption());
         jRadioButtonAuto.addActionListener(new BeobOption());
-        jRadioButtonAkt.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jCheckBoxUpdate.setSelected(jRadioButtonDiff.isSelected());
-                tabelleLaden();
-            }
-        });
-        jRadioButtonDiff.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jCheckBoxUpdate.setSelected(jRadioButtonDiff.isSelected());
-                tabelleLaden();
-            }
-        });
-        //jTable1.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
-        jTable1.addMouseListener(new BeobachterTableSelect());
         jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_URL_FILMLISTEN, PanelFilmlisteLaden.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                tabelleLaden();
-            }
-        });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_IMPORT_FILMLISTE, PanelFilmlisteLaden.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -154,82 +96,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         setPanelTabelle(jRadioButtonManuell.isSelected());
     }
 
-    private void listeFilmlistenSuchen() {
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        if (jRadioButtonAkt.isSelected()) {
-            Daten.filmeLaden.updateDownloadUrlsFilmlisten(true);
-        } else /*diff*/ {
-            Daten.filmeLaden.updateDownloadUrlsFilmlisten(false);
-        }
-        stopBeob = true;
-        tabelleLaden();
-        stopBeob = false;
-        this.setCursor(Cursor.getDefaultCursor());
-    }
-
-    private void tabelleLaden() {
-        if (jRadioButtonAkt.isSelected()) {
-            jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().getTableObjectData(), DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
-        } else /*diff*/ {
-            jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().getTableObjectData(), DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
-        }
-        for (int i = 0; i < jTable1.getColumnCount(); ++i) {
-            if (i == DatenFilmlisteUrl.FILM_UPDATE_SERVER_URL_NR) {
-                jTable1.getColumnModel().getColumn(i).setMinWidth(10);
-                jTable1.getColumnModel().getColumn(i).setMaxWidth(3000);
-                jTable1.getColumnModel().getColumn(i).setPreferredWidth(400);
-            } else if (!Daten.debug && (i == DatenFilmlisteUrl.FILM_UPDATE_SERVER_PRIO_NR || i == DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR)) {
-                jTable1.getColumnModel().getColumn(i).setMinWidth(0);
-                jTable1.getColumnModel().getColumn(i).setMaxWidth(0);
-                jTable1.getColumnModel().getColumn(i).setPreferredWidth(0);
-            } else {
-                jTable1.getColumnModel().getColumn(i).setMinWidth(10);
-                jTable1.getColumnModel().getColumn(i).setMaxWidth(3000);
-                jTable1.getColumnModel().getColumn(i).setPreferredWidth(100);
-            }
-        }
-        if (jRadioButtonDiff.isSelected() || jRadioButtonAkt.isSelected()) {
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_DATUM_NR)).setMinWidth(0);
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_DATUM_NR)).setPreferredWidth(0);
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_DATUM_NR)).setMaxWidth(0);
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_ZEIT_NR)).setMinWidth(0);
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_ZEIT_NR)).setPreferredWidth(0);
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_ZEIT_NR)).setMaxWidth(0);
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_PRIO_NR)).setMinWidth(0);
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_PRIO_NR)).setPreferredWidth(0);
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_PRIO_NR)).setMaxWidth(0);
-        }
-    }
-
-    private void table1Select(boolean doppel) {
-        stopBeob = true;
-        DatenFilmlisteUrl datenUrlFilmliste = null;
-        int selectedTableRow = jTable1.getSelectedRow();
-        if (selectedTableRow >= 0) {
-            String url = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), DatenFilmlisteUrl.FILM_UPDATE_SERVER_URL_NR).toString();
-            if (jRadioButtonAkt.isSelected()) {
-                datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().getDatenUrlFilmliste(url);
-            } else /*diff*/ {
-                datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().getDatenUrlFilmliste(url);
-            }
-        }
-        if (datenUrlFilmliste != null) {
-            jTextFieldUrl.setText(datenUrlFilmliste.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_URL_NR]);
-            if (doppel) {
-                // dann wars ein Doppelklick, gleich laden
-                if (jCheckBoxUpdate.isSelected()) {
-                    Daten.filmeLaden.updateFilmliste(jTextFieldUrl.getText());
-                } else {
-                    Daten.filmeLaden.importFilmliste(jTextFieldUrl.getText());
-                }
-            }
-        }
-        stopBeob = false;
-        if (doppel && dialog != null) {
-            dialog.dispose();
-        }
-    }
-
     private void setPanelTabelle(boolean manuell) {
         if (manuell) {
             jTextAreaManuell.setBackground(MVColor.FILMLISTE_LADEN_AKTIV.color);
@@ -238,19 +104,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             jTextAreaManuell.setBackground(null);
             jTextAreaAuto.setBackground(MVColor.FILMLISTE_LADEN_AKTIV.color);
         }
-//        enableComponents(jPanelAuto, !manuell);
-//        enableComponents(jPanelManuel, manuell);
     }
-
-//    private void enableComponents(Container container, boolean enable) {
-//        Component[] components = container.getComponents();
-//        for (Component component : components) {
-//            component.setEnabled(enable);
-//            if (component instanceof Container) {
-//                enableComponents((Container) component, enable);
-//            }
-//        }
-//    }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -262,10 +116,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jTextAreaAuto = new javax.swing.JTextArea();
         jButtonLoad = new javax.swing.JButton();
         jPanelManuel = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jLabelAktListe = new javax.swing.JLabel();
-        jButtonAkualisieren = new javax.swing.JButton();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jTextFieldUrl = new javax.swing.JTextField();
         jButtonDateiAuswaehlen = new javax.swing.JButton();
@@ -273,8 +123,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         javax.swing.JScrollPane jScrollPane3 = new javax.swing.JScrollPane();
         jTextAreaManuell = new javax.swing.JTextArea();
         jCheckBoxUpdate = new javax.swing.JCheckBox();
-        jRadioButtonAkt = new javax.swing.JRadioButton();
-        jRadioButtonDiff = new javax.swing.JRadioButton();
         jButtonUrl = new javax.swing.JButton();
         jRadioButtonAuto = new javax.swing.JRadioButton();
         jRadioButtonManuell = new javax.swing.JRadioButton();
@@ -314,15 +162,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         jPanelManuel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 255)), "Filmliste nur manuell laden"));
 
-        jTable1.setAutoCreateRowSorter(true);
-        jTable1.setModel(new TModel());
-        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        jScrollPane1.setViewportView(jTable1);
-
-        jLabelAktListe.setText("Liste aktualisieren:");
-
-        jButtonAkualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/view-refresh_16.png"))); // NOI18N
-
         jLabel1.setText("URL/Datei:");
 
         jButtonDateiAuswaehlen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
@@ -339,13 +178,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         jCheckBoxUpdate.setText("alte Filmliste nicht löschen, nur erweitern");
 
-        buttonGroup2.add(jRadioButtonAkt);
-        jRadioButtonAkt.setSelected(true);
-        jRadioButtonAkt.setText("aktuelle komplette Listen");
-
-        buttonGroup2.add(jRadioButtonDiff);
-        jRadioButtonDiff.setText("Differenzlisten");
-
         jButtonUrl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/icons_refresh_16.png"))); // NOI18N
         jButtonUrl.setToolTipText("Neue URL suchen");
 
@@ -356,7 +188,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             .addGroup(jPanelManuelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanelManuelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelManuelLayout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -368,30 +199,14 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                     .addComponent(jScrollPane3)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelManuelLayout.createSequentialGroup()
                         .addComponent(jCheckBoxUpdate)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonFilmeLaden))
-                    .addGroup(jPanelManuelLayout.createSequentialGroup()
-                        .addComponent(jRadioButtonAkt)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButtonDiff)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 348, Short.MAX_VALUE)
-                        .addComponent(jLabelAktListe)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonAkualisieren)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 263, Short.MAX_VALUE)
+                        .addComponent(jButtonFilmeLaden)))
                 .addContainerGap())
         );
         jPanelManuelLayout.setVerticalGroup(
             jPanelManuelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelManuelLayout.createSequentialGroup()
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelManuelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jRadioButtonAkt)
-                    .addComponent(jRadioButtonDiff)
-                    .addComponent(jLabelAktListe)
-                    .addComponent(jButtonAkualisieren))
-                .addGap(9, 9, 9)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanelManuelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -435,29 +250,21 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                     .addComponent(jPanelAuto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelManuel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jRadioButtonManuell)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                    .addComponent(jRadioButtonManuell)
+                    .addComponent(jPanelManuel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonAkualisieren;
     private javax.swing.JButton jButtonDateiAuswaehlen;
     private javax.swing.JButton jButtonFilmeLaden;
     private javax.swing.JButton jButtonLoad;
     private javax.swing.JButton jButtonUrl;
     private javax.swing.JCheckBox jCheckBoxUpdate;
-    private javax.swing.JLabel jLabelAktListe;
     private javax.swing.JPanel jPanelAuto;
     private javax.swing.JPanel jPanelManuel;
-    private javax.swing.JRadioButton jRadioButtonAkt;
     private javax.swing.JRadioButton jRadioButtonAuto;
-    private javax.swing.JRadioButton jRadioButtonDiff;
     private javax.swing.JRadioButton jRadioButtonManuell;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextAreaAuto;
     private javax.swing.JTextArea jTextAreaManuell;
     private javax.swing.JTextField jTextFieldUrl;
@@ -475,34 +282,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                 }                // den Dialog gibts 2x
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_IMPORT_FILMLISTE, this.getClass().getSimpleName());
             }
-        }
-    }
-
-    private class BeobachterTableSelect implements MouseListener {
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            if (e.getClickCount() == 2) {
-                table1Select(true);
-            } else {
-                table1Select(false);
-            }
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
         }
     }
 
