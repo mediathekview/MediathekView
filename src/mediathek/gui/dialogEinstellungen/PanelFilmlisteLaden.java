@@ -279,7 +279,8 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                     Daten.mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUS));
                 } else {
                     Daten.mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUTO));
-                }                // den Dialog gibts 2x
+                }
+                // den Dialog gibts 2x
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_IMPORT_FILMLISTE, this.getClass().getSimpleName());
             }
         }
