@@ -21,6 +21,7 @@ package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
 import java.awt.FileDialog;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,6 +43,7 @@ import mediathek.MediathekGui;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
+import mediathek.gui.dialogEinstellungen.PanelFilmlisten;
 import mediathek.tool.Duration;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
@@ -64,9 +66,11 @@ public class GuiDebug extends JPanel {
         sender = Daten.filmeLaden.getSenderNamen();
         buttonSender = new JButton[sender.length];
 
-        jPanel3.setLayout(new GridLayout(1, 1));
-        jPanel3.add(new PanelInfoStarts());
-        jPanel3.repaint();
+        jPanelFilmlisteLaden.setLayout(new GridLayout(1, 1));
+        jPanelFilmlisteLaden.add(new PanelFilmlisten(d, daten.mediathekGui));
+
+        jPanelStarts.setLayout(new GridLayout(1, 1));
+        jPanelStarts.add(new PanelInfoStarts());
 
         //Tab1 Sender löschen Panel füllen
         for (int i = 0; i < Daten.filmeLaden.getSenderNamen().length; ++i) {
@@ -338,14 +342,15 @@ public class GuiDebug extends JPanel {
     private void initComponents() {
 
         javax.swing.JTabbedPane jTabbedSender = new javax.swing.JTabbedPane();
-        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
+        jPanelFilmlisteLaden = new javax.swing.JPanel();
+        javax.swing.JPanel jPanelFilmliste = new javax.swing.JPanel();
         javax.swing.JPanel jPanelSender = new javax.swing.JPanel();
         jPanelLoeschen = new javax.swing.JPanel();
         jButtonFilmlisteLoeschen = new javax.swing.JButton();
         jButtonNeuLaden = new javax.swing.JButton();
         jButtonCheck = new javax.swing.JButton();
         jButtonClean = new javax.swing.JButton();
-        javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanelTools = new javax.swing.JPanel();
         jButtonCheckUrl = new javax.swing.JButton();
         jTextFieldUrl = new javax.swing.JTextField();
         jButtonGc = new javax.swing.JButton();
@@ -359,7 +364,20 @@ public class GuiDebug extends JPanel {
         jTextFieldSearchUrl = new javax.swing.JTextField();
         jButtonGetName = new javax.swing.JButton();
         jButtonDoppelteUrls = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
+        jPanelStarts = new javax.swing.JPanel();
+
+        javax.swing.GroupLayout jPanelFilmlisteLadenLayout = new javax.swing.GroupLayout(jPanelFilmlisteLaden);
+        jPanelFilmlisteLaden.setLayout(jPanelFilmlisteLadenLayout);
+        jPanelFilmlisteLadenLayout.setHorizontalGroup(
+            jPanelFilmlisteLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 702, Short.MAX_VALUE)
+        );
+        jPanelFilmlisteLadenLayout.setVerticalGroup(
+            jPanelFilmlisteLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 489, Short.MAX_VALUE)
+        );
+
+        jTabbedSender.addTab("Filmliste laden", jPanelFilmlisteLaden);
 
         jPanelSender.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Sender löschen"));
 
@@ -399,21 +417,21 @@ public class GuiDebug extends JPanel {
 
         jButtonClean.setText("Clean Filmliste");
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanelFilmlisteLayout = new javax.swing.GroupLayout(jPanelFilmliste);
+        jPanelFilmliste.setLayout(jPanelFilmlisteLayout);
+        jPanelFilmlisteLayout.setHorizontalGroup(
+            jPanelFilmlisteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelFilmlisteLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanelFilmlisteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanelSender, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(jPanelFilmlisteLayout.createSequentialGroup()
+                        .addGroup(jPanelFilmlisteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanelFilmlisteLayout.createSequentialGroup()
                                 .addComponent(jButtonFilmlisteLoeschen)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jButtonNeuLaden))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(jPanelFilmlisteLayout.createSequentialGroup()
                                 .addComponent(jButtonCheck)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jButtonClean, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -421,17 +439,17 @@ public class GuiDebug extends JPanel {
                 .addContainerGap())
         );
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonCheck, jButtonFilmlisteLoeschen, jButtonNeuLaden});
+        jPanelFilmlisteLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonCheck, jButtonFilmlisteLoeschen, jButtonNeuLaden});
 
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+        jPanelFilmlisteLayout.setVerticalGroup(
+            jPanelFilmlisteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFilmlisteLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanelFilmlisteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonFilmlisteLoeschen)
                     .addComponent(jButtonNeuLaden))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanelFilmlisteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonCheck)
                     .addComponent(jButtonClean))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -439,7 +457,7 @@ public class GuiDebug extends JPanel {
                 .addContainerGap())
         );
 
-        jTabbedSender.addTab("Filmliste", jPanel1);
+        jTabbedSender.addTab("Filmliste", jPanelFilmliste);
 
         jButtonCheckUrl.setText("get URL Filesize:");
 
@@ -463,19 +481,19 @@ public class GuiDebug extends JPanel {
 
         jButtonDoppelteUrls.setText("doppelte URLs löschen");
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanelToolsLayout = new javax.swing.GroupLayout(jPanelTools);
+        jPanelTools.setLayout(jPanelToolsLayout);
+        jPanelToolsLayout.setHorizontalGroup(
+            jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelToolsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelToolsLayout.createSequentialGroup()
                         .addComponent(jButtonCheckUrl)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldUrl))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(jPanelToolsLayout.createSequentialGroup()
+                        .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jButtonGetName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButtonFehler, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButtonGc, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -484,20 +502,20 @@ public class GuiDebug extends JPanel {
                             .addComponent(jButtonSize, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButtonSearchUrl, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelToolsLayout.createSequentialGroup()
                                 .addComponent(jTextFieldPath, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonDir))
                             .addComponent(jTextFieldSearchUrl)))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
+                    .addGroup(jPanelToolsLayout.createSequentialGroup()
                         .addComponent(jButtonDoppelteUrls)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+        jPanelToolsLayout.setVerticalGroup(
+            jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelToolsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButtonAllesSpeichern)
                 .addGap(18, 18, 18)
@@ -507,12 +525,12 @@ public class GuiDebug extends JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(jToggleButtonFastAuto)
                 .addGap(65, 65, 65)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonSize)
                     .addComponent(jTextFieldPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonDir))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonSearchUrl)
                     .addComponent(jTextFieldSearchUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
@@ -520,32 +538,32 @@ public class GuiDebug extends JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(jButtonDoppelteUrls)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonCheckUrl)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
-        jPanel5Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonCheckUrl, jTextFieldUrl});
+        jPanelToolsLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonCheckUrl, jTextFieldUrl});
 
-        jPanel5Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonDir, jTextFieldPath});
+        jPanelToolsLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonDir, jTextFieldPath});
 
-        jPanel5Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonSearchUrl, jTextFieldSearchUrl});
+        jPanelToolsLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonSearchUrl, jTextFieldSearchUrl});
 
-        jTabbedSender.addTab("Tool", jPanel5);
+        jTabbedSender.addTab("Tool", jPanelTools);
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout jPanelStartsLayout = new javax.swing.GroupLayout(jPanelStarts);
+        jPanelStarts.setLayout(jPanelStartsLayout);
+        jPanelStartsLayout.setHorizontalGroup(
+            jPanelStartsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 702, Short.MAX_VALUE)
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        jPanelStartsLayout.setVerticalGroup(
+            jPanelStartsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 485, Short.MAX_VALUE)
         );
 
-        jTabbedSender.addTab("Starts", jPanel3);
+        jTabbedSender.addTab("Starts", jPanelStarts);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -578,8 +596,9 @@ public class GuiDebug extends JPanel {
     private javax.swing.JButton jButtonNeuLaden;
     private javax.swing.JButton jButtonSearchUrl;
     private javax.swing.JButton jButtonSize;
-    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanelFilmlisteLaden;
     private javax.swing.JPanel jPanelLoeschen;
+    private javax.swing.JPanel jPanelStarts;
     private javax.swing.JTextField jTextFieldPath;
     private javax.swing.JTextField jTextFieldSearchUrl;
     private javax.swing.JTextField jTextFieldUrl;
