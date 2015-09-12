@@ -26,6 +26,7 @@ public class MVSenderIconCache {
         iconCache.put("HR", scaleImage(PFAD + "hr.png", height));
         iconCache.put("KiKA", scaleImage(PFAD + "kika.png", height));
         iconCache.put("MDR", scaleImage(PFAD + "mdr.png", height));
+        iconCache.put("DW", scaleImage(PFAD + "dw.png", height));
         iconCache.put("NDR", scaleImage(PFAD + "ndr.png", height));
         iconCache.put("ORF", scaleImage(PFAD + "orf.png", height));
         iconCache.put("RBB", scaleImage(PFAD + "rbb.png", height));
@@ -49,6 +50,7 @@ public class MVSenderIconCache {
         iconCache_small.put("HR", scaleImage(PFAD + "hr.png", height_small));
         iconCache_small.put("KiKA", scaleImage(PFAD + "kika.png", height_small));
         iconCache_small.put("MDR", scaleImage(PFAD + "mdr.png", height_small));
+        iconCache_small.put("DW", scaleImage(PFAD + "dw.png", height_small));
         iconCache_small.put("NDR", scaleImage(PFAD + "ndr.png", height_small));
         iconCache_small.put("ORF", scaleImage(PFAD + "orf.png", height_small));
         iconCache_small.put("RBB", scaleImage(PFAD + "rbb.png", height_small));
