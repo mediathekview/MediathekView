@@ -21,7 +21,7 @@ package mediathek.tool;
 
 public class Konstanten {
 
-    public static final String VERSION = "10";
+    public static final String VERSION = "11";
     public static final String PROGRAMMNAME = "MediathekView";
     public static final String USER_AGENT_DEFAULT = MVFunctionSys.getProgVersionString();
     public static final String CONFIG_FILE = "mediathek.xml";
