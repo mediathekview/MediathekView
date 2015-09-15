@@ -44,7 +44,6 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableRowSorter;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
@@ -113,6 +112,7 @@ public final class MVTable extends JTable {
                 setDropMode(DropMode.INSERT_ROWS);
                 setTransferHandler(new TableRowTransferHandlerDownload(this));
                 setModel(new TModelDownload(new Object[][]{}, spaltenTitel));
+                this.getTableHeader().addMouseListener(new WidthAdjuster(this));
                 break;
             case TABELLE_TAB_ABOS:
                 spaltenTitel = DatenAbo.COLUMN_NAMES;
@@ -123,6 +123,7 @@ public final class MVTable extends JTable {
                 iconAnzeigenStr = MVConfig.SYSTEM_TAB_ABO_ICON_ANZEIGEN;
                 iconKleinStr = MVConfig.SYSTEM_TAB_ABO_ICON_KLEIN;
                 this.setModel(new TModelAbo(new Object[][]{}, spaltenTitel));
+                this.getTableHeader().addMouseListener(new WidthAdjuster(this));
                 break;
             case TABELLE_TAB_PSET:
                 spaltenTitel = DatenPset.COLUMN_NAMES;
@@ -133,6 +134,7 @@ public final class MVTable extends JTable {
                 this.setModel(new TModel(new Object[][]{}, spaltenTitel));
                 this.setRowSorter(null);
                 this.setAutoCreateRowSorter(false); // Reihenfolge ist die Anzeige der Button!
+                this.getTableHeader().addMouseListener(new WidthAdjuster(this));
                 break;
             case TABELLE_TAB_PROG:
                 spaltenTitel = DatenProg.COLUMN_NAMES;
@@ -141,6 +143,7 @@ public final class MVTable extends JTable {
                 indexSpalte = 0;
                 nrDatenSystem = "";
                 this.setModel(new TModel(new Object[][]{}, spaltenTitel));
+                this.getTableHeader().addMouseListener(new WidthAdjuster(this));
                 break;
             case TABELLE_MEDIA_DB:
                 spaltenTitel = DatenMediaDB.COLUMN_NAMES;
@@ -149,6 +152,7 @@ public final class MVTable extends JTable {
                 indexSpalte = 0;
                 nrDatenSystem = MVConfig.SYSTEM_EIGENSCHAFTEN_TABELLE_MEDIA_DB;
                 this.setModel(new TModel(new Object[][]{}, spaltenTitel));
+                this.getTableHeader().addMouseListener(new WidthAdjuster(this));
                 break;
         }
         breite = getArray(maxSpalten);

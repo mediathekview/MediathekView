@@ -47,7 +47,7 @@ import mediathek.tool.MVConfig;
 import org.jdesktop.swingx.JXBusyLabel;
 
 public class DialogBeendenZeit extends JDialog {
-
+    
     private static final String WAIT_FOR_DOWNLOADS_AND_TERMINATE = "Auf Abschluß aller Downloads warten und danach Programm beenden";
     private static final String WAIT_FOR_DOWNLOADS_AND_DONT_TERMINATE_PROGRAM = "Auf Abschluß aller Downloads warten, Programm danach NICHT beenden";
     private static final String DONT_START = "Downloads nicht starten";
@@ -89,14 +89,14 @@ public class DialogBeendenZeit extends JDialog {
     public boolean isShutdownRequested() {
         return shutdown;
     }
-
+    
     public DialogBeendenZeit(JFrame pparent, final Daten daten_, final ArrayList<DatenDownload> listeDownloadsStarten_) {
         super(pparent, true);
         initComponents();
         this.parent = pparent;
         daten = daten_;
         listeDownloadsStarten = listeDownloadsStarten_;
-
+        this.setTitle("Zeitverzögerter Download-Start");
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
@@ -106,7 +106,7 @@ public class DialogBeendenZeit extends JDialog {
                 escapeHandler();
             }
         };
-
+        
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -123,13 +123,13 @@ public class DialogBeendenZeit extends JDialog {
         cal.add(Calendar.DATE, 2);
         Date endDate = cal.getTime();
         SpinnerDateModel model = new SpinnerDateModel(now, startDate, endDate, Calendar.MINUTE);
-
+        
         if (!Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT).isEmpty()) {
             try {
                 String heute = new SimpleDateFormat("yyyyMMdd").format(new Date());
                 heute = heute + Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT);
                 Date start = new SimpleDateFormat("yyyyMMddHH:mm").parse(heute);
-
+                
                 if (start.after(startDate)) {
                     // nur wenn start nach "jetzt" kommt
                     model = new SpinnerDateModel(start, startDate, endDate, Calendar.MINUTE);
@@ -141,11 +141,11 @@ public class DialogBeendenZeit extends JDialog {
             } catch (Exception ignored) {
             }
         }
-
+        
         jSpinnerTime.setModel(model);
         JSpinner.DateEditor dEditor = new JSpinner.DateEditor(jSpinnerTime, "dd.MM.yyy  HH:mm");
         jSpinnerTime.setEditor(dEditor);
-
+        
         comboActions.setModel(getComboBoxModel());
         comboActions.addActionListener(new ActionListener() {
             @Override
@@ -153,7 +153,7 @@ public class DialogBeendenZeit extends JDialog {
                 setCbShutdownCoputer();
             }
         });
-
+        
         jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHilfe.addActionListener(new ActionListener() {
             @Override
@@ -162,7 +162,7 @@ public class DialogBeendenZeit extends JDialog {
             }
         });
         setCbShutdownCoputer();
-
+        
         cbShutdownComputer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -170,31 +170,31 @@ public class DialogBeendenZeit extends JDialog {
             }
         });
         cbShutdownComputer.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN)));
-
+        
         btnContinue.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 final String strSelectedItem = comboActions.getSelectedItem().toString();
                 Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN, String.valueOf(cbShutdownComputer.isSelected()));
-
+                
                 SimpleDateFormat format = ((JSpinner.DateEditor) jSpinnerTime.getEditor()).getFormat();
                 format.applyPattern("HH:mm");
                 Date sp = (Date) jSpinnerTime.getValue();
                 String strDate = format.format(sp);
-
+                
                 Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT, strDate);
-
+                
                 switch (strSelectedItem) {
                     case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
                         applicationCanTerminate = true;
                         waitUntilDownloadsHaveFinished();
                         break;
-
+                    
                     case WAIT_FOR_DOWNLOADS_AND_DONT_TERMINATE_PROGRAM:
                         applicationCanTerminate = false;
                         waitUntilDownloadsHaveFinished();
                         break;
-
+                    
                     case DONT_START:
                         applicationCanTerminate = false;
                         dispose();
@@ -202,29 +202,27 @@ public class DialogBeendenZeit extends JDialog {
                 }
             }
         });
-
+        
         btnCancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 escapeHandler();
             }
         });
-
+        
         pack();
-
+        
         getRootPane().setDefaultButton(btnContinue);
     }
-
+    
     private void setCbShutdownCoputer() {
         final String strSelectedItem = (String) comboActions.getSelectedItem();
         switch (strSelectedItem) {
             case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
-                jButtonHilfe.setEnabled(true);
                 cbShutdownComputer.setEnabled(true);
                 break;
             default:
                 //manually reset shutdown state
-                jButtonHilfe.setEnabled(false);
                 cbShutdownComputer.setEnabled(false);
                 cbShutdownComputer.setSelected(false);
                 shutdown = false;
@@ -248,11 +246,11 @@ public class DialogBeendenZeit extends JDialog {
         if (downloadMonitorWorker != null) {
             downloadMonitorWorker.cancel(true);
         }
-
+        
         if (glassPane != null) {
             glassPane.setVisible(false);
         }
-
+        
         applicationCanTerminate = false;
         dispose();
     }
@@ -268,7 +266,7 @@ public class DialogBeendenZeit extends JDialog {
             strMessage += "<br><b>Der Rechner wird danach heruntergefahren.</b>";
         }
         strMessage += "<br>Sie können den Vorgang mit Escape abbrechen.</html>";
-
+        
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout(5, 5));
         lblGlassPane.setText(strMessage);
@@ -276,16 +274,16 @@ public class DialogBeendenZeit extends JDialog {
         lblGlassPane.setVerticalAlignment(SwingConstants.CENTER);
         lblGlassPane.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(lblGlassPane, BorderLayout.CENTER);
-
+        
         return panel;
     }
-
+    
     private void setTextWait() {
         SimpleDateFormat format = ((JSpinner.DateEditor) jSpinnerTime.getEditor()).getFormat();
         format.applyPattern("dd.MM.yyy  HH:mm");
         Date sp = (Date) jSpinnerTime.getValue();
         String strDate = format.format(sp);
-
+        
         String strMessage = "<html>Downloads starten:<br><br><b>" + strDate + "</b><br>";
         if (isShutdownRequested()) {
             strMessage += "<br><b>Der Rechner wird danach heruntergefahren.</b>";
@@ -293,7 +291,7 @@ public class DialogBeendenZeit extends JDialog {
         strMessage += "<br>Sie können den Vorgang mit Escape abbrechen.</html>";
         lblGlassPane.setText(strMessage);
     }
-
+    
     private void setTextDownload_() {
         String strMessage = "<html>Warte auf Abschluss der Downloads...";
         if (isShutdownRequested()) {
@@ -302,7 +300,7 @@ public class DialogBeendenZeit extends JDialog {
         strMessage += "<br>Sie können den Vorgang mit Escape abbrechen.</html>";
         lblGlassPane.setText(strMessage);
     }
-
+    
     private void setTextDownload() {
         try {
             if (SwingUtilities.isEventDispatchThread()) {
@@ -328,7 +326,7 @@ public class DialogBeendenZeit extends JDialog {
         setGlassPane(glassPane);
         setTextWait();
         glassPane.setVisible(true);
-
+        
         downloadMonitorWorker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
@@ -337,14 +335,14 @@ public class DialogBeendenZeit extends JDialog {
                 }
                 setTextDownload();
                 DatenDownload.startenDownloads(daten, listeDownloadsStarten);
-
+                
                 while ((Daten.listeDownloads.nochNichtFertigeDownloads() > 0) && !isCancelled()) {
                     Thread.sleep(1000);
                 }
-
+                
                 return null;
             }
-
+            
             @Override
             protected void done() {
                 glassPane.setVisible(false);
@@ -369,7 +367,6 @@ public class DialogBeendenZeit extends JDialog {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("MediathekView beenden");
         setResizable(false);
 
         jLabel1.setText("<html>Wie möchten Sie fortfahren<br>\nwenn alle Downloads fertig sind?</html>");
