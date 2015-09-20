@@ -48,6 +48,8 @@ public class Konstanten {
     public static final String VERZEICHNIS_DOWNLOADS = PROGRAMMNAME; // Standard wenn nichts angeben, Verzeichnis wird im Homeverzeichnis angelegt
     public static final String VERZEICHNIS_EINSTELLUNGEN = ".mediathek3"; // im Homeverzeichnis
     public static final String JSON_DATEI_FILME = "filme.json";
+    public final static String PFAD_SHUTDOWN_LINUX = "bin/shutdown.sh";
+
     // 
     public static final int MIN_DATEI_GROESSE_FILM = 256 * 1024; //minimale Größe (256 KiB) eines Films um nicht als Fehler zu gelten
     public static final String XML_START = "Mediathek";
