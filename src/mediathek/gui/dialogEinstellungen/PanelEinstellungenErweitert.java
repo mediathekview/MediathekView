@@ -27,6 +27,7 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.controller.Log;
@@ -38,6 +39,8 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
+import mediathek.tool.MVFunctionSys;
+import mediathek.tool.MVFunctionSys.OperatingSystemType;
 import mediathek.tool.MVMessageDialog;
 
 public class PanelEinstellungenErweitert extends PanelVorlage {
@@ -45,20 +48,12 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     public PanelEinstellungenErweitert(Daten d, JFrame pparentComponent) {
         super(d, pparentComponent);
         initComponents();
-        jButtonProgrammDateimanager.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
-        jButtonProgrammUrl.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         daten = d;
+
         init();
-        jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
-        jButtonHilfe.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parentComponent, true, "\n"
-                        + "Dieser Text wird als User-Agent\n"
-                        + "an den Webserver übertragen. Das entspricht\n"
-                        + "der Kennung, die auch die Browser senden.").setVisible(true);
-            }
-        });
+        setIcon();
+        setHelp();
+
         jRadioButtonAuto.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -71,6 +66,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 setUserAgent();
             }
         });
+
         jTextFieldUserAgent.getDocument().addDocumentListener(new BeobUserAgent());
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, PanelEinstellungenErweitert.class.getSimpleName()) {
             @Override
@@ -92,273 +88,35 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 Daten.mVConfig.add(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.toString(jCheckBoxDownloadSofortStarten.isSelected()));
             }
         });
+
         // ====================================
-        jButtonProgrammDateimanager.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //we can use native chooser on Mac...
-                if (SystemInfo.isMacOSX()) {
-                    FileDialog chooser = new FileDialog(daten.mediathekGui, "Dateimanager suchen");
-                    chooser.setMode(FileDialog.LOAD);
-                    chooser.setVisible(true);
-                    if (chooser.getFile() != null) {
-                        try {
-                            File destination = new File(chooser.getDirectory() + chooser.getFile());
-                            jTextFieldProgrammDateimanager.setText(destination.getAbsolutePath());
-                        } catch (Exception ex) {
-                            Log.fehlerMeldung(798963047, ex);
-                        }
-                    }
-                } else {
-                    int returnVal;
-                    JFileChooser chooser = new JFileChooser();
-                    if (!jTextFieldProgrammDateimanager.getText().equals("")) {
-                        chooser.setCurrentDirectory(new File(jTextFieldProgrammDateimanager.getText()));
-                    } else {
-                        chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
-                    }
-                    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                    returnVal = chooser.showOpenDialog(null);
-                    if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        try {
-                            jTextFieldProgrammDateimanager.setText(chooser.getSelectedFile().getAbsolutePath());
-                        } catch (Exception ex) {
-                            Log.fehlerMeldung(963299647, ex);
-                        }
-                    }
-                }
-                // merken und prüfen
-                Daten.mVConfig.add(MVConfig.SYSTEM_ORDNER_OEFFNEN, jTextFieldProgrammDateimanager.getText());
-                String programm = jTextFieldProgrammDateimanager.getText();
-                if (!programm.equals("")) {
-                    try {
-                        if (!new File(programm).exists()) {
-                            MVMessageDialog.showMessageDialog(daten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
-                        } else if (!new File(programm).canExecute()) {
-                            MVMessageDialog.showMessageDialog(daten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
-                        }
-                    } catch (Exception ignored) {
-                    }
-                }
+        jButtonProgrammDateimanager.addActionListener(new BeobPfad(MVConfig.SYSTEM_ORDNER_OEFFNEN, "Dateimanager suchen", jTextFieldProgrammDateimanager));
+        jButtonProgrammVideoplayer.addActionListener(new BeobPfad(MVConfig.SYSTEM_PLAYER_ABSPIELEN, "Videoplayer suchen", jTextFieldVideoplayer));
+        jButtonProgrammUrl.addActionListener(new BeobPfad(MVConfig.SYSTEM_URL_OEFFNEN, "Browser suchen", jTextFieldProgrammUrl));
+        jButtonProgrammShutdown.addActionListener(new BeobPfad(MVConfig.SYSTEM_LINUX_SHUTDOWN, "Shutdown Befehl", jTextFieldProgrammShutdown));
 
-            }
-        });
-        jButtonProgrammVideoplayer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //we can use native chooser on Mac...
-                if (SystemInfo.isMacOSX()) {
-                    FileDialog chooser = new FileDialog(daten.mediathekGui, "Dateimanager suchen");
-                    chooser.setMode(FileDialog.LOAD);
-                    chooser.setVisible(true);
-                    if (chooser.getFile() != null) {
-                        try {
-                            File destination = new File(chooser.getDirectory() + chooser.getFile());
-                            jTextFieldVideoplayer.setText(destination.getAbsolutePath());
-                        } catch (Exception ex) {
-                            Log.fehlerMeldung(821036489, ex);
-                        }
-                    }
-                } else {
-                    int returnVal;
-                    JFileChooser chooser = new JFileChooser();
-                    if (!jTextFieldVideoplayer.getText().equals("")) {
-                        chooser.setCurrentDirectory(new File(jTextFieldVideoplayer.getText()));
-                    } else {
-                        chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
-                    }
-                    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                    returnVal = chooser.showOpenDialog(null);
-                    if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        try {
-                            jTextFieldVideoplayer.setText(chooser.getSelectedFile().getAbsolutePath());
-                        } catch (Exception ex) {
-                            Log.fehlerMeldung(732656980, ex);
-                        }
-                    }
-                }
-                // merken und prüfen
-                Daten.mVConfig.add(MVConfig.SYSTEM_PLAYER_ABSPIELEN, jTextFieldVideoplayer.getText());
-                String programm = jTextFieldVideoplayer.getText();
-                if (!programm.equals("")) {
-                    try {
-                        if (!new File(programm).exists()) {
-                            MVMessageDialog.showMessageDialog(daten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
-                        } else if (!new File(programm).canExecute()) {
-                            MVMessageDialog.showMessageDialog(daten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
-                        }
-                    } catch (Exception ignored) {
-                    }
-                }
-
-            }
-        });
-        jButtonProgrammUrl.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //we can use native chooser on Mac...
-                if (SystemInfo.isMacOSX()) {
-                    FileDialog chooser = new FileDialog(daten.mediathekGui, "Browser suchen");
-                    chooser.setMode(FileDialog.LOAD);
-                    chooser.setVisible(true);
-                    if (chooser.getFile() != null) {
-                        try {
-                            File destination = new File(chooser.getDirectory() + chooser.getFile());
-                            jTextFieldProgrammUrl.setText(destination.getAbsolutePath());
-                        } catch (Exception ex) {
-                            Log.fehlerMeldung(369874598, ex);
-                        }
-                    }
-                } else {
-                    int returnVal;
-                    JFileChooser chooser = new JFileChooser();
-                    if (!jTextFieldProgrammUrl.getText().equals("")) {
-                        chooser.setCurrentDirectory(new File(jTextFieldProgrammUrl.getText()));
-                    } else {
-                        chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
-                    }
-                    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                    returnVal = chooser.showOpenDialog(null);
-                    if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        try {
-                            jTextFieldProgrammUrl.setText(chooser.getSelectedFile().getAbsolutePath());
-                        } catch (Exception ex) {
-                            Log.fehlerMeldung(469012789, ex);
-                        }
-                    }
-                }
-                // merken und prüfen
-                Daten.mVConfig.add(MVConfig.SYSTEM_URL_OEFFNEN, jTextFieldProgrammUrl.getText());
-                String programm = jTextFieldProgrammUrl.getText();
-                if (!programm.equals("")) {
-                    try {
-                        if (!new File(programm).exists()) {
-                            MVMessageDialog.showMessageDialog(daten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
-                        } else if (!new File(programm).canExecute()) {
-                            MVMessageDialog.showMessageDialog(daten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
-                        }
-                    } catch (Exception ignored) {
-                    }
-                }
-
-            }
-        });
-        jButtonHilfeProgrammDateimanager.setIcon(GetIcon.getProgramIcon("help_16.png"));
-        jButtonHilfeProgrammDateimanager.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parentComponent, true, "\n"
-                        + "Im Tab \"Downloads\" kann man mit der rechten\n"
-                        + "Maustaste den Downloadordner (Zielordner)\n"
-                        + "des jeweiligen Downloads öffnen.\n"
-                        + "Normalerweise wird der Dateimanager des\n"
-                        + "Betriebssystems gefunden und geöffnet. Klappt das nicht,\n"
-                        + "kann hier ein Programm dafür angegeben werden.").setVisible(true);
-            }
-        });
-        jButtonHilfeNeuladen.setIcon(GetIcon.getProgramIcon("help_16.png"));
-        jButtonHilfeNeuladen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parentComponent, true, "\n"
-                        + "Abos automatisch suchen:\n"
-                        + "Nach dem Neuladen einer Filmliste wird dann\n"
-                        + "sofort nach neuen Abos gesucht. Ansonsten muss man\n"
-                        + "im Tab Download auf \"Downloads aktualisieren\" klicken.\n"
-                        + "\n"
-                        + "Downloads sofort starten:\n"
-                        + "Neu angelegte Downloads (aus Abos) werden\n"
-                        + "sofort gestartet. Ansonsten muss man sie\n"
-                        + "selbst starten.\n").setVisible(true);
-            }
-        });
-        jButtonHilfeVideoplayer.setIcon(GetIcon.getProgramIcon("help_16.png"));
-        jButtonHilfeVideoplayer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parentComponent, true, "\n"
-                        + "Im Tab \"Downloads\" kann man den gespeicherten\n"
-                        + "Film in einem Videoplayer öffnen.\n"
-                        + "Normalerweise wird der Videoplayer des\n"
-                        + "Betriebssystems gefunden und geöffnet. Klappt das nicht,\n"
-                        + "kann hier ein Programm dafür angegeben werden.").setVisible(true);
-            }
-        });
-        jButtonHilfeProgrammUrl.setIcon(GetIcon.getProgramIcon("help_16.png"));
-        jButtonHilfeProgrammUrl.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parentComponent, true, "\n"
-                        + "Wenn das Programm versucht, einen Link zu öffnen\n"
-                        + "(z.B. den Link im Menüpunkt \"Hilfe\" zu den \"Hilfeseiten\")\n"
-                        + "und die Standardanwendung (z.B. \"Firefox\") nicht startet,\n"
-                        + "kann damit ein Programm ausgewählt und\n"
-                        + "fest zugeordnet werden (z.B. der Browser \"Firefox\").").setVisible(true);
-            }
-        });
         jTextFieldProgrammDateimanager.setText(Daten.mVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN));
-        jTextFieldProgrammDateimanager.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                tus();
-            }
+        jTextFieldProgrammDateimanager.getDocument().addDocumentListener(new BeobDoc(MVConfig.SYSTEM_ORDNER_OEFFNEN, jTextFieldProgrammDateimanager));
 
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                tus();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                tus();
-            }
-
-            private void tus() {
-                Daten.mVConfig.add(MVConfig.SYSTEM_ORDNER_OEFFNEN, jTextFieldProgrammDateimanager.getText());
-            }
-        });
         jTextFieldVideoplayer.setText(Daten.mVConfig.get(MVConfig.SYSTEM_PLAYER_ABSPIELEN));
-        jTextFieldVideoplayer.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                tus();
-            }
+        jTextFieldVideoplayer.getDocument().addDocumentListener(new BeobDoc(MVConfig.SYSTEM_PLAYER_ABSPIELEN, jTextFieldVideoplayer));
 
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                tus();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                tus();
-            }
-
-            private void tus() {
-                Daten.mVConfig.add(MVConfig.SYSTEM_PLAYER_ABSPIELEN, jTextFieldVideoplayer.getText());
-            }
-        });
         jTextFieldProgrammUrl.setText(Daten.mVConfig.get(MVConfig.SYSTEM_URL_OEFFNEN));
-        jTextFieldProgrammUrl.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                tus();
-            }
+        jTextFieldProgrammUrl.getDocument().addDocumentListener(new BeobDoc(MVConfig.SYSTEM_URL_OEFFNEN, jTextFieldProgrammUrl));
 
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                tus();
-            }
+        jTextFieldProgrammShutdown.setText(Daten.mVConfig.get(MVConfig.SYSTEM_LINUX_SHUTDOWN));
+        if (jTextFieldProgrammShutdown.getText().isEmpty()) {
+            jTextFieldProgrammShutdown.setText(Konstanten.SHUTDOWN_LINUX);
+            Daten.mVConfig.add(MVConfig.SYSTEM_LINUX_SHUTDOWN, Konstanten.SHUTDOWN_LINUX);
+        }
+        jTextFieldProgrammShutdown.getDocument().addDocumentListener(new BeobDoc(MVConfig.SYSTEM_LINUX_SHUTDOWN, jTextFieldProgrammShutdown));
 
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                tus();
-            }
-
-            private void tus() {
-                Daten.mVConfig.add(MVConfig.SYSTEM_URL_OEFFNEN, jTextFieldProgrammUrl.getText());
-            }
-        });
+        if (MVFunctionSys.getOs() != OperatingSystemType.LINUX) {
+            // Funktion ist nur für Linux
+            jButtonHilfeProgrammShutdown.setEnabled(false);
+            jTextFieldProgrammShutdown.setEnabled(false);
+            jButtonProgrammShutdown.setEnabled(false);
+        }
     }
 
     private void init() {
@@ -381,6 +139,96 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             Daten.setUserAgentManuel(jTextFieldUserAgent.getText());
         }
         jTextFieldUserAgent.setEditable(!Daten.isUserAgentAuto());
+    }
+
+    private void setHelp() {
+        jButtonHilfe.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DialogHilfe(parentComponent, true, "\n"
+                        + "Dieser Text wird als User-Agent\n"
+                        + "an den Webserver übertragen. Das entspricht\n"
+                        + "der Kennung, die auch die Browser senden.").setVisible(true);
+            }
+        });
+        jButtonHilfeProgrammDateimanager.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DialogHilfe(parentComponent, true, "\n"
+                        + "Im Tab \"Downloads\" kann man mit der rechten\n"
+                        + "Maustaste den Downloadordner (Zielordner)\n"
+                        + "des jeweiligen Downloads öffnen.\n"
+                        + "Normalerweise wird der Dateimanager des\n"
+                        + "Betriebssystems gefunden und geöffnet. Klappt das nicht,\n"
+                        + "kann hier ein Programm dafür angegeben werden.").setVisible(true);
+            }
+        });
+        jButtonHilfeNeuladen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DialogHilfe(parentComponent, true, "\n"
+                        + "Abos automatisch suchen:\n"
+                        + "Nach dem Neuladen einer Filmliste wird dann\n"
+                        + "sofort nach neuen Abos gesucht. Ansonsten muss man\n"
+                        + "im Tab Download auf \"Downloads aktualisieren\" klicken.\n"
+                        + "\n"
+                        + "Downloads sofort starten:\n"
+                        + "Neu angelegte Downloads (aus Abos) werden\n"
+                        + "sofort gestartet. Ansonsten muss man sie\n"
+                        + "selbst starten.\n").setVisible(true);
+            }
+        });
+        jButtonHilfeVideoplayer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DialogHilfe(parentComponent, true, "\n"
+                        + "Im Tab \"Downloads\" kann man den gespeicherten\n"
+                        + "Film in einem Videoplayer öffnen.\n"
+                        + "Normalerweise wird der Videoplayer des\n"
+                        + "Betriebssystems gefunden und geöffnet. Klappt das nicht,\n"
+                        + "kann hier ein Programm dafür angegeben werden.").setVisible(true);
+            }
+        });
+        jButtonHilfeProgrammUrl.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DialogHilfe(parentComponent, true, "\n"
+                        + "Wenn das Programm versucht, einen Link zu öffnen\n"
+                        + "(z.B. den Link im Menüpunkt \"Hilfe\" zu den \"Hilfeseiten\")\n"
+                        + "und die Standardanwendung (z.B. \"Firefox\") nicht startet,\n"
+                        + "kann damit ein Programm ausgewählt und\n"
+                        + "fest zugeordnet werden (z.B. der Browser \"Firefox\").").setVisible(true);
+            }
+        });
+        jButtonHilfeProgrammShutdown.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DialogHilfe(parentComponent, true, "\n"
+                        + "Bei Linux wird das Programm/Script ausgeführt\n"
+                        + "um den Recher herunter zu fahren\n"
+                        + "\n"
+                        + "mögliche Aufrufe sind:\n"
+                        + "\n"
+                        + "systemctl poweroff\n"
+                        + "poweroff\n"
+                        + "sudo shutdown -P now\n"
+                        + "shutdown -h now").setVisible(true);
+            }
+        });
+    }
+
+    private void setIcon() {
+        jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonHilfeNeuladen.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonHilfeProgrammDateimanager.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonHilfeVideoplayer.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonHilfeProgrammUrl.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonHilfeProgrammShutdown.setIcon(GetIcon.getProgramIcon("help_16.png"));
+
+        jButtonProgrammDateimanager.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+        jButtonProgrammVideoplayer.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+        jButtonProgrammUrl.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+        jButtonProgrammShutdown.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
     }
 
     /** This method is called from within the constructor to
@@ -416,6 +264,10 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jTextFieldProgrammUrl = new javax.swing.JTextField();
         jButtonProgrammUrl = new javax.swing.JButton();
         jButtonHilfeProgrammUrl = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jButtonHilfeProgrammShutdown = new javax.swing.JButton();
+        jButtonProgrammShutdown = new javax.swing.JButton();
+        jTextFieldProgrammShutdown = new javax.swing.JTextField();
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Nach dem Neuladen der Filmliste"));
 
@@ -591,10 +443,44 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addComponent(jTextFieldProgrammUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonProgrammUrl)
                     .addComponent(jButtonHilfeProgrammUrl))
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeProgrammUrl, jButtonProgrammUrl, jTextFieldProgrammUrl});
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Linux: Aufruf zum Shutdown"));
+
+        jButtonHilfeProgrammShutdown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+
+        jButtonProgrammShutdown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
+
+        jTextFieldProgrammShutdown.setText("shutdown -h now");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTextFieldProgrammShutdown)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonProgrammShutdown)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonHilfeProgrammShutdown)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jTextFieldProgrammShutdown, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jButtonHilfeProgrammShutdown)
+                        .addComponent(jButtonProgrammShutdown)))
+                .addGap(0, 12, Short.MAX_VALUE))
+        );
+
+        jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfeProgrammShutdown, jButtonProgrammShutdown, jTextFieldProgrammShutdown});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -606,7 +492,8 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -620,7 +507,9 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(79, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -628,9 +517,11 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     private javax.swing.JButton jButtonHilfe;
     private javax.swing.JButton jButtonHilfeNeuladen;
     private javax.swing.JButton jButtonHilfeProgrammDateimanager;
+    private javax.swing.JButton jButtonHilfeProgrammShutdown;
     private javax.swing.JButton jButtonHilfeProgrammUrl;
     private javax.swing.JButton jButtonHilfeVideoplayer;
     private javax.swing.JButton jButtonProgrammDateimanager;
+    private javax.swing.JButton jButtonProgrammShutdown;
     private javax.swing.JButton jButtonProgrammUrl;
     private javax.swing.JButton jButtonProgrammVideoplayer;
     private javax.swing.JCheckBox jCheckBoxAboSuchen;
@@ -638,11 +529,13 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JRadioButton jRadioButtonAuto;
     private javax.swing.JRadioButton jRadioButtonManuel;
     private javax.swing.JTextField jTextFieldAuto;
     private javax.swing.JTextField jTextFieldProgrammDateimanager;
+    private javax.swing.JTextField jTextFieldProgrammShutdown;
     private javax.swing.JTextField jTextFieldProgrammUrl;
     private javax.swing.JTextField jTextFieldUserAgent;
     private javax.swing.JTextField jTextFieldVideoplayer;
@@ -668,5 +561,99 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         private void tus() {
             Daten.setUserAgentManuel(jTextFieldUserAgent.getText());
         }
+    }
+
+    private class BeobDoc implements DocumentListener {
+
+        String config;
+        JTextField txt;
+
+        public BeobDoc(String config, JTextField txt) {
+            this.config = config;
+            this.txt = txt;
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        private void tus() {
+            Daten.mVConfig.add(config, txt.getText());
+        }
+
+    }
+
+    private class BeobPfad implements ActionListener {
+
+        String config;
+        String title;
+        JTextField textField;
+
+        public BeobPfad(String config, String title, JTextField textField) {
+            this.config = config;
+            this.title = title;
+            this.textField = textField;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //we can use native chooser on Mac...
+            if (SystemInfo.isMacOSX()) {
+                FileDialog chooser = new FileDialog(daten.mediathekGui, title);
+                chooser.setMode(FileDialog.LOAD);
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    try {
+                        File destination = new File(chooser.getDirectory() + chooser.getFile());
+                        textField.setText(destination.getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(915263014, ex);
+                    }
+                }
+            } else {
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                if (!textField.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(textField.getText()));
+                } else {
+                    chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));
+                }
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        textField.setText(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(751214501, ex);
+                    }
+                }
+            }
+            // merken und prüfen
+            Daten.mVConfig.add(config, textField.getText());
+            String programm = textField.getText();
+            if (!programm.equals("")) {
+                try {
+                    if (!new File(programm).exists()) {
+                        MVMessageDialog.showMessageDialog(daten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    } else if (!new File(programm).canExecute()) {
+                        MVMessageDialog.showMessageDialog(daten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+
+        }
+
     }
 }
