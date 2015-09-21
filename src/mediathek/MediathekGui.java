@@ -1238,7 +1238,12 @@ public class MediathekGui extends JFrame {
         switch (MVFunctionSys.getOs()) {
             case LINUX:
                 //strShutdownCommand = "shutdown -h now";
-                strShutdownCommand = Konstanten.PFAD_SHUTDOWN_LINUX;
+                strShutdownCommand = Daten.mVConfig.get(MVConfig.SYSTEM_LINUX_SHUTDOWN);
+                if (strShutdownCommand.isEmpty()) {
+                    // sicherheitshalber
+                    strShutdownCommand = Konstanten.SHUTDOWN_LINUX;
+                    Daten.mVConfig.add(MVConfig.SYSTEM_LINUX_SHUTDOWN, Konstanten.SHUTDOWN_LINUX);
+                }
                 break;
 
             case WIN32:

@@ -47,6 +47,7 @@ public class MVConfig {
     public static final String SYSTEM_HINWEIS_NR_ANGEZEIGT = "Hinweis-Nr-angezeigt";
     public static final String SYSTEM_ORDNER_OEFFNEN = "Download-Ordner-oeffnen";
     public static final String SYSTEM_URL_OEFFNEN = "Programm-Url-oeffnen";
+    public static final String SYSTEM_LINUX_SHUTDOWN = "Programm-Linux-Shutdown";
     public static final String SYSTEM_NOTIFICATION = "Notification-anzeigen";
     public static final String SYSTEM_PLAYER_ABSPIELEN = "Player-zum-Abspielen";
     public static final String SYSTEM_GEO_MELDEN = "Geo-melden";
