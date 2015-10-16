@@ -184,11 +184,11 @@ public class GuiFilme extends PanelVorlage {
     }
 
     public void filmGesehen() {
-        setGesehen(true);
+        daten.history.setGesehen(true, getSelFilme());
     }
 
     public void filmUngesehen() {
-        setGesehen(false);
+        daten.history.setGesehen( false, getSelFilme());
     }
 
     public void init() {
@@ -510,28 +510,6 @@ public class GuiFilme extends PanelVorlage {
     private void setInfo() {
         // Infopanel setzen
         daten.mediathekGui.getStatusBar().setTextForLeftDisplay();
-    }
-
-    private void setGesehen(boolean gesehen) {
-        ArrayList<DatenFilm> arrayFilms = getSelFilme();
-        if (arrayFilms.isEmpty()) {
-            return;
-        }
-        if (!gesehen) {
-            daten.history.urlAusLogfileLoeschen(arrayFilms);
-            for (DatenFilm film : arrayFilms) {
-                Daten.listeFilmeHistory.remove(film);
-            }
-        } else {
-            ArrayList<DatenFilm> neueFilme = new ArrayList<>();
-            for (DatenFilm film : arrayFilms) {
-                if (!daten.history.urlPruefen(film.getUrlHistory())) {
-                    neueFilme.add(film);
-                    Daten.listeFilmeHistory.add(film);
-                }
-            }
-            daten.history.zeileSchreiben(neueFilme);
-        }
     }
 
     private ArrayList<DatenFilm> getSelFilme() {

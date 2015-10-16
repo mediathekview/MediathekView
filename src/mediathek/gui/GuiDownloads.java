@@ -189,6 +189,14 @@ public class GuiDownloads extends PanelVorlage {
         downloadAendern();
     }
 
+    public void filmGesehen() {
+        daten.history.setGesehen(true, getSelFilme());
+    }
+
+    public void filmUngesehen() {
+        daten.history.setGesehen(false, getSelFilme());
+    }
+
     //===================================
     //private
     //===================================
@@ -727,6 +735,22 @@ public class GuiDownloads extends PanelVorlage {
             // Beschreibung setzen
             panelBeschreibung.setAktFilm(aktFilm);
         }
+    }
+
+    private ArrayList<DatenFilm> getSelFilme() {
+        ArrayList<DatenFilm> arrayFilme = new ArrayList<>();
+        int rows[] = tabelle.getSelectedRows();
+        if (rows.length > 0) {
+            for (int row : rows) {
+                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
+                if (datenDownload.film != null) {
+                    arrayFilme.add(datenDownload.film);
+                }
+            }
+        } else {
+            new HinweisKeineAuswahl().zeigen(parentComponent);
+        }
+        return arrayFilme;
     }
 
     /**
