@@ -126,14 +126,16 @@
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
               </AuxValues>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemFilmGesehen">
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator6">
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemFilmeGesehen">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Film als gesehen markieren"/>
+                <Property name="text" type="java.lang.String" value="Filme als gesehen markieren"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemFilmUngesehen">
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemFilmeUngesehen">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Film als ungesehen markieren"/>
+                <Property name="text" type="java.lang.String" value="Filme als ungesehen markieren"/>
               </Properties>
             </MenuItem>
           </SubComponents>
@@ -263,6 +265,16 @@
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
               </AuxValues>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadGesehen">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Filme als gesehen markieren"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadUngesehen">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Filme als ungesehen markieren"/>
+              </Properties>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadAbspielen">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
@@ -270,6 +282,8 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="gespeicherten Film abspielen"/>
               </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator7">
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadShutDown">
               <Properties>

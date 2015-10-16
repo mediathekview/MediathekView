@@ -60,6 +60,27 @@ public class MVUsedUrls {
         listeBauen();
     }
 
+    public synchronized void setGesehen(boolean gesehen, ArrayList<DatenFilm> arrayFilms) {
+        if (arrayFilms.isEmpty()) {
+            return;
+        }
+        if (!gesehen) {
+            urlAusLogfileLoeschen(arrayFilms);
+            for (DatenFilm film : arrayFilms) {
+                Daten.listeFilmeHistory.remove(film);
+            }
+        } else {
+            ArrayList<DatenFilm> neueFilme = new ArrayList<>();
+            for (DatenFilm film : arrayFilms) {
+                if (!urlPruefen(film.getUrlHistory())) {
+                    neueFilme.add(film);
+                    Daten.listeFilmeHistory.add(film);
+                }
+            }
+            zeileSchreiben(neueFilme);
+        }
+    }
+
     public synchronized void alleLoeschen() {
         listeUrls.clear();
         Path urlPath = getUrlFilePath();
@@ -217,7 +238,7 @@ public class MVUsedUrls {
         try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getUrlFilePath(), StandardOpenOption.APPEND)))) {
 
             for (DatenFilm film : arrayFilms) {
-               // film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR], film.getUrlHistory()
+                // film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR], film.getUrlHistory()
                 listeUrls.add(film.getUrlHistory());
                 listeUrlsSortDate.add(new MVUsedUrl(datum, film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR], film.getUrlHistory()));
                 text = MVUsedUrl.getUsedUrl(datum, film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR], film.getUrlHistory());
