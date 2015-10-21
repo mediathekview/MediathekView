@@ -105,6 +105,10 @@ Diese Angaben werden durch die URL ersetzt:
 
 zwei Sterne ** werden durch den Zieldateinamen mit Pfad ersetzt.
 
+Zusätzlich ist im Schalter:
+%a  für den Pfad und
+%b  für den Dateinamen
+des Films möglich. Statt "**" wäre also auch "%a/%b" möglich.
 
 ==================================================
 Beispiel für den VLC:
