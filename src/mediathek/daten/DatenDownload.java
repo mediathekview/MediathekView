@@ -456,6 +456,32 @@ public class DatenDownload implements Comparable<DatenDownload> {
         }
     }
 
+    private void programmaufrufBauen(DatenProg programm) {
+        if (art == ART_DOWNLOAD) {
+            arr[DOWNLOAD_PROGRAMM_AUFRUF_NR] = "";
+            arr[DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR] = "";
+        } else {
+            String befehlsString = programm.getProgrammAufruf();
+            befehlsString = replaceExec(befehlsString);
+            arr[DOWNLOAD_PROGRAMM_AUFRUF_NR] = befehlsString;
+
+            String progArray = programm.getProgrammAufrufArray();
+            progArray = replaceExec(progArray);
+            arr[DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR] = progArray;
+        }
+    }
+
+    private String replaceExec(String befehlsString) {
+        befehlsString = befehlsString.replace("**", arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+        befehlsString = befehlsString.replace("%f", arr[DOWNLOAD_URL_NR]);
+        befehlsString = befehlsString.replace("%F", arr[DOWNLOAD_URL_RTMP_NR]);
+
+        befehlsString = befehlsString.replace("%a", arr[DOWNLOAD_ZIEL_PFAD_NR]);
+        befehlsString = befehlsString.replace("%b", arr[DOWNLOAD_ZIEL_DATEINAME_NR]);
+
+        return befehlsString;
+    }
+
     private void dateinamePfadBauen(DatenPset pSet, DatenFilm film, DatenAbo abo, String nname, String ppfad) {
         // nname und ppfad sind nur belegt, wenn der Download über den DialogAddDownload gestartet wurde (aus TabFilme)
         String name;
@@ -554,52 +580,8 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pathName[0], pathName[1]);
     }
 
-    private void programmaufrufBauen(DatenProg programm) {
-        if (art == ART_DOWNLOAD) {
-            arr[DOWNLOAD_PROGRAMM_AUFRUF_NR] = "";
-            arr[DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR] = "";
-        } else {
-            String befehlsString = programm.getProgrammAufruf();
-            befehlsString = replaceExec(befehlsString);
-            arr[DOWNLOAD_PROGRAMM_AUFRUF_NR] = befehlsString;
-
-//            if (MVFunctionSys.getOs() == MVFunctionSys.OperatingSystemType.LINUX) {
-            // klappt nur bei Linux gut :), Win verwendet Programmpfade mit LEERZEICHEN!!
-            String progArray = programm.getProgrammAufrufArray();
-            progArray = replaceExec(progArray);
-            arr[DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR] = progArray;
-//            }
-        }
-    }
-
-    private String replaceExec(String befehlsString) {
-        befehlsString = befehlsString.replace("**", arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-        befehlsString = befehlsString.replace("%f", arr[DOWNLOAD_URL_NR]);
-        befehlsString = befehlsString.replace("%F", arr[DOWNLOAD_URL_RTMP_NR]);
-
-        // ================
-        // brauchts eigentlich nicht mehr
-//        befehlsString = befehlsString.replace("%k", arr[DOWNLOAD_URL_NR]); // ehemals kleine Auflösung
-//        befehlsString = befehlsString.replace("%K", arr[DOWNLOAD_URL_RTMP_NR]); // ehemals kleine Auflösung
-//            befehlsString = befehlsString.replace("%x", AsxLesen.lesen(arr[DOWNLOAD_URL_NR]));
-//        if (befehlsString.contains("%x")) {
-//            // sonst holt er doch tatsächlich immer erst die asx-datei!
-//            befehlsString = befehlsString.replace("%x", AsxLesen.lesen(arr[DOWNLOAD_URL_NR]));
-//        }
-//        //Auth eintragen
-//        if (arr[DOWNLOAD_URL_AUTH_NR].equals("")) {
-//            befehlsString = befehlsString.replace("%a", "");
-//            befehlsString = befehlsString.replace("%A", "");
-//        } else {
-//            befehlsString = befehlsString.replace("%a", arr[DOWNLOAD_URL_AUTH_NR]);
-//            befehlsString = befehlsString.replace("%A", "-W " + arr[DOWNLOAD_URL_AUTH_NR]);
-//        }
-        //===============================================================
-        return befehlsString;
-    }
-
     private String replaceString(String s, DatenFilm film) {
-         //Felder mit variabler Länge, evtl. Kürzen
+        //Felder mit variabler Länge, evtl. Kürzen
         int laenge = -1;
         String field;
         if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN_NR])) {
