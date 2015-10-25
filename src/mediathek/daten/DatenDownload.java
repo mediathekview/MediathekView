@@ -440,7 +440,8 @@ public class DatenDownload implements Comparable<DatenDownload> {
             arr[DOWNLOAD_PROGRAMMSET_NR] = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
 
             // Direkter Download nur wenn url passt und wenn im Programm ein Zielpfad ist sonst Abspielen
-            art = (pSet.checkDownloadDirekt(arr[DOWNLOAD_URL_NR]) && pSet.progsContainPath()) ? ART_DOWNLOAD : ART_PROGRAMM;
+            art = (pSet.checkDownloadDirekt(arr[DOWNLOAD_URL_NR])
+                    && pSet.progsContainPath()/*legt fest, dass NICHT Abspielen, Abspielen immer über Programm!*/) ? ART_DOWNLOAD : ART_PROGRAMM;
             arr[DOWNLOAD_ART_NR] = String.valueOf(art);
             if (art == ART_DOWNLOAD) {
                 arr[DatenDownload.DOWNLOAD_PROGRAMM_NR] = ART_DOWNLOAD_TXT;

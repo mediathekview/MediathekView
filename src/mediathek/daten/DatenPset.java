@@ -117,13 +117,17 @@ public class DatenPset {
     }
 
     public boolean progsContainPath() {
-        // ein Programmschalter mit "**"
+        // ein Programmschalter mit
+        // "**" (Pfad/Datei) oder %a (Pfad) oder %b (Datei)
+        // damit ist es ein Set zum Speichern
         boolean ret = false;
         Iterator<DatenProg> it = listeProg.iterator();
         DatenProg prog;
         while (it.hasNext()) {
             prog = it.next();
-            if (prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains("**")) {
+            if (prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains("**")
+                    || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains("%a")
+                    || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains("%b")) {
                 ret = true;
                 break;
             }
