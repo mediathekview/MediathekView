@@ -21,7 +21,6 @@ package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
 import java.awt.FileDialog;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,7 +28,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -42,7 +40,6 @@ import javax.swing.JPanel;
 import mediathek.MediathekGui;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
-import mediathek.daten.DatenDownload;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisten;
 import mediathek.tool.Duration;
 import mediathek.tool.GuiFunktionen;
@@ -199,109 +196,21 @@ public class GuiDebug extends JPanel {
                 daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.FILME);
             }
         });
-        jButtonGetName.addActionListener(new ActionListener() {
+        jButtonTest.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-//                int count = 0;
-//                OutputStreamWriter out = null;
-//                ArrayList<String> list = new ArrayList<>();
-//                ArrayList<String> listUrl = new ArrayList<>();
-//                ListeFilme listeFilme = new ListeFilme();
-//                try {
-//                    System.out.println("---------------------");
-//                    File file = new File("/tmp/name");
-//                    out = new OutputStreamWriter(new FileOutputStream(file), MSConst.KODIERUNG_UTF);
-//                    for (DatenFilm film : Daten.listeFilme) {
-//                        if (!listUrl.contains(film.arr[DatenFilm.FILM_URL_NR])) {
-//                            listeFilme.add(film);
-//                            listUrl.add(film.arr[DatenFilm.FILM_URL_NR]);
-//                        }
-//                    }
-//
-//                    for (DatenFilm film : listeFilme) {
-//                        String s = GuiFunktionen.getDateiName(film.arr[DatenFilm.FILM_URL_NR]);
-//                        String te = film.arr[DatenFilm.FILM_THEMA_NR];
-//                        String ti = film.arr[DatenFilm.FILM_TITEL_NR];
-//                        list.add(te + "--" + ti + "--" + s);
-//                    }
-//                    Collections.sort(list);
-//                    String old = "";
-//                    for (String s : list) {
-//                        if (old.equals(s)) {
-//                            ++count;
-//                            out.write("\n\n\n");
-//                            out.write("============ doppelt ================\n");
-//                            out.write(s + "\n");
-//                            out.write("============================\n");
-//                        } else {
-////                            out.write(s + "\n");
-//                        }
-//                        old = s;
-//                    }
-//                    out.write("\n");
-//                    out.write("\n");
-//                    out.write("===============================" + "\n");
-//                    out.write("Doppelte: " + count + "\n");
-//                } catch (Exception ex) {
-//                } finally {
-//                    try {
-//                        out.close();
-//                    } catch (IOException ex) {
-//                        Logger.getLogger(GuiDebug.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
-//                }
-
-                int count = 0;
-                OutputStreamWriter out = null;
-                ArrayList<String> list = new ArrayList<>();
-                try {
-                    System.out.println("---------------------");
-                    File file = new File("/tmp/name");
-                    out = new OutputStreamWriter(new FileOutputStream(file), MSConst.KODIERUNG_UTF);
-
-                    for (DatenFilm film : Daten.listeFilme) {
-//                        if ((film.arr[DatenFilm.FILM_URL_NR].hashCode() + "").equals("1183061251")) {
-//                            System.out.println(film.arr[DatenFilm.FILM_URL_NR]);
-//                        }
-//                        if ((film.arr[DatenFilm.FILM_URL_NR].hashCode() + "").equals("-1183061251")) {
-//                            System.out.println(film.arr[DatenFilm.FILM_URL_NR]);
-//                        }
-
-                        String s = GuiFunktionen.getDateiName(film.arr[DatenFilm.FILM_URL_NR]);
-                        String h = GuiFunktionen.getHash(film.arr[DatenFilm.FILM_URL_NR]);
-                        String se = film.arr[DatenFilm.FILM_SENDER_NR];
-                        String te = film.arr[DatenFilm.FILM_THEMA_NR];
-                        String ti = film.arr[DatenFilm.FILM_TITEL_NR];
-                        list.add(h);
-//                        list.add(se + "--" + te + "--" + ti + "------" + s);
-//                        list.add(te + "--" + ti + "------" + s);
-                    }
-                    Collections.sort(list);
-                    String old = "";
-                    for (String s : list) {
-                        if (old.equals(s)) {
-                            ++count;
-                            out.write("===============================" + "\n");
-                            out.write(s + "\n");
-                        } else {
-                            out.write(s + "\n");
-                        }
-                        old = s;
-                    }
-                    out.write("\n");
-                    out.write("\n");
-                    out.write("===============================" + "\n");
-                    out.write("Doppelte: " + count + "\n");
-                } catch (Exception ex) {
-                } finally {
-                    try {
-                        out.close();
-                    } catch (IOException ex) {
-                        Logger.getLogger(GuiDebug.class.getName()).log(Level.SEVERE, null, ex);
+                ArrayList<String> liste = new ArrayList<>();
+                for (DatenFilm film : Daten.listeFilme) {
+                    film.arr[DatenFilm.FILM_ABO_NAME_NR] = getHost(film.arr[DatenFilm.FILM_URL_NR]);
+                    if (!liste.contains(film.arr[DatenFilm.FILM_ABO_NAME_NR])) {
+                        liste.add(film.arr[DatenFilm.FILM_ABO_NAME_NR]);
                     }
                 }
-
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
+                for (String s : liste) {
+                    System.out.println(s);
+                }
             }
         });
         jButtonDoppelteUrls.addActionListener(new ActionListener() {
@@ -323,6 +232,50 @@ public class GuiDebug extends JPanel {
                 Daten.filmlisteSpeichern();
             }
         });
+    }
+
+    private String getHost(String uurl) {
+        String host = "";
+        try {
+            try {
+                // die funktion "getHost()" kann nur das Protokoll "http" ??!??
+                if (uurl.startsWith("rtmpt:")) {
+                    uurl = uurl.toLowerCase().replace("rtmpt:", "http:");
+                }
+                if (uurl.startsWith("rtmp:")) {
+                    uurl = uurl.toLowerCase().replace("rtmp:", "http:");
+                }
+                if (uurl.startsWith("mms:")) {
+                    uurl = uurl.toLowerCase().replace("mms:", "http:");
+                }
+                URL url = new URL(uurl);
+                String tmp = url.getHost();
+                if (tmp.contains(".")) {
+                    host = tmp.substring(tmp.lastIndexOf('.'));
+                    tmp = tmp.substring(0, tmp.lastIndexOf('.'));
+                    if (tmp.contains(".")) {
+                        host = tmp.substring(tmp.lastIndexOf('.') + 1) + host;
+                    } else if (tmp.contains("/")) {
+                        host = tmp.substring(tmp.lastIndexOf('/') + 1) + host;
+                    } else {
+                        host = "host";
+                    }
+                }
+            } catch (Exception ex) {
+                // für die Hosts bei denen das nicht klappt
+                // Log.systemMeldung("getHost 1: " + s.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                host = "host";
+            } finally {
+                if (host.equals("")) {
+                    // Log.systemMeldung("getHost 3: " + s.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                    host = "host";
+                }
+            }
+        } catch (Exception ex) {
+            // Log.systemMeldung("getHost 4: " + s.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
+            host = "exception";
+        }
+        return host;
     }
 
     private void addSender() {
@@ -362,7 +315,7 @@ public class GuiDebug extends JPanel {
         jButtonDir = new javax.swing.JButton();
         jButtonSearchUrl = new javax.swing.JButton();
         jTextFieldSearchUrl = new javax.swing.JTextField();
-        jButtonGetName = new javax.swing.JButton();
+        jButtonTest = new javax.swing.JButton();
         jButtonDoppelteUrls = new javax.swing.JButton();
         jPanelStarts = new javax.swing.JPanel();
 
@@ -477,7 +430,7 @@ public class GuiDebug extends JPanel {
 
         jButtonSearchUrl.setText("URL suchen");
 
-        jButtonGetName.setText("getName");
+        jButtonTest.setText("Test");
 
         jButtonDoppelteUrls.setText("doppelte URLs löschen");
 
@@ -494,7 +447,7 @@ public class GuiDebug extends JPanel {
                         .addComponent(jTextFieldUrl))
                     .addGroup(jPanelToolsLayout.createSequentialGroup()
                         .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jButtonGetName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonTest, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButtonFehler, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButtonGc, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButtonAllesSpeichern, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -534,7 +487,7 @@ public class GuiDebug extends JPanel {
                     .addComponent(jButtonSearchUrl)
                     .addComponent(jTextFieldSearchUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jButtonGetName)
+                .addComponent(jButtonTest)
                 .addGap(18, 18, 18)
                 .addComponent(jButtonDoppelteUrls)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
@@ -592,10 +545,10 @@ public class GuiDebug extends JPanel {
     private javax.swing.JButton jButtonFehler;
     private javax.swing.JButton jButtonFilmlisteLoeschen;
     private javax.swing.JButton jButtonGc;
-    private javax.swing.JButton jButtonGetName;
     private javax.swing.JButton jButtonNeuLaden;
     private javax.swing.JButton jButtonSearchUrl;
     private javax.swing.JButton jButtonSize;
+    private javax.swing.JButton jButtonTest;
     private javax.swing.JPanel jPanelFilmlisteLaden;
     private javax.swing.JPanel jPanelLoeschen;
     private javax.swing.JPanel jPanelStarts;

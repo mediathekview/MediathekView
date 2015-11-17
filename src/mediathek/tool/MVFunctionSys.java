@@ -63,8 +63,9 @@ public class MVFunctionSys {
             os = OperatingSystemType.LINUX;
         } else if (SystemInfo.isMacOSX()) {
             os = OperatingSystemType.MAC;
+        } else if (System.getProperty("os.name").toLowerCase().contains("freebsd")) {
+            os = OperatingSystemType.LINUX;
         }
-
         return os;
         //return OperatingSystemType.WIN32;
     }

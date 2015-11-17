@@ -48,10 +48,13 @@ public class PanelDownload extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 new DialogHilfe(parentComponent, true, "\n"
                         + "Hier kann angegeben werden, wie viele\n"
-                        + "Downloads gleichzeitig gestartet werden können.\n"
-                        + "Es gibt jedoch noch eine Begrenzung \n"
-                        + "auf 2 Downloads pro Server,\n"
-                        + "die trotzdem nicht überschritten wird.").setVisible(true);
+                        + "Downloads gleichzeitig gestartet werden können.\n\n"
+                        + "Es gibt jedoch noch eine Begrenzung\n"
+                        + "die trotzdem nicht überschritten wird:\n\n"
+                        + "2 Downloads pro Server, das kann auch noch\n"
+                        + "auf 1 Download pro Server\n"
+                        + "(z.B. nur ein Download von \"www.zdf.de\")\n"
+                        + "weiter begrenzt werden.").setVisible(true);
             }
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelDownload.class.getSimpleName()) {
@@ -79,6 +82,14 @@ public class PanelDownload extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Daten.mVConfig.add(MVConfig.SYSTEM_DOWNLOAD_BEEP, String.valueOf(jCheckBoxBeep.isSelected()));
+            }
+        });
+        jCheckBoxServer.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER)));
+        jCheckBoxServer.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER, String.valueOf(jCheckBoxServer.isSelected()));
             }
         });
         jButtonBeep.addActionListener(new ActionListener() {
@@ -147,6 +158,7 @@ public class PanelDownload extends PanelVorlage {
         jButtonHilfeAnzahl = new javax.swing.JButton();
         jCheckBoxBeep = new javax.swing.JCheckBox();
         jButtonBeep = new javax.swing.JButton();
+        jCheckBoxServer = new javax.swing.JCheckBox();
         jPanel1 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabelBandwidth = new javax.swing.JLabel();
@@ -170,6 +182,8 @@ public class PanelDownload extends PanelVorlage {
 
         jButtonBeep.setText("Testen");
 
+        jCheckBoxServer.setText("nur ein Download pro Downloadserver");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -182,6 +196,9 @@ public class PanelDownload extends PanelVorlage {
                         .addGap(64, 64, 64))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addComponent(jCheckBoxServer))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jCheckBoxBeep)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -208,6 +225,8 @@ public class PanelDownload extends PanelVorlage {
                     .addComponent(jLabel3)
                     .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonHilfeAnzahl))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jCheckBoxServer)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -283,9 +302,9 @@ public class PanelDownload extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(217, Short.MAX_VALUE))
+                .addContainerGap(249, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -295,6 +314,7 @@ public class PanelDownload extends PanelVorlage {
     private javax.swing.JButton jButtonHilfeAnzahl;
     private javax.swing.JCheckBox jCheckBoxBeep;
     private javax.swing.JCheckBox jCheckBoxNotification;
+    private javax.swing.JCheckBox jCheckBoxServer;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabelBandwidth;
