@@ -32,8 +32,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogZiel;
-import mediathek.tool.MVFunctionSys;
 import mediathek.tool.GuiFunktionen;
+import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVMessageDialog;
 
 public class ProgrammLog {

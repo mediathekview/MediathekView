@@ -620,13 +620,19 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
 
+        int maxProSender = Konstanten.MAX_SENDER_FILME_LADEN;
+        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER))) {
+            // dann darf nur ein Download pro Server gestartet werden
+            maxProSender = 1;
+        }
+
         //zweiter Versuch, Start mit einem passenden Sender
         it = iterator();
         while (it.hasNext()) {
             DatenDownload datenDownload = it.next();
             if (datenDownload.start != null) {
                 if (datenDownload.start.status == Start.STATUS_INIT) {
-                    if (!maxSenderLaufen(datenDownload, Konstanten.MAX_SENDER_FILME_LADEN)) {
+                    if (!maxSenderLaufen(datenDownload, maxProSender)) {
                         return datenDownload;
                     }
                 }

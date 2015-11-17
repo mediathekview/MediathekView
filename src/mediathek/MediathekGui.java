@@ -79,7 +79,6 @@ import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.gui.MVAboutDialog;
 import mediathek.gui.MVHelpDialog;
 import mediathek.gui.dialog.DialogMediaDB;
-import mediathek.gui.dialog.MVFilmInfo;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.gui.dialog.MVFilmInformationLinux;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;

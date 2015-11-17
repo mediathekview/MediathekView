@@ -228,7 +228,7 @@
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                  <Component id="jButtonGetName" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="jButtonTest" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jButtonFehler" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jButtonGc" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jButtonAllesSpeichern" alignment="0" max="32767" attributes="0"/>
@@ -278,7 +278,7 @@
                           <Component id="jTextFieldSearchUrl" linkSize="5" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="jButtonGetName" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonTest" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jButtonDoppelteUrls" min="-2" max="-2" attributes="0"/>
                       <EmptySpace pref="67" max="32767" attributes="0"/>
@@ -341,9 +341,9 @@
             </Component>
             <Component class="javax.swing.JTextField" name="jTextFieldSearchUrl">
             </Component>
-            <Component class="javax.swing.JButton" name="jButtonGetName">
+            <Component class="javax.swing.JButton" name="jButtonTest">
               <Properties>
-                <Property name="text" type="java.lang.String" value="getName"/>
+                <Property name="text" type="java.lang.String" value="Test"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="jButtonDoppelteUrls">

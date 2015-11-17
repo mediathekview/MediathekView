@@ -34,7 +34,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import mediathek.controller.Log;
 import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
@@ -48,7 +47,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
 
     private static final ArrayList<String> winPfade = new ArrayList<>();
 
-    private static void setWinProgPade() {
+    private static void setWinProgPfade() {
         String pfad;
         if (System.getenv("ProgramFiles") != null) {
             pfad = System.getenv("ProgramFiles");
@@ -85,7 +84,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 pfad = PFAD_MAC_VLC;
                 break;
             default:
-                setWinProgPade();
+                setWinProgPfade();
                 for (String s : winPfade) {
                     pfad = s + PFAD_WIN;
                     if (new File(pfad).exists()) {
