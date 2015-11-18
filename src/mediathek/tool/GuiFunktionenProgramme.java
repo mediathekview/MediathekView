@@ -73,12 +73,16 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         // liefert den Standardpfad für das entsprechende BS 
         // Programm muss auf dem Rechner instelliert sein
         final String PFAD_LINUX_VLC = "/usr/bin/vlc";
+        final String PFAD_FREEBSD = "/usr/local/bin/vlc";
         final String PFAD_MAC_VLC = "/Applications/VLC.app/Contents/MacOS/VLC";
         final String PFAD_WIN = "\\VideoLAN\\VLC\\vlc.exe";
         String pfad = "";
         switch (getOs()) {
             case LINUX:
                 pfad = PFAD_LINUX_VLC;
+                break;
+            case FREEBSD:
+                pfad = PFAD_FREEBSD;
                 break;
             case MAC:
                 pfad = PFAD_MAC_VLC;
@@ -107,15 +111,16 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         // im Ordner "bin" der mit dem Programm mitgeliefert wird
         // bei Linux muss das Programm auf dem Rechner instelliert sein
         final String PFAD_LINUX_FLV = "/usr/bin/flvstreamer";
+        final String PFAD_FREEBSD = "/usr/local/bin/flvstreamer";
         final String PFAD_MAC_FLV = "bin/flvstreamer_macosx_intel_32bit_latest";
         final String PFAD_WINDOWS_FLV = "bin\\flvstreamer_win32_latest.exe";
         String pfad;
         switch (getOs()) {
             case LINUX:
                 pfad = PFAD_LINUX_FLV;
-                if (!new File(pfad).exists()) {
-                    pfad = "";
-                }
+                break;
+            case FREEBSD:
+                pfad = PFAD_FREEBSD;
                 break;
             case MAC:
                 pfad = MVFunctionSys.getPathJar() + PFAD_MAC_FLV;
@@ -138,15 +143,16 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         // im Ordner "bin" der mit dem Programm mitgeliefert wird
         // bei Linux muss das Programm auf dem Rechner installiert sein
         final String PFAD_LINUX_FFMPEG = "/usr/bin/ffmpeg";
+        final String PFAD_FREEBSD_FFMPEG = "/usr/local/bin/ffmpeg";
         final String PFAD_MAC_FFMPEG = "bin/ffmpeg";
         final String PFAD_WINDOWS_FFMPEG = "bin\\ffmpeg.exe";
         String pfad;
         switch (getOs()) {
             case LINUX:
                 pfad = PFAD_LINUX_FFMPEG;
-                if (!new File(pfad).exists()) {
-                    pfad = "";
-                }
+                break;
+            case FREEBSD:
+                pfad = PFAD_FREEBSD_FFMPEG;
                 break;
             case MAC:
                 pfad = MVFunctionSys.getPathJar() + PFAD_MAC_FFMPEG;
@@ -171,6 +177,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         final String PFAD_WINDOWS_SCRIPT = "bin\\flv.bat";
         switch (getOs()) {
             case LINUX:
+            case FREEBSD:
                 pfadScript = getPathJar() + PFAD_LINUX_SCRIPT;
                 break;
             case MAC:
