@@ -39,29 +39,5 @@ public class MVFunction {
         final String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
-//    public enum ReleaseType { DEBUG, RELEASE}
-//    public static ReleaseType getReleaseType()
-//    {
-//        ReleaseType releaseType;
-//        try {
-//            ResourceBundle.clearCache();
-//            ResourceBundle rb = ResourceBundle.getBundle("version");
-//            String msg = rb.getString("TYPE");
-//            switch(msg) {
-//                case "DEBUG":
-//                    releaseType = ReleaseType.DEBUG;
-//                    break;
-//                default:
-//                    releaseType = ReleaseType.RELEASE;
-//                    break;
-//            }
-//        } catch (Exception ex) {
-//            //in case of an exception always pretend we are in Release mode...
-//            ex.printStackTrace();
-//            releaseType = ReleaseType.DEBUG;////////////////
-//        }
-//
-//        return releaseType;
-//    }
 
 }

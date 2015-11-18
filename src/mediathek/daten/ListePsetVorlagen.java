@@ -114,6 +114,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             InputStreamReader inReader;
             switch (MVFunctionSys.getOs()) {
                 case LINUX:
+                case FREEBSD:
                     inReader = new GetFile().getPsetVorlageLinux();
                     break;
                 case MAC:

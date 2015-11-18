@@ -53,7 +53,8 @@ public class MVMemoryUsageButton extends JButton {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         final long maxMem;
-        if (MVFunctionSys.getOs() == MVFunctionSys.OperatingSystemType.LINUX) {
+        if (MVFunctionSys.getOs() == MVFunctionSys.OperatingSystemType.LINUX
+                || MVFunctionSys.getOs() == MVFunctionSys.OperatingSystemType.FREEBSD) {
             maxMem = rt.totalMemory();
         } else {
             maxMem = rt.maxMemory();
