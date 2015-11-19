@@ -111,8 +111,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         }
         jTextFieldProgrammShutdown.getDocument().addDocumentListener(new BeobDoc(MVConfig.SYSTEM_LINUX_SHUTDOWN, jTextFieldProgrammShutdown));
 
-        if (MVFunctionSys.getOs() != OperatingSystemType.LINUX
-                && MVFunctionSys.getOs() != OperatingSystemType.FREEBSD) {
+        if (MVFunctionSys.getOs() != OperatingSystemType.LINUX) {
             // Funktion ist nur für Linux
             jButtonHilfeProgrammShutdown.setEnabled(false);
             jTextFieldProgrammShutdown.setEnabled(false);

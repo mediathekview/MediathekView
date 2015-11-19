@@ -30,7 +30,7 @@ public class MVFunctionSys {
 
     public enum OperatingSystemType {
 
-        UNKNOWN(""), WIN32("Windows"), WIN64("Windows"), LINUX("Linux"), MAC("Mac"), FREEBSD("FreeBSD");
+        UNKNOWN(""), WIN32("Windows"), WIN64("Windows"), LINUX("Linux"), MAC("Mac");
         private final String name;
 
         OperatingSystemType(String name) {
@@ -59,15 +59,16 @@ public class MVFunctionSys {
                 // win 32Bit
                 os = OperatingSystemType.WIN32;
             }
+
         } else if (SystemInfo.isLinux()) {
             os = OperatingSystemType.LINUX;
+        } else if (System.getProperty("os.name").toLowerCase().contains("freebsd")) {
+            os = OperatingSystemType.LINUX;
+
         } else if (SystemInfo.isMacOSX()) {
             os = OperatingSystemType.MAC;
-        } else if (System.getProperty("os.name").toLowerCase().contains("freebsd")) {
-            os = OperatingSystemType.FREEBSD;
         }
         return os;
-        //return OperatingSystemType.WIN32;
     }
 
     public static String getOsString() {

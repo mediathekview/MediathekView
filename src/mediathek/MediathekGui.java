@@ -1262,7 +1262,6 @@ public class MediathekGui extends JFrame {
 
         switch (MVFunctionSys.getOs()) {
             case LINUX:
-            case FREEBSD:
                 //strShutdownCommand = "shutdown -h now";
                 strShutdownCommand = Daten.mVConfig.get(MVConfig.SYSTEM_LINUX_SHUTDOWN);
                 if (strShutdownCommand.isEmpty()) {
