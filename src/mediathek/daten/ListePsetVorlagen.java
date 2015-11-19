@@ -31,9 +31,9 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import mediathek.controller.Log;
 import mediathek.file.GetFile;
-import mediathek.tool.MVFunctionSys;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
+import mediathek.tool.MVFunctionSys;
 import mediathek.tool.TModel;
 import msearch.tool.MSConst;
 
@@ -114,7 +114,6 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             InputStreamReader inReader;
             switch (MVFunctionSys.getOs()) {
                 case LINUX:
-                case FREEBSD:
                     inReader = new GetFile().getPsetVorlageLinux();
                     break;
                 case MAC:

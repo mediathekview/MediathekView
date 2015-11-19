@@ -79,10 +79,11 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         String pfad = "";
         switch (getOs()) {
             case LINUX:
-                pfad = PFAD_LINUX_VLC;
-                break;
-            case FREEBSD:
-                pfad = PFAD_FREEBSD;
+                if (System.getProperty("os.name").toLowerCase().contains("freebsd")) {
+                    pfad = PFAD_FREEBSD;
+                } else {
+                    pfad = PFAD_LINUX_VLC;
+                }
                 break;
             case MAC:
                 pfad = PFAD_MAC_VLC;
@@ -117,10 +118,11 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         String pfad;
         switch (getOs()) {
             case LINUX:
-                pfad = PFAD_LINUX_FLV;
-                break;
-            case FREEBSD:
-                pfad = PFAD_FREEBSD;
+                if (System.getProperty("os.name").toLowerCase().contains("freebsd")) {
+                    pfad = PFAD_FREEBSD;
+                } else {
+                    pfad = PFAD_LINUX_FLV;
+                }
                 break;
             case MAC:
                 pfad = MVFunctionSys.getPathJar() + PFAD_MAC_FLV;
@@ -149,10 +151,11 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         String pfad;
         switch (getOs()) {
             case LINUX:
-                pfad = PFAD_LINUX_FFMPEG;
-                break;
-            case FREEBSD:
-                pfad = PFAD_FREEBSD_FFMPEG;
+                if (System.getProperty("os.name").toLowerCase().contains("freebsd")) {
+                    pfad = PFAD_FREEBSD_FFMPEG;
+                } else {
+                    pfad = PFAD_LINUX_FFMPEG;
+                }
                 break;
             case MAC:
                 pfad = MVFunctionSys.getPathJar() + PFAD_MAC_FFMPEG;
@@ -177,7 +180,6 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         final String PFAD_WINDOWS_SCRIPT = "bin\\flv.bat";
         switch (getOs()) {
             case LINUX:
-            case FREEBSD:
                 pfadScript = getPathJar() + PFAD_LINUX_SCRIPT;
                 break;
             case MAC:
