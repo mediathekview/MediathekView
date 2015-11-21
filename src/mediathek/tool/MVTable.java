@@ -326,7 +326,35 @@ public final class MVTable extends JTable {
         }
     }
 
-    public void scrollToCenter(int rowIndex) {
+    public void setSelRow(int i) {
+        // Sel auf zeile i in der TABELLE! (nicht Modell) setzten oder erste-letzt Zeile
+        if (i < 0) {
+            i = 0;
+        }
+        if (getRowCount() > 0) {
+            if (i >= getRowCount()) {
+                i = getRowCount() - 1;
+            }
+            setRowSelectionInterval(i, i);
+            scrollToSelection(i);
+        }
+    }
+
+    public void scrollToSelection() {
+        int i = getSelectedRow();
+        if (i < 0) {
+            i = 0;
+            setRowSelectionInterval(i, i);
+        }
+        if (getRowCount() > 0) {
+            if (i >= getRowCount()) {
+                i = getRowCount() - 1;
+            }
+            scrollToSelection(i);
+        }
+    }
+
+    private void scrollToSelection(int rowIndex) {
         if (!(getParent() instanceof JViewport)) {
             return;
         }
@@ -380,7 +408,7 @@ public final class MVTable extends JTable {
         }
     }
 
-    public void setSelected() {
+    private void setSelected() {
         // gemerkte Einstellungen der Tabelle wieder setzten
         switch (tabelle) {
             case TABELLE_TAB_DOWNLOADS:
@@ -399,6 +427,16 @@ public final class MVTable extends JTable {
                         }
                     }
                     this.selectionModel.setValueIsAdjusting(false);
+//                    for (int i : selIndexes) {
+//                        //noch sel anzeigen
+//                        r = tModel.getIdxRow(i);
+//                        if (r >= 0) {
+//                            // ansonsten gibts die Zeile nicht mehr
+//                            r = this.convertRowIndexToView(r);
+//                            scrollToCenter(r);
+//                        }
+//                        break;
+//                    }
                 }
                 indexWertSelection = null;
                 break;
