@@ -328,10 +328,10 @@ public final class MVTable extends JTable {
 
     public void setSelRow(int i) {
         // Sel auf zeile i in der TABELLE! (nicht Modell) setzten oder erste-letzt Zeile
-        if (i < 0) {
-            i = 0;
-        }
         if (getRowCount() > 0) {
+            if (i < 0) {
+                i = 0;
+            }
             if (i >= getRowCount()) {
                 i = getRowCount() - 1;
             }
@@ -341,12 +341,12 @@ public final class MVTable extends JTable {
     }
 
     public void scrollToSelection() {
-        int i = getSelectedRow();
-        if (i < 0) {
-            i = 0;
-            setRowSelectionInterval(i, i);
-        }
         if (getRowCount() > 0) {
+            int i = getSelectedRow();
+            if (i < 0) {
+                i = 0;
+                setRowSelectionInterval(i, i);
+            }
             if (i >= getRowCount()) {
                 i = getRowCount() - 1;
             }
