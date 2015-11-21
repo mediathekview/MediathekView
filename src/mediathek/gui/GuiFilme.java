@@ -188,7 +188,7 @@ public class GuiFilme extends PanelVorlage {
     }
 
     public void filmUngesehen() {
-        daten.history.setGesehen( false, getSelFilme());
+        daten.history.setGesehen(false, getSelFilme());
     }
 
     public void init() {
@@ -717,11 +717,6 @@ public class GuiFilme extends PanelVorlage {
         stopBeob = true;
         boolean geändert = false;
         try {
-//            mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
-//            mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
-//            mVFilter.get_jComboBoxFilterSender().setSelectedItem(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__SENDER, filter));
-//            mVFilter.get_jComboBoxFilterThema().setSelectedItem(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__THEMA, filter));
-
             mVFilter.get_jTextFieldFilterTitel().setText(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__TITEL, filter));
             mVFilter.get_jTextFieldFilterThemaTitel().setText(Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__THEMA_TITEL, filter));
             if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__TT, filter).isEmpty()) {
@@ -767,7 +762,10 @@ public class GuiFilme extends PanelVorlage {
         if (geändert) {
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getSimpleName());
         }
+        //dann laden
         loadTable();
+        //beim Filter umschalten immer auf die erste Zeile setzen
+        tabelle.setSelRow(0);
     }
 
     private void delFilter() {
@@ -897,6 +895,9 @@ public class GuiFilme extends PanelVorlage {
         } catch (Exception ex) {
             Log.fehlerMeldung(558965421, ex);
         }
+
+        tabelle.scrollToSelection();
+
     }
 
     private synchronized void listeInModellLaden() {

@@ -508,17 +508,7 @@ public class GuiDownloads extends PanelVorlage {
         Daten.listeDownloads.downloadLoeschen(arrayDownloadsLoeschen);
         reloadTable();
         // ausrichten
-        if (tabelle.getRowCount() > 0 && rows.length >= 1) {
-            int s = rows[0];
-            if (s >= tabelle.getRowCount()) {
-                s = tabelle.getRowCount() - 1;
-                if (s < 0) {
-                    s = 0;
-                }
-            }
-            tabelle.setRowSelectionInterval(s, s);
-            tabelle.scrollToCenter(s);
-        }
+        tabelle.setSelRow(rows[0]);
     }
 
     private void filmStartAtTime() {
