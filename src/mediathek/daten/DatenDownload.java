@@ -507,8 +507,23 @@ public class DatenDownload implements Comparable<DatenDownload> {
             if (name.equals("")) {
                 name = getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
             }
+
             name = replaceString(name, film); // %D ... ersetzen
+            String suff = "";
+            if (name.contains(".")) {
+                //Suffix (und den . ) nicht ändern
+                suff = name.substring(name.lastIndexOf("."));
+                if (suff.length() <= 4 && suff.length() > 1) {
+                    //dann ist es sonst was??
+                    name = name.substring(0, name.lastIndexOf("."));
+                } else {
+                    suff = "";
+                }
+            }
+
             name = FilenameUtils.replaceLeerDateiname(name);
+            name = name + suff;
+
             // prüfen ob das Suffix 2x vorkommt
             if (name.length() > 8) {
                 String suf1 = name.substring(name.length() - 8, name.length() - 4);
