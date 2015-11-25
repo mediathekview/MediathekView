@@ -31,6 +31,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -47,6 +48,7 @@ import mediathek.tool.EscBeenden;
 import mediathek.tool.FilenameUtils;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVColor;
+import mediathek.tool.MVMessageDialog;
 
 public class DialogEditAbo extends javax.swing.JDialog {
 
@@ -98,8 +100,11 @@ public class DialogEditAbo extends javax.swing.JDialog {
         jButtonBeenden.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                check();
-                beenden();
+                if (check()) {
+                    beenden();
+                } else {
+                    MVMessageDialog.showMessageDialog(parent, "Filter angeben!", "Leeres Abo", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         jButtonAbbrechen.addActionListener(new ActionListener() {
@@ -232,33 +237,44 @@ public class DialogEditAbo extends javax.swing.JDialog {
         }
     }
 
-    private void check() {
+    private boolean check() {
+        DatenAbo test = new DatenAbo();
+        get(test);
+        if (test.isEmpty()) {
+            ok = false;
+        } else {
+            get(aktAbo);
+            ok = true;
+        }
+        return ok;
+    }
+
+    private void get(DatenAbo abo) {
         for (int i = 0; i < DatenAbo.MAX_ELEM; ++i) {
             switch (i) {
                 case (DatenAbo.ABO_ZIELPFAD_NR):
-                    aktAbo.arr[DatenAbo.ABO_ZIELPFAD_NR] = comboboxPfad.getSelectedItem().toString();
+                    abo.arr[DatenAbo.ABO_ZIELPFAD_NR] = comboboxPfad.getSelectedItem().toString();
                     break;
                 case (DatenAbo.ABO_PSET_NR):
-                    aktAbo.arr[DatenAbo.ABO_PSET_NR] = comboboxPSet.getSelectedItem().toString();
+                    abo.arr[DatenAbo.ABO_PSET_NR] = comboboxPSet.getSelectedItem().toString();
                     break;
                 case (DatenAbo.ABO_SENDER_NR):
-                    aktAbo.arr[DatenAbo.ABO_SENDER_NR] = comboboxSender.getSelectedItem().toString();
+                    abo.arr[DatenAbo.ABO_SENDER_NR] = comboboxSender.getSelectedItem().toString();
                     break;
                 case (DatenAbo.ABO_EINGESCHALTET_NR):
-                    aktAbo.arr[DatenAbo.ABO_EINGESCHALTET_NR] = Boolean.toString(checkBoxEingeschaltet.isSelected());
+                    abo.arr[DatenAbo.ABO_EINGESCHALTET_NR] = Boolean.toString(checkBoxEingeschaltet.isSelected());
                     break;
                 case (DatenAbo.ABO_MINDESTDAUER_NR):
-                    aktAbo.setMindestDauerMinuten(sliderDauer.getValue());
+                    abo.setMindestDauerMinuten(sliderDauer.getValue());
                     break;
                 case (DatenAbo.ABO_NR_NR):
                 case (DatenAbo.ABO_DOWN_DATUM_NR):
                     break;
                 default:
-                    aktAbo.arr[i] = textfeldListe[i].getText().trim();
+                    abo.arr[i] = textfeldListe[i].getText().trim();
                     break;
             }
         }
-        ok = true;
     }
 
     private void beenden() {

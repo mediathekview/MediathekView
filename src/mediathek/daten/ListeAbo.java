@@ -49,7 +49,11 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     }
     private int nr = 0;
 
-    public boolean addAbo(String filmSender, String filmThema, String filmTitel) {
+    public boolean addAbo(String aboName) {
+        return addAbo(aboName, "", "", "");
+    }
+
+    public boolean addAbo(String aboname, String filmSender, String filmThema, String filmTitel) {
         int min;
         try {
             min = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ABO_MIN_SIZE));
@@ -57,7 +61,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             min = 0;
             Daten.mVConfig.add(MVConfig.SYSTEM_ABO_MIN_SIZE, "0");
         }
-        return addAbo(filmSender, filmThema, filmTitel, "", "", min, filmThema);
+        return addAbo(filmSender, filmThema, filmTitel, "", "", min, aboname);
     }
 
     public boolean addAbo(String filmSender, String filmThema, String filmTitel, String filmThemaTitel, String irgendwo, int mindestdauer, String namePfad) {
@@ -218,6 +222,10 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 while (iteratorAbo.hasNext()) {
                     // jedes Abo prüfen
                     datenAbo = iteratorAbo.next();
+                    if (datenAbo.isEmpty()) {
+                        //dann ists kein richtiges Abo!!
+                        continue;
+                    }
                     if (datenAbo.arr[DatenAbo.ABO_TITEL_NR].isEmpty()) {
                         titel = LEER;
                     } else {

@@ -85,6 +85,20 @@ public class DatenAbo implements Comparable<DatenAbo> {
         return ret;
     }
 
+    public boolean isEmpty() {
+        //liefert TRUE wenn das Abo leer ist, also bei jedem Film ansprechen würde
+        //ist dann offensichtlich falsch!!
+        if (arr[ABO_SENDER_NR].isEmpty()
+                && arr[ABO_THEMA_NR].isEmpty()
+                && arr[ABO_TITEL_NR].isEmpty()
+                && arr[ABO_THEMA_TITEL_NR].isEmpty()
+                && arr[ABO_IRGENDWO_NR].isEmpty()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public final void setMindestDauerMinuten(int d) {
         mindestdauerMinuten = d;
         arr[ABO_MINDESTDAUER_NR] = String.valueOf(d);
@@ -117,24 +131,23 @@ public class DatenAbo implements Comparable<DatenAbo> {
         return spaltenAnzeigen == null || spaltenAnzeigen[i];
     }
 
-/*
-    public boolean toggleAboEinAus() {
-        // Abo EinAus wird geändert und der Zustand NACH der Änderung
-        // wird zurückgegeben
-        if (arr[DatenAbo.ABO_EINGESCHALTET_NR].equals("")) {
-            aboEin();
-        }
-        arr[DatenAbo.ABO_EINGESCHALTET_NR] = String.valueOf(!Boolean.parseBoolean(arr[DatenAbo.ABO_EINGESCHALTET_NR]));
-        return Boolean.parseBoolean(arr[DatenAbo.ABO_EINGESCHALTET_NR]);
-    }
-*/
+    /*
+     public boolean toggleAboEinAus() {
+     // Abo EinAus wird geändert und der Zustand NACH der Änderung
+     // wird zurückgegeben
+     if (arr[DatenAbo.ABO_EINGESCHALTET_NR].equals("")) {
+     aboEin();
+     }
+     arr[DatenAbo.ABO_EINGESCHALTET_NR] = String.valueOf(!Boolean.parseBoolean(arr[DatenAbo.ABO_EINGESCHALTET_NR]));
+     return Boolean.parseBoolean(arr[DatenAbo.ABO_EINGESCHALTET_NR]);
+     }
+     */
 
-/*
-    public void aboAus() {
-        arr[DatenAbo.ABO_EINGESCHALTET_NR] = String.valueOf(false);
-    }
-*/
-
+    /*
+     public void aboAus() {
+     arr[DatenAbo.ABO_EINGESCHALTET_NR] = String.valueOf(false);
+     }
+     */
     public void aboEin() {
         arr[DatenAbo.ABO_EINGESCHALTET_NR] = String.valueOf(true);
     }
@@ -144,16 +157,15 @@ public class DatenAbo implements Comparable<DatenAbo> {
         this.mindestdauerMinuten = datenAbo.mindestdauerMinuten;
     }
 
-/*
-    public String aboPfadAnhaengen(String pfad) {
-        String ret = pfad;
-        if (!arr[ABO_ZIELPFAD_NR].equals("")) {
-            ret = GuiFunktionen.addsPfad(pfad, arr[ABO_ZIELPFAD_NR]);
-        }
-        return ret;
-    }
-*/
-
+    /*
+     public String aboPfadAnhaengen(String pfad) {
+     String ret = pfad;
+     if (!arr[ABO_ZIELPFAD_NR].equals("")) {
+     ret = GuiFunktionen.addsPfad(pfad, arr[ABO_ZIELPFAD_NR]);
+     }
+     return ret;
+     }
+     */
     private void makeArr() {
         arr = new String[MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {

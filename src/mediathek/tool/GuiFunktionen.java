@@ -139,20 +139,24 @@ public class GuiFunktionen extends MVFunctionSys {
     }
 
     public static String concatPaths(String pfad1, String pfad2) {
-        String ret = "";
-        if (pfad1 != null && pfad2 != null) {
-            if (!pfad1.equals("") && !pfad2.equals("")) {
-                if (pfad1.endsWith(File.separator)) {
-                    ret = pfad1.substring(0, pfad1.length() - 1);
-                } else {
-                    ret = pfad1;
-                }
-                if (pfad2.charAt(0) == File.separatorChar) {
-                    ret += pfad2;
-                } else {
-                    ret += File.separator + pfad2;
-                }
-            }
+        String ret;
+
+        if (pfad1 == null || pfad2 == null) {
+            return "";
+        }
+        if (pfad1.isEmpty() || pfad2.isEmpty()) {
+            return pfad1 + pfad2;
+        }
+
+        if (pfad1.endsWith(File.separator)) {
+            ret = pfad1.substring(0, pfad1.length() - 1);
+        } else {
+            ret = pfad1;
+        }
+        if (pfad2.charAt(0) == File.separatorChar) {
+            ret += pfad2;
+        } else {
+            ret += File.separator + pfad2;
         }
         return ret;
     }
