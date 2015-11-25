@@ -190,7 +190,7 @@ public class GuiAbo extends PanelVorlage {
     }
 
     private void aboNeu() {
-        Daten.listeAbo.addAbo("" /*sender*/, "Thema" /*thema*/, ""/*titel*/);
+        Daten.listeAbo.addAbo("Neu" /*Abonamer*/);
     }
 
     private void aboEinAus(boolean ein) {
@@ -353,6 +353,19 @@ public class GuiAbo extends PanelVorlage {
                 }
             });
             jPopupMenu.add(itemAendern);
+
+            //##Trenner##
+            jPopupMenu.addSeparator();
+            //Abo ändern
+            JMenuItem itemNeu = new JMenuItem("Abo anlegen");
+            itemNeu.setIcon(GetIcon.getProgramIcon("add_16.png"));
+            itemNeu.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    aboNeu();
+                }
+            });
+            jPopupMenu.add(itemNeu);
 
             //Menü anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());

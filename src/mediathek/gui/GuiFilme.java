@@ -1685,9 +1685,11 @@ public class GuiFilme extends PanelVorlage {
                             } else {
                                 //neues Abo anlegen
                                 if (mitTitel) {
-                                    Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR]);
+                                    Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA_NR]/*aboname*/,
+                                            film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR]);
                                 } else {
-                                    Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], "");
+                                    Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA_NR]/*aboname*/,
+                                            film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], "");
                                 }
                             }
                         }

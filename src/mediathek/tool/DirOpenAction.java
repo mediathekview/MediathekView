@@ -33,6 +33,8 @@ public class DirOpenAction {
     public static void zielordnerOeffnen(Frame parent, String ordner) {
         boolean gut = false;
         File sFile = null;
+        String[] arrProgCallArray = {"", ""};
+
         if (ordner.isEmpty()) {
             return;
         }
@@ -46,7 +48,10 @@ public class DirOpenAction {
             }
             if (!Daten.mVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN).isEmpty()) {
                 String programm = Daten.mVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN);
-                Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
+                arrProgCallArray[0] = programm;
+                arrProgCallArray[1] = sFile.getAbsolutePath();
+                Runtime.getRuntime().exec(arrProgCallArray);
+                //Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
                 gut = true;
             } else {
                 if (Desktop.isDesktopSupported()) {
@@ -69,10 +74,13 @@ public class DirOpenAction {
                         programm = dialog.ziel;
                     }
                 } else {
-                    programm =Daten.mVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN);
+                    programm = Daten.mVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN);
                 }
                 if (sFile != null) {
-                    Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
+                    arrProgCallArray[0] = programm;
+                    arrProgCallArray[1] = sFile.getAbsolutePath();
+                    Runtime.getRuntime().exec(arrProgCallArray);
+                    //Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
                     Daten.mVConfig.add(MVConfig.SYSTEM_ORDNER_OEFFNEN, programm);
                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
                     gut = true;
