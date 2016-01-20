@@ -155,7 +155,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
 
                             return panel;
                         } else {
-                            setText(Start.getTextProgress(datenDownload.start));
+                            setText(Start.getTextProgress(datenDownload));
                         }
                     } else {
                         setText("");
@@ -184,6 +184,16 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                         setIcon(nein_12);
                     }
                     break;
+
+                case DatenDownload.DOWNLOAD_PROGRAMM_REMOTE_DOWNLOAD_NR:
+                    setHorizontalAlignment(SwingConstants.CENTER);
+                    if (datenDownload.isRemoteDownload()) {
+                        setIcon(ja_16);
+                    } else {
+                        setIcon(nein_12);
+                    }
+                    break;
+
                 case DatenDownload.DOWNLOAD_ART_NR:
                     switch (datenDownload.art) {
                         case DatenDownload.ART_DOWNLOAD:
@@ -311,7 +321,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
     private void handleButtonStartColumn(final DatenDownload datenDownload, final boolean isSelected) {
         setHorizontalAlignment(SwingConstants.CENTER);
         if (isSelected) {
-            if (datenDownload.start != null) {
+            if (datenDownload.start != null && !datenDownload.isRemoteDownload()) {
                 if (datenDownload.start.status == Start.STATUS_FERTIG) {
                     setIcon(film_start_tab);
                     setToolTipText(PLAY_DOWNLOADED_FILM);
@@ -327,7 +337,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 setToolTipText(DOWNLOAD_STARTEN);
             }
         } else {
-            if (datenDownload.start != null) {
+            if (datenDownload.start != null && !datenDownload.isRemoteDownload()) {
                 if (datenDownload.start.status == Start.STATUS_FERTIG) {
                     setIcon(film_start_sw_tab);
                     setToolTipText(PLAY_DOWNLOADED_FILM);
