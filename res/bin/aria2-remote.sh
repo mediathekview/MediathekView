@@ -1,11 +1,11 @@
-#!/bin/bash -x
+#!/bin/bash
 
 log=/tmp/MediathekView-aria2.log
 echo "Running $0 $*" >$log
-aria2_url=$1
-aria2_secret=$2
-url=$3
-filename=$(basename "$4")
+url=$1
+filename=$(basename "$2")
+aria2_server_url=$3
+aria2_server_secret=$4
 
 echo "MediathekView-aria2 parameters:" >>$log
 while [ -n "$1" ]
