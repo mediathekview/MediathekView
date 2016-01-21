@@ -18,12 +18,12 @@ public class MVMemoryUsageButton extends JButton {
     private final Runtime rt = Runtime.getRuntime();
     private final String MEMORY_STRING;
 
-    private static final int MEGABYTE = 1024 * 1024;
+    private static final int MEGABYTE = 1000 * 1000;
     private static final int BAR_HEIGHT = 16;
 
     public MVMemoryUsageButton() {
         final long maxMemory = Math.min(rt.maxMemory() / MEGABYTE, 9999);
-        MEMORY_STRING = maxMemory + " von " + maxMemory + "MB ";
+        MEMORY_STRING = maxMemory + " von " + maxMemory + "MiB ";
 
         setOpaque(false);
         setFocusable(false);

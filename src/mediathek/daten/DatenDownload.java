@@ -400,7 +400,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
                         s = s.substring(0, s.length() - 3) + "," + s.substring(s.length() - 3);
                     }
                     return s + " MB/s";
-                    //return String.valueOf(start.bandbreite / (1000 * 1000)) + "," + (start.bandbreite / 1000 % 1000) + " MB/s";
                 } else if (start.bandbreite > 1000) {
                     return (start.bandbreite / 1000) + " kB/s";
                 } else if (start.bandbreite > 1) {

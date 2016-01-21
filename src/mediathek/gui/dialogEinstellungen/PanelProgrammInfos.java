@@ -33,8 +33,6 @@ import mediathek.tool.UrlHyperlinkAction;
 
 public class PanelProgrammInfos extends PanelVorlage {
 
-    private final static long BYTES_TO_MBYTE = (1024L * 1024L);
-
     public PanelProgrammInfos(Daten dd, JFrame parentComponent) {
         super(dd, parentComponent);
         initComponents();
@@ -73,13 +71,13 @@ public class PanelProgrammInfos extends PanelVorlage {
 
     private void updateMemory() {
         final Runtime rt = Runtime.getRuntime();
-        final long totalMem = rt.totalMemory() / BYTES_TO_MBYTE;
-        final long maxMem = rt.maxMemory() / BYTES_TO_MBYTE;
-        final long freeMem = rt.freeMemory() / BYTES_TO_MBYTE;
+        final long totalMem = rt.totalMemory() / (1000L * 1000L);
+        final long maxMem = rt.maxMemory() / (1000L * 1000L);
+        final long freeMem = rt.freeMemory() / (1000L * 1000L);
 
-        lblVmMemory.setText(totalMem + " MiB");
-        lblMaxVmMemory.setText(maxMem + " MiB");
-        lblFreeMemory.setText(freeMem + " MiB");
+        lblVmMemory.setText(totalMem + " MB");
+        lblMaxVmMemory.setText(maxMem + " MB");
+        lblFreeMemory.setText(freeMem + " MB");
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

@@ -55,7 +55,6 @@ public class Log {
     public static PanelMeldungen panelMeldungenFehler = null; // unschön, gab aber sonst einen Deadlock mit notifyMediathekListener
     public static PanelMeldungen panelMeldungenSystem = null;
     public static PanelMeldungen panelMeldungenPlayer = null;
-    private final static long BYTES_TO_MBYTE = (1024L * 1024L);
     private final static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
     public static synchronized void versionsMeldungen() {
@@ -71,9 +70,9 @@ public class Log {
         Log.systemMeldung("Programmstart: " + sdf.format(startZeit));
         Log.systemMeldung("###########################################################");
         Log.systemMeldung("###########################################################");
-        Log.systemMeldung("totalMemory: " + totalMem / BYTES_TO_MBYTE + " MiB");
-        Log.systemMeldung("maxMemory: " + maxMem / BYTES_TO_MBYTE + " MiB");
-        Log.systemMeldung("freeMemory: " + freeMem / BYTES_TO_MBYTE + " MiB");
+        Log.systemMeldung("totalMemory: " + totalMem / (1000L * 1000L) + " MB");
+        Log.systemMeldung("maxMemory: " + maxMem / (1000L * 1000L) + " MB");
+        Log.systemMeldung("freeMemory: " + freeMem / (1000L * 1000L) + " MB");
         Log.systemMeldung("###########################################################");
         //Version
         Log.systemMeldung(MVFunctionSys.getProgVersionString());
