@@ -30,7 +30,7 @@ import msearch.tool.MSConst;
 
 public class AsxLesen {
 
-    public static final int STRING_BUFFER_START_BUFFER = 10 * 1024 * 8; // 10 KiB
+    public static final int STRING_BUFFER_START_BUFFER = 8 * 1024 * 8; // 8 KiB
 
     public static String lesen(String datei) {
         if (!datei.toLowerCase().endsWith(".asx")) {

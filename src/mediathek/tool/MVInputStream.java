@@ -90,8 +90,8 @@ public class MVInputStream extends InputStream {
         final long bandwidth = calculationTask.getBandwidth();
 
         return "Download: "
-                + "gelesen: " + (bytesRead > 0 ? bytesRead / 1024 : 0) + " KiB, "
-                + "Bandbreite: " + (bandwidth > 0 ? bandwidth / 1024 : 0) + " KiB/s ";
+                + "gelesen: " + (bytesRead > 0 ? bytesRead / 1000 : 0) + " kB, "
+                + "Bandbreite: " + (bandwidth > 0 ? bandwidth / 1000 : 0) + " kB/s ";
     }
 
     /**

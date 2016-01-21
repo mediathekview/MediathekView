@@ -166,15 +166,15 @@ public class GuiDebug extends JPanel {
                     File file = new File(path);
                     long i = file.getFreeSpace();
                     System.out.println("getFreeSpace " + i);
-                    System.out.println(" " + i / 1024 / 1024 / 1024);
+                    System.out.println(" " + i / 1000 / 1000 / 1000);
                     i = file.getTotalSpace();
                     System.out.println("=============================");
                     System.out.println("getTotalSpace " + i);
-                    System.out.println(" " + i / 1024 / 1024 / 1024);
+                    System.out.println(" " + i / 1000 / 1000 / 1000);
                     i = file.getUsableSpace();
                     System.out.println("=============================");
                     System.out.println("getUsableSpace " + i);
-                    System.out.println(" " + i / 1024 / 1024 / 1024);
+                    System.out.println(" " + i / 1000 / 1000 / 1000);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
