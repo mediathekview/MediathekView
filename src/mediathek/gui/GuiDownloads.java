@@ -852,7 +852,7 @@ public class GuiDownloads extends PanelVorlage {
                 datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
                 if (tabelle.convertColumnIndexToModel(column) == DatenDownload.DOWNLOAD_BUTTON_START_NR) {
                     // filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */)
-                    if (datenDownload.start != null && !datenDownload.isRemoteDownload()) {
+                    if (datenDownload.start != null && !datenDownload.isDownloadManager()) {
                         if (datenDownload.start.status == Start.STATUS_FERTIG) {
                             filmAbspielen_();
                         } else if (datenDownload.start.status == Start.STATUS_ERR) {

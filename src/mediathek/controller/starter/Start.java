@@ -52,7 +52,7 @@ public class Start {
 
     public static String getTextProgress(final DatenDownload download) {
         String ret = "";
-        boolean isRemote = download.isRemoteDownload();
+        boolean dManager = download.isDownloadManager();
         Start s = download.start;
         if (s == null)
             return ret;
@@ -62,23 +62,23 @@ public class Start {
                 break;
 
             case PROGRESS_WARTEN:
-                ret = isRemote ? "remote" : "warten";
+                ret = dManager ? "extern" : "warten";
                 break;
 
             case PROGRESS_GESTARTET:
-                ret = isRemote ? "remote:gesendet" : "gestartet";
+                ret = dManager ? "extern:gesendet" : "gestartet";
                 break;
 
             case PROGRESS_FERTIG:
                 if (s.status == Start.STATUS_ERR)
-                    ret = isRemote ? "remote:fehler" : "fehlerhaft";
+                    ret = dManager ? "extern:fehler" : "fehlerhaft";
                 else
-                    ret = isRemote ? "remote:fertig" : "fertig";
+                    ret = dManager ? "extern:fertig" : "fertig";
                 break;
 
             default:
-            	if (isRemote)
-            		ret = "remote";
+            	if (dManager)
+            		ret = "extern";
             	else if (1 < s.percent && s.percent < PROGRESS_FERTIG) {
                     double d = s.percent / 10.0;
                     ret = Double.toString(d) + "%";

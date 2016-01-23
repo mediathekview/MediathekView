@@ -493,7 +493,7 @@ public class PanelPsetLang extends PanelVorlage {
         for (int i = 0; i < tabelleProgramme.getColumnCount(); ++i) {
             if (i == DatenProg.PROGRAMM_PRAEFIX_NR
                     || i == DatenProg.PROGRAMM_RESTART_NR
-                    || i == DatenProg.PROGRAMM_REMOTE_DOWNLOAD_NR
+                    || i == DatenProg.PROGRAMM_DOWNLOADMANAGER_NR
                     || i == DatenProg.PROGRAMM_SUFFIX_NR) {
                 tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i)).setMinWidth(10);
                 tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i)).setMaxWidth(3000);
@@ -538,7 +538,7 @@ public class PanelPsetLang extends PanelVorlage {
             jTextFieldProgPraefix.setText(prog.arr[DatenProg.PROGRAMM_PRAEFIX_NR]);
             jTextFieldProgSuffix.setText(prog.arr[DatenProg.PROGRAMM_SUFFIX_NR]);
             jCheckBoxRestart.setSelected(prog.isRestart());
-            jCheckBoxRemoteDownload.setSelected(prog.isRemoteDownload());
+            jCheckBoxRemoteDownload.setSelected(prog.isDownloadManager());
         } else {
             jTextFieldProgPfad.setText("");
             jTextFieldProgSchalter.setText("");
@@ -765,8 +765,8 @@ public class PanelPsetLang extends PanelVorlage {
         jTextFieldProgSuffix = new javax.swing.JTextField();
         jCheckBoxRestart = new javax.swing.JCheckBox();
         javax.swing.JLabel jLabel9 = new javax.swing.JLabel();
-        jCheckBoxRemoteDownload = new javax.swing.JCheckBox();
         jTextFieldProgZielDateiName = new javax.swing.JTextField();
+        jCheckBoxRemoteDownload = new javax.swing.JCheckBox();
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         javax.swing.JTable jTablePset = new javax.swing.JTable();
@@ -818,7 +818,7 @@ public class PanelPsetLang extends PanelVorlage {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelInfo)
@@ -984,7 +984,7 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(469, Short.MAX_VALUE))
+                .addContainerGap(488, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Aussehen", jPanel10);
@@ -1106,7 +1106,7 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(366, Short.MAX_VALUE))
+                .addContainerGap(385, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Speicherziel", jPanel9);
@@ -1323,9 +1323,9 @@ public class PanelPsetLang extends PanelVorlage {
 
         jCheckBoxRestart.setText("fehlgeschlagene Downloads wieder starten");
 
-        jCheckBoxRemoteDownload.setText("Remote Download");
-        
         jLabel9.setText("Zieldateiname:");
+
+        jCheckBoxRemoteDownload.setText("externer Downloadmanager");
 
         javax.swing.GroupLayout jPanelProgrammDetailsLayout = new javax.swing.GroupLayout(jPanelProgrammDetails);
         jPanelProgrammDetails.setLayout(jPanelProgrammDetailsLayout);
@@ -1336,13 +1336,19 @@ public class PanelPsetLang extends PanelVorlage {
                 .addGroup(jPanelProgrammDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelProgrammDetailsLayout.createSequentialGroup()
                         .addGroup(jPanelProgrammDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel9))
+                        .addGap(24, 24, 24)
+                        .addGroup(jPanelProgrammDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextFieldProgZielDateiName)
+                            .addComponent(jTextFieldProgName)))
+                    .addGroup(jPanelProgrammDetailsLayout.createSequentialGroup()
+                        .addGroup(jPanelProgrammDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
                             .addComponent(jLabel1)
                             .addComponent(jLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanelProgrammDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBoxRestart)
-                            .addComponent(jCheckBoxRemoteDownload)
                             .addComponent(jTextFieldProgSchalter)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelProgrammDetailsLayout.createSequentialGroup()
                                 .addComponent(jTextFieldProgPfad)
@@ -1353,15 +1359,12 @@ public class PanelPsetLang extends PanelVorlage {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextFieldProgSuffix, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE))))
-                    .addGroup(jPanelProgrammDetailsLayout.createSequentialGroup()
-                        .addGroup(jPanelProgrammDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel9))
-                        .addGap(24, 24, 24)
-                        .addGroup(jPanelProgrammDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldProgZielDateiName)
-                            .addComponent(jTextFieldProgName))))
+                                .addComponent(jTextFieldProgSuffix, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE))
+                            .addGroup(jPanelProgrammDetailsLayout.createSequentialGroup()
+                                .addGroup(jPanelProgrammDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jCheckBoxRemoteDownload)
+                                    .addComponent(jCheckBoxRestart))
+                                .addGap(0, 125, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         jPanelProgrammDetailsLayout.setVerticalGroup(
@@ -1394,7 +1397,7 @@ public class PanelPsetLang extends PanelVorlage {
                 .addComponent(jCheckBoxRestart)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxRemoteDownload)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         jPanelProgrammDetailsLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonProgPfad, jTextFieldProgName, jTextFieldProgPfad, jTextFieldProgPraefix, jTextFieldProgSchalter, jTextFieldProgSuffix, jTextFieldProgZielDateiName});
@@ -1419,8 +1422,7 @@ public class PanelPsetLang extends PanelVorlage {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelProgrammDetails, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jPanelProgrammDetails, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jTabbedPane.addTab("Hilfsprogramme", jPanelProgramme);
@@ -1478,7 +1480,7 @@ public class PanelPsetLang extends PanelVorlage {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 453, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jButtonGruppeAuf)
@@ -1546,8 +1548,8 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxField;
     private javax.swing.JCheckBox jCheckBoxInfodatei;
     private javax.swing.JCheckBox jCheckBoxLaenge;
-    private javax.swing.JCheckBox jCheckBoxRestart;
     private javax.swing.JCheckBox jCheckBoxRemoteDownload;
+    private javax.swing.JCheckBox jCheckBoxRestart;
     private javax.swing.JCheckBox jCheckBoxSpeichern;
     private javax.swing.JCheckBox jCheckBoxSpotlight;
     private javax.swing.JCheckBox jCheckBoxSubtitle;
@@ -1606,8 +1608,8 @@ public class PanelPsetLang extends PanelVorlage {
                 if (rows != -1) {
                     int row = tabelleProgramme.convertRowIndexToModel(rows);
                     DatenProg prog = getPset().getListeProg().get(row);
-                    prog.arr[DatenProg.PROGRAMM_REMOTE_DOWNLOAD_NR] = Boolean.toString(jCheckBoxRemoteDownload.isSelected());
-                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRemoteDownload.isSelected()), row, DatenProg.PROGRAMM_REMOTE_DOWNLOAD_NR);
+                    prog.arr[DatenProg.PROGRAMM_DOWNLOADMANAGER_NR] = Boolean.toString(jCheckBoxRemoteDownload.isSelected());
+                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRemoteDownload.isSelected()), row, DatenProg.PROGRAMM_DOWNLOADMANAGER_NR);
                 }
             }
 

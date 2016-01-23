@@ -187,6 +187,9 @@ public class StarterClass {
             } else if (start.status == Start.STATUS_ERR) {
                 text.add("Download ist fertig und war fehlerhaft");
             }
+            if (datenDownload.isDownloadManager()) {
+                text.add("Programm ist ein Downloadmanager");
+            }
             text.add("Programmset: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR]);
             text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
@@ -452,7 +455,11 @@ public class StarterClass {
                             case stat_start:
                                 // versuch das Programm zu Starten
                                 if (starten()) {
-                                    stat = stat_laufen;
+                                    if (datenDownload.isDownloadManager()) {
+                                        stat = stat_fertig_ok;
+                                    } else {
+                                        stat = stat_laufen;
+                                    }
                                 } else {
                                     stat = stat_restart;
                                 }
@@ -481,7 +488,7 @@ public class StarterClass {
                                 }
                                 break;
                             case stat_restart:
-                                if (!datenDownload.isRestart() || datenDownload.isRemoteDownload()) {
+                                if (!datenDownload.isRestart()) {
                                     // dann wars das
                                     stat = stat_fertig_fehler;
                                 } else {
@@ -521,7 +528,7 @@ public class StarterClass {
                                 }
                                 break;
                             case stat_pruefen:
-                                if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON || datenDownload.isRemoteDownload()) {
+                                if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON || datenDownload.isDownloadManager()) {
                                     //für die direkten Starts mit dem Button und die remote downloads wars das dann
                                     stat = stat_fertig_ok;
                                 } else if (pruefen(datenDownload, start)) {
@@ -572,6 +579,10 @@ public class StarterClass {
         }
 
         private boolean cancelDownload() {
+            if (datenDownload.isDownloadManager()) {
+                // da kümmert sich ein anderes Programm darum
+                return false;
+            }
             if (!file.exists()) {
                 // dann ist alles OK
                 return false;

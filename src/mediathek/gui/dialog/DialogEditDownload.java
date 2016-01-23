@@ -52,7 +52,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
     private final JTextField[] textfeldListe = new JTextField[DatenDownload.MAX_ELEM];
     private final JLabel[] labelListe = new JLabel[DatenDownload.MAX_ELEM];
     private final JCheckBox jCheckBoxRestart = new JCheckBox();
-    private final JCheckBox jCheckBoxRemoteDownload = new JCheckBox();
+    private final JCheckBox jCheckBoxDownloadmanager = new JCheckBox();
     private final JCheckBox jCheckBoxUnterbrochen = new JCheckBox();
     private final JCheckBox jCheckBoxInfodatei = new JCheckBox();
     private final JCheckBox jCheckBoxSubtitle = new JCheckBox();
@@ -264,16 +264,16 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 c.weightx = 10;
                 gridbag.setConstraints(jCheckBoxRestart, c);
                 jPanelExtra.add(jCheckBoxRestart);
-            } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_REMOTE_DOWNLOAD_NR) {
-                jCheckBoxRemoteDownload.setSelected(datenDownload.isRemoteDownload());
+            } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER_NR) {
+                jCheckBoxDownloadmanager.setSelected(datenDownload.isDownloadManager());
                 // jCheckBoxRestart.addActionListener(new BeobCheckbox());
-                jCheckBoxRemoteDownload.setEnabled(false);
+                jCheckBoxDownloadmanager.setEnabled(false);
                 gridbag.setConstraints(labelListe[i], c);
                 jPanelExtra.add(labelListe[i]);
                 c.gridx = 1;
                 c.weightx = 10;
-                gridbag.setConstraints(jCheckBoxRemoteDownload, c);
-                jPanelExtra.add(jCheckBoxRemoteDownload);
+                gridbag.setConstraints(jCheckBoxDownloadmanager, c);
+                jPanelExtra.add(jCheckBoxDownloadmanager);
             } else if (i == DatenDownload.DOWNLOAD_UNTERBROCHEN_NR) {
                 // das macht nur Sinn, wenn der Download unterbrochen ist um "es" auszuschalten
                 // Unterbrechung einschalten macht keinen Sinn
