@@ -481,7 +481,7 @@ public class StarterClass {
                                 }
                                 break;
                             case stat_restart:
-                                if (!datenDownload.isRestart()) {
+                                if (!datenDownload.isRestart() || datenDownload.isRemoteDownload()) {
                                     // dann wars das
                                     stat = stat_fertig_fehler;
                                 } else {
@@ -521,8 +521,8 @@ public class StarterClass {
                                 }
                                 break;
                             case stat_pruefen:
-                                if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON) {
-                                    //für die direkten Starts mit dem Button wars das dann
+                                if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON || datenDownload.isRemoteDownload()) {
+                                    //für die direkten Starts mit dem Button und die remote downloads wars das dann
                                     stat = stat_fertig_ok;
                                 } else if (pruefen(datenDownload, start)) {
                                     //fertig und OK
