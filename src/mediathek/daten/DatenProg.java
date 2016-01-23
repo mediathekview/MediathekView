@@ -38,30 +38,30 @@ public class DatenProg {
     public static final int PROGRAMM_SUFFIX_NR = 5;
     public static final String PROGRAMM_RESTART = "Restart";
     public static final int PROGRAMM_RESTART_NR = 6;
-    public static final String PROGRAMM_REMOTE_DOWNLOAD = "Remote";
-    public static final int PROGRAMM_REMOTE_DOWNLOAD_NR = 7;
+    public static final String PROGRAMM_DOWNLOADMANAGER = "Downloadmanager";
+    public static final int PROGRAMM_DOWNLOADMANAGER_NR = 7;
     public static final int MAX_ELEM = 8;
     public static final String[] COLUMN_NAMES = {"Beschreibung", PROGRAMM_ZIEL_DATEINAME, "Programm",
-        "Schalter", "Präfix", PROGRAMM_SUFFIX, PROGRAMM_RESTART, PROGRAMM_REMOTE_DOWNLOAD};
+        "Schalter", "Präfix", PROGRAMM_SUFFIX, PROGRAMM_RESTART, PROGRAMM_DOWNLOADMANAGER};
 
     public static final String[] COLUMN_NAMES_ = {PROGRAMM_NAME, PROGRAMM_ZIEL_DATEINAME, PROGRAMM_PROGRAMMPFAD,
-        PROGRAMM_SCHALTER, PROGRAMM_PRAEFIX, PROGRAMM_SUFFIX, PROGRAMM_RESTART, PROGRAMM_REMOTE_DOWNLOAD};
+        PROGRAMM_SCHALTER, PROGRAMM_PRAEFIX, PROGRAMM_SUFFIX, PROGRAMM_RESTART, PROGRAMM_DOWNLOADMANAGER};
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
 
     public DatenProg() {
         makeArr();
         arr[PROGRAMM_RESTART_NR] = Boolean.toString(false);
-        arr[PROGRAMM_REMOTE_DOWNLOAD_NR] = Boolean.toString(false);
+        arr[PROGRAMM_DOWNLOADMANAGER_NR] = Boolean.toString(false);
     }
 
-    public DatenProg(String name, String programmpfad, String schalter, String restart, String remote) {
+    public DatenProg(String name, String programmpfad, String schalter, String restart, String downloadmanager) {
         makeArr();
         arr[PROGRAMM_NAME_NR] = name;
         arr[PROGRAMM_PROGRAMMPFAD_NR] = programmpfad;
         arr[PROGRAMM_SCHALTER_NR] = schalter;
         arr[PROGRAMM_RESTART_NR] = restart.equals("") ? Boolean.toString(false) : restart;
-        arr[PROGRAMM_REMOTE_DOWNLOAD_NR] = remote.equals("") ? Boolean.toString(false) : remote;
+        arr[PROGRAMM_DOWNLOADMANAGER_NR] = downloadmanager.equals("") ? Boolean.toString(false) : downloadmanager;
     }
 
     public DatenProg copy() {
@@ -77,11 +77,11 @@ public class DatenProg {
         return Boolean.parseBoolean(arr[PROGRAMM_RESTART_NR]);
     }
 
-    public boolean isRemoteDownload() {
-        if (arr[PROGRAMM_REMOTE_DOWNLOAD_NR].equals("")) {
+    public boolean isDownloadManager() {
+        if (arr[PROGRAMM_DOWNLOADMANAGER_NR].equals("")) {
             return false;
         }
-        return Boolean.parseBoolean(arr[PROGRAMM_REMOTE_DOWNLOAD_NR]);
+        return Boolean.parseBoolean(arr[PROGRAMM_DOWNLOADMANAGER_NR]);
     }
 
     public boolean urlTesten(String url) {

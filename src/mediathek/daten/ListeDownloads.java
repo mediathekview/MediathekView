@@ -282,8 +282,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                             || i == DatenDownload.DOWNLOAD_SUBTITLE_NR
                             || i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR) {
                         object[i] = "";
-                    } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_REMOTE_DOWNLOAD_NR) {
-                    	object[i] = download.isRemoteDownload();
+                    } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER_NR) {
+                    	object[i] = download.isDownloadManager();
                     } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
                         object[i] = download.datumFilm;
                     } else if (i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {

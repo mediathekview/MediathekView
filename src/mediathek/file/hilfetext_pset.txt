@@ -3,6 +3,14 @@ Ein Set ist ein Satz von Hilfsprogrammen, an die eine
 URL eines Films übergeben wird. Je nach Programm
 wird der Film dann aufgezeichnet oder angezeigt.
 
+====================
+Externer Downloadmanager
+===
+Ist das aktiviert, geht das Programm davon aus, dass das eingerichtete
+Hilsfprogramm sich um den Download komplett selbst kümmert. Für MediathekView
+ist mit dem Aufruf des Hilfsprogramms, der Download erfolgreich abgeschlossen.
+
+
 
 ====================
 Arten:

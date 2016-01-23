@@ -132,10 +132,10 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final int DOWNLOAD_SPOTLIGHT_NR = 34;
     public static final String DOWNLOAD_SUBTITLE = "Untertitel"; // Untertitel anlegen ja/nein
     public static final int DOWNLOAD_SUBTITLE_NR = 35;
+    public static final String DOWNLOAD_PROGRAMM_DOWNLOADMANAGER = "Remote-Download";
+    public static final int DOWNLOAD_PROGRAMM_DOWNLOADMANAGER_NR = 36;
     public static final String DOWNLOAD_REF = "Ref";
-    public static final int DOWNLOAD_REF_NR = 36;
-    public static final String DOWNLOAD_PROGRAMM_REMOTE_DOWNLOAD = "Remote-Download";
-    public static final int DOWNLOAD_PROGRAMM_REMOTE_DOWNLOAD_NR = 37;
+    public static final int DOWNLOAD_REF_NR = 37;
     //
     public static final String DOWNLOAD = "Downlad";
     public static final int MAX_ELEM = 38;
@@ -146,7 +146,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         DOWNLOAD_FILM_URL, DOWNLOAD_HISTORY_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_SUBTITLE,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_AUFRUF_ARRAY, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE,
-        DOWNLOAD_ZURUECKGESTELLT, DOWNLOAD_INFODATEI, DOWNLOAD_SPOTLIGHT, DOWNLOAD_SUBTITLE, DOWNLOAD_REF, DOWNLOAD_PROGRAMM_REMOTE_DOWNLOAD};
+        DOWNLOAD_ZURUECKGESTELLT, DOWNLOAD_INFODATEI, DOWNLOAD_SPOTLIGHT, DOWNLOAD_SUBTITLE, DOWNLOAD_PROGRAMM_DOWNLOADMANAGER, DOWNLOAD_REF};
     public static final String[] COLUMN_NAMES_ = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
         "Button-Start"/*DOWNLOAD_BUTTON_START*/, "Button-Del"/*DOWNLOAD_BUTTON_DEL*/,
         DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT, DOWNLOAD_BANDBREITE, "Groesse"/*DOWNLOAD_GROESSE*/,
@@ -154,7 +154,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         DOWNLOAD_FILM_URL, DOWNLOAD_HISTORY_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_SUBTITLE,
         DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_AUFRUF_ARRAY, DOWNLOAD_PROGRAMM_RESTART,
         DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE,
-        DOWNLOAD_ZURUECKGESTELLT, DOWNLOAD_INFODATEI, DOWNLOAD_SPOTLIGHT, DOWNLOAD_SUBTITLE, DOWNLOAD_REF, DOWNLOAD_PROGRAMM_REMOTE_DOWNLOAD};
+        DOWNLOAD_ZURUECKGESTELLT, DOWNLOAD_INFODATEI, DOWNLOAD_SPOTLIGHT, DOWNLOAD_SUBTITLE, DOWNLOAD_PROGRAMM_DOWNLOADMANAGER, DOWNLOAD_REF};
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
 
@@ -343,11 +343,11 @@ public class DatenDownload implements Comparable<DatenDownload> {
         return Boolean.parseBoolean(arr[DOWNLOAD_PROGRAMM_RESTART_NR]);
     }
 
-    public boolean isRemoteDownload() {
-        if (arr[DOWNLOAD_PROGRAMM_REMOTE_DOWNLOAD_NR].equals("")) {
+    public boolean isDownloadManager() {
+        if (arr[DOWNLOAD_PROGRAMM_DOWNLOADMANAGER_NR].equals("")) {
             return false;
         }
-        return Boolean.parseBoolean(arr[DOWNLOAD_PROGRAMM_REMOTE_DOWNLOAD_NR]);
+        return Boolean.parseBoolean(arr[DOWNLOAD_PROGRAMM_DOWNLOADMANAGER_NR]);
     }
 
     public boolean isInfoFile() {
@@ -458,7 +458,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             }
 
             arr[DOWNLOAD_PROGRAMM_RESTART_NR] = String.valueOf(programm.isRestart());
-            arr[DOWNLOAD_PROGRAMM_REMOTE_DOWNLOAD_NR] = String.valueOf(programm.isRemoteDownload());
+            arr[DOWNLOAD_PROGRAMM_DOWNLOADMANAGER_NR] = String.valueOf(programm.isDownloadManager());
             dateinamePfadBauen(pSet, film, abo, nname, ppfad);
             programmaufrufBauen(programm);
         } catch (Exception ex) {

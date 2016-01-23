@@ -48,7 +48,7 @@ public class CellRendererProgramme extends DefaultTableCellRenderer {
                 table, value, isSelected, hasFocus, row, column);
         try {
             int c = table.convertColumnIndexToModel(column);
-            if (c == DatenProg.PROGRAMM_RESTART_NR || c == DatenProg.PROGRAMM_REMOTE_DOWNLOAD_NR) {
+            if (c == DatenProg.PROGRAMM_RESTART_NR || c == DatenProg.PROGRAMM_DOWNLOADMANAGER_NR) {
             	setHorizontalAlignment(CENTER);
                 if (getText().equals(Boolean.TRUE.toString())) {
                     setIcon(GetIcon.getProgramIcon("ja_16.png"));
