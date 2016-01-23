@@ -19,6 +19,7 @@
  */
 package mediathek.controller.starter;
 
+import mediathek.daten.DatenDownload;
 import mediathek.tool.MVInputStream;
 import msearch.tool.Datum;
 
@@ -49,9 +50,10 @@ public class Start {
     public Start() {
     }
 
-    public static String getTextProgress(final Start s) {
+    public static String getTextProgress(final DatenDownload download) {
         String ret = "";
-
+        boolean isRemote = download.isRemoteDownload();
+        Start s = download.start;
         if (s == null)
             return ret;
 
@@ -60,22 +62,24 @@ public class Start {
                 break;
 
             case PROGRESS_WARTEN:
-                ret = "warten";
+                ret = isRemote ? "remote" : "warten";
                 break;
 
             case PROGRESS_GESTARTET:
-                ret = "gestartet";
+                ret = isRemote ? "remote:gesendet" : "gestartet";
                 break;
 
             case PROGRESS_FERTIG:
                 if (s.status == Start.STATUS_ERR)
-                    ret = "fehlerhaft";
+                    ret = isRemote ? "remote:fehler" : "fehlerhaft";
                 else
-                    ret = "fertig";
+                    ret = isRemote ? "remote:fertig" : "fertig";
                 break;
 
             default:
-                if (1 < s.percent && s.percent < PROGRESS_FERTIG) {
+            	if (isRemote)
+            		ret = "remote";
+            	else if (1 < s.percent && s.percent < PROGRESS_FERTIG) {
                     double d = s.percent / 10.0;
                     ret = Double.toString(d) + "%";
                 }
