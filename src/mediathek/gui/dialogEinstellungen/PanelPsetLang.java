@@ -141,6 +141,7 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonProgAb.addActionListener(new BeobProgAufAb(false));
         jButtonProgPfad.setEnabled(false);
         jCheckBoxRestart.addActionListener(new BeobProgRestart());
+        jCheckBoxRemoteDownload.addActionListener(new BeobProgRemoteDownload());
         //Pset
         jButtonAbspielen.addActionListener(new ActionListener() {
             @Override
@@ -492,6 +493,7 @@ public class PanelPsetLang extends PanelVorlage {
         for (int i = 0; i < tabelleProgramme.getColumnCount(); ++i) {
             if (i == DatenProg.PROGRAMM_PRAEFIX_NR
                     || i == DatenProg.PROGRAMM_RESTART_NR
+                    || i == DatenProg.PROGRAMM_REMOTE_DOWNLOAD_NR
                     || i == DatenProg.PROGRAMM_SUFFIX_NR) {
                 tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i)).setMinWidth(10);
                 tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i)).setMaxWidth(3000);
@@ -525,6 +527,7 @@ public class PanelPsetLang extends PanelVorlage {
         jTextFieldProgSuffix.setEnabled(row != -1);
         jButtonProgPfad.setEnabled(row != -1);
         jCheckBoxRestart.setEnabled(row != -1);
+        jCheckBoxRemoteDownload.setEnabled(row != -1);
         if (row != -1) {
             DatenProg prog = getPset().getProg(tabelleProgramme.convertRowIndexToModel(row));
             jTextFieldProgPfad.setText(prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]);
@@ -535,6 +538,7 @@ public class PanelPsetLang extends PanelVorlage {
             jTextFieldProgPraefix.setText(prog.arr[DatenProg.PROGRAMM_PRAEFIX_NR]);
             jTextFieldProgSuffix.setText(prog.arr[DatenProg.PROGRAMM_SUFFIX_NR]);
             jCheckBoxRestart.setSelected(prog.isRestart());
+            jCheckBoxRemoteDownload.setSelected(prog.isRemoteDownload());
         } else {
             jTextFieldProgPfad.setText("");
             jTextFieldProgSchalter.setText("");
@@ -761,6 +765,7 @@ public class PanelPsetLang extends PanelVorlage {
         jTextFieldProgSuffix = new javax.swing.JTextField();
         jCheckBoxRestart = new javax.swing.JCheckBox();
         javax.swing.JLabel jLabel9 = new javax.swing.JLabel();
+        jCheckBoxRemoteDownload = new javax.swing.JCheckBox();
         jTextFieldProgZielDateiName = new javax.swing.JTextField();
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -1318,6 +1323,8 @@ public class PanelPsetLang extends PanelVorlage {
 
         jCheckBoxRestart.setText("fehlgeschlagene Downloads wieder starten");
 
+        jCheckBoxRemoteDownload.setText("Remote Download");
+        
         jLabel9.setText("Zieldateiname:");
 
         javax.swing.GroupLayout jPanelProgrammDetailsLayout = new javax.swing.GroupLayout(jPanelProgrammDetails);
@@ -1335,6 +1342,7 @@ public class PanelPsetLang extends PanelVorlage {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanelProgrammDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jCheckBoxRestart)
+                            .addComponent(jCheckBoxRemoteDownload)
                             .addComponent(jTextFieldProgSchalter)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelProgrammDetailsLayout.createSequentialGroup()
                                 .addComponent(jTextFieldProgPfad)
@@ -1384,6 +1392,8 @@ public class PanelPsetLang extends PanelVorlage {
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxRestart)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBoxRemoteDownload)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1537,6 +1547,7 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxInfodatei;
     private javax.swing.JCheckBox jCheckBoxLaenge;
     private javax.swing.JCheckBox jCheckBoxRestart;
+    private javax.swing.JCheckBox jCheckBoxRemoteDownload;
     private javax.swing.JCheckBox jCheckBoxSpeichern;
     private javax.swing.JCheckBox jCheckBoxSpotlight;
     private javax.swing.JCheckBox jCheckBoxSubtitle;
@@ -1580,6 +1591,23 @@ public class PanelPsetLang extends PanelVorlage {
                     DatenProg prog = getPset().getListeProg().get(row);
                     prog.arr[DatenProg.PROGRAMM_RESTART_NR] = Boolean.toString(jCheckBoxRestart.isSelected());
                     tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRestart.isSelected()), row, DatenProg.PROGRAMM_RESTART_NR);
+                }
+            }
+
+        }
+    }
+
+    private class BeobProgRemoteDownload implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!stopBeob) {
+                int rows = tabelleProgramme.getSelectedRow();
+                if (rows != -1) {
+                    int row = tabelleProgramme.convertRowIndexToModel(rows);
+                    DatenProg prog = getPset().getListeProg().get(row);
+                    prog.arr[DatenProg.PROGRAMM_REMOTE_DOWNLOAD_NR] = Boolean.toString(jCheckBoxRemoteDownload.isSelected());
+                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRemoteDownload.isSelected()), row, DatenProg.PROGRAMM_REMOTE_DOWNLOAD_NR);
                 }
             }
 
