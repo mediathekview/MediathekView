@@ -141,7 +141,7 @@ public class PanelExportFilmliste extends PanelVorlage {
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
         jTextArea1.setRows(7);
-        jTextArea1.setText("Es kann die programmeigene Liste mit den Filmen exportiert werden.\n\nDateien werden mit der Endung:\n\n\".zip\"\tals Zip-Dateien,\n\".bz2\"\tals Bzip2-Dateien und\n\".xz\" \tim XZ-Container mit LZMA2 komprimiert.\n\nAlle anderen Dateien werden unkomprimiert gespeichert.\n");
+        jTextArea1.setText("Es kann die programmeigene Liste mit den Filmen exportiert werden.\n\nDateien werden mit der Endung:\n\n\".zip\"\tals Zip-Dateien,\n\".xz\" \tim XZ-Container mit LZMA2 komprimiert.\n\nAlle anderen Dateien werden unkomprimiert gespeichert.\n");
         jTextArea1.setMargin(new java.awt.Insets(4, 4, 4, 4));
         jScrollPane1.setViewportView(jTextArea1);
 
