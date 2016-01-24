@@ -294,13 +294,17 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                     }
 
                 } else {
+                    String file = GuiFunktionen.getDateiName(datei);
+                    File f = new File(GuiFunktionen.addsPfad(zielPfad, file));
                     try (BufferedInputStream in = new BufferedInputStream(conn.getInputStream())) {
-                        FileOutputStream fOut = new FileOutputStream(GuiFunktionen.addsPfad(zielPfad, datei));
+                        FileOutputStream fOut = new FileOutputStream(f);
                         final byte[] buffer = new byte[1024];
                         while ((n = in.read(buffer)) != -1) {
                             fOut.write(buffer, 0, n);
                         }
                         fOut.close();
+                        f.setExecutable(true, false);
+                        f.setReadable(true, false);
                     }
                 }
             }
