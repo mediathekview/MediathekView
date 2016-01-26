@@ -132,15 +132,15 @@ Programm beenden		ctrl + q
 
 Film abspielen			F6
 Film aufzeichnen		F7
-Filter löschen                  F8
-Blacklist anzeigen              F9
+Filter löschen			F8
+Blacklist anzeigen		F9
 
 Download zurückstellen			Rücktaste
 Download dauerhaft löschen		Entf
 Downloads aktualisieren			Leertaste
 
-Abos löschen			Entf
-Abos ändern				Return
+Abos löschen	Entf
+Abos ändern		Return
 
 Beschreibung anzeigen	F10
 Buttons anzeigen		F11
@@ -154,10 +154,17 @@ ctrl + p	Film abspielen
 ctrl + d	Download erstellen
 ctrl + f	springt ins Suchfeld 
 			(entweder in der Toolbar oder "ThemaTitel" im Suchpanel wenn es 
-angezeigt wird)
+			angezeigt wird)
 ctrl + t	springt in die Tabelle
 ctrl + i	Infos zum Film anzeigen
+ctrl + e	Titel in der Mediensammlung suchen
 			
+ctrl + u	Film-URL kopieren
+ctrl + h	Film-URL in "HD" kopieren
+ctrl + k	Film-URL in "Klein" kopieren
+ctrl + m	Filme als gesehen markieren
+ctrl + n	Filme als ungesehen markieren
+
 in der Tabelle Filme
 ----------------------
 return		Film abspielen
@@ -168,6 +175,11 @@ Tab Downloads
 ctrl + t	springt in die Tabelle
 ctrl + d	Download starten
 ctrl + i	Infos zum Film anzeigen
+ctrl + e	Titel in der Mediensammlung suchen
+
+ctrl + u	URL kopieren
+ctrl + m	Filme als gesehen markieren
+ctrl + n	Filme als ungesehen markieren
 
 in der Tabelle Downloads
 ----------------------

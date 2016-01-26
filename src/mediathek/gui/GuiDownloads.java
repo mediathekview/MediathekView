@@ -236,6 +236,36 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         });
+
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-copy");
+        this.getActionMap().put("url-copy", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = tabelle.getSelectedRow();
+                if (row >= 0) {
+                    GuiFunktionen.copyToClipboard(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row),
+                            DatenDownload.DOWNLOAD_URL_NR).toString());
+                }
+            }
+        });
+
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mediensammlung");
+        this.getActionMap().put("mediensammlung", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = tabelle.getSelectedRow();
+                if (row >= 0) {
+                    Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
+                    daten.dialogMediaDB.setVis();
+
+                    DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
+                    if (datenDownload != null) {
+                        daten.dialogMediaDB.setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
+                    }
+
+                }
+            }
+        });
         panelBeschreibungSetzen();
 
         final CellRendererDownloads cellRenderer = new CellRendererDownloads();
@@ -1111,6 +1141,8 @@ public class GuiDownloads extends PanelVorlage {
 
             // Film in der MediaDB suchen
             JMenuItem itemDb = new JMenuItem("Titel in der Mediensammlung suchen");
+            KeyStroke ctrlE = KeyStroke.getKeyStroke(KeyEvent.VK_E, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+            itemDb.setAccelerator(ctrlE);
             itemDb.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -1167,6 +1199,8 @@ public class GuiDownloads extends PanelVorlage {
 
             // URL kopieren
             JMenuItem itemUrl = new JMenuItem("URL kopieren");
+            KeyStroke ctrlU = KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+            itemUrl.setAccelerator(ctrlU);
             itemUrl.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {

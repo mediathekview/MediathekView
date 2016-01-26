@@ -67,18 +67,18 @@ import mediathek.gui.GuiAbo;
 import mediathek.gui.GuiDebug;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
+import mediathek.gui.MVAboutDialog;
 import mediathek.gui.MVBandwidthMonitor;
 import mediathek.gui.MVDownloadInfo;
+import mediathek.gui.MVHelpDialog;
 import mediathek.gui.MVStatusBar;
 import mediathek.gui.MVToolBar;
 import mediathek.gui.MVTray;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.DialogLeer;
-import mediathek.gui.dialog.DialogStarteinstellungen;
-import mediathek.gui.MVAboutDialog;
-import mediathek.gui.MVHelpDialog;
 import mediathek.gui.dialog.DialogMediaDB;
+import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.gui.dialog.MVFilmInformationLinux;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
@@ -86,13 +86,13 @@ import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 import mediathek.res.GetIcon;
 import mediathek.tool.Duration;
-import mediathek.tool.MVFunctionSys;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVFrame;
+import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVMessageDialog;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
 import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
@@ -1422,9 +1422,11 @@ public class MediathekGui extends JFrame {
         jMenuFilme.add(jMenuItemBlacklist);
         jMenuFilme.add(jSeparator6);
 
+        jMenuItemFilmeGesehen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemFilmeGesehen.setText("Filme als gesehen markieren");
         jMenuFilme.add(jMenuItemFilmeGesehen);
 
+        jMenuItemFilmeUngesehen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemFilmeUngesehen.setText("Filme als ungesehen markieren");
         jMenuFilme.add(jMenuItemFilmeUngesehen);
 
@@ -1488,9 +1490,11 @@ public class MediathekGui extends JFrame {
         jMenuDownload.add(jMenuItemDownloadAendern);
         jMenuDownload.add(jSeparator1);
 
+        jMenuItemDownloadGesehen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemDownloadGesehen.setText("Filme als gesehen markieren");
         jMenuDownload.add(jMenuItemDownloadGesehen);
 
+        jMenuItemDownloadUngesehen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemDownloadUngesehen.setText("Filme als ungesehen markieren");
         jMenuDownload.add(jMenuItemDownloadUngesehen);
 
