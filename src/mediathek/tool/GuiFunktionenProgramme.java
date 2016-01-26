@@ -303,8 +303,6 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                             fOut.write(buffer, 0, n);
                         }
                         fOut.close();
-                        f.setExecutable(true, false);
-                        f.setReadable(true, false);
                     }
                 }
             }
