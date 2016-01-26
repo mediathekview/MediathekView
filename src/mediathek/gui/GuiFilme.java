@@ -249,6 +249,51 @@ public class GuiFilme extends PanelVorlage {
             }
         });
 
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-copy");
+        this.getActionMap().put("url-copy", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DatenFilm film = getSelFilm();
+                if (film != null) {
+                    GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL));
+                }
+            }
+        });
+
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_H, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-hd-copy");
+        this.getActionMap().put("url-hd-copy", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DatenFilm film = getSelFilm();
+                if (film != null) {
+                    GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD));
+                }
+            }
+        });
+
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_K, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-k-copy");
+        this.getActionMap().put("url-k-copy", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DatenFilm film = getSelFilm();
+                if (film != null) {
+                    GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN));
+                }
+            }
+        });
+
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mediensammlung");
+        this.getActionMap().put("mediensammlung", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DatenFilm film = getSelFilm();
+                if (film != null) {
+                    Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
+                    daten.dialogMediaDB.setVis();
+                    daten.dialogMediaDB.setFilter(film.arr[DatenFilm.FILM_TITEL_NR]);
+                }
+            }
+        });
         //Tabelle einrichten
         ActionMap am = tabelle.getActionMap();
         InputMap im = tabelle.getInputMap();
@@ -1369,16 +1414,16 @@ public class GuiFilme extends PanelVorlage {
 
             //Url
             if (film != null) {
-                String uNornal = film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL);
+                String uNormal = film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL);
                 String uHd = film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD);
                 String uLow = film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN);
-                if (uHd.equals(uNornal)) {
+                if (uHd.equals(uNormal)) {
                     uHd = ""; // dann gibts keine
                 }
-                if (uLow.equals(uNornal)) {
+                if (uLow.equals(uNormal)) {
                     uLow = ""; // dann gibts keine
                 }
-                if (!uNornal.isEmpty()) {
+                if (!uNormal.isEmpty()) {
                     //##Trenner##
                     jPopupMenu.addSeparator();
                     //##Trenner##
@@ -1387,6 +1432,10 @@ public class GuiFilme extends PanelVorlage {
                         // HD
                         if (!uHd.isEmpty()) {
                             item = new JMenuItem("in HD-Auflösung");
+
+                            KeyStroke ctrlH = KeyStroke.getKeyStroke(KeyEvent.VK_H, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+                            item.setAccelerator(ctrlH);
+
                             item.addActionListener(new ActionListener() {
 
                                 @Override
@@ -1400,6 +1449,10 @@ public class GuiFilme extends PanelVorlage {
 
                         // normale Auflösung, gibts immer
                         item = new JMenuItem("in hoher Auflösung");
+
+                        KeyStroke ctrlU = KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+                        item.setAccelerator(ctrlU);
+
                         item.addActionListener(new ActionListener() {
 
                             @Override
@@ -1413,6 +1466,10 @@ public class GuiFilme extends PanelVorlage {
                         // kleine Auflösung
                         if (!uLow.isEmpty()) {
                             item = new JMenuItem("in geringer Auflösung");
+
+                            KeyStroke ctrlK = KeyStroke.getKeyStroke(KeyEvent.VK_K, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+                            item.setAccelerator(ctrlK);
+
                             item.addActionListener(new ActionListener() {
 
                                 @Override
@@ -1446,6 +1503,10 @@ public class GuiFilme extends PanelVorlage {
             // Film in der MediaDB suchen
             if (film != null) {
                 JMenuItem itemDb = new JMenuItem("Titel in der Mediensammlung suchen");
+
+                KeyStroke ctrlE = KeyStroke.getKeyStroke(KeyEvent.VK_E, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+                item.setAccelerator(ctrlE);
+
                 itemDb.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
