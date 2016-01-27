@@ -33,6 +33,7 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -376,17 +377,7 @@ public class MediathekGui extends JFrame {
 
         }
         duration.ping("Gui steht!");
-//        if (Daten.delSets) {
-//            Log.systemMeldung("==========================================");
-//            Log.systemMeldung("Sets neu anlegen");
-//            Log.systemMeldung("");
-//            // die Sets sollen neu angelegt werden
-//            // setzt die Standardpfade für die wichtigsten Programme
-//            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
-//            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
-//            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
-//            new CheckUpdate(this, daten).checkSet();
-//        }
+
     }
 
     private void setFocusSuchfeld() {
@@ -1401,28 +1392,28 @@ public class MediathekGui extends JFrame {
         jMenuFilme.setMnemonic('f');
         jMenuFilme.setText("Filme");
 
-        jMenuItemFilmAbspielen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
+        jMenuItemFilmAbspielen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemFilmAbspielen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/film_start_16.png"))); // NOI18N
         jMenuItemFilmAbspielen.setText("Film abspielen");
         jMenuFilme.add(jMenuItemFilmAbspielen);
 
-        jMenuItemFilmAufzeichnen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F7, 0));
+        jMenuItemFilmAufzeichnen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemFilmAufzeichnen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/film_rec_16.png"))); // NOI18N
         jMenuItemFilmAufzeichnen.setText("Film aufzeichnen");
         jMenuFilme.add(jMenuItemFilmAufzeichnen);
 
-        jMenuItemFilterLoeschen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F8, 0));
+        jMenuItemFilterLoeschen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemFilterLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/clear_16.png"))); // NOI18N
         jMenuItemFilterLoeschen.setText("Filter löschen");
         jMenuFilme.add(jMenuItemFilterLoeschen);
 
-        jMenuItemBlacklist.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F9, 0));
+        jMenuItemBlacklist.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemBlacklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/blacklist_16.png"))); // NOI18N
         jMenuItemBlacklist.setText("Blacklist öffnen");
         jMenuFilme.add(jMenuItemBlacklist);
         jMenuFilme.add(jSeparator6);
 
-        jMenuItemFilmeGesehen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemFilmeGesehen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemFilmeGesehen.setText("Filme als gesehen markieren");
         jMenuFilme.add(jMenuItemFilmeGesehen);
 
@@ -1453,7 +1444,7 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadWartendeStoppen.setToolTipText("wartende Downloads stoppen");
         jMenuDownload.add(jMenuItemDownloadWartendeStoppen);
 
-        jMenuItemDownloadsAktualisieren.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_SPACE, 0));
+        jMenuItemDownloadsAktualisieren.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemDownloadsAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/view-refresh_16.png"))); // NOI18N
         jMenuItemDownloadsAktualisieren.setText("Liste der Downloads aktualisieren");
         jMenuDownload.add(jMenuItemDownloadsAktualisieren);
@@ -1490,7 +1481,7 @@ public class MediathekGui extends JFrame {
         jMenuDownload.add(jMenuItemDownloadAendern);
         jMenuDownload.add(jSeparator1);
 
-        jMenuItemDownloadGesehen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemDownloadGesehen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemDownloadGesehen.setText("Filme als gesehen markieren");
         jMenuDownload.add(jMenuItemDownloadGesehen);
 

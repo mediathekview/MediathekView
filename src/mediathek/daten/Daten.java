@@ -50,7 +50,6 @@ import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.MVFilmInfo;
-import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.Konstanten;
@@ -74,12 +73,10 @@ public class Daten {
     // flags
     public static boolean debug = false; // Debugmodus
     public static boolean startMaximized = false; // Fenster maximieren
-//    public static boolean delSets = false; // Programmsets löschen und neu anlegen
     public static boolean auto = false; // Version: MediathekAuto
     public static boolean RESET = false; // Programm auf Starteinstellungen zurücksetzen
     //alle Programmeinstellungen
     public static MVConfig mVConfig = new MVConfig();
-    //public static int aktFilter = 0; // welcher Filter ausgewählt ist 1 ... 5
 
     // zentrale Klassen
     public static MVColor mVColor = new MVColor(); // verwendete Farben
@@ -94,6 +91,7 @@ public class Daten {
     public static ListeBlacklist listeBlacklist = null;
     public static ListeAbo listeAbo = null;
     public static DownloadInfos downloadInfos = null;
+
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis = "";
     public static ListePset listePset = null;
