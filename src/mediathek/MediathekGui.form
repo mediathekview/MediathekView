@@ -73,7 +73,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemFilmAbspielen">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="F6"/>
+                  <KeyStroke key="Ctrl+P"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/programm/film_start_16.png"/>
@@ -87,7 +87,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemFilmAufzeichnen">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="F7"/>
+                  <KeyStroke key="Ctrl+D"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/programm/film_rec_16.png"/>
@@ -101,7 +101,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemFilterLoeschen">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="F8"/>
+                  <KeyStroke key="Ctrl+L"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/programm/clear_16.png"/>
@@ -115,7 +115,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemBlacklist">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="F9"/>
+                  <KeyStroke key="Ctrl+B"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/programm/blacklist_16.png"/>
@@ -131,7 +131,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemFilmeGesehen">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Ctrl+M"/>
+                  <KeyStroke key="Ctrl+G"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Filme als gesehen markieren"/>
               </Properties>
@@ -189,7 +189,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadsAktualisieren">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="SPACE"/>
+                  <KeyStroke key="Ctrl+W"/>
                 </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mediathek/res/programm/view-refresh_16.png"/>
@@ -274,7 +274,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadGesehen">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Ctrl+M"/>
+                  <KeyStroke key="Ctrl+G"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Filme als gesehen markieren"/>
               </Properties>

@@ -129,15 +129,18 @@ Einstellungen			F4
 neue Filmliste			F5
 Programm beenden		ctrl + q
 
-
-Film abspielen			F6
-Film aufzeichnen		F7
-Filter löschen			F8
-Blacklist anzeigen		F9
+Film abspielen			ctrl + p
+Film aufzeichnen		ctrl + d
+Filter löschen			ctrl + l
+Blacklist anzeigen		ctrl + b
+Filme als gesehen markieren		ctrl + g
+Filme als ungesehen markieren	ctrl + n
 
 Download zurückstellen			Rücktaste
 Download dauerhaft löschen		Entf
-Downloads aktualisieren			Leertaste
+Downloads aktualisieren			ctrl + w
+Filme als gesehen markieren		ctrl + g
+Filme als ungesehen markieren	ctrl + n
 
 Abos löschen	Entf
 Abos ändern		Return
@@ -157,13 +160,10 @@ ctrl + f	springt ins Suchfeld
 			angezeigt wird)
 ctrl + t	springt in die Tabelle
 ctrl + i	Infos zum Film anzeigen
-ctrl + e	Titel in der Mediensammlung suchen
-			
+ctrl + m	Titel in der Mediensammlung suchen
 ctrl + u	Film-URL kopieren
-ctrl + h	Film-URL in "HD" kopieren
-ctrl + k	Film-URL in "Klein" kopieren
-ctrl + m	Filme als gesehen markieren
-ctrl + n	Filme als ungesehen markieren
+ctrl + h	Film-URL in "HD" kopieren (wenn nicht vorhanden, dann normale URL)
+ctrl + k	Film-URL in "Klein" kopieren (wenn nicht vorhanden, dann normale URL)
 
 in der Tabelle Filme
 ----------------------
@@ -175,11 +175,8 @@ Tab Downloads
 ctrl + t	springt in die Tabelle
 ctrl + d	Download starten
 ctrl + i	Infos zum Film anzeigen
-ctrl + e	Titel in der Mediensammlung suchen
-
+ctrl + m	Titel in der Mediensammlung suchen
 ctrl + u	URL kopieren
-ctrl + m	Filme als gesehen markieren
-ctrl + n	Filme als ungesehen markieren
 
 in der Tabelle Downloads
 ----------------------
