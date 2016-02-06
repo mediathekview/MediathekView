@@ -171,6 +171,10 @@ public class GuiFilme extends PanelVorlage {
         saveFilm();
     }
 
+    public void guiFilmMediensammlung() {
+        mediensammlung();
+    }
+
     public void guiFilmeFilterLoeschen() {
         delFilter();
     }
@@ -521,6 +525,15 @@ public class GuiFilme extends PanelVorlage {
                 aufloesung = DatenFilm.AUFLOESUNG_HD;
             }
             daten.starterClass.urlMitProgrammStarten(pSet, getSelFilm(), aufloesung);
+        }
+    }
+
+    private void mediensammlung() {
+        DatenFilm film = getSelFilm();
+        if (film != null) {
+            Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
+            daten.dialogMediaDB.setVis();
+            daten.dialogMediaDB.setFilter(film.arr[DatenFilm.FILM_TITEL_NR]);
         }
     }
 
@@ -1503,16 +1516,10 @@ public class GuiFilme extends PanelVorlage {
             // Film in der MediaDB suchen
             if (film != null) {
                 JMenuItem itemDb = new JMenuItem("Titel in der Mediensammlung suchen");
-
-                KeyStroke ctrlE = KeyStroke.getKeyStroke(KeyEvent.VK_E, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-                item.setAccelerator(ctrlE);
-
                 itemDb.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-                        daten.dialogMediaDB.setVis();
-                        daten.dialogMediaDB.setFilter(film.arr[DatenFilm.FILM_TITEL_NR]);
+                        mediensammlung();
                     }
                 });
                 jPopupMenu.add(itemDb);

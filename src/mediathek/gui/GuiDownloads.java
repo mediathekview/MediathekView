@@ -153,6 +153,10 @@ public class GuiDownloads extends PanelVorlage {
         filmAbspielen_();
     }
 
+    public void guiFilmMediensammlung() {
+        mediensammlung();
+    }
+
     public void starten(boolean alle) {
         filmStartenWiederholenStoppen(alle, true /* starten */);
     }
@@ -375,6 +379,16 @@ public class GuiDownloads extends PanelVorlage {
         stopBeob = false;
         aktFilmSetzen();
         setInfo();
+    }
+
+    private void mediensammlung() {
+        DatenDownload datenDownload = getSelDownload();
+        Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
+        daten.dialogMediaDB.setVis();
+
+        if (datenDownload != null) {
+            daten.dialogMediaDB.setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
+        }
     }
 
     private synchronized void downloadsAktualisieren() {
@@ -1141,21 +1155,10 @@ public class GuiDownloads extends PanelVorlage {
 
             // Film in der MediaDB suchen
             JMenuItem itemDb = new JMenuItem("Titel in der Mediensammlung suchen");
-            KeyStroke ctrlE = KeyStroke.getKeyStroke(KeyEvent.VK_E, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-            itemDb.setAccelerator(ctrlE);
             itemDb.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-                    daten.dialogMediaDB.setVis();
-
-                    int nr = tabelle.rowAtPoint(p);
-                    if (nr >= 0) {
-                        DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr), DatenDownload.DOWNLOAD_REF_NR);
-                        if (datenDownload != null) {
-                            daten.dialogMediaDB.setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
-                        }
-                    }
+                    mediensammlung();
                 }
             });
             jPopupMenu.add(itemDb);
