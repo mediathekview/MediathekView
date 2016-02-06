@@ -29,12 +29,14 @@ import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import mediathek.controller.Log;
 
 /**
  * Converter for TTML XML subtitle files into SubRip Text format.
  * Tested with MediathekView downloaded subtitles and TTML format version 1.0.
  */
 public class TimedTextMarkupLanguageParser {
+
     private final SimpleDateFormat ttmlFormat = new SimpleDateFormat("HH:mm:ss.SS");
     private final SimpleDateFormat srtFormat = new SimpleDateFormat("HH:mm:ss,SS");
     private final Map<String, String> colorMap = new Hashtable<>();
@@ -55,8 +57,9 @@ public class TimedTextMarkupLanguageParser {
                 final NamedNodeMap attrMap = subnode.getAttributes();
                 final Node idNode = attrMap.getNamedItem("xml:id");
                 final Node colorNode = attrMap.getNamedItem("tts:color");
-                if (idNode != null && colorNode != null)
+                if (idNode != null && colorNode != null) {
                     colorMap.put(idNode.getNodeValue(), colorNode.getNodeValue());
+                }
             }
         }
     }
@@ -80,11 +83,13 @@ public class TimedTextMarkupLanguageParser {
                     subtitle.begin = ttmlFormat.parse(beginNode.getNodeValue());
                     //HACK:: Don´t know why this is set like this...
                     //but we have to subract 10 hours from the XML
-                    if (subtitle.begin.getHours() >= 10)
+                    if (subtitle.begin.getHours() >= 10) {
                         subtitle.begin.setHours(subtitle.begin.getHours() - 10);
+                    }
                     subtitle.end = ttmlFormat.parse(endNode.getNodeValue());
-                    if (subtitle.end.getHours() >= 10)
+                    if (subtitle.end.getHours() >= 10) {
                         subtitle.end.setHours(subtitle.end.getHours() - 10);
+                    }
 
                 }
             }
@@ -111,7 +116,8 @@ public class TimedTextMarkupLanguageParser {
      *
      * @param ttmlFilePath the TTML file to parse
      */
-    public void parse(Path ttmlFilePath) {
+    public boolean parse(Path ttmlFilePath) {
+        boolean ret = false;
         try {
             final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
@@ -123,16 +129,21 @@ public class TimedTextMarkupLanguageParser {
             final NodeList metaData = doc.getElementsByTagName("ebuttm:documentEbuttVersion");
             if (metaData != null) {
                 final Node versionNode = metaData.item(0);
-                if (!versionNode.getTextContent().equalsIgnoreCase("v1.0"))
+                if (!versionNode.getTextContent().equalsIgnoreCase("v1.0")) {
                     throw new Exception("Unknown TTML file version");
-            } else
+                }
+            } else {
                 throw new Exception("Unknown File Format");
+            }
 
             buildColorMap();
             buildFilmList();
+            ret = true;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Log.fehlerMeldung(912036478, ex, "File: " + ttmlFilePath);
+            ret = false;
         }
+        return ret;
     }
 
     /**
@@ -145,18 +156,20 @@ public class TimedTextMarkupLanguageParser {
                 writer.println(counter);
                 writer.println(srtFormat.format(title.begin) + " --> " + srtFormat.format(title.end));
                 for (StyledString entry : title.listOfStrings) {
-                    if (!entry.color.isEmpty())
+                    if (!entry.color.isEmpty()) {
                         writer.print("<font color=\"" + entry.color + "\">");
+                    }
                     writer.print(entry.text);
-                    if (!entry.color.isEmpty())
+                    if (!entry.color.isEmpty()) {
                         writer.print("</font>");
+                    }
                     writer.println();
                 }
                 writer.println("");
                 counter++;
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Log.fehlerMeldung(201036470, ex, "File: " + srtFile);
         }
     }
 
@@ -166,6 +179,7 @@ public class TimedTextMarkupLanguageParser {
     }
 
     private class StyledString {
+
         public String getText() {
             return text;
         }
@@ -187,6 +201,7 @@ public class TimedTextMarkupLanguageParser {
     }
 
     private class Subtitle {
+
         public Date begin;
         public Date end;
         public List<StyledString> listOfStrings = new ArrayList<>();

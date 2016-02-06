@@ -837,6 +837,13 @@ public class MediathekGui extends JFrame {
                 daten.guiFilme.filmUngesehen();
             }
         });
+        jMenuItemFilmeMediensammlung.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                daten.guiFilme.guiFilmMediensammlung();
+            }
+        });
         // Downloads
         jMenuItemDownloadsAktualisieren.addActionListener(new ActionListener() {
             @Override
@@ -941,6 +948,13 @@ public class MediathekGui extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 daten.guiDownloads.filmUngesehen();
+            }
+        });
+        jMenuItemDownloadMediensammlung.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                daten.guiDownloads.guiFilmMediensammlung();
             }
         });
 
@@ -1303,6 +1317,7 @@ public class MediathekGui extends JFrame {
         jSeparator6 = new javax.swing.JPopupMenu.Separator();
         jMenuItemFilmeGesehen = new javax.swing.JMenuItem();
         jMenuItemFilmeUngesehen = new javax.swing.JMenuItem();
+        jMenuItemFilmeMediensammlung = new javax.swing.JMenuItem();
         jMenuDownload = new javax.swing.JMenu();
         jMenuItemDownloadsAlleStarten = new javax.swing.JMenuItem();
         jMenuItemDownloadStartTime = new javax.swing.JMenuItem();
@@ -1320,6 +1335,7 @@ public class MediathekGui extends JFrame {
         javax.swing.JPopupMenu.Separator jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenuItemDownloadGesehen = new javax.swing.JMenuItem();
         jMenuItemDownloadUngesehen = new javax.swing.JMenuItem();
+        jMenuItemDownloadMediensammlung = new javax.swing.JMenuItem();
         jMenuItemDownloadAbspielen = new javax.swing.JMenuItem();
         jSeparator7 = new javax.swing.JPopupMenu.Separator();
         jMenuItemDownloadShutDown = new javax.swing.JMenuItem();
@@ -1420,6 +1436,10 @@ public class MediathekGui extends JFrame {
         jMenuItemFilmeUngesehen.setText("Filme als ungesehen markieren");
         jMenuFilme.add(jMenuItemFilmeUngesehen);
 
+        jMenuItemFilmeMediensammlung.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemFilmeMediensammlung.setText("Titel in der Mediensammlung suchen");
+        jMenuFilme.add(jMenuItemFilmeMediensammlung);
+
         jMenuBar.add(jMenuFilme);
 
         jMenuDownload.setMnemonic('w');
@@ -1487,6 +1507,10 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadUngesehen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemDownloadUngesehen.setText("Filme als ungesehen markieren");
         jMenuDownload.add(jMenuItemDownloadUngesehen);
+
+        jMenuItemDownloadMediensammlung.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemDownloadMediensammlung.setText("Titel in der Mediensammlung suchen");
+        jMenuDownload.add(jMenuItemDownloadMediensammlung);
 
         jMenuItemDownloadAbspielen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/film_start_16.png"))); // NOI18N
         jMenuItemDownloadAbspielen.setText("gespeicherten Film abspielen");
@@ -1623,6 +1647,7 @@ public class MediathekGui extends JFrame {
     private javax.swing.JMenuItem jMenuItemDownloadAendern;
     private javax.swing.JMenuItem jMenuItemDownloadAlleStoppen;
     private javax.swing.JMenuItem jMenuItemDownloadGesehen;
+    private javax.swing.JMenuItem jMenuItemDownloadMediensammlung;
     private javax.swing.JMenuItem jMenuItemDownloadShutDown;
     private javax.swing.JMenuItem jMenuItemDownloadStartTime;
     private javax.swing.JMenuItem jMenuItemDownloadStarten;
@@ -1639,6 +1664,7 @@ public class MediathekGui extends JFrame {
     protected javax.swing.JMenuItem jMenuItemFilmAbspielen;
     protected javax.swing.JMenuItem jMenuItemFilmAufzeichnen;
     private javax.swing.JMenuItem jMenuItemFilmeGesehen;
+    private javax.swing.JMenuItem jMenuItemFilmeMediensammlung;
     private javax.swing.JMenuItem jMenuItemFilmeUngesehen;
     private javax.swing.JMenuItem jMenuItemFilmlisteLaden;
     protected javax.swing.JMenuItem jMenuItemFilterLoeschen;

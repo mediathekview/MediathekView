@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
@@ -36,6 +37,7 @@ public class MVSubtitle {
 
     private static final int timeout = 10000;
     public static final String KODIERUNG_UTF = "UTF-8";
+    private static String subFile = null;
 
     public static void writeSubtitle(DatenDownload datenDownload) {
         String url;
@@ -67,6 +69,7 @@ public class MVSubtitle {
                 }
             }
             file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] + suff);
+            subFile = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] + suff;
 
             conn = (HttpURLConnection) new URL(url).openConnection();
             conn.setRequestProperty("User-Agent", Daten.getUserAgent());
@@ -105,6 +108,7 @@ public class MVSubtitle {
             }
             Log.systemMeldung(new String[]{"Untertitel", "  geschrieben"});
         } catch (IOException ex) {
+            subFile = null;
             if (conn != null) {
                 try {
                     InputStream i = conn.getErrorStream();
@@ -118,6 +122,7 @@ public class MVSubtitle {
                 }
             }
         } catch (Exception ignored) {
+            subFile = null;
         } finally {
             try {
                 if (fos != null) {
@@ -127,6 +132,17 @@ public class MVSubtitle {
                     in.close();
                 }
             } catch (Exception ignored) {
+            }
+        }
+        if (subFile != null) {
+            if (!subFile.endsWith(".srt")) {
+                TimedTextMarkupLanguageParser ttmlp = new TimedTextMarkupLanguageParser();
+                Path p = new File(subFile).toPath();
+                Path srt = new File(subFile + ".srt").toPath();
+                if (ttmlp.parse(p)) {
+                    ttmlp.toSrt(srt);
+                }
+                ttmlp.cleanup();
             }
         }
     }
