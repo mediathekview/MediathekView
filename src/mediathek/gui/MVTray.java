@@ -19,6 +19,7 @@
  */
 package mediathek.gui;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -30,10 +31,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JWindow;
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
@@ -110,7 +115,11 @@ public final class MVTray {
 
             trayIcon.setPopupMenu(popup);
             try {
+//                if (SystemInfo.isLinux()) {
+//                    new HackyLinuxTrayIconInitialiser(trayIcon).execute();
+//                } else {
                 tray.add(trayIcon);
+//                }
                 return this;
             } catch (AWTException e) {
                 Log.systemMeldung("Tray konnte nicht geladen werden!");
@@ -258,6 +267,66 @@ public final class MVTray {
             Notification notification = new Notification(messageFrame, WindowPosition.BOTTOMRIGHT, 20, 20, 6000);
             NotificationQueue q = new NotificationQueue();
             q.add(notification);
+        }
+    }
+
+    public class HackyLinuxTrayIconInitialiser extends SwingWorker<Void, TrayIcon> {
+
+        private static final int MAX_ADD_ATTEMPTS = 4;
+        private static final long ADD_ICON_DELAY = 200;
+        private static final long ADD_FAILED_DELAY = 1000;
+
+        private TrayIcon[] icons;
+
+        public HackyLinuxTrayIconInitialiser(TrayIcon... ic) {
+            icons = ic;
+        }
+
+        @Override
+        protected Void doInBackground() {
+            try {
+                Method addNotify = TrayIcon.class.getDeclaredMethod("addNotify", (Class<?>[]) null);
+                addNotify.setAccessible(true);
+                for (TrayIcon icon : icons) {
+                    for (int attempt = 1; attempt < MAX_ADD_ATTEMPTS; attempt++) {
+                        try {
+                            addNotify.invoke(icon, (Object[]) null);
+                            publish(icon);
+                            pause(ADD_ICON_DELAY);
+                            break;
+                        } catch (NullPointerException | IllegalAccessException | IllegalArgumentException e) {
+                            System.err.println("Failed to add icon. Giving up.");
+                            e.printStackTrace();
+                            break;
+                        } catch (InvocationTargetException e) {
+                            System.err.println("Failed to add icon, attempt " + attempt);
+                            pause(ADD_FAILED_DELAY);
+                        }
+                    }
+                }
+            } catch (NoSuchMethodException | SecurityException e1) {
+                e1.printStackTrace();
+            }
+            return null;
+        }
+
+        private void pause(long delay) {
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        @Override
+        protected void process(List<TrayIcon> icons) {
+            for (TrayIcon icon : icons) {
+                try {
+                    tray.add(icon);
+                } catch (AWTException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
