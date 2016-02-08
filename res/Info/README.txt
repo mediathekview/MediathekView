@@ -113,7 +113,8 @@ gestartet, kann man damit den Splashscreen unterdrücken.
 ---------------------------------------------------------------------------
 Hotkey
 ---------------------------------------------------------
-Menü
+
+Menüs
 ======
 alt+d		Datei
 alt+f		Filme
@@ -122,28 +123,14 @@ alt+b		Abos
 alt+a		Ansicht
 alt+h		Hilfe
 
-
 Menüpunkte
 ===========
 Einstellungen			F4
 neue Filmliste			F5
 Programm beenden		ctrl + q
 
-Film abspielen			ctrl + p
-Film aufzeichnen		ctrl + d
 Filter löschen			ctrl + l
 Blacklist anzeigen		ctrl + b
-Filme als gesehen markieren		ctrl + g
-Filme als ungesehen markieren	ctrl + n
-
-Download zurückstellen			Rücktaste
-Download dauerhaft löschen		Entf
-Downloads aktualisieren			ctrl + w
-Filme als gesehen markieren		ctrl + g
-Filme als ungesehen markieren	ctrl + n
-
-Abos löschen	Entf
-Abos ändern		Return
 
 Beschreibung anzeigen	F10
 Buttons anzeigen		F11
@@ -151,45 +138,47 @@ Buttons anzeigen		F11
 
 Tab Filme
 ==============
+ctrl + p	Film abspielen
+return		Film abspielen (in der Tabelle Filme)
+ctrl + d	Download erstellen
+
+ctrl + t	springt in die Tabelle
 ctrl + s	Die Tabelle wird nach Sender sortiert und der Focus wir auf 
 			die erste Tabellenzeile gesetzt
-ctrl + p	Film abspielen
-ctrl + d	Download erstellen
 ctrl + f	springt ins Suchfeld 
 			(entweder in der Toolbar oder "ThemaTitel" im Suchpanel wenn es 
 			angezeigt wird)
-ctrl + t	springt in die Tabelle
 ctrl + i	Infos zum Film anzeigen
 ctrl + m	Titel in der Mediensammlung suchen
 ctrl + u	Film-URL kopieren
 ctrl + h	Film-URL in "HD" kopieren (wenn nicht vorhanden, dann normale URL)
 ctrl + k	Film-URL in "Klein" kopieren (wenn nicht vorhanden, dann normale URL)
-
-in der Tabelle Filme
-----------------------
-return		Film abspielen
+ctrl + g	Filme als gesehen markieren
+ctrl + n	Filme als ungesehen markieren
 
 
 Tab Downloads
 ==============
-ctrl + t	springt in die Tabelle
 ctrl + d	Download starten
+Rücktaste	Download zurückstellen
+Entf		Download dauerhaft löschen
+ctrl + w	Downloads aktualisieren
+return		Download ändern (in der Tabelle Downloads)
+
+ctrl + t	springt in die Tabelle
 ctrl + i	Infos zum Film anzeigen
 ctrl + m	Titel in der Mediensammlung suchen
 ctrl + u	URL kopieren
-
-in der Tabelle Downloads
-----------------------
-return		Download ändern
+ctrl + g	Filme als gesehen markieren
+ctrl + n	Filme als ungesehen markieren	
 
 
 Tab Abos
 =========
-ctrl + t	springt in die Tabelle
+Entf		Abos löschen
+Return		Abos ändern (in der Tabelle Abos)
 
-in der Tabelle Abos
-----------------------
-return		Abo ändern
+ctrl + t	springt in die Tabelle
 
 
 

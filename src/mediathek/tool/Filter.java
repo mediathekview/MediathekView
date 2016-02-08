@@ -82,6 +82,7 @@ public class Filter {
                             || pruefen(themaTitelSuchen, film.arr[DatenFilm.FILM_TITEL_NR])) {
 
                         if (irgendwoSuchen.length == 0
+                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_DATUM_NR])
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_THEMA_NR])
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_TITEL_NR])
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_BESCHREIBUNG_NR])) {
