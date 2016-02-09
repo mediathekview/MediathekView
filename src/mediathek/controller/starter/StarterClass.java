@@ -671,6 +671,7 @@ public class StarterClass {
         private final DatenDownload datenDownload;
         private final Start start;
         private HttpURLConnection conn = null;
+        private static final int TIMEOUT = 20_000; //20 Sekunden
         private HttpDownloadState state = HttpDownloadState.DOWNLOAD;
         private long downloaded = 0;
         private File file = null;
@@ -837,6 +838,8 @@ public class StarterClass {
                 datenDownload.mVFilmSize.setSize(getContentLength(url));
                 datenDownload.mVFilmSize.setAktSize(0);
                 conn = (HttpURLConnection) url.openConnection();
+                conn.setConnectTimeout(TIMEOUT);
+                conn.setReadTimeout(TIMEOUT);
                 file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                 if (!cancelDownload()) {
                     setupHttpConnection(conn);

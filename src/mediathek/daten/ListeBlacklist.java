@@ -59,14 +59,6 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
     }
 
-//    public boolean change(String idx, DatenBlacklist b) {
-//        boolean ret;
-//        remove(idx);
-//        b.arr[DatenBlacklist.BLACKLIST_NR_NR] = getNr(nr++);
-//        ret = super.add(b);
-//        notifyBlack();
-//        return ret;
-//    }
     @Override
     public boolean remove(Object b) {
         boolean ret = super.remove(b);
@@ -179,13 +171,6 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     }
 
     private static long getZeitZukunftBlacklist() {
-//        try {
-//            SimpleDateFormat sdfIn = new SimpleDateFormat("dd.MM.yyyy");
-//            Date filmDate = sdfIn.parse(new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
-//            return filmDate.getTime() + (1000 * 60 * 60 * 24);
-//        } catch (ParseException ex) {
-//            return new Date().getTime();
-//        }
         return new Date().getTime();
     }
 
