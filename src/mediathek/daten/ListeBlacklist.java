@@ -218,9 +218,9 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         for (DatenBlacklist blacklistEntry : this) {
             if (Filter.filterAufFilmPruefen(blacklistEntry.arr[DatenBlacklist.BLACKLIST_SENDER_NR], blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_NR],
                     Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR])
-                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR].toLowerCase()} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR].toLowerCase().split(","),
+                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR].toLowerCase().split(","),
                     Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR])
-                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase()} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase().split(","),
+                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase().split(","),
                     new String[]{""}, 0, film, true /*auch die Länge prüfen*/
             )) {
                 return Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST));

@@ -230,19 +230,19 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                         titel = LEER;
                     } else {
                         titel = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_TITEL_NR])
-                                ? new String[]{datenAbo.arr[DatenAbo.ABO_TITEL_NR].toLowerCase()} : datenAbo.arr[DatenAbo.ABO_TITEL_NR].toLowerCase().split(",");
+                                ? new String[]{datenAbo.arr[DatenAbo.ABO_TITEL_NR]} : datenAbo.arr[DatenAbo.ABO_TITEL_NR].toLowerCase().split(",");
                     }
                     if (datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR].isEmpty()) {
                         thema = LEER;
                     } else {
                         thema = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR])
-                                ? new String[]{datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR].toLowerCase()} : datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR].toLowerCase().split(",");
+                                ? new String[]{datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR]} : datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR].toLowerCase().split(",");
                     }
                     if (datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR].isEmpty()) {
                         irgendwo = LEER;
                     } else {
                         irgendwo = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR])
-                                ? new String[]{datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR].toLowerCase()} : datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR].toLowerCase().split(",");
+                                ? new String[]{datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR]} : datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR].toLowerCase().split(",");
                     }
                     if (Filter.filterAufFilmPruefen(datenAbo.arr[DatenAbo.ABO_SENDER_NR], datenAbo.arr[DatenAbo.ABO_THEMA_NR],
                             titel,
