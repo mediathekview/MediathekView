@@ -139,7 +139,7 @@ public class Filter {
         Pattern p = null;
         try {
             if (isPattern(textSuchen)) {
-                p = Pattern.compile(textSuchen.substring(2), Pattern.CASE_INSENSITIVE);
+                p = Pattern.compile(textSuchen.substring(2), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
             }
         } catch (Exception ex) {
             p = null;
