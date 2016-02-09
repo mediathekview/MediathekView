@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.LinkedList;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
@@ -33,6 +34,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListeBlacklist;
+import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVReplaceList;
 import msearch.filmlisten.DatenFilmlisteUrl;
@@ -140,8 +142,8 @@ public class IoXmlLesen {
         return Files.exists(xmlFilePath);
     }
 
-    public static int[] importAboBlacklist(String datei, boolean abo, boolean black) {
-        int[] found = new int[]{0, 0};
+    public static int[] importAboBlacklist(String datei, boolean abo, boolean black, boolean replace) {
+        int[] found = new int[]{0, 0, 0};
         try {
             int event;
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
@@ -169,6 +171,13 @@ public class IoXmlLesen {
                             ++found[1];
                             blacklist.add(datenBlacklist);
                         }
+                    } else if (replace && parser.getLocalName().equals(MVReplaceList.REPLACELIST)) {
+                        //Ersetzungstabelle
+                        String[] sa = new String[MVReplaceList.MAX_ELEM];
+                        if (get(parser, MVReplaceList.REPLACELIST, MVReplaceList.COLUMN_NAMES, sa)) {
+                            ++found[2];
+                            Daten.mVReplaceList.list.add(sa);
+                        }
                     }
                 }
             }
@@ -179,9 +188,11 @@ public class IoXmlLesen {
         if (found[0] > 0) {
             Daten.listeAbo.aenderungMelden();
         }
+        if (found[2] > 0) {
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_REPLACELIST_CHANGED, IoXmlLesen.class.getSimpleName());
+        }
         return found;
     }
-
 
     // ##############################
     // private

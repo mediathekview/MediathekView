@@ -41,7 +41,6 @@ import mediathek.tool.MVMessageDialog;
 public class PanelImport extends PanelVorlage {
 
     //ListePsetVorlagen listeVorlagen = new ListePsetVorlagen();
-
     public PanelImport(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();
@@ -73,23 +72,31 @@ public class PanelImport extends PanelVorlage {
                 setButtonImport();
             }
         });
+        jCheckBoxErsetzungstabelle.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setButtonImport();
+            }
+        });
         final Path xmlFilePath = Daten.getMediathekXmlFilePath();
         jTextFieldPfadKonfig.setText(xmlFilePath.toAbsolutePath().toString());
     }
 
     private void importDatei(String datei) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        int[] found = IoXmlLesen.importAboBlacklist(datei, jCheckBoxAbo.isSelected(), jCheckBoxBlack.isSelected());
+        int[] found = IoXmlLesen.importAboBlacklist(datei, jCheckBoxAbo.isSelected(), jCheckBoxBlack.isSelected(), jCheckBoxErsetzungstabelle.isSelected());
         String text = "Es wurden\n"
                 + found[0] + " Abos und\n"
                 + found[1] + " Blacklisteinträge\n"
+                + found[2] + " Ersetzungen\n"
                 + "hinzugefügt";
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         MVMessageDialog.showMessageDialog(parentComponent, text, "Import", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void setButtonImport() {
-        jButtonImportDatei.setEnabled(!jTextFieldDatei.getText().isEmpty() && (jCheckBoxAbo.isSelected() || jCheckBoxBlack.isSelected()));
+        jButtonImportDatei.setEnabled(!jTextFieldDatei.getText().isEmpty() && (jCheckBoxAbo.isSelected() || jCheckBoxBlack.isSelected() || jCheckBoxErsetzungstabelle.isSelected()));
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -106,6 +113,7 @@ public class PanelImport extends PanelVorlage {
         jCheckBoxBlack = new javax.swing.JCheckBox();
         jLabel1 = new javax.swing.JLabel();
         jTextFieldPfadKonfig = new javax.swing.JTextField();
+        jCheckBoxErsetzungstabelle = new javax.swing.JCheckBox();
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Abos und Blacklist aus Datei importieren"));
 
@@ -119,7 +127,7 @@ public class PanelImport extends PanelVorlage {
         jTextArea1.setColumns(20);
         jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
-        jTextArea1.setText("Damit können Abos/Blacklist aus einer alten gesicherten Konfigurationsdatei\nimportiert werden.\n(mediathek.xml oder mediathek.xml_copy_1, mediathek.xml_copy_2, ..)\n\n\nSollen die aktuellen Abos/Blacklist durch die importierten ersetzt werden,\nsollten die aktuellen zuerst gelöscht werden.\n\nDie importierten Abos/Blacklist werden an die vorhandenen angehängt.\n");
+        jTextArea1.setText("Damit können Abos/Blacklist/Ersetzungstabelle aus einer alten gesicherten\nKonfigurationsdatei importiert werden.\n(mediathek.xml oder mediathek.xml_copy_1, mediathek.xml_copy_2, ..)\n\n\nSollen die aktuellen Einstellungen durch die importierten ersetzt werden,\nsollten die aktuellen zuerst gelöscht werden.\n\nDie importierten Abos/Blacklist/Ersetzungstabelle werden\nan die vorhandenen angehängt.\n");
         jScrollPane1.setViewportView(jTextArea1);
 
         jCheckBoxAbo.setText("Abos importieren");
@@ -130,6 +138,8 @@ public class PanelImport extends PanelVorlage {
 
         jTextFieldPfadKonfig.setEditable(false);
         jTextFieldPfadKonfig.setText("jTextField1");
+
+        jCheckBoxErsetzungstabelle.setText("Ersetzungstabelle");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -144,6 +154,10 @@ public class PanelImport extends PanelVorlage {
                         .addContainerGap()
                         .addComponent(jScrollPane1))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
                         .addContainerGap(12, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -153,16 +167,14 @@ public class PanelImport extends PanelVorlage {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonPfad))
                             .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addComponent(jCheckBoxBlack)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(jPanel6Layout.createSequentialGroup()
                                 .addComponent(jCheckBoxAbo)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 379, Short.MAX_VALUE)
-                                .addComponent(jButtonImportDatei))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addComponent(jButtonImportDatei))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jCheckBoxErsetzungstabelle)
+                                    .addComponent(jCheckBoxBlack))
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -178,10 +190,12 @@ public class PanelImport extends PanelVorlage {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButtonImportDatei)
                     .addComponent(jCheckBoxAbo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBoxBlack)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBoxErsetzungstabelle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -213,6 +227,7 @@ public class PanelImport extends PanelVorlage {
     private javax.swing.JButton jButtonPfad;
     private javax.swing.JCheckBox jCheckBoxAbo;
     private javax.swing.JCheckBox jCheckBoxBlack;
+    private javax.swing.JCheckBox jCheckBoxErsetzungstabelle;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
