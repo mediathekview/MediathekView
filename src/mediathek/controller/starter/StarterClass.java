@@ -671,7 +671,7 @@ public class StarterClass {
         private final DatenDownload datenDownload;
         private final Start start;
         private HttpURLConnection conn = null;
-        private static final int TIMEOUT = 20_000; //20 Sekunden
+        private static final int TIMEOUT = 250_000; //250 Sekunden, wie bei Firefox
         private HttpDownloadState state = HttpDownloadState.DOWNLOAD;
         private long downloaded = 0;
         private File file = null;
