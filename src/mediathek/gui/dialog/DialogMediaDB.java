@@ -178,7 +178,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
     }
 
     public void setFilter(String titel) {
-        titel = FilenameUtils.replaceLeerDateiname(titel); // mit den eingestellten Ersetzungen bearbeiten
+        titel = FilenameUtils.replaceLeerDateiname(titel, false /*pfad*/); // mit den eingestellten Ersetzungen bearbeiten
         jTextFieldSearch.setText(titel);
     }
 

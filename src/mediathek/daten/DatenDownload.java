@@ -33,7 +33,6 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVFilmSize;
-import mediathek.tool.MVFunctionSys;
 import msearch.daten.DatenFilm;
 import msearch.tool.Datum;
 
@@ -530,7 +529,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 }
             }
 
-            name = FilenameUtils.replaceLeerDateiname(name);
+            name = FilenameUtils.replaceLeerDateiname(name, false /*pfad*/);
             name = name + suff;
 
             // prüfen ob das Suffix 2x vorkommt
@@ -578,11 +577,10 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 }
             } else if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
                 // bei Downloads den Namen des Themas an den Zielpfad anhängen
-                path = GuiFunktionen.addsPfad(path, FilenameUtils.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA_NR]));
+                path = GuiFunktionen.addsPfad(path, FilenameUtils.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA_NR], true /*pfad*/));
             }
             path = replaceString(path, film); // %D ... ersetzen
-            // der vorgegebenen Pfad des Sets wird so genommen wie er ist
-            //pfad = GuiFunktionen.replaceLeerDateiname(pfad, false/* istDatei */, false /* leerEntfernen */); 
+            path = FilenameUtils.replaceLeerDateiname(path, true /*pfad*/); //zur Sicherheit nach den Ersetzungen nochmal prüfen
         }
         if (path.endsWith(File.separator)) {
             path = path.substring(0, path.length() - 1);
