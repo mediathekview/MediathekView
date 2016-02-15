@@ -22,11 +22,13 @@ public class FilenameUtils {
      * Based on http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx
      */
     public static final String REGEXP_ILLEGAL_CHARACTERS_WINDOWS = "[:\\\\/*?|<>\"]";
+    public static final String REGEXP_ILLEGAL_CHARACTERS_WINDOWS_PATH = "[:/*?|<>\"]";
 
     /**
      * Valid characters for all UNIX-like OS.
      */
     public static final String REGEXP_ILLEGAL_CHARACTERS_OTHERS = "[:\\\\/*|<>]";
+    public static final String REGEXP_ILLEGAL_CHARACTERS_OTHERS_PATH = "[:\\\\*|<>]";
 
     public static String checkDateiname(final String name, final boolean isPath) {
         // dient nur zur Anzeige für Probleme (Textfeld wird rot)
@@ -58,7 +60,7 @@ public class FilenameUtils {
             final String[] sa = ret.split(splitChar); // Regex
             for (String s : sa) {
                 if (!s.isEmpty()) {
-                    str += File.separator + convertToNativeEncoding(s);
+                    str += File.separator + convertToNativeEncoding(s, false); //sind ja nur noch die Ordnernamen
                 }
             }
             if (!ret.startsWith(File.separator)) {
@@ -69,7 +71,7 @@ public class FilenameUtils {
             }
             ret = str;
         } else {
-            ret = convertToNativeEncoding(ret);
+            ret = convertToNativeEncoding(ret, false);
         }
 
         if (isWindowsPath) {
@@ -119,10 +121,10 @@ public class FilenameUtils {
      * @param fileName The UTF-16 filename string.
      * @return Natively encoded string for the OS.
      */
-    private static String convertToNativeEncoding(String fileName) {
+    private static String convertToNativeEncoding(String fileName, boolean isPath) {
         String ret = fileName;
 
-        ret = removeIllegalCharacters(ret);
+        ret = removeIllegalCharacters(ret, isPath);
 
         //convert our filename to OS encoding...
         try {
@@ -151,15 +153,16 @@ public class FilenameUtils {
      * @param input The input string
      * @return Cleaned-up string.
      */
-    private static String removeIllegalCharacters(final String input) {
+    private static String removeIllegalCharacters(final String input, boolean isPath) {
         String ret = input;
 
         switch (MVFunctionSys.getOs()) {
             case MAC:
+            case LINUX:
                 //On OSX the VFS take care of writing correct filenames to FAT filesystems...
                 //Just remove the default illegal characters
                 ret = removeStartingDots(ret);
-                ret = ret.replaceAll(REGEXP_ILLEGAL_CHARACTERS_OTHERS, "_");
+                ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_OTHERS_PATH : REGEXP_ILLEGAL_CHARACTERS_OTHERS, "_");
                 break;
 
             case WIN64:
@@ -167,14 +170,14 @@ public class FilenameUtils {
                 //we need to be more careful on Windows when using e.g. FAT32
                 //Therefore be more conservative by default and replace more characters.
                 ret = removeWindowsTrailingDots(ret);
-                ret = ret.replaceAll(REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
+                ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_WINDOWS_PATH : REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
                 break;
 
             default:
                 //we need to be more careful on Linux when using e.g. FAT32
                 //Therefore be more conservative by default and replace more characters.
                 ret = removeStartingDots(ret);
-                ret = ret.replaceAll(REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
+                ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_WINDOWS_PATH : REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
                 break;
         }
 
@@ -187,7 +190,7 @@ public class FilenameUtils {
      * @param fileName The UTF-16 filename string.
      * @return US-ASCII encoded string for the OS.
      */
-    private static String convertToASCIIEncoding(String fileName) {
+    private static String convertToASCIIEncoding(String fileName, boolean isPath) {
         String ret = fileName;
 
         ret = ret.replace("ä", "ae");
@@ -201,7 +204,7 @@ public class FilenameUtils {
         // ein Versuch zu vereinfachen
         ret = cleanUnicode(ret);
 
-        ret = removeIllegalCharacters(ret);
+        ret = removeIllegalCharacters(ret, isPath);
 
         //convert our filename to OS encoding...
         try {
@@ -309,22 +312,39 @@ public class FilenameUtils {
      * Entferne verbotene Zeichen aus Dateiname.
      *
      * @param name Dateiname
+     * @param isPath
      * @return Bereinigte Fassung
      */
-    public static String replaceLeerDateiname(String name) {
+    public static String replaceLeerDateiname(String name, boolean isPath) {
         String ret = name;
+        boolean isWindowsPath = false;
+        if (SystemInfo.isWindows() && isPath && ret.length() > 1 && ret.charAt(1) == ':') {
+            // damit auch "d:" und nicht nur "d:\" als Pfad geht
+            isWindowsPath = true;
+            ret = ret.replaceFirst(":", ""); // muss zum Schluss wieder rein, kann aber so nicht ersetzt werden
+        }
 
         // zuerst die Ersetzungstabelle mit den Wünschen des Users
         if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE))) {
-            ret = Daten.mVReplaceList.replace(ret, false /*path*/);
+            ret = Daten.mVReplaceList.replace(ret, isPath);
         }
 
         // und wenn gewünscht: "NUR Ascii-Zeichen"
         if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ONLY_ASCII))) {
-            return convertToASCIIEncoding(ret);
+            ret = convertToASCIIEncoding(ret, isPath);
         } else {
-            return convertToNativeEncoding(ret);
+            ret = convertToNativeEncoding(ret, isPath);
         }
+
+        if (isWindowsPath) {
+            // c: wieder herstellen
+            if (ret.length() == 1) {
+                ret = ret + ":";
+            } else if (ret.length() > 1) {
+                ret = ret.charAt(0) + ":" + ret.substring(1);
+            }
+        }
+        return ret;
     }
 
 }

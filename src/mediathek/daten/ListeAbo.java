@@ -67,7 +67,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     public boolean addAbo(String filmSender, String filmThema, String filmTitel, String filmThemaTitel, String irgendwo, int mindestdauer, String namePfad) {
         //abo anlegen, oder false wenns schon existiert
         boolean ret = false;
-        namePfad = FilenameUtils.replaceLeerDateiname(namePfad);
+        namePfad = FilenameUtils.replaceLeerDateiname(namePfad, false /*nur ein Ordner*/);
         DatenAbo datenAbo = new DatenAbo(namePfad /* name */, filmSender, filmThema, filmTitel, filmThemaTitel, irgendwo, mindestdauer, namePfad, "");
         DialogEditAbo dialogEditAbo = new DialogEditAbo(daten.mediathekGui, true, daten, datenAbo);
         dialogEditAbo.setVisible(true);
