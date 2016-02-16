@@ -614,13 +614,13 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 laenge = Integer.parseInt(pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_FIELD_NR]);
             }
         }
-        field = getField(film.arr[DatenFilm.FILM_THEMA_NR], laenge);
+        field = cleanField(getField(film.arr[DatenFilm.FILM_THEMA_NR], laenge));
         s = s.replace("%t", field);
-        field = getField(film.arr[DatenFilm.FILM_TITEL_NR], laenge);
+        field = cleanField(getField(film.arr[DatenFilm.FILM_TITEL_NR], laenge));
         s = s.replace("%T", field);
-        field = getField(film.arr[DatenFilm.FILM_SENDER_NR], laenge);
+        field = cleanField(getField(film.arr[DatenFilm.FILM_SENDER_NR], laenge));
         s = s.replace("%s", field);
-        field = getField(GuiFunktionen.getDateiName(this.arr[DatenDownload.DOWNLOAD_URL_NR]), laenge);
+        field = cleanField(getField(GuiFunktionen.getDateiName(this.arr[DatenDownload.DOWNLOAD_URL_NR]), laenge));
         s = s.replace("%N", field);
 
         //Felder mit fester Länge werden immer ganz geschrieben
@@ -661,6 +661,16 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 + "." + GuiFunktionen.getDateiSuffix(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
 
         return s;
+    }
+
+    private String cleanField(String name) {
+        if (!name.equals(FilenameUtils.replaceLeerDateiname(name, false /*pfad*/))) {
+            System.out.println(name);
+            System.out.println(FilenameUtils.replaceLeerDateiname(name, false /*pfad*/));
+            System.out.println("Tag geändert");
+        }
+        name = FilenameUtils.replaceLeerDateiname(name, false /*pfad*/);
+        return name;
     }
 
     private String getField(String name, int length) {
