@@ -375,7 +375,7 @@ public class DialogBeendenZeit extends JDialog {
 
         cbShutdownComputer.setText("Rechner herunterfahren");
 
-        btnCancel.setText("Abbrechen");
+        btnCancel.setText("Zurück");
 
         jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
 
