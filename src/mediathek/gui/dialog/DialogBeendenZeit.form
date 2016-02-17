@@ -112,7 +112,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnCancel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Abbrechen"/>
+        <Property name="text" type="java.lang.String" value="Zur&#xfc;ck"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonHilfe">
