@@ -43,16 +43,18 @@ public class IoXmlSchreiben {
 
     private static XMLStreamWriter writer;
     private static OutputStreamWriter out = null;
-    private static Path xmlFilePath = Daten.getMediathekXmlFilePath();
+    private static Path xmlFilePath;
 
     public static synchronized void datenSchreiben() {
+        xmlFilePath = Daten.getMediathekXmlFilePath();
+        Log.systemMeldung("Daten Schreiben nach: " + xmlFilePath.toString());
         xmlDatenSchreiben();
     }
 
     public static synchronized void exportPset(DatenPset[] pSet, String datei) {
         try {
-            Log.systemMeldung("Pset exportieren");
             xmlFilePath = Paths.get(datei);
+            Log.systemMeldung("Pset exportieren nach: " + xmlFilePath.toString());
             xmlSchreibenStart();
             xmlSchreibenPset(pSet);
             xmlSchreibenEnde();
@@ -63,7 +65,6 @@ public class IoXmlSchreiben {
 
     private static void xmlDatenSchreiben() {
         try {
-            Log.systemMeldung("Daten Schreiben");
             xmlSchreibenStart();
 
             writer.writeCharacters("\n\n");
