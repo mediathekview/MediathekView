@@ -213,7 +213,10 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                             if (!get(parser, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr)) {
                                 datenPset = null;
                             } else {
-                                liste.add(datenPset);
+                                if (!datenPset.isEmpty()) {
+                                    //kann beim Einlesen der Konfigdatei vorkommen
+                                    liste.add(datenPset);
+                                }
                             }
                             break;
                         case DatenProg.PROGRAMM:
