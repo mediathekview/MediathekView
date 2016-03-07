@@ -184,7 +184,6 @@ public class MediathekGui extends JFrame {
         final int maxSteps = 11; // KEEP THIS CURRENT!
 
         splashScreenProgress++;
-        //System.out.println("HOW_MANY_STEPS: " + splashScreenProgress);
 
         splashScreenContext.setRenderingHint(
                 RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -822,7 +821,6 @@ public class MediathekGui extends JFrame {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BANDBREITE, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
-                System.out.println("Ping!!!!!!");
                 setSlider();
             }
         });

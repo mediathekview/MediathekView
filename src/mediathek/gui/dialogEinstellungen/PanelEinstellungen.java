@@ -242,7 +242,6 @@ public class PanelEinstellungen extends PanelVorlage {
             File[] files = new File(MVFunctionSys.pathProgramIcons()).listFiles();
             if (files != null) {
                 for (File file : files) {
-                    // System.out.print(files[i].getAbsolutePath());
                     if (file.isDirectory()) {
                         model.addElement(file.getName());
                     }

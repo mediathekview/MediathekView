@@ -664,11 +664,11 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     private String cleanField(String name) {
-        if (!name.equals(FilenameUtils.replaceLeerDateiname(name, false /*pfad*/))) {
-            System.out.println(name);
-            System.out.println(FilenameUtils.replaceLeerDateiname(name, false /*pfad*/));
-            System.out.println("Tag geändert");
-        }
+//        if (!name.equals(FilenameUtils.replaceLeerDateiname(name, false /*pfad*/))) {
+//            System.out.println(name);
+//            System.out.println(FilenameUtils.replaceLeerDateiname(name, false /*pfad*/));
+//            System.out.println("Tag geändert");
+//        }
         name = FilenameUtils.replaceLeerDateiname(name, false /*pfad*/);
         return name;
     }
