@@ -49,6 +49,7 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
@@ -104,6 +105,10 @@ public class MediathekGui extends JFrame {
     private final JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
     private final JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
     private final JPanel jPanelAnzahl = new JPanel();
+    private JLabel jLabelBandbreite = new JLabel("Bandbreite pro Download");
+//    private final JLabel jLabelBandbreiteKb = new JLabel("");
+    private final JPanel jPanelBandbreite = new JPanel();
+    private final JSlider jSliderBandbreite = new JSlider();
     private PanelVorlage panelMeldungen = new PanelVorlage(daten, this);
     private JSplitPane splitPane = null;
     private final MVToolBar mVToolBar;
@@ -434,6 +439,7 @@ public class MediathekGui extends JFrame {
                 jMenuItemBlacklist.setEnabled(true);
                 jMenuItemFilmeGesehen.setEnabled(true);
                 jMenuItemFilmeUngesehen.setEnabled(true);
+                jMenuItemFilmeMediensammlung.setEnabled(true);
                 break;
             case MVToolBar.TOOLBAR_TAB_DOWNLOADS:
                 buttonAus();
@@ -453,8 +459,11 @@ public class MediathekGui extends JFrame {
                 jMenuItemDownloadGesehen.setEnabled(true);
                 jMenuItemDownloadUngesehen.setEnabled(true);
                 jMenuItemDownloadShutDown.setEnabled(true);
+                jMenuItemDownloadMediensammlung.setEnabled(true);
                 jSpinnerAnzahl.setEnabled(true);
                 jLabelAnzahl.setEnabled(true);
+                jSliderBandbreite.setEnabled(true);
+                jLabelBandbreite.setEnabled(true);
                 break;
             case MVToolBar.TOOLBAR_TAB_ABOS:
                 buttonAus();
@@ -494,6 +503,7 @@ public class MediathekGui extends JFrame {
         jMenuItemBlacklist.setEnabled(false);
         jMenuItemFilmeGesehen.setEnabled(false);
         jMenuItemFilmeUngesehen.setEnabled(false);
+        jMenuItemFilmeMediensammlung.setEnabled(false);
         jMenuItemDownloadsAktualisieren.setEnabled(false);
         jMenuItemDownloadAbspielen.setEnabled(false);
         jMenuItemDownloadsAufraeumen.setEnabled(false);
@@ -510,8 +520,11 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadUngesehen.setEnabled(false);
         jMenuItemDownloadVorziehen.setEnabled(false);
         jMenuItemDownloadShutDown.setEnabled(false);
+        jMenuItemDownloadMediensammlung.setEnabled(false);
         jSpinnerAnzahl.setEnabled(false);
         jLabelAnzahl.setEnabled(false);
+        jSliderBandbreite.setEnabled(false);
+        jLabelBandbreite.setEnabled(false);
         jMenuItemAbosEinschalten.setEnabled(false);
         jMenuItemAbosAusschalten.setEnabled(false);
         jMenuItemAbosLoeschen.setEnabled(false);
@@ -752,9 +765,23 @@ public class MediathekGui extends JFrame {
         }
     }
 
+    private void setSlider() {
+        MVDownloadInfo.setSliderBandwith(jSliderBandbreite, null);
+        setSliderText();
+    }
+
+    private void setSliderText() {
+        String s = MVDownloadInfo.getTextBandwith();
+        s = " [" + s + "]: ";
+        while (s.length() < 20) {
+            s = s + " ";
+        }
+        jLabelBandbreite.setText("Bandbreite pro Download" + s);
+    }
+
     protected void initMenue() {
-        initSpinner();
         // Anzahl gleichzeitiger Downlaods
+        initSpinner();
         jPanelAnzahl.setLayout(new BorderLayout());
         jPanelAnzahl.add(jLabelAnzahl, BorderLayout.WEST);
         jPanelAnzahl.add(jSpinnerAnzahl, BorderLayout.EAST);
@@ -773,8 +800,34 @@ public class MediathekGui extends JFrame {
                 initSpinner();
             }
         });
-        //jMenuDownload.add(jPanelAnzahl, 14);
         jMenuDownload.add(jPanelAnzahl);
+
+        // Bandbreite pro Downlaods
+        jPanelBandbreite.setLayout(new BorderLayout());
+        jPanelBandbreite.add(jLabelBandbreite, BorderLayout.WEST);
+        jPanelBandbreite.add(jSliderBandbreite, BorderLayout.EAST);
+        jLabelBandbreite.setIcon(GetIcon.getProgramIcon("bandwith_16.png"));
+        jSliderBandbreite.setMinimum(5); //50 kByte/s
+        jSliderBandbreite.setMaximum(100); //1.000 kByte/s
+        setSlider();
+        jSliderBandbreite.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                int bandbreiteKByte = jSliderBandbreite.getValue() * 10;
+                Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(bandbreiteKByte));
+                setSliderText();
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, MediathekGui.class.getSimpleName());
+            }
+        });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BANDBREITE, MediathekGui.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                System.out.println("Ping!!!!!!");
+                setSlider();
+            }
+        });
+        jMenuDownload.add(jPanelBandbreite);
+
         // Datei
         jMenuItemEinstellungen.addActionListener(new ActionListener() {
             @Override

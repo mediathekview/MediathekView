@@ -28,6 +28,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.controller.starter.MVBandwidthTokenBucket;
 import mediathek.daten.Daten;
+import mediathek.gui.MVDownloadInfo;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
@@ -118,26 +119,7 @@ public class PanelDownload extends PanelVorlage {
 
     private void setSliderBandwith() {
         stopBeob = true;
-        int bandbreiteKByte;
-        try {
-            bandbreiteKByte = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
-        } catch (Exception ex) {
-            bandbreiteKByte = MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE;
-            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE + "");
-        }
-        jSliderBandbreite.setValue(bandbreiteKByte / 10);
-        if (bandbreiteKByte == MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE) {
-            jLabelBandwidth.setText("aus");
-        } else {
-            jLabelBandwidth.setText(bandbreiteKByte + " kByte/s");
-        }
-        if (bandbreiteKByte > MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE) {
-            jTextFieldWarnung.setForeground(Color.red);
-            jLabelBandwidth.setForeground(Color.red);
-        } else {
-            jTextFieldWarnung.setForeground(Color.black);
-            jLabelBandwidth.setForeground(Color.black);
-        }
+        MVDownloadInfo.setSliderBandwith(jSliderBandbreite, jLabelBandwidth);
         stopBeob = false;
     }
 

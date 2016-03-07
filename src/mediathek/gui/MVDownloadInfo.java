@@ -34,6 +34,8 @@ import java.util.TimerTask;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
@@ -124,7 +126,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getSimpleName()) {
             @Override
             public void ping() {
-                setSliderBandwith();
+                setSlider();
             }
         });
         jEditorPaneInfo.setText("");
@@ -134,7 +136,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         jSliderBandwidth.setMinimum(5); //50 kByte/s
         jSliderBandwidth.setMaximum(100); //1_000 kByte/s
         jSliderBandwidth.setToolTipText("");
-        setSliderBandwith();
+        setSlider();
         jSliderBandwidth.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -240,27 +242,51 @@ public class MVDownloadInfo extends javax.swing.JPanel {
 
     }
 
-    private void setSliderBandwith() {
+    private void setSlider() {
         stopBeob = true;
+        setSliderBandwith(jSliderBandwidth, jLabelBandwidth);
+        stopBeob = false;
+
+    }
+
+    public static String setSliderBandwith(JSlider slider, JLabel label) {
         int bandbreiteKByte;
+        String ret;
         try {
             bandbreiteKByte = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
         } catch (Exception ex) {
             bandbreiteKByte = MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE;
             Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE + "");
         }
-        jSliderBandwidth.setValue(bandbreiteKByte / 10);
+        slider.setValue(bandbreiteKByte / 10);
+
+        ret = getTextBandwith();
+        if (label != null) {
+            label.setText(ret);
+            if (bandbreiteKByte > MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE) {
+                label.setForeground(Color.red);
+            } else {
+                label.setForeground(Color.black);
+            }
+        }
+        return ret;
+    }
+
+    public static String getTextBandwith() {
+        int bandbreiteKByte;
+        String ret;
+        try {
+            bandbreiteKByte = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
+        } catch (Exception ex) {
+            bandbreiteKByte = MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE;
+            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE + "");
+        }
         if (bandbreiteKByte == MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE) {
-            jLabelBandwidth.setText("aus");
+            ret = "aus";
         } else {
-            jLabelBandwidth.setText(bandbreiteKByte + " kByte/s");
+            ret = bandbreiteKByte + " kByte/s";
         }
-        if (bandbreiteKByte > MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE) {
-            jLabelBandwidth.setForeground(Color.red);
-        } else {
-            jLabelBandwidth.setForeground(Color.black);
-        }
-        stopBeob = false;
+        return ret;
     }
 
     /**
