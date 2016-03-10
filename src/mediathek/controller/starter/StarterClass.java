@@ -701,14 +701,14 @@ public class StarterClass {
          * @return Length in bytes or -1 on error.
          */
         private long getContentLength(final URL url) {
-            final int TIMEOUT = 5000; //ms, beim Start eines Downloads
+            final int TIMEOUT_LENGTH = 5000; //ms, beim Start eines Downloads
             long ret = -1;
             HttpURLConnection connection = null;
             try {
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestProperty("User-Agent", Daten.getUserAgent());
-                connection.setReadTimeout(TIMEOUT);
-                connection.setConnectTimeout(TIMEOUT);
+                connection.setReadTimeout(TIMEOUT_LENGTH);
+                connection.setConnectTimeout(TIMEOUT_LENGTH);
                 if (connection.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST) {
                     ret = connection.getContentLengthLong();
                 }
