@@ -1,12 +1,12 @@
 ============================================================
-Änderungen in der Version 10:
+Änderungen ab der Version 10:
 -------------------------------
 
 Die Sets zum Abspielen und Aufzeichnen der Sendungen haben sich
-geändert! Das Abspielen oder Aufzeichnen klappt mit den alten
-Einstellungen nicht mehr.
+ab der Version geändert!
+Das Abspielen oder Aufzeichnen klappt mit den alten Einstellungen nicht mehr.
 
-Beim ersten Start der neuen Version wird der Update der Sets
+Beim ersten Start der Version (ab Verson 10) wird der Update der Sets
 angeboten und sollte auch vorgenommen werden.
 
 In den Einstellungen->"Set bearbeiten" oder Einstellungen->"Set importieren"

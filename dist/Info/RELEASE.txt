@@ -18,6 +18,25 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+	# Version 11
+	- Tab Download: neuer Menüpunkt: Filme als gesehen/ungesehen markieren
+	- Set: Neuer Schalter für Pfad, Dateiname: %a, %b
+	- Starteinstellungen für FreeBSD
+	- Tab Filme: Markierte Filme bei Filterwechsel
+	- es wurden ein paar Fehler behoben (-auto und kein Desktop/X )
+	- Doppelklick zwischen die Tabellenspalten (Filme, Download, Abo) stellt 
+	die Spaltenbreite automatisch ein
+	- Tab Filme: neuer Menüpunkt: Filme als gesehen/ungesehen markieren
+	- DW, neuer Sender
+	- Hotkeys erweitert/angepasst
+	- Möglichkeit einen externen Downloadmanager zu verwenden
+	- Funktionalität zum Konvertieren der XML-Untertitel der öffentlich-rechtlichen 
+	Sender in das von VLC unterstützte SRT-Format
+	- Filter "irgendwo" sucht jetzt auch im Feld "Datum"
+	- Import der Ersetzungstabelle ist jetzt möglich
+	- Verbesserungen beim Download
+	- Einstellung der Bandbreite im Menü "Download"
+
 	# Version 10
 	- Status "Film neu" bleibt nach Neustart erhalten
 	- Es könne Untertitel zu Filmen geladen werden (wo verfügbar)
