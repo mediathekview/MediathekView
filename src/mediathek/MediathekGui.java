@@ -806,7 +806,6 @@ public class MediathekGui extends JFrame {
         jMenuDownload.add(jPanelAnzahl);
 
         // Bandbreite pro Downlaods
-//        jMenuDownload.add(new javax.swing.JPopupMenu.Separator());
         jPanelBandbreite.setLayout(new BorderLayout());
         jPanelBandbreite.setBorder(new EmptyBorder(3, 5, 3, 5));
         jPanelBandbreite.add(jLabelBandbreite, BorderLayout.WEST);
