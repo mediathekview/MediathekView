@@ -52,11 +52,13 @@ import javax.swing.JSeparator;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
+import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mediathek.controller.CheckUpdate;
@@ -781,7 +783,9 @@ public class MediathekGui extends JFrame {
     protected void initMenue() {
         // Anzahl gleichzeitiger Downlaods
         initSpinner();
+        jMenuDownload.add(new javax.swing.JPopupMenu.Separator());
         jPanelAnzahl.setLayout(new BorderLayout());
+        jPanelAnzahl.setBorder(new EmptyBorder(3, 5, 3, 5));
         jPanelAnzahl.add(jLabelAnzahl, BorderLayout.WEST);
         jPanelAnzahl.add(jSpinnerAnzahl, BorderLayout.EAST);
         jLabelAnzahl.setIcon(GetIcon.getProgramIcon("up_down_16.png"));
@@ -802,7 +806,9 @@ public class MediathekGui extends JFrame {
         jMenuDownload.add(jPanelAnzahl);
 
         // Bandbreite pro Downlaods
+//        jMenuDownload.add(new javax.swing.JPopupMenu.Separator());
         jPanelBandbreite.setLayout(new BorderLayout());
+        jPanelBandbreite.setBorder(new EmptyBorder(3, 5, 3, 5));
         jPanelBandbreite.add(jLabelBandbreite, BorderLayout.WEST);
         jPanelBandbreite.add(jSliderBandbreite, BorderLayout.EAST);
         jLabelBandbreite.setIcon(GetIcon.getProgramIcon("bandwith_16.png"));
