@@ -19,13 +19,6 @@
  */
 package mediathek.tool;
 
-import java.awt.Component;
-import java.awt.Font;
-import javax.swing.ImageIcon;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
-
 import com.jidesoft.utils.SystemInfo;
 import mediathek.controller.Log;
 import mediathek.controller.MVUsedUrls;
@@ -35,6 +28,10 @@ import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
 
 public class CellRendererFilme extends DefaultTableCellRenderer {
 
@@ -96,21 +93,15 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             boolean start = false;
 
             /*
-             * On OS X do not change font sizes as it violates HIG...
+             * On OS X do not change fonts as it violates HIG...
              */
-            if (isSelected) {
-                if (SystemInfo.isMacOSX()) {
-                    setFont(getFont().deriveFont(Font.BOLD));
-                } else {
+            if (!SystemInfo.isMacOSX()) {
+                if (isSelected)
                     setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
-                }
-            } else {
-                if (SystemInfo.isMacOSX()) {
-                    setFont(getFont().deriveFont(Font.PLAIN));
-                } else {
+                else
                     setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
-                }
             }
+
             switch (columnModelIndex) {
                 case DatenFilm.FILM_NR_NR:
                 case DatenFilm.FILM_DATUM_NR:
