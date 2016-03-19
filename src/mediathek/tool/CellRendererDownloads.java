@@ -126,12 +126,14 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             final int columnModelIndex = table.convertColumnIndexToModel(column);
 
             DatenDownload datenDownload = (DatenDownload) table.getModel().getValueAt(rowModelIndex, DatenDownload.DOWNLOAD_REF_NR);
-            if (isSelected) {
-                // setFont(new java.awt.Font("Dialog", Font.BOLD, getFont().getSize()));
-                setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
-            } else {
-                // setFont(getFont());
-                setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
+            if (!SystemInfo.isMacOSX()) {
+                if (isSelected) {
+                    // setFont(new java.awt.Font("Dialog", Font.BOLD, getFont().getSize()));
+                    setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
+                } else {
+                    // setFont(getFont());
+                    setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
+                }
             }
 
             switch (columnModelIndex) {
