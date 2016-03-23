@@ -3,9 +3,9 @@ mit der rechten Maustaste auf einen Film:
 "Titel in der Mediensammlung suchen"
 nach einem Filmtitel durchsucht werden.
 
-Das Suchverhalten im "Dialog: Mediensammlung" kann  im
-Tab: "Einrichten" geändert werden.
-"Echtzeitsuche" bedeutet, sofortiges Suchen bei jeder Änderung im
+Das Suchverhalten im "Dialog: Mediensammlung" kann im
+Tab "Einrichten" geändert werden.
+"Echtzeitsuche" bedeutet sofortiges Suchen bei jeder Änderung im
 Feld Titel, sonst nur beim Klick auf "Suchen".
 
 "Keine Dateien mit diesem Suffix": Dateien mit einem dort

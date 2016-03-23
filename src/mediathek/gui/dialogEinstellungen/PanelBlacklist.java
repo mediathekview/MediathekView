@@ -383,7 +383,7 @@ public class PanelBlacklist extends PanelVorlage {
 
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel3.setText("Filme deren Datum in der Zukunft liegt, sind meist nur Trailer");
+        jLabel3.setText("Filme, deren Datum in der Zukunft liegt, sind meist nur Trailer");
 
         jCheckBoxZukunftNichtAnzeigen.setText("Filme mit Datum in der Zukunft nicht anzeigen");
 
@@ -420,7 +420,7 @@ public class PanelBlacklist extends PanelVorlage {
 
         jLabel12.setText("Beim Wert \"0\" werden alle Filme anzeigt.");
 
-        jLabel13.setText("Filme die keine Längenangabe haben, werden immer angezeigt.");
+        jLabel13.setText("Filme, die keine Längenangabe haben, werden immer angezeigt.");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -462,9 +462,9 @@ public class PanelBlacklist extends PanelVorlage {
 
         jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel4.setText("Geo-geblockte Filme können im jeweiligen \"Ausland\" nicht abgerufen werden.");
+        jLabel4.setText("Geogeblockte Filme können im jeweiligen \"Ausland\" nicht abgerufen werden.");
 
-        jCheckBoxGeo.setText("Filme die per Geo-Blocking gesperrt sind, nicht anzeigen");
+        jCheckBoxGeo.setText("Filme, die per Geoblocking gesperrt sind, nicht anzeigen");
 
         jLabel9.setText("(Dazu muss die eigene Position in den Einstellungen angegeben werden)");
 

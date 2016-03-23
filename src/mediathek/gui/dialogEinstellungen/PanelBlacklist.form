@@ -161,7 +161,7 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jLabel3">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Filme deren Datum in der Zukunft liegt, sind meist nur Trailer"/>
+                    <Property name="text" type="java.lang.String" value="Filme, deren Datum in der Zukunft liegt, sind meist nur Trailer"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="jCheckBoxZukunftNichtAnzeigen">
@@ -254,7 +254,7 @@
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel13">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Filme die keine L&#xe4;ngenangabe haben, werden immer angezeigt."/>
+                    <Property name="text" type="java.lang.String" value="Filme, die keine L&#xe4;ngenangabe haben, werden immer angezeigt."/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -302,12 +302,12 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jLabel4">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Geo-geblockte Filme k&#xf6;nnen im jeweiligen &quot;Ausland&quot; nicht abgerufen werden."/>
+                    <Property name="text" type="java.lang.String" value="Geogeblockte Filme k&#xf6;nnen im jeweiligen &quot;Ausland&quot; nicht abgerufen werden."/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="jCheckBoxGeo">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Filme die per Geo-Blocking gesperrt sind, nicht anzeigen"/>
+                    <Property name="text" type="java.lang.String" value="Filme, die per Geoblocking gesperrt sind, nicht anzeigen"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel9">

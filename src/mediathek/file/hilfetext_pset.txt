@@ -1,14 +1,14 @@
 
-Ein Set ist ein Satz von Hilfsprogrammen, an die eine
+Ein Set ist ein Satz von Hilfsprogrammen, an welches eine
 URL eines Films übergeben wird. Je nach Programm
 wird der Film dann aufgezeichnet oder angezeigt.
 
 ====================
 Externer Downloadmanager
 ===
-Ist das aktiviert, geht das Programm davon aus, dass das eingerichtete
-Hilsfprogramm sich um den Download komplett selbst kümmert. Für MediathekView
-ist mit dem Aufruf des Hilfsprogramms, der Download erfolgreich abgeschlossen.
+Ist dieser Punkt selektiert, geht das Programm davon aus, dass das eingerichtete
+Hilfsprogramm sich um den Download komplett selbst kümmert. Für MediathekView
+ist mit dem Aufruf des Hilfsprogramms der Download erfolgreich abgeschlossen.
 
 
 
@@ -111,7 +111,7 @@ Diese Angaben werden durch die URL ersetzt:
 %f ist die URL des Films (Original-URL)
 %F ist die URL des Films für den flvstreamer vorbereitet
 
-zwei Sterne ** werden durch den Zieldateinamen mit Pfad ersetzt.
+Zwei Sterne "**" werden durch den Zieldateinamen mit Pfad ersetzt.
 
 Zusätzlich ist im Schalter:
 %a  für den Pfad und
