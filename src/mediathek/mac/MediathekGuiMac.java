@@ -6,14 +6,18 @@ import mediathek.MediathekGui;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVConfig;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Enumeration;
 
 /**
  * User: crystalpalace1977
@@ -27,6 +31,11 @@ public class MediathekGuiMac extends MediathekGui {
      */
     private Thread osxProgressIndicatorThread = null;
 
+    /**
+     * Group manager for maximum number of Downloads Radio Buttons.
+     **/
+    private ButtonGroup group = null;
+
     public MediathekGuiMac(String[] ar) {
         super(ar);
     }
@@ -35,7 +44,6 @@ public class MediathekGuiMac extends MediathekGui {
     protected void initMenue() {
         super.initMenue();
         if (SystemInfo.isMacOSX()) {
-            // sonst gibts eine Exception
             setupUserInterfaceForOsx();
             setupAcceleratorsForOsx();
         }
@@ -59,7 +67,7 @@ public class MediathekGuiMac extends MediathekGui {
     private void setupOsxDockIconBadge() {
         //setup the badge support for displaying active downloads
         ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{
-            ListenerMediathekView.EREIGNIS_START_EVENT, ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS}, MediathekGui.class.getSimpleName()) {
+                ListenerMediathekView.EREIGNIS_START_EVENT, ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS}, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 final int activeDownloads = Daten.downloadInfos.downloadStarts[4];
@@ -158,4 +166,78 @@ public class MediathekGuiMac extends MediathekGui {
         }
     }
 
+    private int getNumberOfDownloads() {
+        int numDownloads;
+        if (Daten.mVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD).equals("")) {
+            Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
+            numDownloads = 1;
+        } else
+            numDownloads = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD));
+
+        return numDownloads;
+    }
+
+    @Override
+    protected void setupMaximumNumberOfDownloadsMenuItem() {
+        jMenuDownload.addSeparator();
+
+        final JMenu numDownloadsMenu = new JMenu("Anzahl gleichzeitiger Downloads");
+        group = new ButtonGroup();
+
+        for (int i = 1; i <= 10; i++) {
+            JRadioButtonMenuItem menuItem = new JRadioButtonMenuItem(Integer.toString(i));
+            menuItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    final AbstractButton btn = (AbstractButton) e.getSource();
+                    if (btn != null) {
+                        Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, btn.getText());
+                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
+                    }
+                }
+            });
+            group.add(menuItem);
+            numDownloadsMenu.add(menuItem);
+        }
+        jMenuDownload.add(numDownloadsMenu);
+
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                //FIXME selection is not properly changed when JFrame settings dialog is displayed...needs to be JDialog in the future...
+                //JMenuBar gets destroyed when a JFrame is shown
+                //modal JDialog will keep it
+                //System.out.println("LISTENER NUM DOWNLOADS CALLED with " + getNumberOfDownloads());
+                setupMaxDownloadButtonSelection(getNumberOfDownloads());
+            }
+        });
+
+        setupMaxDownloadButtonSelection(getNumberOfDownloads());
+    }
+
+    private void setupMaxDownloadButtonSelection(int numDownloads) {
+        if (group == null) {
+            //System.out.println("GROUP IS NULL");
+            return;
+        }
+
+        final Enumeration<AbstractButton> elem = group.getElements();
+        while (elem.hasMoreElements()) {
+            final AbstractButton btn = elem.nextElement();
+            if (btn.getText().equals(Integer.toString(numDownloads))) {
+                btn.doClick();
+                btn.setSelected(true);
+                break;
+            }
+        }
+    }
+
+    @Override
+    protected void setupBandwidthMenuItem() {
+    }
+
+    @Override
+    protected void initSpinner() {
+        //unused in OS X
+    }
 }
