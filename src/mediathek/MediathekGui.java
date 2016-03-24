@@ -20,85 +20,29 @@
 package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.SplashScreen;
-import java.awt.Toolkit;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
-import javax.swing.AbstractAction;
-import javax.swing.InputMap;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRootPane;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JSlider;
-import javax.swing.JSpinner;
-import javax.swing.JSplitPane;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import mediathek.controller.CheckUpdate;
 import mediathek.controller.Log;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
-import mediathek.gui.GuiAbo;
-import mediathek.gui.GuiDebug;
-import mediathek.gui.GuiDownloads;
-import mediathek.gui.GuiFilme;
-import mediathek.gui.MVAboutDialog;
-import mediathek.gui.MVBandwidthMonitor;
-import mediathek.gui.MVDownloadInfo;
-import mediathek.gui.MVHelpDialog;
-import mediathek.gui.MVStatusBar;
-import mediathek.gui.MVToolBar;
-import mediathek.gui.MVTray;
-import mediathek.gui.PanelVorlage;
-import mediathek.gui.dialog.DialogBeenden;
-import mediathek.gui.dialog.DialogLeer;
-import mediathek.gui.dialog.DialogMediaDB;
-import mediathek.gui.dialog.DialogStarteinstellungen;
-import mediathek.gui.dialog.MVFilmInformation;
-import mediathek.gui.dialog.MVFilmInformationLinux;
+import mediathek.gui.*;
+import mediathek.gui.dialog.*;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 import mediathek.res.GetIcon;
-import mediathek.tool.Duration;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Konstanten;
-import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVConfig;
-import mediathek.tool.MVFont;
-import mediathek.tool.MVFrame;
-import mediathek.tool.MVFunctionSys;
-import mediathek.tool.MVMessageDialog;
+import mediathek.tool.*;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
 import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 
 public class MediathekGui extends JFrame {
 
@@ -639,7 +583,7 @@ public class MediathekGui extends JFrame {
         initFrames();
     }
 
-    public void initFrames() {
+    private void initFrames() {
         // Downloads
         int nr = 1;
         if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_DOWNLOAD))) {
@@ -757,7 +701,7 @@ public class MediathekGui extends JFrame {
         initFrames();
     }
 
-    private void initSpinner() {
+    protected void initSpinner() {
         if (Daten.mVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD).equals("")) {
             jSpinnerAnzahl.setValue(1);
             Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
@@ -780,32 +724,8 @@ public class MediathekGui extends JFrame {
         jLabelBandbreite.setText("Bandbreite pro Download" + s);
     }
 
-    protected void initMenue() {
-        // Anzahl gleichzeitiger Downlaods
-        initSpinner();
-        jMenuDownload.add(new javax.swing.JPopupMenu.Separator());
-        jPanelAnzahl.setLayout(new BorderLayout());
-        jPanelAnzahl.setBorder(new EmptyBorder(3, 5, 3, 5));
-        jPanelAnzahl.add(jLabelAnzahl, BorderLayout.WEST);
-        jPanelAnzahl.add(jSpinnerAnzahl, BorderLayout.EAST);
-        jLabelAnzahl.setIcon(GetIcon.getProgramIcon("up_down_16.png"));
-        jSpinnerAnzahl.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent arg0) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD,
-                        String.valueOf(((Number) jSpinnerAnzahl.getModel().getValue()).intValue()));
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
-            }
-        });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                initSpinner();
-            }
-        });
-        jMenuDownload.add(jPanelAnzahl);
-
-        // Bandbreite pro Downlaods
+    protected void setupBandwidthMenuItem() {
+        // Bandbreite pro Downloads
         jPanelBandbreite.setLayout(new BorderLayout());
         jPanelBandbreite.setBorder(new EmptyBorder(3, 5, 3, 5));
         jPanelBandbreite.add(jLabelBandbreite, BorderLayout.WEST);
@@ -830,6 +750,38 @@ public class MediathekGui extends JFrame {
             }
         });
         jMenuDownload.add(jPanelBandbreite);
+    }
+
+    protected void setupMaximumNumberOfDownloadsMenuItem() {
+        // Anzahl gleichzeitiger Downloads
+        initSpinner();
+
+        jMenuDownload.add(new javax.swing.JPopupMenu.Separator());
+        jPanelAnzahl.setLayout(new BorderLayout());
+        jPanelAnzahl.setBorder(new EmptyBorder(3, 5, 3, 5));
+        jPanelAnzahl.add(jLabelAnzahl, BorderLayout.WEST);
+        jPanelAnzahl.add(jSpinnerAnzahl, BorderLayout.EAST);
+        jLabelAnzahl.setIcon(GetIcon.getProgramIcon("up_down_16.png"));
+        jSpinnerAnzahl.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent arg0) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD,
+                        String.valueOf(((Number) jSpinnerAnzahl.getModel().getValue()).intValue()));
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
+            }
+        });
+        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                initSpinner();
+            }
+        });
+        jMenuDownload.add(jPanelAnzahl);
+    }
+
+    protected void initMenue() {
+        setupMaximumNumberOfDownloadsMenuItem();
+        setupBandwidthMenuItem();
 
         // Datei
         jMenuItemEinstellungen.addActionListener(new ActionListener() {
@@ -1370,7 +1322,7 @@ public class MediathekGui extends JFrame {
         jMenuItemFilmAufzeichnen = new javax.swing.JMenuItem();
         jMenuItemFilterLoeschen = new javax.swing.JMenuItem();
         jMenuItemBlacklist = new javax.swing.JMenuItem();
-        jSeparator6 = new javax.swing.JPopupMenu.Separator();
+        javax.swing.JPopupMenu.Separator jSeparator6 = new javax.swing.JPopupMenu.Separator();
         jMenuItemFilmeGesehen = new javax.swing.JMenuItem();
         jMenuItemFilmeUngesehen = new javax.swing.JMenuItem();
         jMenuItemFilmeMediensammlung = new javax.swing.JMenuItem();
@@ -1393,7 +1345,7 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadUngesehen = new javax.swing.JMenuItem();
         jMenuItemDownloadMediensammlung = new javax.swing.JMenuItem();
         jMenuItemDownloadAbspielen = new javax.swing.JMenuItem();
-        jSeparator7 = new javax.swing.JPopupMenu.Separator();
+        javax.swing.JPopupMenu.Separator jSeparator7 = new javax.swing.JPopupMenu.Separator();
         jMenuItemDownloadShutDown = new javax.swing.JMenuItem();
         javax.swing.JMenu jMenuAbos = new javax.swing.JMenu();
         jMenuItemAbosEinschalten = new javax.swing.JMenuItem();
@@ -1688,7 +1640,7 @@ public class MediathekGui extends JFrame {
     private javax.swing.JMenu jMenuAnsicht;
     private javax.swing.JMenuBar jMenuBar;
     protected javax.swing.JMenu jMenuDatei;
-    private javax.swing.JMenu jMenuDownload;
+    protected javax.swing.JMenu jMenuDownload;
     protected javax.swing.JMenu jMenuHilfe;
     private javax.swing.JMenuItem jMenuItemAboNeu;
     private javax.swing.JMenuItem jMenuItemAbosAendern;
@@ -1731,8 +1683,6 @@ public class MediathekGui extends JFrame {
     private javax.swing.JPanel jPanelToolBar;
     protected javax.swing.JPopupMenu.Separator jSeparator2;
     protected javax.swing.JPopupMenu.Separator jSeparator4;
-    private javax.swing.JPopupMenu.Separator jSeparator6;
-    private javax.swing.JPopupMenu.Separator jSeparator7;
     private javax.swing.JTabbedPane jTabbedPane;
     // End of variables declaration//GEN-END:variables
 
