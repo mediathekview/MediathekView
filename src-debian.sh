@@ -18,11 +18,11 @@
 
 PKG      := mediathekview
 PKG2     := msearch
-VER      := 10
+VER      := 11
 UURL     := https://github.com/xaverW/MediathekView.git
 UURL2    := https://github.com/xaverW/MSearch.git
-COMMIT   := dd2e9ea7441cbfdc3e02737c51cf4ff51dab70c3
-COMMIT2  := f4cf87fa9100b6d38e77026e304ea07f5e41f9eb
+COMMIT   := 38be76ecf9744f2db2decd2b9411a991211dd759
+COMMIT2  := 80a208f29d3555036ab40eff3a1d6da70988db57
 
 
 .PHONY: make-orig-source

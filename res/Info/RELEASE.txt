@@ -82,7 +82,7 @@
 	- OS X: Spotlight
 	- Anzeige laufender Downloads im Tab Download
 	- Bandbreitenmonitor
-	- Progressanzeige beim Laden der Filmliste
+	- Fortschrittsanzeige beim Laden der Filmliste
 	- Beep nach Download
 	- "Datei existiert" Anfrage bei Downloads über ein Programm
 	
@@ -104,13 +104,13 @@
 	- tmp-Files wurden nicht gelöscht
 	- der Downloadpfad im Set (Basispfad) wird jetzt nicht mehr verändert
 	- die Filmbeschreibung kann direkt gespeichert werden
-	- Auräumen fertiger Downloads in der Tabelle löschte den falschen Download
+	- Aufräumen fertiger Downloads in der Tabelle löschte den falschen Download
 	- Dialog: Downloadfehler bekommt keinen Focus
 	- Filter: "7 Tage" eingefügt
 
 	# Version 5
 	- Anordnung der Filter
-	- Beenden wenn Downloads noch laufen: sofort - warten ( und anschließend Rechner heruterfahen) - Abbrechen
+	- Beenden wenn Downloads noch laufen: sofort - warten ( und anschließend Rechner herunterfahren) - Abbrechen
 	- Geoblocking: Geblockte Filme werden markiert
 	- aktuelle History im Filter: alle in der aktuellen Sitzung gestarteten Filme anzeigen lassen (und evtl. nochmal starten ..)
 	- http-Downloads können unterbrochen und fortgesetzt werden
@@ -131,7 +131,7 @@
 	- Ist ein Download fertig, kommt ein Hinweisfenster
 	- Fertig geladen Filme/Downloads können direkt im Tab Download gestartet werden (Button in der Tabelle und in der Toolbar)
 	- Ist im Tab Filme der Filter "HD" aktiv, werden die Filme in der HD-Auflösung gestartet
-	- Beim Neuladen einer Filmliste werden neue Filme in eigener Farbe in der Tabele angezeigt, es gibt auch einen Filter "nur Neue"
+	- Beim Neuladen einer Filmliste werden neue Filme in eigener Farbe in der Tabelle angezeigt, es gibt auch einen Filter "nur Neue"
 	- Filme können als gesehen/ungesehen markiert werden
 	- Der letzte Zustand im Downloaddialog "Download sofort starten" wird gespeichert und wieder verwendet (gecheckt oder nicht)
 	- Beim Anlegen eines Sets/Downloads kann man angeben, ob eine Infodatei mit den Filminfos mit gespeichert werden soll
@@ -207,7 +207,7 @@
     - das Angebot des ORF wurde etwas erweitert
     - die immer wieder mal vorkommenden Exceptions sollten weitgehend behoben sein
     und dadurch die Oberfläche nicht mehr einfrieren
-    - in der History wird die Original-Url gespeicher und abgefragt, dadurch spielt es keine Rolle mehr,
+    - in der History wird die Original-Url gespeichert und abgefragt, dadurch spielt es keine Rolle mehr,
     wenn die URLs für den flvstreamer umgeschrieben werden oder nicht
     - beim Aktualisieren der Filmliste werden bz2-komprimierte Dateien erst mal heruntergeladen, 
     dadurch stand die Anzeige am Anfang einige Zeit still und konnte nicht abgebrochen werden, das geht jetzt
@@ -229,9 +229,9 @@
     - Abo 1x um einzelne Filme über die Aboliste herunterzuladen
     - Mehr Metadaten: Sendedatum und -zeit (wo möglich)
     - Filme (Abos) die als fertig markiert wurden, können wieder gestartet werden
-    - Stopmöglichkeit für laufende Filme
+    - Stoppmöglichkeit für laufende Filme
     - Blacklist um Themen und Sender dauerhaft von der Anzeige auszunehmen
-    - History-Funktion, Markierung bereits gesehner Filme
+    - History-Funktion, Markierung bereits gesehener Filme
 
     # Version 2.3.0
     - Es kann automatisch der aktuellste Downloadserver gewählt werden.
@@ -242,7 +242,7 @@
 
     # Version 2.2.1
     - Ist ein Downloadserver nicht erreichbar, wird automatisch ein anderer gewählt
-    - Einige Sendungen sind beim ARD in besserer Auflösung (zB. Nachrichten)
+    - Einige Sendungen sind beim ARD in besserer Auflösung (z.B. Nachrichten)
     - Das Laden der Filmliste von der Senderwebsite wurde nochmals etwas überarbeitet, es wird nur noch mit
     Modem-Geschwindigkeit (max. 50 kBit je Sender, bei den Regionalsendern noch weniger) von der Senderwebsite geladen
     (es treten so keine Spitzen beim Traffic mehr auf, die Gesamtzeit hat sich dadurch nur geringfügig geändert und
@@ -272,17 +272,17 @@
     - WDR geht wieder
     - SWR ist dabei
     - Im Tab Filme kann im Suchfeld "Titel" und "Thema" (das Feld Thema muss mit der rechten Maustaste in den Edit-Modus geschaltet werden)
-    mit Reguläreren Ausdrücken gesucht werden. Dazu den Reguläreren Ausdruck hinter ein "#:" schreiben.
-    zB.: "#:.*Rätsel.*"
+    mit Regulären Ausdrücken gesucht werden. Dazu den Regulären Ausdruck hinter ein "#:" schreiben.
+    z.B.: "#:.*Rätsel.*"
     Die Regulären Ausdrücke werden auch beim Suchen der Abos beachtet
-    - Im Tab Filme kann mit Return ein Film mit dem Standardprogramm gestartet weren
+    - Im Tab Filme kann mit Return ein Film mit dem Standardprogramm gestartet werden
 
     # Version 2.1.2
     - Arte verwendet für den Flashplayer ein swf-File, dieses kann über den Parameter "-a" oder "-A" in den Programmpfad eingefügt werden.
-    "-a" ergibt zB. "http://videos.arte.tv/blob/web/i18n/view/player_8-3188338-data-4797751.swf" und
+    "-a" ergibt z.B. "http://videos.arte.tv/blob/web/i18n/view/player_8-3188338-data-4797751.swf" und
     "-A" ergibt "-W http://videos.arte.tv/blob/web/i18n/view/player_8-3188338-data-4797751.swf"
-    Dieses File kann zB. das Programm rtmpdump auswerten. Es kommt dann nicht zu den Abbrüchen beim Aufzeichnen.
-    zB. Programm: "/usr/bin/rtmpdump"
+    Dieses File kann z.B. das Programm rtmpdump auswerten. Es kommt dann nicht zu den Abbrüchen beim Aufzeichnen.
+    z.B. Programm: "/usr/bin/rtmpdump"
       Schalter  "%f %A -o ** --resume"
     - WDR ist neu hinzugekommen
 
@@ -291,9 +291,9 @@
 
     # Version 2.1.0
     - Beim Suchen kann das Feld Thema zwischen "Thema enthält die Zeichenfolge" und "Thema ist exakt die Zeichenfolge" durch einen klick mit der
-    rechten Maustaste auf das Suchfeld "Thema" umgestellt werden, wird ein Abo angelgt, verhält es sich bei dem Abo dann genauso
+    rechten Maustaste auf das Suchfeld "Thema" umgestellt werden, wird ein Abo angelegt, verhält es sich bei dem Abo dann genauso
     - Die Liste der Filme kann ausgedruckt werden, rechte Maustaste auf die Tabelle
-    - Es kann ein "Standardprogramm" festgelgt werden. In der Tabelle mit den Filmen (im Tab Filme oder im Tab Abo) kann durch einen Doppelklick auf einen Film,
+    - Es kann ein "Standardprogramm" festgelegt werden. In der Tabelle mit den Filmen (im Tab Filme oder im Tab Abo) kann durch einen Doppelklick auf einen Film,
     dieser mit dem Standardprogramm abgespielt werden.
     - Arte hat die Filme auf Flash umgestellt. Der flvStreamer kann die Filme laden, bricht aber immer mal wieder ab. Wenn man den flvStreamer mit der
     Option --resume verwendet, kann man einen Film im Fehlerfall einfach wieder starten. Der Download startet dann an der Stelle und wird weitergeführt.
@@ -306,9 +306,9 @@
     - Die Änderung der Einstellung "RTMP-Protokoll: Url für flvstreamer vorbereiten" wirkt sich direkt auf die URLs der Filme aus, die Filmliste muss nicht mehr neu geladen werden
 
     # Version 2.0.0
-    - Da sich die Einstllungsmöglichkeiten für die Programme (zB. VLC) geändert haben, müssen sie neu angelegt werden. Beim Start der
+    - Da sich die Einstellungsmöglichkeiten für die Programme (z.B. VLC) geändert haben, müssen sie neu angelegt werden. Beim Start der
     neuen Version werden ein paar Standardwerte gesetzt. Wer aus der alten Version Einstellungen übernehmen will, kann beide Versionen
-    gleichzeitig öffnen und die Einstellungen übertragen. Angelgte Abos und Podcasts bleiben erhalten.
+    gleichzeitig öffnen und die Einstellungen übertragen. Angelegte Abos und Podcasts bleiben erhalten.
     ---> Die Einstellungen des zuletzt geschlossenen Programms werden gespeichert. Die alte Version kann mit den neuen Einstellungen nicht
         mehr gestartet werden.
     - Programmgruppen:
@@ -324,19 +324,19 @@
     Es können so die Daten auf mehrere Rechner verteilt werden.
     - Podcasts können von Podster.de geladen werden
     - ARD und SF haben Filme im Angebot, die nicht als Stream sondern als Datei zum direkten Download
-    angeboten werden. In den Einstellungen kann man angeben, auf werlche Dateien das zutrifft. Diese Dateien
-    werden beim Download anders behandelt. Deswegen hat sich beim Einrichten der Programme zum Download (zB. VLC) etwas
+    angeboten werden. In den Einstellungen kann man angeben, auf welche Dateien das zutrifft. Diese Dateien
+    werden beim Download anders behandelt. Deswegen hat sich beim Einrichten der Programme zum Download (z.B. VLC) etwas
     geändert. Bitte Anleitung beachten.
 
     # Version 1.5.0
     - ARD geht wieder. Es werden die Filme die als Podcast angeboten werden, angezeigt.
     - Die Liste der Filme wird in einer eigenen Datei gespeichert. Da wird dann noch eine Funktion zum Importieren und Exportieren kommen.
-    - Die Auto-Funtion lädt jetzt alle Sender und Podcasts, es kann so alles automatisch aktuell gehalten werden.
+    - Die Auto-Funktion lädt jetzt alle Sender und Podcasts, es kann so alles automatisch aktuell gehalten werden.
 
     # Version 1.4.2
     - Beim Neuladen der Filme oder beim Neuladen eines Themas bleiben Filtereinstellungen erhalten
-    - Wenn mehrere Filme markiert sind und ein Mediaplayer (zB. VLC) gestartet wird, werden alle URL's in der Variablen
-    %f übergeben (zB. www.url.de/film1 www.url2.de/film2 www.url3.de/film3"). Beim VLC werden dann alle Filme in die Wiedergabeliste
+    - Wenn mehrere Filme markiert sind und ein Mediaplayer (z.B. VLC) gestartet wird, werden alle URL's in der Variablen
+    %f übergeben (z.B. www.url.de/film1 www.url2.de/film2 www.url3.de/film3"). Beim VLC werden dann alle Filme in die Wiedergabeliste
     eingetragen.
 
     # Version 1.4.1
@@ -351,10 +351,10 @@
     - Bei den Abos können jetzt mehrere Programme zum Download angegeben werden (bitte in der Anleitung nachlesen)
 
     # Version 1.2.1
-    - Ard läuft wieder
+    - ARD läuft wieder
 
     # Version 1.2.0
-    - Die Verwendung der Programmschalter bei den Abos hat sich ewas geändert, bitte Anleitung lesen.
+    - Die Verwendung der Programmschalter bei den Abos hat sich etwas geändert, bitte Anleitung lesen.
     - Es gibt neue Schalter: %t, %T, %D, -> Anleitung
     - Rechtsklick auf die Tabelle mit den Filmen kopiert die URL in die Zwischenablage
     - Es kann ein Proxyserver eingetragen werden
@@ -379,7 +379,7 @@
     - das Speichern beim Beenden unter MacOs sollte jetzt gehen
 
     # Version 0.9.2
-    - Bei Arte gabs unter Windows Probleme
+    - Bei Arte gab es unter Windows Probleme
     - Die Umlaute sollten unter Windows jetzt stimmen
 
     # Version 0.9.1
