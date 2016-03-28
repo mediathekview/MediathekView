@@ -73,7 +73,7 @@ java -jar MediathekView.jar Einstellungen/.mediathek3
 Das Programm verwendet das Verzeichnis "Einstellungen" (relativ zur Programmdatei)
 oder "c:\temp" für die Einstellungen.
 Die Programmeinstellungen (Filmliste, Einstellungen, gesehene Filme) werden 
-standardmässig im Home-Verzeichnis (Benutzer-Verzeichnis) in einem Ordner ".mediathek3" 
+standardmäßig im Home-Verzeichnis (Benutzer-Verzeichnis) in einem Ordner ".mediathek3" 
 gespeichert (beim Start ohne die Angabe eines Pfades).
 
 java -jar MediathekView.jar -v
@@ -191,7 +191,7 @@ Build
 Wer das Programm selbst übersetzten will, sollte sich Netbeans installieren:
 http://www.netbeans.org/
 
-Die Quelltexte gibts hier (Repository: MediathekView):
+Die Quelltexte gibt es hier (Repository: MediathekView):
 https://github.com/xaverW
 
 In Netbeans ein neues Projekt "with existing Sources" anlegen und den Ordner mit 
