@@ -148,43 +148,6 @@ public class FilenameUtils {
     }
 
     /**
-     * Remove illegal characters from String based on current OS.
-     *
-     * @param input The input string
-     * @return Cleaned-up string.
-     */
-    private static String removeIllegalCharacters(final String input, boolean isPath) {
-        String ret = input;
-
-        switch (MVFunctionSys.getOs()) {
-            case MAC:
-            case LINUX:
-                //On OSX the VFS take care of writing correct filenames to FAT filesystems...
-                //Just remove the default illegal characters
-                ret = removeStartingDots(ret);
-                ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_OTHERS_PATH : REGEXP_ILLEGAL_CHARACTERS_OTHERS, "_");
-                break;
-
-            case WIN64:
-            case WIN32:
-                //we need to be more careful on Windows when using e.g. FAT32
-                //Therefore be more conservative by default and replace more characters.
-                ret = removeWindowsTrailingDots(ret);
-                ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_WINDOWS_PATH : REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
-                break;
-
-            default:
-                //we need to be more careful on Linux when using e.g. FAT32
-                //Therefore be more conservative by default and replace more characters.
-                ret = removeStartingDots(ret);
-                ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_WINDOWS_PATH : REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
-                break;
-        }
-
-        return ret;
-    }
-
-    /**
      * Convert a filename from Java´s native UTF-16 to US-ASCII character encoding.
      *
      * @param fileName The UTF-16 filename string.
@@ -306,6 +269,44 @@ public class FilenameUtils {
             }
         }
         return r;
+    }
+
+    /**
+     * Remove illegal characters from String based on current OS.
+     *
+     * @param input The input string
+     * @param isPath
+     * @return Cleaned-up string.
+     */
+    public static String removeIllegalCharacters(final String input, boolean isPath) {
+        String ret = input;
+
+        switch (MVFunctionSys.getOs()) {
+            case MAC:
+            case LINUX:
+                //On OSX the VFS take care of writing correct filenames to FAT filesystems...
+                //Just remove the default illegal characters
+                ret = removeStartingDots(ret);
+                ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_OTHERS_PATH : REGEXP_ILLEGAL_CHARACTERS_OTHERS, "_");
+                break;
+
+            case WIN64:
+            case WIN32:
+                //we need to be more careful on Windows when using e.g. FAT32
+                //Therefore be more conservative by default and replace more characters.
+                ret = removeWindowsTrailingDots(ret);
+                ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_WINDOWS_PATH : REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
+                break;
+
+            default:
+                //we need to be more careful on Linux when using e.g. FAT32
+                //Therefore be more conservative by default and replace more characters.
+                ret = removeStartingDots(ret);
+                ret = ret.replaceAll(isPath ? REGEXP_ILLEGAL_CHARACTERS_WINDOWS_PATH : REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "_");
+                break;
+        }
+
+        return ret;
     }
 
     /**

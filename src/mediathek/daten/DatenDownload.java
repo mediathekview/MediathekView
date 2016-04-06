@@ -181,7 +181,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_THEMA_NR] = film.arr[DatenFilm.FILM_THEMA_NR];
         arr[DOWNLOAD_TITEL_NR] = film.arr[DatenFilm.FILM_TITEL_NR];
         arr[DOWNLOAD_FILM_URL_NR] = film.arr[DatenFilm.FILM_URL_NR];
-//        arr[DOWNLOAD_URL_AUTH_NR] = film.arr[DatenFilm.FILM_URL_AUTH_NR];
         arr[DOWNLOAD_URL_SUBTITLE_NR] = film.getUrlSubtitle();
         arr[DOWNLOAD_DATUM_NR] = film.arr[DatenFilm.FILM_DATUM_NR];
         arr[DOWNLOAD_ZEIT_NR] = film.arr[DatenFilm.FILM_ZEIT_NR];
@@ -509,15 +508,17 @@ public class DatenDownload implements Comparable<DatenDownload> {
             // wenn vorgegeben, dann den nehmen
             name = nname;
         } else {
-            arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR] = pSet.getZielDateiname(arr[DOWNLOAD_URL_NR]);
-            name = arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR];
+            name = pSet.getZielDateiname(arr[DOWNLOAD_URL_NR]);
+            arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR] = name;
             // ##############################
             // Name sinnvoll belegen
             if (name.equals("")) {
                 name = getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
             }
 
+            //Tags ersetzen
             name = replaceString(name, film); // %D ... ersetzen
+
             String suff = "";
             if (name.contains(".")) {
                 //Suffix (und den . ) nicht ändern
@@ -543,9 +544,9 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     }
                 }
             }
+
             // Kürzen
             if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN_NR])) {
-                // nur dann ist was zu tun
                 int laenge = Konstanten.LAENGE_DATEINAME;
                 if (!pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR].equals("")) {
                     laenge = Integer.parseInt(pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_NR]);
@@ -557,11 +558,15 @@ public class DatenDownload implements Comparable<DatenDownload> {
         // ##############################################
         // Pfad
         // ##############################################
-        if (ppfad.isEmpty()) {
+        if (!ppfad.isEmpty()) {
+            // wenn vorgegeben, dann den nehmen
+            path = ppfad;
+        } else {
             // Pfad sinnvoll belegen
-            path = pSet.getZielPfad();
-            if (path.isEmpty()) {
+            if (pSet.getZielPfad().isEmpty()) {
                 path = GuiFunktionen.getStandardDownloadPath();
+            } else {
+                path = pSet.getZielPfad();
             }
 
             if (abo != null) {
@@ -569,7 +574,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 arr[DatenDownload.DOWNLOAD_ABO_NR] = abo.arr[DatenAbo.ABO_NAME_NR];
                 if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
                     //und Abopfad an den Pfad anhängen
-                    path = GuiFunktionen.addsPfad(path, abo.arr[DatenAbo.ABO_ZIELPFAD_NR]);
+                    path = GuiFunktionen.addsPfad(path, FilenameUtils.removeIllegalCharacters(abo.arr[DatenAbo.ABO_ZIELPFAD_NR], true));
                 }
             } else {
                 //Downloads
@@ -580,11 +585,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
             }
 
             path = replaceString(path, film); // %D ... ersetzen
-            path = FilenameUtils.replaceLeerDateiname(path, true /*pfad*/); //zur Sicherheit nach den Ersetzungen nochmal prüfen
-
-        } else {
-            // wenn vorgegeben, dann den nehmen
-            path = ppfad;
         }
 
         if (path.endsWith(File.separator)) {
@@ -610,7 +610,9 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     private String replaceString(String replStr, DatenFilm film) {
-        //Felder mit variabler Länge, evtl. Kürzen
+        //hier wird nur ersetzt! 
+        //Felder mit variabler Länge, evtl. vorher kürzen
+
         int laenge = -1;
 
         if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN_NR])) {
@@ -667,6 +669,8 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     private String getField(String name, int length) {
+        name = FilenameUtils.replaceLeerDateiname(name, false /*pfad*/);
+
         if (length < 0) {
             return name;
         }
@@ -674,7 +678,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
         if (name.length() > length) {
             name = name.substring(0, length);
         }
-        name = FilenameUtils.replaceLeerDateiname(name, false /*pfad*/);
         return name;
     }
 
