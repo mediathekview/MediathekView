@@ -1502,6 +1502,17 @@ public class GuiFilme extends PanelVorlage {
                         jPopupMenu.add(item);
                     }
                 }
+                if (!film.getUrlSubtitle().isEmpty()) {
+                    item = new JMenuItem("Untertitel-URL kopieren");
+                    item.addActionListener(new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            GuiFunktionen.copyToClipboard(film.getUrlSubtitle());
+                        }
+                    });
+                    jPopupMenu.add(item);
+                }
             }
 
             //##Trenner##

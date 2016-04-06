@@ -182,7 +182,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_TITEL_NR] = film.arr[DatenFilm.FILM_TITEL_NR];
         arr[DOWNLOAD_FILM_URL_NR] = film.arr[DatenFilm.FILM_URL_NR];
 //        arr[DOWNLOAD_URL_AUTH_NR] = film.arr[DatenFilm.FILM_URL_AUTH_NR];
-        arr[DOWNLOAD_URL_SUBTITLE_NR] = film.arr[DatenFilm.FILM_URL_SUBTITLE_NR];
+        arr[DOWNLOAD_URL_SUBTITLE_NR] = film.getUrlSubtitle();
         arr[DOWNLOAD_DATUM_NR] = film.arr[DatenFilm.FILM_DATUM_NR];
         arr[DOWNLOAD_ZEIT_NR] = film.arr[DatenFilm.FILM_ZEIT_NR];
         arr[DOWNLOAD_URL_RTMP_NR] = film.arr[DatenFilm.FILM_URL_RTMP_NR];
@@ -501,6 +501,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR] = "";
             return;
         }
+
         // ##############################################
         // Name
         // ##############################################
@@ -552,45 +553,50 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 name = GuiFunktionen.cutName(name, laenge);
             }
         }
+
         // ##############################################
         // Pfad
         // ##############################################
-        if (!ppfad.equals("")) {
-            // wenn vorgegeben, dann den nehmen
-            path = ppfad;
-        } else {
-            arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR] = pSet.getZielPfad();
-            path = arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
-            // ##############################
+        if (ppfad.isEmpty()) {
             // Pfad sinnvoll belegen
-            if (path.equals("")) {
-                // wenn leer, vorbelegen
+            path = pSet.getZielPfad();
+            if (path.isEmpty()) {
                 path = GuiFunktionen.getStandardDownloadPath();
             }
+
             if (abo != null) {
-                // Bei Abos: den Namen des Abos eintragen
+                //Abos: den Namen des Abos eintragen
                 arr[DatenDownload.DOWNLOAD_ABO_NR] = abo.arr[DatenAbo.ABO_NAME_NR];
                 if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
-                    // und Abopfad an den Pfad anhängen
-                    //pfad = GuiFunktionen.addsPfad(pfad, GuiFunktionen.replaceLeerDateiname(abo.arr[DatenAbo.ABO_ZIELPFAD_NR], true/* istDatei */));
+                    //und Abopfad an den Pfad anhängen
                     path = GuiFunktionen.addsPfad(path, abo.arr[DatenAbo.ABO_ZIELPFAD_NR]);
                 }
-            } else if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
-                // bei Downloads den Namen des Themas an den Zielpfad anhängen
-                path = GuiFunktionen.addsPfad(path, FilenameUtils.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA_NR], true /*pfad*/));
+            } else {
+                //Downloads
+                if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
+                    //und den Namen des Themas an den Zielpfad anhängen
+                    path = GuiFunktionen.addsPfad(path, FilenameUtils.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA_NR], true /*pfad*/));
+                }
             }
+
             path = replaceString(path, film); // %D ... ersetzen
             path = FilenameUtils.replaceLeerDateiname(path, true /*pfad*/); //zur Sicherheit nach den Ersetzungen nochmal prüfen
+
+        } else {
+            // wenn vorgegeben, dann den nehmen
+            path = ppfad;
         }
+
         if (path.endsWith(File.separator)) {
             path = path.substring(0, path.length() - 1);
         }
+
         //###########################################################
         // zur Sicherheit bei Unsinn im Set
-        if (path.equals("")) {
+        if (path.isEmpty()) {
             path = GuiFunktionen.getStandardDownloadPath();
         }
-        if (name.equals("")) {
+        if (name.isEmpty()) {
             name = getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
         }
 
@@ -603,10 +609,10 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pathName[0], pathName[1]);
     }
 
-    private String replaceString(String s, DatenFilm film) {
+    private String replaceString(String replStr, DatenFilm film) {
         //Felder mit variabler Länge, evtl. Kürzen
         int laenge = -1;
-        String field;
+
         if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN_NR])) {
             // nur dann ist was zu tun
             laenge = Konstanten.LAENGE_FELD;
@@ -614,30 +620,27 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 laenge = Integer.parseInt(pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_FIELD_NR]);
             }
         }
-        field = cleanField(getField(film.arr[DatenFilm.FILM_THEMA_NR], laenge));
-        s = s.replace("%t", field);
-        field = cleanField(getField(film.arr[DatenFilm.FILM_TITEL_NR], laenge));
-        s = s.replace("%T", field);
-        field = cleanField(getField(film.arr[DatenFilm.FILM_SENDER_NR], laenge));
-        s = s.replace("%s", field);
-        field = cleanField(getField(GuiFunktionen.getDateiName(this.arr[DatenDownload.DOWNLOAD_URL_NR]), laenge));
-        s = s.replace("%N", field);
+
+        replStr = replStr.replace("%t", getField(film.arr[DatenFilm.FILM_THEMA_NR], laenge));
+        replStr = replStr.replace("%T", getField(film.arr[DatenFilm.FILM_TITEL_NR], laenge));
+        replStr = replStr.replace("%s", getField(film.arr[DatenFilm.FILM_SENDER_NR], laenge));
+        replStr = replStr.replace("%N", getField(GuiFunktionen.getDateiName(this.arr[DatenDownload.DOWNLOAD_URL_NR]), laenge));
 
         //Felder mit fester Länge werden immer ganz geschrieben
-        s = s.replace("%D", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM_NR])));
-        s = s.replace("%d", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? getJetzt_HHMMSS() : datumDatumZeitReinigen(film.arr[DatenFilm.FILM_ZEIT_NR]));
-        s = s.replace("%H", getHeute_yyyyMMdd());
-        s = s.replace("%h", getJetzt_HHMMSS());
+        replStr = replStr.replace("%D", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM_NR])));
+        replStr = replStr.replace("%d", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? getJetzt_HHMMSS() : datumDatumZeitReinigen(film.arr[DatenFilm.FILM_ZEIT_NR]));
+        replStr = replStr.replace("%H", getHeute_yyyyMMdd());
+        replStr = replStr.replace("%h", getJetzt_HHMMSS());
 
-        s = s.replace("%1", getDMY("%1", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM_NR]));
-        s = s.replace("%2", getDMY("%2", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM_NR]));
-        s = s.replace("%3", getDMY("%3", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM_NR]));
+        replStr = replStr.replace("%1", getDMY("%1", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM_NR]));
+        replStr = replStr.replace("%2", getDMY("%2", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM_NR]));
+        replStr = replStr.replace("%3", getDMY("%3", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM_NR]));
 
-        s = s.replace("%4", getHMS("%4", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT_NR]));
-        s = s.replace("%5", getHMS("%5", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT_NR]));
-        s = s.replace("%6", getHMS("%6", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT_NR]));
+        replStr = replStr.replace("%4", getHMS("%4", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT_NR]));
+        replStr = replStr.replace("%5", getHMS("%5", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT_NR]));
+        replStr = replStr.replace("%6", getHMS("%6", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT_NR]));
 
-        s = s.replace("%i", String.valueOf(film.nr));
+        replStr = replStr.replace("%i", String.valueOf(film.nr));
 
         String res = "";
         if (arr[DOWNLOAD_URL_NR].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL))) {
@@ -653,24 +656,14 @@ public class DatenDownload implements Comparable<DatenDownload> {
         } else if (arr[DOWNLOAD_URL_NR].equals(film.getUrlRtmpFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN))) {
             res = "L";
         }
-        s = s.replace("%q", res); //%q Qualität des Films ("HD", "H", "L")
+        replStr = replStr.replace("%q", res); //%q Qualität des Films ("HD", "H", "L")
 
-        s = s.replace("%S", GuiFunktionen.getDateiSuffix(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
-        s = s.replace("%Z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
-        s = s.replace("%z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL_NR])
+        replStr = replStr.replace("%S", GuiFunktionen.getDateiSuffix(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
+        replStr = replStr.replace("%Z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
+        replStr = replStr.replace("%z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL_NR])
                 + "." + GuiFunktionen.getDateiSuffix(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
 
-        return s;
-    }
-
-    private String cleanField(String name) {
-//        if (!name.equals(FilenameUtils.replaceLeerDateiname(name, false /*pfad*/))) {
-//            System.out.println(name);
-//            System.out.println(FilenameUtils.replaceLeerDateiname(name, false /*pfad*/));
-//            System.out.println("Tag geändert");
-//        }
-        name = FilenameUtils.replaceLeerDateiname(name, false /*pfad*/);
-        return name;
+        return replStr;
     }
 
     private String getField(String name, int length) {
@@ -681,6 +674,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         if (name.length() > length) {
             name = name.substring(0, length);
         }
+        name = FilenameUtils.replaceLeerDateiname(name, false /*pfad*/);
         return name;
     }
 
