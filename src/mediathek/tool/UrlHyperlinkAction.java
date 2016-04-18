@@ -73,7 +73,8 @@ public class UrlHyperlinkAction extends AbstractAction {
                 } else {
                     programm = Daten.mVConfig.get(MVConfig.SYSTEM_URL_OEFFNEN);
                 }
-                Runtime.getRuntime().exec(programm + " " + url);
+                String[] cmd = {programm, url};
+                Runtime.getRuntime().exec(cmd);
                 Daten.mVConfig.add(MVConfig.SYSTEM_URL_OEFFNEN, programm);
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, UrlHyperlinkAction.class.getSimpleName());
             } catch (Exception ex) {
