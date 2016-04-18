@@ -67,7 +67,8 @@ public class OpenPlayerAction {
                 if (dialog.ok) {
                     programm = dialog.ziel;
                 }
-                Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
+                String[] cmd = {programm, sFile.getAbsolutePath()};
+                Runtime.getRuntime().exec(cmd);
                 Daten.mVConfig.add(MVConfig.SYSTEM_PLAYER_ABSPIELEN, programm);
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
                 gut = true;
