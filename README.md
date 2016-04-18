@@ -1,16 +1,34 @@
 # MediathekView
-Das Programm MediathekView durchsucht die Mediatheken verschiedener öffentlich-rechtlicher Sender (3Sat, ARD, ARTE, KiKa, MDR, ORF, SRF, ZDF etc.), lädt Beiträge daraus herunter oder spielt diese ab (mit VLC Media Player oder mit einem Programm eigener Wahl). Es können auch Sendereihen/Serien abonniert werden.
+Das Programm **MediathekView** durchsucht die Mediatheken verschiedener überwiegend deutschsprachiger öffentlich-rechtlicher Sender, lädt Beiträge daraus herunter oder spielt diese ab (mit [VLC Media Player](http://videolan.org/vlc/) oder mit einem Programm eigener Wahl). Es können auch Sendereihen/Serien abonniert werden.
 
-#Website
-<a href="http://zdfmediathk.sourceforge.net/">http://zdfmediathk.sourceforge.net/</a>
+## Sender
+Derzeit werden die Mediatheken der folgenden Sender unterstützt:
 
-#Screenshots
-<a http://zdfmediathk.sourceforge.net/screenshots.html">http://zdfmediathk.sourceforge.net/screenshots.html</a>
+- ARD (Das Erste)
+   - BR (Bayerischer Rundfunk)
+   - HR (Hessischer Rundfunk)
+   - MDR (Mitteldeutscher Rundfunk)
+   - NDR (Norddeutscher Rundfunk)
+   - RBB (Rundfunk Berlin-Brandenburg)
+   - SR (Saarländischer Rundfunk)
+   - SWR (Südwestrundfunk)
+   - WDR (Westdeutscher Rundfunk)
+- ZDF (Zweites Deutsches Fernsehen) inkl. Tivi
+   - Phoenix
+   - Kika (Kinderkanal von ARD und ZDF)
+   - 3Sat
+   - Arte (deutsch und französisch)
+- DW TV (Deutsche Welle)
+- ORF (Österreichischer Rundfunk)
+- SRF (Schweizer Rundfunk) inkl. Podcasts
 
-#Download
-<a href="http://sourceforge.net/projects/zdfmediathk/">http://sourceforge.net/projects/zdfmediathk/</a>
+# Sourceforge
 
-#License
+- [Website](http://zdfmediathk.sourceforge.net)
+- [Screenshots](http://zdfmediathk.sourceforge.net/screenshots.html)
+- [Download](http://sourceforge.net/projects/zdfmediathk/) Installationspakete
+
+# License
 
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
