@@ -18,23 +18,22 @@
  */
 package mediathek.tool;
 
+import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import mediathek.controller.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.PrintWriter;
-import java.nio.file.Path;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.*;
-import mediathek.controller.Log;
 
 /**
  * Converter for TTML XML subtitle files into SubRip Text format.
@@ -44,6 +43,8 @@ public class TimedTextMarkupLanguageParser {
 
     private final SimpleDateFormat ttmlFormat = new SimpleDateFormat("HH:mm:ss.SS");
     private final SimpleDateFormat srtFormat = new SimpleDateFormat("HH:mm:ss,SS");
+    private final SimpleDateFormat sdfFlash = new SimpleDateFormat("s.S");
+
     private final Map<String, String> colorMap = new Hashtable<>();
     private final List<Subtitle> subtitleList = new ArrayList<>();
     private String color = "#FFFFFF";
@@ -117,11 +118,8 @@ public class TimedTextMarkupLanguageParser {
         }
     }
 
-    SimpleDateFormat sdf = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
-    private final static String DATUM_ZEIT_FORMAT = "s.S";
-
     private Date parseFlash(String tStamp) throws ParseException {
-        Date da = sdf.parse(tStamp + "00");
+        Date da = sdfFlash.parse(tStamp + "00");
         return da;
     }
 
