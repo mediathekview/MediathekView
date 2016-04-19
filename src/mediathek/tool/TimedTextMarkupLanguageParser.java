@@ -27,7 +27,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.PrintWriter;
 import java.nio.file.Path;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import mediathek.controller.Log;
 
@@ -41,6 +46,7 @@ public class TimedTextMarkupLanguageParser {
     private final SimpleDateFormat srtFormat = new SimpleDateFormat("HH:mm:ss,SS");
     private final Map<String, String> colorMap = new Hashtable<>();
     private final List<Subtitle> subtitleList = new ArrayList<>();
+    private String color = "#FFFFFF";
     private Document doc = null;
 
     public TimedTextMarkupLanguageParser() {
@@ -111,6 +117,50 @@ public class TimedTextMarkupLanguageParser {
         }
     }
 
+    SimpleDateFormat sdf = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
+    private final static String DATUM_ZEIT_FORMAT = "s.S";
+
+    private Date parseFlash(String tStamp) throws ParseException {
+        Date da = sdf.parse(tStamp + "00");
+        return da;
+    }
+
+    /**
+     * Build the Subtitle objects from TTML content.
+     */
+    private void buildFilmListFlash() throws Exception {
+        final NodeList subtitleData = doc.getElementsByTagName("p");
+
+        for (int i = 0; i < subtitleData.getLength(); i++) {
+            final Subtitle subtitle = new Subtitle();
+
+            final Node subnode = subtitleData.item(i);
+            if (subnode.hasAttributes()) {
+                // retrieve the begin and end attributes...
+                final NamedNodeMap attrMap = subnode.getAttributes();
+                final Node beginNode = attrMap.getNamedItem("begin");
+                final Node endNode = attrMap.getNamedItem("end");
+                final Node col = attrMap.getNamedItem("tts:color");
+                if (beginNode != null && endNode != null) {
+                    subtitle.begin = parseFlash(beginNode.getNodeValue());
+                    subtitle.end = parseFlash(endNode.getNodeValue());
+
+                    final StyledString textContent = new StyledString();
+
+                    if (col != null) {
+                        textContent.setColor(col.getNodeValue());
+                    } else {
+                        textContent.setColor(this.color);
+                    }
+
+                    textContent.setText(subnode.getTextContent());
+                    subtitle.listOfStrings.add(textContent);
+                }
+            }
+            subtitleList.add(subtitle);
+        }
+    }
+
     /**
      * Parse the TTML file into internal representation.
      *
@@ -138,6 +188,72 @@ public class TimedTextMarkupLanguageParser {
 
             buildColorMap();
             buildFilmList();
+            ret = true;
+        } catch (Exception ex) {
+            Log.fehlerMeldung(912036478, ex, "File: " + ttmlFilePath);
+            ret = false;
+        }
+        return ret;
+    }
+
+    /**
+     * Parse the XML Subtitle File for Flash Player into internal representation.
+     *
+     * @param ttmlFilePath the TTML file to parse
+     * @return
+     */
+    public boolean parseXmlFlash(Path ttmlFilePath) {
+        boolean ret;
+        try {
+            final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(true);
+
+            final DocumentBuilder db = dbf.newDocumentBuilder();
+            doc = db.parse(ttmlFilePath.toFile());
+
+            //Check that we have TTML v1.0 file as we have tested only them...
+            final NodeList metaData = doc.getElementsByTagName("tt");
+            final NodeList colorNote = doc.getElementsByTagName("style");
+            if (metaData != null) {
+                final Node node = metaData.item(0);
+
+                if (node.hasAttributes()) {
+                    // retrieve the begin and end attributes...
+                    final NamedNodeMap attrMap = node.getAttributes();
+                    final Node xmlns = attrMap.getNamedItem("xmlns");
+                    if (xmlns != null) {
+                        String s;
+                        if (!(s = xmlns.getNodeValue()).equals("http://www.w3.org/2006/04/ttaf1")) {
+                            throw new Exception("Unknown TTML file version");
+                        }
+                    }
+                } else {
+                    throw new Exception("Unknown File Format");
+                }
+            } else {
+                throw new Exception("Unknown File Format");
+            }
+            if (colorNote != null) {
+                final Node node = colorNote.item(0);
+
+                if (node.hasAttributes()) {
+                    // retrieve the begin and end attributes...
+                    final NamedNodeMap attrMap = node.getAttributes();
+                    final Node col = attrMap.getNamedItem("tts:color");
+                    if (col != null) {
+                        if (!col.getNodeValue().isEmpty()) {
+                            this.color = col.getNodeValue();
+                        }
+                    }
+                } else {
+                    throw new Exception("Unknown File Format");
+                }
+            } else {
+                throw new Exception("Unknown File Format");
+            }
+
+            //buildColorMap();
+            buildFilmListFlash();
             ret = true;
         } catch (Exception ex) {
             Log.fehlerMeldung(912036478, ex, "File: " + ttmlFilePath);
