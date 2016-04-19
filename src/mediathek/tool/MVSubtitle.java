@@ -141,6 +141,8 @@ public class MVSubtitle {
                 Path srt = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] + ".srt").toPath();
                 if (ttmlp.parse(p)) {
                     ttmlp.toSrt(srt);
+                } else if (ttmlp.parseXmlFlash(p)) {
+                    ttmlp.toSrt(srt);
                 }
                 ttmlp.cleanup();
             }
