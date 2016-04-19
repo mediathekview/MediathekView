@@ -138,7 +138,7 @@ public class MVSubtitle {
             if (!subFile.endsWith(".srt")) {
                 TimedTextMarkupLanguageParser ttmlp = new TimedTextMarkupLanguageParser();
                 Path p = new File(subFile).toPath();
-                Path srt = new File(subFile + ".srt").toPath();
+                Path srt = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] + ".srt").toPath();
                 if (ttmlp.parse(p)) {
                     ttmlp.toSrt(srt);
                 }
