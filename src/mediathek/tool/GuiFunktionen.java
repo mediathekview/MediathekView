@@ -230,7 +230,7 @@ public class GuiFunktionen extends MVFunctionSys {
         return hh;
     }
 
-    public static String getDateiSuffix(String pfad) {
+    public static String getSuffixFromUrl(String pfad) {
         // Suffix einer URL extrahieren
         // "http://ios-ondemand.swr.de/i/swr-fernsehen/bw-extra/20130202/601676.,m,s,l,.mp4.csmil/index_2_av.m3u8?e=b471643725c47acd"
         String ret = "";
@@ -249,6 +249,39 @@ public class GuiFunktionen extends MVFunctionSys {
             // dann ist was faul
             ret = "---";
             Log.fehlerMeldung(821397046, pfad);
+        }
+        return ret;
+    }
+
+    public static String getFileNameWithoutSuffix(String pfad) {
+        // Suffix einer URL extrahieren
+        // "http://ios-ondemand.swr.de/i/swr-fernsehen/bw-extra/20130202/601676.,m,s,l,.mp4.csmil/index_2_av.m3u8?e=b471643725c47acd"
+        // FILENAME.SUFF
+        String ret = "";
+        if (pfad != null) {
+            if (!pfad.equals("") && pfad.contains(".")) {
+                ret = pfad.substring(0, pfad.lastIndexOf('.'));
+            }
+        }
+        if (ret.equals("")) {
+            ret = pfad;
+            Log.fehlerMeldung(945123647, pfad);
+        }
+        return ret;
+    }
+
+    public static String getFileNameSuffix(String pfad) {
+        // Suffix einer Pfad/Dateinamen extrahieren
+        // FILENAME.SUFF
+        String ret = "";
+        if (pfad != null) {
+            if (!pfad.equals("") && pfad.contains(".")) {
+                ret = pfad.substring(pfad.lastIndexOf('.') + 1);
+            }
+        }
+        if (ret.equals("")) {
+            ret = pfad;
+            Log.fehlerMeldung(802103647, pfad);
         }
         return ret;
     }
