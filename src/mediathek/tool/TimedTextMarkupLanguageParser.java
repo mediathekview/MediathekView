@@ -119,7 +119,12 @@ public class TimedTextMarkupLanguageParser {
     }
 
     private Date parseFlash(String tStamp) throws ParseException {
-        Date da = sdfFlash.parse(tStamp + "00");
+        Date da;
+        if (tStamp.contains(":")) {
+            da = ttmlFormat.parse(tStamp);
+        } else {
+            da = sdfFlash.parse(tStamp + "00");
+        }
         return da;
     }
 
@@ -138,21 +143,30 @@ public class TimedTextMarkupLanguageParser {
                 final NamedNodeMap attrMap = subnode.getAttributes();
                 final Node beginNode = attrMap.getNamedItem("begin");
                 final Node endNode = attrMap.getNamedItem("end");
-                final Node col = attrMap.getNamedItem("tts:color");
                 if (beginNode != null && endNode != null) {
                     subtitle.begin = parseFlash(beginNode.getNodeValue());
                     subtitle.end = parseFlash(endNode.getNodeValue());
-
                     final StyledString textContent = new StyledString();
+                    textContent.setColor(color); // sicher ist sicher
+                    textContent.setText(subnode.getTextContent());
 
+                    final Node col = attrMap.getNamedItem("tts:color");
                     if (col != null) {
                         textContent.setColor(col.getNodeValue());
                     } else {
-                        textContent.setColor(this.color);
+                        final NodeList childNodes = subnode.getChildNodes();
+                        for (int j = 0; j < childNodes.getLength(); j++) {
+                            final Node node = childNodes.item(j);
+                            if (node.getNodeName().equalsIgnoreCase("span")) {
+                                //retrieve the text and color information...
+                                final NamedNodeMap attr = node.getAttributes();
+                                final Node co = attr.getNamedItem("tts:color");
+                                textContent.setColor(co.getNodeValue());
+                            }
+                        }
                     }
-
-                    textContent.setText(subnode.getTextContent());
                     subtitle.listOfStrings.add(textContent);
+
                 }
             }
             subtitleList.add(subtitle);
@@ -221,7 +235,7 @@ public class TimedTextMarkupLanguageParser {
                     final Node xmlns = attrMap.getNamedItem("xmlns");
                     if (xmlns != null) {
                         String s;
-                        if (!(s = xmlns.getNodeValue()).equals("http://www.w3.org/2006/04/ttaf1")) {
+                        if (!(s = xmlns.getNodeValue()).equals("http://www.w3.org/2006/04/ttaf1") && !(s = xmlns.getNodeValue()).equals("http://www.w3.org/ns/ttml")) {
                             throw new Exception("Unknown TTML file version");
                         }
                     }
@@ -232,25 +246,27 @@ public class TimedTextMarkupLanguageParser {
                 throw new Exception("Unknown File Format");
             }
             if (colorNote != null) {
-                final Node node = colorNote.item(0);
-
-                if (node.hasAttributes()) {
-                    // retrieve the begin and end attributes...
-                    final NamedNodeMap attrMap = node.getAttributes();
-                    final Node col = attrMap.getNamedItem("tts:color");
-                    if (col != null) {
-                        if (!col.getNodeValue().isEmpty()) {
-                            this.color = col.getNodeValue();
-                        }
-                    }
+                if (colorNote.getLength() == 0) {
+                    this.color = "#FFFFFF";
                 } else {
-                    throw new Exception("Unknown File Format");
+                    final Node node = colorNote.item(0);
+
+                    if (node.hasAttributes()) {
+                        // retrieve the begin and end attributes...
+                        final NamedNodeMap attrMap = node.getAttributes();
+                        final Node col = attrMap.getNamedItem("tts:color");
+                        if (col != null) {
+                            if (!col.getNodeValue().isEmpty()) {
+                                this.color = col.getNodeValue();
+                            }
+                        }
+                    } else {
+                        throw new Exception("Unknown File Format");
+                    }
                 }
             } else {
                 throw new Exception("Unknown File Format");
             }
-
-            //buildColorMap();
             buildFilmListFlash();
             ret = true;
         } catch (Exception ex) {
