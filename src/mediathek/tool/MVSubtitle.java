@@ -37,11 +37,14 @@ public class MVSubtitle {
 
     private static final int timeout = 10000;
     public static final String KODIERUNG_UTF = "UTF-8";
-    private static String subFile = null;
 
     public static void writeSubtitle(DatenDownload datenDownload) {
-        String url;
-        File file;
+        final String SUFFIX_TTML = "ttml";
+        final String SUFFIX_SRT = "srt";
+        String suffix = SUFFIX_TTML;// txt käme dem Infofile in die Quere
+        String urlSubtitle = "";
+        String strSubtitelFile = null;
+        File subtitelFile;
         HttpURLConnection conn = null;
         InputStream in = null;
         FileOutputStream fos = null;
@@ -53,25 +56,18 @@ public class MVSubtitle {
         try {
             Log.systemMeldung(new String[]{"Untertitel: ", datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE_NR],
                 "schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]});
-            url = datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE_NR];
-            new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
-            String suff = ".xml"; // txt käme dem Infofile in die Quere
-            if (url.contains(".")) {
-                suff = url.substring(url.lastIndexOf("."));
 
-                // erstmal putzen
-                String newSuff;
-                newSuff = suff.replaceAll(FilenameUtils.REGEXP_ILLEGAL_CHARACTERS_WINDOWS, "--");
-                newSuff = newSuff.replaceAll(FilenameUtils.REGEXP_ILLEGAL_CHARACTERS_OTHERS, "--");
-
-                if (!newSuff.equals(suff) || suff.length() > 6 /* zur Sicherheit: .ttml, ..*/) {
-                    suff = ".xml";
-                }
+            urlSubtitle = datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE_NR];
+            suffix = GuiFunktionen.getSuffixFromUrl(urlSubtitle);
+            if (!suffix.endsWith(SUFFIX_SRT)) {
+                suffix = SUFFIX_TTML;
             }
-            file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] + suff);
-            subFile = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] + suff;
+            strSubtitelFile = datenDownload.getFileNameWithoutSuffix() + "." + suffix;
+            subtitelFile = new File(strSubtitelFile);
 
-            conn = (HttpURLConnection) new URL(url).openConnection();
+            new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
+
+            conn = (HttpURLConnection) new URL(urlSubtitle).openConnection();
             conn.setRequestProperty("User-Agent", Daten.getUserAgent());
             conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
             conn.setReadTimeout(timeout);
@@ -82,7 +78,7 @@ public class MVSubtitle {
                 in = conn.getInputStream();
             } else {
                 // dann wars das
-                Log.fehlerMeldung(752301248, "url: " + url);
+                Log.fehlerMeldung(752301248, "url: " + urlSubtitle);
             }
 
             if (in == null) {
@@ -100,7 +96,7 @@ public class MVSubtitle {
                 }
             }
 
-            fos = new FileOutputStream(file);
+            fos = new FileOutputStream(subtitelFile);
             final byte[] buffer = new byte[1024];
             int n;
             while ((n = in.read(buffer)) != -1) {
@@ -108,7 +104,7 @@ public class MVSubtitle {
             }
             Log.systemMeldung(new String[]{"Untertitel", "  geschrieben"});
         } catch (IOException ex) {
-            subFile = null;
+            strSubtitelFile = null;
             if (conn != null) {
                 try {
                     InputStream i = conn.getErrorStream();
@@ -122,7 +118,7 @@ public class MVSubtitle {
                 }
             }
         } catch (Exception ignored) {
-            subFile = null;
+            strSubtitelFile = null;
         } finally {
             try {
                 if (fos != null) {
@@ -134,18 +130,22 @@ public class MVSubtitle {
             } catch (Exception ignored) {
             }
         }
-        if (subFile != null) {
-            if (!subFile.endsWith(".srt")) {
-                TimedTextMarkupLanguageParser ttmlp = new TimedTextMarkupLanguageParser();
-                Path p = new File(subFile).toPath();
-                Path srt = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] + ".srt").toPath();
-                if (ttmlp.parse(p)) {
-                    ttmlp.toSrt(srt);
-                } else if (ttmlp.parseXmlFlash(p)) {
-                    ttmlp.toSrt(srt);
+        try {
+            if (strSubtitelFile != null) {
+                if (!strSubtitelFile.endsWith("." + SUFFIX_SRT)) {
+                    TimedTextMarkupLanguageParser ttmlp = new TimedTextMarkupLanguageParser();
+                    Path p = new File(strSubtitelFile).toPath();
+                    Path srt = new File(datenDownload.getFileNameWithoutSuffix() + "." + SUFFIX_SRT).toPath();
+                    if (ttmlp.parse(p)) {
+                        ttmlp.toSrt(srt);
+                    } else if (ttmlp.parseXmlFlash(p)) {
+                        ttmlp.toSrt(srt);
+                    }
+                    ttmlp.cleanup();
                 }
-                ttmlp.cleanup();
             }
+        } catch (Exception ignored) {
+            Log.fehlerMeldung(461203210, ignored, "SubtitelUrl: " + urlSubtitle);
         }
     }
 }

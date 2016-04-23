@@ -113,7 +113,7 @@ public class MVInfoFile {
             Log.systemMeldung(new String[]{"Infofile schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]});
 
             new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
-            Path path = Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] + ".txt");
+            Path path = Paths.get(datenDownload.getFileNameWithoutSuffix() + ".txt");
             BufferedWriter br = new BufferedWriter(new OutputStreamWriter(new DataOutputStream(Files.newOutputStream(path))));
             if (datenDownload.film != null) {
                 br.write(DatenFilm.FILM_SENDER + ":      " + datenDownload.film.arr[DatenFilm.FILM_SENDER_NR]);

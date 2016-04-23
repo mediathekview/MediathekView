@@ -660,10 +660,10 @@ public class DatenDownload implements Comparable<DatenDownload> {
         }
         replStr = replStr.replace("%q", res); //%q Qualität des Films ("HD", "H", "L")
 
-        replStr = replStr.replace("%S", GuiFunktionen.getDateiSuffix(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
+        replStr = replStr.replace("%S", GuiFunktionen.getSuffixFromUrl(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
         replStr = replStr.replace("%Z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
         replStr = replStr.replace("%z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL_NR])
-                + "." + GuiFunktionen.getDateiSuffix(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
+                + "." + GuiFunktionen.getSuffixFromUrl(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
 
         return replStr;
     }
@@ -813,5 +813,13 @@ public class DatenDownload implements Comparable<DatenDownload> {
             }
         }
         return tmp;
+    }
+
+    public String getFileNameWithoutSuffix() {
+        return GuiFunktionen.getFileNameWithoutSuffix(arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+    }
+
+    public String getFileNameSuffix() {
+        return GuiFunktionen.getFileNameSuffix(arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
     }
 }
