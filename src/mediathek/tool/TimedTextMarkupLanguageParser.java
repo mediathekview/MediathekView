@@ -109,8 +109,14 @@ public class TimedTextMarkupLanguageParser {
                     final NamedNodeMap attrMap = node.getAttributes();
                     final Node styleNode = attrMap.getNamedItem("style");
                     final StyledString textContent = new StyledString();
+
                     textContent.setText(node.getTextContent());
-                    textContent.setColor(colorMap.get(styleNode.getNodeValue()));
+                    final String col = colorMap.get(styleNode.getNodeValue());
+                    if (col == null) {
+                        textContent.setColor(color); // gabs beim BR
+                    } else {
+                        textContent.setColor(colorMap.get(styleNode.getNodeValue()));
+                    }
                     subtitle.listOfStrings.add(textContent);
                 }
             }
@@ -235,7 +241,8 @@ public class TimedTextMarkupLanguageParser {
                     final Node xmlns = attrMap.getNamedItem("xmlns");
                     if (xmlns != null) {
                         String s;
-                        if (!(s = xmlns.getNodeValue()).equals("http://www.w3.org/2006/04/ttaf1") && !(s = xmlns.getNodeValue()).equals("http://www.w3.org/ns/ttml")) {
+                        if (!(s = xmlns.getNodeValue()).equals("http://www.w3.org/2006/04/ttaf1")
+                                && !(s = xmlns.getNodeValue()).equals("http://www.w3.org/ns/ttml")) {
                             throw new Exception("Unknown TTML file version");
                         }
                     }
@@ -326,8 +333,8 @@ public class TimedTextMarkupLanguageParser {
             this.color = color;
         }
 
-        private String text;
-        private String color;
+        private String text = "";
+        private String color = "";
     }
 
     private class Subtitle {
