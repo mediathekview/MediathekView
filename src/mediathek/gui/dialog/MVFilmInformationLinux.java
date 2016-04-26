@@ -216,7 +216,7 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
             }
             lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
             lblUrlSubtitle.setText(aktFilm.getUrlSubtitle());
-            jLabelFilmNeu.setVisible(aktFilm.neuerFilm);
+            jLabelFilmNeu.setVisible(aktFilm.isNew());
         }
         this.repaint();
     }

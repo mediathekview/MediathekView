@@ -124,7 +124,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             for (DatenFilm filmEntry : listeFilme) {
                 if (checkFilm(filmEntry)) {
                     listeRet.add(filmEntry);
-                    if (filmEntry.neuerFilm) {
+                    if (filmEntry.isNew()) {
                         listeRet.neueFilme = true;
                     }
                 }
