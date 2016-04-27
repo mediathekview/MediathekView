@@ -237,15 +237,18 @@ public class FilmeLaden {
 
     /**
      * Search through history and mark new films.
+     *
      * @param listeFilme
      */
     private void findAndMarkNewFilms(ListeFilme listeFilme) {
         listeFilme.neueFilme = false;
-        listeFilme.parallelStream().filter(film -> !hashSet.contains(film.getUrlHistory()))
+
+        listeFilme.parallelStream().peek(film -> film.setNew(false)).filter(film -> !hashSet.contains(film.getUrlHistory()))
                 .forEach(film -> {
                     film.setNew(true);
                     listeFilme.neueFilme = true;
                 });
+
         hashSet.clear();
     }
 
