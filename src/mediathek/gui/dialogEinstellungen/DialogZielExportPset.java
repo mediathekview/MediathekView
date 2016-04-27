@@ -42,14 +42,6 @@ public class DialogZielExportPset extends javax.swing.JDialog {
     private Component parentComponent = null;
     private Daten ddaten = null;
 
-    /**
-     *
-     * @param parent
-     * @param modal
-     * @param dd
-     * @param pfad
-     * @param name
-     */
     public DialogZielExportPset(JFrame parent, Daten dd, boolean modal, String pfad, String name) {
         super(parent, modal);
         parentComponent = parent;

@@ -28,8 +28,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -53,7 +51,6 @@ public class PanelBlacklist extends PanelVorlage {
 
     public boolean ok = false;
     public String ziel;
-    private String[] sender;
     private final String name;
     private final Color cGruen = new Color(0, 153, 51);
     private final Color cRot = new Color(255, 0, 0);
@@ -114,117 +111,77 @@ public class PanelBlacklist extends PanelVorlage {
         jTableBlacklist.addMouseListener(new BeobMausTabelle());
         jTableBlacklist.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
         jRadioButtonWhitelist.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST)));
-        jRadioButtonWhitelist.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
-                notifyBlack();
-            }
+        jRadioButtonWhitelist.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
+            notifyBlack();
         });
-        jRadioButtonBlacklist.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
-                notifyBlack();
-            }
+        jRadioButtonBlacklist.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
+            notifyBlack();
         });
-        jCheckBoxZukunftNichtAnzeigen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxZukunftNichtAnzeigen.isSelected()));
-                notifyBlack();
-            }
+        jCheckBoxZukunftNichtAnzeigen.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxZukunftNichtAnzeigen.isSelected()));
+            notifyBlack();
         });
-        jCheckBoxGeo.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxGeo.isSelected()));
-                notifyBlack();
-            }
+        jCheckBoxGeo.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxGeo.isSelected()));
+            notifyBlack();
         });
-        jCheckBoxAbo.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setCheckBlacklist();
-                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO, Boolean.toString(jCheckBoxAbo.isSelected()));
-                // bei den Downloads melden
-                // damit die Änderungen im Eigenschaftendialog auch übernommen werden
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name);
-            }
+        jCheckBoxAbo.addActionListener(e -> {
+            setCheckBlacklist();
+            Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO, Boolean.toString(jCheckBoxAbo.isSelected()));
+            // bei den Downloads melden
+            // damit die Änderungen im Eigenschaftendialog auch übernommen werden
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name);
         });
-        jCheckBoxStart.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setCheckBlacklist();
-                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_START_ON, Boolean.toString(jCheckBoxStart.isSelected()));
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_START_GEAENDERT, name);
-            }
+        jCheckBoxStart.addActionListener(e -> {
+            setCheckBlacklist();
+            Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_START_ON, Boolean.toString(jCheckBoxStart.isSelected()));
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_START_GEAENDERT, name);
         });
-        jCheckBoxBlacklistEingeschaltet.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setCheckBlacklist();
-                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.toString(jCheckBoxBlacklistEingeschaltet.isSelected()));
-                notifyBlack();
-            }
+        jCheckBoxBlacklistEingeschaltet.addActionListener(e -> {
+            setCheckBlacklist();
+            Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.toString(jCheckBoxBlacklistEingeschaltet.isSelected()));
+            notifyBlack();
         });
-        jButtonHinzufuegen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String se = jComboBoxSender.getSelectedItem().toString();
-                String th = jComboBoxThema.getSelectedItem().toString();
-                String ti = jTextFieldTitel.getText().trim();
-                String thti = jTextFieldThemaTitel.getText().trim();
-                if (!se.equals("") || !th.equals("") || !ti.equals("") || !thti.equals("")) {
-                    Daten.listeBlacklist.add(new DatenBlacklist(se, th, ti, thti));
-                    tabelleLaden();
-                }
-            }
-        });
-        jButtonAendern.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String se = jComboBoxSender.getSelectedItem().toString();
-                String th = jComboBoxThema.getSelectedItem().toString();
-                String ti = jTextFieldTitel.getText().trim();
-                String thti = jTextFieldThemaTitel.getText().trim();
-                if (!se.equals("") || !th.equals("") || !ti.equals("") || !thti.equals("")) {
-                    int selectedTableRow = jTableBlacklist.getSelectedRow();
-                    if (selectedTableRow >= 0) {
-                        int row = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
-                        String delNr = jTableBlacklist.getModel().getValueAt(row, DatenBlacklist.BLACKLIST_NR_NR).toString();
-                        DatenBlacklist bl = Daten.listeBlacklist.get(delNr);
-                        bl.arr[DatenBlacklist.BLACKLIST_SENDER_NR] = se;
-                        bl.arr[DatenBlacklist.BLACKLIST_THEMA_NR] = th;
-                        bl.arr[DatenBlacklist.BLACKLIST_TITEL_NR] = ti;
-                        bl.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR] = thti;
-                        tabelleLaden();
-                        jTableBlacklist.addRowSelectionInterval(row, row);
-                        notifyBlack();
-                    }
-                }
-
-            }
-        });
-        jButtonHilfe.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BLACKLIST)).setVisible(true);
-            }
-        });
-        jButtonTabelleLoeschen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.listeBlacklist.clear();
+        jButtonHinzufuegen.addActionListener(e -> {
+            String se = jComboBoxSender.getSelectedItem().toString();
+            String th = jComboBoxThema.getSelectedItem().toString();
+            String ti = jTextFieldTitel.getText().trim();
+            String thti = jTextFieldThemaTitel.getText().trim();
+            if (!se.equals("") || !th.equals("") || !ti.equals("") || !thti.equals("")) {
+                Daten.listeBlacklist.add(new DatenBlacklist(se, th, ti, thti));
                 tabelleLaden();
             }
         });
-        jComboBoxSender.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                comboThemaLaden();
+        jButtonAendern.addActionListener(e -> {
+            String se = jComboBoxSender.getSelectedItem().toString();
+            String th = jComboBoxThema.getSelectedItem().toString();
+            String ti = jTextFieldTitel.getText().trim();
+            String thti = jTextFieldThemaTitel.getText().trim();
+            if (!se.equals("") || !th.equals("") || !ti.equals("") || !thti.equals("")) {
+                int selectedTableRow = jTableBlacklist.getSelectedRow();
+                if (selectedTableRow >= 0) {
+                    int row = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
+                    String delNr = jTableBlacklist.getModel().getValueAt(row, DatenBlacklist.BLACKLIST_NR_NR).toString();
+                    DatenBlacklist bl = Daten.listeBlacklist.get(delNr);
+                    bl.arr[DatenBlacklist.BLACKLIST_SENDER_NR] = se;
+                    bl.arr[DatenBlacklist.BLACKLIST_THEMA_NR] = th;
+                    bl.arr[DatenBlacklist.BLACKLIST_TITEL_NR] = ti;
+                    bl.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR] = thti;
+                    tabelleLaden();
+                    jTableBlacklist.addRowSelectionInterval(row, row);
+                    notifyBlack();
+                }
             }
+
         });
+        jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BLACKLIST)).setVisible(true));
+        jButtonTabelleLoeschen.addActionListener(e -> {
+            Daten.listeBlacklist.clear();
+            tabelleLaden();
+        });
+        jComboBoxSender.addActionListener(e -> comboThemaLaden());
         jTextFieldTitel.getDocument().addDocumentListener(new BeobFilterTitelDoc());
         jTextFieldThemaTitel.getDocument().addDocumentListener(new BeobFilterTitelDoc());
         try {
@@ -234,14 +191,11 @@ public class PanelBlacklist extends PanelVorlage {
             Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, "0");
         }
         jTextFieldMinuten.setText(String.valueOf(jSliderMinuten.getValue()));
-        jSliderMinuten.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                jTextFieldMinuten.setText(String.valueOf(jSliderMinuten.getValue()));
-                if (!jSliderMinuten.getValueIsAdjusting()) {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, String.valueOf(jSliderMinuten.getValue()));
-                    notifyBlack();
-                }
+        jSliderMinuten.addChangeListener(e -> {
+            jTextFieldMinuten.setText(String.valueOf(jSliderMinuten.getValue()));
+            if (!jSliderMinuten.getValueIsAdjusting()) {
+                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, String.valueOf(jSliderMinuten.getValue()));
+                notifyBlack();
             }
         });
         initCombo();
@@ -281,7 +235,7 @@ public class PanelBlacklist extends PanelVorlage {
 
     private void initCombo() {
         // der erste Sender ist ""
-        sender = GuiFunktionen.addLeerListe(Daten.filmeLaden.getSenderNamen());
+        final String[] sender = GuiFunktionen.addLeerListe(Daten.filmeLaden.getSenderNamen());
         jComboBoxSender.setModel(new javax.swing.DefaultComboBoxModel<>(sender));
     }
 

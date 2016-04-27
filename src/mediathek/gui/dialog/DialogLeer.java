@@ -20,8 +20,6 @@
 package mediathek.gui.dialog;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 import mediathek.tool.EscBeenden;
 
@@ -43,12 +41,7 @@ public class DialogLeer extends javax.swing.JDialog {
                 beenden();
             }
         };
-        jButtonSchliessen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                beenden();
-            }
-        });
+        jButtonSchliessen.addActionListener(e -> beenden());
     }
 
     private void beenden() {

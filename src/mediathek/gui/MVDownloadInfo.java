@@ -38,8 +38,6 @@ import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import mediathek.controller.starter.MVBandwidthTokenBucket;
 import mediathek.daten.Daten;
 import mediathek.daten.DownloadInfos;
@@ -137,17 +135,14 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         jSliderBandwidth.setMaximum(100); //1_000 kByte/s
         jSliderBandwidth.setToolTipText("");
         setSlider();
-        jSliderBandwidth.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (stopBeob) {
-                    return;
-                }
-                int b = jSliderBandwidth.getValue() * 10;
-                jLabelBandwidth.setText(b + " kByte/s");
-                Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getName());
+        jSliderBandwidth.addChangeListener(e -> {
+            if (stopBeob) {
+                return;
             }
+            int b = jSliderBandwidth.getValue() * 10;
+            jLabelBandwidth.setText(b + " kByte/s");
+            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getName());
         });
 
         jDialog.setContentPane(this);
@@ -306,12 +301,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
                         counter++;
                         m_trace.addPoint(counter / 60, Daten.downloadInfos.bandwidth); // minutes
                         x_achse.getAxisTitle().setTitle(Daten.downloadInfos.roundBandwidth((long) counter));
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                setInfoText(Daten.downloadInfos);
-                            }
-                        });
+                        SwingUtilities.invokeLater(() -> setInfoText(Daten.downloadInfos));
                     }
                 };
                 timer.schedule(timerTask, 0, 1_000);

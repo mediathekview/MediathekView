@@ -97,14 +97,12 @@ public class MVColor {
     }
 
     public final void load() {
-        for (MVC mvc : liste) {
-            if (!Daten.mVConfig.get(mvc.name).isEmpty()) {
-                try {
-                    mvc.color = new Color(Integer.parseInt(Daten.mVConfig.get(mvc.name)));
-                } catch (Exception ignored) {
-                }
+        liste.stream().filter(mvc -> !Daten.mVConfig.get(mvc.name).isEmpty()).forEach(mvc -> {
+            try {
+                mvc.color = new Color(Integer.parseInt(Daten.mVConfig.get(mvc.name)));
+            } catch (Exception ignored) {
             }
-        }
+        });
     }
 
     public final void save() {
@@ -127,9 +125,7 @@ public class MVColor {
     }
 
     public void reset(Daten daten) {
-        for (MVC entry : liste) {
-            entry.reset();
-        }
+        liste.forEach(MVC::reset);
         GuiFunktionen.updateGui(daten.mediathekGui);
         Daten.mVColor.save();
     }

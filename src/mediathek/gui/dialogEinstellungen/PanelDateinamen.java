@@ -20,8 +20,6 @@
 package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Iterator;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -61,51 +59,27 @@ public class PanelDateinamen extends PanelVorlage {
         jButtonMinus.setIcon(GetIcon.getProgramIcon("remove_16.png"));
         jButtonUp.setIcon(GetIcon.getProgramIcon("move_up_16.png"));
         jButtonDown.setIcon(GetIcon.getProgramIcon("move_down_16.png"));
-        jButtonReset.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVReplaceList.init();
+        jButtonReset.addActionListener(e -> {
+            Daten.mVReplaceList.init();
+            tabelleLaden();
+            setTextfelder();
+        });
+        jButtonPlus.addActionListener(e -> {
+            Daten.mVReplaceList.list.add(new String[]{"von", "nach"});
+            tabelleLaden();
+            tabelle.setRowSelectionInterval(tabelle.getRowCount() - 1, tabelle.getRowCount() - 1);
+            setTextfelder();
+        });
+        jButtonMinus.addActionListener(e -> {
+            int selectedTableRow = tabelle.getSelectedRow();
+            if (selectedTableRow >= 0) {
+                Daten.mVReplaceList.list.remove(selectedTableRow);
                 tabelleLaden();
                 setTextfelder();
             }
         });
-        jButtonPlus.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVReplaceList.list.add(new String[]{"von", "nach"});
-                tabelleLaden();
-                tabelle.setRowSelectionInterval(tabelle.getRowCount() - 1, tabelle.getRowCount() - 1);
-                setTextfelder();
-            }
-        });
-        jButtonMinus.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedTableRow = tabelle.getSelectedRow();
-                if (selectedTableRow >= 0) {
-                    Daten.mVReplaceList.list.remove(selectedTableRow);
-                    tabelleLaden();
-                    setTextfelder();
-                }
-            }
-        });
-        jButtonUp.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                upDown(true);
-            }
-        });
-        jButtonDown.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                upDown(false);
-            }
-        });
+        jButtonUp.addActionListener(e -> upDown(true));
+        jButtonDown.addActionListener(e -> upDown(false));
         tabelleLaden();
         setTextfelder();
         tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
@@ -144,24 +118,16 @@ public class PanelDateinamen extends PanelVorlage {
             }
         });
 
-        jCheckBoxTable.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected()));
-                setColor(jCheckBoxTable, jCheckBoxTable.isSelected());
-            }
+        jCheckBoxTable.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected()));
+            setColor(jCheckBoxTable, jCheckBoxTable.isSelected());
         });
         jCheckBoxTable.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)));
         setColor(jCheckBoxTable, jCheckBoxTable.isSelected());
 
-        jCheckBoxAscii.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_ONLY_ASCII, Boolean.toString(jCheckBoxAscii.isSelected()));
-                setColor(jCheckBoxAscii, jCheckBoxAscii.isSelected());
-            }
+        jCheckBoxAscii.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_ONLY_ASCII, Boolean.toString(jCheckBoxAscii.isSelected()));
+            setColor(jCheckBoxAscii, jCheckBoxAscii.isSelected());
         });
         jCheckBoxAscii.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ONLY_ASCII)));
         setColor(jCheckBoxAscii, jCheckBoxAscii.isSelected());

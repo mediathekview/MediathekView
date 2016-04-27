@@ -19,8 +19,6 @@
  */
 package mediathek.gui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -212,12 +210,9 @@ public final class MVToolBar extends JToolBar {
             jTextFieldFilter.setSearchMode(JXSearchField.SearchMode.INSTANT);
             jTextFieldFilter.setUseNativeSearchFieldIfPossible(true);
             jTextFieldFilter.getFindButton().setIcon(GetIcon.getProgramIcon("suchen_22.png"));
-            jTextFieldFilter.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent actionEvent) {
-                    Filter.checkPattern2(jTextFieldFilter);
-                    daten.guiFilme.guiFilmeFiltern();
-                }
+            jTextFieldFilter.addActionListener(actionEvent -> {
+                Filter.checkPattern2(jTextFieldFilter);
+                daten.guiFilme.guiFilmeFiltern();
             });
             //looks like you need to explicitly set this on Linux...
             jTextFieldFilter.setInstantSearchDelay(150);
@@ -374,12 +369,7 @@ public final class MVToolBar extends JToolBar {
                 jButtonFilmeLaden.setEnabled(true);
             }
         });
-        jButtonFilmeLaden.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.filmeLaden.filmeLaden(daten, false);
-            }
-        });
+        jButtonFilmeLaden.addActionListener(e -> Daten.filmeLaden.filmeLaden(daten, false));
         jButtonFilmeLaden.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent arg0) {
@@ -400,94 +390,26 @@ public final class MVToolBar extends JToolBar {
             }
         });
         // Tab Filme
-        jButtonFilmSpeichern.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiFilme.guiFilmeFilmSpeichern();
-            }
-        });
-        jButtonFilmAbspielen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiFilme.guiFilmeFilmAbspielen();
-            }
-        });
-        jButtonInfo.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.filmInfo.showInfo();
-            }
-        });
+        jButtonFilmSpeichern.addActionListener(e -> daten.guiFilme.guiFilmeFilmSpeichern());
+        jButtonFilmAbspielen.addActionListener(e -> daten.guiFilme.guiFilmeFilmAbspielen());
+        jButtonInfo.addActionListener(e -> daten.filmInfo.showInfo());
         // Tab Downloads
-        jButtonDownloadAktualisieren.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.aktualisieren();
-            }
-        });
-        jButtonDownloadAufraeumen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.aufraeumen();
-            }
-        });
-        jButtonDownloadLoeschen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.loeschen();
-            }
-        });
-        jButtonDownloadAlleStarten.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.starten(true);
-            }
-        });
-        jButtonDownloadFilmStarten.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.filmAbspielen();
-            }
-        });
-        jButtonDownloadZurueckstellen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.zurueckstellen();
-            }
-        });
+        jButtonDownloadAktualisieren.addActionListener(e -> daten.guiDownloads.aktualisieren());
+        jButtonDownloadAufraeumen.addActionListener(e -> daten.guiDownloads.aufraeumen());
+        jButtonDownloadLoeschen.addActionListener(e -> daten.guiDownloads.loeschen());
+        jButtonDownloadAlleStarten.addActionListener(e -> daten.guiDownloads.starten(true));
+        jButtonDownloadFilmStarten.addActionListener(e -> daten.guiDownloads.filmAbspielen());
+        jButtonDownloadZurueckstellen.addActionListener(e -> daten.guiDownloads.zurueckstellen());
         // Tab Abo
-        jButtonAbosEinschalten.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiAbo.einAus(true);
-            }
-        });
-        jButtonAbosAusschalten.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiAbo.einAus(false);
-            }
-        });
-        jButtonAbosLoeschen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiAbo.loeschen();
-            }
-        });
-        jButtonAboAendern.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                daten.guiAbo.aendern();
-            }
-        });
-        jButtonFilterPanel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                boolean b = !Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER));
-                Daten.mVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.toString(b));
-                filterAnzeigen();
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVToolBar.class.getName());
-            }
+        jButtonAbosEinschalten.addActionListener(e -> daten.guiAbo.einAus(true));
+        jButtonAbosAusschalten.addActionListener(e -> daten.guiAbo.einAus(false));
+        jButtonAbosLoeschen.addActionListener(e -> daten.guiAbo.loeschen());
+        jButtonAboAendern.addActionListener(actionEvent -> daten.guiAbo.aendern());
+        jButtonFilterPanel.addActionListener(e -> {
+            boolean b = !Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER));
+            Daten.mVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.toString(b));
+            filterAnzeigen();
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVToolBar.class.getName());
         });
     }
 
@@ -551,12 +473,7 @@ public final class MVToolBar extends JToolBar {
 
         private void showMenu(MouseEvent evt) {
             JPopupMenu jPopupMenu = new JPopupMenu();
-            itemKlein.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    setIcon(itemKlein.isSelected());
-                }
-            });
+            itemKlein.addActionListener(e -> setIcon(itemKlein.isSelected()));
             jPopupMenu.add(itemKlein);
             //##Trenner##
             jPopupMenu.addSeparator();
@@ -580,12 +497,9 @@ public final class MVToolBar extends JToolBar {
                     box[i] = new JCheckBoxMenuItem(buttonListToUse.get(i).name);
                     box[i].setIcon(GetIcon.getProgramIcon(buttonListToUse.get(i).imageIconKlein));
                     box[i].setSelected(buttonListToUse.get(i).anzeigen);
-                    box[i].addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            setButtonList();
-                            storeVisible();
-                        }
+                    box[i].addActionListener(e -> {
+                        setButtonList();
+                        storeVisible();
                     });
                     jPopupMenu.add(box[i]);
                 }
@@ -593,13 +507,9 @@ public final class MVToolBar extends JToolBar {
             //##Trenner##
             jPopupMenu.addSeparator();
             //##Trenner##
-            itemReset.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    resetToolbar();
-                    storeVisible();
-                }
+            itemReset.addActionListener(e -> {
+                resetToolbar();
+                storeVisible();
             });
             jPopupMenu.add(itemReset);
 

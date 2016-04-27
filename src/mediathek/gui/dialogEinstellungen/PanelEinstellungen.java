@@ -56,33 +56,24 @@ public class PanelEinstellungen extends PanelVorlage {
         daten = d;
         initSpinner();
         jSpinnerDays.addChangeListener(new BeobSpinnerDays());
-        jButtonLoad.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                Daten.listeFilme.clear(); // sonst wird evtl. nur eine Diff geladen
-                Daten.filmeLaden.importFilmliste("");
-            }
+        jButtonLoad.addActionListener(ae -> {
+            Daten.listeFilme.clear(); // sonst wird evtl. nur eine Diff geladen
+            Daten.filmeLaden.importFilmliste("");
         });
         setupLookAndFeelComboBox();
         jButtonHelpDays.setIcon(GetIcon.getProgramIcon("help_16.png"));
-        jButtonHelpDays.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parentComponent, true, "\n"
-                        + "Es werden nur Filme der letzten\n"
-                        + "xx Tage geladen."
-                        + "\n"
-                        + "Bei \"0\" werden alle Filme geladen.\n"
-                        + "\n"
-                        + "(Eine kleinere Filmliste\n"
-                        + "kann bei Rechnern mit wenig\n"
-                        + "Speicher hilfreich sein.)"
-                        + "\n\n"
-                        + "Auswirkung hat das erst nach dem\n"
-                        + "Neuladen der kompletten Filmliste.").setVisible(true);
-            }
-        });
+        jButtonHelpDays.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
+                + "Es werden nur Filme der letzten\n"
+                + "xx Tage geladen."
+                + "\n"
+                + "Bei \"0\" werden alle Filme geladen.\n"
+                + "\n"
+                + "(Eine kleinere Filmliste\n"
+                + "kann bei Rechnern mit wenig\n"
+                + "Speicher hilfreich sein.)"
+                + "\n\n"
+                + "Auswirkung hat das erst nach dem\n"
+                + "Neuladen der kompletten Filmliste.").setVisible(true));
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -96,50 +87,26 @@ public class PanelEinstellungen extends PanelVorlage {
             }
         });
         jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE)));
-        jCheckBoxEchtzeit.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.toString(jCheckBoxEchtzeit.isSelected()));
-            }
-        });
+        jCheckBoxEchtzeit.addActionListener(ae -> Daten.mVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.toString(jCheckBoxEchtzeit.isSelected())));
         if (SystemInfo.isMacOSX()) {
             jCheckBoxTray.setSelected(false);
             jCheckBoxTray.setEnabled(false);
         } else {
             jCheckBoxTray.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_TRAY)));
-            jCheckBoxTray.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent ae) {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.toString(jCheckBoxTray.isSelected()));
-                    daten.mediathekGui.setTray();
-                }
+            jCheckBoxTray.addActionListener(ae -> {
+                Daten.mVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.toString(jCheckBoxTray.isSelected()));
+                daten.mediathekGui.setTray();
             });
         }
         jCheckBoxSuchen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_UPDATE_SUCHEN)));
-        jCheckBoxSuchen.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBoxSuchen.isSelected()));
-            }
-        });
+        jCheckBoxSuchen.addActionListener(ae -> Daten.mVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBoxSuchen.isSelected())));
         jButtonSuchen.addActionListener(new BeobSuchen(false));
         jButtonInfos.addActionListener(new BeobSuchen(true));
-        jButtonRefresh.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                fillIconList();
-            }
-        });
+        jButtonRefresh.addActionListener(e -> fillIconList());
         fillIconList();
-        jComboBoxIcons.addItemListener(new java.awt.event.ItemListener() {
-            @Override
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                if (evt.getStateChange() == 1) {
-                    cbxIconPackagesItemStateChanged(evt);
-                }
+        jComboBoxIcons.addItemListener(evt -> {
+            if (evt.getStateChange() == 1) {
+                cbxIconPackagesItemStateChanged(evt);
             }
         });
     }
@@ -200,33 +167,30 @@ public class PanelEinstellungen extends PanelVorlage {
             jComboBoxLookAndFeel.setModel(model);
             jComboBoxLookAndFeel.setSelectedIndex(idx);
 
-            ActionListener lst = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent actionEvent) {
-                    String lafName = jComboBoxLookAndFeel.getModel().getElementAt(jComboBoxLookAndFeel.getSelectedIndex());
-                    String lafClass = "";
-                    //retrieve class name for selected LAF
-                    for (UIManager.LookAndFeelInfo i : info) {
-                        if (i.getName().equals(lafName)) {
-                            lafClass = i.getClassName();
-                            break;
-                        }
+            ActionListener lst = actionEvent -> {
+                String lafName = jComboBoxLookAndFeel.getModel().getElementAt(jComboBoxLookAndFeel.getSelectedIndex());
+                String lafClass = "";
+                //retrieve class name for selected LAF
+                for (UIManager.LookAndFeelInfo i : info) {
+                    if (i.getName().equals(lafName)) {
+                        lafClass = i.getClassName();
+                        break;
                     }
-                    //and now switch it...
-                    try {
-                        UIManager.setLookAndFeel(lafClass);
-                        SwingUtilities.updateComponentTreeUI(daten.mediathekGui);
-                        for (Frame f : Frame.getFrames()) {
-                            SwingUtilities.updateComponentTreeUI(f);
-                            for (Window w : f.getOwnedWindows()) {
-                                SwingUtilities.updateComponentTreeUI(w);
-                            }
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                    Daten.mVConfig.add(MVConfig.SYSTEM_LOOK, lafClass);  //
                 }
+                //and now switch it...
+                try {
+                    UIManager.setLookAndFeel(lafClass);
+                    SwingUtilities.updateComponentTreeUI(daten.mediathekGui);
+                    for (Frame f : Frame.getFrames()) {
+                        SwingUtilities.updateComponentTreeUI(f);
+                        for (Window w : f.getOwnedWindows()) {
+                            SwingUtilities.updateComponentTreeUI(w);
+                        }
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                Daten.mVConfig.add(MVConfig.SYSTEM_LOOK, lafClass);  //
             };
             jComboBoxLookAndFeel.addActionListener(lst);
 

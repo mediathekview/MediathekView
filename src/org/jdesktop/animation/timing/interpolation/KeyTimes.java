@@ -44,7 +44,7 @@ import java.util.ArrayList;
  */
 public class KeyTimes {
     
-    private ArrayList<Float> times = new ArrayList<Float>();
+    private ArrayList<Float> times = new ArrayList<>();
     
     /** 
      * Creates a new instance of KeyTimes.  Times should be in increasing

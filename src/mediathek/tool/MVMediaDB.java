@@ -60,11 +60,7 @@ public class MVMediaDB {
             Pattern p = Filter.makePattern(title);
             if (p != null) {
                 // dann mit RegEx prüfen
-                for (DatenMediaDB s : fileArray) {
-                    if (p.matcher(s.arr[DatenMediaDB.MEDIA_DB_NAME_NR]).matches()) {
-                        modelFilm.addRow(s.getRow());
-                    }
-                }
+                fileArray.stream().filter(s -> p.matcher(s.arr[DatenMediaDB.MEDIA_DB_NAME_NR]).matches()).forEach(s -> modelFilm.addRow(s.getRow()));
             } else {
                 title = title.toLowerCase();
                 for (DatenMediaDB s : fileArray) {
@@ -200,7 +196,7 @@ public class MVMediaDB {
                 if (out != null) {
                     out.close();
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
     }

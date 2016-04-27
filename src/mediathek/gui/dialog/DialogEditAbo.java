@@ -24,8 +24,6 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -35,8 +33,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
@@ -97,22 +93,14 @@ public class DialogEditAbo extends javax.swing.JDialog {
 
         });
         // =====================
-        jButtonBeenden.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (check()) {
-                    beenden();
-                } else {
-                    MVMessageDialog.showMessageDialog(parent, "Filter angeben!", "Leeres Abo", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-        jButtonAbbrechen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        jButtonBeenden.addActionListener(e -> {
+            if (check()) {
                 beenden();
+            } else {
+                MVMessageDialog.showMessageDialog(parent, "Filter angeben!", "Leeres Abo", JOptionPane.ERROR_MESSAGE);
             }
         });
+        jButtonAbbrechen.addActionListener(e -> beenden());
         getRootPane().setDefaultButton(jButtonBeenden);
         new EscBeenden(this) {
             @Override
@@ -122,12 +110,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
         };
         setExtra();
         jButtonHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
-        jButtonHelp.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_ADD_ABO)).setVisible(true);
-            }
-        });
+        jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_ADD_ABO)).setVisible(true));
     }
 
     private void checkPfad() {
@@ -188,12 +171,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
         } else if (i == DatenAbo.ABO_MINDESTDAUER_NR) {
             sliderDauer.setValue(aktAbo.mindestdauerMinuten);
             labelDauer.setText(String.valueOf(aktAbo.mindestdauerMinuten));
-            sliderDauer.addChangeListener(new ChangeListener() {
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    labelDauer.setText("  " + sliderDauer.getValue() + " ");
-                }
-            });
+            sliderDauer.addChangeListener(e -> labelDauer.setText("  " + sliderDauer.getValue() + " "));
             JPanel p = new JPanel(new BorderLayout());
             p.add(sliderDauer, BorderLayout.CENTER);
             p.add(labelDauer, BorderLayout.EAST);

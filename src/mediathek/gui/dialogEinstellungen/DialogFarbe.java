@@ -31,12 +31,6 @@ public class DialogFarbe extends javax.swing.JDialog {
 
     public Color farbe = null;
 
-    /** Creates new form DialogFarbe
-     *
-     * @param parent
-     * @param modal
-     * @param color
-     */
     public DialogFarbe(JFrame parent, boolean modal, Color color) {
         super(parent, modal);
         initComponents();
