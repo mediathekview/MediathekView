@@ -77,7 +77,7 @@ public class MVListeFilme {
             }
             for (DatenFilm film : listeFilme) {
                 if (nurNeue) {
-                    if (!film.neuerFilm) {
+                    if (!film.isNew()) {
                         continue;
                     }
                 }

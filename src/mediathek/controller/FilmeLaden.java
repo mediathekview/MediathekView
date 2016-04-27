@@ -19,22 +19,10 @@
  */
 package mediathek.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import javax.swing.event.EventListenerList;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
-import mediathek.tool.Duration;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Konstanten;
-import mediathek.tool.MVConfig;
-import mediathek.tool.MVListeFilme;
-import mediathek.tool.MVMessageDialog;
+import mediathek.tool.*;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 import msearch.filmeSuchen.MSFilmeSuchen;
@@ -44,6 +32,14 @@ import msearch.filmlisten.ListeFilmlistenUrls;
 import msearch.filmlisten.MSFilmlisteLesen;
 import msearch.filmlisten.MSImportFilmliste;
 import msearch.tool.MSConfig;
+
+import javax.swing.*;
+import javax.swing.event.EventListenerList;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 public class FilmeLaden {
 
@@ -107,7 +103,7 @@ public class FilmeLaden {
         Log.systemMeldung("");
         Log.systemMeldung("Alte Liste erstellt am: " + Daten.listeFilme.genDate());
         Log.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
-        Log.systemMeldung("  Anzahl Neue: " + Daten.listeFilme.countFilmNew());
+        Log.systemMeldung("  Anzahl Neue: " + Daten.listeFilme.countNewFilms());
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
@@ -119,7 +115,6 @@ public class FilmeLaden {
                 Daten.listeFilme.clear(); // sonst wird eine "zu kurze" Liste wieder nur mit einer Diff-Liste aufgefüllt, wenn das Alter noch passt
             }
             Daten.listeFilmeNachBlackList.clear();
-            System.gc();
             if (dateiUrl.equals("")) {
                 // Filme als Liste importieren, Url automatisch ermitteln
                 Log.systemMeldung("Filmliste laden (auto)");
@@ -140,7 +135,7 @@ public class FilmeLaden {
         Log.systemMeldung("");
         Log.systemMeldung("Alte Liste erstellt am: " + Daten.listeFilme.genDate());
         Log.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
-        Log.systemMeldung("  Anzahl Neue: " + Daten.listeFilme.countFilmNew());
+        Log.systemMeldung("  Anzahl Neue: " + Daten.listeFilme.countNewFilms());
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
@@ -149,7 +144,6 @@ public class FilmeLaden {
             fillHash(Daten.listeFilme);
             //Daten.listeFilme.clear();
             Daten.listeFilmeNachBlackList.clear();
-            System.gc();
             // Filme als Liste importieren, feste URL/Datei
             Log.systemMeldung("Filmliste laden von: " + dateiUrl);
             msImportFilmliste.filmeImportierenDatei(dateiUrl, diffListe, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
@@ -183,7 +177,7 @@ public class FilmeLaden {
     }
 
     public String getDownloadUrl_akt() {
-        return msImportFilmliste.msFilmlistenSuchen.suchenAkt(new ArrayList<String>());
+        return msImportFilmliste.msFilmlistenSuchen.suchenAkt(new ArrayList<>());
     }
 
     // #######################################
@@ -210,7 +204,7 @@ public class FilmeLaden {
             Log.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
         }
 
-        searchHash(Daten.listeFilme);
+        findAndMarkNewFilms(Daten.listeFilme);
         Daten.listeFilme.themenLaden();
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false/*aboLoeschen*/);
         istAmLaufen = false;
@@ -222,7 +216,6 @@ public class FilmeLaden {
             Daten.listeFilme.clear();
             MSConfig.setStop(false);
             new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
-            Daten.listeFilme.setFilmNew();
             Log.systemMeldung("");
         } else {
             Daten.filmlisteSpeichern();
@@ -231,32 +224,28 @@ public class FilmeLaden {
 
         Log.systemMeldung("Jetzige Liste erstellt am: " + Daten.listeFilme.genDate());
         Log.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
-        Log.systemMeldung("  Anzahl Neue:  " + Daten.listeFilme.countFilmNew());
+        Log.systemMeldung("  Anzahl Neue:  " + Daten.listeFilme.countNewFilms());
         Log.systemMeldung("");
 
         MVListeFilme.checkBlacklist();
         notifyFertig(event);
-        System.gc();
     }
 
     private void fillHash(ListeFilme listeFilme) {
-        for (DatenFilm film : listeFilme) {
-            hashSet.add(film.getUrlHistory());
-        }
+        hashSet.addAll(listeFilme.stream().map(DatenFilm::getUrlHistory).collect(Collectors.toList()));
     }
 
-    private void searchHash(ListeFilme listeFilme) {
+    /**
+     * Search through history and mark new films.
+     * @param listeFilme
+     */
+    private void findAndMarkNewFilms(ListeFilme listeFilme) {
         listeFilme.neueFilme = false;
-        for (DatenFilm film : listeFilme) {
-            if (!hashSet.contains(film.getUrlHistory())) {
-                film.neuerFilm = true;
-                film.arr[DatenFilm.FILM_NEU_NR] = Boolean.TRUE.toString();
-                listeFilme.neueFilme = true;
-            } else {
-                film.neuerFilm = false;
-                film.arr[DatenFilm.FILM_NEU_NR] = Boolean.FALSE.toString();
-            }
-        }
+        listeFilme.parallelStream().filter(film -> !hashSet.contains(film.getUrlHistory()))
+                .forEach(film -> {
+                    film.setNew(true);
+                    listeFilme.neueFilme = true;
+                });
         hashSet.clear();
     }
 
@@ -268,12 +257,9 @@ public class FilmeLaden {
                     l.start(event);
                 }
             } else {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
-                            l.start(e);
-                        }
+                SwingUtilities.invokeLater(() -> {
+                    for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
+                        l.start(e);
                     }
                 });
             }
@@ -290,12 +276,9 @@ public class FilmeLaden {
                     l.progress(e);
                 }
             } else {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
-                            l.progress(e);
-                        }
+                SwingUtilities.invokeLater(() -> {
+                    for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
+                        l.progress(e);
                     }
                 });
             }
@@ -312,12 +295,9 @@ public class FilmeLaden {
                     l.fertig(e);
                 }
             } else {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
-                            l.fertig(e);
-                        }
+                SwingUtilities.invokeLater(() -> {
+                    for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
+                        l.fertig(e);
                     }
                 });
             }

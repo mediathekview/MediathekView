@@ -226,7 +226,7 @@ public class MVFilmInformation implements MVFilmInfo {
             }
             lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
             lblUrlSubtitle.setText(aktFilm.getUrlSubtitle());
-            jLabelFilmNeu.setVisible(aktFilm.neuerFilm);
+            jLabelFilmNeu.setVisible(aktFilm.isNew());
         }
         dialog.repaint();
     }
