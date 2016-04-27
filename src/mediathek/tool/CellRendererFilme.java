@@ -126,7 +126,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                     break;
                 case DatenFilm.FILM_NEU_NR:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (datenFilm.neuerFilm) {
+                    if (datenFilm.isNew()) {
                         setIcon(ja_16);
                     } else {
                         setIcon(nein_12);
@@ -151,7 +151,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                         if (!isSelected) {
                             setBackground(MVColor.FILM_HISTORY.color);
                         }
-                    } else if (datenFilm.neuerFilm) {
+                    } else if (datenFilm.isNew()) {
                         setForeground(MVColor.FILM_NEU.color);
                     }
                 }

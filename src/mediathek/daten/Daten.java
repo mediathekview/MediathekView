@@ -20,8 +20,6 @@
 package mediathek.daten;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -145,12 +143,9 @@ public class Daten {
         downloadInfos = new DownloadInfos();
 
         starterClass = new StarterClass(this);
-        Timer timer = new Timer(1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                downloadInfos.makeDownloadInfos();
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_TIMER, Daten.class.getName());
-            }
+        Timer timer = new Timer(1000, e -> {
+            downloadInfos.makeDownloadInfos();
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_TIMER, Daten.class.getName());
         });
         timer.setInitialDelay(4000); // damit auch alles geladen ist
         timer.start();
@@ -248,8 +243,7 @@ public class Daten {
      * Return the path to "mediathek.xml_copy_"
      * first copy exists
      *
-     * @param xmlFilePath
-     * @return Path object to mediathek.xml_copy_? file
+     * @param xmlFilePath Path to file.
      */
     public static void getMediathekXmlCopyFilePath(ArrayList<Path> xmlFilePath) {
         try {
@@ -344,19 +338,18 @@ public class Daten {
 
         // erst die Systemdaten, dann die Filmliste
         updateSplashScreen("Lade Filmliste...");
-        new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
-        int c = listeFilme.setFilmNew();
+        new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
         // Meldungen sind zwar doppelt, aber damit sie auch im Meldungsfenser erscheinen..
         Log.systemMeldung("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-        Log.systemMeldung("  erstellt am: " + Daten.listeFilme.genDate());
-        Log.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
-        Log.systemMeldung("  Anzahl Neue: " + c);
+        Log.systemMeldung("  erstellt am: " + listeFilme.genDate());
+        Log.systemMeldung("  Anzahl Filme: " + listeFilme.size());
+        Log.systemMeldung("  Anzahl Neue: " + listeFilme.countNewFilms());
 
-        Daten.listeFilme.themenLaden();
-        Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
+        listeFilme.themenLaden();
+        Daten.listeAbo.setAboFuerFilm(listeFilme, false /*aboLoeschen*/);
         Daten.listeDownloads.filmEintragen(); // Filme bei einmalDownloads eintragen
         Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
-        MVListeFilme.checkBlacklist(); // ToDo brauchts das??
+        MVListeFilme.checkBlacklist(); // TODO brauchts das??
         return true;
     }
 
