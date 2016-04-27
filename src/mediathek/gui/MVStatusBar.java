@@ -3,8 +3,6 @@ package mediathek.gui;
 import com.explodingpixels.macwidgets.BottomBar;
 import com.explodingpixels.macwidgets.BottomBarSize;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.EnumMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -66,12 +64,7 @@ public final class MVStatusBar extends JPanel {
         stopButton.setIcon(GetIcon.getProgramIcon("close.png"));
 
         stopButton.setToolTipText("Abbrechen");
-        stopButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.filmeLaden.setStop(true);
-            }
-        });
+        stopButton.addActionListener(e -> Daten.filmeLaden.setStop(true));
 
         progressPanel.add(stopButton);
         bottomBar.addComponentToRight(progressPanel);

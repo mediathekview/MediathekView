@@ -77,41 +77,15 @@ public class DialogEditDownload extends javax.swing.JDialog {
         orgProgArray = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR];
         mVPanelDownloadZiel = new MVPanelDownloadZiel(parent, datenDownload, false);
         mVPanelDownloadZiel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        jRadioButtonResHd.addActionListener(new ActionListener() {
-            
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                changeRes();
-            }
-        });
-        jRadioButtonResHi.addActionListener(new ActionListener() {
-            
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                changeRes();
-            }
-        });
-        jRadioButtonResLo.addActionListener(new ActionListener() {
-            
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                changeRes();
-            }
-        });
-        jButtonOk.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (check()) {
-                    beenden();
-                }
-            }
-        });
-        jButtonAbbrechen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        jRadioButtonResHd.addActionListener(e -> changeRes());
+        jRadioButtonResHi.addActionListener(e -> changeRes());
+        jRadioButtonResLo.addActionListener(e -> changeRes());
+        jButtonOk.addActionListener(e -> {
+            if (check()) {
                 beenden();
             }
         });
+        jButtonAbbrechen.addActionListener(e -> beenden());
         getRootPane().setDefaultButton(jButtonOk);
         new EscBeenden(this) {
             @Override
@@ -359,21 +333,11 @@ public class DialogEditDownload extends javax.swing.JDialog {
                         JButton jButtonReset = new JButton("");
                         jButtonReset.setToolTipText("Reset");
                         jButtonReset.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
-                        jButtonReset.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR].setText(orgProgArray);
-                            }
-                        });
+                        jButtonReset.addActionListener(e -> textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR].setText(orgProgArray));
                         JButton jButtonHelp = new JButton("");
                         jButtonHelp.setToolTipText("Hilfe");
                         jButtonHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
-                        jButtonHelp.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG)).setVisible(true);
-                            }
-                        });
+                        jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG)).setVisible(true));
                         
                         gc.gridy = 0;
                         gc.gridx = 0;

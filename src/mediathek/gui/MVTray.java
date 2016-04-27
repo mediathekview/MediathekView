@@ -26,8 +26,6 @@ import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
@@ -75,37 +73,21 @@ public final class MVTray {
             trayIcon.setPopupMenu(popup);
 
             MenuItem itemInfo = new MenuItem("Infos anzeigen");
-            itemInfo.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    addNotification(getTextInfos());
-                }
-            });
+            itemInfo.addActionListener(e -> addNotification(getTextInfos()));
             popup.add(itemInfo);
 
             MenuItem itemRemoveTray = new MenuItem("Trayicon ausblenden");
-            itemRemoveTray.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    daten.mediathekGui.setVisible(true); // WICHTIG!!
-                    Daten.mVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.toString(false));
-                    daten.mediathekGui.setTray();
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_TRAYICON, MVTray.class.getSimpleName());
-                }
+            itemRemoveTray.addActionListener(e -> {
+                daten.mediathekGui.setVisible(true); // WICHTIG!!
+                Daten.mVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.toString(false));
+                daten.mediathekGui.setTray();
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_TRAYICON, MVTray.class.getSimpleName());
             });
             popup.add(itemRemoveTray);
 
             popup.addSeparator();
             MenuItem itemBeenden = new MenuItem("Programm beenden");
-            itemBeenden.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    daten.mediathekGui.beenden(false, false);
-                }
-            });
+            itemBeenden.addActionListener(e -> daten.mediathekGui.beenden(false, false));
             popup.add(itemBeenden);
 
             trayIcon.setPopupMenu(popup);

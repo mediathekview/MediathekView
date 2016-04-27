@@ -232,10 +232,10 @@ public class MVConfig {
     public synchronized String[][] getAll() {
         LinkedList<String[]> liste = new LinkedList<>();
         String[] setArray = hashmap.keySet().toArray(new String[]{});
-        for (int i = 0; i < setArray.length; ++i) {
+        for (String entry : setArray) {
             String[] s = new String[2];
-            s[0] = setArray[i];
-            s[1] = hashmap.get(setArray[i]);
+            s[0] = entry;
+            s[1] = hashmap.get(entry);
             liste.add(s);
         }
         listeSort(liste, 0);

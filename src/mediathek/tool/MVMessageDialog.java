@@ -31,12 +31,7 @@ public class MVMessageDialog {
             if (SwingUtilities.isEventDispatchThread()) {
                 JOptionPane.showMessageDialog(parent, message, title, messageType);
             } else {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        JOptionPane.showMessageDialog(parent, message, title, messageType);
-                    }
-                });
+                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(parent, message, title, messageType));
             }
         }
 

@@ -33,8 +33,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.print.PrinterException;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import javax.swing.AbstractAction;
@@ -55,8 +53,6 @@ import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -326,22 +322,16 @@ public class GuiFilme extends PanelVorlage {
                 true /*Icon*/));
 
         jCheckBoxProgamme.setIcon(GetIcon.getProgramIcon("close_15.png"));
-        jCheckBoxProgamme.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, Boolean.FALSE.toString());
-                daten.mediathekGui.videoplayerAnzeigen(true);
-                panelVideoplayerSetzen();
-            }
+        jCheckBoxProgamme.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, Boolean.FALSE.toString());
+            daten.mediathekGui.videoplayerAnzeigen(true);
+            panelVideoplayerSetzen();
         });
         setSplitPane();
         jSplitPane1.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY,
-                new PropertyChangeListener() {
-                    @Override
-                    public void propertyChange(PropertyChangeEvent pce) {
-                        if (jScrollPaneFilter.isVisible()) {
-                            Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, String.valueOf(jSplitPane1.getDividerLocation()));
-                        }
+                pce -> {
+                    if (jScrollPaneFilter.isVisible()) {
+                        Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, String.valueOf(jSplitPane1.getDividerLocation()));
                     }
                 });
 
@@ -714,29 +704,23 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void setFilterAction() {
-        mVFilter.get_jComboBoxZeitraum().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_FILTER__TAGE, String.valueOf(mVFilter.get_jComboBoxZeitraum().getSelectedIndex()));
-                if (!stopBeob) {
-                    MVListeFilme.checkBlacklist();
-                    loadTable();
-                }
+        mVFilter.get_jComboBoxZeitraum().addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_FILTER__TAGE, String.valueOf(mVFilter.get_jComboBoxZeitraum().getSelectedIndex()));
+            if (!stopBeob) {
+                MVListeFilme.checkBlacklist();
+                loadTable();
             }
         });
         //beobachter Filter
-        mVFilter.get_jToggleButtonLivestram().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!stopBeob) {
-                    stopBeob = true;
-                    //auch die Filter löschen
-                    mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
-                    mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
-                    mVFilter.get_jTextFieldFilterTitel().setText("");
-                }
-                loadTable();
+        mVFilter.get_jToggleButtonLivestram().addActionListener(e -> {
+            if (!stopBeob) {
+                stopBeob = true;
+                //auch die Filter löschen
+                mVFilter.get_jComboBoxFilterSender().setModel(new DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
+                mVFilter.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
+                mVFilter.get_jTextFieldFilterTitel().setText("");
             }
+            loadTable();
         });
         //Combo Sender
         mVFilter.get_jButtonFilterLoeschen().addActionListener(new BeobFilterLoeschen());
@@ -746,14 +730,11 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jTextFieldFilterTitel().getDocument().addDocumentListener(new BeobFilterTitelDoc());
         mVFilter.get_jTextFieldFilterThemaTitel().addActionListener(new BeobFilter());
         mVFilter.get_jTextFieldFilterThemaTitel().getDocument().addDocumentListener(new BeobFilterTitelDoc());
-        mVFilter.get_jSliderMinuten().addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (!stopBeob) {
-                    mVFilter.get_jTextFieldFilterMinuten().setText(String.valueOf(mVFilter.get_jSliderMinuten().getValue()));
-                    if (!mVFilter.get_jSliderMinuten().getValueIsAdjusting()) {
-                        loadTable();
-                    }
+        mVFilter.get_jSliderMinuten().addChangeListener(e -> {
+            if (!stopBeob) {
+                mVFilter.get_jTextFieldFilterMinuten().setText(String.valueOf(mVFilter.get_jSliderMinuten().getValue()));
+                if (!mVFilter.get_jSliderMinuten().getValueIsAdjusting()) {
+                    loadTable();
                 }
             }
         });
@@ -1272,22 +1253,12 @@ public class GuiFilme extends PanelVorlage {
             //Thema laden
             JMenuItem item = new JMenuItem("Film abspielen");
             item.setIcon(GetIcon.getProgramIcon("film_start_16.png"));
-            item.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    playFilm();
-                }
-            });
+            item.addActionListener(e -> playFilm());
             jPopupMenu.add(item);
             //Url
             item = new JMenuItem("Film aufzeichnen");
             item.setIcon(GetIcon.getProgramIcon("film_rec_16.png"));
-            item.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    saveFilm();
-                }
-            });
+            item.addActionListener(e -> saveFilm());
             jPopupMenu.add(item);
 
             //##Trenner##
@@ -1397,26 +1368,18 @@ public class GuiFilme extends PanelVorlage {
 
             final JCheckBoxMenuItem jCheckBoxBlackBoxOn = new JCheckBoxMenuItem("Blacklist ist eingeschaltet");
             jCheckBoxBlackBoxOn.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ON)));
-            jCheckBoxBlackBoxOn.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.toString(jCheckBoxBlackBoxOn.isSelected()));
-                    MVListeFilme.checkBlacklist();
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getName());
-                }
+            jCheckBoxBlackBoxOn.addActionListener(e -> {
+                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.toString(jCheckBoxBlackBoxOn.isSelected()));
+                MVListeFilme.checkBlacklist();
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getName());
             });
             submenueBlack.add(jCheckBoxBlackBoxOn);
 
             final JCheckBoxMenuItem jCheckBoxBlackBoxStart = new JCheckBoxMenuItem("Blacklist ist beim Programmstart eingeschaltet");
             jCheckBoxBlackBoxStart.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)));
-            jCheckBoxBlackBoxStart.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_START_ON, Boolean.toString(jCheckBoxBlackBoxStart.isSelected()));
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_START_GEAENDERT, GuiFilme.class.getName());
-                }
+            jCheckBoxBlackBoxStart.addActionListener(e -> {
+                Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_START_ON, Boolean.toString(jCheckBoxBlackBoxStart.isSelected()));
+                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_START_GEAENDERT, GuiFilme.class.getName());
             });
             submenueBlack.add(jCheckBoxBlackBoxStart);
 
@@ -1444,14 +1407,7 @@ public class GuiFilme extends PanelVorlage {
                             KeyStroke ctrlH = KeyStroke.getKeyStroke(KeyEvent.VK_H, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
                             item.setAccelerator(ctrlH);
 
-                            item.addActionListener(new ActionListener() {
-
-                                @Override
-                                public void actionPerformed(ActionEvent e) {
-                                    GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD));
-
-                                }
-                            });
+                            item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD)));
                             submenueURL.add(item);
                         }
 
@@ -1461,14 +1417,7 @@ public class GuiFilme extends PanelVorlage {
                         KeyStroke ctrlU = KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
                         item.setAccelerator(ctrlU);
 
-                        item.addActionListener(new ActionListener() {
-
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL));
-
-                            }
-                        });
+                        item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL)));
                         submenueURL.add(item);
 
                         // kleine Auflösung
@@ -1478,39 +1427,19 @@ public class GuiFilme extends PanelVorlage {
                             KeyStroke ctrlK = KeyStroke.getKeyStroke(KeyEvent.VK_K, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
                             item.setAccelerator(ctrlK);
 
-                            item.addActionListener(new ActionListener() {
-
-                                @Override
-                                public void actionPerformed(ActionEvent e) {
-                                    GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN));
-
-                                }
-                            });
+                            item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN)));
                             submenueURL.add(item);
                         }
                         jPopupMenu.add(submenueURL);
                     } else {
                         item = new JMenuItem("Film-URL kopieren");
-                        item.addActionListener(new ActionListener() {
-
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL));
-
-                            }
-                        });
+                        item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL)));
                         jPopupMenu.add(item);
                     }
                 }
                 if (!film.getUrlSubtitle().isEmpty()) {
                     item = new JMenuItem("Untertitel-URL kopieren");
-                    item.addActionListener(new ActionListener() {
-
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            GuiFunktionen.copyToClipboard(film.getUrlSubtitle());
-                        }
-                    });
+                    item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlSubtitle()));
                     jPopupMenu.add(item);
                 }
             }
@@ -1522,12 +1451,7 @@ public class GuiFilme extends PanelVorlage {
             // Film in der MediaDB suchen
             if (film != null) {
                 JMenuItem itemDb = new JMenuItem("Titel in der Mediensammlung suchen");
-                itemDb.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        mediensammlung();
-                    }
-                });
+                itemDb.addActionListener(e -> mediensammlung());
                 jPopupMenu.add(itemDb);
             }
 
@@ -1537,12 +1461,9 @@ public class GuiFilme extends PanelVorlage {
             jPopupMenu.add(item);
             //Infos
             item = new JMenuItem("Filminformation anzeigen");
-            item.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent actionEvent) {
-                    if (!filmInfo.isVisible()) {
-                        filmInfo.showInfo();
-                    }
+            item.addActionListener(e -> {
+                if (!filmInfo.isVisible()) {
+                    filmInfo.showInfo();
                 }
             });
             jPopupMenu.add(item);

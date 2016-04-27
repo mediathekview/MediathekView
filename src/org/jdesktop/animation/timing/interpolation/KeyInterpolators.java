@@ -40,7 +40,7 @@ import java.util.Arrays;
  */
 class KeyInterpolators {
     
-    private ArrayList<Interpolator> interpolators = new ArrayList<Interpolator>();
+    private ArrayList<Interpolator> interpolators = new ArrayList<>();
     
     /**
      * Creates a new instance of KeyInterpolators

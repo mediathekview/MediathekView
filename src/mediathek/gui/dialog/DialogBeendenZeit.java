@@ -21,8 +21,6 @@
 package mediathek.gui.dialog;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
@@ -147,68 +145,45 @@ public class DialogBeendenZeit extends JDialog {
         jSpinnerTime.setEditor(dEditor);
         
         comboActions.setModel(getComboBoxModel());
-        comboActions.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setCbShutdownCoputer();
-            }
-        });
+        comboActions.addActionListener(e -> setCbShutdownCoputer());
         
         jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
-        jButtonHilfe.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BEENDEN)).setVisible(true);
-            }
-        });
+        jButtonHilfe.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BEENDEN)).setVisible(true));
         setCbShutdownCoputer();
         
-        cbShutdownComputer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                shutdown = cbShutdownComputer.isSelected();
-            }
-        });
+        cbShutdownComputer.addActionListener(e -> shutdown = cbShutdownComputer.isSelected());
         cbShutdownComputer.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN)));
         
-        btnContinue.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final String strSelectedItem = comboActions.getSelectedItem().toString();
-                Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN, String.valueOf(cbShutdownComputer.isSelected()));
-                
-                SimpleDateFormat format = ((JSpinner.DateEditor) jSpinnerTime.getEditor()).getFormat();
-                format.applyPattern("HH:mm");
-                Date sp = (Date) jSpinnerTime.getValue();
-                String strDate = format.format(sp);
-                
-                Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT, strDate);
-                
-                switch (strSelectedItem) {
-                    case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
-                        applicationCanTerminate = true;
-                        waitUntilDownloadsHaveFinished();
-                        break;
-                    
-                    case WAIT_FOR_DOWNLOADS_AND_DONT_TERMINATE_PROGRAM:
-                        applicationCanTerminate = false;
-                        waitUntilDownloadsHaveFinished();
-                        break;
-                    
-                    case DONT_START:
-                        applicationCanTerminate = false;
-                        dispose();
-                        break;
-                }
+        btnContinue.addActionListener(e -> {
+            final String strSelectedItem = comboActions.getSelectedItem().toString();
+            Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN, String.valueOf(cbShutdownComputer.isSelected()));
+
+            SimpleDateFormat format = ((JSpinner.DateEditor) jSpinnerTime.getEditor()).getFormat();
+            format.applyPattern("HH:mm");
+            Date sp = (Date) jSpinnerTime.getValue();
+            String strDate = format.format(sp);
+
+            Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT, strDate);
+
+            switch (strSelectedItem) {
+                case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
+                    applicationCanTerminate = true;
+                    waitUntilDownloadsHaveFinished();
+                    break;
+
+                case WAIT_FOR_DOWNLOADS_AND_DONT_TERMINATE_PROGRAM:
+                    applicationCanTerminate = false;
+                    waitUntilDownloadsHaveFinished();
+                    break;
+
+                case DONT_START:
+                    applicationCanTerminate = false;
+                    dispose();
+                    break;
             }
         });
         
-        btnCancel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                escapeHandler();
-            }
-        });
+        btnCancel.addActionListener(e -> escapeHandler());
         
         pack();
         
@@ -306,12 +281,7 @@ public class DialogBeendenZeit extends JDialog {
             if (SwingUtilities.isEventDispatchThread()) {
                 setTextDownload_();
             } else {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        setTextDownload_();
-                    }
-                });
+                SwingUtilities.invokeLater(this::setTextDownload_);
             }
         } catch (Exception ignored) {
         }

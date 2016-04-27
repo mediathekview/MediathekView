@@ -20,12 +20,8 @@
 package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -120,12 +116,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         initTree();
         GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_EINSTELLUNGEN, this, ddaten.mediathekGui);
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
-        jButtonBeenden.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                beenden();
-            }
-        });
+        jButtonBeenden.addActionListener(e -> beenden());
         new EscBeenden(this) {
             @Override
             public void beenden_() {
@@ -191,107 +182,104 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNodeStart));
         jTree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         jTree1.setRootVisible(false);
-        jTree1.addTreeSelectionListener(new TreeSelectionListener() {
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
-                if (node == null) {
-                    // nix markiert
-                    jPanelExtra.removeAll();
-                    jPanelExtra.add(panelLeer);
-                } else {
-                    String name = node.getUserObject().toString();
-                    setTitle(name);
-                    switch (name) {
-                        //Einstellungen
-                        case NAME_einstellungen:
-                            jTree1.setSelectionPath(new TreePath(treeNodeAllgemeineEinstellungen.getPath()));
-                            break;
-                        case NAME_bandwidth:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelDownload);
-                            break;
-                        case NAME_mediaDB:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelMediaDB);
-                            break;
-                        case NAME_allgemeineEinstellungen:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelEinstellungen);
-                            break;
-                        case NAME_allgemeineEinstellungenErweitert:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelEinstellungenErweitert);
-                            break;
-                        case NAME_allgemeineEinstellungenGeo:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelEinstellungenGeo);
-                            break;
-                        case NAME_allgemeineEinstellungenImport:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelImport);
-                            break;
-                        case NAME_allgemeineEinstellungenColor:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelEinstellungenColor);
-                            break;
-                        //Filmliste
-                        case NAME_filmListe:
-                            jTree1.setSelectionPath(new TreePath(treeNodeFilmliste.getPath()));
-                            break;
-                        case NAME_filmListeLaden:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelImportFilme);
-                            break;
-                        case NAME_filmListeExportieren:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelExportFilmliste);
-                            break;
-                        case NAME_blacklist:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelBlacklist);
-                            break;
-                        //Aufzeichnen, Abspielen
-                        case NAME_aufzeichnen:
-                            jTree1.setSelectionPath(new TreePath(treeNodeDateinamen.getPath()));
-                            break;
-                        case NAME_dateiname:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelDateinamen);
-                            break;
-                        case NAME_programmset:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelPset);
-                            break;
-                        case NAME_programmsetImportieren:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelPsetVorlagen);
-                            break;
-                        //Infos
-                        case NAME_infos:
-                            jTree1.setSelectionPath(new TreePath(treeNodeProgrammInfos.getPath()));
-                            break;
-                        case NAME_programmInfos:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelAbout);
-                            break;
-                        case NAME_history:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelHistory);
-                            break;
-                        case NAME_logfile:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelErledigteAbos);
-                            break;
-                        default:
-                            jPanelExtra.removeAll();
-                            jPanelExtra.add(panelLeer);
-                            setTitle("Programmeinstellungen");
-                            break;
-                    }
+        jTree1.addTreeSelectionListener(e -> {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
+            if (node == null) {
+                // nix markiert
+                jPanelExtra.removeAll();
+                jPanelExtra.add(panelLeer);
+            } else {
+                String name1 = node.getUserObject().toString();
+                setTitle(name1);
+                switch (name1) {
+                    //Einstellungen
+                    case NAME_einstellungen:
+                        jTree1.setSelectionPath(new TreePath(treeNodeAllgemeineEinstellungen.getPath()));
+                        break;
+                    case NAME_bandwidth:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelDownload);
+                        break;
+                    case NAME_mediaDB:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelMediaDB);
+                        break;
+                    case NAME_allgemeineEinstellungen:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelEinstellungen);
+                        break;
+                    case NAME_allgemeineEinstellungenErweitert:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelEinstellungenErweitert);
+                        break;
+                    case NAME_allgemeineEinstellungenGeo:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelEinstellungenGeo);
+                        break;
+                    case NAME_allgemeineEinstellungenImport:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelImport);
+                        break;
+                    case NAME_allgemeineEinstellungenColor:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelEinstellungenColor);
+                        break;
+                    //Filmliste
+                    case NAME_filmListe:
+                        jTree1.setSelectionPath(new TreePath(treeNodeFilmliste.getPath()));
+                        break;
+                    case NAME_filmListeLaden:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelImportFilme);
+                        break;
+                    case NAME_filmListeExportieren:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelExportFilmliste);
+                        break;
+                    case NAME_blacklist:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelBlacklist);
+                        break;
+                    //Aufzeichnen, Abspielen
+                    case NAME_aufzeichnen:
+                        jTree1.setSelectionPath(new TreePath(treeNodeDateinamen.getPath()));
+                        break;
+                    case NAME_dateiname:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelDateinamen);
+                        break;
+                    case NAME_programmset:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelPset);
+                        break;
+                    case NAME_programmsetImportieren:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelPsetVorlagen);
+                        break;
+                    //Infos
+                    case NAME_infos:
+                        jTree1.setSelectionPath(new TreePath(treeNodeProgrammInfos.getPath()));
+                        break;
+                    case NAME_programmInfos:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelAbout);
+                        break;
+                    case NAME_history:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelHistory);
+                        break;
+                    case NAME_logfile:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelErledigteAbos);
+                        break;
+                    default:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelLeer);
+                        setTitle("Programmeinstellungen");
+                        break;
                 }
-                jPanelExtra.updateUI();
             }
+            jPanelExtra.updateUI();
         });
         // und jetzt noch aufklappen
         for (int i = 0; i < jTree1.getRowCount(); ++i) {

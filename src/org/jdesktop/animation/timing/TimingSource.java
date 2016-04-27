@@ -60,7 +60,7 @@ public abstract class TimingSource {
 
     // listeners that will receive timing events
     private final ArrayList<TimingEventListener> listeners =
-            new ArrayList<TimingEventListener>();
+            new ArrayList<>();
     
     /**
      * Starts the TimingSource

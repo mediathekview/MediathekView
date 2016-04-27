@@ -21,8 +21,6 @@
 package mediathek.gui.dialog;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.DefaultComboBoxModel;
@@ -92,72 +90,51 @@ public class DialogBeenden extends JDialog {
         });
         
         jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
-        jButtonHilfe.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BEENDEN)).setVisible(true);
-            }
-        });
+        jButtonHilfe.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BEENDEN)).setVisible(true));
         jButtonHilfe.setEnabled(false);
         cbShutdownComputer.setEnabled(false);
         
-        comboActions.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final String strSelectedItem = (String) comboActions.getSelectedItem();
-                switch (strSelectedItem) {
-                    case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
-                        jButtonHilfe.setEnabled(true);
-                        cbShutdownComputer.setEnabled(true);
-                        break;
-                    
-                    default:
-                        jButtonHilfe.setEnabled(false);
-                        cbShutdownComputer.setEnabled(false);
-                        //manually reset shutdown state
-                        jButtonHilfe.setEnabled(false);
-                        cbShutdownComputer.setSelected(false);
-                        shutdown = false;
-                        break;
-                }
+        comboActions.addActionListener(e -> {
+            final String strSelectedItem = (String) comboActions.getSelectedItem();
+            switch (strSelectedItem) {
+                case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
+                    jButtonHilfe.setEnabled(true);
+                    cbShutdownComputer.setEnabled(true);
+                    break;
+
+                default:
+                    jButtonHilfe.setEnabled(false);
+                    cbShutdownComputer.setEnabled(false);
+                    //manually reset shutdown state
+                    jButtonHilfe.setEnabled(false);
+                    cbShutdownComputer.setSelected(false);
+                    shutdown = false;
+                    break;
             }
         });
         
-        cbShutdownComputer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                shutdown = cbShutdownComputer.isSelected();
+        cbShutdownComputer.addActionListener(e -> shutdown = cbShutdownComputer.isSelected());
+        
+        btnContinue.addActionListener(e -> {
+            final String strSelectedItem = (String) comboActions.getSelectedItem();
+            switch (strSelectedItem) {
+                case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
+                    waitUntilDownloadsHaveFinished();
+                    break;
+
+                case CANCEL_AND_TERMINATE_PROGRAM:
+                    applicationCanTerminate = true;
+                    dispose();
+                    break;
+
+                case DONT_TERMINATE:
+                    applicationCanTerminate = false;
+                    dispose();
+                    break;
             }
         });
         
-        btnContinue.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final String strSelectedItem = (String) comboActions.getSelectedItem();
-                switch (strSelectedItem) {
-                    case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
-                        waitUntilDownloadsHaveFinished();
-                        break;
-                    
-                    case CANCEL_AND_TERMINATE_PROGRAM:
-                        applicationCanTerminate = true;
-                        dispose();
-                        break;
-                    
-                    case DONT_TERMINATE:
-                        applicationCanTerminate = false;
-                        dispose();
-                        break;
-                }
-            }
-        });
-        
-        btnCancel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                escapeHandler();
-            }
-        });
+        btnCancel.addActionListener(e -> escapeHandler());
         
         pack();
         

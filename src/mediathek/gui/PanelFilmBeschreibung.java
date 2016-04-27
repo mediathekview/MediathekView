@@ -19,8 +19,6 @@
  */
 package mediathek.gui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -49,12 +47,9 @@ public class PanelFilmBeschreibung extends JPanel {
         parent = pparent;
         daten = dd;
         jCheckBoxBeschreibung.setIcon(GetIcon.getProgramIcon("close_15.png"));
-        jCheckBoxBeschreibung.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.FALSE.toString());
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
-            }
+        jCheckBoxBeschreibung.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.FALSE.toString());
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
         });
         jXHyperlinkWebsite.setText("");
         try {
@@ -65,19 +60,15 @@ public class PanelFilmBeschreibung extends JPanel {
         jEditorPane.setEditable(false);
         jEditorPane.setContentType("text/html");
         jCheckBoxChange.setIcon(GetIcon.getProgramIcon("edit_16.png"));
-        jCheckBoxChange.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (aktFilm != null) {
-                    String akt = aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR];
-                    new DialogFilmBeschreibung(parent, daten, aktFilm).setVisible(true);
-                    if (!aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].equals(akt)) {
-                        // dann hat sich die Beschreibung geändert
-                        setText();
-                        Daten.filmlisteSpeichern();
-                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BESCHREIBUNG, PanelFilmBeschreibung.class.getSimpleName());
-                    }
+        jCheckBoxChange.addActionListener(e -> {
+            if (aktFilm != null) {
+                String akt = aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR];
+                new DialogFilmBeschreibung(parent, daten, aktFilm).setVisible(true);
+                if (!aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].equals(akt)) {
+                    // dann hat sich die Beschreibung geändert
+                    setText();
+                    Daten.filmlisteSpeichern();
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BESCHREIBUNG, PanelFilmBeschreibung.class.getSimpleName());
                 }
             }
         });

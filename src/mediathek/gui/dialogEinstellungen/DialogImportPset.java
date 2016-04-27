@@ -19,8 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
@@ -41,19 +39,13 @@ public class DialogImportPset extends javax.swing.JDialog {
         this.setTitle("Programmset");
         liste = lliste;
         jScrollPane1.setViewportView(new PanelPsetKurz(ddaten, parentComponent, liste));
-        jButtonOk.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ok = true;
-                beenden();
-            }
+        jButtonOk.addActionListener(e -> {
+            ok = true;
+            beenden();
         });
-        jButtonAbbrechen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ok = false;
-                beenden();
-            }
+        jButtonAbbrechen.addActionListener(e -> {
+            ok = false;
+            beenden();
         });
         new EscBeenden(this) {
             @Override
@@ -62,14 +54,11 @@ public class DialogImportPset extends javax.swing.JDialog {
                 beenden();
             }
         };
-        jCheckBoxAlleEinstellungen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (jCheckBoxAlleEinstellungen.isSelected()) {
-                    jScrollPane1.setViewportView(new PanelPsetLang(ddaten, parentComponent, liste));
-                } else {
-                    jScrollPane1.setViewportView(new PanelPsetKurz(ddaten, parentComponent, liste));
-                }
+        jCheckBoxAlleEinstellungen.addActionListener(e -> {
+            if (jCheckBoxAlleEinstellungen.isSelected()) {
+                jScrollPane1.setViewportView(new PanelPsetLang(ddaten, parentComponent, liste));
+            } else {
+                jScrollPane1.setViewportView(new PanelPsetKurz(ddaten, parentComponent, liste));
             }
         });
     }

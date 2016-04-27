@@ -185,7 +185,7 @@ public class TimedTextMarkupLanguageParser {
      * @param ttmlFilePath the TTML file to parse
      */
     public boolean parse(Path ttmlFilePath) {
-        boolean ret = false;
+        boolean ret;
         try {
             final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(true);
@@ -240,9 +240,9 @@ public class TimedTextMarkupLanguageParser {
                     final NamedNodeMap attrMap = node.getAttributes();
                     final Node xmlns = attrMap.getNamedItem("xmlns");
                     if (xmlns != null) {
-                        String s;
-                        if (!(s = xmlns.getNodeValue()).equals("http://www.w3.org/2006/04/ttaf1")
-                                && !(s = xmlns.getNodeValue()).equals("http://www.w3.org/ns/ttml")) {
+                        final String s = xmlns.getNodeValue();
+                        if (!s.equals("http://www.w3.org/2006/04/ttaf1")
+                                && !s.equals("http://www.w3.org/ns/ttml")) {
                             throw new Exception("Unknown TTML file version");
                         }
                     }

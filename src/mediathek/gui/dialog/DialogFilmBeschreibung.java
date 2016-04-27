@@ -19,8 +19,6 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
@@ -34,12 +32,6 @@ public class DialogFilmBeschreibung extends javax.swing.JDialog {
     JFrame paFrame;
     Daten daten;
 
-    /**
-     *
-     * @param parent
-     * @param ddaten
-     * @param ddatenFilm
-     */
     public DialogFilmBeschreibung(JFrame parent, Daten ddaten, DatenFilm ddatenFilm) {
         super(parent, true);
         paFrame = parent;
@@ -58,34 +50,21 @@ public class DialogFilmBeschreibung extends javax.swing.JDialog {
         };
         jTextArea1.setText(datenFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR]);
         jTextFieldTitel.setText(datenFilm.arr[DatenFilm.FILM_TITEL_NR]);
-        jButtonOk.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                datenFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR] = jTextArea1.getText();
-                beenden();
-            }
+        jButtonOk.addActionListener(e -> {
+            datenFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR] = jTextArea1.getText();
+            beenden();
         });
         jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
-        jButtonHilfe.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(paFrame, true, "\n"
-                        + "Diese Funktion richtet sich z.B. an Benutzer,\n"
-                        + "welche eine angepasste Beschreibung der Sendung in Form\n"
-                        + "der Infodatei (\"Filmname.txt\") anlegen\n"
-                        + "und durch Drittprogramme einlesen lassen wollen.\n"
-                        + "Achtung: Diese Änderungen gehen nach dem Neuladen\n"
-                        + "einer Filmliste verloren.").setVisible(true);
-            }
-        });
-        jButtonSpeichern.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                datenFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR] = jTextArea1.getText();
-                MVInfoFile.writeInfoFile(paFrame, daten, datenFilm);
-            }
+        jButtonHilfe.addActionListener(e -> new DialogHilfe(paFrame, true, "\n"
+                + "Diese Funktion richtet sich z.B. an Benutzer,\n"
+                + "welche eine angepasste Beschreibung der Sendung in Form\n"
+                + "der Infodatei (\"Filmname.txt\") anlegen\n"
+                + "und durch Drittprogramme einlesen lassen wollen.\n"
+                + "Achtung: Diese Änderungen gehen nach dem Neuladen\n"
+                + "einer Filmliste verloren.").setVisible(true));
+        jButtonSpeichern.addActionListener(e -> {
+            datenFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR] = jTextArea1.getText();
+            MVInfoFile.writeInfoFile(paFrame, daten, datenFilm);
         });
         pack();
     }
