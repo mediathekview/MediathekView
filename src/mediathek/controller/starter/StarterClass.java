@@ -212,12 +212,7 @@ public class StarterClass {
         Log.systemMeldung(text.toArray(new String[text.size()]));
         if (!start.stoppen && !abgebrochen) {
             if (datenDownload.quelle != DatenDownload.QUELLE_BUTTON) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        MVNotification.addNotification(daten, datenDownload, start.status != Start.STATUS_ERR);
-                    }
-                });
+                SwingUtilities.invokeLater(() -> MVNotification.addNotification(daten, datenDownload, start.status != Start.STATUS_ERR));
             }
         }
     }
@@ -553,12 +548,9 @@ public class StarterClass {
             } catch (Exception ex) {
                 exMessage = ex.getLocalizedMessage();
                 Log.fehlerMeldung(395623710, ex);
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!Daten.auto) {
-                            new MeldungDownloadfehler(daten.mediathekGui, exMessage, datenDownload).setVisible(true);
-                        }
+                SwingUtilities.invokeLater(() -> {
+                    if (!Daten.auto) {
+                        new MeldungDownloadfehler(daten.mediathekGui, exMessage, datenDownload).setVisible(true);
                     }
                 });
             }
@@ -604,12 +596,9 @@ public class StarterClass {
             if (SwingUtilities.isEventDispatchThread()) {
                 retAbbrechen = abbrechen_();
             } else {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        retAbbrechen = abbrechen_();
-                        dialogAbbrechenIsVis = false;
-                    }
+                SwingUtilities.invokeLater(() -> {
+                    retAbbrechen = abbrechen_();
+                    dialogAbbrechenIsVis = false;
                 });
             }
             while (dialogAbbrechenIsVis) {
@@ -865,14 +854,11 @@ public class StarterClass {
                             // dann wars das
                             responseCode = "Responsecode: " + conn.getResponseCode() + "\n" + conn.getResponseMessage();
                             Log.fehlerMeldung(915236798, "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
-                            SwingUtilities.invokeLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (!Daten.auto) {
-                                        new MeldungDownloadfehler(daten.mediathekGui, "URL des Films:\n"
-                                                + datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR] + "\n\n"
-                                                + responseCode + "\n", datenDownload).setVisible(true);
-                                    }
+                            SwingUtilities.invokeLater(() -> {
+                                if (!Daten.auto) {
+                                    new MeldungDownloadfehler(daten.mediathekGui, "URL des Films:\n"
+                                            + datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR] + "\n\n"
+                                            + responseCode + "\n", datenDownload).setVisible(true);
                                 }
                             });
                             state = HttpDownloadState.ERROR;
@@ -894,12 +880,9 @@ public class StarterClass {
                 exMessage = ex.getLocalizedMessage();
                 Log.fehlerMeldung(316598941, ex, "Fehler");
                 start.status = Start.STATUS_ERR;
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!Daten.auto) {
-                            new MeldungDownloadfehler(daten.mediathekGui, exMessage, datenDownload).setVisible(true);
-                        }
+                SwingUtilities.invokeLater(() -> {
+                    if (!Daten.auto) {
+                        new MeldungDownloadfehler(daten.mediathekGui, exMessage, datenDownload).setVisible(true);
                     }
                 });
             }
@@ -934,12 +917,9 @@ public class StarterClass {
             if (SwingUtilities.isEventDispatchThread()) {
                 retAbbrechen = abbrechen_();
             } else {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        retAbbrechen = abbrechen_();
-                        dialogAbbrechenIsVis = false;
-                    }
+                SwingUtilities.invokeLater(() -> {
+                    retAbbrechen = abbrechen_();
+                    dialogAbbrechenIsVis = false;
                 });
             }
             while (dialogAbbrechenIsVis) {

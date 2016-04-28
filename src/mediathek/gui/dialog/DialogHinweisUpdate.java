@@ -31,13 +31,6 @@ public class DialogHinweisUpdate extends javax.swing.JDialog {
     private String text = "";
     private final JFrame parent;
 
-    /**
-     *
-     * @param pparent
-     * @param modal
-     * @param dialogTitel
-     * @param ttext
-     */
     public DialogHinweisUpdate(JFrame pparent, boolean modal, String dialogTitel, String ttext) {
         super(pparent, modal);
         parent = pparent;

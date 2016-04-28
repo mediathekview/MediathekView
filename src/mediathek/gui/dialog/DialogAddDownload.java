@@ -100,12 +100,7 @@ public class DialogAddDownload extends JDialog {
         jComboBoxPset.setModel(new DefaultComboBoxModel<>(Daten.listePset.getListeSpeichern().getObjectDataCombo()));
 
         jCheckBoxStarten.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN)));
-        jCheckBoxStarten.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, String.valueOf(jCheckBoxStarten.isSelected()));
-            }
-        });
+        jCheckBoxStarten.addActionListener(e -> Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, String.valueOf(jCheckBoxStarten.isSelected())));
         jButtonZiel.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         if (Daten.listePset.getListeSpeichern().size() == 0) {
             // Satz mit x, war wohl nix
@@ -113,12 +108,9 @@ public class DialogAddDownload extends JDialog {
             beenden();
         }
         jButtonZiel.addActionListener(new ZielBeobachter());
-        jButtonOk.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (check()) {
-                    beenden();
-                }
+        jButtonOk.addActionListener(e -> {
+            if (check()) {
+                beenden();
             }
         });
         getRootPane().setDefaultButton(jButtonOk); //TH
@@ -129,12 +121,9 @@ public class DialogAddDownload extends JDialog {
                 beenden();
             }
         };
-        jButtonAbbrechen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ok = false;
-                beenden();
-            }
+        jButtonAbbrechen.addActionListener(e -> {
+            ok = false;
+            beenden();
         });
 
         if (pSet != null) {
@@ -148,12 +137,7 @@ public class DialogAddDownload extends JDialog {
             jComboBoxPset.setVisible(false);
             jComboBoxPset.setEnabled(false);
         } else {
-            jComboBoxPset.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    setupResolutionButtons();
-                }
-            });
+            jComboBoxPset.addActionListener(e -> setupResolutionButtons());
         }
         jTextFieldSender.setText(" " + datenFilm.arr[DatenFilm.FILM_SENDER_NR] + ":   " + datenFilm.arr[DatenFilm.FILM_TITEL_NR]);
         jTextFieldName.getDocument().addDocumentListener(new DocumentListener() {
@@ -239,20 +223,12 @@ public class DialogAddDownload extends JDialog {
                 jRadioButtonAufloesungKlein.setText(jRadioButtonAufloesungKlein.getText() + "   [ " + dateiGroesse_Klein + " MB ]");
             }
         }
-        jButtonDelHistory.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
-                jComboBoxPfad.setModel(new DefaultComboBoxModel<>(new String[]{orgPfad}));
-            }
+        jButtonDelHistory.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
+            jComboBoxPfad.setModel(new DefaultComboBoxModel<>(new String[]{orgPfad}));
         });
         jCheckBoxPfadSpeichern.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)));
-        jCheckBoxPfadSpeichern.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN, Boolean.toString(jCheckBoxPfadSpeichern.isSelected()));
-            }
-        });
+        jCheckBoxPfadSpeichern.addActionListener(e -> Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN, Boolean.toString(jCheckBoxPfadSpeichern.isSelected())));
         setupResolutionButtons();
         calculateAndCheckDiskSpace();
         nameGeaendert = false;

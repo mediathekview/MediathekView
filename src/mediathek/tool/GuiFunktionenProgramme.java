@@ -29,7 +29,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.swing.JFrame;
@@ -416,11 +415,8 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         final String PFEIL = " -> ";
         boolean ret = true;
         String text = "";
-        Iterator<DatenPset> itPset = Daten.listePset.iterator();
-        DatenPset datenPset;
-        DatenProg datenProg;
-        while (itPset.hasNext()) {
-            datenPset = itPset.next();
+
+        for (DatenPset datenPset : Daten.listePset) {
             ret = true;
             if (!datenPset.isFreeLine() && !datenPset.isLable()) {
                 // nur wenn kein Lable oder freeline
@@ -442,9 +438,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                         }
                     }
                 }
-                Iterator<DatenProg> itProg = datenPset.getListeProg().iterator();
-                while (itProg.hasNext()) {
-                    datenProg = itProg.next();
+                for (DatenProg datenProg : datenPset.getListeProg()) {
                     // Programmpfad prüfen
                     if (!new File(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]).canExecute()) {
                         // dann noch mit RuntimeExec versuchen

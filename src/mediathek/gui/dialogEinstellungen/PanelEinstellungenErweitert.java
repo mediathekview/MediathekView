@@ -54,18 +54,8 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         setIcon();
         setHelp();
 
-        jRadioButtonAuto.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setUserAgent();
-            }
-        });
-        jRadioButtonManuel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setUserAgent();
-            }
-        });
+        jRadioButtonAuto.addActionListener(e -> setUserAgent());
+        jRadioButtonManuel.addActionListener(e -> setUserAgent());
 
         jTextFieldUserAgent.getDocument().addDocumentListener(new BeobUserAgent());
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, PanelEinstellungenErweitert.class.getSimpleName()) {
@@ -75,19 +65,9 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             }
         });
         jCheckBoxAboSuchen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN)));
-        jCheckBoxAboSuchen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.toString(jCheckBoxAboSuchen.isSelected()));
-            }
-        });
+        jCheckBoxAboSuchen.addActionListener(e -> Daten.mVConfig.add(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.toString(jCheckBoxAboSuchen.isSelected())));
         jCheckBoxDownloadSofortStarten.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN)));
-        jCheckBoxDownloadSofortStarten.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.toString(jCheckBoxDownloadSofortStarten.isSelected()));
-            }
-        });
+        jCheckBoxDownloadSofortStarten.addActionListener(e -> Daten.mVConfig.add(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.toString(jCheckBoxDownloadSofortStarten.isSelected())));
 
         // ====================================
         jButtonProgrammDateimanager.addActionListener(new BeobPfad(MVConfig.SYSTEM_ORDNER_OEFFNEN, "Dateimanager suchen", jTextFieldProgrammDateimanager));
@@ -142,79 +122,49 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     }
 
     private void setHelp() {
-        jButtonHilfe.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parentComponent, true, "\n"
-                        + "Dieser Text wird als User-Agent\n"
-                        + "an den Webserver übertragen. Das entspricht\n"
-                        + "der Kennung, die auch die Browser senden.").setVisible(true);
-            }
-        });
-        jButtonHilfeProgrammDateimanager.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parentComponent, true, "\n"
-                        + "Im Tab \"Downloads\" kann man mit der rechten\n"
-                        + "Maustaste den Downloadordner (Zielordner)\n"
-                        + "des jeweiligen Downloads öffnen.\n"
-                        + "Normalerweise wird der Dateimanager des\n"
-                        + "Betriebssystems gefunden und geöffnet. Klappt das nicht,\n"
-                        + "kann hier ein Programm dafür angegeben werden.").setVisible(true);
-            }
-        });
-        jButtonHilfeNeuladen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parentComponent, true, "\n"
-                        + "Abos automatisch suchen:\n"
-                        + "Nach dem Neuladen einer Filmliste wird dann\n"
-                        + "sofort nach neuen Abos gesucht. Ansonsten muss man\n"
-                        + "im Tab Download auf \"Downloads aktualisieren\" klicken.\n"
-                        + "\n"
-                        + "Downloads sofort starten:\n"
-                        + "Neu angelegte Downloads (aus Abos) werden\n"
-                        + "sofort gestartet. Ansonsten muss man sie\n"
-                        + "selbst starten.\n").setVisible(true);
-            }
-        });
-        jButtonHilfeVideoplayer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parentComponent, true, "\n"
-                        + "Im Tab \"Downloads\" kann man den gespeicherten\n"
-                        + "Film in einem Videoplayer öffnen.\n"
-                        + "Normalerweise wird der Videoplayer des\n"
-                        + "Betriebssystems gefunden und geöffnet. Klappt das nicht,\n"
-                        + "kann hier ein Programm dafür angegeben werden.").setVisible(true);
-            }
-        });
-        jButtonHilfeProgrammUrl.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parentComponent, true, "\n"
-                        + "Wenn das Programm versucht, einen Link zu öffnen\n"
-                        + "(z.B. den Link im Menüpunkt \"Hilfe\" zu den \"Hilfeseiten\")\n"
-                        + "und die Standardanwendung (z.B. \"Firefox\") nicht startet,\n"
-                        + "kann damit ein Programm ausgewählt und\n"
-                        + "fest zugeordnet werden (z.B. der Browser \"Firefox\").").setVisible(true);
-            }
-        });
-        jButtonHilfeProgrammShutdown.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parentComponent, true, "\n"
-                        + "Bei Linux wird das Programm/Script ausgeführt\n"
-                        + "um den Recher herunter zu fahren\n"
-                        + "\n"
-                        + "mögliche Aufrufe sind:\n"
-                        + "\n"
-                        + "systemctl poweroff\n"
-                        + "poweroff\n"
-                        + "sudo shutdown -P now\n"
-                        + "shutdown -h now").setVisible(true);
-            }
-        });
+        jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
+                + "Dieser Text wird als User-Agent\n"
+                + "an den Webserver übertragen. Das entspricht\n"
+                + "der Kennung, die auch die Browser senden.").setVisible(true));
+        jButtonHilfeProgrammDateimanager.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
+                + "Im Tab \"Downloads\" kann man mit der rechten\n"
+                + "Maustaste den Downloadordner (Zielordner)\n"
+                + "des jeweiligen Downloads öffnen.\n"
+                + "Normalerweise wird der Dateimanager des\n"
+                + "Betriebssystems gefunden und geöffnet. Klappt das nicht,\n"
+                + "kann hier ein Programm dafür angegeben werden.").setVisible(true));
+        jButtonHilfeNeuladen.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
+                + "Abos automatisch suchen:\n"
+                + "Nach dem Neuladen einer Filmliste wird dann\n"
+                + "sofort nach neuen Abos gesucht. Ansonsten muss man\n"
+                + "im Tab Download auf \"Downloads aktualisieren\" klicken.\n"
+                + "\n"
+                + "Downloads sofort starten:\n"
+                + "Neu angelegte Downloads (aus Abos) werden\n"
+                + "sofort gestartet. Ansonsten muss man sie\n"
+                + "selbst starten.\n").setVisible(true));
+        jButtonHilfeVideoplayer.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
+                + "Im Tab \"Downloads\" kann man den gespeicherten\n"
+                + "Film in einem Videoplayer öffnen.\n"
+                + "Normalerweise wird der Videoplayer des\n"
+                + "Betriebssystems gefunden und geöffnet. Klappt das nicht,\n"
+                + "kann hier ein Programm dafür angegeben werden.").setVisible(true));
+        jButtonHilfeProgrammUrl.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
+                + "Wenn das Programm versucht, einen Link zu öffnen\n"
+                + "(z.B. den Link im Menüpunkt \"Hilfe\" zu den \"Hilfeseiten\")\n"
+                + "und die Standardanwendung (z.B. \"Firefox\") nicht startet,\n"
+                + "kann damit ein Programm ausgewählt und\n"
+                + "fest zugeordnet werden (z.B. der Browser \"Firefox\").").setVisible(true));
+        jButtonHilfeProgrammShutdown.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
+                + "Bei Linux wird das Programm/Script ausgeführt\n"
+                + "um den Recher herunter zu fahren\n"
+                + "\n"
+                + "mögliche Aufrufe sind:\n"
+                + "\n"
+                + "systemctl poweroff\n"
+                + "poweroff\n"
+                + "sudo shutdown -P now\n"
+                + "shutdown -h now").setVisible(true));
     }
 
     private void setIcon() {

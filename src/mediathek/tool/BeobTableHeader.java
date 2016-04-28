@@ -80,12 +80,7 @@ public class BeobTableHeader extends MouseAdapter {
             }
             box[i] = new JCheckBoxMenuItem(columns[i]);
             box[i].setSelected(anzeigen(i));
-            box[i].addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    setSpalten();
-                }
-            });
+            box[i].addActionListener(e -> setSpalten());
             jPopupMenu.add(box[i]);
         }
         // jetzt evtl. noch die Button
@@ -95,12 +90,9 @@ public class BeobTableHeader extends MouseAdapter {
             //##Trenner##
             final JCheckBoxMenuItem item2 = new JCheckBoxMenuItem("Button anzeigen");
             item2.setSelected(anzeigen(button[0])); //entweder alle oder keiner!
-            item2.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    for (int i : button) {
-                        setSpalten(i, item2.isSelected());
-                    }
+            item2.addActionListener(e -> {
+                for (int i : button) {
+                    setSpalten(i, item2.isSelected());
                 }
             });
             jPopupMenu.add(item2);
@@ -110,13 +102,10 @@ public class BeobTableHeader extends MouseAdapter {
             jPopupMenu.addSeparator();
             final JCheckBoxMenuItem item3 = new JCheckBoxMenuItem("Icons anzeigen");
             item3.setSelected(tabelle.iconAnzeigen);
-            item3.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    tabelle.iconAnzeigen = item3.isSelected();
-                    tabelle.setHeight();
-                    setSpalten();
-                }
+            item3.addActionListener(e -> {
+                tabelle.iconAnzeigen = item3.isSelected();
+                tabelle.setHeight();
+                setSpalten();
             });
             jPopupMenu.add(item3);
             final JCheckBoxMenuItem item2 = new JCheckBoxMenuItem("kleine Icons anzeigen");
@@ -124,13 +113,10 @@ public class BeobTableHeader extends MouseAdapter {
             if (!tabelle.iconAnzeigen) {
                 item2.setEnabled(false);
             } else {
-                item2.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        tabelle.iconKlein = item2.isSelected();
-                        tabelle.setHeight();
-                        setSpalten();
-                    }
+                item2.addActionListener(e -> {
+                    tabelle.iconKlein = item2.isSelected();
+                    tabelle.setHeight();
+                    setSpalten();
                 });
             }
             jPopupMenu.add(item2);
@@ -140,12 +126,7 @@ public class BeobTableHeader extends MouseAdapter {
         //##Trenner##
         // Tabellenspalten zurücksetzen
         JMenuItem item1 = new JMenuItem("Spalten zurücksetzen");
-        item1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tabelle.resetTabelle();
-            }
-        });
+        item1.addActionListener(e -> tabelle.resetTabelle());
         jPopupMenu.add(item1);
         //anzeigen
         jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());

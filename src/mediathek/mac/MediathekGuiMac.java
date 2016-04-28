@@ -96,26 +96,13 @@ public class MediathekGuiMac extends MediathekGui {
     private void setupUserInterfaceForOsx() {
         final Application application = Application.getApplication();
         application.disableSuddenTermination();
-        application.setAboutHandler(new AboutHandler() {
-            @Override
-            public void handleAbout(AppEvent.AboutEvent aboutEvent) {
-                showAboutDialog();
-            }
-        });
-        application.setPreferencesHandler(new PreferencesHandler() {
-            @Override
-            public void handlePreferences(AppEvent.PreferencesEvent preferencesEvent) {
-                dialogEinstellungen.setVisible(true);
-            }
-        });
-        application.setQuitHandler(new QuitHandler() {
-            @Override
-            public void handleQuitRequestWith(AppEvent.QuitEvent quitEvent, QuitResponse quitResponse) {
-                if (!beenden(false, false)) {
-                    quitResponse.cancelQuit();
-                } else {
-                    quitResponse.performQuit();
-                }
+        application.setAboutHandler(aboutEvent -> showAboutDialog());
+        application.setPreferencesHandler(preferencesEvent -> dialogEinstellungen.setVisible(true));
+        application.setQuitHandler((quitEvent, quitResponse) -> {
+            if (!beenden(false, false)) {
+                quitResponse.cancelQuit();
+            } else {
+                quitResponse.performQuit();
             }
         });
 
@@ -186,14 +173,11 @@ public class MediathekGuiMac extends MediathekGui {
 
         for (int i = 1; i <= 10; i++) {
             JRadioButtonMenuItem menuItem = new JRadioButtonMenuItem(Integer.toString(i));
-            menuItem.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    final AbstractButton btn = (AbstractButton) e.getSource();
-                    if (btn != null) {
-                        Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, btn.getText());
-                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
-                    }
+            menuItem.addActionListener(e -> {
+                final AbstractButton btn = (AbstractButton) e.getSource();
+                if (btn != null) {
+                    Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, btn.getText());
+                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
                 }
             });
             group.add(menuItem);

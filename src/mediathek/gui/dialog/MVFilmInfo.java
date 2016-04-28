@@ -8,10 +8,10 @@ import msearch.daten.DatenFilm;
  */
 public interface MVFilmInfo extends ChangeListener {
 
-    public void showInfo();
+    void showInfo();
 
-    public boolean isVisible();
+    boolean isVisible();
 
-    public void updateCurrentFilm(DatenFilm film);
+    void updateCurrentFilm(DatenFilm film);
 
 }

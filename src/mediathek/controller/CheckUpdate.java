@@ -57,12 +57,7 @@ public class CheckUpdate {
                 if (SwingUtilities.isEventDispatchThread()) {
                     prog();
                 } else {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            prog();
-                        }
-                    });
+                    SwingUtilities.invokeLater(CheckUpdate.this::prog);
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldung(794510101, ex);
@@ -112,12 +107,7 @@ public class CheckUpdate {
                 if (SwingUtilities.isEventDispatchThread()) {
                     set();
                 } else {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            set();
-                        }
-                    });
+                    SwingUtilities.invokeLater(CheckUpdate.this::set);
                 }
             } catch (Exception ex) {
                 Log.fehlerMeldung(794510101, ex);
@@ -130,7 +120,7 @@ public class CheckUpdate {
             return;// nur einmal laufen
         }
         run = true;
-        ListePset listePsetStandard = ListePsetVorlagen.getStandarset(parent, daten, false /*replaceMuster*/);;
+        ListePset listePsetStandard = ListePsetVorlagen.getStandarset(parent, daten, false /*replaceMuster*/);
         String version = Daten.mVConfig.get(MVConfig.SYSTEM_VERSION_PROGRAMMSET);
         if (listePsetStandard != null) {
             if (Daten.listePset.size() > 0) {

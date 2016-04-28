@@ -20,8 +20,6 @@
 package mediathek.gui.dialogEinstellungen;
 
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
@@ -45,13 +43,7 @@ public class PanelEinstellungenColor extends PanelVorlage {
         jTable1.addMouseListener(new BeobMausTabelle());
         jTable1.setDefaultRenderer(MVC.class, new CellRendererColor());
         jTable1.setModel(Daten.mVColor.getModel());
-        jButtonReset.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVColor.reset(daten);
-            }
-        });
+        jButtonReset.addActionListener(e -> Daten.mVColor.reset(daten));
     }
 
     private void getColor(MVC mvc) {

@@ -19,14 +19,10 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Color;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import mediathek.controller.starter.MVBandwidthTokenBucket;
 import mediathek.daten.Daten;
 import mediathek.gui.MVDownloadInfo;
 import mediathek.gui.PanelVorlage;
@@ -44,20 +40,15 @@ public class PanelDownload extends PanelVorlage {
         initSpinner();
         jSpinnerDownload.addChangeListener(new BeobSpinnerDownload());
         jButtonHilfeAnzahl.setIcon(GetIcon.getProgramIcon("help_16.png"));
-        jButtonHilfeAnzahl.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parentComponent, true, "\n"
-                        + "Hier kann angegeben werden, wie viele\n"
-                        + "Downloads gleichzeitig gestartet werden können.\n\n"
-                        + "Es gibt jedoch noch eine Begrenzung\n"
-                        + "die trotzdem nicht überschritten wird:\n\n"
-                        + "2 Downloads pro Server, das kann auch noch\n"
-                        + "auf 1 Download pro Server\n"
-                        + "(z.B. nur ein Download von \"www.zdf.de\")\n"
-                        + "weiter begrenzt werden.").setVisible(true);
-            }
-        });
+        jButtonHilfeAnzahl.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
+                + "Hier kann angegeben werden, wie viele\n"
+                + "Downloads gleichzeitig gestartet werden können.\n\n"
+                + "Es gibt jedoch noch eine Begrenzung\n"
+                + "die trotzdem nicht überschritten wird:\n\n"
+                + "2 Downloads pro Server, das kann auch noch\n"
+                + "auf 1 Download pro Server\n"
+                + "(z.B. nur ein Download von \"www.zdf.de\")\n"
+                + "weiter begrenzt werden.").setVisible(true));
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelDownload.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -71,49 +62,23 @@ public class PanelDownload extends PanelVorlage {
             }
         });
         jCheckBoxNotification.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_NOTIFICATION)));
-        jCheckBoxNotification.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_NOTIFICATION, Boolean.toString(jCheckBoxNotification.isSelected()));
-            }
-        });
+        jCheckBoxNotification.addActionListener(e -> Daten.mVConfig.add(MVConfig.SYSTEM_NOTIFICATION, Boolean.toString(jCheckBoxNotification.isSelected())));
         jCheckBoxBeep.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DOWNLOAD_BEEP)));
-        jCheckBoxBeep.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_DOWNLOAD_BEEP, String.valueOf(jCheckBoxBeep.isSelected()));
-            }
-        });
+        jCheckBoxBeep.addActionListener(ae -> Daten.mVConfig.add(MVConfig.SYSTEM_DOWNLOAD_BEEP, String.valueOf(jCheckBoxBeep.isSelected())));
         jCheckBoxServer.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER)));
-        jCheckBoxServer.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER, String.valueOf(jCheckBoxServer.isSelected()));
-            }
-        });
-        jButtonBeep.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                Toolkit.getDefaultToolkit().beep();
-            }
-        });
+        jCheckBoxServer.addActionListener(ae -> Daten.mVConfig.add(MVConfig.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER, String.valueOf(jCheckBoxServer.isSelected())));
+        jButtonBeep.addActionListener(ae -> Toolkit.getDefaultToolkit().beep());
         jSliderBandbreite.setMinimum(5); //50 kByte/s
         jSliderBandbreite.setMaximum(100); //1.000 kByte/s
         setSliderBandwith();
-        jSliderBandbreite.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (stopBeob) {
-                    return;
-                }
-                int bandbreiteKByte = jSliderBandbreite.getValue() * 10;
-                jLabelBandwidth.setText(bandbreiteKByte + " kByte/s");
-                Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(bandbreiteKByte));
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelDownload.class.getName());
+        jSliderBandbreite.addChangeListener(e -> {
+            if (stopBeob) {
+                return;
             }
+            int bandbreiteKByte = jSliderBandbreite.getValue() * 10;
+            jLabelBandwidth.setText(bandbreiteKByte + " kByte/s");
+            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(bandbreiteKByte));
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelDownload.class.getName());
         });
     }
 

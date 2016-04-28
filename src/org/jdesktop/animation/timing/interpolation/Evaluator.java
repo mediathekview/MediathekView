@@ -76,8 +76,7 @@ public abstract class Evaluator<T> {
      * HashMap that holds all registered evaluators
      */
     private static final Map<Class<?>, Class<? extends Evaluator>> 
-            impls = new HashMap<Class<?>, 
-            Class<? extends Evaluator>>();
+            impls = new HashMap<>();
     
     /**
      * Static registration of pre-defined evaluators
