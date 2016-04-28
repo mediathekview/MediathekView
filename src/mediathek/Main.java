@@ -153,27 +153,24 @@ public class Main {
                 break;
 
             case GUI:
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (Daten.debug) {
-                            // use for debugging EDT violations
-                            RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
+                EventQueue.invokeLater(() -> {
+                    if (Daten.debug) {
+                        // use for debugging EDT violations
+                        RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
 
-                            if (SystemInfo.isMacOSX()) {
-                                //prevent startup of multiple instances...useful during debugging :(
-                                MVSingleInstance singleInstanceWatcher = new MVSingleInstance();
-                                if (singleInstanceWatcher.isAppAlreadyActive()) {
-                                    JOptionPane.showMessageDialog(null, "MediathekView is already running!");
-                                    //System.exit(1);
-                                }
+                        if (SystemInfo.isMacOSX()) {
+                            //prevent startup of multiple instances...useful during debugging :(
+                            MVSingleInstance singleInstanceWatcher = new MVSingleInstance();
+                            if (singleInstanceWatcher.isAppAlreadyActive()) {
+                                JOptionPane.showMessageDialog(null, "MediathekView is already running!");
+                                //System.exit(1);
                             }
                         }
-                        if (SystemInfo.isMacOSX()) {
-                            new MediathekGuiMac(args).setVisible(true);
-                        } else {
-                            new MediathekGui(args).setVisible(true);
-                        }
+                    }
+                    if (SystemInfo.isMacOSX()) {
+                        new MediathekGuiMac(args).setVisible(true);
+                    } else {
+                        new MediathekGui(args).setVisible(true);
                     }
                 });
                 break;

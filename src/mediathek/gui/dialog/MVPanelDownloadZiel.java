@@ -61,12 +61,9 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
         jButtonDelPath.setIcon(GetIcon.getProgramIcon("del_16.png"));
         jLabelExists.setText("");
         jButtonPath.addActionListener(new ZielBeobachter());
-        jButtonDelPath.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
-                jComboBoxPath.setModel(new DefaultComboBoxModel<>(new String[]{datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]}));
-            }
+        jButtonDelPath.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
+            jComboBoxPath.setModel(new DefaultComboBoxModel<>(new String[]{datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]}));
         });
         jTextFieldName.setText(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR]);
         jTextFieldName.getDocument().addDocumentListener(new DocumentListener() {

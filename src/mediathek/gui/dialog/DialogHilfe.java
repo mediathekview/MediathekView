@@ -19,20 +19,12 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.text.DefaultCaret;
 import mediathek.tool.EscBeenden;
 
 public class DialogHilfe extends javax.swing.JDialog {
 
-    /** Creates new form HilfeDialog
-     *
-     * @param parent
-     * @param modal
-     * @param text
-     */
     public DialogHilfe(JFrame parent, boolean modal, String text) {
         super(parent, modal);
         initComponents();
@@ -40,12 +32,7 @@ public class DialogHilfe extends javax.swing.JDialog {
         DefaultCaret caret = (DefaultCaret) jTextArea1.getCaret();
         caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         jTextArea1.setText(text);
-        jButtonOk.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                beenden();
-            }
-        });
+        jButtonOk.addActionListener(e -> beenden());
         getRootPane().setDefaultButton(jButtonOk);
         new EscBeenden(this) {
             @Override

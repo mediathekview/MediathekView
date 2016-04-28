@@ -7,8 +7,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.Timer;
 import mediathek.tool.MVFunctionSys;
@@ -29,22 +27,12 @@ public class MVMemoryUsageButton extends JButton {
         setFocusable(false);
 
         //we may want to explicitly garbage collect :)
-        addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.gc();
-            }
-        });
+        addActionListener(e -> System.gc());
 
         updateUI();
 
         //Update every second...
-        Timer updateTimer = new Timer(1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                repaint();
-            }
-        });
+        Timer updateTimer = new Timer(1000, e -> repaint());
         updateTimer.start();
     }
 

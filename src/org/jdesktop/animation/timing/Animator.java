@@ -85,7 +85,7 @@ public final class Animator {
     private TimingSource swingTimer;
     private TimingSourceTarget timingSourceTarget;
     
-    private final ArrayList<TimingTarget> targets = new ArrayList<TimingTarget>();    // Animators may have
+    private final ArrayList<TimingTarget> targets = new ArrayList<>();    // Animators may have
                                                     // multiple targets
 
     private long startTime;	    // Tracks original Animator start time
@@ -120,12 +120,12 @@ public final class Animator {
      * EndBehavior determines what happens at the end of the animation.
      * @see #setEndBehavior
      */
-    public static enum EndBehavior {
+    public enum EndBehavior {
         /** Timing sequence will maintain its final value at the end */
 	HOLD,
         /** Timing sequence should reset to the initial value at the end */
 	RESET,
-    };
+    }
 
     /**
      * Direction is used to set the initial direction in which the
@@ -133,20 +133,20 @@ public final class Animator {
      * 
      * @see #setStartDirection
      */
-    public static enum Direction {
+    public enum Direction {
         /**
          * cycle proceeds forward
          */
 	FORWARD,
         /** cycle proceeds backward */
 	BACKWARD,
-    };
+    }
     
     /**
      * RepeatBehavior determines how each successive cycle will flow.
      * @see #setRepeatBehavior
      */
-    public static enum RepeatBehavior {
+    public enum RepeatBehavior {
         /** 
          * Each repeated cycle proceeds in the same direction as the 
          * previous one 
@@ -157,7 +157,7 @@ public final class Animator {
          * previous one
          */
 	REVERSE
-    };
+    }
     
     /**
      * Used to specify unending duration or repeatCount
@@ -738,9 +738,7 @@ public final class Animator {
      */
     private void begin() {
         synchronized (targets) {
-            for (TimingTarget target : targets) {
-                target.begin();
-            }
+            targets.forEach(TimingTarget::begin);
         }
     }
     
@@ -749,9 +747,7 @@ public final class Animator {
      */
     private void end() {
         synchronized (targets) {
-            for (TimingTarget target : targets) {
-                target.end();
-            }
+            targets.forEach(TimingTarget::end);
         }
     }
     
@@ -760,9 +756,7 @@ public final class Animator {
      */
     private void repeat() {
         synchronized (targets) {
-            for (TimingTarget target : targets) {
-                target.repeat();
-            }
+            targets.forEach(TimingTarget::repeat);
         }
     }
     

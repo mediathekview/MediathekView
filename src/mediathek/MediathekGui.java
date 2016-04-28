@@ -32,7 +32,6 @@ import java.awt.SplashScreen;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -58,8 +57,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import mediathek.controller.CheckUpdate;
 import mediathek.controller.Log;
 import mediathek.controller.starter.Start;
@@ -363,21 +360,11 @@ public class MediathekGui extends JFrame {
         if (SystemInfo.isMacOSX()) {
             bandwidthMonitor = new MVBandwidthMonitor(this, cbBandwidthDisplay);
             bandwidthMonitor.toggleVisibility();
-            cbBandwidthDisplay.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    bandwidthMonitor.toggleVisibility();
-                }
-            });
+            cbBandwidthDisplay.addActionListener(e -> bandwidthMonitor.toggleVisibility());
         } else {
             mvDownloadInfo = new MVDownloadInfo(this, cbBandwidthDisplay);
             mvDownloadInfo.toggleVisibility();
-            cbBandwidthDisplay.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    mvDownloadInfo.toggleVisibility();
-                }
-            });
+            cbBandwidthDisplay.addActionListener(e -> mvDownloadInfo.toggleVisibility());
 
         }
         duration.ping("Gui steht!");
@@ -789,14 +776,11 @@ public class MediathekGui extends JFrame {
         jSliderBandbreite.setMinimum(5); //50 kByte/s
         jSliderBandbreite.setMaximum(100); //1.000 kByte/s
         setSlider();
-        jSliderBandbreite.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                int bandbreiteKByte = jSliderBandbreite.getValue() * 10;
-                Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(bandbreiteKByte));
-                setSliderText();
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, MediathekGui.class.getSimpleName());
-            }
+        jSliderBandbreite.addChangeListener(e -> {
+            int bandbreiteKByte = jSliderBandbreite.getValue() * 10;
+            Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(bandbreiteKByte));
+            setSliderText();
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, MediathekGui.class.getSimpleName());
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BANDBREITE, MediathekGui.class.getSimpleName()) {
             @Override
@@ -817,13 +801,10 @@ public class MediathekGui extends JFrame {
         jPanelAnzahl.add(jLabelAnzahl, BorderLayout.WEST);
         jPanelAnzahl.add(jSpinnerAnzahl, BorderLayout.EAST);
         jLabelAnzahl.setIcon(GetIcon.getProgramIcon("up_down_16.png"));
-        jSpinnerAnzahl.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent arg0) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD,
-                        String.valueOf(((Number) jSpinnerAnzahl.getModel().getValue()).intValue()));
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
-            }
+        jSpinnerAnzahl.addChangeListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD,
+                    String.valueOf(((Number) jSpinnerAnzahl.getModel().getValue()).intValue()));
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
         });
         ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
             @Override
@@ -839,275 +820,80 @@ public class MediathekGui extends JFrame {
         setupBandwidthMenuItem();
 
         // Datei
-        jMenuItemEinstellungen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dialogEinstellungen.setVisible(true);
-            }
-        });
-        jMenuItemBeenden.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                beenden(false, false);
-            }
-        });
+        jMenuItemEinstellungen.addActionListener(e -> dialogEinstellungen.setVisible(true));
+        jMenuItemBeenden.addActionListener(e -> beenden(false, false));
         // Filme
-        jMenuItemFilmlisteLaden.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.filmeLaden.filmeLaden(daten, false);
-            }
+        jMenuItemFilmlisteLaden.addActionListener(e -> Daten.filmeLaden.filmeLaden(daten, false));
+        jMenuItemFilmAbspielen.addActionListener(e -> daten.guiFilme.guiFilmeFilmAbspielen());
+        jMenuItemFilmAufzeichnen.addActionListener(e -> daten.guiFilme.guiFilmeFilmSpeichern());
+        jMenuItemFilterLoeschen.addActionListener(e -> daten.guiFilme.guiFilmeFilterLoeschen());
+        jMenuItemBlacklist.addActionListener(e -> {
+            DialogLeer dialog = new DialogLeer(daten.mediathekGui, true);
+            dialog.init("Blacklist", new PanelBlacklist(daten, daten.mediathekGui, PanelBlacklist.class.getName() + "_2"));
+            dialog.setVisible(true);
         });
-        jMenuItemFilmAbspielen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiFilme.guiFilmeFilmAbspielen();
-            }
-        });
-        jMenuItemFilmAufzeichnen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiFilme.guiFilmeFilmSpeichern();
-            }
-        });
-        jMenuItemFilterLoeschen.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiFilme.guiFilmeFilterLoeschen();
-            }
-        });
-        jMenuItemBlacklist.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DialogLeer dialog = new DialogLeer(daten.mediathekGui, true);
-                dialog.init("Blacklist", new PanelBlacklist(daten, daten.mediathekGui, PanelBlacklist.class.getName() + "_2"));
-                dialog.setVisible(true);
-            }
-        });
-        jMenuItemFilmeGesehen.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiFilme.filmGesehen();
-            }
-        });
-        jMenuItemFilmeUngesehen.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiFilme.filmUngesehen();
-            }
-        });
-        jMenuItemFilmeMediensammlung.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiFilme.guiFilmMediensammlung();
-            }
-        });
+        jMenuItemFilmeGesehen.addActionListener(e -> daten.guiFilme.filmGesehen());
+        jMenuItemFilmeUngesehen.addActionListener(e -> daten.guiFilme.filmUngesehen());
+        jMenuItemFilmeMediensammlung.addActionListener(e -> daten.guiFilme.guiFilmMediensammlung());
         // Downloads
-        jMenuItemDownloadsAktualisieren.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.aktualisieren();
+        jMenuItemDownloadsAktualisieren.addActionListener(e -> daten.guiDownloads.aktualisieren());
+        jMenuItemDownloadAbspielen.addActionListener(e -> daten.guiDownloads.filmAbspielen());
+        jMenuItemDownloadsAufraeumen.addActionListener(e -> daten.guiDownloads.aufraeumen());
+        jMenuItemDownloadsLoeschen.addActionListener(e -> daten.guiDownloads.loeschen());
+        jMenuItemDownloadsAlleStarten.addActionListener(e -> daten.guiDownloads.starten(true /* alle */));
+        jMenuItemDownloadStartTime.addActionListener(e -> daten.guiDownloads.startAtTime());
+        jMenuItemDownloadStarten.addActionListener(e -> daten.guiDownloads.starten(false /* alle */));
+        jMenuItemDownloadsZurueckstellen.addActionListener(e -> daten.guiDownloads.zurueckstellen());
+        jMenuItemDownloadVorziehen.addActionListener(e -> daten.guiDownloads.vorziehen());
+        jMenuItemDownloadAendern.addActionListener(e -> daten.guiDownloads.aendern());
+        jMenuItemDownloadAlleStoppen.addActionListener(e -> daten.guiDownloads.stoppen(true /* alle */));
+        jMenuItemDownloadWartendeStoppen.addActionListener(e -> daten.guiDownloads.wartendeStoppen());
+        jMenuItemDownloadStoppen.addActionListener(e -> daten.guiDownloads.stoppen(false /* alle */));
+        jMenuItemDownloadShutDown.addActionListener(e -> {
+            if (Daten.listeDownloads.nochNichtFertigeDownloads() > 0) {
+                // ansonsten gibts keine laufenden Downloads auf die man warten sollte
+                beenden(true /*Dialog auf "warten" einstellen*/, false /*shutdown computer*/);
+            } else {
+                MVMessageDialog.showMessageDialog(daten.mediathekGui, "Die Downloads müssen zuerst gestartet werden.",
+                        "Keine laufenden Downloads!", JOptionPane.ERROR_MESSAGE);
             }
         });
-        jMenuItemDownloadAbspielen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.filmAbspielen();
-            }
-        });
-        jMenuItemDownloadsAufraeumen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.aufraeumen();
-            }
-        });
-        jMenuItemDownloadsLoeschen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.loeschen();
-            }
-        });
-        jMenuItemDownloadsAlleStarten.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.starten(true /* alle */);
-            }
-        });
-        jMenuItemDownloadStartTime.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.startAtTime();
-            }
-        });
-        jMenuItemDownloadStarten.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.starten(false /* alle */);
-            }
-        });
-        jMenuItemDownloadsZurueckstellen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.zurueckstellen();
-            }
-        });
-        jMenuItemDownloadVorziehen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.vorziehen();
-            }
-        });
-        jMenuItemDownloadAendern.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.aendern();
-            }
-        });
-        jMenuItemDownloadAlleStoppen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.stoppen(true /* alle */);
-            }
-        });
-        jMenuItemDownloadWartendeStoppen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.wartendeStoppen();
-            }
-        });
-        jMenuItemDownloadStoppen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.stoppen(false /* alle */);
-            }
-        });
-        jMenuItemDownloadShutDown.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (Daten.listeDownloads.nochNichtFertigeDownloads() > 0) {
-                    // ansonsten gibts keine laufenden Downloads auf die man warten sollte
-                    beenden(true /*Dialog auf "warten" einstellen*/, false /*shutdown computer*/);
-                } else {
-                    MVMessageDialog.showMessageDialog(daten.mediathekGui, "Die Downloads müssen zuerst gestartet werden.",
-                            "Keine laufenden Downloads!", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-        jMenuItemDownloadGesehen.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.filmGesehen();
-            }
-        });
-        jMenuItemDownloadUngesehen.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.filmUngesehen();
-            }
-        });
-        jMenuItemDownloadMediensammlung.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiDownloads.guiFilmMediensammlung();
-            }
-        });
+        jMenuItemDownloadGesehen.addActionListener(e -> daten.guiDownloads.filmGesehen());
+        jMenuItemDownloadUngesehen.addActionListener(e -> daten.guiDownloads.filmUngesehen());
+        jMenuItemDownloadMediensammlung.addActionListener(e -> daten.guiDownloads.guiFilmMediensammlung());
 
         // Abo
-        jMenuItemAbosEinschalten.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiAbo.einAus(true);
-            }
-        });
-        jMenuItemAbosAusschalten.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiAbo.einAus(false);
-            }
-        });
-        jMenuItemAbosLoeschen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiAbo.loeschen();
-            }
-        });
-        jMenuItemAbosAendern.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiAbo.aendern();
-            }
-        });
-        jMenuItemAboNeu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                daten.guiAbo.neu();
-            }
-        });
+        jMenuItemAbosEinschalten.addActionListener(e -> daten.guiAbo.einAus(true));
+        jMenuItemAbosAusschalten.addActionListener(e -> daten.guiAbo.einAus(false));
+        jMenuItemAbosLoeschen.addActionListener(e -> daten.guiAbo.loeschen());
+        jMenuItemAbosAendern.addActionListener(e -> daten.guiAbo.aendern());
+        jMenuItemAboNeu.addActionListener(e -> daten.guiAbo.neu());
 
         // Ansicht
         jCheckBoxMenuItemToolBar.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
         mVToolBar.setVisible(jCheckBoxMenuItemToolBar.isSelected());
-        jCheckBoxMenuItemToolBar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.toString(jCheckBoxMenuItemToolBar.isSelected()));
-                mVToolBar.setVisible(jCheckBoxMenuItemToolBar.isSelected());
-            }
+        jCheckBoxMenuItemToolBar.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.toString(jCheckBoxMenuItemToolBar.isSelected()));
+            mVToolBar.setVisible(jCheckBoxMenuItemToolBar.isSelected());
         });
         jCheckBoxMenuItemVideoplayer.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
-        jCheckBoxMenuItemVideoplayer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, String.valueOf(jCheckBoxMenuItemVideoplayer.isSelected()));
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, MediathekGui.class.getSimpleName());
-            }
+        jCheckBoxMenuItemVideoplayer.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, String.valueOf(jCheckBoxMenuItemVideoplayer.isSelected()));
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, MediathekGui.class.getSimpleName());
         });
         jCheckBoxMenuItemBeschreibung.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
-        jCheckBoxMenuItemBeschreibung.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, String.valueOf(jCheckBoxMenuItemBeschreibung.isSelected()));
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName());
-            }
+        jCheckBoxMenuItemBeschreibung.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, String.valueOf(jCheckBoxMenuItemBeschreibung.isSelected()));
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName());
         });
         jCheckBoxMenuItemMediaDb.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
-        jCheckBoxMenuItemMediaDb.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, String.valueOf(jCheckBoxMenuItemMediaDb.isSelected()));
-                daten.dialogMediaDB.setVis();
-            }
+        jCheckBoxMenuItemMediaDb.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, String.valueOf(jCheckBoxMenuItemMediaDb.isSelected()));
+            daten.dialogMediaDB.setVis();
         });
-        jMenuItemSchriftGr.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MVFont.setFontSize(true);
-            }
-        });
-        jMenuItemSchriftKl.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MVFont.setFontSize(false);
-            }
-        });
-        jMenuItemSchriftNormal.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MVFont.resetFontSize();
-            }
-        });
+        jMenuItemSchriftGr.addActionListener(e -> MVFont.setFontSize(true));
+        jMenuItemSchriftKl.addActionListener(e -> MVFont.setFontSize(false));
+        jMenuItemSchriftNormal.addActionListener(e -> MVFont.resetFontSize());
         // ============================
         // Filter
         jMenuAnsicht.add(new JSeparator());
@@ -1117,22 +903,14 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.add(jCheckBoxFilterAnzeigen);
         jMenuAnsicht.add(jCheckBoxFilterExtrafenster);
         jCheckBoxFilterAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
-        jCheckBoxFilterAnzeigen.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.toString(jCheckBoxFilterAnzeigen.isSelected()));
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName());
-            }
+        jCheckBoxFilterAnzeigen.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.toString(jCheckBoxFilterAnzeigen.isSelected()));
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName());
         });
         jCheckBoxFilterExtrafenster.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_FILTER)));
-        jCheckBoxFilterExtrafenster.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_FENSTER_FILTER, Boolean.toString(jCheckBoxFilterExtrafenster.isSelected()));
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName());
-            }
+        jCheckBoxFilterExtrafenster.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_FENSTER_FILTER, Boolean.toString(jCheckBoxFilterExtrafenster.isSelected()));
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName());
         });
         // ============================
         // Downloads
@@ -1143,22 +921,14 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.add(jCheckBoxDownloadAnzeigen);
         jMenuAnsicht.add(jCheckBoxDownloadExtrafenster);
         jCheckBoxDownloadAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_DOWNLOAD)));
-        jCheckBoxDownloadAnzeigen.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_VIS_DOWNLOAD, Boolean.toString(jCheckBoxDownloadAnzeigen.isSelected()));
-                initFrames();
-            }
+        jCheckBoxDownloadAnzeigen.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_VIS_DOWNLOAD, Boolean.toString(jCheckBoxDownloadAnzeigen.isSelected()));
+            initFrames();
         });
         jCheckBoxDownloadExtrafenster.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_DOWNLOAD)));
-        jCheckBoxDownloadExtrafenster.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_FENSTER_DOWNLOAD, Boolean.toString(jCheckBoxDownloadExtrafenster.isSelected()));
-                initFrames();
-            }
+        jCheckBoxDownloadExtrafenster.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_FENSTER_DOWNLOAD, Boolean.toString(jCheckBoxDownloadExtrafenster.isSelected()));
+            initFrames();
         });
         // 
         // ============================
@@ -1170,22 +940,14 @@ public class MediathekGui extends JFrame {
         jMenuAnsicht.add(jCheckBoxAboAnzeigen);
         jMenuAnsicht.add(jCheckBoxAboExtrafenster);
         jCheckBoxAboAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_ABO)));
-        jCheckBoxAboAnzeigen.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_VIS_ABO, Boolean.toString(jCheckBoxAboAnzeigen.isSelected()));
-                initFrames();
-            }
+        jCheckBoxAboAnzeigen.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_VIS_ABO, Boolean.toString(jCheckBoxAboAnzeigen.isSelected()));
+            initFrames();
         });
         jCheckBoxAboExtrafenster.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_ABO)));
-        jCheckBoxAboExtrafenster.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_FENSTER_ABO, Boolean.toString(jCheckBoxAboExtrafenster.isSelected()));
-                initFrames();
-            }
+        jCheckBoxAboExtrafenster.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_FENSTER_ABO, Boolean.toString(jCheckBoxAboExtrafenster.isSelected()));
+            initFrames();
         });
         // 
         // ============================
@@ -1195,42 +957,26 @@ public class MediathekGui extends JFrame {
         jCheckBoxMeldungenExtrafenster.setText("in Extrafenster");
         jCheckBoxMeldungenExtrafenster.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 10, 5, 1));
         jCheckBoxMeldungenAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_MELDUNGEN)));
-        jCheckBoxMeldungenAnzeigen.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_VIS_MELDUNGEN, Boolean.toString(jCheckBoxMeldungenAnzeigen.isSelected()));
-                initFrames();
-            }
+        jCheckBoxMeldungenAnzeigen.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_VIS_MELDUNGEN, Boolean.toString(jCheckBoxMeldungenAnzeigen.isSelected()));
+            initFrames();
         });
         jCheckBoxMeldungenExtrafenster.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_MELDUNGEN)));
-        jCheckBoxMeldungenExtrafenster.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_FENSTER_MELDUNGEN, Boolean.toString(jCheckBoxMeldungenExtrafenster.isSelected()));
-                initFrames();
-            }
+        jCheckBoxMeldungenExtrafenster.addActionListener(e -> {
+            Daten.mVConfig.add(MVConfig.SYSTEM_FENSTER_MELDUNGEN, Boolean.toString(jCheckBoxMeldungenExtrafenster.isSelected()));
+            initFrames();
         });
         jMenuAnsicht.add(jCheckBoxMeldungenAnzeigen);
         jMenuAnsicht.add(jCheckBoxMeldungenExtrafenster);
         // ===============================
 
         // Hilfe
-        jMenuItemAnleitung.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MVHelpDialog dialogOk = new MVHelpDialog(daten.mediathekGui, true, daten, "Hilfe zum Programm");
-                dialogOk.setVisible(true);
-            }
+        jMenuItemAnleitung.addActionListener(e -> {
+            MVHelpDialog dialogOk = new MVHelpDialog(daten.mediathekGui, true, daten, "Hilfe zum Programm");
+            dialogOk.setVisible(true);
         });
         // Über
-        jMenuItemAbout.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showAboutDialog();
-            }
-        });
+        jMenuItemAbout.addActionListener(e -> showAboutDialog());
     }
 
     public void showDialogPreferences() {

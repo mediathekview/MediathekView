@@ -75,29 +75,19 @@ public class DialogContinueDownload extends JDialog {
                 + "\" existiert bereits.<br>Wie möchten Sie fortfahren?</html>";
         jLabel1.setText(dialogText);
 
-        jButtonNeuerName.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                isNewName = mVPanelDownloadZiel.setPfadName_geaendert();
-                if (!direkterDownload && !isNewName) {
-                    // dann gibts es nur Überschreiben oder anderer Name, sonst zickt ffmpeg
-                    MVMessageDialog.showMessageDialog(parent, "Der Dateiname wurde nicht geändert!",
-                            "Datei existiert bereits!", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    result = DownloadResult.RESTART_WITH_NEW_NAME;
-                    beenden();
-                }
+        jButtonNeuerName.addActionListener(e -> {
+            isNewName = mVPanelDownloadZiel.setPfadName_geaendert();
+            if (!direkterDownload && !isNewName) {
+                // dann gibts es nur Überschreiben oder anderer Name, sonst zickt ffmpeg
+                MVMessageDialog.showMessageDialog(parent, "Der Dateiname wurde nicht geändert!",
+                        "Datei existiert bereits!", JOptionPane.ERROR_MESSAGE);
+            } else {
+                result = DownloadResult.RESTART_WITH_NEW_NAME;
+                beenden();
             }
         });
 
-        jButtonAbbrechen.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                abbrechen();
-            }
-        });
+        jButtonAbbrechen.addActionListener(e -> abbrechen());
         new EscBeenden(this) {
             @Override
             public void beenden_() {
@@ -111,13 +101,9 @@ public class DialogContinueDownload extends JDialog {
                 abbrechen();
             }
         });
-        jButtonWeiter.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                result = DownloadResult.CONTINUE;
-                beenden();
-            }
+        jButtonWeiter.addActionListener(e -> {
+            result = DownloadResult.CONTINUE;
+            beenden();
         });
 
         //start the countdown...

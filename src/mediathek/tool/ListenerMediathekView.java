@@ -109,12 +109,7 @@ public class ListenerMediathekView implements EventListener {
             if (SwingUtilities.isEventDispatchThread()) {
                 ping();
             } else {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        ping();
-                    }
-                });
+                SwingUtilities.invokeLater(this::ping);
             }
         } catch (Exception ex) {
             Log.fehlerMeldung(698989743, ex);

@@ -43,12 +43,6 @@ public class MVHelpDialog extends javax.swing.JDialog {
     private Daten daten;
     private JFrame parent;
 
-    /**
-     *
-     * @param pparent
-     * @param ddaten
-     * @param modal
-     * @param titel */
     public MVHelpDialog(JFrame pparent, boolean modal, Daten ddaten, String titel) {
         super(pparent, modal);
         initComponents();
@@ -80,48 +74,26 @@ public class MVHelpDialog extends javax.swing.JDialog {
             jXHyperlinkSpende.addMouseListener(new BeobMausUrl(jXHyperlinkSpende));
         } catch (URISyntaxException ignored) {
         }
-        jButtonLogErstellen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ProgrammLog.LogDateiSchreiben(daten, parent);
-            }
-        });
+        jButtonLogErstellen.addActionListener(e -> ProgrammLog.LogDateiSchreiben(daten, parent));
         jButtonHilfeReset.setIcon(GetIcon.getProgramIcon("help_16.png"));
-        jButtonHilfeReset.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET)).setVisible(true);
-            }
+        jButtonHilfeReset.addActionListener(e -> new DialogHilfe(daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET)).setVisible(true));
+        jButtonResetSets.addActionListener(e -> {
+            Daten.listePset.clear();
+            //GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
+            GuiFunktionenProgramme.addSetVorlagen(parent, daten, ListePsetVorlagen.getStandarset(parent, daten, true /*replaceMuster*/), false /*auto*/, true /*setVersion*/);
+            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, MVHelpDialog.class.getSimpleName());
         });
-        jButtonResetSets.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.listePset.clear();
-                //GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
-                GuiFunktionenProgramme.addSetVorlagen(parent, daten, ListePsetVorlagen.getStandarset(parent, daten, true /*replaceMuster*/), false /*auto*/, true /*setVersion*/);
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, MVHelpDialog.class.getSimpleName());
-            }
-        });
-        jButtonResetAll.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int ret = JOptionPane.showConfirmDialog(parent, "Alle Einstellungen zurücksetzen?", "Alle Einstellungen zurücksetzen!", JOptionPane.YES_NO_OPTION);
-                if (ret == JOptionPane.OK_OPTION) {
-                    // damit wird vor dem Beenden das Konfig-Verzeichnis umbenannt und so startet das
-                    // Programm wie beim ersten Start
-                    Daten.RESET = true;
-                    daten.mediathekGui.beenden(false, false);
-                }
+        jButtonResetAll.addActionListener(e -> {
+            int ret = JOptionPane.showConfirmDialog(parent, "Alle Einstellungen zurücksetzen?", "Alle Einstellungen zurücksetzen!", JOptionPane.YES_NO_OPTION);
+            if (ret == JOptionPane.OK_OPTION) {
+                // damit wird vor dem Beenden das Konfig-Verzeichnis umbenannt und so startet das
+                // Programm wie beim ersten Start
+                Daten.RESET = true;
+                daten.mediathekGui.beenden(false, false);
             }
         });
 
-        jButtonBeenden.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                beenden();
-            }
-        });
+        jButtonBeenden.addActionListener(e -> beenden());
         new EscBeenden(this) {
             @Override
             public void beenden_() {

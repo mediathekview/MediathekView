@@ -139,10 +139,9 @@ public class Log {
         systemMeldung("");
         systemMeldung("");
         systemMeldung("");
-        ArrayList<String> ret = printFehlerMeldung();
-        for (String s : ret) {
-            systemMeldung(s);
-        }
+
+        printFehlerMeldung().forEach(Log::systemMeldung);
+
         // Laufzeit ausgeben
         final Date stopZeit = new Date(System.currentTimeMillis());
         int minuten;
@@ -364,17 +363,14 @@ public class Log {
                     panelMeldungenPlayer.notifyPanel();
                 }
             } else {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        // notify
-                        if (a == LOG_FEHLER && panelMeldungenFehler != null) {
-                            panelMeldungenFehler.notifyPanel();
-                        } else if (a == LOG_SYSTEM && panelMeldungenSystem != null) {
-                            panelMeldungenSystem.notifyPanel();
-                        } else if (a == LOG_PLAYER && panelMeldungenPlayer != null) {
-                            panelMeldungenPlayer.notifyPanel();
-                        }
+                SwingUtilities.invokeLater(() -> {
+                    // notify
+                    if (a == LOG_FEHLER && panelMeldungenFehler != null) {
+                        panelMeldungenFehler.notifyPanel();
+                    } else if (a == LOG_SYSTEM && panelMeldungenSystem != null) {
+                        panelMeldungenSystem.notifyPanel();
+                    } else if (a == LOG_PLAYER && panelMeldungenPlayer != null) {
+                        panelMeldungenPlayer.notifyPanel();
                     }
                 });
             }
