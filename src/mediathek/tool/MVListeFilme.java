@@ -105,6 +105,9 @@ public class MVListeFilme {
                     addObjectDataTabFilme(tModel, film);
                 }
             }
+            // listeFilme.stream().filter((DatenFilm film) -> Filter.filterAufFilmPruefen(filterSender,
+            //      filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, film, true /*länge nicht prüfen*/)).forEach(f -> addObjectDataTabFilme(tModel, f));
+
         }
         table.setModel(tModel);
     }
