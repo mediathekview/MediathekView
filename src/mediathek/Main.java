@@ -23,6 +23,7 @@ import com.jidesoft.utils.SystemInfo;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import java.awt.EventQueue;
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 import java.io.File;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
@@ -170,6 +171,16 @@ public class Main {
                     if (SystemInfo.isMacOSX()) {
                         new MediathekGuiMac(args).setVisible(true);
                     } else {
+                        if (SystemInfo.isLinux()) {
+                            try {
+                                Toolkit xToolkit = Toolkit.getDefaultToolkit();
+                                java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
+                                awtAppClassNameField.setAccessible(true);
+                                awtAppClassNameField.set(xToolkit, "MediathekView");
+                            } catch (Exception ignored) {
+                                System.err.println("Couldn't set awtAppClassName");
+                            }
+                        }
                         new MediathekGui(args).setVisible(true);
                     }
                 });
