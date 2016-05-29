@@ -29,7 +29,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
@@ -238,7 +237,7 @@ public class GuiDebug extends JPanel {
                 Daten.filmlisteSpeichern();
             }
         });
-        jButtonTTdoppelt.addActionListener(new ActionListener() {
+        jButtonHashOlddoppelt.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -246,7 +245,7 @@ public class GuiDebug extends JPanel {
                 HashSet<String> hash = new HashSet<>();
                 HashSet<String> hashDoppelt = new HashSet<>();
                 for (DatenFilm film : Daten.listeFilme) {
-                    String tt = film.arr[DatenFilm.FILM_THEMA_NR].toLowerCase() + film.arr[DatenFilm.FILM_TITEL_NR].toLowerCase();
+                    String tt = film.getIndexAddOld();
                     if (hash.contains(tt)) {
                         hashDoppelt.add(tt);
                     } else {
@@ -255,7 +254,7 @@ public class GuiDebug extends JPanel {
                 }
                 hash.clear();
                 for (DatenFilm film : Daten.listeFilme) {
-                    String tt = film.arr[DatenFilm.FILM_THEMA_NR].toLowerCase() + film.arr[DatenFilm.FILM_TITEL_NR].toLowerCase();
+                    String tt = film.getIndexAddOld();
                     if (hashDoppelt.contains(tt)) {
                         listeFilme.add(film);
                     }
@@ -298,7 +297,7 @@ public class GuiDebug extends JPanel {
                 Daten.filmlisteSpeichern();
             }
         });
-        jButtonOld.addActionListener(new ActionListener() {
+        jButtonAddOld.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -396,10 +395,10 @@ public class GuiDebug extends JPanel {
         jButtonSearchUrl = new javax.swing.JButton();
         jTextFieldSearchUrl = new javax.swing.JTextField();
         jButtonDoppelteUrls = new javax.swing.JButton();
-        jButtonOld = new javax.swing.JButton();
+        jButtonAddOld = new javax.swing.JButton();
         jTextFieldOld = new javax.swing.JTextField();
         jButtonNurDoppelte = new javax.swing.JButton();
-        jButtonTTdoppelt = new javax.swing.JButton();
+        jButtonHashOlddoppelt = new javax.swing.JButton();
         jButtonTTUrl = new javax.swing.JButton();
         jPanelStarts = new javax.swing.JPanel();
 
@@ -516,13 +515,13 @@ public class GuiDebug extends JPanel {
 
         jButtonDoppelteUrls.setText("doppelte URLs löschen");
 
-        jButtonOld.setText("Alte Filmliste");
+        jButtonAddOld.setText("Alte Filmliste");
 
         jTextFieldOld.setText("/tmp/usb/filme.xz");
 
         jButtonNurDoppelte.setText("NUR doppelte URLs");
 
-        jButtonTTdoppelt.setText("NUR doppelte Thema+Titel");
+        jButtonHashOlddoppelt.setText("NUR doppelte HashOld");
 
         jButtonTTUrl.setText("NUR doppelte Th+Ti+Url");
 
@@ -539,7 +538,7 @@ public class GuiDebug extends JPanel {
                         .addComponent(jTextFieldUrl))
                     .addGroup(jPanelToolsLayout.createSequentialGroup()
                         .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jButtonOld, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonAddOld, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(jButtonAllesSpeichern, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
                                 .addComponent(jButtonSize, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -561,7 +560,7 @@ public class GuiDebug extends JPanel {
                             .addGroup(jPanelToolsLayout.createSequentialGroup()
                                 .addComponent(jButtonNurDoppelte)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonTTdoppelt)
+                                .addComponent(jButtonHashOlddoppelt)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonTTUrl))
                             .addComponent(jButtonDoppelteUrls, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -573,7 +572,7 @@ public class GuiDebug extends JPanel {
                 .addContainerGap())
         );
 
-        jPanelToolsLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonAllesSpeichern, jButtonCheckUrl, jButtonDoppelteUrls, jButtonFehler, jButtonGc, jButtonNurDoppelte, jButtonSearchUrl, jButtonSize, jButtonTTUrl, jButtonTTdoppelt, jToggleButtonFastAuto});
+        jPanelToolsLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonAllesSpeichern, jButtonCheckUrl, jButtonDoppelteUrls, jButtonFehler, jButtonGc, jButtonHashOlddoppelt, jButtonNurDoppelte, jButtonSearchUrl, jButtonSize, jButtonTTUrl, jToggleButtonFastAuto});
 
         jPanelToolsLayout.setVerticalGroup(
             jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -591,11 +590,11 @@ public class GuiDebug extends JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonNurDoppelte)
-                    .addComponent(jButtonTTdoppelt)
+                    .addComponent(jButtonHashOlddoppelt)
                     .addComponent(jButtonTTUrl))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonOld)
+                    .addComponent(jButtonAddOld)
                     .addComponent(jTextFieldOld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -619,7 +618,7 @@ public class GuiDebug extends JPanel {
 
         jPanelToolsLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonSearchUrl, jTextFieldSearchUrl});
 
-        jPanelToolsLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonOld, jTextFieldOld});
+        jPanelToolsLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonAddOld, jTextFieldOld});
 
         jTabbedSender.addTab("Tool", jPanelTools);
 
@@ -653,6 +652,7 @@ public class GuiDebug extends JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAddOld;
     private javax.swing.JButton jButtonAllesSpeichern;
     private javax.swing.JButton jButtonCheck;
     private javax.swing.JButton jButtonCheckUrl;
@@ -662,13 +662,12 @@ public class GuiDebug extends JPanel {
     private javax.swing.JButton jButtonFehler;
     private javax.swing.JButton jButtonFilmlisteLoeschen;
     private javax.swing.JButton jButtonGc;
+    private javax.swing.JButton jButtonHashOlddoppelt;
     private javax.swing.JButton jButtonNeuLaden;
     private javax.swing.JButton jButtonNurDoppelte;
-    private javax.swing.JButton jButtonOld;
     private javax.swing.JButton jButtonSearchUrl;
     private javax.swing.JButton jButtonSize;
     private javax.swing.JButton jButtonTTUrl;
-    private javax.swing.JButton jButtonTTdoppelt;
     private javax.swing.JPanel jPanelFilmlisteLaden;
     private javax.swing.JPanel jPanelLoeschen;
     private javax.swing.JPanel jPanelStarts;
