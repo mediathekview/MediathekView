@@ -227,7 +227,7 @@
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                  <Component id="jButtonOld" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="jButtonAddOld" alignment="0" max="32767" attributes="0"/>
                                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
                                       <Component id="jButtonAllesSpeichern" linkSize="6" alignment="0" pref="154" max="32767" attributes="0"/>
                                       <Component id="jButtonSize" linkSize="6" alignment="0" max="32767" attributes="0"/>
@@ -256,7 +256,7 @@
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jButtonNurDoppelte" linkSize="6" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jButtonTTdoppelt" linkSize="6" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jButtonHashOlddoppelt" linkSize="6" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="jButtonTTUrl" linkSize="6" min="-2" max="-2" attributes="0"/>
                                   </Group>
@@ -292,12 +292,12 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jButtonNurDoppelte" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButtonTTdoppelt" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButtonHashOlddoppelt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jButtonTTUrl" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jButtonOld" linkSize="7" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButtonAddOld" linkSize="7" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jTextFieldOld" linkSize="7" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -376,7 +376,7 @@
                 <Property name="text" type="java.lang.String" value="doppelte URLs l&#xf6;schen"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="jButtonOld">
+            <Component class="javax.swing.JButton" name="jButtonAddOld">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Alte Filmliste"/>
               </Properties>
@@ -391,9 +391,9 @@
                 <Property name="text" type="java.lang.String" value="NUR doppelte URLs"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="jButtonTTdoppelt">
+            <Component class="javax.swing.JButton" name="jButtonHashOlddoppelt">
               <Properties>
-                <Property name="text" type="java.lang.String" value="NUR doppelte Thema+Titel"/>
+                <Property name="text" type="java.lang.String" value="NUR doppelte HashOld"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="jButtonTTUrl">
