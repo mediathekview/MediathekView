@@ -19,9 +19,8 @@
  */
 package mediathek.gui;
 
-import java.net.URISyntaxException;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
+
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
 import mediathek.res.GetIcon;
@@ -29,7 +28,6 @@ import mediathek.tool.BeobMausUrl;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFont;
-import mediathek.tool.UrlHyperlinkAction;
 import msearch.daten.DatenFilm;
 
 /**
@@ -51,14 +49,9 @@ public class PanelFilmBeschreibung extends JPanel {
             Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.FALSE.toString());
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
         });
-        jXHyperlinkWebsite.setText("");
-        try {
-            jXHyperlinkWebsite.setAction(new UrlHyperlinkAction(parent, ""));
-        } catch (URISyntaxException ignored) {
-        }
+
         jXHyperlinkWebsite.addMouseListener(new BeobMausUrl(jXHyperlinkWebsite));
-        jEditorPane.setEditable(false);
-        jEditorPane.setContentType("text/html");
+
         jCheckBoxChange.setIcon(GetIcon.getProgramIcon("edit_16.png"));
         jCheckBoxChange.addActionListener(e -> {
             if (aktFilm != null) {
@@ -123,7 +116,9 @@ public class PanelFilmBeschreibung extends JPanel {
 
         jScrollPane2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
+        jEditorPane.setEditable(false);
         jEditorPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 4, 4, 4));
+        jEditorPane.setContentType("text/html"); // NOI18N
         jEditorPane.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
         jScrollPane2.setViewportView(jEditorPane);
 
@@ -131,7 +126,7 @@ public class PanelFilmBeschreibung extends JPanel {
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
-        jXHyperlinkWebsite.setText("jXHyperlink1");
+        jXHyperlinkWebsite.setText("");
         jScrollPane1.setViewportView(jXHyperlinkWebsite);
 
         jCheckBoxChange.setToolTipText("Beschreibung ändern");
