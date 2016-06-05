@@ -105,11 +105,13 @@
           <SubComponents>
             <Component class="javax.swing.JEditorPane" name="jEditorPane">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
                     <EmptyBorder bottom="4" left="4" right="4" top="4"/>
                   </Border>
                 </Property>
+                <Property name="contentType" type="java.lang.String" value="text/html" noResource="true"/>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Dialog" size="24" style="0"/>
                 </Property>
@@ -136,7 +138,7 @@
           <SubComponents>
             <Component class="org.jdesktop.swingx.JXHyperlink" name="jXHyperlinkWebsite">
               <Properties>
-                <Property name="text" type="java.lang.String" value="jXHyperlink1"/>
+                <Property name="text" type="java.lang.String" value=""/>
               </Properties>
             </Component>
           </SubComponents>
