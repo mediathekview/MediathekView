@@ -19,25 +19,17 @@
  */
 package mediathek.daten;
 
-import java.awt.Frame;
+import mediathek.controller.starter.Start;
+import mediathek.tool.*;
+import msearch.daten.DatenFilm;
+
+import javax.swing.*;
+import java.awt.*;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
-import java.util.ListIterator;
-import javax.swing.JOptionPane;
-import mediathek.controller.starter.Start;
-import mediathek.tool.Konstanten;
-import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVConfig;
-import mediathek.tool.MVMessageDialog;
-import mediathek.tool.TModel;
-import mediathek.tool.TModelDownload;
-import msearch.daten.DatenFilm;
+import java.util.stream.Collectors;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
 
@@ -62,22 +54,14 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     }
 
     public synchronized void zurueckgestellteWiederAktivieren() {
-        ListIterator<DatenDownload> it = this.listIterator(0);
-        while (it.hasNext()) {
-            it.next().arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.FALSE.toString();
-        }
+        this.parallelStream().forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.FALSE.toString());
     }
 
     public synchronized void filmEintragen() {
         // bei einmal Downloads nach einem Programmstart/Neuladen der Filmliste
         // den Film wieder eintragen
-        Iterator<DatenDownload> it = this.iterator();
-        while (it.hasNext()) {
-            DatenDownload d = it.next();
-            if (d.film == null) {
-                d.film = Daten.listeFilme.getFilmByUrl_klein_hoch_hd(d.arr[DatenDownload.DOWNLOAD_URL_NR]);
-            }
-        }
+        this.stream().filter(d -> d.film == null)
+                .forEach(d -> d.film = Daten.listeFilme.getFilmByUrl_klein_hoch_hd(d.arr[DatenDownload.DOWNLOAD_URL_NR]));
     }
 
     public synchronized void listePutzen() {
@@ -509,15 +493,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
      */
     public synchronized LinkedList<DatenDownload> getListOfStartsNotFinished(int quelle) {
         aktivDownloads.clear();
-        for (DatenDownload download : this) {
-            if (download.start != null) {
-                if (download.start.status < Start.STATUS_FERTIG) {
-                    if (quelle == DatenDownload.QUELLE_ALLE || download.quelle == quelle) {
-                        aktivDownloads.add(download);
-                    }
-                }
-            }
-        }
+        aktivDownloads.addAll(this.stream()
+                .filter(download -> download.start != null)
+                .filter(download -> download.start.status < Start.STATUS_FERTIG)
+                .filter(download -> quelle == DatenDownload.QUELLE_ALLE || download.quelle == quelle)
+                .collect(Collectors.toList()));
         return aktivDownloads;
     }
 
