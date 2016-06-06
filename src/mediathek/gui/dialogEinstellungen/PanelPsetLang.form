@@ -681,6 +681,10 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="(ist der Abo-Zielpfad leer, wird das Thema verwendet)"/>
                       </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                      </AuxValues>
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="jCheckBoxField">
                       <Properties>
@@ -698,6 +702,10 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Zeichen"/>
                       </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                      </AuxValues>
                     </Component>
                   </SubComponents>
                 </Container>
