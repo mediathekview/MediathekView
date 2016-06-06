@@ -79,7 +79,7 @@ public class GuiDownloads extends PanelVorlage {
             });
         }
 
-        tabelle = new MVTable(MVTable.TABELLE_TAB_DOWNLOADS);
+        tabelle = new MVTable(MVTable.TableType.DOWNLOADS);
         jScrollPane1.setViewportView(tabelle);
         filmInfoHud = daten.filmInfo;
 

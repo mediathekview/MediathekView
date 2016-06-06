@@ -52,7 +52,7 @@ public class GuiAbo extends PanelVorlage {
     public GuiAbo(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();
-        tabelle = new MVTable(MVTable.TABELLE_TAB_ABOS);
+        tabelle = new MVTable(MVTable.TableType.ABOS);
         jScrollPane1.setViewportView(tabelle);
         initBeobachter();
         tabelleLaden();
