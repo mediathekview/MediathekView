@@ -20,28 +20,35 @@
 package mediathek.gui;
 
 import mediathek.daten.Daten;
+import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
 import msearch.daten.DatenFilm;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableModel;
 import java.net.URISyntaxException;
 
 /**
  *
  * @author emil
  */
-public class PanelFilmBeschreibung extends JPanel {
+public class PanelFilmBeschreibung extends JPanel implements ListSelectionListener {
 
-    Daten daten;
-    DatenFilm aktFilm = null;
-    JFrame parent;
+    private Daten daten;
+    private DatenFilm currentFilm = null;
+    private JFrame parent;
+    private MVTable table = null;
 
-    public PanelFilmBeschreibung(JFrame pparent, Daten dd) {
+    public PanelFilmBeschreibung(JFrame pparent, Daten dd, MVTable table) {
         initComponents();
         parent = pparent;
         daten = dd;
+        this.table = table;
+
         jCheckBoxBeschreibung.setIcon(GetIcon.getProgramIcon("close_15.png"));
         jCheckBoxBeschreibung.addActionListener(e -> {
             Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.FALSE.toString());
@@ -57,10 +64,10 @@ public class PanelFilmBeschreibung extends JPanel {
 
         jCheckBoxChange.setIcon(GetIcon.getProgramIcon("edit_16.png"));
         jCheckBoxChange.addActionListener(e -> {
-            if (aktFilm != null) {
-                String akt = aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR];
-                new DialogFilmBeschreibung(parent, daten, aktFilm).setVisible(true);
-                if (!aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].equals(akt)) {
+            if (currentFilm != null) {
+                final String akt = currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR];
+                new DialogFilmBeschreibung(parent, daten, currentFilm).setVisible(true);
+                if (!currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].equals(akt)) {
                     // dann hat sich die Beschreibung geändert
                     setText();
                     Daten.filmlisteSpeichern();
@@ -74,15 +81,18 @@ public class PanelFilmBeschreibung extends JPanel {
                 setText();
             }
         });
+
+        table.getSelectionModel().addListSelectionListener(this);
+
     }
 
-    public void setAktFilm(DatenFilm aaktFilm) {
-        aktFilm = aaktFilm;
+    private void displayFilmData(DatenFilm aaktFilm) {
+        currentFilm = aaktFilm;
         setText();
     }
 
-    public void setText() {
-        if (aktFilm == null) {
+    private void setText() {
+        if (currentFilm == null) {
             jEditorPane.setText("");
             jXHyperlinkWebsite.setText("");
         } else {
@@ -91,13 +101,42 @@ public class PanelFilmBeschreibung extends JPanel {
                     "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
                     + "<head><style type=\"text/css\">.sans { font-family: Verdana, Geneva, sans-serif; font-size: " + MVFont.fontSize + "pt; }</style></head>\n"
                     + "<body>"
-                    + "<span class=\"sans\"><b>" + (aktFilm.arr[DatenFilm.FILM_SENDER_NR].isEmpty() ? "" : aktFilm.arr[DatenFilm.FILM_SENDER_NR] + "  -  ")
-                    + aktFilm.arr[DatenFilm.FILM_TITEL_NR] + "</b><br /></span>"
-                    + "<span class=\"sans\">" + aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].replace("\n", "<br />") + "</span>"
+                    + "<span class=\"sans\"><b>" + (currentFilm.arr[DatenFilm.FILM_SENDER_NR].isEmpty() ? "" : currentFilm.arr[DatenFilm.FILM_SENDER_NR] + "  -  ")
+                    + currentFilm.arr[DatenFilm.FILM_TITEL_NR] + "</b><br /></span>"
+                    + "<span class=\"sans\">" + currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].replace("\n", "<br />") + "</span>"
                     + "</body>"
                     + "</html>");
 
-            jXHyperlinkWebsite.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
+            jXHyperlinkWebsite.setText(currentFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
+        }
+    }
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            final int selectedTableRow = table.getSelectedRow();
+            if (selectedTableRow >= 0) {
+                DatenFilm film;
+                final TableModel model = table.getModel();
+                final int modelIndex = table.convertRowIndexToModel(selectedTableRow);
+
+                switch (table.getTableType()) {
+                    case FILME:
+                        film = (DatenFilm)model.getValueAt(modelIndex, DatenFilm.FILM_REF_NR);
+                        break;
+
+                    case DOWNLOADS:
+                        film = ((DatenDownload) model.getValueAt(modelIndex, DatenDownload.DOWNLOAD_REF_NR)).film;
+                        break;
+
+                    default:
+                        System.out.println("UNHANDLED TABLE TYPE!!!");
+                        film = null;
+                        break;
+                }
+                displayFilmData(film);
+            } else
+                displayFilmData(null);
         }
     }
 

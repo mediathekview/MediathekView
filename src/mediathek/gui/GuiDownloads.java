@@ -20,34 +20,6 @@
 package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.BorderLayout;
-import java.awt.Point;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.InputMap;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import mediathek.controller.Log;
 import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
@@ -60,27 +32,24 @@ import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.dialog.MVFilmInfo;
 import mediathek.res.GetIcon;
-import mediathek.tool.BeobTableHeader;
-import mediathek.tool.CellRendererDownloads;
-import mediathek.tool.DirOpenAction;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.HinweisKeineAuswahl;
-import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVConfig;
-import mediathek.tool.MVFilmSize;
-import mediathek.tool.MVMessageDialog;
-import mediathek.tool.MVTable;
-import mediathek.tool.OpenPlayerAction;
-import mediathek.tool.TModelDownload;
+import mediathek.tool.*;
 import msearch.daten.DatenFilm;
 import msearch.filmeSuchen.MSListenerFilmeLaden;
 import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
 import msearch.tool.Datum;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+
 public class GuiDownloads extends PanelVorlage {
 
     private final MVFilmInfo filmInfoHud;
-    private final PanelFilmBeschreibung panelBeschreibung;
     private long lastUpdate = 0;
     private boolean showAbos = true;
     private boolean showDownloads = true;
@@ -110,12 +79,11 @@ public class GuiDownloads extends PanelVorlage {
             });
         }
 
-        tabelle = new MVTable(MVTable.TABELLE_TAB_DOWNLOADS);
+        tabelle = new MVTable(MVTable.TableType.DOWNLOADS);
         jScrollPane1.setViewportView(tabelle);
         filmInfoHud = daten.filmInfo;
 
-        panelBeschreibung = new PanelFilmBeschreibung(daten.mediathekGui, daten);
-        jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
+        setupDescriptionPanel();
 
         init();
         tabelle.initTabelle();
@@ -129,6 +97,11 @@ public class GuiDownloads extends PanelVorlage {
         SwingUtilities.invokeLater(this::downloadsAktualisieren);
     }
 
+    private void setupDescriptionPanel() {
+        PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten.mediathekGui, daten, tabelle);
+        jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
+    }
+
     @Override
     public void isShown() {
         super.isShown();
@@ -136,7 +109,7 @@ public class GuiDownloads extends PanelVorlage {
             daten.mediathekGui.setToolbar(MVToolBar.TOOLBAR_TAB_DOWNLOADS);
             daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.DOWNLOAD);
         }
-        aktFilmSetzen();
+        updateFilmData();
     }
 
     public void aktualisieren() {
@@ -275,7 +248,12 @@ public class GuiDownloads extends PanelVorlage {
         model = new TModelDownload(new Object[][]{}, DatenDownload.COLUMN_NAMES);
         tabelle.setModel(model);
         tabelle.addMouseListener(new BeobMausTabelle());
-        tabelle.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
+        tabelle.getSelectionModel().addListSelectionListener(event -> {
+            if (!event.getValueIsAdjusting()) {
+                updateFilmData();
+            }
+        });
+
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenDownload.COLUMN_NAMES, DatenDownload.spaltenAnzeigen,
                 new int[]{DatenDownload.DOWNLOAD_BUTTON_START_NR, DatenDownload.DOWNLOAD_BUTTON_DEL_NR, DatenDownload.DOWNLOAD_REF_NR},
                 new int[]{DatenDownload.DOWNLOAD_BUTTON_START_NR, DatenDownload.DOWNLOAD_BUTTON_DEL_NR},
@@ -371,7 +349,7 @@ public class GuiDownloads extends PanelVorlage {
         Daten.listeDownloads.getModel(model, showAbos, showDownloads);
         tabelle.setSpalten();
         stopBeob = false;
-        aktFilmSetzen();
+        updateFilmData();
         setInfo();
     }
 
@@ -749,19 +727,17 @@ public class GuiDownloads extends PanelVorlage {
         return new DefaultComboBoxModel<>(new String[]{COMBO_DISPLAY_ALL, COMBO_DISPLAY_DOWNLOADS_ONLY, COMBO_DISPLAY_ABOS_ONLY});
     }
 
-    private void aktFilmSetzen() {
-        if (this.isShowing()) {
+    private void updateFilmData() {
+        if (isShowing()) {
             DatenFilm aktFilm = null;
             final int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow >= 0) {
-                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), DatenDownload.DOWNLOAD_REF_NR);
+                final DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), DatenDownload.DOWNLOAD_REF_NR);
                 if (datenDownload != null) {
                     aktFilm = datenDownload.film;
                 }
             }
             filmInfoHud.updateCurrentFilm(aktFilm);
-            // Beschreibung setzen
-            panelBeschreibung.setAktFilm(aktFilm);
         }
     }
 
@@ -829,16 +805,6 @@ public class GuiDownloads extends PanelVorlage {
     private javax.swing.JPanel jPanelBeschreibung;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
-
-    private class BeobachterTableSelect implements ListSelectionListener {
-
-        @Override
-        public void valueChanged(ListSelectionEvent event) {
-            if (!event.getValueIsAdjusting()) {
-                aktFilmSetzen();
-            }
-        }
-    }
 
     public class BeobMausTabelle extends MouseAdapter {
 

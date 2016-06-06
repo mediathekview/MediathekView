@@ -89,7 +89,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
             }
         });
 
-        tabelleFilme = new MVTable(MVTable.TABELLE_MEDIA_DB);
+        tabelleFilme = new MVTable(MVTable.TableType.MEDIA_DB);
         jScrollPane3.setViewportView(tabelleFilme);
 
         TModelMediaDB modelFilm = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
@@ -107,43 +107,15 @@ public class DialogMediaDB extends javax.swing.JDialog {
         progress.setMinimum(0);
         progress.setValue(0);
 
-        jTextFieldSearch.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                search();
-            }
-        });
+        jTextFieldSearch.addActionListener(e -> search());
         jTextFieldSearch.getDocument().addDocumentListener(new BeobDoc());
 
-        jButtonIndex.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Daten.mVMediaDB.makeIndex();
-            }
-        });
+        jButtonIndex.addActionListener(e -> Daten.mVMediaDB.makeIndex());
 
         jButtonHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
-        jButtonHelp.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_MEDIA_DB)).setVisible(true);
-            }
-        });
-        jButtonSearch.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                search();
-            }
-        });
-        jButtonBeenden.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                beenden();
-            }
-        });
+        jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_MEDIA_DB)).setVisible(true));
+        jButtonSearch.addActionListener(e -> search());
+        jButtonBeenden.addActionListener(e -> beenden());
         new EscBeenden(this) {
             @Override
             public void beenden_() {
@@ -496,46 +468,26 @@ public class DialogMediaDB extends javax.swing.JDialog {
             // Film abspielen
             JMenuItem itemPlayerDownload = new JMenuItem("gespeicherten Film (Datei) abspielen");
             itemPlayerDownload.setIcon(GetIcon.getProgramIcon("film_start_16.png"));
-            itemPlayerDownload.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    filmAbspielen_();
-                }
-            });
+            itemPlayerDownload.addActionListener(e -> filmAbspielen_());
             jPopupMenu.add(itemPlayerDownload);
 
             // Film löschen
             JMenuItem itemDeleteDownload = new JMenuItem("gespeicherten Film (Datei) löschen");
             itemDeleteDownload.setIcon(GetIcon.getProgramIcon("film_del_16.png"));
-            itemDeleteDownload.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    filmLoeschen_();
-                }
-            });
+            itemDeleteDownload.addActionListener(e -> filmLoeschen_());
             jPopupMenu.add(itemDeleteDownload);
 
             // Zielordner öffnen
             JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
             itemOeffnen.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
             jPopupMenu.add(itemOeffnen);
-            itemOeffnen.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent arg0) {
-                    zielordnerOeffnen();
-                }
-            });
+            itemOeffnen.addActionListener(arg0 -> zielordnerOeffnen());
 
             jPopupMenu.addSeparator();
             // Reset Tabelle
             JMenuItem itemResetTab = new JMenuItem("Tabelle zurücksetzen");
             jPopupMenu.add(itemResetTab);
-            itemResetTab.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent arg0) {
-                    tabelleFilme.resetTabelle();
-                }
-            });
+            itemResetTab.addActionListener(arg0 -> tabelleFilme.resetTabelle());
 
             // ######################
             // Menü anzeigen
