@@ -19,16 +19,14 @@
  */
 package mediathek.gui;
 
-import javax.swing.*;
-
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
 import mediathek.res.GetIcon;
-import mediathek.tool.BeobMausUrl;
-import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVConfig;
-import mediathek.tool.MVFont;
+import mediathek.tool.*;
 import msearch.daten.DatenFilm;
+
+import javax.swing.*;
+import java.net.URISyntaxException;
 
 /**
  *
@@ -50,6 +48,11 @@ public class PanelFilmBeschreibung extends JPanel {
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
         });
 
+        try {
+            jXHyperlinkWebsite.setAction(new UrlHyperlinkAction(parent, ""));
+        } catch (URISyntaxException ignored) {
+            jXHyperlinkWebsite.setText("");
+        }
         jXHyperlinkWebsite.addMouseListener(new BeobMausUrl(jXHyperlinkWebsite));
 
         jCheckBoxChange.setIcon(GetIcon.getProgramIcon("edit_16.png"));
