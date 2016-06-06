@@ -82,6 +82,14 @@ public final class MVTable extends JTable {
     private String iconAnzeigenStr = "";
     private String iconKleinStr = "";
 
+    /**
+     * Return the type of this MVTable.
+     * @return
+     */
+    public int getTableType() {
+        return tabelle;
+    }
+
     public MVTable(int tabelle) {
         this.tabelle = tabelle;
         setAutoCreateRowSorter(true);
