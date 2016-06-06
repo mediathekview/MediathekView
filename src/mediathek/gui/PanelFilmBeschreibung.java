@@ -65,7 +65,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
         jCheckBoxChange.setIcon(GetIcon.getProgramIcon("edit_16.png"));
         jCheckBoxChange.addActionListener(e -> {
             if (currentFilm != null) {
-                String akt = currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR];
+                final String akt = currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR];
                 new DialogFilmBeschreibung(parent, daten, currentFilm).setVisible(true);
                 if (!currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].equals(akt)) {
                     // dann hat sich die Beschreibung geändert
@@ -121,11 +121,11 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
                 final int modelIndex = table.convertRowIndexToModel(selectedTableRow);
 
                 switch (table.getTableType()) {
-                    case MVTable.TABELLE_TAB_FILME:
+                    case FILME:
                         film = (DatenFilm)model.getValueAt(modelIndex, DatenFilm.FILM_REF_NR);
                         break;
 
-                    case MVTable.TABELLE_TAB_DOWNLOADS:
+                    case DOWNLOADS:
                         film = ((DatenDownload) model.getValueAt(modelIndex, DatenDownload.DOWNLOAD_REF_NR)).film;
                         break;
 

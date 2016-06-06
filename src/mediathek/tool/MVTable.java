@@ -54,15 +54,8 @@ import mediathek.daten.DatenPset;
 import msearch.daten.DatenFilm;
 
 public final class MVTable extends JTable {
-
+    public enum TableType { STANDARD, FILME, DOWNLOADS, ABOS, PSET, PROG, MEDIA_DB};
     //public static final String TABELLEN = "Tabellen";
-    public static final int TABELLE_STANDARD = -1;
-    public static final int TABELLE_TAB_FILME = 0;
-    public static final int TABELLE_TAB_DOWNLOADS = 1;
-    public static final int TABELLE_TAB_ABOS = 2;
-    public static final int TABELLE_TAB_PSET = 3;
-    public static final int TABELLE_TAB_PROG = 4;
-    public static final int TABELLE_MEDIA_DB = 5;
     public static final String FELDTRENNER = "|";
     public static final String SORT_ASCENDING = "ASCENDING";
     public static final String SORT_DESCENDING = "DESCENDING";
@@ -71,7 +64,7 @@ public final class MVTable extends JTable {
     private final int[] breite;
     private final int[] reihe;
     private String nrDatenSystem = "";
-    private int tabelle;
+    private TableType tabelle;
     private int maxSpalten;
     private List<? extends RowSorter.SortKey> listeSortKeys = null;
     private int indexSpalte = 0;
@@ -86,18 +79,18 @@ public final class MVTable extends JTable {
      * Return the type of this MVTable.
      * @return
      */
-    public int getTableType() {
+    public TableType getTableType() {
         return tabelle;
     }
 
-    public MVTable(int tabelle) {
+    public MVTable(TableType tabelle) {
         this.tabelle = tabelle;
         setAutoCreateRowSorter(true);
         setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
         String[] spaltenTitel;
         switch (tabelle) {
-            case TABELLE_TAB_FILME:
+            case FILME:
                 spaltenTitel = DatenFilm.COLUMN_NAMES;
                 maxSpalten = DatenFilm.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenFilm.spaltenAnzeigen, DatenFilm.MAX_ELEM);
@@ -108,7 +101,7 @@ public final class MVTable extends JTable {
                 this.setModel(new TModelFilm(new Object[][]{}, spaltenTitel));
                 this.getTableHeader().addMouseListener(new WidthAdjuster(this));
                 break;
-            case TABELLE_TAB_DOWNLOADS:
+            case DOWNLOADS:
                 spaltenTitel = DatenDownload.COLUMN_NAMES;
                 maxSpalten = DatenDownload.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenDownload.spaltenAnzeigen, DatenDownload.MAX_ELEM);
@@ -122,7 +115,7 @@ public final class MVTable extends JTable {
                 setModel(new TModelDownload(new Object[][]{}, spaltenTitel));
                 this.getTableHeader().addMouseListener(new WidthAdjuster(this));
                 break;
-            case TABELLE_TAB_ABOS:
+            case ABOS:
                 spaltenTitel = DatenAbo.COLUMN_NAMES;
                 maxSpalten = DatenAbo.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenAbo.spaltenAnzeigen, DatenAbo.MAX_ELEM);
@@ -133,7 +126,7 @@ public final class MVTable extends JTable {
                 this.setModel(new TModelAbo(new Object[][]{}, spaltenTitel));
                 this.getTableHeader().addMouseListener(new WidthAdjuster(this));
                 break;
-            case TABELLE_TAB_PSET:
+            case PSET:
                 spaltenTitel = DatenPset.COLUMN_NAMES;
                 maxSpalten = DatenPset.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenPset.spaltenAnzeigen, DatenPset.MAX_ELEM);
@@ -144,7 +137,7 @@ public final class MVTable extends JTable {
                 this.setAutoCreateRowSorter(false); // Reihenfolge ist die Anzeige der Button!
                 this.getTableHeader().addMouseListener(new WidthAdjuster(this));
                 break;
-            case TABELLE_TAB_PROG:
+            case PROG:
                 spaltenTitel = DatenProg.COLUMN_NAMES;
                 maxSpalten = DatenProg.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenProg.spaltenAnzeigen, DatenProg.MAX_ELEM);
@@ -153,7 +146,7 @@ public final class MVTable extends JTable {
                 this.setModel(new TModel(new Object[][]{}, spaltenTitel));
                 this.getTableHeader().addMouseListener(new WidthAdjuster(this));
                 break;
-            case TABELLE_MEDIA_DB:
+            case MEDIA_DB:
                 spaltenTitel = DatenMediaDB.COLUMN_NAMES;
                 maxSpalten = DatenMediaDB.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(new boolean[DatenMediaDB.MAX_ELEM], DatenMediaDB.MAX_ELEM);
@@ -388,9 +381,9 @@ public final class MVTable extends JTable {
         int selRow = this.getSelectedRow();
         selRows = this.getSelectedRows();
         switch (tabelle) {
-            case TABELLE_TAB_DOWNLOADS:
-            case TABELLE_TAB_FILME:
-            case TABELLE_TAB_ABOS:
+            case DOWNLOADS:
+            case FILME:
+            case ABOS:
                 if (selRow >= 0) {
                     selIndexes = new int[selRows.length];
                     int k = 0;
@@ -401,7 +394,7 @@ public final class MVTable extends JTable {
                     selIndexes = null;
                 }
                 break;
-            case TABELLE_MEDIA_DB:
+            case MEDIA_DB:
                 break;
             default:
                 if (selRows != null) {
@@ -419,9 +412,9 @@ public final class MVTable extends JTable {
     private void setSelected() {
         // gemerkte Einstellungen der Tabelle wieder setzten
         switch (tabelle) {
-            case TABELLE_TAB_DOWNLOADS:
-            case TABELLE_TAB_FILME:
-            case TABELLE_TAB_ABOS:
+            case DOWNLOADS:
+            case FILME:
+            case ABOS:
                 if (selIndexes != null) {
                     this.selectionModel.setValueIsAdjusting(true);
                     TModel tModel = (TModel) this.getModel();
@@ -448,7 +441,7 @@ public final class MVTable extends JTable {
                 }
                 indexWertSelection = null;
                 break;
-            case TABELLE_MEDIA_DB:
+            case MEDIA_DB:
                 break;
             default:
                 if (selRows != null) {
@@ -619,16 +612,16 @@ public final class MVTable extends JTable {
         // Standardwerte wetzen
         for (int i = 0; i < maxSpalten; ++i) {
             switch (tabelle) {
-                case TABELLE_TAB_FILME:
+                case FILME:
                     resetFilmeTab(i);
                     break;
-                case TABELLE_TAB_DOWNLOADS:
+                case DOWNLOADS:
                     resetDownloadsTab(i);
                     break;
-                case TABELLE_TAB_ABOS:
+                case ABOS:
                     resetAbosTab(i);
                     break;
-                case TABELLE_MEDIA_DB:
+                case MEDIA_DB:
                     reihe[i] = i;
                     breite[i] = 200;
                     break;
@@ -687,21 +680,21 @@ public final class MVTable extends JTable {
     private void spaltenAusschalten() {
         for (int i = 0; i < maxSpalten; ++i) {
             switch (tabelle) {
-                case TABELLE_TAB_FILME:
+                case FILME:
                     spaltenAusschaltenFilme(i);
                     break;
-                case TABELLE_TAB_DOWNLOADS:
+                case DOWNLOADS:
                     spaltenAusschaltenDownloads(i);
                     break;
-                case TABELLE_TAB_ABOS:
-                case TABELLE_STANDARD:
+                case ABOS:
+                case STANDARD:
                     break;
             }
         }
     }
 
     public void tabelleNachDatenSchreiben() {
-        if (tabelle == TABELLE_STANDARD) {
+        if (tabelle == TableType.STANDARD) {
             // wird nur für eingerichtet Tabellen gemacht
             return;
         }
@@ -882,7 +875,7 @@ public final class MVTable extends JTable {
 
         @Override
         public void mousePressed(final MouseEvent evt) {
-            int c = getLeftColumn(evt.getPoint());
+            //int c = getLeftColumn(evt.getPoint());
             if (evt.getClickCount() == 1) {
                 if (table.getRowSorter() != null) {
                     listeSortKeys = table.getRowSorter().getSortKeys();

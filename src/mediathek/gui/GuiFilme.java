@@ -59,7 +59,7 @@ public class GuiFilme extends PanelVorlage {
     public GuiFilme(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();
-        tabelle = new MVTable(MVTable.TABELLE_TAB_FILME);
+        tabelle = new MVTable(MVTable.TableType.FILME);
         jScrollPane1.setViewportView(tabelle);
         jScrollPaneFilter.getVerticalScrollBar().setUnitIncrement(16);
         panelVideoplayerSetzen();
