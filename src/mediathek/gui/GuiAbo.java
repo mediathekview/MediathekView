@@ -22,7 +22,6 @@ package mediathek.gui;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -315,43 +314,23 @@ public class GuiAbo extends PanelVorlage {
             JMenuItem itemEinschalten = new JMenuItem("Abo einschalten");
             itemEinschalten.setIcon(GetIcon.getProgramIcon("ja_16.png"));
             itemEinschalten.setEnabled(!ein);
-            itemEinschalten.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    aboEinAus(true);
-                }
-            });
+            itemEinschalten.addActionListener(e -> aboEinAus(true));
             jPopupMenu.add(itemEinschalten);
             // Abo deaktivieren
             JMenuItem itemDeaktivieren = new JMenuItem("Abo ausschalten");
             itemDeaktivieren.setIcon(GetIcon.getProgramIcon("nein_16.png"));
             itemDeaktivieren.setEnabled(ein);
-            itemDeaktivieren.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    aboEinAus(false);
-                }
-            });
+            itemDeaktivieren.addActionListener(e -> aboEinAus(false));
             jPopupMenu.add(itemDeaktivieren);
             //Abo lösschen
             JMenuItem itemLoeschen = new JMenuItem("Abo löschen");
             itemLoeschen.setIcon(GetIcon.getProgramIcon("del_16.png"));
-            itemLoeschen.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    aboLoeschen();
-                }
-            });
+            itemLoeschen.addActionListener(e -> aboLoeschen());
             jPopupMenu.add(itemLoeschen);
             //Abo ändern
             JMenuItem itemAendern = new JMenuItem("Abo ändern");
             itemAendern.setIcon(GetIcon.getProgramIcon("configure_16.png"));
-            itemAendern.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    aboAendern();
-                }
-            });
+            itemAendern.addActionListener(e -> aboAendern());
             jPopupMenu.add(itemAendern);
 
             //##Trenner##
@@ -359,12 +338,7 @@ public class GuiAbo extends PanelVorlage {
             //Abo ändern
             JMenuItem itemNeu = new JMenuItem("Abo anlegen");
             itemNeu.setIcon(GetIcon.getProgramIcon("add_16.png"));
-            itemNeu.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    aboNeu();
-                }
-            });
+            itemNeu.addActionListener(e -> aboNeu());
             jPopupMenu.add(itemNeu);
 
             //Menü anzeigen
