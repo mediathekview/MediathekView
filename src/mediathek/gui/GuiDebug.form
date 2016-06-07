@@ -270,6 +270,7 @@
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="jButtonDir" min="-2" max="-2" attributes="0"/>
                                           <Component id="jButtonDelLive" alignment="1" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jButtonOldList" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -308,6 +309,7 @@
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jButtonAddOld" linkSize="7" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jTextFieldOld" linkSize="7" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jButtonOldList" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
@@ -398,7 +400,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="jTextFieldOld">
               <Properties>
-                <Property name="text" type="java.lang.String" value="/tmp/filme.xz"/>
+                <Property name="text" type="java.lang.String" value="/tmp/usb/2016-06-03-filme.xz"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="jButtonNurDoppelte">
@@ -429,6 +431,11 @@
             <Component class="javax.swing.JButton" name="jButtonDelLive">
               <Properties>
                 <Property name="text" type="java.lang.String" value="l&#xf6;schen"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="jButtonOldList">
+              <Properties>
+                <Property name="text" type="java.lang.String" value=":::"/>
               </Properties>
             </Component>
           </SubComponents>
