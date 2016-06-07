@@ -103,14 +103,18 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void setupDescriptionPanel() {
-        PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten.mediathekGui, daten, tabelle);
+        PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten, tabelle);
         jPanelBeschreibung.setLayout(new BorderLayout());
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
     }
 
-    //===================================
-    // Public
-    //===================================
+    /**
+     * Show description panel based on settings.
+     */
+    private void showDescriptionPanel() {
+        jPanelBeschreibung.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
+    }
+
     @Override
     public void isShown() {
         super.isShown();
@@ -413,13 +417,6 @@ public class GuiFilme extends PanelVorlage {
                 }
             }
         });
-    }
-
-    /**
-     * Show description panel based on settings.
-     */
-    private void showDescriptionPanel() {
-        jPanelBeschreibung.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
     }
 
     private synchronized void playFilm() {
