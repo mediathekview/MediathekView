@@ -19,17 +19,16 @@
  */
 package mediathek.daten;
 
-import mediathek.controller.starter.Start;
-import mediathek.tool.*;
-import msearch.daten.DatenFilm;
-
-import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.swing.*;
+import mediathek.controller.starter.Start;
+import mediathek.tool.*;
+import msearch.daten.DatenFilm;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
 
@@ -498,6 +497,25 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 .filter(download -> quelle == DatenDownload.QUELLE_ALLE || download.quelle == quelle)
                 .collect(Collectors.toList()));
         return aktivDownloads;
+    }
+
+    /**
+     * Return a List of all not yet finished downloads.
+     *
+     * @param quelle Use QUELLE_XXX constants from {@link mediathek.controller.starter.Start}.
+     * @param liste
+     */
+    public synchronized void getListOfStartsNotFinished(int quelle, LinkedList<DatenDownload> liste) {
+        liste.clear();
+        for (DatenDownload download : this) {
+            if (download.start != null) {
+                if (download.start.status < Start.STATUS_FERTIG) {
+                    if (quelle == DatenDownload.QUELLE_ALLE || download.quelle == quelle) {
+                        liste.add(download);
+                    }
+                }
+            }
+        }
     }
 
     public synchronized TModel getModelStarts(TModel model) {
