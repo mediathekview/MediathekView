@@ -30,6 +30,7 @@ import java.net.PasswordAuthentication;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javafx.application.Application;
 import javax.swing.JOptionPane;
 import javax.swing.RepaintManager;
 import mediathek.controller.Log;
@@ -42,7 +43,7 @@ public class Main {
 
     public enum StartupMode {
 
-        GUI, AUTO, FASTAUTO
+        GUI, AUTO, FASTAUTO, FX
     }
 
     /**
@@ -103,6 +104,10 @@ public class Main {
             for (String s : args) {
                 s = s.toLowerCase();
                 switch (s) {
+                    case "-fx":
+                        state = StartupMode.FX;
+                        break;
+
                     case "-auto":
                         state = StartupMode.AUTO;
                         break;
@@ -119,10 +124,6 @@ public class Main {
                     case "-d":
                         Daten.debug = true;
                         break;
-
-//                    case "-delset":
-//                        Daten.delSets = true;
-//                        break;
 
                     case "-m":
                         Daten.startMaximized = true;
@@ -143,6 +144,10 @@ public class Main {
         }
 
         switch (state) {
+            case FX:
+                Application.launch(MediathekGuiFx.class, args);
+                break;
+
             case AUTO:
                 new MediathekAuto(args).starten();
                 break;
