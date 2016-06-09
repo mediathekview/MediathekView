@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+    <stylesheets>
+        <URL value="@mvfx.css" />
+    </stylesheets>
+    <children>
+        <BorderPane AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
+            <top>
+                <MenuBar BorderPane.alignment="CENTER">
+                    <menus>
+                        <Menu mnemonicParsing="false" text="File">
+                            <items>
+                                <MenuItem fx:id="miQuit" mnemonicParsing="false" text="Beenden" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Hilfe">
+                            <items>
+                                <MenuItem fx:id="miHelp" mnemonicParsing="false" text="Hilfe und Fregen zum Programm" />
+                                <MenuItem fx:id="miAbout" mnemonicParsing="false" text="Über MediathekView" />
+                            </items>
+                        </Menu>
+                    </menus>
+                </MenuBar>
+            </top>
+            <center>
+                <StackPane fx:id="paneContent" BorderPane.alignment="CENTER">
+               <children>
+                  <VBox>
+                     <children>
+                        <HBox alignment="CENTER">
+                           <children>
+                              <Button fx:id="btnFilm" mnemonicParsing="false" styleClass="btnFunction" text="Filme">
+                                 <opaqueInsets>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </opaqueInsets>
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="btnDownload" mnemonicParsing="false" styleClass="btnFunction" text="Downloads">
+                                 <HBox.margin>
+                                    <Insets left="10.0" right="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="btnAbo" mnemonicParsing="false" styleClass="btnFunction" text="Abos">
+                                 <HBox.margin>
+                                    <Insets left="10.0" right="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="btnConfig" mnemonicParsing="false" styleClass="btnFunction" text=":::">
+                                 <HBox.margin>
+                                    <Insets left="10.0" right="10.0" />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children></StackPane>
+            </center>
+        </BorderPane>
+    </children>
+</AnchorPane>

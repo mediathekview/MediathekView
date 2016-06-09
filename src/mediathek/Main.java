@@ -145,7 +145,7 @@ public class Main {
 
         switch (state) {
             case FX:
-                Application.launch(MediathekGuiFx.class, args);
+                Application.launch(MVFx.class, args);
                 break;
 
             case AUTO:
