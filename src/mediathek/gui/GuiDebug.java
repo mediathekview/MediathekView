@@ -298,6 +298,7 @@ public class GuiDebug extends JPanel {
                 Daten.filmlisteSpeichern();
             }
         });
+        jButtonOldList.addActionListener(new BeobPfadOldUrl());
         jButtonAddOld.addActionListener(new ActionListener() {
 
             @Override
@@ -433,6 +434,7 @@ public class GuiDebug extends JPanel {
         jButtonLiveStreams = new javax.swing.JButton();
         jTextFieldLiveStreams = new javax.swing.JTextField();
         jButtonDelLive = new javax.swing.JButton();
+        jButtonOldList = new javax.swing.JButton();
         jPanelStarts = new javax.swing.JPanel();
 
         javax.swing.GroupLayout jPanelFilmlisteLadenLayout = new javax.swing.GroupLayout(jPanelFilmlisteLaden);
@@ -550,7 +552,7 @@ public class GuiDebug extends JPanel {
 
         jButtonAddOld.setText("Alte Filmliste");
 
-        jTextFieldOld.setText("/tmp/filme.xz");
+        jTextFieldOld.setText("/tmp/usb/2016-06-03-filme.xz");
 
         jButtonNurDoppelte.setText("NUR doppelte URLs");
 
@@ -563,6 +565,8 @@ public class GuiDebug extends JPanel {
         jTextFieldLiveStreams.setText("http://zdfmediathk.sourceforge.net/live-streams.json");
 
         jButtonDelLive.setText("löschen");
+
+        jButtonOldList.setText(":::");
 
         javax.swing.GroupLayout jPanelToolsLayout = new javax.swing.GroupLayout(jPanelTools);
         jPanelTools.setLayout(jPanelToolsLayout);
@@ -611,7 +615,8 @@ public class GuiDebug extends JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jButtonDir)
-                                    .addComponent(jButtonDelLive, javax.swing.GroupLayout.Alignment.TRAILING))))))
+                                    .addComponent(jButtonDelLive, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jButtonOldList))))))
                 .addContainerGap())
         );
 
@@ -642,7 +647,8 @@ public class GuiDebug extends JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButtonAddOld)
-                            .addComponent(jTextFieldOld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTextFieldOld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonOldList))
                         .addGap(18, 18, 18)
                         .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButtonSize)
@@ -720,6 +726,7 @@ public class GuiDebug extends JPanel {
     private javax.swing.JButton jButtonLiveStreams;
     private javax.swing.JButton jButtonNeuLaden;
     private javax.swing.JButton jButtonNurDoppelte;
+    private javax.swing.JButton jButtonOldList;
     private javax.swing.JButton jButtonSearchUrl;
     private javax.swing.JButton jButtonSize;
     private javax.swing.JButton jButtonTTUrl;
@@ -785,4 +792,42 @@ public class GuiDebug extends JPanel {
             }
         }
     }
+
+    private class BeobPfadOldUrl implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //we can use native chooser on Mac...
+            if (SystemInfo.isMacOSX()) {
+                FileDialog chooser = new FileDialog(daten.mediathekGui, "Pfad");
+                chooser.setMode(FileDialog.SAVE);
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    try {
+                        File destination = new File(chooser.getDirectory() + chooser.getFile());
+                        jTextFieldOld.setText(destination.getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(679890147, ex);
+                    }
+                }
+            } else {
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                if (!jTextFieldOld.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(jTextFieldOld.getText()));
+                }
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                chooser.setFileHidingEnabled(false);
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        jTextFieldOld.setText(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.fehlerMeldung(911025463, ex);
+                    }
+                }
+            }
+        }
+    }
+
 }
