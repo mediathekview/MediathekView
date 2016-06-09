@@ -24,12 +24,14 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
+import javafx.scene.layout.AnchorPane;
 import javax.swing.SwingUtilities;
 import mediathek.gui.MVAboutDialog;
 import mediathek.gui.MVHelpDialog;
 
-public class MediathekGuiFxController implements Initializable {
+public class MVFxController extends AnchorPane implements Initializable {
 
     @FXML
     MenuItem miQuit;
@@ -37,10 +39,19 @@ public class MediathekGuiFxController implements Initializable {
     MenuItem miHelp;
     @FXML
     MenuItem miAbout;
+    @FXML
+    Button btnFilm;
 
     @FXML
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+//        btnFilm.setRotate(-90);
+
+//        Label label = new Label("Filme");
+//        label.setRotate(-90);
+//        btnFilm.setText("");
+//        btnFilm.setGraphic(new Group(label));
+
         miHelp.setOnAction(e -> {
             SwingUtilities.invokeLater(() -> {
                 MVHelpDialog mVHelpDialog = new MVHelpDialog(null, true, null, "Hilfe zum Programm");

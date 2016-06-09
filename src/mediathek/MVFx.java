@@ -26,7 +26,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import mediathek.tool.Konstanten;
 
-public class MediathekGuiFx extends Application {
+public class MVFx extends Application {
 
     @Override
     public void init() throws Exception {
@@ -34,8 +34,17 @@ public class MediathekGuiFx extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        final Parent root = FXMLLoader.load(getClass().getResource("mediathekGuiFx.fxml"));
-        Scene scene = new Scene(root, 300, 250);
+//        final Parent root = FXMLLoader.load(getClass().getResource("mvFx.fxml"));
+//        Scene scene = new Scene(root, 500, 500);
+//        primaryStage.setTitle(Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION);
+//        primaryStage.setScene(scene);
+//        primaryStage.show();
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("mvFx.fxml"));
+        MVFxController c = new MVFxController();
+        fxmlLoader.setController(c);
+        Parent root = fxmlLoader.load();
+        Scene scene = new Scene(root, 500, 500);
 
         primaryStage.setTitle(Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION);
         primaryStage.setScene(scene);
