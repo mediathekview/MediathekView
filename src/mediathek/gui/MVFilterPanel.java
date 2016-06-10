@@ -492,16 +492,16 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         javax.swing.ButtonGroup buttonGroup2 = new javax.swing.ButtonGroup();
         javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
-        jComboBoxFilterSender = new javax.swing.JComboBox<String>();
+        jComboBoxFilterSender = new javax.swing.JComboBox<>();
         javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
-        jComboBoxFilterThema = new javax.swing.JComboBox<String>();
+        jComboBoxFilterThema = new javax.swing.JComboBox<>();
         javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
         jTextFieldFilterTitel = new javax.swing.JTextField();
         jTextFieldFilterThemaTitel = new javax.swing.JTextField();
         jRadioButtonTT = new javax.swing.JRadioButton();
         jRadioButtonIrgendwo = new javax.swing.JRadioButton();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        jComboBoxZeitraum = new javax.swing.JComboBox<String>();
+        jComboBoxZeitraum = new javax.swing.JComboBox<>();
         javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jTextFieldFilterMinuten = new javax.swing.JTextField();
         jSliderMinuten = new javax.swing.JSlider();
@@ -546,6 +546,8 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jRadioButtonIrgendwo.setText("irgendwo:");
 
         jLabel1.setText("Zeitraum:");
+
+        jComboBoxZeitraum.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "alles", "1 Tag", "2 Tage", "3 Tage", "7 Tage", "15 Tage", "20 Tage", "30 Tage" }));
 
         jLabel3.setText("Mindestlänge [min]:");
 
