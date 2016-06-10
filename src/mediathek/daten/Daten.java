@@ -34,12 +34,9 @@ import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
+import mediathek.MVFx;
 import mediathek.MediathekGui;
-import mediathek.controller.FilmeLaden;
-import mediathek.controller.IoXmlLesen;
-import mediathek.controller.IoXmlSchreiben;
-import mediathek.controller.Log;
-import mediathek.controller.MVUsedUrls;
+import mediathek.controller.*;
 import mediathek.controller.starter.MVBandwidthTokenBucket;
 import mediathek.controller.starter.StarterClass;
 import mediathek.gui.GuiAbo;
@@ -48,18 +45,7 @@ import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.MVFilmInfo;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.Konstanten;
-import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVColor;
-import mediathek.tool.MVConfig;
-import mediathek.tool.MVFont;
-import mediathek.tool.MVFunctionSys;
-import mediathek.tool.MVListeFilme;
-import mediathek.tool.MVMediaDB;
-import mediathek.tool.MVMessageDialog;
-import mediathek.tool.MVReplaceList;
+import mediathek.tool.*;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
 import msearch.filmlisten.MSFilmlisteLesen;
@@ -109,10 +95,28 @@ public class Daten {
 
     private boolean alreadyMadeBackup = false;
 
+    //*********************** fx ********************
+    public static MVFx mVFx = null;
+    //***********************************************
+
+    public Daten(String basis) {
+        basisverzeichnis = basis;
+        start();
+    }
+
+    public Daten(String basis, MVFx mVFx) {
+        basisverzeichnis = basis;
+        Daten.mVFx = mVFx;
+        start();
+    }
+
     public Daten(String basis, MediathekGui gui) {
         basisverzeichnis = basis;
         mediathekGui = gui;
+        start();
+    }
 
+    private void start() {
         init();
 
         listeFilme = new ListeFilme();

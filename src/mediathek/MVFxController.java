@@ -27,7 +27,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javax.swing.SwingUtilities;
+import mediathek.daten.Daten;
 import mediathek.gui.MVAboutDialog;
 import mediathek.gui.MVHelpDialog;
 
@@ -41,17 +43,12 @@ public class MVFxController extends AnchorPane implements Initializable {
     MenuItem miAbout;
     @FXML
     Button btnFilm;
+    @FXML
+    StackPane paneTabs;
 
     @FXML
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-//        btnFilm.setRotate(-90);
-
-//        Label label = new Label("Filme");
-//        label.setRotate(-90);
-//        btnFilm.setText("");
-//        btnFilm.setGraphic(new Group(label));
-
         miHelp.setOnAction(e -> {
             SwingUtilities.invokeLater(() -> {
                 MVHelpDialog mVHelpDialog = new MVHelpDialog(null, true, null, "Hilfe zum Programm");
@@ -68,7 +65,7 @@ public class MVFxController extends AnchorPane implements Initializable {
             });
         });
         miQuit.setOnAction(e -> {
-            System.out.println("Test");
+            Daten.mVFx.quit();
         });
 
     }
