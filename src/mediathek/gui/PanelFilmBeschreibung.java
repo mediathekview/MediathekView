@@ -37,16 +37,11 @@ import java.net.URISyntaxException;
  * @author emil
  */
 public class PanelFilmBeschreibung extends JPanel implements ListSelectionListener {
-
-    private Daten daten;
     private DatenFilm currentFilm = null;
-    private JFrame parent;
     private MVTable table = null;
 
-    public PanelFilmBeschreibung(JFrame pparent, Daten dd, MVTable table) {
+    public PanelFilmBeschreibung(Daten daten, MVTable table) {
         initComponents();
-        parent = pparent;
-        daten = dd;
         this.table = table;
 
         jCheckBoxBeschreibung.setIcon(GetIcon.getProgramIcon("close_15.png"));
@@ -56,7 +51,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
         });
 
         try {
-            jXHyperlinkWebsite.setAction(new UrlHyperlinkAction(parent, ""));
+            jXHyperlinkWebsite.setAction(new UrlHyperlinkAction(daten.mediathekGui, ""));
         } catch (URISyntaxException ignored) {
             jXHyperlinkWebsite.setText("");
         }
@@ -66,7 +61,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
         jCheckBoxChange.addActionListener(e -> {
             if (currentFilm != null) {
                 final String akt = currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR];
-                new DialogFilmBeschreibung(parent, daten, currentFilm).setVisible(true);
+                new DialogFilmBeschreibung(daten.mediathekGui, daten, currentFilm).setVisible(true);
                 if (!currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].equals(akt)) {
                     // dann hat sich die Beschreibung geändert
                     setText();
@@ -84,6 +79,34 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
 
         table.getSelectionModel().addListSelectionListener(this);
 
+        //update for first time...
+        updateFilmData();
+    }
+
+    private void updateFilmData() {
+        final int selectedTableRow = table.getSelectedRow();
+        if (selectedTableRow >= 0) {
+            DatenFilm film;
+            final TableModel model = table.getModel();
+            final int modelIndex = table.convertRowIndexToModel(selectedTableRow);
+
+            switch (table.getTableType()) {
+                case FILME:
+                    film = (DatenFilm)model.getValueAt(modelIndex, DatenFilm.FILM_REF_NR);
+                    break;
+
+                case DOWNLOADS:
+                    film = ((DatenDownload) model.getValueAt(modelIndex, DatenDownload.DOWNLOAD_REF_NR)).film;
+                    break;
+
+                default:
+                    System.out.println("UNHANDLED TABLE TYPE!!!");
+                    film = null;
+                    break;
+            }
+            displayFilmData(film);
+        } else
+            displayFilmData(null);
     }
 
     private void displayFilmData(DatenFilm aaktFilm) {
@@ -114,29 +137,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
-            final int selectedTableRow = table.getSelectedRow();
-            if (selectedTableRow >= 0) {
-                DatenFilm film;
-                final TableModel model = table.getModel();
-                final int modelIndex = table.convertRowIndexToModel(selectedTableRow);
-
-                switch (table.getTableType()) {
-                    case FILME:
-                        film = (DatenFilm)model.getValueAt(modelIndex, DatenFilm.FILM_REF_NR);
-                        break;
-
-                    case DOWNLOADS:
-                        film = ((DatenDownload) model.getValueAt(modelIndex, DatenDownload.DOWNLOAD_REF_NR)).film;
-                        break;
-
-                    default:
-                        System.out.println("UNHANDLED TABLE TYPE!!!");
-                        film = null;
-                        break;
-                }
-                displayFilmData(film);
-            } else
-                displayFilmData(null);
+            updateFilmData();
         }
     }
 
