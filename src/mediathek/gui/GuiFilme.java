@@ -47,7 +47,6 @@ import java.util.Optional;
 public class GuiFilme extends PanelVorlage {
 
     private JButton buttonArray[];
-    private final String[] COMBO_ZEIT = new String[]{"alles", "1 Tag", "2 Tage", "3 Tage", "7 Tage", "15 Tage", "20 Tage", "30 Tage"};
     public static final int[] COMBO_ZEIT_INT = {0, 1, 2, 3, 7, 15, 20, 30};
     private static final int FILTER_ZEIT_STARTWERT = 5;
     private static final int FILTER_DAUER_STARTWERT = 0;
@@ -103,14 +102,18 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void setupDescriptionPanel() {
-        PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten.mediathekGui, daten, tabelle);
+        PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten, tabelle);
         jPanelBeschreibung.setLayout(new BorderLayout());
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
     }
 
-    //===================================
-    // Public
-    //===================================
+    /**
+     * Show description panel based on settings.
+     */
+    private void showDescriptionPanel() {
+        jPanelBeschreibung.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
+    }
+
     @Override
     public void isShown() {
         super.isShown();
@@ -415,13 +418,6 @@ public class GuiFilme extends PanelVorlage {
         });
     }
 
-    /**
-     * Show description panel based on settings.
-     */
-    private void showDescriptionPanel() {
-        jPanelBeschreibung.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
-    }
-
     private synchronized void playFilm() {
         DatenPset pset = Daten.listePset.getPsetAbspielen();
         if (pset != null) {
@@ -648,7 +644,6 @@ public class GuiFilme extends PanelVorlage {
         }
         // einrichten
         mVFilter.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
-        mVFilter.get_jComboBoxZeitraum().setModel(new DefaultComboBoxModel<>(COMBO_ZEIT));
         mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
         mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
         mVFilter.get_jToggleButtonHistory().setSelected(history);

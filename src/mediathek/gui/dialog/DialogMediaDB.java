@@ -20,8 +20,6 @@
 package mediathek.gui.dialog;
 
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -244,25 +242,22 @@ public class DialogMediaDB extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel2 = new javax.swing.JLabel();
         jButtonBeenden = new javax.swing.JButton();
         jButtonHelp = new javax.swing.JButton();
         jTextFieldSearch = new javax.swing.JTextField();
         jButtonSearch = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTableFilm = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
+        javax.swing.JTable jTableFilm = new javax.swing.JTable();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jLabelSizeFound = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
         jButtonIndex = new javax.swing.JButton();
         jLabelSum = new javax.swing.JLabel();
         progress = new javax.swing.JProgressBar();
-        jLabel3 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jTextFieldFilmTitle = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
         jTextFieldFilmPfad = new javax.swing.JTextField();
-
-        jLabel2.setText("jLabel2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -386,15 +381,9 @@ public class DialogMediaDB extends javax.swing.JDialog {
     private javax.swing.JButton jButtonHelp;
     private javax.swing.JButton jButtonIndex;
     private javax.swing.JButton jButtonSearch;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabelSizeFound;
     private javax.swing.JLabel jLabelSum;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTableFilm;
     private javax.swing.JTextField jTextFieldFilmPfad;
     private javax.swing.JTextField jTextFieldFilmTitle;
     private javax.swing.JTextField jTextFieldSearch;

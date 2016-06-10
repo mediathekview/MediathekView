@@ -50,29 +50,14 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jButtonDateiAuswaehlen.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         jButtonUrl.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
         initRadio();
-        jButtonUrl.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jTextFieldUrl.setText(Daten.filmeLaden.getDownloadUrl_akt());
-            }
-        });
-        jButtonLoad.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                Daten.filmeLaden.importFilmliste("");
-            }
-        });
+        jButtonUrl.addActionListener(e -> jTextFieldUrl.setText(Daten.filmeLaden.getDownloadUrl_akt()));
+        jButtonLoad.addActionListener(ae -> Daten.filmeLaden.importFilmliste(""));
         jButtonDateiAuswaehlen.addActionListener(new BeobPfad());
-        jButtonFilmeLaden.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (jCheckBoxUpdate.isSelected()) {
-                    Daten.filmeLaden.updateFilmliste(jTextFieldUrl.getText());
-                } else {
-                    Daten.filmeLaden.importFilmliste(jTextFieldUrl.getText());
-                }
+        jButtonFilmeLaden.addActionListener(e -> {
+            if (jCheckBoxUpdate.isSelected()) {
+                Daten.filmeLaden.updateFilmliste(jTextFieldUrl.getText());
+            } else {
+                Daten.filmeLaden.importFilmliste(jTextFieldUrl.getText());
             }
         });
         jRadioButtonManuell.addActionListener(new BeobOption());
@@ -110,12 +95,11 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     private void initComponents() {
 
         javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
-        javax.swing.ButtonGroup buttonGroup2 = new javax.swing.ButtonGroup();
-        jPanelAuto = new javax.swing.JPanel();
+        javax.swing.JPanel jPanelAuto = new javax.swing.JPanel();
         javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
         jTextAreaAuto = new javax.swing.JTextArea();
         jButtonLoad = new javax.swing.JButton();
-        jPanelManuel = new javax.swing.JPanel();
+        javax.swing.JPanel jPanelManuel = new javax.swing.JPanel();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jTextFieldUrl = new javax.swing.JTextField();
         jButtonDateiAuswaehlen = new javax.swing.JButton();
@@ -261,8 +245,6 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     private javax.swing.JButton jButtonLoad;
     private javax.swing.JButton jButtonUrl;
     private javax.swing.JCheckBox jCheckBoxUpdate;
-    private javax.swing.JPanel jPanelAuto;
-    private javax.swing.JPanel jPanelManuel;
     private javax.swing.JRadioButton jRadioButtonAuto;
     private javax.swing.JRadioButton jRadioButtonManuell;
     private javax.swing.JTextArea jTextAreaAuto;
