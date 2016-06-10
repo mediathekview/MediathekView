@@ -17,7 +17,7 @@
         <URL value="@mvfx.css" />
     </stylesheets>
     <children>
-        <BorderPane AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
+        <BorderPane AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
             <top>
                 <MenuBar BorderPane.alignment="CENTER">
                     <menus>
@@ -36,43 +36,41 @@
                 </MenuBar>
             </top>
             <center>
-                <StackPane fx:id="paneContent" BorderPane.alignment="CENTER">
+            <VBox>
                <children>
-                  <VBox>
+                  <HBox alignment="CENTER">
                      <children>
-                        <HBox alignment="CENTER">
-                           <children>
-                              <Button fx:id="btnFilm" mnemonicParsing="false" styleClass="btnFunction" text="Filme">
-                                 <opaqueInsets>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </opaqueInsets>
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-                                 </HBox.margin>
-                              </Button>
-                              <Button fx:id="btnDownload" mnemonicParsing="false" styleClass="btnFunction" text="Downloads">
-                                 <HBox.margin>
-                                    <Insets left="10.0" right="10.0" />
-                                 </HBox.margin>
-                              </Button>
-                              <Button fx:id="btnAbo" mnemonicParsing="false" styleClass="btnFunction" text="Abos">
-                                 <HBox.margin>
-                                    <Insets left="10.0" right="10.0" />
-                                 </HBox.margin>
-                              </Button>
-                              <Button fx:id="btnConfig" mnemonicParsing="false" styleClass="btnFunction" text=":::">
-                                 <HBox.margin>
-                                    <Insets left="10.0" right="10.0" />
-                                 </HBox.margin>
-                              </Button>
-                           </children>
-                           <padding>
+                        <Button fx:id="btnFilm" mnemonicParsing="false" styleClass="btnFunction" text="Filme">
+                           <opaqueInsets>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </padding>
-                        </HBox>
+                           </opaqueInsets>
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="btnDownload" mnemonicParsing="false" styleClass="btnFunction" text="Downloads">
+                           <HBox.margin>
+                              <Insets left="10.0" right="10.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="btnAbo" mnemonicParsing="false" styleClass="btnFunction" text="Abos">
+                           <HBox.margin>
+                              <Insets left="10.0" right="10.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="btnConfig" mnemonicParsing="false" styleClass="btnFunction" text=":::">
+                           <HBox.margin>
+                              <Insets left="10.0" right="10.0" />
+                           </HBox.margin>
+                        </Button>
                      </children>
-                  </VBox>
-               </children></StackPane>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+                  <StackPane fx:id="paneTabs" VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
             </center>
         </BorderPane>
     </children>

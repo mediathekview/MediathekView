@@ -24,8 +24,8 @@
 }
 
 .button.btnFunction:pressed{
-    -fx-background-color: #434444,
+    -fx-background-color: #636464,
         linear-gradient(from 0% 0% to 100% 100%, #d6d6d6 40%, white 90%),
-        radial-gradient(center 50% -40%, radius 200%, #e6e6e6 35%, rgba(230,230,230,0) 40%);
+        radial-gradient(center 80% -70%, radius 200%, #e6e6e6 35%, rgba(230,230,230,0) 40%);
 }
 

@@ -72,7 +72,7 @@ public class MediathekAuto {
     }
 
     public void starten() {
-        daten = new Daten(pfad, null);
+        daten = new Daten(pfad);
         Daten.auto = true;
         Log.startMeldungen();
 
