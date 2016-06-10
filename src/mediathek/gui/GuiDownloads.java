@@ -98,7 +98,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void setupDescriptionPanel() {
-        PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten.mediathekGui, daten, tabelle);
+        PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten, tabelle);
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
     }
 
@@ -766,15 +766,12 @@ public class GuiDownloads extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
         javax.swing.JPanel jPanelFilter = new javax.swing.JPanel();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        cbDisplayCategories = new javax.swing.JComboBox<String>();
+        cbDisplayCategories = new javax.swing.JComboBox<>();
         jPanelBeschreibung = new javax.swing.JPanel();
-
-        jLabel2.setText("jLabel2");
 
         setLayout(new java.awt.BorderLayout());
 
@@ -801,7 +798,6 @@ public class GuiDownloads extends PanelVorlage {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> cbDisplayCategories;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanelBeschreibung;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables

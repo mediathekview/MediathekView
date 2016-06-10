@@ -21,22 +21,21 @@ package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
-import java.awt.EventQueue;
-import java.awt.GraphicsEnvironment;
-import java.awt.Toolkit;
+import javafx.application.Platform;
+import mediathek.controller.Log;
+import mediathek.daten.Daten;
+import mediathek.mac.MediathekGuiMac;
+import mediathek.tool.Konstanten;
+import mediathek.tool.MVSingleInstance;
+
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import javax.swing.JOptionPane;
-import javax.swing.RepaintManager;
-import mediathek.controller.Log;
-import mediathek.daten.Daten;
-import mediathek.mac.MediathekGuiMac;
-import mediathek.tool.Konstanten;
-import mediathek.tool.MVSingleInstance;
 
 public class Main {
 
@@ -72,11 +71,6 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(final String args[]) {
-        if (SystemInfo.isMacOSX()) {
-            System.setProperty("apple.laf.useScreenMenuBar", "true");
-            cleanupOsxFiles();
-        }
-
         StartupMode state = StartupMode.GUI;
 
         try {
@@ -155,6 +149,14 @@ public class Main {
 
             case GUI:
                 EventQueue.invokeLater(() -> {
+                    //JavaFX stuff
+                    Platform.setImplicitExit(false);
+
+                    if (SystemInfo.isMacOSX()) {
+                        System.setProperty("apple.laf.useScreenMenuBar", "true");
+                        cleanupOsxFiles();
+                    }
+
                     if (Daten.debug) {
                         // use for debugging EDT violations
                         RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
