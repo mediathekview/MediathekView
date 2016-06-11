@@ -100,7 +100,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
                     break;
 
                 default:
-                    System.out.println("UNHANDLED TABLE TYPE!!!");
+                    DebugMsg.print("UNHANDLED TABLE TYPE!!!");
                     film = null;
                     break;
             }

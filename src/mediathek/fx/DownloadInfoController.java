@@ -54,6 +54,7 @@ import javafx.scene.shape.Rectangle;
 import javax.swing.Timer;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.DebugMsg;
 
 public class DownloadInfoController implements Initializable {
 
@@ -290,7 +291,7 @@ public class DownloadInfoController implements Initializable {
         xAxis.setUpperBound(xAxis.getLowerBound() + zoomRect.getWidth() / xAxisScale);
         yAxis.setLowerBound(yAxis.getLowerBound() + yOffset / yAxisScale);
         yAxis.setUpperBound(yAxis.getLowerBound() - zoomRect.getHeight() / yAxisScale);
-        System.out.println(yAxis.getLowerBound() + " " + yAxis.getUpperBound());
+        DebugMsg.print(yAxis.getLowerBound() + " " + yAxis.getUpperBound());
         zoomRect.setWidth(0);
         zoomRect.setHeight(0);
     }
