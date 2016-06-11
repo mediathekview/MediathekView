@@ -21,6 +21,7 @@ package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
+import com.sun.javafx.application.LauncherImpl;
 import java.awt.*;
 import java.io.File;
 import java.net.Authenticator;
@@ -28,7 +29,6 @@ import java.net.PasswordAuthentication;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javax.swing.JOptionPane;
 import javax.swing.RepaintManager;
@@ -139,7 +139,8 @@ public class Main {
 
         switch (state) {
             case FX:
-                Application.launch(MVFx.class, args);
+                LauncherImpl.launchApplication(MVFx.class, MVPreloader.class, args);
+//                Application.launch(MVFx.class, args);
                 break;
 
             case AUTO:

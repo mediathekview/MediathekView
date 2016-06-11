@@ -23,6 +23,7 @@ import javax.swing.WindowConstants;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.DebugMsg;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVConfig;
 
@@ -149,7 +150,7 @@ public class MVBandwidthMonitor {
                 timer.purge();
             }
         } catch (IllegalStateException ignored) {
-            System.out.println(ignored.getMessage());
+            DebugMsg.print(ignored.getMessage());
         }
     }
 

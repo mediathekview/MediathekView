@@ -41,11 +41,7 @@ import javax.swing.WindowConstants;
 import mediathek.controller.starter.MVBandwidthTokenBucket;
 import mediathek.daten.Daten;
 import mediathek.daten.DownloadInfos;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVConfig;
-import mediathek.tool.MVFilmSize;
-import mediathek.tool.MVFunctionSys;
+import mediathek.tool.*;
 
 public class MVDownloadInfo extends javax.swing.JPanel {
 
@@ -312,7 +308,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
                 timer.purge();
             }
         } catch (IllegalStateException ignored) {
-            System.out.println(ignored.getMessage());
+            DebugMsg.print(ignored.getMessage());
         }
     }
 
