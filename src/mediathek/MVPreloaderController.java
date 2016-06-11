@@ -22,29 +22,44 @@ package mediathek;
 import javafx.application.Preloader;
 import javafx.application.Preloader.PreloaderNotification;
 import javafx.application.Preloader.StateChangeNotification;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import mediathek.tool.DebugMsg;
 
-public class MVPreloader extends Preloader {
+public class MVPreloaderController extends Preloader {
 
-    ProgressBar bar;
+    @FXML
+    ProgressBar prBar;
+    @FXML
+    Label lblText;
     Stage stage;
 
-    private Scene createPreloaderScene() {
-        bar = new ProgressBar(0);
-        BorderPane p = new BorderPane();
-        p.setCenter(bar);
-        return new Scene(p, 300, 150);
+    public MVPreloaderController() {
+
     }
 
     @Override
     public void start(Stage stage) throws Exception {
         this.stage = stage;
-        stage.setScene(createPreloaderScene());
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("mVPreloader.fxml"));
+        fxmlLoader.setController(this);
+        Parent root = fxmlLoader.load();
+        stage.initStyle(StageStyle.UNDECORATED);
+
+        Scene scene = new Scene(root, 300, 300);
+        stage.setScene(scene);
         stage.show();
+    }
+
+    public void setText(String text) {
+        lblText.setText(text);
     }
 
     @Override
@@ -61,10 +76,11 @@ public class MVPreloader extends Preloader {
 
     @Override
     public void handleApplicationNotification(PreloaderNotification pn) {
-        if (pn instanceof ProgressNotification) {
-            DebugMsg.print("handleApplicationNotification-ProgressNotification: " + ((ProgressNotification) pn).getProgress());
+        if (pn instanceof PreloaderNotify) {
+            DebugMsg.print("handleApplicationNotification-ProgressNotification: " + ((PreloaderNotify) pn).getProgress());
             double v = ((ProgressNotification) pn).getProgress();
-            bar.setProgress(v);
+            prBar.setProgress(v);
+            lblText.setText(((PreloaderNotify) pn).getText());
         } else if (pn instanceof StateChangeNotification) {
             DebugMsg.print("handleApplicationNotification-StateChangeNotification:" + ((StateChangeNotification) pn).getType().toString());
             if (((StateChangeNotification) pn).getType().equals(StateChangeNotification.Type.BEFORE_START)) {
@@ -73,4 +89,5 @@ public class MVPreloader extends Preloader {
 
         }
     }
+
 }

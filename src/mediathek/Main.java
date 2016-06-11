@@ -139,7 +139,7 @@ public class Main {
 
         switch (state) {
             case FX:
-                LauncherImpl.launchApplication(MVFx.class, MVPreloader.class, args);
+                LauncherImpl.launchApplication(MVFx.class, MVPreloaderController.class, args);
 //                Application.launch(MVFx.class, args);
                 break;
 
