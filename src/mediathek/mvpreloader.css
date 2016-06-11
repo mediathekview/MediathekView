@@ -1,0 +1,16 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.mainFxmlClass {
+
+}
+
+
+#AnchorPane{
+    -fx-background-image: url("res/splash.png");
+    -fx-background-repeat: no-repeat;   
+    -fx-background-position: center center;
+    -fx-background-size: 80%, 80%;
+    -fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0); 
+}

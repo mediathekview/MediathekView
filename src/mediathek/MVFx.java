@@ -22,7 +22,6 @@ package mediathek;
 import java.awt.*;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.application.Preloader.ProgressNotification;
 import javafx.application.Preloader.StateChangeNotification;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -84,10 +83,10 @@ public class MVFx extends Application {
 
     private synchronized void splash(String text) {
         try {
-            wait(200); //onliy for testing
+            wait(500); //onliy for testing
         } catch (Exception ig) {
         }
-        notifyPreloader(new ProgressNotification(((double) splash++) / SPLASH_MAX));
+        notifyPreloader(new PreloaderNotify(((double) splash++) / SPLASH_MAX, text));
     }
 
     public void quit() {
