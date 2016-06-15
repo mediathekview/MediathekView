@@ -22,6 +22,7 @@ package mediathek.daten;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 import javax.swing.JFrame;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
@@ -87,43 +88,28 @@ public class ListePset extends LinkedList<DatenPset> {
 
     public ListePset getListeSpeichern() {
         // liefert eine Liste Programmsets, die zum Speichern angelegt sind (ist meist nur eins)
-        ListePset liste = new ListePset();
-        for (DatenPset datenPset : this) {
-            if (Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_SPEICHERN_NR])) {
-                liste.add(datenPset);
-            }
-        }
-        return liste;
+        return this.stream().filter(datenPset -> Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_SPEICHERN_NR]))
+                .collect(Collectors.toCollection(ListePset::new));
     }
 
     public ListePset getListeButton() {
         // liefert eine Liste Programmsets, die als Button angelegt sind
-        ListePset liste = new ListePset();
-        for (DatenPset datenPset : this) {
-            if (Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_BUTTON_NR])) {
-                liste.add(datenPset);
-            }
-        }
-        return liste;
+        return this.stream().filter(datenPset -> Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_BUTTON_NR]))
+                .collect(Collectors.toCollection(ListePset::new));
     }
 
     public ListePset getListeAbo() {
         // liefert eine Liste Programmsets, die für Abos angelegt sind (ist meist nur eins)
-        ListePset liste = new ListePset();
-        for (DatenPset datenPset : this) {
-            if (Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_ABO_NR])) {
-                liste.add(datenPset);
-            }
-        }
-        return liste;
+        return this.stream().filter(datenPset -> Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_ABO_NR]))
+                .collect(Collectors.toCollection(ListePset::new));
     }
 
     public String[] getObjectDataCombo() {
         //liefert eine Liste aller Psetnamen
         String[] object;
         int i = 0;
-        ListIterator<DatenPset> it = this.listIterator(0);
         object = new String[this.size()];
+        ListIterator<DatenPset> it = this.listIterator(0);
         while (it.hasNext()) {
             object[i] = it.next().arr[DatenPset.PROGRAMMSET_NAME_NR];
             ++i;

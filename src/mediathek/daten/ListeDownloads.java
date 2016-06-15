@@ -507,15 +507,10 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
      */
     public synchronized void getListOfStartsNotFinished(int quelle, LinkedList<DatenDownload> liste) {
         liste.clear();
-        for (DatenDownload download : this) {
-            if (download.start != null) {
-                if (download.start.status < Start.STATUS_FERTIG) {
-                    if (quelle == DatenDownload.QUELLE_ALLE || download.quelle == quelle) {
-                        liste.add(download);
-                    }
-                }
-            }
-        }
+        liste.addAll(this.stream().filter(download -> download.start != null)
+                .filter(download -> download.start.status < Start.STATUS_FERTIG)
+                .filter(download -> quelle == DatenDownload.QUELLE_ALLE || download.quelle == quelle)
+                .collect(Collectors.toList()));
     }
 
     public synchronized TModel getModelStarts(TModel model) {
@@ -523,11 +518,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         Object[] object;
 
         if (!this.isEmpty()) {
-            Iterator<DatenDownload> iterator = iterator();
             final int objLen = DatenDownload.MAX_ELEM + 1;
             object = new Object[objLen];
-            while (iterator.hasNext()) {
-                DatenDownload datenDownload = iterator.next();
+            for (DatenDownload datenDownload : this) {
                 if (datenDownload.start != null) {
                     for (int k = 0; k < objLen; ++k) {
                         if (k < DatenDownload.MAX_ELEM) {

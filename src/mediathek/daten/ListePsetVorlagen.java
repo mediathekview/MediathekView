@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.LinkedList;
+import java.util.stream.Collectors;
 import javax.swing.JFrame;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -67,11 +68,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         String[][] object;
         if (this.size() > 0) {
             if (!bs.equals("")) {
-                for (String[] aThi : this) {
-                    if (aThi[PGR_BS_NR].contains(bs)) {
-                        tmp.add(aThi);
-                    }
-                }
+                tmp.addAll(this.stream().filter(aThi -> aThi[PGR_BS_NR].contains(bs)).collect(Collectors.toList()));
                 object = new String[tmp.size()][PGR_MAX_ELEM];
                 for (int i = 0; i < tmp.size(); i++) {
                     object[i] = tmp.get(i);
