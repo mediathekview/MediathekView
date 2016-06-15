@@ -19,9 +19,6 @@
  */
 package mediathek.daten;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.ListIterator;
 import mediathek.controller.Log;
 import mediathek.gui.GuiFilme;
 import mediathek.tool.Filter;
@@ -30,6 +27,10 @@ import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 import msearch.daten.DatenFilm;
 import msearch.daten.ListeFilme;
+
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     //Tags Blacklist
@@ -121,14 +122,13 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         setFilter();
         if (listeFilme != null) {
             listeRet.setMeta(listeFilme);
-            for (DatenFilm filmEntry : listeFilme) {
-                if (checkFilm(filmEntry)) {
-                    listeRet.add(filmEntry);
-                    if (filmEntry.isNew()) {
-                        listeRet.neueFilme = true;
-                    }
-                }
-            }
+            listeFilme.stream().filter(this::checkFilm)
+                    .forEach(filmEntry -> {
+                        listeRet.add(filmEntry);
+                        if (filmEntry.isNew()) {
+                            listeRet.neueFilme = true;
+                        }
+                    });
             // Array mit Sendernamen/Themen füllen
             listeRet.themenLaden();
         }

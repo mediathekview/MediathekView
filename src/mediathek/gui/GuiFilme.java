@@ -1458,20 +1458,22 @@ public class GuiFilme extends PanelVorlage {
                 eintragen = eeintragen;
             }
 
+            private void updateHistory(DatenFilm film) {
+                if (eintragen) {
+                    daten.history.zeileSchreiben(film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR], film.getUrlHistory());
+                    Daten.listeFilmeHistory.add(film);
+                } else {
+                    daten.history.urlAusLogfileLoeschen(film.getUrlHistory());
+                    Daten.listeFilmeHistory.remove(film);
+                }
+            }
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 final int nr = tabelle.rowAtPoint(p);
                 if (nr >= 0) {
                     Optional<DatenFilm> res = getFilm(nr);
-                    res.ifPresent(film -> {
-                        if (eintragen) {
-                            daten.history.zeileSchreiben(film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR], film.getUrlHistory());
-                            Daten.listeFilmeHistory.add(film);
-                        } else {
-                            daten.history.urlAusLogfileLoeschen(film.getUrlHistory());
-                            Daten.listeFilmeHistory.remove(film);
-                        }
-                    });
+                    res.ifPresent(this::updateHistory);
                 }
             }
         }
