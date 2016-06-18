@@ -6,9 +6,8 @@
 
 }
 
-
 #AnchorPane{
-    -fx-background-image: url("res/splash.png");
+    -fx-background-image: url("/mediathek/res/splash.png");
     -fx-background-repeat: no-repeat;   
     -fx-background-position: center center;
     -fx-background-size: 80%, 80%;

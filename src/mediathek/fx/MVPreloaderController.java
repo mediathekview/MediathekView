@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek;
+package mediathek.fx;
 
 import javafx.application.Preloader;
 import javafx.application.Preloader.PreloaderNotification;
@@ -48,7 +48,7 @@ public class MVPreloaderController extends Preloader {
     public void start(Stage stage) throws Exception {
         this.stage = stage;
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("mVPreloader.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MVPreloader.fxml"));
         fxmlLoader.setController(this);
         Parent root = fxmlLoader.load();
         stage.initStyle(StageStyle.UNDECORATED);

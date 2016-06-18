@@ -17,25 +17,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek;
+package mediathek.fx;
 
-import javafx.application.Preloader;
+import java.net.URL;
+import java.util.ResourceBundle;
+import javafx.fxml.Initializable;
 
-public class PreloaderNotify extends Preloader.ProgressNotification {
+/**
+ * FXML Controller class
+ *
+ * @author emil
+ */
+public class FXDownloadController implements Initializable {
 
-    private String text = "";
-
-    public PreloaderNotify(double progress) {
-        super(progress);
-    }
-
-    public PreloaderNotify(double progress, String text) {
-        super(progress);
-        this.text = text;
-    }
-
-    public String getText() {
-        return text;
-    }
-
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        // TODO
+    }    
+    
 }

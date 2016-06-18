@@ -19,6 +19,7 @@
  */
 package mediathek;
 
+import mediathek.fx.MVPreloaderController;
 import com.jidesoft.utils.SystemInfo;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import com.sun.javafx.application.LauncherImpl;
