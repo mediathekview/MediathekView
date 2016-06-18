@@ -23,6 +23,7 @@ import com.jidesoft.utils.SystemInfo;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
@@ -44,7 +45,16 @@ public class MVFxController extends AnchorPane implements Initializable {
     @FXML
     Button btnFilm;
     @FXML
-    StackPane paneTabs;
+    Button btnDownload;
+    @FXML
+    Button btnAbo;
+
+    @FXML
+    StackPane paneCont;
+
+    private AnchorPane FXFilm;
+    private AnchorPane FXDownload;
+    private AnchorPane FXAbo;
 
     @FXML
     @Override
@@ -68,6 +78,25 @@ public class MVFxController extends AnchorPane implements Initializable {
             Daten.mVFx.quit();
         });
 
+        btnFilm.setOnAction(e -> {
+            FXFilm.toFront();
+        });
+        btnDownload.setOnAction(e -> {
+            FXDownload.toFront();
+        });
+        btnAbo.setOnAction(e -> {
+            FXAbo.toFront();
+        });
+        try {
+            FXFilm = (AnchorPane) FXMLLoader.load(getClass().getResource("/mediathek/fx/FXFilm.fxml"));
+            paneCont.getChildren().add(FXFilm);
+            FXDownload = (AnchorPane) FXMLLoader.load(getClass().getResource("/mediathek/fx/FXDownload.fxml"));
+            paneCont.getChildren().add(FXDownload);
+            FXAbo = (AnchorPane) FXMLLoader.load(getClass().getResource("/mediathek/fx/FXAbo.fxml"));
+            paneCont.getChildren().add(FXAbo);
+        } catch (Exception ex) {
+        }
+        FXFilm.toFront();
     }
 
 }

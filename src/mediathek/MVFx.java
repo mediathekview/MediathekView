@@ -29,6 +29,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
+import mediathek.fx.PreloaderNotify;
 import mediathek.tool.Konstanten;
 
 public class MVFx extends Application {
@@ -40,9 +41,9 @@ public class MVFx extends Application {
     @Override
     public void init() throws Exception {
         try {
-            final SplashScreen splash = SplashScreen.getSplashScreen();
-            if (splash != null) {
-                splash.close();
+            final SplashScreen spScreen = SplashScreen.getSplashScreen();
+            if (spScreen != null) {
+                spScreen.close();
             }
         } catch (Exception ignored) {
             Log.systemMeldung("NoSplashscreen");
@@ -67,7 +68,7 @@ public class MVFx extends Application {
 //        primaryStage.setScene(scene);
 //        primaryStage.show();
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("mvFx.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MVFx.fxml"));
         MVFxController c = new MVFxController();
         fxmlLoader.setController(c);
         Parent root = fxmlLoader.load();
@@ -83,7 +84,7 @@ public class MVFx extends Application {
 
     private synchronized void splash(String text) {
         try {
-            wait(500); //onliy for testing
+            wait(250); //onliy for testing
         } catch (Exception ig) {
         }
         notifyPreloader(new PreloaderNotify(((double) splash++) / SPLASH_MAX, text));
