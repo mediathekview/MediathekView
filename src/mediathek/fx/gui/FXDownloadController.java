@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.fx;
+package mediathek.fx.gui;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -28,7 +28,7 @@ import javafx.fxml.Initializable;
  *
  * @author emil
  */
-public class FXAboController implements Initializable {
+public class FXDownloadController implements Initializable {
 
     /**
      * Initializes the controller class.

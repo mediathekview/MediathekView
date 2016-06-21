@@ -34,7 +34,7 @@ import mediathek.tool.Konstanten;
 
 public class MVFx extends Application {
 
-    Daten daten;
+    public static Daten daten;
     int splash = 1;
     final int SPLASH_MAX = 6;
 
@@ -72,12 +72,11 @@ public class MVFx extends Application {
         MVFxController c = new MVFxController();
         fxmlLoader.setController(c);
         Parent root = fxmlLoader.load();
-        Scene scene = new Scene(root, 500, 500);
+        Scene scene = new Scene(root, 800, 600);
 
         primaryStage.setTitle(Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION);
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(e -> quit());
-
         primaryStage.show();
         notifyPreloader(new StateChangeNotification(StateChangeNotification.Type.BEFORE_START));
     }
