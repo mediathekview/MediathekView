@@ -46,10 +46,10 @@ import mediathek.gui.GuiFilme;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.MVFilmInfo;
 import mediathek.tool.*;
-import msearch.daten.DatenFilm;
-import msearch.daten.ListeFilme;
-import msearch.filmlisten.MSFilmlisteLesen;
-import msearch.filmlisten.WriteFilmlistJson;
+import mSearch.daten.DatenFilm;
+import mSearch.daten.ListeFilme;
+import mSearch.filmlisten.MSFilmlisteLesen;
+import mSearch.filmlisten.WriteFilmlistJson;
 
 public class Daten {
 

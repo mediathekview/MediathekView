@@ -40,9 +40,9 @@ import mediathek.gui.dialogEinstellungen.PanelFilmlisten;
 import mediathek.tool.Duration;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
-import msearch.daten.DatenFilm;
-import msearch.daten.ListeFilme;
-import msearch.filmlisten.MSFilmlisteLesen;
+import mSearch.daten.DatenFilm;
+import mSearch.daten.ListeFilme;
+import mSearch.filmlisten.MSFilmlisteLesen;
 
 public class GuiDebug extends JPanel {
 

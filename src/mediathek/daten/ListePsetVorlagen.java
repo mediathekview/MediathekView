@@ -36,7 +36,7 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.TModel;
-import msearch.tool.MSConst;
+import mSearch.tool.MSConst;
 
 public class ListePsetVorlagen extends LinkedList<String[]> {
 

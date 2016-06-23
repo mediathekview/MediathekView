@@ -53,7 +53,7 @@ import mediathek.tool.MVColor;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFunction;
 import mediathek.tool.MVMessageDialog;
-import msearch.daten.DatenFilm;
+import mSearch.daten.DatenFilm;
 
 public class DialogAddDownload extends JDialog {
 

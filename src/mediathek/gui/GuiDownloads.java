@@ -33,10 +33,10 @@ import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.dialog.MVFilmInfo;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
-import msearch.daten.DatenFilm;
-import msearch.filmeSuchen.MSListenerFilmeLaden;
-import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
-import msearch.tool.Datum;
+import mSearch.daten.DatenFilm;
+import mSearch.filmeSuchen.MSListenerFilmeLaden;
+import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import mSearch.tool.Datum;
 
 import javax.swing.*;
 import java.awt.*;

@@ -256,7 +256,7 @@ public class MVConfig {
 
     private void listeSort(LinkedList<String[]> liste, int stelle) {
         //Stringliste alphabetisch sortieren
-        msearch.tool.GermanStringSorter sorter = msearch.tool.GermanStringSorter.getInstance();
+        mSearch.tool.GermanStringSorter sorter = mSearch.tool.GermanStringSorter.getInstance();
         if (liste != null) {
             String str1;
             String str2;

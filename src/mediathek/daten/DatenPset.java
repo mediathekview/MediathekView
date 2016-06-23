@@ -27,7 +27,7 @@ import javax.swing.JOptionPane;
 import mediathek.controller.Log;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.MVMessageDialog;
-import msearch.daten.DatenFilm;
+import mSearch.daten.DatenFilm;
 
 public class DatenPset {
 

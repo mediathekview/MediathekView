@@ -25,7 +25,7 @@ import javax.swing.JPanel;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.TModel;
-import msearch.daten.DatenFilm;
+import mSearch.daten.DatenFilm;
 
 public class PanelInfoStarts extends JPanel {
 

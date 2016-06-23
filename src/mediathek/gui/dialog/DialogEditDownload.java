@@ -43,7 +43,7 @@ import mediathek.file.GetFile;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.MVMessageDialog;
-import msearch.daten.DatenFilm;
+import mSearch.daten.DatenFilm;
 
 public class DialogEditDownload extends javax.swing.JDialog {
     

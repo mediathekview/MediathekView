@@ -48,8 +48,8 @@ import mediathek.tool.MVInfoFile;
 import mediathek.tool.MVInputStream;
 import mediathek.tool.MVNotification;
 import mediathek.tool.MVSubtitle;
-import msearch.daten.DatenFilm;
-import msearch.tool.Datum;
+import mSearch.daten.DatenFilm;
+import mSearch.tool.Datum;
 
 public class StarterClass {
     //Tags Filme

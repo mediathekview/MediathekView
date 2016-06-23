@@ -16,8 +16,8 @@ import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
-import msearch.filmeSuchen.MSListenerFilmeLaden;
-import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import mSearch.filmeSuchen.MSListenerFilmeLaden;
+import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
 
 /**
  * User: crystalpalace1977

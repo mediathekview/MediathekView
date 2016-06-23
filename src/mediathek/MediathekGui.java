@@ -93,8 +93,8 @@ import mediathek.tool.MVFont;
 import mediathek.tool.MVFrame;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVMessageDialog;
-import msearch.filmeSuchen.MSListenerFilmeLaden;
-import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import mSearch.filmeSuchen.MSListenerFilmeLaden;
+import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
 
 public class MediathekGui extends JFrame {
 

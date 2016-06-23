@@ -40,7 +40,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.UrlHyperlinkAction;
-import msearch.daten.DatenFilm;
+import mSearch.daten.DatenFilm;
 import org.jdesktop.swingx.JXHyperlink;
 
 public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFilmInfo {

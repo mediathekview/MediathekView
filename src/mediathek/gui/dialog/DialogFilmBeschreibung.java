@@ -24,7 +24,7 @@ import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.MVInfoFile;
-import msearch.daten.DatenFilm;
+import mSearch.daten.DatenFilm;
 
 public class DialogFilmBeschreibung extends javax.swing.JDialog {
 

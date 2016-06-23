@@ -23,7 +23,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import mediathek.controller.Log;
-import msearch.tool.MSConst;
+import mSearch.tool.MSConst;
 
 /**
  *

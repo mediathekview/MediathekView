@@ -19,8 +19,8 @@
  */
 package mediathek.tool;
 
-import msearch.daten.DatenFilm;
-import msearch.tool.Datum;
+import mSearch.daten.DatenFilm;
+import mSearch.tool.Datum;
 
 public class TModelFilm extends TModel {
 
