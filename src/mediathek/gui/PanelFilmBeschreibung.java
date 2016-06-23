@@ -24,7 +24,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
-import msearch.daten.DatenFilm;
+import mSearch.daten.DatenFilm;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

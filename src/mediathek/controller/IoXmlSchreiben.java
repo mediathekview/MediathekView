@@ -36,8 +36,8 @@ import mediathek.daten.DatenPset;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVReplaceList;
-import msearch.filmlisten.DatenFilmlisteUrl;
-import msearch.tool.MSConst;
+import mSearch.filmlisten.DatenFilmlisteUrl;
+import mSearch.tool.MSConst;
 
 public class IoXmlSchreiben {
 

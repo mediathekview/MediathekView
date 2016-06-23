@@ -20,7 +20,7 @@
 package mediathek.controller;
 
 import mediathek.tool.GuiFunktionen;
-import msearch.tool.GermanStringSorter;
+import mSearch.tool.GermanStringSorter;
 
 public class MVUsedUrl implements Comparable<MVUsedUrl> {
 

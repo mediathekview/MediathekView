@@ -26,7 +26,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
-import msearch.tool.MSConst;
+import mSearch.tool.MSConst;
 
 public class AsxLesen {
 

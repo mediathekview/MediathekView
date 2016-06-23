@@ -44,7 +44,7 @@ import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVTable;
 import mediathek.tool.TModelAbo;
-import msearch.tool.Datum;
+import mSearch.tool.Datum;
 
 public class GuiAbo extends PanelVorlage {
 

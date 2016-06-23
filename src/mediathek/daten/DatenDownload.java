@@ -33,8 +33,8 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVFilmSize;
-import msearch.daten.DatenFilm;
-import msearch.tool.Datum;
+import mSearch.daten.DatenFilm;
+import mSearch.tool.Datum;
 
 public class DatenDownload implements Comparable<DatenDownload> {
 

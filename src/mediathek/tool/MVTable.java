@@ -51,7 +51,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenMediaDB;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
-import msearch.daten.DatenFilm;
+import mSearch.daten.DatenFilm;
 
 public final class MVTable extends JTable {
     public enum TableType { STANDARD, FILME, DOWNLOADS, ABOS, PSET, PROG, MEDIA_DB};

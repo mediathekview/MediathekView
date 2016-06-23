@@ -28,8 +28,8 @@ import javax.swing.JOptionPane;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenMediaDB;
-import msearch.tool.MSConst;
-import msearch.tool.MSLog;
+import mSearch.tool.MSConst;
+import mSearch.tool.MSLog;
 
 public class MVMediaDB {
 

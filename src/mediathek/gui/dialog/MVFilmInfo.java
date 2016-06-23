@@ -1,7 +1,7 @@
 package mediathek.gui.dialog;
 
 import javax.swing.event.ChangeListener;
-import msearch.daten.DatenFilm;
+import mSearch.daten.DatenFilm;
 
 /**
  * Display the current film information

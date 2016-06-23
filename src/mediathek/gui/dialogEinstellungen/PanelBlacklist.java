@@ -44,8 +44,8 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 import mediathek.tool.TModel;
-import msearch.filmeSuchen.MSListenerFilmeLaden;
-import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import mSearch.filmeSuchen.MSListenerFilmeLaden;
+import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
 
 public class PanelBlacklist extends PanelVorlage {
 

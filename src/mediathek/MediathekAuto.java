@@ -29,9 +29,9 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
-import msearch.filmeSuchen.MSListenerFilmeLaden;
-import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
-import msearch.filmlisten.MSFilmlisteLesen;
+import mSearch.filmeSuchen.MSListenerFilmeLaden;
+import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import mSearch.filmlisten.MSFilmlisteLesen;
 
 public class MediathekAuto {
 

@@ -143,7 +143,7 @@ public class ProgrammLog {
             bw.newLine();
             bw.write("## Fehlermeldungen lib msearch                           ");
             bw.newLine();
-            retList = msearch.tool.MSLog.fehlerMeldungen();
+            retList = mSearch.tool.MSLog.fehlerMeldungen();
             for (String s : retList) {
                 bw.write(s);
                 bw.newLine();

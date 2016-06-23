@@ -36,8 +36,8 @@ import mediathek.daten.ListeBlacklist;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVReplaceList;
-import msearch.filmlisten.DatenFilmlisteUrl;
-import msearch.tool.MSConst;
+import mSearch.filmlisten.DatenFilmlisteUrl;
+import mSearch.tool.MSConst;
 
 public class IoXmlLesen {
 

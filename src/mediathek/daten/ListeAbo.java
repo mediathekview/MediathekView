@@ -33,10 +33,10 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelAbo;
-import msearch.daten.DatenFilm;
-import msearch.daten.ListeFilme;
-import msearch.tool.Datum;
-import msearch.tool.GermanStringSorter;
+import mSearch.daten.DatenFilm;
+import mSearch.daten.ListeFilme;
+import mSearch.tool.Datum;
+import mSearch.tool.GermanStringSorter;
 
 public class ListeAbo extends LinkedList<DatenAbo> {
 

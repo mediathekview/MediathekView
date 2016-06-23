@@ -59,7 +59,7 @@ import mediathek.tool.MVColor;
 import mediathek.tool.MVTable;
 import mediathek.tool.TModel;
 import mediathek.tool.UrlHyperlinkAction;
-import msearch.daten.DatenFilm;
+import mSearch.daten.DatenFilm;
 
 public class PanelPsetLang extends PanelVorlage {
 

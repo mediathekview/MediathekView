@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import javax.swing.*;
 import mediathek.controller.starter.Start;
 import mediathek.tool.*;
-import msearch.daten.DatenFilm;
+import mSearch.daten.DatenFilm;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
 

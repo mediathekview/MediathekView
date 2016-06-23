@@ -20,8 +20,8 @@
 package mediathek.tool;
 
 import mediathek.daten.Daten;
-import msearch.daten.DatenFilm;
-import msearch.daten.ListeFilme;
+import mSearch.daten.DatenFilm;
+import mSearch.daten.ListeFilme;
 
 public class MVListeFilme {
 

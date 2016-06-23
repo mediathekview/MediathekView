@@ -36,7 +36,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import mediathek.daten.Daten;
 import mediathek.tool.ListenerMediathekView;
-import msearch.daten.DatenFilm;
+import mSearch.daten.DatenFilm;
 
 public class MVUsedUrls {
 

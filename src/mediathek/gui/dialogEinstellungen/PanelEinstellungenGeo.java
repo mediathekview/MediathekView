@@ -29,7 +29,7 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
-import msearch.daten.DatenFilm;
+import mSearch.daten.DatenFilm;
 
 public class PanelEinstellungenGeo extends PanelVorlage {
 

@@ -35,8 +35,8 @@ import mediathek.res.GetIcon;
 import mediathek.tool.Filter;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
-import msearch.filmeSuchen.MSListenerFilmeLaden;
-import msearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import mSearch.filmeSuchen.MSListenerFilmeLaden;
+import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
 import org.jdesktop.swingx.JXSearchField;
 
 public final class MVToolBar extends JToolBar {

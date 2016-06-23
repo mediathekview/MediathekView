@@ -25,8 +25,8 @@ import mediathek.tool.Filter;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
-import msearch.daten.DatenFilm;
-import msearch.daten.ListeFilme;
+import mSearch.daten.DatenFilm;
+import mSearch.daten.ListeFilme;
 
 import java.util.Date;
 import java.util.LinkedList;

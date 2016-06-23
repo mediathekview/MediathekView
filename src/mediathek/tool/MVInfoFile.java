@@ -34,7 +34,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialog.DialogZiel;
-import msearch.daten.DatenFilm;
+import mSearch.daten.DatenFilm;
 
 public class MVInfoFile {
 

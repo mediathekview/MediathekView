@@ -38,7 +38,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.TModel;
-import msearch.filmlisten.DatenFilmlisteUrl;
+import mSearch.filmlisten.DatenFilmlisteUrl;
 
 public class PanelFilmlisten extends PanelVorlage {
 

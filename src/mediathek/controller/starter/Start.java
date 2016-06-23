@@ -21,7 +21,7 @@ package mediathek.controller.starter;
 
 import mediathek.daten.DatenDownload;
 import mediathek.tool.MVInputStream;
-import msearch.tool.Datum;
+import mSearch.tool.Datum;
 
 public class Start {
 
