@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import mSearch.tool.MSLog;
 import mediathek.controller.Log;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.ListenerMediathekView;
@@ -95,7 +96,7 @@ public class RuntimeExec {
             clearIn.start();
             clearOut.start();
         } catch (Exception ex) {
-            Log.fehlerMeldung(450028932, ex, "Fehler beim Starten");
+            MSLog.fehlerMeldung(450028932, ex, "Fehler beim Starten");
         }
         return process;
     }
@@ -161,7 +162,7 @@ public class RuntimeExec {
                     meldenDouble(d);
                 } catch (Exception ex) {
                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
-                    Log.fehlerMeldung(912036780, input);
+                    MSLog.fehlerMeldung(912036780, input);
                 }
                 return;
             }
@@ -225,7 +226,7 @@ public class RuntimeExec {
                 }
             } catch (Exception ex) {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
-                Log.fehlerMeldung(912036780, input);
+                MSLog.fehlerMeldung(912036780, input);
             }
         }
 

@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
+import mSearch.tool.MSLog;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
@@ -78,7 +79,7 @@ public class MVSubtitle {
                 in = conn.getInputStream();
             } else {
                 // dann wars das
-                Log.fehlerMeldung(752301248, "url: " + urlSubtitle);
+                MSLog.fehlerMeldung(752301248, "url: " + urlSubtitle);
             }
 
             if (in == null) {
@@ -145,7 +146,7 @@ public class MVSubtitle {
                 }
             }
         } catch (Exception ignored) {
-            Log.fehlerMeldung(461203210, ignored, "SubtitelUrl: " + urlSubtitle);
+            MSLog.fehlerMeldung(461203210, ignored, "SubtitelUrl: " + urlSubtitle);
         }
     }
 }

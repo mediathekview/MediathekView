@@ -31,7 +31,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
@@ -39,6 +38,7 @@ import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.TModel;
 import mSearch.filmlisten.DatenFilmlisteUrl;
+import mSearch.tool.MSLog;
 
 public class PanelFilmlisten extends PanelVorlage {
 
@@ -364,7 +364,7 @@ public class PanelFilmlisten extends PanelVorlage {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldUrl.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(102036579, ex);
+                        MSLog.fehlerMeldung(102036579, ex);
                     }
                 }
             } else {
@@ -380,7 +380,7 @@ public class PanelFilmlisten extends PanelVorlage {
                     try {
                         jTextFieldUrl.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(733025319, ex);
+                        MSLog.fehlerMeldung(733025319, ex);
                     }
                 }
             }

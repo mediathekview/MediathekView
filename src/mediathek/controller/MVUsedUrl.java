@@ -19,8 +19,9 @@
  */
 package mediathek.controller;
 
-import mediathek.tool.GuiFunktionen;
 import mSearch.tool.GermanStringSorter;
+import mSearch.tool.MSLog;
+import mediathek.tool.GuiFunktionen;
 
 public class MVUsedUrl implements Comparable<MVUsedUrl> {
 
@@ -72,7 +73,7 @@ public class MVUsedUrl implements Comparable<MVUsedUrl> {
                 url = zeile;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(398853224, ex);
+            MSLog.fehlerMeldung(398853224, ex);
         }
         return new MVUsedUrl(datum, thema, titel, url);
     }

@@ -95,6 +95,7 @@ import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVMessageDialog;
 import mSearch.filmeSuchen.MSListenerFilmeLaden;
 import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import mSearch.tool.MSLog;
 
 public class MediathekGui extends JFrame {
 
@@ -1049,7 +1050,7 @@ public class MediathekGui extends JFrame {
         // FilterFrame
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_FILTER, daten.guiFilme.mVFilterFrame);
         daten.allesSpeichern();
-        Log.printEndeMeldung();
+        MSLog.endeMeldung();
 
         if (shutDown) {
             shutdownComputer();
@@ -1084,7 +1085,7 @@ public class MediathekGui extends JFrame {
                 break;
 
             default:
-                Log.fehlerMeldung(465321789, "Shutdown unsupported operating system ...");
+                MSLog.fehlerMeldung(465321789, "Shutdown unsupported operating system ...");
                 break;
         }
 
@@ -1094,7 +1095,7 @@ public class MediathekGui extends JFrame {
                 Log.systemMeldung("Shutdown: " + strShutdownCommand);
                 Runtime.getRuntime().exec(strShutdownCommand);
             } catch (IOException ex) {
-                Log.fehlerMeldung(915263047, ex);
+                MSLog.fehlerMeldung(915263047, ex);
             }
         }
     }

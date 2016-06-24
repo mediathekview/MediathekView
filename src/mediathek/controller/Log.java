@@ -19,18 +19,10 @@
  */
 package mediathek.controller;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
 import javax.swing.SwingUtilities;
 import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
-import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVFunctionSys;
 
@@ -38,9 +30,7 @@ public class Log {
 
     public static StringBuffer textSystem = new StringBuffer(10000);
     public static StringBuffer textProgramm = new StringBuffer(10000);
-////    public static StringBuffer textFehler = new StringBuffer();
     public static boolean playerMeldungenAus = false;
-    public static final int LOG_FEHLER = ListenerMediathekView.EREIGNIS_LOG_FEHLER;
     public static final int LOG_SYSTEM = ListenerMediathekView.EREIGNIS_LOG_SYSTEM;
     public static final int LOG_PLAYER = ListenerMediathekView.EREIGNIS_LOG_PLAYER;
 
@@ -48,77 +38,17 @@ public class Log {
     private static final int MAX_LAENGE_2 = 30000;
     private static int zeilenNrSystem = 0;
     private static int zeilenNrProgramm = 0;
-////    private static int zeilenNrFehler = 0;
-    private static final LinkedList<Integer[]> fehlerListe = new LinkedList<>(); // [Fehlernummer, Anzahl, Exception(0,1 für ja, nein)]
-    private static final Date startZeit = new Date(System.currentTimeMillis());
-    public static PanelMeldungen panelMeldungenFehler = null; // unschön, gab aber sonst einen Deadlock mit notifyMediathekListener
     public static PanelMeldungen panelMeldungenSystem = null;
     public static PanelMeldungen panelMeldungenPlayer = null;
-    private final static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
-////    public static synchronized void versionsMeldungen() {
-////        final Runtime rt = Runtime.getRuntime();
-////        final long totalMem = rt.totalMemory();
-////        final long maxMem = rt.maxMemory();
-////        final long freeMem = rt.freeMemory();
-////
-////        Log.systemMeldung("");
-////        Log.systemMeldung("");
-////        Log.systemMeldung("###########################################################");
-////        Log.systemMeldung("###########################################################");
-////        Log.systemMeldung("Programmstart: " + sdf.format(startZeit));
-////        Log.systemMeldung("###########################################################");
-////        Log.systemMeldung("###########################################################");
-////        Log.systemMeldung("totalMemory: " + totalMem / (1000L * 1000L) + " MB");
-////        Log.systemMeldung("maxMemory: " + maxMem / (1000L * 1000L) + " MB");
-////        Log.systemMeldung("freeMemory: " + freeMem / (1000L * 1000L) + " MB");
-////        Log.systemMeldung("###########################################################");
-////        //Version
-////        Log.systemMeldung(MVFunctionSys.getProgVersionString());
-////        Log.systemMeldung("Compiled: " + MVFunctionSys.getCompileDate());
-////        Log.systemMeldung("###########################################################");
-////        //dynamically get caller class name...
-////        final Throwable t = new Throwable();
-////        final StackTraceElement methodCaller = t.getStackTrace()[2];
-////        if (t != null) {
-////            systemMeldung("Classname: " + methodCaller.getClassName());
-////        }
-////
-////        String[] java = MVFunctionSys.getJavaVersion();
-////        for (final String ja : java) {
-////            Log.systemMeldung(ja);
-////        }
-////        Log.systemMeldung("###########################################################");
-////    }
     public static synchronized void startMeldungen() {
         MSLog.versionsMeldungen(MVFunctionSys.getProgName());
-////        versionsMeldungen();
         Log.systemMeldung("Programmpfad: " + MVFunctionSys.getPathJar());
         Log.systemMeldung("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
+        Log.systemMeldung("");
         Log.systemMeldung("###########################################################");
         Log.systemMeldung("");
         Log.systemMeldung("");
-    }
-
-    // Fehlermeldung mit Exceptions
-    public static synchronized void fehlerMeldung(int fehlerNummer, Exception ex) {
-        fehlermeldung_(fehlerNummer, ex, new String[]{});
-    }
-
-    public static synchronized void fehlerMeldung(int fehlerNummer, Exception ex, String text) {
-        fehlermeldung_(fehlerNummer, ex, new String[]{text});
-    }
-
-    public static synchronized void fehlerMeldung(int fehlerNummer, Exception ex, String text[]) {
-        fehlermeldung_(fehlerNummer, ex, text);
-    }
-
-    public static synchronized void fehlerMeldung(int fehlerNummer, String text) {
-        fehlermeldung_(fehlerNummer, null, new String[]{text});
-    }
-
-    public static synchronized void fehlerMeldung(int fehlerNummer, String[] text) {
-        fehlermeldung_(fehlerNummer, null, text);
     }
 
     public static synchronized void systemMeldung(String[] text) {
@@ -132,144 +62,6 @@ public class Log {
     public static synchronized void playerMeldung(String text) {
         if (!playerMeldungenAus) {
             playermeldung(new String[]{text});
-        }
-    }
-
-    public static void printEndeMeldung() {
-        MSLog.endeMeldung();
-        systemMeldung("");
-        systemMeldung("");
-        systemMeldung("");
-        systemMeldung("");
-
-        printFehlerMeldung().forEach(Log::systemMeldung);
-
-        // Laufzeit ausgeben
-        final Date stopZeit = new Date(System.currentTimeMillis());
-        int minuten;
-        try {
-            minuten = Math.round((stopZeit.getTime() - startZeit.getTime()) / (1000 * 60));
-        } catch (Exception ex) {
-            minuten = -1;
-        }
-        systemMeldung("");
-        systemMeldung("");
-        systemMeldung("###########################################################");
-        systemMeldung("   --> Beginn: " + sdf.format(startZeit));
-        systemMeldung("   --> Fertig: " + sdf.format(stopZeit));
-        systemMeldung("   --> Dauer[Min]: " + (minuten == 0 ? "<1" : minuten));
-        systemMeldung("###########################################################");
-        systemMeldung("");
-        systemMeldung("   und Tschuess");
-        systemMeldung("");
-        systemMeldung("");
-        systemMeldung("###########################################################");
-    }
-
-    public static ArrayList<String> printFehlerMeldung() {
-        ArrayList<String> retList = new ArrayList<>();
-
-        retList.add("");
-        retList.add("###########################################################");
-        if (fehlerListe.size() == 0) {
-            retList.add(" Keine Fehler :)");
-        } else {
-            // Fehler ausgeben
-            int i_1;
-            int i_2;
-            for (int i = 1; i < fehlerListe.size(); ++i) {
-                for (int k = i; k > 0; --k) {
-                    i_1 = fehlerListe.get(k - 1)[0];
-                    i_2 = fehlerListe.get(k)[0];
-                    // if (str1.compareToIgnoreCase(str2) > 0) {
-                    if (i_1 < i_2) {
-                        fehlerListe.add(k - 1, fehlerListe.remove(k));
-                    } else {
-                        break;
-                    }
-                }
-            }
-            for (Integer[] integers : fehlerListe) {
-                boolean ex = integers[2] == 1;
-                String strEx;
-                if (ex) {
-                    strEx = "Ex! ";
-                } else {
-                    strEx = "    ";
-                }
-                if (integers[0] < 0) {
-                    retList.add(strEx + " Fehlernummer: " + integers[0] + " Anzahl: " + integers[1]);
-                } else {
-                    retList.add(strEx + " Fehlernummer:  " + integers[0] + " Anzahl: " + integers[1]);
-                }
-            }
-        }
-        retList.add("###########################################################");
-        retList.add("");
-        return retList;
-    }
-
-    private static void addFehlerNummer(int nr, boolean exception) {
-        Iterator<Integer[]> it = fehlerListe.iterator();
-        int ex = exception ? 1 : 2;
-        while (it.hasNext()) {
-            Integer[] i = it.next();
-            if (i[0] == nr) {
-                i[1]++;
-                i[2] = ex;
-                return;
-            }
-        }
-        // dann gibts die Nummer noch nicht
-        fehlerListe.add(new Integer[]{nr, 1, ex});
-    }
-
-    private static void fehlermeldung_(int fehlerNummer, Exception ex, String[] texte) {
-        addFehlerNummer(fehlerNummer, ex != null);
-        final Throwable t = new Throwable();
-        final StackTraceElement methodCaller = t.getStackTrace()[2];
-        final String klasse = methodCaller.getClassName() + "." + methodCaller.getMethodName();
-        String kl;
-        try {
-            kl = klasse;
-            while (kl.contains(".")) {
-                if (Character.isUpperCase(kl.charAt(0))) {
-                    break;
-                } else {
-                    kl = kl.substring(kl.indexOf(".") + 1);
-                }
-            }
-        } catch (Exception ignored) {
-            kl = klasse;
-        }
-
-        if (ex != null || Daten.debug) {
-            try {
-                String s = getStackTrace(ex);
-                System.out.println(s);
-            } catch (Exception ignored) {
-            }
-            // Exceptions immer ausgeben
-            final String FEHLER = "Fehler(" + Konstanten.PROGRAMMNAME + "): ";
-            String x, z;
-            if (ex != null) {
-                x = "!";
-            } else {
-                x = "=";
-            }
-            z = "*";
-            System.out.println(x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x + x);
-            System.out.println(z + " Fehlernr: " + fehlerNummer);
-            if (ex != null) {
-                System.out.println(z + " Exception: " + ex.getMessage());
-            }
-            System.out.println(z + " " + FEHLER + kl);
-            notifyPanelMeldung(LOG_FEHLER, FEHLER + kl);
-            for (String text : texte) {
-                System.out.println(z + "           " + text);
-                notifyPanelMeldung(LOG_FEHLER, text);
-            }
-            System.out.println("");
         }
     }
 
@@ -309,10 +101,6 @@ public class Log {
 
     public static void clearText(int art) {
         switch (art) {
-//            case LOG_FEHLER:
-//////                zeilenNrFehler = 0;
-//////                textFehler.setLength(0);
-//                break;
             case LOG_SYSTEM:
                 zeilenNrSystem = 0;
                 textSystem.setLength(0);
@@ -328,9 +116,6 @@ public class Log {
 
     private static void notifyPanelMeldung(int art, String zeile) {
         switch (art) {
-//            case LOG_FEHLER:
-////////                addText(textFehler, "[" + getNr(zeilenNrFehler++) + "]   " + zeile);
-//                break;
             case LOG_SYSTEM:
                 addText(textSystem, "[" + getNr(zeilenNrSystem++) + "]   " + zeile);
                 break;
@@ -348,9 +133,7 @@ public class Log {
         try {
             if (SwingUtilities.isEventDispatchThread()) {
                 // notify
-                if (art == LOG_FEHLER && panelMeldungenFehler != null) {
-                    panelMeldungenFehler.notifyPanel();
-                } else if (art == LOG_SYSTEM && panelMeldungenSystem != null) {
+                if (art == LOG_SYSTEM && panelMeldungenSystem != null) {
                     panelMeldungenSystem.notifyPanel();
                 } else if (art == LOG_PLAYER && panelMeldungenPlayer != null) {
                     panelMeldungenPlayer.notifyPanel();
@@ -358,9 +141,7 @@ public class Log {
             } else {
                 SwingUtilities.invokeLater(() -> {
                     // notify
-                    if (a == LOG_FEHLER && panelMeldungenFehler != null) {
-                        panelMeldungenFehler.notifyPanel();
-                    } else if (a == LOG_SYSTEM && panelMeldungenSystem != null) {
+                    if (a == LOG_SYSTEM && panelMeldungenSystem != null) {
                         panelMeldungenSystem.notifyPanel();
                     } else if (a == LOG_PLAYER && panelMeldungenPlayer != null) {
                         panelMeldungenPlayer.notifyPanel();
@@ -368,17 +149,8 @@ public class Log {
                 });
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(698989743, ex);
+            MSLog.fehlerMeldung(698989743, ex);
         }
-    }
-
-    private static String getStackTrace(Throwable t) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw, true);
-        t.printStackTrace(pw);
-        pw.flush();
-        sw.flush();
-        return sw.toString();
     }
 
     private static String getNr(int nr) {

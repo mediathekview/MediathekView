@@ -27,7 +27,7 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import mediathek.controller.Log;
+import mSearch.tool.MSLog;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
@@ -223,7 +223,7 @@ public class DialogZiel extends javax.swing.JDialog {
                         jTextFieldPfad.setText(destination.getAbsolutePath());
                         ziel = jTextFieldPfad.getText();
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(642109058, ex);
+                        MSLog.fehlerMeldung(642109058, ex);
                     }
                 }
             } else {
@@ -240,7 +240,7 @@ public class DialogZiel extends javax.swing.JDialog {
                     try {
                         jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(642109058, ex);
+                        MSLog.fehlerMeldung(642109058, ex);
                     }
                 }
             }

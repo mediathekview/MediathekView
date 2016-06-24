@@ -30,13 +30,13 @@ import javax.swing.JFrame;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
-import mediathek.controller.Log;
 import mediathek.file.GetFile;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.TModel;
 import mSearch.tool.MSConst;
+import mSearch.tool.MSLog;
 
 public class ListePsetVorlagen extends LinkedList<String[]> {
 
@@ -160,7 +160,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(398001963, ex);
+            MSLog.fehlerMeldung(398001963, ex);
             return false;
         }
         return true;
@@ -181,7 +181,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             }
         } catch (Exception ex) {
             if (log) {
-                Log.fehlerMeldung(630048926, ex);
+                MSLog.fehlerMeldung(630048926, ex);
             }
             return null;
         }
@@ -230,7 +230,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             in.close();
         } catch (Exception ex) {
             if (log) {
-                Log.fehlerMeldung(467810360, ex);
+                MSLog.fehlerMeldung(467810360, ex);
             }
             return null;
         }
@@ -266,7 +266,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             }
         } catch (Exception ex) {
             ret = false;
-            Log.fehlerMeldung(467256394, ex);
+            MSLog.fehlerMeldung(467256394, ex);
         }
         return ret;
     }

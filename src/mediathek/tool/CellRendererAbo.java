@@ -25,7 +25,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
-import mediathek.controller.Log;
+import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.res.GetIcon;
@@ -96,7 +96,7 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
                     break;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(630365892, ex);
+            MSLog.fehlerMeldung(630365892, ex);
         }
         return this;
     }

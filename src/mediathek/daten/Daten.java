@@ -34,6 +34,11 @@ import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
+import mSearch.daten.DatenFilm;
+import mSearch.daten.ListeFilme;
+import mSearch.filmlisten.MSFilmlisteLesen;
+import mSearch.filmlisten.WriteFilmlistJson;
+import mSearch.tool.MSLog;
 import mediathek.MediathekGui;
 import mediathek.controller.*;
 import mediathek.controller.starter.MVBandwidthTokenBucket;
@@ -45,10 +50,6 @@ import mediathek.gui.GuiFilme;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.MVFilmInfo;
 import mediathek.tool.*;
-import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
-import mSearch.filmlisten.MSFilmlisteLesen;
-import mSearch.filmlisten.WriteFilmlistJson;
 
 public class Daten {
 
@@ -440,7 +441,7 @@ public class Daten {
                         + getSettingsDirectory_String() + "\n"
                         + "von Hand löschen und dann das Programm wieder starten.\n\n"
                         + "Im Forum finden Sie weitere Hilfe.", "Fehler", JOptionPane.ERROR_MESSAGE);
-                Log.fehlerMeldung(465690123, e);
+                MSLog.fehlerMeldung(465690123, e);
             }
         }
     }
@@ -488,7 +489,7 @@ public class Daten {
                 }
             } catch (IOException e) {
                 Log.systemMeldung("Die Einstellungen konnten nicht komplett gesichert werden!");
-                Log.fehlerMeldung(795623147, e);
+                MSLog.fehlerMeldung(795623147, e);
             }
 
             alreadyMadeBackup = true;

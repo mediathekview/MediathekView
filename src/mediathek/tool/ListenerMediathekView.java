@@ -23,7 +23,7 @@ import java.util.EventListener;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 import mSearch.tool.DebugMsg;
-import mediathek.controller.Log;
+import mSearch.tool.MSLog;
 
 public class ListenerMediathekView implements EventListener {
 
@@ -113,7 +113,7 @@ public class ListenerMediathekView implements EventListener {
                 SwingUtilities.invokeLater(this::ping);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(698989743, ex);
+            MSLog.fehlerMeldung(698989743, ex);
         }
     }
 }

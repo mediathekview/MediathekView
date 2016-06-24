@@ -23,7 +23,7 @@ import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
-import mediathek.controller.Log;
+import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenPset;
 import mediathek.res.GetIcon;
@@ -116,7 +116,7 @@ public class CellRendererPset extends DefaultTableCellRenderer {
 //                }
 //            }
         } catch (Exception ex) {
-            Log.fehlerMeldung(962380071, ex);
+            MSLog.fehlerMeldung(962380071, ex);
         }
         return this;
     }

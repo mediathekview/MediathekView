@@ -23,7 +23,7 @@ import java.awt.Desktop;
 import java.awt.Frame;
 import java.io.File;
 import javax.swing.JOptionPane;
-import mediathek.controller.Log;
+import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
@@ -73,7 +73,7 @@ public class OpenPlayerAction {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
                 gut = true;
             } catch (Exception eex) {
-                Log.fehlerMeldung(959632369, ex, "Ordner öffnen: " + datei);
+                MSLog.fehlerMeldung(959632369, ex, "Ordner öffnen: " + datei);
             }
         } finally {
             if (!gut) {

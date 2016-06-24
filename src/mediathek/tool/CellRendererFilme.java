@@ -20,7 +20,6 @@
 package mediathek.tool;
 
 import com.jidesoft.utils.SystemInfo;
-import mediathek.controller.Log;
 import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
@@ -32,6 +31,7 @@ import mSearch.daten.ListeFilme;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
+import mSearch.tool.MSLog;
 
 public class CellRendererFilme extends DefaultTableCellRenderer {
 
@@ -169,7 +169,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(630098552, ex);
+            MSLog.fehlerMeldung(630098552, ex);
         }
         return this;
     }

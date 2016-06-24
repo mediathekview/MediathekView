@@ -31,12 +31,13 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import mSearch.tool.MSConst;
+import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogHinweisUpdate;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFunctionSys;
-import mSearch.tool.MSConst;
 
 public class ProgrammUpdateSuchen {
 
@@ -101,7 +102,7 @@ public class ProgrammUpdateSuchen {
                 }
             });
         } catch (Exception ex) {
-            Log.fehlerMeldung(159002583, ex);
+            MSLog.fehlerMeldung(159002583, ex);
         }
         return neueVersion;
     }
@@ -129,7 +130,7 @@ public class ProgrammUpdateSuchen {
                     Daten.mVConfig.add(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(listInfos.size()));
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(693298731, ex);
+                MSLog.fehlerMeldung(693298731, ex);
             }
         } else if (alleAnzeigen) {
             // dann wenigstens einen Hinweis, dass es keine gibt
@@ -154,7 +155,7 @@ public class ProgrammUpdateSuchen {
                 return true;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(683021193, ex);
+            MSLog.fehlerMeldung(683021193, ex);
         }
         return false;
     }

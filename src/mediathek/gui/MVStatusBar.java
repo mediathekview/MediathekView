@@ -4,20 +4,16 @@ import com.explodingpixels.macwidgets.BottomBar;
 import com.explodingpixels.macwidgets.BottomBarSize;
 import java.awt.FlowLayout;
 import java.util.EnumMap;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import mediathek.controller.Log;
+import javax.swing.*;
+import mSearch.filmeSuchen.MSListenerFilmeLaden;
+import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.ListenerMediathekView;
-import mSearch.filmeSuchen.MSListenerFilmeLaden;
-import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
 
 /**
  * User: crystalpalace1977
@@ -79,7 +75,7 @@ public final class MVStatusBar extends JPanel {
                         setTextForRightDisplay();
                     }
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(936251087, ex);
+                    MSLog.fehlerMeldung(936251087, ex);
                 }
             }
         });

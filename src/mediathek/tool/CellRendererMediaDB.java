@@ -23,7 +23,7 @@ import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
-import mediathek.controller.Log;
+import mSearch.tool.MSLog;
 import mediathek.daten.DatenMediaDB;
 
 public class CellRendererMediaDB extends DefaultTableCellRenderer {
@@ -49,7 +49,7 @@ public class CellRendererMediaDB extends DefaultTableCellRenderer {
                 setHorizontalAlignment(SwingConstants.CENTER);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(912034567, ex);
+            MSLog.fehlerMeldung(912034567, ex);
         }
         return this;
     }

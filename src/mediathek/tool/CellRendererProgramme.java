@@ -22,7 +22,7 @@ package mediathek.tool;
 import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
-import mediathek.controller.Log;
+import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.res.GetIcon;
@@ -58,7 +58,7 @@ public class CellRendererProgramme extends DefaultTableCellRenderer {
                 setText("");
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(338740095, ex);
+            MSLog.fehlerMeldung(338740095, ex);
         }
         return this;
     }

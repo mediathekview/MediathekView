@@ -20,27 +20,16 @@
 package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FileDialog;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import mediathek.controller.Log;
+import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
@@ -401,7 +390,7 @@ public class PanelPsetKurz extends PanelVorlage {
                             arr[idx] = textField.getText();
                         }
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(392847589, ex);
+                        MSLog.fehlerMeldung(392847589, ex);
                     }
                 }
                 if (!file) {
@@ -423,7 +412,7 @@ public class PanelPsetKurz extends PanelVorlage {
                             arr[idx] = textField.getText();
                         }
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(613986500, ex);
+                        MSLog.fehlerMeldung(613986500, ex);
                     }
                 }
             }
