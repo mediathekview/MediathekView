@@ -27,17 +27,18 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import javax.swing.SwingUtilities;
+import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
-import mediathek.tool.MVFunctionSys;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVFunctionSys;
 
 public class Log {
 
     public static StringBuffer textSystem = new StringBuffer(10000);
     public static StringBuffer textProgramm = new StringBuffer(10000);
-    public static StringBuffer textFehler = new StringBuffer();
+////    public static StringBuffer textFehler = new StringBuffer();
     public static boolean playerMeldungenAus = false;
     public static final int LOG_FEHLER = ListenerMediathekView.EREIGNIS_LOG_FEHLER;
     public static final int LOG_SYSTEM = ListenerMediathekView.EREIGNIS_LOG_SYSTEM;
@@ -47,51 +48,51 @@ public class Log {
     private static final int MAX_LAENGE_2 = 30000;
     private static int zeilenNrSystem = 0;
     private static int zeilenNrProgramm = 0;
-    private static int zeilenNrFehler = 0;
+////    private static int zeilenNrFehler = 0;
     private static final LinkedList<Integer[]> fehlerListe = new LinkedList<>(); // [Fehlernummer, Anzahl, Exception(0,1 für ja, nein)]
-    private static final boolean progress = false;
-    private static final String progressText = "";
     private static final Date startZeit = new Date(System.currentTimeMillis());
     public static PanelMeldungen panelMeldungenFehler = null; // unschön, gab aber sonst einen Deadlock mit notifyMediathekListener
     public static PanelMeldungen panelMeldungenSystem = null;
     public static PanelMeldungen panelMeldungenPlayer = null;
     private final static SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
-    public static synchronized void versionsMeldungen() {
-        final Runtime rt = Runtime.getRuntime();
-        final long totalMem = rt.totalMemory();
-        final long maxMem = rt.maxMemory();
-        final long freeMem = rt.freeMemory();
-
-        Log.systemMeldung("");
-        Log.systemMeldung("");
-        Log.systemMeldung("###########################################################");
-        Log.systemMeldung("###########################################################");
-        Log.systemMeldung("Programmstart: " + sdf.format(startZeit));
-        Log.systemMeldung("###########################################################");
-        Log.systemMeldung("###########################################################");
-        Log.systemMeldung("totalMemory: " + totalMem / (1000L * 1000L) + " MB");
-        Log.systemMeldung("maxMemory: " + maxMem / (1000L * 1000L) + " MB");
-        Log.systemMeldung("freeMemory: " + freeMem / (1000L * 1000L) + " MB");
-        Log.systemMeldung("###########################################################");
-        //Version
-        Log.systemMeldung(MVFunctionSys.getProgVersionString());
-        Log.systemMeldung("Compiled: " + MVFunctionSys.getCompileDate());
-        Log.systemMeldung("###########################################################");
-        //dynamically get caller class name...
-        final Throwable t = new Throwable();
-        final StackTraceElement methodCaller = t.getStackTrace()[2];
-        systemMeldung("Classname: " + methodCaller.getClassName());
-
-        String[] java = MVFunctionSys.getJavaVersion();
-        for (final String ja : java) {
-            Log.systemMeldung(ja);
-        }
-        Log.systemMeldung("###########################################################");
-    }
-
+////    public static synchronized void versionsMeldungen() {
+////        final Runtime rt = Runtime.getRuntime();
+////        final long totalMem = rt.totalMemory();
+////        final long maxMem = rt.maxMemory();
+////        final long freeMem = rt.freeMemory();
+////
+////        Log.systemMeldung("");
+////        Log.systemMeldung("");
+////        Log.systemMeldung("###########################################################");
+////        Log.systemMeldung("###########################################################");
+////        Log.systemMeldung("Programmstart: " + sdf.format(startZeit));
+////        Log.systemMeldung("###########################################################");
+////        Log.systemMeldung("###########################################################");
+////        Log.systemMeldung("totalMemory: " + totalMem / (1000L * 1000L) + " MB");
+////        Log.systemMeldung("maxMemory: " + maxMem / (1000L * 1000L) + " MB");
+////        Log.systemMeldung("freeMemory: " + freeMem / (1000L * 1000L) + " MB");
+////        Log.systemMeldung("###########################################################");
+////        //Version
+////        Log.systemMeldung(MVFunctionSys.getProgVersionString());
+////        Log.systemMeldung("Compiled: " + MVFunctionSys.getCompileDate());
+////        Log.systemMeldung("###########################################################");
+////        //dynamically get caller class name...
+////        final Throwable t = new Throwable();
+////        final StackTraceElement methodCaller = t.getStackTrace()[2];
+////        if (t != null) {
+////            systemMeldung("Classname: " + methodCaller.getClassName());
+////        }
+////
+////        String[] java = MVFunctionSys.getJavaVersion();
+////        for (final String ja : java) {
+////            Log.systemMeldung(ja);
+////        }
+////        Log.systemMeldung("###########################################################");
+////    }
     public static synchronized void startMeldungen() {
-        versionsMeldungen();
+        MSLog.versionsMeldungen(MVFunctionSys.getProgName());
+////        versionsMeldungen();
         Log.systemMeldung("Programmpfad: " + MVFunctionSys.getPathJar());
         Log.systemMeldung("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
         Log.systemMeldung("###########################################################");
@@ -135,6 +136,7 @@ public class Log {
     }
 
     public static void printEndeMeldung() {
+        MSLog.endeMeldung();
         systemMeldung("");
         systemMeldung("");
         systemMeldung("");
@@ -248,10 +250,6 @@ public class Log {
             } catch (Exception ignored) {
             }
             // Exceptions immer ausgeben
-            if (progress) {
-                // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
-                System.out.print("                                                                            \r");
-            }
             final String FEHLER = "Fehler(" + Konstanten.PROGRAMMNAME + "): ";
             String x, z;
             if (ex != null) {
@@ -272,17 +270,10 @@ public class Log {
                 notifyPanelMeldung(LOG_FEHLER, text);
             }
             System.out.println("");
-            if (progress) {
-                System.out.print(progressText);
-            }
         }
     }
 
     private static void systemmeldung(String[] texte) {
-        if (progress) {
-            // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
-            System.out.print("                                                                            \r");
-        }
         final String z = ". ";
         if (texte.length <= 1) {
             System.out.println(z + " " + texte[0]);
@@ -304,16 +295,9 @@ public class Log {
             notifyPanelMeldung(LOG_SYSTEM, " ");
             System.out.println(z + zeile);
         }
-        if (progress) {
-            System.out.print(progressText);
-        }
     }
 
     private static void playermeldung(String[] texte) {
-        if (progress) {
-            // dann brauchen wir erst eine Leerzeite um die Progresszeile zu löschen
-            System.out.print("                                                                            \r");
-        }
         final String z = "  >>";
         System.out.println(z + " " + texte[0]);
         notifyPanelMeldung(LOG_PLAYER, texte[0]);
@@ -321,31 +305,40 @@ public class Log {
             System.out.println(z + " " + texte[i]);
             notifyPanelMeldung(LOG_PLAYER, texte[i]);
         }
-        if (progress) {
-            System.out.print(progressText);
-        }
     }
 
     public static void clearText(int art) {
-        if (art == LOG_FEHLER) {
-            zeilenNrFehler = 0;
-            textFehler.setLength(0);
-        } else if (art == LOG_SYSTEM) {
-            zeilenNrSystem = 0;
-            textSystem.setLength(0);
-        } else if (art == LOG_PLAYER) {
-            zeilenNrProgramm = 0;
-            textProgramm.setLength(0);
+        switch (art) {
+//            case LOG_FEHLER:
+//////                zeilenNrFehler = 0;
+//////                textFehler.setLength(0);
+//                break;
+            case LOG_SYSTEM:
+                zeilenNrSystem = 0;
+                textSystem.setLength(0);
+                break;
+            case LOG_PLAYER:
+                zeilenNrProgramm = 0;
+                textProgramm.setLength(0);
+                break;
+            default:
+                break;
         }
     }
 
     private static void notifyPanelMeldung(int art, String zeile) {
-        if (art == LOG_FEHLER) {
-            addText(textFehler, "[" + getNr(zeilenNrFehler++) + "]   " + zeile);
-        } else if (art == LOG_SYSTEM) {
-            addText(textSystem, "[" + getNr(zeilenNrSystem++) + "]   " + zeile);
-        } else if (art == LOG_PLAYER) {
-            addText(textProgramm, "[" + getNr(zeilenNrProgramm++) + "]   " + zeile);
+        switch (art) {
+//            case LOG_FEHLER:
+////////                addText(textFehler, "[" + getNr(zeilenNrFehler++) + "]   " + zeile);
+//                break;
+            case LOG_SYSTEM:
+                addText(textSystem, "[" + getNr(zeilenNrSystem++) + "]   " + zeile);
+                break;
+            case LOG_PLAYER:
+                addText(textProgramm, "[" + getNr(zeilenNrProgramm++) + "]   " + zeile);
+                break;
+            default:
+                break;
         }
         notifyPanel(art);
     }

@@ -21,7 +21,6 @@ package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
-import com.sun.javafx.application.LauncherImpl;
 import java.awt.EventQueue;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
@@ -35,9 +34,9 @@ import javafx.application.Platform;
 import javax.swing.JOptionPane;
 import javax.swing.RepaintManager;
 import mSearch.tool.MSConfig;
+import mSearch.tool.MSLog;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
-import mediathek.fx.MVPreloaderController;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVSingleInstance;
@@ -46,7 +45,7 @@ public class Main {
 
     public enum StartupMode {
 
-        GUI, AUTO, FASTAUTO, FX
+        GUI, AUTO, FASTAUTO
     }
 
     /**
@@ -102,10 +101,6 @@ public class Main {
             for (String s : args) {
                 s = s.toLowerCase();
                 switch (s) {
-                    case "-fx":
-                        state = StartupMode.FX;
-                        break;
-
                     case "-auto":
                         state = StartupMode.AUTO;
                         break;
@@ -115,8 +110,15 @@ public class Main {
                         break;
 
                     case "-v":
-                        Log.versionsMeldungen();
-                        System.exit(0);
+                        EventQueue.invokeLater(() -> {
+                            Log.startMeldungen();
+                            Log.systemMeldung("Test 0");
+                            Log.fehlerMeldung(100000000, "Test 1");
+                            Log.fehlerMeldung(200000000, "Test 2");
+                            MSLog.fehlerMeldung(0, "Test 3");
+                            Log.printEndeMeldung();
+                            System.exit(0);
+                        });
                         break;
 
                     case "-d":
@@ -143,11 +145,6 @@ public class Main {
         }
 
         switch (state) {
-            case FX:
-                LauncherImpl.launchApplication(MVFx.class, MVPreloaderController.class, args);
-//                Application.launch(MVFx.class, args);
-                break;
-
             case AUTO:
                 new MediathekAuto(args).starten();
                 break;

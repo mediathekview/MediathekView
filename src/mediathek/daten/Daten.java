@@ -34,7 +34,6 @@ import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
-import mediathek.MVFx;
 import mediathek.MediathekGui;
 import mediathek.controller.*;
 import mediathek.controller.starter.MVBandwidthTokenBucket;
@@ -95,18 +94,8 @@ public class Daten {
 
     private boolean alreadyMadeBackup = false;
 
-    //*********************** fx ********************
-    public static MVFx mVFx = null;
-    //***********************************************
-
     public Daten(String basis) {
         basisverzeichnis = basis;
-        start();
-    }
-
-    public Daten(String basis, MVFx mVFx) {
-        basisverzeichnis = basis;
-        Daten.mVFx = mVFx;
         start();
     }
 
