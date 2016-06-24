@@ -39,7 +39,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mediathek.controller.IoXmlSchreiben;
-import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
@@ -60,6 +59,7 @@ import mediathek.tool.MVTable;
 import mediathek.tool.TModel;
 import mediathek.tool.UrlHyperlinkAction;
 import mSearch.daten.DatenFilm;
+import mSearch.tool.MSLog;
 
 public class PanelPsetLang extends PanelVorlage {
 
@@ -1629,7 +1629,7 @@ public class PanelPsetLang extends PanelVorlage {
                     try {
                         jTextFieldProgPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(369047894, ex);
+                        MSLog.fehlerMeldung(369047894, ex);
                     }
                 }
             } else {
@@ -1645,7 +1645,7 @@ public class PanelPsetLang extends PanelVorlage {
                         String str = chooser.getSelectedFile().getPath();
                         jTextFieldProgPfad.setText(str);
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(825630443, ex);
+                        MSLog.fehlerMeldung(825630443, ex);
                     }
                 }
             }
@@ -1667,7 +1667,7 @@ public class PanelPsetLang extends PanelVorlage {
                     try {
                         jTextFieldGruppeZielPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(392847589, ex);
+                        MSLog.fehlerMeldung(392847589, ex);
                     }
                 }
                 System.setProperty("apple.awt.fileDialogForDirectories", "false");
@@ -1684,7 +1684,7 @@ public class PanelPsetLang extends PanelVorlage {
                     try {
                         jTextFieldGruppeZielPfad.setText(chooser.getSelectedFile().getPath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(319860075, ex);
+                        MSLog.fehlerMeldung(319860075, ex);
                     }
                 }
             }

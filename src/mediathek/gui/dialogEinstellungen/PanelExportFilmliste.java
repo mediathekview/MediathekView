@@ -32,7 +32,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mSearch.filmlisten.WriteFilmlistJson;
 import mSearch.tool.Duration;
-import mediathek.controller.Log;
+import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
@@ -82,7 +82,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(464589201, ex);
+                MSLog.fehlerMeldung(464589201, ex);
             }
         }
         this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -213,7 +213,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldPfad.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(679890147, ex);
+                        MSLog.fehlerMeldung(679890147, ex);
                     }
                 }
             } else {
@@ -229,7 +229,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                     try {
                         jTextFieldPfad.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(911025463, ex);
+                        MSLog.fehlerMeldung(911025463, ex);
                     }
                 }
             }

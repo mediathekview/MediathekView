@@ -19,7 +19,7 @@
  */
 package mediathek.tool;
 
-import mediathek.controller.Log;
+import mSearch.tool.MSLog;
 
 public class MVFilmSize implements Comparable<MVFilmSize> {
 
@@ -52,7 +52,7 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
                 sizeL = sizeL * 1000 * 1000;
                 sizeStr = size;
             } catch (Exception ex) {
-                Log.fehlerMeldung(978745320, ex, "String: " + size);
+                MSLog.fehlerMeldung(978745320, ex, "String: " + size);
                 sizeL = 0L;
                 sizeStr = "";
             }

@@ -37,8 +37,8 @@ import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmlisten.MSFilmlisteLesen;
 import mSearch.tool.Duration;
+import mSearch.tool.MSLog;
 import mediathek.MediathekGui;
-import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisten;
 import mediathek.tool.ListenerMediathekView;
@@ -101,7 +101,7 @@ public class GuiDebug extends JPanel {
         jButtonFehler.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Log.printEndeMeldung();
+                MSLog.endeMeldung();
             }
         });
         jButtonCheck.addActionListener(new ActionListener() {
@@ -770,7 +770,7 @@ public class GuiDebug extends JPanel {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldPath.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(679890147, ex);
+                        MSLog.fehlerMeldung(679890147, ex);
                     }
                 }
             } else {
@@ -786,7 +786,7 @@ public class GuiDebug extends JPanel {
                     try {
                         jTextFieldPath.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(911025463, ex);
+                        MSLog.fehlerMeldung(911025463, ex);
                     }
                 }
             }
@@ -807,7 +807,7 @@ public class GuiDebug extends JPanel {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldOld.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(679890147, ex);
+                        MSLog.fehlerMeldung(679890147, ex);
                     }
                 }
             } else {
@@ -823,7 +823,7 @@ public class GuiDebug extends JPanel {
                     try {
                         jTextFieldOld.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(911025463, ex);
+                        MSLog.fehlerMeldung(911025463, ex);
                     }
                 }
             }

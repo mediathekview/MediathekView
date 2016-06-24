@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.swing.JFrame;
 import mSearch.daten.DatenFilm;
+import mSearch.tool.MSLog;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
@@ -100,7 +101,7 @@ public class MVInfoFile {
             br.write("\n\n");
             br.flush();
         } catch (IOException ex) {
-            Log.fehlerMeldung(632656214, dialog.ziel);
+            MSLog.fehlerMeldung(632656214, dialog.ziel);
         }
     }
 
@@ -158,7 +159,7 @@ public class MVInfoFile {
             br.close();
             Log.systemMeldung(new String[]{"Infofile", "  geschrieben"});
         } catch (IOException ex) {
-            Log.fehlerMeldung(975410369, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            MSLog.fehlerMeldung(975410369, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
     }
 

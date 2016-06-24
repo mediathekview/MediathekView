@@ -1,23 +1,20 @@
 package mediathek.mac;
 
-import com.apple.eawt.*;
+import com.apple.eawt.Application;
 import com.jidesoft.utils.SystemInfo;
-import mediathek.MediathekGui;
-import mediathek.controller.Log;
-import mediathek.daten.Daten;
-import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVConfig;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import mSearch.tool.MSLog;
+import mediathek.MediathekGui;
+import mediathek.daten.Daten;
+import mediathek.tool.ListenerMediathekView;
+import mediathek.tool.MVConfig;
 
 /**
  * User: crystalpalace1977
@@ -112,7 +109,7 @@ public class MediathekGuiMac extends MediathekGui {
             final BufferedImage appImage = ImageIO.read(url);
             application.setDockIconImage(appImage);
         } catch (IOException ex) {
-            Log.fehlerMeldung(165623698, "OS X Application image could not be loaded");
+            MSLog.fehlerMeldung(165623698, "OS X Application image could not be loaded");
         }
 
         //Remove all menu items which don´t need to be displayed due to OS X´s native menu support

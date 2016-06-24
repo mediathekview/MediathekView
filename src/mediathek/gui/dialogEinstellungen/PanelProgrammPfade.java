@@ -26,23 +26,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URISyntaxException;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import mediathek.controller.Log;
+import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.Konstanten;
-import mediathek.tool.MVConfig;
-import mediathek.tool.UrlHyperlinkAction;
+import mediathek.tool.*;
 
 public class PanelProgrammPfade extends JPanel {
 
@@ -446,7 +438,7 @@ public class PanelProgrammPfade extends JPanel {
                     try {
                         textField.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(306087945, ex);
+                        MSLog.fehlerMeldung(306087945, ex);
                     }
                 }
             } else {
@@ -464,7 +456,7 @@ public class PanelProgrammPfade extends JPanel {
                     try {
                         textField.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(643289561, ex);
+                        MSLog.fehlerMeldung(643289561, ex);
                     }
                 }
             }

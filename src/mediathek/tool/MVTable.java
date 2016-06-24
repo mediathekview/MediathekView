@@ -44,7 +44,6 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
@@ -52,6 +51,7 @@ import mediathek.daten.DatenMediaDB;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mSearch.daten.DatenFilm;
+import mSearch.tool.MSLog;
 
 public final class MVTable extends JTable {
     public enum TableType { STANDARD, FILME, DOWNLOADS, ABOS, PSET, PROG, MEDIA_DB};
@@ -537,7 +537,7 @@ public final class MVTable extends JTable {
             }
             this.validate();
         } catch (Exception ex) {
-            Log.fehlerMeldung(965001463, ex);
+            MSLog.fehlerMeldung(965001463, ex);
         }
     }
 

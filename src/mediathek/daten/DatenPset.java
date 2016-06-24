@@ -24,10 +24,10 @@ import java.awt.Color;
 import java.util.Iterator;
 import java.util.ListIterator;
 import javax.swing.JOptionPane;
-import mediathek.controller.Log;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.MVMessageDialog;
 import mSearch.daten.DatenFilm;
+import mSearch.tool.MSLog;
 
 public class DatenPset {
 
@@ -267,7 +267,7 @@ public class DatenPset {
             try {
                 ret = new Color(Integer.parseInt(r), Integer.parseInt(g), Integer.parseInt(b));
             } catch (Exception ex) {
-                Log.fehlerMeldung(669254033, ex);
+                MSLog.fehlerMeldung(669254033, ex);
             }
         }
         return ret;

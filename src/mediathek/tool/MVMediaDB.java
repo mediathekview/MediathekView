@@ -25,11 +25,11 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
-import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenMediaDB;
 import mSearch.tool.MSConst;
 import mSearch.tool.MSLog;
+import mediathek.controller.Log;
 
 public class MVMediaDB {
 
@@ -118,7 +118,7 @@ public class MVMediaDB {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(120321254, ex);
+                MSLog.fehlerMeldung(120321254, ex);
             }
             makeIndex = false;
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIA_DB_STOP, MVMediaDB.class.getSimpleName());
@@ -174,7 +174,7 @@ public class MVMediaDB {
     public synchronized void writeFileArray(String datei) {
         OutputStreamWriter out = null;
         try {
-            MSLog.systemMeldung("MediaDB schreiben (" + fileArray.size() + " Dateien) :");
+            Log.systemMeldung("MediaDB schreiben (" + fileArray.size() + " Dateien) :");
             File file = new File(datei);
             File dir = new File(file.getParent());
             if (!dir.exists()) {
@@ -182,13 +182,13 @@ public class MVMediaDB {
                     MSLog.fehlerMeldung(945120365, "Kann den Pfad nicht anlegen: " + dir.toString());
                 }
             }
-            MSLog.systemMeldung("   --> Start Schreiben nach: " + datei);
+            Log.systemMeldung("   --> Start Schreiben nach: " + datei);
             out = new OutputStreamWriter(new FileOutputStream(datei), MSConst.KODIERUNG_UTF);
 
             for (DatenMediaDB s : fileArray) {
                 out.write(s.arr[DatenMediaDB.MEDIA_DB_NAME_NR] + "\n");
             }
-            MSLog.systemMeldung("   --> geschrieben!");
+            Log.systemMeldung("   --> geschrieben!");
         } catch (Exception ex) {
             MSLog.fehlerMeldung(102035478, ex, "nach: " + datei);
         } finally {

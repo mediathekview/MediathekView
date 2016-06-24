@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogZiel;
 import mediathek.tool.GuiFunktionen;
@@ -130,28 +131,19 @@ public class ProgrammLog {
             //
             bw.write("#########################################################");
             bw.newLine();
-            bw.write("## Fehlermeldungen GUI                                   ");
+            bw.write("## Fehlermeldungen                                       ");
             bw.newLine();
-            retList = Log.printFehlerMeldung();
+            retList = MSLog.fehlerMeldungen();
             for (String s : retList) {
                 bw.write(s);
                 bw.newLine();
             }
             bw.newLine();
             bw.newLine();
-            bw.write("#########################################################");
-            bw.newLine();
-            bw.write("## Fehlermeldungen lib msearch                           ");
-            bw.newLine();
-            retList = mSearch.tool.MSLog.fehlerMeldungen();
-            for (String s : retList) {
-                bw.write(s);
-                bw.newLine();
-            }
             //
             bw.close();
         } catch (Exception ex) {
-            Log.fehlerMeldung(319865493, ex);
+            MSLog.fehlerMeldung(319865493, ex);
             MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
                     "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
         }

@@ -31,8 +31,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import mSearch.tool.MSLog;
 import mediathek.controller.IoXmlLesen;
-import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
@@ -270,7 +270,7 @@ public class PanelImport extends PanelVorlage {
                     try {
                         jTextFieldDatei.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(304656587, ex);
+                        MSLog.fehlerMeldung(304656587, ex);
                     }
                 }
             } else {
@@ -288,7 +288,7 @@ public class PanelImport extends PanelVorlage {
                     try {
                         jTextFieldDatei.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(802039730, ex);
+                        MSLog.fehlerMeldung(802039730, ex);
                     }
                 }
             }

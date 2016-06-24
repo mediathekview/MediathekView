@@ -26,7 +26,7 @@ import java.net.URISyntaxException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
-import mediathek.controller.Log;
+import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 
@@ -79,7 +79,7 @@ public class UrlHyperlinkAction extends AbstractAction {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, UrlHyperlinkAction.class.getSimpleName());
             } catch (Exception ex) {
                 Daten.mVConfig.add(MVConfig.SYSTEM_URL_OEFFNEN, ""); // dann wars wohl nix
-                Log.fehlerMeldung(316497658, ex, "URL öffnen: " + url);
+                MSLog.fehlerMeldung(316497658, ex, "URL öffnen: " + url);
             }
         }
     }

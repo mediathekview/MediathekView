@@ -35,7 +35,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
-import mediathek.controller.Log;
+import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
@@ -306,7 +306,7 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
                         jComboBoxPath.addItem(chooser.getDirectory() + chooser.getFile());
                         jComboBoxPath.setSelectedItem(chooser.getDirectory() + chooser.getFile());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(356871087, ex);
+                        MSLog.fehlerMeldung(356871087, ex);
                     }
                 }
                 System.setProperty("apple.awt.fileDialogForDirectories", "false");
@@ -324,7 +324,7 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
                         jComboBoxPath.addItem(chooser.getSelectedFile().getAbsolutePath());
                         jComboBoxPath.setSelectedItem(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(356871087, ex);
+                        MSLog.fehlerMeldung(356871087, ex);
                     }
                 }
             }

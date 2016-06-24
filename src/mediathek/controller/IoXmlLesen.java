@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import mSearch.filmlisten.DatenFilmlisteUrl;
 import mSearch.tool.MSConst;
+import mSearch.tool.MSLog;
 import mediathek.daten.*;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
@@ -120,7 +121,7 @@ public class IoXmlLesen {
                 ret = true;
             } catch (Exception ex) {
                 ret = false;
-                Log.fehlerMeldung(392840096, ex);
+                MSLog.fehlerMeldung(392840096, ex);
             }
             Daten.listeDownloads.listeNummerieren();
             //ListeFilmUpdateServer aufbauen
@@ -176,7 +177,7 @@ public class IoXmlLesen {
             }
             in.close();
         } catch (Exception ex) {
-            Log.fehlerMeldung(302045698, ex);
+            MSLog.fehlerMeldung(302045698, ex);
         }
         if (found[0] > 0) {
             Daten.listeAbo.aenderungMelden();
@@ -223,7 +224,7 @@ public class IoXmlLesen {
         } catch (Exception ex) {
             ret = false;
             if (log) {
-                Log.fehlerMeldung(739530149, ex);
+                MSLog.fehlerMeldung(739530149, ex);
             }
         }
         return ret;
@@ -248,7 +249,7 @@ public class IoXmlLesen {
         } catch (Exception ex) {
             ret = false;
             if (log) {
-                Log.fehlerMeldung(945120369, ex);
+                MSLog.fehlerMeldung(945120369, ex);
             }
         }
         return ret;

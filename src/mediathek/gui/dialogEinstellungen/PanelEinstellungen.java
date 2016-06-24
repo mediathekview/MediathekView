@@ -34,7 +34,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import mediathek.controller.Log;
+import mSearch.tool.MSLog;
 import mediathek.controller.ProgrammUpdateSuchen;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
@@ -133,7 +133,7 @@ public class PanelEinstellungen extends PanelVorlage {
         } catch (Exception ex) {
             Daten.mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
             Daten.mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, "");
-            Log.fehlerMeldung(829304789, ex);
+            MSLog.fehlerMeldung(829304789, ex);
         }
     }
 
@@ -212,7 +212,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(636875409, ex);
+            MSLog.fehlerMeldung(636875409, ex);
         }
 
         jComboBoxIcons.setModel(model);

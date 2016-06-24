@@ -112,11 +112,9 @@ public class Main {
                     case "-v":
                         EventQueue.invokeLater(() -> {
                             Log.startMeldungen();
-                            Log.systemMeldung("Test 0");
-                            Log.fehlerMeldung(100000000, "Test 1");
-                            Log.fehlerMeldung(200000000, "Test 2");
-                            MSLog.fehlerMeldung(0, "Test 3");
-                            Log.printEndeMeldung();
+                            Log.systemMeldung("Systemmeldung");
+                            MSLog.fehlerMeldung(100000000, "Fehlermeldung");
+                            MSLog.endeMeldung();
                             System.exit(0);
                         });
                         break;
@@ -124,6 +122,16 @@ public class Main {
                     case "-d":
                         Daten.debug = true;
                         MSConfig.debug = true;
+
+//                        EventQueue.invokeLater(() -> {
+//                            // zum Test
+//                            Log.startMeldungen();
+//                            Log.systemMeldung("Test 0");
+//                            MSLog.fehlerMeldung(100000000, "Test 1");
+//                            MSLog.fehlerMeldung(200000000, "Test 2");
+//                            MSLog.fehlerMeldung(0, "Test 3");
+//                        });
+
                         break;
 
                     case "-m":

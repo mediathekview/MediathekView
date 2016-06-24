@@ -30,7 +30,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import mediathek.controller.Log;
+import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenMediaDB;
 import mediathek.file.GetFile;
@@ -201,7 +201,7 @@ public class PanelMediaDB extends PanelVorlage {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(732165489, ex);
+                MSLog.fehlerMeldung(732165489, ex);
             }
         }
         this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -665,7 +665,7 @@ public class PanelMediaDB extends PanelVorlage {
                     try {
                         jTextFieldPath.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(951024789, ex);
+                        MSLog.fehlerMeldung(951024789, ex);
                     }
                 }
                 System.setProperty("apple.awt.fileDialogForDirectories", "false");
@@ -682,7 +682,7 @@ public class PanelMediaDB extends PanelVorlage {
                     try {
                         jTextFieldPath.setText(chooser.getSelectedFile().getPath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(765212369, ex);
+                        MSLog.fehlerMeldung(765212369, ex);
                     }
                 }
             }
@@ -725,7 +725,7 @@ public class PanelMediaDB extends PanelVorlage {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldExportPath.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(679890147, ex);
+                        MSLog.fehlerMeldung(679890147, ex);
                     }
                 }
             } else {
@@ -741,7 +741,7 @@ public class PanelMediaDB extends PanelVorlage {
                     try {
                         jTextFieldExportPath.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(911025463, ex);
+                        MSLog.fehlerMeldung(911025463, ex);
                     }
                 }
             }

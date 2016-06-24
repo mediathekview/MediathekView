@@ -30,7 +30,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import mediathek.controller.Log;
+import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
@@ -568,7 +568,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         textField.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(915263014, ex);
+                        MSLog.fehlerMeldung(915263014, ex);
                     }
                 }
             } else {
@@ -585,7 +585,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     try {
                         textField.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(751214501, ex);
+                        MSLog.fehlerMeldung(751214501, ex);
                     }
                 }
             }

@@ -44,6 +44,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.MVMessageDialog;
 import mSearch.daten.DatenFilm;
+import mSearch.tool.MSLog;
 
 public class DialogEditDownload extends javax.swing.JDialog {
     
@@ -442,7 +443,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
             }
         } catch (Exception ex) {
             MVMessageDialog.showMessageDialog(parent, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
-            Log.fehlerMeldung(812036789, "Fehler beim löschen: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            MSLog.fehlerMeldung(812036789, "Fehler beim löschen: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
         return true;
     }

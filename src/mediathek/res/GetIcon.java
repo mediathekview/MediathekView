@@ -21,7 +21,7 @@ package mediathek.res;
 
 import java.io.File;
 import javax.swing.ImageIcon;
-import mediathek.controller.Log;
+import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVConfig;
@@ -57,7 +57,7 @@ public class GetIcon {
                     icon = getStandard(strIcon, path);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(932107891, strIcon);
+                MSLog.fehlerMeldung(932107891, strIcon);
                 icon = getStandard(strIcon, path);
             }
             return icon;

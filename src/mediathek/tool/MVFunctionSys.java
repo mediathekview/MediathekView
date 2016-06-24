@@ -23,8 +23,8 @@ import com.jidesoft.utils.SystemInfo;
 import java.io.File;
 import java.security.CodeSource;
 import java.util.ResourceBundle;
+import mSearch.tool.MSLog;
 import mediathek.Main;
-import mediathek.controller.Log;
 
 public class MVFunctionSys {
 
@@ -135,7 +135,7 @@ public class MVFunctionSys {
             rb = ResourceBundle.getBundle("version");
             msg = rb.getString(propToken);
         } catch (Exception e) {
-            Log.fehlerMeldung(807293847, e);
+            MSLog.fehlerMeldung(807293847, e);
         }
         return msg;
     }
@@ -149,7 +149,7 @@ public class MVFunctionSys {
             rb = ResourceBundle.getBundle("version");
             msg = rb.getString(propToken);
         } catch (Exception e) {
-            Log.fehlerMeldung(134679898, e);
+            MSLog.fehlerMeldung(134679898, e);
         }
         return msg;
     }

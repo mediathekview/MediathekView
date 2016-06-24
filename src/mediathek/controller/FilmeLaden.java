@@ -37,6 +37,7 @@ import mSearch.filmlisten.MSFilmlisteLesen;
 import mSearch.filmlisten.MSImportFilmliste;
 import mSearch.tool.Duration;
 import mSearch.tool.MSConfig;
+import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
@@ -268,7 +269,7 @@ public class FilmeLaden {
                 });
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(765213654, ex);
+            MSLog.fehlerMeldung(765213654, ex);
         }
     }
 
@@ -287,7 +288,7 @@ public class FilmeLaden {
                 });
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(201020369, ex);
+            MSLog.fehlerMeldung(201020369, ex);
         }
     }
 
@@ -306,7 +307,7 @@ public class FilmeLaden {
                 });
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(945120303, ex);
+            MSLog.fehlerMeldung(945120303, ex);
         }
     }
 }

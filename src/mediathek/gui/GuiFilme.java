@@ -19,7 +19,6 @@
  */
 package mediathek.gui;
 
-import mediathek.controller.Log;
 import mediathek.controller.starter.Start;
 import mediathek.daten.*;
 import mediathek.gui.dialog.DialogAddDownload;
@@ -43,6 +42,7 @@ import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Optional;
+import mSearch.tool.MSLog;
 
 public class GuiFilme extends PanelVorlage {
 
@@ -900,7 +900,7 @@ public class GuiFilme extends PanelVorlage {
                 loadTable();
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(558965421, ex);
+            MSLog.fehlerMeldung(558965421, ex);
         }
 
         tabelle.scrollToSelection();
@@ -1485,7 +1485,7 @@ public class GuiFilme extends PanelVorlage {
                 try {
                     tabelle.print();
                 } catch (PrinterException ex) {
-                    Log.fehlerMeldung(688542239, ex);
+                    MSLog.fehlerMeldung(688542239, ex);
                 }
             }
         }

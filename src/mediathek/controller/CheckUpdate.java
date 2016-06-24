@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
@@ -60,7 +61,7 @@ public class CheckUpdate {
                     SwingUtilities.invokeLater(CheckUpdate.this::prog);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(794510101, ex);
+                MSLog.fehlerMeldung(794510101, ex);
             }
         }
     }
@@ -90,7 +91,7 @@ public class CheckUpdate {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(794612801, ex);
+            MSLog.fehlerMeldung(794612801, ex);
         }
     }
 
@@ -110,7 +111,7 @@ public class CheckUpdate {
                     SwingUtilities.invokeLater(CheckUpdate.this::set);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(794510101, ex);
+                MSLog.fehlerMeldung(794510101, ex);
             }
         }
     }
