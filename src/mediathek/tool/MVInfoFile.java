@@ -19,22 +19,18 @@
  */
 package mediathek.tool;
 
-import java.io.BufferedWriter;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.swing.JFrame;
+import mSearch.daten.DatenFilm;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialog.DialogZiel;
-import mSearch.daten.DatenFilm;
 
 public class MVInfoFile {
 

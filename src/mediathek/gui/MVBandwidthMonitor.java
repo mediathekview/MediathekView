@@ -20,10 +20,10 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
+import mSearch.tool.DebugMsg;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.DebugMsg;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVConfig;
 

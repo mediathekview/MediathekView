@@ -84,7 +84,7 @@ import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 import mediathek.res.GetIcon;
-import mediathek.tool.Duration;
+import mSearch.tool.Duration;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.ListenerMediathekView;
@@ -630,32 +630,26 @@ public class MediathekGui extends JFrame {
         int nr = 1;
         if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_DOWNLOAD))) {
             hide(0, daten.guiDownloads);
+        } else if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_DOWNLOAD))) {
+            setFrame(0, MVConfig.SYSTEM_GROESSE_DOWNLOAD, daten.guiDownloads, MVToolBar.TOOLBAR_TAB_DOWNLOADS, "Downloads");
         } else {
-            if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_DOWNLOAD))) {
-                setFrame(0, MVConfig.SYSTEM_GROESSE_DOWNLOAD, daten.guiDownloads, MVToolBar.TOOLBAR_TAB_DOWNLOADS, "Downloads");
-            } else {
-                setTab(0, daten.guiDownloads, "Downloads", nr++);
-            }
+            setTab(0, daten.guiDownloads, "Downloads", nr++);
         }
         // Abos
         if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_ABO))) {
             hide(1, daten.guiAbo);
+        } else if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_ABO))) {
+            setFrame(1, MVConfig.SYSTEM_GROESSE_ABO, daten.guiAbo, MVToolBar.TOOLBAR_TAB_ABOS, "Abos");
         } else {
-            if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_ABO))) {
-                setFrame(1, MVConfig.SYSTEM_GROESSE_ABO, daten.guiAbo, MVToolBar.TOOLBAR_TAB_ABOS, "Abos");
-            } else {
-                setTab(1, daten.guiAbo, "Abos", nr++);
-            }
+            setTab(1, daten.guiAbo, "Abos", nr++);
         }
         // Meldungen
         if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_MELDUNGEN))) {
             hide(2, panelMeldungen);
+        } else if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_MELDUNGEN))) {
+            setFrame(2, MVConfig.SYSTEM_GROESSE_MELDUNGEN, panelMeldungen, MVToolBar.TOOLBAR_TAB_MELDUNGEN, "Meldungen");
         } else {
-            if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_MELDUNGEN))) {
-                setFrame(2, MVConfig.SYSTEM_GROESSE_MELDUNGEN, panelMeldungen, MVToolBar.TOOLBAR_TAB_MELDUNGEN, "Meldungen");
-            } else {
-                setTab(2, panelMeldungen, "Meldungen", nr);
-            }
+            setTab(2, panelMeldungen, "Meldungen", nr);
         }
         mVToolBar.loadVisible(); // die können sich im externen Fenster geändert haben
         jTabbedPane.setSelectedIndex(0);

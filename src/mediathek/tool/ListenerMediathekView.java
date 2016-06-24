@@ -22,6 +22,7 @@ package mediathek.tool;
 import java.util.EventListener;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
+import mSearch.tool.DebugMsg;
 import mediathek.controller.Log;
 
 public class ListenerMediathekView implements EventListener {

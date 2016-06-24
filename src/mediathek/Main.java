@@ -19,11 +19,12 @@
  */
 package mediathek;
 
-import mediathek.fx.MVPreloaderController;
 import com.jidesoft.utils.SystemInfo;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import com.sun.javafx.application.LauncherImpl;
-import java.awt.*;
+import java.awt.EventQueue;
+import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
 import java.io.File;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
@@ -33,8 +34,10 @@ import java.nio.file.Paths;
 import javafx.application.Platform;
 import javax.swing.JOptionPane;
 import javax.swing.RepaintManager;
+import mSearch.tool.MSConfig;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
+import mediathek.fx.MVPreloaderController;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVSingleInstance;
@@ -118,6 +121,7 @@ public class Main {
 
                     case "-d":
                         Daten.debug = true;
+                        MSConfig.debug = true;
                         break;
 
                     case "-m":
