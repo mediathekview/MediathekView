@@ -52,9 +52,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javax.swing.Timer;
+import mSearch.tool.DebugMsg;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.DebugMsg;
 
 public class DownloadInfoController implements Initializable {
 

@@ -33,16 +33,16 @@ import java.util.Iterator;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
+import mSearch.daten.DatenFilm;
+import mSearch.daten.ListeFilme;
+import mSearch.filmlisten.MSFilmlisteLesen;
+import mSearch.tool.Duration;
 import mediathek.MediathekGui;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisten;
-import mediathek.tool.Duration;
 import mediathek.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
-import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
-import mSearch.filmlisten.MSFilmlisteLesen;
 
 public class GuiDebug extends JPanel {
 

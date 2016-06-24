@@ -19,18 +19,18 @@
  */
 package mediathek.gui;
 
+import java.net.URISyntaxException;
+import javax.swing.JPanel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableModel;
+import mSearch.daten.DatenFilm;
+import mSearch.tool.DebugMsg;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
-import mSearch.daten.DatenFilm;
-
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableModel;
-import java.net.URISyntaxException;
 
 /**
  *

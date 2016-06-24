@@ -19,10 +19,14 @@
  */
 package mediathek.controller;
 
-import mediathek.daten.Daten;
-import mediathek.gui.dialog.DialogLeer;
-import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
-import mediathek.tool.*;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.stream.Collectors;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.event.EventListenerList;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.MSFilmeSuchen;
@@ -31,15 +35,12 @@ import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
 import mSearch.filmlisten.ListeFilmlistenUrls;
 import mSearch.filmlisten.MSFilmlisteLesen;
 import mSearch.filmlisten.MSImportFilmliste;
+import mSearch.tool.Duration;
 import mSearch.tool.MSConfig;
-
-import javax.swing.*;
-import javax.swing.event.EventListenerList;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.stream.Collectors;
+import mediathek.daten.Daten;
+import mediathek.gui.dialog.DialogLeer;
+import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
+import mediathek.tool.*;
 
 public class FilmeLaden {
 

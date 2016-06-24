@@ -35,21 +35,15 @@ import java.util.ArrayList;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.swing.SwingUtilities;
+import mSearch.daten.DatenFilm;
+import mSearch.tool.Datum;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.gui.dialog.DialogContinueDownload;
 import mediathek.gui.dialog.MeldungDownloadfehler;
-import mediathek.tool.Konstanten;
-import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVConfig;
-import mediathek.tool.MVInfoFile;
-import mediathek.tool.MVInputStream;
-import mediathek.tool.MVNotification;
-import mediathek.tool.MVSubtitle;
-import mSearch.daten.DatenFilm;
-import mSearch.tool.Datum;
+import mediathek.tool.*;
 
 public class StarterClass {
     //Tags Filme

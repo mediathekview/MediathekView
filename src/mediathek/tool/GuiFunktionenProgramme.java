@@ -20,11 +20,7 @@
 package mediathek.tool;
 
 import java.awt.Cursor;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -33,6 +29,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import mSearch.tool.MSConst;
 import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
@@ -40,7 +37,6 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.dialogEinstellungen.DialogImportPset;
-import mSearch.tool.MSConst;
 
 public class GuiFunktionenProgramme extends GuiFunktionen {
 

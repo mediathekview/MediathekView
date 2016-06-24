@@ -19,9 +19,9 @@
  */
 package mediathek.daten;
 
-import mediathek.controller.Log;
-import mediathek.tool.GermanStringSorter;
 import mSearch.daten.DatenFilm;
+import mSearch.tool.GermanStringSorter;
+import mediathek.controller.Log;
 
 public class DatenAbo implements Comparable<DatenAbo> {
     //Tags Abo

@@ -40,7 +40,7 @@ public class MVNotification {
         final String[] m = {
                 "Film:   " + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR],
                 "Sender: " + datenDownload.arr[DatenDownload.DOWNLOAD_SENDER_NR],
-                "Größe:  " + MVFunction.humanReadableByteCount(datenDownload.mVFilmSize.getSize(), true),
+                "Größe:  " + MVFilmSize.humanReadableByteCount(datenDownload.mVFilmSize.getSize(), true),
                 (erfolgreich ? "Download war erfolgreich" : "Download war fehlerhaft")
         };
         add(m, erfolgreich);

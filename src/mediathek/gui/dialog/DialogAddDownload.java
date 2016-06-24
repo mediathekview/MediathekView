@@ -39,21 +39,13 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
+import mSearch.daten.DatenFilm;
 import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.res.GetIcon;
-import mediathek.tool.EscBeenden;
-import mediathek.tool.FilenameUtils;
-import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.Konstanten;
-import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVColor;
-import mediathek.tool.MVConfig;
-import mediathek.tool.MVFunction;
-import mediathek.tool.MVMessageDialog;
-import mSearch.daten.DatenFilm;
+import mediathek.tool.*;
 
 public class DialogAddDownload extends JDialog {
 
@@ -294,7 +286,7 @@ public class DialogAddDownload extends JDialog {
         try {
             long usableSpace = getFreeDiskSpace(cbPathTextComponent.getText());
             if (usableSpace > 0) {
-                filmBorder.setTitle(TITLED_BORDER_STRING + " [ noch frei: " + MVFunction.humanReadableByteCount(usableSpace, true) + " ]");
+                filmBorder.setTitle(TITLED_BORDER_STRING + " [ noch frei: " + MVFilmSize.humanReadableByteCount(usableSpace, true) + " ]");
             } else {
                 filmBorder.setTitle(TITLED_BORDER_STRING);
             }

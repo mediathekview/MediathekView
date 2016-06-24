@@ -30,7 +30,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import mediathek.tool.DebugMsg;
+import mSearch.tool.DebugMsg;
 
 public class MVPreloaderController extends Preloader {
 
