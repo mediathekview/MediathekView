@@ -19,6 +19,7 @@
  */
 package mediathek.gui;
 
+import mSearch.tool.ListenerMediathekView;
 import java.net.URISyntaxException;
 import javax.swing.JPanel;
 import javax.swing.event.ListSelectionEvent;

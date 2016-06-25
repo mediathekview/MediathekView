@@ -1,15 +1,10 @@
 package mediathek.gui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.RenderingHints;
+import java.awt.*;
 import javax.swing.JButton;
 import javax.swing.Timer;
-import mediathek.tool.MVFunctionSys;
+import mSearch.tool.MSFunktionen.OperatingSystemType;
+import static mSearch.tool.MSFunktionen.getOs;
 
 public class MVMemoryUsageButton extends JButton {
 
@@ -41,7 +36,7 @@ public class MVMemoryUsageButton extends JButton {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         final long maxMem;
-        if (MVFunctionSys.getOs() == MVFunctionSys.OperatingSystemType.LINUX) {
+        if (getOs() == OperatingSystemType.LINUX) {
             maxMem = rt.totalMemory();
         } else {
             maxMem = rt.maxMemory();

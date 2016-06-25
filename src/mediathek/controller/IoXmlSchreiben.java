@@ -19,7 +19,6 @@
  */
 package mediathek.controller;
 
-import mediathek.tool.MVLog;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
@@ -28,13 +27,15 @@ import java.nio.file.Paths;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import static mSearch.daten.Data.mVReplaceList;
 import mSearch.filmlisten.DatenFilmlisteUrl;
 import mSearch.tool.MSConst;
 import mSearch.tool.MSLog;
+import mSearch.tool.MVReplaceList;
 import mediathek.daten.*;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVConfig;
-import mediathek.tool.MVReplaceList;
+import mediathek.tool.MVLog;
 
 public class IoXmlSchreiben {
 
@@ -120,7 +121,7 @@ public class IoXmlSchreiben {
     }
 
     private static void xmlSchreibenErsetzungstabelle() {
-        for (String[] sa : Daten.mVReplaceList.list) {
+        for (String[] sa : mVReplaceList.list) {
             xmlSchreibenDaten(MVReplaceList.REPLACELIST, MVReplaceList.COLUMN_NAMES, sa, false);
         }
     }

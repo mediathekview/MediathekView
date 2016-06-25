@@ -28,7 +28,7 @@ import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.TModel;
 

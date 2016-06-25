@@ -19,6 +19,8 @@
  */
 package mediathek.gui.dialog;
 
+import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.FilenameUtils;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -137,7 +139,9 @@ public class DialogMediaDB extends javax.swing.JDialog {
     }
 
     public void setFilter(String titel) {
-        titel = FilenameUtils.replaceLeerDateiname(titel, false /*pfad*/); // mit den eingestellten Ersetzungen bearbeiten
+        titel = FilenameUtils.replaceLeerDateiname(titel, false /*pfad*/,
+                Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)),
+                Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ONLY_ASCII))); // mit den eingestellten Ersetzungen bearbeiten
         jTextFieldSearch.setText(titel);
     }
 

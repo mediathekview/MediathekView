@@ -41,7 +41,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.BeobTableHeader;
 import mediathek.tool.CellRendererAbo;
 import mediathek.tool.HinweisKeineAuswahl;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVTable;
 import mediathek.tool.TModelAbo;
 import mSearch.tool.Datum;

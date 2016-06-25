@@ -19,6 +19,8 @@
  */
 package mediathek.daten;
 
+import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.FilenameUtils;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -527,7 +529,9 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 }
             }
 
-            name = FilenameUtils.replaceLeerDateiname(name, false /*pfad*/);
+            name = FilenameUtils.replaceLeerDateiname(name, false /*pfad*/,
+                    Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)),
+                    Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ONLY_ASCII)));
             name = name + suff;
 
             // prüfen ob das Suffix 2x vorkommt
@@ -576,7 +580,9 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 //Downloads
                 if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
                     //und den Namen des Themas an den Zielpfad anhängen
-                    path = GuiFunktionen.addsPfad(path, FilenameUtils.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA_NR], true /*pfad*/));
+                    path = GuiFunktionen.addsPfad(path, FilenameUtils.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA_NR], true /*pfad*/,
+                            Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)),
+                            Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ONLY_ASCII))));
                 }
             }
 
@@ -665,7 +671,9 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     private String getField(String name, int length) {
-        name = FilenameUtils.replaceLeerDateiname(name, false /*pfad*/);
+        name = FilenameUtils.replaceLeerDateiname(name, false /*pfad*/,
+                Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)),
+                Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ONLY_ASCII)));
 
         if (length < 0) {
             return name;

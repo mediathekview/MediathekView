@@ -37,7 +37,7 @@ import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 
 public class PanelPsetKurz extends PanelVorlage {
 

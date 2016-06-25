@@ -29,6 +29,8 @@ import java.io.File;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import mSearch.tool.MSFunktionen.OperatingSystemType;
+import static mSearch.tool.MSFunktionen.getOs;
 import mSearch.tool.MSLog;
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;

@@ -2,7 +2,7 @@ package mediathek.controller.starter;
 
 import java.util.concurrent.Semaphore;
 import mediathek.daten.Daten;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 
 /**

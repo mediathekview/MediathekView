@@ -30,18 +30,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.MSFunktionen.OperatingSystemType;
+import static mSearch.tool.MSFunktionen.getOs;
 import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Konstanten;
-import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVConfig;
-import mediathek.tool.MVFunctionSys;
-import mediathek.tool.MVFunctionSys.OperatingSystemType;
-import mediathek.tool.MVMessageDialog;
+import mediathek.tool.*;
 
 public class PanelEinstellungenErweitert extends PanelVorlage {
 
@@ -91,7 +88,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         }
         jTextFieldProgrammShutdown.getDocument().addDocumentListener(new BeobDoc(MVConfig.SYSTEM_LINUX_SHUTDOWN, jTextFieldProgrammShutdown));
 
-        if (MVFunctionSys.getOs() != OperatingSystemType.LINUX) {
+        if (getOs() != OperatingSystemType.LINUX) {
             // Funktion ist nur für Linux
             jButtonHilfeProgrammShutdown.setEnabled(false);
             jTextFieldProgrammShutdown.setEnabled(false);

@@ -31,7 +31,7 @@ import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.dialog.DialogNewSet;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFunctionSys;
 

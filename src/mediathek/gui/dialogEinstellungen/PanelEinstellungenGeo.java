@@ -27,7 +27,7 @@ import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mSearch.daten.DatenFilm;
 

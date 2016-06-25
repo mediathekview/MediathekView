@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import mSearch.tool.ListenerMediathekView;
 import java.awt.*;
 import java.net.URL;
 import java.text.SimpleDateFormat;

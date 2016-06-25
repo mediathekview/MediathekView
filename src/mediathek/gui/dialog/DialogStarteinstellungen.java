@@ -24,6 +24,7 @@ import java.awt.event.ActionListener;
 import javax.swing.GroupLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import static mSearch.tool.MSFunktionen.getOs;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
@@ -33,7 +34,6 @@ import mediathek.gui.dialogEinstellungen.PanelPsetKurz;
 import mediathek.gui.dialogEinstellungen.PanelPsetLang;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.MVConfig;
-import static mediathek.tool.MVFunctionSys.getOs;
 
 public class DialogStarteinstellungen extends javax.swing.JDialog {
 

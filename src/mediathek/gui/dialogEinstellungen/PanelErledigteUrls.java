@@ -46,7 +46,7 @@ import mediathek.gui.dialog.DialogZiel;
 import mediathek.gui.dialog.MVFilmInfo;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVRun;
 import mediathek.tool.TModel;

@@ -19,6 +19,7 @@
  */
 package mediathek.controller.starter;
 
+import mSearch.tool.ListenerMediathekView;
 import com.apple.eawt.Application;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Toolkit;

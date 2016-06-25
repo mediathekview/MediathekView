@@ -13,7 +13,7 @@ import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 
 /**
  * User: crystalpalace1977

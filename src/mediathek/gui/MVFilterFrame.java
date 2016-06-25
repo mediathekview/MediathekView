@@ -66,7 +66,7 @@ import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 

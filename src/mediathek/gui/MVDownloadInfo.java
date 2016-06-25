@@ -19,6 +19,7 @@
  */
 package mediathek.gui;
 
+import mSearch.tool.ListenerMediathekView;
 import info.monitorenter.gui.chart.Chart2D;
 import info.monitorenter.gui.chart.IAxis;
 import info.monitorenter.gui.chart.labelformatters.LabelFormatterAutoUnits;
@@ -33,6 +34,8 @@ import java.awt.event.WindowListener;
 import java.util.TimerTask;
 import javax.swing.*;
 import mSearch.tool.DebugMsg;
+import mSearch.tool.MSFunktionen.OperatingSystemType;
+import static mSearch.tool.MSFunktionen.getOs;
 import mediathek.controller.starter.MVBandwidthTokenBucket;
 import mediathek.daten.Daten;
 import mediathek.daten.DownloadInfos;
@@ -76,7 +79,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         chart.setPaintLabels(true);
         chart.setUseAntialiasing(true);
         chart.setToolTipType(Chart2D.ToolTipType.VALUE_SNAP_TO_TRACEPOINTS);
-        if (MVFunctionSys.getOs() == MVFunctionSys.OperatingSystemType.LINUX) {
+        if (getOs() == OperatingSystemType.LINUX) {
             jDialog.setBackground(null);
             chart.setOpaque(true);
             this.setOpaque(true);

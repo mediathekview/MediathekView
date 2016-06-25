@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.ListenerMediathekView;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.BorderLayout;
 import java.awt.Color;

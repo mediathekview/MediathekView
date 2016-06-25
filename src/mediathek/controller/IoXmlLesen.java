@@ -26,13 +26,14 @@ import java.nio.file.Path;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
+import static mSearch.daten.Data.mVReplaceList;
 import mSearch.filmlisten.DatenFilmlisteUrl;
 import mSearch.tool.MSConst;
 import mSearch.tool.MSLog;
 import mediathek.daten.*;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
-import mediathek.tool.MVReplaceList;
+import mSearch.tool.MVReplaceList;
 
 public class IoXmlLesen {
 
@@ -74,7 +75,7 @@ public class IoXmlLesen {
                                 // Ersetzungstabelle
                                 String[] sa = new String[MVReplaceList.MAX_ELEM];
                                 if (get(parser, MVReplaceList.REPLACELIST, MVReplaceList.COLUMN_NAMES, sa)) {
-                                    Daten.mVReplaceList.list.add(sa);
+                                    mVReplaceList.list.add(sa);
                                 }
                                 break;
                             case DatenAbo.ABO:
@@ -170,7 +171,7 @@ public class IoXmlLesen {
                         String[] sa = new String[MVReplaceList.MAX_ELEM];
                         if (get(parser, MVReplaceList.REPLACELIST, MVReplaceList.COLUMN_NAMES, sa)) {
                             ++found[2];
-                            Daten.mVReplaceList.list.add(sa);
+                            mVReplaceList.list.add(sa);
                         }
                     }
                 }

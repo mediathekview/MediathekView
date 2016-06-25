@@ -39,7 +39,7 @@ import mSearch.tool.MSLog;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
-import mediathek.tool.FilenameUtils;
+import mSearch.tool.FilenameUtils;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVColor;
 import mediathek.tool.MVConfig;

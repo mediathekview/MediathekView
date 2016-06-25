@@ -57,6 +57,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
+import mSearch.daten.Data;
 import mediathek.controller.CheckUpdate;
 import mediathek.tool.MVLog;
 import mediathek.controller.starter.Start;
@@ -87,14 +88,15 @@ import mediathek.res.GetIcon;
 import mSearch.tool.Duration;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVFrame;
-import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVMessageDialog;
 import mSearch.filmeSuchen.MSListenerFilmeLaden;
 import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import mSearch.tool.MSFunktionen.OperatingSystemType;
+import static mSearch.tool.MSFunktionen.getOs;
 import mSearch.tool.MSLog;
 
 public class MediathekGui extends JFrame {
@@ -275,7 +277,7 @@ public class MediathekGui extends JFrame {
             updateSplashScreenText("GUI Initialisieren...");
         } else {
             // erster Start
-            Daten.mVReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
+            Data.mVReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
             new DialogStarteinstellungen(this, daten).setVisible(true);
             this.pack();
         }
@@ -389,7 +391,7 @@ public class MediathekGui extends JFrame {
             String laf = Daten.mVConfig.get(MVConfig.SYSTEM_LOOK);
             //if we have the old values, reset to System LAF
             if (laf.equals("") || laf.length() == 1) {
-                if (MVFunctionSys.getOs() != MVFunctionSys.OperatingSystemType.LINUX) {
+                if (getOs() != OperatingSystemType.LINUX) {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 }
             } else {
@@ -1068,7 +1070,7 @@ public class MediathekGui extends JFrame {
     protected void shutdownComputer() {
         String strShutdownCommand = "";
 
-        switch (MVFunctionSys.getOs()) {
+        switch (getOs()) {
             case LINUX:
                 //strShutdownCommand = "shutdown -h now";
                 strShutdownCommand = Daten.mVConfig.get(MVConfig.SYSTEM_LINUX_SHUTDOWN);

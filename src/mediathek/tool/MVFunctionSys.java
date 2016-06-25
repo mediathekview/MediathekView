@@ -19,7 +19,6 @@
  */
 package mediathek.tool;
 
-import com.jidesoft.utils.SystemInfo;
 import java.io.File;
 import java.security.CodeSource;
 import java.util.ResourceBundle;
@@ -28,52 +27,7 @@ import mediathek.Main;
 
 public class MVFunctionSys {
 
-    public enum OperatingSystemType {
-
-        UNKNOWN(""), WIN32("Windows"), WIN64("Windows"), LINUX("Linux"), MAC("Mac");
-        private final String name;
-
-        OperatingSystemType(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
-
-    /**
-     * Detect and return the currently used operating system.
-     *
-     * @return The enum for supported Operating Systems.
-     */
-    public static OperatingSystemType getOs() {
-        OperatingSystemType os = OperatingSystemType.UNKNOWN;
-
-        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            if (System.getenv("ProgramFiles(x86)") != null) {
-                // win 64Bit
-                os = OperatingSystemType.WIN64;
-            } else if (System.getenv("ProgramFiles") != null) {
-                // win 32Bit
-                os = OperatingSystemType.WIN32;
-            }
-
-        } else if (SystemInfo.isLinux()) {
-            os = OperatingSystemType.LINUX;
-        } else if (System.getProperty("os.name").toLowerCase().contains("freebsd")) {
-            os = OperatingSystemType.LINUX;
-
-        } else if (SystemInfo.isMacOSX()) {
-            os = OperatingSystemType.MAC;
-        }
-        return os;
-    }
-
-    public static String getOsString() {
-        return getOs().toString();
-    }
+ 
 
     /**
      * Retrieve the path to the program jar file.

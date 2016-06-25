@@ -27,9 +27,9 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import javax.swing.JOptionPane;
 import mediathek.gui.dialog.DialogEditAbo;
-import mediathek.tool.FilenameUtils;
+import mSearch.tool.FilenameUtils;
 import mediathek.tool.Filter;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelAbo;
@@ -67,7 +67,9 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     public boolean addAbo(String filmSender, String filmThema, String filmTitel, String filmThemaTitel, String irgendwo, int mindestdauer, String namePfad) {
         //abo anlegen, oder false wenns schon existiert
         boolean ret = false;
-        namePfad = FilenameUtils.replaceLeerDateiname(namePfad, false /*nur ein Ordner*/);
+        namePfad = FilenameUtils.replaceLeerDateiname(namePfad, false /*nur ein Ordner*/,
+                Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)),
+                Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ONLY_ASCII)));
         DatenAbo datenAbo = new DatenAbo(namePfad /* name */, filmSender, filmThema, filmTitel, filmThemaTitel, irgendwo, mindestdauer, namePfad, "");
         DialogEditAbo dialogEditAbo = new DialogEditAbo(daten.mediathekGui, true, daten, datenAbo);
         dialogEditAbo.setVisible(true);
