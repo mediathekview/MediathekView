@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.text.DefaultCaret;
-import mediathek.controller.Log;
+import mediathek.tool.MVLog;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.ListenerMediathekView;
@@ -191,7 +191,7 @@ public class PanelMeldungen extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
-            Log.clearText(logArt);
+            MVLog.clearText(logArt);
             setText();
         }
     }

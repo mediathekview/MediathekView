@@ -29,7 +29,6 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenMediaDB;
 import mSearch.tool.MSConst;
 import mSearch.tool.MSLog;
-import mediathek.controller.Log;
 
 public class MVMediaDB {
 
@@ -174,7 +173,7 @@ public class MVMediaDB {
     public synchronized void writeFileArray(String datei) {
         OutputStreamWriter out = null;
         try {
-            Log.systemMeldung("MediaDB schreiben (" + fileArray.size() + " Dateien) :");
+            MVLog.systemMeldung("MediaDB schreiben (" + fileArray.size() + " Dateien) :");
             File file = new File(datei);
             File dir = new File(file.getParent());
             if (!dir.exists()) {
@@ -182,13 +181,13 @@ public class MVMediaDB {
                     MSLog.fehlerMeldung(945120365, "Kann den Pfad nicht anlegen: " + dir.toString());
                 }
             }
-            Log.systemMeldung("   --> Start Schreiben nach: " + datei);
+            MVLog.systemMeldung("   --> Start Schreiben nach: " + datei);
             out = new OutputStreamWriter(new FileOutputStream(datei), MSConst.KODIERUNG_UTF);
 
             for (DatenMediaDB s : fileArray) {
                 out.write(s.arr[DatenMediaDB.MEDIA_DB_NAME_NR] + "\n");
             }
-            Log.systemMeldung("   --> geschrieben!");
+            MVLog.systemMeldung("   --> geschrieben!");
         } catch (Exception ex) {
             MSLog.fehlerMeldung(102035478, ex, "nach: " + datei);
         } finally {

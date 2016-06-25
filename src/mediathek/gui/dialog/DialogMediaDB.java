@@ -34,7 +34,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mSearch.tool.MSLog;
-import mediathek.controller.Log;
+import mediathek.tool.MVLog;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenMediaDB;
 import mediathek.file.GetFile;
@@ -213,7 +213,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
             }
 
             // und jetzt die Datei löschen
-            Log.systemMeldung(new String[]{"Datei löschen: ", delFile.getAbsolutePath()});
+            MVLog.systemMeldung(new String[]{"Datei löschen: ", delFile.getAbsolutePath()});
             if (!delFile.delete()) {
                 throw new Exception();
             }

@@ -26,7 +26,6 @@ import java.nio.file.Paths;
 import javax.swing.JFrame;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.MSLog;
-import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
@@ -107,7 +106,7 @@ public class MVInfoFile {
 
     public static void writeInfoFile(DatenDownload datenDownload) {
         try {
-            Log.systemMeldung(new String[]{"Infofile schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]});
+            MVLog.systemMeldung(new String[]{"Infofile schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]});
 
             new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
             Path path = Paths.get(datenDownload.getFileNameWithoutSuffix() + ".txt");
@@ -157,7 +156,7 @@ public class MVInfoFile {
             br.write("\n\n");
             br.flush();
             br.close();
-            Log.systemMeldung(new String[]{"Infofile", "  geschrieben"});
+            MVLog.systemMeldung(new String[]{"Infofile", "  geschrieben"});
         } catch (IOException ex) {
             MSLog.fehlerMeldung(975410369, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }

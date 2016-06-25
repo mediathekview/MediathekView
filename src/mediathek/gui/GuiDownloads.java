@@ -20,7 +20,7 @@
 package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
-import mediathek.controller.Log;
+import mediathek.tool.MVLog;
 import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
@@ -482,7 +482,7 @@ public class GuiDownloads extends PanelVorlage {
             if (ret == JOptionPane.OK_OPTION) {
 
                 // und jetzt die Datei löschen
-                Log.systemMeldung(new String[]{"Datei löschen: ", file.getAbsolutePath()});
+                MVLog.systemMeldung(new String[]{"Datei löschen: ", file.getAbsolutePath()});
                 if (!file.delete()) {
                     throw new Exception();
                 }

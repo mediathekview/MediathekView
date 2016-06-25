@@ -35,7 +35,7 @@ import javax.swing.JOptionPane;
 import javax.swing.RepaintManager;
 import mSearch.tool.MSConfig;
 import mSearch.tool.MSLog;
-import mediathek.controller.Log;
+import mediathek.tool.MVLog;
 import mediathek.daten.Daten;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.tool.Konstanten;
@@ -88,13 +88,13 @@ public class Main {
                         return new PasswordAuthentication(proxyUser, proxyPassword.toCharArray());
                     }
                 });
-                Log.systemMeldung("Proxy Authentication: (" + System.getProperty("http.proxyUser") + ")");
+                MVLog.systemMeldung("Proxy Authentication: (" + System.getProperty("http.proxyUser") + ")");
             } else {
-                Log.systemMeldung("Proxy Authentication: not configured");
+                MVLog.systemMeldung("Proxy Authentication: not configured");
             }
 
         } catch (SecurityException se) {
-            Log.systemMeldung("Proxy Authentication: cannot access proxyUser / proxyPassword" + se.toString());
+            MVLog.systemMeldung("Proxy Authentication: cannot access proxyUser / proxyPassword" + se.toString());
         }
 
         if (args != null) {
@@ -111,8 +111,8 @@ public class Main {
 
                     case "-v":
                         EventQueue.invokeLater(() -> {
-                            Log.startMeldungen();
-                            Log.systemMeldung("Systemmeldung");
+                            MVLog.startMeldungen();
+                            MVLog.systemMeldung("Systemmeldung");
                             MSLog.fehlerMeldung(100000000, "Fehlermeldung");
                             MSLog.endeMeldung();
                             System.exit(0);

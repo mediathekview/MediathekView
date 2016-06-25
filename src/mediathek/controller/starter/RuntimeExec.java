@@ -26,7 +26,7 @@ import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import mSearch.tool.MSLog;
-import mediathek.controller.Log;
+import mediathek.tool.MVLog;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.ListenerMediathekView;
 
@@ -75,18 +75,18 @@ public class RuntimeExec {
         try {
             if (arrProgCallArray != null) {
                 if (log) {
-                    Log.systemMeldung("=====================");
-                    Log.systemMeldung("Starte Array: ");
-                    Log.systemMeldung(" -> " + strProgCallArray);
-                    Log.systemMeldung("=====================");
+                    MVLog.systemMeldung("=====================");
+                    MVLog.systemMeldung("Starte Array: ");
+                    MVLog.systemMeldung(" -> " + strProgCallArray);
+                    MVLog.systemMeldung("=====================");
                 }
                 process = Runtime.getRuntime().exec(arrProgCallArray);
             } else {
                 if (log) {
-                    Log.systemMeldung("=====================");
-                    Log.systemMeldung("Starte nicht als Array:");
-                    Log.systemMeldung(" -> " + strProgCall);
-                    Log.systemMeldung("=====================");
+                    MVLog.systemMeldung("=====================");
+                    MVLog.systemMeldung("Starte nicht als Array:");
+                    MVLog.systemMeldung(" -> " + strProgCall);
+                    MVLog.systemMeldung("=====================");
                 }
                 process = Runtime.getRuntime().exec(strProgCall);
             }
@@ -139,7 +139,7 @@ public class RuntimeExec {
                 String inStr;
                 while ((inStr = buff.readLine()) != null) {
                     GetPercentageFromErrorStream(inStr);
-                    Log.playerMeldung(titel + ": " + inStr);
+                    MVLog.playerMeldung(titel + ": " + inStr);
                 }
             } catch (IOException ignored) {
             } finally {

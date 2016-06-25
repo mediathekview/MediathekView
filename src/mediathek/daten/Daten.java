@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import mediathek.tool.MVLog;
 import com.jidesoft.utils.SystemInfo;
 import java.io.File;
 import java.io.IOException;
@@ -320,13 +321,13 @@ public class Daten {
         updateSplashScreen("Lade Konfigurationsdaten...");
 
         if (!load()) {
-            Log.systemMeldung("Weder Konfig noch Backup konnte geladen werden!");
+            MVLog.systemMeldung("Weder Konfig noch Backup konnte geladen werden!");
             // teils geladene Reste entfernen
             clearKonfig();
             return false;
         }
 
-        Log.systemMeldung("Konfig wurde gelesen!");
+        MVLog.systemMeldung("Konfig wurde gelesen!");
         mVColor.load(); // Farben einrichten
         MVFont.initFont(); // Fonts einrichten
 
@@ -334,10 +335,10 @@ public class Daten {
         updateSplashScreen("Lade Filmliste...");
         new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
         // Meldungen sind zwar doppelt, aber damit sie auch im Meldungsfenser erscheinen..
-        Log.systemMeldung("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-        Log.systemMeldung("  erstellt am: " + listeFilme.genDate());
-        Log.systemMeldung("  Anzahl Filme: " + listeFilme.size());
-        Log.systemMeldung("  Anzahl Neue: " + listeFilme.countNewFilms());
+        MVLog.systemMeldung("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+        MVLog.systemMeldung("  erstellt am: " + listeFilme.genDate());
+        MVLog.systemMeldung("  Anzahl Filme: " + listeFilme.size());
+        MVLog.systemMeldung("  Anzahl Neue: " + listeFilme.countNewFilms());
 
         listeFilme.themenLaden();
         Daten.listeAbo.setAboFuerFilm(listeFilme, false /*aboLoeschen*/);
@@ -365,11 +366,11 @@ public class Daten {
                 return true;
             } else {
                 // dann hat das Laden nicht geklappt
-                Log.systemMeldung("Konfig konnte nicht gelesen werden!");
+                MVLog.systemMeldung("Konfig konnte nicht gelesen werden!");
             }
         } else {
             // dann hat das Laden nicht geklappt
-            Log.systemMeldung("Konfig existiert nicht!");
+            MVLog.systemMeldung("Konfig existiert nicht!");
         }
 
         // versuchen das Backup zu laden
@@ -384,12 +385,12 @@ public class Daten {
         ArrayList<Path> path = new ArrayList<>();
         Daten.getMediathekXmlCopyFilePath(path);
         if (path.isEmpty()) {
-            Log.systemMeldung("Es gibt kein Backup");
+            MVLog.systemMeldung("Es gibt kein Backup");
             return false;
         }
 
         // dann gibts ein Backup
-        Log.systemMeldung("Es gibt ein Backup");
+        MVLog.systemMeldung("Es gibt ein Backup");
         mediathekGui.closeSplashScreen();
         int r = JOptionPane.showConfirmDialog(null, "Die Einstellungen sind beschädigt\n"
                 + "und können nicht geladen werden.\n"
@@ -399,16 +400,16 @@ public class Daten {
                 + "Standardeinstellungen)", "Gesicherte Einstellungen laden?", JOptionPane.YES_NO_OPTION);
 
         if (r != JOptionPane.OK_OPTION) {
-            Log.systemMeldung("User will kein Backup laden.");
+            MVLog.systemMeldung("User will kein Backup laden.");
             return false;
         }
 
         for (Path p : path) {
             // teils geladene Reste entfernen
             clearKonfig();
-            Log.systemMeldung(new String[]{"Versuch Backup zu laden:", p.toString()});
+            MVLog.systemMeldung(new String[]{"Versuch Backup zu laden:", p.toString()});
             if (IoXmlLesen.datenLesen(p)) {
-                Log.systemMeldung(new String[]{"Backup hat geklappt:", p.toString()});
+                MVLog.systemMeldung(new String[]{"Backup hat geklappt:", p.toString()});
                 ret = true;
                 break;
             }
@@ -435,7 +436,7 @@ public class Daten {
                 Files.move(path1, Paths.get(dir2), StandardCopyOption.REPLACE_EXISTING);
                 Files.deleteIfExists(path1);
             } catch (IOException e) {
-                Log.systemMeldung("Die Einstellungen konnten nicht zurückgesetzt werden.");
+                MVLog.systemMeldung("Die Einstellungen konnten nicht zurückgesetzt werden.");
                 MVMessageDialog.showMessageDialog(this.mediathekGui, "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
                         + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
                         + getSettingsDirectory_String() + "\n"
@@ -457,8 +458,8 @@ public class Daten {
     private void konfigCopy() {
         if (!alreadyMadeBackup) {
             // nur einmal pro Programmstart machen
-            Log.systemMeldung("-------------------------------------------------------");
-            Log.systemMeldung("Einstellungen sichern");
+            MVLog.systemMeldung("-------------------------------------------------------");
+            MVLog.systemMeldung("Einstellungen sichern");
 
             try {
                 final Path xmlFilePath = Daten.getMediathekXmlFilePath();
@@ -483,17 +484,17 @@ public class Daten {
                     if (Files.exists(xmlFilePath)) {
                         Files.move(xmlFilePath, Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1), StandardCopyOption.REPLACE_EXISTING);
                     }
-                    Log.systemMeldung("Einstellungen wurden gesichert");
+                    MVLog.systemMeldung("Einstellungen wurden gesichert");
                 } else {
-                    Log.systemMeldung("Einstellungen wurden heute schon gesichert");
+                    MVLog.systemMeldung("Einstellungen wurden heute schon gesichert");
                 }
             } catch (IOException e) {
-                Log.systemMeldung("Die Einstellungen konnten nicht komplett gesichert werden!");
+                MVLog.systemMeldung("Die Einstellungen konnten nicht komplett gesichert werden!");
                 MSLog.fehlerMeldung(795623147, e);
             }
 
             alreadyMadeBackup = true;
-            Log.systemMeldung("-------------------------------------------------------");
+            MVLog.systemMeldung("-------------------------------------------------------");
         }
     }
 

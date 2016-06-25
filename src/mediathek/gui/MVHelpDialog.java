@@ -19,24 +19,15 @@
  */
 package mediathek.gui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import mediathek.controller.ProgrammLog;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
-import mediathek.tool.BeobMausUrl;
-import mediathek.tool.EscBeenden;
-import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.Konstanten;
-import mediathek.tool.ListenerMediathekView;
-import mediathek.tool.MVFunctionSys;
-import mediathek.tool.UrlHyperlinkAction;
+import mediathek.tool.*;
 
 public class MVHelpDialog extends javax.swing.JDialog {
 
@@ -74,7 +65,7 @@ public class MVHelpDialog extends javax.swing.JDialog {
             jXHyperlinkSpende.addMouseListener(new BeobMausUrl(jXHyperlinkSpende));
         } catch (URISyntaxException ignored) {
         }
-        jButtonLogErstellen.addActionListener(e -> ProgrammLog.LogDateiSchreiben(daten, parent));
+        jButtonLogErstellen.addActionListener(e -> MVLog.LogDateiSchreiben(daten, parent));
         jButtonHilfeReset.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHilfeReset.addActionListener(e -> new DialogHilfe(daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET)).setVisible(true));
         jButtonResetSets.addActionListener(e -> {

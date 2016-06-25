@@ -19,6 +19,7 @@
  */
 package mediathek.controller;
 
+import mediathek.tool.MVLog;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -102,10 +103,10 @@ public class FilmeLaden {
     public void importFilmliste(String dateiUrl, boolean immerNeuLaden) {
         // damit wird die Filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
         duration.start("Filme laden, start");
-        Log.systemMeldung("");
-        Log.systemMeldung("Alte Liste erstellt am: " + Daten.listeFilme.genDate());
-        Log.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
-        Log.systemMeldung("  Anzahl Neue: " + Daten.listeFilme.countNewFilms());
+        MVLog.systemMeldung("");
+        MVLog.systemMeldung("Alte Liste erstellt am: " + Daten.listeFilme.genDate());
+        MVLog.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
+        MVLog.systemMeldung("  Anzahl Neue: " + Daten.listeFilme.countNewFilms());
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
@@ -119,11 +120,11 @@ public class FilmeLaden {
             Daten.listeFilmeNachBlackList.clear();
             if (dateiUrl.equals("")) {
                 // Filme als Liste importieren, Url automatisch ermitteln
-                Log.systemMeldung("Filmliste laden (auto)");
+                MVLog.systemMeldung("Filmliste laden (auto)");
                 msImportFilmliste.filmeImportierenAuto(Daten.listeFilme, diffListe, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
             } else {
                 // Filme als Liste importieren, feste URL/Datei
-                Log.systemMeldung("Filmliste laden von: " + dateiUrl);
+                MVLog.systemMeldung("Filmliste laden von: " + dateiUrl);
                 Daten.listeFilme.clear();
                 msImportFilmliste.filmeImportierenDatei(dateiUrl, Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
             }
@@ -134,10 +135,10 @@ public class FilmeLaden {
         // damit wird die Filmliste mit einer weiteren aktualisiert (die bestehende bleibt
         // erhalten) UND auch gleich im Konfig-Ordner gespeichert
         duration.start("Filme laden (Update), start");
-        Log.systemMeldung("");
-        Log.systemMeldung("Alte Liste erstellt am: " + Daten.listeFilme.genDate());
-        Log.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
-        Log.systemMeldung("  Anzahl Neue: " + Daten.listeFilme.countNewFilms());
+        MVLog.systemMeldung("");
+        MVLog.systemMeldung("Alte Liste erstellt am: " + Daten.listeFilme.genDate());
+        MVLog.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
+        MVLog.systemMeldung("  Anzahl Neue: " + Daten.listeFilme.countNewFilms());
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
@@ -147,7 +148,7 @@ public class FilmeLaden {
             //Daten.listeFilme.clear();
             Daten.listeFilmeNachBlackList.clear();
             // Filme als Liste importieren, feste URL/Datei
-            Log.systemMeldung("Filmliste laden von: " + dateiUrl);
+            MVLog.systemMeldung("Filmliste laden von: " + dateiUrl);
             msImportFilmliste.filmeImportierenDatei(dateiUrl, diffListe, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
         }
     }
@@ -188,22 +189,22 @@ public class FilmeLaden {
         // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
         // beim Ändern von Abos gemacht wird
 
-        Log.systemMeldung("");
+        MVLog.systemMeldung("");
 
         // wenn nur ein Update
         if (!diffListe.isEmpty()) {
-            Log.systemMeldung("Liste Diff gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-            Log.systemMeldung("  Liste Diff erstellt am: " + diffListe.genDate());
-            Log.systemMeldung("  Anzahl Filme: " + diffListe.size());
+            MVLog.systemMeldung("Liste Diff gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+            MVLog.systemMeldung("  Liste Diff erstellt am: " + diffListe.genDate());
+            MVLog.systemMeldung("  Anzahl Filme: " + diffListe.size());
 
             Daten.listeFilme.updateListe(diffListe, true/* Vergleich über Index, sonst nur URL */, true /*ersetzen*/);
             Daten.listeFilme.metaDaten = diffListe.metaDaten;
             Daten.listeFilme.sort(); // jetzt sollte alles passen
             diffListe.clear();
         } else {
-            Log.systemMeldung("Liste Kompl. gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-            Log.systemMeldung("  Liste Kompl erstellt am: " + Daten.listeFilme.genDate());
-            Log.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
+            MVLog.systemMeldung("Liste Kompl. gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+            MVLog.systemMeldung("  Liste Kompl erstellt am: " + Daten.listeFilme.genDate());
+            MVLog.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
         }
 
         findAndMarkNewFilms(Daten.listeFilme);
@@ -211,23 +212,23 @@ public class FilmeLaden {
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false/*aboLoeschen*/);
         istAmLaufen = false;
         if (event.fehler) {
-            Log.systemMeldung("");
-            Log.systemMeldung("Filmliste laden war fehlerhaft, alte Liste wird wieder geladen");
+            MVLog.systemMeldung("");
+            MVLog.systemMeldung("Filmliste laden war fehlerhaft, alte Liste wird wieder geladen");
             MVMessageDialog.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
             // dann die alte Liste wieder laden
             Daten.listeFilme.clear();
             MSConfig.setStop(false);
             new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
-            Log.systemMeldung("");
+            MVLog.systemMeldung("");
         } else {
             Daten.filmlisteSpeichern();
         }
-        Log.systemMeldung("");
+        MVLog.systemMeldung("");
 
-        Log.systemMeldung("Jetzige Liste erstellt am: " + Daten.listeFilme.genDate());
-        Log.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
-        Log.systemMeldung("  Anzahl Neue:  " + Daten.listeFilme.countNewFilms());
-        Log.systemMeldung("");
+        MVLog.systemMeldung("Jetzige Liste erstellt am: " + Daten.listeFilme.genDate());
+        MVLog.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
+        MVLog.systemMeldung("  Anzahl Neue:  " + Daten.listeFilme.countNewFilms());
+        MVLog.systemMeldung("");
 
         MVListeFilme.checkBlacklist();
         notifyFertig(event);

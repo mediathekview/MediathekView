@@ -38,7 +38,7 @@ import javax.swing.SwingUtilities;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Datum;
 import mSearch.tool.MSLog;
-import mediathek.controller.Log;
+import mediathek.tool.MVLog;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
@@ -120,12 +120,12 @@ public class StarterClass {
                 // zum Wiederstarten/Aufräumen die leer/zu kleine Datei löschen, alles auf Anfang
                 if (file.length() == 0) {
                     // zum Wiederstarten/Aufräumen die leer/zu kleine Datei löschen, alles auf Anfang
-                    Log.systemMeldung(new String[]{"Restart/Aufräumen: leere Datei löschen", file.getAbsolutePath()});
+                    MVLog.systemMeldung(new String[]{"Restart/Aufräumen: leere Datei löschen", file.getAbsolutePath()});
                     if (!file.delete()) {
                         throw new Exception();
                     }
                 } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_FILM) {
-                    Log.systemMeldung(new String[]{"Restart/Aufräumen: Zu kleine Datei löschen", file.getAbsolutePath()});
+                    MVLog.systemMeldung(new String[]{"Restart/Aufräumen: Zu kleine Datei löschen", file.getAbsolutePath()});
                     if (!file.delete()) {
                         throw new Exception();
                     }
@@ -158,7 +158,7 @@ public class StarterClass {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
             text.add("Programmaufruf[]: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR]);
         }
-        Log.systemMeldung(text.toArray(new String[text.size()]));
+        MVLog.systemMeldung(text.toArray(new String[text.size()]));
     }
 
     private void fertigmeldung(final DatenDownload datenDownload, final Start start, boolean abgebrochen) {
@@ -204,7 +204,7 @@ public class StarterClass {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
             text.add("Programmaufruf[]: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR]);
         }
-        Log.systemMeldung(text.toArray(new String[text.size()]));
+        MVLog.systemMeldung(text.toArray(new String[text.size()]));
         if (!start.stoppen && !abgebrochen) {
             if (datenDownload.quelle != DatenDownload.QUELLE_BUTTON) {
                 SwingUtilities.invokeLater(() -> MVNotification.addNotification(daten, datenDownload, start.status != Start.STATUS_ERR));
@@ -794,7 +794,7 @@ public class StarterClass {
                     melden = false;
                 }
             }
-            Log.systemMeldung(start.mVInputStream.toString());
+            MVLog.systemMeldung(start.mVInputStream.toString());
             if (!start.stoppen) {
                 if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON) {
                     // direkter Start mit dem Button

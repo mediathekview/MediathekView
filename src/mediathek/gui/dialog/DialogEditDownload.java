@@ -35,7 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import mediathek.controller.Log;
+import mediathek.tool.MVLog;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenProg;
@@ -437,7 +437,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
             }
 
             // und jetzt die Datei löschen
-            Log.systemMeldung(new String[]{"Datei löschen: ", file.getAbsolutePath()});
+            MVLog.systemMeldung(new String[]{"Datei löschen: ", file.getAbsolutePath()});
             if (!file.delete()) {
                 throw new Exception();
             }
