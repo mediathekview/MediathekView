@@ -19,6 +19,7 @@
  */
 package mediathek.gui;
 
+import mSearch.tool.ListenerMediathekView;
 import mediathek.controller.starter.Start;
 import mediathek.daten.*;
 import mediathek.gui.dialog.DialogAddDownload;

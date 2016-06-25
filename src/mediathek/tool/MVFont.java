@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.ListenerMediathekView;
 import javax.swing.JTable;
 import mediathek.daten.Daten;
 

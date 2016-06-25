@@ -19,7 +19,6 @@
  */
 package mediathek.daten;
 
-import mediathek.tool.MVLog;
 import com.jidesoft.utils.SystemInfo;
 import java.io.File;
 import java.io.IOException;
@@ -35,13 +34,18 @@ import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
+import static mSearch.daten.Data.mVReplaceList;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmlisten.MSFilmlisteLesen;
 import mSearch.filmlisten.WriteFilmlistJson;
+import mSearch.tool.ListenerMediathekView;
 import mSearch.tool.MSLog;
 import mediathek.MediathekGui;
-import mediathek.controller.*;
+import mediathek.controller.FilmeLaden;
+import mediathek.controller.IoXmlLesen;
+import mediathek.controller.IoXmlSchreiben;
+import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.MVBandwidthTokenBucket;
 import mediathek.controller.starter.StarterClass;
 import mediathek.gui.GuiAbo;
@@ -65,7 +69,7 @@ public class Daten {
 
     // zentrale Klassen
     public static MVColor mVColor = new MVColor(); // verwendete Farben
-    public static MVReplaceList mVReplaceList = new MVReplaceList(); // Ersetzungsliste für die Namen der Downloads
+//    public static MVReplaceList mVReplaceList = new MVReplaceList(); // Ersetzungsliste für die Namen der Downloads
     public static MVMediaDB mVMediaDB = new MVMediaDB();
     public static FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
     public static ListeFilme listeFilme = null;

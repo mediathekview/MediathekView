@@ -13,7 +13,7 @@ import javax.swing.*;
 import mSearch.tool.MSLog;
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 
 /**

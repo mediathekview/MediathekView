@@ -36,7 +36,7 @@ import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogZiel;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVMessageDialog;
 

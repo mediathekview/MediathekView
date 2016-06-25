@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.ListenerMediathekView;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Point;

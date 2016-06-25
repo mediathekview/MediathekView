@@ -27,7 +27,7 @@ import javax.swing.text.DefaultCaret;
 import mediathek.tool.MVLog;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 
 public class PanelMeldungen extends PanelVorlage {

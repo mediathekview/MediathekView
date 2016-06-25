@@ -41,7 +41,7 @@ import mSearch.tool.MSLog;
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisten;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 
 public class GuiDebug extends JPanel {

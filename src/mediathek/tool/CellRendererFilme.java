@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.ListenerMediathekView;
 import com.jidesoft.utils.SystemInfo;
 import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.Start;

@@ -49,17 +49,18 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
 import mediathek.tool.CellRendererProgramme;
 import mediathek.tool.CellRendererPset;
-import mediathek.tool.FilenameUtils;
+import mSearch.tool.FilenameUtils;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.Konstanten;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVColor;
 import mediathek.tool.MVTable;
 import mediathek.tool.TModel;
 import mediathek.tool.UrlHyperlinkAction;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.MSLog;
+import mediathek.tool.*;
 
 public class PanelPsetLang extends PanelVorlage {
 
@@ -583,7 +584,9 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
             String name = liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME_NR].equals("") ? "Name.xml" : liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME_NR] + ".xml";
-            DialogZielExportPset dialogZiel = new DialogZielExportPset(null, daten, true, exportPfad, FilenameUtils.replaceLeerDateiname(name, false /*pfad*/));
+            DialogZielExportPset dialogZiel = new DialogZielExportPset(null, daten, true, exportPfad, FilenameUtils.replaceLeerDateiname(name, false /*pfad*/,
+                    Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)),
+                    Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ONLY_ASCII))));
             dialogZiel.setVisible(true);
             if (dialogZiel.ok) {
                 if (dialogZiel.ziel.contains(File.separator)) {

@@ -27,13 +27,14 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import static mSearch.daten.Data.mVReplaceList;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.HinweisKeineAuswahl;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
-import mediathek.tool.MVReplaceList;
+import mSearch.tool.MVReplaceList;
 import mediathek.tool.TModel;
 
 public class PanelDateinamen extends PanelVorlage {
@@ -60,12 +61,12 @@ public class PanelDateinamen extends PanelVorlage {
         jButtonUp.setIcon(GetIcon.getProgramIcon("move_up_16.png"));
         jButtonDown.setIcon(GetIcon.getProgramIcon("move_down_16.png"));
         jButtonReset.addActionListener(e -> {
-            Daten.mVReplaceList.init();
+            mVReplaceList.init();
             tabelleLaden();
             setTextfelder();
         });
         jButtonPlus.addActionListener(e -> {
-            Daten.mVReplaceList.list.add(new String[]{"von", "nach"});
+            mVReplaceList.list.add(new String[]{"von", "nach"});
             tabelleLaden();
             tabelle.setRowSelectionInterval(tabelle.getRowCount() - 1, tabelle.getRowCount() - 1);
             setTextfelder();
@@ -73,7 +74,7 @@ public class PanelDateinamen extends PanelVorlage {
         jButtonMinus.addActionListener(e -> {
             int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow >= 0) {
-                Daten.mVReplaceList.list.remove(selectedTableRow);
+                mVReplaceList.list.remove(selectedTableRow);
                 tabelleLaden();
                 setTextfelder();
             }
@@ -143,7 +144,7 @@ public class PanelDateinamen extends PanelVorlage {
             if (selectedTableRow >= 0) {
 //                Daten.mVReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[MVReplaceList.VON_NR]
 //                        = jTextFieldVon.getText().isEmpty() ? " " : jTextFieldVon.getText(); // nicht nach nix suchen
-                Daten.mVReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[MVReplaceList.VON_NR] = jTextFieldVon.getText(); // leer wird beim suchen aussortiert
+                mVReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[MVReplaceList.VON_NR] = jTextFieldVon.getText(); // leer wird beim suchen aussortiert
                 tabelleLaden();
             }
         }
@@ -153,7 +154,7 @@ public class PanelDateinamen extends PanelVorlage {
         if (!stopBeob) {
             int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow >= 0) {
-                Daten.mVReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[MVReplaceList.NACH_NR] = jTextFieldNach.getText();
+                mVReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[MVReplaceList.NACH_NR] = jTextFieldNach.getText();
                 tabelleLaden();
             }
         }
@@ -163,7 +164,7 @@ public class PanelDateinamen extends PanelVorlage {
         int rows = tabelle.getSelectedRow();
         if (rows != -1) {
             int row = tabelle.convertRowIndexToModel(rows);
-            int neu = Daten.mVReplaceList.up(row, auf);
+            int neu = mVReplaceList.up(row, auf);
             tabelleLaden();
             tabelle.setRowSelectionInterval(neu, neu);
             tabelle.scrollRectToVisible(tabelle.getCellRect(neu, 0, true));
@@ -182,7 +183,7 @@ public class PanelDateinamen extends PanelVorlage {
         TModel model = new TModel(new Object[][]{}, MVReplaceList.COLUMN_NAMES);
         Object[] object;
         model.setRowCount(0);
-        Iterator<String[]> iterator = Daten.mVReplaceList.list.iterator();
+        Iterator<String[]> iterator = mVReplaceList.list.iterator();
         object = new Object[MVReplaceList.MAX_ELEM];
         while (iterator.hasNext()) {
             String[] s = iterator.next();
@@ -203,7 +204,7 @@ public class PanelDateinamen extends PanelVorlage {
         } else if (tabelle.getRowCount() > 0) {
             tabelle.setRowSelectionInterval(0, 0);
         }
-        jLabelAlert.setVisible(Daten.mVReplaceList.check());
+        jLabelAlert.setVisible(mVReplaceList.check());
         stopBeob = false;
     }
 

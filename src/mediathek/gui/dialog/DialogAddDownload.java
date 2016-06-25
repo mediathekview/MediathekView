@@ -19,6 +19,8 @@
  */
 package mediathek.gui.dialog;
 
+import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.FilenameUtils;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
 import java.awt.FileDialog;

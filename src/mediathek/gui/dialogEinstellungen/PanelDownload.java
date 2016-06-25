@@ -28,7 +28,7 @@ import mediathek.gui.MVDownloadInfo;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 
 public class PanelDownload extends PanelVorlage {

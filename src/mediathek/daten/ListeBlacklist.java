@@ -21,7 +21,7 @@ package mediathek.daten;
 
 import mediathek.gui.GuiFilme;
 import mediathek.tool.Filter;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 import mSearch.daten.DatenFilm;

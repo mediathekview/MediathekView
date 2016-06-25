@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.ListenerMediathekView;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.net.URI;

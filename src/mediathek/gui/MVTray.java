@@ -35,7 +35,7 @@ import javax.swing.SwingConstants;
 import mediathek.tool.MVLog;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import net.sf.jcarrierpigeon.Notification;
 import net.sf.jcarrierpigeon.NotificationQueue;

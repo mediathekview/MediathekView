@@ -33,7 +33,7 @@ import javax.swing.JToolBar;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.Filter;
-import mediathek.tool.ListenerMediathekView;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mSearch.filmeSuchen.MSListenerFilmeLaden;
 import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
