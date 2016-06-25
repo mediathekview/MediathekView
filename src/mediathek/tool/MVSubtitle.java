@@ -30,7 +30,6 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 import mSearch.tool.MSLog;
-import mediathek.controller.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 
@@ -55,7 +54,7 @@ public class MVSubtitle {
             return;
         }
         try {
-            Log.systemMeldung(new String[]{"Untertitel: ", datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE_NR],
+            MVLog.systemMeldung(new String[]{"Untertitel: ", datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE_NR],
                 "schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]});
 
             urlSubtitle = datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE_NR];
@@ -103,7 +102,7 @@ public class MVSubtitle {
             while ((n = in.read(buffer)) != -1) {
                 fos.write(buffer, 0, n);
             }
-            Log.systemMeldung(new String[]{"Untertitel", "  geschrieben"});
+            MVLog.systemMeldung(new String[]{"Untertitel", "  geschrieben"});
         } catch (IOException ex) {
             strSubtitelFile = null;
             if (conn != null) {

@@ -24,7 +24,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 import mediathek.controller.IoXmlLesen;
-import mediathek.controller.Log;
+import mediathek.tool.MVLog;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.MVConfig;
@@ -57,7 +57,7 @@ public class MediathekAuto {
                 splash.close();
             }
         } catch (Exception ignored) {
-            Log.systemMeldung("NoSplashscreen");
+            MVLog.systemMeldung("NoSplashscreen");
         }
     }
 
@@ -75,7 +75,7 @@ public class MediathekAuto {
     public void starten() {
         daten = new Daten(pfad);
         Daten.auto = true;
-        Log.startMeldungen();
+        MVLog.startMeldungen();
 
         if (!IoXmlLesen.einstellungenExistieren()) {
             // Programm erst mit der GuiVersion einrichten
@@ -85,7 +85,7 @@ public class MediathekAuto {
 
         // Einstellungen laden
         Path xmlFilePath = Daten.getMediathekXmlFilePath();
-        Log.systemMeldung("Einstellungen laden: " + xmlFilePath.toString());
+        MVLog.systemMeldung("Einstellungen laden: " + xmlFilePath.toString());
         if (!IoXmlLesen.datenLesen(xmlFilePath)) {
             // dann hat das Laden nicht geklappt
             MSLog.fehlerMeldung(834986137, "Einstellungen konnten nicht geladen werden: " + xmlFilePath.toString());
@@ -102,7 +102,7 @@ public class MediathekAuto {
 
         if (Daten.listeFilme.isTooOld()) {
             // erst neue Filmliste laden
-            Log.systemMeldung("Neue Filmliste laden");
+            MVLog.systemMeldung("Neue Filmliste laden");
             Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
                 @Override
                 public void fertig(MSListenerFilmeLadenEvent event) {
@@ -112,7 +112,7 @@ public class MediathekAuto {
             Daten.filmeLaden.importFilmliste("", true);
         } else {
             // mit aktueller Filmliste starten
-            Log.systemMeldung("aktuelle Filmliste verwenden");
+            MVLog.systemMeldung("aktuelle Filmliste verwenden");
             // Liste erst mal aufbereiten
             Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
             MVListeFilme.checkBlacklist();
@@ -125,21 +125,21 @@ public class MediathekAuto {
 
     private synchronized void download() {
         try {
-            Log.playerMeldungenAus = true;
+            MVLog.playerMeldungenAus = true;
             Daten.listeDownloads.abosSuchen(null);
 
-            Log.systemMeldung(Daten.listeDownloads.size() + " Filme zum Laden");
-            Log.systemMeldung("");
+            MVLog.systemMeldung(Daten.listeDownloads.size() + " Filme zum Laden");
+            MVLog.systemMeldung("");
             // erst mal die Filme schreiben
             int i = 1;
             for (DatenDownload d : Daten.listeDownloads) {
-                Log.systemMeldung("Film " + (i++) + ": ");
-                Log.systemMeldung("\tSender: " + d.arr[DatenDownload.DOWNLOAD_SENDER_NR]);
-                Log.systemMeldung("\tThema: " + d.arr[DatenDownload.DOWNLOAD_THEMA_NR]);
-                Log.systemMeldung("\tTitel: " + d.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
-                Log.systemMeldung("");
+                MVLog.systemMeldung("Film " + (i++) + ": ");
+                MVLog.systemMeldung("\tSender: " + d.arr[DatenDownload.DOWNLOAD_SENDER_NR]);
+                MVLog.systemMeldung("\tThema: " + d.arr[DatenDownload.DOWNLOAD_THEMA_NR]);
+                MVLog.systemMeldung("\tTitel: " + d.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
+                MVLog.systemMeldung("");
             }
-            Log.systemMeldung("###########################################################");
+            MVLog.systemMeldung("###########################################################");
             // und jetzt starten
             for (DatenDownload d : Daten.listeDownloads) {
                 d.startDownload(daten);

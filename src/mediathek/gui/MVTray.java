@@ -32,7 +32,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JWindow;
 import javax.swing.SwingConstants;
-import mediathek.controller.Log;
+import mediathek.tool.MVLog;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.ListenerMediathekView;
@@ -60,7 +60,7 @@ public final class MVTray {
 
     public MVTray systemTray() {
         if (!SystemTray.isSupported()) {
-            Log.systemMeldung("Tray wird nicht unterstützt!");
+            MVLog.systemMeldung("Tray wird nicht unterstützt!");
             return null;
         } else {
             tray = SystemTray.getSystemTray();
@@ -99,7 +99,7 @@ public final class MVTray {
 //                }
                 return this;
             } catch (AWTException e) {
-                Log.systemMeldung("Tray konnte nicht geladen werden!");
+                MVLog.systemMeldung("Tray konnte nicht geladen werden!");
             }
 
         }

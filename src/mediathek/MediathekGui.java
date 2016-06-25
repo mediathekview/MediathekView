@@ -58,7 +58,7 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import mediathek.controller.CheckUpdate;
-import mediathek.controller.Log;
+import mediathek.tool.MVLog;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
@@ -225,13 +225,13 @@ public class MediathekGui extends JFrame {
         String pfad = "";
         initComponents();
         if (ar != null) {
-            Log.systemMeldung("");
-            Log.systemMeldung("==========================================");
+            MVLog.systemMeldung("");
+            MVLog.systemMeldung("==========================================");
             for (String s : ar) {
-                Log.systemMeldung("Startparameter: " + s);
+                MVLog.systemMeldung("Startparameter: " + s);
             }
-            Log.systemMeldung("==========================================");
-            Log.systemMeldung("");
+            MVLog.systemMeldung("==========================================");
+            MVLog.systemMeldung("");
             if (ar.length > 0) {
                 if (!ar[0].startsWith("-")) {
                     if (!ar[0].endsWith(File.separator)) {
@@ -255,7 +255,7 @@ public class MediathekGui extends JFrame {
         daten = new Daten(pfad, this);
         duration.ping("Daten");
 
-        Log.startMeldungen();
+        MVLog.startMeldungen();
         createStatusBar();
         mVToolBar = new MVToolBar(daten);
         jPanelToolBar.setLayout(new BorderLayout());
@@ -301,7 +301,7 @@ public class MediathekGui extends JFrame {
 
         if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO) {
             if (Daten.listeFilme.isTooOld()) {
-                Log.systemMeldung("Neue Filmliste laden");
+                MVLog.systemMeldung("Neue Filmliste laden");
                 Daten.filmeLaden.importFilmliste("", true);
             }
         }
@@ -721,13 +721,13 @@ public class MediathekGui extends JFrame {
                 }
             }
         };
-        PanelMeldungen panelMeldungenSystem = new PanelMeldungen(daten, daten.mediathekGui, Log.textSystem, ListenerMediathekView.EREIGNIS_LOG_SYSTEM, "Systemmeldungen");
-        PanelMeldungen panelMeldungenPlayer = new PanelMeldungen(daten, daten.mediathekGui, Log.textProgramm, ListenerMediathekView.EREIGNIS_LOG_PLAYER, "Meldungen Hilfsprogramme");
+        PanelMeldungen panelMeldungenSystem = new PanelMeldungen(daten, daten.mediathekGui, MVLog.textSystem, ListenerMediathekView.EREIGNIS_LOG_SYSTEM, "Systemmeldungen");
+        PanelMeldungen panelMeldungenPlayer = new PanelMeldungen(daten, daten.mediathekGui, MVLog.textProgramm, ListenerMediathekView.EREIGNIS_LOG_PLAYER, "Meldungen Hilfsprogramme");
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 panelMeldungenSystem,
                 panelMeldungenPlayer);
-        Log.panelMeldungenPlayer = panelMeldungenPlayer;
-        Log.panelMeldungenSystem = panelMeldungenSystem;
+        MVLog.panelMeldungenPlayer = panelMeldungenPlayer;
+        MVLog.panelMeldungenSystem = panelMeldungenSystem;
 
         panelMeldungen.setLayout(new BorderLayout());
         panelMeldungen.add(splitPane, BorderLayout.CENTER);
@@ -1092,7 +1092,7 @@ public class MediathekGui extends JFrame {
         //only run if we have a proper shutdown command...
         if (!strShutdownCommand.isEmpty()) {
             try {
-                Log.systemMeldung("Shutdown: " + strShutdownCommand);
+                MVLog.systemMeldung("Shutdown: " + strShutdownCommand);
                 Runtime.getRuntime().exec(strShutdownCommand);
             } catch (IOException ex) {
                 MSLog.fehlerMeldung(915263047, ex);

@@ -19,6 +19,7 @@
  */
 package mediathek.controller;
 
+import mediathek.tool.MVLog;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
@@ -43,14 +44,14 @@ public class IoXmlSchreiben {
 
     public static synchronized void datenSchreiben() {
         xmlFilePath = Daten.getMediathekXmlFilePath();
-        Log.systemMeldung("Daten Schreiben nach: " + xmlFilePath.toString());
+        MVLog.systemMeldung("Daten Schreiben nach: " + xmlFilePath.toString());
         xmlDatenSchreiben();
     }
 
     public static synchronized void exportPset(DatenPset[] pSet, String datei) {
         try {
             xmlFilePath = Paths.get(datei);
-            Log.systemMeldung("Pset exportieren nach: " + xmlFilePath.toString());
+            MVLog.systemMeldung("Pset exportieren nach: " + xmlFilePath.toString());
             xmlSchreibenStart();
             xmlSchreibenPset(pSet);
             xmlSchreibenEnde();
@@ -107,7 +108,7 @@ public class IoXmlSchreiben {
     }
 
     private static void xmlSchreibenStart() throws IOException, XMLStreamException {
-        Log.systemMeldung("Start Schreiben nach: " + xmlFilePath.toAbsolutePath());
+        MVLog.systemMeldung("Start Schreiben nach: " + xmlFilePath.toAbsolutePath());
         out = new OutputStreamWriter(Files.newOutputStream(xmlFilePath), MSConst.KODIERUNG_UTF);
 
         XMLOutputFactory outFactory = XMLOutputFactory.newInstance();
@@ -253,6 +254,6 @@ public class IoXmlSchreiben {
         writer.close();
         out.close();
 
-        Log.systemMeldung("geschrieben!");
+        MVLog.systemMeldung("geschrieben!");
     }
 }
