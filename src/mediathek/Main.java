@@ -40,7 +40,7 @@ import mediathek.daten.Daten;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.tool.Konstanten;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
-import mediathek.tool.MVSingleInstance;
+import mSearch.tool.MVSingleInstance;
 
 public class Main {
 

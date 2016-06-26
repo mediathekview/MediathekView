@@ -19,7 +19,6 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.ListenerMediathekView;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.net.URI;
@@ -27,6 +26,7 @@ import java.net.URISyntaxException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
+import mSearch.tool.ListenerMediathekView;
 import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
