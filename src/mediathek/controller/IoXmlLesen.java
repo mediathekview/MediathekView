@@ -29,7 +29,7 @@ import javax.xml.stream.XMLStreamReader;
 import static mSearch.daten.Data.mVReplaceList;
 import mSearch.filmlisten.DatenFilmlisteUrl;
 import mSearch.tool.MSConst;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 import mediathek.daten.*;
 import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
@@ -122,7 +122,7 @@ public class IoXmlLesen {
                 ret = true;
             } catch (Exception ex) {
                 ret = false;
-                MSLog.fehlerMeldung(392840096, ex);
+                Log.fehlerMeldung(392840096, ex);
             }
             Daten.listeDownloads.listeNummerieren();
             //ListeFilmUpdateServer aufbauen
@@ -178,7 +178,7 @@ public class IoXmlLesen {
             }
             in.close();
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(302045698, ex);
+            Log.fehlerMeldung(302045698, ex);
         }
         if (found[0] > 0) {
             Daten.listeAbo.aenderungMelden();
@@ -225,7 +225,7 @@ public class IoXmlLesen {
         } catch (Exception ex) {
             ret = false;
             if (log) {
-                MSLog.fehlerMeldung(739530149, ex);
+                Log.fehlerMeldung(739530149, ex);
             }
         }
         return ret;
@@ -250,7 +250,7 @@ public class IoXmlLesen {
         } catch (Exception ex) {
             ret = false;
             if (log) {
-                MSLog.fehlerMeldung(945120369, ex);
+                Log.fehlerMeldung(945120369, ex);
             }
         }
         return ret;

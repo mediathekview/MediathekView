@@ -29,7 +29,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
@@ -390,7 +390,7 @@ public class PanelPsetKurz extends PanelVorlage {
                             arr[idx] = textField.getText();
                         }
                     } catch (Exception ex) {
-                        MSLog.fehlerMeldung(392847589, ex);
+                        Log.fehlerMeldung(392847589, ex);
                     }
                 }
                 if (!file) {
@@ -412,7 +412,7 @@ public class PanelPsetKurz extends PanelVorlage {
                             arr[idx] = textField.getText();
                         }
                     } catch (Exception ex) {
-                        MSLog.fehlerMeldung(613986500, ex);
+                        Log.fehlerMeldung(613986500, ex);
                     }
                 }
             }

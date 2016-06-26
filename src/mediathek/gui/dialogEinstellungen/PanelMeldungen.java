@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.text.DefaultCaret;
-import mediathek.tool.MVLog;
+import mSearch.tool.SysMsg;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mSearch.tool.ListenerMediathekView;
@@ -70,9 +70,15 @@ public class PanelMeldungen extends PanelVorlage {
         });
         setAuto();
         setLineWrab();
+        ListenerMediathekView.addListener(new ListenerMediathekView(logArt, PanelMeldungen.class.getSimpleName() + logArt) {
+            @Override
+            public void ping() {
+                notifyPanel();
+            }
+        });
     }
 
-    public void notifyPanel() {
+    private void notifyPanel() {
         if (jCheckBoxAuto.isSelected() || firstScroll > 0) {
             if (firstScroll > 0) {
                 --firstScroll;
@@ -103,9 +109,9 @@ public class PanelMeldungen extends PanelVorlage {
     private String getNrSystem() {
         String nr = MVConfig.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN;
         switch (logArt) {
-            case ListenerMediathekView.EREIGNIS_LOG_FEHLER:
-                nr = MVConfig.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN;
-                break;
+//            case ListenerMediathekView.EREIGNIS_LOG_FEHLER:
+//                nr = MVConfig.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN;
+//                break;
             case ListenerMediathekView.EREIGNIS_LOG_SYSTEM:
                 nr = MVConfig.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN;
                 break;
@@ -191,7 +197,7 @@ public class PanelMeldungen extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
-            MVLog.clearText(logArt);
+            SysMsg.clearText(logArt);
             setText();
         }
     }

@@ -26,7 +26,7 @@ import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import mSearch.daten.DatenFilm;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mSearch.tool.ListenerMediathekView;
 
@@ -131,7 +131,7 @@ public class MVUsedUrls {
                 }
             }
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(281006874, ex);
+            Log.fehlerMeldung(281006874, ex);
         }
 
         //und jetzt wieder schreiben, wenn nötig
@@ -141,7 +141,7 @@ public class MVUsedUrls {
                     bufferedWriter.write(entry + "\n");
                 }
             } catch (Exception ex) {
-                MSLog.fehlerMeldung(566277080, ex);
+                Log.fehlerMeldung(566277080, ex);
             }
         }
         listeUrls.clear();
@@ -182,7 +182,7 @@ public class MVUsedUrls {
 
             }
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(401020398, ex);
+            Log.fehlerMeldung(401020398, ex);
         }
 
         //und jetzt wieder schreiben, wenn nötig
@@ -192,7 +192,7 @@ public class MVUsedUrls {
                     bufferedWriter.write(entry + "\n");
                 }
             } catch (Exception ex) {
-                MSLog.fehlerMeldung(784512067, ex);
+                Log.fehlerMeldung(784512067, ex);
             }
         }
         listeUrls.clear();
@@ -215,7 +215,7 @@ public class MVUsedUrls {
             bufferedWriter.write(text);
             ret = true;
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(945258023, ex);
+            Log.fehlerMeldung(945258023, ex);
         }
 
         ListenerMediathekView.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
@@ -240,7 +240,7 @@ public class MVUsedUrls {
             //Automatic Resource Management
             ret = true;
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(420312459, ex);
+            Log.fehlerMeldung(420312459, ex);
         }
 
         ListenerMediathekView.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
@@ -279,7 +279,7 @@ public class MVUsedUrls {
                 }
             } catch (Exception ex) {
                 ret = false;
-                MSLog.fehlerMeldung(945258023, ex);
+                Log.fehlerMeldung(945258023, ex);
             }
             ListenerMediathekView.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
             return ret;
@@ -314,7 +314,7 @@ public class MVUsedUrls {
                 listeUrlsSortDate.add(mvuu);
             }
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(926362547, ex);
+            Log.fehlerMeldung(926362547, ex);
         }
     }
 

@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import mSearch.tool.SysMsg;
 import com.jidesoft.utils.SystemInfo;
 import java.io.File;
 import java.io.IOException;
@@ -39,8 +40,9 @@ import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmlisten.MSFilmlisteLesen;
 import mSearch.filmlisten.WriteFilmlistJson;
+import static mSearch.tool.Functions.getPathJar;
 import mSearch.tool.ListenerMediathekView;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.controller.FilmeLaden;
 import mediathek.controller.IoXmlLesen;
@@ -278,7 +280,7 @@ public class Daten {
         mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.FALSE.toString());
         mVConfig.add(MVConfig.SYSTEM_BLACKLIST_START_ON, Boolean.FALSE.toString());
         mVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, "0");
-        mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, MVFunctionSys.getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss");
+        mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss");
         mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE));
         mVConfig.add(MVConfig.SYSTEM_NOTIFICATION, Boolean.TRUE.toString());
         mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, Boolean.TRUE.toString());
@@ -325,13 +327,13 @@ public class Daten {
         updateSplashScreen("Lade Konfigurationsdaten...");
 
         if (!load()) {
-            MVLog.systemMeldung("Weder Konfig noch Backup konnte geladen werden!");
+            SysMsg.systemMeldung("Weder Konfig noch Backup konnte geladen werden!");
             // teils geladene Reste entfernen
             clearKonfig();
             return false;
         }
 
-        MVLog.systemMeldung("Konfig wurde gelesen!");
+        SysMsg.systemMeldung("Konfig wurde gelesen!");
         mVColor.load(); // Farben einrichten
         MVFont.initFont(); // Fonts einrichten
 
@@ -339,10 +341,10 @@ public class Daten {
         updateSplashScreen("Lade Filmliste...");
         new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
         // Meldungen sind zwar doppelt, aber damit sie auch im Meldungsfenser erscheinen..
-        MVLog.systemMeldung("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-        MVLog.systemMeldung("  erstellt am: " + listeFilme.genDate());
-        MVLog.systemMeldung("  Anzahl Filme: " + listeFilme.size());
-        MVLog.systemMeldung("  Anzahl Neue: " + listeFilme.countNewFilms());
+        SysMsg.systemMeldung("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+        SysMsg.systemMeldung("  erstellt am: " + listeFilme.genDate());
+        SysMsg.systemMeldung("  Anzahl Filme: " + listeFilme.size());
+        SysMsg.systemMeldung("  Anzahl Neue: " + listeFilme.countNewFilms());
 
         listeFilme.themenLaden();
         Daten.listeAbo.setAboFuerFilm(listeFilme, false /*aboLoeschen*/);
@@ -370,11 +372,11 @@ public class Daten {
                 return true;
             } else {
                 // dann hat das Laden nicht geklappt
-                MVLog.systemMeldung("Konfig konnte nicht gelesen werden!");
+                SysMsg.systemMeldung("Konfig konnte nicht gelesen werden!");
             }
         } else {
             // dann hat das Laden nicht geklappt
-            MVLog.systemMeldung("Konfig existiert nicht!");
+            SysMsg.systemMeldung("Konfig existiert nicht!");
         }
 
         // versuchen das Backup zu laden
@@ -389,12 +391,12 @@ public class Daten {
         ArrayList<Path> path = new ArrayList<>();
         Daten.getMediathekXmlCopyFilePath(path);
         if (path.isEmpty()) {
-            MVLog.systemMeldung("Es gibt kein Backup");
+            SysMsg.systemMeldung("Es gibt kein Backup");
             return false;
         }
 
         // dann gibts ein Backup
-        MVLog.systemMeldung("Es gibt ein Backup");
+        SysMsg.systemMeldung("Es gibt ein Backup");
         mediathekGui.closeSplashScreen();
         int r = JOptionPane.showConfirmDialog(null, "Die Einstellungen sind beschädigt\n"
                 + "und können nicht geladen werden.\n"
@@ -404,16 +406,16 @@ public class Daten {
                 + "Standardeinstellungen)", "Gesicherte Einstellungen laden?", JOptionPane.YES_NO_OPTION);
 
         if (r != JOptionPane.OK_OPTION) {
-            MVLog.systemMeldung("User will kein Backup laden.");
+            SysMsg.systemMeldung("User will kein Backup laden.");
             return false;
         }
 
         for (Path p : path) {
             // teils geladene Reste entfernen
             clearKonfig();
-            MVLog.systemMeldung(new String[]{"Versuch Backup zu laden:", p.toString()});
+            SysMsg.systemMeldung(new String[]{"Versuch Backup zu laden:", p.toString()});
             if (IoXmlLesen.datenLesen(p)) {
-                MVLog.systemMeldung(new String[]{"Backup hat geklappt:", p.toString()});
+                SysMsg.systemMeldung(new String[]{"Backup hat geklappt:", p.toString()});
                 ret = true;
                 break;
             }
@@ -440,13 +442,13 @@ public class Daten {
                 Files.move(path1, Paths.get(dir2), StandardCopyOption.REPLACE_EXISTING);
                 Files.deleteIfExists(path1);
             } catch (IOException e) {
-                MVLog.systemMeldung("Die Einstellungen konnten nicht zurückgesetzt werden.");
+                SysMsg.systemMeldung("Die Einstellungen konnten nicht zurückgesetzt werden.");
                 MVMessageDialog.showMessageDialog(this.mediathekGui, "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
                         + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
                         + getSettingsDirectory_String() + "\n"
                         + "von Hand löschen und dann das Programm wieder starten.\n\n"
                         + "Im Forum finden Sie weitere Hilfe.", "Fehler", JOptionPane.ERROR_MESSAGE);
-                MSLog.fehlerMeldung(465690123, e);
+                Log.fehlerMeldung(465690123, e);
             }
         }
     }
@@ -462,8 +464,8 @@ public class Daten {
     private void konfigCopy() {
         if (!alreadyMadeBackup) {
             // nur einmal pro Programmstart machen
-            MVLog.systemMeldung("-------------------------------------------------------");
-            MVLog.systemMeldung("Einstellungen sichern");
+            SysMsg.systemMeldung("-------------------------------------------------------");
+            SysMsg.systemMeldung("Einstellungen sichern");
 
             try {
                 final Path xmlFilePath = Daten.getMediathekXmlFilePath();
@@ -488,17 +490,17 @@ public class Daten {
                     if (Files.exists(xmlFilePath)) {
                         Files.move(xmlFilePath, Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1), StandardCopyOption.REPLACE_EXISTING);
                     }
-                    MVLog.systemMeldung("Einstellungen wurden gesichert");
+                    SysMsg.systemMeldung("Einstellungen wurden gesichert");
                 } else {
-                    MVLog.systemMeldung("Einstellungen wurden heute schon gesichert");
+                    SysMsg.systemMeldung("Einstellungen wurden heute schon gesichert");
                 }
             } catch (IOException e) {
-                MVLog.systemMeldung("Die Einstellungen konnten nicht komplett gesichert werden!");
-                MSLog.fehlerMeldung(795623147, e);
+                SysMsg.systemMeldung("Die Einstellungen konnten nicht komplett gesichert werden!");
+                Log.fehlerMeldung(795623147, e);
             }
 
             alreadyMadeBackup = true;
-            MVLog.systemMeldung("-------------------------------------------------------");
+            SysMsg.systemMeldung("-------------------------------------------------------");
         }
     }
 

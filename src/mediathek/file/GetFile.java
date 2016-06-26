@@ -23,7 +23,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import mSearch.tool.MSConst;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 
 /**
  *
@@ -60,7 +60,7 @@ public class GetFile {
             //Close the input stream
             in.close();
         } catch (IOException ex) {
-            MSLog.fehlerMeldung(885692213, ex);
+            Log.fehlerMeldung(885692213, ex);
         }
         return ret;
     }
@@ -69,7 +69,7 @@ public class GetFile {
         try {
             return new InputStreamReader(getClass().getResource(PFAD_PSET_LINUX).openStream(), MSConst.KODIERUNG_UTF);
         } catch (IOException ex) {
-            MSLog.fehlerMeldung(469691002, ex);
+            Log.fehlerMeldung(469691002, ex);
         }
         return null;
     }
@@ -78,7 +78,7 @@ public class GetFile {
         try {
             return new InputStreamReader(getClass().getResource(PFAD_PSET_WINDOWS).openStream(), MSConst.KODIERUNG_UTF);
         } catch (IOException ex) {
-            MSLog.fehlerMeldung(842306087, ex);
+            Log.fehlerMeldung(842306087, ex);
         }
         return null;
     }
@@ -87,7 +87,7 @@ public class GetFile {
         try {
             return new InputStreamReader(getClass().getResource(PFAD_PSET_MAC).openStream(), MSConst.KODIERUNG_UTF);
         } catch (IOException ex) {
-            MSLog.fehlerMeldung(496532180, ex);
+            Log.fehlerMeldung(496532180, ex);
         }
         return null;
     }

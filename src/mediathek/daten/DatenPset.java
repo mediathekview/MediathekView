@@ -27,7 +27,7 @@ import javax.swing.JOptionPane;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.MVMessageDialog;
 import mSearch.daten.DatenFilm;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 
 public class DatenPset {
 
@@ -267,7 +267,7 @@ public class DatenPset {
             try {
                 ret = new Color(Integer.parseInt(r), Integer.parseInt(g), Integer.parseInt(b));
             } catch (Exception ex) {
-                MSLog.fehlerMeldung(669254033, ex);
+                Log.fehlerMeldung(669254033, ex);
             }
         }
         return ret;

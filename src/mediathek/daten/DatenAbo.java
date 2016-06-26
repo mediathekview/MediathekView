@@ -21,7 +21,7 @@ package mediathek.daten;
 
 import mSearch.daten.DatenFilm;
 import mSearch.tool.GermanStringSorter;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 
 public class DatenAbo implements Comparable<DatenAbo> {
     //Tags Abo
@@ -113,7 +113,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
         try {
             mindestdauerMinuten = Integer.parseInt(this.arr[DatenAbo.ABO_MINDESTDAUER_NR]);
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(462558700, ex);
+            Log.fehlerMeldung(462558700, ex);
             mindestdauerMinuten = 0;
             arr[ABO_MINDESTDAUER_NR] = "0";
         }

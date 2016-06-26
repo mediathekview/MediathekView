@@ -10,7 +10,7 @@ import java.net.URL;
 import java.util.Enumeration;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mSearch.tool.ListenerMediathekView;
@@ -109,7 +109,7 @@ public class MediathekGuiMac extends MediathekGui {
             final BufferedImage appImage = ImageIO.read(url);
             application.setDockIconImage(appImage);
         } catch (IOException ex) {
-            MSLog.fehlerMeldung(165623698, "OS X Application image could not be loaded");
+            Log.fehlerMeldung(165623698, "OS X Application image could not be loaded");
         }
 
         //Remove all menu items which don´t need to be displayed due to OS X´s native menu support

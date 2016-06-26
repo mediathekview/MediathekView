@@ -43,7 +43,7 @@ import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Optional;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 
 public class GuiFilme extends PanelVorlage {
 
@@ -901,7 +901,7 @@ public class GuiFilme extends PanelVorlage {
                 loadTable();
             }
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(558965421, ex);
+            Log.fehlerMeldung(558965421, ex);
         }
 
         tabelle.scrollToSelection();
@@ -1486,7 +1486,7 @@ public class GuiFilme extends PanelVorlage {
                 try {
                     tabelle.print();
                 } catch (PrinterException ex) {
-                    MSLog.fehlerMeldung(688542239, ex);
+                    Log.fehlerMeldung(688542239, ex);
                 }
             }
         }

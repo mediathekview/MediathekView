@@ -31,9 +31,9 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mSearch.tool.ListenerMediathekView;
-import mSearch.tool.MSFunktionen.OperatingSystemType;
-import static mSearch.tool.MSFunktionen.getOs;
-import mSearch.tool.MSLog;
+import mSearch.tool.Functions.OperatingSystemType;
+import static mSearch.tool.Functions.getOs;
+import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
@@ -565,7 +565,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         textField.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        MSLog.fehlerMeldung(915263014, ex);
+                        Log.fehlerMeldung(915263014, ex);
                     }
                 }
             } else {
@@ -582,7 +582,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     try {
                         textField.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        MSLog.fehlerMeldung(751214501, ex);
+                        Log.fehlerMeldung(751214501, ex);
                     }
                 }
             }

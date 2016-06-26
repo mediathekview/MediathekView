@@ -38,7 +38,7 @@ import mSearch.tool.ListenerMediathekView;
 import mediathek.tool.MVConfig;
 import mediathek.tool.TModel;
 import mSearch.filmlisten.DatenFilmlisteUrl;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 
 public class PanelFilmlisten extends PanelVorlage {
 
@@ -364,7 +364,7 @@ public class PanelFilmlisten extends PanelVorlage {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldUrl.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        MSLog.fehlerMeldung(102036579, ex);
+                        Log.fehlerMeldung(102036579, ex);
                     }
                 }
             } else {
@@ -380,7 +380,7 @@ public class PanelFilmlisten extends PanelVorlage {
                     try {
                         jTextFieldUrl.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        MSLog.fehlerMeldung(733025319, ex);
+                        Log.fehlerMeldung(733025319, ex);
                     }
                 }
             }

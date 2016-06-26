@@ -1,4 +1,42 @@
 ============================================================
+MediathekView startet nicht:
+-------------------------------
+
+http://sourceforge.net/p/zdfmediathk/wiki/FAQ/
+http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/
+
+
+* "MediathekView__mehr_Speicher__Start.exe"
+   kann unter Windows als Startdatei bei Startproblemen oder 
+   Problemen beim Laden der Filmliste verwendet werden
+   (Damit wird dem Programm mehr Speicher zur Verfügung gestellt).
+
+
+* "MediathekView-ipv4__Start.exe"
+   kann unter Windows als Startdatei bei Problemen beim Laden der 
+   Filmliste verwendet werden (Problem beim Erkennen des
+   verwendeten Network Stacks: IPv4 vs. IPv6).
+
+
+* ZIP-Datei nicht entpackt (Windows): Die Programmdatei wurde direkt im 
+  ZIP-Archiv doppelgeklickt. Die ZIP-Datei muss erst entpackt werden, dazu sind 
+  alle Dateien aus dem ZIP-Archiv in ein beliebiges Verzeichnis zu kopieren. Dort 
+  kann dann die Programmdatei "MediathekView__Start.exe" doppelgeklickt werden.
+
+* Java ist nicht oder nicht in der richtigen Version installiert (Java7). Zum 
+  Java-Download: 
+  http://java.com/de/
+
+* Benötigte Dateien wurden aus dem Programm-Ordner gelöscht (Windows) Die 
+  benötigten Java-Bibliotheken (libs) oder die Hilfsprogramm (im Ordner "bin") 
+  fehlen, da Dateien aus dem MediathekView-Programmordner gelöscht oder verschoben 
+  wurden, ->dann eine Neuinstallation.
+
+============================================================
+
+
+
+============================================================
 Änderungen ab der Version 10:
 -------------------------------
 
@@ -24,31 +62,3 @@ oder Abspielen mit dem VLC
 Programm: C:\Program Files\VideoLAN\VLC\vlc.exe
 Schalter: %f --play-and-exit
 ============================================================
-
-
-============================================================
-MediathekView startet nicht:
--------------------------------
-
-http://sourceforge.net/p/zdfmediathk/wiki/FAQ/
-http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/
-
-* ZIP-Datei nicht entpackt (Windows): Die Programmdatei wurde direkt im 
-	ZIP-Archiv doppelgeklickt. Die ZIP-Datei muss erst entpackt werden, dazu sind 
-	alle Dateien aus dem ZIP-Archiv in ein beliebiges Verzeichnis zu kopieren. Dort 
-	kann dann die Programmdatei "MediathekView__Start.exe" doppelgeklickt werden.
-
-* "MediathekView-ipv4__Start.exe" kann unter Windows als Startdatei bei Problemen
-   beim Laden der Filmliste verwendet werden (Problem beim Erkennen des
-   verwendeten Network Stacks: IPv4 vs. IPv6).
-
-* Java ist nicht oder nicht in der richtigen Version installiert (Java7). Zum 
-	Java-Download: 
-	http://java.com/de/
-
-* Benötigte Dateien wurden aus dem Programm-Ordner gelöscht (Windows) Die 
-	benötigten Java-Bibliotheken (libs) oder die Hilfsprogramm (im Ordner "bin") 
-	fehlen, da Dateien aus dem MediathekView-Programmordner gelöscht oder verschoben 
-	wurden, ->dann eine Neuinstallation.
-============================================================
-

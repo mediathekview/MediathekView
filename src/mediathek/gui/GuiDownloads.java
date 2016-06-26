@@ -21,7 +21,7 @@ package mediathek.gui;
 
 import mSearch.tool.ListenerMediathekView;
 import com.jidesoft.utils.SystemInfo;
-import mediathek.tool.MVLog;
+import mSearch.tool.SysMsg;
 import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
@@ -47,7 +47,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 
 public class GuiDownloads extends PanelVorlage {
 
@@ -483,14 +483,14 @@ public class GuiDownloads extends PanelVorlage {
             if (ret == JOptionPane.OK_OPTION) {
 
                 // und jetzt die Datei löschen
-                MVLog.systemMeldung(new String[]{"Datei löschen: ", file.getAbsolutePath()});
+                SysMsg.systemMeldung(new String[]{"Datei löschen: ", file.getAbsolutePath()});
                 if (!file.delete()) {
                     throw new Exception();
                 }
             }
         } catch (Exception ex) {
             MVMessageDialog.showMessageDialog(parentComponent, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
-            MSLog.fehlerMeldung(915236547, "Fehler beim löschen: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.fehlerMeldung(915236547, "Fehler beim löschen: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
     }
 

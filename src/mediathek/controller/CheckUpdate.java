@@ -19,12 +19,12 @@
  */
 package mediathek.controller;
 
-import mediathek.tool.MVLog;
+import mSearch.tool.SysMsg;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
@@ -62,7 +62,7 @@ public class CheckUpdate {
                     SwingUtilities.invokeLater(CheckUpdate.this::prog);
                 }
             } catch (Exception ex) {
-                MSLog.fehlerMeldung(794510101, ex);
+                Log.fehlerMeldung(794510101, ex);
             }
         }
     }
@@ -92,7 +92,7 @@ public class CheckUpdate {
                 }
             }
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(794612801, ex);
+            Log.fehlerMeldung(794612801, ex);
         }
     }
 
@@ -112,7 +112,7 @@ public class CheckUpdate {
                     SwingUtilities.invokeLater(CheckUpdate.this::set);
                 }
             } catch (Exception ex) {
-                MSLog.fehlerMeldung(794510101, ex);
+                Log.fehlerMeldung(794510101, ex);
             }
         }
     }
@@ -138,13 +138,13 @@ public class CheckUpdate {
                     DialogNewSet dialogNewSet = new DialogNewSet(parent);
                     dialogNewSet.setVisible(true);
                     if (!dialogNewSet.ok) {
-                        MVLog.systemMeldung("Setanlegen: Abbruch");
+                        SysMsg.systemMeldung("Setanlegen: Abbruch");
                         if (!dialogNewSet.morgen) {
                             // dann auch die Versionsnummer aktualisieren
-                            MVLog.systemMeldung("Setanlegen: Nicht wieder nachfragen");
+                            SysMsg.systemMeldung("Setanlegen: Nicht wieder nachfragen");
                             Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
                         }
-                        MVLog.systemMeldung("==========================================");
+                        SysMsg.systemMeldung("==========================================");
                         // dann halt nicht
                         return;
                     }
@@ -185,8 +185,8 @@ public class CheckUpdate {
                 }
             }
             GuiFunktionenProgramme.addSetVorlagen(daten.mediathekGui, daten, listePsetStandard, true /*auto*/, true /*setVersion*/); // damit auch AddOns geladen werden
-            MVLog.systemMeldung("Setanlegen: OK");
-            MVLog.systemMeldung("==========================================");
+            SysMsg.systemMeldung("Setanlegen: OK");
+            SysMsg.systemMeldung("==========================================");
         }
     }
 

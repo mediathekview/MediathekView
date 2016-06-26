@@ -35,7 +35,7 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 import javax.swing.table.DefaultTableCellRenderer;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
@@ -302,7 +302,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             setColor(this, datenDownload.start, isSelected);
             handleGeoBlocking(datenDownload, isSelected);
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(758200166, ex);
+            Log.fehlerMeldung(758200166, ex);
         }
         return this;
     }

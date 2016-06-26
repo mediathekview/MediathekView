@@ -72,7 +72,7 @@ public class MVConfig {
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS = "Eigenschaften-Tabellen-Abos";
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_MEDIA_DB = "Eigenschaften-Tabellen-MediaDB";
     public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN = "Meldungsfenster-Systemmeldungen";
-    public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN = "Meldungsfenster-Fehlermeldungen";
+////    public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN = "Meldungsfenster-Fehlermeldungen";
     public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN = "Meldungsfenster-Playermeldungen";
     public static final String SYSTEM_ANSICHT_SET_LANG = "Ansicht-Set-lang";
     public static final String SYSTEM_BANDWIDTH_MONITOR_VISIBLE = "Bandwidthmonitor-visible";
