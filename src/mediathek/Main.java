@@ -34,11 +34,12 @@ import javafx.application.Platform;
 import javax.swing.JOptionPane;
 import javax.swing.RepaintManager;
 import mSearch.tool.MSConfig;
-import mSearch.tool.MSLog;
-import mediathek.tool.MVLog;
+import mSearch.tool.Log;
+import mSearch.tool.SysMsg;
 import mediathek.daten.Daten;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.tool.Konstanten;
+import static mediathek.tool.MVFunctionSys.startMeldungen;
 import mediathek.tool.MVSingleInstance;
 
 public class Main {
@@ -88,13 +89,13 @@ public class Main {
                         return new PasswordAuthentication(proxyUser, proxyPassword.toCharArray());
                     }
                 });
-                MVLog.systemMeldung("Proxy Authentication: (" + System.getProperty("http.proxyUser") + ")");
+                SysMsg.systemMeldung("Proxy Authentication: (" + System.getProperty("http.proxyUser") + ")");
             } else {
-                MVLog.systemMeldung("Proxy Authentication: not configured");
+                SysMsg.systemMeldung("Proxy Authentication: not configured");
             }
 
         } catch (SecurityException se) {
-            MVLog.systemMeldung("Proxy Authentication: cannot access proxyUser / proxyPassword" + se.toString());
+            SysMsg.systemMeldung("Proxy Authentication: cannot access proxyUser / proxyPassword" + se.toString());
         }
 
         if (args != null) {
@@ -111,10 +112,10 @@ public class Main {
 
                     case "-v":
                         EventQueue.invokeLater(() -> {
-                            MVLog.startMeldungen();
-                            MVLog.systemMeldung("Systemmeldung");
-                            MSLog.fehlerMeldung(100000000, "Fehlermeldung");
-                            MSLog.endeMeldung();
+                            startMeldungen();
+                            SysMsg.systemMeldung("Systemmeldung");
+                            Log.fehlerMeldung(100000000, "Fehlermeldung");
+                            Log.endeMeldung();
                             System.exit(0);
                         });
                         break;

@@ -32,7 +32,7 @@ import mSearch.daten.ListeFilme;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 
 public class CellRendererFilme extends DefaultTableCellRenderer {
 
@@ -170,7 +170,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 }
             }
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(630098552, ex);
+            Log.fehlerMeldung(630098552, ex);
         }
         return this;
     }

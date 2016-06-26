@@ -25,8 +25,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import mSearch.tool.MSLog;
-import mediathek.tool.MVLog;
+import mSearch.tool.Log;
+import mSearch.tool.SysMsg;
 import mediathek.daten.DatenDownload;
 import mSearch.tool.ListenerMediathekView;
 
@@ -75,18 +75,18 @@ public class RuntimeExec {
         try {
             if (arrProgCallArray != null) {
                 if (log) {
-                    MVLog.systemMeldung("=====================");
-                    MVLog.systemMeldung("Starte Array: ");
-                    MVLog.systemMeldung(" -> " + strProgCallArray);
-                    MVLog.systemMeldung("=====================");
+                    SysMsg.systemMeldung("=====================");
+                    SysMsg.systemMeldung("Starte Array: ");
+                    SysMsg.systemMeldung(" -> " + strProgCallArray);
+                    SysMsg.systemMeldung("=====================");
                 }
                 process = Runtime.getRuntime().exec(arrProgCallArray);
             } else {
                 if (log) {
-                    MVLog.systemMeldung("=====================");
-                    MVLog.systemMeldung("Starte nicht als Array:");
-                    MVLog.systemMeldung(" -> " + strProgCall);
-                    MVLog.systemMeldung("=====================");
+                    SysMsg.systemMeldung("=====================");
+                    SysMsg.systemMeldung("Starte nicht als Array:");
+                    SysMsg.systemMeldung(" -> " + strProgCall);
+                    SysMsg.systemMeldung("=====================");
                 }
                 process = Runtime.getRuntime().exec(strProgCall);
             }
@@ -96,7 +96,7 @@ public class RuntimeExec {
             clearIn.start();
             clearOut.start();
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(450028932, ex, "Fehler beim Starten");
+            Log.fehlerMeldung(450028932, ex, "Fehler beim Starten");
         }
         return process;
     }
@@ -139,7 +139,7 @@ public class RuntimeExec {
                 String inStr;
                 while ((inStr = buff.readLine()) != null) {
                     GetPercentageFromErrorStream(inStr);
-                    MVLog.playerMeldung(titel + ": " + inStr);
+                    SysMsg.playerMeldung(titel + ": " + inStr);
                 }
             } catch (IOException ignored) {
             } finally {
@@ -162,7 +162,7 @@ public class RuntimeExec {
                     meldenDouble(d);
                 } catch (Exception ex) {
                     ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
-                    MSLog.fehlerMeldung(912036780, input);
+                    Log.fehlerMeldung(912036780, input);
                 }
                 return;
             }
@@ -226,7 +226,7 @@ public class RuntimeExec {
                 }
             } catch (Exception ex) {
                 ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
-                MSLog.fehlerMeldung(912036780, input);
+                Log.fehlerMeldung(912036780, input);
             }
         }
 

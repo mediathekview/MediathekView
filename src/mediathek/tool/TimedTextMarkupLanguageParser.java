@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -208,7 +208,7 @@ public class TimedTextMarkupLanguageParser {
             buildFilmList();
             ret = true;
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(912036478, ex, "File: " + ttmlFilePath);
+            Log.fehlerMeldung(912036478, ex, "File: " + ttmlFilePath);
             ret = false;
         }
         return ret;
@@ -277,7 +277,7 @@ public class TimedTextMarkupLanguageParser {
             buildFilmListFlash();
             ret = true;
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(912036478, ex, "File: " + ttmlFilePath);
+            Log.fehlerMeldung(912036478, ex, "File: " + ttmlFilePath);
             ret = false;
         }
         return ret;
@@ -306,7 +306,7 @@ public class TimedTextMarkupLanguageParser {
                 counter++;
             }
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(201036470, ex, "File: " + srtFile);
+            Log.fehlerMeldung(201036470, ex, "File: " + srtFile);
         }
     }
 

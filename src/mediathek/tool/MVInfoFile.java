@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.SysMsg;
 import mSearch.tool.FilenameUtils;
 import java.io.*;
 import java.nio.file.Files;
@@ -26,7 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.swing.JFrame;
 import mSearch.daten.DatenFilm;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
@@ -103,13 +104,13 @@ public class MVInfoFile {
             br.write("\n\n");
             br.flush();
         } catch (IOException ex) {
-            MSLog.fehlerMeldung(632656214, dialog.ziel);
+            Log.fehlerMeldung(632656214, dialog.ziel);
         }
     }
 
     public static void writeInfoFile(DatenDownload datenDownload) {
         try {
-            MVLog.systemMeldung(new String[]{"Infofile schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]});
+            SysMsg.systemMeldung(new String[]{"Infofile schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]});
 
             new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
             Path path = Paths.get(datenDownload.getFileNameWithoutSuffix() + ".txt");
@@ -159,9 +160,9 @@ public class MVInfoFile {
             br.write("\n\n");
             br.flush();
             br.close();
-            MVLog.systemMeldung(new String[]{"Infofile", "  geschrieben"});
+            SysMsg.systemMeldung(new String[]{"Infofile", "  geschrieben"});
         } catch (IOException ex) {
-            MSLog.fehlerMeldung(975410369, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.fehlerMeldung(975410369, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
     }
 

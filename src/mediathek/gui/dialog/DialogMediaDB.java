@@ -35,8 +35,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import mSearch.tool.MSLog;
-import mediathek.tool.MVLog;
+import mSearch.tool.Log;
+import mSearch.tool.SysMsg;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenMediaDB;
 import mediathek.file.GetFile;
@@ -217,13 +217,13 @@ public class DialogMediaDB extends javax.swing.JDialog {
             }
 
             // und jetzt die Datei löschen
-            MVLog.systemMeldung(new String[]{"Datei löschen: ", delFile.getAbsolutePath()});
+            SysMsg.systemMeldung(new String[]{"Datei löschen: ", delFile.getAbsolutePath()});
             if (!delFile.delete()) {
                 throw new Exception();
             }
         } catch (Exception ex) {
             MVMessageDialog.showMessageDialog(parent, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
-            MSLog.fehlerMeldung(984512036, "Fehler beim löschen: " + del);
+            Log.fehlerMeldung(984512036, "Fehler beim löschen: " + del);
         }
     }
 

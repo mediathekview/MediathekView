@@ -30,7 +30,7 @@ import mSearch.daten.ListeFilme;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     //Tags Blacklist
@@ -225,7 +225,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 }
             }
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(462558700, ex);
+            Log.fehlerMeldung(462558700, ex);
         }
         return true;
     }
@@ -240,7 +240,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 }
             }
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(696987123, ex);
+            Log.fehlerMeldung(696987123, ex);
         }
         return true;
     }
@@ -252,7 +252,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 return false;
             }
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(912304894, ex);
+            Log.fehlerMeldung(912304894, ex);
         }
         return true;
     }

@@ -29,7 +29,7 @@ import java.util.LinkedList;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Datum;
 import mSearch.tool.GermanStringSorter;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
 import mediathek.tool.*;
@@ -229,7 +229,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             art = Byte.parseByte(arr[DOWNLOAD_ART_NR]);
             quelle = Byte.parseByte(arr[DOWNLOAD_QUELLE_NR]);
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(649632580, ex, "Art: " + arr[DOWNLOAD_ART_NR] + " Quelle: " + arr[DOWNLOAD_QUELLE_NR]);
+            Log.fehlerMeldung(649632580, ex, "Art: " + arr[DOWNLOAD_ART_NR] + " Quelle: " + arr[DOWNLOAD_QUELLE_NR]);
             art = ART_PROGRAMM;
             quelle = QUELLE_BUTTON;
         }
@@ -458,7 +458,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             dateinamePfadBauen(pSet, film, abo, nname, ppfad);
             programmaufrufBauen(programm);
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(825600145, ex);
+            Log.fehlerMeldung(825600145, ex);
         }
     }
 
@@ -724,7 +724,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     }
                 }
             } catch (Exception ex) {
-                MSLog.fehlerMeldung(775421006, ex, datum);
+                Log.fehlerMeldung(775421006, ex, datum);
             }
         }
         return ret;
@@ -753,7 +753,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     }
                 }
             } catch (Exception ex) {
-                MSLog.fehlerMeldung(775421006, ex, zeit);
+                Log.fehlerMeldung(775421006, ex, zeit);
             }
         }
         return ret;
@@ -770,7 +770,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     ret = tmp;
                 }
             } catch (Exception ex) {
-                MSLog.fehlerMeldung(775421006, ex, datum);
+                Log.fehlerMeldung(775421006, ex, datum);
             }
         }
         return ret;
@@ -812,7 +812,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     tmp.setTime(sdf_datum.parse(arr[DatenDownload.DOWNLOAD_DATUM_NR]).getTime());
                 }
             } catch (Exception ex) {
-                MSLog.fehlerMeldung(649897321, ex,
+                Log.fehlerMeldung(649897321, ex,
                         new String[]{"Datum: " + arr[DatenDownload.DOWNLOAD_DATUM_NR], "Zeit: " + arr[DatenDownload.DOWNLOAD_ZEIT_NR]});
             }
         }

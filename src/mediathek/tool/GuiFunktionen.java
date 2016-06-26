@@ -29,9 +29,9 @@ import java.io.File;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import mSearch.tool.MSFunktionen.OperatingSystemType;
-import static mSearch.tool.MSFunktionen.getOs;
-import mSearch.tool.MSLog;
+import mSearch.tool.Functions.OperatingSystemType;
+import static mSearch.tool.Functions.getOs;
+import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 
@@ -135,7 +135,7 @@ public class GuiFunktionen extends MVFunctionSys {
     public static String addsPfad(String pfad1, String pfad2) {
         String ret = concatPaths(pfad1, pfad2);
         if (ret.equals("")) {
-            MSLog.fehlerMeldung(283946015, pfad1 + " - " + pfad2);
+            Log.fehlerMeldung(283946015, pfad1 + " - " + pfad2);
         }
         return ret;
     }
@@ -171,18 +171,18 @@ public class GuiFunktionen extends MVFunctionSys {
             // in Win dürfen die Pfade nicht länger als 260 Zeichen haben (für die Infodatei kommen noch ".txt" dazu)
             if ((pathName[0].length() + 10) > WIN_MAX_PATH_LENGTH) {
                 // es sollen für den Dateinamen mind. 10 Zeichen bleiben
-                MSLog.fehlerMeldung(102036598, "Pfad zu lang: " + pathName[0]);
+                Log.fehlerMeldung(102036598, "Pfad zu lang: " + pathName[0]);
                 pathName[0] = GuiFunktionen.getHomePath();
             }
             if ((pathName[0].length() + pathName[1].length()) > WIN_MAX_PATH_LENGTH) {
-                MSLog.fehlerMeldung(902367369, "Name zu lang: " + pathName[0]);
+                Log.fehlerMeldung(902367369, "Name zu lang: " + pathName[0]);
                 int maxNameL = WIN_MAX_PATH_LENGTH - pathName[0].length();
                 pathName[1] = cutName(pathName[1], maxNameL);
             }
         } else {
             // für X-Systeme
             if ((pathName[1].length()) > X_MAX_NAME_LENGTH) {
-                MSLog.fehlerMeldung(823012012, "Name zu lang: " + pathName[1]);
+                Log.fehlerMeldung(823012012, "Name zu lang: " + pathName[1]);
                 pathName[1] = cutName(pathName[1], X_MAX_NAME_LENGTH);
             }
         }
@@ -216,7 +216,7 @@ public class GuiFunktionen extends MVFunctionSys {
             ret = ret.substring(0, ret.indexOf('&'));
         }
         if (ret.equals("")) {
-            MSLog.fehlerMeldung(395019631, pfad);
+            Log.fehlerMeldung(395019631, pfad);
         }
         return ret;
     }
@@ -242,7 +242,7 @@ public class GuiFunktionen extends MVFunctionSys {
             }
         }
         if (ret.equals("")) {
-            MSLog.fehlerMeldung(969871236, pfad);
+            Log.fehlerMeldung(969871236, pfad);
         }
         if (ret.contains("?")) {
             ret = ret.substring(0, ret.indexOf('?'));
@@ -250,7 +250,7 @@ public class GuiFunktionen extends MVFunctionSys {
         if (ret.length() > 5) {
             // dann ist was faul
             ret = "---";
-            MSLog.fehlerMeldung(821397046, pfad);
+            Log.fehlerMeldung(821397046, pfad);
         }
         return ret;
     }
@@ -267,7 +267,7 @@ public class GuiFunktionen extends MVFunctionSys {
         }
         if (ret.equals("")) {
             ret = pfad;
-            MSLog.fehlerMeldung(945123647, pfad);
+            Log.fehlerMeldung(945123647, pfad);
         }
         return ret;
     }
@@ -283,7 +283,7 @@ public class GuiFunktionen extends MVFunctionSys {
         }
         if (ret.equals("")) {
             ret = pfad;
-            MSLog.fehlerMeldung(802103647, pfad);
+            Log.fehlerMeldung(802103647, pfad);
         }
         return ret;
     }

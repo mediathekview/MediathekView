@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.SysMsg;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
@@ -27,7 +28,7 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import mSearch.tool.ListenerMediathekView;
 import mSearch.tool.MSConst;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenMediaDB;
 
@@ -118,7 +119,7 @@ public class MVMediaDB {
                     }
                 }
             } catch (Exception ex) {
-                MSLog.fehlerMeldung(120321254, ex);
+                Log.fehlerMeldung(120321254, ex);
             }
             makeIndex = false;
             ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIA_DB_STOP, MVMediaDB.class.getSimpleName());
@@ -174,23 +175,23 @@ public class MVMediaDB {
     public synchronized void writeFileArray(String datei) {
         OutputStreamWriter out = null;
         try {
-            MVLog.systemMeldung("MediaDB schreiben (" + fileArray.size() + " Dateien) :");
+            SysMsg.systemMeldung("MediaDB schreiben (" + fileArray.size() + " Dateien) :");
             File file = new File(datei);
             File dir = new File(file.getParent());
             if (!dir.exists()) {
                 if (!dir.mkdirs()) {
-                    MSLog.fehlerMeldung(945120365, "Kann den Pfad nicht anlegen: " + dir.toString());
+                    Log.fehlerMeldung(945120365, "Kann den Pfad nicht anlegen: " + dir.toString());
                 }
             }
-            MVLog.systemMeldung("   --> Start Schreiben nach: " + datei);
+            SysMsg.systemMeldung("   --> Start Schreiben nach: " + datei);
             out = new OutputStreamWriter(new FileOutputStream(datei), MSConst.KODIERUNG_UTF);
 
             for (DatenMediaDB s : fileArray) {
                 out.write(s.arr[DatenMediaDB.MEDIA_DB_NAME_NR] + "\n");
             }
-            MVLog.systemMeldung("   --> geschrieben!");
+            SysMsg.systemMeldung("   --> geschrieben!");
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(102035478, ex, "nach: " + datei);
+            Log.fehlerMeldung(102035478, ex, "nach: " + datei);
         } finally {
             try {
                 if (out != null) {

@@ -22,12 +22,22 @@ package mediathek.tool;
 import java.io.File;
 import java.security.CodeSource;
 import java.util.ResourceBundle;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
+import mSearch.tool.SysMsg;
 import mediathek.Main;
+import mediathek.daten.Daten;
 
 public class MVFunctionSys {
 
- 
+    public static synchronized void startMeldungen() {
+        Log.versionsMeldungen(MVFunctionSys.getProgName());
+        SysMsg.systemMeldung("Programmpfad: " + MVFunctionSys.getPathJar());
+        SysMsg.systemMeldung("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
+        SysMsg.systemMeldung("");
+        SysMsg.systemMeldung("###########################################################");
+        SysMsg.systemMeldung("");
+        SysMsg.systemMeldung("");
+    }
 
     /**
      * Retrieve the path to the program jar file.
@@ -89,7 +99,7 @@ public class MVFunctionSys {
             rb = ResourceBundle.getBundle("version");
             msg = rb.getString(propToken);
         } catch (Exception e) {
-            MSLog.fehlerMeldung(807293847, e);
+            Log.fehlerMeldung(807293847, e);
         }
         return msg;
     }
@@ -103,7 +113,7 @@ public class MVFunctionSys {
             rb = ResourceBundle.getBundle("version");
             msg = rb.getString(propToken);
         } catch (Exception e) {
-            MSLog.fehlerMeldung(134679898, e);
+            Log.fehlerMeldung(134679898, e);
         }
         return msg;
     }

@@ -24,7 +24,7 @@ import java.awt.event.ActionListener;
 import javax.swing.GroupLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import static mSearch.tool.MSFunktionen.getOs;
+import static mSearch.tool.Functions.getOs;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;

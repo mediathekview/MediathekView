@@ -19,14 +19,28 @@
  */
 package mediathek.gui;
 
+import java.io.BufferedWriter;
+import mSearch.tool.SysMsg;
+import java.io.File;
+import java.io.OutputStreamWriter;
 import mSearch.tool.ListenerMediathekView;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import static mSearch.tool.Functions.getJavaVersion;
+import static mSearch.tool.Functions.getPathJar;
+import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.gui.dialog.DialogZiel;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
 
@@ -50,7 +64,7 @@ public class MVHelpDialog extends javax.swing.JDialog {
         } catch (Exception e) {
             jTextFieldVersion.setText(Konstanten.VERSION);
         }
-        jTextFieldPfad.setText(MVFunctionSys.getPathJar());
+        jTextFieldPfad.setText(getPathJar());
         try {
             jXHyperlinkWebsite.setText(Konstanten.ADRESSE_WEBSITE);
             jXHyperlinkWebsite.addActionListener(new UrlHyperlinkAction(parent, Konstanten.ADRESSE_WEBSITE));
@@ -66,7 +80,17 @@ public class MVHelpDialog extends javax.swing.JDialog {
             jXHyperlinkSpende.addMouseListener(new BeobMausUrl(jXHyperlinkSpende));
         } catch (URISyntaxException ignored) {
         }
-        jButtonLogErstellen.addActionListener(e -> MVLog.LogDateiSchreiben(daten, parent));
+        jButtonLogErstellen.addActionListener(e -> {
+            DialogZiel dialog = new DialogZiel(parent, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek.log", "Logdatei speichern");
+            dialog.setVisible(true);
+            if (!dialog.ok) {
+                return;
+            }
+            if (!LogDateiSchreiben(dialog.ziel)) {
+                MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!", "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
+            }
+
+        });
         jButtonHilfeReset.setIcon(GetIcon.getProgramIcon("help_16.png"));
         jButtonHilfeReset.addActionListener(e -> new DialogHilfe(daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET)).setVisible(true));
         jButtonResetSets.addActionListener(e -> {
@@ -92,6 +116,112 @@ public class MVHelpDialog extends javax.swing.JDialog {
                 beenden();
             }
         };
+    }
+
+    private boolean LogDateiSchreiben(String ziel) {
+        boolean ret = false;
+
+        ArrayList<String> retList;
+        Path logFilePath = Paths.get(ziel);
+        try (final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(logFilePath)))) {
+            // Programminfos
+            bw.write("#####################################################");
+            bw.newLine();
+            bw.write("Erstellt: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+            bw.newLine();
+            bw.write("#####################################################");
+            bw.newLine();
+            bw.newLine();
+            bw.write(MVFunctionSys.getProgVersionString());
+            bw.newLine();
+            bw.write("Compiled: " + MVFunctionSys.getCompileDate());
+            bw.newLine();
+            bw.write("=====================================================");
+            bw.newLine();
+            bw.write("Java");
+            bw.newLine();
+            String[] java = getJavaVersion();
+            for (String ja : java) {
+                bw.write(ja);
+                bw.newLine();
+            }
+            bw.write("=====================================================");
+            bw.newLine();
+            bw.write("Betriebssystem: " + System.getProperty("os.name"));
+            bw.newLine();
+            bw.write("Bs-Version:     " + System.getProperty("os.version"));
+            bw.newLine();
+            bw.write("Bs-Architektur: " + System.getProperty("os.arch"));
+            bw.newLine();
+            bw.newLine();
+            bw.write("Programmpfad: " + getPathJar());
+            bw.newLine();
+            bw.write("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory());
+            bw.newLine();
+            bw.newLine();
+            bw.newLine();
+            //
+            bw.write("#####################################################");
+            bw.newLine();
+            bw.write("## Programmsets ##################################");
+            bw.newLine();
+            bw.write("#####################################################");
+            bw.newLine();
+            bw.newLine();
+            for (int i = 0; i < Daten.listePset.size(); ++i) {
+                bw.write(Daten.listePset.get(i).toString());
+                bw.newLine();
+            }
+            bw.newLine();
+            bw.newLine();
+            bw.newLine();
+            bw.newLine();
+            //
+            bw.write("#####################################################");
+            bw.newLine();
+            bw.write("## Systemmeldungen ##################################");
+            bw.newLine();
+            bw.write("#####################################################");
+            bw.newLine();
+            bw.newLine();
+            bw.write(SysMsg.textSystem.toString());
+            bw.newLine();
+            bw.newLine();
+            bw.newLine();
+            bw.newLine();
+            //
+            bw.write("#####################################################");
+            bw.newLine();
+            bw.write("## Programmausgabe ##################################");
+            bw.newLine();
+            bw.write("#####################################################");
+            bw.newLine();
+            bw.newLine();
+            bw.write(SysMsg.textProgramm.toString());
+            bw.newLine();
+            bw.newLine();
+            bw.newLine();
+            bw.newLine();
+            //
+            bw.write("#########################################################");
+            bw.newLine();
+            bw.write("## Fehlermeldungen                                       ");
+            bw.newLine();
+            retList = Log.fehlerMeldungen();
+            for (String s : retList) {
+                bw.write(s);
+                bw.newLine();
+            }
+            bw.newLine();
+            bw.newLine();
+            //
+            bw.close();
+            ret = true;
+        } catch (Exception ex) {
+            Log.fehlerMeldung(319865493, ex);
+            ret = false;
+        }
+        return ret;
     }
 
     private void beenden() {

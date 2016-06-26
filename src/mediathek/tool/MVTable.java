@@ -52,7 +52,7 @@ import mediathek.daten.DatenMediaDB;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mSearch.daten.DatenFilm;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 
 public final class MVTable extends JTable {
     public enum TableType { STANDARD, FILME, DOWNLOADS, ABOS, PSET, PROG, MEDIA_DB};
@@ -538,7 +538,7 @@ public final class MVTable extends JTable {
             }
             this.validate();
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(965001463, ex);
+            Log.fehlerMeldung(965001463, ex);
         }
     }
 

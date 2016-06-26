@@ -23,7 +23,7 @@ import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 import mediathek.daten.Daten;
 
 public class CellRendererColor extends DefaultTableCellRenderer {
@@ -54,7 +54,7 @@ public class CellRendererColor extends DefaultTableCellRenderer {
                 setText("");
             }
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(630365892, ex);
+            Log.fehlerMeldung(630365892, ex);
         }
         return this;
     }

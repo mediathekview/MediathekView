@@ -20,84 +20,36 @@
 package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.SplashScreen;
-import java.awt.Toolkit;
-import java.awt.Window;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import javax.swing.AbstractAction;
-import javax.swing.InputMap;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRootPane;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JSlider;
-import javax.swing.JSpinner;
-import javax.swing.JSplitPane;
-import javax.swing.KeyStroke;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import mSearch.daten.Data;
+import mSearch.filmeSuchen.MSListenerFilmeLaden;
+import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import mSearch.tool.Duration;
+import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Functions.OperatingSystemType;
+import static mSearch.tool.Functions.getOs;
+import mSearch.tool.Log;
+import mSearch.tool.SysMsg;
 import mediathek.controller.CheckUpdate;
-import mediathek.tool.MVLog;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
-import mediathek.gui.GuiAbo;
-import mediathek.gui.GuiDebug;
-import mediathek.gui.GuiDownloads;
-import mediathek.gui.GuiFilme;
-import mediathek.gui.MVAboutDialog;
-import mediathek.gui.MVBandwidthMonitor;
-import mediathek.gui.MVDownloadInfo;
-import mediathek.gui.MVHelpDialog;
-import mediathek.gui.MVStatusBar;
-import mediathek.gui.MVToolBar;
-import mediathek.gui.MVTray;
-import mediathek.gui.PanelVorlage;
-import mediathek.gui.dialog.DialogBeenden;
-import mediathek.gui.dialog.DialogLeer;
-import mediathek.gui.dialog.DialogMediaDB;
-import mediathek.gui.dialog.DialogStarteinstellungen;
-import mediathek.gui.dialog.MVFilmInformation;
-import mediathek.gui.dialog.MVFilmInformationLinux;
+import mediathek.gui.*;
+import mediathek.gui.dialog.*;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 import mediathek.res.GetIcon;
-import mSearch.tool.Duration;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Konstanten;
-import mSearch.tool.ListenerMediathekView;
-import mediathek.tool.MVConfig;
-import mediathek.tool.MVFont;
-import mediathek.tool.MVFrame;
-import mediathek.tool.MVMessageDialog;
-import mSearch.filmeSuchen.MSListenerFilmeLaden;
-import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
-import mSearch.tool.MSFunktionen.OperatingSystemType;
-import static mSearch.tool.MSFunktionen.getOs;
-import mSearch.tool.MSLog;
+import static mediathek.tool.MVFunctionSys.startMeldungen;
+import mediathek.tool.*;
 
 public class MediathekGui extends JFrame {
 
@@ -227,13 +179,13 @@ public class MediathekGui extends JFrame {
         String pfad = "";
         initComponents();
         if (ar != null) {
-            MVLog.systemMeldung("");
-            MVLog.systemMeldung("==========================================");
+            SysMsg.systemMeldung("");
+            SysMsg.systemMeldung("==========================================");
             for (String s : ar) {
-                MVLog.systemMeldung("Startparameter: " + s);
+                SysMsg.systemMeldung("Startparameter: " + s);
             }
-            MVLog.systemMeldung("==========================================");
-            MVLog.systemMeldung("");
+            SysMsg.systemMeldung("==========================================");
+            SysMsg.systemMeldung("");
             if (ar.length > 0) {
                 if (!ar[0].startsWith("-")) {
                     if (!ar[0].endsWith(File.separator)) {
@@ -257,7 +209,7 @@ public class MediathekGui extends JFrame {
         daten = new Daten(pfad, this);
         duration.ping("Daten");
 
-        MVLog.startMeldungen();
+        startMeldungen();
         createStatusBar();
         mVToolBar = new MVToolBar(daten);
         jPanelToolBar.setLayout(new BorderLayout());
@@ -303,7 +255,7 @@ public class MediathekGui extends JFrame {
 
         if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO) {
             if (Daten.listeFilme.isTooOld()) {
-                MVLog.systemMeldung("Neue Filmliste laden");
+                SysMsg.systemMeldung("Neue Filmliste laden");
                 Daten.filmeLaden.importFilmliste("", true);
             }
         }
@@ -723,13 +675,13 @@ public class MediathekGui extends JFrame {
                 }
             }
         };
-        PanelMeldungen panelMeldungenSystem = new PanelMeldungen(daten, daten.mediathekGui, MVLog.textSystem, ListenerMediathekView.EREIGNIS_LOG_SYSTEM, "Systemmeldungen");
-        PanelMeldungen panelMeldungenPlayer = new PanelMeldungen(daten, daten.mediathekGui, MVLog.textProgramm, ListenerMediathekView.EREIGNIS_LOG_PLAYER, "Meldungen Hilfsprogramme");
+        PanelMeldungen panelMeldungenSystem = new PanelMeldungen(daten, daten.mediathekGui, SysMsg.textSystem, ListenerMediathekView.EREIGNIS_LOG_SYSTEM, "Systemmeldungen");
+        PanelMeldungen panelMeldungenPlayer = new PanelMeldungen(daten, daten.mediathekGui, SysMsg.textProgramm, ListenerMediathekView.EREIGNIS_LOG_PLAYER, "Meldungen Hilfsprogramme");
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 panelMeldungenSystem,
                 panelMeldungenPlayer);
-        MVLog.panelMeldungenPlayer = panelMeldungenPlayer;
-        MVLog.panelMeldungenSystem = panelMeldungenSystem;
+//        MVLog.panelMeldungenPlayer = panelMeldungenPlayer;
+//        MVLog.panelMeldungenSystem = panelMeldungenSystem;
 
         panelMeldungen.setLayout(new BorderLayout());
         panelMeldungen.add(splitPane, BorderLayout.CENTER);
@@ -1052,7 +1004,7 @@ public class MediathekGui extends JFrame {
         // FilterFrame
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_FILTER, daten.guiFilme.mVFilterFrame);
         daten.allesSpeichern();
-        MSLog.endeMeldung();
+        Log.endeMeldung();
 
         if (shutDown) {
             shutdownComputer();
@@ -1087,17 +1039,17 @@ public class MediathekGui extends JFrame {
                 break;
 
             default:
-                MSLog.fehlerMeldung(465321789, "Shutdown unsupported operating system ...");
+                Log.fehlerMeldung(465321789, "Shutdown unsupported operating system ...");
                 break;
         }
 
         //only run if we have a proper shutdown command...
         if (!strShutdownCommand.isEmpty()) {
             try {
-                MVLog.systemMeldung("Shutdown: " + strShutdownCommand);
+                SysMsg.systemMeldung("Shutdown: " + strShutdownCommand);
                 Runtime.getRuntime().exec(strShutdownCommand);
             } catch (IOException ex) {
-                MSLog.fehlerMeldung(915263047, ex);
+                Log.fehlerMeldung(915263047, ex);
             }
         }
     }

@@ -34,7 +34,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
@@ -607,7 +607,7 @@ public class PanelPsetImport extends PanelVorlage {
                     try {
                         jTextFieldDatei.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        MSLog.fehlerMeldung(989563047, ex);
+                        Log.fehlerMeldung(989563047, ex);
                     }
                 }
             } else {
@@ -625,7 +625,7 @@ public class PanelPsetImport extends PanelVorlage {
                     try {
                         jTextFieldDatei.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        MSLog.fehlerMeldung(925004992, ex);
+                        Log.fehlerMeldung(925004992, ex);
                     }
                 }
             }

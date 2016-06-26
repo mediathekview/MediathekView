@@ -7,7 +7,7 @@ import java.util.EnumMap;
 import javax.swing.*;
 import mSearch.filmeSuchen.MSListenerFilmeLaden;
 import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
@@ -75,7 +75,7 @@ public final class MVStatusBar extends JPanel {
                         setTextForRightDisplay();
                     }
                 } catch (Exception ex) {
-                    MSLog.fehlerMeldung(936251087, ex);
+                    Log.fehlerMeldung(936251087, ex);
                 }
             }
         });

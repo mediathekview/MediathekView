@@ -59,7 +59,7 @@ import mediathek.tool.MVTable;
 import mediathek.tool.TModel;
 import mediathek.tool.UrlHyperlinkAction;
 import mSearch.daten.DatenFilm;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 import mediathek.tool.*;
 
 public class PanelPsetLang extends PanelVorlage {
@@ -1632,7 +1632,7 @@ public class PanelPsetLang extends PanelVorlage {
                     try {
                         jTextFieldProgPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        MSLog.fehlerMeldung(369047894, ex);
+                        Log.fehlerMeldung(369047894, ex);
                     }
                 }
             } else {
@@ -1648,7 +1648,7 @@ public class PanelPsetLang extends PanelVorlage {
                         String str = chooser.getSelectedFile().getPath();
                         jTextFieldProgPfad.setText(str);
                     } catch (Exception ex) {
-                        MSLog.fehlerMeldung(825630443, ex);
+                        Log.fehlerMeldung(825630443, ex);
                     }
                 }
             }
@@ -1670,7 +1670,7 @@ public class PanelPsetLang extends PanelVorlage {
                     try {
                         jTextFieldGruppeZielPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        MSLog.fehlerMeldung(392847589, ex);
+                        Log.fehlerMeldung(392847589, ex);
                     }
                 }
                 System.setProperty("apple.awt.fileDialogForDirectories", "false");
@@ -1687,7 +1687,7 @@ public class PanelPsetLang extends PanelVorlage {
                     try {
                         jTextFieldGruppeZielPfad.setText(chooser.getSelectedFile().getPath());
                     } catch (Exception ex) {
-                        MSLog.fehlerMeldung(319860075, ex);
+                        Log.fehlerMeldung(319860075, ex);
                     }
                 }
             }

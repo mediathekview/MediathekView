@@ -30,12 +30,12 @@ import javax.xml.stream.XMLStreamWriter;
 import static mSearch.daten.Data.mVReplaceList;
 import mSearch.filmlisten.DatenFilmlisteUrl;
 import mSearch.tool.MSConst;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 import mSearch.tool.MVReplaceList;
 import mediathek.daten.*;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVConfig;
-import mediathek.tool.MVLog;
+import mSearch.tool.SysMsg;
 
 public class IoXmlSchreiben {
 
@@ -45,19 +45,19 @@ public class IoXmlSchreiben {
 
     public static synchronized void datenSchreiben() {
         xmlFilePath = Daten.getMediathekXmlFilePath();
-        MVLog.systemMeldung("Daten Schreiben nach: " + xmlFilePath.toString());
+        SysMsg.systemMeldung("Daten Schreiben nach: " + xmlFilePath.toString());
         xmlDatenSchreiben();
     }
 
     public static synchronized void exportPset(DatenPset[] pSet, String datei) {
         try {
             xmlFilePath = Paths.get(datei);
-            MVLog.systemMeldung("Pset exportieren nach: " + xmlFilePath.toString());
+            SysMsg.systemMeldung("Pset exportieren nach: " + xmlFilePath.toString());
             xmlSchreibenStart();
             xmlSchreibenPset(pSet);
             xmlSchreibenEnde();
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(392846204, ex, "nach: " + datei);
+            Log.fehlerMeldung(392846204, ex, "nach: " + datei);
         }
     }
 
@@ -104,12 +104,12 @@ public class IoXmlSchreiben {
             writer.writeCharacters("\n\n");
             xmlSchreibenEnde();
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(656328109, ex);
+            Log.fehlerMeldung(656328109, ex);
         }
     }
 
     private static void xmlSchreibenStart() throws IOException, XMLStreamException {
-        MVLog.systemMeldung("Start Schreiben nach: " + xmlFilePath.toAbsolutePath());
+        SysMsg.systemMeldung("Start Schreiben nach: " + xmlFilePath.toAbsolutePath());
         out = new OutputStreamWriter(Files.newOutputStream(xmlFilePath), MSConst.KODIERUNG_UTF);
 
         XMLOutputFactory outFactory = XMLOutputFactory.newInstance();
@@ -217,7 +217,7 @@ public class IoXmlSchreiben {
             writer.writeEndElement();
             writer.writeCharacters("\n"); //neue Zeile
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(198325017, ex);
+            Log.fehlerMeldung(198325017, ex);
         }
     }
 
@@ -243,7 +243,7 @@ public class IoXmlSchreiben {
             writer.writeEndElement();
             writer.writeCharacters("\n"); //neue Zeile
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(951230478, ex);
+            Log.fehlerMeldung(951230478, ex);
         }
     }
 
@@ -255,6 +255,6 @@ public class IoXmlSchreiben {
         writer.close();
         out.close();
 
-        MVLog.systemMeldung("geschrieben!");
+        SysMsg.systemMeldung("geschrieben!");
     }
 }

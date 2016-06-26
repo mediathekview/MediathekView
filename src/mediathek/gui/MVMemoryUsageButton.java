@@ -3,8 +3,8 @@ package mediathek.gui;
 import java.awt.*;
 import javax.swing.JButton;
 import javax.swing.Timer;
-import mSearch.tool.MSFunktionen.OperatingSystemType;
-import static mSearch.tool.MSFunktionen.getOs;
+import mSearch.tool.Functions.OperatingSystemType;
+import static mSearch.tool.Functions.getOs;
 
 public class MVMemoryUsageButton extends JButton {
 

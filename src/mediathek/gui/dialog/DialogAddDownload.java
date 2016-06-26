@@ -42,7 +42,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import mSearch.daten.DatenFilm;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
@@ -704,7 +704,7 @@ public class DialogAddDownload extends JDialog {
                         jComboBoxPfad.addItem(chooser.getDirectory() + chooser.getFile());
                         jComboBoxPfad.setSelectedItem(chooser.getDirectory() + chooser.getFile());
                     } catch (Exception ex) {
-                        MSLog.fehlerMeldung(356871087, ex);
+                        Log.fehlerMeldung(356871087, ex);
                     }
                 }
                 System.setProperty("apple.awt.fileDialogForDirectories", "false");
@@ -722,7 +722,7 @@ public class DialogAddDownload extends JDialog {
                         jComboBoxPfad.addItem(chooser.getSelectedFile().getAbsolutePath());
                         jComboBoxPfad.setSelectedItem(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        MSLog.fehlerMeldung(356871087, ex);
+                        Log.fehlerMeldung(356871087, ex);
                     }
                 }
             }

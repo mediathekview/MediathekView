@@ -27,7 +27,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
@@ -233,7 +233,7 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldProgramm.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        MSLog.fehlerMeldung(398762109, ex);
+                        Log.fehlerMeldung(398762109, ex);
                     }
                 }
             } else {
@@ -250,7 +250,7 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
                     try {
                         jTextFieldProgramm.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        MSLog.fehlerMeldung(107458930, ex);
+                        Log.fehlerMeldung(107458930, ex);
                     }
                 }
             }

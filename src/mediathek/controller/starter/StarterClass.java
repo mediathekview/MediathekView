@@ -38,8 +38,8 @@ import javax.script.ScriptEngineManager;
 import javax.swing.SwingUtilities;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Datum;
-import mSearch.tool.MSLog;
-import mediathek.tool.MVLog;
+import mSearch.tool.Log;
+import mSearch.tool.SysMsg;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
@@ -89,16 +89,16 @@ public class StarterClass {
         if (start != null) {
             if (start.percent > -1 && start.percent < 995) {
                 // Prozent werden berechnet und es wurde vor 99,5% abgebrochen
-                MSLog.fehlerMeldung(696510258, "Download fehlgeschlagen: 99,5% wurden nicht erreicht"
+                Log.fehlerMeldung(696510258, "Download fehlgeschlagen: 99,5% wurden nicht erreicht"
                         + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                 return false;
             }
         }
         File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         if (!file.exists()) {
-            MSLog.fehlerMeldung(550236231, "Download fehlgeschlagen: Datei existiert nicht" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.fehlerMeldung(550236231, "Download fehlgeschlagen: Datei existiert nicht" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_FILM) {
-            MSLog.fehlerMeldung(795632500, "Download fehlgeschlagen: Datei zu klein" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.fehlerMeldung(795632500, "Download fehlgeschlagen: Datei zu klein" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         } else {
             if (datenDownload.istAbo()) {
                 daten.erledigteAbos.zeileSchreiben(datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],
@@ -121,19 +121,19 @@ public class StarterClass {
                 // zum Wiederstarten/Aufräumen die leer/zu kleine Datei löschen, alles auf Anfang
                 if (file.length() == 0) {
                     // zum Wiederstarten/Aufräumen die leer/zu kleine Datei löschen, alles auf Anfang
-                    MVLog.systemMeldung(new String[]{"Restart/Aufräumen: leere Datei löschen", file.getAbsolutePath()});
+                    SysMsg.systemMeldung(new String[]{"Restart/Aufräumen: leere Datei löschen", file.getAbsolutePath()});
                     if (!file.delete()) {
                         throw new Exception();
                     }
                 } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_FILM) {
-                    MVLog.systemMeldung(new String[]{"Restart/Aufräumen: Zu kleine Datei löschen", file.getAbsolutePath()});
+                    SysMsg.systemMeldung(new String[]{"Restart/Aufräumen: Zu kleine Datei löschen", file.getAbsolutePath()});
                     if (!file.delete()) {
                         throw new Exception();
                     }
                 }
             }
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(795632500, "Fehler beim löschen" + file.getAbsolutePath());
+            Log.fehlerMeldung(795632500, "Fehler beim löschen" + file.getAbsolutePath());
         }
     }
 
@@ -159,7 +159,7 @@ public class StarterClass {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
             text.add("Programmaufruf[]: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR]);
         }
-        MVLog.systemMeldung(text.toArray(new String[text.size()]));
+        SysMsg.systemMeldung(text.toArray(new String[text.size()]));
     }
 
     private void fertigmeldung(final DatenDownload datenDownload, final Start start, boolean abgebrochen) {
@@ -205,7 +205,7 @@ public class StarterClass {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
             text.add("Programmaufruf[]: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR]);
         }
-        MVLog.systemMeldung(text.toArray(new String[text.size()]));
+        SysMsg.systemMeldung(text.toArray(new String[text.size()]));
         if (!start.stoppen && !abgebrochen) {
             if (datenDownload.quelle != DatenDownload.QUELLE_BUTTON) {
                 SwingUtilities.invokeLater(() -> MVNotification.addNotification(daten, datenDownload, start.status != Start.STATUS_ERR));
@@ -252,7 +252,7 @@ public class StarterClass {
                     ScriptEngine engine = mgr.getEngineByName("AppleScript");
                     engine.eval(script);
                 } catch (Exception ex) {
-                    MSLog.fehlerMeldung(915263987, "Fehler beim Spotlight schreiben" + filmPath.toString());
+                    Log.fehlerMeldung(915263987, "Fehler beim Spotlight schreiben" + filmPath.toString());
                     //AppleScript may not be available if user does not use the official MacApp.
                     //We need to log that as well if there are error reports.
                     try {
@@ -272,7 +272,7 @@ public class StarterClass {
      * This is relevant to know for bug reports.
      */
     private void logUnofficialMacAppUse() {
-        MSLog.fehlerMeldung(915263987, "MV wird NICHT über die offizielle Mac App genutzt.");
+        Log.fehlerMeldung(915263987, "MV wird NICHT über die offizielle Mac App genutzt.");
     }
 
     private void finalizeDownload(DatenDownload datenDownload, Start start /* wegen "datenDownload.start=null" beim stoppen */, HttpDownloadState state) {
@@ -346,7 +346,7 @@ public class StarterClass {
                     Daten.listeDownloadsButton.buttonStartsPutzen(); // Button Starts aus der Liste löschen
                     sleep(3 * 1000);
                 } catch (Exception ex) {
-                    MSLog.fehlerMeldung(613822015, ex);
+                    Log.fehlerMeldung(613822015, ex);
                 }
             } //while(true)
         }
@@ -383,7 +383,7 @@ public class StarterClass {
                     downloadThread.start();
                     break;
                 default:
-                    MSLog.fehlerMeldung(789356001, "StarterClass.Starten - Switch-default");
+                    Log.fehlerMeldung(789356001, "StarterClass.Starten - Switch-default");
                     break;
             }
         }
@@ -423,7 +423,7 @@ public class StarterClass {
                 Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
             } catch (IOException ignored) {
             } catch (Exception ex) {
-                MSLog.fehlerMeldung(469365281, ex);
+                Log.fehlerMeldung(469365281, ex);
             }
         }
 
@@ -543,7 +543,7 @@ public class StarterClass {
                 }
             } catch (Exception ex) {
                 exMessage = ex.getLocalizedMessage();
-                MSLog.fehlerMeldung(395623710, ex);
+                Log.fehlerMeldung(395623710, ex);
                 SwingUtilities.invokeLater(() -> {
                     if (!Daten.auto) {
                         new MeldungDownloadfehler(daten.mediathekGui, exMessage, datenDownload).setVisible(true);
@@ -582,7 +582,7 @@ public class StarterClass {
                     file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                 } catch (IOException ex) {
                     // kann nicht gelöscht werden, evtl. klappt ja das Überschreiben
-                    MSLog.fehlerMeldung(795623145, ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                    Log.fehlerMeldung(795623145, ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                 }
                 return false; //auf keinen Fall den Dialog starten :)
             }
@@ -626,7 +626,7 @@ public class StarterClass {
                             file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                         } catch (Exception ex) {
                             // kann nicht gelöscht werden, evtl. klappt ja das Überschreiben
-                            MSLog.fehlerMeldung(945120398, ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                            Log.fehlerMeldung(945120398, ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                         }
                         break;
 
@@ -703,7 +703,7 @@ public class StarterClass {
                 }
             } catch (Exception ex) {
                 ret = -1;
-                MSLog.fehlerMeldung(643298301, ex);
+                Log.fehlerMeldung(643298301, ex);
             } finally {
                 if (connection != null) {
                     connection.disconnect();
@@ -795,7 +795,7 @@ public class StarterClass {
                     melden = false;
                 }
             }
-            MVLog.systemMeldung(start.mVInputStream.toString());
+            SysMsg.systemMeldung(start.mVInputStream.toString());
             if (!start.stoppen) {
                 if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON) {
                     // direkter Start mit dem Button
@@ -849,7 +849,7 @@ public class StarterClass {
                             // ==================================
                             // dann wars das
                             responseCode = "Responsecode: " + conn.getResponseCode() + "\n" + conn.getResponseMessage();
-                            MSLog.fehlerMeldung(915236798, "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
+                            Log.fehlerMeldung(915236798, "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
                             SwingUtilities.invokeLater(() -> {
                                 if (!Daten.auto) {
                                     new MeldungDownloadfehler(daten.mediathekGui, "URL des Films:\n"
@@ -874,7 +874,7 @@ public class StarterClass {
                 }
             } catch (Exception ex) {
                 exMessage = ex.getLocalizedMessage();
-                MSLog.fehlerMeldung(316598941, ex, "Fehler");
+                Log.fehlerMeldung(316598941, ex, "Fehler");
                 start.status = Start.STATUS_ERR;
                 SwingUtilities.invokeLater(() -> {
                     if (!Daten.auto) {

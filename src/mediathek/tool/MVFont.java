@@ -19,8 +19,8 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.ListenerMediathekView;
 import javax.swing.JTable;
+import mSearch.tool.ListenerMediathekView;
 import mediathek.daten.Daten;
 
 public class MVFont {

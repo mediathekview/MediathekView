@@ -30,7 +30,7 @@ import java.util.zip.ZipFile;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import mSearch.tool.MSConst;
-import static mSearch.tool.MSFunktionen.getOs;
+import static mSearch.tool.Functions.getOs;
 import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;

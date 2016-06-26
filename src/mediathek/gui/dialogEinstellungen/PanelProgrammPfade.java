@@ -29,7 +29,7 @@ import java.net.URISyntaxException;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import mSearch.tool.MSLog;
+import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
@@ -438,7 +438,7 @@ public class PanelProgrammPfade extends JPanel {
                     try {
                         textField.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        MSLog.fehlerMeldung(306087945, ex);
+                        Log.fehlerMeldung(306087945, ex);
                     }
                 }
             } else {
@@ -456,7 +456,7 @@ public class PanelProgrammPfade extends JPanel {
                     try {
                         textField.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        MSLog.fehlerMeldung(643289561, ex);
+                        Log.fehlerMeldung(643289561, ex);
                     }
                 }
             }

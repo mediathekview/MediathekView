@@ -35,9 +35,9 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.TModel;
 import mSearch.tool.MSConst;
-import static mSearch.tool.MSFunktionen.getOs;
-import static mSearch.tool.MSFunktionen.getOsString;
-import mSearch.tool.MSLog;
+import static mSearch.tool.Functions.getOs;
+import static mSearch.tool.Functions.getOsString;
+import mSearch.tool.Log;
 
 public class ListePsetVorlagen extends LinkedList<String[]> {
 
@@ -161,7 +161,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                 }
             }
         } catch (Exception ex) {
-            MSLog.fehlerMeldung(398001963, ex);
+            Log.fehlerMeldung(398001963, ex);
             return false;
         }
         return true;
@@ -182,7 +182,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             }
         } catch (Exception ex) {
             if (log) {
-                MSLog.fehlerMeldung(630048926, ex);
+                Log.fehlerMeldung(630048926, ex);
             }
             return null;
         }
@@ -231,7 +231,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             in.close();
         } catch (Exception ex) {
             if (log) {
-                MSLog.fehlerMeldung(467810360, ex);
+                Log.fehlerMeldung(467810360, ex);
             }
             return null;
         }
@@ -267,7 +267,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             }
         } catch (Exception ex) {
             ret = false;
-            MSLog.fehlerMeldung(467256394, ex);
+            Log.fehlerMeldung(467256394, ex);
         }
         return ret;
     }
