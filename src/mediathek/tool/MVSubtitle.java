@@ -19,7 +19,7 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.SysMsg;
+import mSearch.tool.TimedTextMarkupLanguageParser;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,6 +31,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 import mSearch.tool.Log;
+import mSearch.tool.SysMsg;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 
@@ -39,7 +40,7 @@ public class MVSubtitle {
     private static final int timeout = 10000;
     public static final String KODIERUNG_UTF = "UTF-8";
 
-    public static void writeSubtitle(DatenDownload datenDownload) {
+    public static void writeSubtitle( DatenDownload datenDownload) {
         final String SUFFIX_TTML = "ttml";
         final String SUFFIX_SRT = "srt";
         String suffix = SUFFIX_TTML;// txt käme dem Infofile in die Quere
