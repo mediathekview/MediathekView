@@ -14,7 +14,7 @@ import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mSearch.tool.Listener;
-import mediathek.tool.MVConfig;
+import mSearch.tool.MVConfig;
 
 /**
  * User: crystalpalace1977
@@ -152,11 +152,11 @@ public class MediathekGuiMac extends MediathekGui {
 
     private int getNumberOfDownloads() {
         int numDownloads;
-        if (Daten.mVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD).equals("")) {
-            Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
+        if (MVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD).equals("")) {
+            MVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
             numDownloads = 1;
         } else
-            numDownloads = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD));
+            numDownloads = Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD));
 
         return numDownloads;
     }
@@ -173,7 +173,7 @@ public class MediathekGuiMac extends MediathekGui {
             menuItem.addActionListener(e -> {
                 final AbstractButton btn = (AbstractButton) e.getSource();
                 if (btn != null) {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, btn.getText());
+                    MVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, btn.getText());
                     Listener.notify(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
                 }
             });

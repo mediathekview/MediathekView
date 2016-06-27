@@ -33,7 +33,7 @@ import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.HinweisKeineAuswahl;
 import mSearch.tool.Listener;
-import mediathek.tool.MVConfig;
+import mSearch.tool.MVConfig;
 import mSearch.tool.ReplaceList;
 import mediathek.tool.TModel;
 
@@ -120,17 +120,17 @@ public class PanelDateinamen extends PanelVorlage {
         });
 
         jCheckBoxTable.addActionListener(e -> {
-            Daten.mVConfig.add(MVConfig.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected()));
+            MVConfig.add(MVConfig.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected()));
             setColor(jCheckBoxTable, jCheckBoxTable.isSelected());
         });
-        jCheckBoxTable.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)));
+        jCheckBoxTable.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)));
         setColor(jCheckBoxTable, jCheckBoxTable.isSelected());
 
         jCheckBoxAscii.addActionListener(e -> {
-            Daten.mVConfig.add(MVConfig.SYSTEM_ONLY_ASCII, Boolean.toString(jCheckBoxAscii.isSelected()));
+            MVConfig.add(MVConfig.SYSTEM_ONLY_ASCII, Boolean.toString(jCheckBoxAscii.isSelected()));
             setColor(jCheckBoxAscii, jCheckBoxAscii.isSelected());
         });
-        jCheckBoxAscii.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ONLY_ASCII)));
+        jCheckBoxAscii.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ONLY_ASCII)));
         setColor(jCheckBoxAscii, jCheckBoxAscii.isSelected());
     }
 

@@ -41,7 +41,7 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
 import mSearch.tool.Listener;
-import mediathek.tool.MVConfig;
+import mSearch.tool.MVConfig;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVMessageDialog;
 
@@ -83,23 +83,23 @@ public class PanelEinstellungen extends PanelVorlage {
         Listener.addListener(new Listener(Listener.EREIGNIS_TRAYICON, PanelEinstellungen.class.getSimpleName()) {
             @Override
             public void ping() {
-                jCheckBoxTray.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_TRAY)));
+                jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_USE_TRAY)));
             }
         });
-        jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE)));
-        jCheckBoxEchtzeit.addActionListener(ae -> Daten.mVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.toString(jCheckBoxEchtzeit.isSelected())));
+        jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE)));
+        jCheckBoxEchtzeit.addActionListener(ae -> MVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.toString(jCheckBoxEchtzeit.isSelected())));
         if (SystemInfo.isMacOSX()) {
             jCheckBoxTray.setSelected(false);
             jCheckBoxTray.setEnabled(false);
         } else {
-            jCheckBoxTray.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_TRAY)));
+            jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_USE_TRAY)));
             jCheckBoxTray.addActionListener(ae -> {
-                Daten.mVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.toString(jCheckBoxTray.isSelected()));
+                MVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.toString(jCheckBoxTray.isSelected()));
                 daten.mediathekGui.setTray();
             });
         }
-        jCheckBoxSuchen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_UPDATE_SUCHEN)));
-        jCheckBoxSuchen.addActionListener(ae -> Daten.mVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBoxSuchen.isSelected())));
+        jCheckBoxSuchen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_UPDATE_SUCHEN)));
+        jCheckBoxSuchen.addActionListener(ae -> MVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBoxSuchen.isSelected())));
         jButtonSuchen.addActionListener(new BeobSuchen(false));
         jButtonInfos.addActionListener(new BeobSuchen(true));
         jButtonRefresh.addActionListener(e -> fillIconList());
@@ -115,33 +115,33 @@ public class PanelEinstellungen extends PanelVorlage {
         MVMessageDialog.showMessageDialog(this, "Sie müssen die Applikation neu starten damit die Icons genutzt werden können.", "MediathekView", JOptionPane.WARNING_MESSAGE);
         String iconName = jComboBoxIcons.getModel().getElementAt(jComboBoxIcons.getSelectedIndex());
         if (iconName.equals(ICONSET_STANDARD)) {
-            Daten.mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
-            Daten.mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, "");
+            MVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
+            MVConfig.add(MVConfig.SYSTEM_ICON_PFAD, "");
         } else {
-            Daten.mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.FALSE.toString());
+            MVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.FALSE.toString());
         }
         try {
             File[] files = new File(MVFunctionSys.pathProgramIcons()).listFiles();
             if (files != null) {
                 for (File file : files) {
                     if (file.isDirectory() && file.getName().equals(iconName)) {
-                        Daten.mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, file.getAbsolutePath());
+                        MVConfig.add(MVConfig.SYSTEM_ICON_PFAD, file.getAbsolutePath());
                         break;
                     }
                 }
             }
         } catch (Exception ex) {
-            Daten.mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
-            Daten.mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, "");
+            MVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
+            MVConfig.add(MVConfig.SYSTEM_ICON_PFAD, "");
             Log.errorLog(829304789, ex);
         }
     }
 
     private void initSpinner() {
-        if (Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE).equals("")) {
-            Daten.mVConfig.add(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE, "0");
+        if (MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE).equals("")) {
+            MVConfig.add(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE, "0");
         }
-        jSpinnerDays.setValue(Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+        jSpinnerDays.setValue(Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
     }
 
     @SuppressWarnings("unchecked")
@@ -190,7 +190,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-                Daten.mVConfig.add(MVConfig.SYSTEM_LOOK, lafClass);  //
+                MVConfig.add(MVConfig.SYSTEM_LOOK, lafClass);  //
             };
             jComboBoxLookAndFeel.addActionListener(lst);
 
@@ -217,9 +217,9 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jComboBoxIcons.setModel(model);
 
-        if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ICON_STANDARD))) {
-            if (!Daten.mVConfig.get(MVConfig.SYSTEM_ICON_PFAD).equals("")) {
-                File f = new File(Daten.mVConfig.get(MVConfig.SYSTEM_ICON_PFAD));
+        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ICON_STANDARD))) {
+            if (!MVConfig.get(MVConfig.SYSTEM_ICON_PFAD).equals("")) {
+                File f = new File(MVConfig.get(MVConfig.SYSTEM_ICON_PFAD));
                 jComboBoxIcons.setSelectedItem(f.getName());
             }
         }
@@ -420,7 +420,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         @Override
         public void stateChanged(ChangeEvent arg0) {
-            Daten.mVConfig.add(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE,
+            MVConfig.add(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE,
                     String.valueOf(((Number) jSpinnerDays.getModel().getValue()).intValue()));
         }
     }

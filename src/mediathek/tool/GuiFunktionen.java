@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.MVConfig;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -56,14 +57,14 @@ public class GuiFunktionen extends MVFunctionSys {
     }
 
     public static void getSize(String nr, JFrame jFrame) {
-        Daten.mVConfig.add(nr, jFrame.getSize().width + ":"
+        MVConfig.add(nr, jFrame.getSize().width + ":"
                 + jFrame.getSize().height + ":"
                 + jFrame.getLocation().x + ":"
                 + jFrame.getLocation().y);
     }
 
     public static void getSize(String nr, JDialog jDialog) {
-        Daten.mVConfig.add(nr, jDialog.getSize().width + ":"
+        MVConfig.add(nr, jDialog.getSize().width + ":"
                 + jDialog.getSize().height + ":"
                 + jDialog.getLocation().x + ":"
                 + jDialog.getLocation().y);
@@ -75,7 +76,7 @@ public class GuiFunktionen extends MVFunctionSys {
         hoehe = 0;
         posX = 0;
         posY = 0;
-        String[] arr = Daten.mVConfig.get(nr).split(":");
+        String[] arr = MVConfig.get(nr).split(":");
         try {
             if (arr.length == 4) {
                 breite = Integer.parseInt(arr[0]);
@@ -106,7 +107,7 @@ public class GuiFunktionen extends MVFunctionSys {
         hoehe = 0;
         posX = 0;
         posY = 0;
-        String[] arr = Daten.mVConfig.get(nr).split(":");
+        String[] arr = MVConfig.get(nr).split(":");
         try {
             if (arr.length == 4) {
                 breite = Integer.parseInt(arr[0]);
@@ -319,30 +320,13 @@ public class GuiFunktionen extends MVFunctionSys {
         return liste;
     }
 
-    public static String textLaenge(int max, String text, boolean mitte, boolean addVorne) {
-        if (text.length() > max) {
-            if (mitte) {
-                text = text.substring(0, 25) + " .... " + text.substring(text.length() - (max - 31));
-            } else {
-                text = text.substring(0, max - 1);
-            }
-        }
-        while (text.length() < max) {
-            if (addVorne) {
-                text = " " + text;
-            } else {
-                text = text + " ";
-            }
-        }
-        return text;
-    }
 
     public static int getImportArtFilme() {
         int ret;
         try {
-            ret = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_IMPORT_ART_FILME));
+            ret = Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_IMPORT_ART_FILME));
         } catch (Exception ex) {
-            Daten.mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUTO));
+            MVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUTO));
             ret = Konstanten.UPDATE_FILME_AUTO;
         }
         return ret;

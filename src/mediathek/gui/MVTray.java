@@ -36,7 +36,7 @@ import mSearch.tool.SysMsg;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mSearch.tool.Listener;
-import mediathek.tool.MVConfig;
+import mSearch.tool.MVConfig;
 import net.sf.jcarrierpigeon.Notification;
 import net.sf.jcarrierpigeon.NotificationQueue;
 import net.sf.jcarrierpigeon.WindowPosition;
@@ -79,7 +79,7 @@ public final class MVTray {
             MenuItem itemRemoveTray = new MenuItem("Trayicon ausblenden");
             itemRemoveTray.addActionListener(e -> {
                 daten.mediathekGui.setVisible(true); // WICHTIG!!
-                Daten.mVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.toString(false));
+                MVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.toString(false));
                 daten.mediathekGui.setTray();
                 Listener.notify(Listener.EREIGNIS_TRAYICON, MVTray.class.getSimpleName());
             });
@@ -222,7 +222,7 @@ public final class MVTray {
     }
 
     private void addNotification(String meldung) {
-        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_NOTIFICATION))) {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_NOTIFICATION))) {
 
             final JWindow messageFrame = new JWindow();
             messageFrame.setLayout(new BorderLayout());

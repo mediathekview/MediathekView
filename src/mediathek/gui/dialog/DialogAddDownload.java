@@ -19,6 +19,8 @@
  */
 package mediathek.gui.dialog;
 
+import mSearch.tool.MVConfig;
+import mSearch.tool.MVFilmSize;
 import mSearch.tool.Listener;
 import mSearch.tool.FilenameUtils;
 import com.jidesoft.utils.SystemInfo;
@@ -93,8 +95,8 @@ public class DialogAddDownload extends JDialog {
     private void init() {
         jComboBoxPset.setModel(new DefaultComboBoxModel<>(Daten.listePset.getListeSpeichern().getObjectDataCombo()));
 
-        jCheckBoxStarten.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN)));
-        jCheckBoxStarten.addActionListener(e -> Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, String.valueOf(jCheckBoxStarten.isSelected())));
+        jCheckBoxStarten.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN)));
+        jCheckBoxStarten.addActionListener(e -> MVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, String.valueOf(jCheckBoxStarten.isSelected())));
         jButtonZiel.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         if (Daten.listePset.getListeSpeichern().size() == 0) {
             // Satz mit x, war wohl nix
@@ -218,11 +220,11 @@ public class DialogAddDownload extends JDialog {
             }
         }
         jButtonDelHistory.addActionListener(e -> {
-            Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
+            MVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
             jComboBoxPfad.setModel(new DefaultComboBoxModel<>(new String[]{orgPfad}));
         });
-        jCheckBoxPfadSpeichern.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)));
-        jCheckBoxPfadSpeichern.addActionListener(e -> Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN, Boolean.toString(jCheckBoxPfadSpeichern.isSelected())));
+        jCheckBoxPfadSpeichern.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)));
+        jCheckBoxPfadSpeichern.addActionListener(e -> MVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN, Boolean.toString(jCheckBoxPfadSpeichern.isSelected())));
         setupResolutionButtons();
         calculateAndCheckDiskSpace();
         nameGeaendert = false;
@@ -326,20 +328,20 @@ public class DialogAddDownload extends JDialog {
     private void setModelPfad(String pfad) {
         ArrayList<String> pfade = new ArrayList<>();
         // wenn gewünscht, den letzten verwendeten Pfad an den Anfang setzen
-        if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)) && !pfad.isEmpty()) {
+        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)) && !pfad.isEmpty()) {
             // aktueller Pfad an Platz 1
             pfade.add(pfad);
 
         }
-        if (!Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).isEmpty()) {
-            String[] p = Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).split("<>");
+        if (!MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).isEmpty()) {
+            String[] p = MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).split("<>");
             for (String s : p) {
                 if (!pfade.contains(s)) {
                     pfade.add(s);
                 }
             }
         }
-        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)) && !pfad.isEmpty()) {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)) && !pfad.isEmpty()) {
             // aktueller Pfad zum Schluss
             if (!pfade.contains(pfad)) {
                 pfade.add(pfad);
@@ -368,7 +370,7 @@ public class DialogAddDownload extends JDialog {
                 }
             }
         }
-        Daten.mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, s);
+        MVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, s);
     }
 
     /**

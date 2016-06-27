@@ -19,8 +19,9 @@
  */
 package mediathek.controller.starter;
 
-import mediathek.tool.MVInputStream;
-import mSearch.tool.Listener;
+import mSearch.dlCtrl.MVInputStream;
+import mSearch.dlCtrl.MVBandwidthTokenBucket;
+import mSearch.tool.MVConfig;
 import com.apple.eawt.Application;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Toolkit;
@@ -39,6 +40,7 @@ import javax.script.ScriptEngineManager;
 import javax.swing.SwingUtilities;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Datum;
+import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
 import mediathek.daten.Daten;
@@ -164,7 +166,7 @@ public class StarterClass {
     }
 
     private void fertigmeldung(final DatenDownload datenDownload, final Start start, boolean abgebrochen) {
-        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DOWNLOAD_BEEP))) {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DOWNLOAD_BEEP))) {
             try {
                 Toolkit.getDefaultToolkit().beep();
             } catch (Exception ignored) {

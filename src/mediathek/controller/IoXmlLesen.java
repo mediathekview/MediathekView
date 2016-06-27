@@ -26,14 +26,14 @@ import java.nio.file.Path;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
+import mSearch.Const;
 import static mSearch.daten.Data.mVReplaceList;
 import mSearch.filmlisten.DatenFilmlisteUrl;
-import mSearch.Const;
-import mSearch.tool.Log;
-import mediathek.daten.*;
 import mSearch.tool.Listener;
-import mediathek.tool.MVConfig;
+import mSearch.tool.Log;
+import mSearch.tool.MVConfig;
 import mSearch.tool.ReplaceList;
+import mediathek.daten.*;
 
 public class IoXmlLesen {
 
@@ -53,7 +53,7 @@ public class IoXmlLesen {
                         switch (parser.getLocalName()) {
                             case MVConfig.SYSTEM:
                                 //System
-                                getConfig(parser, MVConfig.SYSTEM, Daten.mVConfig, true);
+                                getConfig(parser, MVConfig.SYSTEM, true);
                                 break;
                             case DatenPset.PROGRAMMSET:
                                 //Programmgruppen
@@ -231,7 +231,7 @@ public class IoXmlLesen {
         return ret;
     }
 
-    private static boolean getConfig(XMLStreamReader parser, String xmlElem, MVConfig mVConfig, boolean log) {
+    private static boolean getConfig(XMLStreamReader parser, String xmlElem, boolean log) {
         boolean ret = true;
         try {
             while (parser.hasNext()) {
@@ -244,7 +244,7 @@ public class IoXmlLesen {
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     String s = parser.getLocalName();
                     String n = parser.getElementText();
-                    mVConfig.add(s, n);
+                    MVConfig.add(s, n);
                 }
             }
         } catch (Exception ex) {

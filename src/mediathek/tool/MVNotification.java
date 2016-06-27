@@ -19,6 +19,8 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.MVConfig;
+import mSearch.tool.MVFilmSize;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JLabel;
@@ -47,7 +49,7 @@ public class MVNotification {
     }
 
     private static void add(String[] mmeldung, boolean fehler) {
-        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_NOTIFICATION))) {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_NOTIFICATION))) {
             String meldung = "<html><head></head><body><p>";
             for (String s : mmeldung) {
                 meldung += s + "<br />";

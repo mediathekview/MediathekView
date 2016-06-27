@@ -19,7 +19,6 @@
  */
 package mediathek.daten;
 
-import mSearch.tool.SysMsg;
 import com.jidesoft.utils.SystemInfo;
 import java.io.File;
 import java.io.IOException;
@@ -38,17 +37,19 @@ import javax.swing.Timer;
 import static mSearch.daten.Data.mVReplaceList;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
+import mSearch.dlCtrl.MVBandwidthTokenBucket;
 import mSearch.filmlisten.FilmlisteLesen;
 import mSearch.filmlisten.WriteFilmlistJson;
 import static mSearch.tool.Functions.getPathJar;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mSearch.tool.MVConfig;
+import mSearch.tool.SysMsg;
 import mediathek.MediathekGui;
 import mediathek.controller.FilmeLaden;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
-import mediathek.controller.MVUsedUrls;
-import mediathek.controller.starter.MVBandwidthTokenBucket;
+import mSearch.dlCtrl.MVUsedUrls;
 import mediathek.controller.starter.StarterClass;
 import mediathek.gui.GuiAbo;
 import mediathek.gui.GuiDebug;
@@ -67,7 +68,7 @@ public class Daten {
     public static boolean auto = false; // Version: MediathekAuto
     public static boolean RESET = false; // Programm auf Starteinstellungen zurücksetzen
     //alle Programmeinstellungen
-    public static MVConfig mVConfig = new MVConfig();
+//    public static MVConfig mVConfig = new MVConfig();
 
     // zentrale Klassen
     public static MVColor mVColor = new MVColor(); // verwendete Farben
@@ -136,10 +137,10 @@ public class Daten {
 
         updateSplashScreen("Lade erledigte Abos...");
         //erledigteAbos = new ErledigteAbos();
-        erledigteAbos = new MVUsedUrls(Konstanten.FILE_ERLEDIGTE_ABOS, Listener.EREIGNIS_LISTE_ERLEDIGTE_ABOS);
+        erledigteAbos = new MVUsedUrls(Konstanten.FILE_ERLEDIGTE_ABOS, getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_ERLEDIGTE_ABOS);
 
         updateSplashScreen("Lade History...");
-        history = new MVUsedUrls(Konstanten.FILE_HISTORY, Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT);
+        history = new MVUsedUrls(Konstanten.FILE_HISTORY, getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT);
 
         downloadInfos = new DownloadInfos();
 
@@ -154,24 +155,24 @@ public class Daten {
 
     public static void setUserAgentAuto() {
         // Useragent wird vom Programm verwaltet
-        Daten.mVConfig.add(MVConfig.SYSTEM_USER_AGENT_AUTO, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_USER_AGENT_AUTO, Boolean.TRUE.toString());
     }
 
     public static void setUserAgentManuel(String ua) {
         // Useragent den der Benutzer vorgegeben hat
-        Daten.mVConfig.add(MVConfig.SYSTEM_USER_AGENT_AUTO, Boolean.FALSE.toString());
-        Daten.mVConfig.add(MVConfig.SYSTEM_USER_AGENT, ua);
+        MVConfig.add(MVConfig.SYSTEM_USER_AGENT_AUTO, Boolean.FALSE.toString());
+        MVConfig.add(MVConfig.SYSTEM_USER_AGENT, ua);
     }
 
     public static boolean isUserAgentAuto() {
-        return Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USER_AGENT_AUTO));
+        return Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_USER_AGENT_AUTO));
     }
 
     public static String getUserAgent() {
         if (isUserAgentAuto()) {
             return Konstanten.USER_AGENT_DEFAULT;
         } else {
-            return Daten.mVConfig.get(MVConfig.SYSTEM_USER_AGENT);
+            return MVConfig.get(MVConfig.SYSTEM_USER_AGENT);
         }
     }
 
@@ -265,50 +266,50 @@ public class Daten {
 
     private void init() {
         //MVConfig initialisieren
-        mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
-        mVConfig.add(MVConfig.SYSTEM_LOOK, "0");
-        mVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.FALSE.toString());
-        mVConfig.add(MVConfig.SYSTEM_USE_REPLACETABLE, SystemInfo.isLinux() || SystemInfo.isMacOSX() ? Boolean.TRUE.toString() : Boolean.FALSE.toString()); // wegen des Problems mit ext. Programmaufrufen und Leerzeichen
-        mVConfig.add(MVConfig.SYSTEM_ONLY_ASCII, Boolean.FALSE.toString());
-        mVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.FALSE.toString());
-        mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.FALSE.toString());
-        mVConfig.add(MVConfig.SYSTEM_BLACKLIST_START_ON, Boolean.FALSE.toString());
-        mVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, "0");
-        mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss");
-        mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE));
-        mVConfig.add(MVConfig.SYSTEM_NOTIFICATION, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_VIS_DOWNLOAD, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_VIS_ABO, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_GEO_MELDEN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);
-        mVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, Konstanten.GUIFILME_DIVIDER_LOCATION);
-        mVConfig.add(MVConfig.SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_TAB_FILME_ICON_ANZEIGEN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_TAB_ABO_ICON_ANZEIGEN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_TAB_DOWNLOAD_ICON_KLEIN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_TAB_FILME_ICON_KLEIN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_TAB_ABO_ICON_KLEIN, Boolean.TRUE.toString());
-        mVConfig.add(MVConfig.SYSTEM_FONT_SIZE, "0");
-        mVConfig.add(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE, "0");
+        MVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
+        MVConfig.add(MVConfig.SYSTEM_LOOK, "0");
+        MVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.FALSE.toString());
+        MVConfig.add(MVConfig.SYSTEM_USE_REPLACETABLE, SystemInfo.isLinux() || SystemInfo.isMacOSX() ? Boolean.TRUE.toString() : Boolean.FALSE.toString()); // wegen des Problems mit ext. Programmaufrufen und Leerzeichen
+        MVConfig.add(MVConfig.SYSTEM_ONLY_ASCII, Boolean.FALSE.toString());
+        MVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.FALSE.toString());
+        MVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.FALSE.toString());
+        MVConfig.add(MVConfig.SYSTEM_BLACKLIST_START_ON, Boolean.FALSE.toString());
+        MVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, "0");
+        MVConfig.add(MVConfig.SYSTEM_ICON_PFAD, getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss");
+        MVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE));
+        MVConfig.add(MVConfig.SYSTEM_NOTIFICATION, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_VIS_DOWNLOAD, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_VIS_ABO, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_GEO_MELDEN, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);
+        MVConfig.add(MVConfig.SYSTEM_PANEL_FILME_DIVIDER, Konstanten.GUIFILME_DIVIDER_LOCATION);
+        MVConfig.add(MVConfig.SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_TAB_FILME_ICON_ANZEIGEN, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_TAB_ABO_ICON_ANZEIGEN, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_TAB_DOWNLOAD_ICON_KLEIN, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_TAB_FILME_ICON_KLEIN, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_TAB_ABO_ICON_KLEIN, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_FONT_SIZE, "0");
+        MVConfig.add(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE, "0");
         // UserAgent
-        mVConfig.add(MVConfig.SYSTEM_USER_AGENT_AUTO, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_USER_AGENT_AUTO, Boolean.TRUE.toString());
         try {
-            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
-            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
-            Daten.mVConfig.add(MVConfig.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
+            MVConfig.add(MVConfig.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
+            MVConfig.add(MVConfig.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
+            MVConfig.add(MVConfig.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
         } catch (Exception ignored) {
         }
         if (Daten.debug) {
-            mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUS));
+            MVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUS));
         }
     }
 
@@ -339,7 +340,7 @@ public class Daten {
 
         // erst die Systemdaten, dann die Filmliste
         updateSplashScreen("Lade Filmliste...");
-        new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+        new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), listeFilme, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
         // Meldungen sind zwar doppelt, aber damit sie auch im Meldungsfenser erscheinen..
         SysMsg.sysMsg("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
         SysMsg.sysMsg("  erstellt am: " + listeFilme.genDate());
@@ -349,7 +350,7 @@ public class Daten {
         listeFilme.themenLaden();
         Daten.listeAbo.setAboFuerFilm(listeFilme, false /*aboLoeschen*/);
         Daten.listeDownloads.filmEintragen(); // Filme bei einmalDownloads eintragen
-        Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
+        MVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
         MVListeFilme.checkBlacklist(); // TODO brauchts das??
         return true;
     }

@@ -19,6 +19,7 @@
  */
 package mediathek.controller;
 
+import mSearch.tool.MVConfig;
 import mSearch.tool.SysMsg;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -121,12 +122,12 @@ public class FilmeLaden {
             if (dateiUrl.equals("")) {
                 // Filme als Liste importieren, Url automatisch ermitteln
                 SysMsg.sysMsg("Filmliste laden (auto)");
-                msImportFilmliste.filmeImportierenAuto(Daten.listeFilme, diffListe, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+                msImportFilmliste.filmeImportierenAuto(Daten.listeFilme, diffListe, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
             } else {
                 // Filme als Liste importieren, feste URL/Datei
                 SysMsg.sysMsg("Filmliste laden von: " + dateiUrl);
                 Daten.listeFilme.clear();
-                msImportFilmliste.filmeImportierenDatei(dateiUrl, Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+                msImportFilmliste.filmeImportierenDatei(dateiUrl, Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
             }
         }
     }
@@ -149,7 +150,7 @@ public class FilmeLaden {
             Daten.listeFilmeNachBlackList.clear();
             // Filme als Liste importieren, feste URL/Datei
             SysMsg.sysMsg("Filmliste laden von: " + dateiUrl);
-            msImportFilmliste.filmeImportierenDatei(dateiUrl, diffListe, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+            msImportFilmliste.filmeImportierenDatei(dateiUrl, diffListe, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
         }
     }
 
@@ -218,7 +219,7 @@ public class FilmeLaden {
             // dann die alte Liste wieder laden
             Daten.listeFilme.clear();
             Config.setStop(false);
-            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
             SysMsg.sysMsg("");
         } else {
             Daten.filmlisteSpeichern();

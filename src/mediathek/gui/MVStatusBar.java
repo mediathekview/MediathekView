@@ -7,6 +7,7 @@ import java.util.EnumMap;
 import javax.swing.*;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
+import mSearch.tool.Functions;
 import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
@@ -138,7 +139,7 @@ public final class MVStatusBar extends JPanel {
             progress.setString(event.text);
         }
         if (Daten.debug) {
-            lblRight.setText(GuiFunktionen.textLaenge(60, event.senderUrl, true /* mitte */, true /*addVorne*/));
+            lblRight.setText(Functions.textLaenge(60, event.senderUrl, true /* mitte */, true /*addVorne*/));
         } else {
             lblRight.setVisible(false);
         }

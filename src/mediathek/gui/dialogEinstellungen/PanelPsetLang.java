@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import mSearch.tool.MVConfig;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
 import java.awt.Component;
@@ -585,8 +586,8 @@ public class PanelPsetLang extends PanelVorlage {
             }
             String name = liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME_NR].equals("") ? "Name.xml" : liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME_NR] + ".xml";
             DialogZielExportPset dialogZiel = new DialogZielExportPset(null, daten, true, exportPfad, FilenameUtils.replaceLeerDateiname(name, false /*pfad*/,
-                    Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)),
-                    Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ONLY_ASCII))));
+                    Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)),
+                    Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ONLY_ASCII))));
             dialogZiel.setVisible(true);
             if (dialogZiel.ok) {
                 if (dialogZiel.ziel.contains(File.separator)) {

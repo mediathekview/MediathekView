@@ -19,10 +19,12 @@
  */
 package mediathek.gui;
 
+import mSearch.tool.MVConfig;
+import mSearch.tool.MVFilmSize;
 import mSearch.tool.Listener;
 import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.SysMsg;
-import mediathek.controller.MVUsedUrl;
+import mSearch.dlCtrl.MVUsedUrl;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
@@ -163,11 +165,11 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     public void filmGesehen() {
-        daten.history.setGesehen(true, getSelFilme());
+        daten.history.setGesehen(true, getSelFilme(), Daten.listeFilmeHistory);
     }
 
     public void filmUngesehen() {
-        daten.history.setGesehen(false, getSelFilme());
+        daten.history.setGesehen(false, getSelFilme(), Daten.listeFilmeHistory);
     }
 
     //===================================
@@ -228,7 +230,7 @@ public class GuiDownloads extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 int row = tabelle.getSelectedRow();
                 if (row >= 0) {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
+                    MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
                     daten.dialogMediaDB.setVis();
 
                     DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
@@ -265,7 +267,7 @@ public class GuiDownloads extends PanelVorlage {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 Daten.listeDownloads.filmEintragen();
-                if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN))) {
+                if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN))) {
                     downloadsAktualisieren();
                 } else {
                     reloadTable(); // damit die Filmnummern richtig angezeigt werden
@@ -280,8 +282,8 @@ public class GuiDownloads extends PanelVorlage {
         Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN))
-                        && Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO))) {
+                if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN))
+                        && Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO))) {
                     // nur auf Blacklist reagieren, wenn auch für Abos eingeschaltet
                     downloadsAktualisieren();
                 }
@@ -291,7 +293,7 @@ public class GuiDownloads extends PanelVorlage {
             Listener.EREIGNIS_LISTE_ABOS}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN))) {
+                if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN))) {
                     downloadsAktualisieren();
                 }
             }
@@ -340,7 +342,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void panelBeschreibungSetzen() {
-        jPanelBeschreibung.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
+        jPanelBeschreibung.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
     }
 
     private synchronized void reloadTable() {
@@ -357,7 +359,7 @@ public class GuiDownloads extends PanelVorlage {
 
     private void mediensammlung() {
         DatenDownload datenDownload = getSelDownload();
-        Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
         daten.dialogMediaDB.setVis();
 
         if (datenDownload != null) {
@@ -371,7 +373,7 @@ public class GuiDownloads extends PanelVorlage {
         Daten.listeDownloads.zurueckgestellteWiederAktivieren();
         Daten.listeDownloads.abosSuchen(parentComponent);
         reloadTable();
-        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN))) {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN))) {
             // und wenn gewollt auch gleich starten
             filmStartenWiederholenStoppen(true /*alle*/, true /*starten*/, false /*fertige wieder starten*/);
         }
@@ -678,15 +680,13 @@ public class GuiDownloads extends PanelVorlage {
                     }
                 }
                 listeDownloadsStarten.add(download);
-            } else {
-                // ==========================================
-                // stoppen
-                if (download.start != null) {
-                    // wenn kein s -> dann gibts auch nichts zum stoppen oder wieder-starten
-                    if (download.start.status <= Start.STATUS_RUN) {
-                        // löschen -> nur wenn noch läuft, sonst gibts nichts mehr zum löschen
-                        listeDownloadsLoeschen.add(download);
-                    }
+            } else // ==========================================
+            // stoppen
+            if (download.start != null) {
+                // wenn kein s -> dann gibts auch nichts zum stoppen oder wieder-starten
+                if (download.start.status <= Start.STATUS_RUN) {
+                    // löschen -> nur wenn noch läuft, sonst gibts nichts mehr zum löschen
+                    listeDownloadsLoeschen.add(download);
                 }
             }
         }

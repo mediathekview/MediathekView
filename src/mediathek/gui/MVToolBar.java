@@ -34,7 +34,7 @@ import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.Filter;
 import mSearch.tool.Listener;
-import mediathek.tool.MVConfig;
+import mSearch.tool.MVConfig;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import org.jdesktop.swingx.JXSearchField;
@@ -235,14 +235,14 @@ public final class MVToolBar extends JToolBar {
         }
         // Icons
         if (!nrIconKlein.isEmpty()) {
-            setIcon(Boolean.parseBoolean(Daten.mVConfig.get(nrIconKlein)));
+            setIcon(Boolean.parseBoolean(MVConfig.get(nrIconKlein)));
         }
         loadVisible();
         initListener();
     }
 
     public final void setIcon(boolean klein) {
-        Daten.mVConfig.add(nrIconKlein, Boolean.toString(klein));
+        MVConfig.add(nrIconKlein, Boolean.toString(klein));
         beobMausToolBar.itemKlein.setSelected(klein);
         jButtonFilmeLaden.setIcon();
         jButtonFilmAbspielen.setIcon();
@@ -291,11 +291,11 @@ public final class MVToolBar extends JToolBar {
                     if (extern) {
                         b.setVisible(false);
                     } else {
-                        if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_DOWNLOAD)) && b.sparte.contains(TOOLBAR_TAB_DOWNLOADS)
-                                || Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_DOWNLOAD)) && b.sparte.contains(TOOLBAR_TAB_DOWNLOADS)) {
+                        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_DOWNLOAD)) && b.sparte.contains(TOOLBAR_TAB_DOWNLOADS)
+                                || Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FENSTER_DOWNLOAD)) && b.sparte.contains(TOOLBAR_TAB_DOWNLOADS)) {
                             b.setVisible(false);
-                        } else if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_ABO)) && b.sparte.contains(TOOLBAR_TAB_ABOS)
-                                || Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_ABO)) && b.sparte.contains(TOOLBAR_TAB_ABOS)) {
+                        } else if (!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_ABO)) && b.sparte.contains(TOOLBAR_TAB_ABOS)
+                                || Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FENSTER_ABO)) && b.sparte.contains(TOOLBAR_TAB_ABOS)) {
                             b.setVisible(false);
                         } else {
                             b.setEnabled(false);
@@ -310,7 +310,7 @@ public final class MVToolBar extends JToolBar {
         jButtonFilterPanel.setEnabled(state.equals(TOOLBAR_TAB_FILME));
         jTextFieldFilter.setEnabled(state.equals(TOOLBAR_TAB_FILME));
         if (!extern) {
-            jTextFieldFilter.setVisible(!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
+            jTextFieldFilter.setVisible(!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
         } else {
             jTextFieldFilter.setVisible(false);
         }
@@ -318,7 +318,7 @@ public final class MVToolBar extends JToolBar {
 
     public void loadVisible() {
         if (!nrToolbar.isEmpty()) {
-            String[] b = Daten.mVConfig.get(nrToolbar).split(":");
+            String[] b = MVConfig.get(nrToolbar).split(":");
             if (buttonListToUse.size() == b.length) {
                 // ansonsten gibt es neue Button: dann alle anzeigen
                 for (int i = 0; i < b.length; ++i) {
@@ -329,18 +329,18 @@ public final class MVToolBar extends JToolBar {
         }
         setToolbar();
         if (!nrIconKlein.isEmpty()) {
-            setIcon(Boolean.parseBoolean(Daten.mVConfig.get(nrIconKlein)));
+            setIcon(Boolean.parseBoolean(MVConfig.get(nrIconKlein)));
         }
     }
 
     private void storeVisible() {
         if (!nrToolbar.isEmpty()) {
-            Daten.mVConfig.add(nrToolbar, "");
+            MVConfig.add(nrToolbar, "");
             for (MVButton b : buttonListToUse) {
-                if (!Daten.mVConfig.get(nrToolbar).isEmpty()) {
-                    Daten.mVConfig.add(nrToolbar, Daten.mVConfig.get(nrToolbar) + ":");
+                if (!MVConfig.get(nrToolbar).isEmpty()) {
+                    MVConfig.add(nrToolbar, MVConfig.get(nrToolbar) + ":");
                 }
-                Daten.mVConfig.add(nrToolbar, Daten.mVConfig.get(nrToolbar) + Boolean.toString(b.anzeigen));
+                MVConfig.add(nrToolbar, MVConfig.get(nrToolbar) + Boolean.toString(b.anzeigen));
             }
         }
     }
@@ -406,8 +406,8 @@ public final class MVToolBar extends JToolBar {
         jButtonAbosLoeschen.addActionListener(e -> daten.guiAbo.loeschen());
         jButtonAboAendern.addActionListener(actionEvent -> daten.guiAbo.aendern());
         jButtonFilterPanel.addActionListener(e -> {
-            boolean b = !Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER));
-            Daten.mVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.toString(b));
+            boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_FILTER));
+            MVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.toString(b));
             filterAnzeigen();
             Listener.notify(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVToolBar.class.getName());
         });
@@ -436,7 +436,7 @@ public final class MVToolBar extends JToolBar {
 
         void setIcon() {
             if (!nrIconKlein.isEmpty()) {
-                if (Boolean.parseBoolean(Daten.mVConfig.get(nrIconKlein))) {
+                if (Boolean.parseBoolean(MVConfig.get(nrIconKlein))) {
                     this.setIcon(GetIcon.getProgramIcon(imageIconKlein));
                 } else {
                     this.setIcon(GetIcon.getProgramIcon(imageIconNormal));
@@ -453,7 +453,7 @@ public final class MVToolBar extends JToolBar {
 
         public BeobMausToolBar() {
             if (!nrIconKlein.isEmpty()) {
-                itemKlein.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(nrIconKlein)));
+                itemKlein.setSelected(Boolean.parseBoolean(MVConfig.get(nrIconKlein)));
             }
         }
 

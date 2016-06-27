@@ -30,7 +30,7 @@ import mediathek.gui.dialog.DialogEditAbo;
 import mSearch.tool.FilenameUtils;
 import mediathek.tool.Filter;
 import mSearch.tool.Listener;
-import mediathek.tool.MVConfig;
+import mSearch.tool.MVConfig;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelAbo;
 import mSearch.daten.DatenFilm;
@@ -56,10 +56,10 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     public boolean addAbo(String aboname, String filmSender, String filmThema, String filmTitel) {
         int min;
         try {
-            min = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ABO_MIN_SIZE));
+            min = Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ABO_MIN_SIZE));
         } catch (Exception ex) {
             min = 0;
-            Daten.mVConfig.add(MVConfig.SYSTEM_ABO_MIN_SIZE, "0");
+            MVConfig.add(MVConfig.SYSTEM_ABO_MIN_SIZE, "0");
         }
         return addAbo(filmSender, filmThema, filmTitel, "", "", min, aboname);
     }
@@ -68,14 +68,14 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         //abo anlegen, oder false wenns schon existiert
         boolean ret = false;
         namePfad = FilenameUtils.replaceLeerDateiname(namePfad, false /*nur ein Ordner*/,
-                Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)),
-                Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ONLY_ASCII)));
+                Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)),
+                Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ONLY_ASCII)));
         DatenAbo datenAbo = new DatenAbo(namePfad /* name */, filmSender, filmThema, filmTitel, filmThemaTitel, irgendwo, mindestdauer, namePfad, "");
         DialogEditAbo dialogEditAbo = new DialogEditAbo(daten.mediathekGui, true, daten, datenAbo);
         dialogEditAbo.setVisible(true);
         if (dialogEditAbo.ok) {
             if (!aboExistiertBereits(datenAbo)) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_ABO_MIN_SIZE, datenAbo.arr[DatenAbo.ABO_MINDESTDAUER_NR]); // als Vorgabe merken
+                MVConfig.add(MVConfig.SYSTEM_ABO_MIN_SIZE, datenAbo.arr[DatenAbo.ABO_MINDESTDAUER_NR]); // als Vorgabe merken
                 addAbo(datenAbo);
                 aenderungMelden();
                 ret = true;

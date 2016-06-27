@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.MVConfig;
 import java.awt.Cursor;
 import java.io.*;
 import java.net.URL;
@@ -216,7 +217,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         if (auto) {
             if (Daten.listePset.addPset(pSet)) {
                 if (setVersion) {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, pSet.version);
+                    MVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, pSet.version);
                 }
             }
         } else {
@@ -225,7 +226,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             if (dialog.ok) {
                 if (Daten.listePset.addPset(pSet)) {
                     if (setVersion) {
-                        Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, pSet.version);
+                        MVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, pSet.version);
                     }
                     MVMessageDialog.showMessageDialog(null, pSet.size() + " Programmset importiert!",
                             "Ok", JOptionPane.INFORMATION_MESSAGE);

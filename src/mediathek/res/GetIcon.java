@@ -24,7 +24,7 @@ import javax.swing.ImageIcon;
 import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.MVConfig;
+import mSearch.tool.MVConfig;
 
 public class GetIcon {
 
@@ -45,12 +45,12 @@ public class GetIcon {
     }
 
     public static ImageIcon getIcon(String strIcon, String path) {
-        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ICON_STANDARD))) {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ICON_STANDARD))) {
             return getStandard(strIcon, path);
         } else {
             ImageIcon icon;
             try {
-                String pfad = GuiFunktionen.addsPfad(Daten.mVConfig.get(MVConfig.SYSTEM_ICON_PFAD), strIcon);
+                String pfad = GuiFunktionen.addsPfad(MVConfig.get(MVConfig.SYSTEM_ICON_PFAD), strIcon);
                 if (new File(pfad).exists()) {
                     icon = new ImageIcon(pfad);
                 } else {

@@ -36,7 +36,7 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mSearch.tool.Listener;
 import mediathek.tool.MVColor;
-import mediathek.tool.MVConfig;
+import mSearch.tool.MVConfig;
 
 public class PanelFilmlisteLaden extends PanelVorlage {
 
@@ -77,7 +77,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         } else {
             jRadioButtonAuto.setSelected(true);
         }
-        jTextFieldUrl.setText(Daten.mVConfig.get(MVConfig.SYSTEM_IMPORT_URL_MANUELL));
+        jTextFieldUrl.setText(MVConfig.get(MVConfig.SYSTEM_IMPORT_URL_MANUELL));
         setPanelTabelle(jRadioButtonManuell.isSelected());
     }
 
@@ -258,9 +258,9 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             if (!stopBeob) {
                 if (jRadioButtonManuell.isSelected()) {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUS));
+                    MVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUS));
                 } else {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUTO));
+                    MVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUTO));
                 }
                 // den Dialog gibts 2x
                 Listener.notify(Listener.EREIGNIS_ART_IMPORT_FILMLISTE, this.getClass().getSimpleName());
@@ -323,7 +323,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         }
 
         private void tus() {
-            Daten.mVConfig.add(MVConfig.SYSTEM_IMPORT_URL_MANUELL, jTextFieldUrl.getText());
+            MVConfig.add(MVConfig.SYSTEM_IMPORT_URL_MANUELL, jTextFieldUrl.getText());
         }
     }
 }

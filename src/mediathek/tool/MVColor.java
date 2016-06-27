@@ -21,6 +21,7 @@ package mediathek.tool;
 
 import java.awt.Color;
 import java.util.LinkedList;
+import mSearch.tool.MVConfig;
 import mediathek.daten.Daten;
 
 public class MVColor {
@@ -97,9 +98,9 @@ public class MVColor {
     }
 
     public final void load() {
-        liste.stream().filter(mvc -> !Daten.mVConfig.get(mvc.name).isEmpty()).forEach(mvc -> {
+        liste.stream().filter(mvc -> !MVConfig.get(mvc.name).isEmpty()).forEach(mvc -> {
             try {
-                mvc.color = new Color(Integer.parseInt(Daten.mVConfig.get(mvc.name)));
+                mvc.color = new Color(Integer.parseInt(MVConfig.get(mvc.name)));
             } catch (Exception ignored) {
             }
         });
@@ -107,7 +108,7 @@ public class MVColor {
 
     public final void save() {
         for (MVC mvc : liste) {
-            Daten.mVConfig.add(mvc.name, String.valueOf(mvc.color.getRGB()));
+            MVConfig.add(mvc.name, String.valueOf(mvc.color.getRGB()));
         }
     }
 
