@@ -20,7 +20,7 @@
 package mediathek.tool;
 
 import javax.swing.JTable;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.daten.Daten;
 
 public class MVFont {
@@ -51,7 +51,7 @@ public class MVFont {
     public static void resetFontSize() {
         Daten.mVConfig.add(MVConfig.SYSTEM_FONT_SIZE, "0");
         MVFont.fontSize = getFontSize(0);
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FONT, GuiFunktionen.class.getSimpleName());
+        Listener.notify(Listener.EREIGNIS_FONT, GuiFunktionen.class.getSimpleName());
     }
 
     public static void setFontSize(boolean up) {
@@ -72,7 +72,7 @@ public class MVFont {
         }
         Daten.mVConfig.add(MVConfig.SYSTEM_FONT_SIZE, String.valueOf(size));
         MVFont.fontSize = getFontSize(size);
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FONT, GuiFunktionen.class.getSimpleName());
+        Listener.notify(Listener.EREIGNIS_FONT, GuiFunktionen.class.getSimpleName());
     }
 
 }

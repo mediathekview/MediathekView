@@ -19,7 +19,7 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import java.awt.Desktop;
 import java.awt.Frame;
 import java.io.File;
@@ -71,15 +71,15 @@ public class OpenPlayerAction {
                 String[] cmd = {programm, sFile.getAbsolutePath()};
                 Runtime.getRuntime().exec(cmd);
                 Daten.mVConfig.add(MVConfig.SYSTEM_PLAYER_ABSPIELEN, programm);
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
+                Listener.notify(Listener.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
                 gut = true;
             } catch (Exception eex) {
-                Log.fehlerMeldung(959632369, ex, "Ordner öffnen: " + datei);
+                Log.errorLog(959632369, ex, "Ordner öffnen: " + datei);
             }
         } finally {
             if (!gut) {
                 Daten.mVConfig.add(MVConfig.SYSTEM_PLAYER_ABSPIELEN, "");
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
+                Listener.notify(Listener.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
                 MVMessageDialog.showMessageDialog(parent, "Kann den Videoplayer nicht öffnen!",
                         "Fehler", JOptionPane.ERROR_MESSAGE);
             }

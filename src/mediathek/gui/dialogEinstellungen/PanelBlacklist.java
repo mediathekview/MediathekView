@@ -40,12 +40,12 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
 import mediathek.tool.Filter;
 import mediathek.tool.GuiFunktionen;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 import mediathek.tool.TModel;
-import mSearch.filmeSuchen.MSListenerFilmeLaden;
-import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import mSearch.filmeSuchen.ListenerFilmeLaden;
+import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 
 public class PanelBlacklist extends PanelVorlage {
 
@@ -63,28 +63,28 @@ public class PanelBlacklist extends PanelVorlage {
         jButtonTabelleLoeschen.setIcon(GetIcon.getProgramIcon("del_16.png"));
         init_();
         init();
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, name) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_GEAENDERT, name) {
             @Override
             public void ping() {
                 init_();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_START_GEAENDERT, name) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_START_GEAENDERT, name) {
             @Override
             public void ping() {
                 jCheckBoxStart.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)));
                 setCheckBlacklist();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name) {
             @Override
             public void ping() {
                 init_();
             }
         });
-        Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
+        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void fertig(MSListenerFilmeLadenEvent event) {
+            public void fertig(ListenerFilmeLadenEvent event) {
                 comboThemaLaden();
             }
         });
@@ -132,12 +132,12 @@ public class PanelBlacklist extends PanelVorlage {
             Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO, Boolean.toString(jCheckBoxAbo.isSelected()));
             // bei den Downloads melden
             // damit die Änderungen im Eigenschaftendialog auch übernommen werden
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name);
+            Listener.notify(Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name);
         });
         jCheckBoxStart.addActionListener(e -> {
             setCheckBlacklist();
             Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_START_ON, Boolean.toString(jCheckBoxStart.isSelected()));
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_START_GEAENDERT, name);
+            Listener.notify(Listener.EREIGNIS_BLACKLIST_START_GEAENDERT, name);
         });
         jCheckBoxBlacklistEingeschaltet.addActionListener(e -> {
             setCheckBlacklist();
@@ -210,7 +210,7 @@ public class PanelBlacklist extends PanelVorlage {
 
     private void notifyBlack() {
         MVListeFilme.checkBlacklist();
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, name);
+        Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, name);
     }
 
     private void comboThemaLaden() {

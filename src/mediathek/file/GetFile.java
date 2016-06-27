@@ -22,7 +22,7 @@ package mediathek.file;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import mSearch.tool.MSConst;
+import mSearch.Const;
 import mSearch.tool.Log;
 
 /**
@@ -51,7 +51,7 @@ public class GetFile {
     public String getHilfeSuchen(String pfad) {
         String ret = "";
         try {
-            InputStreamReader in = new InputStreamReader(getClass().getResource(pfad).openStream(), MSConst.KODIERUNG_UTF);
+            InputStreamReader in = new InputStreamReader(getClass().getResource(pfad).openStream(), Const.KODIERUNG_UTF);
             BufferedReader br = new BufferedReader(in);
             String strLine;
             while ((strLine = br.readLine()) != null) {
@@ -60,34 +60,34 @@ public class GetFile {
             //Close the input stream
             in.close();
         } catch (IOException ex) {
-            Log.fehlerMeldung(885692213, ex);
+            Log.errorLog(885692213, ex);
         }
         return ret;
     }
 
     public InputStreamReader getPsetVorlageLinux() {
         try {
-            return new InputStreamReader(getClass().getResource(PFAD_PSET_LINUX).openStream(), MSConst.KODIERUNG_UTF);
+            return new InputStreamReader(getClass().getResource(PFAD_PSET_LINUX).openStream(), Const.KODIERUNG_UTF);
         } catch (IOException ex) {
-            Log.fehlerMeldung(469691002, ex);
+            Log.errorLog(469691002, ex);
         }
         return null;
     }
 
     public InputStreamReader getPsetVorlageWindows() {
         try {
-            return new InputStreamReader(getClass().getResource(PFAD_PSET_WINDOWS).openStream(), MSConst.KODIERUNG_UTF);
+            return new InputStreamReader(getClass().getResource(PFAD_PSET_WINDOWS).openStream(), Const.KODIERUNG_UTF);
         } catch (IOException ex) {
-            Log.fehlerMeldung(842306087, ex);
+            Log.errorLog(842306087, ex);
         }
         return null;
     }
 
     public InputStreamReader getPsetVorlageMac() {
         try {
-            return new InputStreamReader(getClass().getResource(PFAD_PSET_MAC).openStream(), MSConst.KODIERUNG_UTF);
+            return new InputStreamReader(getClass().getResource(PFAD_PSET_MAC).openStream(), Const.KODIERUNG_UTF);
         } catch (IOException ex) {
-            Log.fehlerMeldung(496532180, ex);
+            Log.errorLog(496532180, ex);
         }
         return null;
     }

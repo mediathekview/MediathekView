@@ -116,7 +116,7 @@ public class CellRendererPset extends DefaultTableCellRenderer {
 //                }
 //            }
         } catch (Exception ex) {
-            Log.fehlerMeldung(962380071, ex);
+            Log.errorLog(962380071, ex);
         }
         return this;
     }

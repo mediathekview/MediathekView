@@ -28,12 +28,12 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import static mSearch.daten.Data.mVReplaceList;
 import mSearch.filmlisten.DatenFilmlisteUrl;
-import mSearch.tool.MSConst;
+import mSearch.Const;
 import mSearch.tool.Log;
 import mediathek.daten.*;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVConfig;
-import mSearch.tool.MVReplaceList;
+import mSearch.tool.ReplaceList;
 
 public class IoXmlLesen {
 
@@ -44,7 +44,7 @@ public class IoXmlLesen {
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
             inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
             DatenPset datenPset = null;
-            try (InputStreamReader in = new InputStreamReader(Files.newInputStream(xmlFilePath), MSConst.KODIERUNG_UTF)) {
+            try (InputStreamReader in = new InputStreamReader(Files.newInputStream(xmlFilePath), Const.KODIERUNG_UTF)) {
                 XMLStreamReader parser = inFactory.createXMLStreamReader(in);
                 while (parser.hasNext()) {
                     event = parser.next();
@@ -71,10 +71,10 @@ public class IoXmlLesen {
                                 }
                                 //ende Programgruppen
                                 break;
-                            case MVReplaceList.REPLACELIST:
+                            case ReplaceList.REPLACELIST:
                                 // Ersetzungstabelle
-                                String[] sa = new String[MVReplaceList.MAX_ELEM];
-                                if (get(parser, MVReplaceList.REPLACELIST, MVReplaceList.COLUMN_NAMES, sa)) {
+                                String[] sa = new String[ReplaceList.MAX_ELEM];
+                                if (get(parser, ReplaceList.REPLACELIST, ReplaceList.COLUMN_NAMES, sa)) {
                                     mVReplaceList.list.add(sa);
                                 }
                                 break;
@@ -122,7 +122,7 @@ public class IoXmlLesen {
                 ret = true;
             } catch (Exception ex) {
                 ret = false;
-                Log.fehlerMeldung(392840096, ex);
+                Log.errorLog(392840096, ex);
             }
             Daten.listeDownloads.listeNummerieren();
             //ListeFilmUpdateServer aufbauen
@@ -145,7 +145,7 @@ public class IoXmlLesen {
             inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
             XMLStreamReader parser;
             InputStreamReader in;
-            in = new InputStreamReader(new FileInputStream(datei), MSConst.KODIERUNG_UTF);
+            in = new InputStreamReader(new FileInputStream(datei), Const.KODIERUNG_UTF);
             parser = inFactory.createXMLStreamReader(in);
             while (parser.hasNext()) {
                 event = parser.next();
@@ -166,10 +166,10 @@ public class IoXmlLesen {
                             ++found[1];
                             blacklist.add(datenBlacklist);
                         }
-                    } else if (replace && parser.getLocalName().equals(MVReplaceList.REPLACELIST)) {
+                    } else if (replace && parser.getLocalName().equals(ReplaceList.REPLACELIST)) {
                         //Ersetzungstabelle
-                        String[] sa = new String[MVReplaceList.MAX_ELEM];
-                        if (get(parser, MVReplaceList.REPLACELIST, MVReplaceList.COLUMN_NAMES, sa)) {
+                        String[] sa = new String[ReplaceList.MAX_ELEM];
+                        if (get(parser, ReplaceList.REPLACELIST, ReplaceList.COLUMN_NAMES, sa)) {
                             ++found[2];
                             mVReplaceList.list.add(sa);
                         }
@@ -178,13 +178,13 @@ public class IoXmlLesen {
             }
             in.close();
         } catch (Exception ex) {
-            Log.fehlerMeldung(302045698, ex);
+            Log.errorLog(302045698, ex);
         }
         if (found[0] > 0) {
             Daten.listeAbo.aenderungMelden();
         }
         if (found[2] > 0) {
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_REPLACELIST_CHANGED, IoXmlLesen.class.getSimpleName());
+            Listener.notify(Listener.EREIGNIS_REPLACELIST_CHANGED, IoXmlLesen.class.getSimpleName());
         }
         return found;
     }
@@ -225,7 +225,7 @@ public class IoXmlLesen {
         } catch (Exception ex) {
             ret = false;
             if (log) {
-                Log.fehlerMeldung(739530149, ex);
+                Log.errorLog(739530149, ex);
             }
         }
         return ret;
@@ -250,7 +250,7 @@ public class IoXmlLesen {
         } catch (Exception ex) {
             ret = false;
             if (log) {
-                Log.fehlerMeldung(945120369, ex);
+                Log.errorLog(945120369, ex);
             }
         }
         return ret;

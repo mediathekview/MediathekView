@@ -19,7 +19,7 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import java.awt.Desktop;
 import java.awt.Frame;
 import java.io.File;
@@ -83,16 +83,16 @@ public class DirOpenAction {
                     Runtime.getRuntime().exec(arrProgCallArray);
                     //Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
                     Daten.mVConfig.add(MVConfig.SYSTEM_ORDNER_OEFFNEN, programm);
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
+                    Listener.notify(Listener.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
                     gut = true;
                 }
             } catch (Exception eex) {
-                Log.fehlerMeldung(306590789, ex, "Ordner öffnen: " + ordner);
+                Log.errorLog(306590789, ex, "Ordner öffnen: " + ordner);
             }
         } finally {
             if (!gut) {
                 Daten.mVConfig.add(MVConfig.SYSTEM_ORDNER_OEFFNEN, "");
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
+                Listener.notify(Listener.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
                 MVMessageDialog.showMessageDialog(parent, "Kann den Dateimanager nicht öffnen!",
                         "Fehler", JOptionPane.ERROR_MESSAGE);
             }

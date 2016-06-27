@@ -28,7 +28,7 @@ import java.util.*;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Log;
 import mediathek.daten.Daten;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 
 public class MVUsedUrls {
 
@@ -81,7 +81,7 @@ public class MVUsedUrls {
         } catch (IOException ignored) {
         }
 
-        ListenerMediathekView.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
+        Listener.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
     }
 
     public synchronized boolean urlPruefen(String urlFilm) {
@@ -131,7 +131,7 @@ public class MVUsedUrls {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(281006874, ex);
+            Log.errorLog(281006874, ex);
         }
 
         //und jetzt wieder schreiben, wenn nötig
@@ -141,13 +141,13 @@ public class MVUsedUrls {
                     bufferedWriter.write(entry + "\n");
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(566277080, ex);
+                Log.errorLog(566277080, ex);
             }
         }
         listeUrls.clear();
         listeBauen();
 
-        ListenerMediathekView.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
+        Listener.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
         return gefunden;
     }
 
@@ -182,7 +182,7 @@ public class MVUsedUrls {
 
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(401020398, ex);
+            Log.errorLog(401020398, ex);
         }
 
         //und jetzt wieder schreiben, wenn nötig
@@ -192,13 +192,13 @@ public class MVUsedUrls {
                     bufferedWriter.write(entry + "\n");
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(784512067, ex);
+                Log.errorLog(784512067, ex);
             }
         }
         listeUrls.clear();
         listeBauen();
 
-        ListenerMediathekView.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
+        Listener.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
         return gefunden;
     }
 
@@ -215,10 +215,10 @@ public class MVUsedUrls {
             bufferedWriter.write(text);
             ret = true;
         } catch (Exception ex) {
-            Log.fehlerMeldung(945258023, ex);
+            Log.errorLog(945258023, ex);
         }
 
-        ListenerMediathekView.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
+        Listener.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
         return ret;
     }
 
@@ -240,10 +240,10 @@ public class MVUsedUrls {
             //Automatic Resource Management
             ret = true;
         } catch (Exception ex) {
-            Log.fehlerMeldung(420312459, ex);
+            Log.errorLog(420312459, ex);
         }
 
-        ListenerMediathekView.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
+        Listener.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
         return ret;
     }
 
@@ -279,9 +279,9 @@ public class MVUsedUrls {
                 }
             } catch (Exception ex) {
                 ret = false;
-                Log.fehlerMeldung(945258023, ex);
+                Log.errorLog(945258023, ex);
             }
-            ListenerMediathekView.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
+            Listener.notify(notifyEvent, MVUsedUrls.class.getSimpleName());
             return ret;
         }
     }
@@ -314,7 +314,7 @@ public class MVUsedUrls {
                 listeUrlsSortDate.add(mvuu);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(926362547, ex);
+            Log.errorLog(926362547, ex);
         }
     }
 

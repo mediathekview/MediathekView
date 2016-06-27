@@ -19,7 +19,7 @@
  */
 package mediathek.gui;
 
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import info.monitorenter.gui.chart.Chart2D;
 import info.monitorenter.gui.chart.IAxis;
 import info.monitorenter.gui.chart.labelformatters.LabelFormatterAutoUnits;
@@ -115,7 +115,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         jPanelChart.add(chart, BorderLayout.CENTER);
 
         // Slider zum Einstellen der Bandbreite
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getSimpleName()) {
             @Override
             public void ping() {
                 setSlider();
@@ -136,7 +136,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
             int b = jSliderBandwidth.getValue() * 10;
             jLabelBandwidth.setText(b + " kByte/s");
             Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getName());
+            Listener.notify(Listener.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getName());
         });
 
         jDialog.setContentPane(this);

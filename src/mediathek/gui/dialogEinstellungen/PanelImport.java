@@ -270,7 +270,7 @@ public class PanelImport extends PanelVorlage {
                     try {
                         jTextFieldDatei.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(304656587, ex);
+                        Log.errorLog(304656587, ex);
                     }
                 }
             } else {
@@ -288,7 +288,7 @@ public class PanelImport extends PanelVorlage {
                     try {
                         jTextFieldDatei.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(802039730, ex);
+                        Log.errorLog(802039730, ex);
                     }
                 }
             }

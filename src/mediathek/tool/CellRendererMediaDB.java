@@ -49,7 +49,7 @@ public class CellRendererMediaDB extends DefaultTableCellRenderer {
                 setHorizontalAlignment(SwingConstants.CENTER);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(912034567, ex);
+            Log.errorLog(912034567, ex);
         }
         return this;
     }

@@ -66,7 +66,7 @@ import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 
@@ -170,11 +170,11 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jToggleButtonBlacklist.addActionListener(e -> {
             Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.toString(jToggleButtonBlacklist.isSelected()));
             MVListeFilme.checkBlacklist();
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterFrame.class.getSimpleName());
+            Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterFrame.class.getSimpleName());
             setIconBlacklist();
         });
         jToggleButtonBlacklist.addMouseListener(new BeobMausBlacklist());
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterFrame.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterFrame.class.getSimpleName()) {
             @Override
             public void ping() {
                 setIconBlacklist();
@@ -196,7 +196,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jRadioButtonF5.addMouseListener(new BeobMaus(4));
 
         setFilterAnzahl();
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FILTER_ANZAHL, MVFilterFrame.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_FILTER_ANZAHL, MVFilterFrame.class.getSimpleName()) {
             @Override
             public void ping() {
                 setFilterAnzahl();
@@ -479,7 +479,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
             jSpinner.addChangeListener(e -> {
                 Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_PROFILE__ANZAHL_FILTER, String.valueOf(((Number) jSpinner.getModel().getValue()).intValue()));
                 setFilterAnzahl();
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILTER_ANZAHL, MVFilterFrame.class.getSimpleName());
+                Listener.notify(Listener.EREIGNIS_FILTER_ANZAHL, MVFilterFrame.class.getSimpleName());
             });
             JLabel label = new JLabel("Anzahl Filter anzeigen:");
             p.add(label);
@@ -546,7 +546,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     public void dispose() {
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_FILTER, this);
         Daten.mVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.FALSE.toString());
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVFilterFrame.class.getName());
+        Listener.notify(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVFilterFrame.class.getName());
         super.dispose();
     }
 

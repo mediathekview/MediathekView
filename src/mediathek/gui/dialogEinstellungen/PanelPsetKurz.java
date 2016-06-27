@@ -37,7 +37,7 @@ import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 
 public class PanelPsetKurz extends PanelVorlage {
 
@@ -66,7 +66,7 @@ public class PanelPsetKurz extends PanelVorlage {
                 }
             });
         }
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, PanelPsetKurz.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, PanelPsetKurz.class.getSimpleName()) {
             @Override
             public void ping() {
                 if (!stopBeob) {
@@ -390,7 +390,7 @@ public class PanelPsetKurz extends PanelVorlage {
                             arr[idx] = textField.getText();
                         }
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(392847589, ex);
+                        Log.errorLog(392847589, ex);
                     }
                 }
                 if (!file) {
@@ -412,7 +412,7 @@ public class PanelPsetKurz extends PanelVorlage {
                             arr[idx] = textField.getText();
                         }
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(613986500, ex);
+                        Log.errorLog(613986500, ex);
                     }
                 }
             }

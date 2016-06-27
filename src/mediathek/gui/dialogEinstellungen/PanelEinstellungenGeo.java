@@ -27,7 +27,7 @@ import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVConfig;
 import mSearch.daten.DatenFilm;
 
@@ -116,7 +116,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
     }
 
     private void melden() {
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_GEO, PanelEinstellungenGeo.class.getName());
+        Listener.notify(Listener.EREIGNIS_GEO, PanelEinstellungenGeo.class.getName());
     }
 
     /** This method is called from within the constructor to

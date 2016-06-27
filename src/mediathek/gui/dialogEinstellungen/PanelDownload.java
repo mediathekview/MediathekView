@@ -28,7 +28,7 @@ import mediathek.gui.MVDownloadInfo;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVConfig;
 
 public class PanelDownload extends PanelVorlage {
@@ -49,13 +49,13 @@ public class PanelDownload extends PanelVorlage {
                 + "auf 1 Download pro Server\n"
                 + "(z.B. nur ein Download von \"www.zdf.de\")\n"
                 + "weiter begrenzt werden.").setVisible(true));
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelDownload.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_ANZAHL_DOWNLOADS, PanelDownload.class.getSimpleName()) {
             @Override
             public void ping() {
                 initSpinner();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelDownload.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_BANDBREITE, PanelDownload.class.getSimpleName()) {
             @Override
             public void ping() {
                 setSliderBandwith();
@@ -78,7 +78,7 @@ public class PanelDownload extends PanelVorlage {
             int bandbreiteKByte = jSliderBandbreite.getValue() * 10;
             jLabelBandwidth.setText(bandbreiteKByte + " kByte/s");
             Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(bandbreiteKByte));
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, PanelDownload.class.getName());
+            Listener.notify(Listener.EREIGNIS_BANDBREITE, PanelDownload.class.getName());
         });
     }
 
@@ -278,7 +278,7 @@ public class PanelDownload extends PanelVorlage {
         public void stateChanged(ChangeEvent arg0) {
             Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD,
                     String.valueOf(((Number) jSpinnerDownload.getModel().getValue()).intValue()));
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelDownload.class.getSimpleName());
+            Listener.notify(Listener.EREIGNIS_ANZAHL_DOWNLOADS, PanelDownload.class.getSimpleName());
         }
     }
 

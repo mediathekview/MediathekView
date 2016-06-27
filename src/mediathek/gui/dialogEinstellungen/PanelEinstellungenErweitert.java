@@ -30,7 +30,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mSearch.tool.Functions.OperatingSystemType;
 import static mSearch.tool.Functions.getOs;
 import mSearch.tool.Log;
@@ -55,7 +55,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jRadioButtonManuel.addActionListener(e -> setUserAgent());
 
         jTextFieldUserAgent.getDocument().addDocumentListener(new BeobUserAgent());
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PROGRAMM_OEFFNEN, PanelEinstellungenErweitert.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_PROGRAMM_OEFFNEN, PanelEinstellungenErweitert.class.getSimpleName()) {
             @Override
             public void ping() {
                 init();
@@ -565,7 +565,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         textField.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(915263014, ex);
+                        Log.errorLog(915263014, ex);
                     }
                 }
             } else {
@@ -582,7 +582,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                     try {
                         textField.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(751214501, ex);
+                        Log.errorLog(751214501, ex);
                     }
                 }
             }

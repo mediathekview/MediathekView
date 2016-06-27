@@ -21,7 +21,7 @@ package mediathek.daten;
 
 import mediathek.gui.GuiFilme;
 import mediathek.tool.Filter;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 import mSearch.daten.DatenFilm;
@@ -57,7 +57,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     private void notifyBlack() {
         MVListeFilme.checkBlacklist();
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
+        Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
     }
 
     @Override
@@ -225,7 +225,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(462558700, ex);
+            Log.errorLog(462558700, ex);
         }
         return true;
     }
@@ -240,7 +240,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(696987123, ex);
+            Log.errorLog(696987123, ex);
         }
         return true;
     }
@@ -252,7 +252,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 return false;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(912304894, ex);
+            Log.errorLog(912304894, ex);
         }
         return true;
     }

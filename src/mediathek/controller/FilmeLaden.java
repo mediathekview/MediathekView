@@ -30,14 +30,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
-import mSearch.filmeSuchen.MSFilmeSuchen;
-import mSearch.filmeSuchen.MSListenerFilmeLaden;
-import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import mSearch.filmeSuchen.FilmeSuchen;
+import mSearch.filmeSuchen.ListenerFilmeLaden;
+import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.ListeFilmlistenUrls;
-import mSearch.filmlisten.MSFilmlisteLesen;
-import mSearch.filmlisten.MSImportFilmliste;
+import mSearch.filmlisten.FilmlisteLesen;
+import mSearch.filmlisten.ImportFilmliste;
 import mSearch.tool.Duration;
-import mSearch.tool.MSConfig;
+import mSearch.Config;
 import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogLeer;
@@ -55,25 +55,25 @@ public class FilmeLaden {
         START, PROGRESS, FINISHED
     }
     // private
-    private final MSImportFilmliste msImportFilmliste;
+    private final ImportFilmliste msImportFilmliste;
     private final EventListenerList listeners = new EventListenerList();
     private boolean istAmLaufen = false;
 
     public FilmeLaden() {
-        msImportFilmliste = new MSImportFilmliste();
-        msImportFilmliste.addAdListener(new MSListenerFilmeLaden() {
+        msImportFilmliste = new ImportFilmliste();
+        msImportFilmliste.addAdListener(new ListenerFilmeLaden() {
             @Override
-            public synchronized void start(MSListenerFilmeLadenEvent event) {
+            public synchronized void start(ListenerFilmeLadenEvent event) {
                 notifyStart(event);
             }
 
             @Override
-            public synchronized void progress(MSListenerFilmeLadenEvent event) {
+            public synchronized void progress(ListenerFilmeLadenEvent event) {
                 notifyProgress(event);
             }
 
             @Override
-            public synchronized void fertig(MSListenerFilmeLadenEvent event) {
+            public synchronized void fertig(ListenerFilmeLadenEvent event) {
                 // Ergebnisliste listeFilme eintragen -> Feierabend!
                 duration.stop("Filme laden, ende");
                 undEnde(event);
@@ -103,10 +103,10 @@ public class FilmeLaden {
     public void importFilmliste(String dateiUrl, boolean immerNeuLaden) {
         // damit wird die Filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
         duration.start("Filme laden, start");
-        SysMsg.systemMeldung("");
-        SysMsg.systemMeldung("Alte Liste erstellt am: " + Daten.listeFilme.genDate());
-        SysMsg.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
-        SysMsg.systemMeldung("  Anzahl Neue: " + Daten.listeFilme.countNewFilms());
+        SysMsg.sysMsg("");
+        SysMsg.sysMsg("Alte Liste erstellt am: " + Daten.listeFilme.genDate());
+        SysMsg.sysMsg("  Anzahl Filme: " + Daten.listeFilme.size());
+        SysMsg.sysMsg("  Anzahl Neue: " + Daten.listeFilme.countNewFilms());
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
@@ -120,11 +120,11 @@ public class FilmeLaden {
             Daten.listeFilmeNachBlackList.clear();
             if (dateiUrl.equals("")) {
                 // Filme als Liste importieren, Url automatisch ermitteln
-                SysMsg.systemMeldung("Filmliste laden (auto)");
+                SysMsg.sysMsg("Filmliste laden (auto)");
                 msImportFilmliste.filmeImportierenAuto(Daten.listeFilme, diffListe, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
             } else {
                 // Filme als Liste importieren, feste URL/Datei
-                SysMsg.systemMeldung("Filmliste laden von: " + dateiUrl);
+                SysMsg.sysMsg("Filmliste laden von: " + dateiUrl);
                 Daten.listeFilme.clear();
                 msImportFilmliste.filmeImportierenDatei(dateiUrl, Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
             }
@@ -135,10 +135,10 @@ public class FilmeLaden {
         // damit wird die Filmliste mit einer weiteren aktualisiert (die bestehende bleibt
         // erhalten) UND auch gleich im Konfig-Ordner gespeichert
         duration.start("Filme laden (Update), start");
-        SysMsg.systemMeldung("");
-        SysMsg.systemMeldung("Alte Liste erstellt am: " + Daten.listeFilme.genDate());
-        SysMsg.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
-        SysMsg.systemMeldung("  Anzahl Neue: " + Daten.listeFilme.countNewFilms());
+        SysMsg.sysMsg("");
+        SysMsg.sysMsg("Alte Liste erstellt am: " + Daten.listeFilme.genDate());
+        SysMsg.sysMsg("  Anzahl Filme: " + Daten.listeFilme.size());
+        SysMsg.sysMsg("  Anzahl Neue: " + Daten.listeFilme.countNewFilms());
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
@@ -148,23 +148,23 @@ public class FilmeLaden {
             //Daten.listeFilme.clear();
             Daten.listeFilmeNachBlackList.clear();
             // Filme als Liste importieren, feste URL/Datei
-            SysMsg.systemMeldung("Filmliste laden von: " + dateiUrl);
+            SysMsg.sysMsg("Filmliste laden von: " + dateiUrl);
             msImportFilmliste.filmeImportierenDatei(dateiUrl, diffListe, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
         }
     }
 
     // #######################################
     // #######################################
-    public void addAdListener(MSListenerFilmeLaden listener) {
-        listeners.add(MSListenerFilmeLaden.class, listener);
+    public void addAdListener(ListenerFilmeLaden listener) {
+        listeners.add(ListenerFilmeLaden.class, listener);
     }
 
     public synchronized void setStop(boolean set) {
-        MSConfig.setStop(set);
+        Config.setStop(set);
     }
 
     public String[] getSenderNamen() {
-        return MSFilmeSuchen.getNamenSender();
+        return FilmeSuchen.getNamenSender();
     }
 
     public void updateDownloadUrlsFilmlisten(boolean akt) {
@@ -185,26 +185,26 @@ public class FilmeLaden {
 
     // #######################################
     // #######################################
-    private void undEnde(MSListenerFilmeLadenEvent event) {
+    private void undEnde(ListenerFilmeLadenEvent event) {
         // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
         // beim Ändern von Abos gemacht wird
 
-        SysMsg.systemMeldung("");
+        SysMsg.sysMsg("");
 
         // wenn nur ein Update
         if (!diffListe.isEmpty()) {
-            SysMsg.systemMeldung("Liste Diff gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-            SysMsg.systemMeldung("  Liste Diff erstellt am: " + diffListe.genDate());
-            SysMsg.systemMeldung("  Anzahl Filme: " + diffListe.size());
+            SysMsg.sysMsg("Liste Diff gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+            SysMsg.sysMsg("  Liste Diff erstellt am: " + diffListe.genDate());
+            SysMsg.sysMsg("  Anzahl Filme: " + diffListe.size());
 
             Daten.listeFilme.updateListe(diffListe, true/* Vergleich über Index, sonst nur URL */, true /*ersetzen*/);
             Daten.listeFilme.metaDaten = diffListe.metaDaten;
             Daten.listeFilme.sort(); // jetzt sollte alles passen
             diffListe.clear();
         } else {
-            SysMsg.systemMeldung("Liste Kompl. gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-            SysMsg.systemMeldung("  Liste Kompl erstellt am: " + Daten.listeFilme.genDate());
-            SysMsg.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
+            SysMsg.sysMsg("Liste Kompl. gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+            SysMsg.sysMsg("  Liste Kompl erstellt am: " + Daten.listeFilme.genDate());
+            SysMsg.sysMsg("  Anzahl Filme: " + Daten.listeFilme.size());
         }
 
         findAndMarkNewFilms(Daten.listeFilme);
@@ -212,23 +212,23 @@ public class FilmeLaden {
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false/*aboLoeschen*/);
         istAmLaufen = false;
         if (event.fehler) {
-            SysMsg.systemMeldung("");
-            SysMsg.systemMeldung("Filmliste laden war fehlerhaft, alte Liste wird wieder geladen");
+            SysMsg.sysMsg("");
+            SysMsg.sysMsg("Filmliste laden war fehlerhaft, alte Liste wird wieder geladen");
             MVMessageDialog.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
             // dann die alte Liste wieder laden
             Daten.listeFilme.clear();
-            MSConfig.setStop(false);
-            new MSFilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
-            SysMsg.systemMeldung("");
+            Config.setStop(false);
+            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+            SysMsg.sysMsg("");
         } else {
             Daten.filmlisteSpeichern();
         }
-        SysMsg.systemMeldung("");
+        SysMsg.sysMsg("");
 
-        SysMsg.systemMeldung("Jetzige Liste erstellt am: " + Daten.listeFilme.genDate());
-        SysMsg.systemMeldung("  Anzahl Filme: " + Daten.listeFilme.size());
-        SysMsg.systemMeldung("  Anzahl Neue:  " + Daten.listeFilme.countNewFilms());
-        SysMsg.systemMeldung("");
+        SysMsg.sysMsg("Jetzige Liste erstellt am: " + Daten.listeFilme.genDate());
+        SysMsg.sysMsg("  Anzahl Filme: " + Daten.listeFilme.size());
+        SysMsg.sysMsg("  Anzahl Neue:  " + Daten.listeFilme.countNewFilms());
+        SysMsg.sysMsg("");
 
         MVListeFilme.checkBlacklist();
         notifyFertig(event);
@@ -255,60 +255,60 @@ public class FilmeLaden {
         hashSet.clear();
     }
 
-    private void notifyStart(MSListenerFilmeLadenEvent event) {
-        final MSListenerFilmeLadenEvent e = event;
+    private void notifyStart(ListenerFilmeLadenEvent event) {
+        final ListenerFilmeLadenEvent e = event;
         try {
             if (SwingUtilities.isEventDispatchThread()) {
-                for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
+                for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
                     l.start(event);
                 }
             } else {
                 SwingUtilities.invokeLater(() -> {
-                    for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
+                    for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
                         l.start(e);
                     }
                 });
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(765213654, ex);
+            Log.errorLog(765213654, ex);
         }
     }
 
-    private void notifyProgress(MSListenerFilmeLadenEvent event) {
-        final MSListenerFilmeLadenEvent e = event;
+    private void notifyProgress(ListenerFilmeLadenEvent event) {
+        final ListenerFilmeLadenEvent e = event;
         try {
             if (SwingUtilities.isEventDispatchThread()) {
-                for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
+                for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
                     l.progress(e);
                 }
             } else {
                 SwingUtilities.invokeLater(() -> {
-                    for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
+                    for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
                         l.progress(e);
                     }
                 });
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(201020369, ex);
+            Log.errorLog(201020369, ex);
         }
     }
 
-    private void notifyFertig(MSListenerFilmeLadenEvent event) {
-        final MSListenerFilmeLadenEvent e = event;
+    private void notifyFertig(ListenerFilmeLadenEvent event) {
+        final ListenerFilmeLadenEvent e = event;
         try {
             if (SwingUtilities.isEventDispatchThread()) {
-                for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
+                for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
                     l.fertig(e);
                 }
             } else {
                 SwingUtilities.invokeLater(() -> {
-                    for (MSListenerFilmeLaden l : listeners.getListeners(MSListenerFilmeLaden.class)) {
+                    for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
                         l.fertig(e);
                     }
                 });
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(945120303, ex);
+            Log.errorLog(945120303, ex);
         }
     }
 }

@@ -19,7 +19,7 @@
  */
 package mediathek.gui.dialog;
 
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mSearch.tool.FilenameUtils;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
@@ -449,7 +449,7 @@ public class DialogAddDownload extends JDialog {
             datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR] = Boolean.toString(jCheckBoxInfodatei.isSelected());
             datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE_NR] = Boolean.toString(jCheckBoxSubtitle.isSelected());
             Daten.listeDownloads.addMitNummer(datenDownload);
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+            Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
             if (jCheckBoxStarten.isSelected()) {
                 // und evtl. auch gleich starten
                 datenDownload.startDownload(daten);
@@ -704,7 +704,7 @@ public class DialogAddDownload extends JDialog {
                         jComboBoxPfad.addItem(chooser.getDirectory() + chooser.getFile());
                         jComboBoxPfad.setSelectedItem(chooser.getDirectory() + chooser.getFile());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(356871087, ex);
+                        Log.errorLog(356871087, ex);
                     }
                 }
                 System.setProperty("apple.awt.fileDialogForDirectories", "false");
@@ -722,7 +722,7 @@ public class DialogAddDownload extends JDialog {
                         jComboBoxPfad.addItem(chooser.getSelectedFile().getAbsolutePath());
                         jComboBoxPfad.setSelectedItem(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(356871087, ex);
+                        Log.errorLog(356871087, ex);
                     }
                 }
             }

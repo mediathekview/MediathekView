@@ -104,13 +104,13 @@ public class MVInfoFile {
             br.write("\n\n");
             br.flush();
         } catch (IOException ex) {
-            Log.fehlerMeldung(632656214, dialog.ziel);
+            Log.errorLog(632656214, dialog.ziel);
         }
     }
 
     public static void writeInfoFile(DatenDownload datenDownload) {
         try {
-            SysMsg.systemMeldung(new String[]{"Infofile schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]});
+            SysMsg.sysMsg(new String[]{"Infofile schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]});
 
             new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
             Path path = Paths.get(datenDownload.getFileNameWithoutSuffix() + ".txt");
@@ -160,9 +160,9 @@ public class MVInfoFile {
             br.write("\n\n");
             br.flush();
             br.close();
-            SysMsg.systemMeldung(new String[]{"Infofile", "  geschrieben"});
+            SysMsg.sysMsg(new String[]{"Infofile", "  geschrieben"});
         } catch (IOException ex) {
-            Log.fehlerMeldung(975410369, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.errorLog(975410369, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
     }
 

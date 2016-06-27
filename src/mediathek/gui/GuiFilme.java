@@ -19,7 +19,7 @@
  */
 package mediathek.gui;
 
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.controller.starter.Start;
 import mediathek.daten.*;
 import mediathek.gui.dialog.DialogAddDownload;
@@ -29,8 +29,8 @@ import mediathek.res.GetIcon;
 import mediathek.tool.*;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
-import mSearch.filmeSuchen.MSListenerFilmeLaden;
-import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import mSearch.filmeSuchen.ListenerFilmeLaden;
+import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Datum;
 
 import javax.swing.*;
@@ -158,15 +158,15 @@ public class GuiFilme extends PanelVorlage {
 
     public void init() {
         showDescriptionPanel();
-        Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
+        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void start(MSListenerFilmeLadenEvent event) {
+            public void start(ListenerFilmeLadenEvent event) {
                 mVFilter.enableFilter(false);
                 loadTable();
             }
 
             @Override
-            public void fertig(MSListenerFilmeLadenEvent event) {
+            public void fertig(ListenerFilmeLadenEvent event) {
                 loadTable();
                 mVFilter.enableFilter(true);
             }
@@ -330,13 +330,13 @@ public class GuiFilme extends PanelVorlage {
     // Private
     //===================================
     private void addMVListener() {
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 panelVideoplayerSetzen();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, GuiFilme.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 if (mVFilter.get_jCheckBoxKeineGesehenen().isSelected() || mVFilter.get_jToggleButtonHistory().isSelected()) {
@@ -346,53 +346,53 @@ public class GuiFilme extends PanelVorlage {
                 }
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiFilme.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_ABOS, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 loadTable();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BESCHREIBUNG, GuiFilme.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_BESCHREIBUNG, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 loadTable();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 loadTable();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FILMLISTE_GEAENDERT, GuiFilme.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_FILMLISTE_GEAENDERT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 MVListeFilme.checkBlacklist();
                 loadTable();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_START_EVENT_BUTTON, GuiFilme.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_START_EVENT_BUTTON, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 tabelle.fireTableDataChanged(true /*setSpalten*/);
                 setInfo();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_GEO, GuiFilme.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_GEO, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 MVListeFilme.checkBlacklist();
                 loadTable();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{/*ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT,*/
-            ListenerMediathekView.EREIGNIS_START_EVENT, ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS}, GuiFilme.class.getSimpleName()) {
+        Listener.addListener(new Listener(new int[]{/*ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT,*/
+            Listener.EREIGNIS_START_EVENT, Listener.EREIGNIS_LISTE_DOWNLOADS}, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 setInfo();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, GuiFilme.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 // Panel anzeigen und die Filmliste anpassen
@@ -402,13 +402,13 @@ public class GuiFilme extends PanelVorlage {
                 loadTable();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, GuiFilme.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 showDescriptionPanel();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_SUCHFELD_FOCUS_SETZEN, GuiFilme.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_SUCHFELD_FOCUS_SETZEN, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER))) {
@@ -768,7 +768,7 @@ public class GuiFilme extends PanelVorlage {
         stopBeob = false;
 
         if (geändert) {
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getSimpleName());
+            Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getSimpleName());
         }
         //dann laden
         loadTable();
@@ -901,7 +901,7 @@ public class GuiFilme extends PanelVorlage {
                 loadTable();
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(558965421, ex);
+            Log.errorLog(558965421, ex);
         }
 
         tabelle.scrollToSelection();
@@ -1338,7 +1338,7 @@ public class GuiFilme extends PanelVorlage {
             jCheckBoxBlackBoxOn.addActionListener(e -> {
                 Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.toString(jCheckBoxBlackBoxOn.isSelected()));
                 MVListeFilme.checkBlacklist();
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getName());
+                Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getName());
             });
             submenueBlack.add(jCheckBoxBlackBoxOn);
 
@@ -1346,7 +1346,7 @@ public class GuiFilme extends PanelVorlage {
             jCheckBoxBlackBoxStart.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)));
             jCheckBoxBlackBoxStart.addActionListener(e -> {
                 Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_START_ON, Boolean.toString(jCheckBoxBlackBoxStart.isSelected()));
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_START_GEAENDERT, GuiFilme.class.getName());
+                Listener.notify(Listener.EREIGNIS_BLACKLIST_START_GEAENDERT, GuiFilme.class.getName());
             });
             submenueBlack.add(jCheckBoxBlackBoxStart);
 
@@ -1486,7 +1486,7 @@ public class GuiFilme extends PanelVorlage {
                 try {
                     tabelle.print();
                 } catch (PrinterException ex) {
-                    Log.fehlerMeldung(688542239, ex);
+                    Log.errorLog(688542239, ex);
                 }
             }
         }

@@ -96,7 +96,7 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
                     break;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(630365892, ex);
+            Log.errorLog(630365892, ex);
         }
         return this;
     }

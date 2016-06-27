@@ -19,7 +19,7 @@
  */
 package mediathek.daten;
 
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import java.awt.*;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -85,7 +85,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+            Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         }
     }
 
@@ -104,7 +104,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+            Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         }
     }
 
@@ -133,7 +133,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+            Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         }
     }
 
@@ -155,7 +155,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             this.remove(datenDownload);
             this.addFirst(datenDownload);
         }
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, this.getClass().getSimpleName());
+        Listener.notify(Listener.EREIGNIS_REIHENFOLGE_DOWNLOAD, this.getClass().getSimpleName());
     }
 
     public synchronized DatenDownload getDownloadByUrl(String url) {
@@ -182,7 +182,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
                 datenDownload.mVFilmSize.reset();
                 datenDownload.start = null;
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+                Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
                 break;
             }
         }
@@ -208,7 +208,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
+            Listener.notify(Listener.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
         }
     }
 
@@ -227,7 +227,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+            Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         }
     }
 
@@ -558,7 +558,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT_BUTTON, this.getClass().getSimpleName());
+            Listener.notify(Listener.EREIGNIS_START_EVENT_BUTTON, this.getClass().getSimpleName());
         }
     }
 

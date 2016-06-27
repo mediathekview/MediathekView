@@ -39,7 +39,7 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
 import mediathek.tool.CellRendererMediaDB;
 import mediathek.tool.HinweisKeineAuswahl;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModel;
@@ -55,7 +55,7 @@ public class PanelMediaDB extends PanelVorlage {
         initComponents();
         daten = d;
 
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_MEDIA_DB_START, PanelMediaDB.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_MEDIA_DB_START, PanelMediaDB.class.getSimpleName()) {
             @Override
             public void ping() {
                 // neue DB suchen
@@ -64,7 +64,7 @@ public class PanelMediaDB extends PanelVorlage {
                 jToggleButtonLoad.setSelected(false);
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_MEDIA_DB_STOP, PanelMediaDB.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_MEDIA_DB_STOP, PanelMediaDB.class.getSimpleName()) {
             @Override
             public void ping() {
                 // neue DB liegt vor
@@ -201,7 +201,7 @@ public class PanelMediaDB extends PanelVorlage {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(732165489, ex);
+                Log.errorLog(732165489, ex);
             }
         }
         this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -665,7 +665,7 @@ public class PanelMediaDB extends PanelVorlage {
                     try {
                         jTextFieldPath.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(951024789, ex);
+                        Log.errorLog(951024789, ex);
                     }
                 }
                 System.setProperty("apple.awt.fileDialogForDirectories", "false");
@@ -682,7 +682,7 @@ public class PanelMediaDB extends PanelVorlage {
                     try {
                         jTextFieldPath.setText(chooser.getSelectedFile().getPath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(765212369, ex);
+                        Log.errorLog(765212369, ex);
                     }
                 }
             }
@@ -725,7 +725,7 @@ public class PanelMediaDB extends PanelVorlage {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldExportPath.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(679890147, ex);
+                        Log.errorLog(679890147, ex);
                     }
                 }
             } else {
@@ -741,7 +741,7 @@ public class PanelMediaDB extends PanelVorlage {
                     try {
                         jTextFieldExportPath.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(911025463, ex);
+                        Log.errorLog(911025463, ex);
                     }
                 }
             }

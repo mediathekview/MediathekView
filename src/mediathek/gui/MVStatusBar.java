@@ -5,15 +5,15 @@ import com.explodingpixels.macwidgets.BottomBarSize;
 import java.awt.FlowLayout;
 import java.util.EnumMap;
 import javax.swing.*;
-import mSearch.filmeSuchen.MSListenerFilmeLaden;
-import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import mSearch.filmeSuchen.ListenerFilmeLaden;
+import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 
 /**
  * User: crystalpalace1977
@@ -66,7 +66,7 @@ public final class MVStatusBar extends JPanel {
         bottomBar.addComponentToRight(progressPanel);
 
         hideProgressIndicators();
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_TIMER, MVStatusBar.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_TIMER, MVStatusBar.class.getSimpleName()) {
             @Override
             public void ping() {
                 setTextForLeftDisplay();
@@ -75,22 +75,22 @@ public final class MVStatusBar extends JPanel {
                         setTextForRightDisplay();
                     }
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(936251087, ex);
+                    Log.errorLog(936251087, ex);
                 }
             }
         });
-        Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
+        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void start(MSListenerFilmeLadenEvent event) {
+            public void start(ListenerFilmeLadenEvent event) {
             }
 
             @Override
-            public void progress(MSListenerFilmeLadenEvent event) {
+            public void progress(ListenerFilmeLadenEvent event) {
                 updateProgressBar(event);
             }
 
             @Override
-            public void fertig(MSListenerFilmeLadenEvent event) {
+            public void fertig(ListenerFilmeLadenEvent event) {
                 hideProgressIndicators();
             }
         });
@@ -116,7 +116,7 @@ public final class MVStatusBar extends JPanel {
         setTextForRightDisplay();
     }
 
-    private void updateProgressBar(MSListenerFilmeLadenEvent event) {
+    private void updateProgressBar(ListenerFilmeLadenEvent event) {
         stopTimer = true;
         if (!progress.isVisible()) {
             progress.setVisible(true);

@@ -35,7 +35,7 @@ import javax.swing.SwingConstants;
 import mSearch.tool.SysMsg;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVConfig;
 import net.sf.jcarrierpigeon.Notification;
 import net.sf.jcarrierpigeon.NotificationQueue;
@@ -60,7 +60,7 @@ public final class MVTray {
 
     public MVTray systemTray() {
         if (!SystemTray.isSupported()) {
-            SysMsg.systemMeldung("Tray wird nicht unterstützt!");
+            SysMsg.sysMsg("Tray wird nicht unterstützt!");
             return null;
         } else {
             tray = SystemTray.getSystemTray();
@@ -81,7 +81,7 @@ public final class MVTray {
                 daten.mediathekGui.setVisible(true); // WICHTIG!!
                 Daten.mVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.toString(false));
                 daten.mediathekGui.setTray();
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_TRAYICON, MVTray.class.getSimpleName());
+                Listener.notify(Listener.EREIGNIS_TRAYICON, MVTray.class.getSimpleName());
             });
             popup.add(itemRemoveTray);
 
@@ -99,7 +99,7 @@ public final class MVTray {
 //                }
                 return this;
             } catch (AWTException e) {
-                SysMsg.systemMeldung("Tray konnte nicht geladen werden!");
+                SysMsg.sysMsg("Tray konnte nicht geladen werden!");
             }
 
         }
@@ -122,7 +122,7 @@ public final class MVTray {
             }
         });
 
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_TIMER, MVStatusBar.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_TIMER, MVStatusBar.class.getSimpleName()) {
             int count = 0;
 
             @Override

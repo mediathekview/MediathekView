@@ -29,7 +29,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import mSearch.tool.MSConst;
+import mSearch.Const;
 import static mSearch.tool.Functions.getOs;
 import mediathek.controller.starter.RuntimeExec;
 import mediathek.daten.Daten;
@@ -252,7 +252,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                     // und Tschüss
                     return false;
                 }
-                if (datei.endsWith(MSConst.FORMAT_ZIP)) {
+                if (datei.endsWith(Const.FORMAT_ZIP)) {
                     if (!entpacken(zipFile, new File(zielPfad))) {
                         // und Tschüss
                         return false;
@@ -272,7 +272,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 conn.setConnectTimeout(timeout);
                 conn.setReadTimeout(timeout);
                 conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-                if (datei.endsWith(MSConst.FORMAT_ZIP)) {
+                if (datei.endsWith(Const.FORMAT_ZIP)) {
 
                     File tmpFile = File.createTempFile("mediathek", null);
                     tmpFile.deleteOnExit();

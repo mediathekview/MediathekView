@@ -20,7 +20,7 @@
 package mediathek.controller.starter;
 
 import mediathek.tool.MVInputStream;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import com.apple.eawt.Application;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Toolkit;
@@ -90,16 +90,16 @@ public class StarterClass {
         if (start != null) {
             if (start.percent > -1 && start.percent < 995) {
                 // Prozent werden berechnet und es wurde vor 99,5% abgebrochen
-                Log.fehlerMeldung(696510258, "Download fehlgeschlagen: 99,5% wurden nicht erreicht"
+                Log.errorLog(696510258, "Download fehlgeschlagen: 99,5% wurden nicht erreicht"
                         + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                 return false;
             }
         }
         File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         if (!file.exists()) {
-            Log.fehlerMeldung(550236231, "Download fehlgeschlagen: Datei existiert nicht" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.errorLog(550236231, "Download fehlgeschlagen: Datei existiert nicht" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_FILM) {
-            Log.fehlerMeldung(795632500, "Download fehlgeschlagen: Datei zu klein" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.errorLog(795632500, "Download fehlgeschlagen: Datei zu klein" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         } else {
             if (datenDownload.istAbo()) {
                 daten.erledigteAbos.zeileSchreiben(datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],
@@ -122,19 +122,19 @@ public class StarterClass {
                 // zum Wiederstarten/Aufräumen die leer/zu kleine Datei löschen, alles auf Anfang
                 if (file.length() == 0) {
                     // zum Wiederstarten/Aufräumen die leer/zu kleine Datei löschen, alles auf Anfang
-                    SysMsg.systemMeldung(new String[]{"Restart/Aufräumen: leere Datei löschen", file.getAbsolutePath()});
+                    SysMsg.sysMsg(new String[]{"Restart/Aufräumen: leere Datei löschen", file.getAbsolutePath()});
                     if (!file.delete()) {
                         throw new Exception();
                     }
                 } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_FILM) {
-                    SysMsg.systemMeldung(new String[]{"Restart/Aufräumen: Zu kleine Datei löschen", file.getAbsolutePath()});
+                    SysMsg.sysMsg(new String[]{"Restart/Aufräumen: Zu kleine Datei löschen", file.getAbsolutePath()});
                     if (!file.delete()) {
                         throw new Exception();
                     }
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(795632500, "Fehler beim löschen" + file.getAbsolutePath());
+            Log.errorLog(795632500, "Fehler beim löschen" + file.getAbsolutePath());
         }
     }
 
@@ -160,7 +160,7 @@ public class StarterClass {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
             text.add("Programmaufruf[]: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR]);
         }
-        SysMsg.systemMeldung(text.toArray(new String[text.size()]));
+        SysMsg.sysMsg(text.toArray(new String[text.size()]));
     }
 
     private void fertigmeldung(final DatenDownload datenDownload, final Start start, boolean abgebrochen) {
@@ -206,7 +206,7 @@ public class StarterClass {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
             text.add("Programmaufruf[]: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR]);
         }
-        SysMsg.systemMeldung(text.toArray(new String[text.size()]));
+        SysMsg.sysMsg(text.toArray(new String[text.size()]));
         if (!start.stoppen && !abgebrochen) {
             if (datenDownload.quelle != DatenDownload.QUELLE_BUTTON) {
                 SwingUtilities.invokeLater(() -> MVNotification.addNotification(daten, datenDownload, start.status != Start.STATUS_ERR));
@@ -253,7 +253,7 @@ public class StarterClass {
                     ScriptEngine engine = mgr.getEngineByName("AppleScript");
                     engine.eval(script);
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(915263987, "Fehler beim Spotlight schreiben" + filmPath.toString());
+                    Log.errorLog(915263987, "Fehler beim Spotlight schreiben" + filmPath.toString());
                     //AppleScript may not be available if user does not use the official MacApp.
                     //We need to log that as well if there are error reports.
                     try {
@@ -273,7 +273,7 @@ public class StarterClass {
      * This is relevant to know for bug reports.
      */
     private void logUnofficialMacAppUse() {
-        Log.fehlerMeldung(915263987, "MV wird NICHT über die offizielle Mac App genutzt.");
+        Log.errorLog(915263987, "MV wird NICHT über die offizielle Mac App genutzt.");
     }
 
     private void finalizeDownload(DatenDownload datenDownload, Start start /* wegen "datenDownload.start=null" beim stoppen */, HttpDownloadState state) {
@@ -302,10 +302,10 @@ public class StarterClass {
     }
 
     private void notifyStartEvent(DatenDownload datenDownload) {
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, StarterClass.class.getSimpleName());
+        Listener.notify(Listener.EREIGNIS_START_EVENT, StarterClass.class.getSimpleName());
         if (datenDownload != null) {
             if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON) {
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT_BUTTON, StarterClass.class.getSimpleName());
+                Listener.notify(Listener.EREIGNIS_START_EVENT_BUTTON, StarterClass.class.getSimpleName());
             }
         }
     }
@@ -347,7 +347,7 @@ public class StarterClass {
                     Daten.listeDownloadsButton.buttonStartsPutzen(); // Button Starts aus der Liste löschen
                     sleep(3 * 1000);
                 } catch (Exception ex) {
-                    Log.fehlerMeldung(613822015, ex);
+                    Log.errorLog(613822015, ex);
                 }
             } //while(true)
         }
@@ -371,7 +371,7 @@ public class StarterClass {
          */
         private void startStarten(DatenDownload datenDownload) {
             datenDownload.start.startZeit = new Datum();
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
+            Listener.notify(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
             Thread downloadThread;
 
             switch (datenDownload.art) {
@@ -384,7 +384,7 @@ public class StarterClass {
                     downloadThread.start();
                     break;
                 default:
-                    Log.fehlerMeldung(789356001, "StarterClass.Starten - Switch-default");
+                    Log.errorLog(789356001, "StarterClass.Starten - Switch-default");
                     break;
             }
         }
@@ -424,7 +424,7 @@ public class StarterClass {
                 Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
             } catch (IOException ignored) {
             } catch (Exception ex) {
-                Log.fehlerMeldung(469365281, ex);
+                Log.errorLog(469365281, ex);
             }
         }
 
@@ -544,7 +544,7 @@ public class StarterClass {
                 }
             } catch (Exception ex) {
                 exMessage = ex.getLocalizedMessage();
-                Log.fehlerMeldung(395623710, ex);
+                Log.errorLog(395623710, ex);
                 SwingUtilities.invokeLater(() -> {
                     if (!Daten.auto) {
                         new MeldungDownloadfehler(daten.mediathekGui, exMessage, datenDownload).setVisible(true);
@@ -583,7 +583,7 @@ public class StarterClass {
                     file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                 } catch (IOException ex) {
                     // kann nicht gelöscht werden, evtl. klappt ja das Überschreiben
-                    Log.fehlerMeldung(795623145, ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                    Log.errorLog(795623145, ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                 }
                 return false; //auf keinen Fall den Dialog starten :)
             }
@@ -627,7 +627,7 @@ public class StarterClass {
                             file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                         } catch (Exception ex) {
                             // kann nicht gelöscht werden, evtl. klappt ja das Überschreiben
-                            Log.fehlerMeldung(945120398, ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                            Log.errorLog(945120398, ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
                         }
                         break;
 
@@ -635,7 +635,7 @@ public class StarterClass {
                         if (dialogContinueDownload.isNewName()) {
                             // jetzt den Programmaufruf nochmal mit dem geänderten Dateinamen nochmal bauen
                             datenDownload.aufrufBauen();
-                            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+                            Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
                             try {
                                 Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
                             } catch (IOException ignored) {
@@ -704,7 +704,7 @@ public class StarterClass {
                 }
             } catch (Exception ex) {
                 ret = -1;
-                Log.fehlerMeldung(643298301, ex);
+                Log.errorLog(643298301, ex);
             } finally {
                 if (connection != null) {
                     connection.disconnect();
@@ -792,11 +792,11 @@ public class StarterClass {
                     melden = true;
                 }
                 if (melden) {
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
+                    Listener.notify(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
                     melden = false;
                 }
             }
-            SysMsg.systemMeldung(start.mVInputStream.toString());
+            SysMsg.sysMsg(start.mVInputStream.toString());
             if (!start.stoppen) {
                 if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON) {
                     // direkter Start mit dem Button
@@ -850,7 +850,7 @@ public class StarterClass {
                             // ==================================
                             // dann wars das
                             responseCode = "Responsecode: " + conn.getResponseCode() + "\n" + conn.getResponseMessage();
-                            Log.fehlerMeldung(915236798, "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
+                            Log.errorLog(915236798, "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
                             SwingUtilities.invokeLater(() -> {
                                 if (!Daten.auto) {
                                     new MeldungDownloadfehler(daten.mediathekGui, "URL des Films:\n"
@@ -875,7 +875,7 @@ public class StarterClass {
                 }
             } catch (Exception ex) {
                 exMessage = ex.getLocalizedMessage();
-                Log.fehlerMeldung(316598941, ex, "Fehler");
+                Log.errorLog(316598941, ex, "Fehler");
                 start.status = Start.STATUS_ERR;
                 SwingUtilities.invokeLater(() -> {
                     if (!Daten.auto) {
@@ -948,7 +948,7 @@ public class StarterClass {
 
                     case RESTART_WITH_NEW_NAME:
                         if (dialogContinueDownload.isNewName()) {
-                            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+                            Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
                             try {
                                 Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
                             } catch (IOException ignored) {

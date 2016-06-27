@@ -33,14 +33,14 @@ import java.nio.file.Paths;
 import javafx.application.Platform;
 import javax.swing.JOptionPane;
 import javax.swing.RepaintManager;
-import mSearch.tool.MSConfig;
+import mSearch.Config;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
 import mediathek.daten.Daten;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.tool.Konstanten;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
-import mSearch.tool.MVSingleInstance;
+import mSearch.tool.SingleInstance;
 
 public class Main {
 
@@ -89,13 +89,13 @@ public class Main {
                         return new PasswordAuthentication(proxyUser, proxyPassword.toCharArray());
                     }
                 });
-                SysMsg.systemMeldung("Proxy Authentication: (" + System.getProperty("http.proxyUser") + ")");
+                SysMsg.sysMsg("Proxy Authentication: (" + System.getProperty("http.proxyUser") + ")");
             } else {
-                SysMsg.systemMeldung("Proxy Authentication: not configured");
+                SysMsg.sysMsg("Proxy Authentication: not configured");
             }
 
         } catch (SecurityException se) {
-            SysMsg.systemMeldung("Proxy Authentication: cannot access proxyUser / proxyPassword" + se.toString());
+            SysMsg.sysMsg("Proxy Authentication: cannot access proxyUser / proxyPassword" + se.toString());
         }
 
         if (args != null) {
@@ -113,16 +113,16 @@ public class Main {
                     case "-v":
                         EventQueue.invokeLater(() -> {
                             startMeldungen();
-                            SysMsg.systemMeldung("Systemmeldung");
-                            Log.fehlerMeldung(100000000, "Fehlermeldung");
-                            Log.endeMeldung();
+                            SysMsg.sysMsg("Systemmeldung");
+                            Log.errorLog(100000000, "Fehlermeldung");
+                            Log.endMsg();
                             System.exit(0);
                         });
                         break;
 
                     case "-d":
                         Daten.debug = true;
-                        MSConfig.debug = true;
+                        Config.debug = true;
 
 //                        EventQueue.invokeLater(() -> {
 //                            // zum Test
@@ -180,7 +180,7 @@ public class Main {
 
                         if (SystemInfo.isMacOSX()) {
                             //prevent startup of multiple instances...useful during debugging :(
-                            MVSingleInstance singleInstanceWatcher = new MVSingleInstance();
+                            SingleInstance singleInstanceWatcher = new SingleInstance();
                             if (singleInstanceWatcher.isAppAlreadyActive()) {
                                 JOptionPane.showMessageDialog(null, "MediathekView is already running!");
                                 //System.exit(1);

@@ -26,8 +26,8 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
-import mSearch.tool.ListenerMediathekView;
-import mSearch.tool.MSConst;
+import mSearch.tool.Listener;
+import mSearch.Const;
 import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenMediaDB;
@@ -74,7 +74,7 @@ public class MVMediaDB {
     }
 
     public synchronized void makeIndex() {
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIA_DB_START, MVMediaDB.class.getSimpleName());
+        Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, MVMediaDB.class.getSimpleName());
         suffix = Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX).split(",");
         for (int i = 0; i < suffix.length; ++i) {
             suffix[i] = suffix[i].toLowerCase();
@@ -119,10 +119,10 @@ public class MVMediaDB {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(120321254, ex);
+                Log.errorLog(120321254, ex);
             }
             makeIndex = false;
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIA_DB_STOP, MVMediaDB.class.getSimpleName());
+            Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, MVMediaDB.class.getSimpleName());
         }
 
         private void searchFile(File dir) {
@@ -175,23 +175,23 @@ public class MVMediaDB {
     public synchronized void writeFileArray(String datei) {
         OutputStreamWriter out = null;
         try {
-            SysMsg.systemMeldung("MediaDB schreiben (" + fileArray.size() + " Dateien) :");
+            SysMsg.sysMsg("MediaDB schreiben (" + fileArray.size() + " Dateien) :");
             File file = new File(datei);
             File dir = new File(file.getParent());
             if (!dir.exists()) {
                 if (!dir.mkdirs()) {
-                    Log.fehlerMeldung(945120365, "Kann den Pfad nicht anlegen: " + dir.toString());
+                    Log.errorLog(945120365, "Kann den Pfad nicht anlegen: " + dir.toString());
                 }
             }
-            SysMsg.systemMeldung("   --> Start Schreiben nach: " + datei);
-            out = new OutputStreamWriter(new FileOutputStream(datei), MSConst.KODIERUNG_UTF);
+            SysMsg.sysMsg("   --> Start Schreiben nach: " + datei);
+            out = new OutputStreamWriter(new FileOutputStream(datei), Const.KODIERUNG_UTF);
 
             for (DatenMediaDB s : fileArray) {
                 out.write(s.arr[DatenMediaDB.MEDIA_DB_NAME_NR] + "\n");
             }
-            SysMsg.systemMeldung("   --> geschrieben!");
+            SysMsg.sysMsg("   --> geschrieben!");
         } catch (Exception ex) {
-            Log.fehlerMeldung(102035478, ex, "nach: " + datei);
+            Log.errorLog(102035478, ex, "nach: " + datei);
         } finally {
             try {
                 if (out != null) {
