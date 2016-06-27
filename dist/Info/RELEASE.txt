@@ -1,0 +1,418 @@
+/*    
+ *    MediathekView
+ *    Copyright (C) 2008   W. Xaver
+ *    W.Xaver[at]googlemail.com
+ *    http://zdfmediathk.sourceforge.net/
+ *    
+ *    This program is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+	# Version 11
+	- Tab Download: neuer Menüpunkt: Filme als gesehen/ungesehen markieren
+	- Set: Neuer Schalter für Pfad, Dateiname: %a, %b
+	- Starteinstellungen für FreeBSD
+	- Tab Filme: Markierte Filme bei Filterwechsel
+	- es wurden ein paar Fehler behoben (-auto und kein Desktop/X )
+	- Doppelklick zwischen die Tabellenspalten (Filme, Download, Abo) stellt 
+	die Spaltenbreite automatisch ein
+	- Tab Filme: neuer Menüpunkt: Filme als gesehen/ungesehen markieren
+	- DW, neuer Sender
+	- Hotkeys erweitert/angepasst
+	- Möglichkeit einen externen Downloadmanager zu verwenden
+	- Funktionalität zum Konvertieren der XML-Untertitel der öffentlich-rechtlichen 
+	Sender in das von VLC unterstützte SRT-Format
+	- Filter "irgendwo" sucht jetzt auch im Feld "Datum"
+	- Import der Ersetzungstabelle ist jetzt möglich
+	- Verbesserungen beim Download
+	- Einstellung der Bandbreite im Menü "Download"
+
+	# Version 10
+	- Status "Film neu" bleibt nach Neustart erhalten
+	- Es könne Untertitel zu Filmen geladen werden (wo verfügbar)
+	- Status der Blacklist (ein-aus) wird im Filterprofil gespeichert
+	- Filterprofilen kann man Namen geben
+	- Tab Download: Rechte Maus auf einen Download: Der gespeicherte Film kann gelöscht werden
+	- Tab Filme, Tab Download: Rechte Maus auf einen Film/Download: Abo löschen und ändern
+	- TrayIcon: kann in den Einstellungen aktiviert werden
+	- Die eigene Mediensammlung kann vor einem Download durchsucht werden, ob Titel schon vorhanden
+	(Einstellungen zur Mediensammlung in den Programmeinstellungen)
+	- Neue Schalter für die Namen der Downloads (Tag, Monat, Jahr, Uhrzeit, Filmqualität, Hash der URL)
+	- Geogeblockte Filme können in die Blacklist aufgenommen werden
+	- Beim Suchen der Hilfsprogramme der Sets können Umgebungsvariablen benutzt werden:
+	(PATH_VLC, PATH_FLVSTREAMER, PATH_FFMPEG)
+	- Beim Download kommt das Programm jetzt besser mit Leerzeichen im Pfad (auch Linux/OS X) zurecht
+	- Bei Lesefehlern der Konfigdatei kann auch auf die Backups zurückgegriffen werden
+	- Tab Filme: Kontextmenü Maus: Blacklist ein-/ausschalten
+	- Dateiname/Pfad eines Downloads bei Linux/OS X: führende Punkte werden entfernt
+	- Dateiname eines Downloads: Die maximale Länge eines Feldes (z.B.: %T oder %t für Titel oder Thema) kann
+	vorgegeben werden
+	- Durch die Umstellung beim Abspielen/Speichern sind geänderte Sets notwendig, die sollten auch beim ersten Start
+	eingespielt werden
+	
+	# Version 9
+	- Film-Url auch in HD und Klein in die Zwischenablage kopieren
+	- Anzeige der Plattengröße (freier Platz) beim Anlegen eines Downloads
+	- eigene exe (Skripte) fürs Starten vom USB-Stick
+	- neue Option: "-fastauto", wie "-auto" aber es werden keine Filmbeschreibungen mit 
+	geladen, spart Speicher und beschleunigt schwache Hardware
+	- neue Option: "nur Filme der letzten x Tage laden", (in den Einstellungen)
+	spart Speicher und beschleunigt schwache Hardware, muss in der GUI gesetzt werden und
+	ist dann auch in "-auto" aktiv
+	- "Downloads um XX:YY Uhr starten", neue Option in den Downloads
+	- neuer Sender: Phoenix, SR
+	- Kontrolle der max. Pfadlänge unter Windows
+	- Umstellung der Kontrolle der Bandbreite, jetzt gilt die Vorgabe für JEDEN Download nicht mehr als Summe für alle
+	- Beim Anlegen eines neuen Abos dient "Mindestdauer" als Vorgabe des nächsten Abos
+	- Der zuletzt angeklickte (aktive) Filter wird markiert	
+	
+	# Version 8
+	- Sendericons
+	- Anzeige der Gesamtbandbreite: Menü: Ansicht
+	- OS X: Spotlight
+	- Anzeige laufender Downloads im Tab Download
+	- Bandbreitenmonitor
+	- Fortschrittsanzeige beim Laden der Filmliste
+	- Beep nach Download
+	- "Datei existiert" Anfrage bei Downloads über ein Programm
+	
+	# Version 7
+	- "-auto" geht wieder
+	- Filter: es können Filterprofile verwaltet werden
+	- OS X: Dock-Icon
+	- Tabelle Download: beim Löschen einer Zeile bleibt die Selektion an der Stelle
+	- History/erledigte Abos: die Liste kann exportiert werden und Filme könne nochmals
+	als Download angelegt werden
+	- Schriftgröße in den Tabellen: Es wird die Systemschriftgröße verwendet und sie kann auch übers Menü eingestellt werden
+	- Dialog Abos: Es werden bereits verwendete Pfade als Ziel mit angezeigt und es können
+	jetzt auch "Unterpfade" angegeben werden
+	- Im Tab Abo: Es kann ein Abo auch direkt angelegt werden (Menü)
+	- Mit %i kann beim Namen eines Downloads die Filmnummer verwendet werden
+	- %1, %2, %3 wird bei Downloads in den Tag, Monat, Jahr des Films (oder wenn nicht vorhanden von "Heute") übersetzt
+	
+	# Version 6
+	- tmp-Files wurden nicht gelöscht
+	- der Downloadpfad im Set (Basispfad) wird jetzt nicht mehr verändert
+	- die Filmbeschreibung kann direkt gespeichert werden
+	- Aufräumen fertiger Downloads in der Tabelle löschte den falschen Download
+	- Dialog: Downloadfehler bekommt keinen Focus
+	- Filter: "7 Tage" eingefügt
+
+	# Version 5
+	- Anordnung der Filter
+	- Beenden wenn Downloads noch laufen: sofort - warten ( und anschließend Rechner herunterfahren) - Abbrechen
+	- Geoblocking: Geblockte Filme werden markiert
+	- aktuelle History im Filter: alle in der aktuellen Sitzung gestarteten Filme anzeigen lassen (und evtl. nochmal starten ..)
+	- http-Downloads können unterbrochen und fortgesetzt werden
+	- Diff: es gibt "Diffs" der Filmliste, so braucht nur ein Diff-File und nicht die ganze Liste geladen werden
+	- verwendete Farben können in den Einstellungen verändert werden
+	- die Ersetzung von "verbotenen" Zeichen für Namen von Downloads kann angepasst werden
+	- "Sets zurücksetzen": Alle Sets zum Speichern/Abspielen auf die Standardeinstellungen zurücksetzen 
+	ohne jedoch die Abos, Blacklist etc. zu löschen
+	- Abos und die Blacklist kann aus einer alten Konfigdatei importiert werden
+	- Pfad bei direkten Downloads kann angepasst werden
+	
+	# Version 4
+	- Das Dateiformat der Filmliste ist auf "json" geändert worden, die Liste zum Download wird mit den XZ Utils mit "LZMA2" komprimiert
+	- Die Tabelle Download kann mit der Maus sortiert werden, die Downloads werden dann in der Reihenfolge gestartet
+	- Beim Download wird die aktuelle Bandbreite in der Tabelle angezeigt
+	- Downloads und Filme können mit Button aus der Tabelle heraus gestartet werden
+	- Die Farbe der Restzeit eines Downloads ändert sich, wenn man bereits zum Ansehen anfangen kann
+	- Ist ein Download fertig, kommt ein Hinweisfenster
+	- Fertig geladen Filme/Downloads können direkt im Tab Download gestartet werden (Button in der Tabelle und in der Toolbar)
+	- Ist im Tab Filme der Filter "HD" aktiv, werden die Filme in der HD-Auflösung gestartet
+	- Beim Neuladen einer Filmliste werden neue Filme in eigener Farbe in der Tabelle angezeigt, es gibt auch einen Filter "nur Neue"
+	- Filme können als gesehen/ungesehen markiert werden
+	- Der letzte Zustand im Downloaddialog "Download sofort starten" wird gespeichert und wieder verwendet (gecheckt oder nicht)
+	- Beim Anlegen eines Sets/Downloads kann man angeben, ob eine Infodatei mit den Filminfos mit gespeichert werden soll
+	- Die Tabs "Download", "Abo", "Meldungen" können ausgeblendet oder in einem Extrafenster angezeigt werden (-> Menü "Ansicht")
+	- Im Downloaddialog kann man sich den letzten verwendetet Pfad als Vorgabe anzeigen lassen
+	- Toolbar kann angepasst werden (rechte Maustaste)
+	
+	# Version 3.3.0
+	- Sortierreihenfolge der Tabellen wird gespeichert
+    - Es kann ein eigenes Iconset verwendet werden
+    - Über den Menüpunkt "Hilfe->Hilfe und Fragen.." können alle Einstellungen zurückgesetzt werden
+    - Neue Infos zu den Sendungen: Beschreibung, Bild, Sendungsdauer, Dateigröße
+    - Die unterschiedliche Behandlung von Strings im Filter "Titel" und "Thema/Titel" wurde vereinheitlicht.
+    Soll jetzt nach mehreren Begriffen gesucht werden, müssen diese durch Komma getrennt werden, 
+	es ist also jetzt auch möglich nach Begriffen mit Leerzeichen zu suchen 
+	- Es gibt jetzt auch einen Filter für die Sendungsdauer.
+	- Downloadbandreite kann in den Einstellungen begrenzt werden
+	- Das Ansehen/Speichern von Filmen in kleinerer Auflösung wurde vereinfacht
+	- Mit einem Rechtsklick auf den Tabellenkopf kann man Spalten ein- und ausblenden und die Tabelle wieder zurücksetzen.
+	- Startreihenfolge der Downloads kann man anpassen, die Downloads werden so gestartet wie sie in der Tabelle sortiert werden
+	
+    # Version 3.2.1
+    - Fehler bei der Blacklist
+    - Probleme mit best. Java-Versionen
+
+    # Version 3.2.0
+    Veränderungen an der grafischen Bedienungsoberfläche:
+    Mit Version 3.2 wurde Verbesserungen an der GUI eingeleitet und dazu macht MediathekView ab sofort von folgenden Bibliotheken Gebrauch:
+    - Swingx-Toolkit: Stellt GUI-Komponenten bereit um funktionsreiche Anwendungen zu entwickeln.
+    - JGoodies-Forms: Gerüst für Layout und Umsetzung eleganter Swing-Panels.
+    - Jide-OSS: Bereitstellung von fortgeschrittenen Swing-Komponenten.
+    - Macify von Simplericity: Für ein natives "Look and Feel" von Java-Anwendungen unter MacOSX.
+    - Mac-Widgets von Explodingpixels: Sie helfen Mac-ähnliche Anwendungen zu entwickeln, sind aber nicht nur auf Apple-Mac-Computer beschränkt.
+
+    Weitere Veränderungen:
+    - Filter in der Toolbar (mit F8 kann man zwischen dem neuen und dem bisherigen Filterpanel umschalten)
+    - Neue Option in den Einstellungen: Es können Unicodezeichen vereinfacht werden, die beim Speichern im Dateinamen Probleme verursachen können
+    - Die Blacklist wurde erweitert und sie kann jetzt auch auf das Suchen der Abos angewandt werden (wenn im Dialog Blacklist eingeschalter)
+    - Anzeige der Restzeit bei Downloads
+    - Öffnen des Downloadordners eines Download im Kontextmenü der Maus im Tab Download
+
+    # Version 3.1.1
+    - Fehler in der Blacklist behoben
+    - Darstellungsproblem bei bestimmten Javaversionen behoben
+
+    # Version 3.1.0
+    - Bei den Downloads gibt es jetzt eine Fortschrittsanzeige die in "Prozent" anzeigt, 
+    wieviel schon geladen wurde
+    - In den Programmsets kann jetzt auch für Downloads eingestellt werden, dass ein Unterverzeichnis
+    "Thema" angelegt wird (wie bisher bei den Abos)
+    - Der Dialog der bei einem Download angezeigt wird, enthält jetzt auch den Zielpfad und der kann so 
+    auch noch geändert werden
+    - Im Filter "Titel" funktionieren jetzt auch reguläre Ausdrücke
+    - Die Sender ZDF, 3sat, HR, NDR, WDR und ORF wurden erweitert/angepasst
+    - Programmmeldungen können als eigener Tab angezeigt werden (unter "Ansicht")
+    - Eine Filtereinstellung kann als Abo (Kontextmenü Maus) übernommen werden, es werden dann alle Filme
+    geladen, auf die die Filtereinstellungen passen
+    - mit dem Schalter "-auto" lädt das Programm automatisch die Filmliste, erledigt alle Abos und beendet sich 
+    dann wieder. Das funktioniert jetzt auch auf Rechnern ohne grafische Oberfläche (ohne X)
+
+    # Version 3.0.0
+    - Die gesamte Oberfläche des Programms wurde überarbeitet
+    - Der Ablauf zum Download ist vereinfacht worden
+    - Beim ersten Start wird der VLC und der flvstreamer so eingerichtet, dass sich alle Filme direkt
+    ansehen lassen
+    - Beim ersten Start des Programms gibt es einen Einrichtungsdialog
+    - Bei den Programsets (Programmgruppen) kann jetzt für jedes Programm ein eigener Zieldateiname angegeben werden
+    - Die Programmschalter wurden erweitert
+
+    # Version 2.6.0
+    - Änderung des MDR und RBB ins Programm integriert
+    - bei 3sat werden jetzt auch ältere Beiträge gefunden
+    - das Angebot des ORF wurde etwas erweitert
+    - die immer wieder mal vorkommenden Exceptions sollten weitgehend behoben sein
+    und dadurch die Oberfläche nicht mehr einfrieren
+    - in der History wird die Original-Url gespeichert und abgefragt, dadurch spielt es keine Rolle mehr,
+    wenn die URLs für den flvstreamer umgeschrieben werden oder nicht
+    - beim Aktualisieren der Filmliste werden bz2-komprimierte Dateien erst mal heruntergeladen, 
+    dadurch stand die Anzeige am Anfang einige Zeit still und konnte nicht abgebrochen werden, das geht jetzt
+    - die Beschränkung auf max. 2 Downloads bezieht sich nicht mehr auf den "Sender" sondern auf den konkreten Server
+    - Dialoge lassen sich mit Esc beenden wo sinnvoll
+    - Bei der Angabe von Pfaden, werden die Schreibrechte geprüft
+    - beim ersten Programmstart werden die Standardpfade für Windows7 64Bit richtig gesetzt
+    - "Button" lassen sich exportieren und importieren.
+    - Abos können jetzt einzeln über das Kontextmenü der Maus nicht nur gestartet und wiedergestartet werden,
+    sondern auch abgebrochen werden.
+
+    # Version 2.5.0
+    - Startdateien für Windows und Linux (Starten_Windows.exe und Starten_Linux.sh)
+    - BR ist enthalten
+    - Die Qualität der Streams kann wieder für einige Sender geändert werden
+    - Einige Verbesserungen bei der Anzeige der Filme
+
+    # Version 2.4.0
+    - Abo 1x um einzelne Filme über die Aboliste herunterzuladen
+    - Mehr Metadaten: Sendedatum und -zeit (wo möglich)
+    - Filme (Abos) die als fertig markiert wurden, können wieder gestartet werden
+    - Stoppmöglichkeit für laufende Filme
+    - Blacklist um Themen und Sender dauerhaft von der Anzeige auszunehmen
+    - History-Funktion, Markierung bereits gesehener Filme
+
+    # Version 2.3.0
+    - Es kann automatisch der aktuellste Downloadserver gewählt werden.
+    - Beim Import der Filmliste kann man sich auf bestimmte Sender einschränken
+    - Arte+7 ist jetzt enthalten
+    - Das Gui wurde überarbeitet, einige Dialoge sind ins Menü gewandert, dadurch ist das Programm
+    wieder auf kleinen Displays ganz darstellbar
+
+    # Version 2.2.1
+    - Ist ein Downloadserver nicht erreichbar, wird automatisch ein anderer gewählt
+    - Einige Sendungen sind beim ARD in besserer Auflösung (z.B. Nachrichten)
+    - Das Laden der Filmliste von der Senderwebsite wurde nochmals etwas überarbeitet, es wird nur noch mit
+    Modem-Geschwindigkeit (max. 50 kBit je Sender, bei den Regionalsendern noch weniger) von der Senderwebsite geladen
+    (es treten so keine Spitzen beim Traffic mehr auf, die Gesamtzeit hat sich dadurch nur geringfügig geändert und
+    liegt für die gesamte Liste bei knapp 2 Stunden )
+
+    # Version 2.2.0
+    - Umstellung beim Laden der Filme auf einen direkten Download der Filmliste
+    eine entsprechende Liste mit Links wird automatisch importiert
+    (Sollte zur Schonung der Bandbreite der Sender unbedingt verwendet werden.)
+    - Das Programm kann automatisch beim Start einmal täglich melden, wenn es ein Programmupdate gibt
+    - SWR ist (vorübergehend?) abgeschaltet
+    - SF.Podcast auch
+    - Es wurde eine Lib aktualisiert, bitte auch den Ordner lib mit installieren
+    - Beim Import einer Filmliste kann man den Import auf aktuelle Filme beschränken
+    - Beim Laden von Abos werden die neu gestarteten Filme auf die verschiedenen Sender verteilt, es werden nicht mehr als 2 Filme
+    gleichzeitig von einem Sender geladen. Stehen von verschiedenen Sendern Filme zum Laden an, können auch mehr gleichzeitig geladen werden
+    (bis zur in den Einstellungen eingestellten Obergrenze).
+
+    # Version 2.1.5
+    - Arte geht wieder
+    - SF erweitert
+
+    # Version 2.1.4
+    - Arte geht wieder
+
+    # Version 2.1.3
+    - WDR geht wieder
+    - SWR ist dabei
+    - Im Tab Filme kann im Suchfeld "Titel" und "Thema" (das Feld Thema muss mit der rechten Maustaste in den Edit-Modus geschaltet werden)
+    mit Regulären Ausdrücken gesucht werden. Dazu den Regulären Ausdruck hinter ein "#:" schreiben.
+    z.B.: "#:.*Rätsel.*"
+    Die Regulären Ausdrücke werden auch beim Suchen der Abos beachtet
+    - Im Tab Filme kann mit Return ein Film mit dem Standardprogramm gestartet werden
+
+    # Version 2.1.2
+    - Arte verwendet für den Flashplayer ein swf-File, dieses kann über den Parameter "-a" oder "-A" in den Programmpfad eingefügt werden.
+    "-a" ergibt z.B. "http://videos.arte.tv/blob/web/i18n/view/player_8-3188338-data-4797751.swf" und
+    "-A" ergibt "-W http://videos.arte.tv/blob/web/i18n/view/player_8-3188338-data-4797751.swf"
+    Dieses File kann z.B. das Programm rtmpdump auswerten. Es kommt dann nicht zu den Abbrüchen beim Aufzeichnen.
+    z.B. Programm: "/usr/bin/rtmpdump"
+      Schalter  "%f %A -o ** --resume"
+    - WDR ist neu hinzugekommen
+
+    # Version 2.1.1
+    - Beim ARD können jetzt auch ältere Filme gesucht werden
+
+    # Version 2.1.0
+    - Beim Suchen kann das Feld Thema zwischen "Thema enthält die Zeichenfolge" und "Thema ist exakt die Zeichenfolge" durch einen klick mit der
+    rechten Maustaste auf das Suchfeld "Thema" umgestellt werden, wird ein Abo angelegt, verhält es sich bei dem Abo dann genauso
+    - Die Liste der Filme kann ausgedruckt werden, rechte Maustaste auf die Tabelle
+    - Es kann ein "Standardprogramm" festgelegt werden. In der Tabelle mit den Filmen (im Tab Filme oder im Tab Abo) kann durch einen Doppelklick auf einen Film,
+    dieser mit dem Standardprogramm abgespielt werden.
+    - Arte hat die Filme auf Flash umgestellt. Der flvStreamer kann die Filme laden, bricht aber immer mal wieder ab. Wenn man den flvStreamer mit der
+    Option --resume verwendet, kann man einen Film im Fehlerfall einfach wieder starten. Der Download startet dann an der Stelle und wird weitergeführt.
+    Dafür gibt es in den Einstellungen für die Programme eine Option, dass das Programm automatisch wieder neu Startet.
+
+
+    # Version 2.0.1
+    - Senderlisten und Suchfunktionen optimiert, dadurch eine schnellere Anzeige der Filme
+    - Die GUI wurde um ein Theme für Linux (GTK) erweitert und es können beim Start auch andere Themes angegeben werden
+    - Die Änderung der Einstellung "RTMP-Protokoll: Url für flvstreamer vorbereiten" wirkt sich direkt auf die URLs der Filme aus, die Filmliste muss nicht mehr neu geladen werden
+
+    # Version 2.0.0
+    - Da sich die Einstellungsmöglichkeiten für die Programme (z.B. VLC) geändert haben, müssen sie neu angelegt werden. Beim Start der
+    neuen Version werden ein paar Standardwerte gesetzt. Wer aus der alten Version Einstellungen übernehmen will, kann beide Versionen
+    gleichzeitig öffnen und die Einstellungen übertragen. Angelegte Abos und Podcasts bleiben erhalten.
+    ---> Die Einstellungen des zuletzt geschlossenen Programms werden gespeichert. Die alte Version kann mit den neuen Einstellungen nicht
+        mehr gestartet werden.
+    - Programmgruppen:
+    Bei den Programmen kann man angeben, für welchen Dateityp es Zuständig ist und bei einem Download wird dann das passende Programm ausgewählt.
+    - Flash-Videos:
+    Es werden auch Filme die über das RTMP-Protokoll (Flash) angeboten werden, angezeigt. Dazu ist ein geeignetes Programm zum Aufzeichnen einzurichten (Anleitung).
+    - Einstellungen Abo:
+    Beim Anlegen der Abos kann nun nach Sender, Thema und einem Teil des Titels gesucht werden.
+    - Sender: ORF, NDR
+
+    # Version 1.6.0
+    - Die Filmliste kann aus einer Datei geladen und in eine Datei exportiert werden.
+    Es können so die Daten auf mehrere Rechner verteilt werden.
+    - Podcasts können von Podster.de geladen werden
+    - ARD und SF haben Filme im Angebot, die nicht als Stream sondern als Datei zum direkten Download
+    angeboten werden. In den Einstellungen kann man angeben, auf welche Dateien das zutrifft. Diese Dateien
+    werden beim Download anders behandelt. Deswegen hat sich beim Einrichten der Programme zum Download (z.B. VLC) etwas
+    geändert. Bitte Anleitung beachten.
+
+    # Version 1.5.0
+    - ARD geht wieder. Es werden die Filme die als Podcast angeboten werden, angezeigt.
+    - Die Liste der Filme wird in einer eigenen Datei gespeichert. Da wird dann noch eine Funktion zum Importieren und Exportieren kommen.
+    - Die Auto-Funktion lädt jetzt alle Sender und Podcasts, es kann so alles automatisch aktuell gehalten werden.
+
+    # Version 1.4.2
+    - Beim Neuladen der Filme oder beim Neuladen eines Themas bleiben Filtereinstellungen erhalten
+    - Wenn mehrere Filme markiert sind und ein Mediaplayer (z.B. VLC) gestartet wird, werden alle URL's in der Variablen
+    %f übergeben (z.B. www.url.de/film1 www.url2.de/film2 www.url3.de/film3"). Beim VLC werden dann alle Filme in die Wiedergabeliste
+    eingetragen.
+
+    # Version 1.4.1
+    - Einstellungen ZDF: Die Filme können auf die aktuellen reduziert werden, was die Daten und die Downloadzeit reduziert.
+
+    # Version 1.4
+    - ZDF an die neue ZDF-Mediathek angepasst
+
+    # Version 1.3
+    - Arte kann auch die französische Sprache laden
+    - Schweizer Fernsehen ist jetzt enthalten
+    - Bei den Abos können jetzt mehrere Programme zum Download angegeben werden (bitte in der Anleitung nachlesen)
+
+    # Version 1.2.1
+    - ARD läuft wieder
+
+    # Version 1.2.0
+    - Die Verwendung der Programmschalter bei den Abos hat sich etwas geändert, bitte Anleitung lesen.
+    - Es gibt neue Schalter: %t, %T, %D, -> Anleitung
+    - Rechtsklick auf die Tabelle mit den Filmen kopiert die URL in die Zwischenablage
+    - Es kann ein Proxyserver eingetragen werden
+
+    # Version 1.1.0
+    - Programmfenster ist auf kleineren Bildschirmen wieder komplett darstellbar
+    - Größe des Programmfenster wird gespeichert und beim Start wieder eingestellt
+    - Wenn man das Laden der Filme abbricht, wird die Liste der Filme nicht mehr gelöscht
+    - Das Laden der Filme des ARD kann unterbrochen werden. Beim nächsten Start des Ladens wird an der Stelle weitergemacht.
+
+    # Version 1.0.1
+    - mit den beschriebenen Änderungen geht der ARD wieder
+    - neuer Sender: MDR (sind aber nur ein paar Sendungen online)
+
+    # Version 1.0.0
+    - Auto-Funktion
+    - Verkürzte Ladezeit beim ZDF
+    - ARD geht wieder
+
+    # Version 0.9.3
+    - wieder mal ARD
+    - das Speichern beim Beenden unter MacOs sollte jetzt gehen
+
+    # Version 0.9.2
+    - Bei Arte gab es unter Windows Probleme
+    - Die Umlaute sollten unter Windows jetzt stimmen
+
+    # Version 0.9.1
+    - Die Struktur der ARD-Mediathek hat sich geändert und hat ein paar Anpassungen erforderlich gemacht
+
+    # Version 0.9
+    - Arte ist dazugekommen
+    - Mit der neuen Version des VLC-Mediaplayers habe ich ein paar Einstellungen zum Aufzeichnen in der Beispielkonfiguration geändert
+
+    # Version 0.8
+    - Es werden jetzt Sendungen von ARD, ZDF und 3Sat angezeigt
+    - Es gibt eine neue Version der Bibliothek (ROME) und es muss die aktuelle Version "1.0 RC1" verwendet werden, die Mediathek
+    startet mit der alten Version nicht!
+    - In den Einstellungen lassen sich Sender von der Suche ausnehmen.
+
+    # Version 0.7
+    - Es werden jetzt auch Sendungen von 3Sat angezeigt
+    - Verbesserungen in der Bedienung
+
+    # Version 0.6
+    - Erledigte Downloads werden in einem Logfile gespeichert. Ursprünglich wurde der Zielpfad gespeichert. Da aber gleiche
+    Videos in verschiedenen Kanälen gelistet werden und bisher dann auch mehrmals geladen wurden, habe ich das Logfile
+    umgestellt. Ab dieser Version wird der Quellpfad im Logfile gespeichert. Damit werden gleiche Videos auch nur einmal
+    gedownloaded. Damit beim Programmupdate nicht alle Downloads wieder geladen werden, bitte folgendes vorgehen:
+    Mit der alten Programmversion alle anstehenden Downloads erledigen. An dieser Stelle kann das alte Logfile gelöscht
+    werden ("Benutzerverzeichnis/.mediathek/mediathek_log"). Neue Programmversion installieren, nach neuen Downloads
+    suchen und alle als "Download dauerhaft löschen" markieren. Damit werden sie als gedownloaded ins Logfile geschrieben.
+    - Beim Download zeigt ein Fortschrittsbalken den Verlauf an.
+    - Die Downloads laufen in eigenen Threads, dadurch wird die Bedienung der GUI verbessert.
+    - Als neue Funktion können auch normale Podcasts gedownloaded werden. (noch Beta!)
+
+    # Version 0.5.1
+    - Verbesserung der Anzeige laufender Downloads im Tab Abo
+
+    # Version 0.5
+    - Erste veröffentliche Version
