@@ -1,0 +1,75 @@
+--------------------------------------------------------------------
+Hinweise zur portablen Verwendung von MediathekView
+--------------------------------------------------------------------
+
+Mit den Portable-Startdateien kann das Programm auf einem USB-Stick benutzt
+werden. Sämtliche Einstellungsdateien werden in der Folge im MediathekView-
+Programmordner auf dem USB-Stick gesichert und es gibt keine weiteren
+Abhängigkeiten auf dem PC.
+
+(1) Zu diesem Zweck wird der MediathekView-Programmordner (z.B. MediathekView_9)
+an einen beliebigen Ort auf den USB-Stick kopiert.
+
+(2) Nun wird die Startdatei (für das entsprechende Betriebssystem) aus dem Ordner "Portable"
+in den MediathekView-Programmordner kopiert. Die Startdatei sollte sich somit im gleichen
+Ordner wie die Datei "MediathekView.jar" befinden.
+
+(3) MediathekView lässt sich nun über die eben kopierte portable Startdatei starten
+(Details vgl. weiter unten):
+
+* Windows:  MediathekView__Portable.exe
+* Linux:    MediathekView__Linux_Portable.sh
+* OS X:     MediathekView__Mac_Portable.command
+
+(4) Beim Einrichtungsdialog kann optional auf VLC Portable (sofern vorhanden)
+anstelle von einer lokalen VLC-Installation verwiesen werden.
+
+Mac-User müssen im Einrichtungsdialog die Pfade für den "flvstreamer", "ffmpg" 
+(Set "Mac Speichern") und das "skript" (Set "Mac Abspielen") anpassen und zwar jeweils:
+bin/
+statt
+/Applications/MediathekView.app/Contents/Resources/
+
+Wenn als Zielpfad für Downloads z.B. nur "Filme" angegeben wird
+(und kein absoluter Pfad: C:\xxx\yyy oder /home/user/filme ), dann
+wird ein Ordner "Filme" auf dem USB-Stick im MediathekView-Programmordner
+angelegt und für den Download verwendet.
+
+
+Die Einstellungen werden im Ordner "Einstellungen" im MediathekView-Programmordner
+gesichert. Sollen die Einstellungen von einer bestehenden
+Installation übernommen werden, muss vorher der Ordner "Einstellungen" im
+MediathekView-Programmordner angelegt werden. Der Ordner ".mediathek3",
+welcher sich im im Home-Verzeichnis befindet und die alten Einstellungen
+enthält, muss dann in den neu angelegten Ordner "Einstellungen" kopiert werden.
+(evtl. müssen dann die Pfade für den Download angepasst werden!)
+
+
+----------------------------
+Hinweis zum Starten
+----------------------------
+
+Windows
+=========
+Das Programm wird mit einem Doppelklick auf "MediathekView_Portable.exe"
+(im Mediathekview-Programmordner) gestartet.
+
+Linux
+=======
+Die Linux-Startdatei im Mediathekview-Programmordner starten:
+./MediathekView__Linux_Portable.sh
+
+oder der direkte Programmaufruf wäre:
+java -jar MediathekView.jar Einstellungen/.mediathek3
+
+OS X
+=====
+Das Programm wird mit einem Doppelklick auf "MediathekView__Mac_Portable.command"
+gestartet.
+
+Diese Datei steht nur zur Verfügung, wenn man die Nicht-App-Version
+(also die ZIP-Version) heruntergeladen hat.
+
+
+http://sourceforge.net/p/zdfmediathk/wiki/FAQ/#kann-man-mediathekview-von-einem-usb-stick-starten-mediathekview-portable
+
