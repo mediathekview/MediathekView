@@ -24,7 +24,7 @@ import mSearch.tool.MVConfig;
 import mSearch.tool.Listener;
 import com.jidesoft.utils.SystemInfo;
 import mSearch.dlCtrl.MVUsedUrls;
-import mediathek.controller.starter.Start;
+import mSearch.dlCtrl.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
