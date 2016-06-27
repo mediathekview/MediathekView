@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import mSearch.tool.MVColor;
 import com.jidesoft.utils.SystemInfo;
 import java.io.File;
 import java.io.IOException;

@@ -23,12 +23,15 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
+import mSearch.tool.MVC;
+import mSearch.tool.MVColor;
+import static mSearch.tool.MVColor.*;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.CellRendererColor;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.MVC;
-import mediathek.tool.MVColor;
+import mediathek.tool.TModel;
+import mediathek.tool.TModelColor;
 
 public class PanelEinstellungenColor extends PanelVorlage {
 
@@ -42,8 +45,12 @@ public class PanelEinstellungenColor extends PanelVorlage {
     private void init() {
         jTable1.addMouseListener(new BeobMausTabelle());
         jTable1.setDefaultRenderer(MVC.class, new CellRendererColor());
-        jTable1.setModel(Daten.mVColor.getModel());
-        jButtonReset.addActionListener(e -> Daten.mVColor.reset(daten));
+        jTable1.setModel(getModel());
+        jButtonReset.addActionListener(e -> {
+            Daten.mVColor.reset();
+            GuiFunktionen.updateGui(daten.mediathekGui);
+            Daten.mVColor.save();
+        });
     }
 
     private void getColor(MVC mvc) {
@@ -52,11 +59,24 @@ public class PanelEinstellungenColor extends PanelVorlage {
         if (dialog.farbe != null) {
             if (!dialog.farbe.equals(mvc.color)) {
                 mvc.set(dialog.farbe);
-                jTable1.setModel(Daten.mVColor.getModel());
+                jTable1.setModel(getModel());
                 GuiFunktionen.updateGui(daten.mediathekGui);
                 Daten.mVColor.save();
             }
         }
+    }
+
+    private TModel getModel() {
+        Object[] object;
+        TModelColor tModel = new TModelColor(new Object[][]{}, new String[]{"Beschreibung", "Farbe"});
+        tModel.setRowCount(0);
+        for (MVC mvc : Daten.mVColor.liste) {
+            object = new Object[MVC_MAX];
+            object[MVC_TEXT] = mvc.text;
+            object[MVC_COLOR] = mvc;
+            tModel.addRow(object);
+        }
+        return tModel;
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

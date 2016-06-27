@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.MVColor;
 import java.awt.Color;
 import java.util.regex.Pattern;
 import javax.swing.JTextField;

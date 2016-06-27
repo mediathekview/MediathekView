@@ -19,6 +19,9 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.MVC;
+import mSearch.tool.MVColor;
+
 public class TModelColor extends TModel {
 
     Class[] types;
