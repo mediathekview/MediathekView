@@ -3,7 +3,7 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>MediathekView.jar</jar>
-  <outfile>/home/emil/daten/software/mediathek/mediathek/res/Portable/MediathekView__Portable.exe</outfile>
+  <outfile>/home/emil/daten/software/mediathek/mediathek/res/Portable/MediathekView__mehr_Speicher__Portable.exe</outfile>
   <errTitle></errTitle>
   <cmdLine>Einstellungen\.mediathek3</cmdLine>
   <chdir></chdir>
@@ -22,5 +22,8 @@
     <maxVersion></maxVersion>
     <jdkPreference>preferJre</jdkPreference>
     <runtimeBits>64/32</runtimeBits>
+    <initialHeapSize>256</initialHeapSize>
+    <maxHeapSize>2048</maxHeapSize>
+    <maxHeapPercent>80</maxHeapPercent>
   </jre>
 </launch4jConfig>
