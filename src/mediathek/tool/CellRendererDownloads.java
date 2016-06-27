@@ -38,8 +38,7 @@ import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import mSearch.tool.Log;
-import mediathek.controller.starter.Start;
-import mediathek.daten.Daten;
+import mSearch.dlCtrl.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
 
@@ -160,7 +159,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
 
                             return panel;
                         } else {
-                            setText(Start.getTextProgress(datenDownload));
+                            setText(Start.getTextProgress(datenDownload.isDownloadManager(),datenDownload.start));
                         }
                     } else {
                         setText("");

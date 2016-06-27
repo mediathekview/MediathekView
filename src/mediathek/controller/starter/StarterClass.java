@@ -19,9 +19,6 @@
  */
 package mediathek.controller.starter;
 
-import mSearch.dlCtrl.MVInputStream;
-import mSearch.dlCtrl.MVBandwidthTokenBucket;
-import mSearch.tool.MVConfig;
 import com.apple.eawt.Application;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Toolkit;
@@ -39,16 +36,20 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.swing.SwingUtilities;
 import mSearch.daten.DatenFilm;
-import mSearch.tool.Datum;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
+import mSearch.dlCtrl.MVBandwidthTokenBucket;
+import mSearch.dlCtrl.MVInputStream;
+import mSearch.dlCtrl.RuntimeExec;
+import mSearch.dlCtrl.Start;
+import mSearch.tool.*;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.gui.dialog.DialogContinueDownload;
 import mediathek.gui.dialog.MeldungDownloadfehler;
-import mediathek.tool.*;
+import mediathek.tool.Konstanten;
+import mediathek.tool.MVInfoFile;
+import mediathek.tool.MVNotification;
+import mediathek.tool.MVSubtitle;
 
 public class StarterClass {
     //Tags Filme
@@ -485,39 +486,35 @@ public class StarterClass {
                                 if (!datenDownload.isRestart()) {
                                     // dann wars das
                                     stat = stat_fertig_fehler;
-                                } else {
-                                    if (filesize == -1) {
-                                        //noch nichts geladen
-                                        deleteIfEmpty(file);
-                                        if (file.exists()) {
-                                            // dann bestehende Datei weitermachen
-                                            filesize = file.length();
+                                } else if (filesize == -1) {
+                                    //noch nichts geladen
+                                    deleteIfEmpty(file);
+                                    if (file.exists()) {
+                                        // dann bestehende Datei weitermachen
+                                        filesize = file.length();
+                                        stat = stat_start;
+                                    } else // counter prüfen und bei einem Maxwert cancelDownload, sonst endlos
+                                    {
+                                        if (start.startcounter < Start.STARTCOUNTER_MAX) {
+                                            // dann nochmal von vorne
                                             stat = stat_start;
                                         } else {
-                                            // counter prüfen und bei einem Maxwert cancelDownload, sonst endlos
-                                            if (start.startcounter < Start.STARTCOUNTER_MAX) {
-                                                // dann nochmal von vorne
-                                                stat = stat_start;
-                                            } else {
-                                                // dann wars das
-                                                stat = stat_fertig_fehler;
-                                            }
-                                        }
-                                    } else {
-                                        //jetzt muss das File wachsen, sonst kein Restart
-                                        if (!file.exists()) {
                                             // dann wars das
                                             stat = stat_fertig_fehler;
-                                        } else {
-                                            if (file.length() > filesize) {
-                                                //nur weitermachen wenn die Datei tasächlich wächst
-                                                filesize = file.length();
-                                                stat = stat_start;
-                                            } else {
-                                                // dann wars das
-                                                stat = stat_fertig_fehler;
-                                            }
                                         }
+                                    }
+                                } else //jetzt muss das File wachsen, sonst kein Restart
+                                {
+                                    if (!file.exists()) {
+                                        // dann wars das
+                                        stat = stat_fertig_fehler;
+                                    } else if (file.length() > filesize) {
+                                        //nur weitermachen wenn die Datei tasächlich wächst
+                                        filesize = file.length();
+                                        stat = stat_start;
+                                    } else {
+                                        // dann wars das
+                                        stat = stat_fertig_fehler;
                                     }
                                 }
                                 break;
@@ -561,7 +558,8 @@ public class StarterClass {
             // die Reihenfolge: startcounter - startmeldung ist wichtig!
             start.startcounter++;
             startmeldung(datenDownload, start);
-            runtimeExec = new RuntimeExec(datenDownload);
+            runtimeExec = new RuntimeExec(datenDownload.mVFilmSize, datenDownload.start,
+                    datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR], datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR]);
             start.process = runtimeExec.exec(true /*log*/);
             if (start.process != null) {
                 ret = true;

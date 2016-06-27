@@ -36,7 +36,7 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mSearch.tool.SysMsg;
-import mediathek.controller.starter.Start;
+import mSearch.dlCtrl.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenProg;
 import mediathek.file.GetFile;
@@ -383,7 +383,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
                     textfeldListe[i].setText(datenDownload.mVFilmSize.toString());
                 } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
-                    textfeldListe[i].setText(Start.getTextProgress(datenDownload));
+                    textfeldListe[i].setText(Start.getTextProgress(datenDownload.isDownloadManager(),datenDownload.start));
                 } else if (i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
                     textfeldListe[i].setText(datenDownload.getTextRestzeit());
                 } else if (i == DatenDownload.DOWNLOAD_ART_NR) {

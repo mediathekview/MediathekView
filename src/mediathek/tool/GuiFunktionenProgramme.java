@@ -32,7 +32,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import mSearch.Const;
 import static mSearch.tool.Functions.getOs;
-import mediathek.controller.starter.RuntimeExec;
+import mSearch.dlCtrl.RuntimeExec;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;

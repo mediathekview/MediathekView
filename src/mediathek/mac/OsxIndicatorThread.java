@@ -1,7 +1,7 @@
 package mediathek.mac;
 
 import com.apple.eawt.Application;
-import mediathek.controller.starter.Start;
+import mSearch.dlCtrl.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 

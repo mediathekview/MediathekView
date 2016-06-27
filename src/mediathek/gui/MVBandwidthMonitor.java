@@ -23,7 +23,7 @@ import javax.swing.WindowConstants;
 import mSearch.tool.DebugMsg;
 import mSearch.tool.Functions.OperatingSystemType;
 import static mSearch.tool.Functions.getOs;
-import mediathek.controller.starter.Start;
+import mSearch.dlCtrl.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mSearch.tool.MVConfig;

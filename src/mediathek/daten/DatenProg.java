@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import static mSearch.dlCtrl.RuntimeExec.TRENNER_PROG_ARRAY;
 import mediathek.tool.GuiFunktionenProgramme;
 
 public class DatenProg {
@@ -106,13 +107,13 @@ public class DatenProg {
         ret = arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR];
         String[] ar = arr[DatenProg.PROGRAMM_SCHALTER_NR].split(" ");
         for (String s : ar) {
-            ret = ret + DatenDownload.TRENNER_PROG_ARRAY + s;
+            ret = ret + TRENNER_PROG_ARRAY + s;
         }
         return ret;
     }
 
     public static String makeProgAufrufArray(String pArray) {
-        String[] progArray = pArray.split(DatenDownload.TRENNER_PROG_ARRAY);
+        String[] progArray = pArray.split(TRENNER_PROG_ARRAY);
         String execStr = "";
         for (String s : progArray) {
             execStr = execStr + s + " ";
