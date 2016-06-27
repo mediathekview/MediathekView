@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.MVFilmSize;
 import mediathek.daten.DatenDownload;
 import mSearch.tool.Datum;
 

@@ -36,7 +36,7 @@ import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogHinweisUpdate;
 import mediathek.tool.Konstanten;
-import mediathek.tool.MVConfig;
+import mSearch.tool.MVConfig;
 import mediathek.tool.MVFunctionSys;
 
 public class ProgrammUpdateSuchen {
@@ -77,8 +77,8 @@ public class ProgrammUpdateSuchen {
                     release = ret[1];
                     downloadUrlProgramm = ret[2];
                     if (!version.equals("")) {
-                        Daten.mVConfig.add(MVConfig.SYSTEM_BUILD_NR, MVFunctionSys.getBuildNr());
-                        Daten.mVConfig.add(MVConfig.SYSTEM_UPDATE_DATUM, new SimpleDateFormat("yyyyMMdd").format(new Date()));
+                        MVConfig.add(MVConfig.SYSTEM_BUILD_NR, MVFunctionSys.getBuildNr());
+                        MVConfig.add(MVConfig.SYSTEM_UPDATE_DATUM, new SimpleDateFormat("yyyyMMdd").format(new Date()));
                         if (checkObNeueVersion(version, Konstanten.VERSION)) {
                             neueVersion = true;
                             // DialogHinweisUpdate(java.awt.Frame parent, boolean modal, String ttext, String dialogTitel, Daten ddaten) {
@@ -112,10 +112,10 @@ public class ProgrammUpdateSuchen {
             try {
                 StringBuilder text = new StringBuilder();
                 int angezeigt = 0;
-                if (Daten.mVConfig.get(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT).equals("")) {
-                    Daten.mVConfig.add(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(-1));
+                if (MVConfig.get(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT).equals("")) {
+                    MVConfig.add(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(-1));
                 } else {
-                    angezeigt = Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT));
+                    angezeigt = Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT));
                 }
                 for (String[] h : listInfos) {
                     if (alleAnzeigen || angezeigt < Integer.parseInt(h[0])) {
@@ -127,7 +127,7 @@ public class ProgrammUpdateSuchen {
                 }
                 if (text.length() > 0) {
                     new DialogHinweisUpdate(null, true, "Infos", text.toString()).setVisible(true);
-                    Daten.mVConfig.add(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(listInfos.size()));
+                    MVConfig.add(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(listInfos.size()));
                 }
             } catch (Exception ex) {
                 Log.errorLog(693298731, ex);

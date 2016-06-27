@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.MVConfig;
 import mSearch.tool.Listener;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.BorderLayout;
@@ -80,11 +81,11 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
         download_clear_sw_tab = GetIcon.getProgramIcon("download_clear_sw_tab.png");
         download_del_tab = GetIcon.getProgramIcon("download_del_tab.png");
         download_del_sw_tab = GetIcon.getProgramIcon("download_del_sw_tab.png");
-        geoMelden = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_GEO_MELDEN));
+        geoMelden = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_GEO_MELDEN));
         Listener.addListener(new Listener(Listener.EREIGNIS_GEO, CellRendererDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                geoMelden = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_GEO_MELDEN));
+                geoMelden = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_GEO_MELDEN));
             }
         });
 
@@ -391,7 +392,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
         if (datenDownload.start == null
                 && geoMelden
                 && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO_NR].isEmpty()
-                && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO_NR].contains(Daten.mVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
+                && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO_NR].contains(MVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
             if (isSelected) {
                 setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND_SEL.color);
             } else {

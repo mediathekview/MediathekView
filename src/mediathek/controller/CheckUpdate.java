@@ -32,7 +32,7 @@ import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.dialog.DialogNewSet;
 import mediathek.tool.GuiFunktionenProgramme;
 import mSearch.tool.Listener;
-import mediathek.tool.MVConfig;
+import mSearch.tool.MVConfig;
 import mediathek.tool.MVFunctionSys;
 
 public class CheckUpdate {
@@ -69,9 +69,9 @@ public class CheckUpdate {
 
     private void prog() {
         try {
-            if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_UPDATE_SUCHEN))) {
-                if (!Daten.mVConfig.get(MVConfig.SYSTEM_BUILD_NR).equals(MVFunctionSys.getBuildNr())
-                        || !Daten.mVConfig.get(MVConfig.SYSTEM_UPDATE_DATUM).equals(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
+            if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_UPDATE_SUCHEN))) {
+                if (!MVConfig.get(MVConfig.SYSTEM_BUILD_NR).equals(MVFunctionSys.getBuildNr())
+                        || !MVConfig.get(MVConfig.SYSTEM_UPDATE_DATUM).equals(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
                     // damit geänderte Sets gleich gemeldet werden und nicht erst morgen
                     final ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
                     if (pgrUpdate.checkVersion(false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
@@ -123,7 +123,7 @@ public class CheckUpdate {
         }
         run = true;
         ListePset listePsetStandard = ListePsetVorlagen.getStandarset(parent, daten, false /*replaceMuster*/);
-        String version = Daten.mVConfig.get(MVConfig.SYSTEM_VERSION_PROGRAMMSET);
+        String version = MVConfig.get(MVConfig.SYSTEM_VERSION_PROGRAMMSET);
         if (listePsetStandard != null) {
             if (Daten.listePset.size() > 0) {
                 // ansonsten ist die Liste leer und dann gibts immer was
@@ -142,7 +142,7 @@ public class CheckUpdate {
                         if (!dialogNewSet.morgen) {
                             // dann auch die Versionsnummer aktualisieren
                             SysMsg.sysMsg("Setanlegen: Nicht wieder nachfragen");
-                            Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
+                            MVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
                         }
                         SysMsg.sysMsg("==========================================");
                         // dann halt nicht
@@ -156,7 +156,7 @@ public class CheckUpdate {
             // damit die Variablen ersetzt werden
             ListePset.progMusterErsetzen(parent, listePsetStandard);
 
-            Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
+            MVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
             // die Zielpafade anpassen
             ListePset listePsetOrgSpeichern = Daten.listePset.getListeSpeichern();
             if (listePsetOrgSpeichern.size() > 0) {

@@ -31,7 +31,7 @@ import mediathek.gui.PanelVorlage;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
-import mediathek.tool.MVConfig;
+import mSearch.tool.MVConfig;
 
 public class DialogEinstellungen extends javax.swing.JFrame {
 

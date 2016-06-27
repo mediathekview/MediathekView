@@ -19,6 +19,7 @@
  */
 package mediathek.gui;
 
+import mSearch.tool.MVConfig;
 import mSearch.tool.Listener;
 import java.net.URISyntaxException;
 import javax.swing.JPanel;
@@ -47,7 +48,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
 
         jCheckBoxBeschreibung.setIcon(GetIcon.getProgramIcon("close_15.png"));
         jCheckBoxBeschreibung.addActionListener(e -> {
-            Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.FALSE.toString());
+            MVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.FALSE.toString());
             Listener.notify(Listener.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
         });
 

@@ -34,7 +34,7 @@ import mSearch.tool.Log;
 import mSearch.tool.ReplaceList;
 import mediathek.daten.*;
 import mediathek.tool.Konstanten;
-import mediathek.tool.MVConfig;
+import mSearch.tool.MVConfig;
 import mSearch.tool.SysMsg;
 
 public class IoXmlSchreiben {
@@ -78,7 +78,7 @@ public class IoXmlSchreiben {
             writer.writeCharacters("\n\n");
             writer.writeComment("Programmeinstellungen");
             writer.writeCharacters("\n");
-            xmlSchreibenConfig(MVConfig.SYSTEM, Daten.mVConfig.getAll(), true);
+            xmlSchreibenConfig(MVConfig.SYSTEM, MVConfig.getAll(), true);
             writer.writeCharacters("\n");
 
             writer.writeCharacters("\n\n");

@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.MVConfig;
 import mSearch.tool.Listener;
 import java.awt.Desktop;
 import java.awt.Frame;
@@ -44,8 +45,8 @@ public class OpenPlayerAction {
             return;
         }
         try {
-            if (!Daten.mVConfig.get(MVConfig.SYSTEM_PLAYER_ABSPIELEN).isEmpty()) {
-                String programm = Daten.mVConfig.get(MVConfig.SYSTEM_PLAYER_ABSPIELEN);
+            if (!MVConfig.get(MVConfig.SYSTEM_PLAYER_ABSPIELEN).isEmpty()) {
+                String programm = MVConfig.get(MVConfig.SYSTEM_PLAYER_ABSPIELEN);
                 String[] cmd = {programm, sFile.getAbsolutePath()};
                 Runtime.getRuntime().exec(cmd);
                 gut = true;
@@ -70,7 +71,7 @@ public class OpenPlayerAction {
                 }
                 String[] cmd = {programm, sFile.getAbsolutePath()};
                 Runtime.getRuntime().exec(cmd);
-                Daten.mVConfig.add(MVConfig.SYSTEM_PLAYER_ABSPIELEN, programm);
+                MVConfig.add(MVConfig.SYSTEM_PLAYER_ABSPIELEN, programm);
                 Listener.notify(Listener.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
                 gut = true;
             } catch (Exception eex) {
@@ -78,7 +79,7 @@ public class OpenPlayerAction {
             }
         } finally {
             if (!gut) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_PLAYER_ABSPIELEN, "");
+                MVConfig.add(MVConfig.SYSTEM_PLAYER_ABSPIELEN, "");
                 Listener.notify(Listener.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
                 MVMessageDialog.showMessageDialog(parent, "Kann den Videoplayer nicht öffnen!",
                         "Fehler", JOptionPane.ERROR_MESSAGE);

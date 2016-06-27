@@ -28,7 +28,7 @@ import mSearch.tool.SysMsg;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mSearch.tool.Listener;
-import mediathek.tool.MVConfig;
+import mSearch.tool.MVConfig;
 
 public class PanelMeldungen extends PanelVorlage {
 
@@ -63,7 +63,7 @@ public class PanelMeldungen extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!stopBeob) {
-                    Daten.mVConfig.add(getNrSystem(), String.valueOf(jCheckBoxUmbrechen.isSelected()));
+                    MVConfig.add(getNrSystem(), String.valueOf(jCheckBoxUmbrechen.isSelected()));
                     setLineWrab();
                 }
             }
@@ -99,7 +99,7 @@ public class PanelMeldungen extends PanelVorlage {
 
     private void setLineWrab() {
         stopBeob = true;
-        jCheckBoxUmbrechen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(getNrSystem())));
+        jCheckBoxUmbrechen.setSelected(Boolean.parseBoolean(MVConfig.get(getNrSystem())));
         jTextArea.setLineWrap(jCheckBoxUmbrechen.isSelected());
         jTextArea.setWrapStyleWord(false);
         setText();

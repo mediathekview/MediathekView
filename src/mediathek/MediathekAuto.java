@@ -27,7 +27,7 @@ import mediathek.controller.IoXmlLesen;
 import mSearch.tool.SysMsg;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.MVConfig;
+import mSearch.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
@@ -99,7 +99,7 @@ public class MediathekAuto {
             //do not read film descriptions in FASTAUTO mode as they won´t be used...
             FilmlisteLesen.setWorkMode(FilmlisteLesen.WorkMode.FASTAUTO);
         }
-        filmList.readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+        filmList.readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
 
         if (Daten.listeFilme.isTooOld()) {
             // erst neue Filmliste laden

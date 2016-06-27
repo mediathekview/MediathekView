@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import mSearch.tool.MVConfig;
 import mSearch.tool.Listener;
 import java.awt.*;
 import java.net.URL;
@@ -348,7 +349,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         DatenAbo abo;
         ListIterator<DatenFilm> itFilm;
         // prüfen ob in "alle Filme" oder nur "nach Blacklist" gesucht werden soll
-        boolean checkWithBlackList = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO));
+        boolean checkWithBlackList = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO));
         itFilm = Daten.listeFilme.listIterator();
         while (itFilm.hasNext()) {
             film = itFilm.next();
@@ -566,7 +567,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // get: erstes passendes Element der Liste zurückgeben oder null
         // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
         DatenDownload ret = null;
-        if (this.size() > 0 && getDown(Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD)))) {
+        if (this.size() > 0 && getDown(Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD)))) {
             DatenDownload datenDownload = naechsterStart();
             if (datenDownload != null) {
                 if (datenDownload.start != null) {
@@ -614,7 +615,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
 
         int maxProSender = Konstanten.MAX_SENDER_FILME_LADEN;
-        if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER))) {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER))) {
             // dann darf nur ein Download pro Server gestartet werden
             maxProSender = 1;
         }

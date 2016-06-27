@@ -29,7 +29,7 @@ import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mSearch.tool.Listener;
-import mediathek.tool.MVConfig;
+import mSearch.tool.MVConfig;
 import mediathek.tool.TModel;
 
 public class ListePset extends LinkedList<DatenPset> {
@@ -228,26 +228,26 @@ public class ListePset extends LinkedList<DatenPset> {
 
     private static String getPfadVlc(JFrame parent) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
-        if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_VLC).equals("")) {
+        if (MVConfig.get(MVConfig.SYSTEM_PFAD_VLC).equals("")) {
             new DialogOk(null, true, new PanelProgrammPfade(parent, true /* vlc */, false /* flvstreamer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
-        return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_VLC);
+        return MVConfig.get(MVConfig.SYSTEM_PFAD_VLC);
     }
 
     private static String getPfadFlv(JFrame parent) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
-        if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FLVSTREAMER).equals("")) {
+        if (MVConfig.get(MVConfig.SYSTEM_PFAD_FLVSTREAMER).equals("")) {
             new DialogOk(null, true, new PanelProgrammPfade(parent, false /* vlc */, true /* flvstreamer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
-        return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FLVSTREAMER);
+        return MVConfig.get(MVConfig.SYSTEM_PFAD_FLVSTREAMER);
     }
 
     private static String getPfadFFmpeg(JFrame parent) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
-        if (Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FFMPEG).equals("")) {
+        if (MVConfig.get(MVConfig.SYSTEM_PFAD_FFMPEG).equals("")) {
             new DialogOk(null, true, new PanelProgrammPfade(parent, false /* vlc */, false /* flvstreamer */, true /*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
-        return Daten.mVConfig.get(MVConfig.SYSTEM_PFAD_FFMPEG);
+        return MVConfig.get(MVConfig.SYSTEM_PFAD_FFMPEG);
     }
 
     public TModel getModel() {

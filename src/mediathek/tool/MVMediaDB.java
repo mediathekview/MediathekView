@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.MVConfig;
 import mSearch.tool.SysMsg;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -75,14 +76,14 @@ public class MVMediaDB {
 
     public synchronized void makeIndex() {
         Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, MVMediaDB.class.getSimpleName());
-        suffix = Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX).split(",");
+        suffix = MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX).split(",");
         for (int i = 0; i < suffix.length; ++i) {
             suffix[i] = suffix[i].toLowerCase();
             if (!suffix[i].isEmpty() && !suffix[i].startsWith(".")) {
                 suffix[i] = "." + suffix[i];
             }
         }
-        ohneSuffix = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE));
+        ohneSuffix = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE));
 
         makeIndex = true;
         fileArray.clear();
@@ -94,7 +95,7 @@ public class MVMediaDB {
         @Override
         public synchronized void run() {
             try {
-                String db = Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA);
+                String db = MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA);
                 if (!db.isEmpty()) {
                     String error = "";
                     boolean more = false;

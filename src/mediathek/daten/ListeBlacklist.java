@@ -22,7 +22,7 @@ package mediathek.daten;
 import mediathek.gui.GuiFilme;
 import mediathek.tool.Filter;
 import mSearch.tool.Listener;
-import mediathek.tool.MVConfig;
+import mSearch.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
@@ -141,15 +141,15 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         setFilter();
         tage = 0; // soll nur im TabFilme ausgewertet werden (Filter: Tage)
         blacklistOn = true; // Blacklist nur wenn "auch für Abos" geklickt, egal ob ein- oder ausgeschaltet
-        zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
-        geoNichtAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN));
+        zukunftNichtAnzeigen = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
+        geoNichtAnzeigen = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN));
         jetzt = getZeitZukunftBlacklist();
         return checkFilm(film);
     }
 
     private void setFilter() {
         try {
-            //if (Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE).equals("") || Daten.mVConfig.get(MVConfig.SYSTEM_FILTER_TAGE).equals("0")) {
+            //if (MVConfig.get(MVConfig.SYSTEM_FILTER_TAGE).equals("") || MVConfig.get(MVConfig.SYSTEM_FILTER_TAGE).equals("0")) {
             if (daten.guiFilme.getFilterTage() == 0) {
                 tage = 0;
             } else {
@@ -160,13 +160,13 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             tage = 0;
         }
         try {
-            filmlaengeSoll = Long.valueOf(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE)) * 60; // Minuten
+            filmlaengeSoll = Long.valueOf(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE)) * 60; // Minuten
         } catch (Exception ex) {
             filmlaengeSoll = 0;
         }
-        blacklistOn = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ON));
-        zukunftNichtAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
-        geoNichtAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN));
+        blacklistOn = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_ON));
+        zukunftNichtAnzeigen = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
+        geoNichtAnzeigen = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN));
         jetzt = getZeitZukunftBlacklist();
     }
 
@@ -186,7 +186,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         }
         // keine Geo-gesperrten Filme
         if (geoNichtAnzeigen) {
-            if (!film.arr[DatenFilm.FILM_GEO_NR].isEmpty() && !film.arr[DatenFilm.FILM_GEO_NR].contains(Daten.mVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
+            if (!film.arr[DatenFilm.FILM_GEO_NR].isEmpty() && !film.arr[DatenFilm.FILM_GEO_NR].contains(MVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
                 return false;
             }
         }
@@ -208,10 +208,10 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                             ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase().split(","),
                     new String[]{""}, 0, film, true /*auch die Länge prüfen*/
             )) {
-                return Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST));
+                return Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST));
             }
         }
-        return !Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST));
+        return !Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST));
     }
 
     private boolean checkDate(DatenFilm film) {

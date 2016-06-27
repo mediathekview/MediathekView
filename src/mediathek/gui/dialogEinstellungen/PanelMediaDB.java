@@ -40,7 +40,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.CellRendererMediaDB;
 import mediathek.tool.HinweisKeineAuswahl;
 import mSearch.tool.Listener;
-import mediathek.tool.MVConfig;
+import mSearch.tool.MVConfig;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelMediaDB;
@@ -82,46 +82,46 @@ public class PanelMediaDB extends PanelVorlage {
         final CellRendererMediaDB cellRenderer = new CellRendererMediaDB();
         jTableMediaDB.setDefaultRenderer(Object.class, cellRenderer);
         jTableMediaDB.setModel(modelFilm);
-        jTextFieldSuffix.setText(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX));
+        jTextFieldSuffix.setText(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX));
         jTextFieldSuffix.getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
             public void insertUpdate(DocumentEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
+                MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
+                MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
+                MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
             }
         });
-        jRadioButtonOhneSuffix.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE)));
-        jRadioButtonMitSuffix.setSelected(!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE)));
+        jRadioButtonOhneSuffix.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE)));
+        jRadioButtonMitSuffix.setSelected(!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE)));
         jRadioButtonOhneSuffix.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE, Boolean.toString(jRadioButtonOhneSuffix.isSelected()));
+                MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE, Boolean.toString(jRadioButtonOhneSuffix.isSelected()));
             }
         });
         jRadioButtonMitSuffix.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE, Boolean.toString(jRadioButtonOhneSuffix.isSelected()));
+                MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE, Boolean.toString(jRadioButtonOhneSuffix.isSelected()));
             }
         });
-        jCheckBoxMediaDB.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE)));
+        jCheckBoxMediaDB.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE)));
         jCheckBoxMediaDB.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
-                Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE, Boolean.toString(jCheckBoxMediaDB.isSelected()));
+                MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE, Boolean.toString(jCheckBoxMediaDB.isSelected()));
             }
         });
 
@@ -161,7 +161,7 @@ public class PanelMediaDB extends PanelVorlage {
         });
 
         jButtonExportPath.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
-        jTextFieldExportPath.setText(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_EXPORT_DATEI));
+        jTextFieldExportPath.setText(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_EXPORT_DATEI));
         jTextFieldExportPath.getDocument().addDocumentListener(new BeobTextFeld());
         jButtonExport.addActionListener(new BeobExport());
         jButtonExportPath.addActionListener(new BeobPfad());
@@ -217,7 +217,7 @@ public class PanelMediaDB extends PanelVorlage {
     }
 
     private void addPath() {
-        String db = Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA);
+        String db = MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA);
         String add = jTextFieldPath.getText();
         if (add.isEmpty()) {
             return;
@@ -232,7 +232,7 @@ public class PanelMediaDB extends PanelVorlage {
         } else {
             db += Daten.mVMediaDB.FILE_TRENNER + add;
         }
-        Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA, db);
+        MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA, db);
         setTablePath(); //neu aufbauen
     }
 
@@ -240,7 +240,7 @@ public class PanelMediaDB extends PanelVorlage {
         int row = jTablePath.getSelectedRow();
         if (row >= 0) {
             String p = jTablePath.getModel().getValueAt(jTablePath.convertRowIndexToModel(row), 0).toString();
-            String db = Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA);
+            String db = MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA);
             String dbNew = "";
             if (db.isEmpty()) {
                 return;
@@ -251,7 +251,7 @@ public class PanelMediaDB extends PanelVorlage {
                 }
                 dbNew += dbNew.isEmpty() ? s : Daten.mVMediaDB.FILE_TRENNER + s;
             }
-            Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA, dbNew);
+            MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA, dbNew);
             setTablePath(); //neu aufbauen
         } else {
             new HinweisKeineAuswahl().zeigen(daten.mediathekGui);
@@ -260,7 +260,7 @@ public class PanelMediaDB extends PanelVorlage {
 
     private synchronized void setTablePath() {
         // Tabelle mit den Pfaden bauen
-        String db = Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA);
+        String db = MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA);
         modelPath.setRowCount(0);
         if (!db.isEmpty()) {
             for (String s : db.split(Daten.mVMediaDB.FILE_TRENNER)) {
@@ -707,7 +707,7 @@ public class PanelMediaDB extends PanelVorlage {
         }
 
         void tusEinfach(DocumentEvent e) {
-            Daten.mVConfig.add(MVConfig.SYSTEM_MEDIA_DB_EXPORT_DATEI, jTextFieldExportPath.getText());
+            MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_EXPORT_DATEI, jTextFieldExportPath.getText());
         }
     }
 

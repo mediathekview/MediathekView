@@ -26,7 +26,7 @@ import static mSearch.tool.Functions.getOs;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.MVConfig;
+import mSearch.tool.MVConfig;
 
 /**
  * This class will manage and display the download bandwidth chart display.
@@ -115,7 +115,7 @@ public class MVBandwidthMonitor {
      */
     public void toggleVisibility() {
         final boolean isSelected = menuItem.isSelected();
-        Daten.mVConfig.add(MVConfig.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(menuItem.isSelected()));
+        MVConfig.add(MVConfig.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(menuItem.isSelected()));
         hudWindow.getJDialog().setVisible(isSelected);
         try {
             if (menuItem.isSelected()) {

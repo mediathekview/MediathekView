@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.MVConfig;
 import mSearch.tool.Listener;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -160,10 +161,10 @@ public final class MVTable extends JTable {
         breite = getArray(maxSpalten);
         reihe = getArray(maxSpalten);
         if (!iconAnzeigenStr.isEmpty()) {
-            iconAnzeigen = Boolean.parseBoolean(Daten.mVConfig.get(iconAnzeigenStr));
+            iconAnzeigen = Boolean.parseBoolean(MVConfig.get(iconAnzeigenStr));
         }
         if (!iconKleinStr.isEmpty()) {
-            iconKlein = Boolean.parseBoolean(Daten.mVConfig.get(iconKleinStr));
+            iconKlein = Boolean.parseBoolean(MVConfig.get(iconKleinStr));
         }
         setHeight();
         Listener.addListener(new Listener(Listener.EREIGNIS_FONT, MVTable.class.getSimpleName()) {
@@ -239,18 +240,18 @@ public final class MVTable extends JTable {
             }
             String b = "", r = "", s = "", upDown = "";
             boolean ok = false;
-            if (!Daten.mVConfig.get(nrDatenSystem).equals("")) {
+            if (!MVConfig.get(nrDatenSystem).equals("")) {
                 ok = true;
                 int f1, f2, f3;
                 //String d = Daten.system[nrDatenSystem];
-                if ((f1 = Daten.mVConfig.get(nrDatenSystem).indexOf(FELDTRENNER)) != -1) {
-                    b = Daten.mVConfig.get(nrDatenSystem).substring(0, f1);
-                    if ((f2 = Daten.mVConfig.get(nrDatenSystem).indexOf(FELDTRENNER, f1 + 1)) != -1) {
-                        r = Daten.mVConfig.get(nrDatenSystem).substring(f1 + 1, f2);
+                if ((f1 = MVConfig.get(nrDatenSystem).indexOf(FELDTRENNER)) != -1) {
+                    b = MVConfig.get(nrDatenSystem).substring(0, f1);
+                    if ((f2 = MVConfig.get(nrDatenSystem).indexOf(FELDTRENNER, f1 + 1)) != -1) {
+                        r = MVConfig.get(nrDatenSystem).substring(f1 + 1, f2);
                     }
-                    if ((f3 = Daten.mVConfig.get(nrDatenSystem).indexOf(FELDTRENNER, f2 + 1)) != -1) {
-                        s = Daten.mVConfig.get(nrDatenSystem).substring(f2 + 1, f3);
-                        upDown = Daten.mVConfig.get(nrDatenSystem).substring(f3 + 1);
+                    if ((f3 = MVConfig.get(nrDatenSystem).indexOf(FELDTRENNER, f2 + 1)) != -1) {
+                        s = MVConfig.get(nrDatenSystem).substring(f2 + 1, f3);
+                        upDown = MVConfig.get(nrDatenSystem).substring(f3 + 1);
                     }
                 }
                 if (!arrLesen(b, breite)) {
@@ -724,12 +725,12 @@ public final class MVTable extends JTable {
                 upDown = sk.getSortOrder().equals(SortOrder.ASCENDING) ? SORT_ASCENDING : SORT_DESCENDING;
             }
         }
-        Daten.mVConfig.add(nrDatenSystem, b + FELDTRENNER + r + FELDTRENNER + s + FELDTRENNER + upDown);
+        MVConfig.add(nrDatenSystem, b + FELDTRENNER + r + FELDTRENNER + s + FELDTRENNER + upDown);
         if (!iconAnzeigenStr.isEmpty()) {
-            Daten.mVConfig.add(iconAnzeigenStr, String.valueOf(iconAnzeigen));
+            MVConfig.add(iconAnzeigenStr, String.valueOf(iconAnzeigen));
         }
         if (!iconKleinStr.isEmpty()) {
-            Daten.mVConfig.add(iconKleinStr, String.valueOf(iconKlein));
+            MVConfig.add(iconKleinStr, String.valueOf(iconKlein));
         }
     }
 

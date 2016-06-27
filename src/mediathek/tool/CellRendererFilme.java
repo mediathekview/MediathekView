@@ -19,9 +19,10 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.MVConfig;
 import mSearch.tool.Listener;
 import com.jidesoft.utils.SystemInfo;
-import mediathek.controller.MVUsedUrls;
+import mSearch.dlCtrl.MVUsedUrls;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
@@ -58,11 +59,11 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
         film_rec_sw_tab = GetIcon.getProgramIcon("film_rec_sw_tab.png");
         film_stop_tab = GetIcon.getProgramIcon("film_stop_tab.png");
         film_stop_sw_tab = GetIcon.getProgramIcon("film_stop_sw_tab.png");
-        geoMelden = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_GEO_MELDEN));
+        geoMelden = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_GEO_MELDEN));
         Listener.addListener(new Listener(Listener.EREIGNIS_GEO, CellRendererFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                geoMelden = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_GEO_MELDEN));
+                geoMelden = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_GEO_MELDEN));
             }
         });
         senderIconCache = new MVSenderIconCache();
@@ -159,7 +160,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             }
             if (!start && geoMelden) {
                 if (!datenFilm.arr[DatenFilm.FILM_GEO_NR].isEmpty()) {
-                    if (!datenFilm.arr[DatenFilm.FILM_GEO_NR].contains(Daten.mVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
+                    if (!datenFilm.arr[DatenFilm.FILM_GEO_NR].contains(MVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
                         //setForeground(GuiKonstanten.FARBE_FILM_GEOBLOCK_FORGROUND);
                         if (isSelected) {
                             setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND_SEL.color);

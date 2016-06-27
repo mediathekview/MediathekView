@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import mSearch.tool.MVConfig;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
@@ -61,10 +62,10 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 init();
             }
         });
-        jCheckBoxAboSuchen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN)));
-        jCheckBoxAboSuchen.addActionListener(e -> Daten.mVConfig.add(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.toString(jCheckBoxAboSuchen.isSelected())));
-        jCheckBoxDownloadSofortStarten.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN)));
-        jCheckBoxDownloadSofortStarten.addActionListener(e -> Daten.mVConfig.add(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.toString(jCheckBoxDownloadSofortStarten.isSelected())));
+        jCheckBoxAboSuchen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN)));
+        jCheckBoxAboSuchen.addActionListener(e -> MVConfig.add(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.toString(jCheckBoxAboSuchen.isSelected())));
+        jCheckBoxDownloadSofortStarten.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN)));
+        jCheckBoxDownloadSofortStarten.addActionListener(e -> MVConfig.add(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.toString(jCheckBoxDownloadSofortStarten.isSelected())));
 
         // ====================================
         jButtonProgrammDateimanager.addActionListener(new BeobPfad(MVConfig.SYSTEM_ORDNER_OEFFNEN, "Dateimanager suchen", jTextFieldProgrammDateimanager));
@@ -72,19 +73,19 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jButtonProgrammUrl.addActionListener(new BeobPfad(MVConfig.SYSTEM_URL_OEFFNEN, "Browser suchen", jTextFieldProgrammUrl));
         jButtonProgrammShutdown.addActionListener(new BeobPfad(MVConfig.SYSTEM_LINUX_SHUTDOWN, "Shutdown Befehl", jTextFieldProgrammShutdown));
 
-        jTextFieldProgrammDateimanager.setText(Daten.mVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN));
+        jTextFieldProgrammDateimanager.setText(MVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN));
         jTextFieldProgrammDateimanager.getDocument().addDocumentListener(new BeobDoc(MVConfig.SYSTEM_ORDNER_OEFFNEN, jTextFieldProgrammDateimanager));
 
-        jTextFieldVideoplayer.setText(Daten.mVConfig.get(MVConfig.SYSTEM_PLAYER_ABSPIELEN));
+        jTextFieldVideoplayer.setText(MVConfig.get(MVConfig.SYSTEM_PLAYER_ABSPIELEN));
         jTextFieldVideoplayer.getDocument().addDocumentListener(new BeobDoc(MVConfig.SYSTEM_PLAYER_ABSPIELEN, jTextFieldVideoplayer));
 
-        jTextFieldProgrammUrl.setText(Daten.mVConfig.get(MVConfig.SYSTEM_URL_OEFFNEN));
+        jTextFieldProgrammUrl.setText(MVConfig.get(MVConfig.SYSTEM_URL_OEFFNEN));
         jTextFieldProgrammUrl.getDocument().addDocumentListener(new BeobDoc(MVConfig.SYSTEM_URL_OEFFNEN, jTextFieldProgrammUrl));
 
-        jTextFieldProgrammShutdown.setText(Daten.mVConfig.get(MVConfig.SYSTEM_LINUX_SHUTDOWN));
+        jTextFieldProgrammShutdown.setText(MVConfig.get(MVConfig.SYSTEM_LINUX_SHUTDOWN));
         if (jTextFieldProgrammShutdown.getText().isEmpty()) {
             jTextFieldProgrammShutdown.setText(Konstanten.SHUTDOWN_LINUX);
-            Daten.mVConfig.add(MVConfig.SYSTEM_LINUX_SHUTDOWN, Konstanten.SHUTDOWN_LINUX);
+            MVConfig.add(MVConfig.SYSTEM_LINUX_SHUTDOWN, Konstanten.SHUTDOWN_LINUX);
         }
         jTextFieldProgrammShutdown.getDocument().addDocumentListener(new BeobDoc(MVConfig.SYSTEM_LINUX_SHUTDOWN, jTextFieldProgrammShutdown));
 
@@ -102,11 +103,11 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jRadioButtonManuel.setSelected(!Daten.isUserAgentAuto());
 
         jTextFieldUserAgent.setEditable(!Daten.isUserAgentAuto());
-        jTextFieldUserAgent.setText(Daten.mVConfig.get(MVConfig.SYSTEM_USER_AGENT));
+        jTextFieldUserAgent.setText(MVConfig.get(MVConfig.SYSTEM_USER_AGENT));
         jTextFieldAuto.setText(Konstanten.USER_AGENT_DEFAULT);
 
-        jTextFieldProgrammDateimanager.setText(Daten.mVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN));
-        jTextFieldProgrammUrl.setText(Daten.mVConfig.get(MVConfig.SYSTEM_URL_OEFFNEN));
+        jTextFieldProgrammDateimanager.setText(MVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN));
+        jTextFieldProgrammUrl.setText(MVConfig.get(MVConfig.SYSTEM_URL_OEFFNEN));
     }
 
     private void setUserAgent() {
@@ -536,7 +537,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         }
 
         private void tus() {
-            Daten.mVConfig.add(config, txt.getText());
+            MVConfig.add(config, txt.getText());
         }
 
     }
@@ -587,7 +588,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 }
             }
             // merken und prüfen
-            Daten.mVConfig.add(config, textField.getText());
+            MVConfig.add(config, textField.getText());
             String programm = textField.getText();
             if (!programm.equals("")) {
                 try {
