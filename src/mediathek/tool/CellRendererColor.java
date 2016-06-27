@@ -19,6 +19,8 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.MVColor;
+import mSearch.tool.MVC;
 import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;

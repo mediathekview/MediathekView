@@ -55,7 +55,7 @@ import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.Konstanten;
 import mSearch.tool.Listener;
-import mediathek.tool.MVColor;
+import mSearch.tool.MVColor;
 import mediathek.tool.MVTable;
 import mediathek.tool.TModel;
 import mediathek.tool.UrlHyperlinkAction;

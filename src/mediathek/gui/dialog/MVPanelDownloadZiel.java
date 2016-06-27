@@ -41,7 +41,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
 import mSearch.tool.FilenameUtils;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.MVColor;
+import mSearch.tool.MVColor;
 import mSearch.tool.MVConfig;
 import mediathek.tool.MVMessageDialog;
 

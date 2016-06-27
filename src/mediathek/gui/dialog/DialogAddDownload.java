@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialog;
 
+import mSearch.tool.MVColor;
 import mSearch.tool.MVConfig;
 import mSearch.tool.MVFilmSize;
 import mSearch.tool.Listener;

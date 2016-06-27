@@ -43,7 +43,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mSearch.tool.FilenameUtils;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.MVColor;
+import mSearch.tool.MVColor;
 import mediathek.tool.MVMessageDialog;
 
 public class DialogEditAbo extends javax.swing.JDialog {

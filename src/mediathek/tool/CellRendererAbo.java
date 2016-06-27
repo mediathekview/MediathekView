@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.MVColor;
 import java.awt.Component;
 import java.awt.Font;
 import javax.swing.ImageIcon;

@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.MVColor;
 import mSearch.tool.MVConfig;
 import mSearch.tool.Listener;
 import com.jidesoft.utils.SystemInfo;

@@ -35,7 +35,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mSearch.tool.Listener;
-import mediathek.tool.MVColor;
+import mSearch.tool.MVColor;
 import mSearch.tool.MVConfig;
 
 public class PanelFilmlisteLaden extends PanelVorlage {
