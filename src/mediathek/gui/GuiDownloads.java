@@ -19,7 +19,7 @@
  */
 package mediathek.gui;
 
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.SysMsg;
 import mediathek.controller.MVUsedUrl;
@@ -35,8 +35,8 @@ import mediathek.gui.dialog.MVFilmInfo;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
 import mSearch.daten.DatenFilm;
-import mSearch.filmeSuchen.MSListenerFilmeLaden;
-import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import mSearch.filmeSuchen.ListenerFilmeLaden;
+import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Datum;
 
 import javax.swing.*;
@@ -261,9 +261,9 @@ public class GuiDownloads extends PanelVorlage {
                 new int[]{DatenDownload.DOWNLOAD_BUTTON_START_NR, DatenDownload.DOWNLOAD_BUTTON_DEL_NR},
                 true /*Icon*/));
 
-        Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
+        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void fertig(MSListenerFilmeLadenEvent event) {
+            public void fertig(ListenerFilmeLadenEvent event) {
                 Daten.listeDownloads.filmEintragen();
                 if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN))) {
                     downloadsAktualisieren();
@@ -277,7 +277,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void addListenerMediathekView() {
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, GuiDownloads.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN))
@@ -287,8 +287,8 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS,
-            ListenerMediathekView.EREIGNIS_LISTE_ABOS}, GuiDownloads.class.getSimpleName()) {
+        Listener.addListener(new Listener(new int[]{Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS,
+            Listener.EREIGNIS_LISTE_ABOS}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 if (Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN))) {
@@ -296,15 +296,15 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS,
-            ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, ListenerMediathekView.EREIGNIS_RESET_INTERRUPT}, GuiDownloads.class.getSimpleName()) {
+        Listener.addListener(new Listener(new int[]{Listener.EREIGNIS_LISTE_DOWNLOADS,
+            Listener.EREIGNIS_REIHENFOLGE_DOWNLOAD, Listener.EREIGNIS_RESET_INTERRUPT}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 reloadTable();
                 daten.allesSpeichern(); // damit nichts verloren geht
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_START_EVENT}, GuiDownloads.class.getSimpleName()) {
+        Listener.addListener(new Listener(new int[]{Listener.EREIGNIS_START_EVENT}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 Daten.listeDownloads.setModelProgressAlleStart(model);
@@ -312,14 +312,14 @@ public class GuiDownloads extends PanelVorlage {
                 setInfo();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_GEO, GuiDownloads.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_GEO, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 tabelle.fireTableDataChanged(true /*setSpalten*/);
                 setInfo();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT}, GuiDownloads.class.getSimpleName()) {
+        Listener.addListener(new Listener(new int[]{Listener.EREIGNIS_ART_DOWNLOAD_PROZENT}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 if (lastUpdate < (new Date().getTime() - 500)) {
@@ -331,7 +331,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, GuiDownloads.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 panelBeschreibungSetzen();
@@ -483,14 +483,14 @@ public class GuiDownloads extends PanelVorlage {
             if (ret == JOptionPane.OK_OPTION) {
 
                 // und jetzt die Datei löschen
-                SysMsg.systemMeldung(new String[]{"Datei löschen: ", file.getAbsolutePath()});
+                SysMsg.sysMsg(new String[]{"Datei löschen: ", file.getAbsolutePath()});
                 if (!file.delete()) {
                     throw new Exception();
                 }
             }
         } catch (Exception ex) {
             MVMessageDialog.showMessageDialog(parentComponent, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
-            Log.fehlerMeldung(915236547, "Fehler beim löschen: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.errorLog(915236547, "Fehler beim löschen: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
         }
     }
 

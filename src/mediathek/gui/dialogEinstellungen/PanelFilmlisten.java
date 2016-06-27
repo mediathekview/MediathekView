@@ -34,7 +34,7 @@ import javax.swing.event.DocumentListener;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVConfig;
 import mediathek.tool.TModel;
 import mSearch.filmlisten.DatenFilmlisteUrl;
@@ -104,7 +104,7 @@ public class PanelFilmlisten extends PanelVorlage {
         });
         jTable1.addMouseListener(new BeobachterTableSelect());
         jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_URL_FILMLISTEN, PanelFilmlisten.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_URL_FILMLISTEN, PanelFilmlisten.class.getSimpleName()) {
             @Override
             public void ping() {
                 tabelleLaden();
@@ -364,7 +364,7 @@ public class PanelFilmlisten extends PanelVorlage {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldUrl.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(102036579, ex);
+                        Log.errorLog(102036579, ex);
                     }
                 }
             } else {
@@ -380,7 +380,7 @@ public class PanelFilmlisten extends PanelVorlage {
                     try {
                         jTextFieldUrl.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(733025319, ex);
+                        Log.errorLog(733025319, ex);
                     }
                 }
             }

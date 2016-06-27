@@ -29,9 +29,9 @@ import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
-import mSearch.filmeSuchen.MSListenerFilmeLaden;
-import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
-import mSearch.filmlisten.MSFilmlisteLesen;
+import mSearch.filmeSuchen.ListenerFilmeLaden;
+import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
+import mSearch.filmlisten.FilmlisteLesen;
 import mSearch.tool.Log;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 
@@ -58,7 +58,7 @@ public class MediathekAuto {
                 splash.close();
             }
         } catch (Exception ignored) {
-            SysMsg.systemMeldung("NoSplashscreen");
+            SysMsg.sysMsg("NoSplashscreen");
         }
     }
 
@@ -80,40 +80,40 @@ public class MediathekAuto {
 
         if (!IoXmlLesen.einstellungenExistieren()) {
             // Programm erst mit der GuiVersion einrichten
-            Log.fehlerMeldung(834986137, "Das Programm muss erst mit der Gui-Version eingerichtet werden!");
+            Log.errorLog(834986137, "Das Programm muss erst mit der Gui-Version eingerichtet werden!");
             System.exit(1);
         }
 
         // Einstellungen laden
         Path xmlFilePath = Daten.getMediathekXmlFilePath();
-        SysMsg.systemMeldung("Einstellungen laden: " + xmlFilePath.toString());
+        SysMsg.sysMsg("Einstellungen laden: " + xmlFilePath.toString());
         if (!IoXmlLesen.datenLesen(xmlFilePath)) {
             // dann hat das Laden nicht geklappt
-            Log.fehlerMeldung(834986137, "Einstellungen konnten nicht geladen werden: " + xmlFilePath.toString());
+            Log.errorLog(834986137, "Einstellungen konnten nicht geladen werden: " + xmlFilePath.toString());
             System.exit(1);
         }
 
         // Filmliste laden
-        MSFilmlisteLesen filmList = new MSFilmlisteLesen();
+        FilmlisteLesen filmList = new FilmlisteLesen();
         if (bFastAuto) {
             //do not read film descriptions in FASTAUTO mode as they won´t be used...
-            MSFilmlisteLesen.setWorkMode(MSFilmlisteLesen.WorkMode.FASTAUTO);
+            FilmlisteLesen.setWorkMode(FilmlisteLesen.WorkMode.FASTAUTO);
         }
         filmList.readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(Daten.mVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
 
         if (Daten.listeFilme.isTooOld()) {
             // erst neue Filmliste laden
-            SysMsg.systemMeldung("Neue Filmliste laden");
-            Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
+            SysMsg.sysMsg("Neue Filmliste laden");
+            Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
                 @Override
-                public void fertig(MSListenerFilmeLadenEvent event) {
+                public void fertig(ListenerFilmeLadenEvent event) {
                     download();
                 }
             });
             Daten.filmeLaden.importFilmliste("", true);
         } else {
             // mit aktueller Filmliste starten
-            SysMsg.systemMeldung("aktuelle Filmliste verwenden");
+            SysMsg.sysMsg("aktuelle Filmliste verwenden");
             // Liste erst mal aufbereiten
             Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
             MVListeFilme.checkBlacklist();
@@ -129,18 +129,18 @@ public class MediathekAuto {
             SysMsg.playerMeldungenAus = true;
             Daten.listeDownloads.abosSuchen(null);
 
-            SysMsg.systemMeldung(Daten.listeDownloads.size() + " Filme zum Laden");
-            SysMsg.systemMeldung("");
+            SysMsg.sysMsg(Daten.listeDownloads.size() + " Filme zum Laden");
+            SysMsg.sysMsg("");
             // erst mal die Filme schreiben
             int i = 1;
             for (DatenDownload d : Daten.listeDownloads) {
-                SysMsg.systemMeldung("Film " + (i++) + ": ");
-                SysMsg.systemMeldung("\tSender: " + d.arr[DatenDownload.DOWNLOAD_SENDER_NR]);
-                SysMsg.systemMeldung("\tThema: " + d.arr[DatenDownload.DOWNLOAD_THEMA_NR]);
-                SysMsg.systemMeldung("\tTitel: " + d.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
-                SysMsg.systemMeldung("");
+                SysMsg.sysMsg("Film " + (i++) + ": ");
+                SysMsg.sysMsg("\tSender: " + d.arr[DatenDownload.DOWNLOAD_SENDER_NR]);
+                SysMsg.sysMsg("\tThema: " + d.arr[DatenDownload.DOWNLOAD_THEMA_NR]);
+                SysMsg.sysMsg("\tTitel: " + d.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
+                SysMsg.sysMsg("");
             }
-            SysMsg.systemMeldung("###########################################################");
+            SysMsg.sysMsg("###########################################################");
             // und jetzt starten
             for (DatenDownload d : Daten.listeDownloads) {
                 d.startDownload(daten);
@@ -162,10 +162,10 @@ public class MediathekAuto {
                 Thread.sleep(remTime);
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(769325469, ex);
+            Log.errorLog(769325469, ex);
         }
         daten.allesSpeichern();
-        Log.endeMeldung();
+        Log.endMsg();
         System.exit(0);
     }
 }

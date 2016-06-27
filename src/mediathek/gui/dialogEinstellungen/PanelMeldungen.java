@@ -27,7 +27,7 @@ import javax.swing.text.DefaultCaret;
 import mSearch.tool.SysMsg;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVConfig;
 
 public class PanelMeldungen extends PanelVorlage {
@@ -44,7 +44,7 @@ public class PanelMeldungen extends PanelVorlage {
         text = ttext;
         jLabelHeader.setText(header);
         logArt = llogArt;
-        if (logArt == ListenerMediathekView.EREIGNIS_LOG_SYSTEM) {
+        if (logArt == Listener.EREIGNIS_LOG_SYSTEM) {
             jCheckBoxAuto.setSelected(true);
         } else {
             jCheckBoxAuto.setSelected(false);
@@ -70,7 +70,7 @@ public class PanelMeldungen extends PanelVorlage {
         });
         setAuto();
         setLineWrab();
-        ListenerMediathekView.addListener(new ListenerMediathekView(logArt, PanelMeldungen.class.getSimpleName() + logArt) {
+        Listener.addListener(new Listener(logArt, PanelMeldungen.class.getSimpleName() + logArt) {
             @Override
             public void ping() {
                 notifyPanel();
@@ -112,10 +112,10 @@ public class PanelMeldungen extends PanelVorlage {
 //            case ListenerMediathekView.EREIGNIS_LOG_FEHLER:
 //                nr = MVConfig.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN;
 //                break;
-            case ListenerMediathekView.EREIGNIS_LOG_SYSTEM:
+            case Listener.EREIGNIS_LOG_SYSTEM:
                 nr = MVConfig.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN;
                 break;
-            case ListenerMediathekView.EREIGNIS_LOG_PLAYER:
+            case Listener.EREIGNIS_LOG_PLAYER:
                 nr = MVConfig.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN;
                 break;
         }

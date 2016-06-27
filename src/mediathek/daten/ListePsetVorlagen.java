@@ -34,7 +34,7 @@ import mediathek.file.GetFile;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.TModel;
-import mSearch.tool.MSConst;
+import mSearch.Const;
 import static mSearch.tool.Functions.getOs;
 import static mSearch.tool.Functions.getOsString;
 import mSearch.tool.Log;
@@ -145,7 +145,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             conn.setRequestProperty("User-Agent", Daten.getUserAgent());
             conn.setReadTimeout(TIMEOUT);
             conn.setConnectTimeout(TIMEOUT);
-            inReader = new InputStreamReader(conn.getInputStream(), MSConst.KODIERUNG_UTF);
+            inReader = new InputStreamReader(conn.getInputStream(), Const.KODIERUNG_UTF);
             parser = inFactory.createXMLStreamReader(inReader);
             while (parser.hasNext()) {
                 event = parser.next();
@@ -161,7 +161,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(398001963, ex);
+            Log.errorLog(398001963, ex);
             return false;
         }
         return true;
@@ -176,13 +176,13 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                 conn.setConnectTimeout(timeout);
                 conn.setReadTimeout(timeout);
                 conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-                return ListePsetVorlagen.importPset(new InputStreamReader(conn.getInputStream(), MSConst.KODIERUNG_UTF), log);
+                return ListePsetVorlagen.importPset(new InputStreamReader(conn.getInputStream(), Const.KODIERUNG_UTF), log);
             } else {
-                return ListePsetVorlagen.importPset(new InputStreamReader(new FileInputStream(dateiUrl), MSConst.KODIERUNG_UTF), log);
+                return ListePsetVorlagen.importPset(new InputStreamReader(new FileInputStream(dateiUrl), Const.KODIERUNG_UTF), log);
             }
         } catch (Exception ex) {
             if (log) {
-                Log.fehlerMeldung(630048926, ex);
+                Log.errorLog(630048926, ex);
             }
             return null;
         }
@@ -231,7 +231,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             in.close();
         } catch (Exception ex) {
             if (log) {
-                Log.fehlerMeldung(467810360, ex);
+                Log.errorLog(467810360, ex);
             }
             return null;
         }
@@ -267,7 +267,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             }
         } catch (Exception ex) {
             ret = false;
-            Log.fehlerMeldung(467256394, ex);
+            Log.errorLog(467256394, ex);
         }
         return ret;
     }

@@ -19,7 +19,7 @@
  */
 package mediathek.gui.dialog;
 
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mSearch.tool.FilenameUtils;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
@@ -60,7 +60,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
             }
         });
         this.setTitle("Mediensammlung durchsuchen");
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_MEDIA_DB_START, DialogMediaDB.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_MEDIA_DB_START, DialogMediaDB.class.getSimpleName()) {
             @Override
             public void ping() {
                 // neue DB suchen
@@ -68,7 +68,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
                 jLabelSum.setText("0");
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_MEDIA_DB_STOP, DialogMediaDB.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_MEDIA_DB_STOP, DialogMediaDB.class.getSimpleName()) {
             @Override
             public void ping() {
                 // neue DB liegt vor
@@ -129,7 +129,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
     public final void setVis() {
         this.setVisible(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_DIALOG_MEDIA_DB, DialogMediaDB.class.getName());
+        Listener.notify(Listener.EREIGNIS_DIALOG_MEDIA_DB, DialogMediaDB.class.getName());
     }
 
     public void tabelleSpeichern() {
@@ -217,13 +217,13 @@ public class DialogMediaDB extends javax.swing.JDialog {
             }
 
             // und jetzt die Datei löschen
-            SysMsg.systemMeldung(new String[]{"Datei löschen: ", delFile.getAbsolutePath()});
+            SysMsg.sysMsg(new String[]{"Datei löschen: ", delFile.getAbsolutePath()});
             if (!delFile.delete()) {
                 throw new Exception();
             }
         } catch (Exception ex) {
             MVMessageDialog.showMessageDialog(parent, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
-            Log.fehlerMeldung(984512036, "Fehler beim löschen: " + del);
+            Log.errorLog(984512036, "Fehler beim löschen: " + del);
         }
     }
 

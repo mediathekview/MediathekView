@@ -56,7 +56,7 @@ public class MVSubtitle {
             return;
         }
         try {
-            SysMsg.systemMeldung(new String[]{"Untertitel: ", datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE_NR],
+            SysMsg.sysMsg(new String[]{"Untertitel: ", datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE_NR],
                 "schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]});
 
             urlSubtitle = datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE_NR];
@@ -80,7 +80,7 @@ public class MVSubtitle {
                 in = conn.getInputStream();
             } else {
                 // dann wars das
-                Log.fehlerMeldung(752301248, "url: " + urlSubtitle);
+                Log.errorLog(752301248, "url: " + urlSubtitle);
             }
 
             if (in == null) {
@@ -104,7 +104,7 @@ public class MVSubtitle {
             while ((n = in.read(buffer)) != -1) {
                 fos.write(buffer, 0, n);
             }
-            SysMsg.systemMeldung(new String[]{"Untertitel", "  geschrieben"});
+            SysMsg.sysMsg(new String[]{"Untertitel", "  geschrieben"});
         } catch (IOException ex) {
             strSubtitelFile = null;
             if (conn != null) {
@@ -147,7 +147,7 @@ public class MVSubtitle {
                 }
             }
         } catch (Exception ignored) {
-            Log.fehlerMeldung(461203210, ignored, "SubtitelUrl: " + urlSubtitle);
+            Log.errorLog(461203210, ignored, "SubtitelUrl: " + urlSubtitle);
         }
     }
 }

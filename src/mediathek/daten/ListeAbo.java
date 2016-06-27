@@ -29,7 +29,7 @@ import javax.swing.JOptionPane;
 import mediathek.gui.dialog.DialogEditAbo;
 import mSearch.tool.FilenameUtils;
 import mediathek.tool.Filter;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelAbo;
@@ -110,7 +110,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     public void aenderungMelden() {
         // Filmliste anpassen
         setAboFuerFilm(Daten.listeFilme, true /*aboLoeschen*/);
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
+        Listener.notify(Listener.EREIGNIS_LISTE_ABOS, ListeAbo.class.getSimpleName());
     }
 
     public DatenAbo getAboNr(int i) {

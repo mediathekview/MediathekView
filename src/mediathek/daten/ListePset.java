@@ -28,7 +28,7 @@ import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVConfig;
 import mediathek.tool.TModel;
 
@@ -130,7 +130,7 @@ public class ListePset extends LinkedList<DatenPset> {
             }
         }
         this.add(neu, prog);
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
+        Listener.notify(Listener.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
         return neu;
     }
 
@@ -146,7 +146,7 @@ public class ListePset extends LinkedList<DatenPset> {
             datenPset.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
         }
         boolean ret = add(datenPset);
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
+        Listener.notify(Listener.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
         return ret;
     }
 
@@ -157,7 +157,7 @@ public class ListePset extends LinkedList<DatenPset> {
                 ret = false;
             }
         }
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
+        Listener.notify(Listener.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
         return ret;
     }
 
@@ -168,7 +168,7 @@ public class ListePset extends LinkedList<DatenPset> {
                 ret = false;
             }
         }
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
+        Listener.notify(Listener.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
         return ret;
     }
 

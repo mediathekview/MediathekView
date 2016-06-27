@@ -30,10 +30,10 @@ import java.io.IOException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import mSearch.daten.Data;
-import mSearch.filmeSuchen.MSListenerFilmeLaden;
-import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import mSearch.filmeSuchen.ListenerFilmeLaden;
+import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Duration;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mSearch.tool.Functions.OperatingSystemType;
 import static mSearch.tool.Functions.getOs;
 import mSearch.tool.Log;
@@ -179,13 +179,13 @@ public class MediathekGui extends JFrame {
         String pfad = "";
         initComponents();
         if (ar != null) {
-            SysMsg.systemMeldung("");
-            SysMsg.systemMeldung("==========================================");
+            SysMsg.sysMsg("");
+            SysMsg.sysMsg("==========================================");
             for (String s : ar) {
-                SysMsg.systemMeldung("Startparameter: " + s);
+                SysMsg.sysMsg("Startparameter: " + s);
             }
-            SysMsg.systemMeldung("==========================================");
-            SysMsg.systemMeldung("");
+            SysMsg.sysMsg("==========================================");
+            SysMsg.sysMsg("");
             if (ar.length > 0) {
                 if (!ar[0].startsWith("-")) {
                     if (!ar[0].endsWith(File.separator)) {
@@ -255,43 +255,43 @@ public class MediathekGui extends JFrame {
 
         if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO) {
             if (Daten.listeFilme.isTooOld()) {
-                SysMsg.systemMeldung("Neue Filmliste laden");
+                SysMsg.sysMsg("Neue Filmliste laden");
                 Daten.filmeLaden.importFilmliste("", true);
             }
         }
         duration.ping("Filmliste laden");
 
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_ORG_TITEL, MediathekGui.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_MEDIATHEKGUI_ORG_TITEL, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 setOrgTitel();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_PROGRAMM_AKTUELL, MediathekGui.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_MEDIATHEKGUI_PROGRAMM_AKTUELL, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 setTitelAllesAktuell();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, MediathekGui.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 setTitelUpdate();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 jCheckBoxMenuItemBeschreibung.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_DIALOG_MEDIA_DB, MediathekGui.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_DIALOG_MEDIA_DB, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 jCheckBoxMenuItemMediaDb.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 jCheckBoxFilterAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
@@ -327,7 +327,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void setFocusSuchfeld() {
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_SUCHFELD_FOCUS_SETZEN, MediathekGui.class.getName());
+        Listener.notify(Listener.EREIGNIS_SUCHFELD_FOCUS_SETZEN, MediathekGui.class.getName());
         if (!Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER))) {
             mVToolBar.jTextFieldFilter.requestFocus();
             mVToolBar.jTextFieldFilter.setCaretPosition(0);
@@ -524,18 +524,18 @@ public class MediathekGui extends JFrame {
         initTabs();
         initMenue();
         mVToolBar.loadVisible(); // erst jetzt sind die Einstellungen geladen!
-        Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
+        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void start(MSListenerFilmeLadenEvent event) {
+            public void start(ListenerFilmeLadenEvent event) {
                 jMenuItemFilmlisteLaden.setEnabled(false);
             }
 
             @Override
-            public void progress(MSListenerFilmeLadenEvent event) {
+            public void progress(ListenerFilmeLadenEvent event) {
             }
 
             @Override
-            public void fertig(MSListenerFilmeLadenEvent event) {
+            public void fertig(ListenerFilmeLadenEvent event) {
                 jMenuItemFilmlisteLaden.setEnabled(true);
                 daten.allesSpeichern(); // damit nichts verlorengeht
             }
@@ -675,8 +675,8 @@ public class MediathekGui extends JFrame {
                 }
             }
         };
-        PanelMeldungen panelMeldungenSystem = new PanelMeldungen(daten, daten.mediathekGui, SysMsg.textSystem, ListenerMediathekView.EREIGNIS_LOG_SYSTEM, "Systemmeldungen");
-        PanelMeldungen panelMeldungenPlayer = new PanelMeldungen(daten, daten.mediathekGui, SysMsg.textProgramm, ListenerMediathekView.EREIGNIS_LOG_PLAYER, "Meldungen Hilfsprogramme");
+        PanelMeldungen panelMeldungenSystem = new PanelMeldungen(daten, daten.mediathekGui, SysMsg.textSystem, Listener.EREIGNIS_LOG_SYSTEM, "Systemmeldungen");
+        PanelMeldungen panelMeldungenPlayer = new PanelMeldungen(daten, daten.mediathekGui, SysMsg.textProgramm, Listener.EREIGNIS_LOG_PLAYER, "Meldungen Hilfsprogramme");
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 panelMeldungenSystem,
                 panelMeldungenPlayer);
@@ -729,9 +729,9 @@ public class MediathekGui extends JFrame {
             int bandbreiteKByte = jSliderBandbreite.getValue() * 10;
             Daten.mVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(bandbreiteKByte));
             setSliderText();
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BANDBREITE, MediathekGui.class.getSimpleName());
+            Listener.notify(Listener.EREIGNIS_BANDBREITE, MediathekGui.class.getSimpleName());
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BANDBREITE, MediathekGui.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_BANDBREITE, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 setSlider();
@@ -753,9 +753,9 @@ public class MediathekGui extends JFrame {
         jSpinnerAnzahl.addChangeListener(e -> {
             Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD,
                     String.valueOf(((Number) jSpinnerAnzahl.getModel().getValue()).intValue()));
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
+            Listener.notify(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 initSpinner();
@@ -828,12 +828,12 @@ public class MediathekGui extends JFrame {
         jCheckBoxMenuItemVideoplayer.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
         jCheckBoxMenuItemVideoplayer.addActionListener(e -> {
             Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, String.valueOf(jCheckBoxMenuItemVideoplayer.isSelected()));
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, MediathekGui.class.getSimpleName());
+            Listener.notify(Listener.EREIGNIS_LISTE_PSET, MediathekGui.class.getSimpleName());
         });
         jCheckBoxMenuItemBeschreibung.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
         jCheckBoxMenuItemBeschreibung.addActionListener(e -> {
             Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, String.valueOf(jCheckBoxMenuItemBeschreibung.isSelected()));
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName());
+            Listener.notify(Listener.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName());
         });
         jCheckBoxMenuItemMediaDb.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
         jCheckBoxMenuItemMediaDb.addActionListener(e -> {
@@ -854,12 +854,12 @@ public class MediathekGui extends JFrame {
         jCheckBoxFilterAnzeigen.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
         jCheckBoxFilterAnzeigen.addActionListener(e -> {
             Daten.mVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.toString(jCheckBoxFilterAnzeigen.isSelected()));
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName());
+            Listener.notify(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName());
         });
         jCheckBoxFilterExtrafenster.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_FENSTER_FILTER)));
         jCheckBoxFilterExtrafenster.addActionListener(e -> {
             Daten.mVConfig.add(MVConfig.SYSTEM_FENSTER_FILTER, Boolean.toString(jCheckBoxFilterExtrafenster.isSelected()));
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName());
+            Listener.notify(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName());
         });
         // ============================
         // Downloads
@@ -1004,7 +1004,7 @@ public class MediathekGui extends JFrame {
         // FilterFrame
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_FILTER, daten.guiFilme.mVFilterFrame);
         daten.allesSpeichern();
-        Log.endeMeldung();
+        Log.endMsg();
 
         if (shutDown) {
             shutdownComputer();
@@ -1039,17 +1039,17 @@ public class MediathekGui extends JFrame {
                 break;
 
             default:
-                Log.fehlerMeldung(465321789, "Shutdown unsupported operating system ...");
+                Log.errorLog(465321789, "Shutdown unsupported operating system ...");
                 break;
         }
 
         //only run if we have a proper shutdown command...
         if (!strShutdownCommand.isEmpty()) {
             try {
-                SysMsg.systemMeldung("Shutdown: " + strShutdownCommand);
+                SysMsg.sysMsg("Shutdown: " + strShutdownCommand);
                 Runtime.getRuntime().exec(strShutdownCommand);
             } catch (IOException ex) {
-                Log.fehlerMeldung(915263047, ex);
+                Log.errorLog(915263047, ex);
             }
         }
     }

@@ -19,7 +19,7 @@
  */
 package mediathek.daten;
 
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mSearch.tool.FilenameUtils;
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -229,7 +229,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             art = Byte.parseByte(arr[DOWNLOAD_ART_NR]);
             quelle = Byte.parseByte(arr[DOWNLOAD_QUELLE_NR]);
         } catch (Exception ex) {
-            Log.fehlerMeldung(649632580, ex, "Art: " + arr[DOWNLOAD_ART_NR] + " Quelle: " + arr[DOWNLOAD_QUELLE_NR]);
+            Log.errorLog(649632580, ex, "Art: " + arr[DOWNLOAD_ART_NR] + " Quelle: " + arr[DOWNLOAD_QUELLE_NR]);
             art = ART_PROGRAMM;
             quelle = QUELLE_BUTTON;
         }
@@ -260,7 +260,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     public void interruptRestart() {
         arr[DOWNLOAD_UNTERBROCHEN_NR] = Boolean.FALSE.toString();
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_RESET_INTERRUPT, DatenDownload.class.getName());
+        Listener.notify(Listener.EREIGNIS_RESET_INTERRUPT, DatenDownload.class.getName());
     }
 
     public boolean isFinished() {
@@ -280,7 +280,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             Daten.listeFilmeHistory.add(film);
         }
         ddaten.history.zeileSchreiben(arr[DatenDownload.DOWNLOAD_THEMA_NR], arr[DatenDownload.DOWNLOAD_TITEL_NR], arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
+        Listener.notify(Listener.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
     }
 
     public static void startenDownloads(Daten ddaten, ArrayList<DatenDownload> downloads) {
@@ -297,7 +297,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         if (!urlList.isEmpty()) {
             ddaten.history.zeilenSchreiben(urlList);
         }
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_START_EVENT, DatenDownload.class.getSimpleName());
+        Listener.notify(Listener.EREIGNIS_START_EVENT, DatenDownload.class.getSimpleName());
     }
 
     public DatenDownload getCopy() {
@@ -458,7 +458,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             dateinamePfadBauen(pSet, film, abo, nname, ppfad);
             programmaufrufBauen(programm);
         } catch (Exception ex) {
-            Log.fehlerMeldung(825600145, ex);
+            Log.errorLog(825600145, ex);
         }
     }
 
@@ -724,7 +724,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(775421006, ex, datum);
+                Log.errorLog(775421006, ex, datum);
             }
         }
         return ret;
@@ -753,7 +753,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     }
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(775421006, ex, zeit);
+                Log.errorLog(775421006, ex, zeit);
             }
         }
         return ret;
@@ -770,7 +770,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     ret = tmp;
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(775421006, ex, datum);
+                Log.errorLog(775421006, ex, datum);
             }
         }
         return ret;
@@ -812,7 +812,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     tmp.setTime(sdf_datum.parse(arr[DatenDownload.DOWNLOAD_DATUM_NR]).getTime());
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(649897321, ex,
+                Log.errorLog(649897321, ex,
                         new String[]{"Datum: " + arr[DatenDownload.DOWNLOAD_DATUM_NR], "Zeit: " + arr[DatenDownload.DOWNLOAD_ZEIT_NR]});
             }
         }

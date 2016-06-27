@@ -33,10 +33,10 @@ import javax.swing.JToolBar;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.Filter;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVConfig;
-import mSearch.filmeSuchen.MSListenerFilmeLaden;
-import mSearch.filmeSuchen.MSListenerFilmeLadenEvent;
+import mSearch.filmeSuchen.ListenerFilmeLaden;
+import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import org.jdesktop.swingx.JXSearchField;
 
 public final class MVToolBar extends JToolBar {
@@ -346,26 +346,26 @@ public final class MVToolBar extends JToolBar {
     }
 
     private void initListener() {
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVToolBar.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVToolBar.class.getSimpleName()) {
             @Override
             public void ping() {
                 filterAnzeigen();
             }
         });
         addMouseListener(beobMausToolBar);
-        Daten.filmeLaden.addAdListener(new MSListenerFilmeLaden() {
+        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void start(MSListenerFilmeLadenEvent event) {
+            public void start(ListenerFilmeLadenEvent event) {
                 //ddaten.infoPanel.setProgress();
                 jButtonFilmeLaden.setEnabled(false);
             }
 
             @Override
-            public void progress(MSListenerFilmeLadenEvent event) {
+            public void progress(ListenerFilmeLadenEvent event) {
             }
 
             @Override
-            public void fertig(MSListenerFilmeLadenEvent event) {
+            public void fertig(ListenerFilmeLadenEvent event) {
                 jButtonFilmeLaden.setEnabled(true);
             }
         });
@@ -409,7 +409,7 @@ public final class MVToolBar extends JToolBar {
             boolean b = !Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_VIS_FILTER));
             Daten.mVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.toString(b));
             filterAnzeigen();
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVToolBar.class.getName());
+            Listener.notify(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, MVToolBar.class.getName());
         });
     }
 

@@ -32,9 +32,9 @@ import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.HinweisKeineAuswahl;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVConfig;
-import mSearch.tool.MVReplaceList;
+import mSearch.tool.ReplaceList;
 import mediathek.tool.TModel;
 
 public class PanelDateinamen extends PanelVorlage {
@@ -48,7 +48,7 @@ public class PanelDateinamen extends PanelVorlage {
         super(d, pparentComponent);
         initComponents();
         daten = d;
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_REPLACELIST_CHANGED, PanelDateinamen.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_REPLACELIST_CHANGED, PanelDateinamen.class.getSimpleName()) {
             @Override
             public void ping() {
                 tabelleLaden();
@@ -144,7 +144,7 @@ public class PanelDateinamen extends PanelVorlage {
             if (selectedTableRow >= 0) {
 //                Daten.mVReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[MVReplaceList.VON_NR]
 //                        = jTextFieldVon.getText().isEmpty() ? " " : jTextFieldVon.getText(); // nicht nach nix suchen
-                mVReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[MVReplaceList.VON_NR] = jTextFieldVon.getText(); // leer wird beim suchen aussortiert
+                mVReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[ReplaceList.VON_NR] = jTextFieldVon.getText(); // leer wird beim suchen aussortiert
                 tabelleLaden();
             }
         }
@@ -154,7 +154,7 @@ public class PanelDateinamen extends PanelVorlage {
         if (!stopBeob) {
             int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow >= 0) {
-                mVReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[MVReplaceList.NACH_NR] = jTextFieldNach.getText();
+                mVReplaceList.list.get(tabelle.convertRowIndexToModel(selectedTableRow))[ReplaceList.NACH_NR] = jTextFieldNach.getText();
                 tabelleLaden();
             }
         }
@@ -180,11 +180,11 @@ public class PanelDateinamen extends PanelVorlage {
         if (selectedTableRow >= 0) {
             selectedTableRow = tabelle.convertRowIndexToModel(selectedTableRow);
         }
-        TModel model = new TModel(new Object[][]{}, MVReplaceList.COLUMN_NAMES);
+        TModel model = new TModel(new Object[][]{}, ReplaceList.COLUMN_NAMES);
         Object[] object;
         model.setRowCount(0);
         Iterator<String[]> iterator = mVReplaceList.list.iterator();
-        object = new Object[MVReplaceList.MAX_ELEM];
+        object = new Object[ReplaceList.MAX_ELEM];
         while (iterator.hasNext()) {
             String[] s = iterator.next();
             //object[i] = datenAbo.arr;
@@ -212,8 +212,8 @@ public class PanelDateinamen extends PanelVorlage {
         int selectedTableRow = tabelle.getSelectedRow();
 
         if (selectedTableRow >= 0) {
-            jTextFieldVon.setText(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), MVReplaceList.VON_NR).toString());
-            jTextFieldNach.setText(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), MVReplaceList.NACH_NR).toString());
+            jTextFieldVon.setText(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), ReplaceList.VON_NR).toString());
+            jTextFieldNach.setText(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), ReplaceList.NACH_NR).toString());
         } else {
             jTextFieldVon.setText("");
             jTextFieldNach.setText("");

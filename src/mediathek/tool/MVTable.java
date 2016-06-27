@@ -19,7 +19,7 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Point;
@@ -166,7 +166,7 @@ public final class MVTable extends JTable {
             iconKlein = Boolean.parseBoolean(Daten.mVConfig.get(iconKleinStr));
         }
         setHeight();
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FONT, MVTable.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_FONT, MVTable.class.getSimpleName()) {
             @Override
             public void ping() {
                 setHeight();
@@ -224,7 +224,7 @@ public final class MVTable extends JTable {
         this.setRowSorter(null);
         this.setAutoCreateRowSorter(true);
         setSelected();
-        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_REIHENFOLGE_DOWNLOAD, MVTable.class.getSimpleName());
+        Listener.notify(Listener.EREIGNIS_REIHENFOLGE_DOWNLOAD, MVTable.class.getSimpleName());
     }
 
     public void initTabelle() {
@@ -538,7 +538,7 @@ public final class MVTable extends JTable {
             }
             this.validate();
         } catch (Exception ex) {
-            Log.fehlerMeldung(965001463, ex);
+            Log.errorLog(965001463, ex);
         }
     }
 

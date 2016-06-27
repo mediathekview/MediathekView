@@ -59,7 +59,7 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.res.GetIcon;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
 
@@ -114,11 +114,11 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jToggleButtonBlacklist.addActionListener(e -> {
             Daten.mVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.toString(jToggleButtonBlacklist.isSelected()));
             MVListeFilme.checkBlacklist();
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterPanel.class.getSimpleName());
+            Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterPanel.class.getSimpleName());
             setIconBlacklist();
         });
         jToggleButtonBlacklist.addMouseListener(new BeobMausBlacklist());
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterPanel.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterPanel.class.getSimpleName()) {
             @Override
             public void ping() {
                 setIconBlacklist();
@@ -139,7 +139,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jRadioButtonF4.addMouseListener(new BeobMaus(3));
         jRadioButtonF5.addMouseListener(new BeobMaus(4));
         setFilterAnzahl();
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FILTER_ANZAHL, MVFilterPanel.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_FILTER_ANZAHL, MVFilterPanel.class.getSimpleName()) {
             @Override
             public void ping() {
                 setFilterAnzahl();
@@ -421,7 +421,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
             jSpinner.addChangeListener(e -> {
                 Daten.mVConfig.add(MVConfig.SYSTEM_FILTER_PROFILE__ANZAHL_FILTER, String.valueOf(((Number) jSpinner.getModel().getValue()).intValue()));
                 setFilterAnzahl();
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_FILTER_ANZAHL, MVFilterPanel.class.getSimpleName());
+                Listener.notify(Listener.EREIGNIS_FILTER_ANZAHL, MVFilterPanel.class.getSimpleName());
             });
             JLabel label = new JLabel("Anzahl Filter anzeigen:");
             p.add(label);

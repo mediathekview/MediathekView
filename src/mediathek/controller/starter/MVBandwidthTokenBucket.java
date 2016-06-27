@@ -2,7 +2,7 @@ package mediathek.controller.starter;
 
 import java.util.concurrent.Semaphore;
 import mediathek.daten.Daten;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVConfig;
 
 /**
@@ -24,7 +24,7 @@ public class MVBandwidthTokenBucket {
 
     public MVBandwidthTokenBucket() {
         setBucketCapacity(getBandwidth());
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_BANDBREITE, MVBandwidthTokenBucket.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_BANDBREITE, MVBandwidthTokenBucket.class.getSimpleName()) {
             @Override
             public void ping() {
                 setBucketCapacity(getBandwidth());

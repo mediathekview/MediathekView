@@ -57,7 +57,7 @@ public class GetIcon {
                     icon = getStandard(strIcon, path);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(932107891, strIcon);
+                Log.errorLog(932107891, strIcon);
                 icon = getStandard(strIcon, path);
             }
             return icon;

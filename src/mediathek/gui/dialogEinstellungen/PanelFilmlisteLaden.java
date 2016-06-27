@@ -34,7 +34,7 @@ import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVColor;
 import mediathek.tool.MVConfig;
 
@@ -63,7 +63,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jRadioButtonManuell.addActionListener(new BeobOption());
         jRadioButtonAuto.addActionListener(new BeobOption());
         jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ART_IMPORT_FILMLISTE, PanelFilmlisteLaden.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_ART_IMPORT_FILMLISTE, PanelFilmlisteLaden.class.getSimpleName()) {
             @Override
             public void ping() {
                 initRadio();
@@ -263,7 +263,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                     Daten.mVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUTO));
                 }
                 // den Dialog gibts 2x
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_IMPORT_FILMLISTE, this.getClass().getSimpleName());
+                Listener.notify(Listener.EREIGNIS_ART_IMPORT_FILMLISTE, this.getClass().getSimpleName());
             }
         }
     }
@@ -282,7 +282,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldUrl.setText(destination.getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(102036579, ex);
+                        Log.errorLog(102036579, ex);
                     }
                 }
             } else {
@@ -298,7 +298,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                     try {
                         jTextFieldUrl.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(733025319, ex);
+                        Log.errorLog(733025319, ex);
                     }
                 }
             }

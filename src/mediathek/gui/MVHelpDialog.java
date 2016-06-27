@@ -23,7 +23,7 @@ import java.io.BufferedWriter;
 import mSearch.tool.SysMsg;
 import java.io.File;
 import java.io.OutputStreamWriter;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -97,7 +97,7 @@ public class MVHelpDialog extends javax.swing.JDialog {
             Daten.listePset.clear();
             //GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
             GuiFunktionenProgramme.addSetVorlagen(parent, daten, ListePsetVorlagen.getStandarset(parent, daten, true /*replaceMuster*/), false /*auto*/, true /*setVersion*/);
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_LISTE_PSET, MVHelpDialog.class.getSimpleName());
+            Listener.notify(Listener.EREIGNIS_LISTE_PSET, MVHelpDialog.class.getSimpleName());
         });
         jButtonResetAll.addActionListener(e -> {
             int ret = JOptionPane.showConfirmDialog(parent, "Alle Einstellungen zurücksetzen?", "Alle Einstellungen zurücksetzen!", JOptionPane.YES_NO_OPTION);
@@ -207,7 +207,7 @@ public class MVHelpDialog extends javax.swing.JDialog {
             bw.newLine();
             bw.write("## Fehlermeldungen                                       ");
             bw.newLine();
-            retList = Log.fehlerMeldungen();
+            retList = Log.printErrorMsg();
             for (String s : retList) {
                 bw.write(s);
                 bw.newLine();
@@ -218,7 +218,7 @@ public class MVHelpDialog extends javax.swing.JDialog {
             bw.close();
             ret = true;
         } catch (Exception ex) {
-            Log.fehlerMeldung(319865493, ex);
+            Log.errorLog(319865493, ex);
             ret = false;
         }
         return ret;

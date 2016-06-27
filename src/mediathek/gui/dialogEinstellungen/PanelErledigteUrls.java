@@ -46,7 +46,7 @@ import mediathek.gui.dialog.DialogZiel;
 import mediathek.gui.dialog.MVFilmInfo;
 import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.tool.GuiFunktionen;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVRun;
 import mediathek.tool.TModel;
@@ -72,7 +72,7 @@ public class PanelErledigteUrls extends PanelVorlage {
 
     public void initAbo() {
         abo = true;
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ERLEDIGTE_ABOS, PanelErledigteUrls.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_ERLEDIGTE_ABOS, PanelErledigteUrls.class.getSimpleName()) {
             @Override
             public void ping() {
                 if (jToggleButtonLaden.isSelected()) {
@@ -105,7 +105,7 @@ public class PanelErledigteUrls extends PanelVorlage {
 
     public void initHistory() {
         abo = false;
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_HISTORY_GEAENDERT, PanelErledigteUrls.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT, PanelErledigteUrls.class.getSimpleName()) {
             @Override
             public void ping() {
                 if (jToggleButtonLaden.isSelected()) {

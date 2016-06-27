@@ -31,7 +31,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import mSearch.tool.MSConst;
+import mSearch.Const;
 import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.gui.dialog.DialogHinweisUpdate;
@@ -102,7 +102,7 @@ public class ProgrammUpdateSuchen {
                 }
             });
         } catch (Exception ex) {
-            Log.fehlerMeldung(159002583, ex);
+            Log.errorLog(159002583, ex);
         }
         return neueVersion;
     }
@@ -130,7 +130,7 @@ public class ProgrammUpdateSuchen {
                     Daten.mVConfig.add(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(listInfos.size()));
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(693298731, ex);
+                Log.errorLog(693298731, ex);
             }
         } else if (alleAnzeigen) {
             // dann wenigstens einen Hinweis, dass es keine gibt
@@ -155,7 +155,7 @@ public class ProgrammUpdateSuchen {
                 return true;
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(683021193, ex);
+            Log.errorLog(683021193, ex);
         }
         return false;
     }
@@ -174,7 +174,7 @@ public class ProgrammUpdateSuchen {
         conn.setRequestProperty("User-Agent", Daten.getUserAgent());
         conn.setReadTimeout(timeout);
         conn.setConnectTimeout(timeout);
-        inReader = new InputStreamReader(conn.getInputStream(), MSConst.KODIERUNG_UTF);
+        inReader = new InputStreamReader(conn.getInputStream(), Const.KODIERUNG_UTF);
         parser = inFactory.createXMLStreamReader(inReader);
         while (parser.hasNext()) {
             event = parser.next();

@@ -19,7 +19,7 @@
  */
 package mediathek.gui;
 
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import java.net.URISyntaxException;
 import javax.swing.JPanel;
 import javax.swing.event.ListSelectionEvent;
@@ -48,7 +48,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
         jCheckBoxBeschreibung.setIcon(GetIcon.getProgramIcon("close_15.png"));
         jCheckBoxBeschreibung.addActionListener(e -> {
             Daten.mVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.FALSE.toString());
-            ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
+            Listener.notify(Listener.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
         });
 
         try {
@@ -67,11 +67,11 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
                     // dann hat sich die Beschreibung geändert
                     setText();
                     Daten.filmlisteSpeichern();
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_BESCHREIBUNG, PanelFilmBeschreibung.class.getSimpleName());
+                    Listener.notify(Listener.EREIGNIS_BESCHREIBUNG, PanelFilmBeschreibung.class.getSimpleName());
                 }
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_FONT, PanelFilmBeschreibung.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_FONT, PanelFilmBeschreibung.class.getSimpleName()) {
             @Override
             public void ping() {
                 setText();

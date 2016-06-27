@@ -438,7 +438,7 @@ public class PanelProgrammPfade extends JPanel {
                     try {
                         textField.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(306087945, ex);
+                        Log.errorLog(306087945, ex);
                     }
                 }
             } else {
@@ -456,7 +456,7 @@ public class PanelProgrammPfade extends JPanel {
                     try {
                         textField.setText(chooser.getSelectedFile().getAbsolutePath());
                     } catch (Exception ex) {
-                        Log.fehlerMeldung(643289561, ex);
+                        Log.errorLog(643289561, ex);
                     }
                 }
             }

@@ -58,7 +58,7 @@ public class CellRendererProgramme extends DefaultTableCellRenderer {
                 setText("");
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(338740095, ex);
+            Log.errorLog(338740095, ex);
         }
         return this;
     }

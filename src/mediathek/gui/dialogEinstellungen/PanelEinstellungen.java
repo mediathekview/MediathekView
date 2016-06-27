@@ -40,7 +40,7 @@ import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVMessageDialog;
@@ -74,13 +74,13 @@ public class PanelEinstellungen extends PanelVorlage {
                 + "\n\n"
                 + "Auswirkung hat das erst nach dem\n"
                 + "Neuladen der kompletten Filmliste.").setVisible(true));
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName()) {
             @Override
             public void ping() {
                 initSpinner();
             }
         });
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_TRAYICON, PanelEinstellungen.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_TRAYICON, PanelEinstellungen.class.getSimpleName()) {
             @Override
             public void ping() {
                 jCheckBoxTray.setSelected(Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_USE_TRAY)));
@@ -133,7 +133,7 @@ public class PanelEinstellungen extends PanelVorlage {
         } catch (Exception ex) {
             Daten.mVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
             Daten.mVConfig.add(MVConfig.SYSTEM_ICON_PFAD, "");
-            Log.fehlerMeldung(829304789, ex);
+            Log.errorLog(829304789, ex);
         }
     }
 
@@ -212,7 +212,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(636875409, ex);
+            Log.errorLog(636875409, ex);
         }
 
         jComboBoxIcons.setModel(model);

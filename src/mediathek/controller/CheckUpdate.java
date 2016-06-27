@@ -31,7 +31,7 @@ import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.dialog.DialogNewSet;
 import mediathek.tool.GuiFunktionenProgramme;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVConfig;
 import mediathek.tool.MVFunctionSys;
 
@@ -62,7 +62,7 @@ public class CheckUpdate {
                     SwingUtilities.invokeLater(CheckUpdate.this::prog);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(794510101, ex);
+                Log.errorLog(794510101, ex);
             }
         }
     }
@@ -75,9 +75,9 @@ public class CheckUpdate {
                     // damit geänderte Sets gleich gemeldet werden und nicht erst morgen
                     final ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
                     if (pgrUpdate.checkVersion(false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
-                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, CheckUpdate.class.getSimpleName());
+                        Listener.notify(Listener.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, CheckUpdate.class.getSimpleName());
                     } else {
-                        ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_PROGRAMM_AKTUELL, CheckUpdate.class.getSimpleName());
+                        Listener.notify(Listener.EREIGNIS_MEDIATHEKGUI_PROGRAMM_AKTUELL, CheckUpdate.class.getSimpleName());
                     }
 
                     //==============================================
@@ -88,11 +88,11 @@ public class CheckUpdate {
                         this.wait(10 * 1000); // 10 Sekunden den Titel anzeigen
                     } catch (Exception ignored) {
                     }
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_MEDIATHEKGUI_ORG_TITEL, CheckUpdate.class.getSimpleName());
+                    Listener.notify(Listener.EREIGNIS_MEDIATHEKGUI_ORG_TITEL, CheckUpdate.class.getSimpleName());
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(794612801, ex);
+            Log.errorLog(794612801, ex);
         }
     }
 
@@ -112,7 +112,7 @@ public class CheckUpdate {
                     SwingUtilities.invokeLater(CheckUpdate.this::set);
                 }
             } catch (Exception ex) {
-                Log.fehlerMeldung(794510101, ex);
+                Log.errorLog(794510101, ex);
             }
         }
     }
@@ -138,13 +138,13 @@ public class CheckUpdate {
                     DialogNewSet dialogNewSet = new DialogNewSet(parent);
                     dialogNewSet.setVisible(true);
                     if (!dialogNewSet.ok) {
-                        SysMsg.systemMeldung("Setanlegen: Abbruch");
+                        SysMsg.sysMsg("Setanlegen: Abbruch");
                         if (!dialogNewSet.morgen) {
                             // dann auch die Versionsnummer aktualisieren
-                            SysMsg.systemMeldung("Setanlegen: Nicht wieder nachfragen");
+                            SysMsg.sysMsg("Setanlegen: Nicht wieder nachfragen");
                             Daten.mVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
                         }
-                        SysMsg.systemMeldung("==========================================");
+                        SysMsg.sysMsg("==========================================");
                         // dann halt nicht
                         return;
                     }
@@ -185,8 +185,8 @@ public class CheckUpdate {
                 }
             }
             GuiFunktionenProgramme.addSetVorlagen(daten.mediathekGui, daten, listePsetStandard, true /*auto*/, true /*setVersion*/); // damit auch AddOns geladen werden
-            SysMsg.systemMeldung("Setanlegen: OK");
-            SysMsg.systemMeldung("==========================================");
+            SysMsg.sysMsg("Setanlegen: OK");
+            SysMsg.sysMsg("==========================================");
         }
     }
 

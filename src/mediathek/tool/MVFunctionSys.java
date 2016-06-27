@@ -30,13 +30,13 @@ import mediathek.daten.Daten;
 public class MVFunctionSys {
 
     public static synchronized void startMeldungen() {
-        Log.versionsMeldungen(MVFunctionSys.getProgName());
-        SysMsg.systemMeldung("Programmpfad: " + MVFunctionSys.getPathJar());
-        SysMsg.systemMeldung("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
-        SysMsg.systemMeldung("");
-        SysMsg.systemMeldung("###########################################################");
-        SysMsg.systemMeldung("");
-        SysMsg.systemMeldung("");
+        Log.versionMsg(MVFunctionSys.getProgName());
+        SysMsg.sysMsg("Programmpfad: " + MVFunctionSys.getPathJar());
+        SysMsg.sysMsg("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
+        SysMsg.sysMsg("");
+        SysMsg.sysMsg("###########################################################");
+        SysMsg.sysMsg("");
+        SysMsg.sysMsg("");
     }
 
     /**
@@ -99,7 +99,7 @@ public class MVFunctionSys {
             rb = ResourceBundle.getBundle("version");
             msg = rb.getString(propToken);
         } catch (Exception e) {
-            Log.fehlerMeldung(807293847, e);
+            Log.errorLog(807293847, e);
         }
         return msg;
     }
@@ -113,7 +113,7 @@ public class MVFunctionSys {
             rb = ResourceBundle.getBundle("version");
             msg = rb.getString(propToken);
         } catch (Exception e) {
-            Log.fehlerMeldung(134679898, e);
+            Log.errorLog(134679898, e);
         }
         return msg;
     }

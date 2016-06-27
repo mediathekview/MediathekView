@@ -19,7 +19,7 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -81,7 +81,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
         download_del_tab = GetIcon.getProgramIcon("download_del_tab.png");
         download_del_sw_tab = GetIcon.getProgramIcon("download_del_sw_tab.png");
         geoMelden = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_GEO_MELDEN));
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_GEO, CellRendererDownloads.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_GEO, CellRendererDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 geoMelden = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_GEO_MELDEN));
@@ -302,7 +302,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             setColor(this, datenDownload.start, isSelected);
             handleGeoBlocking(datenDownload, isSelected);
         } catch (Exception ex) {
-            Log.fehlerMeldung(758200166, ex);
+            Log.errorLog(758200166, ex);
         }
         return this;
     }

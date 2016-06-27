@@ -19,7 +19,7 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import com.jidesoft.utils.SystemInfo;
 import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.Start;
@@ -59,7 +59,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
         film_stop_tab = GetIcon.getProgramIcon("film_stop_tab.png");
         film_stop_sw_tab = GetIcon.getProgramIcon("film_stop_sw_tab.png");
         geoMelden = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_GEO_MELDEN));
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_GEO, CellRendererFilme.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_GEO, CellRendererFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 geoMelden = Boolean.parseBoolean(Daten.mVConfig.get(MVConfig.SYSTEM_GEO_MELDEN));
@@ -170,7 +170,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 }
             }
         } catch (Exception ex) {
-            Log.fehlerMeldung(630098552, ex);
+            Log.errorLog(630098552, ex);
         }
         return this;
     }

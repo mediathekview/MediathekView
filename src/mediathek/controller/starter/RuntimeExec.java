@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
 import mediathek.daten.DatenDownload;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 
 public class RuntimeExec {
 
@@ -75,18 +75,18 @@ public class RuntimeExec {
         try {
             if (arrProgCallArray != null) {
                 if (log) {
-                    SysMsg.systemMeldung("=====================");
-                    SysMsg.systemMeldung("Starte Array: ");
-                    SysMsg.systemMeldung(" -> " + strProgCallArray);
-                    SysMsg.systemMeldung("=====================");
+                    SysMsg.sysMsg("=====================");
+                    SysMsg.sysMsg("Starte Array: ");
+                    SysMsg.sysMsg(" -> " + strProgCallArray);
+                    SysMsg.sysMsg("=====================");
                 }
                 process = Runtime.getRuntime().exec(arrProgCallArray);
             } else {
                 if (log) {
-                    SysMsg.systemMeldung("=====================");
-                    SysMsg.systemMeldung("Starte nicht als Array:");
-                    SysMsg.systemMeldung(" -> " + strProgCall);
-                    SysMsg.systemMeldung("=====================");
+                    SysMsg.sysMsg("=====================");
+                    SysMsg.sysMsg("Starte nicht als Array:");
+                    SysMsg.sysMsg(" -> " + strProgCall);
+                    SysMsg.sysMsg("=====================");
                 }
                 process = Runtime.getRuntime().exec(strProgCall);
             }
@@ -96,7 +96,7 @@ public class RuntimeExec {
             clearIn.start();
             clearOut.start();
         } catch (Exception ex) {
-            Log.fehlerMeldung(450028932, ex, "Fehler beim Starten");
+            Log.errorLog(450028932, ex, "Fehler beim Starten");
         }
         return process;
     }
@@ -139,7 +139,7 @@ public class RuntimeExec {
                 String inStr;
                 while ((inStr = buff.readLine()) != null) {
                     GetPercentageFromErrorStream(inStr);
-                    SysMsg.playerMeldung(titel + ": " + inStr);
+                    SysMsg.playerMsg(titel + ": " + inStr);
                 }
             } catch (IOException ignored) {
             } finally {
@@ -161,8 +161,8 @@ public class RuntimeExec {
                     double d = Double.parseDouble(prozent);
                     meldenDouble(d);
                 } catch (Exception ex) {
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
-                    Log.fehlerMeldung(912036780, input);
+                    Listener.notify(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
+                    Log.errorLog(912036780, input);
                 }
                 return;
             }
@@ -225,8 +225,8 @@ public class RuntimeExec {
                     }
                 }
             } catch (Exception ex) {
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
-                Log.fehlerMeldung(912036780, input);
+                Listener.notify(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
+                Log.errorLog(912036780, input);
             }
         }
 
@@ -248,7 +248,7 @@ public class RuntimeExec {
                     int restProzent = 1000 - percent;
                     start.restSekunden = (diffZeit * restProzent / diffProzent);
                 }
-                ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
+                Listener.notify(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, RuntimeExec.class.getName());
             }
         }
     }

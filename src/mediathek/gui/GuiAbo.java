@@ -41,7 +41,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.BeobTableHeader;
 import mediathek.tool.CellRendererAbo;
 import mediathek.tool.HinweisKeineAuswahl;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVTable;
 import mediathek.tool.TModelAbo;
 import mSearch.tool.Datum;
@@ -93,7 +93,7 @@ public class GuiAbo extends PanelVorlage {
     //private
     //===================================
     private void initBeobachter() {
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName()) {
             @Override
             public void ping() {
                 tabelleLaden();

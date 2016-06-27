@@ -13,7 +13,7 @@ import javax.swing.*;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
-import mSearch.tool.ListenerMediathekView;
+import mSearch.tool.Listener;
 import mediathek.tool.MVConfig;
 
 /**
@@ -63,8 +63,8 @@ public class MediathekGuiMac extends MediathekGui {
      */
     private void setupOsxDockIconBadge() {
         //setup the badge support for displaying active downloads
-        ListenerMediathekView.addListener(new ListenerMediathekView(new int[]{
-                ListenerMediathekView.EREIGNIS_START_EVENT, ListenerMediathekView.EREIGNIS_LISTE_DOWNLOADS}, MediathekGui.class.getSimpleName()) {
+        Listener.addListener(new Listener(new int[]{
+                Listener.EREIGNIS_START_EVENT, Listener.EREIGNIS_LISTE_DOWNLOADS}, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 final int activeDownloads = Daten.downloadInfos.downloadStarts[4];
@@ -109,7 +109,7 @@ public class MediathekGuiMac extends MediathekGui {
             final BufferedImage appImage = ImageIO.read(url);
             application.setDockIconImage(appImage);
         } catch (IOException ex) {
-            Log.fehlerMeldung(165623698, "OS X Application image could not be loaded");
+            Log.errorLog(165623698, "OS X Application image could not be loaded");
         }
 
         //Remove all menu items which don´t need to be displayed due to OS X´s native menu support
@@ -174,7 +174,7 @@ public class MediathekGuiMac extends MediathekGui {
                 final AbstractButton btn = (AbstractButton) e.getSource();
                 if (btn != null) {
                     Daten.mVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, btn.getText());
-                    ListenerMediathekView.notify(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
+                    Listener.notify(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
                 }
             });
             group.add(menuItem);
@@ -182,7 +182,7 @@ public class MediathekGuiMac extends MediathekGui {
         }
         jMenuDownload.add(numDownloadsMenu);
 
-        ListenerMediathekView.addListener(new ListenerMediathekView(ListenerMediathekView.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 //FIXME selection is not properly changed when JFrame settings dialog is displayed...needs to be JDialog in the future...
