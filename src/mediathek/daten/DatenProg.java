@@ -19,7 +19,7 @@
  */
 package mediathek.daten;
 
-import static mSearch.dlCtrl.RuntimeExec.TRENNER_PROG_ARRAY;
+import static mediathek.controller.starter.RuntimeExec.TRENNER_PROG_ARRAY;
 import mediathek.tool.GuiFunktionenProgramme;
 
 public class DatenProg {
