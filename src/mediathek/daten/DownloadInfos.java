@@ -21,7 +21,7 @@ package mediathek.daten;
 
 import java.text.DecimalFormat;
 import java.util.LinkedList;
-import mSearch.dlCtrl.Start;
+import mediathek.controller.starter.Start;
 
 public class DownloadInfos {
 

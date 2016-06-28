@@ -28,7 +28,7 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.*;
-import mSearch.dlCtrl.Start;
+import mediathek.controller.starter.Start;
 import mediathek.tool.*;
 import mSearch.daten.DatenFilm;
 
@@ -488,7 +488,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     /**
      * Return a List of all not yet finished downloads.
      *
-     * @param quelle Use QUELLE_XXX constants from {@link mSearch.dlCtrl.Start}.
+     * @param quelle Use QUELLE_XXX constants from {@link mediathek.controller.starter.Start}.
      * @return A list with all download objects.
      */
     public synchronized LinkedList<DatenDownload> getListOfStartsNotFinished(int quelle) {
@@ -504,7 +504,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     /**
      * Return a List of all not yet finished downloads.
      *
-     * @param quelle Use QUELLE_XXX constants from {@link mSearch.dlCtrl.Start}.
+     * @param quelle Use QUELLE_XXX constants from {@link mediathek.controller.starter.Start}.
      * @param liste
      */
     public synchronized void getListOfStartsNotFinished(int quelle, LinkedList<DatenDownload> liste) {

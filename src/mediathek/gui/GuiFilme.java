@@ -21,7 +21,7 @@ package mediathek.gui;
 
 import mSearch.tool.MVConfig;
 import mSearch.tool.Listener;
-import mSearch.dlCtrl.Start;
+import mediathek.controller.starter.Start;
 import mediathek.daten.*;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogEditAbo;

@@ -38,7 +38,7 @@ import javax.swing.*;
 import mSearch.tool.DebugMsg;
 import mSearch.tool.Functions.OperatingSystemType;
 import static mSearch.tool.Functions.getOs;
-import mSearch.dlCtrl.MVBandwidthTokenBucket;
+import mediathek.controller.MVBandwidthTokenBucket;
 import mediathek.daten.Daten;
 import mediathek.daten.DownloadInfos;
 import mediathek.tool.*;

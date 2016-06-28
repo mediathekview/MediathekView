@@ -40,7 +40,7 @@ import static mSearch.tool.Functions.getOs;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
 import mediathek.controller.CheckUpdate;
-import mSearch.dlCtrl.Start;
+import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.*;
