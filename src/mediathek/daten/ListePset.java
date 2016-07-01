@@ -19,17 +19,18 @@
  */
 package mediathek.daten;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import javax.swing.JFrame;
+import mSearch.tool.Listener;
+import mSearch.tool.MVConfig;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
-import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
 import mediathek.tool.TModel;
 
 public class ListePset extends LinkedList<DatenPset> {
@@ -124,10 +125,8 @@ public class ListePset extends LinkedList<DatenPset> {
             if (neu > 0) {
                 --neu;
             }
-        } else {
-            if (neu < this.size()) {
-                ++neu;
-            }
+        } else if (neu < this.size()) {
+            ++neu;
         }
         this.add(neu, prog);
         Listener.notify(Listener.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
@@ -268,5 +267,13 @@ public class ListePset extends LinkedList<DatenPset> {
             model = new TModel(new Object[0][DatenPset.MAX_ELEM], DatenPset.COLUMN_NAMES);
         }
         return model;
+    }
+
+    public ArrayList<String> getListProg() {
+        ArrayList<String> prog = new ArrayList<>();
+        for (int i = 0; i < size(); ++i) {
+            prog.add(get(i).toString());
+        }
+        return prog;
     }
 }
