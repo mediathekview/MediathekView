@@ -33,6 +33,7 @@ import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.FilmlisteLesen;
 import mSearch.tool.Log;
+import static mSearch.tool.Log.LILNE;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 public class MediathekAuto {
@@ -140,7 +141,7 @@ public class MediathekAuto {
                 SysMsg.sysMsg("\tTitel: " + d.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
                 SysMsg.sysMsg("");
             }
-            SysMsg.sysMsg("###########################################################");
+            SysMsg.sysMsg(LILNE);
             // und jetzt starten
             for (DatenDownload d : Daten.listeDownloads) {
                 d.startDownload(daten);

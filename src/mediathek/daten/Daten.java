@@ -35,17 +35,13 @@ import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
-import static mSearch.daten.Data.mVReplaceList;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mediathek.controller.MVBandwidthTokenBucket;
 import mSearch.filmlisten.FilmlisteLesen;
 import mSearch.filmlisten.WriteFilmlistJson;
+import mSearch.tool.*;
 import static mSearch.tool.Functions.getPathJar;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
-import mSearch.tool.MVConfig;
-import mSearch.tool.SysMsg;
 import mediathek.MediathekGui;
 import mediathek.controller.FilmeLaden;
 import mediathek.controller.IoXmlLesen;
@@ -359,7 +355,7 @@ public class Daten {
     private void clearKonfig() {
         init();
         listePset.clear();
-        mVReplaceList.list.clear();
+        ReplaceList.list.clear();
         listeAbo.clear();
         listeDownloads.clear();
         listeBlacklist.clear();

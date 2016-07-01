@@ -27,7 +27,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import mSearch.Const;
-import static mSearch.daten.Data.mVReplaceList;
 import mSearch.filmlisten.DatenFilmlisteUrl;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
@@ -75,7 +74,7 @@ public class IoXmlLesen {
                                 // Ersetzungstabelle
                                 String[] sa = new String[ReplaceList.MAX_ELEM];
                                 if (get(parser, ReplaceList.REPLACELIST, ReplaceList.COLUMN_NAMES, sa)) {
-                                    mVReplaceList.list.add(sa);
+                                    ReplaceList.list.add(sa);
                                 }
                                 break;
                             case DatenAbo.ABO:
@@ -171,7 +170,7 @@ public class IoXmlLesen {
                         String[] sa = new String[ReplaceList.MAX_ELEM];
                         if (get(parser, ReplaceList.REPLACELIST, ReplaceList.COLUMN_NAMES, sa)) {
                             ++found[2];
-                            mVReplaceList.list.add(sa);
+                            ReplaceList.list.add(sa);
                         }
                     }
                 }
