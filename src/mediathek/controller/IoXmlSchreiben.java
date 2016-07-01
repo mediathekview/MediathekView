@@ -27,7 +27,6 @@ import java.nio.file.Paths;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import static mSearch.daten.Data.mVReplaceList;
 import mSearch.filmlisten.DatenFilmlisteUrl;
 import mSearch.Const;
 import mSearch.tool.Log;
@@ -121,7 +120,7 @@ public class IoXmlSchreiben {
     }
 
     private static void xmlSchreibenErsetzungstabelle() {
-        for (String[] sa : mVReplaceList.list) {
+        for (String[] sa : ReplaceList.list) {
             xmlSchreibenDaten(ReplaceList.REPLACELIST, ReplaceList.COLUMN_NAMES, sa, false);
         }
     }

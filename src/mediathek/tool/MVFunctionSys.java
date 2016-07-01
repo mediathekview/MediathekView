@@ -23,6 +23,7 @@ import java.io.File;
 import java.security.CodeSource;
 import java.util.ResourceBundle;
 import mSearch.tool.Log;
+import static mSearch.tool.Log.LILNE;
 import mSearch.tool.SysMsg;
 import mediathek.Main;
 import mediathek.daten.Daten;
@@ -34,7 +35,7 @@ public class MVFunctionSys {
         SysMsg.sysMsg("Programmpfad: " + MVFunctionSys.getPathJar());
         SysMsg.sysMsg("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
         SysMsg.sysMsg("");
-        SysMsg.sysMsg("###########################################################");
+        SysMsg.sysMsg(LILNE);
         SysMsg.sysMsg("");
         SysMsg.sysMsg("");
     }

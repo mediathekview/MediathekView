@@ -19,7 +19,6 @@
  */
 package mediathek;
 
-import mSearch.tool.MVConfig;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -30,15 +29,11 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import mSearch.daten.Data;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.tool.Duration;
-import mSearch.tool.Listener;
 import mSearch.tool.Functions.OperatingSystemType;
 import static mSearch.tool.Functions.getOs;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
+import mSearch.tool.*;
 import mediathek.controller.CheckUpdate;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
@@ -230,7 +225,7 @@ public class MediathekGui extends JFrame {
             updateSplashScreenText("GUI Initialisieren...");
         } else {
             // erster Start
-            Data.mVReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
+            ReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
             new DialogStarteinstellungen(this, daten).setVisible(true);
             this.pack();
         }
