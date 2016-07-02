@@ -5,19 +5,6 @@ MediathekView startet nicht:
 http://sourceforge.net/p/zdfmediathk/wiki/FAQ/
 http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/
 
-
-* "MediathekView__mehr_Speicher__Start.exe"
-   kann unter Windows als Startdatei bei Startproblemen oder 
-   Problemen beim Laden der Filmliste verwendet werden
-   (Damit wird dem Programm mehr Speicher zur Verfügung gestellt).
-
-
-* "MediathekView-ipv4__Start.exe"
-   kann unter Windows als Startdatei bei Problemen beim Laden der 
-   Filmliste verwendet werden (Problem beim Erkennen des
-   verwendeten Network Stacks: IPv4 vs. IPv6).
-
-
 * ZIP-Datei nicht entpackt (Windows): Die Programmdatei wurde direkt im 
   ZIP-Archiv doppelgeklickt. Die ZIP-Datei muss erst entpackt werden, dazu sind 
   alle Dateien aus dem ZIP-Archiv in ein beliebiges Verzeichnis zu kopieren. Dort 

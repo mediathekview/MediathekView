@@ -3,9 +3,9 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>MediathekView.jar</jar>
-  <outfile>/home/emil/daten/software/mediathek/mediathek/res/Portable/MediathekView__Portable.exe</outfile>
+  <outfile>/home/emil/daten/software/mediathek/mediathek/res/Windows/MediathekView__ohne_Speicher__Start.exe</outfile>
   <errTitle></errTitle>
-  <cmdLine>Einstellungen\.mediathek3</cmdLine>
+  <cmdLine></cmdLine>
   <chdir></chdir>
   <priority>normal</priority>
   <downloadUrl>https://www.java.com/de/</downloadUrl>

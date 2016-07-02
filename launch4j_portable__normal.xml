@@ -3,9 +3,9 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>MediathekView.jar</jar>
-  <outfile>/home/emil/daten/software/mediathek/mediathek/res/MediathekView-ipv4__Start.exe</outfile>
+  <outfile>/home/emil/daten/software/mediathek/mediathek/res/Portable/MediathekView__Portable.exe</outfile>
   <errTitle></errTitle>
-  <cmdLine></cmdLine>
+  <cmdLine>Einstellungen\.mediathek3</cmdLine>
   <chdir></chdir>
   <priority>normal</priority>
   <downloadUrl>https://www.java.com/de/</downloadUrl>
@@ -22,6 +22,8 @@
     <maxVersion></maxVersion>
     <jdkPreference>preferJre</jdkPreference>
     <runtimeBits>64/32</runtimeBits>
-    <opt>-Djava.net.preferIPv4Stack=true</opt>
+    <initialHeapSize>256</initialHeapSize>
+    <maxHeapSize>2048</maxHeapSize>
+    <maxHeapPercent>80</maxHeapPercent>
   </jre>
 </launch4jConfig>

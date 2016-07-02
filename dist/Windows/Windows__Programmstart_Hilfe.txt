@@ -5,6 +5,31 @@ MediathekView startet nicht:
 http://sourceforge.net/p/zdfmediathk/wiki/FAQ/
 http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/
 
+Startprobleme können evtl. durch eine andere Startdatei behoben werden.
+Dazu die Startdatei aus diesem Verzeichnis eine Ebene höher kopieren
+(in den Ordner in den die jetztige Startdatei liegt) und dann das Programm
+darüber starten.
+
+* "MediathekView__ohne_Speicher__Start.exe"
+   Damit werden keine Vorgaben für den Speicher
+   den das Programm vom Betriebssystem bekommt, gemacht.
+   
+* "MediathekView__ohne_Speicher__Portable.exe"
+   wie oben, aber als Ersatzt für die Version "Portable"
+   im Ordner "Portable"
+
+
+* "MediathekView-ipv4__Start.exe"
+   kann unter Windows als Startdatei bei Problemen beim Laden der 
+   Filmliste verwendet werden (Problem beim Erkennen des
+   verwendeten Network Stacks: IPv4 vs. IPv6).
+
+   
+* "MediathekView__Start.bat"
+   das ist eine Startdatei mit der man eigene Vorgaben für den Start 
+   des Programms machen kann. Beispiele sind darin enthalten.
+
+
 * ZIP-Datei nicht entpackt (Windows): Die Programmdatei wurde direkt im 
   ZIP-Archiv doppelgeklickt. Die ZIP-Datei muss erst entpackt werden, dazu sind 
   alle Dateien aus dem ZIP-Archiv in ein beliebiges Verzeichnis zu kopieren. Dort 
@@ -19,33 +44,4 @@ http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/
   fehlen, da Dateien aus dem MediathekView-Programmordner gelöscht oder verschoben 
   wurden, ->dann eine Neuinstallation.
 
-============================================================
-
-
-
-============================================================
-Änderungen ab der Version 10:
--------------------------------
-
-Die Sets zum Abspielen und Aufzeichnen der Sendungen haben sich
-ab der Version geändert!
-Das Abspielen oder Aufzeichnen klappt mit den alten Einstellungen nicht mehr.
-
-Beim ersten Start der Version (ab Verson 10) wird der Update der Sets
-angeboten und sollte auch vorgenommen werden.
-
-In den Einstellungen->"Set bearbeiten" oder Einstellungen->"Set importieren"
-kann man das Update auch von Hand vornehmen.
-
-Geändert:
-Im Feld Programm darf NUR noch "PFAD/PROGRAMM" stehen, die Parameter müssen
-im Feld Schalter stehen. Z.B.:
-
-Aufzeichnen mit dem VLC
-Programm: cmd
-Schalter: /c "C:\Program Files\VideoLAN\VLC\vlc.exe" %f :sout=#standard{access=file,mux=ts,dst="**"} -I "dummy" --play-and-exit
-
-oder Abspielen mit dem VLC
-Programm: C:\Program Files\VideoLAN\VLC\vlc.exe
-Schalter: %f --play-and-exit
 ============================================================
