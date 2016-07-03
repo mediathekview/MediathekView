@@ -26,7 +26,7 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane1" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="791" max="32767" attributes="0"/>
                   <Component id="jPanel2" alignment="1" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -68,8 +68,8 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jCheckBoxAlleEinstellungen" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
-                  <Component id="jCheckBoxAnpassen" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="jButtonAnpassen" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="jButtonStandard" linkSize="2" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -82,7 +82,7 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jButtonStandard" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jCheckBoxAlleEinstellungen" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jCheckBoxAnpassen" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonAnpassen" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -100,9 +100,9 @@
             <Property name="text" type="java.lang.String" value="alle Einstellungen anzeigen"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JCheckBox" name="jCheckBoxAnpassen">
+        <Component class="javax.swing.JButton" name="jButtonAnpassen">
           <Properties>
-            <Property name="text" type="java.lang.String" value="vorher anpassen"/>
+            <Property name="text" type="java.lang.String" value="Einstellungen anpassen"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -116,7 +116,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="679" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="788" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
