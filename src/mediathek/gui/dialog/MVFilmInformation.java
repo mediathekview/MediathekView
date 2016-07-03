@@ -3,29 +3,16 @@ package mediathek.gui.dialog;
 import com.explodingpixels.macwidgets.HudWidgetFactory;
 import com.explodingpixels.macwidgets.HudWindow;
 import com.explodingpixels.macwidgets.plaf.HudPaintingUtils;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.net.URISyntaxException;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
+import mSearch.daten.DatenFilm;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.UrlHyperlinkAction;
-import mSearch.daten.DatenFilm;
 import org.jdesktop.swingx.JXHyperlink;
 
 /**
@@ -39,6 +26,8 @@ public class MVFilmInformation implements MVFilmInfo {
     private JXHyperlink lblUrlSubtitle;
     private JTextArea textAreaBeschreibung;
     private JLabel jLabelFilmNeu;
+    private JLabel jLabelFilmHD;
+    private JLabel jLabelFilmUT;
     private final JLabel[] labelArrNames = new JLabel[DatenFilm.MAX_ELEM];
     private final JTextField[] txtArrCont = new JTextField[DatenFilm.MAX_ELEM];
     private final Color foreground, background;
@@ -116,10 +105,22 @@ public class MVFilmInformation implements MVFilmInfo {
         textAreaBeschreibung.setForeground(foreground);
         textAreaBeschreibung.setOpaque(false);
         textAreaBeschreibung.setRows(4);
+        
         jLabelFilmNeu = new JLabel();
         jLabelFilmNeu.setOpaque(false);
         jLabelFilmNeu.setVisible(false);
         jLabelFilmNeu.setIcon(ja_sw_16);
+        
+        jLabelFilmHD = new JLabel();
+        jLabelFilmHD.setOpaque(false);
+        jLabelFilmHD.setVisible(false);
+        jLabelFilmHD.setIcon(ja_sw_16);
+        
+        jLabelFilmUT = new JLabel();
+        jLabelFilmUT.setOpaque(false);
+        jLabelFilmUT.setVisible(false);
+        jLabelFilmUT.setIcon(ja_sw_16);
+        
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(4, 10, 4, 10);
         c.weighty = 0;
@@ -162,21 +163,35 @@ public class MVFilmInformation implements MVFilmInfo {
         panel.add(labelArrNames[i]);
         c.gridx = 1;
         c.weightx = 10;
-        if (i == DatenFilm.FILM_WEBSEITE_NR) {
-            gridbag.setConstraints(lblUrlThemaField, c);
-            panel.add(lblUrlThemaField);
-        } else if (i == DatenFilm.FILM_URL_SUBTITLE_NR) {
-            gridbag.setConstraints(lblUrlSubtitle, c);
-            panel.add(lblUrlSubtitle);
-        } else if (i == DatenFilm.FILM_BESCHREIBUNG_NR) {
-            gridbag.setConstraints(textAreaBeschreibung, c);
-            panel.add(textAreaBeschreibung);
-        } else if (i == DatenFilm.FILM_NEU_NR) {
-            gridbag.setConstraints(jLabelFilmNeu, c);
-            panel.add(jLabelFilmNeu);
-        } else {
-            gridbag.setConstraints(txtArrCont[i], c);
-            panel.add(txtArrCont[i]);
+        switch (i) {
+            case DatenFilm.FILM_WEBSEITE_NR:
+                gridbag.setConstraints(lblUrlThemaField, c);
+                panel.add(lblUrlThemaField);
+                break;
+            case DatenFilm.FILM_URL_SUBTITLE_NR:
+                gridbag.setConstraints(lblUrlSubtitle, c);
+                panel.add(lblUrlSubtitle);
+                break;
+            case DatenFilm.FILM_BESCHREIBUNG_NR:
+                gridbag.setConstraints(textAreaBeschreibung, c);
+                panel.add(textAreaBeschreibung);
+                break;
+            case DatenFilm.FILM_NEU_NR:
+                gridbag.setConstraints(jLabelFilmNeu, c);
+                panel.add(jLabelFilmNeu);
+                break;
+            case DatenFilm.FILM_HD_NR:
+                gridbag.setConstraints(jLabelFilmHD, c);
+                panel.add(jLabelFilmHD);
+                break;
+            case DatenFilm.FILM_UT_NR:
+                gridbag.setConstraints(jLabelFilmUT, c);
+                panel.add(jLabelFilmUT);
+                break;
+            default:
+                gridbag.setConstraints(txtArrCont[i], c);
+                panel.add(txtArrCont[i]);
+                break;
         }
     }
 
@@ -214,6 +229,8 @@ public class MVFilmInformation implements MVFilmInfo {
             lblUrlThemaField.setText("");
             lblUrlSubtitle.setText("");
             jLabelFilmNeu.setVisible(false);
+            jLabelFilmHD.setVisible(false);
+            jLabelFilmUT.setVisible(false);
         } else {
             for (int i = 0; i < txtArrCont.length; ++i) {
                 txtArrCont[i].setText(aktFilm.arr[i]);
@@ -227,6 +244,8 @@ public class MVFilmInformation implements MVFilmInfo {
             lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
             lblUrlSubtitle.setText(aktFilm.getUrlSubtitle());
             jLabelFilmNeu.setVisible(aktFilm.isNew());
+            jLabelFilmHD.setVisible(aktFilm.isHD());
+            jLabelFilmUT.setVisible(aktFilm.hasUT());
         }
         dialog.repaint();
     }

@@ -24,23 +24,14 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.net.URISyntaxException;
-import javax.swing.ImageIcon;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
+import mSearch.daten.DatenFilm;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.UrlHyperlinkAction;
-import mSearch.daten.DatenFilm;
 import org.jdesktop.swingx.JXHyperlink;
 
 public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFilmInfo {
@@ -49,6 +40,8 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
     private JXHyperlink lblUrlSubtitle;
     private JTextArea textAreaBeschreibung;
     private JLabel jLabelFilmNeu;
+    private JLabel jLabelFilmHD;
+    private JLabel jLabelFilmUT;
     private final JLabel[] labelArrNames = new JLabel[DatenFilm.MAX_ELEM];
     private final JTextField[] txtArrCont = new JTextField[DatenFilm.MAX_ELEM];
     private DatenFilm aktFilm = new DatenFilm();
@@ -112,6 +105,16 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
         jLabelFilmNeu.setVisible(false);
         jLabelFilmNeu.setIcon(ja_sw_16);
 
+        jLabelFilmHD = new JLabel();
+        jLabelFilmHD.setOpaque(false);
+        jLabelFilmHD.setVisible(false);
+        jLabelFilmHD.setIcon(ja_sw_16);
+
+        jLabelFilmUT = new JLabel();
+        jLabelFilmUT.setOpaque(false);
+        jLabelFilmUT.setVisible(false);
+        jLabelFilmUT.setIcon(ja_sw_16);
+
         textAreaBeschreibung = new JTextArea();
         textAreaBeschreibung.setDoubleBuffered(true);
         textAreaBeschreibung.setLineWrap(true);
@@ -160,24 +163,38 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
         panel.add(labelArrNames[i]);
         c.gridx = 1;
         c.weightx = 1;
-        if (i == DatenFilm.FILM_WEBSEITE_NR) {
-            gridbag.setConstraints(lblUrlThemaField, c);
-            panel.add(lblUrlThemaField);
-        } else if (i == DatenFilm.FILM_URL_SUBTITLE_NR) {
-            gridbag.setConstraints(lblUrlSubtitle, c);
-            panel.add(lblUrlSubtitle);
-        } else if (i == DatenFilm.FILM_BESCHREIBUNG_NR) {
-            JScrollPane sp = new JScrollPane();
-            sp.setMinimumSize(new Dimension(10, 100));
-            sp.setViewportView(textAreaBeschreibung);
-            gridbag.setConstraints(sp, c);
-            panel.add(sp);
-        } else if (i == DatenFilm.FILM_NEU_NR) {
-            gridbag.setConstraints(jLabelFilmNeu, c);
-            panel.add(jLabelFilmNeu);
-        } else {
-            gridbag.setConstraints(txtArrCont[i], c);
-            panel.add(txtArrCont[i]);
+        switch (i) {
+            case DatenFilm.FILM_WEBSEITE_NR:
+                gridbag.setConstraints(lblUrlThemaField, c);
+                panel.add(lblUrlThemaField);
+                break;
+            case DatenFilm.FILM_URL_SUBTITLE_NR:
+                gridbag.setConstraints(lblUrlSubtitle, c);
+                panel.add(lblUrlSubtitle);
+                break;
+            case DatenFilm.FILM_BESCHREIBUNG_NR:
+                JScrollPane sp = new JScrollPane();
+                sp.setMinimumSize(new Dimension(10, 100));
+                sp.setViewportView(textAreaBeschreibung);
+                gridbag.setConstraints(sp, c);
+                panel.add(sp);
+                break;
+            case DatenFilm.FILM_NEU_NR:
+                gridbag.setConstraints(jLabelFilmNeu, c);
+                panel.add(jLabelFilmNeu);
+                break;
+            case DatenFilm.FILM_HD_NR:
+                gridbag.setConstraints(jLabelFilmHD, c);
+                panel.add(jLabelFilmHD);
+                break;
+            case DatenFilm.FILM_UT_NR:
+                gridbag.setConstraints(jLabelFilmUT, c);
+                panel.add(jLabelFilmUT);
+                break;
+            default:
+                gridbag.setConstraints(txtArrCont[i], c);
+                panel.add(txtArrCont[i]);
+                break;
         }
     }
 
@@ -204,6 +221,8 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
             lblUrlThemaField.setText("");
             lblUrlSubtitle.setText("");
             jLabelFilmNeu.setVisible(false);
+            jLabelFilmHD.setVisible(false);
+            jLabelFilmUT.setVisible(false);
         } else {
             for (int i = 0; i < txtArrCont.length; ++i) {
                 txtArrCont[i].setText(aktFilm.arr[i]);
@@ -217,6 +236,8 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
             lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
             lblUrlSubtitle.setText(aktFilm.getUrlSubtitle());
             jLabelFilmNeu.setVisible(aktFilm.isNew());
+            jLabelFilmHD.setVisible(aktFilm.isHD());
+            jLabelFilmUT.setVisible(aktFilm.hasUT());
         }
         this.repaint();
     }

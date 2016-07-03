@@ -37,7 +37,7 @@ import java.awt.*;
 import mSearch.tool.Log;
 
 public class CellRendererFilme extends DefaultTableCellRenderer {
-
+    
     private static ImageIcon film_start_tab = null;
     private static ImageIcon film_start_sw_tab = null;
     private static ImageIcon film_rec_tab = null;
@@ -49,7 +49,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
     private final MVSenderIconCache senderIconCache;
     private static ImageIcon ja_16 = null;
     private static ImageIcon nein_12 = null;
-
+    
     public CellRendererFilme(Daten d) {
         ja_16 = GetIcon.getProgramIcon("ja_16.png");
         nein_12 = GetIcon.getProgramIcon("nein_12.png");
@@ -69,7 +69,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
         });
         senderIconCache = new MVSenderIconCache();
     }
-
+    
     @Override
     public Component getTableCellRendererComponent(
             JTable table,
@@ -85,13 +85,13 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             setToolTipText(null);
             setHorizontalAlignment(SwingConstants.LEADING);
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
+            
             final int rowModelIndex = table.convertRowIndexToModel(row);
             final int columnModelIndex = table.convertColumnIndexToModel(column);
-
+            
             DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF_NR);
             DatenDownload datenDownload = Daten.listeDownloadsButton.getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL_NR]);
-
+            
             boolean live = datenFilm.arr[DatenFilm.FILM_THEMA_NR].equals(ListeFilme.THEMA_LIVE);
             boolean start = false;
 
@@ -99,12 +99,13 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
              * On OS X do not change fonts as it violates HIG...
              */
             if (!SystemInfo.isMacOSX()) {
-                if (isSelected)
+                if (isSelected) {
                     setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
-                else
+                } else {
                     setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
+                }
             }
-
+            
             switch (columnModelIndex) {
                 case DatenFilm.FILM_NR_NR:
                 case DatenFilm.FILM_DATUM_NR:
@@ -118,7 +119,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 case DatenFilm.FILM_ABSPIELEN_NR:
                     handleButtonStartColumn(datenDownload, isSelected);
                     break;
-
+                
                 case DatenFilm.FILM_AUFZEICHNEN_NR:
                     handleButtonDownloadColumn(isSelected);
                     break;
@@ -134,6 +135,25 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                     } else {
                         setIcon(nein_12);
                     }
+                    setText("");
+                    break;
+                case DatenFilm.FILM_HD_NR:
+                    setHorizontalAlignment(SwingConstants.CENTER);
+                    if (datenFilm.isHD()) {
+                        setIcon(ja_16);
+                    } else {
+                        setIcon(nein_12);
+                    }
+                    setText("");//im Modle brauchen wir den Text zum Sortieren
+                    break;
+                case DatenFilm.FILM_UT_NR:
+                    setHorizontalAlignment(SwingConstants.CENTER);
+                    if (datenFilm.hasUT()) {
+                        setIcon(ja_16);
+                    } else {
+                        setIcon(nein_12);
+                    }
+                    setText("");
                     break;
             }
 
@@ -149,14 +169,12 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 if (live) {
                     // bei livestreams keine History anzeigen
                     setForeground(MVColor.FILM_LIVESTREAM.color);
-                } else {
-                    if (history.urlPruefen(datenFilm.getUrlHistory())) {
-                        if (!isSelected) {
-                            setBackground(MVColor.FILM_HISTORY.color);
-                        }
-                    } else if (datenFilm.isNew()) {
-                        setForeground(MVColor.FILM_NEU.color);
+                } else if (history.urlPruefen(datenFilm.getUrlHistory())) {
+                    if (!isSelected) {
+                        setBackground(MVColor.FILM_HISTORY.color);
                     }
+                } else if (datenFilm.isNew()) {
+                    setForeground(MVColor.FILM_NEU.color);
                 }
             }
             if (!start && geoMelden) {
@@ -176,7 +194,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
         }
         return this;
     }
-
+    
     private void handleButtonStartColumn(final DatenDownload datenDownload, final boolean isSelected) {
         // Button Abspielen
         setHorizontalAlignment(SwingConstants.CENTER);
@@ -201,7 +219,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             }
         }
     }
-
+    
     private void handleButtonDownloadColumn(final boolean isSelected) {
         // Button Aufzeichnen
         setHorizontalAlignment(SwingConstants.CENTER);
@@ -226,7 +244,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             setIcon(icon);
         }
     }
-
+    
     private void setColor(Component c, Start s, boolean isSelected) {
         switch (s.status) {
             case Start.STATUS_INIT:

@@ -19,8 +19,6 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.MVConfig;
-import mSearch.tool.Listener;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Point;
@@ -33,30 +31,23 @@ import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
 import javax.activation.DataHandler;
-import javax.swing.DropMode;
-import javax.swing.JComponent;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JViewport;
-import javax.swing.RowSorter;
 import javax.swing.RowSorter.SortKey;
-import javax.swing.SortOrder;
-import javax.swing.TransferHandler;
+import javax.swing.*;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import mediathek.daten.Daten;
-import mediathek.daten.DatenAbo;
-import mediathek.daten.DatenDownload;
-import mediathek.daten.DatenMediaDB;
-import mediathek.daten.DatenProg;
-import mediathek.daten.DatenPset;
 import mSearch.daten.DatenFilm;
+import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mSearch.tool.MVConfig;
+import mediathek.daten.*;
 
 public final class MVTable extends JTable {
-    public enum TableType { STANDARD, FILME, DOWNLOADS, ABOS, PSET, PROG, MEDIA_DB};
+
+    public enum TableType {
+        STANDARD, FILME, DOWNLOADS, ABOS, PSET, PROG, MEDIA_DB
+    };
     //public static final String TABELLEN = "Tabellen";
     public static final String FELDTRENNER = "|";
     public static final String SORT_ASCENDING = "ASCENDING";
@@ -79,6 +70,7 @@ public final class MVTable extends JTable {
 
     /**
      * Return the type of this MVTable.
+     *
      * @return
      */
     public TableType getTableType() {
@@ -188,12 +180,10 @@ public final class MVTable extends JTable {
             } else {
                 setRowHeight(MVFont.fontSize + MVFont.fontSize / 3);
             }
+        } else if (MVFont.fontSize < 30) {
+            setRowHeight(36);
         } else {
-            if (MVFont.fontSize < 30) {
-                setRowHeight(36);
-            } else {
-                setRowHeight(MVFont.fontSize + MVFont.fontSize / 3);
-            }
+            setRowHeight(MVFont.fontSize + MVFont.fontSize / 3);
         }
     }
 
@@ -467,10 +457,8 @@ public final class MVTable extends JTable {
             if (!anzeigen(i, spaltenAnzeigen)) {
                 // geänderte Ansicht der Spalten abfragen
                 breite[i] = 0;
-            } else {
-                if (breite[i] == 0) {
-                    breite[i] = 100; // damit sie auch zu sehen ist :)
-                }
+            } else if (breite[i] == 0) {
+                breite[i] = 100; // damit sie auch zu sehen ist :)
             }
         }
         for (int i = 0; i < breite.length && i < this.getColumnCount(); ++i) {
@@ -512,10 +500,8 @@ public final class MVTable extends JTable {
                 if (!anzeigen(i, spaltenAnzeigen)) {
                     // geänderte Ansicht der Spalten abfragen
                     breite[i] = 0;
-                } else {
-                    if (breite[i] == 0) {
-                        breite[i] = 100; // damit sie auch zu sehen ist :)
-                    }
+                } else if (breite[i] == 0) {
+                    breite[i] = 100; // damit sie auch zu sehen ist :)
                 }
             }
             for (int i = 0; i < breite.length && i < this.getColumnCount(); ++i) {
@@ -546,55 +532,73 @@ public final class MVTable extends JTable {
     private void resetFilmeTab(int i) {
         reihe[i] = i;
         breite[i] = 200;
-        if (i == DatenFilm.FILM_NR_NR) {
-            breite[i] = 75;
-        } else if (i == DatenFilm.FILM_TITEL_NR) {
-            breite[i] = 300;
-        } else if (i == DatenFilm.FILM_DATUM_NR
-                || i == DatenFilm.FILM_ZEIT_NR
-                || i == DatenFilm.FILM_SENDER_NR
-                || i == DatenFilm.FILM_GROESSE_NR
-                || i == DatenFilm.FILM_DAUER_NR
-                || i == DatenFilm.FILM_GEO_NR) {
-            breite[i] = 100;
-        } else if (i == DatenFilm.FILM_URL_NR) {
-            breite[i] = 500;
-        } else if (i == DatenFilm.FILM_ABSPIELEN_NR
-                || i == DatenFilm.FILM_AUFZEICHNEN_NR) {
-            breite[i] = 50;
+        switch (i) {
+            case DatenFilm.FILM_NR_NR:
+                breite[i] = 75;
+                break;
+            case DatenFilm.FILM_TITEL_NR:
+                breite[i] = 300;
+                break;
+            case DatenFilm.FILM_DATUM_NR:
+            case DatenFilm.FILM_ZEIT_NR:
+            case DatenFilm.FILM_SENDER_NR:
+            case DatenFilm.FILM_GROESSE_NR:
+            case DatenFilm.FILM_DAUER_NR:
+            case DatenFilm.FILM_GEO_NR:
+                breite[i] = 100;
+                break;
+            case DatenFilm.FILM_URL_NR:
+                breite[i] = 500;
+                break;
+            case DatenFilm.FILM_ABSPIELEN_NR:
+            case DatenFilm.FILM_AUFZEICHNEN_NR:
+            case DatenFilm.FILM_HD_NR:
+            case DatenFilm.FILM_UT_NR:
+                breite[i] = 50;
+                break;
+            default:
+                break;
         }
     }
 
     private void resetDownloadsTab(int i) {
         reihe[i] = i;
         breite[i] = 200;
-        if (i == DatenDownload.DOWNLOAD_NR_NR
-                || i == DatenDownload.DOWNLOAD_FILM_NR_NR) {
-            breite[i] = 75;
-        } else if (i == DatenDownload.DOWNLOAD_BUTTON_START_NR
-                || i == DatenDownload.DOWNLOAD_BUTTON_DEL_NR
-                || i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR
-                || i == DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER_NR
-                || i == DatenDownload.DOWNLOAD_UNTERBROCHEN_NR
-                || i == DatenDownload.DOWNLOAD_SPOTLIGHT_NR
-                || i == DatenDownload.DOWNLOAD_SUBTITLE_NR
-                || i == DatenDownload.DOWNLOAD_INFODATEI_NR) {
-            breite[i] = 50;
-        } else if (i == DatenDownload.DOWNLOAD_TITEL_NR) {
-            breite[i] = 250;
-        } else if (i == DatenDownload.DOWNLOAD_ABO_NR
-                || i == DatenDownload.DOWNLOAD_THEMA_NR) {
-            breite[i] = 150;
-        } else if (i == DatenDownload.DOWNLOAD_DATUM_NR
-                || i == DatenDownload.DOWNLOAD_ZEIT_NR
-                || i == DatenDownload.DOWNLOAD_GROESSE_NR
-                || i == DatenDownload.DOWNLOAD_BANDBREITE_NR
-                || i == DatenDownload.DOWNLOAD_SENDER_NR
-                || i == DatenDownload.DOWNLOAD_PROGRESS_NR
-                || i == DatenDownload.DOWNLOAD_RESTZEIT_NR
-                || i == DatenDownload.DOWNLOAD_DAUER_NR
-                || i == DatenDownload.DOWNLOAD_GEO_NR) {
-            breite[i] = 100;
+        switch (i) {
+            case DatenDownload.DOWNLOAD_NR_NR:
+            case DatenDownload.DOWNLOAD_FILM_NR_NR:
+                breite[i] = 75;
+                break;
+            case DatenDownload.DOWNLOAD_BUTTON_START_NR:
+            case DatenDownload.DOWNLOAD_BUTTON_DEL_NR:
+            case DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR:
+            case DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER_NR:
+            case DatenDownload.DOWNLOAD_UNTERBROCHEN_NR:
+            case DatenDownload.DOWNLOAD_SPOTLIGHT_NR:
+            case DatenDownload.DOWNLOAD_SUBTITLE_NR:
+            case DatenDownload.DOWNLOAD_INFODATEI_NR:
+                breite[i] = 50;
+                break;
+            case DatenDownload.DOWNLOAD_TITEL_NR:
+                breite[i] = 250;
+                break;
+            case DatenDownload.DOWNLOAD_ABO_NR:
+            case DatenDownload.DOWNLOAD_THEMA_NR:
+                breite[i] = 150;
+                break;
+            case DatenDownload.DOWNLOAD_DATUM_NR:
+            case DatenDownload.DOWNLOAD_ZEIT_NR:
+            case DatenDownload.DOWNLOAD_GROESSE_NR:
+            case DatenDownload.DOWNLOAD_BANDBREITE_NR:
+            case DatenDownload.DOWNLOAD_SENDER_NR:
+            case DatenDownload.DOWNLOAD_PROGRESS_NR:
+            case DatenDownload.DOWNLOAD_RESTZEIT_NR:
+            case DatenDownload.DOWNLOAD_DAUER_NR:
+            case DatenDownload.DOWNLOAD_GEO_NR:
+                breite[i] = 100;
+                break;
+            default:
+                break;
         }
     }
 
@@ -650,6 +654,7 @@ public final class MVTable extends JTable {
                 || i == DatenFilm.FILM_URL_RTMP_KLEIN_NR
                 || i == DatenFilm.FILM_DATUM_LONG_NR
                 || i == DatenFilm.FILM_URL_HISTORY_NR
+                || i == DatenFilm.FILM_URL_SUBTITLE_NR
                 || i == DatenFilm.FILM_REF_NR) {
             breite[i] = 0;
         }
