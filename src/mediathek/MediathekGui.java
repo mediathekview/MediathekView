@@ -671,8 +671,8 @@ public class MediathekGui extends JFrame {
                 }
             }
         };
-        PanelMeldungen panelMeldungenSystem = new PanelMeldungen(daten, daten.mediathekGui, SysMsg.textSystem, Listener.EREIGNIS_LOG_SYSTEM, "Systemmeldungen");
-        PanelMeldungen panelMeldungenPlayer = new PanelMeldungen(daten, daten.mediathekGui, SysMsg.textProgramm, Listener.EREIGNIS_LOG_PLAYER, "Meldungen Hilfsprogramme");
+        PanelMeldungen panelMeldungenSystem = new PanelMeldungen(daten, daten.mediathekGui, SysMsg.LOG_SYSTEM, "Systemmeldungen");
+        PanelMeldungen panelMeldungenPlayer = new PanelMeldungen(daten, daten.mediathekGui, SysMsg.LOG_PLAYER, "Meldungen Hilfsprogramme");
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 panelMeldungenSystem,
                 panelMeldungenPlayer);
