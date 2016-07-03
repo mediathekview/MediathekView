@@ -19,9 +19,9 @@
  */
 package mediathek.tool;
 
-import mediathek.daten.Daten;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
+import mediathek.daten.Daten;
 
 public class MVListeFilme {
 
@@ -87,7 +87,7 @@ public class MVListeFilme {
                     }
                 }
                 if (nurHd) {
-                    if (film.arr[DatenFilm.FILM_URL_HD_NR].isEmpty()) {
+                    if (!film.isHD()) {
                         continue;
                     }
                 }
@@ -112,109 +112,6 @@ public class MVListeFilme {
         table.setModel(tModel);
     }
 
-//    public static synchronized void getModelTabFilme_(ListeFilme listeFilme, Daten ddaten, MVTable table,
-//            String filterSender, String filterThema, String filterTitel, String filterThemaTitel, String filterIrgendwo,
-//            int laenge, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean live) {
-//        // Model für die Tabelle Filme zusammenbauen
-//        TModel tModel = (TModel) table.getModel();
-//        tModel.setRowCount(0);
-//        if (listeFilme.isEmpty()) {
-//            // wenn die Liste leer ist, dann Tschüss
-//            table.setModel(new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES));
-//            return;
-//        }
-//        // dann ein neues Model anlegen
-//        tModel.setRowCount(listeFilme.size());
-//        if (filterSender.equals("") && filterThema.equals("") && filterTitel.equals("") && filterThemaTitel.equals("") && filterIrgendwo.equals("") && laenge == 0
-//                && !keineAbos && !kGesehen && !nurHd && !live) {
-//            // =============================================================
-//            // wenn ganze Liste
-//            int row = 0;
-//            for (DatenFilm film : listeFilme) {
-//                addObjectDataTabFilme(tModel, film, row);
-//                ++row;
-//            }
-//            //tModel.setRowCount(row);
-//        } else {
-//            // =============================================================
-//            // nur mit Filter laden
-//            // Titel
-//            String[] arrTitel;
-//            if (Filter.isPattern(filterTitel)) {
-//                arrTitel = new String[]{filterTitel};
-//            } else {
-//                arrTitel = filterTitel.split(",");
-//                for (int i = 0; i < arrTitel.length; ++i) {
-//                    arrTitel[i] = arrTitel[i].trim().toLowerCase();
-//                }
-//            }
-//            // ThemaTitel
-//            String[] arrThemaTitel;
-//            if (Filter.isPattern(filterThemaTitel)) {
-//                arrThemaTitel = new String[]{filterThemaTitel};
-//            } else {
-//                arrThemaTitel = filterThemaTitel.split(",");
-//                for (int i = 0; i < arrThemaTitel.length; ++i) {
-//                    arrThemaTitel[i] = arrThemaTitel[i].trim().toLowerCase();
-//                }
-//            }
-//            // Irgendwo
-//            String[] arrIrgendwo;
-//            if (Filter.isPattern(filterIrgendwo)) {
-//                arrIrgendwo = new String[]{filterIrgendwo};
-//            } else {
-//                arrIrgendwo = filterIrgendwo.split(",");
-//                for (int i = 0; i < arrIrgendwo.length; ++i) {
-//                    arrIrgendwo[i] = arrIrgendwo[i].trim().toLowerCase();
-//                }
-//            }
-//            int row = 0;
-//            for (DatenFilm film : listeFilme) {
-//                if (live) {
-//                    if (!film.arr[DatenFilm.FILM_THEMA_NR].equals(ListeFilme.THEMA_LIVE)) {
-//                        continue;
-//                    }
-//                }
-//                if (nurHd) {
-//                    if (film.arr[DatenFilm.FILM_URL_HD_NR].isEmpty()) {
-//                        continue;
-//                    }
-//                }
-//                if (keineAbos) {
-//                    if (!film.arr[DatenFilm.FILM_ABO_NAME_NR].isEmpty()) {
-//                        continue;
-//                    }
-//                }
-//                if (kGesehen) {
-//                    if (ddaten.history.urlPruefen(film.getUrlHistory())) {
-//                        continue;
-//                    }
-//                }
-//                if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, film, true /*länge nicht prüfen*/)) {
-//                    addObjectDataTabFilme(tModel, film, row);
-//                    ++row;
-//                }
-//            }
-//            tModel.setRowCount(row);
-//        }
-//        tModel.fireTableDataChanged();
-//    }
-//    private static void addObjectDataTabFilme(TModel tModel, DatenFilm film, int row) {
-//        for (int column = 0; column < DatenFilm.MAX_ELEM; ++column) {
-//            if (column == DatenFilm.FILM_DATUM_NR) {
-//                tModel.setValueAt(film.datumFilm, row, column);
-//            } else if (column == DatenFilm.FILM_GROESSE_NR) {
-//                tModel.setValueAt(film.dateigroesseL, row, column);
-////            } else if (column == DatenFilm.FILM_URL_NR || column == DatenFilm.FILM_NR_NR) {
-////                // Url und Nr immer füllen, egal ob angezeigt
-////                tModel.setValueAt(film.arr[column], row, column);
-////            } else if (!DatenFilm.anzeigen(column)) {
-////                tModel.setValueAt("", row, column);
-//            } else {
-//                tModel.setValueAt(film.arr[column], row, column);
-//            }
-//        }
-//    }
     //===================================
     // private
     //===================================
@@ -229,18 +126,31 @@ public class MVListeFilme {
     private static void addObjectDataTabFilme(TModel tModel, DatenFilm film) {
         Object[] object = new Object[DatenFilm.MAX_ELEM];
         for (int m = 0; m < DatenFilm.MAX_ELEM; ++m) {
-            if (m == DatenFilm.FILM_NR_NR) {
-                object[m] = film.nr;
-            } else if (m == DatenFilm.FILM_DATUM_NR) {
-                object[m] = film.datumFilm;
-            } else if (m == DatenFilm.FILM_GROESSE_NR) {
-                object[m] = film.dateigroesseL;
-            } else if (m == DatenFilm.FILM_REF_NR) {
-                object[m] = film;
-            } else if (m == DatenFilm.FILM_NEU_NR) {
-                object[m] = "";
-            } else {
-                object[m] = film.arr[m];
+            switch (m) {
+                case DatenFilm.FILM_NR_NR:
+                    object[m] = film.nr;
+                    break;
+                case DatenFilm.FILM_DATUM_NR:
+                    object[m] = film.datumFilm;
+                    break;
+                case DatenFilm.FILM_GROESSE_NR:
+                    object[m] = film.dateigroesseL;
+                    break;
+                case DatenFilm.FILM_REF_NR:
+                    object[m] = film;
+                    break;
+                case DatenFilm.FILM_NEU_NR:
+                    object[m] = film.isNew() ? "1" : "0";
+                    break;
+                case DatenFilm.FILM_HD_NR:
+                    object[m] = film.isHD() ? "1" : "0";
+                    break;
+                case DatenFilm.FILM_UT_NR:
+                    object[m] = film.hasUT() ? "1" : "0";
+                    break;
+                default:
+                    object[m] = film.arr[m];
+                    break;
             }
         }
         tModel.addRow(object);
