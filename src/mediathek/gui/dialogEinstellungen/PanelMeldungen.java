@@ -22,63 +22,65 @@ package mediathek.gui.dialogEinstellungen;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javafx.beans.Observable;
+import javafx.collections.ObservableList;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.text.DefaultCaret;
+import mSearch.tool.Log;
+import mSearch.tool.MVConfig;
 import mSearch.tool.SysMsg;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
-import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
 
 public class PanelMeldungen extends PanelVorlage {
 
-    private final StringBuffer text;
+    private final ObservableList<String> text;
     private final int logArt;
     private int firstScroll = 25;
     private Color cGruen = new Color(0, 153, 51);
     private Color cRot = new Color(255, 0, 0);
 
-    public PanelMeldungen(Daten d, JFrame parentComponent, StringBuffer ttext, int llogArt, String header) {
+    public PanelMeldungen(Daten d, JFrame parentComponent, int logArt, String header) {
         super(d, parentComponent);
         initComponents();
-        text = ttext;
         jLabelHeader.setText(header);
-        logArt = llogArt;
-        if (logArt == Listener.EREIGNIS_LOG_SYSTEM) {
+        this.logArt = logArt;
+        if (logArt == SysMsg.LOG_SYSTEM) {
+            text = SysMsg.textSystem;
             jCheckBoxAuto.setSelected(true);
         } else {
+            text = SysMsg.textProgramm;
             jCheckBoxAuto.setSelected(false);
         }
         jCheckBoxAuto.setForeground(jCheckBoxAuto.isSelected() ? cGruen : cRot);
-        setText();
         jButtonLoeschen.addActionListener(new BeobLoeschen());
-        jCheckBoxAuto.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jCheckBoxAuto.setForeground(jCheckBoxAuto.isSelected() ? cGruen : cRot);
-                setAuto();
-            }
+        jCheckBoxAuto.addActionListener((ActionEvent e) -> {
+            jCheckBoxAuto.setForeground(jCheckBoxAuto.isSelected() ? cGruen : cRot);
+            setAuto();
         });
-        jCheckBoxUmbrechen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!stopBeob) {
-                    MVConfig.add(getNrSystem(), String.valueOf(jCheckBoxUmbrechen.isSelected()));
-                    setLineWrab();
-                }
+        jCheckBoxUmbrechen.addActionListener((ActionEvent e) -> {
+            if (!stopBeob) {
+                MVConfig.add(getNrSystem(), String.valueOf(jCheckBoxUmbrechen.isSelected()));
+                setLineWrab();
             }
         });
         setAuto();
         setLineWrab();
-        Listener.addListener(new Listener(logArt, PanelMeldungen.class.getSimpleName() + logArt) {
-            @Override
-            public void ping() {
-                notifyPanel();
+        text.addListener((Observable ll) -> {
+            try {
+                if (SwingUtilities.isEventDispatchThread()) {
+                    notifyPanel();
+                } else {
+                    SwingUtilities.invokeLater(PanelMeldungen.this::notifyPanel);
+                }
+            } catch (Exception ex) {
+                Log.errorLog(912365478, ex);
             }
         });
     }
 
-    private void notifyPanel() {
+    public void notifyPanel() {
         if (jCheckBoxAuto.isSelected() || firstScroll > 0) {
             if (firstScroll > 0) {
                 --firstScroll;
@@ -109,22 +111,18 @@ public class PanelMeldungen extends PanelVorlage {
     private String getNrSystem() {
         String nr = MVConfig.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN;
         switch (logArt) {
-//            case ListenerMediathekView.EREIGNIS_LOG_FEHLER:
-//                nr = MVConfig.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN;
-//                break;
-            case Listener.EREIGNIS_LOG_SYSTEM:
+            case SysMsg.LOG_SYSTEM:
                 nr = MVConfig.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN;
                 break;
-            case Listener.EREIGNIS_LOG_PLAYER:
+            case SysMsg.LOG_PLAYER:
                 nr = MVConfig.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN;
                 break;
         }
         return nr;
     }
 
-    private void setText() {
-        String s = text.toString();
-        jTextArea.setText(s);
+    private synchronized void setText() {
+        jTextArea.setText(SysMsg.getText(logArt));
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
