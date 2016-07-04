@@ -163,7 +163,7 @@ public class IoXmlSchreiben {
     private static void xmlSchreibenAbo() {
         //Abo schreiben
         for (DatenAbo datenAbo : Daten.listeAbo) {
-            xmlSchreibenDaten(DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr, false);
+            xmlSchreibenDaten(DatenAbo.TAG, DatenAbo.XML_NAMES, datenAbo.arr, false);
         }
     }
 

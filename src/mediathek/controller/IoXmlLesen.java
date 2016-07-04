@@ -77,10 +77,10 @@ public class IoXmlLesen {
                                     ReplaceList.list.add(sa);
                                 }
                                 break;
-                            case DatenAbo.ABO:
+                            case DatenAbo.TAG:
                                 //Abo
                                 DatenAbo datenAbo = new DatenAbo();
-                                if (get(parser, DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr)) {
+                                if (get(parser, DatenAbo.TAG, DatenAbo.XML_NAMES, datenAbo.arr)) {
                                     Daten.listeAbo.addAbo(datenAbo);
                                 }
                                 break;
@@ -150,10 +150,10 @@ public class IoXmlLesen {
                 event = parser.next();
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     //String t = parser.getLocalName();
-                    if (abo && parser.getLocalName().equals(DatenAbo.ABO)) {
+                    if (abo && parser.getLocalName().equals(DatenAbo.TAG)) {
                         //Abo
                         DatenAbo datenAbo = new DatenAbo();
-                        if (get(parser, DatenAbo.ABO, DatenAbo.COLUMN_NAMES, datenAbo.arr)) {
+                        if (get(parser, DatenAbo.TAG, DatenAbo.XML_NAMES, datenAbo.arr)) {
                             ++found[0];
                             Daten.listeAbo.addAbo(datenAbo);
                         }

@@ -27,37 +27,27 @@ public class DatenAbo implements Comparable<DatenAbo> {
     //Tags Abo
 
     private static GermanStringSorter sorter = GermanStringSorter.getInstance();
-    public static final String ABO = "Abonnement";
-    public static final String ABO_NR = "Nr";
     public static final int ABO_NR_NR = 0;
-    public static final String ABO_EINGESCHALTET = "aktiv";
     public static final int ABO_EINGESCHALTET_NR = 1;
-    public static final String ABO_NAME = "Name";
     public static final int ABO_NAME_NR = 2;
-    public static final String ABO_SENDER = DatenFilm.FILM_SENDER;
     public static final int ABO_SENDER_NR = 3;
-    public static final String ABO_THEMA = DatenFilm.FILM_THEMA;
     public static final int ABO_THEMA_NR = 4;
-    public static final String ABO_TITEL = DatenFilm.FILM_TITEL;
     public static final int ABO_TITEL_NR = 5;
-    public static final String ABO_THEMA_TITEL = DatenFilm.FILM_THEMA + "-" + DatenFilm.FILM_TITEL;
     public static final int ABO_THEMA_TITEL_NR = 6;
-    public static final String ABO_IRGENDWO = "Irgendwo";
     public static final int ABO_IRGENDWO_NR = 7;
-    public static final String ABO_MINDESTDAUER = "Mindestdauer";
     public static final int ABO_MINDESTDAUER_NR = 8;
-    public static final String ABO_ZIELPFAD = "Zielpfad";
     public static final int ABO_ZIELPFAD_NR = 9;
-    public static final String ABO_DOWN_DATUM = "letztes_Abo";
     public static final int ABO_DOWN_DATUM_NR = 10;
-    public static final String ABO_PSET = "Programmset";
     public static final int ABO_PSET_NR = 11;
+    public static final String[] COLUMN_NAMES = {"Nr", "aktiv", "Name",
+        DatenFilm.FILM_SENDER, DatenFilm.FILM_THEMA, DatenFilm.FILM_TITEL, DatenFilm.FILM_THEMA + "-" + DatenFilm.FILM_TITEL,
+        "Irgendwo", "Mindestdauer", "Zielpfad", "letztes_Abo", "Programmset"};
+    public static final String[] XML_NAMES = COLUMN_NAMES;
+
     public static final int MAX_ELEM = 12;
-    public static final String[] COLUMN_NAMES = {ABO_NR, ABO_EINGESCHALTET, ABO_NAME, ABO_SENDER, ABO_THEMA, ABO_TITEL, ABO_THEMA_TITEL,
-        ABO_IRGENDWO, ABO_MINDESTDAUER, ABO_ZIELPFAD, ABO_DOWN_DATUM, ABO_PSET};
-    //public static final String[] COLUMN_NAMES_ = COLUMN_NAMES;
-    public int mindestdauerMinuten = 0;
+    public static final String TAG = "Abonnement";
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
+    public int mindestdauerMinuten = 0;
     public String[] arr;
     public int nr = 0;
 
@@ -143,7 +133,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
      }
      */
 
-    /*
+ /*
      public void aboAus() {
      arr[DatenAbo.ABO_EINGESCHALTET_NR] = String.valueOf(false);
      }
