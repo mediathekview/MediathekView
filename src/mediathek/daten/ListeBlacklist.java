@@ -19,18 +19,17 @@
  */
 package mediathek.daten;
 
-import mediathek.gui.GuiFilme;
-import mediathek.tool.Filter;
-import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
-import mediathek.tool.MVListeFilme;
-import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
-
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import mSearch.daten.DatenFilm;
+import mSearch.daten.ListeFilme;
+import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mSearch.tool.MVConfig;
+import mediathek.gui.GuiFilme;
+import mediathek.tool.Filter;
+import mediathek.tool.MVListeFilme;
 
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     //Tags Blacklist

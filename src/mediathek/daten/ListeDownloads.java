@@ -19,18 +19,21 @@
  */
 package mediathek.daten;
 
-import mSearch.tool.MVConfig;
-import mSearch.tool.Listener;
-import java.awt.*;
+import java.awt.Frame;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
-import javax.swing.*;
-import mediathek.controller.starter.Start;
-import mediathek.tool.*;
+import javax.swing.JOptionPane;
 import mSearch.daten.DatenFilm;
+import mSearch.tool.Listener;
+import mSearch.tool.MVConfig;
+import mediathek.controller.starter.Start;
+import mediathek.tool.Konstanten;
+import mediathek.tool.MVMessageDialog;
+import mediathek.tool.TModel;
+import mediathek.tool.TModelDownload;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
 
