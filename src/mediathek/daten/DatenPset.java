@@ -29,7 +29,7 @@ import mSearch.tool.Log;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.MVMessageDialog;
 
-public class DatenPset {
+public class DatenPset extends Data<DatenPset> {
 
     //Tags Programmgruppen
     public static final int PROGRAMMSET_NAME = 0;

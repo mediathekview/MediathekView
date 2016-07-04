@@ -19,7 +19,7 @@
  */
 package mediathek.daten;
 
-public class DatenBlacklist {
+public class DatenBlacklist extends Data<DatenBlacklist> {
 
     public static final int BLACKLIST_NR = 0;
     public static final int BLACKLIST_SENDER = 1;

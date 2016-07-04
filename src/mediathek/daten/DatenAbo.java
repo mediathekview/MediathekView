@@ -19,13 +19,11 @@
  */
 package mediathek.daten;
 
-import mSearch.tool.GermanStringSorter;
 import mSearch.tool.Log;
 
-public class DatenAbo implements Comparable<DatenAbo> {
+public class DatenAbo extends Data<DatenAbo> {
     //Tags Abo
 
-    private static GermanStringSorter sorter = GermanStringSorter.getInstance();
     public static final int ABO_NR = 0;
     public static final int ABO_EINGESCHALTET = 1;
     public static final int ABO_NAME = 2;
@@ -146,15 +144,6 @@ public class DatenAbo implements Comparable<DatenAbo> {
         this.mindestdauerMinuten = datenAbo.mindestdauerMinuten;
     }
 
-    /*
-     public String aboPfadAnhaengen(String pfad) {
-     String ret = pfad;
-     if (!arr[ABO_ZIELPFAD_NR].equals("")) {
-     ret = GuiFunktionen.addsPfad(pfad, arr[ABO_ZIELPFAD_NR]);
-     }
-     return ret;
-     }
-     */
     private void makeArr() {
         arr = new String[MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {
