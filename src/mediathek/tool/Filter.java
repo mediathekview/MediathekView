@@ -73,20 +73,20 @@ public class Filter {
         // themaSuchen exakt mit thema
         // titelSuchen muss im Titel nur enthalten sein
 
-        if (senderSuchen.equals("") || film.arr[DatenFilm.FILM_SENDER_NR].equalsIgnoreCase(senderSuchen)) {
-            if (themaSuchen.equals("") || film.arr[DatenFilm.FILM_THEMA_NR].equalsIgnoreCase(themaSuchen)) {
+        if (senderSuchen.equals("") || film.arr[DatenFilm.FILM_SENDER].equalsIgnoreCase(senderSuchen)) {
+            if (themaSuchen.equals("") || film.arr[DatenFilm.FILM_THEMA].equalsIgnoreCase(themaSuchen)) {
 
-                if (titelSuchen.length == 0 || pruefen(titelSuchen, film.arr[DatenFilm.FILM_TITEL_NR])) {
+                if (titelSuchen.length == 0 || pruefen(titelSuchen, film.arr[DatenFilm.FILM_TITEL])) {
 
                     if (themaTitelSuchen.length == 0
-                            || pruefen(themaTitelSuchen, film.arr[DatenFilm.FILM_THEMA_NR])
-                            || pruefen(themaTitelSuchen, film.arr[DatenFilm.FILM_TITEL_NR])) {
+                            || pruefen(themaTitelSuchen, film.arr[DatenFilm.FILM_THEMA])
+                            || pruefen(themaTitelSuchen, film.arr[DatenFilm.FILM_TITEL])) {
 
                         if (irgendwoSuchen.length == 0
-                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_DATUM_NR])
-                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_THEMA_NR])
-                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_TITEL_NR])
-                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_BESCHREIBUNG_NR])) {
+                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_DATUM])
+                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_THEMA])
+                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_TITEL])
+                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_BESCHREIBUNG])) {
                             // || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_WEBSEITE_NR])) { kostet 25% Zeit zusätzlich!
                             if (mitLaenge) {
                                 // die Länge soll mit gefrüft werden

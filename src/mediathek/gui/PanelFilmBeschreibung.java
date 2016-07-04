@@ -62,9 +62,9 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
         jCheckBoxChange.setIcon(GetIcon.getProgramIcon("edit_16.png"));
         jCheckBoxChange.addActionListener(e -> {
             if (currentFilm != null) {
-                final String akt = currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR];
+                final String akt = currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG];
                 new DialogFilmBeschreibung(daten.mediathekGui, daten, currentFilm).setVisible(true);
-                if (!currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].equals(akt)) {
+                if (!currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG].equals(akt)) {
                     // dann hat sich die Beschreibung geändert
                     setText();
                     Daten.filmlisteSpeichern();
@@ -94,7 +94,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
 
             switch (table.getTableType()) {
                 case FILME:
-                    film = (DatenFilm)model.getValueAt(modelIndex, DatenFilm.FILM_REF_NR);
+                    film = (DatenFilm)model.getValueAt(modelIndex, DatenFilm.FILM_REF);
                     break;
 
                 case DOWNLOADS:
@@ -126,13 +126,13 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
                     "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
                     + "<head><style type=\"text/css\">.sans { font-family: Verdana, Geneva, sans-serif; font-size: " + MVFont.fontSize + "pt; }</style></head>\n"
                     + "<body>"
-                    + "<span class=\"sans\"><b>" + (currentFilm.arr[DatenFilm.FILM_SENDER_NR].isEmpty() ? "" : currentFilm.arr[DatenFilm.FILM_SENDER_NR] + "  -  ")
-                    + currentFilm.arr[DatenFilm.FILM_TITEL_NR] + "</b><br /></span>"
-                    + "<span class=\"sans\">" + currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].replace("\n", "<br />") + "</span>"
+                    + "<span class=\"sans\"><b>" + (currentFilm.arr[DatenFilm.FILM_SENDER].isEmpty() ? "" : currentFilm.arr[DatenFilm.FILM_SENDER] + "  -  ")
+                    + currentFilm.arr[DatenFilm.FILM_TITEL] + "</b><br /></span>"
+                    + "<span class=\"sans\">" + currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG].replace("\n", "<br />") + "</span>"
                     + "</body>"
                     + "</html>");
 
-            jXHyperlinkWebsite.setText(currentFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
+            jXHyperlinkWebsite.setText(currentFilm.arr[DatenFilm.FILM_WEBSEITE]);
         }
     }
 

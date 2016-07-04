@@ -128,17 +128,17 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
         jPanel.setLayout(gridbag);
         int zeile = 0;
         for (int i = 0; i < labelArrNames.length; ++i) {
-            if (i == DatenFilm.FILM_URL_RTMP_NR
-                    || i == DatenFilm.FILM_URL_AUTH_NR
-                    || i == DatenFilm.FILM_URL_HD_NR
-                    || i == DatenFilm.FILM_URL_RTMP_HD_NR
-                    || i == DatenFilm.FILM_URL_KLEIN_NR
-                    || i == DatenFilm.FILM_URL_RTMP_KLEIN_NR
-                    || i == DatenFilm.FILM_ABSPIELEN_NR
-                    || i == DatenFilm.FILM_AUFZEICHNEN_NR
-                    || i == DatenFilm.FILM_DATUM_LONG_NR
-                    || i == DatenFilm.FILM_URL_HISTORY_NR
-                    || i == DatenFilm.FILM_REF_NR) {
+            if (i == DatenFilm.FILM_URL_RTMP
+                    || i == DatenFilm.FILM_URL_AUTH
+                    || i == DatenFilm.FILM_URL_HD
+                    || i == DatenFilm.FILM_URL_RTMP_HD
+                    || i == DatenFilm.FILM_URL_KLEIN
+                    || i == DatenFilm.FILM_URL_RTMP_KLEIN
+                    || i == DatenFilm.FILM_ABSPIELEN
+                    || i == DatenFilm.FILM_AUFZEICHNEN
+                    || i == DatenFilm.FILM_DATUM_LONG
+                    || i == DatenFilm.FILM_URL_HISTORY
+                    || i == DatenFilm.FILM_REF) {
                 continue;
             }
             c.gridy = zeile;
@@ -164,30 +164,30 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
         c.gridx = 1;
         c.weightx = 1;
         switch (i) {
-            case DatenFilm.FILM_WEBSEITE_NR:
+            case DatenFilm.FILM_WEBSEITE:
                 gridbag.setConstraints(lblUrlThemaField, c);
                 panel.add(lblUrlThemaField);
                 break;
-            case DatenFilm.FILM_URL_SUBTITLE_NR:
+            case DatenFilm.FILM_URL_SUBTITLE:
                 gridbag.setConstraints(lblUrlSubtitle, c);
                 panel.add(lblUrlSubtitle);
                 break;
-            case DatenFilm.FILM_BESCHREIBUNG_NR:
+            case DatenFilm.FILM_BESCHREIBUNG:
                 JScrollPane sp = new JScrollPane();
                 sp.setMinimumSize(new Dimension(10, 100));
                 sp.setViewportView(textAreaBeschreibung);
                 gridbag.setConstraints(sp, c);
                 panel.add(sp);
                 break;
-            case DatenFilm.FILM_NEU_NR:
+            case DatenFilm.FILM_NEU:
                 gridbag.setConstraints(jLabelFilmNeu, c);
                 panel.add(jLabelFilmNeu);
                 break;
-            case DatenFilm.FILM_HD_NR:
+            case DatenFilm.FILM_HD:
                 gridbag.setConstraints(jLabelFilmHD, c);
                 panel.add(jLabelFilmHD);
                 break;
-            case DatenFilm.FILM_UT_NR:
+            case DatenFilm.FILM_UT:
                 gridbag.setConstraints(jLabelFilmUT, c);
                 panel.add(jLabelFilmUT);
                 break;
@@ -227,13 +227,13 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
             for (int i = 0; i < txtArrCont.length; ++i) {
                 txtArrCont[i].setText(aktFilm.arr[i]);
             }
-            if (aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR].equals("")) {
+            if (aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG].equals("")) {
                 // sonst müsste die Größe gesetzt werden
                 textAreaBeschreibung.setText(" ");
             } else {
-                textAreaBeschreibung.setText(aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR]);
+                textAreaBeschreibung.setText(aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG]);
             }
-            lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE_NR]);
+            lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE]);
             lblUrlSubtitle.setText(aktFilm.getUrlSubtitle());
             jLabelFilmNeu.setVisible(aktFilm.isNew());
             jLabelFilmHD.setVisible(aktFilm.isHD());

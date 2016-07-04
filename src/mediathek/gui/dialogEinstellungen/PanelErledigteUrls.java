@@ -331,7 +331,7 @@ public class PanelErledigteUrls extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                DatenDownload datenDownload = Daten.listeDownloads.getDownloadUrlFilm(film.arr[DatenFilm.FILM_URL_NR]);
+                DatenDownload datenDownload = Daten.listeDownloads.getDownloadUrlFilm(film.arr[DatenFilm.FILM_URL]);
                 if (datenDownload != null) {
                     int ret = JOptionPane.showConfirmDialog(parentComponent, "Download für den Film existiert bereits.\n"
                             + "Noch einmal anlegen?", "Anlegen?", JOptionPane.YES_NO_OPTION);

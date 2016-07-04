@@ -68,13 +68,13 @@ public class StarterClass {
     public synchronized void urlMitProgrammStarten(DatenPset pSet, DatenFilm ersterFilm, String aufloesung) {
         // url mit dem Programm mit der Nr. starten (Button oder TabDownload "rechte Maustaste")
         // Quelle "Button" ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
-        String url = ersterFilm.arr[DatenFilm.FILM_URL_NR];
+        String url = ersterFilm.arr[DatenFilm.FILM_URL];
         if (!url.equals("")) {
             DatenDownload d = new DatenDownload(pSet, ersterFilm, DatenDownload.QUELLE_BUTTON, null, "", "", aufloesung);
             d.start = new Start();
             starten.startStarten(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
-            daten.history.zeileSchreiben(ersterFilm.arr[DatenFilm.FILM_THEMA_NR], ersterFilm.arr[DatenFilm.FILM_TITEL_NR], d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+            daten.history.zeileSchreiben(ersterFilm.arr[DatenFilm.FILM_THEMA], ersterFilm.arr[DatenFilm.FILM_TITEL], d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
             Daten.listeFilmeHistory.add(ersterFilm);
             // und jetzt noch in die Downloadliste damit die Farbe im Tab Filme passt
             Daten.listeDownloadsButton.addMitNummer(d);
@@ -235,7 +235,7 @@ public class StarterClass {
         final Path filmPath = Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         if (Files.exists(filmPath)) {
             final String strFilePath = filmPath.toString();
-            String strComment = datenDownload.film.arr[DatenFilm.FILM_BESCHREIBUNG_NR];
+            String strComment = datenDownload.film.arr[DatenFilm.FILM_BESCHREIBUNG];
             if (strComment != null) {
                 //no need to write spotlight data when there is no description...
                 if (strComment.isEmpty()) {

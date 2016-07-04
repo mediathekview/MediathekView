@@ -185,7 +185,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         }
         // keine Geo-gesperrten Filme
         if (geoNichtAnzeigen) {
-            if (!film.arr[DatenFilm.FILM_GEO_NR].isEmpty() && !film.arr[DatenFilm.FILM_GEO_NR].contains(MVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
+            if (!film.arr[DatenFilm.FILM_GEO].isEmpty() && !film.arr[DatenFilm.FILM_GEO].contains(MVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
                 return false;
             }
         }

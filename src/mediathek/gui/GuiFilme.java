@@ -177,7 +177,7 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                SortKey sk = new SortKey(DatenFilm.FILM_SENDER_NR, SortOrder.ASCENDING);
+                SortKey sk = new SortKey(DatenFilm.FILM_SENDER, SortOrder.ASCENDING);
                 LinkedList<SortKey> listSortKeys = new LinkedList<>();
                 listSortKeys.add(sk);
                 tabelle.getRowSorter().setSortKeys(listSortKeys);
@@ -260,7 +260,7 @@ public class GuiFilme extends PanelVorlage {
                     final DatenFilm film = filmSelection.get();
                     MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
                     daten.dialogMediaDB.setVis();
-                    daten.dialogMediaDB.setFilter(film.arr[DatenFilm.FILM_TITEL_NR]);
+                    daten.dialogMediaDB.setFilter(film.arr[DatenFilm.FILM_TITEL]);
                 }
             }
         });
@@ -292,8 +292,8 @@ public class GuiFilme extends PanelVorlage {
         tabelle.setDefaultRenderer(Integer.class, cellRenderer);
 
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenFilm.COLUMN_NAMES, DatenFilm.spaltenAnzeigen,
-                new int[]{DatenFilm.FILM_ABSPIELEN_NR, DatenFilm.FILM_AUFZEICHNEN_NR, DatenFilm.FILM_DATUM_LONG_NR, DatenFilm.FILM_REF_NR},
-                new int[]{DatenFilm.FILM_ABSPIELEN_NR, DatenFilm.FILM_AUFZEICHNEN_NR},
+                new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_DATUM_LONG, DatenFilm.FILM_REF},
+                new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN},
                 true /*Icon*/));
 
         jCheckBoxProgamme.setIcon(GetIcon.getProgramIcon("close_15.png"));
@@ -446,7 +446,7 @@ public class GuiFilme extends PanelVorlage {
         ArrayList<DatenFilm> liste = getSelFilme();
         for (DatenFilm datenFilm : liste) {
             // erst mal schauen obs den schon gibt
-            DatenDownload datenDownload = Daten.listeDownloads.getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL_NR]);
+            DatenDownload datenDownload = Daten.listeDownloads.getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL]);
             if (datenDownload != null) {
                 int ret = JOptionPane.showConfirmDialog(parentComponent, "Download für den Film existiert bereits.\n"
                         + "Nochmal anlegen?", "Anlegen?", JOptionPane.YES_NO_OPTION);
@@ -492,7 +492,7 @@ public class GuiFilme extends PanelVorlage {
         if (filmSelection.isPresent()) {
             MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
             daten.dialogMediaDB.setVis();
-            daten.dialogMediaDB.setFilter(filmSelection.get().arr[DatenFilm.FILM_TITEL_NR]);
+            daten.dialogMediaDB.setFilter(filmSelection.get().arr[DatenFilm.FILM_TITEL]);
         }
     }
 
@@ -507,7 +507,7 @@ public class GuiFilme extends PanelVorlage {
     private Optional<DatenFilm> getCurrentlySelectedFilm() {
         final int selectedTableRow = tabelle.getSelectedRow();
         if (selectedTableRow >= 0) {
-            return Optional.of((DatenFilm) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), DatenFilm.FILM_REF_NR));
+            return Optional.of((DatenFilm) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), DatenFilm.FILM_REF));
         } else {
             return Optional.empty();
         }
@@ -522,7 +522,7 @@ public class GuiFilme extends PanelVorlage {
      */
     private Optional<DatenFilm> getFilm(final int zeileTabelle) {
         if (zeileTabelle >= 0 && zeileTabelle < tabelle.getRowCount()) {
-            return Optional.of((DatenFilm) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(zeileTabelle), DatenFilm.FILM_REF_NR));
+            return Optional.of((DatenFilm) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(zeileTabelle), DatenFilm.FILM_REF));
         } else {
             return Optional.empty();
         }
@@ -538,7 +538,7 @@ public class GuiFilme extends PanelVorlage {
         int rows[] = tabelle.getSelectedRows();
         if (rows.length > 0) {
             for (int row : rows) {
-                DatenFilm datenFilm = (DatenFilm) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenFilm.FILM_REF_NR);
+                DatenFilm datenFilm = (DatenFilm) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenFilm.FILM_REF);
                 arrayFilme.add(datenFilm);
             }
         } else {
@@ -627,7 +627,7 @@ public class GuiFilme extends PanelVorlage {
         url = url.trim();
         TModelFilm m = (TModelFilm) tabelle.getModel();
         for (int i = 0; i < m.getRowCount(); ++i) {
-            if (!url.equals(m.getValueAt(i, DatenFilm.FILM_URL_NR).toString())) {
+            if (!url.equals(m.getValueAt(i, DatenFilm.FILM_URL).toString())) {
                 m.removeRow(i);
                 --i;
             }
@@ -1185,16 +1185,16 @@ public class GuiFilme extends PanelVorlage {
 
         private void buttonTable(int row, int column) {
             if (row != -1) {
-                if (tabelle.convertColumnIndexToModel(column) == DatenFilm.FILM_ABSPIELEN_NR) {
+                if (tabelle.convertColumnIndexToModel(column) == DatenFilm.FILM_ABSPIELEN) {
                     Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
                     filmSelection.ifPresent(datenFilm -> {
                         boolean stop = false;
-                        final DatenDownload datenDownload = Daten.listeDownloadsButton.getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL_NR]);
+                        final DatenDownload datenDownload = Daten.listeDownloadsButton.getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL]);
                         if (datenDownload != null) {
                             if (datenDownload.start != null) {
                                 if (datenDownload.start.status == Start.STATUS_RUN) {
                                     stop = true;
-                                    Daten.listeDownloadsButton.delDownloadButton(datenFilm.arr[DatenFilm.FILM_URL_NR]);
+                                    Daten.listeDownloadsButton.delDownloadButton(datenFilm.arr[DatenFilm.FILM_URL]);
                                 }
                             }
                         }
@@ -1202,7 +1202,7 @@ public class GuiFilme extends PanelVorlage {
                             playFilm();
                         }
                     });
-                } else if (tabelle.convertColumnIndexToModel(column) == DatenFilm.FILM_AUFZEICHNEN_NR) {
+                } else if (tabelle.convertColumnIndexToModel(column) == DatenFilm.FILM_AUFZEICHNEN) {
                     saveFilm();
                 }
             }
@@ -1464,7 +1464,7 @@ public class GuiFilme extends PanelVorlage {
 
             private void updateHistory(DatenFilm film) {
                 if (eintragen) {
-                    daten.history.zeileSchreiben(film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR], film.getUrlHistory());
+                    daten.history.zeileSchreiben(film.arr[DatenFilm.FILM_THEMA], film.arr[DatenFilm.FILM_TITEL], film.getUrlHistory());
                     Daten.listeFilmeHistory.add(film);
                 } else {
                     daten.history.urlAusLogfileLoeschen(film.getUrlHistory());
@@ -1503,7 +1503,7 @@ public class GuiFilme extends PanelVorlage {
                     stopBeob = true;
                     Optional<DatenFilm> res = getFilm(nr);
                     res.ifPresent(film -> {
-                        final String thema = film.arr[DatenFilm.FILM_THEMA_NR];
+                        final String thema = film.arr[DatenFilm.FILM_THEMA];
                         mVFilter.get_jComboBoxFilterThema().setSelectedIndex(0);
                         mVFilter.get_jComboBoxFilterThema().setSelectedItem(thema);
                     });
@@ -1522,7 +1522,7 @@ public class GuiFilme extends PanelVorlage {
                     stopBeob = true;
                     Optional<DatenFilm> res = getFilm(nr);
                     res.ifPresent(film -> {
-                        final String sen = film.arr[DatenFilm.FILM_SENDER_NR];
+                        final String sen = film.arr[DatenFilm.FILM_SENDER];
                         mVFilter.get_jComboBoxFilterSender().setSelectedIndex(0);
                         mVFilter.get_jComboBoxFilterSender().setSelectedItem(sen);
                     });
@@ -1541,10 +1541,10 @@ public class GuiFilme extends PanelVorlage {
                     stopBeob = true;
                     Optional<DatenFilm> res = getFilm(nr);
                     res.ifPresent(film -> {
-                        final String sen = film.arr[DatenFilm.FILM_SENDER_NR];
+                        final String sen = film.arr[DatenFilm.FILM_SENDER];
                         mVFilter.get_jComboBoxFilterSender().setSelectedIndex(0);
                         mVFilter.get_jComboBoxFilterSender().setSelectedItem(sen);
-                        final String thema = film.arr[DatenFilm.FILM_THEMA_NR];
+                        final String thema = film.arr[DatenFilm.FILM_THEMA];
                         mVFilter.get_jComboBoxFilterThema().setSelectedIndex(0);
                         mVFilter.get_jComboBoxFilterThema().setSelectedItem(thema);
                         if (mVFilter.get_jComboBoxFilterThema().getSelectedIndex() == 0) {
@@ -1567,17 +1567,17 @@ public class GuiFilme extends PanelVorlage {
                     stopBeob = true;
                     Optional<DatenFilm> res = getFilm(nr);
                     res.ifPresent(film -> {
-                        final String sen = film.arr[DatenFilm.FILM_SENDER_NR];
+                        final String sen = film.arr[DatenFilm.FILM_SENDER];
                         mVFilter.get_jComboBoxFilterSender().setSelectedIndex(0);
                         mVFilter.get_jComboBoxFilterSender().setSelectedItem(sen);
-                        final String thema = film.arr[DatenFilm.FILM_THEMA_NR];
+                        final String thema = film.arr[DatenFilm.FILM_THEMA];
                         mVFilter.get_jComboBoxFilterThema().setSelectedIndex(0);
                         mVFilter.get_jComboBoxFilterThema().setSelectedItem(thema);
                         if (mVFilter.get_jComboBoxFilterThema().getSelectedIndex() == 0) {
                             final String themaFilter = getThemaFilter(sen, thema);
                             mVFilter.get_jComboBoxFilterThema().setSelectedItem(themaFilter);
                         }
-                        final String tit = film.arr[DatenFilm.FILM_TITEL_NR];
+                        final String tit = film.arr[DatenFilm.FILM_TITEL];
                         mVFilter.get_jTextFieldFilterTitel().setText(tit);
                     });
                     stopBeob = false;
@@ -1663,11 +1663,11 @@ public class GuiFilme extends PanelVorlage {
                                 Daten.listeAbo.aboLoeschen(datenAbo);
                             } else //neues Abo anlegen
                             if (mitTitel) {
-                                Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA_NR]/*aboname*/,
-                                        film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR]);
+                                Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
+                                        film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], film.arr[DatenFilm.FILM_TITEL]);
                             } else {
-                                Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA_NR]/*aboname*/,
-                                        film.arr[DatenFilm.FILM_SENDER_NR], film.arr[DatenFilm.FILM_THEMA_NR], "");
+                                Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
+                                        film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], "");
                             }
                         });
                         stopBeob = false;
@@ -1689,7 +1689,7 @@ public class GuiFilme extends PanelVorlage {
                         stopBeob = true;
                         Optional<DatenFilm> res = getFilm(nr);
                         res.ifPresent(film -> {
-                            final String thema = film.arr[DatenFilm.FILM_THEMA_NR];
+                            final String thema = film.arr[DatenFilm.FILM_THEMA];
                             //neues Abo anlegen
                             Daten.listeAbo.addAbo(mVFilter.get_jComboBoxFilterSender().getSelectedItem().toString(),
                                     mVFilter.get_jComboBoxFilterThema().getSelectedItem().toString(),
@@ -1720,8 +1720,8 @@ public class GuiFilme extends PanelVorlage {
                 if (nr >= 0) {
                     Optional<DatenFilm> res = getFilm(nr);
                     res.ifPresent(film -> {
-                        final String th = film.arr[DatenFilm.FILM_THEMA_NR];
-                        final String se = film.arr[DatenFilm.FILM_SENDER_NR];
+                        final String th = film.arr[DatenFilm.FILM_THEMA];
+                        final String se = film.arr[DatenFilm.FILM_SENDER];
                         // Blackliste für alle Fälle einschalten, notify kommt beim add()
                         MVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.TRUE.toString());
                         if (!sender) {
