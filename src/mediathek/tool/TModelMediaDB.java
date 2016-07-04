@@ -30,7 +30,7 @@ public class TModelMediaDB extends TModel {
         types = new Class<?>[DatenMediaDB.MAX_ELEM];
         for (int i = 0; i < DatenMediaDB.MAX_ELEM; ++i) {
             switch (i) {
-                case DatenMediaDB.MEDIA_DB_SIZE_NR:
+                case DatenMediaDB.MEDIA_DB_SIZE:
                     types[i] = MVMediaDBFileSize.class;
                     break;
                 default:
