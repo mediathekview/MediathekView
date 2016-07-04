@@ -92,11 +92,11 @@ public class IoXmlLesen {
                                     Daten.listeDownloads.add(d);
                                 }
                                 break;
-                            case DatenBlacklist.BLACKLIST:
+                            case DatenBlacklist.TAG:
                                 //Blacklist
                                 ListeBlacklist blacklist = Daten.listeBlacklist;
                                 DatenBlacklist datenBlacklist = new DatenBlacklist();
-                                if (get(parser, DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, datenBlacklist.arr)) {
+                                if (get(parser, DatenBlacklist.TAG, DatenBlacklist.XML_NAMES, datenBlacklist.arr)) {
                                     blacklist.add(datenBlacklist);
                                 }
                                 break;
@@ -157,11 +157,11 @@ public class IoXmlLesen {
                             ++found[0];
                             Daten.listeAbo.addAbo(datenAbo);
                         }
-                    } else if (black && parser.getLocalName().equals(DatenBlacklist.BLACKLIST)) {
+                    } else if (black && parser.getLocalName().equals(DatenBlacklist.TAG)) {
                         //Blacklist
                         ListeBlacklist blacklist = Daten.listeBlacklist;
                         DatenBlacklist datenBlacklist = new DatenBlacklist();
-                        if (get(parser, DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, datenBlacklist.arr)) {
+                        if (get(parser, DatenBlacklist.TAG, DatenBlacklist.XML_NAMES, datenBlacklist.arr)) {
                             ++found[1];
                             blacklist.add(datenBlacklist);
                         }

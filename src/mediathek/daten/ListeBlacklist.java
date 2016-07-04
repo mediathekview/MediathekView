@@ -49,7 +49,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     @Override
     public boolean add(DatenBlacklist b) {
-        b.arr[DatenBlacklist.BLACKLIST_NR_NR] = getNr(nr++);
+        b.arr[DatenBlacklist.BLACKLIST_NR] = getNr(nr++);
         boolean ret = super.add(b);
         notifyBlack();
         return ret;
@@ -90,7 +90,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     public DatenBlacklist get(String nr) {
         for (DatenBlacklist b : this) {
-            if (b.arr[DatenBlacklist.BLACKLIST_NR_NR].equals(nr)) {
+            if (b.arr[DatenBlacklist.BLACKLIST_NR].equals(nr)) {
                 return b;
             }
         }
@@ -108,7 +108,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         DatenBlacklist blacklist;
         int i = 0;
         ListIterator<DatenBlacklist> iterator = this.listIterator();
-        object = new Object[this.size()][DatenBlacklist.BLACKLIST_MAX_ELEM];
+        object = new Object[this.size()][DatenBlacklist.MAX_ELEM];
         while (iterator.hasNext()) {
             blacklist = iterator.next();
             object[i] = blacklist.arr;
@@ -201,11 +201,11 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             return true;
         }
         for (DatenBlacklist blacklistEntry : this) {
-            if (Filter.filterAufFilmPruefen(blacklistEntry.arr[DatenBlacklist.BLACKLIST_SENDER_NR], blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_NR],
-                    Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR])
-                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL_NR].toLowerCase().split(","),
-                    Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR])
-                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL_NR].toLowerCase().split(","),
+            if (Filter.filterAufFilmPruefen(blacklistEntry.arr[DatenBlacklist.BLACKLIST_SENDER], blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA],
+                    Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL])
+                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL].toLowerCase().split(","),
+                    Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL])
+                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL].toLowerCase().split(","),
                     new String[]{""}, 0, film, true /*auch die Länge prüfen*/
             )) {
                 return Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST));
