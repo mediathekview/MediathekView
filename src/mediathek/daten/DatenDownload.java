@@ -31,7 +31,7 @@ import mediathek.controller.starter.Start;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 
-public class DatenDownload implements Comparable<DatenDownload> {
+public class DatenDownload extends Data<DatenDownload> {
 
     // Quelle - start über einen Button - Download - Abo
     public static final byte QUELLE_ALLE = -1;
@@ -531,14 +531,12 @@ public class DatenDownload implements Comparable<DatenDownload> {
                     path = GuiFunktionen.addsPfad(path, FilenameUtils.removeIllegalCharacters(abo.arr[DatenAbo.ABO_ZIELPFAD], true));
                 }
             } else //Downloads
-            {
-                if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN])) {
+             if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN])) {
                     //und den Namen des Themas an den Zielpfad anhängen
                     path = GuiFunktionen.addsPfad(path, FilenameUtils.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA], true /*pfad*/,
                             Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)),
                             Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ONLY_ASCII))));
                 }
-            }
 
             path = replaceString(path, film); // %D ... ersetzen
         }
@@ -738,15 +736,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
         return ret;
     }
 
-    @Override
-    public int compareTo(DatenDownload arg0) {
-        int ret;
-        if ((ret = sorter.compare(arr[DatenDownload.DOWNLOAD_SENDER], arg0.arr[DatenDownload.DOWNLOAD_SENDER])) == 0) {
-            return sorter.compare(arr[DatenDownload.DOWNLOAD_THEMA], arg0.arr[DatenDownload.DOWNLOAD_THEMA]);
-        }
-        return ret;
-    }
-
     private void makeArr() {
         arr = new String[MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {
@@ -779,5 +768,14 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     public String getFileNameSuffix() {
         return GuiFunktionen.getFileNameSuffix(arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+    }
+
+    @Override
+    public int compareTo(DatenDownload arg0) {
+        int ret;
+        if ((ret = sorter.compare(arr[DatenDownload.DOWNLOAD_SENDER], arg0.arr[DatenDownload.DOWNLOAD_SENDER])) == 0) {
+            return sorter.compare(arr[DatenDownload.DOWNLOAD_THEMA], arg0.arr[DatenDownload.DOWNLOAD_THEMA]);
+        }
+        return ret;
     }
 }
