@@ -1,4 +1,19 @@
-:: das sind verschiedene Möglichkeiten das Programm
+:: Wenn man in den Einstellungen (nicht im Filter!!), das
+:: Laden der Filmliste auf die letzten 14 Tage reduziert,
+:: bekommt man eine Filmliste mit weniger al 18.000 
+:: Einträgen. Damit läßt sich MV leicht mit nur wenig
+:: Speicher starten, und ohne Einschränkung anwenden.
+:: Nachdem die Einstellungen geändert wurden, und
+:: MV neu gestartet wird, versuch es hiermit:
+ 
+:: java -Xms128M -Xmx256M -jar ./MediathekView.jar
+
+
+
+
+:: =============================================
+
+:: Das sind verschiedene Möglichkeiten das Programm
 :: zu starten, die anderen Aufrufe sind auskommentiert
 :: der Pfad zum Programm "PFAD" muss angepasst werden
 
