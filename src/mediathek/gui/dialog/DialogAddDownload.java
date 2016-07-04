@@ -136,7 +136,7 @@ public class DialogAddDownload extends JDialog {
         } else {
             jComboBoxPset.addActionListener(e -> setupResolutionButtons());
         }
-        jTextFieldSender.setText(" " + datenFilm.arr[DatenFilm.FILM_SENDER_NR] + ":   " + datenFilm.arr[DatenFilm.FILM_TITEL_NR]);
+        jTextFieldSender.setText(" " + datenFilm.arr[DatenFilm.FILM_SENDER] + ":   " + datenFilm.arr[DatenFilm.FILM_TITEL]);
         jTextFieldName.getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
@@ -201,8 +201,8 @@ public class DialogAddDownload extends JDialog {
         jRadioButtonAufloesungHd.addActionListener(new BeobRadio());
         jRadioButtonAufloesungKlein.addActionListener(new BeobRadio());
         jRadioButtonAufloesungHoch.addActionListener(new BeobRadio());
-        jRadioButtonAufloesungHd.setEnabled(!datenFilm.arr[DatenFilm.FILM_URL_HD_NR].isEmpty());
-        jRadioButtonAufloesungKlein.setEnabled(!datenFilm.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty());
+        jRadioButtonAufloesungHd.setEnabled(!datenFilm.arr[DatenFilm.FILM_URL_HD].isEmpty());
+        jRadioButtonAufloesungKlein.setEnabled(!datenFilm.arr[DatenFilm.FILM_URL_KLEIN].isEmpty());
         jRadioButtonAufloesungHoch.setSelected(true);
         if (jRadioButtonAufloesungHd.isEnabled()) {
             dateiGroesse_HD = datenFilm.getDateigroesse(datenFilm.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD));
@@ -210,7 +210,7 @@ public class DialogAddDownload extends JDialog {
                 jRadioButtonAufloesungHd.setText(jRadioButtonAufloesungHd.getText() + "   [ " + dateiGroesse_HD + " MB ]");
             }
         }
-        dateiGroesse_Hoch = datenFilm.getDateigroesse(datenFilm.arr[DatenFilm.FILM_URL_NR]);
+        dateiGroesse_Hoch = datenFilm.getDateigroesse(datenFilm.arr[DatenFilm.FILM_URL]);
         if (!dateiGroesse_Hoch.isEmpty()) {
             jRadioButtonAufloesungHoch.setText(jRadioButtonAufloesungHoch.getText() + "   [ " + dateiGroesse_Hoch + " MB ]");
         }
@@ -380,10 +380,10 @@ public class DialogAddDownload extends JDialog {
     private void setupResolutionButtons() {
         pSet = Daten.listePset.getListeSpeichern().get(jComboBoxPset.getSelectedIndex());
         if (aufloesung.equals(DatenFilm.AUFLOESUNG_HD) || pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG].equals(DatenFilm.AUFLOESUNG_HD)
-                && !datenFilm.arr[DatenFilm.FILM_URL_HD_NR].isEmpty()) {
+                && !datenFilm.arr[DatenFilm.FILM_URL_HD].isEmpty()) {
             /* Dann wurde im Filter HD ausgewählt und wird voreingestellt */
             jRadioButtonAufloesungHd.setSelected(true);
-        } else if (pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG].equals(DatenFilm.AUFLOESUNG_KLEIN) && !datenFilm.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty()) {
+        } else if (pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG].equals(DatenFilm.AUFLOESUNG_KLEIN) && !datenFilm.arr[DatenFilm.FILM_URL_KLEIN].isEmpty()) {
             jRadioButtonAufloesungKlein.setSelected(true);
         } else {
             jRadioButtonAufloesungHoch.setSelected(true);

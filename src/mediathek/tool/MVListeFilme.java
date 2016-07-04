@@ -82,7 +82,7 @@ public class MVListeFilme {
                     }
                 }
                 if (live) {
-                    if (!film.arr[DatenFilm.FILM_THEMA_NR].equals(ListeFilme.THEMA_LIVE)) {
+                    if (!film.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE)) {
                         continue;
                     }
                 }
@@ -92,7 +92,7 @@ public class MVListeFilme {
                     }
                 }
                 if (keineAbos) {
-                    if (!film.arr[DatenFilm.FILM_ABO_NAME_NR].isEmpty()) {
+                    if (!film.arr[DatenFilm.FILM_ABO_NAME].isEmpty()) {
                         continue;
                     }
                 }
@@ -127,25 +127,25 @@ public class MVListeFilme {
         Object[] object = new Object[DatenFilm.MAX_ELEM];
         for (int m = 0; m < DatenFilm.MAX_ELEM; ++m) {
             switch (m) {
-                case DatenFilm.FILM_NR_NR:
+                case DatenFilm.FILM_NR:
                     object[m] = film.nr;
                     break;
-                case DatenFilm.FILM_DATUM_NR:
+                case DatenFilm.FILM_DATUM:
                     object[m] = film.datumFilm;
                     break;
-                case DatenFilm.FILM_GROESSE_NR:
+                case DatenFilm.FILM_GROESSE:
                     object[m] = film.dateigroesseL;
                     break;
-                case DatenFilm.FILM_REF_NR:
+                case DatenFilm.FILM_REF:
                     object[m] = film;
                     break;
-                case DatenFilm.FILM_NEU_NR:
+                case DatenFilm.FILM_NEU:
                     object[m] = film.isNew() ? "1" : "0";
                     break;
-                case DatenFilm.FILM_HD_NR:
+                case DatenFilm.FILM_HD:
                     object[m] = film.isHD() ? "1" : "0";
                     break;
-                case DatenFilm.FILM_UT_NR:
+                case DatenFilm.FILM_UT:
                     object[m] = film.hasUT() ? "1" : "0";
                     break;
                 default:

@@ -128,16 +128,16 @@ public class DatenDownload implements Comparable<DatenDownload> {
         this.film = film;
         this.pSet = pSet;
         this.abo = abo;
-        arr[DOWNLOAD_FILM_NR] = film.arr[DatenFilm.FILM_NR_NR];
-        arr[DOWNLOAD_SENDER] = film.arr[DatenFilm.FILM_SENDER_NR];
-        arr[DOWNLOAD_THEMA] = film.arr[DatenFilm.FILM_THEMA_NR];
-        arr[DOWNLOAD_TITEL] = film.arr[DatenFilm.FILM_TITEL_NR];
-        arr[DOWNLOAD_FILM_URL] = film.arr[DatenFilm.FILM_URL_NR];
+        arr[DOWNLOAD_FILM_NR] = film.arr[DatenFilm.FILM_NR];
+        arr[DOWNLOAD_SENDER] = film.arr[DatenFilm.FILM_SENDER];
+        arr[DOWNLOAD_THEMA] = film.arr[DatenFilm.FILM_THEMA];
+        arr[DOWNLOAD_TITEL] = film.arr[DatenFilm.FILM_TITEL];
+        arr[DOWNLOAD_FILM_URL] = film.arr[DatenFilm.FILM_URL];
         arr[DOWNLOAD_URL_SUBTITLE] = film.getUrlSubtitle();
-        arr[DOWNLOAD_DATUM] = film.arr[DatenFilm.FILM_DATUM_NR];
-        arr[DOWNLOAD_ZEIT] = film.arr[DatenFilm.FILM_ZEIT_NR];
-        arr[DOWNLOAD_URL_RTMP] = film.arr[DatenFilm.FILM_URL_RTMP_NR];
-        arr[DOWNLOAD_DAUER] = film.arr[DatenFilm.FILM_DAUER_NR];
+        arr[DOWNLOAD_DATUM] = film.arr[DatenFilm.FILM_DATUM];
+        arr[DOWNLOAD_ZEIT] = film.arr[DatenFilm.FILM_ZEIT];
+        arr[DOWNLOAD_URL_RTMP] = film.arr[DatenFilm.FILM_URL_RTMP];
+        arr[DOWNLOAD_DAUER] = film.arr[DatenFilm.FILM_DAUER];
         arr[DOWNLOAD_QUELLE] = String.valueOf(quelle);
         arr[DOWNLOAD_HISTORY_URL] = film.getUrlHistory();
         if (aufloesung.isEmpty()) {
@@ -150,10 +150,10 @@ public class DatenDownload implements Comparable<DatenDownload> {
         arr[DatenDownload.DOWNLOAD_INFODATEI] = pSet.arr[DatenPset.PROGRAMMSET_INFODATEI];
         arr[DatenDownload.DOWNLOAD_SUBTITLE] = pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE];
         arr[DatenDownload.DOWNLOAD_SPOTLIGHT] = pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT];
-        arr[DatenDownload.DOWNLOAD_GEO] = film.arr[DatenFilm.FILM_GEO_NR];
+        arr[DatenDownload.DOWNLOAD_GEO] = film.arr[DatenFilm.FILM_GEO];
         // und jetzt noch die Dateigröße für die entsp. URL
-        if (film.arr[DatenFilm.FILM_URL_NR].equals(arr[DOWNLOAD_URL])) {
-            mVFilmSize.setSize(film.arr[DatenFilm.FILM_GROESSE_NR]);
+        if (film.arr[DatenFilm.FILM_URL].equals(arr[DOWNLOAD_URL])) {
+            mVFilmSize.setSize(film.arr[DatenFilm.FILM_GROESSE]);
         } else {
             mVFilmSize.setSize("");
         }
@@ -579,24 +579,24 @@ public class DatenDownload implements Comparable<DatenDownload> {
             }
         }
 
-        replStr = replStr.replace("%t", getField(film.arr[DatenFilm.FILM_THEMA_NR], laenge));
-        replStr = replStr.replace("%T", getField(film.arr[DatenFilm.FILM_TITEL_NR], laenge));
-        replStr = replStr.replace("%s", getField(film.arr[DatenFilm.FILM_SENDER_NR], laenge));
+        replStr = replStr.replace("%t", getField(film.arr[DatenFilm.FILM_THEMA], laenge));
+        replStr = replStr.replace("%T", getField(film.arr[DatenFilm.FILM_TITEL], laenge));
+        replStr = replStr.replace("%s", getField(film.arr[DatenFilm.FILM_SENDER], laenge));
         replStr = replStr.replace("%N", getField(GuiFunktionen.getDateiName(this.arr[DatenDownload.DOWNLOAD_URL]), laenge));
 
         //Felder mit fester Länge werden immer ganz geschrieben
-        replStr = replStr.replace("%D", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM_NR])));
-        replStr = replStr.replace("%d", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? getJetzt_HHMMSS() : datumDatumZeitReinigen(film.arr[DatenFilm.FILM_ZEIT_NR]));
+        replStr = replStr.replace("%D", film.arr[DatenFilm.FILM_DATUM].equals("") ? getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM])));
+        replStr = replStr.replace("%d", film.arr[DatenFilm.FILM_ZEIT].equals("") ? getJetzt_HHMMSS() : datumDatumZeitReinigen(film.arr[DatenFilm.FILM_ZEIT]));
         replStr = replStr.replace("%H", getHeute_yyyyMMdd());
         replStr = replStr.replace("%h", getJetzt_HHMMSS());
 
-        replStr = replStr.replace("%1", getDMY("%1", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM_NR]));
-        replStr = replStr.replace("%2", getDMY("%2", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM_NR]));
-        replStr = replStr.replace("%3", getDMY("%3", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM_NR]));
+        replStr = replStr.replace("%1", getDMY("%1", film.arr[DatenFilm.FILM_DATUM].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM]));
+        replStr = replStr.replace("%2", getDMY("%2", film.arr[DatenFilm.FILM_DATUM].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM]));
+        replStr = replStr.replace("%3", getDMY("%3", film.arr[DatenFilm.FILM_DATUM].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM]));
 
-        replStr = replStr.replace("%4", getHMS("%4", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT_NR]));
-        replStr = replStr.replace("%5", getHMS("%5", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT_NR]));
-        replStr = replStr.replace("%6", getHMS("%6", film.arr[DatenFilm.FILM_ZEIT_NR].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT_NR]));
+        replStr = replStr.replace("%4", getHMS("%4", film.arr[DatenFilm.FILM_ZEIT].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT]));
+        replStr = replStr.replace("%5", getHMS("%5", film.arr[DatenFilm.FILM_ZEIT].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT]));
+        replStr = replStr.replace("%6", getHMS("%6", film.arr[DatenFilm.FILM_ZEIT].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT]));
 
         replStr = replStr.replace("%i", String.valueOf(film.nr));
 

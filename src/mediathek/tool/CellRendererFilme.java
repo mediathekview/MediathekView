@@ -89,10 +89,10 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             final int rowModelIndex = table.convertRowIndexToModel(row);
             final int columnModelIndex = table.convertColumnIndexToModel(column);
             
-            DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF_NR);
-            DatenDownload datenDownload = Daten.listeDownloadsButton.getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL_NR]);
+            DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF);
+            DatenDownload datenDownload = Daten.listeDownloadsButton.getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL]);
             
-            boolean live = datenFilm.arr[DatenFilm.FILM_THEMA_NR].equals(ListeFilme.THEMA_LIVE);
+            boolean live = datenFilm.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE);
             boolean start = false;
 
             /*
@@ -107,28 +107,28 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             }
             
             switch (columnModelIndex) {
-                case DatenFilm.FILM_NR_NR:
-                case DatenFilm.FILM_DATUM_NR:
-                case DatenFilm.FILM_ZEIT_NR:
-                case DatenFilm.FILM_DAUER_NR:
+                case DatenFilm.FILM_NR:
+                case DatenFilm.FILM_DATUM:
+                case DatenFilm.FILM_ZEIT:
+                case DatenFilm.FILM_DAUER:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     break;
-                case DatenFilm.FILM_GROESSE_NR:
+                case DatenFilm.FILM_GROESSE:
                     setHorizontalAlignment(SwingConstants.RIGHT);
                     break;
-                case DatenFilm.FILM_ABSPIELEN_NR:
+                case DatenFilm.FILM_ABSPIELEN:
                     handleButtonStartColumn(datenDownload, isSelected);
                     break;
                 
-                case DatenFilm.FILM_AUFZEICHNEN_NR:
+                case DatenFilm.FILM_AUFZEICHNEN:
                     handleButtonDownloadColumn(isSelected);
                     break;
-                case DatenFilm.FILM_SENDER_NR:
+                case DatenFilm.FILM_SENDER:
                     if (((MVTable) table).iconAnzeigen) {
                         handleSenderColumn((String) value, ((MVTable) table).iconKlein);
                     }
                     break;
-                case DatenFilm.FILM_NEU_NR:
+                case DatenFilm.FILM_NEU:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (datenFilm.isNew()) {
                         setIcon(ja_16);
@@ -137,7 +137,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                     }
                     setText("");
                     break;
-                case DatenFilm.FILM_HD_NR:
+                case DatenFilm.FILM_HD:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (datenFilm.isHD()) {
                         setIcon(ja_16);
@@ -146,7 +146,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                     }
                     setText("");//im Modle brauchen wir den Text zum Sortieren
                     break;
-                case DatenFilm.FILM_UT_NR:
+                case DatenFilm.FILM_UT:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (datenFilm.hasUT()) {
                         setIcon(ja_16);
@@ -178,8 +178,8 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 }
             }
             if (!start && geoMelden) {
-                if (!datenFilm.arr[DatenFilm.FILM_GEO_NR].isEmpty()) {
-                    if (!datenFilm.arr[DatenFilm.FILM_GEO_NR].contains(MVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
+                if (!datenFilm.arr[DatenFilm.FILM_GEO].isEmpty()) {
+                    if (!datenFilm.arr[DatenFilm.FILM_GEO].contains(MVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
                         //setForeground(GuiKonstanten.FARBE_FILM_GEOBLOCK_FORGROUND);
                         if (isSelected) {
                             setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND_SEL.color);

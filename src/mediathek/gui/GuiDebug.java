@@ -198,9 +198,9 @@ public class GuiDebug extends JPanel {
                 ListeFilme listeFilme = new ListeFilme();
                 ArrayList<String> listUrl = new ArrayList<>();
                 for (DatenFilm film : Daten.listeFilme) {
-                    if (!listUrl.contains(film.arr[DatenFilm.FILM_URL_NR])) {
+                    if (!listUrl.contains(film.arr[DatenFilm.FILM_URL])) {
                         listeFilme.add(film);
-                        listUrl.add(film.arr[DatenFilm.FILM_URL_NR]);
+                        listUrl.add(film.arr[DatenFilm.FILM_URL]);
                     }
                 }
                 System.out.println("---------------------");
@@ -218,15 +218,15 @@ public class GuiDebug extends JPanel {
                 HashSet<String> hash = new HashSet<>();
                 HashSet<String> hashDoppelt = new HashSet<>();
                 for (DatenFilm film : Daten.listeFilme) {
-                    if (hash.contains(film.arr[DatenFilm.FILM_URL_NR])) {
-                        hashDoppelt.add(film.arr[DatenFilm.FILM_URL_NR]);
+                    if (hash.contains(film.arr[DatenFilm.FILM_URL])) {
+                        hashDoppelt.add(film.arr[DatenFilm.FILM_URL]);
                     } else {
-                        hash.add(film.arr[DatenFilm.FILM_URL_NR]);
+                        hash.add(film.arr[DatenFilm.FILM_URL]);
                     }
                 }
                 hash.clear();
                 for (DatenFilm film : Daten.listeFilme) {
-                    if (hashDoppelt.contains(film.arr[DatenFilm.FILM_URL_NR])) {
+                    if (hashDoppelt.contains(film.arr[DatenFilm.FILM_URL])) {
                         listeFilme.add(film);
                     }
                 }
@@ -276,7 +276,7 @@ public class GuiDebug extends JPanel {
                 HashSet<String> hash = new HashSet<>();
                 HashSet<String> hashDoppelt = new HashSet<>();
                 for (DatenFilm film : Daten.listeFilme) {
-                    String tt = film.arr[DatenFilm.FILM_THEMA_NR].toLowerCase() + film.arr[DatenFilm.FILM_TITEL_NR].toLowerCase() + film.arr[DatenFilm.FILM_URL_NR];
+                    String tt = film.arr[DatenFilm.FILM_THEMA].toLowerCase() + film.arr[DatenFilm.FILM_TITEL].toLowerCase() + film.arr[DatenFilm.FILM_URL];
                     if (hash.contains(tt)) {
                         hashDoppelt.add(tt);
                     } else {
@@ -285,7 +285,7 @@ public class GuiDebug extends JPanel {
                 }
                 hash.clear();
                 for (DatenFilm film : Daten.listeFilme) {
-                    String tt = film.arr[DatenFilm.FILM_THEMA_NR].toLowerCase() + film.arr[DatenFilm.FILM_TITEL_NR].toLowerCase() + film.arr[DatenFilm.FILM_URL_NR];
+                    String tt = film.arr[DatenFilm.FILM_THEMA].toLowerCase() + film.arr[DatenFilm.FILM_TITEL].toLowerCase() + film.arr[DatenFilm.FILM_URL];
                     if (hashDoppelt.contains(tt)) {
                         listeFilme.add(film);
                     }
@@ -335,7 +335,7 @@ public class GuiDebug extends JPanel {
                 Iterator<DatenFilm> it = Daten.listeFilme.iterator();
                 while (it.hasNext()) {
                     DatenFilm f = it.next();
-                    if (f.arr[DatenFilm.FILM_THEMA_NR].equals(ListeFilme.THEMA_LIVE)) {
+                    if (f.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE)) {
                         it.remove();
                     }
                 }

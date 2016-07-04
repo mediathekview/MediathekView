@@ -207,14 +207,14 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             while (iteratorFilm.hasNext()) {
                 // für jeden Film Abo löschen
                 datenFilm = iteratorFilm.next();
-                datenFilm.arr[DatenFilm.FILM_ABO_NAME_NR] = "";
+                datenFilm.arr[DatenFilm.FILM_ABO_NAME] = "";
                 datenFilm.abo = null;
             }
         } else {
             while (iteratorFilm.hasNext()) {
                 // für jeden Film
                 datenFilm = iteratorFilm.next();
-                datenFilm.arr[DatenFilm.FILM_ABO_NAME_NR] = "";
+                datenFilm.arr[DatenFilm.FILM_ABO_NAME] = "";
                 datenFilm.abo = null;
                 iteratorAbo = this.listIterator();
                 while (iteratorAbo.hasNext()) {
@@ -252,10 +252,10 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                         // und noch die Filmlänge prüfen
                         if (!Filter.laengePruefen(datenAbo.mindestdauerMinuten, datenFilm.dauerL)) {
                             // dann ist der Film zu kurz
-                            datenFilm.arr[DatenFilm.FILM_ABO_NAME_NR] = datenAbo.arr[DatenAbo.ABO_NAME] + " [zu kurz]";
+                            datenFilm.arr[DatenFilm.FILM_ABO_NAME] = datenAbo.arr[DatenAbo.ABO_NAME] + " [zu kurz]";
                             datenFilm.abo = datenAbo;
                         } else {
-                            datenFilm.arr[DatenFilm.FILM_ABO_NAME_NR] = datenAbo.arr[DatenAbo.ABO_NAME];
+                            datenFilm.arr[DatenFilm.FILM_ABO_NAME] = datenAbo.arr[DatenAbo.ABO_NAME];
                             datenFilm.abo = datenAbo;
                         }
                         // und nichts wie weiter

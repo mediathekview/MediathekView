@@ -19,7 +19,6 @@
  */
 package mediathek.daten;
 
-import mSearch.daten.DatenFilm;
 import mSearch.tool.GermanStringSorter;
 import mSearch.tool.Log;
 
@@ -40,7 +39,7 @@ public class DatenAbo implements Comparable<DatenAbo> {
     public static final int ABO_DOWN_DATUM = 10;
     public static final int ABO_PSET = 11;
     public static final String[] COLUMN_NAMES = {"Nr", "aktiv", "Name",
-        DatenFilm.FILM_SENDER, DatenFilm.FILM_THEMA, DatenFilm.FILM_TITEL, DatenFilm.FILM_THEMA + "-" + DatenFilm.FILM_TITEL,
+        "Sender", "Thema", "Titel", "Thema-Titel",
         "Irgendwo", "Mindestdauer", "Zielpfad", "letztes_Abo", "Programmset"};
     public static final String[] XML_NAMES = COLUMN_NAMES;
 

@@ -48,10 +48,10 @@ public class DialogFilmBeschreibung extends javax.swing.JDialog {
                 beenden();
             }
         };
-        jTextArea1.setText(datenFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR]);
-        jTextFieldTitel.setText(datenFilm.arr[DatenFilm.FILM_TITEL_NR]);
+        jTextArea1.setText(datenFilm.arr[DatenFilm.FILM_BESCHREIBUNG]);
+        jTextFieldTitel.setText(datenFilm.arr[DatenFilm.FILM_TITEL]);
         jButtonOk.addActionListener(e -> {
-            datenFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR] = jTextArea1.getText();
+            datenFilm.arr[DatenFilm.FILM_BESCHREIBUNG] = jTextArea1.getText();
             beenden();
         });
         jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
@@ -63,7 +63,7 @@ public class DialogFilmBeschreibung extends javax.swing.JDialog {
                 + "Achtung: Diese Änderungen gehen nach dem Neuladen\n"
                 + "einer Filmliste verloren.").setVisible(true));
         jButtonSpeichern.addActionListener(e -> {
-            datenFilm.arr[DatenFilm.FILM_BESCHREIBUNG_NR] = jTextArea1.getText();
+            datenFilm.arr[DatenFilm.FILM_BESCHREIBUNG] = jTextArea1.getText();
             MVInfoFile.writeInfoFile(paFrame, daten, datenFilm);
         });
         pack();

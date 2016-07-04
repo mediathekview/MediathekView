@@ -57,7 +57,7 @@ public class PanelInfoStarts extends JPanel {
     private synchronized void init() {
         tModel = Daten.listeDownloads.getModelStarts(tModel);
         for (int i = 0; i < jTable1.getColumnCount(); ++i) {
-            if (i > DatenFilm.FILM_URL_NR) {
+            if (i > DatenFilm.FILM_URL) {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(0);
                 jTable1.getColumnModel().getColumn(i).setMaxWidth(0);
                 jTable1.getColumnModel().getColumn(i).setPreferredWidth(0);

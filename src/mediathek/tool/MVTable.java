@@ -88,7 +88,7 @@ public final class MVTable extends JTable {
                 spaltenTitel = DatenFilm.COLUMN_NAMES;
                 maxSpalten = DatenFilm.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenFilm.spaltenAnzeigen, DatenFilm.MAX_ELEM);
-                indexSpalte = DatenFilm.FILM_NR_NR;
+                indexSpalte = DatenFilm.FILM_NR;
                 nrDatenSystem = MVConfig.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME;
                 iconAnzeigenStr = MVConfig.SYSTEM_TAB_FILME_ICON_ANZEIGEN;
                 iconKleinStr = MVConfig.SYSTEM_TAB_FILME_ICON_KLEIN;
@@ -533,27 +533,27 @@ public final class MVTable extends JTable {
         reihe[i] = i;
         breite[i] = 200;
         switch (i) {
-            case DatenFilm.FILM_NR_NR:
+            case DatenFilm.FILM_NR:
                 breite[i] = 75;
                 break;
-            case DatenFilm.FILM_TITEL_NR:
+            case DatenFilm.FILM_TITEL:
                 breite[i] = 300;
                 break;
-            case DatenFilm.FILM_DATUM_NR:
-            case DatenFilm.FILM_ZEIT_NR:
-            case DatenFilm.FILM_SENDER_NR:
-            case DatenFilm.FILM_GROESSE_NR:
-            case DatenFilm.FILM_DAUER_NR:
-            case DatenFilm.FILM_GEO_NR:
+            case DatenFilm.FILM_DATUM:
+            case DatenFilm.FILM_ZEIT:
+            case DatenFilm.FILM_SENDER:
+            case DatenFilm.FILM_GROESSE:
+            case DatenFilm.FILM_DAUER:
+            case DatenFilm.FILM_GEO:
                 breite[i] = 100;
                 break;
-            case DatenFilm.FILM_URL_NR:
+            case DatenFilm.FILM_URL:
                 breite[i] = 500;
                 break;
-            case DatenFilm.FILM_ABSPIELEN_NR:
-            case DatenFilm.FILM_AUFZEICHNEN_NR:
-            case DatenFilm.FILM_HD_NR:
-            case DatenFilm.FILM_UT_NR:
+            case DatenFilm.FILM_ABSPIELEN:
+            case DatenFilm.FILM_AUFZEICHNEN:
+            case DatenFilm.FILM_HD:
+            case DatenFilm.FILM_UT:
                 breite[i] = 50;
                 break;
             default:
@@ -643,19 +643,19 @@ public final class MVTable extends JTable {
     }
 
     private void spaltenAusschaltenFilme(int i) {
-        if (i == DatenFilm.FILM_BESCHREIBUNG_NR
-                || i == DatenFilm.FILM_WEBSEITE_NR
-                || i == DatenFilm.FILM_NEU_NR
-                || i == DatenFilm.FILM_URL_RTMP_NR
-                || i == DatenFilm.FILM_URL_AUTH_NR
-                || i == DatenFilm.FILM_URL_HD_NR
-                || i == DatenFilm.FILM_URL_RTMP_HD_NR
-                || i == DatenFilm.FILM_URL_KLEIN_NR
-                || i == DatenFilm.FILM_URL_RTMP_KLEIN_NR
-                || i == DatenFilm.FILM_DATUM_LONG_NR
-                || i == DatenFilm.FILM_URL_HISTORY_NR
-                || i == DatenFilm.FILM_URL_SUBTITLE_NR
-                || i == DatenFilm.FILM_REF_NR) {
+        if (i == DatenFilm.FILM_BESCHREIBUNG
+                || i == DatenFilm.FILM_WEBSEITE
+                || i == DatenFilm.FILM_NEU
+                || i == DatenFilm.FILM_URL_RTMP
+                || i == DatenFilm.FILM_URL_AUTH
+                || i == DatenFilm.FILM_URL_HD
+                || i == DatenFilm.FILM_URL_RTMP_HD
+                || i == DatenFilm.FILM_URL_KLEIN
+                || i == DatenFilm.FILM_URL_RTMP_KLEIN
+                || i == DatenFilm.FILM_DATUM_LONG
+                || i == DatenFilm.FILM_URL_HISTORY
+                || i == DatenFilm.FILM_URL_SUBTITLE
+                || i == DatenFilm.FILM_REF) {
             breite[i] = 0;
         }
     }

@@ -115,7 +115,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 jRadioButtonResHi.setText(jRadioButtonResHi.getText() + "   [ " + dateiGroesse_Hoch + " MB ]");
             }
             
-            if (!datenDownload.film.arr[DatenFilm.FILM_URL_HD_NR].isEmpty()) {
+            if (!datenDownload.film.arr[DatenFilm.FILM_URL_HD].isEmpty()) {
                 jRadioButtonResHd.setEnabled(!gestartet);
                 jRadioButtonResHd.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD)));
                 dateiGroesse_HD = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD));
@@ -124,7 +124,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 }
             }
             
-            if (!datenDownload.film.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty()) {
+            if (!datenDownload.film.arr[DatenFilm.FILM_URL_KLEIN].isEmpty()) {
                 jRadioButtonResLo.setEnabled(!gestartet);
                 jRadioButtonResLo.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN)));
                 dateiGroesse_Klein = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN));

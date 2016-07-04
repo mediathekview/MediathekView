@@ -32,16 +32,16 @@ public class TModelFilm extends TModel {
         types = new Class<?>[DatenFilm.MAX_ELEM];
         for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {
             switch (i) {
-                case DatenFilm.FILM_NR_NR:
+                case DatenFilm.FILM_NR:
                     types[i] = Integer.class;
                     break;
-                case DatenFilm.FILM_DATUM_NR:
+                case DatenFilm.FILM_DATUM:
                     types[i] = Datum.class;
                     break;
-                case DatenFilm.FILM_GROESSE_NR:
+                case DatenFilm.FILM_GROESSE:
                     types[i] = MVFilmSize.class;
                     break;
-                case DatenFilm.FILM_REF_NR:
+                case DatenFilm.FILM_REF:
                     types[i] = DatenFilm.class;
                     break;
                 default:
