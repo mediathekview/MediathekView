@@ -596,7 +596,7 @@ public class GuiFilme extends PanelVorlage {
         c.gridx = spalte;
         c.gridy = zeile;
         if (liste.get(i).isLable()) {
-            JLabel label = new JLabel(liste.get(i).arr[DatenPset.PROGRAMMSET_NAME_NR]);
+            JLabel label = new JLabel(liste.get(i).arr[DatenPset.PROGRAMMSET_NAME]);
             Color col = liste.get(i).getFarbe();
             if (col != null) {
                 label.setForeground(col);
@@ -605,7 +605,7 @@ public class GuiFilme extends PanelVorlage {
             panel.add(label);
             ret = label;
         } else {
-            button = new JButton(liste.get(i).arr[DatenPset.PROGRAMMSET_NAME_NR]);
+            button = new JButton(liste.get(i).arr[DatenPset.PROGRAMMSET_NAME]);
             button.addActionListener(new BeobOpen(liste.get(i)));
             Color col = liste.get(i).getFarbe();
             if (col != null) {
@@ -1297,12 +1297,12 @@ public class GuiFilme extends PanelVorlage {
             jPopupMenu.add(submenue);
             ListePset liste = Daten.listePset.getListeButton();
             for (DatenPset pset : liste) {
-                if (pset.getListeProg().isEmpty() && pset.arr[DatenPset.PROGRAMMSET_NAME_NR].equals("")) {
+                if (pset.getListeProg().isEmpty() && pset.arr[DatenPset.PROGRAMMSET_NAME].equals("")) {
                     // ein "leeres" Pset, Platzhalter
                     continue;
                 }
                 Color col = pset.getFarbe();
-                item = new JMenuItem(pset.arr[DatenPset.PROGRAMMSET_NAME_NR]);
+                item = new JMenuItem(pset.arr[DatenPset.PROGRAMMSET_NAME]);
                 if (pset.getListeProg().isEmpty()) {
                     if (col != null) {
                         item.setForeground(col);

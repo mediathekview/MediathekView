@@ -46,7 +46,7 @@ public class ListePset extends LinkedList<DatenPset> {
     public DatenPset getPsetAbspielen() {
         //liefert die Programmgruppe zum Abspielen
         for (DatenPset datenPset : this) {
-            if (Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR])) {
+            if (Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN])) {
                 return datenPset;
             }
         }
@@ -67,7 +67,7 @@ public class ListePset extends LinkedList<DatenPset> {
                 DatenPset gruppe;
                 gruppe = it.next();
                 if (gruppe.istAbo()) {
-                    if (gruppe.arr[DatenPset.PROGRAMMSET_NAME_NR].equals(name)) {
+                    if (gruppe.arr[DatenPset.PROGRAMMSET_NAME].equals(name)) {
                         ret = gruppe;
                     }
                 }
@@ -89,19 +89,19 @@ public class ListePset extends LinkedList<DatenPset> {
 
     public ListePset getListeSpeichern() {
         // liefert eine Liste Programmsets, die zum Speichern angelegt sind (ist meist nur eins)
-        return this.stream().filter(datenPset -> Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_SPEICHERN_NR]))
+        return this.stream().filter(datenPset -> Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_SPEICHERN]))
                 .collect(Collectors.toCollection(ListePset::new));
     }
 
     public ListePset getListeButton() {
         // liefert eine Liste Programmsets, die als Button angelegt sind
-        return this.stream().filter(datenPset -> Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_BUTTON_NR]))
+        return this.stream().filter(datenPset -> Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_BUTTON]))
                 .collect(Collectors.toCollection(ListePset::new));
     }
 
     public ListePset getListeAbo() {
         // liefert eine Liste Programmsets, die für Abos angelegt sind (ist meist nur eins)
-        return this.stream().filter(datenPset -> Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_ABO_NR]))
+        return this.stream().filter(datenPset -> Boolean.parseBoolean(datenPset.arr[DatenPset.PROGRAMMSET_IST_ABO]))
                 .collect(Collectors.toCollection(ListePset::new));
     }
 
@@ -112,7 +112,7 @@ public class ListePset extends LinkedList<DatenPset> {
         object = new String[this.size()];
         ListIterator<DatenPset> it = this.listIterator(0);
         while (it.hasNext()) {
-            object[i] = it.next().arr[DatenPset.PROGRAMMSET_NAME_NR];
+            object[i] = it.next().arr[DatenPset.PROGRAMMSET_NAME];
             ++i;
         }
         return object;
@@ -136,13 +136,13 @@ public class ListePset extends LinkedList<DatenPset> {
     public boolean addPset(DatenPset datenPset) {
         boolean abspielen = false;
         for (DatenPset datenPset1 : this) {
-            if (Boolean.parseBoolean(datenPset1.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR])) {
+            if (Boolean.parseBoolean(datenPset1.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN])) {
                 abspielen = true;
                 break;
             }
         }
         if (abspielen) {
-            datenPset.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
+            datenPset.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN] = Boolean.FALSE.toString();
         }
         boolean ret = add(datenPset);
         Listener.notify(Listener.EREIGNIS_LISTE_PSET, ListePset.class.getSimpleName());
@@ -172,7 +172,7 @@ public class ListePset extends LinkedList<DatenPset> {
     }
 
     private static boolean progMusterErsetzen(JFrame parent, DatenPset pSet) {
-        pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace(MUSTER_PFAD_ZIEL, GuiFunktionen.getStandardDownloadPath());
+        pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD].replace(MUSTER_PFAD_ZIEL, GuiFunktionen.getStandardDownloadPath());
         String vlc = "";
         String flvstreamer = "";
         String ffmpeg = "";

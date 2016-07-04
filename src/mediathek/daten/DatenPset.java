@@ -24,70 +24,46 @@ import java.awt.Color;
 import java.util.Iterator;
 import java.util.ListIterator;
 import javax.swing.JOptionPane;
-import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.MVMessageDialog;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Log;
+import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.MVMessageDialog;
 
 public class DatenPset {
 
-    public static final String PROGRAMMSET = "Programmset";
     //Tags Programmgruppen
-    public static final String PROGRAMMSET_NAME = "Name";
-    public static final int PROGRAMMSET_NAME_NR = 0;
-    public static final String PROGRAMMSET_PRAEFIX_DIREKT = "Praefix";
-    public static final int PROGRAMMSET_PRAEFIX_DIREKT_NR = 1;
-    public static final String PROGRAMMSET_SUFFIX_DIREKT = "Suffix";
-    public static final int PROGRAMMSET_SUFFIX_DIREKT_NR = 2;
-    public static final String PROGRAMMSET_FARBE = "Farbe";
-    public static final int PROGRAMMSET_FARBE_NR = 3;
-    public static final String PROGRAMMSET_ZIEL_PFAD = "Zielpfad";
-    public static final int PROGRAMMSET_ZIEL_PFAD_NR = 4;
-    public static final String PROGRAMMSET_ZIEL_DATEINAME = "Zieldateiname";
-    public static final int PROGRAMMSET_ZIEL_DATEINAME_NR = 5;
-    public static final String PROGRAMMSET_THEMA_ANLEGEN = "Thema-anlegen";
-    public static final int PROGRAMMSET_THEMA_ANLEGEN_NR = 6;
-    public static final String PROGRAMMSET_IST_ABSPIELEN = "Abspielen";
-    public static final int PROGRAMMSET_IST_ABSPIELEN_NR = 7;
-    public static final String PROGRAMMSET_IST_SPEICHERN = "Speichern";
-    public static final int PROGRAMMSET_IST_SPEICHERN_NR = 8;
-    public static final String PROGRAMMSET_IST_BUTTON = "Button";
-    public static final int PROGRAMMSET_IST_BUTTON_NR = 9;
-    public static final String PROGRAMMSET_IST_ABO = "Abo";
-    public static final int PROGRAMMSET_IST_ABO_NR = 10;
-    public static final String PROGRAMMSET_LAENGE_BESCHRAENKEN = "Laenge";
-    public static final int PROGRAMMSET_LAENGE_BESCHRAENKEN_NR = 11;
-    public static final String PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN = "Laenge-Feld";
-    public static final int PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN_NR = 12;
-    public static final String PROGRAMMSET_MAX_LAENGE = "max-Laenge";
-    public static final int PROGRAMMSET_MAX_LAENGE_NR = 13;
-    public static final String PROGRAMMSET_MAX_LAENGE_FIELD = "max-Laenge-Feld";
-    public static final int PROGRAMMSET_MAX_LAENGE_FIELD_NR = 14;
-    public static final String PROGRAMMSET_AUFLOESUNG = "Aufloesung";
-    public static final int PROGRAMMSET_AUFLOESUNG_NR = 15;
-    public static final String PROGRAMMSET_ADD_ON = "AddOn";
-    public static final int PROGRAMMSET_ADD_ON_NR = 16;
-    public static final String PROGRAMMSET_BESCHREIBUNG = "Beschreibung";
-    public static final int PROGRAMMSET_BESCHREIBUNG_NR = 17;
-    public static final String PROGRAMMSET_INFO_URL = "Info-URL";
-    public static final int PROGRAMMSET_INFO_URL_NR = 18;
-    public static final String PROGRAMMSET_INFODATEI = "Infodatei";
-    public static final int PROGRAMMSET_INFODATEI_NR = 19;
-    public static final String PROGRAMMSET_SPOTLIGHT = "Spotlight";
-    public static final int PROGRAMMSET_SPOTLIGHT_NR = 20;
-    public static final String PROGRAMMSET_SUBTITLE = "Untertitel";
-    public static final int PROGRAMMSET_SUBTITLE_NR = 21;
+    public static final int PROGRAMMSET_NAME = 0;
+    public static final int PROGRAMMSET_PRAEFIX_DIREKT = 1;
+    public static final int PROGRAMMSET_SUFFIX_DIREKT = 2;
+    public static final int PROGRAMMSET_FARBE = 3;
+    public static final int PROGRAMMSET_ZIEL_PFAD = 4;
+    public static final int PROGRAMMSET_ZIEL_DATEINAME = 5;
+    public static final int PROGRAMMSET_THEMA_ANLEGEN = 6;
+    public static final int PROGRAMMSET_IST_ABSPIELEN = 7;
+    public static final int PROGRAMMSET_IST_SPEICHERN = 8;
+    public static final int PROGRAMMSET_IST_BUTTON = 9;
+    public static final int PROGRAMMSET_IST_ABO = 10;
+    public static final int PROGRAMMSET_LAENGE_BESCHRAENKEN = 11;
+    public static final int PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN = 12;
+    public static final int PROGRAMMSET_MAX_LAENGE = 13;
+    public static final int PROGRAMMSET_MAX_LAENGE_FIELD = 14;
+    public static final int PROGRAMMSET_AUFLOESUNG = 15;
+    public static final int PROGRAMMSET_ADD_ON = 16;
+    public static final int PROGRAMMSET_BESCHREIBUNG = 17;
+    public static final int PROGRAMMSET_INFO_URL = 18;
+    public static final int PROGRAMMSET_INFODATEI = 19;
+    public static final int PROGRAMMSET_SPOTLIGHT = 20;
+    public static final int PROGRAMMSET_SUBTITLE = 21;
+
+    public static final String TAG = "Programmset";
     public static final int MAX_ELEM = 22;
-    public static final String[] COLUMN_NAMES = {"Setname", "Präfix", PROGRAMMSET_SUFFIX_DIREKT,
-        PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME, PROGRAMMSET_THEMA_ANLEGEN,
-        PROGRAMMSET_IST_ABSPIELEN, PROGRAMMSET_IST_SPEICHERN, PROGRAMMSET_IST_BUTTON, PROGRAMMSET_IST_ABO,
-        PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, PROGRAMMSET_MAX_LAENGE_FIELD, "Auflösung", PROGRAMMSET_ADD_ON,
-        PROGRAMMSET_BESCHREIBUNG, PROGRAMMSET_INFO_URL, PROGRAMMSET_INFODATEI, PROGRAMMSET_SPOTLIGHT, PROGRAMMSET_SUBTITLE};
-    public static final String[] COLUMN_NAMES_ = {PROGRAMMSET_NAME, PROGRAMMSET_PRAEFIX_DIREKT, PROGRAMMSET_SUFFIX_DIREKT,
-        PROGRAMMSET_FARBE, PROGRAMMSET_ZIEL_PFAD, PROGRAMMSET_ZIEL_DATEINAME, PROGRAMMSET_THEMA_ANLEGEN,
-        PROGRAMMSET_IST_ABSPIELEN, PROGRAMMSET_IST_SPEICHERN, PROGRAMMSET_IST_BUTTON, PROGRAMMSET_IST_ABO,
-        PROGRAMMSET_LAENGE_BESCHRAENKEN, PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN, PROGRAMMSET_MAX_LAENGE, PROGRAMMSET_MAX_LAENGE_FIELD, PROGRAMMSET_AUFLOESUNG, PROGRAMMSET_ADD_ON,
-        PROGRAMMSET_BESCHREIBUNG, PROGRAMMSET_INFO_URL, PROGRAMMSET_INFODATEI, PROGRAMMSET_SPOTLIGHT, PROGRAMMSET_SUBTITLE};
+
+    public static final String[] COLUMN_NAMES = {"Setname", "Präfix", "Suffix", "Farbe", "Zielpfad", "Zieldateiname", "Thema-anlegen",
+        "Abspielen", "Speichern", "Button", "Abo", "Laenge", "Laenge-Feld", "max-Laenge", "max-Laenge-Feld", "Auflösung", "AddOn",
+        "Beschreibung", "Info-URL", "Infodatei", "Spotlight", "Untertitel"};
+    public static final String[] XML_NAMES = {"Name", "Praefix", "Suffix", "Farbe", "Zielpfad", "Zieldateiname", "Thema-anlegen",
+        "Abspielen", "Speichern", "Button", "Abo", "Laenge", "Laenge-Feld", "max-Laenge", "max-Laenge-Feld", "Aufloesung", "AddOn",
+        "Beschreibung", "Info-URL", "Infodatei", "Spotlight", "Untertitel"};
     private ListeProg listeProg = new ListeProg();
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
@@ -99,8 +75,8 @@ public class DatenPset {
     public DatenPset(String name) {
         // neue Pset sind immer gleich Button
         makeArray();
-        arr[PROGRAMMSET_NAME_NR] = name;
-        arr[PROGRAMMSET_IST_BUTTON_NR] = Boolean.TRUE.toString();
+        arr[PROGRAMMSET_NAME] = name;
+        arr[PROGRAMMSET_IST_BUTTON] = Boolean.TRUE.toString();
     }
 
     // public
@@ -149,25 +125,25 @@ public class DatenPset {
     }
 
     public boolean istAbspielen() {
-        return Boolean.parseBoolean(arr[PROGRAMMSET_IST_ABSPIELEN_NR]);
+        return Boolean.parseBoolean(arr[PROGRAMMSET_IST_ABSPIELEN]);
     }
 
     public boolean istSpeichern() {
-        return Boolean.parseBoolean(arr[PROGRAMMSET_IST_SPEICHERN_NR]);
+        return Boolean.parseBoolean(arr[PROGRAMMSET_IST_SPEICHERN]);
     }
 
     public boolean istButton() {
-        return Boolean.parseBoolean(arr[PROGRAMMSET_IST_BUTTON_NR]);
+        return Boolean.parseBoolean(arr[PROGRAMMSET_IST_BUTTON]);
     }
 
     public boolean istAbo() {
-        return Boolean.parseBoolean(arr[PROGRAMMSET_IST_ABO_NR]);
+        return Boolean.parseBoolean(arr[PROGRAMMSET_IST_ABO]);
     }
 
     public boolean isLable() {
         // wenn die Programmliste leer ist und einen Namen hat, ist es ein Lable
         if (this.listeProg.isEmpty()) {
-            if (!this.arr[PROGRAMMSET_NAME_NR].equals("")) {
+            if (!this.arr[PROGRAMMSET_NAME].equals("")) {
                 return true;
             }
         }
@@ -176,26 +152,26 @@ public class DatenPset {
 
     public boolean isFreeLine() {
         //Wenn die Programmgruppe keinen Namen hat, leere Zeile
-        return this.arr[PROGRAMMSET_NAME_NR].equals("");
+        return this.arr[PROGRAMMSET_NAME].equals("");
     }
 
     public void setAbspielen(Daten daten) {
         for (DatenPset datenPset : Daten.listePset) {
-            datenPset.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.FALSE.toString();
+            datenPset.arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN] = Boolean.FALSE.toString();
         }
-        arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.TRUE.toString();
+        arr[DatenPset.PROGRAMMSET_IST_ABSPIELEN] = Boolean.TRUE.toString();
     }
 
     public void setSpeichern(boolean set) {
-        arr[DatenPset.PROGRAMMSET_IST_SPEICHERN_NR] = Boolean.toString(set);
+        arr[DatenPset.PROGRAMMSET_IST_SPEICHERN] = Boolean.toString(set);
     }
 
     public void setButton(boolean set) {
-        arr[DatenPset.PROGRAMMSET_IST_BUTTON_NR] = Boolean.toString(set);
+        arr[DatenPset.PROGRAMMSET_IST_BUTTON] = Boolean.toString(set);
     }
 
     public void setAbo(boolean set) {
-        arr[DatenPset.PROGRAMMSET_IST_ABO_NR] = Boolean.toString(set);
+        arr[DatenPset.PROGRAMMSET_IST_ABO] = Boolean.toString(set);
     }
 
     public DatenProg getProgUrl(String url) {
@@ -228,7 +204,7 @@ public class DatenPset {
     public String getZielDateiname(String url) {
         //gibt den Zieldateinamen für den Film zurück
         DatenProg prog = this.getProgUrl(url);
-        String ret = arr[PROGRAMMSET_ZIEL_DATEINAME_NR];
+        String ret = arr[PROGRAMMSET_ZIEL_DATEINAME];
         if (!checkDownloadDirekt(url) && prog != null) {
             // nur wenn kein direkter Download und ein passendes Programm
             if (!prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME].equals("")) {
@@ -240,15 +216,15 @@ public class DatenPset {
 
     public String getZielPfad() {
         //gibt den Zielpfad für den Film zurück
-        return arr[PROGRAMMSET_ZIEL_PFAD_NR];
+        return arr[PROGRAMMSET_ZIEL_PFAD];
     }
 
     public DatenPset copy() {
         DatenPset ret = new DatenPset();
         System.arraycopy(this.arr, 0, ret.arr, 0, arr.length);
         //es darf nur einen geben!
-        ret.arr[PROGRAMMSET_NAME_NR] = "Kopie-" + arr[PROGRAMMSET_NAME_NR];
-        ret.arr[PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.toString(false);
+        ret.arr[PROGRAMMSET_NAME] = "Kopie-" + arr[PROGRAMMSET_NAME];
+        ret.arr[PROGRAMMSET_IST_ABSPIELEN] = Boolean.toString(false);
         ListIterator<DatenProg> it = getListeProg().listIterator(0);
         while (it.hasNext()) {
             ret.addProg(it.next().copy());
@@ -259,11 +235,11 @@ public class DatenPset {
     public Color getFarbe() {
         Color ret = null;
         String r, g, b;
-        if (!arr[PROGRAMMSET_FARBE_NR].equals("")) {
-            r = arr[PROGRAMMSET_FARBE_NR].substring(0, arr[PROGRAMMSET_FARBE_NR].indexOf(','));
-            g = arr[PROGRAMMSET_FARBE_NR].substring(arr[PROGRAMMSET_FARBE_NR].indexOf(',') + 1,
-                    arr[PROGRAMMSET_FARBE_NR].lastIndexOf(','));
-            b = arr[PROGRAMMSET_FARBE_NR].substring(arr[PROGRAMMSET_FARBE_NR].lastIndexOf(',') + 1);
+        if (!arr[PROGRAMMSET_FARBE].equals("")) {
+            r = arr[PROGRAMMSET_FARBE].substring(0, arr[PROGRAMMSET_FARBE].indexOf(','));
+            g = arr[PROGRAMMSET_FARBE].substring(arr[PROGRAMMSET_FARBE].indexOf(',') + 1,
+                    arr[PROGRAMMSET_FARBE].lastIndexOf(','));
+            b = arr[PROGRAMMSET_FARBE].substring(arr[PROGRAMMSET_FARBE].lastIndexOf(',') + 1);
             try {
                 ret = new Color(Integer.parseInt(r), Integer.parseInt(g), Integer.parseInt(b));
             } catch (Exception ex) {
@@ -274,16 +250,16 @@ public class DatenPset {
     }
 
     public void setFarbe(Color farbe) {
-        arr[PROGRAMMSET_FARBE_NR]
+        arr[PROGRAMMSET_FARBE]
                 = farbe.getRed() + "," + farbe.getGreen() + "," + farbe.getBlue();
     }
 
     public boolean checkDownloadDirekt(String url) {
         //auf direkte prüfen, pref oder suf: wenn angegeben dann muss es stimmen
-        if (!this.arr[PROGRAMMSET_PRAEFIX_DIREKT_NR].equals("")
-                || !this.arr[PROGRAMMSET_SUFFIX_DIREKT_NR].equals("")) {
-            if (GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_PRAEFIX_DIREKT_NR], url, true)
-                    && GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_SUFFIX_DIREKT_NR], url, false)) {
+        if (!this.arr[PROGRAMMSET_PRAEFIX_DIREKT].equals("")
+                || !this.arr[PROGRAMMSET_SUFFIX_DIREKT].equals("")) {
+            if (GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_PRAEFIX_DIREKT], url, true)
+                    && GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMMSET_SUFFIX_DIREKT], url, false)) {
                 return true;
             }
         }
@@ -314,16 +290,16 @@ public class DatenPset {
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = "";
         }
-        arr[PROGRAMMSET_THEMA_ANLEGEN_NR] = Boolean.toString(true);
-        arr[PROGRAMMSET_IST_ABSPIELEN_NR] = Boolean.toString(false);
-        arr[PROGRAMMSET_IST_SPEICHERN_NR] = Boolean.toString(false);
-        arr[PROGRAMMSET_IST_BUTTON_NR] = Boolean.toString(false);
-        arr[PROGRAMMSET_IST_ABO_NR] = Boolean.toString(false);
-        arr[PROGRAMMSET_LAENGE_BESCHRAENKEN_NR] = Boolean.toString(false);
-        arr[PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN_NR] = Boolean.toString(false);
-        arr[PROGRAMMSET_INFODATEI_NR] = Boolean.toString(false);
-        arr[PROGRAMMSET_SPOTLIGHT_NR] = Boolean.toString(SystemInfo.isMacOSX());
-        arr[PROGRAMMSET_SUBTITLE_NR] = Boolean.toString(false);
-        arr[PROGRAMMSET_AUFLOESUNG_NR] = DatenFilm.AUFLOESUNG_NORMAL;
+        arr[PROGRAMMSET_THEMA_ANLEGEN] = Boolean.toString(true);
+        arr[PROGRAMMSET_IST_ABSPIELEN] = Boolean.toString(false);
+        arr[PROGRAMMSET_IST_SPEICHERN] = Boolean.toString(false);
+        arr[PROGRAMMSET_IST_BUTTON] = Boolean.toString(false);
+        arr[PROGRAMMSET_IST_ABO] = Boolean.toString(false);
+        arr[PROGRAMMSET_LAENGE_BESCHRAENKEN] = Boolean.toString(false);
+        arr[PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN] = Boolean.toString(false);
+        arr[PROGRAMMSET_INFODATEI] = Boolean.toString(false);
+        arr[PROGRAMMSET_SPOTLIGHT] = Boolean.toString(SystemInfo.isMacOSX());
+        arr[PROGRAMMSET_SUBTITLE] = Boolean.toString(false);
+        arr[PROGRAMMSET_AUFLOESUNG] = DatenFilm.AUFLOESUNG_NORMAL;
     }
 }

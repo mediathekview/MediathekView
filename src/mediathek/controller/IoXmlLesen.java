@@ -54,10 +54,10 @@ public class IoXmlLesen {
                                 //System
                                 getConfig(parser, MVConfig.SYSTEM, true);
                                 break;
-                            case DatenPset.PROGRAMMSET:
+                            case DatenPset.TAG:
                                 //Programmgruppen
                                 datenPset = new DatenPset();
-                                if (get(parser, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr)) {
+                                if (get(parser, DatenPset.TAG, DatenPset.XML_NAMES, datenPset.arr)) {
                                     Daten.listePset.add(datenPset);
                                 }
                                 break;

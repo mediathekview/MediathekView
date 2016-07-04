@@ -206,9 +206,9 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                 if (event == XMLStreamConstants.START_ELEMENT) {
                     //String t = parser.getLocalName();
                     switch (parser.getLocalName()) {
-                        case DatenPset.PROGRAMMSET:
+                        case DatenPset.TAG:
                             datenPset = new DatenPset();
-                            if (!get(parser, DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr)) {
+                            if (!get(parser, DatenPset.TAG, DatenPset.XML_NAMES, datenPset.arr)) {
                                 datenPset = null;
                             } else {
                                 if (!datenPset.isEmpty()) {

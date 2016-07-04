@@ -128,7 +128,7 @@ public class IoXmlSchreiben {
     private static void xmlSchreibenProg() {
         //Proggruppen schreiben, bei Konfig-Datei
         for (DatenPset datenPset : Daten.listePset) {
-            xmlSchreibenDaten(DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr, false);
+            xmlSchreibenDaten(DatenPset.TAG, DatenPset.XML_NAMES, datenPset.arr, false);
             for (DatenProg datenProg : datenPset.getListeProg()) {
                 xmlSchreibenDaten(DatenProg.TAG, DatenProg.XML_NAMES, datenProg.arr, false);
             }
@@ -139,7 +139,7 @@ public class IoXmlSchreiben {
         // wird beim Export Sets verwendete
         writer.writeCharacters("\n\n");
         for (DatenPset pset : psetArray) {
-            xmlSchreibenDaten(DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, pset.arr, true);
+            xmlSchreibenDaten(DatenPset.TAG, DatenPset.XML_NAMES, pset.arr, true);
             for (DatenProg datenProg : pset.getListeProg()) {
                 xmlSchreibenDaten(DatenProg.TAG, DatenProg.XML_NAMES, datenProg.arr, true);
             }
