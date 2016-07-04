@@ -77,7 +77,7 @@ public class MVInfoFile {
             br.write("\n");
             br.write(DatenFilm.FILM_DAUER + ":       " + film.arr[DatenFilm.FILM_DAUER_NR]);
             br.write("\n");
-            br.write(DatenDownload.DOWNLOAD_GROESSE + ":  " + film.arr[DatenFilm.FILM_GROESSE_NR]);
+            br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_GROESSE] + ":  " + film.arr[DatenFilm.FILM_GROESSE_NR]);
             br.write("\n\n");
 
             br.write(DatenFilm.FILM_WEBSEITE + "\n");
@@ -111,9 +111,9 @@ public class MVInfoFile {
 
     public static void writeInfoFile(DatenDownload datenDownload) {
         try {
-            SysMsg.sysMsg(new String[]{"Infofile schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]});
+            SysMsg.sysMsg(new String[]{"Infofile schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]});
 
-            new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
+            new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]).mkdirs();
             Path path = Paths.get(datenDownload.getFileNameWithoutSuffix() + ".txt");
             BufferedWriter br = new BufferedWriter(new OutputStreamWriter(new DataOutputStream(Files.newOutputStream(path))));
             if (datenDownload.film != null) {
@@ -129,7 +129,7 @@ public class MVInfoFile {
                 br.write("\n");
                 br.write(DatenFilm.FILM_DAUER + ":       " + datenDownload.film.arr[DatenFilm.FILM_DAUER_NR]);
                 br.write("\n");
-                br.write(DatenDownload.DOWNLOAD_GROESSE + ":  " + datenDownload.mVFilmSize);
+                br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_GROESSE] + ":  " + datenDownload.mVFilmSize);
                 br.write("\n\n");
 
                 br.write(DatenFilm.FILM_WEBSEITE + "\n");
@@ -137,13 +137,13 @@ public class MVInfoFile {
                 br.write("\n\n");
             }
 
-            br.write(DatenDownload.DOWNLOAD_URL + "\n");
-            br.write(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+            br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_URL] + "\n");
+            br.write(datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
             br.write("\n\n");
-            if (!datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP_NR].isEmpty()
-                    && !datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP_NR].equals(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR])) {
-                br.write(DatenDownload.DOWNLOAD_URL_RTMP + "\n");
-                br.write(datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP_NR]);
+            if (!datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP].isEmpty()
+                    && !datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP].equals(datenDownload.arr[DatenDownload.DOWNLOAD_URL])) {
+                br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_URL_RTMP] + "\n");
+                br.write(datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP]);
                 br.write("\n\n");
             }
 
@@ -163,7 +163,7 @@ public class MVInfoFile {
             br.close();
             SysMsg.sysMsg(new String[]{"Infofile", "  geschrieben"});
         } catch (IOException ex) {
-            Log.errorLog(975410369, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.errorLog(975410369, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
     }
 

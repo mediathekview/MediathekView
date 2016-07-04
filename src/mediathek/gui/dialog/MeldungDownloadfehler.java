@@ -48,7 +48,7 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
             }
         };
         jTextArea1.setText(text);
-        jTextFieldTitel.setText(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
+        jTextFieldTitel.setText(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
         jButtonOk.addActionListener(new ActionListener() {
 
             @Override

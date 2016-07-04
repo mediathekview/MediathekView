@@ -54,101 +54,59 @@ public class DatenDownload implements Comparable<DatenDownload> {
     private static SimpleDateFormat sdf_datum_zeit = new SimpleDateFormat("dd.MM.yyyyHH:mm:ss");
     private static SimpleDateFormat sdf_datum = new SimpleDateFormat("dd.MM.yyyy");
 
-    public static final String DOWNLOAD_NR = "Nr";
-    public static final int DOWNLOAD_NR_NR = 0;
-    public static final String DOWNLOAD_FILM_NR = "Filmnr"; // nur ein Platzhalter für: "film.nr"
-    public static final int DOWNLOAD_FILM_NR_NR = 1;
-    public static final String DOWNLOAD_ABO = "Abo"; // wenn das Feld gefüllt ist, ist der Download ein Abo
-    public static final int DOWNLOAD_ABO_NR = 2;
-    public static final String DOWNLOAD_SENDER = "Sender";
-    public static final int DOWNLOAD_SENDER_NR = 3;
-    public static final String DOWNLOAD_THEMA = "Thema";
-    public static final int DOWNLOAD_THEMA_NR = 4;
-    public static final String DOWNLOAD_TITEL = "Titel";
-    public static final int DOWNLOAD_TITEL_NR = 5;
-    public static final String DOWNLOAD_BUTTON_START = "";
-    public static final int DOWNLOAD_BUTTON_START_NR = 6;
-    public static final String DOWNLOAD_BUTTON_DEL = "";
-    public static final int DOWNLOAD_BUTTON_DEL_NR = 7;
-    public static final String DOWNLOAD_PROGRESS = "Fortschritt";
-    public static final int DOWNLOAD_PROGRESS_NR = 8;
-    public static final String DOWNLOAD_RESTZEIT = "Restzeit";
-    public static final int DOWNLOAD_RESTZEIT_NR = 9;
-    public static final String DOWNLOAD_BANDBREITE = "Geschwindigkeit";
-    public static final int DOWNLOAD_BANDBREITE_NR = 10;
-    public static final String DOWNLOAD_GROESSE = "Größe [MB]";
-    public static final int DOWNLOAD_GROESSE_NR = 11;
-    public static final String DOWNLOAD_DATUM = "Datum";
-    public static final int DOWNLOAD_DATUM_NR = 12;
-    public static final String DOWNLOAD_ZEIT = "Zeit";
-    public static final int DOWNLOAD_ZEIT_NR = 13;
-    public static final String DOWNLOAD_DAUER = "Dauer";
-    public static final int DOWNLOAD_DAUER_NR = 14;
-    public static final String DOWNLOAD_UNTERBROCHEN = "Pause";
-    public static final int DOWNLOAD_UNTERBROCHEN_NR = 15;
-    public static final String DOWNLOAD_GEO = "Geo";
-    public static final int DOWNLOAD_GEO_NR = 16;
-    public static final String DOWNLOAD_FILM_URL = "Film-URL";
-    public static final int DOWNLOAD_FILM_URL_NR = 17;
-    public static final String DOWNLOAD_HISTORY_URL = "History-URL";
-    public static final int DOWNLOAD_HISTORY_URL_NR = 18;
-    public static final String DOWNLOAD_URL = "URL";
-    public static final int DOWNLOAD_URL_NR = 19;
-    public static final String DOWNLOAD_URL_RTMP = "URL-rtmp";
-    public static final int DOWNLOAD_URL_RTMP_NR = 20;
-    public static final String DOWNLOAD_URL_SUBTITLE = "URL-Untertitel";
-    public static final int DOWNLOAD_URL_SUBTITLE_NR = 21;
-    public static final String DOWNLOAD_PROGRAMMSET = "Programmset";
-    public static final int DOWNLOAD_PROGRAMMSET_NR = 22;
-    public static final String DOWNLOAD_PROGRAMM = "Programm";
-    public static final int DOWNLOAD_PROGRAMM_NR = 23;
-    public static final String DOWNLOAD_PROGRAMM_AUFRUF = "Programmaufruf_";
-    public static final int DOWNLOAD_PROGRAMM_AUFRUF_NR = 24;
-    public static final String DOWNLOAD_PROGRAMM_AUFRUF_ARRAY = "Programmaufruf";
-    public static final int DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR = 25;
-    public static final String DOWNLOAD_PROGRAMM_RESTART = "Restart";
-    public static final int DOWNLOAD_PROGRAMM_RESTART_NR = 26;
-    public static final String DOWNLOAD_ZIEL_DATEINAME = "Dateiname";
-    public static final int DOWNLOAD_ZIEL_DATEINAME_NR = 27;
-    public static final String DOWNLOAD_ZIEL_PFAD = "Pfad";
-    public static final int DOWNLOAD_ZIEL_PFAD_NR = 28;
-    public static final String DOWNLOAD_ZIEL_PFAD_DATEINAME = "Pfad-Dateiname";
-    public static final int DOWNLOAD_ZIEL_PFAD_DATEINAME_NR = 29;
-    public static final String DOWNLOAD_ART = "Art"; //Art des Downloads: direkter Dateidownload oder über ein Programm
-    public static final int DOWNLOAD_ART_NR = 30;
-    public static final String DOWNLOAD_QUELLE = "Quelle"; //Quelle: gestartet über einen Button, Download, Abo
-    public static final int DOWNLOAD_QUELLE_NR = 31;
-    public static final String DOWNLOAD_ZURUECKGESTELLT = "Zurueckgestellt";
-    public static final int DOWNLOAD_ZURUECKGESTELLT_NR = 32;
-    public static final String DOWNLOAD_INFODATEI = "Infodatei";
-    public static final int DOWNLOAD_INFODATEI_NR = 33;
-    public static final String DOWNLOAD_SPOTLIGHT = "Spotlight";
-    public static final int DOWNLOAD_SPOTLIGHT_NR = 34;
-    public static final String DOWNLOAD_SUBTITLE = "Untertitel"; // Untertitel anlegen ja/nein
-    public static final int DOWNLOAD_SUBTITLE_NR = 35;
-    public static final String DOWNLOAD_PROGRAMM_DOWNLOADMANAGER = "Remote-Download";
-    public static final int DOWNLOAD_PROGRAMM_DOWNLOADMANAGER_NR = 36;
-    public static final String DOWNLOAD_REF = "Ref";
-    public static final int DOWNLOAD_REF_NR = 37;
+    public static final int DOWNLOAD_NR = 0;
+    public static final int DOWNLOAD_FILM_NR = 1;// nur ein Platzhalter für: "film.nr"
+    public static final int DOWNLOAD_ABO = 2; // wenn das Feld gefüllt ist, ist der Download ein Abo
+    public static final int DOWNLOAD_SENDER = 3;
+    public static final int DOWNLOAD_THEMA = 4;
+    public static final int DOWNLOAD_TITEL = 5;
+    public static final int DOWNLOAD_BUTTON_START = 6;
+    public static final int DOWNLOAD_BUTTON_DEL = 7;
+    public static final int DOWNLOAD_PROGRESS = 8;
+    public static final int DOWNLOAD_RESTZEIT = 9;
+    public static final int DOWNLOAD_BANDBREITE = 10;
+    public static final int DOWNLOAD_GROESSE = 11;
+    public static final int DOWNLOAD_DATUM = 12;
+    public static final int DOWNLOAD_ZEIT = 13;
+    public static final int DOWNLOAD_DAUER = 14;
+    public static final int DOWNLOAD_UNTERBROCHEN = 15;
+    public static final int DOWNLOAD_GEO = 16;
+    public static final int DOWNLOAD_FILM_URL = 17;
+    public static final int DOWNLOAD_HISTORY_URL = 18;
+    public static final int DOWNLOAD_URL = 19;
+    public static final int DOWNLOAD_URL_RTMP = 20;
+    public static final int DOWNLOAD_URL_SUBTITLE = 21;
+    public static final int DOWNLOAD_PROGRAMMSET = 22;
+    public static final int DOWNLOAD_PROGRAMM = 23;
+    public static final int DOWNLOAD_PROGRAMM_AUFRUF = 24;
+    public static final int DOWNLOAD_PROGRAMM_AUFRUF_ARRAY = 25;
+    public static final int DOWNLOAD_PROGRAMM_RESTART = 26;
+    public static final int DOWNLOAD_ZIEL_DATEINAME = 27;
+    public static final int DOWNLOAD_ZIEL_PFAD = 28;
+    public static final int DOWNLOAD_ZIEL_PFAD_DATEINAME = 29;
+    public static final int DOWNLOAD_ART = 30;//Art des Downloads: direkter Dateidownload oder über ein Programm
+    public static final int DOWNLOAD_QUELLE = 31; //Quelle: gestartet über einen Button, Download, Abo
+    public static final int DOWNLOAD_ZURUECKGESTELLT = 32;
+    public static final int DOWNLOAD_INFODATEI = 33;
+    public static final int DOWNLOAD_SPOTLIGHT = 34;
+    public static final int DOWNLOAD_SUBTITLE = 35;// Untertitel anlegen ja/nein
+    public static final int DOWNLOAD_PROGRAMM_DOWNLOADMANAGER = 36;
+    public static final int DOWNLOAD_REF = 37;
     //
-    public static final String DOWNLOAD = "Downlad";
+    public static final String TAG = "Downlad";
     public static final int MAX_ELEM = 38;
-    public static final String[] COLUMN_NAMES = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
-        DOWNLOAD_BUTTON_START, DOWNLOAD_BUTTON_DEL,
-        DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT, DOWNLOAD_BANDBREITE, DOWNLOAD_GROESSE,
-        DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER, DOWNLOAD_UNTERBROCHEN, DOWNLOAD_GEO,
-        DOWNLOAD_FILM_URL, DOWNLOAD_HISTORY_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_SUBTITLE,
-        DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_AUFRUF_ARRAY, DOWNLOAD_PROGRAMM_RESTART,
-        DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE,
-        DOWNLOAD_ZURUECKGESTELLT, DOWNLOAD_INFODATEI, DOWNLOAD_SPOTLIGHT, DOWNLOAD_SUBTITLE, DOWNLOAD_PROGRAMM_DOWNLOADMANAGER, DOWNLOAD_REF};
-    public static final String[] COLUMN_NAMES_ = {DOWNLOAD_NR, DOWNLOAD_FILM_NR, DOWNLOAD_ABO, DOWNLOAD_SENDER, DOWNLOAD_THEMA, DOWNLOAD_TITEL,
-        "Button-Start"/*DOWNLOAD_BUTTON_START*/, "Button-Del"/*DOWNLOAD_BUTTON_DEL*/,
-        DOWNLOAD_PROGRESS, DOWNLOAD_RESTZEIT, DOWNLOAD_BANDBREITE, "Groesse"/*DOWNLOAD_GROESSE*/,
-        DOWNLOAD_DATUM, DOWNLOAD_ZEIT, DOWNLOAD_DAUER, DOWNLOAD_UNTERBROCHEN, DOWNLOAD_GEO,
-        DOWNLOAD_FILM_URL, DOWNLOAD_HISTORY_URL, DOWNLOAD_URL, DOWNLOAD_URL_RTMP, DOWNLOAD_URL_SUBTITLE,
-        DOWNLOAD_PROGRAMMSET, DOWNLOAD_PROGRAMM, DOWNLOAD_PROGRAMM_AUFRUF, DOWNLOAD_PROGRAMM_AUFRUF_ARRAY, DOWNLOAD_PROGRAMM_RESTART,
-        DOWNLOAD_ZIEL_DATEINAME, DOWNLOAD_ZIEL_PFAD, DOWNLOAD_ZIEL_PFAD_DATEINAME, DOWNLOAD_ART, DOWNLOAD_QUELLE,
-        DOWNLOAD_ZURUECKGESTELLT, DOWNLOAD_INFODATEI, DOWNLOAD_SPOTLIGHT, DOWNLOAD_SUBTITLE, DOWNLOAD_PROGRAMM_DOWNLOADMANAGER, DOWNLOAD_REF};
+    public static final String[] COLUMN_NAMES = {"Nr", "Filmnr", "Abo", "Sender", "Thema", "Titel", "", "",
+        "Fortschritt", "Restzeit", "Geschwindigkeit", "Größe [MB]",
+        "Datum", "Zeit", "Dauer", "Pause", "Geo", "Film-URL", "History-URL", "URL", "URL-rtmp", "URL-Untertitel",
+        "Programmset", "Programm", "Programmaufruf_", "Programmaufruf", "Restart",
+        "Dateiname", "Pfad", "Pfad-Dateiname", "Art", "Quelle",
+        "Zurueckgestellt", "Infodatei", "Spotlight", "Untertitel", "Remote-Download", "Ref"};
+    public static final String[] XML_NAMES = {"Nr", "Filmnr", "Abo", "Sender", "Thema", "Titel", "Button-Start", "Button-Del",
+        "Fortschritt", "Restzeit", "Geschwindigkeit", "Groesse"/*DOWNLOAD_GROESSE*/,
+        "Datum", "Zeit", "Dauer", "Pause", "Geo", "Film-URL", "History-URL", "URL", "URL-rtmp", "URL-Untertitel",
+        "Programmset", "Programm", "Programmaufruf_", "Programmaufruf", "Restart",
+        "Dateiname", "Pfad", "Pfad-Dateiname", "Art", "Quelle",
+        "Zurueckgestellt", "Infodatei", "Spotlight", "Untertitel", "Remote-Download", "Ref"};
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
 
@@ -171,31 +129,31 @@ public class DatenDownload implements Comparable<DatenDownload> {
         this.film = film;
         this.pSet = pSet;
         this.abo = abo;
-        arr[DOWNLOAD_FILM_NR_NR] = film.arr[DatenFilm.FILM_NR_NR];
-        arr[DOWNLOAD_SENDER_NR] = film.arr[DatenFilm.FILM_SENDER_NR];
-        arr[DOWNLOAD_THEMA_NR] = film.arr[DatenFilm.FILM_THEMA_NR];
-        arr[DOWNLOAD_TITEL_NR] = film.arr[DatenFilm.FILM_TITEL_NR];
-        arr[DOWNLOAD_FILM_URL_NR] = film.arr[DatenFilm.FILM_URL_NR];
-        arr[DOWNLOAD_URL_SUBTITLE_NR] = film.getUrlSubtitle();
-        arr[DOWNLOAD_DATUM_NR] = film.arr[DatenFilm.FILM_DATUM_NR];
-        arr[DOWNLOAD_ZEIT_NR] = film.arr[DatenFilm.FILM_ZEIT_NR];
-        arr[DOWNLOAD_URL_RTMP_NR] = film.arr[DatenFilm.FILM_URL_RTMP_NR];
-        arr[DOWNLOAD_DAUER_NR] = film.arr[DatenFilm.FILM_DAUER_NR];
-        arr[DOWNLOAD_QUELLE_NR] = String.valueOf(quelle);
-        arr[DOWNLOAD_HISTORY_URL_NR] = film.getUrlHistory();
+        arr[DOWNLOAD_FILM_NR] = film.arr[DatenFilm.FILM_NR_NR];
+        arr[DOWNLOAD_SENDER] = film.arr[DatenFilm.FILM_SENDER_NR];
+        arr[DOWNLOAD_THEMA] = film.arr[DatenFilm.FILM_THEMA_NR];
+        arr[DOWNLOAD_TITEL] = film.arr[DatenFilm.FILM_TITEL_NR];
+        arr[DOWNLOAD_FILM_URL] = film.arr[DatenFilm.FILM_URL_NR];
+        arr[DOWNLOAD_URL_SUBTITLE] = film.getUrlSubtitle();
+        arr[DOWNLOAD_DATUM] = film.arr[DatenFilm.FILM_DATUM_NR];
+        arr[DOWNLOAD_ZEIT] = film.arr[DatenFilm.FILM_ZEIT_NR];
+        arr[DOWNLOAD_URL_RTMP] = film.arr[DatenFilm.FILM_URL_RTMP_NR];
+        arr[DOWNLOAD_DAUER] = film.arr[DatenFilm.FILM_DAUER_NR];
+        arr[DOWNLOAD_QUELLE] = String.valueOf(quelle);
+        arr[DOWNLOAD_HISTORY_URL] = film.getUrlHistory();
         if (aufloesung.isEmpty()) {
-            arr[DOWNLOAD_URL_NR] = film.getUrlFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR]);
-            arr[DOWNLOAD_URL_RTMP_NR] = film.getUrlRtmpFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR]);
+            arr[DOWNLOAD_URL] = film.getUrlFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR]);
+            arr[DOWNLOAD_URL_RTMP] = film.getUrlRtmpFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG_NR]);
         } else {
-            arr[DOWNLOAD_URL_NR] = film.getUrlFuerAufloesung(aufloesung);
-            arr[DOWNLOAD_URL_RTMP_NR] = film.getUrlRtmpFuerAufloesung(aufloesung);
+            arr[DOWNLOAD_URL] = film.getUrlFuerAufloesung(aufloesung);
+            arr[DOWNLOAD_URL_RTMP] = film.getUrlRtmpFuerAufloesung(aufloesung);
         }
-        arr[DatenDownload.DOWNLOAD_INFODATEI_NR] = pSet.arr[DatenPset.PROGRAMMSET_INFODATEI_NR];
-        arr[DatenDownload.DOWNLOAD_SUBTITLE_NR] = pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE_NR];
-        arr[DatenDownload.DOWNLOAD_SPOTLIGHT_NR] = pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT_NR];
-        arr[DatenDownload.DOWNLOAD_GEO_NR] = film.arr[DatenFilm.FILM_GEO_NR];
+        arr[DatenDownload.DOWNLOAD_INFODATEI] = pSet.arr[DatenPset.PROGRAMMSET_INFODATEI_NR];
+        arr[DatenDownload.DOWNLOAD_SUBTITLE] = pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE_NR];
+        arr[DatenDownload.DOWNLOAD_SPOTLIGHT] = pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT_NR];
+        arr[DatenDownload.DOWNLOAD_GEO] = film.arr[DatenFilm.FILM_GEO_NR];
         // und jetzt noch die Dateigröße für die entsp. URL
-        if (film.arr[DatenFilm.FILM_URL_NR].equals(arr[DOWNLOAD_URL_NR])) {
+        if (film.arr[DatenFilm.FILM_URL_NR].equals(arr[DOWNLOAD_URL])) {
             mVFilmSize.setSize(film.arr[DatenFilm.FILM_GROESSE_NR]);
         } else {
             mVFilmSize.setSize("");
@@ -208,7 +166,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         if (!groesse.isEmpty()) {
             mVFilmSize.setSize(groesse);
         } else {
-            mVFilmSize.setSize(film.getDateigroesse(arr[DOWNLOAD_URL_NR]));
+            mVFilmSize.setSize(film.getDateigroesse(arr[DOWNLOAD_URL]));
         }
     }
 
@@ -223,17 +181,17 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public final void init() {
         datumFilm = getDatumForObject();
         try {
-            art = Byte.parseByte(arr[DOWNLOAD_ART_NR]);
-            quelle = Byte.parseByte(arr[DOWNLOAD_QUELLE_NR]);
+            art = Byte.parseByte(arr[DOWNLOAD_ART]);
+            quelle = Byte.parseByte(arr[DOWNLOAD_QUELLE]);
         } catch (Exception ex) {
-            Log.errorLog(649632580, ex, "Art: " + arr[DOWNLOAD_ART_NR] + " Quelle: " + arr[DOWNLOAD_QUELLE_NR]);
+            Log.errorLog(649632580, ex, "Art: " + arr[DOWNLOAD_ART] + " Quelle: " + arr[DOWNLOAD_QUELLE]);
             art = ART_PROGRAMM;
             quelle = QUELLE_BUTTON;
         }
     }
 
     public boolean istZurueckgestellt() {
-        return arr[DOWNLOAD_ZURUECKGESTELLT_NR].equals(Boolean.TRUE.toString());
+        return arr[DOWNLOAD_ZURUECKGESTELLT].equals(Boolean.TRUE.toString());
     }
 
     public void zurueckstellen() {
@@ -243,20 +201,20 @@ public class DatenDownload implements Comparable<DatenDownload> {
                 return;
             }
         }
-        arr[DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.TRUE.toString();
+        arr[DOWNLOAD_ZURUECKGESTELLT] = Boolean.TRUE.toString();
         resetDownload();
     }
 
     public boolean isInterrupted() {
-        return !isFinished() && arr[DOWNLOAD_UNTERBROCHEN_NR].equals(Boolean.TRUE.toString());
+        return !isFinished() && arr[DOWNLOAD_UNTERBROCHEN].equals(Boolean.TRUE.toString());
     }
 
     public void interrupt() {
-        arr[DOWNLOAD_UNTERBROCHEN_NR] = Boolean.TRUE.toString();
+        arr[DOWNLOAD_UNTERBROCHEN] = Boolean.TRUE.toString();
     }
 
     public void interruptRestart() {
-        arr[DOWNLOAD_UNTERBROCHEN_NR] = Boolean.FALSE.toString();
+        arr[DOWNLOAD_UNTERBROCHEN] = Boolean.FALSE.toString();
         Listener.notify(Listener.EREIGNIS_RESET_INTERRUPT, DatenDownload.class.getName());
     }
 
@@ -276,7 +234,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         if (film != null) {
             Daten.listeFilmeHistory.add(film);
         }
-        ddaten.history.zeileSchreiben(arr[DatenDownload.DOWNLOAD_THEMA_NR], arr[DatenDownload.DOWNLOAD_TITEL_NR], arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
+        ddaten.history.zeileSchreiben(arr[DatenDownload.DOWNLOAD_THEMA], arr[DatenDownload.DOWNLOAD_TITEL], arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
         Listener.notify(Listener.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
     }
 
@@ -287,9 +245,9 @@ public class DatenDownload implements Comparable<DatenDownload> {
         for (DatenDownload d : downloads) {
             d.start = new Start();
             urlList.add(new MVUsedUrl(zeit,
-                    d.arr[DatenDownload.DOWNLOAD_THEMA_NR],
-                    d.arr[DatenDownload.DOWNLOAD_TITEL_NR],
-                    d.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]));
+                    d.arr[DatenDownload.DOWNLOAD_THEMA],
+                    d.arr[DatenDownload.DOWNLOAD_TITEL],
+                    d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]));
         }
         if (!urlList.isEmpty()) {
             ddaten.history.zeilenSchreiben(urlList);
@@ -326,42 +284,42 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     public boolean istAbo() {
-        return !arr[DatenDownload.DOWNLOAD_ABO_NR].isEmpty();
+        return !arr[DatenDownload.DOWNLOAD_ABO].isEmpty();
     }
 
     public boolean isRestart() {
-        if (arr[DOWNLOAD_PROGRAMM_RESTART_NR].equals("")) {
+        if (arr[DOWNLOAD_PROGRAMM_RESTART].equals("")) {
             return false;
         }
-        return Boolean.parseBoolean(arr[DOWNLOAD_PROGRAMM_RESTART_NR]);
+        return Boolean.parseBoolean(arr[DOWNLOAD_PROGRAMM_RESTART]);
     }
 
     public boolean isDownloadManager() {
-        if (arr[DOWNLOAD_PROGRAMM_DOWNLOADMANAGER_NR].equals("")) {
+        if (arr[DOWNLOAD_PROGRAMM_DOWNLOADMANAGER].equals("")) {
             return false;
         }
-        return Boolean.parseBoolean(arr[DOWNLOAD_PROGRAMM_DOWNLOADMANAGER_NR]);
+        return Boolean.parseBoolean(arr[DOWNLOAD_PROGRAMM_DOWNLOADMANAGER]);
     }
 
     public boolean isInfoFile() {
-        if (arr[DOWNLOAD_INFODATEI_NR].equals("")) {
+        if (arr[DOWNLOAD_INFODATEI].equals("")) {
             return false;
         }
-        return Boolean.parseBoolean(arr[DOWNLOAD_INFODATEI_NR]);
+        return Boolean.parseBoolean(arr[DOWNLOAD_INFODATEI]);
     }
 
     public boolean isSubtitle() {
-        if (arr[DOWNLOAD_SUBTITLE_NR].equals("")) {
+        if (arr[DOWNLOAD_SUBTITLE].equals("")) {
             return false;
         }
-        return Boolean.parseBoolean(arr[DOWNLOAD_SUBTITLE_NR]);
+        return Boolean.parseBoolean(arr[DOWNLOAD_SUBTITLE]);
     }
 
     public boolean isSpotlight() {
-        if (arr[DOWNLOAD_SPOTLIGHT_NR].equals("")) {
+        if (arr[DOWNLOAD_SPOTLIGHT].equals("")) {
             return false;
         }
-        return Boolean.parseBoolean(arr[DOWNLOAD_SPOTLIGHT_NR]);
+        return Boolean.parseBoolean(arr[DOWNLOAD_SPOTLIGHT]);
     }
 
     public String getTextRestzeit() {
@@ -419,13 +377,13 @@ public class DatenDownload implements Comparable<DatenDownload> {
     }
 
     public void aufrufBauen() {
-        aufrufBauen(pSet, film, abo, arr[DOWNLOAD_ZIEL_DATEINAME_NR], arr[DOWNLOAD_ZIEL_PFAD_NR]);
+        aufrufBauen(pSet, film, abo, arr[DOWNLOAD_ZIEL_DATEINAME], arr[DOWNLOAD_ZIEL_PFAD]);
     }
 
     private void aufrufBauen(DatenPset pSet, DatenFilm film, DatenAbo abo, String nname, String ppfad) {
         //zieldatei und pfad bauen und eintragen
         try {
-            DatenProg programm = pSet.getProgUrl(arr[DOWNLOAD_URL_NR]);
+            DatenProg programm = pSet.getProgUrl(arr[DOWNLOAD_URL]);
             // ##############################################
             // für die alten Versionen:
             pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME_NR].replace("%n", "");
@@ -438,20 +396,20 @@ public class DatenDownload implements Comparable<DatenDownload> {
             }
             // ##############################################
             // pSet und ... eintragen
-            arr[DOWNLOAD_PROGRAMMSET_NR] = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
+            arr[DOWNLOAD_PROGRAMMSET] = pSet.arr[DatenPset.PROGRAMMSET_NAME_NR];
 
             // Direkter Download nur wenn url passt und wenn im Programm ein Zielpfad ist sonst Abspielen
-            art = (pSet.checkDownloadDirekt(arr[DOWNLOAD_URL_NR])
+            art = (pSet.checkDownloadDirekt(arr[DOWNLOAD_URL])
                     && pSet.progsContainPath()/*legt fest, dass NICHT Abspielen, Abspielen immer über Programm!*/) ? ART_DOWNLOAD : ART_PROGRAMM;
-            arr[DOWNLOAD_ART_NR] = String.valueOf(art);
+            arr[DOWNLOAD_ART] = String.valueOf(art);
             if (art == ART_DOWNLOAD) {
-                arr[DatenDownload.DOWNLOAD_PROGRAMM_NR] = ART_DOWNLOAD_TXT;
+                arr[DatenDownload.DOWNLOAD_PROGRAMM] = ART_DOWNLOAD_TXT;
             } else {
-                arr[DatenDownload.DOWNLOAD_PROGRAMM_NR] = programm.arr[DatenProg.PROGRAMM_NAME_NR];
+                arr[DatenDownload.DOWNLOAD_PROGRAMM] = programm.arr[DatenProg.PROGRAMM_NAME_NR];
             }
 
-            arr[DOWNLOAD_PROGRAMM_RESTART_NR] = String.valueOf(programm.isRestart());
-            arr[DOWNLOAD_PROGRAMM_DOWNLOADMANAGER_NR] = String.valueOf(programm.isDownloadManager());
+            arr[DOWNLOAD_PROGRAMM_RESTART] = String.valueOf(programm.isRestart());
+            arr[DOWNLOAD_PROGRAMM_DOWNLOADMANAGER] = String.valueOf(programm.isDownloadManager());
             dateinamePfadBauen(pSet, film, abo, nname, ppfad);
             programmaufrufBauen(programm);
         } catch (Exception ex) {
@@ -461,26 +419,26 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
     private void programmaufrufBauen(DatenProg programm) {
         if (art == ART_DOWNLOAD) {
-            arr[DOWNLOAD_PROGRAMM_AUFRUF_NR] = "";
-            arr[DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR] = "";
+            arr[DOWNLOAD_PROGRAMM_AUFRUF] = "";
+            arr[DOWNLOAD_PROGRAMM_AUFRUF_ARRAY] = "";
         } else {
             String befehlsString = programm.getProgrammAufruf();
             befehlsString = replaceExec(befehlsString);
-            arr[DOWNLOAD_PROGRAMM_AUFRUF_NR] = befehlsString;
+            arr[DOWNLOAD_PROGRAMM_AUFRUF] = befehlsString;
 
             String progArray = programm.getProgrammAufrufArray();
             progArray = replaceExec(progArray);
-            arr[DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR] = progArray;
+            arr[DOWNLOAD_PROGRAMM_AUFRUF_ARRAY] = progArray;
         }
     }
 
     private String replaceExec(String befehlsString) {
-        befehlsString = befehlsString.replace("**", arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
-        befehlsString = befehlsString.replace("%f", arr[DOWNLOAD_URL_NR]);
-        befehlsString = befehlsString.replace("%F", arr[DOWNLOAD_URL_RTMP_NR]);
+        befehlsString = befehlsString.replace("**", arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+        befehlsString = befehlsString.replace("%f", arr[DOWNLOAD_URL]);
+        befehlsString = befehlsString.replace("%F", arr[DOWNLOAD_URL_RTMP]);
 
-        befehlsString = befehlsString.replace("%a", arr[DOWNLOAD_ZIEL_PFAD_NR]);
-        befehlsString = befehlsString.replace("%b", arr[DOWNLOAD_ZIEL_DATEINAME_NR]);
+        befehlsString = befehlsString.replace("%a", arr[DOWNLOAD_ZIEL_PFAD]);
+        befehlsString = befehlsString.replace("%b", arr[DOWNLOAD_ZIEL_DATEINAME]);
 
         return befehlsString;
     }
@@ -491,8 +449,8 @@ public class DatenDownload implements Comparable<DatenDownload> {
         String path;
         if (!pSet.progsContainPath()) {
             // dann können wir uns das sparen
-            arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR] = "";
-            arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR] = "";
+            arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME] = "";
+            arr[DatenDownload.DOWNLOAD_ZIEL_PFAD] = "";
             return;
         }
 
@@ -503,12 +461,12 @@ public class DatenDownload implements Comparable<DatenDownload> {
             // wenn vorgegeben, dann den nehmen
             name = nname;
         } else {
-            name = pSet.getZielDateiname(arr[DOWNLOAD_URL_NR]);
-            arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR] = name;
+            name = pSet.getZielDateiname(arr[DOWNLOAD_URL]);
+            arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME] = name;
             // ##############################
             // Name sinnvoll belegen
             if (name.equals("")) {
-                name = getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
+                name = getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA] + "-" + arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
             }
 
             //Tags ersetzen
@@ -568,16 +526,16 @@ public class DatenDownload implements Comparable<DatenDownload> {
 
             if (abo != null) {
                 //Abos: den Namen des Abos eintragen
-                arr[DatenDownload.DOWNLOAD_ABO_NR] = abo.arr[DatenAbo.ABO_NAME_NR];
+                arr[DatenDownload.DOWNLOAD_ABO] = abo.arr[DatenAbo.ABO_NAME_NR];
                 if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
                     //und Abopfad an den Pfad anhängen
                     path = GuiFunktionen.addsPfad(path, FilenameUtils.removeIllegalCharacters(abo.arr[DatenAbo.ABO_ZIELPFAD_NR], true));
                 }
-            } else {
-                //Downloads
+            } else //Downloads
+            {
                 if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN_NR])) {
                     //und den Namen des Themas an den Zielpfad anhängen
-                    path = GuiFunktionen.addsPfad(path, FilenameUtils.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA_NR], true /*pfad*/,
+                    path = GuiFunktionen.addsPfad(path, FilenameUtils.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA], true /*pfad*/,
                             Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)),
                             Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ONLY_ASCII))));
                 }
@@ -596,16 +554,16 @@ public class DatenDownload implements Comparable<DatenDownload> {
             path = GuiFunktionen.getStandardDownloadPath();
         }
         if (name.isEmpty()) {
-            name = getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
+            name = getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA] + "-" + arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
         }
 
         // in Win dürfen die Pfade nicht länger als 255 Zeichen haben (für die Infodatei kommen noch ".txt" dazu)
         String[] pathName = {path, name};
         GuiFunktionen.checkLengthPath(pathName);
 
-        arr[DOWNLOAD_ZIEL_DATEINAME_NR] = pathName[1];
-        arr[DOWNLOAD_ZIEL_PFAD_NR] = pathName[0];
-        arr[DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pathName[0], pathName[1]);
+        arr[DOWNLOAD_ZIEL_DATEINAME] = pathName[1];
+        arr[DOWNLOAD_ZIEL_PFAD] = pathName[0];
+        arr[DOWNLOAD_ZIEL_PFAD_DATEINAME] = GuiFunktionen.addsPfad(pathName[0], pathName[1]);
     }
 
     private String replaceString(String replStr, DatenFilm film) {
@@ -625,7 +583,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
         replStr = replStr.replace("%t", getField(film.arr[DatenFilm.FILM_THEMA_NR], laenge));
         replStr = replStr.replace("%T", getField(film.arr[DatenFilm.FILM_TITEL_NR], laenge));
         replStr = replStr.replace("%s", getField(film.arr[DatenFilm.FILM_SENDER_NR], laenge));
-        replStr = replStr.replace("%N", getField(GuiFunktionen.getDateiName(this.arr[DatenDownload.DOWNLOAD_URL_NR]), laenge));
+        replStr = replStr.replace("%N", getField(GuiFunktionen.getDateiName(this.arr[DatenDownload.DOWNLOAD_URL]), laenge));
 
         //Felder mit fester Länge werden immer ganz geschrieben
         replStr = replStr.replace("%D", film.arr[DatenFilm.FILM_DATUM_NR].equals("") ? getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM_NR])));
@@ -644,25 +602,25 @@ public class DatenDownload implements Comparable<DatenDownload> {
         replStr = replStr.replace("%i", String.valueOf(film.nr));
 
         String res = "";
-        if (arr[DOWNLOAD_URL_NR].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL))) {
+        if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL))) {
             res = "H";
-        } else if (arr[DOWNLOAD_URL_NR].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD))) {
+        } else if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD))) {
             res = "HD";
-        } else if (arr[DOWNLOAD_URL_NR].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN))) {
+        } else if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN))) {
             res = "L";
-        } else if (arr[DOWNLOAD_URL_NR].equals(film.getUrlRtmpFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL))) {
+        } else if (arr[DOWNLOAD_URL].equals(film.getUrlRtmpFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL))) {
             res = "H";
-        } else if (arr[DOWNLOAD_URL_NR].equals(film.getUrlRtmpFuerAufloesung(DatenFilm.AUFLOESUNG_HD))) {
+        } else if (arr[DOWNLOAD_URL].equals(film.getUrlRtmpFuerAufloesung(DatenFilm.AUFLOESUNG_HD))) {
             res = "HD";
-        } else if (arr[DOWNLOAD_URL_NR].equals(film.getUrlRtmpFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN))) {
+        } else if (arr[DOWNLOAD_URL].equals(film.getUrlRtmpFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN))) {
             res = "L";
         }
         replStr = replStr.replace("%q", res); //%q Qualität des Films ("HD", "H", "L")
 
-        replStr = replStr.replace("%S", GuiFunktionen.getSuffixFromUrl(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
-        replStr = replStr.replace("%Z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
-        replStr = replStr.replace("%z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL_NR])
-                + "." + GuiFunktionen.getSuffixFromUrl(this.arr[DatenDownload.DOWNLOAD_URL_NR]));
+        replStr = replStr.replace("%S", GuiFunktionen.getSuffixFromUrl(this.arr[DatenDownload.DOWNLOAD_URL]));
+        replStr = replStr.replace("%Z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL]));
+        replStr = replStr.replace("%z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL])
+                + "." + GuiFunktionen.getSuffixFromUrl(this.arr[DatenDownload.DOWNLOAD_URL]));
 
         return replStr;
     }
@@ -784,8 +742,8 @@ public class DatenDownload implements Comparable<DatenDownload> {
     @Override
     public int compareTo(DatenDownload arg0) {
         int ret;
-        if ((ret = sorter.compare(arr[DatenDownload.DOWNLOAD_SENDER_NR], arg0.arr[DatenDownload.DOWNLOAD_SENDER_NR])) == 0) {
-            return sorter.compare(arr[DatenDownload.DOWNLOAD_THEMA_NR], arg0.arr[DatenDownload.DOWNLOAD_THEMA_NR]);
+        if ((ret = sorter.compare(arr[DatenDownload.DOWNLOAD_SENDER], arg0.arr[DatenDownload.DOWNLOAD_SENDER])) == 0) {
+            return sorter.compare(arr[DatenDownload.DOWNLOAD_THEMA], arg0.arr[DatenDownload.DOWNLOAD_THEMA]);
         }
         return ret;
     }
@@ -795,32 +753,32 @@ public class DatenDownload implements Comparable<DatenDownload> {
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = "";
         }
-        arr[DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.FALSE.toString();
-        arr[DOWNLOAD_UNTERBROCHEN_NR] = Boolean.FALSE.toString();
+        arr[DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString();
+        arr[DOWNLOAD_UNTERBROCHEN] = Boolean.FALSE.toString();
     }
 
     public Datum getDatumForObject() {
         Datum tmp = new Datum(0);
-        if (!arr[DatenDownload.DOWNLOAD_DATUM_NR].equals("")) {
+        if (!arr[DatenDownload.DOWNLOAD_DATUM].equals("")) {
             try {
-                if (!arr[DatenDownload.DOWNLOAD_ZEIT_NR].equals("")) {
-                    tmp.setTime(sdf_datum_zeit.parse(arr[DatenDownload.DOWNLOAD_DATUM_NR] + arr[DatenDownload.DOWNLOAD_ZEIT_NR]).getTime());
+                if (!arr[DatenDownload.DOWNLOAD_ZEIT].equals("")) {
+                    tmp.setTime(sdf_datum_zeit.parse(arr[DatenDownload.DOWNLOAD_DATUM] + arr[DatenDownload.DOWNLOAD_ZEIT]).getTime());
                 } else {
-                    tmp.setTime(sdf_datum.parse(arr[DatenDownload.DOWNLOAD_DATUM_NR]).getTime());
+                    tmp.setTime(sdf_datum.parse(arr[DatenDownload.DOWNLOAD_DATUM]).getTime());
                 }
             } catch (Exception ex) {
                 Log.errorLog(649897321, ex,
-                        new String[]{"Datum: " + arr[DatenDownload.DOWNLOAD_DATUM_NR], "Zeit: " + arr[DatenDownload.DOWNLOAD_ZEIT_NR]});
+                        new String[]{"Datum: " + arr[DatenDownload.DOWNLOAD_DATUM], "Zeit: " + arr[DatenDownload.DOWNLOAD_ZEIT]});
             }
         }
         return tmp;
     }
 
     public String getFileNameWithoutSuffix() {
-        return GuiFunktionen.getFileNameWithoutSuffix(arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+        return GuiFunktionen.getFileNameWithoutSuffix(arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
     }
 
     public String getFileNameSuffix() {
-        return GuiFunktionen.getFileNameSuffix(arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+        return GuiFunktionen.getFileNameSuffix(arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
     }
 }

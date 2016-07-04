@@ -136,9 +136,9 @@ public class MediathekAuto {
             int i = 1;
             for (DatenDownload d : Daten.listeDownloads) {
                 SysMsg.sysMsg("Film " + (i++) + ": ");
-                SysMsg.sysMsg("\tSender: " + d.arr[DatenDownload.DOWNLOAD_SENDER_NR]);
-                SysMsg.sysMsg("\tThema: " + d.arr[DatenDownload.DOWNLOAD_THEMA_NR]);
-                SysMsg.sysMsg("\tTitel: " + d.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
+                SysMsg.sysMsg("\tSender: " + d.arr[DatenDownload.DOWNLOAD_SENDER]);
+                SysMsg.sysMsg("\tThema: " + d.arr[DatenDownload.DOWNLOAD_THEMA]);
+                SysMsg.sysMsg("\tTitel: " + d.arr[DatenDownload.DOWNLOAD_TITEL]);
                 SysMsg.sysMsg("");
             }
             SysMsg.sysMsg(LILNE);

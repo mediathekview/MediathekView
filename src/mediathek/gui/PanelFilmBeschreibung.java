@@ -98,7 +98,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
                     break;
 
                 case DOWNLOADS:
-                    film = ((DatenDownload) model.getValueAt(modelIndex, DatenDownload.DOWNLOAD_REF_NR)).film;
+                    film = ((DatenDownload) model.getValueAt(modelIndex, DatenDownload.DOWNLOAD_REF)).film;
                     break;
 
                 default:

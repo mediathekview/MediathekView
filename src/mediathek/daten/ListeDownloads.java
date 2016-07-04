@@ -55,14 +55,14 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     }
 
     public synchronized void zurueckgestellteWiederAktivieren() {
-        this.parallelStream().forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR] = Boolean.FALSE.toString());
+        this.parallelStream().forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString());
     }
 
     public synchronized void filmEintragen() {
         // bei einmal Downloads nach einem Programmstart/Neuladen der Filmliste
         // den Film wieder eintragen
         this.stream().filter(d -> d.film == null)
-                .forEach(d -> d.film = Daten.listeFilme.getFilmByUrl_klein_hoch_hd(d.arr[DatenDownload.DOWNLOAD_URL_NR]));
+                .forEach(d -> d.film = Daten.listeFilme.getFilmByUrl_klein_hoch_hd(d.arr[DatenDownload.DOWNLOAD_URL]));
     }
 
     public synchronized void listePutzen() {
@@ -162,7 +162,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     public synchronized DatenDownload getDownloadByUrl(String url) {
         DatenDownload ret = null;
         for (DatenDownload download : this) {
-            if (download.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
+            if (download.arr[DatenDownload.DOWNLOAD_URL].equals(url)) {
                 ret = download;
                 break;
             }
@@ -175,7 +175,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         DatenDownload datenDownload;
         while (it.hasNext()) {
             datenDownload = it.next();
-            if (datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
+            if (datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(url)) {
                 if (datenDownload.start != null) {
                     if (datenDownload.start.status < Start.STATUS_FERTIG) {
                         datenDownload.start.stoppen = true;
@@ -234,7 +234,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     public synchronized DatenDownload getDownloadUrlFilm(String urlFilm) {
         for (DatenDownload datenDownload : this) {
-            if (datenDownload.arr[DatenDownload.DOWNLOAD_FILM_URL_NR].equals(urlFilm)) {
+            if (datenDownload.arr[DatenDownload.DOWNLOAD_FILM_URL].equals(urlFilm)) {
                 return datenDownload;
             }
         }
@@ -252,35 +252,35 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             if (abos && istAbo || downloads && !istAbo) {
                 object = new Object[DatenDownload.MAX_ELEM];
                 for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
-                    if (i == DatenDownload.DOWNLOAD_NR_NR) {
+                    if (i == DatenDownload.DOWNLOAD_NR) {
                         object[i] = download.nr;
-                    } else if (i == DatenDownload.DOWNLOAD_FILM_NR_NR) {
+                    } else if (i == DatenDownload.DOWNLOAD_FILM_NR) {
                         if (download.film != null) {
                             object[i] = download.film.nr;
                         } else {
                             object[i] = 0;
                         }
-                    } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR
-                            || i == DatenDownload.DOWNLOAD_UNTERBROCHEN_NR
-                            || i == DatenDownload.DOWNLOAD_SPOTLIGHT_NR
-                            || i == DatenDownload.DOWNLOAD_INFODATEI_NR
-                            || i == DatenDownload.DOWNLOAD_SUBTITLE_NR
-                            || i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR
-                            || i == DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER_NR) {
+                    } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART
+                            || i == DatenDownload.DOWNLOAD_UNTERBROCHEN
+                            || i == DatenDownload.DOWNLOAD_SPOTLIGHT
+                            || i == DatenDownload.DOWNLOAD_INFODATEI
+                            || i == DatenDownload.DOWNLOAD_SUBTITLE
+                            || i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT
+                            || i == DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER) {
                         object[i] = "";
-                    } else if (i == DatenDownload.DOWNLOAD_DATUM_NR) {
+                    } else if (i == DatenDownload.DOWNLOAD_DATUM) {
                         object[i] = download.datumFilm;
-                    } else if (i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
+                    } else if (i == DatenDownload.DOWNLOAD_RESTZEIT) {
                         object[i] = download.getTextRestzeit();
-                    } else if (i == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
+                    } else if (i == DatenDownload.DOWNLOAD_BANDBREITE) {
                         object[i] = download.getTextBandbreite();
-                    } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+                    } else if (i == DatenDownload.DOWNLOAD_PROGRESS) {
                         object[i] = setProgress(download);
-                    } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
+                    } else if (i == DatenDownload.DOWNLOAD_GROESSE) {
                         object[i] = download.mVFilmSize;
-                    } else if (i == DatenDownload.DOWNLOAD_REF_NR) {
+                    } else if (i == DatenDownload.DOWNLOAD_REF) {
                         object[i] = download;
-                    } else if (i != DatenDownload.DOWNLOAD_URL_NR && !DatenDownload.anzeigen(i)) {
+                    } else if (i != DatenDownload.DOWNLOAD_URL && !DatenDownload.anzeigen(i)) {
                         // Filmnr und URL immer füllen, egal ob angezeigt
                         object[i] = "";
                     } else {
@@ -314,13 +314,13 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         int row = 0;
         while (it.hasNext()) {
             List l = it.next();
-            DatenDownload datenDownload = (DatenDownload) l.get(DatenDownload.DOWNLOAD_REF_NR);
+            DatenDownload datenDownload = (DatenDownload) l.get(DatenDownload.DOWNLOAD_REF);
             if (datenDownload.start != null) {
                 if (datenDownload.start.status == Start.STATUS_RUN) {
-                    tModel.setValueAt(datenDownload.getTextRestzeit(), row, DatenDownload.DOWNLOAD_RESTZEIT_NR);
-                    tModel.setValueAt(datenDownload.getTextBandbreite(), row, DatenDownload.DOWNLOAD_BANDBREITE_NR);
-                    tModel.setValueAt(setProgress(datenDownload), row, DatenDownload.DOWNLOAD_PROGRESS_NR);
-                    tModel.setValueAt(datenDownload.mVFilmSize, row, DatenDownload.DOWNLOAD_GROESSE_NR);
+                    tModel.setValueAt(datenDownload.getTextRestzeit(), row, DatenDownload.DOWNLOAD_RESTZEIT);
+                    tModel.setValueAt(datenDownload.getTextBandbreite(), row, DatenDownload.DOWNLOAD_BANDBREITE);
+                    tModel.setValueAt(setProgress(datenDownload), row, DatenDownload.DOWNLOAD_PROGRESS);
+                    tModel.setValueAt(datenDownload.mVFilmSize, row, DatenDownload.DOWNLOAD_GROESSE);
                 }
             }
             ++row;
@@ -330,13 +330,13 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     @SuppressWarnings("unchecked")
     public synchronized void setModelProgressAlleStart(TModelDownload tModel) {
         for (List l : (Iterable<List>) tModel.getDataVector()) {
-            DatenDownload datenDownload = (DatenDownload) l.get(DatenDownload.DOWNLOAD_REF_NR);
+            DatenDownload datenDownload = (DatenDownload) l.get(DatenDownload.DOWNLOAD_REF);
             if (datenDownload.start != null) {
-                l.set(DatenDownload.DOWNLOAD_RESTZEIT_NR, datenDownload.getTextRestzeit());
-                l.set(DatenDownload.DOWNLOAD_BANDBREITE_NR, datenDownload.getTextBandbreite());
-                l.set(DatenDownload.DOWNLOAD_PROGRESS_NR, setProgress(datenDownload));
-                l.set(DatenDownload.DOWNLOAD_GROESSE_NR, datenDownload.mVFilmSize);
-                l.set(DatenDownload.DOWNLOAD_UNTERBROCHEN_NR, null);
+                l.set(DatenDownload.DOWNLOAD_RESTZEIT, datenDownload.getTextRestzeit());
+                l.set(DatenDownload.DOWNLOAD_BANDBREITE, datenDownload.getTextBandbreite());
+                l.set(DatenDownload.DOWNLOAD_PROGRESS, setProgress(datenDownload));
+                l.set(DatenDownload.DOWNLOAD_GROESSE, datenDownload.mVFilmSize);
+                l.set(DatenDownload.DOWNLOAD_UNTERBROCHEN, null);
             }
         }
     }
@@ -661,7 +661,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         String host = "";
         try {
             try {
-                String uurl = datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR];
+                String uurl = datenDownload.arr[DatenDownload.DOWNLOAD_URL];
                 // die funktion "getHost()" kann nur das Protokoll "http" ??!??
                 if (uurl.startsWith("rtmpt:")) {
                     uurl = uurl.toLowerCase().replace("rtmpt:", "http:");
@@ -705,7 +705,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     private synchronized boolean checkUrlExists(String url) {
         //prüfen, ob der Film schon in der Liste ist, (manche Filme sind in verschiedenen Themen)
         for (DatenDownload download : this) {
-            if (download.arr[DatenDownload.DOWNLOAD_URL_NR].equals(url)) {
+            if (download.arr[DatenDownload.DOWNLOAD_URL].equals(url)) {
                 return true;
             }
         }
