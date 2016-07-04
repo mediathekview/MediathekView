@@ -31,11 +31,11 @@ public class TModelAbo extends TModel {
         types = new Class<?>[DatenAbo.MAX_ELEM];
         for (int i = 0; i < DatenAbo.MAX_ELEM; ++i) {
             switch (i) {
-                case DatenAbo.ABO_NR_NR:
-                case DatenAbo.ABO_MINDESTDAUER_NR:
+                case DatenAbo.ABO_NR:
+                case DatenAbo.ABO_MINDESTDAUER:
                     types[i] = Integer.class;
                     break;
-                case DatenAbo.ABO_DOWN_DATUM_NR:
+                case DatenAbo.ABO_DOWN_DATUM:
                     types[i] = Datum.class;
                     break;
                 default:

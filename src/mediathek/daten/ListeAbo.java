@@ -75,7 +75,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         dialogEditAbo.setVisible(true);
         if (dialogEditAbo.ok) {
             if (!aboExistiertBereits(datenAbo)) {
-                MVConfig.add(MVConfig.SYSTEM_ABO_MIN_SIZE, datenAbo.arr[DatenAbo.ABO_MINDESTDAUER_NR]); // als Vorgabe merken
+                MVConfig.add(MVConfig.SYSTEM_ABO_MIN_SIZE, datenAbo.arr[DatenAbo.ABO_MINDESTDAUER]); // als Vorgabe merken
                 addAbo(datenAbo);
                 aenderungMelden();
                 ret = true;
@@ -91,9 +91,9 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         // für das Lesen der Konfig-Datei beim Programmstart
         ++nr;
         datenAbo.nr = nr;
-        if (datenAbo.arr[DatenAbo.ABO_NAME_NR].isEmpty()) {
+        if (datenAbo.arr[DatenAbo.ABO_NAME].isEmpty()) {
             // Downloads ohne "Aboname" sind manuelle Downloads
-            datenAbo.arr[DatenAbo.ABO_NAME_NR] = "Abo_" + nr;
+            datenAbo.arr[DatenAbo.ABO_NAME] = "Abo_" + nr;
         }
         datenAbo.setMindestDauerMinuten();
         super.add(datenAbo);
@@ -131,15 +131,15 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             datenAbo = iterator.next();
             //object[i] = datenAbo.arr;
             for (int m = 0; m < DatenAbo.MAX_ELEM; ++m) {
-                if (m == DatenAbo.ABO_NR_NR) {
+                if (m == DatenAbo.ABO_NR) {
                     object[m] = datenAbo.nr;
-                } else if (m == DatenAbo.ABO_MINDESTDAUER_NR) {
+                } else if (m == DatenAbo.ABO_MINDESTDAUER) {
                     object[m] = datenAbo.mindestdauerMinuten;
-                } else if (m == DatenAbo.ABO_DOWN_DATUM_NR) {
-                    object[m] = getDatumForObject(datenAbo.arr[DatenAbo.ABO_DOWN_DATUM_NR]);
-                } else if (m == DatenAbo.ABO_EINGESCHALTET_NR) {
+                } else if (m == DatenAbo.ABO_DOWN_DATUM) {
+                    object[m] = getDatumForObject(datenAbo.arr[DatenAbo.ABO_DOWN_DATUM]);
+                } else if (m == DatenAbo.ABO_EINGESCHALTET) {
                     object[m] = ""; //Boolean.valueOf(datenAbo.aboIstEingeschaltet());
-                } else if (m != DatenAbo.ABO_NAME_NR && !DatenAbo.anzeigen(m)) {
+                } else if (m != DatenAbo.ABO_NAME && !DatenAbo.anzeigen(m)) {
                     // Name immer füllen, egal ob angezeigt
                     object[m] = "";
                 } else {
@@ -165,9 +165,9 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         // liefert eine Array mit allen Pfaden
         ArrayList<String> pfade = new ArrayList<>();
         for (DatenAbo abo : this) {
-            String s = abo.arr[DatenAbo.ABO_ZIELPFAD_NR];
+            String s = abo.arr[DatenAbo.ABO_ZIELPFAD];
             if (!pfade.contains(s)) {
-                pfade.add(abo.arr[DatenAbo.ABO_ZIELPFAD_NR]);
+                pfade.add(abo.arr[DatenAbo.ABO_ZIELPFAD]);
             }
         }
         GermanStringSorter sorter = GermanStringSorter.getInstance();
@@ -228,25 +228,25 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                         //dann ists kein richtiges Abo!!
                         continue;
                     }
-                    if (datenAbo.arr[DatenAbo.ABO_TITEL_NR].isEmpty()) {
+                    if (datenAbo.arr[DatenAbo.ABO_TITEL].isEmpty()) {
                         titel = LEER;
                     } else {
-                        titel = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_TITEL_NR])
-                                ? new String[]{datenAbo.arr[DatenAbo.ABO_TITEL_NR]} : datenAbo.arr[DatenAbo.ABO_TITEL_NR].toLowerCase().split(",");
+                        titel = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_TITEL])
+                                ? new String[]{datenAbo.arr[DatenAbo.ABO_TITEL]} : datenAbo.arr[DatenAbo.ABO_TITEL].toLowerCase().split(",");
                     }
-                    if (datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR].isEmpty()) {
+                    if (datenAbo.arr[DatenAbo.ABO_THEMA_TITEL].isEmpty()) {
                         thema = LEER;
                     } else {
-                        thema = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR])
-                                ? new String[]{datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR]} : datenAbo.arr[DatenAbo.ABO_THEMA_TITEL_NR].toLowerCase().split(",");
+                        thema = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_THEMA_TITEL])
+                                ? new String[]{datenAbo.arr[DatenAbo.ABO_THEMA_TITEL]} : datenAbo.arr[DatenAbo.ABO_THEMA_TITEL].toLowerCase().split(",");
                     }
-                    if (datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR].isEmpty()) {
+                    if (datenAbo.arr[DatenAbo.ABO_IRGENDWO].isEmpty()) {
                         irgendwo = LEER;
                     } else {
-                        irgendwo = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR])
-                                ? new String[]{datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR]} : datenAbo.arr[DatenAbo.ABO_IRGENDWO_NR].toLowerCase().split(",");
+                        irgendwo = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_IRGENDWO])
+                                ? new String[]{datenAbo.arr[DatenAbo.ABO_IRGENDWO]} : datenAbo.arr[DatenAbo.ABO_IRGENDWO].toLowerCase().split(",");
                     }
-                    if (Filter.filterAufFilmPruefen(datenAbo.arr[DatenAbo.ABO_SENDER_NR], datenAbo.arr[DatenAbo.ABO_THEMA_NR],
+                    if (Filter.filterAufFilmPruefen(datenAbo.arr[DatenAbo.ABO_SENDER], datenAbo.arr[DatenAbo.ABO_THEMA],
                             titel,
                             thema,
                             irgendwo,
@@ -256,10 +256,10 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                         // und noch die Filmlänge prüfen
                         if (!Filter.laengePruefen(datenAbo.mindestdauerMinuten, datenFilm.dauerL)) {
                             // dann ist der Film zu kurz
-                            datenFilm.arr[DatenFilm.FILM_ABO_NAME_NR] = datenAbo.arr[DatenAbo.ABO_NAME_NR] + " [zu kurz]";
+                            datenFilm.arr[DatenFilm.FILM_ABO_NAME_NR] = datenAbo.arr[DatenAbo.ABO_NAME] + " [zu kurz]";
                             datenFilm.abo = datenAbo;
                         } else {
-                            datenFilm.arr[DatenFilm.FILM_ABO_NAME_NR] = datenAbo.arr[DatenAbo.ABO_NAME_NR];
+                            datenFilm.arr[DatenFilm.FILM_ABO_NAME_NR] = datenAbo.arr[DatenAbo.ABO_NAME];
                             datenFilm.abo = datenAbo;
                         }
                         // und nichts wie weiter
