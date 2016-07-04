@@ -21,20 +21,17 @@ package mediathek.daten;
 
 public class DatenBlacklist {
 
-    public static final String BLACKLIST = "Blacklist";
-    public static final String BLACKLIST_NR = "black-nr";
-    public static final int BLACKLIST_NR_NR = 0;
-    public static final String BLACKLIST_SENDER = "black-sender";
-    public static final int BLACKLIST_SENDER_NR = 1;
-    public static final String BLACKLIST_THEMA = "black-thema";
-    public static final int BLACKLIST_THEMA_NR = 2;
-    public static final String BLACKLIST_TITEL = "black-titel";
-    public static final int BLACKLIST_TITEL_NR = 3;
-    public static final String BLACKLIST_THEMA_TITEL = "black-thema-titel";
-    public static final int BLACKLIST_THEMA_TITEL_NR = 4;
-    public static final int BLACKLIST_MAX_ELEM = 5;
-    public static final String[] BLACKLIST_COLUMN_NAMES = {BLACKLIST_NR, BLACKLIST_SENDER, BLACKLIST_THEMA, BLACKLIST_TITEL, BLACKLIST_THEMA_TITEL};
-    public static final String[] BLACKLIST_COLUMN_NAMES_ANZEIGE = {"Nr", "Sender", "Thema", "Titel", "Thema-Titel"};
+    public static final int BLACKLIST_NR = 0;
+    public static final int BLACKLIST_SENDER = 1;
+    public static final int BLACKLIST_THEMA = 2;
+    public static final int BLACKLIST_TITEL = 3;
+    public static final int BLACKLIST_THEMA_TITEL = 4;
+
+    public static final int MAX_ELEM = 5;
+    public static final String TAG = "Blacklist";
+    public static final String[] COLUMN_NAMES = {"Nr", "Sender", "Thema", "Titel", "Thema-Titel"};
+    public static final String[] XML_NAMES = {"black-nr", "black-sender", "black-thema", "black-titel", "black-thema-titel"};
+
     public String[] arr;
 
     public DatenBlacklist() {
@@ -43,15 +40,15 @@ public class DatenBlacklist {
 
     public DatenBlacklist(String sender, String thema, String titel, String themaTitel) {
         makeArr();
-        arr[BLACKLIST_NR_NR] = "";
-        arr[BLACKLIST_SENDER_NR] = sender;
-        arr[BLACKLIST_THEMA_NR] = thema;
-        arr[BLACKLIST_TITEL_NR] = titel;
-        arr[BLACKLIST_THEMA_TITEL_NR] = themaTitel;
+        arr[BLACKLIST_NR] = "";
+        arr[BLACKLIST_SENDER] = sender;
+        arr[BLACKLIST_THEMA] = thema;
+        arr[BLACKLIST_TITEL] = titel;
+        arr[BLACKLIST_THEMA_TITEL] = themaTitel;
     }
 
     private void makeArr() {
-        arr = new String[BLACKLIST_MAX_ELEM];
+        arr = new String[MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {
             arr[i] = "";
         }

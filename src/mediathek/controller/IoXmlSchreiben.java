@@ -170,7 +170,7 @@ public class IoXmlSchreiben {
     private static void xmlSchreibenBlackList() {
         //Blacklist schreiben
         for (DatenBlacklist blacklist : Daten.listeBlacklist) {
-            xmlSchreibenDaten(DatenBlacklist.BLACKLIST, DatenBlacklist.BLACKLIST_COLUMN_NAMES, blacklist.arr, false);
+            xmlSchreibenDaten(DatenBlacklist.TAG, DatenBlacklist.XML_NAMES, blacklist.arr, false);
         }
     }
 
