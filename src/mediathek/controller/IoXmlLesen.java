@@ -84,10 +84,10 @@ public class IoXmlLesen {
                                     Daten.listeAbo.addAbo(datenAbo);
                                 }
                                 break;
-                            case DatenDownload.DOWNLOAD:
+                            case DatenDownload.TAG:
                                 //Downloads
                                 DatenDownload d = new DatenDownload();
-                                if (get(parser, DatenDownload.DOWNLOAD, DatenDownload.COLUMN_NAMES_, d.arr)) {
+                                if (get(parser, DatenDownload.TAG, DatenDownload.XML_NAMES, d.arr)) {
                                     d.init();
                                     Daten.listeDownloads.add(d);
                                 }

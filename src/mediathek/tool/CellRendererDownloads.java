@@ -127,7 +127,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             final int rowModelIndex = table.convertRowIndexToModel(row);
             final int columnModelIndex = table.convertColumnIndexToModel(column);
 
-            DatenDownload datenDownload = (DatenDownload) table.getModel().getValueAt(rowModelIndex, DatenDownload.DOWNLOAD_REF_NR);
+            DatenDownload datenDownload = (DatenDownload) table.getModel().getValueAt(rowModelIndex, DatenDownload.DOWNLOAD_REF);
             if (!SystemInfo.isMacOSX()) {
                 if (isSelected) {
                     // setFont(new java.awt.Font("Dialog", Font.BOLD, getFont().getSize()));
@@ -139,7 +139,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             }
 
             switch (columnModelIndex) {
-                case DatenDownload.DOWNLOAD_PROGRESS_NR:
+                case DatenDownload.DOWNLOAD_PROGRESS:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (((MVTable) table).iconAnzeigen && !((MVTable) table).iconKlein) {
                         progressBar.setBorder(largeBorder);
@@ -166,21 +166,21 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     }
                     break;
 
-                case DatenDownload.DOWNLOAD_RESTZEIT_NR:
+                case DatenDownload.DOWNLOAD_RESTZEIT:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (datenDownload.start != null && datenDownload.start.beginnAnschauen) {
                         setForeground(MVColor.DOWNLOAD_ANSEHEN.color);
                     }
                     break;
 
-                case DatenDownload.DOWNLOAD_FILM_NR_NR:
-                    if ((int) table.getModel().getValueAt(rowModelIndex, DatenDownload.DOWNLOAD_FILM_NR_NR) == 0) {
+                case DatenDownload.DOWNLOAD_FILM_NR:
+                    if ((int) table.getModel().getValueAt(rowModelIndex, DatenDownload.DOWNLOAD_FILM_NR) == 0) {
                         setText("");
                     }
                     setHorizontalAlignment(SwingConstants.CENTER);
                     break;
 
-                case DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR:
+                case DatenDownload.DOWNLOAD_PROGRAMM_RESTART:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (datenDownload.isRestart()) {
                         setIcon(ja_16);
@@ -189,7 +189,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     }
                     break;
 
-                case DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER_NR:
+                case DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (datenDownload.isDownloadManager()) {
                         setIcon(ja_16);
@@ -198,7 +198,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     }
                     break;
 
-                case DatenDownload.DOWNLOAD_ART_NR:
+                case DatenDownload.DOWNLOAD_ART:
                     switch (datenDownload.art) {
                         case DatenDownload.ART_DOWNLOAD:
                             setText(DatenDownload.ART_DOWNLOAD_TXT);
@@ -208,7 +208,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                             break;
                     }
                     break;
-                case DatenDownload.DOWNLOAD_QUELLE_NR:
+                case DatenDownload.DOWNLOAD_QUELLE:
                     switch (datenDownload.quelle) {
                         case DatenDownload.QUELLE_ALLE:
                             setText(DatenDownload.QUELLE_ALLE_TXT);
@@ -224,7 +224,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                             break;
                     }
                     break;
-                case DatenDownload.DOWNLOAD_UNTERBROCHEN_NR:
+                case DatenDownload.DOWNLOAD_UNTERBROCHEN:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (datenDownload.isInterrupted()) {
                         setIcon(ja_16);
@@ -233,7 +233,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     }
                     break;
 
-                case DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR:
+                case DatenDownload.DOWNLOAD_ZURUECKGESTELLT:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (datenDownload.istZurueckgestellt()) {
                         setIcon(ja_16);
@@ -242,7 +242,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     }
                     break;
 
-                case DatenDownload.DOWNLOAD_INFODATEI_NR:
+                case DatenDownload.DOWNLOAD_INFODATEI:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (datenDownload.isInfoFile()) {
                         setIcon(ja_16);
@@ -251,7 +251,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     }
                     break;
 
-                case DatenDownload.DOWNLOAD_SUBTITLE_NR:
+                case DatenDownload.DOWNLOAD_SUBTITLE:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (datenDownload.isSubtitle()) {
                         setIcon(ja_16);
@@ -260,7 +260,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     }
                     break;
 
-                case DatenDownload.DOWNLOAD_SPOTLIGHT_NR:
+                case DatenDownload.DOWNLOAD_SPOTLIGHT:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (datenDownload.isSpotlight()) {
                         setIcon(ja_16);
@@ -269,31 +269,31 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     }
                     break;
 
-                case DatenDownload.DOWNLOAD_BUTTON_START_NR:
+                case DatenDownload.DOWNLOAD_BUTTON_START:
                     handleButtonStartColumn(datenDownload, isSelected);
                     break;
 
-                case DatenDownload.DOWNLOAD_BUTTON_DEL_NR:
+                case DatenDownload.DOWNLOAD_BUTTON_DEL:
                     handleButtonDeleteColumn(datenDownload, isSelected);
                     break;
 
-                case DatenDownload.DOWNLOAD_GROESSE_NR:
+                case DatenDownload.DOWNLOAD_GROESSE:
                     setHorizontalAlignment(SwingConstants.RIGHT);
                     break;
 
-                case DatenDownload.DOWNLOAD_ABO_NR:
+                case DatenDownload.DOWNLOAD_ABO:
                     handleAboColumn(datenDownload);
                     break;
 
-                case DatenDownload.DOWNLOAD_NR_NR:
-                case DatenDownload.DOWNLOAD_DATUM_NR:
-                case DatenDownload.DOWNLOAD_ZEIT_NR:
-                case DatenDownload.DOWNLOAD_DAUER_NR:
-                case DatenDownload.DOWNLOAD_BANDBREITE_NR:
+                case DatenDownload.DOWNLOAD_NR:
+                case DatenDownload.DOWNLOAD_DATUM:
+                case DatenDownload.DOWNLOAD_ZEIT:
+                case DatenDownload.DOWNLOAD_DAUER:
+                case DatenDownload.DOWNLOAD_BANDBREITE:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     break;
 
-                case DatenDownload.DOWNLOAD_SENDER_NR:
+                case DatenDownload.DOWNLOAD_SENDER:
                     if (((MVTable) table).iconAnzeigen) {
                         handleSenderColumn((String) value, ((MVTable) table).iconKlein);
                     }
@@ -380,7 +380,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
 
     private void handleAboColumn(final DatenDownload datenDownload) {
         setHorizontalAlignment(SwingConstants.CENTER);
-        if (!datenDownload.arr[DatenDownload.DOWNLOAD_ABO_NR].equals("")) {
+        if (!datenDownload.arr[DatenDownload.DOWNLOAD_ABO].equals("")) {
             setForeground(MVColor.DOWNLOAD_IST_ABO.color);
         } else {
             setForeground(MVColor.DOWNLOAD_IST_DIREKTER_DOWNLOAD.color);
@@ -391,8 +391,8 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
     private void handleGeoBlocking(final DatenDownload datenDownload, final boolean isSelected) {
         if (datenDownload.start == null
                 && geoMelden
-                && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO_NR].isEmpty()
-                && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO_NR].contains(MVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
+                && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO].isEmpty()
+                && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO].contains(MVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
             if (isSelected) {
                 setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND_SEL.color);
             } else {

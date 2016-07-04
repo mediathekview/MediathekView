@@ -52,14 +52,14 @@ public class MVSubtitle {
         FileOutputStream fos = null;
         String encoding;
 
-        if (datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE_NR].isEmpty()) {
+        if (datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE].isEmpty()) {
             return;
         }
         try {
-            SysMsg.sysMsg(new String[]{"Untertitel: ", datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE_NR],
-                "schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]});
+            SysMsg.sysMsg(new String[]{"Untertitel: ", datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE],
+                "schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]});
 
-            urlSubtitle = datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE_NR];
+            urlSubtitle = datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE];
             suffix = GuiFunktionen.getSuffixFromUrl(urlSubtitle);
             if (!suffix.endsWith(SUFFIX_SRT)) {
                 suffix = SUFFIX_TTML;
@@ -67,7 +67,7 @@ public class MVSubtitle {
             strSubtitelFile = datenDownload.getFileNameWithoutSuffix() + "." + suffix;
             subtitelFile = new File(strSubtitelFile);
 
-            new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]).mkdirs();
+            new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]).mkdirs();
 
             conn = (HttpURLConnection) new URL(urlSubtitle).openConnection();
             conn.setRequestProperty("User-Agent", Daten.getUserAgent());

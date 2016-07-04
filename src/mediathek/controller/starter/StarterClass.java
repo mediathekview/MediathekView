@@ -74,7 +74,7 @@ public class StarterClass {
             d.start = new Start();
             starten.startStarten(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
-            daten.history.zeileSchreiben(ersterFilm.arr[DatenFilm.FILM_THEMA_NR], ersterFilm.arr[DatenFilm.FILM_TITEL_NR], d.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
+            daten.history.zeileSchreiben(ersterFilm.arr[DatenFilm.FILM_THEMA_NR], ersterFilm.arr[DatenFilm.FILM_TITEL_NR], d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
             Daten.listeFilmeHistory.add(ersterFilm);
             // und jetzt noch in die Downloadliste damit die Farbe im Tab Filme passt
             Daten.listeDownloadsButton.addMitNummer(d);
@@ -92,20 +92,20 @@ public class StarterClass {
             if (start.percent > -1 && start.percent < 995) {
                 // Prozent werden berechnet und es wurde vor 99,5% abgebrochen
                 Log.errorLog(696510258, "Download fehlgeschlagen: 99,5% wurden nicht erreicht"
-                        + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                        + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
                 return false;
             }
         }
-        File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+        File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         if (!file.exists()) {
-            Log.errorLog(550236231, "Download fehlgeschlagen: Datei existiert nicht" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.errorLog(550236231, "Download fehlgeschlagen: Datei existiert nicht" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_FILM) {
-            Log.errorLog(795632500, "Download fehlgeschlagen: Datei zu klein" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.errorLog(795632500, "Download fehlgeschlagen: Datei zu klein" + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         } else {
             if (datenDownload.istAbo()) {
-                daten.erledigteAbos.zeileSchreiben(datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],
-                        datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR],
-                        datenDownload.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
+                daten.erledigteAbos.zeileSchreiben(datenDownload.arr[DatenDownload.DOWNLOAD_THEMA],
+                        datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
+                        datenDownload.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
             }
             ret = true;
         }
@@ -150,16 +150,16 @@ public class StarterClass {
             } else {
                 text.add("Download starten");
             }
-            text.add("Programmset: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR]);
-            text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            text.add("Programmset: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET]);
+            text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
-        text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+        text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
         text.add("Startzeit: " + new SimpleDateFormat("HH:mm:ss").format(start.startZeit));
         if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
             text.add(DatenDownload.ART_DOWNLOAD_TXT);
         } else {
-            text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
-            text.add("Programmaufruf[]: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR]);
+            text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF]);
+            text.add("Programmaufruf[]: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]);
         }
         SysMsg.sysMsg(text.toArray(new String[text.size()]));
     }
@@ -188,8 +188,8 @@ public class StarterClass {
             if (datenDownload.isDownloadManager()) {
                 text.add("Programm ist ein Downloadmanager");
             }
-            text.add("Programmset: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET_NR]);
-            text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            text.add("Programmset: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET]);
+            text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
         text.add("Startzeit: " + new SimpleDateFormat("HH:mm:ss").format(start.startZeit));
         text.add("Endzeit: " + new SimpleDateFormat("HH:mm:ss").format(new Datum().getTime()));
@@ -200,12 +200,12 @@ public class StarterClass {
         } else {
             text.add("Dauer: " + start.startZeit.diffInMinuten() + " Min");
         }
-        text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+        text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
         if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
             text.add(DatenDownload.ART_DOWNLOAD_TXT);
         } else {
-            text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
-            text.add("Programmaufruf[]: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR]);
+            text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF]);
+            text.add("Programmaufruf[]: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]);
         }
         SysMsg.sysMsg(text.toArray(new String[text.size()]));
         if (!start.stoppen && !abgebrochen) {
@@ -232,7 +232,7 @@ public class StarterClass {
             // kann bei EinmalDownloads nach einem Neuladen der Filmliste/Programmneustart der Fall sein
             return;
         }
-        final Path filmPath = Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+        final Path filmPath = Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         if (Files.exists(filmPath)) {
             final String strFilePath = filmPath.toString();
             String strComment = datenDownload.film.arr[DatenFilm.FILM_BESCHREIBUNG_NR];
@@ -278,9 +278,9 @@ public class StarterClass {
     }
 
     private void finalizeDownload(DatenDownload datenDownload, Start start /* wegen "datenDownload.start=null" beim stoppen */, HttpDownloadState state) {
-        deleteIfEmpty(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]));
+        deleteIfEmpty(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]));
 
-        if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT_NR])) {
+        if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT])) {
             writeSpotlightComment(datenDownload, state == HttpDownloadState.CANCEL);
         }
 
@@ -407,22 +407,22 @@ public class StarterClass {
 
         public ExternalProgramDownloadThread(DatenDownload d) {
             super();
-            setName("PROGRAMM DL THREAD: " + d.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
+            setName("PROGRAMM DL THREAD: " + d.arr[DatenDownload.DOWNLOAD_TITEL]);
 
             datenDownload = d;
             start = datenDownload.start;
             start.status = Start.STATUS_RUN;
-            file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
             notifyStartEvent(datenDownload);
             try {
-                if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR])) {
+                if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI])) {
                     MVInfoFile.writeInfoFile(datenDownload);
                 }
-                if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE_NR])) {
+                if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE])) {
                     MVSubtitle.writeSubtitle(datenDownload);
                 }
 
-                Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
+                Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]));
             } catch (IOException ignored) {
             } catch (Exception ex) {
                 Log.errorLog(469365281, ex);
@@ -557,7 +557,7 @@ public class StarterClass {
             start.startcounter++;
             startmeldung(datenDownload, start);
             runtimeExec = new RuntimeExec(datenDownload.mVFilmSize, datenDownload.start,
-                    datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR], datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR]);
+                    datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF], datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]);
             start.process = runtimeExec.exec(true /*log*/);
             if (start.process != null) {
                 ret = true;
@@ -578,10 +578,10 @@ public class StarterClass {
                 // dann mit gleichem Namen und Datei vorher löschen
                 try {
                     Files.deleteIfExists(file.toPath());
-                    file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                    file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
                 } catch (IOException ex) {
                     // kann nicht gelöscht werden, evtl. klappt ja das Überschreiben
-                    Log.errorLog(795623145, ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                    Log.errorLog(795623145, ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
                 }
                 return false; //auf keinen Fall den Dialog starten :)
             }
@@ -622,10 +622,10 @@ public class StarterClass {
                         // dann mit gleichem Namen und Datei vorher löschen
                         try {
                             Files.deleteIfExists(file.toPath());
-                            file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                            file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
                         } catch (Exception ex) {
                             // kann nicht gelöscht werden, evtl. klappt ja das Überschreiben
-                            Log.errorLog(945120398, ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                            Log.errorLog(945120398, ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
                         }
                         break;
 
@@ -635,10 +635,10 @@ public class StarterClass {
                             datenDownload.aufrufBauen();
                             Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
                             try {
-                                Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
+                                Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]));
                             } catch (IOException ignored) {
                             }
-                            file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                            file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
                         }
                         break;
                 }
@@ -673,7 +673,7 @@ public class StarterClass {
             this.bandwidthCalculationTimer = bandwidthCalculationTimer;
             datenDownload = d;
             start = datenDownload.start;
-            setName("DIRECT DL THREAD_" + d.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
+            setName("DIRECT DL THREAD_" + d.arr[DatenDownload.DOWNLOAD_TITEL]);
             start.status = Start.STATUS_RUN;
             notifyStartEvent(datenDownload);
         }
@@ -729,10 +729,10 @@ public class StarterClass {
          * @throws Exception
          */
         private void downloadContent() throws Exception {
-            if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR])) {
+            if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI])) {
                 MVInfoFile.writeInfoFile(datenDownload);
             }
-            if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE_NR])) {
+            if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE])) {
                 MVSubtitle.writeSubtitle(datenDownload);
             }
             datenDownload.interruptRestart();
@@ -813,18 +813,18 @@ public class StarterClass {
         public synchronized void run() {
             startmeldung(datenDownload, start);
             try {
-                Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
+                Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]));
             } catch (IOException ignored) {
             }
 
             try {
-                final URL url = new URL(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
+                final URL url = new URL(datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
                 datenDownload.mVFilmSize.setSize(getContentLength(url));
                 datenDownload.mVFilmSize.setAktSize(0);
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setConnectTimeout(TIMEOUT);
                 conn.setReadTimeout(TIMEOUT);
-                file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
                 if (!cancelDownload()) {
                     setupHttpConnection(conn);
                     conn.connect();
@@ -852,7 +852,7 @@ public class StarterClass {
                             SwingUtilities.invokeLater(() -> {
                                 if (!Daten.auto) {
                                     new MeldungDownloadfehler(daten.mediathekGui, "URL des Films:\n"
-                                            + datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR] + "\n\n"
+                                            + datenDownload.arr[DatenDownload.DOWNLOAD_URL] + "\n\n"
                                             + responseCode + "\n", datenDownload).setVisible(true);
                                 }
                             });
@@ -948,10 +948,10 @@ public class StarterClass {
                         if (dialogContinueDownload.isNewName()) {
                             Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
                             try {
-                                Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]));
+                                Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]));
                             } catch (IOException ignored) {
                             }
-                            file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+                            file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
                         }
                         break;
                 }

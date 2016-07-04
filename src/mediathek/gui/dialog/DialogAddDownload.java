@@ -237,7 +237,7 @@ public class DialogAddDownload extends JDialog {
             // nur wenn vom Benutzer noch nicht geänert!
             stopBeob = true;
             datenDownload = new DatenDownload(pSet, datenFilm, DatenDownload.QUELLE_DOWNLOAD, null, "", "", getFilmResolution());
-            if (datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR].equals("")) {
+            if (datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME].equals("")) {
                 // dann wird nicht gespeichert ==> eigenntlich falsche Seteinstellungen??
                 jTextFieldName.setEnabled(false);
                 jComboBoxPfad.setEnabled(false);
@@ -248,9 +248,9 @@ public class DialogAddDownload extends JDialog {
                 jTextFieldName.setEnabled(true);
                 jComboBoxPfad.setEnabled(true);
                 jButtonZiel.setEnabled(true);
-                jTextFieldName.setText(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR]);
-                setModelPfad(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]);
-                orgPfad = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
+                jTextFieldName.setText(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME]);
+                setModelPfad(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]);
+                orgPfad = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD];
             }
             stopBeob = false;
         }
@@ -449,8 +449,8 @@ public class DialogAddDownload extends JDialog {
             // jetzt wird mit den angegebenen Pfaden gearbeitet
             datenDownload = new DatenDownload(pSet, datenFilm, DatenDownload.QUELLE_DOWNLOAD, null, jTextFieldName.getText(), jComboBoxPfad.getSelectedItem().toString(), getFilmResolution());
             datenDownload.setGroesse(getFilmSize());
-            datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR] = Boolean.toString(jCheckBoxInfodatei.isSelected());
-            datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE_NR] = Boolean.toString(jCheckBoxSubtitle.isSelected());
+            datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(jCheckBoxInfodatei.isSelected());
+            datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(jCheckBoxSubtitle.isSelected());
             Daten.listeDownloads.addMitNummer(datenDownload);
             Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
             if (jCheckBoxStarten.isSelected()) {

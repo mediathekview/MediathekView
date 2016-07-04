@@ -219,7 +219,7 @@ public class GuiDownloads extends PanelVorlage {
                 int row = tabelle.getSelectedRow();
                 if (row >= 0) {
                     GuiFunktionen.copyToClipboard(tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row),
-                            DatenDownload.DOWNLOAD_URL_NR).toString());
+                            DatenDownload.DOWNLOAD_URL).toString());
                 }
             }
         });
@@ -233,9 +233,9 @@ public class GuiDownloads extends PanelVorlage {
                     MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
                     daten.dialogMediaDB.setVis();
                     
-                    DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
+                    DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
                     if (datenDownload != null) {
-                        daten.dialogMediaDB.setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
+                        daten.dialogMediaDB.setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
                     }
                     
                 }
@@ -259,8 +259,8 @@ public class GuiDownloads extends PanelVorlage {
         });
         
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenDownload.COLUMN_NAMES, DatenDownload.spaltenAnzeigen,
-                new int[]{DatenDownload.DOWNLOAD_BUTTON_START_NR, DatenDownload.DOWNLOAD_BUTTON_DEL_NR, DatenDownload.DOWNLOAD_REF_NR},
-                new int[]{DatenDownload.DOWNLOAD_BUTTON_START_NR, DatenDownload.DOWNLOAD_BUTTON_DEL_NR},
+                new int[]{DatenDownload.DOWNLOAD_BUTTON_START, DatenDownload.DOWNLOAD_BUTTON_DEL, DatenDownload.DOWNLOAD_REF},
+                new int[]{DatenDownload.DOWNLOAD_BUTTON_START, DatenDownload.DOWNLOAD_BUTTON_DEL},
                 true /*Icon*/));
         
         Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
@@ -363,7 +363,7 @@ public class GuiDownloads extends PanelVorlage {
         daten.dialogMediaDB.setVis();
         
         if (datenDownload != null) {
-            daten.dialogMediaDB.setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR]);
+            daten.dialogMediaDB.setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
         }
     }
     
@@ -396,7 +396,7 @@ public class GuiDownloads extends PanelVorlage {
         int rows[] = tabelle.getSelectedRows();
         if (rows.length > 0) {
             for (int row : rows) {
-                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
+                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
                 arrayDownloads.add(datenDownload);
             }
         } else {
@@ -409,7 +409,7 @@ public class GuiDownloads extends PanelVorlage {
         DatenDownload datenDownload = null;
         int row = tabelle.getSelectedRow();
         if (row >= 0) {
-            datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
+            datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
@@ -449,7 +449,7 @@ public class GuiDownloads extends PanelVorlage {
         if (datenDownload == null) {
             return;
         }
-        String s = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR];
+        String s = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD];
         DirOpenAction.zielordnerOeffnen(parentComponent, s);
     }
     
@@ -458,7 +458,7 @@ public class GuiDownloads extends PanelVorlage {
         if (datenDownload == null) {
             return;
         }
-        String s = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR];
+        String s = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME];
         OpenPlayerAction.filmAbspielen(parentComponent, s);
     }
     
@@ -475,13 +475,13 @@ public class GuiDownloads extends PanelVorlage {
             }
         }
         try {
-            File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
             if (!file.exists()) {
                 MVMessageDialog.showMessageDialog(parentComponent, "Die Datei existiert nicht!", "Film löschen", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             int ret = JOptionPane.showConfirmDialog(parentComponent,
-                    datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR], "Film Löschen?", JOptionPane.YES_NO_OPTION);
+                    datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME], "Film Löschen?", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
 
                 // und jetzt die Datei löschen
@@ -492,7 +492,7 @@ public class GuiDownloads extends PanelVorlage {
             }
         } catch (Exception ex) {
             MVMessageDialog.showMessageDialog(parentComponent, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
-            Log.errorLog(915236547, "Fehler beim löschen: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.errorLog(915236547, "Fehler beim löschen: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
     }
     
@@ -514,9 +514,9 @@ public class GuiDownloads extends PanelVorlage {
                     if (datenDownload.istAbo()) {
                         // ein Abo wird zusätzlich ins Logfile geschrieben
                         urlAboList.add(new MVUsedUrl(zeit,
-                                datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR],
-                                datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR],
-                                datenDownload.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]));
+                                datenDownload.arr[DatenDownload.DOWNLOAD_THEMA],
+                                datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
+                                datenDownload.arr[DatenDownload.DOWNLOAD_HISTORY_URL]));
                     }
                 } else {
                     // wenn nicht dauerhaft
@@ -550,7 +550,7 @@ public class GuiDownloads extends PanelVorlage {
         }
         for (int i = 0; i < tabelle.getRowCount(); ++i) {
             // um in der Reihenfolge zu starten
-            DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF_NR);
+            DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
             listeAllDownloads.add(datenDownload);
             Daten.listeDownloads.remove(datenDownload);
             Daten.listeDownloads.add(datenDownload);
@@ -569,7 +569,7 @@ public class GuiDownloads extends PanelVorlage {
                     // wenn er noch läuft gibts nix
                     // wenn er schon fertig ist, erst mal fragen vor dem erneuten Starten
                     //TODO in auto dialog umwandeln!
-                    int a = JOptionPane.showConfirmDialog(parentComponent, "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL_NR],
+                    int a = JOptionPane.showConfirmDialog(parentComponent, "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL],
                             "Fertiger Download", JOptionPane.YES_NO_OPTION);
                     if (a != JOptionPane.YES_OPTION) {
                         // weiter mit der nächsten URL
@@ -578,7 +578,7 @@ public class GuiDownloads extends PanelVorlage {
                     listeUrlsDownloadsAbbrechen.add(download);
                     if (download.istAbo()) {
                         // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
-                        daten.erledigteAbos.urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
+                        daten.erledigteAbos.urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
                     }
                 }
             }
@@ -623,7 +623,7 @@ public class GuiDownloads extends PanelVorlage {
         if (starten && alle) {
             //Liste in der Reihenfolge wie in der Tabelle sortieren
             for (int i = 0; i < tabelle.getRowCount(); ++i) {
-                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF_NR);
+                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
                 Daten.listeDownloads.remove(datenDownload);
                 Daten.listeDownloads.add(datenDownload);
             }
@@ -633,7 +633,7 @@ public class GuiDownloads extends PanelVorlage {
         // die URLs sammeln
         if (alle) {
             for (int i = 0; i < tabelle.getRowCount(); ++i) {
-                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF_NR);
+                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
                 listeDownloadsMarkiert.add(datenDownload);
             }
         } else {
@@ -667,7 +667,7 @@ public class GuiDownloads extends PanelVorlage {
                                 text = "Es sind bereits fertige Filme dabei,\n"
                                         + "diese nochmal starten?";
                             } else {
-                                text = "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL_NR];
+                                text = "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL];
                             }
                             antwort = JOptionPane.showConfirmDialog(parentComponent, text,
                                     "Fertiger Download", JOptionPane.YES_NO_OPTION);
@@ -679,7 +679,7 @@ public class GuiDownloads extends PanelVorlage {
                         listeDownloadsLoeschen.add(download);
                         if (download.istAbo()) {
                             // wenn er schon feritg ist und ein Abos ist, Url auch aus dem Logfile löschen, der Film ist damit wieder auf "Anfang"
-                            daten.erledigteAbos.urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL_NR]);
+                            daten.erledigteAbos.urlAusLogfileLoeschen(download.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
                         }
                     }
                 }
@@ -709,7 +709,7 @@ public class GuiDownloads extends PanelVorlage {
         // es werden alle noch nicht gestarteten Downloads gelöscht
         ArrayList<DatenDownload> listeStopDownload = new ArrayList<>();
         for (int i = 0; i < tabelle.getRowCount(); ++i) {
-            DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF_NR);
+            DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
             if (datenDownload.start != null) {
                 if (datenDownload.start.status < Start.STATUS_RUN) {
                     listeStopDownload.add(datenDownload);
@@ -738,7 +738,7 @@ public class GuiDownloads extends PanelVorlage {
             DatenFilm aktFilm = null;
             final int selectedTableRow = tabelle.getSelectedRow();
             if (selectedTableRow >= 0) {
-                final DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), DatenDownload.DOWNLOAD_REF_NR);
+                final DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), DatenDownload.DOWNLOAD_REF);
                 if (datenDownload != null) {
                     aktFilm = datenDownload.film;
                 }
@@ -752,7 +752,7 @@ public class GuiDownloads extends PanelVorlage {
         int rows[] = tabelle.getSelectedRows();
         if (rows.length > 0) {
             for (int row : rows) {
-                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
+                DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
                 if (datenDownload.film != null) {
                     arrayFilme.add(datenDownload.film);
                 }
@@ -834,7 +834,7 @@ public class GuiDownloads extends PanelVorlage {
             p = arg0.getPoint();
             int row = tabelle.rowAtPoint(p);
             if (row >= 0) {
-                datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
+                datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
             }
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
@@ -846,7 +846,7 @@ public class GuiDownloads extends PanelVorlage {
             p = arg0.getPoint();
             int row = tabelle.rowAtPoint(p);
             if (row >= 0) {
-                datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
+                datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
             }
             if (arg0.isPopupTrigger()) {
                 showMenu(arg0);
@@ -855,8 +855,8 @@ public class GuiDownloads extends PanelVorlage {
         
         private void buttonTable(int row, int column) {
             if (row != -1) {
-                datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
-                if (tabelle.convertColumnIndexToModel(column) == DatenDownload.DOWNLOAD_BUTTON_START_NR) {
+                datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
+                if (tabelle.convertColumnIndexToModel(column) == DatenDownload.DOWNLOAD_BUTTON_START) {
                     // filmStartenWiederholenStoppen(boolean alle, boolean starten /* starten/wiederstarten oder stoppen */)
                     if (datenDownload.start != null && !datenDownload.isDownloadManager()) {
                         if (datenDownload.start.status == Start.STATUS_FERTIG) {
@@ -872,7 +872,7 @@ public class GuiDownloads extends PanelVorlage {
                         // Download starten
                         filmStartenWiederholenStoppen(false, true /*starten*/);
                     }
-                } else if (tabelle.convertColumnIndexToModel(column) == DatenDownload.DOWNLOAD_BUTTON_DEL_NR) {
+                } else if (tabelle.convertColumnIndexToModel(column) == DatenDownload.DOWNLOAD_BUTTON_DEL) {
                     if (datenDownload.start != null) {
                         if (datenDownload.start.status >= Start.STATUS_FERTIG) {
                             downloadsAufraeumen(datenDownload);
@@ -900,7 +900,7 @@ public class GuiDownloads extends PanelVorlage {
             int row = tabelle.getSelectedRow();
             boolean wartenOderLaufen = false;
             if (row >= 0) {
-                DatenDownload download = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR);
+                DatenDownload download = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
                 if (download.start != null) {
                     if (download.start.status <= Start.STATUS_RUN) {
                         wartenOderLaufen = true;
@@ -1047,13 +1047,13 @@ public class GuiDownloads extends PanelVorlage {
                 if (nr1 >= 0) {
                     DatenPset gruppe = Daten.listePset.getPsetAbspielen();
                     if (gruppe != null) {
-                        DatenDownload datenDownload1 = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr1), DatenDownload.DOWNLOAD_REF_NR);
+                        DatenDownload datenDownload1 = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr1), DatenDownload.DOWNLOAD_REF);
                         if (datenDownload1 != null) {
                             if (datenDownload1.film != null) {
                                 DatenFilm filmDownload = datenDownload1.film.getCopy();
                                 // und jetzt die tatsächlichen URLs des Downloads eintragen
-                                filmDownload.arr[DatenFilm.FILM_URL_NR] = datenDownload1.arr[DatenDownload.DOWNLOAD_URL_NR];
-                                filmDownload.arr[DatenFilm.FILM_URL_RTMP_NR] = datenDownload1.arr[DatenDownload.DOWNLOAD_URL_RTMP_NR];
+                                filmDownload.arr[DatenFilm.FILM_URL_NR] = datenDownload1.arr[DatenDownload.DOWNLOAD_URL];
+                                filmDownload.arr[DatenFilm.FILM_URL_RTMP_NR] = datenDownload1.arr[DatenDownload.DOWNLOAD_URL_RTMP];
                                 filmDownload.arr[DatenFilm.FILM_URL_KLEIN_NR] = "";
                                 filmDownload.arr[DatenFilm.FILM_URL_RTMP_KLEIN_NR] = "";
                                 // und starten
@@ -1083,7 +1083,7 @@ public class GuiDownloads extends PanelVorlage {
                 if (nr1 >= 0) {
                     GuiFunktionen.copyToClipboard(
                             tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(nr1),
-                                    DatenDownload.DOWNLOAD_URL_NR).toString());
+                                    DatenDownload.DOWNLOAD_URL).toString());
                 }
             });
             jPopupMenu.add(itemUrl);

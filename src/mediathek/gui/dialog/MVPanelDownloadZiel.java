@@ -63,9 +63,9 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
         jButtonPath.addActionListener(new ZielBeobachter());
         jButtonDelPath.addActionListener(e -> {
             MVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
-            jComboBoxPath.setModel(new DefaultComboBoxModel<>(new String[]{datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]}));
+            jComboBoxPath.setModel(new DefaultComboBoxModel<>(new String[]{datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]}));
         });
-        jTextFieldName.setText(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR]);
+        jTextFieldName.setText(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME]);
         jTextFieldName.getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
@@ -95,7 +95,7 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
                 }
             }
         });
-        setModelPfad(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR]);
+        setModelPfad(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]);
         ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).setOpaque(true);
         ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentListener() {
 
@@ -168,8 +168,8 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
             if (file.exists()) {
                 jLabelExists.setForeground(MVColor.DOWNLOAD_DATEINAME_EXISTIERT.color);
                 jLabelExists.setText("Datei existiert schon!");
-            } else if (!jTextFieldName.getText().equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR])
-                    || !(((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getText()).equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR])) {
+            } else if (!jTextFieldName.getText().equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME])
+                    || !(((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getText()).equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD])) {
                 jLabelExists.setForeground(MVColor.DOWNLOAD_DATEINAME_NEU.color);
                 jLabelExists.setText("Neuer Name");
             } else {
@@ -193,7 +193,7 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
             pfad = GuiFunktionen.getStandardDownloadPath();
         }
         if (name.equals("")) {
-            name = new SimpleDateFormat("yyyyMMdd").format(new Date()) + "_" + datenDownload.arr[DatenDownload.DOWNLOAD_THEMA_NR] + "-" + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR] + ".mp4";
+            name = new SimpleDateFormat("yyyyMMdd").format(new Date()) + "_" + datenDownload.arr[DatenDownload.DOWNLOAD_THEMA] + "-" + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
         }
         String[] pathName = {pfad, name};
         GuiFunktionen.checkLengthPath(pathName);
@@ -203,12 +203,12 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
             pfad = pathName[0];
             name = pathName[1];
         }
-        String orgPfad = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR];
+        String orgPfad = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME];
         //##############################################
-        datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR] = name;
-        datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR] = pfad;
-        datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR] = GuiFunktionen.addsPfad(pfad, name);
-        return !orgPfad.equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+        datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME] = name;
+        datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD] = pfad;
+        datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME] = GuiFunktionen.addsPfad(pfad, name);
+        return !orgPfad.equals(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

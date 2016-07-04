@@ -75,7 +75,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
         gestartet = ggestartet;
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
         
-        orgProgArray = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR];
+        orgProgArray = datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY];
         mVPanelDownloadZiel = new MVPanelDownloadZiel(parent, datenDownload, false);
         mVPanelDownloadZiel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jRadioButtonResHd.addActionListener(e -> changeRes());
@@ -109,7 +109,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
         }
         if (datenDownload.film != null) {
             jRadioButtonResHi.setEnabled(!gestartet);
-            jRadioButtonResHi.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL)));
+            jRadioButtonResHi.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL)));
             dateiGroesse_Hoch = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL));
             if (!dateiGroesse_Hoch.isEmpty()) {
                 jRadioButtonResHi.setText(jRadioButtonResHi.getText() + "   [ " + dateiGroesse_Hoch + " MB ]");
@@ -117,7 +117,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
             
             if (!datenDownload.film.arr[DatenFilm.FILM_URL_HD_NR].isEmpty()) {
                 jRadioButtonResHd.setEnabled(!gestartet);
-                jRadioButtonResHd.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD)));
+                jRadioButtonResHd.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD)));
                 dateiGroesse_HD = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD));
                 if (!dateiGroesse_HD.isEmpty()) {
                     jRadioButtonResHd.setText(jRadioButtonResHd.getText() + "   [ " + dateiGroesse_HD + " MB ]");
@@ -126,7 +126,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
             
             if (!datenDownload.film.arr[DatenFilm.FILM_URL_KLEIN_NR].isEmpty()) {
                 jRadioButtonResLo.setEnabled(!gestartet);
-                jRadioButtonResLo.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN)));
+                jRadioButtonResLo.setSelected(datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN)));
                 dateiGroesse_Klein = datenDownload.film.getDateigroesse(datenDownload.film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN));
                 if (!dateiGroesse_Klein.isEmpty()) {
                     jRadioButtonResLo.setText(jRadioButtonResLo.getText() + "   [ " + dateiGroesse_Klein + " MB ]");
@@ -153,10 +153,10 @@ public class DialogEditDownload extends javax.swing.JDialog {
         } else {
             res = DatenFilm.AUFLOESUNG_NORMAL;
         }
-        datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR] = datenDownload.film.getUrlFuerAufloesung(res);
-        datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP_NR] = datenDownload.film.getUrlRtmpFuerAufloesung(res);
-        textfeldListe[DatenDownload.DOWNLOAD_URL_NR].setText(datenDownload.arr[DatenDownload.DOWNLOAD_URL_NR]);
-        textfeldListe[DatenDownload.DOWNLOAD_URL_RTMP_NR].setText(datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP_NR]);
+        datenDownload.arr[DatenDownload.DOWNLOAD_URL] = datenDownload.film.getUrlFuerAufloesung(res);
+        datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP] = datenDownload.film.getUrlRtmpFuerAufloesung(res);
+        textfeldListe[DatenDownload.DOWNLOAD_URL].setText(datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
+        textfeldListe[DatenDownload.DOWNLOAD_URL_RTMP].setText(datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP]);
         
         final String size;
         if (jRadioButtonResHd.isSelected()) {
@@ -169,13 +169,13 @@ public class DialogEditDownload extends javax.swing.JDialog {
         if (datenDownload.art == DatenDownload.ART_PROGRAMM && datenDownload.pSet != null) {
             // muss noch der Programmaufruf neu gebaut werden
             DatenDownload d = new DatenDownload(datenDownload.pSet, datenDownload.film, datenDownload.quelle, datenDownload.abo,
-                    datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR],
-                    datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_NR], res);
+                    datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME],
+                    datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD], res);
             
-            datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR] = d.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR];
-            datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR] = d.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR];
-            textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR].setText(datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
-            textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR].setText(datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR]);
+            datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF] = d.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF];
+            datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY] = d.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY];
+            textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF].setText(datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF]);
+            textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].setText(datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]);
         }
         datenDownload.setGroesse(size);
     }
@@ -207,28 +207,28 @@ public class DialogEditDownload extends javax.swing.JDialog {
         //Label
         c.gridx = 0;
         c.weightx = 0;
-        if (i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR
-                || i == DatenDownload.DOWNLOAD_URL_RTMP_NR
-                || i == DatenDownload.DOWNLOAD_BUTTON_DEL_NR || i == DatenDownload.DOWNLOAD_BUTTON_START_NR
-                || i == DatenDownload.DOWNLOAD_REF_NR
-                || i == DatenDownload.DOWNLOAD_BANDBREITE_NR) {
+        if (i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT
+                || i == DatenDownload.DOWNLOAD_URL_RTMP
+                || i == DatenDownload.DOWNLOAD_BUTTON_DEL || i == DatenDownload.DOWNLOAD_BUTTON_START
+                || i == DatenDownload.DOWNLOAD_REF
+                || i == DatenDownload.DOWNLOAD_BANDBREITE) {
             // ist eigentlich Unsinn, es anzuzeigen
             return;
         }
         if (datenDownload.art == DatenDownload.ART_DOWNLOAD
-                && (i == DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR
-                || i == DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR
-                || i == DatenDownload.DOWNLOAD_ZIEL_PFAD_NR)
+                && (i == DatenDownload.DOWNLOAD_ZIEL_DATEINAME
+                || i == DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME
+                || i == DatenDownload.DOWNLOAD_ZIEL_PFAD)
                 && !gestartet) {
             // Downloadpfad anpassen
-            if (i == DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR) {
+            if (i == DatenDownload.DOWNLOAD_ZIEL_DATEINAME) {
                 c.gridx = 1;
                 c.weightx = 10;
                 gridbag.setConstraints(mVPanelDownloadZiel, c);
                 jPanelExtra.add(mVPanelDownloadZiel);
             }
         } else {
-            if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR) {
+            if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART) {
                 labelListe[i].setForeground(Color.BLUE);
                 jCheckBoxRestart.setSelected(datenDownload.isRestart());
                 jCheckBoxRestart.addActionListener(new BeobCheckbox());
@@ -242,7 +242,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 if (datenDownload.isDownloadManager()) {
                     jCheckBoxRestart.setEnabled(false);
                 }
-            } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER_NR) {
+            } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER) {
                 jCheckBoxDownloadmanager.setSelected(datenDownload.isDownloadManager());
                 // jCheckBoxRestart.addActionListener(new BeobCheckbox());
                 jCheckBoxDownloadmanager.setEnabled(false);
@@ -252,7 +252,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 c.weightx = 10;
                 gridbag.setConstraints(jCheckBoxDownloadmanager, c);
                 jPanelExtra.add(jCheckBoxDownloadmanager);
-            } else if (i == DatenDownload.DOWNLOAD_UNTERBROCHEN_NR) {
+            } else if (i == DatenDownload.DOWNLOAD_UNTERBROCHEN) {
                 // das macht nur Sinn, wenn der Download unterbrochen ist um "es" auszuschalten
                 // Unterbrechung einschalten macht keinen Sinn
                 if (!datenDownload.isInterrupted()) {
@@ -268,9 +268,9 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 c.weightx = 10;
                 gridbag.setConstraints(jCheckBoxUnterbrochen, c);
                 jPanelExtra.add(jCheckBoxUnterbrochen);
-            } else if (i == DatenDownload.DOWNLOAD_INFODATEI_NR) {
+            } else if (i == DatenDownload.DOWNLOAD_INFODATEI) {
                 labelListe[i].setForeground(Color.BLUE);
-                jCheckBoxInfodatei.setSelected(Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR]));
+                jCheckBoxInfodatei.setSelected(Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI]));
                 jCheckBoxInfodatei.addActionListener(new BeobCheckbox());
                 jCheckBoxInfodatei.setEnabled(!gestartet);
                 gridbag.setConstraints(labelListe[i], c);
@@ -279,9 +279,9 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 c.weightx = 10;
                 gridbag.setConstraints(jCheckBoxInfodatei, c);
                 jPanelExtra.add(jCheckBoxInfodatei);
-            } else if (i == DatenDownload.DOWNLOAD_SUBTITLE_NR) {
+            } else if (i == DatenDownload.DOWNLOAD_SUBTITLE) {
                 labelListe[i].setForeground(Color.BLUE);
-                jCheckBoxSubtitle.setSelected(Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE_NR]));
+                jCheckBoxSubtitle.setSelected(Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE]));
                 jCheckBoxSubtitle.addActionListener(new BeobCheckbox());
                 jCheckBoxSubtitle.setEnabled(!gestartet);
                 gridbag.setConstraints(labelListe[i], c);
@@ -290,9 +290,9 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 c.weightx = 10;
                 gridbag.setConstraints(jCheckBoxSubtitle, c);
                 jPanelExtra.add(jCheckBoxSubtitle);
-            } else if (i == DatenDownload.DOWNLOAD_SPOTLIGHT_NR) {
+            } else if (i == DatenDownload.DOWNLOAD_SPOTLIGHT) {
                 labelListe[i].setForeground(Color.BLUE);
-                jCheckBoxSpotlight.setSelected(Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT_NR]));
+                jCheckBoxSpotlight.setSelected(Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT]));
                 jCheckBoxSpotlight.addActionListener(new BeobCheckbox());
                 jCheckBoxSpotlight.setEnabled(!gestartet);
                 gridbag.setConstraints(labelListe[i], c);
@@ -301,21 +301,21 @@ public class DialogEditDownload extends javax.swing.JDialog {
                 c.weightx = 10;
                 gridbag.setConstraints(jCheckBoxSpotlight, c);
                 jPanelExtra.add(jCheckBoxSpotlight);
-            } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR) {
-            } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR) {
+            } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF) {
+            } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY) {
                 if (datenDownload.art == DatenDownload.ART_PROGRAMM) {
                     // nur bei Downloads über ein Programm
-                    if (datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR].isEmpty()) {
+                    if (datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].isEmpty()) {
                         // Aufruf über Array ist leer -> Win, Mac
-                        labelListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR].setForeground(Color.BLUE);
-                        textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR].setEditable(!gestartet);// und wenn noch nicht gestartet
-                        textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR));
-                        gridbag.setConstraints(labelListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR], c);
-                        jPanelExtra.add(labelListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR]);
+                        labelListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].setForeground(Color.BLUE);
+                        textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF].setEditable(!gestartet);// und wenn noch nicht gestartet
+                        textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF));
+                        gridbag.setConstraints(labelListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY], c);
+                        jPanelExtra.add(labelListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]);
                         c.gridx = 1;
                         c.weightx = 10;
-                        gridbag.setConstraints(textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR], c);
-                        jPanelExtra.add(textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
+                        gridbag.setConstraints(textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF], c);
+                        jPanelExtra.add(textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF]);
                     } else {
                         // dann ist ein Array vorhanden -> Linux
                         labelListe[i].setForeground(Color.BLUE);
@@ -334,7 +334,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
                         JButton jButtonReset = new JButton("");
                         jButtonReset.setToolTipText("Reset");
                         jButtonReset.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
-                        jButtonReset.addActionListener(e -> textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR].setText(orgProgArray));
+                        jButtonReset.addActionListener(e -> textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].setText(orgProgArray));
                         JButton jButtonHelp = new JButton("");
                         jButtonHelp.setToolTipText("Hilfe");
                         jButtonHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
@@ -347,8 +347,8 @@ public class DialogEditDownload extends javax.swing.JDialog {
                         jp.add(jButtonHelp);
                         gc.gridx = 1;
                         gc.weightx = 10;
-                        gb.setConstraints(textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR], gc);
-                        jp.add(textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
+                        gb.setConstraints(textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF], gc);
+                        jp.add(textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF]);
                         
                         gc.gridy = 1;
                         gc.gridx = 0;
@@ -367,26 +367,26 @@ public class DialogEditDownload extends javax.swing.JDialog {
                     }
                 }
             } else {
-                if (i == DatenDownload.DOWNLOAD_NR_NR) {
+                if (i == DatenDownload.DOWNLOAD_NR) {
                     textfeldListe[i].setText(datenDownload.nr + "");
-                } else if (i == DatenDownload.DOWNLOAD_FILM_NR_NR) {
+                } else if (i == DatenDownload.DOWNLOAD_FILM_NR) {
                     if (datenDownload.film != null) {
                         textfeldListe[i].setText(datenDownload.film.nr + "");
                     }
-                } else if (i == DatenDownload.DOWNLOAD_URL_NR) {
+                } else if (i == DatenDownload.DOWNLOAD_URL) {
                     if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
                         // nur bei direkten Downloads
                         labelListe[i].setForeground(Color.BLUE);
                         textfeldListe[i].setEditable(!gestartet);// und wenn noch nicht gestartet
                         textfeldListe[i].getDocument().addDocumentListener(new BeobachterDocumentTextfeld(i));
                     }
-                } else if (i == DatenDownload.DOWNLOAD_GROESSE_NR) {
+                } else if (i == DatenDownload.DOWNLOAD_GROESSE) {
                     textfeldListe[i].setText(datenDownload.mVFilmSize.toString());
-                } else if (i == DatenDownload.DOWNLOAD_PROGRESS_NR) {
+                } else if (i == DatenDownload.DOWNLOAD_PROGRESS) {
                     textfeldListe[i].setText(Start.getTextProgress(datenDownload.isDownloadManager(),datenDownload.start));
-                } else if (i == DatenDownload.DOWNLOAD_RESTZEIT_NR) {
+                } else if (i == DatenDownload.DOWNLOAD_RESTZEIT) {
                     textfeldListe[i].setText(datenDownload.getTextRestzeit());
-                } else if (i == DatenDownload.DOWNLOAD_ART_NR) {
+                } else if (i == DatenDownload.DOWNLOAD_ART) {
                     switch (datenDownload.art) {
                         case DatenDownload.ART_DOWNLOAD:
                             textfeldListe[i].setText(DatenDownload.ART_DOWNLOAD_TXT);
@@ -395,7 +395,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
                             textfeldListe[i].setText(DatenDownload.ART_PROGRAMM_TXT);
                             break;
                     }
-                } else if (i == DatenDownload.DOWNLOAD_QUELLE_NR) {
+                } else if (i == DatenDownload.DOWNLOAD_QUELLE) {
                     switch (datenDownload.quelle) {
                         case DatenDownload.QUELLE_ALLE:
                             textfeldListe[i].setText(DatenDownload.QUELLE_ALLE_TXT);
@@ -424,7 +424,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
     
     private boolean downloadDateiLoeschen(DatenDownload datenDownload) {
         try {
-            File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
             if (!file.exists()) {
                 return true; // gibt nichts zu löschen
             }
@@ -443,7 +443,7 @@ public class DialogEditDownload extends javax.swing.JDialog {
             }
         } catch (Exception ex) {
             MVMessageDialog.showMessageDialog(parent, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
-            Log.errorLog(812036789, "Fehler beim löschen: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME_NR]);
+            Log.errorLog(812036789, "Fehler beim löschen: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
         return true;
     }
@@ -618,9 +618,9 @@ public class DialogEditDownload extends javax.swing.JDialog {
         
         private void eingabe() {
             datenDownload.arr[nr] = textfeldListe[nr].getText().trim();
-            if (nr == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR) {
-                datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR] = DatenProg.makeProgAufrufArray(datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR]);
-                textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR].setText(datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR]);
+            if (nr == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY) {
+                datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF] = DatenProg.makeProgAufrufArray(datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]);
+                textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF].setText(datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF]);
             }
         }
     }
@@ -629,11 +629,11 @@ public class DialogEditDownload extends javax.swing.JDialog {
         
         @Override
         public void actionPerformed(ActionEvent e) {
-            datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR] = Boolean.toString(jCheckBoxRestart.isSelected());
-            datenDownload.arr[DatenDownload.DOWNLOAD_UNTERBROCHEN_NR] = Boolean.toString(jCheckBoxUnterbrochen.isSelected());
-            datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI_NR] = Boolean.toString(jCheckBoxInfodatei.isSelected());
-            datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE_NR] = Boolean.toString(jCheckBoxSubtitle.isSelected());
-            datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT_NR] = Boolean.toString(jCheckBoxSpotlight.isSelected());
+            datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_RESTART] = Boolean.toString(jCheckBoxRestart.isSelected());
+            datenDownload.arr[DatenDownload.DOWNLOAD_UNTERBROCHEN] = Boolean.toString(jCheckBoxUnterbrochen.isSelected());
+            datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(jCheckBoxInfodatei.isSelected());
+            datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(jCheckBoxSubtitle.isSelected());
+            datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT] = Boolean.toString(jCheckBoxSpotlight.isSelected());
         }
     }
 }

@@ -40,8 +40,8 @@ public class MVNotification {
             return; // dann gibts keine GUI
         }
         final String[] m = {
-                "Film:   " + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL_NR],
-                "Sender: " + datenDownload.arr[DatenDownload.DOWNLOAD_SENDER_NR],
+                "Film:   " + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
+                "Sender: " + datenDownload.arr[DatenDownload.DOWNLOAD_SENDER],
                 "Größe:  " + MVFilmSize.humanReadableByteCount(datenDownload.mVFilmSize.getSize(), true),
                 (erfolgreich ? "Download war erfolgreich" : "Download war fehlerhaft")
         };

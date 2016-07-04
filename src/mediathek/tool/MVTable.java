@@ -99,7 +99,7 @@ public final class MVTable extends JTable {
                 spaltenTitel = DatenDownload.COLUMN_NAMES;
                 maxSpalten = DatenDownload.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenDownload.spaltenAnzeigen, DatenDownload.MAX_ELEM);
-                indexSpalte = DatenDownload.DOWNLOAD_NR_NR;
+                indexSpalte = DatenDownload.DOWNLOAD_NR;
                 nrDatenSystem = MVConfig.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS;
                 iconAnzeigenStr = MVConfig.SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN;
                 iconKleinStr = MVConfig.SYSTEM_TAB_DOWNLOAD_ICON_KLEIN;
@@ -192,7 +192,7 @@ public final class MVTable extends JTable {
         TModel tModel = (TModelDownload) getModel();
         // listeDownloads neu nach der Reihenfolge in der Tabelle erstellen
         for (int i = 0; i < this.getRowCount(); ++i) {
-            DatenDownload d = ((DatenDownload) tModel.getValueAt(this.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF_NR));
+            DatenDownload d = ((DatenDownload) tModel.getValueAt(this.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF));
             if (d != null) {
                 Daten.listeDownloads.remove(d);
                 Daten.listeDownloads.add(d);
@@ -204,7 +204,7 @@ public final class MVTable extends JTable {
             if (index > row) {
                 --index;
             }
-            DatenDownload d = ((DatenDownload) tModel.getValueAt(this.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF_NR));
+            DatenDownload d = ((DatenDownload) tModel.getValueAt(this.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF));
             liste.add(d);
             Daten.listeDownloads.remove(d);
         }
@@ -565,36 +565,36 @@ public final class MVTable extends JTable {
         reihe[i] = i;
         breite[i] = 200;
         switch (i) {
-            case DatenDownload.DOWNLOAD_NR_NR:
-            case DatenDownload.DOWNLOAD_FILM_NR_NR:
+            case DatenDownload.DOWNLOAD_NR:
+            case DatenDownload.DOWNLOAD_FILM_NR:
                 breite[i] = 75;
                 break;
-            case DatenDownload.DOWNLOAD_BUTTON_START_NR:
-            case DatenDownload.DOWNLOAD_BUTTON_DEL_NR:
-            case DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR:
-            case DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER_NR:
-            case DatenDownload.DOWNLOAD_UNTERBROCHEN_NR:
-            case DatenDownload.DOWNLOAD_SPOTLIGHT_NR:
-            case DatenDownload.DOWNLOAD_SUBTITLE_NR:
-            case DatenDownload.DOWNLOAD_INFODATEI_NR:
+            case DatenDownload.DOWNLOAD_BUTTON_START:
+            case DatenDownload.DOWNLOAD_BUTTON_DEL:
+            case DatenDownload.DOWNLOAD_PROGRAMM_RESTART:
+            case DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER:
+            case DatenDownload.DOWNLOAD_UNTERBROCHEN:
+            case DatenDownload.DOWNLOAD_SPOTLIGHT:
+            case DatenDownload.DOWNLOAD_SUBTITLE:
+            case DatenDownload.DOWNLOAD_INFODATEI:
                 breite[i] = 50;
                 break;
-            case DatenDownload.DOWNLOAD_TITEL_NR:
+            case DatenDownload.DOWNLOAD_TITEL:
                 breite[i] = 250;
                 break;
-            case DatenDownload.DOWNLOAD_ABO_NR:
-            case DatenDownload.DOWNLOAD_THEMA_NR:
+            case DatenDownload.DOWNLOAD_ABO:
+            case DatenDownload.DOWNLOAD_THEMA:
                 breite[i] = 150;
                 break;
-            case DatenDownload.DOWNLOAD_DATUM_NR:
-            case DatenDownload.DOWNLOAD_ZEIT_NR:
-            case DatenDownload.DOWNLOAD_GROESSE_NR:
-            case DatenDownload.DOWNLOAD_BANDBREITE_NR:
-            case DatenDownload.DOWNLOAD_SENDER_NR:
-            case DatenDownload.DOWNLOAD_PROGRESS_NR:
-            case DatenDownload.DOWNLOAD_RESTZEIT_NR:
-            case DatenDownload.DOWNLOAD_DAUER_NR:
-            case DatenDownload.DOWNLOAD_GEO_NR:
+            case DatenDownload.DOWNLOAD_DATUM:
+            case DatenDownload.DOWNLOAD_ZEIT:
+            case DatenDownload.DOWNLOAD_GROESSE:
+            case DatenDownload.DOWNLOAD_BANDBREITE:
+            case DatenDownload.DOWNLOAD_SENDER:
+            case DatenDownload.DOWNLOAD_PROGRESS:
+            case DatenDownload.DOWNLOAD_RESTZEIT:
+            case DatenDownload.DOWNLOAD_DAUER:
+            case DatenDownload.DOWNLOAD_GEO:
                 breite[i] = 100;
                 break;
             default:
@@ -661,25 +661,25 @@ public final class MVTable extends JTable {
     }
 
     private void spaltenAusschaltenDownloads(int i) {
-        if (i == DatenDownload.DOWNLOAD_FILM_URL_NR
-                || i == DatenDownload.DOWNLOAD_URL_RTMP_NR
-                || i == DatenDownload.DOWNLOAD_URL_SUBTITLE_NR
-                || i == DatenDownload.DOWNLOAD_PROGRAMM_NR
-                || i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_NR
-                || i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY_NR
-                || i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART_NR
-                || i == DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER_NR
-                || i == DatenDownload.DOWNLOAD_ZIEL_DATEINAME_NR
-                || i == DatenDownload.DOWNLOAD_ZIEL_PFAD_NR
-                || i == DatenDownload.DOWNLOAD_ART_NR
-                || i == DatenDownload.DOWNLOAD_QUELLE_NR
-                || i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT_NR
-                || i == DatenDownload.DOWNLOAD_HISTORY_URL_NR
-                || i == DatenDownload.DOWNLOAD_REF_NR
-                || i == DatenDownload.DOWNLOAD_SPOTLIGHT_NR
-                || i == DatenDownload.DOWNLOAD_INFODATEI_NR
-                || i == DatenDownload.DOWNLOAD_SUBTITLE_NR
-                || i == DatenDownload.DOWNLOAD_UNTERBROCHEN_NR) {
+        if (i == DatenDownload.DOWNLOAD_FILM_URL
+                || i == DatenDownload.DOWNLOAD_URL_RTMP
+                || i == DatenDownload.DOWNLOAD_URL_SUBTITLE
+                || i == DatenDownload.DOWNLOAD_PROGRAMM
+                || i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF
+                || i == DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY
+                || i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART
+                || i == DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER
+                || i == DatenDownload.DOWNLOAD_ZIEL_DATEINAME
+                || i == DatenDownload.DOWNLOAD_ZIEL_PFAD
+                || i == DatenDownload.DOWNLOAD_ART
+                || i == DatenDownload.DOWNLOAD_QUELLE
+                || i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT
+                || i == DatenDownload.DOWNLOAD_HISTORY_URL
+                || i == DatenDownload.DOWNLOAD_REF
+                || i == DatenDownload.DOWNLOAD_SPOTLIGHT
+                || i == DatenDownload.DOWNLOAD_INFODATEI
+                || i == DatenDownload.DOWNLOAD_SUBTITLE
+                || i == DatenDownload.DOWNLOAD_UNTERBROCHEN) {
             breite[i] = 0;
         }
     }

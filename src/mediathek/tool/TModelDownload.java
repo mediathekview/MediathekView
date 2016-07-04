@@ -32,19 +32,19 @@ public class TModelDownload extends TModel {
         types = new Class<?>[DatenDownload.MAX_ELEM];
         for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
             switch (i) {
-                case DatenDownload.DOWNLOAD_NR_NR:
+                case DatenDownload.DOWNLOAD_NR:
                     types[i] = Integer.class;
                     break;
-                case DatenDownload.DOWNLOAD_FILM_NR_NR:
+                case DatenDownload.DOWNLOAD_FILM_NR:
                     types[i] = Integer.class;
                     break;
-                case DatenDownload.DOWNLOAD_DATUM_NR:
+                case DatenDownload.DOWNLOAD_DATUM:
                     types[i] = Datum.class;
                     break;
-                case DatenDownload.DOWNLOAD_GROESSE_NR:
+                case DatenDownload.DOWNLOAD_GROESSE:
                     types[i] = MVFilmSize.class;
                     break;
-                case DatenDownload.DOWNLOAD_REF_NR:
+                case DatenDownload.DOWNLOAD_REF:
                     types[i] = DatenDownload.class;
                     break;
                 default:
