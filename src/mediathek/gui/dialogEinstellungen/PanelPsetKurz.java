@@ -85,8 +85,8 @@ public class PanelPsetKurz extends PanelVorlage {
 
     private void initBeob() {
         jTextFieldName.getDocument().addDocumentListener(new BeobDocName());
-        jTextFieldZiel.getDocument().addDocumentListener(new BeobDoc(jTextFieldZiel, DatenPset.PROGRAMMSET_ZIEL_PFAD_NR));
-        jButtonZiel.addActionListener(new ZielBeobachter(jTextFieldZiel, DatenPset.PROGRAMMSET_ZIEL_PFAD_NR));
+        jTextFieldZiel.getDocument().addDocumentListener(new BeobDoc(jTextFieldZiel, DatenPset.PROGRAMMSET_ZIEL_PFAD));
+        jButtonZiel.addActionListener(new ZielBeobachter(jTextFieldZiel, DatenPset.PROGRAMMSET_ZIEL_PFAD));
     }
 
     private void init() {
@@ -96,20 +96,20 @@ public class PanelPsetKurz extends PanelVorlage {
             pSet = null;
         }
         if (pSet != null) {
-            jTextFieldName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME_NR]);
-            jTextArea1.setText(pSet.arr[DatenPset.PROGRAMMSET_BESCHREIBUNG_NR]);
-            if (!pSet.istSpeichern() && pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].equals("")) {
+            jTextFieldName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME]);
+            jTextArea1.setText(pSet.arr[DatenPset.PROGRAMMSET_BESCHREIBUNG]);
+            if (!pSet.istSpeichern() && pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD].equals("")) {
                 jTextFieldZiel.setEditable(false);
                 jButtonZiel.setEnabled(false);
             } else {
                 jTextFieldZiel.setEditable(true);
                 jButtonZiel.setEnabled(true);
                 // Zielpfad muss gesetzt werden
-                if (pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].equals("")) {
-                    pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = GuiFunktionen.getHomePath();
+                if (pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD].equals("")) {
+                    pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = GuiFunktionen.getHomePath();
                 }
             }
-            jTextFieldZiel.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR]);
+            jTextFieldZiel.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD]);
             extra();
         } else {
             jTextFieldName.setText("");
@@ -491,7 +491,7 @@ public class PanelPsetKurz extends PanelVorlage {
             }
             if (!stopBeob) {
                 stopBeob = true;
-                pSet.arr[ DatenPset.PROGRAMMSET_NAME_NR] = jTextFieldName.getText();
+                pSet.arr[ DatenPset.PROGRAMMSET_NAME] = jTextFieldName.getText();
                 int i = jListPset.getSelectedIndex();
                 jListPset.setModel(new DefaultComboBoxModel<String>(listePset.getObjectDataCombo()));
                 jListPset.setSelectedIndex(i);

@@ -58,10 +58,10 @@ public class CellRendererPset extends DefaultTableCellRenderer {
             for (int i = 0; i < DatenPset.MAX_ELEM; ++i) {
                 datenPset.arr[i] = table.getModel().getValueAt(r, i).toString();
             }
-            if (c == DatenPset.PROGRAMMSET_NAME_NR) {
+            if (c == DatenPset.PROGRAMMSET_NAME) {
                 setForeground(datenPset.getFarbe());
             }
-            if (c == DatenPset.PROGRAMMSET_IST_ABSPIELEN_NR) {
+            if (c == DatenPset.PROGRAMMSET_IST_ABSPIELEN) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 setText(""); // nur das Icon anzeigen
                 if (datenPset.istAbspielen()) {
@@ -70,7 +70,7 @@ public class CellRendererPset extends DefaultTableCellRenderer {
                     setIcon(GetIcon.getProgramIcon("nein_12.png"));
                 }
             }
-            if (c == DatenPset.PROGRAMMSET_IST_SPEICHERN_NR) {
+            if (c == DatenPset.PROGRAMMSET_IST_SPEICHERN) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 setText(""); // nur das Icon anzeigen
                 if (datenPset.istSpeichern()) {

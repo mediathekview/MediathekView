@@ -200,8 +200,8 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         }
         for (DatenPset ps : pSet) {
-            if (!ps.arr[DatenPset.PROGRAMMSET_ADD_ON_NR].equals("")) {
-                if (!addOnZip(ps.arr[DatenPset.PROGRAMMSET_ADD_ON_NR])) {
+            if (!ps.arr[DatenPset.PROGRAMMSET_ADD_ON].equals("")) {
+                if (!addOnZip(ps.arr[DatenPset.PROGRAMMSET_ADD_ON])) {
                     // und Tschüss
                     if (!auto) {
                         MVMessageDialog.showMessageDialog(null, "Die Datei wurde nicht importiert!",
@@ -419,8 +419,8 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             if (!datenPset.isFreeLine() && !datenPset.isLable()) {
                 // nur wenn kein Lable oder freeline
                 text += "++++++++++++++++++++++++++++++++++++++++++++" + "\n";
-                text += PIPE + "Programmgruppe: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME_NR] + "\n";
-                String zielPfad = datenPset.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR];
+                text += PIPE + "Programmgruppe: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME] + "\n";
+                String zielPfad = datenPset.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD];
                 if (datenPset.progsContainPath()) {
                     // beim nur Abspielen wird er nicht gebraucht
                     if (zielPfad.equals("")) {
