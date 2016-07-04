@@ -390,8 +390,8 @@ public class DatenDownload implements Comparable<DatenDownload> {
             pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace("%n", "");
             pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD_NR].replace("%p", "");
             for (DatenProg prog : pSet.getListeProg()) {
-                prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR] = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].replace("%n", "");
-                prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR] = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].replace("%p", "");
+                prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME] = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME].replace("%n", "");
+                prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME] = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME].replace("%p", "");
             }
             // ##############################################
             // pSet und ... eintragen
@@ -404,7 +404,7 @@ public class DatenDownload implements Comparable<DatenDownload> {
             if (art == ART_DOWNLOAD) {
                 arr[DatenDownload.DOWNLOAD_PROGRAMM] = ART_DOWNLOAD_TXT;
             } else {
-                arr[DatenDownload.DOWNLOAD_PROGRAMM] = programm.arr[DatenProg.PROGRAMM_NAME_NR];
+                arr[DatenDownload.DOWNLOAD_PROGRAMM] = programm.arr[DatenProg.PROGRAMM_NAME];
             }
 
             arr[DOWNLOAD_PROGRAMM_RESTART] = String.valueOf(programm.isRestart());

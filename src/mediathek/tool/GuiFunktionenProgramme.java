@@ -438,9 +438,9 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 }
                 for (DatenProg datenProg : datenPset.getListeProg()) {
                     // Programmpfad prüfen
-                    if (!new File(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]).canExecute()) {
+                    if (!new File(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]).canExecute()) {
                         // dann noch mit RuntimeExec versuchen
-                        RuntimeExec r = new RuntimeExec(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]);
+                        RuntimeExec r = new RuntimeExec(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]);
                         Process pr = r.exec(false /*log*/);
                         if (pr != null) {
                             // dann passts ja
@@ -449,9 +449,9 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                             // läßt sich nicht starten
                             ret = false;
                             text += PIPE + LEER + "Falscher Programmpfad!\n";
-                            text += PIPE + LEER + PFEIL + "Programmname: " + datenProg.arr[DatenProg.PROGRAMM_NAME_NR] + "\n";
-                            text += PIPE + LEER + LEER + "Pfad: " + datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] + "\n";
-                            if (!datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(File.separator)) {
+                            text += PIPE + LEER + PFEIL + "Programmname: " + datenProg.arr[DatenProg.PROGRAMM_NAME] + "\n";
+                            text += PIPE + LEER + LEER + "Pfad: " + datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD] + "\n";
+                            if (!datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD].contains(File.separator)) {
                                 text += PIPE + LEER + PFEIL + "Wenn das Programm nicht im Systempfad liegt, " + "\n";
                                 text += PIPE + LEER + LEER + "wird der Start nicht klappen!" + "\n";
                             }

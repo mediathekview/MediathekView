@@ -24,45 +24,38 @@ import mediathek.tool.GuiFunktionenProgramme;
 
 public class DatenProg {
 
-    public static final String PROGRAMM = "Programm";
-    public static final String PROGRAMM_NAME = "Programmname";
-    public static final int PROGRAMM_NAME_NR = 0;
-    public static final String PROGRAMM_ZIEL_DATEINAME = "Zieldateiname";
-    public static final int PROGRAMM_ZIEL_DATEINAME_NR = 1;
-    public static final String PROGRAMM_PROGRAMMPFAD = "Programmpfad";
-    public static final int PROGRAMM_PROGRAMMPFAD_NR = 2;
-    public static final String PROGRAMM_SCHALTER = "Programmschalter";
-    public static final int PROGRAMM_SCHALTER_NR = 3;
-    public static final String PROGRAMM_PRAEFIX = "Praefix";
-    public static final int PROGRAMM_PRAEFIX_NR = 4;
-    public static final String PROGRAMM_SUFFIX = "Suffix";
-    public static final int PROGRAMM_SUFFIX_NR = 5;
-    public static final String PROGRAMM_RESTART = "Restart";
-    public static final int PROGRAMM_RESTART_NR = 6;
-    public static final String PROGRAMM_DOWNLOADMANAGER = "Downloadmanager";
-    public static final int PROGRAMM_DOWNLOADMANAGER_NR = 7;
-    public static final int MAX_ELEM = 8;
-    public static final String[] COLUMN_NAMES = {"Beschreibung", PROGRAMM_ZIEL_DATEINAME, "Programm",
-        "Schalter", "Präfix", PROGRAMM_SUFFIX, PROGRAMM_RESTART, PROGRAMM_DOWNLOADMANAGER};
+    public static final int PROGRAMM_NAME = 0;
+    public static final int PROGRAMM_ZIEL_DATEINAME = 1;
+    public static final int PROGRAMM_PROGRAMMPFAD = 2;
+    public static final int PROGRAMM_SCHALTER = 3;
+    public static final int PROGRAMM_PRAEFIX = 4;
+    public static final int PROGRAMM_SUFFIX = 5;
+    public static final int PROGRAMM_RESTART = 6;
+    public static final int PROGRAMM_DOWNLOADMANAGER = 7;
 
-    public static final String[] COLUMN_NAMES_ = {PROGRAMM_NAME, PROGRAMM_ZIEL_DATEINAME, PROGRAMM_PROGRAMMPFAD,
-        PROGRAMM_SCHALTER, PROGRAMM_PRAEFIX, PROGRAMM_SUFFIX, PROGRAMM_RESTART, PROGRAMM_DOWNLOADMANAGER};
+    public static final int MAX_ELEM = 8;
+    public static final String TAG = "Programm";
+    public static final String[] COLUMN_NAMES = {"Beschreibung", "Zieldateiname", "Programm",
+        "Schalter", "Präfix", "Suffix", "Restart", "Downloadmanager"};
+    public static final String[] XML_NAMES = {"Programmname", "Zieldateiname", "Programmpfad",
+        "Programmschalter", "Praefix", "Suffix", "Restart", "Downloadmanager"};
+
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
 
     public DatenProg() {
         makeArr();
-        arr[PROGRAMM_RESTART_NR] = Boolean.toString(false);
-        arr[PROGRAMM_DOWNLOADMANAGER_NR] = Boolean.toString(false);
+        arr[PROGRAMM_RESTART] = Boolean.toString(false);
+        arr[PROGRAMM_DOWNLOADMANAGER] = Boolean.toString(false);
     }
 
     public DatenProg(String name, String programmpfad, String schalter, String restart, String downloadmanager) {
         makeArr();
-        arr[PROGRAMM_NAME_NR] = name;
-        arr[PROGRAMM_PROGRAMMPFAD_NR] = programmpfad;
-        arr[PROGRAMM_SCHALTER_NR] = schalter;
-        arr[PROGRAMM_RESTART_NR] = restart.equals("") ? Boolean.toString(false) : restart;
-        arr[PROGRAMM_DOWNLOADMANAGER_NR] = downloadmanager.equals("") ? Boolean.toString(false) : downloadmanager;
+        arr[PROGRAMM_NAME] = name;
+        arr[PROGRAMM_PROGRAMMPFAD] = programmpfad;
+        arr[PROGRAMM_SCHALTER] = schalter;
+        arr[PROGRAMM_RESTART] = restart.equals("") ? Boolean.toString(false) : restart;
+        arr[PROGRAMM_DOWNLOADMANAGER] = downloadmanager.equals("") ? Boolean.toString(false) : downloadmanager;
     }
 
     public DatenProg copy() {
@@ -72,17 +65,17 @@ public class DatenProg {
     }
 
     public boolean isRestart() {
-        if (arr[PROGRAMM_RESTART_NR].equals("")) {
+        if (arr[PROGRAMM_RESTART].equals("")) {
             return false;
         }
-        return Boolean.parseBoolean(arr[PROGRAMM_RESTART_NR]);
+        return Boolean.parseBoolean(arr[PROGRAMM_RESTART]);
     }
 
     public boolean isDownloadManager() {
-        if (arr[PROGRAMM_DOWNLOADMANAGER_NR].equals("")) {
+        if (arr[PROGRAMM_DOWNLOADMANAGER].equals("")) {
             return false;
         }
-        return Boolean.parseBoolean(arr[PROGRAMM_DOWNLOADMANAGER_NR]);
+        return Boolean.parseBoolean(arr[PROGRAMM_DOWNLOADMANAGER]);
     }
 
     public boolean urlTesten(String url) {
@@ -90,8 +83,8 @@ public class DatenProg {
         boolean ret = false;
         if (url != null) {
             //Felder sind entweder leer oder passen
-            if (GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMM_PRAEFIX_NR], url, true)
-                    && GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMM_SUFFIX_NR], url, false)) {
+            if (GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMM_PRAEFIX], url, true)
+                    && GuiFunktionenProgramme.praefixTesten(this.arr[PROGRAMM_SUFFIX], url, false)) {
                 ret = true;
             }
         }
@@ -99,13 +92,13 @@ public class DatenProg {
     }
 
     public String getProgrammAufruf() {
-        return arr[PROGRAMM_PROGRAMMPFAD_NR] + " " + arr[PROGRAMM_SCHALTER_NR];
+        return arr[PROGRAMM_PROGRAMMPFAD] + " " + arr[PROGRAMM_SCHALTER];
     }
 
     public String getProgrammAufrufArray() {
         String ret;
-        ret = arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR];
-        String[] ar = arr[DatenProg.PROGRAMM_SCHALTER_NR].split(" ");
+        ret = arr[DatenProg.PROGRAMM_PROGRAMMPFAD];
+        String[] ar = arr[DatenProg.PROGRAMM_SCHALTER].split(" ");
         for (String s : ar) {
             ret = ret + TRENNER_PROG_ARRAY + s;
         }

@@ -435,10 +435,10 @@ public class PanelPsetLang extends PanelVorlage {
 
     public void spaltenSetzenProgramme() {
         for (int i = 0; i < tabelleProgramme.getColumnCount(); ++i) {
-            if (i == DatenProg.PROGRAMM_PRAEFIX_NR
-                    || i == DatenProg.PROGRAMM_RESTART_NR
-                    || i == DatenProg.PROGRAMM_DOWNLOADMANAGER_NR
-                    || i == DatenProg.PROGRAMM_SUFFIX_NR) {
+            if (i == DatenProg.PROGRAMM_PRAEFIX
+                    || i == DatenProg.PROGRAMM_RESTART
+                    || i == DatenProg.PROGRAMM_DOWNLOADMANAGER
+                    || i == DatenProg.PROGRAMM_SUFFIX) {
                 tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i)).setMinWidth(10);
                 tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i)).setMaxWidth(3000);
                 tabelleProgramme.getColumnModel().getColumn(tabelleProgramme.convertColumnIndexToView(i)).setPreferredWidth(75);
@@ -474,13 +474,13 @@ public class PanelPsetLang extends PanelVorlage {
         jCheckBoxRemoteDownload.setEnabled(row != -1);
         if (row != -1) {
             DatenProg prog = getPset().getProg(tabelleProgramme.convertRowIndexToModel(row));
-            jTextFieldProgPfad.setText(prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]);
-            jTextFieldProgSchalter.setText(prog.arr[DatenProg.PROGRAMM_SCHALTER_NR]);
-            jTextFieldProgZielDateiName.setText(prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR]);
-            jTextFieldProgName.setText(prog.arr[DatenProg.PROGRAMM_NAME_NR]);
-            jTextFieldProgZielDateiName.setText(prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR]);
-            jTextFieldProgPraefix.setText(prog.arr[DatenProg.PROGRAMM_PRAEFIX_NR]);
-            jTextFieldProgSuffix.setText(prog.arr[DatenProg.PROGRAMM_SUFFIX_NR]);
+            jTextFieldProgPfad.setText(prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]);
+            jTextFieldProgSchalter.setText(prog.arr[DatenProg.PROGRAMM_SCHALTER]);
+            jTextFieldProgZielDateiName.setText(prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME]);
+            jTextFieldProgName.setText(prog.arr[DatenProg.PROGRAMM_NAME]);
+            jTextFieldProgZielDateiName.setText(prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME]);
+            jTextFieldProgPraefix.setText(prog.arr[DatenProg.PROGRAMM_PRAEFIX]);
+            jTextFieldProgSuffix.setText(prog.arr[DatenProg.PROGRAMM_SUFFIX]);
             jCheckBoxRestart.setSelected(prog.isRestart());
             jCheckBoxRemoteDownload.setSelected(prog.isDownloadManager());
         } else {
@@ -1535,8 +1535,8 @@ public class PanelPsetLang extends PanelVorlage {
                 if (rows != -1) {
                     int row = tabelleProgramme.convertRowIndexToModel(rows);
                     DatenProg prog = getPset().getListeProg().get(row);
-                    prog.arr[DatenProg.PROGRAMM_RESTART_NR] = Boolean.toString(jCheckBoxRestart.isSelected());
-                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRestart.isSelected()), row, DatenProg.PROGRAMM_RESTART_NR);
+                    prog.arr[DatenProg.PROGRAMM_RESTART] = Boolean.toString(jCheckBoxRestart.isSelected());
+                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRestart.isSelected()), row, DatenProg.PROGRAMM_RESTART);
                 }
             }
 
@@ -1552,8 +1552,8 @@ public class PanelPsetLang extends PanelVorlage {
                 if (rows != -1) {
                     int row = tabelleProgramme.convertRowIndexToModel(rows);
                     DatenProg prog = getPset().getListeProg().get(row);
-                    prog.arr[DatenProg.PROGRAMM_DOWNLOADMANAGER_NR] = Boolean.toString(jCheckBoxRemoteDownload.isSelected());
-                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRemoteDownload.isSelected()), row, DatenProg.PROGRAMM_DOWNLOADMANAGER_NR);
+                    prog.arr[DatenProg.PROGRAMM_DOWNLOADMANAGER] = Boolean.toString(jCheckBoxRemoteDownload.isSelected());
+                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRemoteDownload.isSelected()), row, DatenProg.PROGRAMM_DOWNLOADMANAGER);
                 }
             }
 
@@ -1583,18 +1583,18 @@ public class PanelPsetLang extends PanelVorlage {
                 if (rows != -1) {
                     int row = tabelleProgramme.convertRowIndexToModel(rows);
                     DatenProg prog = getPset().getListeProg().get(row);
-                    prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR] = jTextFieldProgPfad.getText();
-                    prog.arr[DatenProg.PROGRAMM_SCHALTER_NR] = jTextFieldProgSchalter.getText();
-                    prog.arr[DatenProg.PROGRAMM_NAME_NR] = jTextFieldProgName.getText();
-                    prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR] = jTextFieldProgZielDateiName.getText();
-                    prog.arr[DatenProg.PROGRAMM_SUFFIX_NR] = jTextFieldProgSuffix.getText();
-                    prog.arr[DatenProg.PROGRAMM_PRAEFIX_NR] = jTextFieldProgPraefix.getText();
-                    tabelleProgramme.getModel().setValueAt(jTextFieldProgPfad.getText(), row, DatenProg.PROGRAMM_PROGRAMMPFAD_NR);
-                    tabelleProgramme.getModel().setValueAt(jTextFieldProgSchalter.getText(), row, DatenProg.PROGRAMM_SCHALTER_NR);
-                    tabelleProgramme.getModel().setValueAt(jTextFieldProgName.getText(), row, DatenProg.PROGRAMM_NAME_NR);
-                    tabelleProgramme.getModel().setValueAt(jTextFieldProgZielDateiName.getText(), row, DatenProg.PROGRAMM_ZIEL_DATEINAME_NR);
-                    tabelleProgramme.getModel().setValueAt(jTextFieldProgSuffix.getText(), row, DatenProg.PROGRAMM_SUFFIX_NR);
-                    tabelleProgramme.getModel().setValueAt(jTextFieldProgPraefix.getText(), row, DatenProg.PROGRAMM_PRAEFIX_NR);
+                    prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD] = jTextFieldProgPfad.getText();
+                    prog.arr[DatenProg.PROGRAMM_SCHALTER] = jTextFieldProgSchalter.getText();
+                    prog.arr[DatenProg.PROGRAMM_NAME] = jTextFieldProgName.getText();
+                    prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME] = jTextFieldProgZielDateiName.getText();
+                    prog.arr[DatenProg.PROGRAMM_SUFFIX] = jTextFieldProgSuffix.getText();
+                    prog.arr[DatenProg.PROGRAMM_PRAEFIX] = jTextFieldProgPraefix.getText();
+                    tabelleProgramme.getModel().setValueAt(jTextFieldProgPfad.getText(), row, DatenProg.PROGRAMM_PROGRAMMPFAD);
+                    tabelleProgramme.getModel().setValueAt(jTextFieldProgSchalter.getText(), row, DatenProg.PROGRAMM_SCHALTER);
+                    tabelleProgramme.getModel().setValueAt(jTextFieldProgName.getText(), row, DatenProg.PROGRAMM_NAME);
+                    tabelleProgramme.getModel().setValueAt(jTextFieldProgZielDateiName.getText(), row, DatenProg.PROGRAMM_ZIEL_DATEINAME);
+                    tabelleProgramme.getModel().setValueAt(jTextFieldProgSuffix.getText(), row, DatenProg.PROGRAMM_SUFFIX);
+                    tabelleProgramme.getModel().setValueAt(jTextFieldProgPraefix.getText(), row, DatenProg.PROGRAMM_PRAEFIX);
 //                    progNamePruefen();
                 }
             }
@@ -1803,7 +1803,7 @@ public class PanelPsetLang extends PanelVorlage {
                 String text;
                 if (rows.length == 1) {
                     int delRow = tabelleProgramme.convertRowIndexToModel(rows[0]);
-                    text = pSet.getProg(delRow).arr[DatenProg.PROGRAMM_NAME_NR];
+                    text = pSet.getProg(delRow).arr[DatenProg.PROGRAMM_NAME];
                 } else {
                     text = rows.length + " Programme löschen?";
                 }

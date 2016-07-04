@@ -140,8 +140,8 @@ public class PanelPsetKurz extends PanelVorlage {
             DatenProg prog = pSet.getProg(i);
             name = "Programmpfad";
             JPanel panel = new JPanel();
-            panel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new Color(80, 80, 80), 1), prog.arr[DatenProg.PROGRAMM_NAME_NR]));
-            setFeld(panel, name, prog.arr, DatenProg.PROGRAMM_PROGRAMMPFAD_NR);
+            panel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new Color(80, 80, 80), 1), prog.arr[DatenProg.PROGRAMM_NAME]));
+            setFeld(panel, name, prog.arr, DatenProg.PROGRAMM_PROGRAMMPFAD);
             gridbag.setConstraints(panel, c);
             jPanelExtra.add(panel);
             ++c.gridy;
