@@ -61,9 +61,9 @@ public class IoXmlLesen {
                                     Daten.listePset.add(datenPset);
                                 }
                                 break;
-                            case DatenProg.PROGRAMM:
+                            case DatenProg.TAG:
                                 DatenProg datenProg = new DatenProg();
-                                if (get(parser, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr)) {
+                                if (get(parser, DatenProg.TAG, DatenProg.XML_NAMES, datenProg.arr)) {
                                     if (datenPset != null) {
                                         datenPset.addProg(datenProg);
                                     }

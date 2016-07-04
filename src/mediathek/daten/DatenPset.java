@@ -125,9 +125,9 @@ public class DatenPset {
         DatenProg prog;
         while (it.hasNext()) {
             prog = it.next();
-            if (prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains("**")
-                    || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains("%a")
-                    || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains("%b")) {
+            if (prog.arr[DatenProg.PROGRAMM_SCHALTER].contains("**")
+                    || prog.arr[DatenProg.PROGRAMM_SCHALTER].contains("%a")
+                    || prog.arr[DatenProg.PROGRAMM_SCHALTER].contains("%b")) {
                 ret = true;
                 break;
             }
@@ -231,8 +231,8 @@ public class DatenPset {
         String ret = arr[PROGRAMMSET_ZIEL_DATEINAME_NR];
         if (!checkDownloadDirekt(url) && prog != null) {
             // nur wenn kein direkter Download und ein passendes Programm
-            if (!prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR].equals("")) {
-                ret = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME_NR];
+            if (!prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME].equals("")) {
+                ret = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME];
             }
         }
         return ret;

@@ -130,7 +130,7 @@ public class IoXmlSchreiben {
         for (DatenPset datenPset : Daten.listePset) {
             xmlSchreibenDaten(DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, datenPset.arr, false);
             for (DatenProg datenProg : datenPset.getListeProg()) {
-                xmlSchreibenDaten(DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr, false);
+                xmlSchreibenDaten(DatenProg.TAG, DatenProg.XML_NAMES, datenProg.arr, false);
             }
         }
     }
@@ -141,7 +141,7 @@ public class IoXmlSchreiben {
         for (DatenPset pset : psetArray) {
             xmlSchreibenDaten(DatenPset.PROGRAMMSET, DatenPset.COLUMN_NAMES_, pset.arr, true);
             for (DatenProg datenProg : pset.getListeProg()) {
-                xmlSchreibenDaten(DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr, true);
+                xmlSchreibenDaten(DatenProg.TAG, DatenProg.XML_NAMES, datenProg.arr, true);
             }
             writer.writeCharacters("\n\n");
         }

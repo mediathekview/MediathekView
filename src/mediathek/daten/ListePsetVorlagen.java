@@ -217,10 +217,10 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                                 }
                             }
                             break;
-                        case DatenProg.PROGRAMM:
+                        case DatenProg.TAG:
                             if (datenPset != null) {
                                 DatenProg datenProg = new DatenProg();
-                                if (get(parser, DatenProg.PROGRAMM, DatenProg.COLUMN_NAMES_, datenProg.arr)) {
+                                if (get(parser, DatenProg.TAG, DatenProg.XML_NAMES, datenProg.arr)) {
                                     datenPset.addProg(datenProg);
                                 }
                             }

@@ -180,21 +180,21 @@ public class ListePset extends LinkedList<DatenPset> {
         // damit nur die Variablen abgefragt werden, die auch verwendet werden
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
-            if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(MUSTER_PFAD_VLC) || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains(MUSTER_PFAD_VLC)) {
+            if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD].contains(MUSTER_PFAD_VLC) || prog.arr[DatenProg.PROGRAMM_SCHALTER].contains(MUSTER_PFAD_VLC)) {
                 vlc = getPfadVlc(parent);
                 break;
             }
         }
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
-            if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(MUSTER_PFAD_FLV) || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains(MUSTER_PFAD_FLV)) {
+            if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD].contains(MUSTER_PFAD_FLV) || prog.arr[DatenProg.PROGRAMM_SCHALTER].contains(MUSTER_PFAD_FLV)) {
                 flvstreamer = getPfadFlv(parent);
                 break;
             }
         }
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
-            if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].contains(MUSTER_PFAD_FFMPEG) || prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].contains(MUSTER_PFAD_FFMPEG)) {
+            if (prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD].contains(MUSTER_PFAD_FFMPEG) || prog.arr[DatenProg.PROGRAMM_SCHALTER].contains(MUSTER_PFAD_FFMPEG)) {
                 ffmpeg = getPfadFFmpeg(parent);
                 break;
             }
@@ -202,25 +202,25 @@ public class ListePset extends LinkedList<DatenPset> {
         for (int p = 0; p < pSet.getListeProg().size(); ++p) {
             DatenProg prog = pSet.getProg(p);
             // VLC
-            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]
-                    = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_VLC, Matcher.quoteReplacement(vlc));
-            prog.arr[DatenProg.PROGRAMM_SCHALTER_NR]
-                    = prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_VLC, Matcher.quoteReplacement(vlc));
+            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]
+                    = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD].replaceAll(MUSTER_PFAD_VLC, Matcher.quoteReplacement(vlc));
+            prog.arr[DatenProg.PROGRAMM_SCHALTER]
+                    = prog.arr[DatenProg.PROGRAMM_SCHALTER].replaceAll(MUSTER_PFAD_VLC, Matcher.quoteReplacement(vlc));
             // flvstreamer
-            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]
-                    = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_FLV, Matcher.quoteReplacement(flvstreamer));
-            prog.arr[DatenProg.PROGRAMM_SCHALTER_NR]
-                    = prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_FLV, Matcher.quoteReplacement(flvstreamer));
+            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]
+                    = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD].replaceAll(MUSTER_PFAD_FLV, Matcher.quoteReplacement(flvstreamer));
+            prog.arr[DatenProg.PROGRAMM_SCHALTER]
+                    = prog.arr[DatenProg.PROGRAMM_SCHALTER].replaceAll(MUSTER_PFAD_FLV, Matcher.quoteReplacement(flvstreamer));
             // ffmpeg
-            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]
-                    = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_FFMPEG, Matcher.quoteReplacement(ffmpeg));
-            prog.arr[DatenProg.PROGRAMM_SCHALTER_NR]
-                    = prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_FFMPEG, Matcher.quoteReplacement(ffmpeg));
+            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]
+                    = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD].replaceAll(MUSTER_PFAD_FFMPEG, Matcher.quoteReplacement(ffmpeg));
+            prog.arr[DatenProg.PROGRAMM_SCHALTER]
+                    = prog.arr[DatenProg.PROGRAMM_SCHALTER].replaceAll(MUSTER_PFAD_FFMPEG, Matcher.quoteReplacement(ffmpeg));
             // script
-            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR]
-                    = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD_NR].replaceAll(MUSTER_PFAD_SCRIPT, Matcher.quoteReplacement(skript));
-            prog.arr[DatenProg.PROGRAMM_SCHALTER_NR]
-                    = prog.arr[DatenProg.PROGRAMM_SCHALTER_NR].replaceAll(MUSTER_PFAD_SCRIPT, Matcher.quoteReplacement(skript));
+            prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]
+                    = prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD].replaceAll(MUSTER_PFAD_SCRIPT, Matcher.quoteReplacement(skript));
+            prog.arr[DatenProg.PROGRAMM_SCHALTER]
+                    = prog.arr[DatenProg.PROGRAMM_SCHALTER].replaceAll(MUSTER_PFAD_SCRIPT, Matcher.quoteReplacement(skript));
         }
         return true;
     }

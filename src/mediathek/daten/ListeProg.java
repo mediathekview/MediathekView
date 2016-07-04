@@ -36,7 +36,7 @@ public class ListeProg extends LinkedList<DatenProg> {
         DatenProg prog;
         while (it.hasNext()) {
             prog = it.next();
-            if (prog.arr[DatenProg.PROGRAMM_NAME_NR].equals(name)) {
+            if (prog.arr[DatenProg.PROGRAMM_NAME].equals(name)) {
                 it.remove();
                 ret = prog;
                 break;
