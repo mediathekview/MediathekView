@@ -45,7 +45,7 @@ public class CellRendererMediaDB extends DefaultTableCellRenderer {
                 table, value, isSelected, hasFocus, row, column);
         try {
             int c = table.convertColumnIndexToModel(column);
-            if (c == DatenMediaDB.MEDIA_DB_SIZE_NR) {
+            if (c == DatenMediaDB.MEDIA_DB_SIZE) {
                 setHorizontalAlignment(SwingConstants.CENTER);
             }
         } catch (Exception ex) {

@@ -62,11 +62,11 @@ public class MVMediaDB {
             Pattern p = Filter.makePattern(title);
             if (p != null) {
                 // dann mit RegEx prüfen
-                fileArray.stream().filter(s -> p.matcher(s.arr[DatenMediaDB.MEDIA_DB_NAME_NR]).matches()).forEach(s -> modelFilm.addRow(s.getRow()));
+                fileArray.stream().filter(s -> p.matcher(s.arr[DatenMediaDB.MEDIA_DB_NAME]).matches()).forEach(s -> modelFilm.addRow(s.getRow()));
             } else {
                 title = title.toLowerCase();
                 for (DatenMediaDB s : fileArray) {
-                    if (s.arr[DatenMediaDB.MEDIA_DB_NAME_NR].toLowerCase().contains(title)) {
+                    if (s.arr[DatenMediaDB.MEDIA_DB_NAME].toLowerCase().contains(title)) {
                         modelFilm.addRow(s.getRow());
                     }
                 }
@@ -188,7 +188,7 @@ public class MVMediaDB {
             out = new OutputStreamWriter(new FileOutputStream(datei), Const.KODIERUNG_UTF);
 
             for (DatenMediaDB s : fileArray) {
-                out.write(s.arr[DatenMediaDB.MEDIA_DB_NAME_NR] + "\n");
+                out.write(s.arr[DatenMediaDB.MEDIA_DB_NAME] + "\n");
             }
             SysMsg.sysMsg("   --> geschrieben!");
         } catch (Exception ex) {

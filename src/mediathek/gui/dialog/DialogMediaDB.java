@@ -165,7 +165,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
     private void zielordnerOeffnen() {
         int row = tabelleFilme.getSelectedRow();
         if (row >= 0) {
-            String s = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH_NR);
+            String s = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH);
             DirOpenAction.zielordnerOeffnen(parent, s);
         } else {
             new HinweisKeineAuswahl().zeigen(parent);
@@ -175,8 +175,8 @@ public class DialogMediaDB extends javax.swing.JDialog {
     private void filmAbspielen_() {
         int row = tabelleFilme.getSelectedRow();
         if (row >= 0) {
-            String file = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_NAME_NR);
-            String path = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH_NR);
+            String file = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_NAME);
+            String path = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH);
             OpenPlayerAction.filmAbspielen(parent, path + File.separator + file);
         } else {
             new HinweisKeineAuswahl().zeigen(parent);
@@ -186,8 +186,8 @@ public class DialogMediaDB extends javax.swing.JDialog {
     private void aktFilmSetzen() {
         int row = tabelleFilme.getSelectedRow();
         if (row >= 0) {
-            String file = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_NAME_NR);
-            String path = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH_NR);
+            String file = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_NAME);
+            String path = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH);
             jTextFieldFilmTitle.setText(file);
             jTextFieldFilmPfad.setText(path);
         } else {
@@ -204,8 +204,8 @@ public class DialogMediaDB extends javax.swing.JDialog {
             return;
         }
         try {
-            String file = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_NAME_NR);
-            String path = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH_NR);
+            String file = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_NAME);
+            String path = (String) tabelleFilme.getModel().getValueAt(tabelleFilme.convertRowIndexToModel(row), DatenMediaDB.MEDIA_DB_PATH);
             del = path + File.separator + file;
             File delFile = new File(del);
             if (!delFile.exists()) {

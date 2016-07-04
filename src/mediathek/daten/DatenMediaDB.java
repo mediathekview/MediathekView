@@ -23,23 +23,21 @@ import mediathek.tool.MVMediaDBFileSize;
 
 public class DatenMediaDB {
 
-    public final static String MEDIA_DB_NAME = "Name";
-    public final static int MEDIA_DB_NAME_NR = 0;
-    public final static String MEDIA_DB_PATH = "Pfad";
-    public final static int MEDIA_DB_PATH_NR = 1;
-    public final static String MEDIA_DB_SIZE = "Größe [MB]";
-    public final static int MEDIA_DB_SIZE_NR = 2;
+    public final static int MEDIA_DB_NAME = 0;
+    public final static int MEDIA_DB_PATH = 1;
+    public final static int MEDIA_DB_SIZE = 2;
 
     public final static int MAX_ELEM = 3;
-    public final static String[] COLUMN_NAMES = {MEDIA_DB_NAME, MEDIA_DB_PATH, MEDIA_DB_SIZE};
+    public final static String[] COLUMN_NAMES = {"Name", "Pfad", "Größe [MB]"};
+    public final static String[] XML_NAMES = {"Name", "Pfad", "Groesse"};
 
     public String[] arr;
     public MVMediaDBFileSize mVMediaDBFileSize;
 
     public DatenMediaDB(String name, String pfad, long size) {
         makeArr();
-        arr[MEDIA_DB_NAME_NR] = name;
-        arr[MEDIA_DB_PATH_NR] = pfad;
+        arr[MEDIA_DB_NAME] = name;
+        arr[MEDIA_DB_PATH] = pfad;
         //arr[MEDIA_DB_SIZE_NR] = getGroesse(size);
         mVMediaDBFileSize = new MVMediaDBFileSize(size);
     }
@@ -58,7 +56,7 @@ public class DatenMediaDB {
     }
 
     public Object[] getRow() {
-        return new Object[]{arr[MEDIA_DB_NAME_NR], arr[MEDIA_DB_PATH_NR], mVMediaDBFileSize};
+        return new Object[]{arr[MEDIA_DB_NAME], arr[MEDIA_DB_PATH], mVMediaDBFileSize};
     }
 
     //===================================
