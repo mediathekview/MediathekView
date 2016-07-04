@@ -66,10 +66,10 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
             int c = table.convertColumnIndexToModel(column);
             DatenAbo abo = Daten.listeAbo.getAboNr(r);
             boolean eingeschaltet = abo.aboIstEingeschaltet();
-            if (c == DatenAbo.ABO_NR_NR) {
+            if (c == DatenAbo.ABO_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
             }
-            if (c == DatenAbo.ABO_MINDESTDAUER_NR) {
+            if (c == DatenAbo.ABO_MINDESTDAUER) {
                 setHorizontalAlignment(SwingConstants.CENTER);
             }
             if (!eingeschaltet) {
@@ -82,7 +82,7 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
                 }
             }
             switch (c) {
-                case DatenAbo.ABO_EINGESCHALTET_NR:
+                case DatenAbo.ABO_EINGESCHALTET:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (eingeschaltet) {
                         setIcon(GetIcon.getProgramIcon("ja_16.png"));
@@ -90,7 +90,7 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
                         setIcon(GetIcon.getProgramIcon("nein_12.png"));
                     }
                     break;
-                case DatenAbo.ABO_SENDER_NR:
+                case DatenAbo.ABO_SENDER:
                     if (((MVTable) table).iconAnzeigen) {
                         handleSenderColumn((String) value, ((MVTable) table).iconKlein);
                     }

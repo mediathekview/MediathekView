@@ -113,7 +113,7 @@ public final class MVTable extends JTable {
                 spaltenTitel = DatenAbo.COLUMN_NAMES;
                 maxSpalten = DatenAbo.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenAbo.spaltenAnzeigen, DatenAbo.MAX_ELEM);
-                indexSpalte = DatenAbo.ABO_NR_NR;
+                indexSpalte = DatenAbo.ABO_NR;
                 nrDatenSystem = MVConfig.SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS;
                 iconAnzeigenStr = MVConfig.SYSTEM_TAB_ABO_ICON_ANZEIGEN;
                 iconKleinStr = MVConfig.SYSTEM_TAB_ABO_ICON_KLEIN;
@@ -605,11 +605,11 @@ public final class MVTable extends JTable {
     private void resetAbosTab(int i) {
         reihe[i] = i;
         breite[i] = 200;
-        if (i == DatenAbo.ABO_NR_NR
-                || i == DatenAbo.ABO_EINGESCHALTET_NR) {
+        if (i == DatenAbo.ABO_NR
+                || i == DatenAbo.ABO_EINGESCHALTET) {
             breite[i] = 75;
-        } else if (i == DatenAbo.ABO_DOWN_DATUM_NR
-                || i == DatenAbo.ABO_SENDER_NR) {
+        } else if (i == DatenAbo.ABO_DOWN_DATUM
+                || i == DatenAbo.ABO_SENDER) {
             breite[i] = 100;
         }
     }

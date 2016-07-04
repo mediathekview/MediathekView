@@ -32,16 +32,16 @@ public class Filter {
         // prüfen ob "aboExistiert" das "aboPrüfen" mit abdeckt, also die gleichen (oder mehr)
         // Filme findet, dann wäre das neue Abo hinfällig
 
-        String senderExistiert = aboExistiert.arr[DatenAbo.ABO_SENDER_NR];
-        String themaExistiert = aboExistiert.arr[DatenAbo.ABO_THEMA_NR];
-        String[] titelExistiert = aboExistiert.arr[DatenAbo.ABO_TITEL_NR].toLowerCase().split(",");
-        String[] themaTitelExistiert = aboExistiert.arr[DatenAbo.ABO_THEMA_TITEL_NR].toLowerCase().split(",");
-        String[] irgendwoExistiert = aboExistiert.arr[DatenAbo.ABO_IRGENDWO_NR].toLowerCase().split(",");
+        String senderExistiert = aboExistiert.arr[DatenAbo.ABO_SENDER];
+        String themaExistiert = aboExistiert.arr[DatenAbo.ABO_THEMA];
+        String[] titelExistiert = aboExistiert.arr[DatenAbo.ABO_TITEL].toLowerCase().split(",");
+        String[] themaTitelExistiert = aboExistiert.arr[DatenAbo.ABO_THEMA_TITEL].toLowerCase().split(",");
+        String[] irgendwoExistiert = aboExistiert.arr[DatenAbo.ABO_IRGENDWO].toLowerCase().split(",");
         // Abos sollen sich nicht nur in der Länge unterscheiden
-        String senderPruefen = aboPruefen.arr[DatenAbo.ABO_SENDER_NR];
-        String themaPruefen = aboPruefen.arr[DatenAbo.ABO_THEMA_NR];
-        String titelPruefen = aboPruefen.arr[DatenAbo.ABO_TITEL_NR];
-        String irgendwoPruefen = aboPruefen.arr[DatenAbo.ABO_IRGENDWO_NR];
+        String senderPruefen = aboPruefen.arr[DatenAbo.ABO_SENDER];
+        String themaPruefen = aboPruefen.arr[DatenAbo.ABO_THEMA];
+        String titelPruefen = aboPruefen.arr[DatenAbo.ABO_TITEL];
+        String irgendwoPruefen = aboPruefen.arr[DatenAbo.ABO_IRGENDWO];
 
         if (senderExistiert.equals("") || senderPruefen.equalsIgnoreCase(senderExistiert)) {
             if (themaExistiert.equals("") || themaPruefen.equalsIgnoreCase(themaExistiert)) {

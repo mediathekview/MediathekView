@@ -105,7 +105,7 @@ public class GuiAbo extends PanelVorlage {
         tabelle.setDefaultRenderer(Integer.class, new CellRendererAbo());
         tabelle.setModel(new TModelAbo(new Object[][]{}, DatenAbo.COLUMN_NAMES));
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenAbo.COLUMN_NAMES, DatenAbo.spaltenAnzeigen,
-                new int[]{DatenAbo.ABO_EINGESCHALTET_NR},
+                new int[]{DatenAbo.ABO_EINGESCHALTET},
                 new int[]{},
                 true /*Icon*/));
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "tabelle");
@@ -141,7 +141,7 @@ public class GuiAbo extends PanelVorlage {
             String text;
             if (rows.length == 1) {
                 int delRow = tabelle.convertRowIndexToModel(rows[0]);
-                text = "\"" + tabelle.getModel().getValueAt(delRow, DatenAbo.ABO_NAME_NR).toString() + "\" löschen?";
+                text = "\"" + tabelle.getModel().getValueAt(delRow, DatenAbo.ABO_NAME).toString() + "\" löschen?";
             } else {
                 text = rows.length + " Abos löschen?";
             }
@@ -198,7 +198,7 @@ public class GuiAbo extends PanelVorlage {
             for (int row : rows) {
                 int modelRow = tabelle.convertRowIndexToModel(row);
                 DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
-                akt.arr[DatenAbo.ABO_EINGESCHALTET_NR] = String.valueOf(ein);
+                akt.arr[DatenAbo.ABO_EINGESCHALTET] = String.valueOf(ein);
             }
             tabelleLaden();
             tabelle.clearSelection();
@@ -285,9 +285,9 @@ public class GuiAbo extends PanelVorlage {
 
         private void buttonTable(int row, int column) {
             if (row != -1) {
-                if (tabelle.convertColumnIndexToModel(column) == DatenAbo.ABO_EINGESCHALTET_NR) {
+                if (tabelle.convertColumnIndexToModel(column) == DatenAbo.ABO_EINGESCHALTET) {
                     DatenAbo akt = Daten.listeAbo.getAboNr(tabelle.convertRowIndexToModel(row));
-                    akt.arr[DatenAbo.ABO_EINGESCHALTET_NR] = Boolean.toString(!Boolean.parseBoolean(akt.arr[DatenAbo.ABO_EINGESCHALTET_NR]));
+                    akt.arr[DatenAbo.ABO_EINGESCHALTET] = Boolean.toString(!Boolean.parseBoolean(akt.arr[DatenAbo.ABO_EINGESCHALTET]));
                     tabelle.getSpalten();
                     tabelleLaden();
                     tabelle.setSpalten();
@@ -307,7 +307,7 @@ public class GuiAbo extends PanelVorlage {
                 tabelle.setRowSelectionInterval(nr, nr);
                 int modelRow = tabelle.convertRowIndexToModel(nr);
                 DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
-                ein = Boolean.parseBoolean(akt.arr[DatenAbo.ABO_EINGESCHALTET_NR]);
+                ein = Boolean.parseBoolean(akt.arr[DatenAbo.ABO_EINGESCHALTET]);
             }
             JPopupMenu jPopupMenu = new JPopupMenu();
             // Abo einschalten
