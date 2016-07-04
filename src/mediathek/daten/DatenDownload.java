@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import mSearch.daten.DatenFilm;
+import mSearch.tool.*;
 import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
-import mSearch.tool.*;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 
@@ -48,7 +48,6 @@ public class DatenDownload implements Comparable<DatenDownload> {
     public static final byte ART_PROGRAMM = 2; // Download über ein Programm
     public static final String ART_DOWNLOAD_TXT = "direkter Download";
     public static final String ART_PROGRAMM_TXT = "Programm";
-//    public static final String TRENNER_PROG_ARRAY = "<>";
 
     private static GermanStringSorter sorter = GermanStringSorter.getInstance();
     private static SimpleDateFormat sdf_datum_zeit = new SimpleDateFormat("dd.MM.yyyyHH:mm:ss");
