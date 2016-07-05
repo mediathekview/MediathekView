@@ -19,24 +19,18 @@
  */
 package mediathek.gui;
 
-import java.awt.AWTException;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
-import java.awt.SystemTray;
-import java.awt.TrayIcon;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JWindow;
 import javax.swing.SwingConstants;
+import mSearch.tool.Listener;
+import mSearch.tool.MVConfig;
 import mSearch.tool.SysMsg;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
-import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
 import net.sf.jcarrierpigeon.Notification;
 import net.sf.jcarrierpigeon.NotificationQueue;
 import net.sf.jcarrierpigeon.WindowPosition;

@@ -187,7 +187,7 @@ public class GuiDebug extends JPanel {
             @Override
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 daten.mediathekGui.setToolbar(MVToolBar.TOOLBAR_NIX);
-                daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.FILME);
+                daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.NONE);
             }
         });
 
@@ -435,6 +435,7 @@ public class GuiDebug extends JPanel {
         jTextFieldLiveStreams = new javax.swing.JTextField();
         jButtonDelLive = new javax.swing.JButton();
         jButtonOldList = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         jPanelStarts = new javax.swing.JPanel();
 
         javax.swing.GroupLayout jPanelFilmlisteLadenLayout = new javax.swing.GroupLayout(jPanelFilmlisteLaden);
@@ -568,6 +569,9 @@ public class GuiDebug extends JPanel {
 
         jButtonOldList.setText(":::");
 
+        jLabel1.setText("5");
+        jLabel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+
         javax.swing.GroupLayout jPanelToolsLayout = new javax.swing.GroupLayout(jPanelTools);
         jPanelTools.setLayout(jPanelToolsLayout);
         jPanelToolsLayout.setHorizontalGroup(
@@ -606,6 +610,8 @@ public class GuiDebug extends JPanel {
                             .addComponent(jTextFieldSearchUrl)
                             .addGroup(jPanelToolsLayout.createSequentialGroup()
                                 .addComponent(jButtonGc, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel1)
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelToolsLayout.createSequentialGroup()
                                 .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -626,9 +632,11 @@ public class GuiDebug extends JPanel {
             jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelToolsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonAllesSpeichern)
-                    .addComponent(jButtonGc))
+                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButtonAllesSpeichern)
+                        .addComponent(jButtonGc))
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonFehler)
@@ -730,6 +738,7 @@ public class GuiDebug extends JPanel {
     private javax.swing.JButton jButtonSearchUrl;
     private javax.swing.JButton jButtonSize;
     private javax.swing.JButton jButtonTTUrl;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanelFilmlisteLaden;
     private javax.swing.JPanel jPanelLoeschen;
     private javax.swing.JPanel jPanelStarts;
