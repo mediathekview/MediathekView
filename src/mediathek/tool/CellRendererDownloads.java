@@ -161,7 +161,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
 
                             return panel;
                         } else {
-                            setText(Start.getTextProgress(datenDownload.isDownloadManager(),datenDownload.start));
+                            setText(Start.getTextProgress(datenDownload.isDownloadManager(), datenDownload.start));
                         }
                     } else {
                         setText("");
@@ -300,6 +300,25 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                         handleSenderColumn((String) value, ((MVTable) table).iconKlein);
                     }
                     break;
+                case DatenDownload.DOWNLOAD_HD:
+                    setHorizontalAlignment(SwingConstants.CENTER);
+                    if (datenDownload.film != null && datenDownload.film.isHD()) {
+                        setIcon(ja_16);
+                    } else {
+                        setIcon(nein_12);
+                    }
+                    setText("");//im Modle brauchen wir den Text zum Sortieren
+                    break;
+                    
+                case DatenDownload.DOWNLOAD_UT:
+                    setHorizontalAlignment(SwingConstants.CENTER);
+                    if (datenDownload.film != null && datenDownload.film.hasUT()) {
+                        setIcon(ja_16);
+                    } else {
+                        setIcon(nein_12);
+                    }
+                    setText("");//im Modle brauchen wir den Text zum Sortieren
+                    break;
             }
 
             setColor(this, datenDownload.start, isSelected);
@@ -342,22 +361,20 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 setIcon(download_start_tab);
                 setToolTipText(DOWNLOAD_STARTEN);
             }
-        } else {
-            if (datenDownload.start != null && !datenDownload.isDownloadManager()) {
-                if (datenDownload.start.status == Start.STATUS_FERTIG) {
-                    setIcon(film_start_sw_tab);
-                    setToolTipText(PLAY_DOWNLOADED_FILM);
-                } else if (datenDownload.start.status == Start.STATUS_ERR) {
-                    setIcon(download_start_sw_tab);
-                    setToolTipText(DOWNLOAD_STARTEN);
-                } else {
-                    setIcon(download_stop_sw_tab);
-                    setToolTipText(DOWNLOAD_STOPPEN);
-                }
-            } else {
+        } else if (datenDownload.start != null && !datenDownload.isDownloadManager()) {
+            if (datenDownload.start.status == Start.STATUS_FERTIG) {
+                setIcon(film_start_sw_tab);
+                setToolTipText(PLAY_DOWNLOADED_FILM);
+            } else if (datenDownload.start.status == Start.STATUS_ERR) {
                 setIcon(download_start_sw_tab);
                 setToolTipText(DOWNLOAD_STARTEN);
+            } else {
+                setIcon(download_stop_sw_tab);
+                setToolTipText(DOWNLOAD_STOPPEN);
             }
+        } else {
+            setIcon(download_start_sw_tab);
+            setToolTipText(DOWNLOAD_STARTEN);
         }
     }
 

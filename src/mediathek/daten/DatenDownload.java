@@ -68,41 +68,47 @@ public class DatenDownload extends Data<DatenDownload> {
     public static final int DOWNLOAD_DATUM = 12;
     public static final int DOWNLOAD_ZEIT = 13;
     public static final int DOWNLOAD_DAUER = 14;
-    public static final int DOWNLOAD_UNTERBROCHEN = 15;
-    public static final int DOWNLOAD_GEO = 16;
-    public static final int DOWNLOAD_FILM_URL = 17;
-    public static final int DOWNLOAD_HISTORY_URL = 18;
-    public static final int DOWNLOAD_URL = 19;
-    public static final int DOWNLOAD_URL_RTMP = 20;
-    public static final int DOWNLOAD_URL_SUBTITLE = 21;
-    public static final int DOWNLOAD_PROGRAMMSET = 22;
-    public static final int DOWNLOAD_PROGRAMM = 23;
-    public static final int DOWNLOAD_PROGRAMM_AUFRUF = 24;
-    public static final int DOWNLOAD_PROGRAMM_AUFRUF_ARRAY = 25;
-    public static final int DOWNLOAD_PROGRAMM_RESTART = 26;
-    public static final int DOWNLOAD_ZIEL_DATEINAME = 27;
-    public static final int DOWNLOAD_ZIEL_PFAD = 28;
-    public static final int DOWNLOAD_ZIEL_PFAD_DATEINAME = 29;
-    public static final int DOWNLOAD_ART = 30;//Art des Downloads: direkter Dateidownload oder über ein Programm
-    public static final int DOWNLOAD_QUELLE = 31; //Quelle: gestartet über einen Button, Download, Abo
-    public static final int DOWNLOAD_ZURUECKGESTELLT = 32;
-    public static final int DOWNLOAD_INFODATEI = 33;
-    public static final int DOWNLOAD_SPOTLIGHT = 34;
-    public static final int DOWNLOAD_SUBTITLE = 35;// Untertitel anlegen ja/nein
-    public static final int DOWNLOAD_PROGRAMM_DOWNLOADMANAGER = 36;
-    public static final int DOWNLOAD_REF = 37;
+
+    public static final int DOWNLOAD_HD = 15;
+    public static final int DOWNLOAD_UT = 16;
+
+    public static final int DOWNLOAD_UNTERBROCHEN = 17;
+    public static final int DOWNLOAD_GEO = 18;
+    public static final int DOWNLOAD_FILM_URL = 19;
+    public static final int DOWNLOAD_HISTORY_URL = 20;
+    public static final int DOWNLOAD_URL = 21;
+    public static final int DOWNLOAD_URL_RTMP = 22;
+    public static final int DOWNLOAD_URL_SUBTITLE = 23;
+    public static final int DOWNLOAD_PROGRAMMSET = 24;
+    public static final int DOWNLOAD_PROGRAMM = 25;
+    public static final int DOWNLOAD_PROGRAMM_AUFRUF = 26;
+    public static final int DOWNLOAD_PROGRAMM_AUFRUF_ARRAY = 27;
+    public static final int DOWNLOAD_PROGRAMM_RESTART = 28;
+    public static final int DOWNLOAD_ZIEL_DATEINAME = 29;
+    public static final int DOWNLOAD_ZIEL_PFAD = 30;
+    public static final int DOWNLOAD_ZIEL_PFAD_DATEINAME = 31;
+    public static final int DOWNLOAD_ART = 32;//Art des Downloads: direkter Dateidownload oder über ein Programm
+    public static final int DOWNLOAD_QUELLE = 33; //Quelle: gestartet über einen Button, Download, Abo
+    public static final int DOWNLOAD_ZURUECKGESTELLT = 34;
+    public static final int DOWNLOAD_INFODATEI = 35;
+    public static final int DOWNLOAD_SPOTLIGHT = 36;
+    public static final int DOWNLOAD_SUBTITLE = 37;// Untertitel anlegen ja/nein
+    public static final int DOWNLOAD_PROGRAMM_DOWNLOADMANAGER = 38;
+    public static final int DOWNLOAD_REF = 39;
     //
     public static final String TAG = "Downlad";
-    public static final int MAX_ELEM = 38;
+    public static final int MAX_ELEM = 40;
     public static final String[] COLUMN_NAMES = {"Nr", "Filmnr", "Abo", "Sender", "Thema", "Titel", "", "",
         "Fortschritt", "Restzeit", "Geschwindigkeit", "Größe [MB]",
-        "Datum", "Zeit", "Dauer", "Pause", "Geo", "Film-URL", "History-URL", "URL", "URL-rtmp", "URL-Untertitel",
+        "Datum", "Zeit", "Dauer", "HD", "UT",
+        "Pause", "Geo", "Film-URL", "History-URL", "URL", "URL-rtmp", "URL-Untertitel",
         "Programmset", "Programm", "Programmaufruf_", "Programmaufruf", "Restart",
         "Dateiname", "Pfad", "Pfad-Dateiname", "Art", "Quelle",
         "Zurueckgestellt", "Infodatei", "Spotlight", "Untertitel", "Remote-Download", "Ref"};
     public static final String[] XML_NAMES = {"Nr", "Filmnr", "Abo", "Sender", "Thema", "Titel", "Button-Start", "Button-Del",
         "Fortschritt", "Restzeit", "Geschwindigkeit", "Groesse"/*DOWNLOAD_GROESSE*/,
-        "Datum", "Zeit", "Dauer", "Pause", "Geo", "Film-URL", "History-URL", "URL", "URL-rtmp", "URL-Untertitel",
+        "Datum", "Zeit", "Dauer", "HD", "UT",
+        "Pause", "Geo", "Film-URL", "History-URL", "URL", "URL-rtmp", "URL-Untertitel",
         "Programmset", "Programm", "Programmaufruf_", "Programmaufruf", "Restart",
         "Dateiname", "Pfad", "Pfad-Dateiname", "Art", "Quelle",
         "Zurueckgestellt", "Infodatei", "Spotlight", "Untertitel", "Remote-Download", "Ref"};
@@ -138,6 +144,8 @@ public class DatenDownload extends Data<DatenDownload> {
         arr[DOWNLOAD_ZEIT] = film.arr[DatenFilm.FILM_ZEIT];
         arr[DOWNLOAD_URL_RTMP] = film.arr[DatenFilm.FILM_URL_RTMP];
         arr[DOWNLOAD_DAUER] = film.arr[DatenFilm.FILM_DAUER];
+        arr[DOWNLOAD_HD] = film.isHD() ? "1" : "0";
+        arr[DOWNLOAD_UT] = film.hasUT() ? "1" : "0";
         arr[DOWNLOAD_QUELLE] = String.valueOf(quelle);
         arr[DOWNLOAD_HISTORY_URL] = film.getUrlHistory();
         if (aufloesung.isEmpty()) {
@@ -186,6 +194,12 @@ public class DatenDownload extends Data<DatenDownload> {
             Log.errorLog(649632580, ex, "Art: " + arr[DOWNLOAD_ART] + " Quelle: " + arr[DOWNLOAD_QUELLE]);
             art = ART_PROGRAMM;
             quelle = QUELLE_BUTTON;
+        }
+        if (film == null) {
+            //damit die Sortierunt bei gespeicherten Downloads bei denen der 
+            //Film nicht mehr ermittelt werden kann stimmt
+            arr[DOWNLOAD_HD] = "0";
+            arr[DOWNLOAD_UT] = "0";
         }
     }
 
