@@ -19,22 +19,24 @@
  */
 package mediathek.tool;
 
+import com.jidesoft.utils.SystemInfo;
+import java.awt.Component;
+import java.awt.Font;
+import javax.swing.ImageIcon;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import mSearch.daten.DatenFilm;
+import mSearch.daten.ListeFilme;
+import mSearch.tool.Listener;
+import mSearch.tool.Log;
 import mSearch.tool.MVColor;
 import mSearch.tool.MVConfig;
-import mSearch.tool.Listener;
-import com.jidesoft.utils.SystemInfo;
 import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
-import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import java.awt.*;
-import mSearch.tool.Log;
 
 public class CellRendererFilme extends DefaultTableCellRenderer {
     
@@ -52,7 +54,8 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
     
     public CellRendererFilme(Daten d) {
         ja_16 = GetIcon.getProgramIcon("ja_16.png");
-        nein_12 = GetIcon.getProgramIcon("nein_12.png");
+//        nein_12 = GetIcon.getProgramIcon("nein_tabelle_12.png");
+//        nein_12 = GetIcon.getProgramIcon("nein_12.png");
         history = d.history;
         film_start_tab = GetIcon.getProgramIcon("film_start_tab.png");
         film_start_sw_tab = GetIcon.getProgramIcon("film_start_sw_tab.png");

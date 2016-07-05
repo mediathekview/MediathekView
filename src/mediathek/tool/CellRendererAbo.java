@@ -19,7 +19,6 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.MVColor;
 import java.awt.Component;
 import java.awt.Font;
 import javax.swing.ImageIcon;
@@ -27,6 +26,7 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import mSearch.tool.Log;
+import mSearch.tool.MVColor;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.res.GetIcon;
@@ -34,9 +34,14 @@ import mediathek.res.GetIcon;
 public class CellRendererAbo extends DefaultTableCellRenderer {
 
     private final MVSenderIconCache senderIconCache;
+    private static ImageIcon ja_16 = null;
+    private static ImageIcon nein_12 = null;
 
     public CellRendererAbo() {
         senderIconCache = new MVSenderIconCache();
+        ja_16 = GetIcon.getProgramIcon("ja_16.png");
+//        nein_12 = GetIcon.getProgramIcon("nein_tabelle_12.png");
+//        nein_12 = GetIcon.getProgramIcon("nein_12.png");
     }
 
     @Override
@@ -85,9 +90,9 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
                 case DatenAbo.ABO_EINGESCHALTET:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (eingeschaltet) {
-                        setIcon(GetIcon.getProgramIcon("ja_16.png"));
+                        setIcon(ja_16);
                     } else {
-                        setIcon(GetIcon.getProgramIcon("nein_12.png"));
+                        setIcon(nein_12);
                     }
                     break;
                 case DatenAbo.ABO_SENDER:
