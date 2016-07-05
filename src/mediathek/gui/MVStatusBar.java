@@ -5,16 +5,18 @@ import com.explodingpixels.macwidgets.BottomBarSize;
 import java.awt.FlowLayout;
 import java.util.EnumMap;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.SoftBevelBorder;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Functions;
+import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
-import mediathek.tool.GuiFunktionen;
-import mSearch.tool.Listener;
 
 /**
  * User: crystalpalace1977
@@ -29,14 +31,24 @@ public final class MVStatusBar extends JPanel {
 
     private final JLabel lblLeft;
     private final JLabel lblRight;
+    private final JLabel lblSel;
     private final JProgressBar progress;
     private final JButton stopButton;
     private final BottomBar bottomBar;
     private final Daten daten;
+    private final String TRENNER = "  ||  ";
 
     public MVStatusBar(Daten daten) {
         this.daten = daten;
         bottomBar = new BottomBar(BottomBarSize.LARGE);
+
+        EmptyBorder eBorder = new EmptyBorder(0, 5, 0, 5); // oben, rechts, unten, links
+        LineBorder lb = new LineBorder(new java.awt.Color(153, 153, 153), 2, true);
+        SoftBevelBorder sbb = new SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED);
+
+        lblSel = new JLabel("0");
+        lblSel.setBorder(BorderFactory.createCompoundBorder(sbb, eBorder));
+        bottomBar.addComponentToLeft(lblSel, 20);
 
         lblLeft = new JLabel();
         bottomBar.addComponentToLeft(lblLeft);
@@ -168,17 +180,31 @@ public final class MVStatusBar extends JPanel {
                 setInfoAbo();
                 break;
             default:
+                setInfoDefault();
         }
         String displayString = displayListForLeftLabel.get(currentIndex);
         lblLeft.setText(displayString);
     }
 
+    private void setInfoDefault() {
+        String textLinks;
+        int gesamt = Daten.listeFilme.size();
+        lblSel.setText("");
+        // Anzahl der Filme
+        if (gesamt == 1) {
+            textLinks = "1 Film";
+        } else {
+            textLinks = gesamt + " Filme";
+        }
+        displayListForLeftLabel.put(MVStatusBar.StatusbarIndex.NONE, textLinks);
+    }
+
     private void setInfoFilme() {
         String textLinks;
-        final String TRENNER = "  ||  ";
         int gesamt = Daten.listeFilme.size();
         int anzListe = daten.guiFilme.getTableRowCount();
         int runs = Daten.listeDownloadsButton.getListOfStartsNotFinished(DatenDownload.QUELLE_BUTTON).size();
+        lblSel.setText(daten.guiFilme.tabelle.getSelectedRowCount() + "");
         // Anzahl der Filme
         if (gesamt == anzListe) {
             if (anzListe == 1) {
@@ -204,18 +230,20 @@ public final class MVStatusBar extends JPanel {
         }
         // auch die Downloads anzeigen
         textLinks += TRENNER;
-        textLinks += getInfoTextDownloads(false /*mitAbo*/);
+        textLinks += getInfoTextDownloads(false);
 
         displayListForLeftLabel.put(MVStatusBar.StatusbarIndex.FILME, textLinks);
     }
 
     private void setInfoDownload() {
+        lblSel.setText(daten.guiDownloads.tabelle.getSelectedRowCount() + "");
         String textLinks = getInfoTextDownloads(true /*mitAbo*/);
 
         displayListForLeftLabel.put(MVStatusBar.StatusbarIndex.DOWNLOAD, textLinks);
     }
 
     private void setInfoAbo() {
+        lblSel.setText(daten.guiAbo.tabelle.getSelectedRowCount() + "");
 
         String textLinks;
         int ein = 0;
@@ -229,37 +257,23 @@ public final class MVStatusBar extends JPanel {
             }
         }
         if (gesamt == 1) {
-            textLinks = "1 Abo, ";
+            textLinks = "1 Abo";
         } else {
-            textLinks = gesamt + " Abos, ";
+            textLinks = gesamt + " Abos";
         }
-        textLinks += "(" + ein + " eingeschaltet, " + aus + " ausgeschaltet)";
+        textLinks += TRENNER + ein + " eingeschaltet, " + aus + " ausgeschaltet";
 
         displayListForLeftLabel.put(MVStatusBar.StatusbarIndex.ABO, textLinks);
     }
 
-    private String getInfoTextDownloads(boolean mitAbo) {
+    private String getInfoTextDownloads(boolean download) {
         String textLinks;
         // Text links: Zeilen Tabelle
         // nicht gestarted, laufen, fertig OK, fertig fehler
         int[] starts = Daten.downloadInfos.downloadStarts;
-        if (starts[0] == 1) {
-            textLinks = "1 Download";
-        } else {
-            textLinks = starts[0] + " Downloads";
-        }
-        if (mitAbo) {
-            if (starts[1] == 1) {
-                textLinks += " (1 Abo, ";
-            } else {
-                textLinks += " (" + starts[1] + " Abos, ";
-            }
-            if (starts[2] == 1) {
-                textLinks += "1 Download)";
-            } else {
-                textLinks += starts[2] + " Downloads)";
-            }
-        }
+        int anz = Daten.listeDownloads.size();
+        int diff = anz - starts[0];
+
         boolean print = false;
         for (int ii = 1; ii < starts.length; ++ii) {
             if (starts[ii] > 0) {
@@ -267,8 +281,35 @@ public final class MVStatusBar extends JPanel {
                 break;
             }
         }
-        if (print) {
+
+        if (anz == 1) {
+            textLinks = "1 Download";
+        } else {
+            textLinks = anz + " Downloads";
+        }
+        if (download) {
+            if (diff == 1) {
+                textLinks += " (1 zurückgestellt)";
+            } else if (diff > 1) {
+                textLinks += " (" + diff + " zurückgestellt)";
+            }
+            textLinks += TRENNER;
+            if (starts[1] == 1) {
+                textLinks += "1 Abo, ";
+            } else {
+                textLinks += "" + starts[1] + " Abos, ";
+            }
+            if (starts[2] == 1) {
+                textLinks += "1 Download";
+            } else {
+                textLinks += starts[2] + " Downloads";
+            }
+            textLinks += TRENNER;
+        } else if (print) {
             textLinks += ": ";
+        }
+
+        if (print) {
             if (starts[4] == 1) {
                 textLinks += "1 läuft";
             } else {
