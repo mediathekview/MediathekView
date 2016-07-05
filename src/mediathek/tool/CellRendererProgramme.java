@@ -20,6 +20,7 @@
 package mediathek.tool;
 
 import java.awt.Component;
+import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import mSearch.tool.Log;
@@ -30,9 +31,14 @@ import mediathek.res.GetIcon;
 public class CellRendererProgramme extends DefaultTableCellRenderer {
 
     Daten daten;
+    private static ImageIcon ja_16 = null;
+    private static ImageIcon nein_12 = null;
 
     public CellRendererProgramme(Daten d) {
         daten = d;
+        ja_16 = GetIcon.getProgramIcon("ja_16.png");
+//        nein_12 = GetIcon.getProgramIcon("nein_tabelle_12.png");
+//        nein_12 = GetIcon.getProgramIcon("nein_12.png");
     }
 
     @Override
@@ -49,11 +55,11 @@ public class CellRendererProgramme extends DefaultTableCellRenderer {
         try {
             int c = table.convertColumnIndexToModel(column);
             if (c == DatenProg.PROGRAMM_RESTART || c == DatenProg.PROGRAMM_DOWNLOADMANAGER) {
-            	setHorizontalAlignment(CENTER);
+                setHorizontalAlignment(CENTER);
                 if (getText().equals(Boolean.TRUE.toString())) {
-                    setIcon(GetIcon.getProgramIcon("ja_16.png"));
+                    setIcon(ja_16);
                 } else {
-                    setIcon(GetIcon.getProgramIcon("nein_12.png"));
+                    setIcon(nein_12);
                 }
                 setText("");
             }

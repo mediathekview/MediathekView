@@ -20,6 +20,7 @@
 package mediathek.tool;
 
 import java.awt.Component;
+import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -31,9 +32,14 @@ import mediathek.res.GetIcon;
 public class CellRendererPset extends DefaultTableCellRenderer {
 
     Daten daten;
+    private static ImageIcon ja_16 = null;
+    private static ImageIcon nein_12 = null;
 
     public CellRendererPset(Daten d) {
         daten = d;
+        ja_16 = GetIcon.getProgramIcon("ja_16.png");
+//        nein_12 = GetIcon.getProgramIcon("nein_tabelle_12.png");
+//        nein_12 = GetIcon.getProgramIcon("nein_12.png");
     }
 
     @Override
@@ -65,56 +71,20 @@ public class CellRendererPset extends DefaultTableCellRenderer {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 setText(""); // nur das Icon anzeigen
                 if (datenPset.istAbspielen()) {
-                    setIcon(GetIcon.getProgramIcon("ja_16.png"));
+                    setIcon(ja_16);
                 } else {
-                    setIcon(GetIcon.getProgramIcon("nein_12.png"));
+                    setIcon(nein_12);
                 }
             }
             if (c == DatenPset.PROGRAMMSET_IST_SPEICHERN) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 setText(""); // nur das Icon anzeigen
                 if (datenPset.istSpeichern()) {
-                    setIcon(GetIcon.getProgramIcon("ja_16.png"));
+                    setIcon(ja_16);
                 } else {
-                    setIcon(GetIcon.getProgramIcon("nein_12.png"));
+                    setIcon(nein_12);
                 }
             }
-//            if (c == DatenPset.PROGRAMMSET_IST_BUTTON_NR) {
-//                setText(""); // nur das Icon anzeigen
-//                if (datenPset.istButton()) {
-//                    if (isSelected) {
-//                        setBackground(GuiKonstanten.ABO_SEL);
-//                    } else {
-//                        setBackground(GuiKonstanten.ABO);
-//                    }
-//                    setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/ja_16.png")));
-//                } else {
-//                    if (isSelected) {
-//                        setBackground(GuiKonstanten.FARBE_GRAU_SEL);
-//                    } else {
-//                        setBackground(GuiKonstanten.FARBE_GRAU);
-//                    }
-//                    setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_12.png")));
-//                }
-//            }
-//            if (c == DatenPset.PROGRAMMSET_IST_ABO_NR) {
-//                setText(""); // nur das Icon anzeigen
-//                if (datenPset.istAbo()) {
-//                    if (isSelected) {
-//                        setBackground(GuiKonstanten.ABO_SEL);
-//                    } else {
-//                        setBackground(GuiKonstanten.ABO);
-//                    }
-//                    setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/ja_16.png")));
-//                } else {
-//                    if (isSelected) {
-//                        setBackground(GuiKonstanten.FARBE_GRAU_SEL);
-//                    } else {
-//                        setBackground(GuiKonstanten.FARBE_GRAU);
-//                    }
-//                    setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/nein_12.png")));
-//                }
-//            }
         } catch (Exception ex) {
             Log.errorLog(962380071, ex);
         }
