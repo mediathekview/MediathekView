@@ -19,9 +19,9 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.Datum;
 import mSearch.tool.MVFilmSize;
 import mediathek.daten.DatenDownload;
-import mSearch.tool.Datum;
 
 public class TModelDownload extends TModel {
 

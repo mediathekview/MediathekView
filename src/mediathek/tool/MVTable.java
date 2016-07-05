@@ -577,6 +577,8 @@ public final class MVTable extends JTable {
             case DatenDownload.DOWNLOAD_SPOTLIGHT:
             case DatenDownload.DOWNLOAD_SUBTITLE:
             case DatenDownload.DOWNLOAD_INFODATEI:
+            case DatenDownload.DOWNLOAD_HD:
+            case DatenDownload.DOWNLOAD_UT:
                 breite[i] = 50;
                 break;
             case DatenDownload.DOWNLOAD_TITEL:
