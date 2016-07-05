@@ -72,6 +72,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
         ja_16 = GetIcon.getProgramIcon("ja_16.png");
 //        nein_12 = GetIcon.getProgramIcon("nein_tabelle_12.png");
 //        nein_12 = GetIcon.getProgramIcon("nein_12.png");
+        nein_12 = GetIcon.getProgramIcon("nein_tabelle_5.png");
         film_start_tab = GetIcon.getProgramIcon("film_start_tab.png");
         film_start_sw_tab = GetIcon.getProgramIcon("film_start_sw_tab.png");
         download_stop_tab = GetIcon.getProgramIcon("download_stop_tab.png");
