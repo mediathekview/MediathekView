@@ -39,6 +39,7 @@ public class CellRendererProgramme extends DefaultTableCellRenderer {
         ja_16 = GetIcon.getProgramIcon("ja_16.png");
 //        nein_12 = GetIcon.getProgramIcon("nein_tabelle_12.png");
 //        nein_12 = GetIcon.getProgramIcon("nein_12.png");
+        nein_12 = GetIcon.getProgramIcon("nein_tabelle_5.png");
     }
 
     @Override
