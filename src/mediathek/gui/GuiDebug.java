@@ -37,12 +37,12 @@ import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmlisten.FilmlisteLesen;
 import mSearch.tool.Duration;
+import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mSearch.tool.MVConfig;
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisten;
-import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
 
 public class GuiDebug extends JPanel {
 

@@ -25,12 +25,14 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import mediathek.daten.Daten;
+import mediathek.gui.MVStatusBar;
+import mediathek.gui.MVToolBar;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.Konstanten;
 
 public class Einstellungen extends javax.swing.JPanel {
 
-    Daten ddaten;
+    Daten daten;
     public boolean ok = false;
     private PanelEinstellungen panelEinstellungen;
     private PanelDownload panelDownload;
@@ -101,31 +103,38 @@ public class Einstellungen extends javax.swing.JPanel {
     public Einstellungen(JFrame parent, Daten d) {
         initComponents();
         parentComponent = parent;
-        ddaten = d;
+        daten = d;
         init();
         initTree();
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                daten.mediathekGui.setToolbar(MVToolBar.TOOLBAR_NIX);
+                daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.NONE);
+            }
+        });
     }
 
     private void init() {
         jPanelExtra.setLayout(new java.awt.BorderLayout());
-        panelEinstellungen = new PanelEinstellungen(ddaten, parentComponent);
-        panelDownload = new PanelDownload(ddaten, parentComponent);
-        panelMediaDB = new PanelMediaDB(ddaten, parentComponent);
-        panelEinstellungenErweitert = new PanelEinstellungenErweitert(ddaten, parentComponent);
-        panelEinstellungenGeo = new PanelEinstellungenGeo(ddaten, parentComponent);
-        panelImport = new PanelImport(ddaten, parentComponent);
-        panelEinstellungenColor = new PanelEinstellungenColor(ddaten, parentComponent);
-        panelImportFilme = new PanelFilmlisteLaden(ddaten, parentComponent);
-        panelExportFilmliste = new PanelExportFilmliste(ddaten, parentComponent);
-        panelBlacklist = new PanelBlacklist(ddaten, parentComponent, PanelBlacklist.class.getName());
-        panelHistory = new PanelErledigteUrls(ddaten, parentComponent);
+        panelEinstellungen = new PanelEinstellungen(daten, parentComponent);
+        panelDownload = new PanelDownload(daten, parentComponent);
+        panelMediaDB = new PanelMediaDB(daten, parentComponent);
+        panelEinstellungenErweitert = new PanelEinstellungenErweitert(daten, parentComponent);
+        panelEinstellungenGeo = new PanelEinstellungenGeo(daten, parentComponent);
+        panelImport = new PanelImport(daten, parentComponent);
+        panelEinstellungenColor = new PanelEinstellungenColor(daten, parentComponent);
+        panelImportFilme = new PanelFilmlisteLaden(daten, parentComponent);
+        panelExportFilmliste = new PanelExportFilmliste(daten, parentComponent);
+        panelBlacklist = new PanelBlacklist(daten, parentComponent, PanelBlacklist.class.getName());
+        panelHistory = new PanelErledigteUrls(daten, parentComponent);
         panelHistory.initHistory();
-        panelErledigteAbos = new PanelErledigteUrls(ddaten, parentComponent);
+        panelErledigteAbos = new PanelErledigteUrls(daten, parentComponent);
         panelErledigteAbos.initAbo();
-        panelDateinamen = new PanelDateinamen(ddaten, parentComponent);
-        panelPset = new PanelPset(ddaten, parentComponent);
-        panelPsetVorlagen = new PanelPsetImport(ddaten, parentComponent);
-        panelAbout = new PanelProgrammInfos(ddaten, parentComponent);
+        panelDateinamen = new PanelDateinamen(daten, parentComponent);
+        panelPset = new PanelPset(daten, parentComponent);
+        panelPsetVorlagen = new PanelPsetImport(daten, parentComponent);
+        panelAbout = new PanelProgrammInfos(daten, parentComponent);
     }
 
     private void initTree() {
