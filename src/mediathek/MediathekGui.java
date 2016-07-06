@@ -705,7 +705,6 @@ public class MediathekGui extends JFrame {
             jTabbedPane.addTab("Filme", daten.guiFilme);
         }
 
-//        jTabbedPane.addTab("Filme", GetIcon.getProgramIcon("switch_24.png"), daten.guiFilme);
         // jetzt noch den Rest
         panelMeldungen = new PanelVorlage(daten, this) {
 
@@ -722,8 +721,6 @@ public class MediathekGui extends JFrame {
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 panelMeldungenSystem,
                 panelMeldungenPlayer);
-//        MVLog.panelMeldungenPlayer = panelMeldungenPlayer;
-//        MVLog.panelMeldungenSystem = panelMeldungenSystem;
 
         panelMeldungen.setLayout(new BorderLayout());
         panelMeldungen.add(splitPane, BorderLayout.CENTER);
@@ -1213,7 +1210,7 @@ public class MediathekGui extends JFrame {
 
         jMenuBar.add(jMenuDatei);
 
-        jMenuFilme.setMnemonic('f');
+        jMenuFilme.setMnemonic('B');
         jMenuFilme.setText("Bearbeiten");
 
         jMenuItemFilmAbspielen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
@@ -1251,7 +1248,7 @@ public class MediathekGui extends JFrame {
 
         jMenuBar.add(jMenuFilme);
 
-        jMenuDownload.setMnemonic('w');
+        jMenuDownload.setMnemonic('B');
         jMenuDownload.setText("Bearbeiten");
 
         jMenuItemDownloadsAlleStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/download_alleStarten_16.png"))); // NOI18N
