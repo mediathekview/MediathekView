@@ -57,10 +57,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return ret;
     }
 
-    public synchronized void zurueckgestellteWiederAktivieren() {
-        this.parallelStream().forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString());
-    }
-
+//    public synchronized void zurueckgestellteWiederAktivieren() {
+//        this.parallelStream().forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString());
+//    }
     public synchronized void filmEintragen() {
         // bei einmal Downloads nach einem Programmstart/Neuladen der Filmliste
         // den Film wieder eintragen
@@ -112,8 +111,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    public synchronized void abosPutzen() {
-        // fehlerhafte und nicht gestartete löschen
+    public synchronized void abosAuffrischen() {
+        // fehlerhafte und nicht gestartete löschen, wird nicht gemeldet ob was gefunden wurde
         boolean gefunden = false;
         Iterator<DatenDownload> it = this.iterator();
         while (it.hasNext()) {
@@ -121,6 +120,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             if (d.isInterrupted()) {
                 // guter Rat teuer was da besser wäre??
                 // wird auch nach dem Neuladen der Filmliste aufgerufen: also Finger weg
+                d.setGroesseFromFilm();//bei den Abgebrochenen wird die tatsächliche Dateigröße angezeigt
                 continue;
             }
             if (!d.istAbo()) {
@@ -137,8 +137,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+//            Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         }
+        this.parallelStream().forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString());
     }
 
     public synchronized int nochNichtFertigeDownloads() {
@@ -304,7 +305,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
                 return s;
             } else {
-                return Start.getTextProgress(download.isDownloadManager(),download.start);
+                return Start.getTextProgress(download.isDownloadManager(), download.start);
             }
         } else {
             return "";
@@ -530,12 +531,10 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     for (int k = 0; k < objLen; ++k) {
                         if (k < DatenDownload.MAX_ELEM) {
                             object[k] = datenDownload.arr[k];
+                        } else if (datenDownload.istAbo()) {
+                            object[k] = "Abo";
                         } else {
-                            if (datenDownload.istAbo()) {
-                                object[k] = "Abo";
-                            } else {
-                                object[k] = "";
-                            }
+                            object[k] = "";
                         }
                     }
                 }

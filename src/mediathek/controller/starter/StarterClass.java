@@ -279,20 +279,8 @@ public class StarterClass {
 
     private void finalizeDownload(DatenDownload datenDownload, Start start /* wegen "datenDownload.start=null" beim stoppen */, HttpDownloadState state) {
         deleteIfEmpty(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]));
+        setFileSize(datenDownload);
 
-//        if (datenDownload.mVFilmSize.getSize() <= 0) {
-            try {
-                if (new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]).exists()) {
-                    long l = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]).length();
-                    if (l > 0) {
-                        datenDownload.mVFilmSize.setSize(l);
-                    }
-                }
-            } catch (Exception ex) {
-                Log.errorLog(601245789, "Fehler beim Ermitteln der Dateigröße: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
-            }
-
-//        }
         if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT])) {
             writeSpotlightComment(datenDownload, state == HttpDownloadState.CANCEL);
         }
@@ -312,6 +300,24 @@ public class StarterClass {
 
         if (SystemInfo.isMacOSX() && daten.mediathekGui != null) {
             Application.getApplication().requestUserAttention(false);
+        }
+    }
+
+    /**
+     * tatsächliche Dateigröße eintragen
+     *
+     * @param DatenDownload with the info of the file
+     */
+    private void setFileSize(DatenDownload datenDownload) {
+        try {
+            if (new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]).exists()) {
+                long l = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]).length();
+                if (l > 0) {
+                    datenDownload.mVFilmSize.setSize(l);
+                }
+            }
+        } catch (Exception ex) {
+            Log.errorLog(461204780, "Fehler beim Ermitteln der Dateigröße: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
     }
 
@@ -505,18 +511,15 @@ public class StarterClass {
                                         filesize = file.length();
                                         stat = stat_start;
                                     } else // counter prüfen und bei einem Maxwert cancelDownload, sonst endlos
-                                    {
-                                        if (start.startcounter < Start.STARTCOUNTER_MAX) {
+                                     if (start.startcounter < Start.STARTCOUNTER_MAX) {
                                             // dann nochmal von vorne
                                             stat = stat_start;
                                         } else {
                                             // dann wars das
                                             stat = stat_fertig_fehler;
                                         }
-                                    }
                                 } else //jetzt muss das File wachsen, sonst kein Restart
-                                {
-                                    if (!file.exists()) {
+                                 if (!file.exists()) {
                                         // dann wars das
                                         stat = stat_fertig_fehler;
                                     } else if (file.length() > filesize) {
@@ -527,7 +530,6 @@ public class StarterClass {
                                         // dann wars das
                                         stat = stat_fertig_fehler;
                                     }
-                                }
                                 break;
                             case stat_pruefen:
                                 if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON || datenDownload.isDownloadManager()) {
