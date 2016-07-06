@@ -36,9 +36,9 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.swing.SwingUtilities;
 import mSearch.daten.DatenFilm;
+import mSearch.tool.*;
 import mediathek.controller.MVBandwidthTokenBucket;
 import mediathek.controller.MVInputStream;
-import mSearch.tool.*;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
@@ -280,6 +280,19 @@ public class StarterClass {
     private void finalizeDownload(DatenDownload datenDownload, Start start /* wegen "datenDownload.start=null" beim stoppen */, HttpDownloadState state) {
         deleteIfEmpty(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]));
 
+//        if (datenDownload.mVFilmSize.getSize() <= 0) {
+            try {
+                if (new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]).exists()) {
+                    long l = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]).length();
+                    if (l > 0) {
+                        datenDownload.mVFilmSize.setSize(l);
+                    }
+                }
+            } catch (Exception ex) {
+                Log.errorLog(601245789, "Fehler beim Ermitteln der Dateigröße: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+            }
+
+//        }
         if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT])) {
             writeSpotlightComment(datenDownload, state == HttpDownloadState.CANCEL);
         }

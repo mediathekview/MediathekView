@@ -271,6 +271,7 @@ public class Daten {
         MVConfig.add(MVConfig.SYSTEM_USE_REPLACETABLE, SystemInfo.isLinux() || SystemInfo.isMacOSX() ? Boolean.TRUE.toString() : Boolean.FALSE.toString()); // wegen des Problems mit ext. Programmaufrufen und Leerzeichen
         MVConfig.add(MVConfig.SYSTEM_ONLY_ASCII, Boolean.FALSE.toString());
         MVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_TABS_LEFT, Boolean.TRUE.toString());
         MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE, Boolean.TRUE.toString());
         MVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.FALSE.toString());
         MVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());

@@ -63,12 +63,8 @@
         <Menu class="javax.swing.JMenu" name="jMenuFilme">
           <Properties>
             <Property name="mnemonic" type="int" value="102"/>
-            <Property name="text" type="java.lang.String" value="Filme"/>
+            <Property name="text" type="java.lang.String" value="Bearbeiten"/>
           </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
-          </AuxValues>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemFilmAbspielen">
               <Properties>
@@ -161,7 +157,7 @@
         <Menu class="javax.swing.JMenu" name="jMenuDownload">
           <Properties>
             <Property name="mnemonic" type="int" value="119"/>
-            <Property name="text" type="java.lang.String" value="Downloads"/>
+            <Property name="text" type="java.lang.String" value="Bearbeiten"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
@@ -337,12 +333,8 @@
         <Menu class="javax.swing.JMenu" name="jMenuAbos">
           <Properties>
             <Property name="mnemonic" type="int" value="98"/>
-            <Property name="text" type="java.lang.String" value="Abos"/>
+            <Property name="text" type="java.lang.String" value="Bearbeiten"/>
           </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
-          </AuxValues>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAbosEinschalten">
               <Properties>

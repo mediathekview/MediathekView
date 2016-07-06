@@ -1,39 +1,34 @@
-/*    
- *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
- *    
- *    This program is free software: you can redistribute it and/or modify
- *    it under the terms of the GNU General Public License as published by
- *    the Free Software Foundation, either version 3 of the License, or
- *    any later version.
+/*
+ * MediathekView
+ * Copyright (C) 2014 W. Xaver
+ * W.Xaver[at]googlemail.com
+ * http://zdfmediathk.sourceforge.net/
  *
- *    This program is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *    GNU General Public License for more details.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
  *
- *    You should have received a copy of the GNU General Public License
- *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-import mSearch.tool.MVConfig;
-import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
-import mediathek.tool.EscBeenden;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 
-public class DialogEinstellungen extends javax.swing.JFrame {
+public class Einstellungen extends javax.swing.JPanel {
 
     Daten ddaten;
     public boolean ok = false;
@@ -103,29 +98,16 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private final DefaultMutableTreeNode treeNodeHistory = new DefaultMutableTreeNode(NAME_history);
     private final DefaultMutableTreeNode treeNodeLogfile = new DefaultMutableTreeNode(NAME_logfile);
 
-    /**
-     * @param parent
-     * @param d
-     */
-    public DialogEinstellungen(JFrame parent, Daten d) {
+    public Einstellungen(JFrame parent, Daten d) {
         initComponents();
-        setTitle("Einstellungen");
-        parentComponent = this;
+        parentComponent = parent;
         ddaten = d;
         init();
         initTree();
-        GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_EINSTELLUNGEN, this, ddaten.mediathekGui);
-        this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
-        jButtonBeenden.addActionListener(e -> beenden());
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                beenden();
-            }
-        };
     }
 
     private void init() {
+        jPanelExtra.setLayout(new java.awt.BorderLayout());
         panelEinstellungen = new PanelEinstellungen(ddaten, parentComponent);
         panelDownload = new PanelDownload(ddaten, parentComponent);
         panelMediaDB = new PanelMediaDB(ddaten, parentComponent);
@@ -190,7 +172,6 @@ public class DialogEinstellungen extends javax.swing.JFrame {
                 jPanelExtra.add(panelLeer);
             } else {
                 String name1 = node.getUserObject().toString();
-                setTitle(name1);
                 switch (name1) {
                     //Einstellungen
                     case NAME_einstellungen:
@@ -275,7 +256,6 @@ public class DialogEinstellungen extends javax.swing.JFrame {
                     default:
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelLeer);
-                        setTitle("Programmeinstellungen");
                         break;
                 }
             }
@@ -290,69 +270,61 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         jTree1.setSelectionPath(tp);
     }
 
-    private void beenden() {
-        ddaten.allesSpeichern();
-        this.dispose();
-    }
-
+    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButtonBeenden = new javax.swing.JButton();
-        javax.swing.JSplitPane jSplitPane1 = new javax.swing.JSplitPane();
-        javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
-        jPanelExtra = new javax.swing.JPanel();
-        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
         jTree1 = new javax.swing.JTree();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jPanelExtra = new javax.swing.JPanel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        jSplitPane1.setDividerLocation(200);
 
-        jButtonBeenden.setText("Schließen");
-
-        jSplitPane1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jSplitPane1.setDividerLocation(250);
-        jSplitPane1.setContinuousLayout(true);
-        jSplitPane1.setOneTouchExpandable(true);
-
-        jPanelExtra.setLayout(new java.awt.BorderLayout());
-        jScrollPane2.setViewportView(jPanelExtra);
-
-        jSplitPane1.setRightComponent(jScrollPane2);
-
-        jTree1.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        jTree1.setRootVisible(false);
         jScrollPane1.setViewportView(jTree1);
 
         jSplitPane1.setLeftComponent(jScrollPane1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        javax.swing.GroupLayout jPanelExtraLayout = new javax.swing.GroupLayout(jPanelExtra);
+        jPanelExtra.setLayout(jPanelExtraLayout);
+        jPanelExtraLayout.setHorizontalGroup(
+            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 526, Short.MAX_VALUE)
+        );
+        jPanelExtraLayout.setVerticalGroup(
+            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 515, Short.MAX_VALUE)
+        );
+
+        jScrollPane2.setViewportView(jPanelExtra);
+
+        jSplitPane1.setRightComponent(jScrollPane2);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1068, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 965, Short.MAX_VALUE)
-                        .addComponent(jButtonBeenden)))
+                .addComponent(jSplitPane1)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonBeenden)
-                .addGap(6, 6, 6))
+                .addComponent(jSplitPane1)
+                .addContainerGap())
         );
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonBeenden;
     private javax.swing.JPanel jPanelExtra;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTree jTree1;
     // End of variables declaration//GEN-END:variables
 }
