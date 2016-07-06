@@ -817,7 +817,9 @@ public class MediathekGui extends JFrame {
         setupBandwidthMenuItem();
 
         // Datei
-        jMenuItemEinstellungen.addActionListener(e -> dialogEinstellungen.setVisible(true));
+////        jMenuItemEinstellungen.addActionListener(e -> dialogEinstellungen.setVisible(true));
+        jMenuItemEinstellungen.setVisible(false);
+
         jMenuItemBeenden.addActionListener(e -> beenden(false, false));
         // Filme
         jMenuItemFilmlisteLaden.addActionListener(e -> Daten.filmeLaden.filmeLaden(daten, false));
