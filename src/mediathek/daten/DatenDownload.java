@@ -31,7 +31,7 @@ import mediathek.controller.starter.Start;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 
-public class DatenDownload extends Data<DatenDownload> {
+public final class DatenDownload extends Data<DatenDownload> {
 
     // Quelle - start über einen Button - Download - Abo
     public static final byte QUELLE_ALLE = -1;
@@ -160,20 +160,30 @@ public class DatenDownload extends Data<DatenDownload> {
         arr[DatenDownload.DOWNLOAD_SPOTLIGHT] = pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT];
         arr[DatenDownload.DOWNLOAD_GEO] = film.arr[DatenFilm.FILM_GEO];
         // und jetzt noch die Dateigröße für die entsp. URL
-        if (film.arr[DatenFilm.FILM_URL].equals(arr[DOWNLOAD_URL])) {
-            mVFilmSize.setSize(film.arr[DatenFilm.FILM_GROESSE]);
-        } else {
-            mVFilmSize.setSize("");
-        }
+        setGroesseFromFilm();
+        //setGroesse(""); //dann dauert das Starten uu sehr lange
+
         aufrufBauen(pSet, film, abo, name, pfad);
         init();
     }
 
+    public void setGroesseFromFilm() {
+        if (film != null) {
+            if (film.arr[DatenFilm.FILM_URL].equals(arr[DOWNLOAD_URL])) {
+                mVFilmSize.setSize(film.arr[DatenFilm.FILM_GROESSE]);
+            } else {
+                mVFilmSize.setSize("");
+            }
+        }
+    }
+
     public void setGroesse(String groesse) {
-        if (!groesse.isEmpty()) {
-            mVFilmSize.setSize(groesse);
-        } else {
-            mVFilmSize.setSize(film.getDateigroesse(arr[DOWNLOAD_URL]));
+        if (film != null) {
+            if (!groesse.isEmpty()) {
+                mVFilmSize.setSize(groesse);
+            } else {
+                mVFilmSize.setSize(film.getDateigroesse(arr[DOWNLOAD_URL]));
+            }
         }
     }
 
@@ -545,12 +555,14 @@ public class DatenDownload extends Data<DatenDownload> {
                     path = GuiFunktionen.addsPfad(path, FilenameUtils.removeIllegalCharacters(abo.arr[DatenAbo.ABO_ZIELPFAD], true));
                 }
             } else //Downloads
-             if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN])) {
+            {
+                if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN])) {
                     //und den Namen des Themas an den Zielpfad anhängen
                     path = GuiFunktionen.addsPfad(path, FilenameUtils.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA], true /*pfad*/,
                             Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)),
                             Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ONLY_ASCII))));
                 }
+            }
 
             path = replaceString(path, film); // %D ... ersetzen
         }
