@@ -26,22 +26,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.LookAndFeel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mSearch.tool.MVConfig;
 import mediathek.controller.ProgrammUpdateSuchen;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
-import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVMessageDialog;
 
@@ -88,6 +83,8 @@ public class PanelEinstellungen extends PanelVorlage {
         });
         jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE)));
         jCheckBoxEchtzeit.addActionListener(ae -> MVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.toString(jCheckBoxEchtzeit.isSelected())));
+        jCheckBoxTabsLeft.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_LEFT)));
+        jCheckBoxTabsLeft.addActionListener(ae -> MVConfig.add(MVConfig.SYSTEM_TABS_LEFT, Boolean.toString(jCheckBoxTabsLeft.isSelected())));
         if (SystemInfo.isMacOSX()) {
             jCheckBoxTray.setSelected(false);
             jCheckBoxTray.setEnabled(false);
@@ -234,9 +231,9 @@ public class PanelEinstellungen extends PanelVorlage {
         jButtonInfos = new javax.swing.JButton();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
-        jComboBoxLookAndFeel = new javax.swing.JComboBox<String>();
+        jComboBoxLookAndFeel = new javax.swing.JComboBox<>();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        jComboBoxIcons = new javax.swing.JComboBox<String>();
+        jComboBoxIcons = new javax.swing.JComboBox<>();
         jButtonRefresh = new javax.swing.JButton();
         javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         jCheckBoxEchtzeit = new javax.swing.JCheckBox();
@@ -245,6 +242,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jButtonHelpDays = new javax.swing.JButton();
         jButtonLoad = new javax.swing.JButton();
         jCheckBoxTray = new javax.swing.JCheckBox();
+        jCheckBoxTabsLeft = new javax.swing.JCheckBox();
 
         setMinimumSize(getPreferredSize());
 
@@ -337,6 +335,8 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jCheckBoxTray.setText("Programm ins Tray minimieren");
 
+        jCheckBoxTabsLeft.setText("Tabs links anzeigen (nach Programmstart)");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -346,7 +346,9 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jCheckBoxEchtzeit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(64, 64, 64))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jCheckBoxTabsLeft)
+                        .addContainerGap())
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -358,13 +360,15 @@ public class PanelEinstellungen extends PanelVorlage {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonLoad))
                             .addComponent(jCheckBoxTray))
-                        .addGap(0, 16, Short.MAX_VALUE))))
+                        .addGap(0, 60, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
-                .addComponent(jCheckBoxEchtzeit)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jCheckBoxEchtzeit)
+                    .addComponent(jCheckBoxTabsLeft))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxTray)
                 .addGap(5, 5, 5)
@@ -397,7 +401,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pnlProgramUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(138, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -410,6 +414,7 @@ public class PanelEinstellungen extends PanelVorlage {
     private javax.swing.JButton jButtonSuchen;
     private javax.swing.JCheckBox jCheckBoxEchtzeit;
     private javax.swing.JCheckBox jCheckBoxSuchen;
+    private javax.swing.JCheckBox jCheckBoxTabsLeft;
     private javax.swing.JCheckBox jCheckBoxTray;
     private javax.swing.JComboBox<String> jComboBoxIcons;
     private javax.swing.JComboBox<String> jComboBoxLookAndFeel;
