@@ -26,26 +26,13 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import javax.swing.AbstractAction;
-import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JEditorPane;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import mediathek.daten.Daten;
-import mediathek.tool.BeobMausUrl;
-import mediathek.tool.EscBeenden;
-import mediathek.tool.MVFunctionSys;
-import mediathek.tool.Konstanten;
-import mediathek.tool.UrlHyperlinkAction;
+import mediathek.tool.*;
 import org.jdesktop.swingx.JXHyperlink;
 
 @SuppressWarnings("serial")

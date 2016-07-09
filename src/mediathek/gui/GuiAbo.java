@@ -19,32 +19,21 @@
  */
 package mediathek.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
+import javax.swing.*;
+import mSearch.tool.Datum;
+import mSearch.tool.Listener;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.res.GetIcon;
-import mediathek.tool.BeobTableHeader;
-import mediathek.tool.CellRendererAbo;
-import mediathek.tool.HinweisKeineAuswahl;
-import mSearch.tool.Listener;
-import mediathek.tool.MVTable;
-import mediathek.tool.TModelAbo;
-import mSearch.tool.Datum;
+import mediathek.tool.*;
 
 public class GuiAbo extends PanelVorlage {
 
@@ -59,6 +48,10 @@ public class GuiAbo extends PanelVorlage {
         if (tabelle.getRowCount() > 0) {
             tabelle.setRowSelectionInterval(0, 0);
         }
+
+        ToolBar toolBar = new ToolBar(daten, ToolBar.TOOLBAR_TAB_ABOS);
+        jPanelToolBar.setLayout(new BorderLayout());
+        jPanelToolBar.add(toolBar, BorderLayout.CENTER);
     }
     //===================================
     //public
@@ -227,8 +220,20 @@ public class GuiAbo extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanelToolBar = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
+
+        javax.swing.GroupLayout jPanelToolBarLayout = new javax.swing.GroupLayout(jPanelToolBar);
+        jPanelToolBar.setLayout(jPanelToolBarLayout);
+        jPanelToolBarLayout.setHorizontalGroup(
+            jPanelToolBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 416, Short.MAX_VALUE)
+        );
+        jPanelToolBarLayout.setVerticalGroup(
+            jPanelToolBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 13, Short.MAX_VALUE)
+        );
 
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
@@ -238,14 +243,19 @@ public class GuiAbo extends PanelVorlage {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 602, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(jPanelToolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanelToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanelToolBar;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 

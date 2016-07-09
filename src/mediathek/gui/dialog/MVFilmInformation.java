@@ -11,7 +11,6 @@ import mSearch.daten.DatenFilm;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
-import mediathek.tool.EscBeenden;
 import mediathek.tool.UrlHyperlinkAction;
 import org.jdesktop.swingx.JXHyperlink;
 
@@ -64,13 +63,13 @@ public class MVFilmInformation implements MVFilmInfo {
         dialog.setSize(size);
         calculateHudPosition();
 
-        tabbedPane.addChangeListener(this);
-        new EscBeenden(dialog) {
-            @Override
-            public void beenden_(JDialog d) {
-                d.dispose();
-            }
-        };
+//        tabbedPane.addChangeListener(this);
+//        new EscBeenden(dialog) {
+//            @Override
+//            public void beenden_(JDialog d) {
+//                d.dispose();
+//            }
+//        };
     }
 
     private JComponent setLable() {

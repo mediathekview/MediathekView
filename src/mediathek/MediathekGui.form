@@ -62,8 +62,8 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenuFilme">
           <Properties>
-            <Property name="mnemonic" type="int" value="66"/>
-            <Property name="text" type="java.lang.String" value="Bearbeiten"/>
+            <Property name="mnemonic" type="int" value="70"/>
+            <Property name="text" type="java.lang.String" value="Filme"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemFilmAbspielen">
@@ -156,8 +156,8 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenuDownload">
           <Properties>
-            <Property name="mnemonic" type="int" value="66"/>
-            <Property name="text" type="java.lang.String" value="Bearbeiten"/>
+            <Property name="mnemonic" type="int" value="79"/>
+            <Property name="text" type="java.lang.String" value="Download"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
@@ -333,7 +333,7 @@
         <Menu class="javax.swing.JMenu" name="jMenuAbos">
           <Properties>
             <Property name="mnemonic" type="int" value="98"/>
-            <Property name="text" type="java.lang.String" value="Bearbeiten"/>
+            <Property name="text" type="java.lang.String" value="Abo"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAbosEinschalten">
@@ -530,14 +530,12 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="jPanel1" pref="1083" max="32767" attributes="0"/>
-          <Component id="jPanelToolBar" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <Component id="jPanelToolBar" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
               <Component id="jPanel1" pref="805" max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -578,21 +576,6 @@
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
         </Container>
       </SubComponents>
-    </Container>
-    <Container class="javax.swing.JPanel" name="jPanelToolBar">
-
-      <Layout>
-        <DimensionLayout dim="0">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-          </Group>
-        </DimensionLayout>
-        <DimensionLayout dim="1">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-          </Group>
-        </DimensionLayout>
-      </Layout>
     </Container>
   </SubComponents>
 </Form>

@@ -319,7 +319,7 @@
         </Component>
         <Component class="javax.swing.JCheckBox" name="jCheckBoxTabsLeft">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Tabs links anzeigen (nach Programmstart)"/>
+            <Property name="text" type="java.lang.String" value="Tabs links anzeigen"/>
           </Properties>
         </Component>
       </SubComponents>
