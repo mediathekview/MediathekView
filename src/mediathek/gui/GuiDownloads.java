@@ -56,6 +56,7 @@ public class GuiDownloads extends PanelVorlage {
     private static final String COMBO_DISPLAY_ALL = "alles";
     private static final String COMBO_DISPLAY_DOWNLOADS_ONLY = "nur Downloads";
     private static final String COMBO_DISPLAY_ABOS_ONLY = "nur Abos";
+    private ToolBar toolBar;
     /**
      * The internally used model.
      */
@@ -94,9 +95,10 @@ public class GuiDownloads extends PanelVorlage {
         cbDisplayCategories.setModel(getDisplaySelectionModel());
         cbDisplayCategories.addActionListener(new DisplayCategoryListener());
 
-        ToolBar toolBar = new ToolBar(daten, ToolBar.TOOLBAR_TAB_DOWNLOADS);
+        toolBar = new ToolBar(daten, ToolBar.TOOLBAR_TAB_DOWNLOADS);
         jPanelToolBar.setLayout(new BorderLayout());
         jPanelToolBar.add(toolBar, BorderLayout.CENTER);
+        setToolbarVisible();
 
         SwingUtilities.invokeLater(this::downloadsAktualisieren);
     }
@@ -175,6 +177,9 @@ public class GuiDownloads extends PanelVorlage {
     //===================================
     //private
     //===================================
+    private void setToolbarVisible() {
+        toolBar.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
+    }
     private void init() {
         //Tabelle einrichten
         ActionMap am = tabelle.getActionMap();
@@ -279,6 +284,12 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void addListenerMediathekView() {
+        Listener.addListener(new Listener(Listener.EREIGNIS_TOOLBAR_VIS, GuiDownloads.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setToolbarVisible();
+            }
+        });
         Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {

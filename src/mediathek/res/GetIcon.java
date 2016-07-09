@@ -22,15 +22,19 @@ package mediathek.res;
 import java.io.File;
 import javax.swing.ImageIcon;
 import mSearch.tool.Log;
-import mediathek.daten.Daten;
-import mediathek.tool.GuiFunktionen;
 import mSearch.tool.MVConfig;
+import mediathek.tool.GuiFunktionen;
 
 public class GetIcon {
 
     private final static String PFAD_PROGRAMM = "/mediathek/res/programm/";
     private final static String PFAD_SENDER = "/mediathek/res/sender/";
     public final static String PFAD_RES = "/mediathek/res/";
+    public final static String PFAD_GUI = "/mediathek/res/gui/";
+
+    public static ImageIcon getGuiIcon(String strIcon) {
+        return getIcon(strIcon, PFAD_GUI);
+    }
 
     public static ImageIcon getIcon(String strIcon) {
         return getIcon(strIcon, PFAD_RES);
