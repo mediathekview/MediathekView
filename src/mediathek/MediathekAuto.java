@@ -23,18 +23,18 @@ import java.awt.SplashScreen;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
-import mediathek.controller.IoXmlLesen;
-import mSearch.tool.SysMsg;
-import mediathek.daten.Daten;
-import mediathek.daten.DatenDownload;
-import mSearch.tool.MVConfig;
-import mediathek.tool.MVListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.FilmlisteLesen;
 import mSearch.tool.Log;
 import static mSearch.tool.Log.LILNE;
+import mSearch.tool.MVConfig;
+import mSearch.tool.SysMsg;
+import mediathek.controller.IoXmlLesen;
+import mediathek.daten.Daten;
+import mediathek.daten.DatenDownload;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
+import mediathek.tool.MVListeFilme;
 
 public class MediathekAuto {
 

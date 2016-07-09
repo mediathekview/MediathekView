@@ -19,7 +19,6 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.MVConfig;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -33,8 +32,8 @@ import javax.swing.SwingUtilities;
 import mSearch.tool.Functions.OperatingSystemType;
 import static mSearch.tool.Functions.getOs;
 import mSearch.tool.Log;
+import mSearch.tool.MVConfig;
 import mediathek.MediathekGui;
-import mediathek.daten.Daten;
 
 public class GuiFunktionen extends MVFunctionSys {
 

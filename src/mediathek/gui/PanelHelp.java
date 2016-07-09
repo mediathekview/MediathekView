@@ -57,7 +57,7 @@ public class PanelHelp extends javax.swing.JPanel {
 
         });
         jButtonHilfeReset.setIcon(GetIcon.getProgramIcon("help_16.png"));
-        jButtonHilfeReset.addActionListener(e -> new DialogHilfe(daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET)).setVisible(true));
+        jButtonHilfeReset.addActionListener(e -> new DialogHilfe(Daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET)).setVisible(true));
         jButtonResetSets.addActionListener(e -> {
             Daten.listePset.clear();
             //GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
@@ -70,7 +70,7 @@ public class PanelHelp extends javax.swing.JPanel {
                 // damit wird vor dem Beenden das Konfig-Verzeichnis umbenannt und so startet das
                 // Programm wie beim ersten Start
                 Daten.RESET = true;
-                daten.mediathekGui.beenden(false, false);
+                Daten.mediathekGui.beenden(false, false);
             }
         });
 

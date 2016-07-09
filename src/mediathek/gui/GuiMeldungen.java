@@ -63,8 +63,8 @@ public class GuiMeldungen extends PanelVorlage {
     public void isShown() {
         super.isShown();
         if (!solo) {
-            daten.mediathekGui.setToolbar(ToolBar.TOOLBAR_NIX);
-            daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.NONE);
+            Daten.mediathekGui.setTabShown(ToolBar.TOOLBAR_NIX);
+            Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.NONE);
 
         }
     }

@@ -156,7 +156,7 @@ public class PanelMediaDB extends PanelVorlage {
         jButtonHelp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PANEL_MEDIA_DB)).setVisible(true);
+                new DialogHilfe(Daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PANEL_MEDIA_DB)).setVisible(true);
             }
         });
 
@@ -254,7 +254,7 @@ public class PanelMediaDB extends PanelVorlage {
             MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA, dbNew);
             setTablePath(); //neu aufbauen
         } else {
-            new HinweisKeineAuswahl().zeigen(daten.mediathekGui);
+            new HinweisKeineAuswahl().zeigen(Daten.mediathekGui);
         }
     }
 
@@ -658,7 +658,7 @@ public class PanelMediaDB extends PanelVorlage {
             if (SystemInfo.isMacOSX()) {
                 //we want to select a directory only, so temporarily change properties
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
-                FileDialog chooser = new FileDialog(daten.mediathekGui, "Pfad zu den Filmen wählen");
+                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Pfad zu den Filmen wählen");
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     //A directory was selected, that means Cancel was not pressed
@@ -717,7 +717,7 @@ public class PanelMediaDB extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(daten.mediathekGui, "Filme exportieren");
+                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Filme exportieren");
                 chooser.setMode(FileDialog.SAVE);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {

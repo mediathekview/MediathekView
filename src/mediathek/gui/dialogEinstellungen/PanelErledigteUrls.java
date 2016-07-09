@@ -30,7 +30,6 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
 import java.util.LinkedList;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
@@ -44,7 +43,6 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogZiel;
 import mediathek.gui.dialog.MVFilmInfo;
-import mediathek.gui.dialog.MVFilmInformation;
 import mediathek.tool.GuiFunktionen;
 import mSearch.tool.Listener;
 import mediathek.tool.MVMessageDialog;
@@ -154,7 +152,7 @@ public class PanelErledigteUrls extends PanelVorlage {
         if (!dialog.ok) {
             return;
         }
-        mVRun = new MVRun(daten.mediathekGui, "Datei: \"" + dialog.ziel + "\" erstellen");
+        mVRun = new MVRun(Daten.mediathekGui, "Datei: \"" + dialog.ziel + "\" erstellen");
         mVRun.setVisible(true);
         new Thread(new Export_(dialog.ziel, mVRun)).start();
     }
@@ -340,7 +338,7 @@ public class PanelErledigteUrls extends PanelVorlage {
                     }
                 }
                 // weiter
-                DialogAddDownload dialog = new DialogAddDownload(daten.mediathekGui, daten, film, null, "");
+                DialogAddDownload dialog = new DialogAddDownload(Daten.mediathekGui, daten, film, null, "");
                 dialog.setVisible(true);
             }
 

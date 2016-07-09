@@ -61,7 +61,6 @@ import mediathek.tool.TModel;
 import mediathek.tool.UrlHyperlinkAction;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Log;
-import mediathek.tool.*;
 
 public class PanelPsetLang extends PanelVorlage {
 
@@ -1626,7 +1625,7 @@ public class PanelPsetLang extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(daten.mediathekGui, "Programm auswählen");
+                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Programm auswählen");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
@@ -1664,7 +1663,7 @@ public class PanelPsetLang extends PanelVorlage {
             if (SystemInfo.isMacOSX()) {
                 //we want to select a directory only, so temporarily change properties
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
-                FileDialog chooser = new FileDialog(daten.mediathekGui, "Film speichern");
+                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Film speichern");
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     //A directory was selected, that means Cancel was not pressed

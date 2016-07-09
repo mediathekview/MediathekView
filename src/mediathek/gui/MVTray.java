@@ -72,16 +72,16 @@ public final class MVTray {
 
             MenuItem itemRemoveTray = new MenuItem("Trayicon ausblenden");
             itemRemoveTray.addActionListener(e -> {
-                daten.mediathekGui.setVisible(true); // WICHTIG!!
+                Daten.mediathekGui.setVisible(true); // WICHTIG!!
                 MVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.toString(false));
-                daten.mediathekGui.setTray();
+                Daten.mediathekGui.setTray();
                 Listener.notify(Listener.EREIGNIS_TRAYICON, MVTray.class.getSimpleName());
             });
             popup.add(itemRemoveTray);
 
             popup.addSeparator();
             MenuItem itemBeenden = new MenuItem("Programm beenden");
-            itemBeenden.addActionListener(e -> daten.mediathekGui.beenden(false, false));
+            itemBeenden.addActionListener(e -> Daten.mediathekGui.beenden(false, false));
             popup.add(itemBeenden);
 
             trayIcon.setPopupMenu(popup);
@@ -106,10 +106,10 @@ public final class MVTray {
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     if (e.getClickCount() == 1) {
-                        daten.mediathekGui.setVisible(!daten.mediathekGui.isVisible());
-                        if (daten.mediathekGui.isVisible()) {
-                            daten.mediathekGui.toFront();
-                            daten.mediathekGui.requestFocus();
+                        Daten.mediathekGui.setVisible(!daten.mediathekGui.isVisible());
+                        if (Daten.mediathekGui.isVisible()) {
+                            Daten.mediathekGui.toFront();
+                            Daten.mediathekGui.requestFocus();
                         }
                     }
                 }
