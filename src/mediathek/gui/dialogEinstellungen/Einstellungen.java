@@ -109,8 +109,8 @@ public class Einstellungen extends javax.swing.JPanel {
         addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentShown(java.awt.event.ComponentEvent evt) {
-                daten.mediathekGui.setToolbar(ToolBar.TOOLBAR_NIX);
-                daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.NONE);
+                Daten.mediathekGui.setTabShown(ToolBar.TOOLBAR_NIX);
+                Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.NONE);
             }
         });
     }

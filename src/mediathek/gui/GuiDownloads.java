@@ -75,7 +75,7 @@ public class GuiDownloads extends PanelVorlage {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    daten.mediathekGui.showDialogPreferences();
+                    Daten.mediathekGui.showDialogPreferences();
                 }
             });
         }
@@ -112,8 +112,8 @@ public class GuiDownloads extends PanelVorlage {
     public void isShown() {
         super.isShown();
         if (!solo) {
-            daten.mediathekGui.setToolbar(ToolBar.TOOLBAR_TAB_DOWNLOADS);
-            daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.DOWNLOAD);
+            Daten.mediathekGui.setTabShown(ToolBar.TOOLBAR_TAB_DOWNLOADS);
+            Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.DOWNLOAD);
         }
         updateFilmData();
     }
@@ -600,11 +600,11 @@ public class GuiDownloads extends PanelVorlage {
 
         // und die Downloads starten oder stoppen
         //alle Downloads starten/wiederstarten
-        DialogBeendenZeit dialogBeenden = new DialogBeendenZeit(daten.mediathekGui, daten, listeDownloadsStarten);
+        DialogBeendenZeit dialogBeenden = new DialogBeendenZeit(Daten.mediathekGui, daten, listeDownloadsStarten);
         dialogBeenden.setVisible(true);
         if (dialogBeenden.applicationCanTerminate()) {
             // fertig und beenden
-            daten.mediathekGui.beenden(false /*Dialog auf "sofort beenden" einstellen*/, dialogBeenden.isShutdownRequested());
+            Daten.mediathekGui.beenden(false /*Dialog auf "sofort beenden" einstellen*/, dialogBeenden.isShutdownRequested());
         }
 
         reloadTable();
@@ -731,7 +731,7 @@ public class GuiDownloads extends PanelVorlage {
 
     private void setInfo() {
         // Infopanel setzen
-        daten.mediathekGui.getStatusBar().setTextForLeftDisplay();
+        Daten.mediathekGui.getStatusBar().setTextForLeftDisplay();
     }
 
     /**
@@ -1071,7 +1071,7 @@ public class GuiDownloads extends PanelVorlage {
                     itemDelAbo.addActionListener(e -> Daten.listeAbo.aboLoeschen(datenAbo));
                     itemChangeAbo.addActionListener(e -> {
                         stopBeob = true;
-                        DialogEditAbo dialog = new DialogEditAbo(daten.mediathekGui, true, daten, datenAbo);
+                        DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, datenAbo);
                         dialog.setVisible(true);
                         if (dialog.ok) {
                             Daten.listeAbo.aenderungMelden();

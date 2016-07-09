@@ -558,7 +558,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(daten.mediathekGui, title);
+                FileDialog chooser = new FileDialog(Daten.mediathekGui, title);
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
@@ -593,9 +593,9 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             if (!programm.equals("")) {
                 try {
                     if (!new File(programm).exists()) {
-                        MVMessageDialog.showMessageDialog(daten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        MVMessageDialog.showMessageDialog(Daten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  existiert nicht!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     } else if (!new File(programm).canExecute()) {
-                        MVMessageDialog.showMessageDialog(daten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
+                        MVMessageDialog.showMessageDialog(Daten.mediathekGui, "Das Programm:  " + "\"" + programm + "\"" + "  kann nicht ausgeführt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (Exception ignored) {
                 }

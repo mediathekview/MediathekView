@@ -97,7 +97,7 @@ public class PanelEinstellungen extends PanelVorlage {
             jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_USE_TRAY)));
             jCheckBoxTray.addActionListener(ae -> {
                 MVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.toString(jCheckBoxTray.isSelected()));
-                daten.mediathekGui.setTray();
+                Daten.mediathekGui.setTray();
             });
         }
         jCheckBoxSuchen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_UPDATE_SUCHEN)));
@@ -182,7 +182,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 //and now switch it...
                 try {
                     UIManager.setLookAndFeel(lafClass);
-                    SwingUtilities.updateComponentTreeUI(daten.mediathekGui);
+                    SwingUtilities.updateComponentTreeUI(Daten.mediathekGui);
                     for (Frame f : Frame.getFrames()) {
                         SwingUtilities.updateComponentTreeUI(f);
                         for (Window w : f.getOwnedWindows()) {

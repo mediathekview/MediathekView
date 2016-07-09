@@ -65,8 +65,8 @@ public class GuiAbo extends PanelVorlage {
     public void isShown() {
         super.isShown();
         if (!solo) {
-            daten.mediathekGui.setToolbar(ToolBar.TOOLBAR_TAB_ABOS);
-            daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.ABO);
+            Daten.mediathekGui.setTabShown(ToolBar.TOOLBAR_TAB_ABOS);
+            Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.ABO);
         }
     }
 
@@ -183,7 +183,7 @@ public class GuiAbo extends PanelVorlage {
         if (row >= 0) {
             int modelRow = tabelle.convertRowIndexToModel(row);
             DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
-            DialogEditAbo dialog = new DialogEditAbo(daten.mediathekGui, true, daten, akt);
+            DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, akt);
             dialog.setVisible(true);
             if (dialog.ok) {
                 tabelleLaden();
@@ -222,7 +222,7 @@ public class GuiAbo extends PanelVorlage {
 
     private void setInfo() {
         // Infopanel setzen
-        daten.mediathekGui.getStatusBar().setTextForLeftDisplay();
+        Daten.mediathekGui.getStatusBar().setTextForLeftDisplay();
     }
 
     /**

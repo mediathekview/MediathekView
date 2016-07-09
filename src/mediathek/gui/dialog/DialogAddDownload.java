@@ -699,7 +699,7 @@ public class DialogAddDownload extends JDialog {
             if (SystemInfo.isMacOSX()) {
                 //we want to select a directory only, so temporarily change properties
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
-                FileDialog chooser = new FileDialog(daten.mediathekGui, "Film speichern");
+                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Film speichern");
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     //A directory was selected, that means Cancel was not pressed

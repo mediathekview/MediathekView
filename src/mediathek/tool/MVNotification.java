@@ -19,14 +19,14 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.MVConfig;
-import mSearch.tool.MVFilmSize;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JWindow;
 import javax.swing.SwingConstants;
+import mSearch.tool.MVConfig;
+import mSearch.tool.MVFilmSize;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.res.GetIcon;
@@ -36,7 +36,7 @@ import net.sf.jcarrierpigeon.WindowPosition;
 
 public class MVNotification {
     public static void addNotification(Daten daten, DatenDownload datenDownload, boolean erfolgreich) {
-        if (daten.mediathekGui == null) {
+        if (Daten.mediathekGui == null) {
             return; // dann gibts keine GUI
         }
         final String[] m = {

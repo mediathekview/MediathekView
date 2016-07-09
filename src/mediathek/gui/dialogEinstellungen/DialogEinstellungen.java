@@ -114,7 +114,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         ddaten = d;
         init();
         initTree();
-        GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_EINSTELLUNGEN, this, ddaten.mediathekGui);
+        GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_EINSTELLUNGEN, this, Daten.mediathekGui);
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
         jButtonBeenden.addActionListener(e -> beenden());
         new EscBeenden(this) {

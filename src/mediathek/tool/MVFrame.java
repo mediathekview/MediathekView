@@ -46,7 +46,7 @@ public class MVFrame extends javax.swing.JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
-                daten.mediathekGui.hideFrame(state);
+                Daten.mediathekGui.hideFrame(state);
             }
         });
         pack();
@@ -62,7 +62,7 @@ public class MVFrame extends javax.swing.JFrame {
 
     public void setSize(String nr) {
         nrGroesse = nr;
-        GuiFunktionen.setSize(nr, this, daten.mediathekGui);
+        GuiFunktionen.setSize(nr, this, Daten.mediathekGui);
     }
 
 

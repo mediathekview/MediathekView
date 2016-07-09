@@ -298,7 +298,7 @@ public class StarterClass {
         }
         notifyStartEvent(datenDownload);
 
-        if (SystemInfo.isMacOSX() && daten.mediathekGui != null) {
+        if (SystemInfo.isMacOSX() && Daten.mediathekGui != null) {
             Application.getApplication().requestUserAttention(false);
         }
     }
@@ -559,7 +559,7 @@ public class StarterClass {
                 Log.errorLog(395623710, ex);
                 SwingUtilities.invokeLater(() -> {
                     if (!Daten.auto) {
-                        new MeldungDownloadfehler(daten.mediathekGui, exMessage, datenDownload).setVisible(true);
+                        new MeldungDownloadfehler(Daten.mediathekGui, exMessage, datenDownload).setVisible(true);
                     }
                 });
             }
@@ -623,7 +623,7 @@ public class StarterClass {
         private boolean abbrechen_() {
             boolean result = false;
             if (file.exists()) {
-                DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(daten.mediathekGui, datenDownload, false /*weiterführen*/);
+                DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(Daten.mediathekGui, datenDownload, false /*weiterführen*/);
                 dialogContinueDownload.setVisible(true);
 
                 switch (dialogContinueDownload.getResult()) {
@@ -866,7 +866,7 @@ public class StarterClass {
                             Log.errorLog(915236798, "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
                             SwingUtilities.invokeLater(() -> {
                                 if (!Daten.auto) {
-                                    new MeldungDownloadfehler(daten.mediathekGui, "URL des Films:\n"
+                                    new MeldungDownloadfehler(Daten.mediathekGui, "URL des Films:\n"
                                             + datenDownload.arr[DatenDownload.DOWNLOAD_URL] + "\n\n"
                                             + responseCode + "\n", datenDownload).setVisible(true);
                                 }
@@ -892,7 +892,7 @@ public class StarterClass {
                 start.status = Start.STATUS_ERR;
                 SwingUtilities.invokeLater(() -> {
                     if (!Daten.auto) {
-                        new MeldungDownloadfehler(daten.mediathekGui, exMessage, datenDownload).setVisible(true);
+                        new MeldungDownloadfehler(Daten.mediathekGui, exMessage, datenDownload).setVisible(true);
                     }
                 });
             }
@@ -945,7 +945,7 @@ public class StarterClass {
         private boolean abbrechen_() {
             boolean result = false;
             if (file.exists()) {
-                DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(daten.mediathekGui, datenDownload, true /*weiterführen*/);
+                DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(Daten.mediathekGui, datenDownload, true /*weiterführen*/);
                 dialogContinueDownload.setVisible(true);
 
                 switch (dialogContinueDownload.getResult()) {

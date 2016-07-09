@@ -125,8 +125,8 @@ public class GuiFilme extends PanelVorlage {
     @Override
     public void isShown() {
         super.isShown();
-        daten.mediathekGui.setToolbar(ToolBar.TOOLBAR_TAB_FILME);
-        daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.FILME);
+        Daten.mediathekGui.setTabShown(ToolBar.TOOLBAR_TAB_FILME);
+        Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.FILME);
         updateFilmData();
         setInfo();
     }
@@ -182,8 +182,8 @@ public class GuiFilme extends PanelVorlage {
                 mVFilter.enableFilter(true);
             }
         });
-        daten.mediathekGui.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "sender");
-        daten.mediathekGui.getRootPane().getActionMap().put("sender", new AbstractAction() {
+        Daten.mediathekGui.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "sender");
+        Daten.mediathekGui.getRootPane().getActionMap().put("sender", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -309,7 +309,7 @@ public class GuiFilme extends PanelVorlage {
         jCheckBoxProgamme.setIcon(GetIcon.getProgramIcon("close_15.png"));
         jCheckBoxProgamme.addActionListener(e -> {
             MVConfig.add(MVConfig.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, Boolean.FALSE.toString());
-            daten.mediathekGui.videoplayerAnzeigen(true);
+            Daten.mediathekGui.videoplayerAnzeigen(true);
             panelVideoplayerSetzen();
         });
         setSplitPane();
@@ -477,7 +477,7 @@ public class GuiFilme extends PanelVorlage {
             if (mVFilter.get_jCheckBoxNurHd().isSelected()) {
                 aufloesung = DatenFilm.AUFLOESUNG_HD;
             }
-            DialogAddDownload dialog = new DialogAddDownload(daten.mediathekGui, daten, datenFilm, pSet, aufloesung);
+            DialogAddDownload dialog = new DialogAddDownload(Daten.mediathekGui, daten, datenFilm, pSet, aufloesung);
             dialog.setVisible(true);
         }
     }
@@ -547,7 +547,7 @@ public class GuiFilme extends PanelVorlage {
 
     private void setInfo() {
         // Infopanel setzen
-        daten.mediathekGui.getStatusBar().setTextForLeftDisplay();
+        Daten.mediathekGui.getStatusBar().setTextForLeftDisplay();
     }
 
     private ArrayList<DatenFilm> getSelFilme() {
@@ -953,7 +953,7 @@ public class GuiFilme extends PanelVorlage {
             // jetzt nur den Filter aus der Toolbar
             MVListeFilme.getModelTabFilme(lf, daten, tabelle,
                     "", "", "",
-                    daten.mediathekGui.getFilterTextFromSearchField(),
+                    getFilterTextFromSearchField(),
                     "",
                     mVFilter.get_jSliderMinuten().getValue(),
                     mVFilter.get_jCheckBoxKeineAbos().isSelected(), mVFilter.get_jCheckBoxKeineGesehenen().isSelected(),
@@ -1700,13 +1700,15 @@ public class GuiFilme extends PanelVorlage {
                                 //gibts schon, dann löschen
                                 Daten.listeAbo.aboLoeschen(datenAbo);
                             } else //neues Abo anlegen
-                             if (mitTitel) {
+                            {
+                                if (mitTitel) {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], film.arr[DatenFilm.FILM_TITEL]);
                                 } else {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], "");
                                 }
+                            }
                         });
                         stopBeob = false;
                     }
