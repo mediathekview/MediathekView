@@ -55,6 +55,7 @@ public class GuiFilme extends PanelVorlage {
     private MVFilter mVFilter;
     public MVFilterFrame mVFilterFrame;
     private final MVFilterPanel mVFilterPanel;
+    ToolBar toolBar;
 
     public GuiFilme(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
@@ -101,9 +102,11 @@ public class GuiFilme extends PanelVorlage {
         jPanelFilter.setLayout(new BorderLayout());
         filmInfo = daten.filmInfo;
 
-        ToolBar toolBar = new ToolBar(daten, ToolBar.TOOLBAR_TAB_FILME);
+        toolBar = new ToolBar(daten, ToolBar.TOOLBAR_TAB_FILME);
         jPanelToolBar.setLayout(new BorderLayout());
         jPanelToolBar.add(toolBar, BorderLayout.CENTER);
+        setToolbarVisible();
+
     }
 
     private void setupDescriptionPanel() {
@@ -126,6 +129,10 @@ public class GuiFilme extends PanelVorlage {
         daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.FILME);
         updateFilmData();
         setInfo();
+    }
+
+    public String getFilterTextFromSearchField() {
+        return toolBar.jTextFieldFilter.getText();
     }
 
     public void guiFilmeFilmAbspielen() {
@@ -331,10 +338,17 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
-    //===================================
-    // Private
-    //===================================
+    private void setToolbarVisible() {
+        toolBar.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
+    }
+
     private void addMVListener() {
+        Listener.addListener(new Listener(Listener.EREIGNIS_TOOLBAR_VIS, GuiFilme.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setToolbarVisible();
+            }
+        });
         Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {

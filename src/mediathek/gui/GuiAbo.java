@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.*;
 import mSearch.tool.Datum;
 import mSearch.tool.Listener;
+import mSearch.tool.MVConfig;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
@@ -36,6 +37,8 @@ import mediathek.res.GetIcon;
 import mediathek.tool.*;
 
 public class GuiAbo extends PanelVorlage {
+
+    private ToolBar toolBar;
 
     public GuiAbo(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
@@ -49,9 +52,10 @@ public class GuiAbo extends PanelVorlage {
             tabelle.setRowSelectionInterval(0, 0);
         }
 
-        ToolBar toolBar = new ToolBar(daten, ToolBar.TOOLBAR_TAB_ABOS);
+        toolBar = new ToolBar(daten, ToolBar.TOOLBAR_TAB_ABOS);
         jPanelToolBar.setLayout(new BorderLayout());
         jPanelToolBar.add(toolBar, BorderLayout.CENTER);
+        setToolbarVisible();
     }
     //===================================
     //public
@@ -65,6 +69,7 @@ public class GuiAbo extends PanelVorlage {
             daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.ABO);
         }
     }
+
 
     public void aendern() {
         aboAendern();
@@ -85,7 +90,16 @@ public class GuiAbo extends PanelVorlage {
     //===================================
     //private
     //===================================
+    private void setToolbarVisible() {
+        toolBar.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
+    }
     private void initBeobachter() {
+        Listener.addListener(new Listener(Listener.EREIGNIS_TOOLBAR_VIS, GuiAbo.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setToolbarVisible();
+            }
+        });
         Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName()) {
             @Override
             public void ping() {
