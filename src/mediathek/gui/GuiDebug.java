@@ -179,14 +179,14 @@ public class GuiDebug extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!jTextFieldSearchUrl.getText().isEmpty()) {
-                    daten.guiFilme.searchUrl(jTextFieldSearchUrl.getText());
+                    Daten.guiFilme.searchUrl(jTextFieldSearchUrl.getText());
                 }
             }
         });
         addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentShown(java.awt.event.ComponentEvent evt) {
-                daten.mediathekGui.setToolbar(MVToolBar.TOOLBAR_NIX);
+                daten.mediathekGui.setToolbar(ToolBar.TOOLBAR_NIX);
                 daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.NONE);
             }
         });

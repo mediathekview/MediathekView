@@ -187,7 +187,7 @@ public final class ToolBar extends JToolBar {
                 jTextFieldFilter.getFindButton().setIcon(GetIcon.getProgramIcon("suchen_22.png"));
                 jTextFieldFilter.addActionListener(actionEvent -> {
                     Filter.checkPattern2(jTextFieldFilter);
-                    daten.guiFilme.guiFilmeFiltern();
+                    Daten.guiFilme.guiFilmeFiltern();
                 });
                 //looks like you need to explicitly set this on Linux...
                 jTextFieldFilter.setInstantSearchDelay(150);
@@ -301,15 +301,15 @@ public final class ToolBar extends JToolBar {
                 ok = true;
             }
             if (!ok) {
-                if (!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_DOWNLOAD)) && b.sparte.contains(TOOLBAR_TAB_DOWNLOADS)
-                        || Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FENSTER_DOWNLOAD)) && b.sparte.contains(TOOLBAR_TAB_DOWNLOADS)) {
-                    b.setVisible(false);
-                } else if (!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_ABO)) && b.sparte.contains(TOOLBAR_TAB_ABOS)
-                        || Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FENSTER_ABO)) && b.sparte.contains(TOOLBAR_TAB_ABOS)) {
-                    b.setVisible(false);
-                } else {
-                    b.setEnabled(false);
-                }
+//////                if (!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_DOWNLOAD)) && b.sparte.contains(TOOLBAR_TAB_DOWNLOADS)
+//////                        || Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FENSTER_DOWNLOAD)) && b.sparte.contains(TOOLBAR_TAB_DOWNLOADS)) {
+//////                    b.setVisible(false);
+//////                } else if (!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_ABO)) && b.sparte.contains(TOOLBAR_TAB_ABOS)
+//////                        || Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FENSTER_ABO)) && b.sparte.contains(TOOLBAR_TAB_ABOS)) {
+//////                    b.setVisible(false);
+//////                } else {
+//////                    b.setEnabled(false);
+//////                }
             }
         }
     }
@@ -405,8 +405,8 @@ public final class ToolBar extends JToolBar {
                         }
                     }
                 });
-                jButtonFilmSpeichern.addActionListener(e -> daten.guiFilme.guiFilmeFilmSpeichern());
-                jButtonFilmAbspielen.addActionListener(e -> daten.guiFilme.guiFilmeFilmAbspielen());
+                jButtonFilmSpeichern.addActionListener(e -> Daten.guiFilme.guiFilmeFilmSpeichern());
+                jButtonFilmAbspielen.addActionListener(e -> Daten.guiFilme.guiFilmeFilmAbspielen());
                 jButtonInfo.addActionListener(e -> daten.filmInfo.showInfo());
                 jButtonFilterPanel.addActionListener(e -> {
                     boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_FILTER));
@@ -419,18 +419,18 @@ public final class ToolBar extends JToolBar {
                 break;
             case TOOLBAR_TAB_DOWNLOADS:
                 jButtonInfo.addActionListener(e -> daten.filmInfo.showInfo());
-                jButtonDownloadAktualisieren.addActionListener(e -> daten.guiDownloads.aktualisieren());
-                jButtonDownloadAufraeumen.addActionListener(e -> daten.guiDownloads.aufraeumen());
-                jButtonDownloadLoeschen.addActionListener(e -> daten.guiDownloads.loeschen());
-                jButtonDownloadAlleStarten.addActionListener(e -> daten.guiDownloads.starten(true));
-                jButtonDownloadFilmStarten.addActionListener(e -> daten.guiDownloads.filmAbspielen());
-                jButtonDownloadZurueckstellen.addActionListener(e -> daten.guiDownloads.zurueckstellen());
+                jButtonDownloadAktualisieren.addActionListener(e -> Daten.guiDownloads.aktualisieren());
+                jButtonDownloadAufraeumen.addActionListener(e -> Daten.guiDownloads.aufraeumen());
+                jButtonDownloadLoeschen.addActionListener(e -> Daten.guiDownloads.loeschen());
+                jButtonDownloadAlleStarten.addActionListener(e -> Daten.guiDownloads.starten(true));
+                jButtonDownloadFilmStarten.addActionListener(e -> Daten.guiDownloads.filmAbspielen());
+                jButtonDownloadZurueckstellen.addActionListener(e -> Daten.guiDownloads.zurueckstellen());
                 break;
             case TOOLBAR_TAB_ABOS:
-                jButtonAbosEinschalten.addActionListener(e -> daten.guiAbo.einAus(true));
-                jButtonAbosAusschalten.addActionListener(e -> daten.guiAbo.einAus(false));
-                jButtonAbosLoeschen.addActionListener(e -> daten.guiAbo.loeschen());
-                jButtonAboAendern.addActionListener(actionEvent -> daten.guiAbo.aendern());
+                jButtonAbosEinschalten.addActionListener(e -> Daten.guiAbo.einAus(true));
+                jButtonAbosAusschalten.addActionListener(e -> Daten.guiAbo.einAus(false));
+                jButtonAbosLoeschen.addActionListener(e -> Daten.guiAbo.loeschen());
+                jButtonAboAendern.addActionListener(actionEvent -> Daten.guiAbo.aendern());
                 break;
 
         }

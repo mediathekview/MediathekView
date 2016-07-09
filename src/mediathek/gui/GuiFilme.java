@@ -125,7 +125,7 @@ public class GuiFilme extends PanelVorlage {
     @Override
     public void isShown() {
         super.isShown();
-        daten.mediathekGui.setToolbar(MVToolBar.TOOLBAR_TAB_FILME);
+        daten.mediathekGui.setToolbar(ToolBar.TOOLBAR_TAB_FILME);
         daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.FILME);
         updateFilmData();
         setInfo();
@@ -320,9 +320,7 @@ public class GuiFilme extends PanelVorlage {
                     }
                 });
 
-        setFilterPanel();
-        MVListeFilme.checkBlacklist();
-        loadTable(); //Filme laden
+        setFilterPanelAndLoad();
         tabelle.initTabelle();
         if (tabelle.getRowCount() > 0) {
             tabelle.setRowSelectionInterval(0, 0);
@@ -340,6 +338,11 @@ public class GuiFilme extends PanelVorlage {
 
     private void setToolbarVisible() {
         toolBar.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
+        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN))) {
+            MVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.toString(true));
+            Listener.notify(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, GuiFilme.class.getSimpleName());
+            setFilterPanelAndLoad();
+        }
     }
 
     private void addMVListener() {
@@ -415,10 +418,7 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void ping() {
                 // Panel anzeigen und die Filmliste anpassen
-                setFilterPanel();
-                //setFilterAction();
-                MVListeFilme.checkBlacklist();
-                loadTable();
+                setFilterPanelAndLoad();
             }
         });
         Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, GuiFilme.class.getSimpleName()) {
@@ -651,7 +651,7 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
-    private void setFilterPanel() {
+    private void setFilterPanelAndLoad() {
         boolean history = false;
         if (mVFilter != null) {
             mVFilter.removeAllListener();
@@ -686,6 +686,10 @@ public class GuiFilme extends PanelVorlage {
 
         setFilterAction();
         this.updateUI();
+        //und jetzt noch alles laden
+        MVListeFilme.checkBlacklist();
+        loadTable();
+
     }
 
     private void setSplitPane() {
@@ -1696,15 +1700,13 @@ public class GuiFilme extends PanelVorlage {
                                 //gibts schon, dann löschen
                                 Daten.listeAbo.aboLoeschen(datenAbo);
                             } else //neues Abo anlegen
-                            {
-                                if (mitTitel) {
+                             if (mitTitel) {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], film.arr[DatenFilm.FILM_TITEL]);
                                 } else {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], "");
                                 }
-                            }
                         });
                         stopBeob = false;
                     }
