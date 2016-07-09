@@ -42,9 +42,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.gui.*;
 import mediathek.gui.dialog.*;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
-import mediathek.gui.dialogEinstellungen.Einstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
-import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 import mediathek.res.GetIcon;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 import mediathek.tool.*;
@@ -60,15 +58,13 @@ public class MediathekGui extends JFrame {
     private final JLabel jLabelBandbreite = new JLabel("Bandbreite pro Download");
     private final JPanel jPanelBandbreite = new JPanel();
     private final JSlider jSliderBandbreite = new JSlider();
-    private PanelVorlage panelMeldungen = new PanelVorlage(daten, this);
-    private JSplitPane splitPane = null;
+//    private PanelVorlage panelMeldungen = new PanelVorlage(daten, this);
+//    private JSplitPane splitPane = null;
     private MVStatusBar statusBar;
     private final MVFrame[] frames = new MVFrame[3]; // Downloads, Abos, Meldungen
     private JCheckBoxMenuItem jCheckBoxFilterAnzeigen = new JCheckBoxMenuItem();
     private JCheckBoxMenuItem jCheckBoxFilterExtrafenster = new JCheckBoxMenuItem();
-    private final JCheckBoxMenuItem jCheckBoxDownloadAnzeigen = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxDownloadExtrafenster = new JCheckBoxMenuItem();
-    private final JCheckBoxMenuItem jCheckBoxAboAnzeigen = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxAboExtrafenster = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxMeldungenAnzeigen = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxMeldungenExtrafenster = new JCheckBoxMenuItem();
@@ -101,7 +97,7 @@ public class MediathekGui extends JFrame {
 
     public String getFilterTextFromSearchField() {
         //return mVToolBar.jTextFieldFilter.getText();
-        return daten.guiFilme.getFilterTextFromSearchField();
+        return Daten.guiFilme.getFilterTextFromSearchField();
     }
     /**
      * The JVM {@link java.awt.SplashScreen} storage
@@ -137,7 +133,7 @@ public class MediathekGui extends JFrame {
         splashScreenProgress++;
 
         splashScreenContext.setRenderingHint(
-                RenderingHints.KEY_TEXT_ANTIALIASING, 
+                RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         //clear the drawing area...
         splashScreenContext.setComposite(AlphaComposite.Clear);
@@ -372,20 +368,19 @@ public class MediathekGui extends JFrame {
     // public
     //===================================
     public void setToolbar(String state) {
-//        mVToolBar.setToolbar(state);
         jMenuFilme.setEnabled(false);
         jMenuDownload.setEnabled(false);
         jMenuAbos.setEnabled(false);
         switch (state) {
             case "":
                 break;
-            case MVToolBar.TOOLBAR_TAB_FILME:
+            case ToolBar.TOOLBAR_TAB_FILME:
                 jMenuFilme.setEnabled(true);
                 break;
-            case MVToolBar.TOOLBAR_TAB_DOWNLOADS:
+            case ToolBar.TOOLBAR_TAB_DOWNLOADS:
                 jMenuDownload.setEnabled(true);
                 break;
-            case MVToolBar.TOOLBAR_TAB_ABOS:
+            case ToolBar.TOOLBAR_TAB_ABOS:
                 jMenuAbos.setEnabled(true);
                 break;
         }
@@ -416,13 +411,13 @@ public class MediathekGui extends JFrame {
         } else {
             GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_GUI, this, null);
         }
-        try {
-            int divider = Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_BREITE_MELDUNGEN));
-            if (divider > 0) {
-                splitPane.setDividerLocation(divider);
-            }
-        } catch (NumberFormatException ignored) {
-        }
+//        try {
+//            int divider = Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_BREITE_MELDUNGEN));
+//            if (divider > 0) {
+//                splitPane.setDividerLocation(divider);
+//            }
+//        } catch (NumberFormatException ignored) {
+//        }
     }
 
     private void init() {
@@ -459,7 +454,6 @@ public class MediathekGui extends JFrame {
         jMenuItemAnleitung.setIcon(GetIcon.getProgramIcon("help_16.png"));
         initTabs();
         initMenue();
-//        mVToolBar.loadVisible(); // erst jetzt sind die Einstellungen geladen!
         Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
@@ -500,17 +494,18 @@ public class MediathekGui extends JFrame {
 
     public void hideFrame(String state) {
         switch (state) {
-            case MVToolBar.TOOLBAR_TAB_DOWNLOADS:
-                jCheckBoxDownloadAnzeigen.setSelected(false);
-                MVConfig.add(MVConfig.SYSTEM_VIS_DOWNLOAD, Boolean.toString(false));
+            case ToolBar.TOOLBAR_TAB_DOWNLOADS:
+                jCheckBoxDownloadExtrafenster.setSelected(false);
+                MVConfig.add(MVConfig.SYSTEM_FENSTER_DOWNLOAD, Boolean.toString(false));
                 break;
-            case MVToolBar.TOOLBAR_TAB_ABOS:
-                jCheckBoxAboAnzeigen.setSelected(false);
-                MVConfig.add(MVConfig.SYSTEM_VIS_ABO, Boolean.toString(false));
+            case ToolBar.TOOLBAR_TAB_ABOS:
+                jCheckBoxAboExtrafenster.setSelected(false);
+                MVConfig.add(MVConfig.SYSTEM_FENSTER_ABO, Boolean.toString(false));
                 break;
-            case MVToolBar.TOOLBAR_TAB_MELDUNGEN:
-                jCheckBoxMeldungenAnzeigen.setSelected(false);
-                MVConfig.add(MVConfig.SYSTEM_VIS_MELDUNGEN, Boolean.toString(false));
+            case ToolBar.TOOLBAR_TAB_MELDUNGEN:
+                jCheckBoxMeldungenAnzeigen.setSelected(true);
+                jCheckBoxMeldungenExtrafenster.setSelected(false);
+                MVConfig.add(MVConfig.SYSTEM_FENSTER_MELDUNGEN, Boolean.toString(false));
                 break;
         }
         initFrames();
@@ -519,55 +514,50 @@ public class MediathekGui extends JFrame {
     private void initFrames() {
         // Downloads
         int nr = 1;
-        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_DOWNLOAD))) {
-            hide(0, daten.guiDownloads);
-        } else if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FENSTER_DOWNLOAD))) {
-            setFrame(0, MVConfig.SYSTEM_GROESSE_DOWNLOAD, daten.guiDownloads, MVToolBar.TOOLBAR_TAB_DOWNLOADS, "Downloads");
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FENSTER_DOWNLOAD))) {
+            setFrame(0, MVConfig.SYSTEM_GROESSE_DOWNLOAD, Daten.guiDownloads, ToolBar.TOOLBAR_TAB_DOWNLOADS, "Downloads");
         } else {
-            setTab(0, daten.guiDownloads, "Downloads", nr++);
+            setTab(0, Daten.guiDownloads, "Downloads", nr++);
         }
         // Abos
-        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_ABO))) {
-            hide(1, daten.guiAbo);
-        } else if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FENSTER_ABO))) {
-            setFrame(1, MVConfig.SYSTEM_GROESSE_ABO, daten.guiAbo, MVToolBar.TOOLBAR_TAB_ABOS, "Abos");
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FENSTER_ABO))) {
+            setFrame(1, MVConfig.SYSTEM_GROESSE_ABO, Daten.guiAbo, ToolBar.TOOLBAR_TAB_ABOS, "Abos");
         } else {
-            setTab(1, daten.guiAbo, "Abos", nr++);
+            setTab(1, Daten.guiAbo, "Abos", nr++);
         }
         // Meldungen
         if (!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_MELDUNGEN))) {
-            hide(2, panelMeldungen);
+            hide(2, Daten.guiMeldungen);
         } else if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FENSTER_MELDUNGEN))) {
-            setFrame(2, MVConfig.SYSTEM_GROESSE_MELDUNGEN, panelMeldungen, MVToolBar.TOOLBAR_TAB_MELDUNGEN, "Meldungen");
+            setFrame(2, MVConfig.SYSTEM_GROESSE_MELDUNGEN, Daten.guiMeldungen, ToolBar.TOOLBAR_TAB_MELDUNGEN, "Meldungen");
         } else {
-            setTab(2, panelMeldungen, "Meldungen", nr);
+            setTab(2, Daten.guiMeldungen, "Meldungen", nr);
         }
-//        mVToolBar.loadVisible(); // die können sich im externen Fenster geändert haben
         jTabbedPane.setSelectedIndex(0);
-        daten.guiFilme.isShown();
+        Daten.guiFilme.isShown();
     }
 
-    private void hide(int nrFrameArr, PanelVorlage panelVorlage) {
-        panelVorlage.solo = true;
-        if (frames[nrFrameArr] != null) {
-            frames[nrFrameArr].dispose();
-            frames[nrFrameArr] = null;
+    private void hide(int frameNr, PanelVorlage panel) {
+        panel.solo = true;
+        if (frames[frameNr] != null) {
+            frames[frameNr].dispose();
+            frames[frameNr] = null;
         }
-        if (tabContain(panelVorlage)) {
-            jTabbedPane.remove(panelVorlage);
+        if (tabContain(panel)) {
+            jTabbedPane.remove(panel);
         }
     }
 
-    private void setFrame(int nrFrameArr, String nrGroesse, PanelVorlage panelVorlage, String sparte, String titel) {
-        panelVorlage.solo = true;
-        if (frames[nrFrameArr] == null) {
-            if (tabContain(panelVorlage)) {
-                jTabbedPane.remove(panelVorlage);
+    private void setFrame(int frameNr, String nrGroesse, PanelVorlage panel, String sparte, String titel) {
+        panel.solo = true;
+        if (frames[frameNr] == null) {
+            if (tabContain(panel)) {
+                jTabbedPane.remove(panel);
             }
-            frames[nrFrameArr] = new MVFrame(daten, panelVorlage, sparte, titel);
-            frames[nrFrameArr].setSize(nrGroesse);
+            frames[frameNr] = new MVFrame(daten, panel, sparte, titel);
+            frames[frameNr].setSize(nrGroesse);
         }
-        frames[nrFrameArr].setVisible(true);
+        frames[frameNr].setVisible(true);
     }
 
     private void setTab(int nrFrameArr, PanelVorlage panelVorlage, String titel, int nrTab) {
@@ -637,38 +627,37 @@ public class MediathekGui extends JFrame {
     }
 
     private void initTabs() {
-        daten.guiDownloads = new GuiDownloads(daten, daten.mediathekGui);
-        daten.guiAbo = new GuiAbo(daten, daten.mediathekGui);
+        Daten.guiDownloads = new GuiDownloads(daten, Daten.mediathekGui);
+        Daten.guiAbo = new GuiAbo(daten, Daten.mediathekGui);
 
-        daten.guiFilme = new GuiFilme(daten, daten.mediathekGui);
-        daten.guiFilme.init();
+        Daten.guiFilme = new GuiFilme(daten, Daten.mediathekGui);
+        Daten.guiFilme.init();
         setTabColor();
-        jTabbedPane.addTab("Filme", spacerIcon, daten.guiFilme);
+        jTabbedPane.addTab("Filme", spacerIcon, Daten.guiFilme);
 
         // jetzt noch den Rest
-        panelMeldungen = new PanelVorlage(daten, this) {
-
+        Daten.guiMeldungen = new GuiMeldungen(daten, this) {
             @Override
             public void isShown() {
                 if (!solo) {
-                    setToolbar(MVToolBar.TOOLBAR_NIX);
+                    setToolbar(ToolBar.TOOLBAR_NIX);
                     statusBar.setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.NONE);
                 }
             }
         };
-        PanelMeldungen panelMeldungenSystem = new PanelMeldungen(daten, daten.mediathekGui, SysMsg.LOG_SYSTEM, "Systemmeldungen");
-        PanelMeldungen panelMeldungenPlayer = new PanelMeldungen(daten, daten.mediathekGui, SysMsg.LOG_PLAYER, "Meldungen Hilfsprogramme");
-        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                panelMeldungenSystem,
-                panelMeldungenPlayer);
-
-        panelMeldungen.setLayout(new BorderLayout());
-        panelMeldungen.add(splitPane, BorderLayout.CENTER);
+//        PanelMeldungen panelMeldungenSystem = new PanelMeldungen(daten, Daten.mediathekGui, SysMsg.LOG_SYSTEM, "Systemmeldungen");
+//        PanelMeldungen panelMeldungenPlayer = new PanelMeldungen(daten, Daten.mediathekGui, SysMsg.LOG_PLAYER, "Meldungen Hilfsprogramme");
+//        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+//                panelMeldungenSystem,
+//                panelMeldungenPlayer);
+//
+//        panelMeldungen.setLayout(new BorderLayout());
+//        panelMeldungen.add(splitPane, BorderLayout.CENTER);
         if (Daten.debug) {
             Daten.guiDebug = new GuiDebug(daten);
             jTabbedPane.addTab("Debug", spacerIcon, Daten.guiDebug);
         }
-        jTabbedPane.addTab("Einstellungen", spacerIcon, new Einstellungen(this, daten));
+//        jTabbedPane.addTab("Einstellungen", spacerIcon, new Einstellungen(this, daten));
         initFrames();
     }
 
@@ -749,37 +738,37 @@ public class MediathekGui extends JFrame {
         setupBandwidthMenuItem();
 
         // Datei
-////        jMenuItemEinstellungen.addActionListener(e -> dialogEinstellungen.setVisible(true));
-        jMenuItemEinstellungen.setVisible(false);
+        jMenuItemEinstellungen.addActionListener(e -> dialogEinstellungen.setVisible(true));
+//        jMenuItemEinstellungen.setVisible(false);
 
         jMenuItemBeenden.addActionListener(e -> beenden(false, false));
         // Filme
         jMenuItemFilmlisteLaden.addActionListener(e -> Daten.filmeLaden.filmeLaden(daten, false));
-        jMenuItemFilmAbspielen.addActionListener(e -> daten.guiFilme.guiFilmeFilmAbspielen());
-        jMenuItemFilmAufzeichnen.addActionListener(e -> daten.guiFilme.guiFilmeFilmSpeichern());
-        jMenuItemFilterLoeschen.addActionListener(e -> daten.guiFilme.guiFilmeFilterLoeschen());
+        jMenuItemFilmAbspielen.addActionListener(e -> Daten.guiFilme.guiFilmeFilmAbspielen());
+        jMenuItemFilmAufzeichnen.addActionListener(e -> Daten.guiFilme.guiFilmeFilmSpeichern());
+        jMenuItemFilterLoeschen.addActionListener(e -> Daten.guiFilme.guiFilmeFilterLoeschen());
         jMenuItemBlacklist.addActionListener(e -> {
-            DialogLeer dialog = new DialogLeer(daten.mediathekGui, true);
-            dialog.init("Blacklist", new PanelBlacklist(daten, daten.mediathekGui, PanelBlacklist.class.getName() + "_2"));
+            DialogLeer dialog = new DialogLeer(Daten.mediathekGui, true);
+            dialog.init("Blacklist", new PanelBlacklist(daten, Daten.mediathekGui, PanelBlacklist.class.getName() + "_2"));
             dialog.setVisible(true);
         });
         jMenuItemFilmeGesehen.addActionListener(e -> daten.guiFilme.filmGesehen());
         jMenuItemFilmeUngesehen.addActionListener(e -> daten.guiFilme.filmUngesehen());
         jMenuItemFilmeMediensammlung.addActionListener(e -> daten.guiFilme.guiFilmMediensammlung());
         // Downloads
-        jMenuItemDownloadsAktualisieren.addActionListener(e -> daten.guiDownloads.aktualisieren());
-        jMenuItemDownloadAbspielen.addActionListener(e -> daten.guiDownloads.filmAbspielen());
-        jMenuItemDownloadsAufraeumen.addActionListener(e -> daten.guiDownloads.aufraeumen());
-        jMenuItemDownloadsLoeschen.addActionListener(e -> daten.guiDownloads.loeschen());
-        jMenuItemDownloadsAlleStarten.addActionListener(e -> daten.guiDownloads.starten(true /* alle */));
-        jMenuItemDownloadStartTime.addActionListener(e -> daten.guiDownloads.startAtTime());
-        jMenuItemDownloadStarten.addActionListener(e -> daten.guiDownloads.starten(false /* alle */));
-        jMenuItemDownloadsZurueckstellen.addActionListener(e -> daten.guiDownloads.zurueckstellen());
-        jMenuItemDownloadVorziehen.addActionListener(e -> daten.guiDownloads.vorziehen());
-        jMenuItemDownloadAendern.addActionListener(e -> daten.guiDownloads.aendern());
-        jMenuItemDownloadAlleStoppen.addActionListener(e -> daten.guiDownloads.stoppen(true /* alle */));
-        jMenuItemDownloadWartendeStoppen.addActionListener(e -> daten.guiDownloads.wartendeStoppen());
-        jMenuItemDownloadStoppen.addActionListener(e -> daten.guiDownloads.stoppen(false /* alle */));
+        jMenuItemDownloadsAktualisieren.addActionListener(e -> Daten.guiDownloads.aktualisieren());
+        jMenuItemDownloadAbspielen.addActionListener(e -> Daten.guiDownloads.filmAbspielen());
+        jMenuItemDownloadsAufraeumen.addActionListener(e -> Daten.guiDownloads.aufraeumen());
+        jMenuItemDownloadsLoeschen.addActionListener(e -> Daten.guiDownloads.loeschen());
+        jMenuItemDownloadsAlleStarten.addActionListener(e -> Daten.guiDownloads.starten(true /* alle */));
+        jMenuItemDownloadStartTime.addActionListener(e -> Daten.guiDownloads.startAtTime());
+        jMenuItemDownloadStarten.addActionListener(e -> Daten.guiDownloads.starten(false /* alle */));
+        jMenuItemDownloadsZurueckstellen.addActionListener(e -> Daten.guiDownloads.zurueckstellen());
+        jMenuItemDownloadVorziehen.addActionListener(e -> Daten.guiDownloads.vorziehen());
+        jMenuItemDownloadAendern.addActionListener(e -> Daten.guiDownloads.aendern());
+        jMenuItemDownloadAlleStoppen.addActionListener(e -> Daten.guiDownloads.stoppen(true /* alle */));
+        jMenuItemDownloadWartendeStoppen.addActionListener(e -> Daten.guiDownloads.wartendeStoppen());
+        jMenuItemDownloadStoppen.addActionListener(e -> Daten.guiDownloads.stoppen(false /* alle */));
         jMenuItemDownloadShutDown.addActionListener(e -> {
             if (Daten.listeDownloads.nochNichtFertigeDownloads() > 0) {
                 // ansonsten gibts keine laufenden Downloads auf die man warten sollte
@@ -789,23 +778,21 @@ public class MediathekGui extends JFrame {
                         "Keine laufenden Downloads!", JOptionPane.ERROR_MESSAGE);
             }
         });
-        jMenuItemDownloadGesehen.addActionListener(e -> daten.guiDownloads.filmGesehen());
-        jMenuItemDownloadUngesehen.addActionListener(e -> daten.guiDownloads.filmUngesehen());
-        jMenuItemDownloadMediensammlung.addActionListener(e -> daten.guiDownloads.guiFilmMediensammlung());
+        jMenuItemDownloadGesehen.addActionListener(e -> Daten.guiDownloads.filmGesehen());
+        jMenuItemDownloadUngesehen.addActionListener(e -> Daten.guiDownloads.filmUngesehen());
+        jMenuItemDownloadMediensammlung.addActionListener(e -> Daten.guiDownloads.guiFilmMediensammlung());
 
         // Abo
-        jMenuItemAbosEinschalten.addActionListener(e -> daten.guiAbo.einAus(true));
-        jMenuItemAbosAusschalten.addActionListener(e -> daten.guiAbo.einAus(false));
-        jMenuItemAbosLoeschen.addActionListener(e -> daten.guiAbo.loeschen());
-        jMenuItemAbosAendern.addActionListener(e -> daten.guiAbo.aendern());
-        jMenuItemAboNeu.addActionListener(e -> daten.guiAbo.neu());
+        jMenuItemAbosEinschalten.addActionListener(e -> Daten.guiAbo.einAus(true));
+        jMenuItemAbosAusschalten.addActionListener(e -> Daten.guiAbo.einAus(false));
+        jMenuItemAbosLoeschen.addActionListener(e -> Daten.guiAbo.loeschen());
+        jMenuItemAbosAendern.addActionListener(e -> Daten.guiAbo.aendern());
+        jMenuItemAboNeu.addActionListener(e -> Daten.guiAbo.neu());
 
         // Ansicht
         jCheckBoxMenuItemToolBar.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
-//        mVToolBar.setVisible(jCheckBoxMenuItemToolBar.isSelected());
         jCheckBoxMenuItemToolBar.addActionListener(e -> {
             MVConfig.add(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.toString(jCheckBoxMenuItemToolBar.isSelected()));
- //            mVToolBar.setVisible(jCheckBoxMenuItemToolBar.isSelected());
             Listener.notify(Listener.EREIGNIS_TOOLBAR_VIS, MediathekGui.class.getSimpleName());
         });
         jCheckBoxMenuItemVideoplayer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
@@ -847,16 +834,16 @@ public class MediathekGui extends JFrame {
         // ============================
         // Downloads
         jMenuAnsicht.add(new JSeparator());
-        jCheckBoxDownloadAnzeigen.setText("Downloads anzeigen");
-        jCheckBoxDownloadExtrafenster.setText("in Extrafenster");
-        jCheckBoxDownloadExtrafenster.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 10, 5, 1));
-        jMenuAnsicht.add(jCheckBoxDownloadAnzeigen);
+//        jCheckBoxDownloadAnzeigen.setText("Downloads anzeigen");
+        jCheckBoxDownloadExtrafenster.setText("Downloads in Extrafenster");
+//        jCheckBoxDownloadExtrafenster.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 10, 5, 1));
+//        jMenuAnsicht.add(jCheckBoxDownloadAnzeigen);
         jMenuAnsicht.add(jCheckBoxDownloadExtrafenster);
-        jCheckBoxDownloadAnzeigen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_DOWNLOAD)));
-        jCheckBoxDownloadAnzeigen.addActionListener(e -> {
-            MVConfig.add(MVConfig.SYSTEM_VIS_DOWNLOAD, Boolean.toString(jCheckBoxDownloadAnzeigen.isSelected()));
-            initFrames();
-        });
+//        jCheckBoxDownloadAnzeigen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_DOWNLOAD)));
+//        jCheckBoxDownloadAnzeigen.addActionListener(e -> {
+//            MVConfig.add(MVConfig.SYSTEM_VIS_DOWNLOAD, Boolean.toString(jCheckBoxDownloadAnzeigen.isSelected()));
+//            initFrames();
+//        });
         jCheckBoxDownloadExtrafenster.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FENSTER_DOWNLOAD)));
         jCheckBoxDownloadExtrafenster.addActionListener(e -> {
             MVConfig.add(MVConfig.SYSTEM_FENSTER_DOWNLOAD, Boolean.toString(jCheckBoxDownloadExtrafenster.isSelected()));
@@ -866,16 +853,16 @@ public class MediathekGui extends JFrame {
         // ============================
         // Abos
         jMenuAnsicht.add(new JSeparator());
-        jCheckBoxAboAnzeigen.setText("Abos anzeigen");
-        jCheckBoxAboExtrafenster.setText("in Extrafenster");
-        jCheckBoxAboExtrafenster.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 10, 5, 1));
-        jMenuAnsicht.add(jCheckBoxAboAnzeigen);
+//        jCheckBoxAboAnzeigen.setText("Abos anzeigen");
+        jCheckBoxAboExtrafenster.setText("Abos in Extrafenster");
+//        jCheckBoxAboExtrafenster.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 10, 5, 1));
+//        jMenuAnsicht.add(jCheckBoxAboAnzeigen);
         jMenuAnsicht.add(jCheckBoxAboExtrafenster);
-        jCheckBoxAboAnzeigen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_ABO)));
-        jCheckBoxAboAnzeigen.addActionListener(e -> {
-            MVConfig.add(MVConfig.SYSTEM_VIS_ABO, Boolean.toString(jCheckBoxAboAnzeigen.isSelected()));
-            initFrames();
-        });
+//        jCheckBoxAboAnzeigen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_ABO)));
+//        jCheckBoxAboAnzeigen.addActionListener(e -> {
+//            MVConfig.add(MVConfig.SYSTEM_VIS_ABO, Boolean.toString(jCheckBoxAboAnzeigen.isSelected()));
+//            initFrames();
+//        });
         jCheckBoxAboExtrafenster.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FENSTER_ABO)));
         jCheckBoxAboExtrafenster.addActionListener(e -> {
             MVConfig.add(MVConfig.SYSTEM_FENSTER_ABO, Boolean.toString(jCheckBoxAboExtrafenster.isSelected()));
@@ -939,9 +926,9 @@ public class MediathekGui extends JFrame {
             shutDown = dialogBeenden.isShutdownRequested();
         }
         // Tabelleneinstellungen merken
-        daten.guiFilme.tabelleSpeichern();
-        daten.guiDownloads.tabelleSpeichern();
-        daten.guiAbo.tabelleSpeichern();
+        Daten.guiFilme.tabelleSpeichern();
+        Daten.guiDownloads.tabelleSpeichern();
+        Daten.guiAbo.tabelleSpeichern();
         daten.dialogMediaDB.tabelleSpeichern();
 
         if (Daten.listeDownloads != null) {
@@ -971,8 +958,7 @@ public class MediathekGui extends JFrame {
         // MediaDB
         GuiFunktionen.getSize(MVConfig.SYSTEM_MEDIA_DB_DIALOG_GROESSE, daten.dialogMediaDB);
 
-        MVConfig.add(MVConfig.SYSTEM_BREITE_MELDUNGEN, String.valueOf(splitPane.getDividerLocation()));
-
+//        MVConfig.add(MVConfig.SYSTEM_BREITE_MELDUNGEN, String.valueOf(splitPane.getDividerLocation()));
         // Frames
         if (frames[0] != null) {
             GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_DOWNLOAD, frames[0]);
@@ -985,7 +971,7 @@ public class MediathekGui extends JFrame {
         }
 
         // FilterFrame
-        GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_FILTER, daten.guiFilme.mVFilterFrame);
+        GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_FILTER, Daten.guiFilme.mVFilterFrame);
         daten.allesSpeichern();
         Log.endMsg();
 

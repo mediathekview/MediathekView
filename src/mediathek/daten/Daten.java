@@ -19,7 +19,6 @@
  */
 package mediathek.daten;
 
-import mSearch.tool.MVColor;
 import com.jidesoft.utils.SystemInfo;
 import java.io.File;
 import java.io.IOException;
@@ -37,21 +36,14 @@ import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
-import mediathek.controller.MVBandwidthTokenBucket;
 import mSearch.filmlisten.FilmlisteLesen;
 import mSearch.filmlisten.WriteFilmlistJson;
-import mSearch.tool.*;
 import static mSearch.tool.Functions.getPathJar;
+import mSearch.tool.*;
 import mediathek.MediathekGui;
-import mediathek.controller.FilmeLaden;
-import mediathek.controller.IoXmlLesen;
-import mediathek.controller.IoXmlSchreiben;
-import mediathek.controller.MVUsedUrls;
+import mediathek.controller.*;
 import mediathek.controller.starter.StarterClass;
-import mediathek.gui.GuiAbo;
-import mediathek.gui.GuiDebug;
-import mediathek.gui.GuiDownloads;
-import mediathek.gui.GuiFilme;
+import mediathek.gui.*;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.MVFilmInfo;
 import mediathek.tool.*;
@@ -90,11 +82,13 @@ public class Daten {
     public StarterClass starterClass = null; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
 
     // Gui
-    public MediathekGui mediathekGui = null; // JFrame der Gui
-    public GuiFilme guiFilme = null; // Tab mit den Filmen
-    public GuiDownloads guiDownloads = null; // Tab mit den Downloads
-    public GuiAbo guiAbo = null; // Tab mit den Abos
+    public static MediathekGui mediathekGui = null; // JFrame der Gui
+    public static GuiFilme guiFilme = null; // Tab mit den Filmen
+    public static GuiDownloads guiDownloads = null; // Tab mit den Downloads
+    public static GuiAbo guiAbo = null; // Tab mit den Abos
     public static GuiDebug guiDebug = null;
+    public static GuiMeldungen guiMeldungen = null;
+
     public MVFilmInfo filmInfo = null; // Infos zum Film
     public DialogMediaDB dialogMediaDB = null;
 
@@ -283,8 +277,8 @@ public class Daten {
         MVConfig.add(MVConfig.SYSTEM_NOTIFICATION, Boolean.TRUE.toString());
         MVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, Boolean.TRUE.toString());
         MVConfig.add(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.TRUE.toString());
-        MVConfig.add(MVConfig.SYSTEM_VIS_DOWNLOAD, Boolean.TRUE.toString());
-        MVConfig.add(MVConfig.SYSTEM_VIS_ABO, Boolean.TRUE.toString());
+//        MVConfig.add(MVConfig.SYSTEM_VIS_DOWNLOAD, Boolean.TRUE.toString());
+//        MVConfig.add(MVConfig.SYSTEM_VIS_ABO, Boolean.TRUE.toString());
         MVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.TRUE.toString());
         MVConfig.add(MVConfig.SYSTEM_GEO_MELDEN, Boolean.TRUE.toString());
         MVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);

@@ -24,14 +24,12 @@ import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.WindowConstants;
-import mediathek.gui.MVToolBar;
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 
 public class MVFrame extends javax.swing.JFrame {
 
-    private final MVToolBar mVToolBar;
     private final Daten daten;
     private final String state;
     private String nrGroesse = "";
@@ -44,13 +42,6 @@ public class MVFrame extends javax.swing.JFrame {
         state = sstate;
         jPanelExtra.setLayout(new BorderLayout());
         jPanelExtra.add(jPanel, BorderLayout.CENTER);
-        if (!state.equals(MVToolBar.TOOLBAR_TAB_MELDUNGEN)) {
-            mVToolBar = new MVToolBar(daten, state);
-            jPanelToolBar.setLayout(new BorderLayout());
-            jPanelToolBar.add(mVToolBar, BorderLayout.CENTER);
-        } else {
-            mVToolBar = null;
-        }
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
@@ -79,7 +70,6 @@ public class MVFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanelExtra = new javax.swing.JPanel();
-        jPanelToolBar = new javax.swing.JPanel();
         jPanelInfo = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -88,22 +78,11 @@ public class MVFrame extends javax.swing.JFrame {
         jPanelExtra.setLayout(jPanelExtraLayout);
         jPanelExtraLayout.setHorizontalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 606, Short.MAX_VALUE)
         );
         jPanelExtraLayout.setVerticalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 435, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout jPanelToolBarLayout = new javax.swing.GroupLayout(jPanelToolBar);
-        jPanelToolBar.setLayout(jPanelToolBarLayout);
-        jPanelToolBarLayout.setHorizontalGroup(
-            jPanelToolBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 606, Short.MAX_VALUE)
-        );
-        jPanelToolBarLayout.setVerticalGroup(
-            jPanelToolBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanelInfoLayout = new javax.swing.GroupLayout(jPanelInfo);
@@ -121,15 +100,13 @@ public class MVFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelToolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanelExtra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanelInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanelToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(6, 6, 6)
                 .addComponent(jPanelExtra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanelInfo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -140,6 +117,5 @@ public class MVFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JPanel jPanelInfo;
-    private javax.swing.JPanel jPanelToolBar;
     // End of variables declaration//GEN-END:variables
 }

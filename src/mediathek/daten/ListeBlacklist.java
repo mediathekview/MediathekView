@@ -149,10 +149,10 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     private void setFilter() {
         try {
             //if (MVConfig.get(MVConfig.SYSTEM_FILTER_TAGE).equals("") || MVConfig.get(MVConfig.SYSTEM_FILTER_TAGE).equals("0")) {
-            if (daten.guiFilme.getFilterTage() == 0) {
+            if (Daten.guiFilme.getFilterTage() == 0) {
                 tage = 0;
             } else {
-                long max = 1000L * 60L * 60L * 24L * GuiFilme.COMBO_ZEIT_INT[daten.guiFilme.getFilterTage()];
+                long max = 1000L * 60L * 60L * 24L * GuiFilme.COMBO_ZEIT_INT[Daten.guiFilme.getFilterTage()];
                 tage = new Date().getTime() - max;
             }
         } catch (Exception ex) {
