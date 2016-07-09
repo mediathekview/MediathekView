@@ -83,8 +83,13 @@ public class PanelEinstellungen extends PanelVorlage {
         });
         jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE)));
         jCheckBoxEchtzeit.addActionListener(ae -> MVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.toString(jCheckBoxEchtzeit.isSelected())));
+
         jCheckBoxTabsLeft.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_LEFT)));
-        jCheckBoxTabsLeft.addActionListener(ae -> MVConfig.add(MVConfig.SYSTEM_TABS_LEFT, Boolean.toString(jCheckBoxTabsLeft.isSelected())));
+        jCheckBoxTabsLeft.addActionListener(ae -> {
+            MVConfig.add(MVConfig.SYSTEM_TABS_LEFT, Boolean.toString(jCheckBoxTabsLeft.isSelected()));
+            Listener.notify(Listener.EREIGNIS_TABS_LEFT, PanelEinstellungen.class.getSimpleName());
+        });
+
         if (SystemInfo.isMacOSX()) {
             jCheckBoxTray.setSelected(false);
             jCheckBoxTray.setEnabled(false);
@@ -335,7 +340,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jCheckBoxTray.setText("Programm ins Tray minimieren");
 
-        jCheckBoxTabsLeft.setText("Tabs links anzeigen (nach Programmstart)");
+        jCheckBoxTabsLeft.setText("Tabs links anzeigen");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);

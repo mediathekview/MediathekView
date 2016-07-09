@@ -25,18 +25,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import javax.swing.Box.Filler;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JToolBar;
+import javax.swing.*;
+import mSearch.filmeSuchen.ListenerFilmeLaden;
+import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
+import mSearch.tool.Listener;
+import mSearch.tool.MVConfig;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.Filter;
-import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
-import mSearch.filmeSuchen.ListenerFilmeLaden;
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import org.jdesktop.swingx.JXSearchField;
 
 public final class MVToolBar extends JToolBar {

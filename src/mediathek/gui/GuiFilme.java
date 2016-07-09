@@ -19,8 +19,24 @@
  */
 package mediathek.gui;
 
-import mSearch.tool.MVConfig;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.print.PrinterException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Optional;
+import javax.swing.RowSorter.SortKey;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import mSearch.daten.DatenFilm;
+import mSearch.daten.ListeFilme;
+import mSearch.filmeSuchen.ListenerFilmeLaden;
+import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
+import mSearch.tool.Datum;
 import mSearch.tool.Listener;
+import mSearch.tool.Log;
+import mSearch.tool.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.daten.*;
 import mediathek.gui.dialog.DialogAddDownload;
@@ -28,23 +44,6 @@ import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.MVFilmInfo;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
-import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
-import mSearch.filmeSuchen.ListenerFilmeLaden;
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.tool.Datum;
-
-import javax.swing.*;
-import javax.swing.RowSorter.SortKey;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.print.PrinterException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Optional;
-import mSearch.tool.Log;
 
 public class GuiFilme extends PanelVorlage {
 
@@ -101,6 +100,10 @@ public class GuiFilme extends PanelVorlage {
 
         jPanelFilter.setLayout(new BorderLayout());
         filmInfo = daten.filmInfo;
+
+        ToolBar toolBar = new ToolBar(daten, ToolBar.TOOLBAR_TAB_FILME);
+        jPanelToolBar.setLayout(new BorderLayout());
+        jPanelToolBar.add(toolBar, BorderLayout.CENTER);
     }
 
     private void setupDescriptionPanel() {
@@ -953,6 +956,7 @@ public class GuiFilme extends PanelVorlage {
         jPanelExtraInnen = new javax.swing.JPanel();
         jScrollPaneFilter = new javax.swing.JScrollPane();
         jPanelFilter = new javax.swing.JPanel();
+        jPanelToolBar = new javax.swing.JPanel();
 
         jSplitPane1.setDividerLocation(240);
 
@@ -983,7 +987,7 @@ public class GuiFilme extends PanelVorlage {
         jPanelExtraInnen.setLayout(jPanelExtraInnenLayout);
         jPanelExtraInnenLayout.setHorizontalGroup(
             jPanelExtraInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 579, Short.MAX_VALUE)
         );
         jPanelExtraInnenLayout.setVerticalGroup(
             jPanelExtraInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1019,12 +1023,12 @@ public class GuiFilme extends PanelVorlage {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanelExtra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 612, Short.MAX_VALUE)
+            .addComponent(jScrollPane1)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1048,15 +1052,30 @@ public class GuiFilme extends PanelVorlage {
 
         jSplitPane1.setLeftComponent(jScrollPaneFilter);
 
+        javax.swing.GroupLayout jPanelToolBarLayout = new javax.swing.GroupLayout(jPanelToolBar);
+        jPanelToolBar.setLayout(jPanelToolBarLayout);
+        jPanelToolBarLayout.setHorizontalGroup(
+            jPanelToolBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanelToolBarLayout.setVerticalGroup(
+            jPanelToolBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 17, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSplitPane1)
+            .addComponent(jPanelToolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(jPanelToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -1066,6 +1085,7 @@ public class GuiFilme extends PanelVorlage {
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JPanel jPanelExtraInnen;
     private javax.swing.JPanel jPanelFilter;
+    private javax.swing.JPanel jPanelToolBar;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPaneFilter;
     private javax.swing.JSplitPane jSplitPane1;
@@ -1662,12 +1682,14 @@ public class GuiFilme extends PanelVorlage {
                                 //gibts schon, dann löschen
                                 Daten.listeAbo.aboLoeschen(datenAbo);
                             } else //neues Abo anlegen
-                            if (mitTitel) {
-                                Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
-                                        film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], film.arr[DatenFilm.FILM_TITEL]);
-                            } else {
-                                Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
-                                        film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], "");
+                            {
+                                if (mitTitel) {
+                                    Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
+                                            film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], film.arr[DatenFilm.FILM_TITEL]);
+                                } else {
+                                    Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
+                                            film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], "");
+                                }
                             }
                         });
                         stopBeob = false;

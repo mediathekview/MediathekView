@@ -30,7 +30,6 @@ import mSearch.daten.DatenFilm;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
-import mediathek.tool.EscBeenden;
 import mediathek.tool.UrlHyperlinkAction;
 import org.jdesktop.swingx.JXHyperlink;
 
@@ -70,13 +69,13 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
 
         setExtra(jPanelExtra);
 
-        tabbedPane.addChangeListener(this);
-        new EscBeenden(this) {
-            @Override
-            public void beenden_(JDialog d) {
-                d.dispose();
-            }
-        };
+//        tabbedPane.addChangeListener(this);
+//        new EscBeenden(this) {
+//            @Override
+//            public void beenden_(JDialog d) {
+//                d.dispose();
+//            }
+//        };
     }
 
     private void setExtra(JPanel jPanel) {

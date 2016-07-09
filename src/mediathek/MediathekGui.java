@@ -51,7 +51,7 @@ import mediathek.tool.*;
 public class MediathekGui extends JFrame {
 
     private Daten daten;
-    private SpacerIcon spacerIcon = new SpacerIcon(30);
+    private final SpacerIcon spacerIcon = new SpacerIcon(30);
     protected final DialogEinstellungen dialogEinstellungen;
     private final JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
     private final JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
@@ -210,8 +210,8 @@ public class MediathekGui extends JFrame {
         startMeldungen();
         createStatusBar();
         mVToolBar = new MVToolBar(daten);
-        jPanelToolBar.setLayout(new BorderLayout());
-        jPanelToolBar.add(mVToolBar, BorderLayout.CENTER);
+//        jPanelToolBar.setLayout(new BorderLayout());
+//        jPanelToolBar.add(mVToolBar, BorderLayout.CENTER);
 
         //create the Film Information HUD
         if (SystemInfo.isMacOSX()) {
@@ -296,6 +296,12 @@ public class MediathekGui extends JFrame {
                 jCheckBoxFilterExtrafenster.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FENSTER_FILTER)));
             }
         });
+        Listener.addListener(new Listener(Listener.EREIGNIS_TABS_LEFT, MediathekGui.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setTabs();
+            }
+        });
 
         // für den Mac
         final JRootPane rootPane = getRootPane();
@@ -327,8 +333,8 @@ public class MediathekGui extends JFrame {
     private void setFocusSuchfeld() {
         Listener.notify(Listener.EREIGNIS_SUCHFELD_FOCUS_SETZEN, MediathekGui.class.getName());
         if (!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_FILTER))) {
-            mVToolBar.jTextFieldFilter.requestFocus();
-            mVToolBar.jTextFieldFilter.setCaretPosition(0);
+//            mVToolBar.jTextFieldFilter.requestFocus();
+//            mVToolBar.jTextFieldFilter.setCaretPosition(0);
         }
     }
 
@@ -367,15 +373,15 @@ public class MediathekGui extends JFrame {
     //===================================
     public void setToolbar(String state) {
         mVToolBar.setToolbar(state);
-        jMenuFilme.setVisible(false);
-        jMenuDownload.setVisible(false);
-        jMenuAbos.setVisible(false);
+        jMenuFilme.setEnabled(false);
+        jMenuDownload.setEnabled(false);
+        jMenuAbos.setEnabled(false);
         switch (state) {
             case "":
 //                buttonAus();
                 break;
             case MVToolBar.TOOLBAR_TAB_FILME:
-                jMenuFilme.setVisible(true);
+                jMenuFilme.setEnabled(true);
 //                buttonAus();
 //                jMenuItemFilmAbspielen.setEnabled(true);
 //                jMenuItemFilmAufzeichnen.setEnabled(true);
@@ -386,7 +392,7 @@ public class MediathekGui extends JFrame {
 //                jMenuItemFilmeMediensammlung.setEnabled(true);
                 break;
             case MVToolBar.TOOLBAR_TAB_DOWNLOADS:
-                jMenuDownload.setVisible(true);
+                jMenuDownload.setEnabled(true);
 //                buttonAus();
 //                jMenuItemDownloadStarten.setEnabled(true);
 //                jMenuItemDownloadStoppen.setEnabled(true);
@@ -411,7 +417,7 @@ public class MediathekGui extends JFrame {
 //                jLabelBandbreite.setEnabled(true);
                 break;
             case MVToolBar.TOOLBAR_TAB_ABOS:
-                jMenuAbos.setVisible(true);
+                jMenuAbos.setEnabled(true);
 //                buttonAus();
 //                jMenuItemAbosEinschalten.setEnabled(true);
 //                jMenuItemAbosAusschalten.setEnabled(true);
@@ -690,15 +696,22 @@ public class MediathekGui extends JFrame {
         }
     }
 
+    private void setTabs() {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_LEFT))) {
+            jTabbedPane.setTabPlacement(JTabbedPane.LEFT);
+        } else {
+            jTabbedPane.setTabPlacement(JTabbedPane.TOP);
+        }
+        
+    }
+
     private void initTabs() {
         daten.guiDownloads = new GuiDownloads(daten, daten.mediathekGui);
         daten.guiAbo = new GuiAbo(daten, daten.mediathekGui);
 
         daten.guiFilme = new GuiFilme(daten, daten.mediathekGui);
         daten.guiFilme.init();
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_LEFT))) {
-            jTabbedPane.setTabPlacement(JTabbedPane.LEFT);
-        }
+        setTabs();
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_LEFT))) {
             jTabbedPane.addTab("Filme", spacerIcon, daten.guiFilme);
         } else {
@@ -1110,7 +1123,6 @@ public class MediathekGui extends JFrame {
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         jPanelInfo = new javax.swing.JPanel();
         jTabbedPane = new javax.swing.JTabbedPane();
-        jPanelToolBar = new javax.swing.JPanel();
         jMenuBar = new javax.swing.JMenuBar();
         jMenuDatei = new javax.swing.JMenu();
         jMenuItemFilmlisteLaden = new javax.swing.JMenuItem();
@@ -1179,17 +1191,6 @@ public class MediathekGui extends JFrame {
         jTabbedPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 1, 1, 1));
         jPanel1.add(jTabbedPane, java.awt.BorderLayout.CENTER);
 
-        javax.swing.GroupLayout jPanelToolBarLayout = new javax.swing.GroupLayout(jPanelToolBar);
-        jPanelToolBar.setLayout(jPanelToolBarLayout);
-        jPanelToolBarLayout.setHorizontalGroup(
-            jPanelToolBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanelToolBarLayout.setVerticalGroup(
-            jPanelToolBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
         jMenuDatei.setMnemonic('d');
         jMenuDatei.setText("Datei");
 
@@ -1212,8 +1213,8 @@ public class MediathekGui extends JFrame {
 
         jMenuBar.add(jMenuDatei);
 
-        jMenuFilme.setMnemonic('B');
-        jMenuFilme.setText("Bearbeiten");
+        jMenuFilme.setMnemonic('F');
+        jMenuFilme.setText("Filme");
 
         jMenuItemFilmAbspielen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemFilmAbspielen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/film_start_16.png"))); // NOI18N
@@ -1250,8 +1251,8 @@ public class MediathekGui extends JFrame {
 
         jMenuBar.add(jMenuFilme);
 
-        jMenuDownload.setMnemonic('B');
-        jMenuDownload.setText("Bearbeiten");
+        jMenuDownload.setMnemonic('O');
+        jMenuDownload.setText("Download");
 
         jMenuItemDownloadsAlleStarten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/download_alleStarten_16.png"))); // NOI18N
         jMenuItemDownloadsAlleStarten.setText("alle Downloads starten");
@@ -1332,7 +1333,7 @@ public class MediathekGui extends JFrame {
         jMenuBar.add(jMenuDownload);
 
         jMenuAbos.setMnemonic('b');
-        jMenuAbos.setText("Bearbeiten");
+        jMenuAbos.setText("Abo");
 
         jMenuItemAbosEinschalten.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/ja_16.png"))); // NOI18N
         jMenuItemAbosEinschalten.setText("einschalten");
@@ -1418,13 +1419,11 @@ public class MediathekGui extends JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1083, Short.MAX_VALUE)
-            .addComponent(jPanelToolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanelToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(6, 6, 6)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 805, Short.MAX_VALUE))
         );
 
@@ -1482,7 +1481,6 @@ public class MediathekGui extends JFrame {
     private javax.swing.JMenuItem jMenuItemSchriftKl;
     private javax.swing.JMenuItem jMenuItemSchriftNormal;
     private javax.swing.JPanel jPanelInfo;
-    private javax.swing.JPanel jPanelToolBar;
     protected javax.swing.JPopupMenu.Separator jSeparator2;
     protected javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JTabbedPane jTabbedPane;
