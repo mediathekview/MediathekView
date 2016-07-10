@@ -66,7 +66,7 @@ public class GuiAbo extends PanelVorlage {
     public void isShown() {
         super.isShown();
         if (!solo) {
-            Daten.mediathekGui.setTabShown(MediathekGui.TABS.TAB_ABOS);
+//            Daten.mediathekGui.setTabShown(MediathekGui.TABS.TAB_ABOS);
             Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.ABO);
         }
     }

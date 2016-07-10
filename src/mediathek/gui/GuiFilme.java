@@ -127,7 +127,7 @@ public class GuiFilme extends PanelVorlage {
     @Override
     public void isShown() {
         super.isShown();
-        Daten.mediathekGui.setTabShown(MediathekGui.TABS.TAB_FILME);
+//        Daten.mediathekGui.setTabShown(MediathekGui.TABS.TAB_FILME);
         Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.FILME);
         updateFilmData();
         setInfo();
@@ -311,7 +311,8 @@ public class GuiFilme extends PanelVorlage {
         jCheckBoxProgamme.setIcon(GetIcon.getProgramIcon("close_15.png"));
         jCheckBoxProgamme.addActionListener(e -> {
             MVConfig.add(MVConfig.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, Boolean.FALSE.toString());
-            Daten.mediathekGui.videoplayerAnzeigen(true);
+            Listener.notify(Listener.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName());
+//            Daten.mediathekGui.videoplayerAnzeigen(true);
             panelVideoplayerSetzen();
         });
         setSplitPane();
@@ -1702,15 +1703,13 @@ public class GuiFilme extends PanelVorlage {
                                 //gibts schon, dann löschen
                                 Daten.listeAbo.aboLoeschen(datenAbo);
                             } else //neues Abo anlegen
-                            {
-                                if (mitTitel) {
+                             if (mitTitel) {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], film.arr[DatenFilm.FILM_TITEL]);
                                 } else {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], "");
                                 }
-                            }
                         });
                         stopBeob = false;
                     }

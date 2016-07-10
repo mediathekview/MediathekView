@@ -113,7 +113,7 @@ public class GuiDownloads extends PanelVorlage {
     public void isShown() {
         super.isShown();
         if (!solo) {
-            Daten.mediathekGui.setTabShown(MediathekGui.TABS.TAB_DOWNLOADS);
+//            Daten.mediathekGui.setTabShown(MediathekGui.TABS.TAB_DOWNLOADS);
             Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.DOWNLOAD);
         }
         updateFilmData();
