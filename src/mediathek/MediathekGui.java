@@ -50,7 +50,7 @@ import mediathek.tool.*;
 
 public class MediathekGui extends JFrame {
 
-    private Daten daten;
+    private final Daten daten;
     private final SpacerIcon spacerIcon = new SpacerIcon(30);
     private final JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
     private final JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
@@ -62,8 +62,8 @@ public class MediathekGui extends JFrame {
     private final MVFrame frameDownload = null;
     private final MVFrame frameAbo = null;
     private final MVFrame frameMeldungen = null;
-    private JCheckBoxMenuItem jCheckBoxFilterAnzeigen = new JCheckBoxMenuItem();
-    private JCheckBoxMenuItem jCheckBoxFilterExtrafenster = new JCheckBoxMenuItem();
+    private final JCheckBoxMenuItem jCheckBoxFilterAnzeigen = new JCheckBoxMenuItem();
+    private final JCheckBoxMenuItem jCheckBoxFilterExtrafenster = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxDownloadExtrafenster = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxAboExtrafenster = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxMeldungenAnzeigen = new JCheckBoxMenuItem();
@@ -360,29 +360,27 @@ public class MediathekGui extends JFrame {
     //===================================
     // public
     //===================================
-    public void setTabShown(TABS state) {
-//        jMenuFilme.setEnabled(false);
-//        jMenuDownload.setEnabled(false);
-//        jMenuAbos.setEnabled(false);
-//        switch (state) {
-//            case "":
-//                break;
-//            case ToolBar.TOOLBAR_TAB_FILME:
-//                jMenuFilme.setEnabled(true);
-//                break;
-//            case ToolBar.TOOLBAR_TAB_DOWNLOADS:
-//                jMenuDownload.setEnabled(true);
-//                break;
-//            case ToolBar.TOOLBAR_TAB_ABOS:
-//                jMenuAbos.setEnabled(true);
-//                break;
-//        }
-    }
-
-    public void videoplayerAnzeigen(boolean anz) {
-        jCheckBoxMenuItemVideoplayer.setSelected(!anz);
-    }
-
+//    public void setTabShown(TABS state) {
+////        jMenuFilme.setEnabled(false);
+////        jMenuDownload.setEnabled(false);
+////        jMenuAbos.setEnabled(false);
+////        switch (state) {
+////            case "":
+////                break;
+////            case ToolBar.TOOLBAR_TAB_FILME:
+////                jMenuFilme.setEnabled(true);
+////                break;
+////            case ToolBar.TOOLBAR_TAB_DOWNLOADS:
+////                jMenuDownload.setEnabled(true);
+////                break;
+////            case ToolBar.TOOLBAR_TAB_ABOS:
+////                jMenuAbos.setEnabled(true);
+////                break;
+////        }
+//    }
+//    public void videoplayerAnzeigen(boolean anz) {
+//        jCheckBoxMenuItemVideoplayer.setSelected(!anz);
+//    }
     //===================================
     // private
     //===================================
@@ -439,6 +437,24 @@ public class MediathekGui extends JFrame {
         }
     }
 
+    private void initTabs() {
+        Daten.guiDownloads = new GuiDownloads(daten, Daten.mediathekGui);
+        Daten.guiAbo = new GuiAbo(daten, Daten.mediathekGui);
+        Daten.guiMeldungen = new GuiMeldungen(daten, this);
+
+        Daten.guiFilme = new GuiFilme(daten, Daten.mediathekGui);
+        Daten.guiFilme.init();
+
+        jTabbedPane.addTab("Filme", GetIcon.getGuiIcon("tab_film.png"), Daten.guiFilme);
+
+        if (Daten.debug) {
+            Daten.guiDebug = new GuiDebug(daten);
+            jTabbedPane.addTab("Debug", spacerIcon, Daten.guiDebug);
+        }
+        
+        initFrames();
+    }
+
     public void hideFrame(TABS state) {
         switch (state) {
             case TAB_DOWNLOADS:
@@ -483,6 +499,7 @@ public class MediathekGui extends JFrame {
         } else {
             setTab(frameMeldungen, Daten.guiMeldungen, "Meldungen", nr);
         }
+        designTabs();
         jTabbedPane.setSelectedIndex(0);
         Daten.guiFilme.isShown();
     }
@@ -542,9 +559,11 @@ public class MediathekGui extends JFrame {
             if (c.equals(Daten.guiAbo)) {
                 ic = GetIcon.getGuiIcon("tab_abo.png");
             }
-
+            if (c.equals(Daten.guiMeldungen)) {
+                ic = GetIcon.getGuiIcon("tab_meldungen.png");
+            }
             String s = jTabbedPane.getTitleAt(i);
-            JLabel lbl = makeLable(s, ic, Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_LEFT)));
+            JLabel lbl = makeLable(s, ic);
             jTabbedPane.setTabComponentAt(i, lbl);
         }
 
@@ -564,36 +583,29 @@ public class MediathekGui extends JFrame {
 //        UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", false);
 //        UIManager.getDefaults().put("TabbedPane.tabsOpaque", true);
 //        UIManager.put("TabbedPane.selected", null);
+//        UIManager.put("TabbedPane.tabInsets", new Insets(25, 25, 25, 25));
+//        UIManager.getLookAndFeelDefaults().put("TabbedPane.tabInsets", new Insets(50, 20, 20, 20));
+//        UIManager.getLookAndFeelDefaults().put("TabbedPane.textIconGap", 20);
+
+        jTabbedPane.updateUI();
+        jPanelCont.updateUI();
+        
     }
 
-    private JLabel makeLable(String text, ImageIcon ic, boolean pos) {
+    private JLabel makeLable(String text, ImageIcon ic) {
         JLabel lbl = new JLabel(text);
 
         lbl.setBorder(null);
         lbl.setIcon(ic);
         lbl.setOpaque(false);
-        if (pos) {
-            lbl.setHorizontalTextPosition(SwingConstants.BOTTOM);
-        }
+//        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_LEFT))) {
+//            lbl.setHorizontalTextPosition(JLabel.CENTER);
+//            lbl.setHorizontalAlignment(JLabel.LEADING);
+//        } else {
+        lbl.setHorizontalTextPosition(JLabel.CENTER);
+        lbl.setHorizontalAlignment(JLabel.LEADING);
+//        }
         return lbl;
-    }
-
-    private void initTabs() {
-        Daten.guiDownloads = new GuiDownloads(daten, Daten.mediathekGui);
-        Daten.guiAbo = new GuiAbo(daten, Daten.mediathekGui);
-        Daten.guiMeldungen = new GuiMeldungen(daten, this);
-
-        Daten.guiFilme = new GuiFilme(daten, Daten.mediathekGui);
-        Daten.guiFilme.init();
-        designTabs();
-
-        jTabbedPane.addTab("Filme", spacerIcon, Daten.guiFilme);
-
-        if (Daten.debug) {
-            Daten.guiDebug = new GuiDebug(daten);
-            jTabbedPane.addTab("Debug", spacerIcon, Daten.guiDebug);
-        }
-        initFrames();
     }
 
     protected void initSpinner() {
@@ -772,6 +784,13 @@ public class MediathekGui extends JFrame {
             MVConfig.add(MVConfig.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, String.valueOf(jCheckBoxMenuItemVideoplayer.isSelected()));
             Listener.notify(Listener.EREIGNIS_LISTE_PSET, MediathekGui.class.getSimpleName());
         });
+        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, MediathekGui.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                jCheckBoxMenuItemVideoplayer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
+            }
+        });
+
         jCheckBoxMenuItemBeschreibung.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
         jCheckBoxMenuItemBeschreibung.addActionListener(e -> {
             MVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, String.valueOf(jCheckBoxMenuItemBeschreibung.isSelected()));
@@ -976,7 +995,7 @@ public class MediathekGui extends JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
+        jPanelCont = new javax.swing.JPanel();
         jPanelInfo = new javax.swing.JPanel();
         jTabbedPane = new javax.swing.JTabbedPane();
         jMenuBar = new javax.swing.JMenuBar();
@@ -1039,13 +1058,13 @@ public class MediathekGui extends JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        jPanelCont.setLayout(new java.awt.BorderLayout());
 
         jPanelInfo.setLayout(new java.awt.BorderLayout());
-        jPanel1.add(jPanelInfo, java.awt.BorderLayout.PAGE_END);
+        jPanelCont.add(jPanelInfo, java.awt.BorderLayout.PAGE_END);
 
         jTabbedPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 1, 1, 1));
-        jPanel1.add(jTabbedPane, java.awt.BorderLayout.CENTER);
+        jPanelCont.add(jTabbedPane, java.awt.BorderLayout.CENTER);
 
         jMenuDatei.setMnemonic('d');
         jMenuDatei.setText("Datei");
@@ -1274,13 +1293,13 @@ public class MediathekGui extends JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1083, Short.MAX_VALUE)
+            .addComponent(jPanelCont, javax.swing.GroupLayout.DEFAULT_SIZE, 1083, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(6, 6, 6)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 805, Short.MAX_VALUE))
+                .addComponent(jPanelCont, javax.swing.GroupLayout.DEFAULT_SIZE, 805, Short.MAX_VALUE))
         );
 
         pack();
@@ -1336,6 +1355,7 @@ public class MediathekGui extends JFrame {
     private javax.swing.JMenuItem jMenuItemSchriftGr;
     private javax.swing.JMenuItem jMenuItemSchriftKl;
     private javax.swing.JMenuItem jMenuItemSchriftNormal;
+    private javax.swing.JPanel jPanelCont;
     private javax.swing.JPanel jPanelInfo;
     protected javax.swing.JPopupMenu.Separator jSeparator2;
     protected javax.swing.JPopupMenu.Separator jSeparator4;
@@ -1379,7 +1399,6 @@ public class MediathekGui extends JFrame {
             }
         }
 
-        
         private void setTabIfContain(Component check) {
             Component[] c = jTabbedPane.getComponents();
             for (int i = 0; i < c.length; ++i) {

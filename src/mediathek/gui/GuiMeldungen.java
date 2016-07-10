@@ -25,7 +25,6 @@ import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import mSearch.tool.MVConfig;
 import mSearch.tool.SysMsg;
-import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 
@@ -64,7 +63,7 @@ public class GuiMeldungen extends PanelVorlage {
     public void isShown() {
         super.isShown();
         if (!solo) {
-            Daten.mediathekGui.setTabShown(MediathekGui.TABS.TAB_NIX);
+//            Daten.mediathekGui.setTabShown(MediathekGui.TABS.TAB_NIX);
             Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.NONE);
 
         }

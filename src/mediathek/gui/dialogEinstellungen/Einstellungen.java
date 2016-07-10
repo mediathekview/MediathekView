@@ -24,7 +24,6 @@ import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mediathek.gui.MVStatusBar;
 import mediathek.gui.PanelVorlage;
@@ -109,7 +108,7 @@ public class Einstellungen extends javax.swing.JPanel {
         addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentShown(java.awt.event.ComponentEvent evt) {
-                Daten.mediathekGui.setTabShown(MediathekGui.TABS.TAB_NIX);
+//                Daten.mediathekGui.setTabShown(MediathekGui.TABS.TAB_NIX);
                 Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.NONE);
             }
         });
