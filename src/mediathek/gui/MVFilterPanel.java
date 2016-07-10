@@ -55,7 +55,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.mediathekGui.showDialogPreferences();
+                    Daten.dialogEinstellungen.setVisible(true);
                 }
             });
             im = jComboBoxFilterThema.getInputMap();
@@ -65,7 +65,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.mediathekGui.showDialogPreferences();
+                    Daten.dialogEinstellungen.setVisible(true);
                 }
             });
             im = jComboBoxZeitraum.getInputMap();
@@ -75,7 +75,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.mediathekGui.showDialogPreferences();
+                    Daten.dialogEinstellungen.setVisible(true);
                 }
             });
         }

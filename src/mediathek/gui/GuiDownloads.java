@@ -34,6 +34,7 @@ import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.*;
+import mediathek.MediathekGui;
 import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
@@ -75,14 +76,14 @@ public class GuiDownloads extends PanelVorlage {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.mediathekGui.showDialogPreferences();
+                    Daten.dialogEinstellungen.setVisible(true);
                 }
             });
         }
 
         tabelle = new MVTable(MVTable.TableType.DOWNLOADS);
         jScrollPane1.setViewportView(tabelle);
-        filmInfoHud = daten.filmInfo;
+        filmInfoHud = Daten.filmInfo;
 
         setupDescriptionPanel();
 
@@ -95,7 +96,7 @@ public class GuiDownloads extends PanelVorlage {
         cbDisplayCategories.setModel(getDisplaySelectionModel());
         cbDisplayCategories.addActionListener(new DisplayCategoryListener());
 
-        toolBar = new ToolBar(daten, ToolBar.TOOLBAR_TAB_DOWNLOADS);
+        toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_DOWNLOADS);
         jPanelToolBar.setLayout(new BorderLayout());
         jPanelToolBar.add(toolBar, BorderLayout.CENTER);
         setToolbarVisible();
@@ -112,7 +113,7 @@ public class GuiDownloads extends PanelVorlage {
     public void isShown() {
         super.isShown();
         if (!solo) {
-            Daten.mediathekGui.setTabShown(ToolBar.TOOLBAR_TAB_DOWNLOADS);
+            Daten.mediathekGui.setTabShown(MediathekGui.TABS.TAB_DOWNLOADS);
             Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.DOWNLOAD);
         }
         updateFilmData();
@@ -180,6 +181,7 @@ public class GuiDownloads extends PanelVorlage {
     private void setToolbarVisible() {
         toolBar.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
     }
+
     private void init() {
         //Tabelle einrichten
         ActionMap am = tabelle.getActionMap();
@@ -236,11 +238,11 @@ public class GuiDownloads extends PanelVorlage {
                 int row = tabelle.getSelectedRow();
                 if (row >= 0) {
                     MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-                    daten.dialogMediaDB.setVis();
+                    Daten.dialogMediaDB.setVis();
 
                     DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
                     if (datenDownload != null) {
-                        daten.dialogMediaDB.setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
+                        Daten.dialogMediaDB.setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
                     }
 
                 }
@@ -371,10 +373,10 @@ public class GuiDownloads extends PanelVorlage {
     private void mediensammlung() {
         DatenDownload datenDownload = getSelDownload();
         MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-        daten.dialogMediaDB.setVis();
+        Daten.dialogMediaDB.setVis();
 
         if (datenDownload != null) {
-            daten.dialogMediaDB.setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
+            Daten.dialogMediaDB.setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
         }
     }
 

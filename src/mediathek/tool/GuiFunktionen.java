@@ -56,17 +56,21 @@ public class GuiFunktionen extends MVFunctionSys {
     }
 
     public static void getSize(String nr, JFrame jFrame) {
-        MVConfig.add(nr, jFrame.getSize().width + ":"
-                + jFrame.getSize().height + ":"
-                + jFrame.getLocation().x + ":"
-                + jFrame.getLocation().y);
+        if (jFrame != null) {
+            MVConfig.add(nr, jFrame.getSize().width + ":"
+                    + jFrame.getSize().height + ":"
+                    + jFrame.getLocation().x + ":"
+                    + jFrame.getLocation().y);
+        }
     }
 
     public static void getSize(String nr, JDialog jDialog) {
-        MVConfig.add(nr, jDialog.getSize().width + ":"
-                + jDialog.getSize().height + ":"
-                + jDialog.getLocation().x + ":"
-                + jDialog.getLocation().y);
+        if (jDialog != null) {
+            MVConfig.add(nr, jDialog.getSize().width + ":"
+                    + jDialog.getSize().height + ":"
+                    + jDialog.getLocation().x + ":"
+                    + jDialog.getLocation().y);
+        }
     }
 
     public static void setSize(String nr, JFrame jFrame, JFrame relativFrame) {
@@ -179,8 +183,8 @@ public class GuiFunktionen extends MVFunctionSys {
                 int maxNameL = WIN_MAX_PATH_LENGTH - pathName[0].length();
                 pathName[1] = cutName(pathName[1], maxNameL);
             }
-        } else {
-            // für X-Systeme
+        } else // für X-Systeme
+        {
             if ((pathName[1].length()) > X_MAX_NAME_LENGTH) {
                 Log.errorLog(823012012, "Name zu lang: " + pathName[1]);
                 pathName[1] = cutName(pathName[1], X_MAX_NAME_LENGTH);
@@ -318,7 +322,6 @@ public class GuiFunktionen extends MVFunctionSys {
         System.arraycopy(str, 0, liste, 1, len - 1);
         return liste;
     }
-
 
     public static int getImportArtFilme() {
         int ret;

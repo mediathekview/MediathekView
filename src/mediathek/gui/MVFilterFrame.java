@@ -91,7 +91,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.mediathekGui.showDialogPreferences();
+                    Daten.dialogEinstellungen.setVisible(true);
                 }
             });
             im = jComboBoxFilterThema.getInputMap();
@@ -101,7 +101,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.mediathekGui.showDialogPreferences();
+                    Daten.dialogEinstellungen.setVisible(true);
                 }
             });
             im = jComboBoxZeitraum.getInputMap();
@@ -111,7 +111,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.mediathekGui.showDialogPreferences();
+                    Daten.dialogEinstellungen.setVisible(true);
                 }
             });
         }

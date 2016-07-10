@@ -46,6 +46,7 @@ import mediathek.controller.starter.StarterClass;
 import mediathek.gui.*;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.MVFilmInfo;
+import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.tool.*;
 
 public class Daten {
@@ -88,9 +89,10 @@ public class Daten {
     public static GuiAbo guiAbo = null; // Tab mit den Abos
     public static GuiDebug guiDebug = null;
     public static GuiMeldungen guiMeldungen = null;
+    public static DialogEinstellungen dialogEinstellungen = null;
 
-    public MVFilmInfo filmInfo = null; // Infos zum Film
-    public DialogMediaDB dialogMediaDB = null;
+    public static MVFilmInfo filmInfo = null; // Infos zum Film
+    public static DialogMediaDB dialogMediaDB = null;
 
     private boolean alreadyMadeBackup = false;
 
