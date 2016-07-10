@@ -30,6 +30,7 @@ import javax.swing.*;
 import mSearch.tool.Datum;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
+import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
@@ -52,7 +53,7 @@ public class GuiAbo extends PanelVorlage {
             tabelle.setRowSelectionInterval(0, 0);
         }
 
-        toolBar = new ToolBar(daten, ToolBar.TOOLBAR_TAB_ABOS);
+        toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_ABOS);
         jPanelToolBar.setLayout(new BorderLayout());
         jPanelToolBar.add(toolBar, BorderLayout.CENTER);
         setToolbarVisible();
@@ -65,7 +66,7 @@ public class GuiAbo extends PanelVorlage {
     public void isShown() {
         super.isShown();
         if (!solo) {
-            Daten.mediathekGui.setTabShown(ToolBar.TOOLBAR_TAB_ABOS);
+            Daten.mediathekGui.setTabShown(MediathekGui.TABS.TAB_ABOS);
             Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.ABO);
         }
     }

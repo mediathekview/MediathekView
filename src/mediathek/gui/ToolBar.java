@@ -30,6 +30,7 @@ import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
+import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.Filter;
@@ -45,11 +46,11 @@ public final class ToolBar extends JToolBar {
 //case TOOLBAR_TAB_ABOS:
 //    break;
 //}
-    public static final String TOOLBAR_NIX = "";
-    public static final String TOOLBAR_TAB_FILME = "Tab-Filme";
-    public static final String TOOLBAR_TAB_DOWNLOADS = "Tab-Downloads";
-    public static final String TOOLBAR_TAB_ABOS = "Tab-Abos";
-    public static final String TOOLBAR_TAB_MELDUNGEN = "Meldungen";
+//    public static final String TOOLBAR_NIX = "";
+//    public static final String TOOLBAR_TAB_FILME = "Tab-Filme";
+//    public static final String TOOLBAR_TAB_DOWNLOADS = "Tab-Downloads";
+//    public static final String TOOLBAR_TAB_ABOS = "Tab-Abos";
+//    public static final String TOOLBAR_TAB_MELDUNGEN = "Meldungen";
     Filler filler__5;
     Filler filler__10;
     Filler filler__trenner;
@@ -78,26 +79,26 @@ public final class ToolBar extends JToolBar {
     LinkedList<MVButton> buttonListDownloads = new LinkedList<>();
     LinkedList<MVButton> buttonListAbos = new LinkedList<>();
     boolean extern = false;
-    String state;
+    MediathekGui.TABS state;
     LinkedList<MVButton> buttonListToUse;
 
-    public ToolBar(Daten ddaten, String state) {
+    public ToolBar(Daten ddaten, MediathekGui.TABS state) {
         // für die Toolbar der Externen Fenster
         extern = true;
         daten = ddaten;
         this.state = state;
         switch (state) {
-            case TOOLBAR_TAB_FILME:
+            case TAB_FILME:
                 nrToolbar = MVConfig.SYSTEM_TOOLBAR_FILME;
                 nrIconKlein = MVConfig.SYSTEM_ICON_KLEIN_FILME;
                 buttonListToUse = buttonListFilme;
                 break;
-            case TOOLBAR_TAB_DOWNLOADS:
+            case TAB_DOWNLOADS:
                 nrToolbar = MVConfig.SYSTEM_TOOLBAR_DOWNLOAD;
                 nrIconKlein = MVConfig.SYSTEM_ICON_KLEIN_DOWNLOAD;
                 buttonListToUse = buttonListDownloads;
                 break;
-            case TOOLBAR_TAB_ABOS:
+            case TAB_ABOS:
                 nrToolbar = MVConfig.SYSTEM_TOOLBAR_ABO;
                 nrIconKlein = MVConfig.SYSTEM_ICON_KLEIN_ABO;
                 buttonListToUse = buttonListAbos;
@@ -121,45 +122,45 @@ public final class ToolBar extends JToolBar {
         filler__trenner = new javax.swing.Box.Filler(new java.awt.Dimension(1, 5), new java.awt.Dimension(1, 5), new java.awt.Dimension(32767, 5));
 
         switch (state) {
-            case TOOLBAR_TAB_FILME:
-                jButtonFilmlisteLaden = new MVButton(new String[]{TOOLBAR_TAB_FILME, TOOLBAR_TAB_DOWNLOADS}, "Filmliste laden", "neue Filmliste laden", "filmlisteLaden_32.png", "filmlisteLaden_16.png");
+            case TAB_FILME:
+                jButtonFilmlisteLaden = new MVButton(new MediathekGui.TABS[]{MediathekGui.TABS.TAB_FILME, MediathekGui.TABS.TAB_DOWNLOADS}, "Filmliste laden", "neue Filmliste laden", "filmlisteLaden_32.png", "filmlisteLaden_16.png");
                 buttonListFilme.add(jButtonFilmlisteLaden);
-                jButtonInfo = new MVButton(new String[]{TOOLBAR_TAB_FILME, TOOLBAR_TAB_DOWNLOADS}, "Filminformation anzeigen", "Filminformation anzeigen", "info_32.png", "info_16.png");
+                jButtonInfo = new MVButton(new MediathekGui.TABS[]{MediathekGui.TABS.TAB_FILME, MediathekGui.TABS.TAB_DOWNLOADS}, "Filminformation anzeigen", "Filminformation anzeigen", "info_32.png", "info_16.png");
                 buttonListFilme.add(jButtonInfo);
-                jButtonFilmAbspielen = new MVButton(new String[]{TOOLBAR_TAB_FILME}, "Film abspielen", "Film abspielen", "film_start_32.png", "film_start_16.png");
+                jButtonFilmAbspielen = new MVButton(new MediathekGui.TABS[]{MediathekGui.TABS.TAB_FILME}, "Film abspielen", "Film abspielen", "film_start_32.png", "film_start_16.png");
                 buttonListFilme.add(jButtonFilmAbspielen);
-                jButtonFilmSpeichern = new MVButton(new String[]{TOOLBAR_TAB_FILME}, "Film aufzeichnen", "Film aufzeichnen", "film_rec_32.png", "film_rec_16.png");
+                jButtonFilmSpeichern = new MVButton(new MediathekGui.TABS[]{MediathekGui.TABS.TAB_FILME}, "Film aufzeichnen", "Film aufzeichnen", "film_rec_32.png", "film_rec_16.png");
                 buttonListFilme.add(jButtonFilmSpeichern);
                 break;
-            case TOOLBAR_TAB_DOWNLOADS:
-                jButtonInfo = new MVButton(new String[]{TOOLBAR_TAB_FILME, TOOLBAR_TAB_DOWNLOADS}, "Filminformation anzeigen", "Filminformation anzeigen", "info_32.png", "info_16.png");
+            case TAB_DOWNLOADS:
+                jButtonInfo = new MVButton(new MediathekGui.TABS[]{MediathekGui.TABS.TAB_FILME, MediathekGui.TABS.TAB_DOWNLOADS}, "Filminformation anzeigen", "Filminformation anzeigen", "info_32.png", "info_16.png");
                 buttonListFilme.add(jButtonInfo);
-                jButtonDownloadAktualisieren = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Liste der Downloads aktualisieren", "Liste der Downloads aktualisieren", "view-refresh_32.png", "view-refresh_16.png");
+                jButtonDownloadAktualisieren = new MVButton(new MediathekGui.TABS[]{MediathekGui.TABS.TAB_DOWNLOADS}, "Liste der Downloads aktualisieren", "Liste der Downloads aktualisieren", "view-refresh_32.png", "view-refresh_16.png");
                 buttonListDownloads.add(jButtonDownloadAktualisieren);
-                jButtonDownloadAlleStarten = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "alle Downloads starten", "alle Downloads starten", "download_alleStarten_32.png", "download_alleStarten_16.png");
+                jButtonDownloadAlleStarten = new MVButton(new MediathekGui.TABS[]{MediathekGui.TABS.TAB_DOWNLOADS}, "alle Downloads starten", "alle Downloads starten", "download_alleStarten_32.png", "download_alleStarten_16.png");
                 buttonListDownloads.add(jButtonDownloadAlleStarten);
-                jButtonDownloadFilmStarten = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Film Starten", "gespeicherten Film abspielen", "film_start_32.png", "film_start_16.png");
+                jButtonDownloadFilmStarten = new MVButton(new MediathekGui.TABS[]{MediathekGui.TABS.TAB_DOWNLOADS}, "Film Starten", "gespeicherten Film abspielen", "film_start_32.png", "film_start_16.png");
                 buttonListDownloads.add(jButtonDownloadFilmStarten);
-                jButtonDownloadZurueckstellen = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Downloads zurückstellen", "Downloads zurückstellen", "undo_32.png", "undo_16.png");
+                jButtonDownloadZurueckstellen = new MVButton(new MediathekGui.TABS[]{MediathekGui.TABS.TAB_DOWNLOADS}, "Downloads zurückstellen", "Downloads zurückstellen", "undo_32.png", "undo_16.png");
                 buttonListDownloads.add(jButtonDownloadZurueckstellen);
-                jButtonDownloadLoeschen = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Downloads aus Liste entfernen", "Downloads aus Liste entfernen", "download_del_32.png", "download_del_16.png");
+                jButtonDownloadLoeschen = new MVButton(new MediathekGui.TABS[]{MediathekGui.TABS.TAB_DOWNLOADS}, "Downloads aus Liste entfernen", "Downloads aus Liste entfernen", "download_del_32.png", "download_del_16.png");
                 buttonListDownloads.add(jButtonDownloadLoeschen);
-                jButtonDownloadAufraeumen = new MVButton(new String[]{TOOLBAR_TAB_DOWNLOADS}, "Liste der Downloads aufräumen", "Liste der Downloads aufräumen", "download_clear_32.png", "download_clear_16.png");
+                jButtonDownloadAufraeumen = new MVButton(new MediathekGui.TABS[]{MediathekGui.TABS.TAB_DOWNLOADS}, "Liste der Downloads aufräumen", "Liste der Downloads aufräumen", "download_clear_32.png", "download_clear_16.png");
                 buttonListDownloads.add(jButtonDownloadAufraeumen);
                 break;
-            case TOOLBAR_TAB_ABOS:
-                jButtonAbosEinschalten = new MVButton(new String[]{TOOLBAR_TAB_ABOS}, "Abos einschalten", "Abos einschalten", "ja_32.png", "ja_16.png");
+            case TAB_ABOS:
+                jButtonAbosEinschalten = new MVButton(new MediathekGui.TABS[]{MediathekGui.TABS.TAB_ABOS}, "Abos einschalten", "Abos einschalten", "ja_32.png", "ja_16.png");
                 buttonListAbos.add(jButtonAbosEinschalten);
-                jButtonAbosAusschalten = new MVButton(new String[]{TOOLBAR_TAB_ABOS}, "Abos ausschalten", "Abos ausschalten", "nein_32.png", "nein_16.png");
+                jButtonAbosAusschalten = new MVButton(new MediathekGui.TABS[]{MediathekGui.TABS.TAB_ABOS}, "Abos ausschalten", "Abos ausschalten", "nein_32.png", "nein_16.png");
                 buttonListAbos.add(jButtonAbosAusschalten);
-                jButtonAbosLoeschen = new MVButton(new String[]{TOOLBAR_TAB_ABOS}, "Abos löschen", "Abos löschen", "del_32.png", "del_16.png");
+                jButtonAbosLoeschen = new MVButton(new MediathekGui.TABS[]{MediathekGui.TABS.TAB_ABOS}, "Abos löschen", "Abos löschen", "del_32.png", "del_16.png");
                 buttonListAbos.add(jButtonAbosLoeschen);
-                jButtonAboAendern = new MVButton(new String[]{TOOLBAR_TAB_ABOS}, "Abo ändern", "Abo ändern", "configure_32.png", "configure_16.png");
+                jButtonAboAendern = new MVButton(new MediathekGui.TABS[]{MediathekGui.TABS.TAB_ABOS}, "Abo ändern", "Abo ändern", "configure_32.png", "configure_16.png");
                 buttonListAbos.add(jButtonAboAendern);
                 break;
         }
         switch (state) {
-            case TOOLBAR_TAB_FILME:
+            case TAB_FILME:
                 this.add(filler__5);
                 this.add(jButtonFilmlisteLaden);
                 this.add(filler__10);
@@ -206,7 +207,7 @@ public final class ToolBar extends JToolBar {
                 jButtonFilterPanel.setIcon(GetIcon.getProgramIcon("filter_anzeigen_22.png"));
                 this.add(jButtonFilterPanel);
                 break;
-            case TOOLBAR_TAB_DOWNLOADS:
+            case TAB_DOWNLOADS:
                 this.add(filler__10);
                 this.add(jButtonInfo);
                 this.add(filler__10);
@@ -217,7 +218,7 @@ public final class ToolBar extends JToolBar {
                 this.add(jButtonDownloadLoeschen);
                 this.add(jButtonDownloadAufraeumen);
                 break;
-            case TOOLBAR_TAB_ABOS:
+            case TAB_ABOS:
                 this.add(filler__10);
                 this.add(jButtonAbosEinschalten);
                 this.add(jButtonAbosAusschalten);
@@ -289,7 +290,7 @@ public final class ToolBar extends JToolBar {
         }
     }
 
-    public void setToolbar(String sstate) {
+    public void setToolbar(MediathekGui.TABS sstate) {
         state = sstate;
         boolean ok;
         filterAnzeigen();
@@ -316,14 +317,14 @@ public final class ToolBar extends JToolBar {
 
     public void filterAnzeigen() {
         switch (state) {
-            case TOOLBAR_TAB_FILME:
-                jButtonFilterPanel.setEnabled(state.equals(TOOLBAR_TAB_FILME));
-                jTextFieldFilter.setEnabled(state.equals(TOOLBAR_TAB_FILME));
+            case TAB_FILME:
+                jButtonFilterPanel.setEnabled(state.equals(MediathekGui.TABS.TAB_FILME));
+                jTextFieldFilter.setEnabled(state.equals(MediathekGui.TABS.TAB_FILME));
                 jTextFieldFilter.setVisible(!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
                 break;
-            case TOOLBAR_TAB_DOWNLOADS:
+            case TAB_DOWNLOADS:
                 break;
-            case TOOLBAR_TAB_ABOS:
+            case TAB_ABOS:
                 break;
         }
     }
@@ -368,7 +369,7 @@ public final class ToolBar extends JToolBar {
         addMouseListener(beobMausToolBar);
 
         switch (state) {
-            case TOOLBAR_TAB_FILME:
+            case TAB_FILME:
                 Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
                     @Override
                     public void start(ListenerFilmeLadenEvent event) {
@@ -407,7 +408,7 @@ public final class ToolBar extends JToolBar {
                 });
                 jButtonFilmSpeichern.addActionListener(e -> Daten.guiFilme.guiFilmeFilmSpeichern());
                 jButtonFilmAbspielen.addActionListener(e -> Daten.guiFilme.guiFilmeFilmAbspielen());
-                jButtonInfo.addActionListener(e -> daten.filmInfo.showInfo());
+                jButtonInfo.addActionListener(e -> Daten.filmInfo.showInfo());
                 jButtonFilterPanel.addActionListener(e -> {
                     boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_FILTER));
                     MVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.toString(b));
@@ -417,8 +418,8 @@ public final class ToolBar extends JToolBar {
                                     .getName());
                 });
                 break;
-            case TOOLBAR_TAB_DOWNLOADS:
-                jButtonInfo.addActionListener(e -> daten.filmInfo.showInfo());
+            case TAB_DOWNLOADS:
+                jButtonInfo.addActionListener(e -> Daten.filmInfo.showInfo());
                 jButtonDownloadAktualisieren.addActionListener(e -> Daten.guiDownloads.aktualisieren());
                 jButtonDownloadAufraeumen.addActionListener(e -> Daten.guiDownloads.aufraeumen());
                 jButtonDownloadLoeschen.addActionListener(e -> Daten.guiDownloads.loeschen());
@@ -426,7 +427,7 @@ public final class ToolBar extends JToolBar {
                 jButtonDownloadFilmStarten.addActionListener(e -> Daten.guiDownloads.filmAbspielen());
                 jButtonDownloadZurueckstellen.addActionListener(e -> Daten.guiDownloads.zurueckstellen());
                 break;
-            case TOOLBAR_TAB_ABOS:
+            case TAB_ABOS:
                 jButtonAbosEinschalten.addActionListener(e -> Daten.guiAbo.einAus(true));
                 jButtonAbosAusschalten.addActionListener(e -> Daten.guiAbo.einAus(false));
                 jButtonAbosLoeschen.addActionListener(e -> Daten.guiAbo.loeschen());
@@ -446,9 +447,9 @@ public final class ToolBar extends JToolBar {
         String name = "";
         String imageIconKlein;
         String imageIconNormal;
-        ArrayList<String> sparte = new ArrayList<>();
+        ArrayList<MediathekGui.TABS> sparte = new ArrayList<>();
 
-        public MVButton(String[] ssparte, String nname, String ttoolTip,
+        public MVButton(MediathekGui.TABS[] ssparte, String nname, String ttoolTip,
                 String iimageIconNormal, String iimageIconKlein) {
             setToolTipText(ttoolTip);
             name = nname;
@@ -511,7 +512,7 @@ public final class ToolBar extends JToolBar {
             for (int i = 0; i < box.length; ++i) {
                 box[i] = null;
                 if (extern) {
-                    for (String s : buttonListToUse.get(i).sparte) {
+                    for (MediathekGui.TABS s : buttonListToUse.get(i).sparte) {
                         if (s.equals(state)) {
                             box[i] = new JCheckBoxMenuItem(buttonListToUse.get(i).name);
                             break;

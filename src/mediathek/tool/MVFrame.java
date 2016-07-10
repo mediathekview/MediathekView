@@ -31,15 +31,28 @@ import mediathek.gui.PanelVorlage;
 public class MVFrame extends javax.swing.JFrame {
 
     private final Daten daten;
-    private final String state;
+    private final MediathekGui.TABS state;
     private String nrGroesse = "";
 
-    public MVFrame(Daten ddaten, PanelVorlage jPanel, String sstate, String titel) {
+    public MVFrame(Daten ddaten, PanelVorlage jPanel, MediathekGui.TABS state) {
         initComponents();
-        this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
-        this.setTitle(titel);
         daten = ddaten;
-        state = sstate;
+        this.state = state;
+
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
+        switch (state) {
+            case TAB_DOWNLOADS:
+                this.setTitle("Downloads");
+                break;
+            case TAB_ABOS:
+                this.setTitle("Abos");
+                break;
+            case TAB_MELDUNGEN:
+                this.setTitle("Meldungen");
+                break;
+            default:
+                this.setTitle(Konstanten.PROGRAMMNAME);
+        }
         jPanelExtra.setLayout(new BorderLayout());
         jPanelExtra.add(jPanel, BorderLayout.CENTER);
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

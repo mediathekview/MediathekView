@@ -30,7 +30,7 @@ public class MediathekGuiMac extends MediathekGui {
 
     /**
      * Group manager for maximum number of Downloads Radio Buttons.
-     **/
+     * */
     private ButtonGroup group = null;
 
     public MediathekGuiMac(String[] ar) {
@@ -64,7 +64,7 @@ public class MediathekGuiMac extends MediathekGui {
     private void setupOsxDockIconBadge() {
         //setup the badge support for displaying active downloads
         Listener.addListener(new Listener(new int[]{
-                Listener.EREIGNIS_START_EVENT, Listener.EREIGNIS_LISTE_DOWNLOADS}, MediathekGui.class.getSimpleName()) {
+            Listener.EREIGNIS_START_EVENT, Listener.EREIGNIS_LISTE_DOWNLOADS}, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 final int activeDownloads = Daten.downloadInfos.downloadStarts[4];
@@ -94,7 +94,7 @@ public class MediathekGuiMac extends MediathekGui {
         final Application application = Application.getApplication();
         application.disableSuddenTermination();
         application.setAboutHandler(aboutEvent -> showAboutDialog());
-        application.setPreferencesHandler(preferencesEvent -> dialogEinstellungen.setVisible(true));
+        application.setPreferencesHandler(preferencesEvent -> Daten.dialogEinstellungen.setVisible(true));
         application.setQuitHandler((quitEvent, quitResponse) -> {
             if (!beenden(false, false)) {
                 quitResponse.cancelQuit();
@@ -155,8 +155,9 @@ public class MediathekGuiMac extends MediathekGui {
         if (MVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD).equals("")) {
             MVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
             numDownloads = 1;
-        } else
+        } else {
             numDownloads = Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD));
+        }
 
         return numDownloads;
     }

@@ -37,6 +37,7 @@ import mSearch.tool.Datum;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.MVConfig;
+import mediathek.MediathekGui;
 import mediathek.controller.starter.Start;
 import mediathek.daten.*;
 import mediathek.gui.dialog.DialogAddDownload;
@@ -48,6 +49,7 @@ import mediathek.tool.*;
 public class GuiFilme extends PanelVorlage {
 
     private JButton buttonArray[];
+    private final String[] COMBO_ZEIT = new String[]{"alles", "1 Tag", "2 Tage", "3 Tage", "7 Tage", "15 Tage", "20 Tage", "30 Tage"};
     public static final int[] COMBO_ZEIT_INT = {0, 1, 2, 3, 7, 15, 20, 30};
     private static final int FILTER_ZEIT_STARTWERT = 5;
     private static final int FILTER_DAUER_STARTWERT = 0;
@@ -100,9 +102,9 @@ public class GuiFilme extends PanelVorlage {
         setupDescriptionPanel();
 
         jPanelFilter.setLayout(new BorderLayout());
-        filmInfo = daten.filmInfo;
+        filmInfo = Daten.filmInfo;
 
-        toolBar = new ToolBar(daten, ToolBar.TOOLBAR_TAB_FILME);
+        toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_FILME);
         jPanelToolBar.setLayout(new BorderLayout());
         jPanelToolBar.add(toolBar, BorderLayout.CENTER);
         setToolbarVisible();
@@ -125,7 +127,7 @@ public class GuiFilme extends PanelVorlage {
     @Override
     public void isShown() {
         super.isShown();
-        Daten.mediathekGui.setTabShown(ToolBar.TOOLBAR_TAB_FILME);
+        Daten.mediathekGui.setTabShown(MediathekGui.TABS.TAB_FILME);
         Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.FILME);
         updateFilmData();
         setInfo();
@@ -269,8 +271,8 @@ public class GuiFilme extends PanelVorlage {
                 if (filmSelection.isPresent()) {
                     final DatenFilm film = filmSelection.get();
                     MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-                    daten.dialogMediaDB.setVis();
-                    daten.dialogMediaDB.setFilter(film.arr[DatenFilm.FILM_TITEL]);
+                    Daten.dialogMediaDB.setVis();
+                    Daten.dialogMediaDB.setFilter(film.arr[DatenFilm.FILM_TITEL]);
                 }
             }
         });
@@ -508,8 +510,8 @@ public class GuiFilme extends PanelVorlage {
         final Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
         if (filmSelection.isPresent()) {
             MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-            daten.dialogMediaDB.setVis();
-            daten.dialogMediaDB.setFilter(filmSelection.get().arr[DatenFilm.FILM_TITEL]);
+            Daten.dialogMediaDB.setVis();
+            Daten.dialogMediaDB.setFilter(filmSelection.get().arr[DatenFilm.FILM_TITEL]);
         }
     }
 
@@ -673,6 +675,7 @@ public class GuiFilme extends PanelVorlage {
         }
         // einrichten
         mVFilter.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
+        mVFilter.get_jComboBoxZeitraum().setModel(new DefaultComboBoxModel<>(COMBO_ZEIT));
         mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
         mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
         mVFilter.get_jToggleButtonHistory().setSelected(history);
@@ -689,7 +692,6 @@ public class GuiFilme extends PanelVorlage {
         //und jetzt noch alles laden
         MVListeFilme.checkBlacklist();
         loadTable();
-
     }
 
     private void setSplitPane() {
