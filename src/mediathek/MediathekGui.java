@@ -441,7 +441,6 @@ public class MediathekGui extends JFrame {
         Daten.guiDownloads = new GuiDownloads(daten, Daten.mediathekGui);
         Daten.guiAbo = new GuiAbo(daten, Daten.mediathekGui);
         Daten.guiMeldungen = new GuiMeldungen(daten, this);
-
         Daten.guiFilme = new GuiFilme(daten, Daten.mediathekGui);
         Daten.guiFilme.init();
 
@@ -543,6 +542,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void designTabs() {
+        boolean se = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_LEFT));
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_LEFT))) {
             jTabbedPane.setTabPlacement(JTabbedPane.LEFT);
         } else {
@@ -554,19 +554,19 @@ public class MediathekGui extends JFrame {
             Component c = jTabbedPane.getComponentAt(i);
             ImageIcon ic = null;
             if (c.equals(Daten.guiFilme)) {
-                ic = GetIcon.getGuiIcon("tab_film.png");
+                ic = se ? GetIcon.getGuiIcon("tab_film_s.png") : GetIcon.getGuiIcon("tab_film.png");
             }
             if (c.equals(Daten.guiDownloads)) {
-                ic = GetIcon.getGuiIcon("tab_download.png");
+                ic = se ? GetIcon.getGuiIcon("tab_download_s.png") : GetIcon.getGuiIcon("tab_download.png");
             }
             if (c.equals(Daten.guiAbo)) {
-                ic = GetIcon.getGuiIcon("tab_abo.png");
+                ic = se ? GetIcon.getGuiIcon("tab_abo_s.png") : GetIcon.getGuiIcon("tab_abo.png");
             }
             if (c.equals(Daten.guiMeldungen)) {
-                ic = GetIcon.getGuiIcon("tab_meldungen.png");
+                ic = se ? GetIcon.getGuiIcon("tab_meldungen_s.png") : GetIcon.getGuiIcon("tab_meldungen.png");
             }
             if (c.equals(Daten.guiDebug)) {
-                ic = GetIcon.getGuiIcon("tab_meldungen.png");
+                ic = se ? GetIcon.getGuiIcon("tab_meldungen_s.png") : GetIcon.getGuiIcon("tab_meldungen.png");
             }
             String s = jTabbedPane.getTitleAt(i);
             JLabel lbl = makeLable(s, ic);
@@ -590,7 +590,12 @@ public class MediathekGui extends JFrame {
 //        UIManager.getDefaults().put("TabbedPane.tabsOpaque", true);
 //        UIManager.put("TabbedPane.selected", null);
 //        UIManager.put("TabbedPane.tabInsets", new Insets(25, 25, 25, 25));
-//        UIManager.getLookAndFeelDefaults().put("TabbedPane.tabInsets", new Insets(50, 20, 20, 20));
+        if (se) {
+            UIManager.getLookAndFeelDefaults().put("TabbedPane.tabInsets", new Insets(20, 0, 10, 0));
+        } else {
+            UIManager.getLookAndFeelDefaults().put("TabbedPane.tabInsets", new Insets(0, 0, 0, 0));
+        }
+
 //        UIManager.getLookAndFeelDefaults().put("TabbedPane.textIconGap", 20);
         jTabbedPane.updateUI();
     }
@@ -601,13 +606,13 @@ public class MediathekGui extends JFrame {
         lbl.setBorder(null);
         lbl.setIcon(ic);
         lbl.setOpaque(false);
-//        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_LEFT))) {
-//            lbl.setHorizontalTextPosition(JLabel.CENTER);
-//            lbl.setHorizontalAlignment(JLabel.LEADING);
-//        } else {
+
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_LEFT))) {
+            lbl.setVerticalTextPosition(JLabel.TOP);
+        }
+        lbl.setVerticalAlignment(JLabel.CENTER);
         lbl.setHorizontalTextPosition(JLabel.CENTER);
-        lbl.setHorizontalAlignment(JLabel.LEADING);
-//        }
+        lbl.setHorizontalAlignment(JLabel.CENTER);
         return lbl;
     }
 
