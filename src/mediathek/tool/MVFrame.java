@@ -60,7 +60,13 @@ public class MVFrame extends javax.swing.JFrame {
             @Override
             public void windowClosing(WindowEvent evt) {
                 Daten.mediathekGui.hideFrame(state);
+                dispose();
             }
+
+//            public void windowClosed(WindowEvent evt) {
+//                Daten.mediathekGui.hideFrame(state);
+//                dispose();
+//            }
         });
         pack();
     }

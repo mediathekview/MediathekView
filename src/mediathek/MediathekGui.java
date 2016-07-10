@@ -59,9 +59,9 @@ public class MediathekGui extends JFrame {
     private final JPanel jPanelBandbreite = new JPanel();
     private final JSlider jSliderBandbreite = new JSlider();
     private MVStatusBar statusBar;
-    private final MVFrame frameDownload = null;
-    private final MVFrame frameAbo = null;
-    private final MVFrame frameMeldungen = null;
+    private MVFrame frameDownload = null;
+    private MVFrame frameAbo = null;
+    private MVFrame frameMeldungen = null;
     private final JCheckBoxMenuItem jCheckBoxFilterAnzeigen = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxFilterExtrafenster = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxDownloadExtrafenster = new JCheckBoxMenuItem();
@@ -451,7 +451,7 @@ public class MediathekGui extends JFrame {
             Daten.guiDebug = new GuiDebug(daten);
             jTabbedPane.addTab("Debug", spacerIcon, Daten.guiDebug);
         }
-        
+
         initFrames();
     }
 
@@ -479,14 +479,14 @@ public class MediathekGui extends JFrame {
         // Downloads
         int nr = 1;
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FENSTER_DOWNLOAD))) {
-            setFrame(frameDownload, MVConfig.SYSTEM_GROESSE_DOWNLOAD, Daten.guiDownloads, TABS.TAB_DOWNLOADS);
+            frameDownload = setFrame(frameDownload, MVConfig.SYSTEM_GROESSE_DOWNLOAD, Daten.guiDownloads, TABS.TAB_DOWNLOADS);
         } else {
             setTab(frameDownload, Daten.guiDownloads, "Downloads", nr++);
         }
 
         // Abos
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FENSTER_ABO))) {
-            setFrame(frameAbo, MVConfig.SYSTEM_GROESSE_ABO, Daten.guiAbo, TABS.TAB_ABOS);
+            frameAbo = setFrame(frameAbo, MVConfig.SYSTEM_GROESSE_ABO, Daten.guiAbo, TABS.TAB_ABOS);
         } else {
             setTab(frameAbo, Daten.guiAbo, "Abos", nr++);
         }
@@ -495,32 +495,34 @@ public class MediathekGui extends JFrame {
         if (!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_MELDUNGEN))) {
             hide(frameMeldungen, Daten.guiMeldungen);
         } else if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FENSTER_MELDUNGEN))) {
-            setFrame(frameMeldungen, MVConfig.SYSTEM_GROESSE_MELDUNGEN, Daten.guiMeldungen, TABS.TAB_MELDUNGEN);
+            frameMeldungen = setFrame(frameMeldungen, MVConfig.SYSTEM_GROESSE_MELDUNGEN, Daten.guiMeldungen, TABS.TAB_MELDUNGEN);
         } else {
             setTab(frameMeldungen, Daten.guiMeldungen, "Meldungen", nr);
         }
+        jTabbedPane.updateUI();
         designTabs();
         jTabbedPane.setSelectedIndex(0);
         Daten.guiFilme.isShown();
     }
 
-    private void hide(MVFrame frame, PanelVorlage panel) {
-        panel.solo = true;
+    private void hide(MVFrame frame, PanelVorlage panelVorlage) {
+        panelVorlage.solo = true;
         if (frame != null) {
             frame.dispose();
             frame = null;
         }
-        if (tabContain(panel)) {
-            jTabbedPane.remove(panel);
+        if (tabContain(panelVorlage)) {
+            jTabbedPane.remove(panelVorlage);
         }
     }
 
-    private void setFrame(MVFrame frame, String nrGroesse, PanelVorlage panel, TABS sparte) {
+    private MVFrame setFrame(MVFrame frame, String nrGroesse, PanelVorlage panel, TABS sparte) {
         hide(frame, panel);
         panel.solo = true;
         frame = new MVFrame(daten, panel, sparte);
         frame.setSize(nrGroesse);
         frame.setVisible(true);
+        return frame;
     }
 
     private void setTab(MVFrame frame, PanelVorlage panel, String titel, int nrTab) {
@@ -546,9 +548,10 @@ public class MediathekGui extends JFrame {
         } else {
             jTabbedPane.setTabPlacement(JTabbedPane.TOP);
         }
+        jTabbedPane.updateUI();
 
         for (int i = 0; i < jTabbedPane.getTabCount(); ++i) {
-            Component c = jTabbedPane.getComponent(i);
+            Component c = jTabbedPane.getComponentAt(i);
             ImageIcon ic = null;
             if (c.equals(Daten.guiFilme)) {
                 ic = GetIcon.getGuiIcon("tab_film.png");
@@ -560,6 +563,9 @@ public class MediathekGui extends JFrame {
                 ic = GetIcon.getGuiIcon("tab_abo.png");
             }
             if (c.equals(Daten.guiMeldungen)) {
+                ic = GetIcon.getGuiIcon("tab_meldungen.png");
+            }
+            if (c.equals(Daten.guiDebug)) {
                 ic = GetIcon.getGuiIcon("tab_meldungen.png");
             }
             String s = jTabbedPane.getTitleAt(i);
@@ -586,10 +592,7 @@ public class MediathekGui extends JFrame {
 //        UIManager.put("TabbedPane.tabInsets", new Insets(25, 25, 25, 25));
 //        UIManager.getLookAndFeelDefaults().put("TabbedPane.tabInsets", new Insets(50, 20, 20, 20));
 //        UIManager.getLookAndFeelDefaults().put("TabbedPane.textIconGap", 20);
-
         jTabbedPane.updateUI();
-        jPanelCont.updateUI();
-        
     }
 
     private JLabel makeLable(String text, ImageIcon ic) {
@@ -934,7 +937,7 @@ public class MediathekGui extends JFrame {
         // MediaDB
         GuiFunktionen.getSize(MVConfig.SYSTEM_MEDIA_DB_DIALOG_GROESSE, daten.dialogMediaDB);
 
-        // Frames
+//        // Frames
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_DOWNLOAD, frameDownload);
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_ABO, frameAbo);
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_MELDUNGEN, frameMeldungen);
