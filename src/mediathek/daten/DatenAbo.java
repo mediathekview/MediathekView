@@ -39,7 +39,9 @@ public class DatenAbo extends Data<DatenAbo> {
     public static final String[] COLUMN_NAMES = {"Nr", "aktiv", "Name",
         "Sender", "Thema", "Titel", "Thema-Titel",
         "Irgendwo", "Mindestdauer", "Zielpfad", "letztes Abo", "Programmset"};
-    public static final String[] XML_NAMES = COLUMN_NAMES;
+    public static final String[] XML_NAMES = {"Nr", "aktiv", "Name",
+        "Sender", "Thema", "Titel", "Thema-Titel",
+        "Irgendwo", "Mindestdauer", "Zielpfad", "letztes_Abo", "Programmset"};
 
     public static final int MAX_ELEM = 12;
     public static final String TAG = "Abonnement";
