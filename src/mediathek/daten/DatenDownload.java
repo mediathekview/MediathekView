@@ -101,10 +101,10 @@ public final class DatenDownload extends Data<DatenDownload> {
     public static final String[] COLUMN_NAMES = {"Nr", "Filmnr", "Abo", "Sender", "Thema", "Titel", "", "",
         "Fortschritt", "Restzeit", "Geschwindigkeit", "Größe [MB]",
         "Datum", "Zeit", "Dauer", "HD", "UT",
-        "Pause", "Geo", "Film-URL", "History-URL", "URL", "URL-rtmp", "URL-Untertitel",
-        "Programmset", "Programm", "Programmaufruf_", "Programmaufruf", "Restart",
+        "Pause", "Geo", "Url Film", "Url History", "Url", "Url RTMP", "Url Untertitel",
+        "Programmset", "Programm", "Programmaufruf", "Programmaufruf Array", "Restart",
         "Dateiname", "Pfad", "Pfad-Dateiname", "Art", "Quelle",
-        "Zurueckgestellt", "Infodatei", "Spotlight", "Untertitel", "Remote-Download", "Ref"};
+        "Zurückgestellt", "Infodatei", "Spotlight", "Untertitel", "Remote Download", "Ref"};
     public static final String[] XML_NAMES = {"Nr", "Filmnr", "Abo", "Sender", "Thema", "Titel", "Button-Start", "Button-Del",
         "Fortschritt", "Restzeit", "Geschwindigkeit", "Groesse"/*DOWNLOAD_GROESSE*/,
         "Datum", "Zeit", "Dauer", "HD", "UT",
