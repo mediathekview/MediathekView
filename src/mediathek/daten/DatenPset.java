@@ -58,9 +58,9 @@ public class DatenPset extends Data<DatenPset> {
     public static final String TAG = "Programmset";
     public static final int MAX_ELEM = 22;
 
-    public static final String[] COLUMN_NAMES = {"Setname", "Präfix", "Suffix", "Farbe", "Zielpfad", "Zieldateiname", "Thema-anlegen",
-        "Abspielen", "Speichern", "Button", "Abo", "Laenge", "Laenge-Feld", "max-Laenge", "max-Laenge-Feld", "Auflösung", "AddOn",
-        "Beschreibung", "Info-URL", "Infodatei", "Spotlight", "Untertitel"};
+    public static final String[] COLUMN_NAMES = {"Setname", "Präfix", "Suffix", "Farbe", "Zielpfad", "Zieldateiname", "Thema anlegen",
+        "Abspielen", "Speichern", "Button", "Abo", "Länge", "Länge Feld", "max Länge", "max Länge Feld", "Auflösung", "AddOn",
+        "Beschreibung", "Url Info", "Infodatei", "Spotlight", "Untertitel"};
     public static final String[] XML_NAMES = {"Name", "Praefix", "Suffix", "Farbe", "Zielpfad", "Zieldateiname", "Thema-anlegen",
         "Abspielen", "Speichern", "Button", "Abo", "Laenge", "Laenge-Feld", "max-Laenge", "max-Laenge-Feld", "Aufloesung", "AddOn",
         "Beschreibung", "Info-URL", "Infodatei", "Spotlight", "Untertitel"};
