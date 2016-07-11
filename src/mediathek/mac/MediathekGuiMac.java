@@ -15,6 +15,7 @@ import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
+import mediathek.gui.MVAboutDialog;
 
 /**
  * User: crystalpalace1977
@@ -88,6 +89,15 @@ public class MediathekGuiMac extends MediathekGui {
     }
 
     /**
+     * Display the About Box
+     */
+    protected void showAboutDialog() {
+        MVAboutDialog aboutDialog = new MVAboutDialog(this, SystemInfo.isMacOSX());
+        aboutDialog.setVisible(true);
+        aboutDialog.dispose();
+    }
+
+    /**
      * Setup the UI for OS X
      */
     private void setupUserInterfaceForOsx() {
@@ -119,9 +129,6 @@ public class MediathekGuiMac extends MediathekGui {
             jMenuDatei.remove(jMenuItemBeenden);
             //Datei->Einstellungen
             jMenuDatei.remove(jMenuItemEinstellungen);
-            //Hilfe->Über
-            jMenuHilfe.remove(jSeparator4);
-            jMenuHilfe.remove(jMenuItemAbout);
         }
 
         setupOsxDockIconBadge();

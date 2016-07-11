@@ -1,77 +1,69 @@
 /*
- * MediathekView
- * Copyright (C) 2014 W. Xaver
- * W.Xaver[at]googlemail.com
- * http://zdfmediathk.sourceforge.net/
+ *    MVAboutDialog
+ *    Copyright (C) 2013 CrystalPalace
+ *    crystalpalace1977@googlemail.com
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
+ *    This program is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mediathek.gui;
 
 import com.jidesoft.swing.MarqueePane;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
+import static mSearch.tool.Functions.getPathJar;
 import mediathek.daten.Daten;
-import mediathek.tool.*;
+import mediathek.tool.BeobMausUrl;
+import mediathek.tool.Konstanten;
+import mediathek.tool.MVFunctionSys;
+import mediathek.tool.UrlHyperlinkAction;
 
+public class AboutPanel extends javax.swing.JPanel {
 
-public class About extends javax.swing.JDialog {
-    
     private MarqueePane marqueePane;
-    private final Boolean isRunningOnMac;
     private final JFrame parentFrame;
-    
-    public About(JFrame parent, final Boolean isRunningOnMac) {
-        super(parent);
+    final private Color greyColor = new Color(159, 159, 159);
+
+    public AboutPanel(JFrame parent) {
         initComponents();
-        
+
         parentFrame = parent;
-        setModal(true);
-        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        this.isRunningOnMac = isRunningOnMac;
-        new EscBeenden(this) {
-            @Override
-            public void beenden_(JDialog d) {
-                d.dispose();
-            }
-        };
-        
-        setResizable(false);
-        setModalityType(ModalityType.APPLICATION_MODAL);
-        setBounds(100, 100, 790, 491);
-        
-        initialize();
-        
+
+        initHpLink();
+        initMarqueePane();
+        initProgramPath();
+        iniJavaPath();
+
         this.setBackground(Color.WHITE);
         contentPanel.setBackground(Color.WHITE);
         jPanel1.setBackground(Color.WHITE);
         jPanel2.setBackground(Color.WHITE);
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        
-        lblProgramIcon.setIcon(new ImageIcon(About.class.getResource("/mediathek/res/MediathekView.png")));
+
+        ImageIcon ic = new ImageIcon(AboutPanel.class.getResource("/mediathek/res/MediathekView.png"));
+        ic.setImage(ic.getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
+        lblProgramIcon.setIcon(ic);
+        //lblProgramIcon.setIcon(new ImageIcon(PanelAbout.class.getResource("/mediathek/res/MediathekView.png")));
         lblProgramIcon.setText("");
-        
+
         lblProgramName.setFont(new Font("Lucida Grande", Font.BOLD, 24));
-        
+
+    }
+
+    private void initHpLink() {
         hprlnkWebsite.setHorizontalAlignment(SwingConstants.LEFT);
         try {
             hprlnkWebsite.setAction(new WebsiteHyperlinkAction());
@@ -80,7 +72,7 @@ public class About extends javax.swing.JDialog {
         }
         hprlnkWebsite.setText("Website");
         hprlnkWebsite.addMouseListener(new BeobMausUrl(Konstanten.ADRESSE_WEBSITE));
-        
+
         hprlnkDonation.setHorizontalAlignment(SwingConstants.LEFT);
         try {
             hprlnkDonation.setAction(new DonationHyperlinkAction());
@@ -89,7 +81,7 @@ public class About extends javax.swing.JDialog {
         }
         hprlnkDonation.setText("Spende");
         hprlnkDonation.addMouseListener(new BeobMausUrl(Konstanten.ADRESSE_DONATION));
-        
+
         hprlnkAnleitung.setHorizontalAlignment(SwingConstants.LEFT);
         try {
             hprlnkAnleitung.setAction(new AnleitungHyperlinkAction());
@@ -98,7 +90,7 @@ public class About extends javax.swing.JDialog {
         }
         hprlnkAnleitung.setText("Anleitung");
         hprlnkAnleitung.addMouseListener(new BeobMausUrl(Konstanten.ADRESSE_ANLEITUNG));
-        
+
         hprlnkForum.setHorizontalAlignment(SwingConstants.LEFT);
         try {
             hprlnkForum.setAction(new ForumHyperlinkAction());
@@ -107,11 +99,9 @@ public class About extends javax.swing.JDialog {
         }
         hprlnkForum.setText("Forum");
         hprlnkForum.addMouseListener(new BeobMausUrl(Konstanten.ADRESSE_FORUM));
-        
-        okButton.setAction(new CloseDialogAction(this));
-        pack();
+
     }
-    
+
     private void initMarqueePane() {
         final JEditorPane messagePane = new JEditorPane();
         messagePane.setEditable(false);
@@ -124,102 +114,79 @@ public class About extends javax.swing.JDialog {
                 + "<p><span class=\"sans\"><b>Autoren:</b><br />\n"
                 + "Xaver W. (W.Xaver [at] googlemail [dot] com)<br />\n"
                 + "Christian F. (crystalpalace1977 [at] googlemail [dot] com)<br />\n"
-                + "Patrick<br />\n"
-                + "thausherr<br />\n"
-                + "Andreas M.<br />\n"
                 + "siedlerchr<br /></span><p>\n"
                 + "<span class=\"sans\"><b>Dokumentation / Test:</b><br />\n"
                 + "styrol<br />\n"
+                + "zxsd<br />\n"
+                + "siedlerchr<br />\n"
+                + "apoleon<br />\n"
                 + "hostis<br />\n"
                 + "pmshell<br />\n"
-                + "thausherr<br />\n"
-                + "apoleon<br />\n"
-                + "siedlerchr<br />\n"
-                + "werner252<br />\n"
-                + "thomas5<br />\n"
-                + "frankypsilon</span><p>\n"
-                + "<span class=\"sans\"><b>Ein Dankeschön an alle, die zu dieser Software beigetragen haben.</b></span>\n"
+                + "clel<br />\n"
+                + "derreisende77<br />\n"
+                + "thausherr</span><p>\n"
+                + "<span class=\"sans\"><b>Ein Dankeschön an alle,<br />"
+                + "die zu dieser Software beigetragen haben.</b></span>\n"
                 + "<br /><br /><br /></body></html>");
-        
+
         marqueePane = new MarqueePane(messagePane);
         marqueePane.setStayDelay(3000);
         marqueePane.setScrollDirection(MarqueePane.SCROLL_DIRECTION_UP);
         marqueePane.setScrollAmount(1);
-        
-    }
-    
-    private void setupJavaInformation() {
-        lblJavaVersion.setText(System.getProperty("java.version"));
-        String strVmType = System.getProperty("java.vm.name");
-        strVmType += " (";
-        strVmType += System.getProperty("java.vendor");
-        strVmType += ")";
-        lblVmType.setText(strVmType);
-    }
-    
-    private void setupVersionString() {
-        String strVersion = "Version ";
-        strVersion += Konstanten.VERSION;
-        strVersion += " (";
-        strVersion += MVFunctionSys.getBuildNr();
-        strVersion += ")";
-        lblVersion.setText(strVersion);
-    }
-    
-    private void initialize() {
-        initMarqueePane();
+
         jPanelLauftext.setLayout(new BorderLayout(0, 0));
         jPanelLauftext.add(marqueePane, BorderLayout.CENTER);
         jPanelLauftext.setPreferredSize(new Dimension(100, 135));
         jPanelLauftext.setMaximumSize(new Dimension(100, 135));
-        
-        TitledBorder border = new TitledBorder("Programmpfade");
-        pnlProgramPaths.setBorder(border);
-        pnlProgramPaths.setBackground(Color.WHITE);
-        
-        border = new TitledBorder("Java Information");
-        pnlJavaInformation.setBorder(border);
+    }
+
+    private void iniJavaPath() {
+
         pnlJavaInformation.setBackground(Color.WHITE);
-        
-        Color greyColor = new Color(159, 159, 159);
-        lblVersion.setForeground(greyColor);
-        lblVersion.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-        
+
         lblJavaVersion_.setText("Version:");
         lblJavaVersion_.setForeground(greyColor);
         lblJavaVersion.setForeground(greyColor);
-        
+
         lblVmType_.setText("Type:");
         lblVmType_.setForeground(greyColor);
         lblVmType.setForeground(greyColor);
-        
-        lblFilmlistPath_.setText("Filmliste:");
-        lblFilmlistPath_.setHorizontalAlignment(SwingConstants.RIGHT);
-        lblFilmlistPath_.setForeground(greyColor);
-        lblFilmlistPath.setForeground(greyColor);
-        
-        lblSettingsFilePath_.setText("Einstellungen:");
-        lblSettingsFilePath_.setForeground(greyColor);
-        lblSettingsFilePath.setForeground(greyColor);
-        
-        try {
-            setupVersionString();
-            setupJavaInformation();
-            // Programmpfade
-            final Path xmlFilePath = Daten.getMediathekXmlFilePath();
-            lblSettingsFilePath.setText(xmlFilePath.toAbsolutePath().toString());
-            lblFilmlistPath.setText(Daten.getDateiFilmliste());
 
-            // auf dem Mac brauchen wir den Schließen Button nicht..
-            if (isRunningOnMac) {
-                this.remove(buttonPane);
-            }
-            
+        try {
+            lblJavaVersion.setText(System.getProperty("java.version"));
+            lblVmType.setText(System.getProperty("java.vm.name") + " (" + System.getProperty("java.vendor") + ")");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
+    private void initProgramPath() {
+
+        pnlProgramPaths.setBackground(Color.WHITE);
+
+        lblVersion.setForeground(greyColor);
+        lblVersion.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+
+        lblFilmlistPath_.setForeground(greyColor);
+        lblFilmlistPath.setForeground(greyColor);
+
+        lblSettingsFilePath_.setForeground(greyColor);
+        lblSettingsFilePath.setForeground(greyColor);
+
+        lblProgramPath_.setForeground(greyColor);
+        lblProgramPath.setForeground(greyColor);
+
+        try {
+            lblVersion.setText("Version " + Konstanten.VERSION + " (" + MVFunctionSys.getBuildNr() + ")");
+
+            lblSettingsFilePath.setText(Daten.getMediathekXmlFilePath().toAbsolutePath().toString());
+            lblFilmlistPath.setText(Daten.getDateiFilmliste());
+            lblProgramPath.setText(getPathJar());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -240,16 +207,13 @@ public class About extends javax.swing.JDialog {
         lblSettingsFilePath_ = new javax.swing.JLabel();
         lblSettingsFilePath = new javax.swing.JLabel();
         lblFilmlistPath = new javax.swing.JLabel();
+        lblProgramPath_ = new javax.swing.JLabel();
+        lblProgramPath = new javax.swing.JLabel();
         pnlJavaInformation = new javax.swing.JPanel();
         lblJavaVersion_ = new javax.swing.JLabel();
         lblVmType_ = new javax.swing.JLabel();
         lblJavaVersion = new javax.swing.JLabel();
         lblVmType = new javax.swing.JLabel();
-        buttonPane = new javax.swing.JPanel();
-        okButton = new javax.swing.JButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setResizable(false);
 
         contentPanel.setLayout(new java.awt.BorderLayout());
 
@@ -314,28 +278,38 @@ public class About extends javax.swing.JDialog {
 
         pnlProgramPaths.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)), "Programmpfade"));
 
-        lblFilmlistPath_.setText("Filmliste");
+        lblFilmlistPath_.setText("Filmliste:");
 
-        lblSettingsFilePath_.setText("Einstellungen");
+        lblSettingsFilePath_.setText("Einstellungen:");
 
         lblSettingsFilePath.setText("jLabel1");
 
         lblFilmlistPath.setText("jLabel2");
+
+        lblProgramPath_.setText("Programmpfad:");
+
+        lblProgramPath.setText("jLabel2");
 
         javax.swing.GroupLayout pnlProgramPathsLayout = new javax.swing.GroupLayout(pnlProgramPaths);
         pnlProgramPaths.setLayout(pnlProgramPathsLayout);
         pnlProgramPathsLayout.setHorizontalGroup(
             pnlProgramPathsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlProgramPathsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlProgramPathsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblSettingsFilePath_)
-                    .addComponent(lblFilmlistPath_))
-                .addGap(18, 18, 18)
+                .addGroup(pnlProgramPathsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblProgramPath_)
+                    .addGroup(pnlProgramPathsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlProgramPathsLayout.createSequentialGroup()
+                            .addGap(50, 50, 50)
+                            .addComponent(lblFilmlistPath_))
+                        .addGroup(pnlProgramPathsLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(lblSettingsFilePath_))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlProgramPathsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblFilmlistPath)
-                    .addComponent(lblSettingsFilePath))
-                .addContainerGap(322, Short.MAX_VALUE))
+                    .addComponent(lblSettingsFilePath)
+                    .addComponent(lblProgramPath))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlProgramPathsLayout.setVerticalGroup(
             pnlProgramPathsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -344,14 +318,18 @@ public class About extends javax.swing.JDialog {
                 .addGroup(pnlProgramPathsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblFilmlistPath_)
                     .addComponent(lblFilmlistPath))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlProgramPathsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblSettingsFilePath)
+                    .addComponent(lblSettingsFilePath_))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlProgramPathsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblSettingsFilePath_)
-                    .addComponent(lblSettingsFilePath))
+                    .addComponent(lblProgramPath_)
+                    .addComponent(lblProgramPath))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        pnlJavaInformation.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)), "Java Informationen", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 12), new java.awt.Color(0, 0, 0))); // NOI18N
+        pnlJavaInformation.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)), "Java Information", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 12), new java.awt.Color(0, 0, 0))); // NOI18N
 
         lblJavaVersion_.setText("Java");
 
@@ -415,58 +393,32 @@ public class About extends javax.swing.JDialog {
                 .addComponent(jPanelLauftext, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pnlProgramPaths, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(pnlJavaInformation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(17, 17, 17)
+                .addComponent(pnlJavaInformation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         contentPanel.add(jPanel2, java.awt.BorderLayout.CENTER);
 
-        okButton.setText("Schließen");
-
-        javax.swing.GroupLayout buttonPaneLayout = new javax.swing.GroupLayout(buttonPane);
-        buttonPane.setLayout(buttonPaneLayout);
-        buttonPaneLayout.setHorizontalGroup(
-            buttonPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, buttonPaneLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(okButton)
-                .addContainerGap())
-        );
-        buttonPaneLayout.setVerticalGroup(
-            buttonPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(buttonPaneLayout.createSequentialGroup()
-                .addGap(3, 3, 3)
-                .addComponent(okButton)
-                .addGap(3, 3, 3))
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(buttonPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(buttonPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
         );
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private class WebsiteHyperlinkAction extends AbstractAction {
-        
+
         public WebsiteHyperlinkAction() throws URISyntaxException {
             putValue(SHORT_DESCRIPTION, Konstanten.ADRESSE_WEBSITE);
             putValue(LONG_DESCRIPTION, Konstanten.ADRESSE_WEBSITE);
         }
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
@@ -475,14 +427,14 @@ public class About extends javax.swing.JDialog {
             }
         }
     }
-    
+
     private class DonationHyperlinkAction extends AbstractAction {
-        
+
         public DonationHyperlinkAction() throws URISyntaxException {
             putValue(SHORT_DESCRIPTION, Konstanten.ADRESSE_DONATION);
             putValue(LONG_DESCRIPTION, Konstanten.ADRESSE_DONATION);
         }
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
@@ -491,14 +443,14 @@ public class About extends javax.swing.JDialog {
             }
         }
     }
-    
+
     private class ForumHyperlinkAction extends AbstractAction {
-        
+
         public ForumHyperlinkAction() throws URISyntaxException {
             putValue(SHORT_DESCRIPTION, Konstanten.ADRESSE_FORUM);
             putValue(LONG_DESCRIPTION, Konstanten.ADRESSE_FORUM);
         }
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
@@ -507,14 +459,14 @@ public class About extends javax.swing.JDialog {
             }
         }
     }
-    
+
     private class AnleitungHyperlinkAction extends AbstractAction {
-        
+
         public AnleitungHyperlinkAction() throws URISyntaxException {
             putValue(SHORT_DESCRIPTION, Konstanten.ADRESSE_ANLEITUNG);
             putValue(LONG_DESCRIPTION, Konstanten.ADRESSE_ANLEITUNG);
         }
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
@@ -523,26 +475,9 @@ public class About extends javax.swing.JDialog {
             }
         }
     }
-    
-    private class CloseDialogAction extends AbstractAction {
-        
-        private final About dlg;
-        
-        public CloseDialogAction(About dlg) {
-            super();
-            putValue(NAME, "Schließen");
-            putValue(SHORT_DESCRIPTION, "Dialog schließen");
-            this.dlg = dlg;
-        }
-        
-        public void actionPerformed(ActionEvent e) {
-            dlg.dispose();
-        }
-    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel buttonPane;
     private javax.swing.JPanel contentPanel;
     private org.jdesktop.swingx.JXHyperlink hprlnkAnleitung;
     private org.jdesktop.swingx.JXHyperlink hprlnkDonation;
@@ -557,12 +492,13 @@ public class About extends javax.swing.JDialog {
     private javax.swing.JLabel lblJavaVersion_;
     private javax.swing.JLabel lblProgramIcon;
     private javax.swing.JLabel lblProgramName;
+    private javax.swing.JLabel lblProgramPath;
+    private javax.swing.JLabel lblProgramPath_;
     private javax.swing.JLabel lblSettingsFilePath;
     private javax.swing.JLabel lblSettingsFilePath_;
     private javax.swing.JLabel lblVersion;
     private javax.swing.JLabel lblVmType;
     private javax.swing.JLabel lblVmType_;
-    private javax.swing.JButton okButton;
     private javax.swing.JPanel pnlJavaInformation;
     private javax.swing.JPanel pnlProgramPaths;
     // End of variables declaration//GEN-END:variables

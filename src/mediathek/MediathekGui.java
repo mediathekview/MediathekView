@@ -546,12 +546,12 @@ public class MediathekGui extends JFrame {
             jTabbedPane.setTabComponentAt(i, lbl);
         }
 
-        if (se) {
-            UIManager.getLookAndFeelDefaults().put("TabbedPane.tabInsets", new Insets(20, 0, 10, 0));
-        } else {
-            UIManager.getLookAndFeelDefaults().put("TabbedPane.tabInsets", new Insets(0, 0, 0, 0));
-        }
-
+//        if (se) {
+//            so wirds bei jedem TabbedPane verstellt ??
+//            UIManager.getLookAndFeelDefaults().put("TabbedPane.tabInsets", new Insets(20, 0, 10, 0));
+//        } else {
+//            UIManager.getLookAndFeelDefaults().put("TabbedPane.tabInsets", new Insets(0, 0, 0, 0));
+//        }
         jTabbedPane.updateUI();
     }
 
@@ -561,6 +561,12 @@ public class MediathekGui extends JFrame {
         lbl.setBorder(null);
         lbl.setIcon(ic);
         lbl.setOpaque(false);
+
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_LEFT))) {
+            lbl.setBorder(new EmptyBorder(20, 0, 0, 0));
+        } else {
+            //lbl.setBorder(new EmptyBorder(10, 10, 10, 10));
+        }
 
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_LEFT))) {
             lbl.setVerticalTextPosition(JLabel.TOP);
@@ -833,21 +839,9 @@ public class MediathekGui extends JFrame {
 
         // Hilfe
         jMenuItemAnleitung.addActionListener(e -> {
-            MVHelpDialog dialogOk = new MVHelpDialog(Daten.mediathekGui, true, daten, "Hilfe zum Programm");
+            HelpDialog dialogOk = new HelpDialog(Daten.mediathekGui, daten);
             dialogOk.setVisible(true);
         });
-
-        // Über
-        jMenuItemAbout.addActionListener(e -> showAboutDialog());
-    }
-
-    /**
-     * Display the About Box
-     */
-    protected void showAboutDialog() {
-        MVAboutDialog aboutDialog = new MVAboutDialog(this, SystemInfo.isMacOSX());
-        aboutDialog.setVisible(true);
-        aboutDialog.dispose();
     }
 
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
@@ -1016,8 +1010,6 @@ public class MediathekGui extends JFrame {
         jCheckBoxMenuItemMediaDb = new javax.swing.JCheckBoxMenuItem();
         jMenuHilfe = new javax.swing.JMenu();
         jMenuItemAnleitung = new javax.swing.JMenuItem();
-        jSeparator4 = new javax.swing.JPopupMenu.Separator();
-        jMenuItemAbout = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -1241,12 +1233,8 @@ public class MediathekGui extends JFrame {
         jMenuHilfe.setText("Hilfe");
 
         jMenuItemAnleitung.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
-        jMenuItemAnleitung.setText("Hilfe und Fragen zum Programm");
+        jMenuItemAnleitung.setText("Infos und Hilfe zum Programm");
         jMenuHilfe.add(jMenuItemAnleitung);
-        jMenuHilfe.add(jSeparator4);
-
-        jMenuItemAbout.setText("Über MediathekView");
-        jMenuHilfe.add(jMenuItemAbout);
 
         jMenuBar.add(jMenuHilfe);
 
@@ -1286,7 +1274,6 @@ public class MediathekGui extends JFrame {
     private javax.swing.JMenuItem jMenuItemAbosAusschalten;
     private javax.swing.JMenuItem jMenuItemAbosEinschalten;
     private javax.swing.JMenuItem jMenuItemAbosLoeschen;
-    protected javax.swing.JMenuItem jMenuItemAbout;
     private javax.swing.JMenuItem jMenuItemAnleitung;
     protected javax.swing.JMenuItem jMenuItemBeenden;
     protected javax.swing.JMenuItem jMenuItemBlacklist;
@@ -1321,7 +1308,6 @@ public class MediathekGui extends JFrame {
     private javax.swing.JPanel jPanelCont;
     private javax.swing.JPanel jPanelInfo;
     protected javax.swing.JPopupMenu.Separator jSeparator2;
-    protected javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JTabbedPane jTabbedPane;
     // End of variables declaration//GEN-END:variables
 

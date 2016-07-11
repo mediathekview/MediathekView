@@ -19,8 +19,6 @@
  */
 package mediathek.gui;
 
-import mSearch.tool.MVConfig;
-import mSearch.tool.Listener;
 import java.net.URISyntaxException;
 import javax.swing.JPanel;
 import javax.swing.event.ListSelectionEvent;
@@ -28,11 +26,16 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.DebugMsg;
+import mSearch.tool.Listener;
+import mSearch.tool.MVConfig;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
 import mediathek.res.GetIcon;
-import mediathek.tool.*;
+import mediathek.tool.BeobMausUrl;
+import mediathek.tool.MVFont;
+import mediathek.tool.MVTable;
+import mediathek.tool.UrlHyperlinkAction;
 
 /**
  *
