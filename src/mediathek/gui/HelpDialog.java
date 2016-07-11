@@ -19,6 +19,7 @@
  */
 package mediathek.gui;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import static javax.swing.Action.NAME;
@@ -28,20 +29,19 @@ import javax.swing.JFrame;
 import mediathek.daten.Daten;
 import mediathek.tool.EscBeenden;
 
-public class Help extends javax.swing.JDialog {
-    
+public class HelpDialog extends javax.swing.JDialog {
+
     private final JFrame parentFrame;
-    
-    public Help(JFrame parent, final Boolean isRunningOnMac, Daten daten) {
+
+    public HelpDialog(JFrame parent, Daten daten) {
         super(parent);
         initComponents();
-        
+
         parentFrame = parent;
         setModal(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         this.setTitle("Infos und Hilfe zum Programm");
-        
-        
+
 //        jTabbedPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         new EscBeenden(this) {
             @Override
@@ -49,34 +49,34 @@ public class Help extends javax.swing.JDialog {
                 d.dispose();
             }
         };
-        if (isRunningOnMac) {
+        if (SystemInfo.isMacOSX()) {
             this.remove(jPanelQuitt);
         }
         jButtonOk.setAction(new CloseDialogAction(this));
-        
-        jTabbedPane.add("Über", new PanelAbout(parentFrame));
-        jTabbedPane.add("Hilfe", new PanelHelp(parentFrame, daten));
-        
+
+        jTabbedPane.add("Über", new AboutPanel(parentFrame));
+        jTabbedPane.add("Hilfe", new HelpPanel(parentFrame, daten));
+
         pack();
-        
+
     }
-    
+
     private class CloseDialogAction extends AbstractAction {
-        
+
         private final JDialog dlg;
-        
+
         public CloseDialogAction(JDialog dlg) {
             super();
             putValue(NAME, "Schließen");
             putValue(SHORT_DESCRIPTION, "Dialog schließen");
             this.dlg = dlg;
         }
-        
+
         public void actionPerformed(ActionEvent e) {
             dlg.dispose();
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
