@@ -357,33 +357,6 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    //===================================
-    // public
-    //===================================
-//    public void setTabShown(TABS state) {
-////        jMenuFilme.setEnabled(false);
-////        jMenuDownload.setEnabled(false);
-////        jMenuAbos.setEnabled(false);
-////        switch (state) {
-////            case "":
-////                break;
-////            case ToolBar.TOOLBAR_TAB_FILME:
-////                jMenuFilme.setEnabled(true);
-////                break;
-////            case ToolBar.TOOLBAR_TAB_DOWNLOADS:
-////                jMenuDownload.setEnabled(true);
-////                break;
-////            case ToolBar.TOOLBAR_TAB_ABOS:
-////                jMenuAbos.setEnabled(true);
-////                break;
-////        }
-//    }
-//    public void videoplayerAnzeigen(boolean anz) {
-//        jCheckBoxMenuItemVideoplayer.setSelected(!anz);
-//    }
-    //===================================
-    // private
-    //===================================
     private void setOrgTitel() {
         this.setTitle(Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION);
     }
@@ -573,30 +546,12 @@ public class MediathekGui extends JFrame {
             jTabbedPane.setTabComponentAt(i, lbl);
         }
 
-//        jTabbedPane.setUI(new BasicTabbedPaneUI() {
-//            @Override
-//            protected void installDefaults() {
-//                super.installDefaults();
-////                highlight = null;
-////                lightHighlight = null;
-////                shadow = null;
-////                darkShadow = null;
-////                focus = null;
-//                tabInsets = new Insets(9, 9, 9, 9);
-//
-//            }
-//        });
-//        UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", false);
-//        UIManager.getDefaults().put("TabbedPane.tabsOpaque", true);
-//        UIManager.put("TabbedPane.selected", null);
-//        UIManager.put("TabbedPane.tabInsets", new Insets(25, 25, 25, 25));
         if (se) {
             UIManager.getLookAndFeelDefaults().put("TabbedPane.tabInsets", new Insets(20, 0, 10, 0));
         } else {
             UIManager.getLookAndFeelDefaults().put("TabbedPane.tabInsets", new Insets(0, 0, 0, 0));
         }
 
-//        UIManager.getLookAndFeelDefaults().put("TabbedPane.textIconGap", 20);
         jTabbedPane.updateUI();
     }
 
