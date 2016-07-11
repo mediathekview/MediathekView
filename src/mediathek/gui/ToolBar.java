@@ -85,7 +85,7 @@ public final class ToolBar extends JToolBar {
                 nrIconKlein = "";
         }
         startup();
-        setToolbar(state);
+        setToolbar();
         Listener.addListener(new Listener(Listener.EREIGNIS_TOOLBAR_BUTTON_KLEIN, ToolBar.class.getSimpleName() + state) {
             @Override
             public void ping() {
@@ -117,7 +117,13 @@ public final class ToolBar extends JToolBar {
         // Icons
         setIcon(Boolean.parseBoolean(MVConfig.get(nrIconKlein)));
         loadVisible();
-        initListener();
+        Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, ToolBar.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                filterAnzeigen();
+            }
+        });
+        addMouseListener(beobMausToolBar);
     }
 
     private void startupFilme() {
@@ -171,6 +177,52 @@ public final class ToolBar extends JToolBar {
         jButtonFilterPanel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButtonFilterPanel.setIcon(GetIcon.getProgramIcon("filter_anzeigen_22.png"));
         this.add(jButtonFilterPanel);
+
+        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+            @Override
+            public void start(ListenerFilmeLadenEvent event) {
+                //ddaten.infoPanel.setProgress();
+                jButtonFilmlisteLaden.setEnabled(false);
+            }
+
+            @Override
+            public void progress(ListenerFilmeLadenEvent event) {
+            }
+
+            @Override
+            public void fertig(ListenerFilmeLadenEvent event) {
+                jButtonFilmlisteLaden.setEnabled(true);
+            }
+        });
+        jButtonFilmlisteLaden.addActionListener(e -> Daten.filmeLaden.filmeLaden(daten, false));
+        jButtonFilmlisteLaden.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent arg0) {
+                if (arg0.isPopupTrigger()) {
+                    if (jButtonFilmlisteLaden.isEnabled()) {
+                        Daten.filmeLaden.filmeLaden(daten, true);
+                    }
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent arg0) {
+                if (arg0.isPopupTrigger()) {
+                    if (jButtonFilmlisteLaden.isEnabled()) {
+                        Daten.filmeLaden.filmeLaden(daten, true);
+                    }
+                }
+            }
+        });
+        jButtonFilmSpeichern.addActionListener(e -> Daten.guiFilme.guiFilmeFilmSpeichern());
+        jButtonFilmAbspielen.addActionListener(e -> Daten.guiFilme.guiFilmeFilmAbspielen());
+        jButtonInfo.addActionListener(e -> Daten.filmInfo.showInfo());
+        jButtonFilterPanel.addActionListener(e -> {
+            boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_FILTER));
+            MVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.toString(b));
+            filterAnzeigen();
+            Listener.notify(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, ToolBar.class.getName());
+        });
     }
 
     private void startupDownload() {
@@ -191,6 +243,13 @@ public final class ToolBar extends JToolBar {
         this.add(jButtonDownloadZurueckstellen);
         this.add(jButtonDownloadLoeschen);
         this.add(jButtonDownloadAufraeumen);
+        jButtonInfo.addActionListener(e -> Daten.filmInfo.showInfo());
+        jButtonDownloadAktualisieren.addActionListener(e -> Daten.guiDownloads.aktualisieren());
+        jButtonDownloadAufraeumen.addActionListener(e -> Daten.guiDownloads.aufraeumen());
+        jButtonDownloadLoeschen.addActionListener(e -> Daten.guiDownloads.loeschen());
+        jButtonDownloadAlleStarten.addActionListener(e -> Daten.guiDownloads.starten(true));
+        jButtonDownloadFilmStarten.addActionListener(e -> Daten.guiDownloads.filmAbspielen());
+        jButtonDownloadZurueckstellen.addActionListener(e -> Daten.guiDownloads.zurueckstellen());
     }
 
     private void startupAbo() {
@@ -204,48 +263,35 @@ public final class ToolBar extends JToolBar {
         this.add(jButtonAbosAusschalten);
         this.add(jButtonAbosLoeschen);
         this.add(jButtonAboAendern);
+        jButtonAbosEinschalten.addActionListener(e -> Daten.guiAbo.einAus(true));
+        jButtonAbosAusschalten.addActionListener(e -> Daten.guiAbo.einAus(false));
+        jButtonAbosLoeschen.addActionListener(e -> Daten.guiAbo.loeschen());
+        jButtonAboAendern.addActionListener(e -> Daten.guiAbo.aendern());
     }
 
-    public final void setIcon(boolean klein) {
+    private final void setIcon(boolean klein) {
         MVConfig.add(nrIconKlein, Boolean.toString(klein));
         beobMausToolBar.itemKlein.setSelected(klein);
-
         for (MVButton b : buttonList) {
             b.setIcon();
         }
         this.repaint();
     }
 
-    public void setToolbar() {
-        if (state != null) {
-            setToolbar(state);
-        }
-    }
-
-    public void setToolbar(MediathekGui.TABS sstate) {
-        state = sstate;
+    private void setToolbar() {
         filterAnzeigen();
         for (MVButton b : buttonList) {
-            b.setEnabled(true);
             b.setVisible(b.anzeigen);
         }
     }
 
-    public void filterAnzeigen() {
-        switch (state) {
-            case TAB_FILME:
-                jButtonFilterPanel.setEnabled(state.equals(MediathekGui.TABS.TAB_FILME));
-                jTextFieldFilter.setEnabled(state.equals(MediathekGui.TABS.TAB_FILME));
-                jTextFieldFilter.setVisible(!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
-                break;
-            case TAB_DOWNLOADS:
-                break;
-            case TAB_ABOS:
-                break;
+    private void filterAnzeigen() {
+        if (state.equals(MediathekGui.TABS.TAB_FILME)) {
+            jTextFieldFilter.setVisible(!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
         }
     }
 
-    public void loadVisible() {
+    private void loadVisible() {
         if (!nrToolbar.isEmpty()) {
             String[] b = MVConfig.get(nrToolbar).split(":");
             if (buttonList.size() == b.length) {
@@ -270,86 +316,7 @@ public final class ToolBar extends JToolBar {
                     MVConfig.add(nrToolbar, MVConfig.get(nrToolbar) + ":");
                 }
                 MVConfig.add(nrToolbar, MVConfig.get(nrToolbar) + Boolean.toString(b.anzeigen));
-
             }
-        }
-    }
-
-    private void initListener() {
-        Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, ToolBar.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                filterAnzeigen();
-            }
-        });
-        addMouseListener(beobMausToolBar);
-
-        switch (state) {
-            case TAB_FILME:
-                Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
-                    @Override
-                    public void start(ListenerFilmeLadenEvent event) {
-                        //ddaten.infoPanel.setProgress();
-                        jButtonFilmlisteLaden.setEnabled(false);
-                    }
-
-                    @Override
-                    public void progress(ListenerFilmeLadenEvent event) {
-                    }
-
-                    @Override
-                    public void fertig(ListenerFilmeLadenEvent event) {
-                        jButtonFilmlisteLaden.setEnabled(true);
-                    }
-                });
-                jButtonFilmlisteLaden.addActionListener(e -> Daten.filmeLaden.filmeLaden(daten, false));
-                jButtonFilmlisteLaden.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mousePressed(MouseEvent arg0) {
-                        if (arg0.isPopupTrigger()) {
-                            if (jButtonFilmlisteLaden.isEnabled()) {
-                                Daten.filmeLaden.filmeLaden(daten, true);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void mouseReleased(MouseEvent arg0) {
-                        if (arg0.isPopupTrigger()) {
-                            if (jButtonFilmlisteLaden.isEnabled()) {
-                                Daten.filmeLaden.filmeLaden(daten, true);
-                            }
-                        }
-                    }
-                });
-                jButtonFilmSpeichern.addActionListener(e -> Daten.guiFilme.guiFilmeFilmSpeichern());
-                jButtonFilmAbspielen.addActionListener(e -> Daten.guiFilme.guiFilmeFilmAbspielen());
-                jButtonInfo.addActionListener(e -> Daten.filmInfo.showInfo());
-                jButtonFilterPanel.addActionListener(e -> {
-                    boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_FILTER));
-                    MVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.toString(b));
-                    filterAnzeigen();
-                    Listener
-                            .notify(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, ToolBar.class
-                                    .getName());
-                });
-                break;
-            case TAB_DOWNLOADS:
-                jButtonInfo.addActionListener(e -> Daten.filmInfo.showInfo());
-                jButtonDownloadAktualisieren.addActionListener(e -> Daten.guiDownloads.aktualisieren());
-                jButtonDownloadAufraeumen.addActionListener(e -> Daten.guiDownloads.aufraeumen());
-                jButtonDownloadLoeschen.addActionListener(e -> Daten.guiDownloads.loeschen());
-                jButtonDownloadAlleStarten.addActionListener(e -> Daten.guiDownloads.starten(true));
-                jButtonDownloadFilmStarten.addActionListener(e -> Daten.guiDownloads.filmAbspielen());
-                jButtonDownloadZurueckstellen.addActionListener(e -> Daten.guiDownloads.zurueckstellen());
-                break;
-            case TAB_ABOS:
-                jButtonAbosEinschalten.addActionListener(e -> Daten.guiAbo.einAus(true));
-                jButtonAbosAusschalten.addActionListener(e -> Daten.guiAbo.einAus(false));
-                jButtonAbosLoeschen.addActionListener(e -> Daten.guiAbo.loeschen());
-                jButtonAboAendern.addActionListener(actionEvent -> Daten.guiAbo.aendern());
-                break;
-
         }
     }
 
@@ -388,7 +355,7 @@ public final class ToolBar extends JToolBar {
 
         JCheckBoxMenuItem itemKlein = new JCheckBoxMenuItem("kleine Icons");
         JMenuItem itemReset = new JMenuItem("zurücksetzen");
-        JCheckBoxMenuItem[] box;
+        JCheckBoxMenuItem[] checkBoxMenuItems;
 
         public BeobMausToolBar() {
             if (!nrIconKlein.isEmpty()) {
@@ -422,19 +389,19 @@ public final class ToolBar extends JToolBar {
             //##Trenner##
 
             // Spalten ein-ausschalten
-            box = new JCheckBoxMenuItem[buttonList.size()];
-            for (int i = 0; i < box.length; ++i) {
-                box[i] = null;
-                box[i] = new JCheckBoxMenuItem(buttonList.get(i).name);
-                if (box[i] != null) {
-                    box[i] = new JCheckBoxMenuItem(buttonList.get(i).name);
-                    box[i].setIcon(GetIcon.getProgramIcon(buttonList.get(i).imageIconKlein));
-                    box[i].setSelected(buttonList.get(i).anzeigen);
-                    box[i].addActionListener(e -> {
+            checkBoxMenuItems = new JCheckBoxMenuItem[buttonList.size()];
+            for (int i = 0; i < checkBoxMenuItems.length; ++i) {
+                checkBoxMenuItems[i] = null;
+                checkBoxMenuItems[i] = new JCheckBoxMenuItem(buttonList.get(i).name);
+                if (checkBoxMenuItems[i] != null) {
+                    checkBoxMenuItems[i] = new JCheckBoxMenuItem(buttonList.get(i).name);
+                    checkBoxMenuItems[i].setIcon(GetIcon.getProgramIcon(buttonList.get(i).imageIconKlein));
+                    checkBoxMenuItems[i].setSelected(buttonList.get(i).anzeigen);
+                    checkBoxMenuItems[i].addActionListener(e -> {
                         setButtonList();
                         storeVisible();
                     });
-                    jPopupMenu.add(box[i]);
+                    jPopupMenu.add(checkBoxMenuItems[i]);
                 }
             }
             //##Trenner##
@@ -443,6 +410,7 @@ public final class ToolBar extends JToolBar {
             itemReset.addActionListener(e -> {
                 resetToolbar();
                 storeVisible();
+                Listener.notify(Listener.EREIGNIS_TOOLBAR_BUTTON_KLEIN, ToolBar.class.getSimpleName() + state);
             });
             jPopupMenu.add(itemReset);
 
@@ -451,25 +419,25 @@ public final class ToolBar extends JToolBar {
         }
 
         private void setButtonList() {
-            if (box == null) {
+            if (checkBoxMenuItems == null) {
                 return;
             }
-            for (int i = 0; i < box.length; ++i) {
-                if (box[i] == null) {
+            for (int i = 0; i < checkBoxMenuItems.length; ++i) {
+                if (checkBoxMenuItems[i] == null) {
                     continue;
                 }
-                buttonList.get(i).anzeigen = box[i].isSelected();
-                buttonList.get(i).setVisible(box[i].isSelected());
+                buttonList.get(i).anzeigen = checkBoxMenuItems[i].isSelected();
+                buttonList.get(i).setVisible(checkBoxMenuItems[i].isSelected());
             }
             setToolbar();
         }
 
         private void resetToolbar() {
-            if (box == null) {
+            if (checkBoxMenuItems == null) {
                 return;
             }
-            for (int i = 0; i < box.length; ++i) {
-                if (box[i] == null) {
+            for (int i = 0; i < checkBoxMenuItems.length; ++i) {
+                if (checkBoxMenuItems[i] == null) {
                     continue;
                 }
                 buttonList.get(i).anzeigen = true;
