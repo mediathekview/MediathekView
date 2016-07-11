@@ -1349,9 +1349,9 @@ public class MediathekGui extends JFrame {
         }
 
         private void setTabIfContain(Component check) {
-            Component[] c = jTabbedPane.getComponents();
-            for (int i = 0; i < c.length; ++i) {
-                if (c[i].equals(check)) {
+            for (int i = 0; i < jTabbedPane.getTabCount(); ++i) {
+                Component c = jTabbedPane.getComponentAt(i);
+                if (c.equals(check)) {
                     jTabbedPane.setSelectedIndex(i);
                     return;
                 }
