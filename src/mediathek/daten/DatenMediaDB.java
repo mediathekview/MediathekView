@@ -21,7 +21,7 @@ package mediathek.daten;
 
 import mediathek.tool.MVMediaDBFileSize;
 
-public class DatenMediaDB extends Data<DatenMediaDB> {
+public class DatenMediaDB extends MVData<DatenMediaDB> {
 
     public final static int MEDIA_DB_NAME = 0;
     public final static int MEDIA_DB_PATH = 1;

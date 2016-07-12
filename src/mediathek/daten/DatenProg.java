@@ -22,7 +22,7 @@ package mediathek.daten;
 import static mediathek.controller.starter.RuntimeExec.TRENNER_PROG_ARRAY;
 import mediathek.tool.GuiFunktionenProgramme;
 
-public class DatenProg extends Data<DatenProg> {
+public class DatenProg extends MVData<DatenProg> {
 
     public static final int PROGRAMM_NAME = 0;
     public static final int PROGRAMM_ZIEL_DATEINAME = 1;

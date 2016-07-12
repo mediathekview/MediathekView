@@ -15,7 +15,7 @@ import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
-import mediathek.gui.MVAboutDialog;
+import mediathek.gui.AboutDialog;
 
 /**
  * User: crystalpalace1977
@@ -92,7 +92,7 @@ public class MediathekGuiMac extends MediathekGui {
      * Display the About Box
      */
     protected void showAboutDialog() {
-        MVAboutDialog aboutDialog = new MVAboutDialog(this, SystemInfo.isMacOSX());
+        AboutDialog aboutDialog = new AboutDialog(this, SystemInfo.isMacOSX());
         aboutDialog.setVisible(true);
         aboutDialog.dispose();
     }

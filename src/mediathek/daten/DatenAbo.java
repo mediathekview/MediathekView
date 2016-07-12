@@ -21,7 +21,7 @@ package mediathek.daten;
 
 import mSearch.tool.Log;
 
-public class DatenAbo extends Data<DatenAbo> {
+public class DatenAbo extends MVData<DatenAbo> {
     //Tags Abo
 
     public static final int ABO_NR = 0;

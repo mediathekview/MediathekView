@@ -30,37 +30,28 @@ public class GetIcon {
 
     // Icons TABBED_PANE
     private static final int w = 30, h = 30;
-    public static final ImageIcon ICON_TAB_FILM = GetIcon.getGuiIcon("tab-film.png", w, h);
-    public static final ImageIcon ICON_TAB_DOWNLOAD = GetIcon.getGuiIcon("tab-download.png", w, h);
-    public static final ImageIcon ICON_TAB_ABO = GetIcon.getGuiIcon("tab-abo.png", w, h);
-    public static final ImageIcon ICON_TAB_MELDUNG = GetIcon.getGuiIcon("tab-meldung.png", w, h);
-    public static final ImageIcon ICON_TAB_FILM_SW = GetIcon.getGuiIcon("tab-film-sw.png", w, h);
-    public static final ImageIcon ICON_TAB_DOWNLOAD_SW = GetIcon.getGuiIcon("tab-download-sw.png", w, h);
-    public static final ImageIcon ICON_TAB_ABO_SW = GetIcon.getGuiIcon("tab-abo-sw.png", w, h);
-    public static final ImageIcon ICON_TAB_MELDUNG_SW = GetIcon.getGuiIcon("tab-meldung-sw.png", w, h);
+    public static final ImageIcon ICON_TAB_FILM = GetIcon.getProgramIcon("tab-film.png", w, h);
+    public static final ImageIcon ICON_TAB_DOWNLOAD = GetIcon.getProgramIcon("tab-download.png", w, h);
+    public static final ImageIcon ICON_TAB_ABO = GetIcon.getProgramIcon("tab-abo.png", w, h);
+    public static final ImageIcon ICON_TAB_MELDUNG = GetIcon.getProgramIcon("tab-meldung.png", w, h);
+    public static final ImageIcon ICON_TAB_FILM_SW = GetIcon.getProgramIcon("tab-film-sw.png", w, h);
+    public static final ImageIcon ICON_TAB_DOWNLOAD_SW = GetIcon.getProgramIcon("tab-download-sw.png", w, h);
+    public static final ImageIcon ICON_TAB_ABO_SW = GetIcon.getProgramIcon("tab-abo-sw.png", w, h);
+    public static final ImageIcon ICON_TAB_MELDUNG_SW = GetIcon.getProgramIcon("tab-meldung-sw.png", w, h);
 
     private static final int wt = 20, ht = 20;
-    public static final ImageIcon ICON_TAB_TOP_FILM = GetIcon.getGuiIcon("tab-film.png", wt, ht);
-    public static final ImageIcon ICON_TAB_TOP_DOWNLOAD = GetIcon.getGuiIcon("tab-download.png", wt, ht);
-    public static final ImageIcon ICON_TAB_TOP_ABO = GetIcon.getGuiIcon("tab-abo.png", wt, ht);
-    public static final ImageIcon ICON_TAB_TOP_MELDUNG = GetIcon.getGuiIcon("tab-meldung.png", wt, ht);
-    public static final ImageIcon ICON_TAB_TOP_FILM_SW = GetIcon.getGuiIcon("tab-film-sw.png", wt, ht);
-    public static final ImageIcon ICON_TAB_TOP_DOWNLOAD_SW = GetIcon.getGuiIcon("tab-download-sw.png", wt, ht);
-    public static final ImageIcon ICON_TAB_TOP_ABO_SW = GetIcon.getGuiIcon("tab-abo-sw.png", wt, ht);
-    public static final ImageIcon ICON_TAB_TOP_MELDUNG_SW = GetIcon.getGuiIcon("tab-meldung-sw.png", wt, ht);
+    public static final ImageIcon ICON_TAB_TOP_FILM = GetIcon.getProgramIcon("tab-film.png", wt, ht);
+    public static final ImageIcon ICON_TAB_TOP_DOWNLOAD = GetIcon.getProgramIcon("tab-download.png", wt, ht);
+    public static final ImageIcon ICON_TAB_TOP_ABO = GetIcon.getProgramIcon("tab-abo.png", wt, ht);
+    public static final ImageIcon ICON_TAB_TOP_MELDUNG = GetIcon.getProgramIcon("tab-meldung.png", wt, ht);
+    public static final ImageIcon ICON_TAB_TOP_FILM_SW = GetIcon.getProgramIcon("tab-film-sw.png", wt, ht);
+    public static final ImageIcon ICON_TAB_TOP_DOWNLOAD_SW = GetIcon.getProgramIcon("tab-download-sw.png", wt, ht);
+    public static final ImageIcon ICON_TAB_TOP_ABO_SW = GetIcon.getProgramIcon("tab-abo-sw.png", wt, ht);
+    public static final ImageIcon ICON_TAB_TOP_MELDUNG_SW = GetIcon.getProgramIcon("tab-meldung-sw.png", wt, ht);
 
     private final static String PFAD_PROGRAMM = "/mediathek/res/programm/";
     private final static String PFAD_SENDER = "/mediathek/res/sender/";
     public final static String PFAD_RES = "/mediathek/res/";
-    public final static String PFAD_GUI = "/mediathek/res/gui/";
-
-    public static ImageIcon getGuiIcon(String strIcon, int w, int h) {
-        return getIcon(strIcon, PFAD_GUI, w, h);
-    }
-
-    public static ImageIcon getGuiIcon(String strIcon) {
-        return getIcon(strIcon, PFAD_GUI, 0, 0);
-    }
 
     public static ImageIcon getIcon(String strIcon) {
         return getIcon(strIcon, PFAD_RES, 0, 0);
@@ -68,6 +59,10 @@ public class GetIcon {
 
     public static ImageIcon getSenderIcon(String strIcon) {
         return getIcon(strIcon, PFAD_SENDER, 0, 0);
+    }
+
+    public static ImageIcon getProgramIcon(String strIcon, int w, int h) {
+        return getIcon(strIcon, PFAD_PROGRAMM, w, h);
     }
 
     public static ImageIcon getProgramIcon(String strIcon) {

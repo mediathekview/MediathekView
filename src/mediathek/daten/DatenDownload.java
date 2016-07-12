@@ -31,7 +31,7 @@ import mediathek.controller.starter.Start;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 
-public final class DatenDownload extends Data<DatenDownload> {
+public final class DatenDownload extends MVData<DatenDownload> {
 
     // Quelle - start über einen Button - Download - Abo
     public static final byte QUELLE_ALLE = -1;
