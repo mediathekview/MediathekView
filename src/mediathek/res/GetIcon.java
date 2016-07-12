@@ -28,6 +28,27 @@ import mediathek.tool.GuiFunktionen;
 
 public class GetIcon {
 
+    // Icons TABBED_PANE
+    private static final int w = 30, h = 30;
+    public static final ImageIcon ICON_TAB_FILM = GetIcon.getGuiIcon("tab-film.png", w, h);
+    public static final ImageIcon ICON_TAB_DOWNLOAD = GetIcon.getGuiIcon("tab-download.png", w, h);
+    public static final ImageIcon ICON_TAB_ABO = GetIcon.getGuiIcon("tab-abo.png", w, h);
+    public static final ImageIcon ICON_TAB_MELDUNG = GetIcon.getGuiIcon("tab-meldung.png", w, h);
+    public static final ImageIcon ICON_TAB_FILM_SW = GetIcon.getGuiIcon("tab-film-sw.png", w, h);
+    public static final ImageIcon ICON_TAB_DOWNLOAD_SW = GetIcon.getGuiIcon("tab-download-sw.png", w, h);
+    public static final ImageIcon ICON_TAB_ABO_SW = GetIcon.getGuiIcon("tab-abo-sw.png", w, h);
+    public static final ImageIcon ICON_TAB_MELDUNG_SW = GetIcon.getGuiIcon("tab-meldung-sw.png", w, h);
+
+    private static final int wt = 20, ht = 20;
+    public static final ImageIcon ICON_TAB_TOP_FILM = GetIcon.getGuiIcon("tab-film.png", wt, ht);
+    public static final ImageIcon ICON_TAB_TOP_DOWNLOAD = GetIcon.getGuiIcon("tab-download.png", wt, ht);
+    public static final ImageIcon ICON_TAB_TOP_ABO = GetIcon.getGuiIcon("tab-abo.png", wt, ht);
+    public static final ImageIcon ICON_TAB_TOP_MELDUNG = GetIcon.getGuiIcon("tab-meldung.png", wt, ht);
+    public static final ImageIcon ICON_TAB_TOP_FILM_SW = GetIcon.getGuiIcon("tab-film-sw.png", wt, ht);
+    public static final ImageIcon ICON_TAB_TOP_DOWNLOAD_SW = GetIcon.getGuiIcon("tab-download-sw.png", wt, ht);
+    public static final ImageIcon ICON_TAB_TOP_ABO_SW = GetIcon.getGuiIcon("tab-abo-sw.png", wt, ht);
+    public static final ImageIcon ICON_TAB_TOP_MELDUNG_SW = GetIcon.getGuiIcon("tab-meldung-sw.png", wt, ht);
+
     private final static String PFAD_PROGRAMM = "/mediathek/res/programm/";
     private final static String PFAD_SENDER = "/mediathek/res/sender/";
     public final static String PFAD_RES = "/mediathek/res/";
@@ -78,23 +99,6 @@ public class GetIcon {
 
     public static ImageIcon getIcon(String strIcon, String path) {
         return getIcon(strIcon, path, 0, 0);
-//        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ICON_STANDARD))) {
-//            return getStandard(strIcon, path);
-//        } else {
-//            ImageIcon icon;
-//            try {
-//                String pfad = GuiFunktionen.addsPfad(MVConfig.get(MVConfig.SYSTEM_ICON_PFAD), strIcon);
-//                if (new File(pfad).exists()) {
-//                    icon = new ImageIcon(pfad);
-//                } else {
-//                    icon = getStandard(strIcon, path);
-//                }
-//            } catch (Exception ex) {
-//                Log.errorLog(932107891, strIcon);
-//                icon = getStandard(strIcon, path);
-//            }
-//            return icon;
-//        }
     }
 
     private static ImageIcon getStandard(String strIcon, String path) {
