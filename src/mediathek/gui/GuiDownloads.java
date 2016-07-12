@@ -175,6 +175,10 @@ public class GuiDownloads extends PanelVorlage {
         daten.history.setGesehen(false, getSelFilme(), Daten.listeFilmeHistory);
     }
 
+    public void invertSelection() {
+        tabelle.invertSelection();
+    }
+
     //===================================
     //private
     //===================================
