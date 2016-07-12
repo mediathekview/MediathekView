@@ -167,6 +167,17 @@ public final class MVTable extends JTable {
         });
     }
 
+    public void invertSelection() {
+        ListSelectionModel mdl = getSelectionModel();
+        int[] selected = getSelectedRows();
+        mdl.setValueIsAdjusting(true);
+        mdl.setSelectionInterval(0, getRowCount() - 1);
+        for (int i : selected) {
+            mdl.removeSelectionInterval(i, i);
+        }
+        mdl.setValueIsAdjusting(false);
+    }
+
     public void setHeight() {
         if (!iconAnzeigen) {
             if (MVFont.fontSize < 15) {

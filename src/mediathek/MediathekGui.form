@@ -314,6 +314,11 @@
                 <Property name="text" type="java.lang.String" value="gespeicherten Film abspielen"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadInvertSelection">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Auswahl umkehren"/>
+              </Properties>
+            </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator7">
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>

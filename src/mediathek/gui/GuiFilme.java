@@ -169,6 +169,10 @@ public class GuiFilme extends PanelVorlage {
         daten.history.setGesehen(false, getSelFilme(), Daten.listeFilmeHistory);
     }
 
+    public void invertSelection() {
+        tabelle.invertSelection();
+    }
+
     public void init() {
         showDescriptionPanel();
         Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {

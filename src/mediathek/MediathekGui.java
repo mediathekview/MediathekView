@@ -752,7 +752,7 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadGesehen.addActionListener(e -> Daten.guiDownloads.filmGesehen());
         jMenuItemDownloadUngesehen.addActionListener(e -> Daten.guiDownloads.filmUngesehen());
         jMenuItemDownloadMediensammlung.addActionListener(e -> Daten.guiDownloads.guiFilmMediensammlung());
-
+        jMenuItemDownloadInvertSelection.addActionListener(e -> Daten.guiDownloads.invertSelection());
         // Abo
         jMenuItemAbosEinschalten.addActionListener(e -> Daten.guiAbo.einAus(true));
         jMenuItemAbosAusschalten.addActionListener(e -> Daten.guiAbo.einAus(false));
@@ -1007,6 +1007,7 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadUngesehen = new javax.swing.JMenuItem();
         jMenuItemDownloadMediensammlung = new javax.swing.JMenuItem();
         jMenuItemDownloadAbspielen = new javax.swing.JMenuItem();
+        jMenuItemDownloadInvertSelection = new javax.swing.JMenuItem();
         javax.swing.JPopupMenu.Separator jSeparator7 = new javax.swing.JPopupMenu.Separator();
         jMenuItemDownloadShutDown = new javax.swing.JMenuItem();
         jMenuAbos = new javax.swing.JMenu();
@@ -1172,6 +1173,9 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadAbspielen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/film_start_16.png"))); // NOI18N
         jMenuItemDownloadAbspielen.setText("gespeicherten Film abspielen");
         jMenuDownload.add(jMenuItemDownloadAbspielen);
+
+        jMenuItemDownloadInvertSelection.setText("Auswahl umkehren");
+        jMenuDownload.add(jMenuItemDownloadInvertSelection);
         jMenuDownload.add(jSeparator7);
 
         jMenuItemDownloadShutDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/beenden_16.png"))); // NOI18N
@@ -1299,6 +1303,7 @@ public class MediathekGui extends JFrame {
     private javax.swing.JMenuItem jMenuItemDownloadAendern;
     private javax.swing.JMenuItem jMenuItemDownloadAlleStoppen;
     private javax.swing.JMenuItem jMenuItemDownloadGesehen;
+    private javax.swing.JMenuItem jMenuItemDownloadInvertSelection;
     private javax.swing.JMenuItem jMenuItemDownloadMediensammlung;
     private javax.swing.JMenuItem jMenuItemDownloadShutDown;
     private javax.swing.JMenuItem jMenuItemDownloadStartTime;
