@@ -69,6 +69,15 @@ public class MediathekGui extends JFrame {
     private final JCheckBoxMenuItem jCheckBoxMeldungenAnzeigen = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxMeldungenExtrafenster = new JCheckBoxMenuItem();
     private MVTray tray = null;
+    private final int w = 30, h = 30;
+    private final ImageIcon icFilm = GetIcon.getGuiIcon("tab-film.png", w, h);
+    private final ImageIcon icDownload = GetIcon.getGuiIcon("tab-download.png", w, h);
+    private final ImageIcon icAbo = GetIcon.getGuiIcon("tab-abo.png", w, h);
+    private final ImageIcon icMeldung = GetIcon.getGuiIcon("tab-meldung.png", w, h);
+    private final ImageIcon icFilm_sw = GetIcon.getGuiIcon("tab-film-sw.png", w, h);
+    private final ImageIcon icDownload_sw = GetIcon.getGuiIcon("tab-download-sw.png", w, h);
+    private final ImageIcon icAbo_sw = GetIcon.getGuiIcon("tab-abo-sw.png", w, h);
+    private final ImageIcon icMeldung_sw = GetIcon.getGuiIcon("tab-meldung-sw.png", w, h);
 
     public static enum TABS {
         TAB_NIX, TAB_FILME, TAB_DOWNLOADS, TAB_ABOS, TAB_MELDUNGEN
@@ -424,6 +433,8 @@ public class MediathekGui extends JFrame {
             jTabbedPane.addTab("Debug", spacerIcon, Daten.guiDebug);
         }
 
+        jTabbedPane.addChangeListener(l -> designTabs());
+
         initFrames();
     }
 
@@ -526,20 +537,56 @@ public class MediathekGui extends JFrame {
         for (int i = 0; i < jTabbedPane.getTabCount(); ++i) {
             Component c = jTabbedPane.getComponentAt(i);
             ImageIcon ic = null;
+//            if (c.equals(Daten.guiFilme)) {
+//                ic = se ? GetIcon.getGuiIcon("tab_film_s.png") : GetIcon.getGuiIcon("tab_film.png");
+//            }
+//            if (c.equals(Daten.guiDownloads)) {
+//                ic = se ? GetIcon.getGuiIcon("tab_download_s.png") : GetIcon.getGuiIcon("tab_download.png");
+//            }
+//            if (c.equals(Daten.guiAbo)) {
+//                ic = se ? GetIcon.getGuiIcon("tab_abo_s.png") : GetIcon.getGuiIcon("tab_abo.png");
+//            }
+//            if (c.equals(Daten.guiMeldungen)) {
+//                ic = se ? GetIcon.getGuiIcon("tab_meldungen_s.png") : GetIcon.getGuiIcon("tab_meldungen.png");
+//            }
+//            if (c.equals(Daten.guiDebug)) {
+//                ic = se ? GetIcon.getGuiIcon("tab_meldungen_s.png") : GetIcon.getGuiIcon("tab_meldungen.png");
+//            }
+
             if (c.equals(Daten.guiFilme)) {
-                ic = se ? GetIcon.getGuiIcon("tab_film_s.png") : GetIcon.getGuiIcon("tab_film.png");
+                if (jTabbedPane.getSelectedIndex() == i) {
+                    ic = icFilm;
+                } else {
+                    ic = icFilm_sw;
+                }
             }
             if (c.equals(Daten.guiDownloads)) {
-                ic = se ? GetIcon.getGuiIcon("tab_download_s.png") : GetIcon.getGuiIcon("tab_download.png");
+                if (jTabbedPane.getSelectedIndex() == i) {
+                    ic = icDownload;
+                } else {
+                    ic = icDownload_sw;
+                }
             }
             if (c.equals(Daten.guiAbo)) {
-                ic = se ? GetIcon.getGuiIcon("tab_abo_s.png") : GetIcon.getGuiIcon("tab_abo.png");
+                if (jTabbedPane.getSelectedIndex() == i) {
+                    ic = icAbo;
+                } else {
+                    ic = icAbo_sw;
+                }
             }
             if (c.equals(Daten.guiMeldungen)) {
-                ic = se ? GetIcon.getGuiIcon("tab_meldungen_s.png") : GetIcon.getGuiIcon("tab_meldungen.png");
+                if (jTabbedPane.getSelectedIndex() == i) {
+                    ic = icMeldung;
+                } else {
+                    ic = icMeldung_sw;
+                }
             }
             if (c.equals(Daten.guiDebug)) {
-                ic = se ? GetIcon.getGuiIcon("tab_meldungen_s.png") : GetIcon.getGuiIcon("tab_meldungen.png");
+                if (jTabbedPane.getSelectedIndex() == i) {
+                    ic = icMeldung;
+                } else {
+                    ic = icMeldung_sw;
+                }
             }
             String s = jTabbedPane.getTitleAt(i);
             JLabel lbl = makeLable(s, ic);
@@ -555,6 +602,20 @@ public class MediathekGui extends JFrame {
         jTabbedPane.updateUI();
     }
 
+//    private boolean isTabSel(Component check) {
+//        for (int i = 0; i < jTabbedPane.getTabCount(); ++i) {
+//            Component c = jTabbedPane.getComponentAt(i);
+//            if (c.equals(check)) {
+//                if (jTabbedPane.getSelectedIndex() == i) {
+//                    return true;
+//                } else {
+//                    return false;
+//                }
+//            }
+//        }
+//        return false;
+//    }
+
     private JLabel makeLable(String text, ImageIcon ic) {
         JLabel lbl = new JLabel(text);
 
@@ -563,17 +624,19 @@ public class MediathekGui extends JFrame {
         lbl.setOpaque(false);
 
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_LEFT))) {
-            lbl.setBorder(new EmptyBorder(20, 0, 0, 0));
+            lbl.setBorder(new EmptyBorder(10, 5, 10, 5));
+            lbl.setVerticalTextPosition(JLabel.TOP);
+            lbl.setVerticalAlignment(JLabel.BOTTOM);
+            lbl.setHorizontalTextPosition(JLabel.CENTER);
+            lbl.setHorizontalAlignment(JLabel.CENTER);
         } else {
-            //lbl.setBorder(new EmptyBorder(10, 10, 10, 10));
+            lbl.setBorder(new EmptyBorder(10, 5, 10, 5));
+            lbl.setVerticalTextPosition(JLabel.CENTER);
+            lbl.setVerticalAlignment(JLabel.CENTER);
+            lbl.setHorizontalTextPosition(JLabel.RIGHT);
+            lbl.setHorizontalAlignment(JLabel.LEFT);
         }
 
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_LEFT))) {
-            lbl.setVerticalTextPosition(JLabel.TOP);
-        }
-        lbl.setVerticalAlignment(JLabel.CENTER);
-        lbl.setHorizontalTextPosition(JLabel.CENTER);
-        lbl.setHorizontalAlignment(JLabel.CENTER);
         return lbl;
     }
 

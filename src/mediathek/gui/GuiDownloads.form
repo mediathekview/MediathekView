@@ -31,7 +31,7 @@
               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
               <Component id="jScrollPane1" pref="352" max="32767" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="jPanelBeschreibung" min="-2" pref="70" max="-2" attributes="0"/>
+              <Component id="jPanelBeschreibung" min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

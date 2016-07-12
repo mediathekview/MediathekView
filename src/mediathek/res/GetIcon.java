@@ -19,6 +19,7 @@
  */
 package mediathek.res;
 
+import java.awt.Image;
 import java.io.File;
 import javax.swing.ImageIcon;
 import mSearch.tool.Log;
@@ -32,27 +33,31 @@ public class GetIcon {
     public final static String PFAD_RES = "/mediathek/res/";
     public final static String PFAD_GUI = "/mediathek/res/gui/";
 
+    public static ImageIcon getGuiIcon(String strIcon, int w, int h) {
+        return getIcon(strIcon, PFAD_GUI, w, h);
+    }
+
     public static ImageIcon getGuiIcon(String strIcon) {
-        return getIcon(strIcon, PFAD_GUI);
+        return getIcon(strIcon, PFAD_GUI, 0, 0);
     }
 
     public static ImageIcon getIcon(String strIcon) {
-        return getIcon(strIcon, PFAD_RES);
+        return getIcon(strIcon, PFAD_RES, 0, 0);
     }
 
     public static ImageIcon getSenderIcon(String strIcon) {
-        return getIcon(strIcon, PFAD_SENDER);
+        return getIcon(strIcon, PFAD_SENDER, 0, 0);
     }
 
     public static ImageIcon getProgramIcon(String strIcon) {
-        return getIcon(strIcon, PFAD_PROGRAMM);
+        return getIcon(strIcon, PFAD_PROGRAMM, 0, 0);
     }
 
-    public static ImageIcon getIcon(String strIcon, String path) {
+    public static ImageIcon getIcon(String strIcon, String path, int w, int h) {
+        ImageIcon icon;
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ICON_STANDARD))) {
-            return getStandard(strIcon, path);
+            icon = getStandard(strIcon, path);
         } else {
-            ImageIcon icon;
             try {
                 String pfad = GuiFunktionen.addsPfad(MVConfig.get(MVConfig.SYSTEM_ICON_PFAD), strIcon);
                 if (new File(pfad).exists()) {
@@ -64,8 +69,32 @@ public class GetIcon {
                 Log.errorLog(932107891, strIcon);
                 icon = getStandard(strIcon, path);
             }
-            return icon;
         }
+        if (w > 0 && h > 0) {
+            icon.setImage(icon.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH));
+        }
+        return icon;
+    }
+
+    public static ImageIcon getIcon(String strIcon, String path) {
+        return getIcon(strIcon, path, 0, 0);
+//        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ICON_STANDARD))) {
+//            return getStandard(strIcon, path);
+//        } else {
+//            ImageIcon icon;
+//            try {
+//                String pfad = GuiFunktionen.addsPfad(MVConfig.get(MVConfig.SYSTEM_ICON_PFAD), strIcon);
+//                if (new File(pfad).exists()) {
+//                    icon = new ImageIcon(pfad);
+//                } else {
+//                    icon = getStandard(strIcon, path);
+//                }
+//            } catch (Exception ex) {
+//                Log.errorLog(932107891, strIcon);
+//                icon = getStandard(strIcon, path);
+//            }
+//            return icon;
+//        }
     }
 
     private static ImageIcon getStandard(String strIcon, String path) {
