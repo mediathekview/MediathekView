@@ -28,15 +28,16 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mSearch.tool.MVColor;
+import mSearch.tool.MVConfig;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
-import mSearch.tool.Listener;
-import mSearch.tool.MVColor;
-import mSearch.tool.MVConfig;
+import mediathek.tool.TextCopyPaste;
 
 public class PanelFilmlisteLaden extends PanelVorlage {
 
@@ -63,6 +64,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jRadioButtonManuell.addActionListener(new BeobOption());
         jRadioButtonAuto.addActionListener(new BeobOption());
         jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());
+        jTextFieldUrl.addMouseListener(new TextCopyPaste());
         Listener.addListener(new Listener(Listener.EREIGNIS_ART_IMPORT_FILMLISTE, PanelFilmlisteLaden.class.getSimpleName()) {
             @Override
             public void ping() {

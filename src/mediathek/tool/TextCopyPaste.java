@@ -28,7 +28,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
 public class TextCopyPaste extends MouseAdapter {
@@ -41,7 +40,7 @@ public class TextCopyPaste extends MouseAdapter {
     private final Action undoAction;
     private final Action selectAllAction;
 
-    private JTextField textComponent;
+    private JTextComponent textComponent;
     private String savedString = "";
     private Actions lastActionSelected;
 
@@ -118,7 +117,7 @@ public class TextCopyPaste extends MouseAdapter {
             if (!(e.getSource() instanceof JTextComponent)) {
                 return;
             }
-            textComponent = (JTextField) e.getSource();
+            textComponent = (JTextComponent) e.getSource();
             textComponent.requestFocus();
 
             boolean enabled = textComponent.isEnabled();

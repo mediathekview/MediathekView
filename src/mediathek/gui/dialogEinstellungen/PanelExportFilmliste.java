@@ -33,11 +33,12 @@ import javax.swing.event.DocumentListener;
 import mSearch.filmlisten.WriteFilmlistJson;
 import mSearch.tool.Duration;
 import mSearch.tool.Log;
+import mSearch.tool.MVConfig;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
-import mSearch.tool.MVConfig;
 import mediathek.tool.MVMessageDialog;
+import mediathek.tool.TextCopyPaste;
 
 public class PanelExportFilmliste extends PanelVorlage {
 
@@ -53,6 +54,8 @@ public class PanelExportFilmliste extends PanelVorlage {
         jButtonExportPfad.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         jTextFieldPfad.setText(MVConfig.get(MVConfig.SYSTEM_EXPORT_DATEI));
         jTextFieldPfad.getDocument().addDocumentListener(new BeobTextFeld());
+        jTextFieldPfad.addMouseListener(new TextCopyPaste());
+
         jButtonExportieren.addActionListener(new BeobExport());
         jButtonExportPfad.addActionListener(new BeobPfad());
     }

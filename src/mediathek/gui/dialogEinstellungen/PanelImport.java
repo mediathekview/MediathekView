@@ -37,6 +37,7 @@ import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.MVMessageDialog;
+import mediathek.tool.TextCopyPaste;
 
 public class PanelImport extends PanelVorlage {
 
@@ -81,6 +82,7 @@ public class PanelImport extends PanelVorlage {
         });
         final Path xmlFilePath = Daten.getMediathekXmlFilePath();
         jTextFieldPfadKonfig.setText(xmlFilePath.toAbsolutePath().toString());
+        jTextFieldDatei.addMouseListener(new TextCopyPaste());
     }
 
     private void importDatei(String datei) {
