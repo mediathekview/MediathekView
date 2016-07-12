@@ -84,10 +84,10 @@ public class PanelEinstellungen extends PanelVorlage {
         jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE)));
         jCheckBoxEchtzeit.addActionListener(ae -> MVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.toString(jCheckBoxEchtzeit.isSelected())));
 
-        jCheckBoxTabsLeft.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_LEFT)));
-        jCheckBoxTabsLeft.addActionListener(ae -> {
-            MVConfig.add(MVConfig.SYSTEM_TABS_LEFT, Boolean.toString(jCheckBoxTabsLeft.isSelected()));
-            Listener.notify(Listener.EREIGNIS_TABS_LEFT, PanelEinstellungen.class.getSimpleName());
+        jCheckBoxTabsTop.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_TOP)));
+        jCheckBoxTabsTop.addActionListener(ae -> {
+            MVConfig.add(MVConfig.SYSTEM_TABS_TOP, Boolean.toString(jCheckBoxTabsTop.isSelected()));
+            Listener.notify(Listener.EREIGNIS_TABS_TOP, PanelEinstellungen.class.getSimpleName());
         });
 
         if (SystemInfo.isMacOSX()) {
@@ -247,7 +247,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jButtonHelpDays = new javax.swing.JButton();
         jButtonLoad = new javax.swing.JButton();
         jCheckBoxTray = new javax.swing.JCheckBox();
-        jCheckBoxTabsLeft = new javax.swing.JCheckBox();
+        jCheckBoxTabsTop = new javax.swing.JCheckBox();
 
         setMinimumSize(getPreferredSize());
 
@@ -340,7 +340,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jCheckBoxTray.setText("Programm ins Tray minimieren");
 
-        jCheckBoxTabsLeft.setText("Tabs links anzeigen");
+        jCheckBoxTabsTop.setText("Tabs oben anzeigen");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -351,11 +351,10 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jCheckBoxEchtzeit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCheckBoxTabsLeft)
-                        .addContainerGap())
+                        .addGap(177, 177, 177))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCheckBoxTabsTop)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -370,13 +369,13 @@ public class PanelEinstellungen extends PanelVorlage {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBoxEchtzeit)
-                    .addComponent(jCheckBoxTabsLeft))
+                .addContainerGap()
+                .addComponent(jCheckBoxTabsTop)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBoxEchtzeit)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxTray)
-                .addGap(5, 5, 5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel6)
                     .addComponent(jSpinnerDays, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -406,7 +405,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pnlProgramUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(138, Short.MAX_VALUE))
+                .addContainerGap(122, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -419,7 +418,7 @@ public class PanelEinstellungen extends PanelVorlage {
     private javax.swing.JButton jButtonSuchen;
     private javax.swing.JCheckBox jCheckBoxEchtzeit;
     private javax.swing.JCheckBox jCheckBoxSuchen;
-    private javax.swing.JCheckBox jCheckBoxTabsLeft;
+    private javax.swing.JCheckBox jCheckBoxTabsTop;
     private javax.swing.JCheckBox jCheckBoxTray;
     private javax.swing.JComboBox<String> jComboBoxIcons;
     private javax.swing.JComboBox<String> jComboBoxLookAndFeel;

@@ -293,7 +293,7 @@ public class Daten {
         MVConfig.add(MVConfig.SYSTEM_TAB_ABO_ICON_KLEIN, Boolean.TRUE.toString());
         MVConfig.add(MVConfig.SYSTEM_FONT_SIZE, "0");
         MVConfig.add(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE, "0");
-        MVConfig.add(MVConfig.SYSTEM_TABS_LEFT, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_TABS_TOP, Boolean.FALSE.toString());
         // UserAgent
         MVConfig.add(MVConfig.SYSTEM_USER_AGENT_AUTO, Boolean.TRUE.toString());
         try {
