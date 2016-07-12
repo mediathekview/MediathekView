@@ -29,6 +29,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
@@ -37,7 +38,7 @@ import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
-import mSearch.tool.Listener;
+import mediathek.tool.TextCopyPaste;
 
 public class PanelPsetKurz extends PanelVorlage {
 
@@ -86,6 +87,9 @@ public class PanelPsetKurz extends PanelVorlage {
     private void initBeob() {
         jTextFieldName.getDocument().addDocumentListener(new BeobDocName());
         jTextFieldZiel.getDocument().addDocumentListener(new BeobDoc(jTextFieldZiel, DatenPset.PROGRAMMSET_ZIEL_PFAD));
+        jTextFieldName.addMouseListener(new TextCopyPaste());
+        jTextFieldZiel.addMouseListener(new TextCopyPaste());
+
         jButtonZiel.addActionListener(new ZielBeobachter(jTextFieldZiel, DatenPset.PROGRAMMSET_ZIEL_PFAD));
     }
 
@@ -174,6 +178,7 @@ public class PanelPsetKurz extends PanelVorlage {
         c.weightx = 10;
         JTextField textField = new JTextField(arr[idx]);
         textField.getDocument().addDocumentListener(new BeobDoc(textField, arr, idx));
+        textField.addMouseListener(new TextCopyPaste());
         gridbag.setConstraints(textField, c);
         panel.add(textField);
         // Button
@@ -491,7 +496,7 @@ public class PanelPsetKurz extends PanelVorlage {
             }
             if (!stopBeob) {
                 stopBeob = true;
-                pSet.arr[ DatenPset.PROGRAMMSET_NAME] = jTextFieldName.getText();
+                pSet.arr[DatenPset.PROGRAMMSET_NAME] = jTextFieldName.getText();
                 int i = jListPset.getSelectedIndex();
                 jListPset.setModel(new DefaultComboBoxModel<String>(listePset.getObjectDataCombo()));
                 jListPset.setSelectedIndex(i);

@@ -61,6 +61,7 @@ import mediathek.tool.TModel;
 import mediathek.tool.UrlHyperlinkAction;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Log;
+import mediathek.tool.*;
 
 public class PanelPsetLang extends PanelVorlage {
 
@@ -126,12 +127,21 @@ public class PanelPsetLang extends PanelVorlage {
         jTextFieldProgZielDateiName.getDocument().addDocumentListener(beobDoc);
         jTextFieldProgPraefix.getDocument().addDocumentListener(beobDoc);
         jTextFieldProgSuffix.getDocument().addDocumentListener(beobDoc);
+
+        jTextFieldProgPfad.addMouseListener(new TextCopyPaste());
+        jTextFieldProgSchalter.addMouseListener(new TextCopyPaste());
+        jTextFieldProgName.addMouseListener(new TextCopyPaste());
+        jTextFieldProgZielDateiName.addMouseListener(new TextCopyPaste());
+        jTextFieldProgPraefix.addMouseListener(new TextCopyPaste());
+        jTextFieldProgSuffix.addMouseListener(new TextCopyPaste());
+
         jTextFieldProgPfad.setEnabled(false);
         jTextFieldProgSchalter.setEnabled(false);
         jTextFieldProgName.setEnabled(false);
         jTextFieldProgZielDateiName.setEnabled(false);
         jTextFieldProgPraefix.setEnabled(false);
         jTextFieldProgSuffix.setEnabled(false);
+
         jButtonProgPfad.addActionListener(new BeobDateiDialogProg());
         jButtonProgPlus.addActionListener(new BeobProgNeueZeile());
         jButtonProgMinus.addActionListener(new BeobProgLoeschen());
@@ -239,8 +249,9 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppeDuplizieren.addActionListener(new BeobGruppeDuplizieren());
         jButtonExport.addActionListener(new BeobGruppeExport());
         jButtonGruppePfad.addActionListener(new BeobDateiDialogPfad());
-        jTextFieldSetName.getDocument().addDocumentListener(new BeobDoc(jTextFieldSetName, DatenPset.PROGRAMMSET_NAME));
+
         jTextAreaSetBeschreibung.getDocument().addDocumentListener(new BeobDoc(jTextAreaSetBeschreibung, DatenPset.PROGRAMMSET_BESCHREIBUNG));
+        jTextFieldSetName.getDocument().addDocumentListener(new BeobDoc(jTextFieldSetName, DatenPset.PROGRAMMSET_NAME));
         jTextFieldGruppeDirektSuffix.getDocument().addDocumentListener(
                 new BeobDoc(jTextFieldGruppeDirektSuffix, DatenPset.PROGRAMMSET_SUFFIX_DIREKT));
         jTextFieldGruppeDirektPraefix.getDocument().addDocumentListener(
@@ -249,6 +260,13 @@ public class PanelPsetLang extends PanelVorlage {
                 DatenPset.PROGRAMMSET_ZIEL_DATEINAME));
         jTextFieldGruppeZielPfad.getDocument().addDocumentListener(
                 new BeobDoc(jTextFieldGruppeZielPfad, DatenPset.PROGRAMMSET_ZIEL_PFAD));
+
+        jTextFieldSetName.addMouseListener(new TextCopyPaste());
+        jTextFieldGruppeDirektSuffix.addMouseListener(new TextCopyPaste());
+        jTextFieldGruppeDirektPraefix.addMouseListener(new TextCopyPaste());
+        jTextFieldGruppeZielName.addMouseListener(new TextCopyPaste());
+        jTextFieldGruppeZielPfad.addMouseListener(new TextCopyPaste());
+
         //rest
         jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, modalHilfe, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PRGRAMME)).setVisible(true));
         jRadioButtonAufloesungKlein.addActionListener(e -> setAufloesung());
