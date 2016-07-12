@@ -69,6 +69,7 @@ import mediathek.tool.GuiFunktionen;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
 import mediathek.tool.MVListeFilme;
+import mediathek.tool.TextCopyPaste;
 
 public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
@@ -202,6 +203,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 setFilterAnzahl();
             }
         });
+        jTextFieldFilterTitel.addMouseListener(new TextCopyPaste());
+        jTextFieldFilterThemaTitel.addMouseListener(new TextCopyPaste());
 
         setToolTip();
         pack();
