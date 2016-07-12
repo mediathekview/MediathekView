@@ -34,6 +34,7 @@ import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.res.GetIcon;
 import mediathek.tool.MVListeFilme;
+import mediathek.tool.TextCopyPaste;
 
 public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
@@ -117,6 +118,9 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                 setFilterAnzahl();
             }
         });
+        jTextFieldFilterTitel.addMouseListener(new TextCopyPaste());
+        jTextFieldFilterThemaTitel.addMouseListener(new TextCopyPaste());
+
         setToolTip();
         super.setVisible(true);
     }
