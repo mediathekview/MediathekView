@@ -251,6 +251,8 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppePfad.addActionListener(new BeobDateiDialogPfad());
 
         jTextAreaSetBeschreibung.getDocument().addDocumentListener(new BeobDoc(jTextAreaSetBeschreibung, DatenPset.PROGRAMMSET_BESCHREIBUNG));
+        jTextAreaSetBeschreibung.addMouseListener(new TextCopyPaste());
+
         jTextFieldSetName.getDocument().addDocumentListener(new BeobDoc(jTextFieldSetName, DatenPset.PROGRAMMSET_NAME));
         jTextFieldGruppeDirektSuffix.getDocument().addDocumentListener(
                 new BeobDoc(jTextFieldGruppeDirektSuffix, DatenPset.PROGRAMMSET_SUFFIX_DIREKT));

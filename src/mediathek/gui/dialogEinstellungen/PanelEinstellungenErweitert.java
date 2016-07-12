@@ -19,7 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.tool.MVConfig;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
@@ -31,15 +30,19 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import mSearch.tool.Listener;
 import mSearch.tool.Functions.OperatingSystemType;
 import static mSearch.tool.Functions.getOs;
+import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mSearch.tool.MVConfig;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
-import mediathek.tool.*;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Konstanten;
+import mediathek.tool.MVMessageDialog;
+import mediathek.tool.TextCopyPaste;
 
 public class PanelEinstellungenErweitert extends PanelVorlage {
 
@@ -75,20 +78,24 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jTextFieldProgrammDateimanager.setText(MVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN));
         jTextFieldProgrammDateimanager.getDocument().addDocumentListener(new BeobDoc(MVConfig.SYSTEM_ORDNER_OEFFNEN, jTextFieldProgrammDateimanager));
-
+        jTextFieldProgrammDateimanager.addMouseListener(new TextCopyPaste());
+        
         jTextFieldVideoplayer.setText(MVConfig.get(MVConfig.SYSTEM_PLAYER_ABSPIELEN));
         jTextFieldVideoplayer.getDocument().addDocumentListener(new BeobDoc(MVConfig.SYSTEM_PLAYER_ABSPIELEN, jTextFieldVideoplayer));
-
+        jTextFieldVideoplayer.addMouseListener(new TextCopyPaste());
+        
         jTextFieldProgrammUrl.setText(MVConfig.get(MVConfig.SYSTEM_URL_OEFFNEN));
         jTextFieldProgrammUrl.getDocument().addDocumentListener(new BeobDoc(MVConfig.SYSTEM_URL_OEFFNEN, jTextFieldProgrammUrl));
-
+        jTextFieldProgrammUrl.addMouseListener(new TextCopyPaste());
+        
         jTextFieldProgrammShutdown.setText(MVConfig.get(MVConfig.SYSTEM_LINUX_SHUTDOWN));
         if (jTextFieldProgrammShutdown.getText().isEmpty()) {
             jTextFieldProgrammShutdown.setText(Konstanten.SHUTDOWN_LINUX);
             MVConfig.add(MVConfig.SYSTEM_LINUX_SHUTDOWN, Konstanten.SHUTDOWN_LINUX);
         }
         jTextFieldProgrammShutdown.getDocument().addDocumentListener(new BeobDoc(MVConfig.SYSTEM_LINUX_SHUTDOWN, jTextFieldProgrammShutdown));
-
+        jTextFieldProgrammShutdown.addMouseListener(new TextCopyPaste());
+        
         if (getOs() != OperatingSystemType.LINUX) {
             // Funktion ist nur für Linux
             jButtonHilfeProgrammShutdown.setEnabled(false);

@@ -27,14 +27,15 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import mSearch.tool.Listener;
+import mSearch.tool.MVConfig;
+import mSearch.tool.ReplaceList;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.HinweisKeineAuswahl;
-import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
-import mSearch.tool.ReplaceList;
 import mediathek.tool.TModel;
+import mediathek.tool.TextCopyPaste;
 
 public class PanelDateinamen extends PanelVorlage {
 
@@ -117,7 +118,9 @@ public class PanelDateinamen extends PanelVorlage {
                 setNach();
             }
         });
-
+        jTextFieldNach.addMouseListener(new TextCopyPaste());
+        jTextFieldVon.addMouseListener(new TextCopyPaste());
+        
         jCheckBoxTable.addActionListener(e -> {
             MVConfig.add(MVConfig.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected()));
             setColor(jCheckBoxTable, jCheckBoxTable.isSelected());

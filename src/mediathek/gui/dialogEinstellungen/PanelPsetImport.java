@@ -40,10 +40,7 @@ import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.TModel;
-import mediathek.tool.UrlHyperlinkAction;
+import mediathek.tool.*;
 
 public class PanelPsetImport extends PanelVorlage {
 
@@ -69,7 +66,11 @@ public class PanelPsetImport extends PanelVorlage {
         jButtonImportText.setEnabled(false);
         jButtonPfad.addActionListener(new BeobPfad());
         jTextFieldDatei.getDocument().addDocumentListener(new BeobPfadDoc());
+        jTextFieldDatei.addMouseListener(new TextCopyPaste());
+        
         jTextAreaImport.getDocument().addDocumentListener(new BeobTextArea());
+        jTextAreaImport.addMouseListener(new TextCopyPaste());
+        
         jButtonImportVorlage.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

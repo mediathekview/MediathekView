@@ -41,9 +41,7 @@ import mediathek.tool.CellRendererMediaDB;
 import mediathek.tool.HinweisKeineAuswahl;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
-import mediathek.tool.MVMessageDialog;
-import mediathek.tool.TModel;
-import mediathek.tool.TModelMediaDB;
+import mediathek.tool.*;
 
 public class PanelMediaDB extends PanelVorlage {
 
@@ -163,6 +161,10 @@ public class PanelMediaDB extends PanelVorlage {
         jButtonExportPath.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
         jTextFieldExportPath.setText(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_EXPORT_DATEI));
         jTextFieldExportPath.getDocument().addDocumentListener(new BeobTextFeld());
+        jTextFieldExportPath.addMouseListener(new TextCopyPaste());
+        jTextFieldPath.addMouseListener(new TextCopyPaste());
+        jTextFieldSuffix.addMouseListener(new TextCopyPaste());
+
         jButtonExport.addActionListener(new BeobExport());
         jButtonExportPath.addActionListener(new BeobPfad());
         jToggleButtonLoad.addActionListener(new ActionListener() {
