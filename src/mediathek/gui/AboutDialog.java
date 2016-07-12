@@ -36,7 +36,7 @@ import mediathek.tool.*;
 import org.jdesktop.swingx.JXHyperlink;
 
 @SuppressWarnings("serial")
-public class MVAboutDialog extends JDialog {
+public class AboutDialog extends JDialog {
 
     private final JLabel lblVersion = new JLabel();
     private final JPanel buttonPane = new JPanel();
@@ -123,7 +123,7 @@ public class MVAboutDialog extends JDialog {
         }
     }
 
-    public MVAboutDialog(JFrame parent, final Boolean isRunningOnMac) {
+    public AboutDialog(JFrame parent, final Boolean isRunningOnMac) {
         super(parent);
         parentFrame = parent;
         setModal(true);
@@ -148,7 +148,7 @@ public class MVAboutDialog extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
 
         JLabel lblProgramIcon = new JLabel();
-        lblProgramIcon.setIcon(new ImageIcon(MVAboutDialog.class
+        lblProgramIcon.setIcon(new ImageIcon(AboutDialog.class
                 .getResource("/mediathek/res/MediathekView.png")));
 
         JLabel lblProgramName = new JLabel("MediathekView");
@@ -448,9 +448,9 @@ public class MVAboutDialog extends JDialog {
 
     private class CloseDialogAction extends AbstractAction {
 
-        private final MVAboutDialog dlg;
+        private final AboutDialog dlg;
 
-        public CloseDialogAction(MVAboutDialog dlg) {
+        public CloseDialogAction(AboutDialog dlg) {
             super();
             putValue(NAME, "Schließen");
             putValue(SHORT_DESCRIPTION, "Dialog schließen");

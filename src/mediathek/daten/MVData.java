@@ -21,7 +21,7 @@ package mediathek.daten;
 
 import mSearch.tool.GermanStringSorter;
 
-public class Data<E> implements Comparable<E> {
+public class MVData<E> implements Comparable<E> {
 
     public static String TAG;
     public static String[] COLUMN_NAMES;
@@ -31,7 +31,7 @@ public class Data<E> implements Comparable<E> {
 
     public static GermanStringSorter sorter = GermanStringSorter.getInstance();
 
-    public Data() {
+    public MVData() {
     }
 
     public String[] makeArr(int max) {

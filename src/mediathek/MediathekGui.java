@@ -417,7 +417,7 @@ public class MediathekGui extends JFrame {
         Daten.guiFilme = new GuiFilme(daten, Daten.mediathekGui);
         Daten.guiFilme.init();
 
-        jTabbedPane.addTab("Filme", GetIcon.getGuiIcon("tab_film.png"), Daten.guiFilme);
+        jTabbedPane.addTab("Filme", GetIcon.ICON_TAB_FILM, Daten.guiFilme);
 
         if (Daten.debug) {
             Daten.guiDebug = new GuiDebug(daten);
