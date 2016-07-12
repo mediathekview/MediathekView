@@ -32,20 +32,17 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import mSearch.filmeSuchen.ListenerFilmeLaden;
+import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
+import mSearch.tool.Listener;
+import mSearch.tool.MVConfig;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenBlacklist;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.res.GetIcon;
-import mediathek.tool.Filter;
-import mediathek.tool.GuiFunktionen;
-import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
-import mediathek.tool.MVListeFilme;
-import mediathek.tool.TModel;
-import mSearch.filmeSuchen.ListenerFilmeLaden;
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
+import mediathek.tool.*;
 
 public class PanelBlacklist extends PanelVorlage {
 
@@ -200,6 +197,8 @@ public class PanelBlacklist extends PanelVorlage {
         });
         initCombo();
         comboThemaLaden();
+        jTextFieldThemaTitel.addMouseListener(new TextCopyPaste());
+        jTextFieldTitel.addMouseListener(new TextCopyPaste());
     }
 
     private void setCheckBlacklist() {
