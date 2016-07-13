@@ -70,10 +70,7 @@ public final class MVStatusBar extends JPanel {
         progressPanel.add(progress);
 
         stopButton = new JButton();
-        ImageIcon ic = Icons.ICON_STATUSBAR_STOP;
-        
         stopButton.setIcon(Icons.ICON_STATUSBAR_STOP);
-
         stopButton.setToolTipText("Abbrechen");
         stopButton.addActionListener(e -> Daten.filmeLaden.setStop(true));
 

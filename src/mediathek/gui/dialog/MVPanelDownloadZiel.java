@@ -57,8 +57,8 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
         datenDownload = download;
         letztenPfadAnzeigen = letzterPfad;
         jButtonPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonPath.setText("");
         jButtonDelPath.setIcon(Icons.ICON_BUTTON_DEL);
+        jButtonPath.setText("");
         jLabelExists.setText("");
         jButtonPath.addActionListener(new ZielBeobachter());
         jButtonDelPath.addActionListener(e -> {

@@ -128,7 +128,7 @@ public final class ToolBar extends JToolBar {
 
     private void startupFilme() {
         // init
-        jButtonFilmlisteLaden = new MVButton("Filmliste laden", "neue Filmliste laden", Icons.ICON_TOOLBAR_FILME_FILM_START_GR, Icons.ICON_TOOLBAR_FILME_FILM_START_KL);
+        jButtonFilmlisteLaden = new MVButton("Filmliste laden", "neue Filmliste laden", Icons.ICON_TOOLBAR_FILME_FILMLISTE_LADEN_GR, Icons.ICON_TOOLBAR_FILME_FILMLISTE_LADEN_KL);
         jButtonInfo = new MVButton("Filminformation anzeigen", "Filminformation anzeigen", Icons.ICON_TOOLBAR_FILME_INFO_GR, Icons.ICON_TOOLBAR_FILME_INFO_KL);
         jButtonFilmAbspielen = new MVButton("Film abspielen", "Film abspielen", Icons.ICON_TOOLBAR_FILME_FILM_START_GR, Icons.ICON_TOOLBAR_FILME_FILM_START_KL);
         jButtonFilmSpeichern = new MVButton("Film aufzeichnen", "Film aufzeichnen", Icons.ICON_TOOLBAR_FILME_REC_GR, Icons.ICON_TOOLBAR_FILME_REC_KL);

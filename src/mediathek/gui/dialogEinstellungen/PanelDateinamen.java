@@ -59,6 +59,7 @@ public class PanelDateinamen extends PanelVorlage {
         jLabelAlert.setText("");
         jLabelAlert.setIcon(Icons.ICON_ACHTUNG_32);
         jButtonPlus.setIcon(Icons.ICON_DIALOG_ADD);
+        jButtonPlus.setText("");
         jButtonMinus.setIcon(Icons.ICON_BUTTON_REMOVE);
         jButtonMinus.setText("");
         jButtonUp.setIcon(Icons.ICON_BUTTON_MOVE_UP);

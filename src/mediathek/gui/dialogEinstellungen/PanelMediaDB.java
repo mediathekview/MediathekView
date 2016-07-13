@@ -132,7 +132,9 @@ public class PanelMediaDB extends PanelVorlage {
             }
         });
         jButtonPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonPath.setText("");
         jButtonAdd.setIcon(Icons.ICON_DIALOG_ADD);
+        jButtonAdd.setText("");
         jButtonRemove.setIcon(Icons.ICON_BUTTON_REMOVE);
         jButtonRemove.setText("");
         jButtonPath.addActionListener(new BeobPath());
@@ -161,6 +163,7 @@ public class PanelMediaDB extends PanelVorlage {
         });
 
         jButtonExportPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonExportPath.setText("");
         jTextFieldExportPath.setText(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_EXPORT_DATEI));
         jTextFieldExportPath.getDocument().addDocumentListener(new BeobTextFeld());
         jTextFieldExportPath.addMouseListener(new TextCopyPaste());

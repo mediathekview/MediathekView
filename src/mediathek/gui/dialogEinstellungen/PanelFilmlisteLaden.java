@@ -50,9 +50,8 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     private void init() {
         jButtonDateiAuswaehlen.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonDateiAuswaehlen.setText("");
-        jButtonUrl.setIcon(Icons.ICON_BUTTON_REFRESH);
-        jButtonUrl.setText("");
         jButtonUrl.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
+        jButtonUrl.setText("");
         initRadio();
         jButtonUrl.addActionListener(e -> jTextFieldUrl.setText(Daten.filmeLaden.getDownloadUrl_akt()));
         jButtonLoad.addActionListener(ae -> Daten.filmeLaden.importFilmliste(""));

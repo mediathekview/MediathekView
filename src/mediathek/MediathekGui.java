@@ -678,7 +678,7 @@ public class MediathekGui extends JFrame {
         jMenuItemBeenden.setIcon(Icons.ICON_MENUE_BEENDEN);
         jMenuItemFilmAbspielen.setIcon(Icons.ICON_MENUE_FILM_START);
         jMenuItemFilmAufzeichnen.setIcon(Icons.ICON_MENUE_FILM_REC);
-        jMenuItemFilmeGesehen.setIcon(Icons.ICON_MENUE_FILM_GESEHEN);
+        jMenuItemFilmeGesehen.setIcon(Icons.ICON_MENUE_HISTORY_ADD);
         jMenuItemFilmeUngesehen.setIcon(Icons.ICON_MENUE_HISTORY_REMOVE);
         jMenuItemBlacklist.setIcon(Icons.ICON_MENUE_BLACKLIST);
         jMenuItemFilterLoeschen.setIcon(Icons.ICON_MENUE_CLEAR);
@@ -696,7 +696,7 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadAbspielen.setIcon(Icons.ICON_MENUE_FILM_START);
         jMenuItemDownloadsAufraeumen.setIcon(Icons.ICON_MENUE_CLEAR);
         jMenuItemDownloadShutDown.setIcon(Icons.ICON_MENUE_BEENDEN);
-        jMenuItemDownloadGesehen.setIcon(Icons.ICON_MENUE_DOWNLOAD_GESEHEN);
+        jMenuItemDownloadGesehen.setIcon(Icons.ICON_MENUE_HISTORY_ADD);
         jMenuItemDownloadUngesehen.setIcon(Icons.ICON_MENUE_HISTORY_REMOVE);
         jMenuItemAbosEinschalten.setIcon(Icons.ICON_MENUE_EIN);
         jMenuItemAbosAusschalten.setIcon(Icons.ICON_MENUE_AUS);

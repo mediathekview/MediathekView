@@ -31,14 +31,14 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import mSearch.filmlisten.DatenFilmlisteUrl;
+import mSearch.tool.Listener;
+import mSearch.tool.Log;
+import mSearch.tool.MVConfig;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
-import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
 import mediathek.tool.TModel;
-import mSearch.filmlisten.DatenFilmlisteUrl;
-import mSearch.tool.Log;
-import mediathek.config.Icons;
 
 public class PanelFilmlisten extends PanelVorlage {
 
@@ -60,10 +60,9 @@ public class PanelFilmlisten extends PanelVorlage {
         jButtonAkualisieren.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
         jButtonAkualisieren.setText("");
         jButtonDateiAuswaehlen.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonUrl.setIcon(Icons.ICON_BUTTON_REFRESH);
-        jButtonUrl.setText("");
         jButtonDateiAuswaehlen.setText("");
         jButtonUrl.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
+        jButtonUrl.setText("");
         tabelleLaden();
         jButtonUrl.addActionListener(new ActionListener() {
 

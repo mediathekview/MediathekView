@@ -47,7 +47,8 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         initComponents();
         this.parent = parent;
         this.daten = daten;
-
+        
+        jToggleButtonBlacklist.setText("");
         if (SystemInfo.isWindows()) {
             // zum Abfangen der Win-F4 für comboboxen
             InputMap im = jComboBoxFilterSender.getInputMap();
@@ -81,8 +82,8 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                 }
             });
         }
-        jButtonFilterLoeschen.setText("");
         jButtonFilterLoeschen.setIcon(Icons.ICON_BUTTON_CLEAR);
+        jButtonFilterLoeschen.setText("");
         jButtonFilterLoeschen.setMnemonic(KeyEvent.VK_F8);
         setIconBlacklist();
         jToggleButtonBlacklist.addActionListener(e -> {
@@ -210,19 +211,19 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     private void setIconOn(int filter) {
         switch (filter) {
             case 0:
-                jRadioButtonF1.setIcon(GetIcon.getProgramIcon("filter_on_1.png"));
+                jRadioButtonF1.setIcon(GetIcon.getProgramIcon("filter-on-1.png"));
                 break;
             case 1:
-                jRadioButtonF2.setIcon(GetIcon.getProgramIcon("filter_on_2.png"));
+                jRadioButtonF2.setIcon(GetIcon.getProgramIcon("filter-on-2.png"));
                 break;
             case 2:
-                jRadioButtonF3.setIcon(GetIcon.getProgramIcon("filter_on_3.png"));
+                jRadioButtonF3.setIcon(GetIcon.getProgramIcon("filter-on-3.png"));
                 break;
             case 3:
-                jRadioButtonF4.setIcon(GetIcon.getProgramIcon("filter_on_4.png"));
+                jRadioButtonF4.setIcon(GetIcon.getProgramIcon("filter-on-4.png"));
                 break;
             case 4:
-                jRadioButtonF5.setIcon(GetIcon.getProgramIcon("filter_on_5.png"));
+                jRadioButtonF5.setIcon(GetIcon.getProgramIcon("filter-on-5.png"));
                 break;
         }
     }
@@ -230,19 +231,19 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     private void setAktIcon(int filter) {
         switch (filter) {
             case 0:
-                jRadioButtonF1.setIcon(GetIcon.getProgramIcon("filter_akt_1.png"));
+                jRadioButtonF1.setIcon(GetIcon.getProgramIcon("filter-akt-1.png"));
                 break;
             case 1:
-                jRadioButtonF2.setIcon(GetIcon.getProgramIcon("filter_akt_2.png"));
+                jRadioButtonF2.setIcon(GetIcon.getProgramIcon("filter-akt-2.png"));
                 break;
             case 2:
-                jRadioButtonF3.setIcon(GetIcon.getProgramIcon("filter_akt_3.png"));
+                jRadioButtonF3.setIcon(GetIcon.getProgramIcon("filter-akt-3.png"));
                 break;
             case 3:
-                jRadioButtonF4.setIcon(GetIcon.getProgramIcon("filter_akt_4.png"));
+                jRadioButtonF4.setIcon(GetIcon.getProgramIcon("filter-akt-4.png"));
                 break;
             case 4:
-                jRadioButtonF5.setIcon(GetIcon.getProgramIcon("filter_akt_5.png"));
+                jRadioButtonF5.setIcon(GetIcon.getProgramIcon("filter-akt-5.png"));
                 break;
         }
     }
@@ -250,19 +251,19 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     private void setIconOff(int filter) {
         switch (filter) {
             case 0:
-                jRadioButtonF1.setIcon(GetIcon.getProgramIcon("filter_off_1.png"));
+                jRadioButtonF1.setIcon(GetIcon.getProgramIcon("filter-off-1.png"));
                 break;
             case 1:
-                jRadioButtonF2.setIcon(GetIcon.getProgramIcon("filter_off_2.png"));
+                jRadioButtonF2.setIcon(GetIcon.getProgramIcon("filter-off-2.png"));
                 break;
             case 2:
-                jRadioButtonF3.setIcon(GetIcon.getProgramIcon("filter_off_3.png"));
+                jRadioButtonF3.setIcon(GetIcon.getProgramIcon("filter-off-3.png"));
                 break;
             case 3:
-                jRadioButtonF4.setIcon(GetIcon.getProgramIcon("filter_off_4.png"));
+                jRadioButtonF4.setIcon(GetIcon.getProgramIcon("filter-off-4.png"));
                 break;
             case 4:
-                jRadioButtonF5.setIcon(GetIcon.getProgramIcon("filter_off_5.png"));
+                jRadioButtonF5.setIcon(GetIcon.getProgramIcon("filter-off-5.png"));
                 break;
         }
     }
@@ -672,23 +673,18 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
         buttonGroup1.add(jRadioButtonF1);
         jRadioButtonF1.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 1 speichern");
-        jRadioButtonF1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/filter_off_1.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF2);
         jRadioButtonF2.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 2 speichern");
-        jRadioButtonF2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/filter_off_2.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF3);
         jRadioButtonF3.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 3 speichern");
-        jRadioButtonF3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/filter_off_3.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF4);
         jRadioButtonF4.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 4 speichern");
-        jRadioButtonF4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/filter_off_4.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF5);
         jRadioButtonF5.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 5 speichern");
-        jRadioButtonF5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/filter_off_5.png"))); // NOI18N
 
         jLabel6.setText("Filterprofile:");
 
