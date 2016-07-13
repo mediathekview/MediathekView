@@ -13,10 +13,10 @@ import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Functions;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
-import mediathek.res.GetIcon;
 
 /**
  * User: crystalpalace1977
@@ -70,7 +70,9 @@ public final class MVStatusBar extends JPanel {
         progressPanel.add(progress);
 
         stopButton = new JButton();
-        stopButton.setIcon(GetIcon.getProgramIcon("close.png"));
+        ImageIcon ic = Icons.ICON_STATUSBAR_STOP;
+        
+        stopButton.setIcon(Icons.ICON_STATUSBAR_STOP);
 
         stopButton.setToolTipText("Abbrechen");
         stopButton.addActionListener(e -> Daten.filmeLaden.setStop(true));

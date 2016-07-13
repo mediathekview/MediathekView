@@ -32,10 +32,10 @@ import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mSearch.tool.Log;
+import mediathek.config.Icons;
 import mediathek.controller.IoXmlLesen;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
-import mediathek.res.GetIcon;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TextCopyPaste;
 
@@ -49,7 +49,8 @@ public class PanelImport extends PanelVorlage {
     }
 
     private void init() {
-        jButtonPfad.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+        jButtonPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonPfad.setText("");
         jButtonImportDatei.setEnabled(false);
         jButtonPfad.addActionListener(new BeobPfad());
         jTextFieldDatei.getDocument().addDocumentListener(new BeobPfadDoc());
@@ -119,7 +120,7 @@ public class PanelImport extends PanelVorlage {
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Abos und Blacklist aus Datei importieren"));
 
-        jButtonPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
+        jButtonPfad.setText("File");
 
         jButtonImportDatei.setText("Import");
 
@@ -196,7 +197,7 @@ public class PanelImport extends PanelVorlage {
                 .addComponent(jCheckBoxBlack)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxErsetzungstabelle)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)

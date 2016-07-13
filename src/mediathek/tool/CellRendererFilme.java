@@ -32,14 +32,14 @@ import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.MVColor;
 import mSearch.tool.MVConfig;
+import mediathek.config.Icons;
 import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
-import mediathek.res.GetIcon;
 
 public class CellRendererFilme extends DefaultTableCellRenderer {
-    
+
     private static ImageIcon film_start_tab = null;
     private static ImageIcon film_start_sw_tab = null;
     private static ImageIcon film_rec_tab = null;
@@ -51,19 +51,17 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
     private final MVSenderIconCache senderIconCache;
     private static ImageIcon ja_16 = null;
     private static ImageIcon nein_12 = null;
-    
+
     public CellRendererFilme(Daten d) {
-        ja_16 = GetIcon.getProgramIcon("ja_16.png");
-//        nein_12 = GetIcon.getProgramIcon("nein_tabelle_12.png");
-//        nein_12 = GetIcon.getProgramIcon("nein_12.png");
-        nein_12 = GetIcon.getProgramIcon("nein_tabelle_5.png");
+        ja_16 = Icons.ICON_TABELLE_EIN;
+        nein_12 = Icons.ICON_TABELLE_AUS;
         history = d.history;
-        film_start_tab = GetIcon.getProgramIcon("film_start_tab.png");
-        film_start_sw_tab = GetIcon.getProgramIcon("film_start_sw_tab.png");
-        film_rec_tab = GetIcon.getProgramIcon("film_rec_tab.png");
-        film_rec_sw_tab = GetIcon.getProgramIcon("film_rec_sw_tab.png");
-        film_stop_tab = GetIcon.getProgramIcon("film_stop_tab.png");
-        film_stop_sw_tab = GetIcon.getProgramIcon("film_stop_sw_tab.png");
+        film_start_tab = Icons.ICON_TABELLE_DOWNOAD_FILM_START;
+        film_start_sw_tab = Icons.ICON_TABELLE_DOWNOAD_FILM_START_SW;
+        film_rec_tab = Icons.ICON_TABELLE_FILM_REC;
+        film_rec_sw_tab = Icons.ICON_TABELLE_FILM_REC_SW;
+        film_stop_tab = Icons.ICON_TABELLE_FILM_STOP;
+        film_stop_sw_tab = Icons.ICON_TABELLE_FILM_STOP_SW;
         geoMelden = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_GEO_MELDEN));
         Listener.addListener(new Listener(Listener.EREIGNIS_GEO, CellRendererFilme.class.getSimpleName()) {
             @Override
@@ -73,7 +71,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
         });
         senderIconCache = new MVSenderIconCache();
     }
-    
+
     @Override
     public Component getTableCellRendererComponent(
             JTable table,
@@ -89,13 +87,13 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             setToolTipText(null);
             setHorizontalAlignment(SwingConstants.LEADING);
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            
+
             final int rowModelIndex = table.convertRowIndexToModel(row);
             final int columnModelIndex = table.convertColumnIndexToModel(column);
-            
+
             DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF);
             DatenDownload datenDownload = Daten.listeDownloadsButton.getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL]);
-            
+
             boolean live = datenFilm.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE);
             boolean start = false;
 
@@ -109,7 +107,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                     setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
                 }
             }
-            
+
             switch (columnModelIndex) {
                 case DatenFilm.FILM_NR:
                 case DatenFilm.FILM_DATUM:
@@ -123,7 +121,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 case DatenFilm.FILM_ABSPIELEN:
                     handleButtonStartColumn(datenDownload, isSelected);
                     break;
-                
+
                 case DatenFilm.FILM_AUFZEICHNEN:
                     handleButtonDownloadColumn(isSelected);
                     break;
@@ -198,7 +196,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
         }
         return this;
     }
-    
+
     private void handleButtonStartColumn(final DatenDownload datenDownload, final boolean isSelected) {
         // Button Abspielen
         setHorizontalAlignment(SwingConstants.CENTER);
@@ -223,7 +221,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             }
         }
     }
-    
+
     private void handleButtonDownloadColumn(final boolean isSelected) {
         // Button Aufzeichnen
         setHorizontalAlignment(SwingConstants.CENTER);
@@ -248,7 +246,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             setIcon(icon);
         }
     }
-    
+
     private void setColor(Component c, Start s, boolean isSelected) {
         switch (s.status) {
             case Start.STATUS_INIT:

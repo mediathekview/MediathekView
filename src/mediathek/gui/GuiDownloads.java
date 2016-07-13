@@ -35,6 +35,7 @@ import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.*;
 import mediathek.MediathekGui;
+import mediathek.config.Icons;
 import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
 import mediathek.daten.Daten;
@@ -45,7 +46,6 @@ import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.dialog.MVFilmInfo;
-import mediathek.res.GetIcon;
 import mediathek.tool.*;
 
 public class GuiDownloads extends PanelVorlage {
@@ -965,14 +965,14 @@ public class GuiDownloads extends PanelVorlage {
             }
             // Download starten
             JMenuItem itemStarten = new JMenuItem("Download starten");
-            itemStarten.setIcon(GetIcon.getProgramIcon("download_start_16.png"));
+            itemStarten.setIcon(Icons.ICON_MENUE_DOWNOAD_STARTEN);
             itemStarten.setEnabled(!wartenOderLaufen);
             jPopupMenu.add(itemStarten);
             itemStarten.addActionListener(arg0 -> filmStartenWiederholenStoppen(false /* alle */, true /* starten */));
 
             // Download stoppen
             JMenuItem itemStoppen = new JMenuItem("Download stoppen");
-            itemStoppen.setIcon(GetIcon.getProgramIcon("download_stop_16.png"));
+            itemStoppen.setIcon(Icons.ICON_MENUE_DOWNOAD_STOP);
             itemStoppen.setEnabled(wartenOderLaufen);
             jPopupMenu.add(itemStoppen);
             itemStoppen.addActionListener(arg0 -> filmStartenWiederholenStoppen(false /* alle */, false /* starten */));
@@ -982,21 +982,21 @@ public class GuiDownloads extends PanelVorlage {
             //#######################################
 
             JMenuItem itemVorziehen = new JMenuItem("Download vorziehen");
-            itemVorziehen.setIcon(GetIcon.getProgramIcon("move_up_16.png"));
+            itemVorziehen.setIcon(Icons.ICON_MENUE_VORZIEHEN);
             jPopupMenu.add(itemVorziehen);
             itemVorziehen.addActionListener(arg0 -> downloadsVorziehen());
             JMenuItem itemLoeschen = new JMenuItem("Download zurückstellen");
-            itemLoeschen.setIcon(GetIcon.getProgramIcon("undo_16.png"));
+            itemLoeschen.setIcon(Icons.ICON_MENUE_DOWNLOAD_ZURUECKSTELLEN);
             jPopupMenu.add(itemLoeschen);
             itemLoeschen.addActionListener(arg0 -> downloadLoeschen(false /* dauerhaft */));
             //dauerhaft löschen
             JMenuItem itemDauerhaftLoeschen = new JMenuItem("Download aus Liste entfernen");
-            itemDauerhaftLoeschen.setIcon(GetIcon.getProgramIcon("download_del_16.png"));
+            itemDauerhaftLoeschen.setIcon(Icons.ICON_MENUE_DOWNOAD_LOESCHEN);
             jPopupMenu.add(itemDauerhaftLoeschen);
             itemDauerhaftLoeschen.addActionListener(arg0 -> downloadLoeschen(true /* dauerhaft */));
             //Download ändern
             JMenuItem itemAendern = new JMenuItem("Download ändern");
-            itemAendern.setIcon(GetIcon.getProgramIcon("configure_16.png"));
+            itemAendern.setIcon(Icons.ICON_MENUE_DOWNLOAD_AENDERN);
             jPopupMenu.add(itemAendern);
             itemAendern.addActionListener(arg0 -> downloadAendern());
 
@@ -1005,23 +1005,23 @@ public class GuiDownloads extends PanelVorlage {
             //#######################################
 
             JMenuItem itemAlleStarten = new JMenuItem("alle Downloads starten");
-            itemAlleStarten.setIcon(GetIcon.getProgramIcon("download_alleStarten_16.png"));
+            itemAlleStarten.setIcon(Icons.ICON_MENUE_DOWNLOAD_ALLE_STARTEN);
             jPopupMenu.add(itemAlleStarten);
             itemAlleStarten.addActionListener(arg0 -> filmStartenWiederholenStoppen(true /* alle */, true /* starten */));
             JMenuItem itemAlleStoppen = new JMenuItem("alle Downloads stoppen");
-            itemAlleStoppen.setIcon(GetIcon.getProgramIcon("download_stop_16.png"));
+            itemAlleStoppen.setIcon(Icons.ICON_MENUE_DOWNOAD_STOP);
             jPopupMenu.add(itemAlleStoppen);
             itemAlleStoppen.addActionListener(arg0 -> filmStartenWiederholenStoppen(true /* alle */, false /* starten */));
             JMenuItem itemWartendeStoppen = new JMenuItem("wartende Downloads stoppen");
-            itemWartendeStoppen.setIcon(GetIcon.getProgramIcon("download_stop_16.png"));
+            itemWartendeStoppen.setIcon(Icons.ICON_MENUE_DOWNOAD_STOP);
             jPopupMenu.add(itemWartendeStoppen);
             itemWartendeStoppen.addActionListener(arg0 -> wartendeDownloadsStoppen());
             JMenuItem itemAktualisieren = new JMenuItem("Liste der Downloads aktualisieren");
-            itemAktualisieren.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
+            itemAktualisieren.setIcon(Icons.ICON_MENUE_AKTUALISIEREN);
             jPopupMenu.add(itemAktualisieren);
             itemAktualisieren.addActionListener(arg0 -> downloadsAktualisieren());
             JMenuItem itemAufraeumen = new JMenuItem("Liste der Downloads aufräumen");
-            itemAufraeumen.setIcon(GetIcon.getProgramIcon("download_clear_16.png"));
+            itemAufraeumen.setIcon(Icons.ICON_MENUE_CLEAR);
             jPopupMenu.add(itemAufraeumen);
             itemAufraeumen.addActionListener(arg0 -> downloadsAufraeumen());
 
@@ -1031,19 +1031,19 @@ public class GuiDownloads extends PanelVorlage {
 
             // Film abspielen
             JMenuItem itemPlayerDownload = new JMenuItem("gespeicherten Film (Datei) abspielen");
-            itemPlayerDownload.setIcon(GetIcon.getProgramIcon("film_start_16.png"));
+            itemPlayerDownload.setIcon(Icons.ICON_MENUE_FILM_START);
 
             itemPlayerDownload.addActionListener(e -> filmAbspielen_());
             jPopupMenu.add(itemPlayerDownload);
             // Film löschen
             JMenuItem itemDeleteDownload = new JMenuItem("gespeicherten Film (Datei) löschen");
-            itemDeleteDownload.setIcon(GetIcon.getProgramIcon("film_del_16.png"));
+            itemDeleteDownload.setIcon(Icons.ICON_MENUE_DOWNOAD_LOESCHEN);
 
             itemDeleteDownload.addActionListener(e -> filmLoeschen_());
             jPopupMenu.add(itemDeleteDownload);
             // Zielordner öffnen
             JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
-            itemOeffnen.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+            itemOeffnen.setIcon(Icons.ICON_MENUE_FILE_OPEN);
             jPopupMenu.add(itemOeffnen);
             itemOeffnen.addActionListener(e -> zielordnerOeffnen());
 

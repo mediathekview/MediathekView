@@ -114,7 +114,7 @@
                   <Component id="jCheckBoxBlack" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jCheckBoxErsetzungstabelle" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="100" max="32767" attributes="0"/>
+                  <EmptySpace pref="102" max="32767" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" pref="180" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
@@ -130,9 +130,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonPfad">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
-            </Property>
+            <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonImportDatei">

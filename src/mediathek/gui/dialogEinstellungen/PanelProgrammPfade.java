@@ -31,10 +31,9 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mSearch.tool.Log;
-import mediathek.daten.Daten;
+import mediathek.config.Icons;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
-import mediathek.res.GetIcon;
 import mediathek.tool.*;
 
 public class PanelProgrammPfade extends JPanel {
@@ -54,9 +53,14 @@ public class PanelProgrammPfade extends JPanel {
     }
 
     private void init() {
-        jButtonVlcPfad.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
-        jButtonFlvPfad.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
-        jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonVlcPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonVlcPfad.setText("");
+        jButtonFlvPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonFlvPfad.setText("");
+        jButtonFFmpegPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonFFmpegPfad.setText("");
+        jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHilfe.setText("");
         jPanelVlc.setVisible(vlc);
         jPanelFlv.setVisible(flvstreamer);
         jPanelFFmpeg.setVisible(ffmpeg);
@@ -193,7 +197,7 @@ public class PanelProgrammPfade extends JPanel {
 
         jPanelVlc.setBorder(javax.swing.BorderFactory.createTitledBorder("Pfad zum VLC-Player auswählen"));
 
-        jButtonVlcPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
+        jButtonVlcPfad.setText("File");
 
         jButtonVlcSuchen.setText("suchen");
 
@@ -240,7 +244,7 @@ public class PanelProgrammPfade extends JPanel {
 
         jPanelFlv.setBorder(javax.swing.BorderFactory.createTitledBorder("Pfad zum flvstreamer auswählen"));
 
-        jButtonFlvPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
+        jButtonFlvPfad.setText("File");
 
         jButtonFlvSuchen.setText("suchen");
 
@@ -285,13 +289,13 @@ public class PanelProgrammPfade extends JPanel {
 
         jPanelFlvLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonFlvPfad, jTextFieldFlv});
 
-        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+        jButtonHilfe.setText("H");
 
         jPanelFFmpeg.setBorder(javax.swing.BorderFactory.createTitledBorder("Pfad zu ffmpeg auswählen"));
 
         jButtonFFmpegSuchen.setText("suchen");
 
-        jButtonFFmpegPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
+        jButtonFFmpegPfad.setText("File");
 
         jLabel4.setText("Website:");
 

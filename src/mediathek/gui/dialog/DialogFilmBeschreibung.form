@@ -103,9 +103,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="jButtonHilfe">
       <Properties>
-        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/mediathek/res/programm/help_16.png"/>
-        </Property>
+        <Property name="text" type="java.lang.String" value="H"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonSpeichern">

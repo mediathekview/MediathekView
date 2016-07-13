@@ -33,12 +33,12 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
-import mediathek.res.GetIcon;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
 import mediathek.tool.TModel;
 import mSearch.filmlisten.DatenFilmlisteUrl;
 import mSearch.tool.Log;
+import mediathek.config.Icons;
 
 public class PanelFilmlisten extends PanelVorlage {
 
@@ -57,9 +57,13 @@ public class PanelFilmlisten extends PanelVorlage {
             jRadioButtonDiff.setVisible(false);
             jButtonAkualisieren.setVisible(false);
         }
-        jButtonAkualisieren.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
-        jButtonDateiAuswaehlen.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
-        jButtonUrl.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
+        jButtonAkualisieren.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
+        jButtonAkualisieren.setText("");
+        jButtonDateiAuswaehlen.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonUrl.setIcon(Icons.ICON_BUTTON_REFRESH);
+        jButtonUrl.setText("");
+        jButtonDateiAuswaehlen.setText("");
+        jButtonUrl.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
         tabelleLaden();
         jButtonUrl.addActionListener(new ActionListener() {
 
@@ -213,11 +217,11 @@ public class PanelFilmlisten extends PanelVorlage {
 
         jLabelAktListe.setText("Liste aktualisieren:");
 
-        jButtonAkualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/view-refresh_16.png"))); // NOI18N
+        jButtonAkualisieren.setText("Akt");
 
         jLabel1.setText("URL/Datei:");
 
-        jButtonDateiAuswaehlen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
+        jButtonDateiAuswaehlen.setText("File");
         jButtonDateiAuswaehlen.setToolTipText("Lokale Filmliste auswählen");
 
         jButtonFilmeLaden.setText("Filme jetzt laden");
@@ -231,7 +235,7 @@ public class PanelFilmlisten extends PanelVorlage {
         buttonGroup2.add(jRadioButtonDiff);
         jRadioButtonDiff.setText("Differenzlisten");
 
-        jButtonUrl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/icons_refresh_16.png"))); // NOI18N
+        jButtonUrl.setText("Ref");
         jButtonUrl.setToolTipText("Neue URL suchen");
 
         javax.swing.GroupLayout jPanelManuelLayout = new javax.swing.GroupLayout(jPanelManuel);
@@ -258,7 +262,7 @@ public class PanelFilmlisten extends PanelVorlage {
                         .addComponent(jRadioButtonAkt)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jRadioButtonDiff)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 348, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 341, Short.MAX_VALUE)
                         .addComponent(jLabelAktListe)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonAkualisieren)))
@@ -274,7 +278,7 @@ public class PanelFilmlisten extends PanelVorlage {
                     .addComponent(jLabelAktListe)
                     .addComponent(jButtonAkualisieren))
                 .addGap(9, 9, 9)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanelManuelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)

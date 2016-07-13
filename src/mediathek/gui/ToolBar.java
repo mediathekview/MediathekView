@@ -29,8 +29,8 @@ import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
 import mediathek.MediathekGui;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
-import mediathek.res.GetIcon;
 import mediathek.tool.Filter;
 import org.jdesktop.swingx.JXSearchField;
 
@@ -128,10 +128,10 @@ public final class ToolBar extends JToolBar {
 
     private void startupFilme() {
         // init
-        jButtonFilmlisteLaden = new MVButton("Filmliste laden", "neue Filmliste laden", "filmlisteLaden_32.png", "filmlisteLaden_16.png");
-        jButtonInfo = new MVButton("Filminformation anzeigen", "Filminformation anzeigen", "info_32.png", "info_16.png");
-        jButtonFilmAbspielen = new MVButton("Film abspielen", "Film abspielen", "film_start_32.png", "film_start_16.png");
-        jButtonFilmSpeichern = new MVButton("Film aufzeichnen", "Film aufzeichnen", "film_rec_32.png", "film_rec_16.png");
+        jButtonFilmlisteLaden = new MVButton("Filmliste laden", "neue Filmliste laden", Icons.ICON_TOOLBAR_FILME_FILM_START_GR, Icons.ICON_TOOLBAR_FILME_FILM_START_KL);
+        jButtonInfo = new MVButton("Filminformation anzeigen", "Filminformation anzeigen", Icons.ICON_TOOLBAR_FILME_INFO_GR, Icons.ICON_TOOLBAR_FILME_INFO_KL);
+        jButtonFilmAbspielen = new MVButton("Film abspielen", "Film abspielen", Icons.ICON_TOOLBAR_FILME_FILM_START_GR, Icons.ICON_TOOLBAR_FILME_FILM_START_KL);
+        jButtonFilmSpeichern = new MVButton("Film aufzeichnen", "Film aufzeichnen", Icons.ICON_TOOLBAR_FILME_REC_GR, Icons.ICON_TOOLBAR_FILME_REC_KL);
         this.add(filler__5);
         this.add(jButtonFilmlisteLaden);
         this.add(filler__10);
@@ -156,7 +156,7 @@ public final class ToolBar extends JToolBar {
         jTextFieldFilter.setLayoutStyle(JXSearchField.LayoutStyle.MAC);
         jTextFieldFilter.setSearchMode(JXSearchField.SearchMode.INSTANT);
         jTextFieldFilter.setUseNativeSearchFieldIfPossible(true);
-        jTextFieldFilter.getFindButton().setIcon(GetIcon.getProgramIcon("suchen_22.png"));
+        jTextFieldFilter.getFindButton().setIcon(Icons.ICON_SUCHEN);
         jTextFieldFilter.addActionListener(actionEvent -> {
             Filter.checkPattern2(jTextFieldFilter);
             Daten.guiFilme.guiFilmeFiltern();
@@ -175,7 +175,7 @@ public final class ToolBar extends JToolBar {
         jButtonFilterPanel.setOpaque(false);
         jButtonFilterPanel.setPreferredSize(new java.awt.Dimension(40, 40));
         jButtonFilterPanel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButtonFilterPanel.setIcon(GetIcon.getProgramIcon("filter_anzeigen_22.png"));
+        jButtonFilterPanel.setIcon(Icons.ICON_BUTTON_FILTER_ANZEIGEN);
         this.add(jButtonFilterPanel);
 
         Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
@@ -227,13 +227,13 @@ public final class ToolBar extends JToolBar {
 
     private void startupDownload() {
         // init
-        jButtonInfo = new MVButton("Filminformation anzeigen", "Filminformation anzeigen", "info_32.png", "info_16.png");
-        jButtonDownloadAktualisieren = new MVButton("Liste der Downloads aktualisieren", "Liste der Downloads aktualisieren", "view-refresh_32.png", "view-refresh_16.png");
-        jButtonDownloadAlleStarten = new MVButton("alle Downloads starten", "alle Downloads starten", "download_alleStarten_32.png", "download_alleStarten_16.png");
-        jButtonDownloadFilmStarten = new MVButton("Film Starten", "gespeicherten Film abspielen", "film_start_32.png", "film_start_16.png");
-        jButtonDownloadZurueckstellen = new MVButton("Downloads zurückstellen", "Downloads zurückstellen", "undo_32.png", "undo_16.png");
-        jButtonDownloadLoeschen = new MVButton("Downloads aus Liste entfernen", "Downloads aus Liste entfernen", "download_del_32.png", "download_del_16.png");
-        jButtonDownloadAufraeumen = new MVButton("Liste der Downloads aufräumen", "Liste der Downloads aufräumen", "download_clear_32.png", "download_clear_16.png");
+        jButtonInfo = new MVButton("Filminformation anzeigen", "Filminformation anzeigen", Icons.ICON_TOOLBAR_DOWNLOAD_FILM_INFO_GR, Icons.ICON_TOOLBAR_DOWNLOAD_FILM_INFO_KL);
+        jButtonDownloadAktualisieren = new MVButton("Liste der Downloads aktualisieren", "Liste der Downloads aktualisieren", Icons.ICON_TOOLBAR_DOWNLOAD_REFRESH_GR, Icons.ICON_TOOLBAR_DOWNLOAD_REFRESH_KL);
+        jButtonDownloadAlleStarten = new MVButton("alle Downloads starten", "alle Downloads starten", Icons.ICON_TOOLBAR_DOWNLOAD_ALLE_STARTEN_GR, Icons.ICON_TOOLBAR_DOWNLOAD_ALLE_STARTEN_KL);
+        jButtonDownloadFilmStarten = new MVButton("Film Starten", "gespeicherten Film abspielen", Icons.ICON_TOOLBAR_DOWNLOAD_FILM_START_GR, Icons.ICON_TOOLBAR_DOWNLOAD_FILM_START_KL);
+        jButtonDownloadZurueckstellen = new MVButton("Downloads zurückstellen", "Downloads zurückstellen", Icons.ICON_TOOLBAR_DOWNLOAD_UNDO_GR, Icons.ICON_TOOLBAR_DOWNLOAD_UNDO_KL);
+        jButtonDownloadLoeschen = new MVButton("Downloads aus Liste entfernen", "Downloads aus Liste entfernen", Icons.ICON_TOOLBAR_DOWNLOAD_DEL_GR, Icons.ICON_TOOLBAR_DOWNLOAD_DEL_KL);
+        jButtonDownloadAufraeumen = new MVButton("Liste der Downloads aufräumen", "Liste der Downloads aufräumen", Icons.ICON_TOOLBAR_DOWNLOAD_CLEAR_GR, Icons.ICON_TOOLBAR_DOWNLOAD_CLEAR_KL);
         this.add(filler__10);
         this.add(jButtonInfo);
         this.add(filler__10);
@@ -254,10 +254,10 @@ public final class ToolBar extends JToolBar {
 
     private void startupAbo() {
         // init
-        jButtonAbosEinschalten = new MVButton("Abos einschalten", "Abos einschalten", "ja_32.png", "ja_16.png");
-        jButtonAbosAusschalten = new MVButton("Abos ausschalten", "Abos ausschalten", "nein_32.png", "nein_16.png");
-        jButtonAbosLoeschen = new MVButton("Abos löschen", "Abos löschen", "del_32.png", "del_16.png");
-        jButtonAboAendern = new MVButton("Abo ändern", "Abo ändern", "configure_32.png", "configure_16.png");
+        jButtonAbosEinschalten = new MVButton("Abos einschalten", "Abos einschalten", Icons.ICON_TOOLBAR_ABO_EIN_GR, Icons.ICON_TOOLBAR_ABO_EIN_KL);
+        jButtonAbosAusschalten = new MVButton("Abos ausschalten", "Abos ausschalten", Icons.ICON_TOOLBAR_ABO_AUS_GR, Icons.ICON_TOOLBAR_ABO_AUS_KL);
+        jButtonAbosLoeschen = new MVButton("Abos löschen", "Abos löschen", Icons.ICON_TOOLBAR_ABO_DEL_GR, Icons.ICON_TOOLBAR_ABO_DEL_KL);
+        jButtonAboAendern = new MVButton("Abo ändern", "Abo ändern", Icons.ICON_TOOLBAR_ABO_CONFIG_GR, Icons.ICON_TOOLBAR_ABO_CONFIG_KL);
         this.add(filler__10);
         this.add(jButtonAbosEinschalten);
         this.add(jButtonAbosAusschalten);
@@ -324,11 +324,11 @@ public final class ToolBar extends JToolBar {
 
         boolean anzeigen = true;
         String name = "";
-        String imageIconKlein;
-        String imageIconNormal;
+        ImageIcon imageIconKlein;
+        ImageIcon imageIconNormal;
 
         public MVButton(String nname, String ttoolTip,
-                String iimageIconNormal, String iimageIconKlein) {
+                ImageIcon iimageIconNormal, ImageIcon iimageIconKlein) {
             setToolTipText(ttoolTip);
             name = nname;
             imageIconKlein = iimageIconKlein;
@@ -343,9 +343,9 @@ public final class ToolBar extends JToolBar {
         void setIcon() {
             if (!nrIconKlein.isEmpty()) {
                 if (Boolean.parseBoolean(MVConfig.get(nrIconKlein))) {
-                    this.setIcon(GetIcon.getProgramIcon(imageIconKlein));
+                    this.setIcon(imageIconKlein);
                 } else {
-                    this.setIcon(GetIcon.getProgramIcon(imageIconNormal));
+                    this.setIcon(imageIconNormal);
                 }
             }
         }
@@ -395,7 +395,7 @@ public final class ToolBar extends JToolBar {
                 checkBoxMenuItems[i] = new JCheckBoxMenuItem(buttonList.get(i).name);
                 if (checkBoxMenuItems[i] != null) {
                     checkBoxMenuItems[i] = new JCheckBoxMenuItem(buttonList.get(i).name);
-                    checkBoxMenuItems[i].setIcon(GetIcon.getProgramIcon(buttonList.get(i).imageIconKlein));
+                    checkBoxMenuItems[i].setIcon(buttonList.get(i).imageIconKlein);
                     checkBoxMenuItems[i].setSelected(buttonList.get(i).anzeigen);
                     checkBoxMenuItems[i].addActionListener(e -> {
                         setButtonList();

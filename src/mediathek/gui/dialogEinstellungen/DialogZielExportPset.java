@@ -29,8 +29,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import mSearch.tool.Log;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
-import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
@@ -47,7 +47,8 @@ public class DialogZielExportPset extends javax.swing.JDialog {
         parentComponent = parent;
         ddaten = dd;
         initComponents();
-        jButtonZiel.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+        jButtonZiel.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonZiel.setText("");
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonZiel.addActionListener(new ZielBeobachter());
         if (name.equals("")) {
@@ -100,7 +101,7 @@ public class DialogZielExportPset extends javax.swing.JDialog {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
+        jButtonZiel.setText("File");
 
         jLabel1.setText("Ziel:");
 
@@ -112,7 +113,7 @@ public class DialogZielExportPset extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextFieldPfad, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                .addComponent(jTextFieldPfad, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonZiel)
                 .addContainerGap())

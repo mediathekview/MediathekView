@@ -27,6 +27,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
@@ -80,8 +81,8 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                 }
             });
         }
-
-        jButtonFilterLoeschen.setIcon(GetIcon.getProgramIcon("clear_16.png"));
+        jButtonFilterLoeschen.setText("");
+        jButtonFilterLoeschen.setIcon(Icons.ICON_BUTTON_CLEAR);
         jButtonFilterLoeschen.setMnemonic(KeyEvent.VK_F8);
         setIconBlacklist();
         jToggleButtonBlacklist.addActionListener(e -> {
@@ -98,7 +99,8 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
             }
         });
 
-        jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHilfe.setText("");
         jButtonHilfe.addActionListener(e -> new DialogHilfe(parent, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true));
         setIcon(false); // erst mal alle aus
         jRadioButtonF1.addActionListener(new BeobRadio(0));
@@ -166,11 +168,11 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     private void setIconBlacklist() {
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_ON))) {
             //ein
-            jToggleButtonBlacklist.setIcon(GetIcon.getProgramIcon("blacklist_ein_16.png"));
+            jToggleButtonBlacklist.setIcon(Icons.ICON_BUTTON_BLACKLIST_EIN);
             jToggleButtonBlacklist.setSelected(true);
         } else {
             //aus
-            jToggleButtonBlacklist.setIcon(GetIcon.getProgramIcon("blacklist_aus_16.png"));
+            jToggleButtonBlacklist.setIcon(Icons.ICON_BUTTON_BLACKLIST_AUS);
             jToggleButtonBlacklist.setSelected(false);
         }
     }
@@ -358,11 +360,11 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
             jPopupMenu.addSeparator();
 
             JMenuItem item = new JMenuItem("Filterprofil speichern");
-            item.setIcon(GetIcon.getProgramIcon("filter_speichern_16.png"));
+            item.setIcon(Icons.ICON_MENUE_FILTER_SPEICHERN);
             item.addActionListener(e -> mvFsaveFilter(filter));
             jPopupMenu.add(item);
             item = new JMenuItem("Filterprofil löschen");
-            item.setIcon(GetIcon.getProgramIcon("filter_loeschen_16.png"));
+            item.setIcon(Icons.ICON_MENUE_FILTER_LOESCHEN);
             item.addActionListener(e -> mvFdeleteFilter(filter));
             jPopupMenu.add(item);
             //##Trenner##
@@ -543,13 +545,13 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+        jButtonHilfe.setText("H");
         jButtonHilfe.setToolTipText("Hilfe");
 
-        jButtonFilterLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/clear_16.png"))); // NOI18N
+        jButtonFilterLoeschen.setText("Cl");
         jButtonFilterLoeschen.setToolTipText("Filter löschen");
 
-        jToggleButtonBlacklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/blacklist_aus_16.png"))); // NOI18N
+        jToggleButtonBlacklist.setText("Bl");
         jToggleButtonBlacklist.setToolTipText("Blacklist ein/aus (Rechtsklick um Blacklist zu bearbeiten)");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

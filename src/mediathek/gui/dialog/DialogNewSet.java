@@ -24,9 +24,9 @@ import java.awt.event.ActionListener;
 import java.net.URISyntaxException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
-import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.Konstanten;
 import mediathek.tool.UrlHyperlinkAction;
@@ -114,7 +114,8 @@ public class DialogNewSet extends javax.swing.JDialog {
                 }
             }
         });
-        jButtonSetHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonSetHelp.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonSetHelp.setText("");
         jButtonSetHelp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -219,7 +220,7 @@ public class DialogNewSet extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonAdd)
                 .addContainerGap())
@@ -263,7 +264,7 @@ public class DialogNewSet extends javax.swing.JDialog {
         jTextArea3.setRows(3);
         jScrollPane3.setViewportView(jTextArea3);
 
-        jButtonSetHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+        jButtonSetHelp.setText("H");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

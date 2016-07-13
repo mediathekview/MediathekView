@@ -61,6 +61,7 @@ import mediathek.tool.TModel;
 import mediathek.tool.UrlHyperlinkAction;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Log;
+import mediathek.config.Icons;
 import mediathek.tool.*;
 
 public class PanelPsetLang extends PanelVorlage {
@@ -97,17 +98,24 @@ public class PanelPsetLang extends PanelVorlage {
     }
 
     private void init() {
-        jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
-        jButtonGruppePfad.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
-        jButtonProgPlus.setIcon(GetIcon.getProgramIcon("add_16.png"));
-        jButtonProgMinus.setIcon(GetIcon.getProgramIcon("remove_16.png"));
-        jButtonProgAuf.setIcon(GetIcon.getProgramIcon("move_up_16.png"));
-        jButtonProgAb.setIcon(GetIcon.getProgramIcon("move_down_16.png"));
-        jButtonProgPfad.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
-        jButtonGruppeNeu.setIcon(GetIcon.getProgramIcon("add_16.png"));
-        jButtonGruppeLoeschen.setIcon(GetIcon.getProgramIcon("remove_16.png"));
-        jButtonGruppeAuf.setIcon(GetIcon.getProgramIcon("move_up_16.png"));
-        jButtonGruppeAb.setIcon(GetIcon.getProgramIcon("move_down_16.png"));
+        jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHilfe.setText("");
+        jButtonGruppePfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonProgPlus.setIcon(Icons.ICON_DIALOG_ADD);
+        jButtonProgMinus.setIcon(Icons.ICON_BUTTON_REMOVE);
+        jButtonProgMinus.setText("");
+        jButtonProgAuf.setIcon(Icons.ICON_BUTTON_MOVE_UP);
+        jButtonProgAuf.setText("");
+        jButtonProgAb.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
+        jButtonProgAb.setText("");
+        jButtonProgPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonGruppeNeu.setIcon(Icons.ICON_DIALOG_ADD);
+        jButtonGruppeLoeschen.setIcon(Icons.ICON_BUTTON_REMOVE);
+        jButtonGruppeLoeschen.setText("");
+        jButtonGruppeAuf.setIcon(Icons.ICON_BUTTON_MOVE_UP);
+        jButtonGruppeAuf.setText("");
+        jButtonGruppeAb.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
+        jButtonGruppeAb.setText("");
         jLabelMeldungAbspielen.setIcon(GetIcon.getProgramIcon("alert_16.png"));
         jLabelMeldungSeichern.setIcon(GetIcon.getProgramIcon("alert_16.png"));
         //Programme
@@ -742,7 +750,7 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppeAuf = new javax.swing.JButton();
         jButtonGruppeAb = new javax.swing.JButton();
 
-        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+        jButtonHilfe.setText("H");
         jButtonHilfe.setToolTipText("Hilfedialog anzeigen");
 
         jButtonPruefen.setText("Prüfen");
@@ -783,7 +791,7 @@ public class PanelPsetLang extends PanelVorlage {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelInfo)
@@ -949,7 +957,7 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(488, Short.MAX_VALUE))
+                .addContainerGap(489, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Aussehen", jPanel10);
@@ -958,7 +966,7 @@ public class PanelPsetLang extends PanelVorlage {
 
         jLabel7.setText("Zielpfad:");
 
-        jButtonGruppePfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
+        jButtonGruppePfad.setText("File");
         jButtonGruppePfad.setToolTipText("Pfad auswählen");
 
         jCheckBoxThema.setText("einen Unterordner mit dem Thema / Abo-Zielpfad anlegen");
@@ -1071,7 +1079,7 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(385, Short.MAX_VALUE))
+                .addContainerGap(388, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Speicherziel", jPanel9);
@@ -1225,19 +1233,19 @@ public class PanelPsetLang extends PanelVorlage {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jButtonProgPlus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/add_16.png"))); // NOI18N
+        jButtonProgPlus.setText("Add");
         jButtonProgPlus.setToolTipText("neues Programm anlegen");
 
-        jButtonProgMinus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/remove_16.png"))); // NOI18N
+        jButtonProgMinus.setText("Mi");
         jButtonProgMinus.setToolTipText("markiertes Programm löschen");
 
         jButtonProgDuplizieren.setText("Duplizieren");
         jButtonProgDuplizieren.setToolTipText("markierte Zeile duplizieren");
 
-        jButtonProgAuf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/move_up_16.png"))); // NOI18N
+        jButtonProgAuf.setText("Up");
         jButtonProgAuf.setToolTipText("markierte Zeile eins nach oben");
 
-        jButtonProgAb.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/move_down_16.png"))); // NOI18N
+        jButtonProgAb.setText("Do");
         jButtonProgAb.setToolTipText("markierte Zeile eins nach unten");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -1275,7 +1283,7 @@ public class PanelPsetLang extends PanelVorlage {
 
         jLabel.setText("Programm:");
 
-        jButtonProgPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
+        jButtonProgPfad.setText("File");
         jButtonProgPfad.setToolTipText("Pfad auswählen");
 
         jLabel1.setText("Schalter:");
@@ -1362,7 +1370,7 @@ public class PanelPsetLang extends PanelVorlage {
                 .addComponent(jCheckBoxRestart)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxRemoteDownload)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanelProgrammDetailsLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonProgPfad, jTextFieldProgName, jTextFieldProgPfad, jTextFieldProgPraefix, jTextFieldProgSchalter, jTextFieldProgSuffix, jTextFieldProgZielDateiName});
@@ -1383,7 +1391,7 @@ public class PanelPsetLang extends PanelVorlage {
             jPanelProgrammeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelProgrammeLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1410,16 +1418,16 @@ public class PanelPsetLang extends PanelVorlage {
 
         jButtonExport.setText("Export");
 
-        jButtonGruppeNeu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/add_16.png"))); // NOI18N
+        jButtonGruppeNeu.setText("Add");
         jButtonGruppeNeu.setToolTipText("neue Programmgruppe anlegen");
 
-        jButtonGruppeLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/remove_16.png"))); // NOI18N
+        jButtonGruppeLoeschen.setText("Mi");
         jButtonGruppeLoeschen.setToolTipText("Programmgruppe löschen");
 
-        jButtonGruppeAuf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/move_up_16.png"))); // NOI18N
+        jButtonGruppeAuf.setText("Up");
         jButtonGruppeAuf.setToolTipText("Programmgruppe nach oben schieben");
 
-        jButtonGruppeAb.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/move_down_16.png"))); // NOI18N
+        jButtonGruppeAb.setText("Do");
         jButtonGruppeAb.setToolTipText("Programmgruppe nach unten schieben");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -1445,7 +1453,7 @@ public class PanelPsetLang extends PanelVorlage {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jButtonGruppeAuf)

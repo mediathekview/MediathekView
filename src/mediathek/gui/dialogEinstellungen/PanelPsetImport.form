@@ -88,7 +88,7 @@
                           <Component id="jComboBoxBs" alignment="2" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" pref="183" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" pref="193" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -291,9 +291,7 @@
             </Container>
             <Component class="javax.swing.JButton" name="jButtonAktualisieren">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/view-refresh_16.png"/>
-                </Property>
+                <Property name="text" type="java.lang.String" value="Akt"/>
                 <Property name="toolTipText" type="java.lang.String" value="Neu laden"/>
               </Properties>
             </Component>
@@ -346,7 +344,7 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane4" pref="584" max="32767" attributes="0"/>
+                          <Component id="jScrollPane4" pref="591" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               <Component id="jButtonImportStandard" min="-2" max="-2" attributes="0"/>
@@ -363,7 +361,7 @@
                       <Component id="jScrollPane4" min="-2" pref="172" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonImportStandard" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="288" max="32767" attributes="0"/>
+                      <EmptySpace pref="295" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -494,9 +492,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonPfad">
                   <Properties>
-                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
-                    </Property>
+                    <Property name="text" type="java.lang.String" value="File"/>
                     <Property name="toolTipText" type="java.lang.String" value="Datei ausw&#xe4;hlen"/>
                   </Properties>
                 </Component>
@@ -535,7 +531,7 @@
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jTextAreaImport" pref="550" max="32767" attributes="0"/>
+                              <Component id="jTextAreaImport" pref="557" max="32767" attributes="0"/>
                               <Group type="102" alignment="1" attributes="0">
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   <Component id="jButtonImportText" min="-2" max="-2" attributes="0"/>
@@ -549,7 +545,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jTextAreaImport" pref="275" max="32767" attributes="0"/>
+                          <Component id="jTextAreaImport" pref="283" max="32767" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jButtonImportText" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>

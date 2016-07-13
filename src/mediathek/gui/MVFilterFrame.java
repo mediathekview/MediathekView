@@ -64,10 +64,10 @@ import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
-import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
+import mediathek.config.Icons;
 import mediathek.tool.MVListeFilme;
 import mediathek.tool.TextCopyPaste;
 
@@ -164,7 +164,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 dispose();
             }
         });
-        jButtonFilterLoeschen.setIcon(GetIcon.getProgramIcon("clear_16.png"));
+        jButtonFilterLoeschen.setText("");
+        jButtonFilterLoeschen.setIcon(Icons.ICON_BUTTON_CLEAR);
         jButtonOk.addActionListener(e -> dispose());
 
         setIconBlacklist();
@@ -182,7 +183,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
             }
         });
 
-        jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHilfe.setText("");
         jButtonHilfe.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true));
         setIcon(false); // erst mal alle aus
         jRadioButtonF1.addActionListener(new BeobRadio(0));
@@ -251,11 +253,11 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     private void setIconBlacklist() {
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_ON))) {
             //ein
-            jToggleButtonBlacklist.setIcon(GetIcon.getProgramIcon("blacklist_ein_16.png"));
+            jToggleButtonBlacklist.setIcon(Icons.ICON_BUTTON_BLACKLIST_EIN);
             jToggleButtonBlacklist.setSelected(true);
         } else {
             //aus
-            jToggleButtonBlacklist.setIcon(GetIcon.getProgramIcon("blacklist_aus_16.png"));
+            jToggleButtonBlacklist.setIcon(Icons.ICON_BUTTON_BLACKLIST_AUS);
             jToggleButtonBlacklist.setSelected(false);
         }
     }
@@ -293,19 +295,19 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     private void setIconOn(int filter) {
         switch (filter) {
             case 0:
-                jRadioButtonF1.setIcon(GetIcon.getProgramIcon("filter_on_1.png"));
+                jRadioButtonF1.setIcon(Icons.ICON_FILTER_ON_1);
                 break;
             case 1:
-                jRadioButtonF2.setIcon(GetIcon.getProgramIcon("filter_on_2.png"));
+                jRadioButtonF2.setIcon(Icons.ICON_FILTER_ON_2);
                 break;
             case 2:
-                jRadioButtonF3.setIcon(GetIcon.getProgramIcon("filter_on_3.png"));
+                jRadioButtonF3.setIcon(Icons.ICON_FILTER_ON_3);
                 break;
             case 3:
-                jRadioButtonF4.setIcon(GetIcon.getProgramIcon("filter_on_4.png"));
+                jRadioButtonF4.setIcon(Icons.ICON_FILTER_ON_4);
                 break;
             case 4:
-                jRadioButtonF5.setIcon(GetIcon.getProgramIcon("filter_on_5.png"));
+                jRadioButtonF5.setIcon(Icons.ICON_FILTER_ON_5);
                 break;
         }
     }
@@ -313,19 +315,19 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     private void setAktIcon(int filter) {
         switch (filter) {
             case 0:
-                jRadioButtonF1.setIcon(GetIcon.getProgramIcon("filter_akt_1.png"));
+                jRadioButtonF1.setIcon(Icons.ICON_FILTER_AKT_1);
                 break;
             case 1:
-                jRadioButtonF2.setIcon(GetIcon.getProgramIcon("filter_akt_2.png"));
+                jRadioButtonF2.setIcon(Icons.ICON_FILTER_AKT_2);
                 break;
             case 2:
-                jRadioButtonF3.setIcon(GetIcon.getProgramIcon("filter_akt_3.png"));
+                jRadioButtonF3.setIcon(Icons.ICON_FILTER_AKT_3);
                 break;
             case 3:
-                jRadioButtonF4.setIcon(GetIcon.getProgramIcon("filter_akt_4.png"));
+                jRadioButtonF4.setIcon(Icons.ICON_FILTER_AKT_4);
                 break;
             case 4:
-                jRadioButtonF5.setIcon(GetIcon.getProgramIcon("filter_akt_5.png"));
+                jRadioButtonF5.setIcon(Icons.ICON_FILTER_AKT_5);
                 break;
         }
     }
@@ -333,19 +335,19 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     private void setIconOff(int filter) {
         switch (filter) {
             case 0:
-                jRadioButtonF1.setIcon(GetIcon.getProgramIcon("filter_off_1.png"));
+                jRadioButtonF1.setIcon(Icons.ICON_FILTER_OFF_1);
                 break;
             case 1:
-                jRadioButtonF2.setIcon(GetIcon.getProgramIcon("filter_off_2.png"));
+                jRadioButtonF2.setIcon(Icons.ICON_FILTER_OFF_2);
                 break;
             case 2:
-                jRadioButtonF3.setIcon(GetIcon.getProgramIcon("filter_off_3.png"));
+                jRadioButtonF3.setIcon(Icons.ICON_FILTER_OFF_3);
                 break;
             case 3:
-                jRadioButtonF4.setIcon(GetIcon.getProgramIcon("filter_off_4.png"));
+                jRadioButtonF4.setIcon(Icons.ICON_FILTER_OFF_4);
                 break;
             case 4:
-                jRadioButtonF5.setIcon(GetIcon.getProgramIcon("filter_off_5.png"));
+                jRadioButtonF5.setIcon(Icons.ICON_FILTER_OFF_5);
                 break;
         }
     }
@@ -443,11 +445,11 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
             jPopupMenu.addSeparator();
 
             JMenuItem item = new JMenuItem("Filterprofil speichern");
-            item.setIcon(GetIcon.getProgramIcon("filter_speichern_16.png"));
+            item.setIcon(Icons.ICON_MENUE_FILTER_SPEICHERN);
             item.addActionListener(e -> mvFsaveFilter(filter));
             jPopupMenu.add(item);
             item = new JMenuItem("Filterprofil löschen");
-            item.setIcon(GetIcon.getProgramIcon("filter_loeschen_16.png"));
+            item.setIcon(Icons.ICON_MENUE_FILTER_LOESCHEN);
             item.addActionListener(e -> mvFdeleteFilter(filter));
             jPopupMenu.add(item);
             //##Trenner##
@@ -561,7 +563,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        jComboBoxZeitraum = new javax.swing.JComboBox<String>();
+        jComboBoxZeitraum = new javax.swing.JComboBox<>();
         javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jTextFieldFilterMinuten = new javax.swing.JTextField();
         jSliderMinuten = new javax.swing.JSlider();
@@ -573,9 +575,9 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jCheckBoxNurNeue = new javax.swing.JCheckBox();
         javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
-        jComboBoxFilterSender = new javax.swing.JComboBox<String>();
+        jComboBoxFilterSender = new javax.swing.JComboBox<>();
         javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
-        jComboBoxFilterThema = new javax.swing.JComboBox<String>();
+        jComboBoxFilterThema = new javax.swing.JComboBox<>();
         javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
         jTextFieldFilterTitel = new javax.swing.JTextField();
         jTextFieldFilterThemaTitel = new javax.swing.JTextField();
@@ -741,7 +743,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jComboBoxFilterSender, jComboBoxFilterThema, jTextFieldFilterThemaTitel, jTextFieldFilterTitel});
 
-        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+        jButtonHilfe.setText("H");
         jButtonHilfe.setToolTipText("Hilfe");
 
         jButtonOk.setText("OK");
@@ -768,10 +770,10 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         jLabel6.setText("Filterprofile:");
 
-        jButtonFilterLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/clear_16.png"))); // NOI18N
+        jButtonFilterLoeschen.setText("Cl");
         jButtonFilterLoeschen.setToolTipText("Filter löschen");
 
-        jToggleButtonBlacklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/blacklist_aus_16.png"))); // NOI18N
+        jToggleButtonBlacklist.setText("Bl");
         jToggleButtonBlacklist.setToolTipText("Blacklist ein/aus (Rechtsklick um Blacklist zu bearbeiten)");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -807,6 +809,9 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                         .addComponent(jButtonOk)))
                 .addContainerGap())
         );
+
+        jPanel3Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonFilterLoeschen, jButtonHilfe, jButtonOk, jToggleButtonBlacklist});
+
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
@@ -828,6 +833,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                     .addComponent(jToggleButtonBlacklist))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonFilterLoeschen, jButtonHilfe, jButtonOk, jToggleButtonBlacklist});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

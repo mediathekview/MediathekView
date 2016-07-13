@@ -21,10 +21,10 @@ package mediathek.gui.dialog;
 
 import javax.swing.JFrame;
 import mediathek.daten.Daten;
-import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.MVInfoFile;
 import mSearch.daten.DatenFilm;
+import mediathek.config.Icons;
 
 public class DialogFilmBeschreibung extends javax.swing.JDialog {
 
@@ -54,7 +54,8 @@ public class DialogFilmBeschreibung extends javax.swing.JDialog {
             datenFilm.arr[DatenFilm.FILM_BESCHREIBUNG] = jTextArea1.getText();
             beenden();
         });
-        jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHilfe.setText("");
         jButtonHilfe.addActionListener(e -> new DialogHilfe(paFrame, true, "\n"
                 + "Diese Funktion richtet sich z.B. an Benutzer,\n"
                 + "welche eine angepasste Beschreibung der Sendung in Form\n"
@@ -102,7 +103,7 @@ public class DialogFilmBeschreibung extends javax.swing.JDialog {
 
         jTextFieldTitel.setEditable(false);
 
-        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+        jButtonHilfe.setText("H");
 
         jButtonSpeichern.setText("Speichern");
 

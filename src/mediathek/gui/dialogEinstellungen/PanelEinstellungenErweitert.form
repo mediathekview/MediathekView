@@ -52,7 +52,7 @@
               <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="79" max="32767" attributes="0"/>
+              <EmptySpace pref="83" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -283,16 +283,12 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonProgrammDateimanager">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
-            </Property>
+            <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonHilfeProgrammDateimanager">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/help_16.png"/>
-            </Property>
+            <Property name="text" type="java.lang.String" value="H"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel1">
@@ -309,16 +305,12 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonHilfeVideoplayer">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/help_16.png"/>
-            </Property>
+            <Property name="text" type="java.lang.String" value="H"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonProgrammVideoplayer">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
-            </Property>
+            <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -365,16 +357,12 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonProgrammUrl">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
-            </Property>
+            <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonHilfeProgrammUrl">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/help_16.png"/>
-            </Property>
+            <Property name="text" type="java.lang.String" value="H"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -420,16 +408,12 @@
       <SubComponents>
         <Component class="javax.swing.JButton" name="jButtonHilfeProgrammShutdown">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/help_16.png"/>
-            </Property>
+            <Property name="text" type="java.lang.String" value="H"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonProgrammShutdown">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
-            </Property>
+            <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextFieldProgrammShutdown">

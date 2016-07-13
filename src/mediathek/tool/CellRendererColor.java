@@ -39,9 +39,6 @@ public class CellRendererColor extends DefaultTableCellRenderer {
             int row,
             int column) {
         setBackground(null);
-//        setForeground(null);
-//        setFont(null);
-//        setIcon(null);
         setHorizontalAlignment(SwingConstants.LEADING);
         super.getTableCellRendererComponent(
                 table, value, isSelected, hasFocus, row, column);
@@ -51,7 +48,6 @@ public class CellRendererColor extends DefaultTableCellRenderer {
             MVC color = Daten.mVColor.liste.get(r);
             if (c == MVColor.MVC_COLOR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
-                //setIcon(GetIcon.getIcon("edit_16.png"));
                 setBackground(color.color);
                 setText("");
             }

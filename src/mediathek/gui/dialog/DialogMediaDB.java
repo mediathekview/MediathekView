@@ -38,10 +38,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenMediaDB;
 import mediathek.file.GetFile;
-import mediathek.res.GetIcon;
 import mediathek.tool.*;
 
 public class DialogMediaDB extends javax.swing.JDialog {
@@ -102,7 +102,8 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
         jButtonIndex.addActionListener(e -> Daten.mVMediaDB.makeIndex());
 
-        jButtonHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHelp.setText("");
         jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_MEDIA_DB)).setVisible(true));
         jButtonSearch.addActionListener(e -> search());
         jButtonBeenden.addActionListener(e -> beenden());
@@ -257,7 +258,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
         jButtonBeenden.setText("Ok");
 
-        jButtonHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+        jButtonHelp.setText("H");
 
         jButtonSearch.setText("Suchen");
 
@@ -349,7 +350,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
                         .addComponent(jLabel1)
                         .addComponent(jLabelSizeFound)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -450,19 +451,19 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
             // Film abspielen
             JMenuItem itemPlayerDownload = new JMenuItem("gespeicherten Film (Datei) abspielen");
-            itemPlayerDownload.setIcon(GetIcon.getProgramIcon("film_start_16.png"));
+            itemPlayerDownload.setIcon(Icons.ICON_MENUE_FILM_START);
             itemPlayerDownload.addActionListener(e -> filmAbspielen_());
             jPopupMenu.add(itemPlayerDownload);
 
             // Film löschen
             JMenuItem itemDeleteDownload = new JMenuItem("gespeicherten Film (Datei) löschen");
-            itemDeleteDownload.setIcon(GetIcon.getProgramIcon("film_del_16.png"));
+            itemDeleteDownload.setIcon(Icons.ICON_BUTTON_DEL);
             itemDeleteDownload.addActionListener(e -> filmLoeschen_());
             jPopupMenu.add(itemDeleteDownload);
 
             // Zielordner öffnen
             JMenuItem itemOeffnen = new JMenuItem("Zielordner öffnen");
-            itemOeffnen.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+            itemOeffnen.setIcon(Icons.ICON_MENUE_FILE_OPEN);
             jPopupMenu.add(itemOeffnen);
             itemOeffnen.addActionListener(arg0 -> zielordnerOeffnen());
 

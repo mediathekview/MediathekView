@@ -27,8 +27,8 @@ import java.net.URISyntaxException;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import mSearch.daten.DatenFilm;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
-import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.UrlHyperlinkAction;
 import org.jdesktop.swingx.JXHyperlink;
@@ -53,7 +53,7 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
         parent = owner;
         this.setTitle("Filminformation");
 
-        ja_sw_16 = GetIcon.getProgramIcon("ja_sw_16.png");
+        ja_sw_16 = Icons.ICON_DIALOG_EIN_SW;
         for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {
             labelArrNames[i] = new JLabel(DatenFilm.COLUMN_NAMES[i] + ":");
             labelArrNames[i].setHorizontalAlignment(SwingConstants.RIGHT);
