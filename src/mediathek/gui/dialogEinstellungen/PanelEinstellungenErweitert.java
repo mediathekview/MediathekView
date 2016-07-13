@@ -184,12 +184,16 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jButtonHilfeProgrammUrl.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfeProgrammUrl.setText("");
         jButtonHilfeProgrammShutdown.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonProgrammShutdown.setText("");
+        jButtonHilfeProgrammShutdown.setText("");
 
         jButtonProgrammDateimanager.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonProgrammDateimanager.setText("");
         jButtonProgrammVideoplayer.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonProgrammVideoplayer.setText("");
         jButtonProgrammUrl.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonProgrammUrl.setText("");
         jButtonProgrammShutdown.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonProgrammShutdown.setText("");
     }
 
     /** This method is called from within the constructor to
@@ -236,7 +240,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jCheckBoxDownloadSofortStarten.setText("Downloads aus Abos sofort starten");
 
-        jButtonHilfeNeuladen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+        jButtonHilfeNeuladen.setText("H");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -265,7 +269,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("User-Agent"));
 
-        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+        jButtonHilfe.setText("H");
 
         buttonGroup1.add(jRadioButtonAuto);
         jRadioButtonAuto.setText("Auto:");
@@ -470,7 +474,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(83, Short.MAX_VALUE))
+                .addContainerGap(70, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

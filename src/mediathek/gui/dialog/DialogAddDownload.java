@@ -19,11 +19,6 @@
  */
 package mediathek.gui.dialog;
 
-import mSearch.tool.MVColor;
-import mSearch.tool.MVConfig;
-import mSearch.tool.MVFilmSize;
-import mSearch.tool.Listener;
-import mSearch.tool.FilenameUtils;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
 import java.awt.FileDialog;
@@ -45,15 +40,18 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import mSearch.daten.DatenFilm;
-import mSearch.tool.Log;
+import mSearch.tool.*;
 import mediathek.config.Icons;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
-import mediathek.tool.*;
+import mediathek.tool.EscBeenden;
+import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.Konstanten;
+import mediathek.tool.MVMessageDialog;
 
 public class DialogAddDownload extends JDialog {
-    
+
     private DatenPset pSet = null;
     private boolean ok = false;
     private DatenDownload datenDownload = null;
@@ -67,36 +65,37 @@ public class DialogAddDownload extends JDialog {
     private boolean nameGeaendert = false;
     private boolean stopBeob = false;
     private JTextComponent cbPathTextComponent = null;
-    
+
     public DialogAddDownload(Frame parent, Daten daten, DatenFilm film, DatenPset pSet, String aufloesung) {
         super(parent, true);
         initComponents();
-        
+
         filmBorder = (TitledBorder) jPanelSize.getBorder();
         cbPathTextComponent = ((JTextComponent) jComboBoxPfad.getEditor().getEditorComponent());
-        
+
         this.aufloesung = aufloesung;
         this.daten = daten;
         datenFilm = film;
         this.pSet = pSet;
-        
+
         init();
         packIt();
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
     }
-    
+
     private void packIt() {
         int w = this.getWidth();
         pack();
         this.setSize(w, this.getHeight());
     }
-    
+
     private void init() {
         jButtonDelHistory.setIcon(Icons.ICON_BUTTON_DEL);
+        jButtonDelHistory.setText("");
         jComboBoxPset.setModel(new DefaultComboBoxModel<>(Daten.listePset.getListeSpeichern().getObjectDataCombo()));
-        
+
         jCheckBoxStarten.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN)));
         jCheckBoxStarten.addActionListener(e -> MVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, String.valueOf(jCheckBoxStarten.isSelected())));
         jButtonZiel.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
@@ -124,7 +123,7 @@ public class DialogAddDownload extends JDialog {
             ok = false;
             beenden();
         });
-        
+
         if (pSet != null) {
             jComboBoxPset.setSelectedItem(pSet.arr[DatenPset.PROGRAMMSET_NAME]);
         } else {
@@ -140,22 +139,22 @@ public class DialogAddDownload extends JDialog {
         }
         jTextFieldSender.setText(" " + datenFilm.arr[DatenFilm.FILM_SENDER] + ":   " + datenFilm.arr[DatenFilm.FILM_TITEL]);
         jTextFieldName.getDocument().addDocumentListener(new DocumentListener() {
-            
+
             @Override
             public void insertUpdate(DocumentEvent e) {
                 tus();
             }
-            
+
             @Override
             public void removeUpdate(DocumentEvent e) {
                 tus();
             }
-            
+
             @Override
             public void changedUpdate(DocumentEvent e) {
                 tus();
             }
-            
+
             private void tus() {
                 if (!stopBeob) {
                     nameGeaendert = true;
@@ -165,27 +164,27 @@ public class DialogAddDownload extends JDialog {
                         jTextFieldName.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.background"));
                     }
                 }
-                
+
             }
         });
         cbPathTextComponent.setOpaque(true);
         cbPathTextComponent.getDocument().addDocumentListener(new DocumentListener() {
-            
+
             @Override
             public void insertUpdate(DocumentEvent e) {
                 tus();
             }
-            
+
             @Override
             public void removeUpdate(DocumentEvent e) {
                 tus();
             }
-            
+
             @Override
             public void changedUpdate(DocumentEvent e) {
                 tus();
             }
-            
+
             private void tus() {
                 if (!stopBeob) {
                     nameGeaendert = true;
@@ -197,7 +196,7 @@ public class DialogAddDownload extends JDialog {
                     }
                     calculateAndCheckDiskSpace();
                 }
-                
+
             }
         });
         jRadioButtonAufloesungHd.addActionListener(new BeobRadio());
@@ -232,7 +231,7 @@ public class DialogAddDownload extends JDialog {
         calculateAndCheckDiskSpace();
         nameGeaendert = false;
     }
-    
+
     private void setNameFilm() {
         // beim ersten mal werden die Standardpfade gesucht
         if (!nameGeaendert) {
@@ -278,7 +277,7 @@ public class DialogAddDownload extends JDialog {
         }
         return usableSpace;
     }
-    
+
     private final TitledBorder filmBorder;
     private static final String TITLED_BORDER_STRING = "Film laden";
 
@@ -289,7 +288,7 @@ public class DialogAddDownload extends JDialog {
         jRadioButtonAufloesungHd.setForeground(Color.black);
         jRadioButtonAufloesungHoch.setForeground(Color.black);
         jRadioButtonAufloesungKlein.setForeground(Color.black);
-        
+
         try {
             long usableSpace = getFreeDiskSpace(cbPathTextComponent.getText());
             if (usableSpace > 0) {
@@ -327,14 +326,14 @@ public class DialogAddDownload extends JDialog {
             ex.printStackTrace();
         }
     }
-    
+
     private void setModelPfad(String pfad) {
         ArrayList<String> pfade = new ArrayList<>();
         // wenn gewünscht, den letzten verwendeten Pfad an den Anfang setzen
         if (!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)) && !pfad.isEmpty()) {
             // aktueller Pfad an Platz 1
             pfade.add(pfad);
-            
+
         }
         if (!MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).isEmpty()) {
             String[] p = MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).split("<>");
@@ -352,7 +351,7 @@ public class DialogAddDownload extends JDialog {
         }
         jComboBoxPfad.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[pfade.size()])));
     }
-    
+
     private void saveComboPfad() {
         ArrayList<String> pfade = new ArrayList<>();
         String s = jComboBoxPfad.getSelectedItem().toString();
@@ -414,7 +413,7 @@ public class DialogAddDownload extends JDialog {
             return DatenFilm.AUFLOESUNG_NORMAL;
         }
     }
-    
+
     private String getFilmSize() {
         if (jRadioButtonAufloesungHd.isSelected()) {
             return dateiGroesse_HD;
@@ -424,7 +423,7 @@ public class DialogAddDownload extends JDialog {
             return dateiGroesse_Hoch;
         }
     }
-    
+
     private boolean check() {
         ok = false;
         String pfad = jComboBoxPfad.getSelectedItem().toString();
@@ -445,7 +444,7 @@ public class DialogAddDownload extends JDialog {
         }
         return ok;
     }
-    
+
     private void beenden() {
         if (ok) {
             // jetzt wird mit den angegebenen Pfaden gearbeitet
@@ -686,15 +685,15 @@ public class DialogAddDownload extends JDialog {
     // End of variables declaration//GEN-END:variables
 
     private class BeobRadio implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             setNameFilm();
         }
     }
-    
+
     private class ZielBeobachter implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native directory chooser on Mac...

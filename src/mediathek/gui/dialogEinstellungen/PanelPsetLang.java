@@ -47,7 +47,6 @@ import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
-import mediathek.res.GetIcon;
 import mediathek.tool.CellRendererProgramme;
 import mediathek.tool.CellRendererPset;
 import mSearch.tool.FilenameUtils;
@@ -101,7 +100,9 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfe.setText("");
         jButtonGruppePfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonGruppePfad.setText("");
         jButtonProgPlus.setIcon(Icons.ICON_DIALOG_ADD);
+        jButtonProgPlus.setText("");
         jButtonProgMinus.setIcon(Icons.ICON_BUTTON_REMOVE);
         jButtonProgMinus.setText("");
         jButtonProgAuf.setIcon(Icons.ICON_BUTTON_MOVE_UP);
@@ -109,15 +110,17 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonProgAb.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
         jButtonProgAb.setText("");
         jButtonProgPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonProgPfad.setText("");
         jButtonGruppeNeu.setIcon(Icons.ICON_DIALOG_ADD);
+        jButtonGruppeNeu.setText("");
         jButtonGruppeLoeschen.setIcon(Icons.ICON_BUTTON_REMOVE);
         jButtonGruppeLoeschen.setText("");
         jButtonGruppeAuf.setIcon(Icons.ICON_BUTTON_MOVE_UP);
         jButtonGruppeAuf.setText("");
         jButtonGruppeAb.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
         jButtonGruppeAb.setText("");
-        jLabelMeldungAbspielen.setIcon(GetIcon.getProgramIcon("alert_16.png"));
-        jLabelMeldungSeichern.setIcon(GetIcon.getProgramIcon("alert_16.png"));
+        jLabelMeldungAbspielen.setIcon(Icons.ICON_ACHTUNG_16);
+        jLabelMeldungSeichern.setIcon(Icons.ICON_ACHTUNG_16);
         //Programme
         tabellePset.setAutoResizeMode(MVTable.AUTO_RESIZE_OFF);
         Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName()) {
@@ -836,10 +839,8 @@ public class PanelPsetLang extends PanelVorlage {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jLabelMeldungAbspielen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/alert_16.png"))); // NOI18N
         jLabelMeldungAbspielen.setText("kein Set zum Abspielen ausgewählt!");
 
-        jLabelMeldungSeichern.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/alert_16.png"))); // NOI18N
         jLabelMeldungSeichern.setText("kein Set zum Speichern ausgewählt!");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);

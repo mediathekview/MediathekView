@@ -449,9 +449,6 @@
               <ComponentRef name="buttonGroup1"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 1 speichern"/>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/filter_off_1.png"/>
-            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JRadioButton" name="jRadioButtonF2">
@@ -460,9 +457,6 @@
               <ComponentRef name="buttonGroup1"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 2 speichern"/>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/filter_off_2.png"/>
-            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JRadioButton" name="jRadioButtonF3">
@@ -471,9 +465,6 @@
               <ComponentRef name="buttonGroup1"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 3 speichern"/>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/filter_off_3.png"/>
-            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JRadioButton" name="jRadioButtonF4">
@@ -482,9 +473,6 @@
               <ComponentRef name="buttonGroup1"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 4 speichern"/>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/filter_off_4.png"/>
-            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JRadioButton" name="jRadioButtonF5">
@@ -493,9 +481,6 @@
               <ComponentRef name="buttonGroup1"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 5 speichern"/>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/filter_off_5.png"/>
-            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel6">

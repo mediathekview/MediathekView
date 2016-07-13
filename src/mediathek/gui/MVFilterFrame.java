@@ -82,7 +82,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         initComponents();
         parent = this;
         daten = d;
-
+        jToggleButtonBlacklist.setText("");
         if (SystemInfo.isWindows()) {
             // zum Abfangen der Win-F4 für comboboxen
             InputMap im = jComboBoxFilterSender.getInputMap();
@@ -164,8 +164,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 dispose();
             }
         });
-        jButtonFilterLoeschen.setText("");
         jButtonFilterLoeschen.setIcon(Icons.ICON_BUTTON_CLEAR);
+        jButtonFilterLoeschen.setText("");
         jButtonOk.addActionListener(e -> dispose());
 
         setIconBlacklist();
@@ -750,23 +750,18 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         buttonGroup1.add(jRadioButtonF1);
         jRadioButtonF1.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 1 speichern");
-        jRadioButtonF1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/filter_off_1.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF2);
         jRadioButtonF2.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 2 speichern");
-        jRadioButtonF2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/filter_off_2.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF3);
         jRadioButtonF3.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 3 speichern");
-        jRadioButtonF3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/filter_off_3.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF4);
         jRadioButtonF4.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 4 speichern");
-        jRadioButtonF4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/filter_off_4.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonF5);
         jRadioButtonF5.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 5 speichern");
-        jRadioButtonF5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/filter_off_5.png"))); // NOI18N
 
         jLabel6.setText("Filterprofile:");
 

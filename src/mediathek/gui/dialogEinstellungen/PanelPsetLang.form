@@ -341,17 +341,11 @@
                     </Container>
                     <Component class="javax.swing.JLabel" name="jLabelMeldungAbspielen">
                       <Properties>
-                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/programm/alert_16.png"/>
-                        </Property>
                         <Property name="text" type="java.lang.String" value="kein Set zum Abspielen ausgew&#xe4;hlt!"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabelMeldungSeichern">
                       <Properties>
-                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/mediathek/res/programm/alert_16.png"/>
-                        </Property>
                         <Property name="text" type="java.lang.String" value="kein Set zum Speichern ausgew&#xe4;hlt!"/>
                       </Properties>
                     </Component>

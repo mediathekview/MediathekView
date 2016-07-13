@@ -59,6 +59,7 @@ public class PanelBlacklist extends PanelVorlage {
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfe.setText("");
         jButtonTabelleLoeschen.setIcon(Icons.ICON_BUTTON_DEL);
+        jButtonTabelleLoeschen.setText("");
         init_();
         init();
         Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_GEAENDERT, name) {

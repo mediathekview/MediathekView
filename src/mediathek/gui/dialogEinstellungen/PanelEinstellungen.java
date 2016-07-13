@@ -47,7 +47,7 @@ public class PanelEinstellungen extends PanelVorlage {
     public PanelEinstellungen(Daten d, JFrame parent) {
         super(d, parent);
         initComponents();
-        jButtonInfos.setIcon(Icons.ICON_BUTTON_REFRESH);
+        jButtonInfos.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
         jButtonInfos.setText("");
         daten = d;
         initSpinner();

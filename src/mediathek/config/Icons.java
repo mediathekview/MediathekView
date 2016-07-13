@@ -69,6 +69,7 @@ public class Icons {
     public static final ImageIcon ICON_MENUE_FILTER_LOESCHEN = GetIcon.getProgramIcon("menue-filter-loeschen.png", 16, 16);
     public static final ImageIcon ICON_MENUE_FILTER_SPEICHERN = GetIcon.getProgramIcon("menue-filter-speichern.png", 16, 16);
     public static final ImageIcon ICON_MENUE_HELP = GetIcon.getProgramIcon("menue-help.png", 16, 16);
+    public static final ImageIcon ICON_MENUE_HISTORY_ADD = GetIcon.getProgramIcon("menue-history-add.png", 16, 16);
     public static final ImageIcon ICON_MENUE_HISTORY_REMOVE = GetIcon.getProgramIcon("menue-history-remove.png", 16, 16);
     public static final ImageIcon ICON_MENUE_EIN = GetIcon.getProgramIcon("menue-ein.png", 16, 16);
     public static final ImageIcon ICON_MENUE_AUS = GetIcon.getProgramIcon("menue-aus.png", 16, 16);
@@ -106,7 +107,6 @@ public class Icons {
     public static final ImageIcon ICON_BUTTON_AKTUALISIEREN = GetIcon.getProgramIcon("button-aktualisieren.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_MOVE_DOWN = GetIcon.getProgramIcon("button-move-down.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_MOVE_UP = GetIcon.getProgramIcon("button-move-up.png", 16, 16);
-    public static final ImageIcon ICON_BUTTON_REFRESH = GetIcon.getProgramIcon("button-refresh.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_HELP = GetIcon.getProgramIcon("button-help.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_CLEAR = GetIcon.getProgramIcon("button-clear.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_DEL = GetIcon.getProgramIcon("button-del.png", 16, 16);
@@ -140,13 +140,13 @@ public class Icons {
     public static final ImageIcon ICON_TOOLBAR_FILME_REC_GR = GetIcon.getProgramIcon("toolbar-filme-rec.png", 32, 32);
 
     public static final ImageIcon ICON_TOOLBAR_ABO_EIN_KL = GetIcon.getProgramIcon("toolbar-abo-ein.png", 16, 16);
-    public static final ImageIcon ICON_TOOLBAR_ABO_EIN_GR = GetIcon.getProgramIcon("toolbar-abp-ein.png", 32, 32);
+    public static final ImageIcon ICON_TOOLBAR_ABO_EIN_GR = GetIcon.getProgramIcon("toolbar-abo-ein.png", 32, 32);
     public static final ImageIcon ICON_TOOLBAR_ABO_AUS_KL = GetIcon.getProgramIcon("toolbar-abo-aus.png", 16, 16);
-    public static final ImageIcon ICON_TOOLBAR_ABO_AUS_GR = GetIcon.getProgramIcon("toolbar-abp-aus.png", 32, 32);
+    public static final ImageIcon ICON_TOOLBAR_ABO_AUS_GR = GetIcon.getProgramIcon("toolbar-abo-aus.png", 32, 32);
     public static final ImageIcon ICON_TOOLBAR_ABO_DEL_KL = GetIcon.getProgramIcon("toolbar-abo-del.png", 16, 16);
-    public static final ImageIcon ICON_TOOLBAR_ABO_DEL_GR = GetIcon.getProgramIcon("toolbar-abp-del.png", 32, 32);
+    public static final ImageIcon ICON_TOOLBAR_ABO_DEL_GR = GetIcon.getProgramIcon("toolbar-abo-del.png", 32, 32);
     public static final ImageIcon ICON_TOOLBAR_ABO_CONFIG_KL = GetIcon.getProgramIcon("toolbar-abo-config.png", 16, 16);
-    public static final ImageIcon ICON_TOOLBAR_ABO_CONFIG_GR = GetIcon.getProgramIcon("toolbar-abp-config.png", 32, 32);
+    public static final ImageIcon ICON_TOOLBAR_ABO_CONFIG_GR = GetIcon.getProgramIcon("toolbar-abo-config.png", 32, 32);
 
     // Icons TABBED_PANE
     private static final int W = 30, H = 30;
