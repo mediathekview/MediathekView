@@ -30,9 +30,9 @@ import javax.swing.event.ListSelectionListener;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
 import mSearch.tool.ReplaceList;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
-import mediathek.res.GetIcon;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.TModel;
 import mediathek.tool.TextCopyPaste;
@@ -56,10 +56,15 @@ public class PanelDateinamen extends PanelVorlage {
             }
         });
         jLabelAlert.setVisible(false);
-        jButtonPlus.setIcon(GetIcon.getProgramIcon("add_16.png"));
-        jButtonMinus.setIcon(GetIcon.getProgramIcon("remove_16.png"));
-        jButtonUp.setIcon(GetIcon.getProgramIcon("move_up_16.png"));
-        jButtonDown.setIcon(GetIcon.getProgramIcon("move_down_16.png"));
+        jLabelAlert.setText("");
+        jLabelAlert.setIcon(Icons.ICON_ACHTUNG_32);
+        jButtonPlus.setIcon(Icons.ICON_DIALOG_ADD);
+        jButtonMinus.setIcon(Icons.ICON_BUTTON_REMOVE);
+        jButtonMinus.setText("");
+        jButtonUp.setIcon(Icons.ICON_BUTTON_MOVE_UP);
+        jButtonUp.setText("");
+        jButtonDown.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
+        jButtonDown.setText("");
         jButtonReset.addActionListener(e -> {
             ReplaceList.init();
             tabelleLaden();
@@ -120,7 +125,7 @@ public class PanelDateinamen extends PanelVorlage {
         });
         jTextFieldNach.addMouseListener(new TextCopyPaste());
         jTextFieldVon.addMouseListener(new TextCopyPaste());
-        
+
         jCheckBoxTable.addActionListener(e -> {
             MVConfig.add(MVConfig.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected()));
             setColor(jCheckBoxTable, jCheckBoxTable.isSelected());
@@ -316,19 +321,19 @@ public class PanelDateinamen extends PanelVorlage {
         ));
         jScrollPane4.setViewportView(tabelle);
 
-        jLabelAlert.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/alert_32.png"))); // NOI18N
+        jLabelAlert.setText("Achtung");
 
         jLabelVon.setText("von:");
 
         jLabelNach.setText("nach:");
 
-        jButtonMinus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/remove_16.png"))); // NOI18N
+        jButtonMinus.setText("Mi");
 
-        jButtonPlus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/add_16.png"))); // NOI18N
+        jButtonPlus.setText("Add");
 
-        jButtonDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/move_down_16.png"))); // NOI18N
+        jButtonDown.setText("Do");
 
-        jButtonUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/move_up_16.png"))); // NOI18N
+        jButtonUp.setText("Up");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -367,7 +372,7 @@ public class PanelDateinamen extends PanelVorlage {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabelVon)

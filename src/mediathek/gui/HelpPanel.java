@@ -24,12 +24,12 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import mSearch.log.Logfile;
 import mSearch.tool.Listener;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.dialog.DialogZiel;
-import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.MVFunctionSys;
@@ -56,7 +56,8 @@ public class HelpPanel extends javax.swing.JPanel {
             }
 
         });
-        jButtonHilfeReset.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonHilfeReset.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHilfeReset.setText("");
         jButtonHilfeReset.addActionListener(e -> new DialogHilfe(Daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET)).setVisible(true));
         jButtonResetSets.addActionListener(e -> {
             Daten.listePset.clear();
@@ -113,7 +114,7 @@ public class HelpPanel extends javax.swing.JPanel {
 
         jButtonResetSets.setText("Einstellungen zum Abspielen/Aufzeichnen zurücksetzen");
 
-        jButtonHilfeReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+        jButtonHilfeReset.setText("H");
 
         jLabel7.setText("Es werden alle Programmsets (auch eigene) zum Abspielen");
 

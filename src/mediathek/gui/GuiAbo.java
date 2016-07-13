@@ -31,10 +31,10 @@ import mSearch.tool.Datum;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
 import mediathek.MediathekGui;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
-import mediathek.res.GetIcon;
 import mediathek.tool.*;
 
 public class GuiAbo extends PanelVorlage {
@@ -337,24 +337,24 @@ public class GuiAbo extends PanelVorlage {
             JPopupMenu jPopupMenu = new JPopupMenu();
             // Abo einschalten
             JMenuItem itemEinschalten = new JMenuItem("Abo einschalten");
-            itemEinschalten.setIcon(GetIcon.getProgramIcon("ja_16.png"));
+            itemEinschalten.setIcon(Icons.ICON_MENUE_EIN);
             itemEinschalten.setEnabled(!ein);
             itemEinschalten.addActionListener(e -> aboEinAus(true));
             jPopupMenu.add(itemEinschalten);
             // Abo deaktivieren
             JMenuItem itemDeaktivieren = new JMenuItem("Abo ausschalten");
-            itemDeaktivieren.setIcon(GetIcon.getProgramIcon("nein_16.png"));
+            itemDeaktivieren.setIcon(Icons.ICON_MENUE_AUS);
             itemDeaktivieren.setEnabled(ein);
             itemDeaktivieren.addActionListener(e -> aboEinAus(false));
             jPopupMenu.add(itemDeaktivieren);
             //Abo lösschen
             JMenuItem itemLoeschen = new JMenuItem("Abo löschen");
-            itemLoeschen.setIcon(GetIcon.getProgramIcon("del_16.png"));
+            itemLoeschen.setIcon(Icons.ICON_MENUE_ABO_LOESCHEN);
             itemLoeschen.addActionListener(e -> aboLoeschen());
             jPopupMenu.add(itemLoeschen);
             //Abo ändern
             JMenuItem itemAendern = new JMenuItem("Abo ändern");
-            itemAendern.setIcon(GetIcon.getProgramIcon("configure_16.png"));
+            itemAendern.setIcon(Icons.ICON_MENUE_ABO_AENDERN);
             itemAendern.addActionListener(e -> aboAendern());
             jPopupMenu.add(itemAendern);
 
@@ -362,7 +362,7 @@ public class GuiAbo extends PanelVorlage {
             jPopupMenu.addSeparator();
             //Abo ändern
             JMenuItem itemNeu = new JMenuItem("Abo anlegen");
-            itemNeu.setIcon(GetIcon.getProgramIcon("add_16.png"));
+            itemNeu.setIcon(Icons.ICON_MENUE_ABO_NEU);
             itemNeu.addActionListener(e -> aboNeu());
             jPopupMenu.add(itemNeu);
 

@@ -27,9 +27,9 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import mSearch.tool.Log;
 import mSearch.tool.MVColor;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
-import mediathek.res.GetIcon;
 
 public class CellRendererAbo extends DefaultTableCellRenderer {
 
@@ -39,10 +39,8 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
 
     public CellRendererAbo() {
         senderIconCache = new MVSenderIconCache();
-        ja_16 = GetIcon.getProgramIcon("ja_16.png");
-//        nein_12 = GetIcon.getProgramIcon("nein_tabelle_12.png");
-        nein_12 = GetIcon.getProgramIcon("nein_tabelle_5.png");
-//        nein_12 = GetIcon.getProgramIcon("nein_12.png");
+        ja_16 = Icons.ICON_TABELLE_EIN;
+        nein_12 = Icons.ICON_TABELLE_AUS;
     }
 
     @Override

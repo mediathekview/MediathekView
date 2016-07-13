@@ -36,13 +36,12 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import mSearch.tool.Log;
-import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
-import mediathek.res.GetIcon;
 import mSearch.tool.FilenameUtils;
 import mediathek.tool.GuiFunktionen;
 import mSearch.tool.MVColor;
 import mSearch.tool.MVConfig;
+import mediathek.config.Icons;
 import mediathek.tool.MVMessageDialog;
 
 public class MVPanelDownloadZiel extends javax.swing.JPanel {
@@ -57,8 +56,9 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
         parent = p;
         datenDownload = download;
         letztenPfadAnzeigen = letzterPfad;
-        jButtonPath.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
-        jButtonDelPath.setIcon(GetIcon.getProgramIcon("del_16.png"));
+        jButtonPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonPath.setText("");
+        jButtonDelPath.setIcon(Icons.ICON_BUTTON_DEL);
         jLabelExists.setText("");
         jButtonPath.addActionListener(new ZielBeobachter());
         jButtonDelPath.addActionListener(e -> {
@@ -215,7 +215,7 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
     private void initComponents() {
 
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        jComboBoxPath = new javax.swing.JComboBox<String>();
+        jComboBoxPath = new javax.swing.JComboBox<>();
         jButtonPath = new javax.swing.JButton();
         jButtonDelPath = new javax.swing.JButton();
         javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
@@ -226,9 +226,9 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
 
         jComboBoxPath.setEditable(true);
 
-        jButtonPath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
+        jButtonPath.setText("File");
 
-        jButtonDelPath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/del_16.png"))); // NOI18N
+        jButtonDelPath.setText("Del");
 
         jLabel2.setText("Dateiname:");
 
@@ -251,7 +251,7 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jComboBoxPath, 0, 429, Short.MAX_VALUE)
+                                .addComponent(jComboBoxPath, 0, 413, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonPath)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)

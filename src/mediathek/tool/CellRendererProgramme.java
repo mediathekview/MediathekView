@@ -24,9 +24,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import mSearch.tool.Log;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
-import mediathek.res.GetIcon;
 
 public class CellRendererProgramme extends DefaultTableCellRenderer {
 
@@ -36,10 +36,8 @@ public class CellRendererProgramme extends DefaultTableCellRenderer {
 
     public CellRendererProgramme(Daten d) {
         daten = d;
-        ja_16 = GetIcon.getProgramIcon("ja_16.png");
-//        nein_12 = GetIcon.getProgramIcon("nein_tabelle_12.png");
-//        nein_12 = GetIcon.getProgramIcon("nein_12.png");
-        nein_12 = GetIcon.getProgramIcon("nein_tabelle_5.png");
+        ja_16 = Icons.ICON_TABELLE_EIN;
+        nein_12 = Icons.ICON_TABELLE_AUS;
     }
 
     @Override

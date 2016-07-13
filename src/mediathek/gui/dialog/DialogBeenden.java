@@ -29,9 +29,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
-import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import org.jdesktop.swingx.JXBusyLabel;
 
@@ -89,7 +89,8 @@ public class DialogBeenden extends JDialog {
             }
         });
         
-        jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHilfe.setText("");
         jButtonHilfe.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BEENDEN)).setVisible(true));
         jButtonHilfe.setEnabled(false);
         cbShutdownComputer.setEnabled(false);
@@ -244,7 +245,7 @@ public class DialogBeenden extends JDialog {
     private void initComponents() {
 
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        comboActions = new javax.swing.JComboBox<String>();
+        comboActions = new javax.swing.JComboBox<>();
         btnContinue = new javax.swing.JButton();
         cbShutdownComputer = new javax.swing.JCheckBox();
         btnCancel = new javax.swing.JButton();
@@ -264,7 +265,7 @@ public class DialogBeenden extends JDialog {
 
         btnCancel.setText("Zurück");
 
-        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+        jButtonHilfe.setText("H");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

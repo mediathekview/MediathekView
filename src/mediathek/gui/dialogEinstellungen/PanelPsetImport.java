@@ -35,11 +35,11 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mSearch.tool.Log;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.PanelVorlage;
-import mediathek.res.GetIcon;
 import mediathek.tool.*;
 
 public class PanelPsetImport extends PanelVorlage {
@@ -53,8 +53,10 @@ public class PanelPsetImport extends PanelVorlage {
     }
 
     private void init() {
-        jButtonAktualisieren.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
-        jButtonPfad.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+        jButtonAktualisieren.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
+        jButtonAktualisieren.setText("");
+        jButtonPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonPfad.setText("");
         jComboBoxBs.setModel(new DefaultComboBoxModel<>(ListePsetVorlagen.BS));
         jComboBoxBs.addActionListener(new ActionListener() {
             @Override
@@ -212,7 +214,7 @@ public class PanelPsetImport extends PanelVorlage {
         jButtonAktualisieren = new javax.swing.JButton();
         javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
         javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
-        jComboBoxBs = new javax.swing.JComboBox<String>();
+        jComboBoxBs = new javax.swing.JComboBox<>();
         javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
         jButtonImportStandard = new javax.swing.JButton();
         javax.swing.JScrollPane jScrollPane4 = new javax.swing.JScrollPane();
@@ -317,7 +319,7 @@ public class PanelPsetImport extends PanelVorlage {
 
         jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonImportVorlage, jTextFieldBs, jTextFieldName, jTextFieldUrl, jXHyperlinkInfos});
 
-        jButtonAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/view-refresh_16.png"))); // NOI18N
+        jButtonAktualisieren.setText("Akt");
         jButtonAktualisieren.setToolTipText("Neu laden");
 
         jLabel4.setText("Vorlagen von der Website laden:");
@@ -353,7 +355,7 @@ public class PanelPsetImport extends PanelVorlage {
                     .addComponent(jLabel5)
                     .addComponent(jComboBoxBs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -378,7 +380,7 @@ public class PanelPsetImport extends PanelVorlage {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 584, Short.MAX_VALUE)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonImportStandard)))
@@ -391,14 +393,14 @@ public class PanelPsetImport extends PanelVorlage {
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonImportStandard)
-                .addContainerGap(288, Short.MAX_VALUE))
+                .addContainerGap(295, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Standardset", jPanel5);
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Set aus Datei importieren"));
 
-        jButtonPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
+        jButtonPfad.setText("File");
         jButtonPfad.setToolTipText("Datei auswählen");
 
         jButtonImportDatei.setText("Set importieren");
@@ -454,7 +456,7 @@ public class PanelPsetImport extends PanelVorlage {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextAreaImport, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
+                    .addComponent(jTextAreaImport, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonImportText)))
@@ -464,7 +466,7 @@ public class PanelPsetImport extends PanelVorlage {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextAreaImport, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
+                .addComponent(jTextAreaImport, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonImportText)
                 .addContainerGap())

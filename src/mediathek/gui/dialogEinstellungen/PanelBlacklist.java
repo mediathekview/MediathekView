@@ -36,12 +36,12 @@ import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenBlacklist;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
-import mediathek.res.GetIcon;
 import mediathek.tool.*;
 
 public class PanelBlacklist extends PanelVorlage {
@@ -56,8 +56,9 @@ public class PanelBlacklist extends PanelVorlage {
         super(d, parentComponent);
         initComponents();
         name = nname;
-        jButtonHilfe.setIcon(GetIcon.getProgramIcon("help_16.png"));
-        jButtonTabelleLoeschen.setIcon(GetIcon.getProgramIcon("del_16.png"));
+        jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHilfe.setText("");
+        jButtonTabelleLoeschen.setIcon(Icons.ICON_BUTTON_DEL);
         init_();
         init();
         Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_GEAENDERT, name) {
@@ -302,9 +303,9 @@ public class PanelBlacklist extends PanelVorlage {
         jTableBlacklist = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        jComboBoxSender = new javax.swing.JComboBox<String>();
+        jComboBoxSender = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
-        jComboBoxThema = new javax.swing.JComboBox<String>();
+        jComboBoxThema = new javax.swing.JComboBox<>();
         jButtonHinzufuegen = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -569,11 +570,11 @@ public class PanelBlacklist extends PanelVorlage {
         buttonGroup1.add(jRadioButtonWhitelist);
         jRadioButtonWhitelist.setText("nur diese \"Sender / Thema / Titel\" anzeigen (Whitelist)");
 
-        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+        jButtonHilfe.setText("H");
 
         jLabel10.setText("alle Einträge löschen:");
 
-        jButtonTabelleLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/del_16.png"))); // NOI18N
+        jButtonTabelleLoeschen.setText("Del");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -588,7 +589,7 @@ public class PanelBlacklist extends PanelVorlage {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jRadioButtonWhitelist)
                             .addComponent(jRadioButtonBlacklist))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 254, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 260, Short.MAX_VALUE)
                         .addComponent(jButtonHilfe))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -608,7 +609,7 @@ public class PanelBlacklist extends PanelVorlage {
                         .addComponent(jRadioButtonWhitelist))
                     .addComponent(jButtonHilfe))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel10)

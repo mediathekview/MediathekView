@@ -38,12 +38,12 @@ import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.MVConfig;
 import mediathek.MediathekGui;
+import mediathek.config.Icons;
 import mediathek.controller.starter.Start;
 import mediathek.daten.*;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.MVFilmInfo;
-import mediathek.res.GetIcon;
 import mediathek.tool.*;
 
 public class GuiFilme extends PanelVorlage {
@@ -312,7 +312,7 @@ public class GuiFilme extends PanelVorlage {
                 new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN},
                 true /*Icon*/));
 
-        jCheckBoxProgamme.setIcon(GetIcon.getProgramIcon("close_15.png"));
+        jCheckBoxProgamme.setIcon(Icons.ICON_CHECKBOX_CLOSE);
         jCheckBoxProgamme.addActionListener(e -> {
             MVConfig.add(MVConfig.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, Boolean.FALSE.toString());
             Listener.notify(Listener.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName());
@@ -1265,12 +1265,12 @@ public class GuiFilme extends PanelVorlage {
 
             //Thema laden
             JMenuItem item = new JMenuItem("Film abspielen");
-            item.setIcon(GetIcon.getProgramIcon("film_start_16.png"));
+            item.setIcon(Icons.ICON_MENUE_FILM_START);
             item.addActionListener(e -> playFilm());
             jPopupMenu.add(item);
             //Url
             item = new JMenuItem("Film aufzeichnen");
-            item.setIcon(GetIcon.getProgramIcon("film_rec_16.png"));
+            item.setIcon(Icons.ICON_MENUE_FILM_REC);
             item.addActionListener(e -> saveFilm());
             jPopupMenu.add(item);
 

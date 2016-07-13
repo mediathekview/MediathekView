@@ -32,11 +32,11 @@ import javax.swing.event.ChangeListener;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.MVConfig;
+import mediathek.config.Icons;
 import mediathek.controller.ProgrammUpdateSuchen;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
-import mediathek.res.GetIcon;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVMessageDialog;
 
@@ -47,7 +47,8 @@ public class PanelEinstellungen extends PanelVorlage {
     public PanelEinstellungen(Daten d, JFrame parent) {
         super(d, parent);
         initComponents();
-        jButtonInfos.setIcon(GetIcon.getProgramIcon("icons_refresh_16.png"));
+        jButtonInfos.setIcon(Icons.ICON_BUTTON_REFRESH);
+        jButtonInfos.setText("");
         daten = d;
         initSpinner();
         jSpinnerDays.addChangeListener(new BeobSpinnerDays());
@@ -56,7 +57,8 @@ public class PanelEinstellungen extends PanelVorlage {
             Daten.filmeLaden.importFilmliste("");
         });
         setupLookAndFeelComboBox();
-        jButtonHelpDays.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonHelpDays.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHelpDays.setText("");
         jButtonHelpDays.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
                 + "Es werden nur Filme der letzten\n"
                 + "xx Tage geladen."
@@ -290,7 +292,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jLabel1.setText("Icon-Pack:");
 
-        jButtonRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/icons_refresh_16.png"))); // NOI18N
+        jButtonRefresh.setText("Ref");
         jButtonRefresh.setToolTipText("neue Icons suchen");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -334,7 +336,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jSpinnerDays.setModel(new javax.swing.SpinnerNumberModel(0, 0, 30, 1));
 
-        jButtonHelpDays.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+        jButtonHelpDays.setText("H");
 
         jButtonLoad.setText("Filmliste jetzt neu laden");
 
@@ -364,7 +366,7 @@ public class PanelEinstellungen extends PanelVorlage {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonLoad))
                             .addComponent(jCheckBoxTray))
-                        .addGap(0, 60, Short.MAX_VALUE))))
+                        .addGap(0, 66, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -405,7 +407,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pnlProgramUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(122, Short.MAX_VALUE))
+                .addContainerGap(125, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

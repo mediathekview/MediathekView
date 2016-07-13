@@ -8,8 +8,8 @@ import java.net.URISyntaxException;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import mSearch.daten.DatenFilm;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
-import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.UrlHyperlinkAction;
 import org.jdesktop.swingx.JXHyperlink;
@@ -38,7 +38,7 @@ public class MVFilmInformation implements MVFilmInfo {
         parent = owner;
         foreground = Color.WHITE;
         background = Color.BLACK;
-        ja_sw_16 = GetIcon.getProgramIcon("ja_sw_16.png");
+        ja_sw_16 = Icons.ICON_DIALOG_EIN_SW;
         hud = new HudWindow("Filminformation", owner);
         hud.makeResizeable();
         for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {

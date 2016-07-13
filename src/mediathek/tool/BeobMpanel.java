@@ -24,7 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
-import mediathek.res.GetIcon;
+import mediathek.config.Icons;
 
 public class BeobMpanel implements ActionListener {
 
@@ -37,7 +37,7 @@ public class BeobMpanel implements ActionListener {
         box.setSelected(true);
         panel = ppanel;
         box.setText(text);
-        box.setIcon(GetIcon.getProgramIcon("abschnitt_zu_16.png"));
+        box.setIcon(Icons.ICON_DIALOG_MINUS);
         box.setFont(new java.awt.Font("Dialog", 0, 11));
     }
 
@@ -48,11 +48,11 @@ public class BeobMpanel implements ActionListener {
         if (box.isSelected()) {
             panel.setSize(panel.getSize().width, hoehe);
             panel.setPreferredSize(new Dimension(panel.getSize().width, hoehe));
-            box.setIcon(GetIcon.getProgramIcon("abschnitt_zu_16.png"));
+            box.setIcon(Icons.ICON_DIALOG_MINUS);
         } else {
             panel.setSize(panel.getSize().width, box.getSize().height + 2);
             panel.setPreferredSize(new Dimension(panel.getSize().width, box.getSize().height + 2));
-            box.setIcon(GetIcon.getProgramIcon("abschnitt_auf_16.png"));
+            box.setIcon(Icons.ICON_DIALOG_PLUS);
         }
         panel.updateUI();
     }

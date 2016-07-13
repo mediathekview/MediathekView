@@ -18,9 +18,6 @@
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="F5"/>
                 </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/filmlisteLaden_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="neue Filmliste laden"/>
               </Properties>
             </MenuItem>
@@ -28,9 +25,6 @@
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="F4"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/configure_16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Einstellungen"/>
                 <Property name="toolTipText" type="java.lang.String" value="allgemeine Programmeinstellungen"/>
@@ -48,9 +42,6 @@
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+Q"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/beenden_16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Beenden"/>
               </Properties>
@@ -71,9 +62,6 @@
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+P"/>
                 </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/film_start_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Film abspielen"/>
               </Properties>
               <AuxValues>
@@ -84,9 +72,6 @@
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+D"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/film_rec_16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Film aufzeichnen"/>
               </Properties>
@@ -99,9 +84,6 @@
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+L"/>
                 </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/clear_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Filter l&#xf6;schen"/>
               </Properties>
               <AuxValues>
@@ -112,9 +94,6 @@
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+B"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/blacklist_16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Blacklist &#xf6;ffnen"/>
               </Properties>
@@ -165,34 +144,22 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadsAlleStarten">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/download_alleStarten_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="alle Downloads starten"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadStartTime">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/download_alleStarten_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="alle Downloads um xx:yy Uhr starten"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadAlleStoppen">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/download_stop_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="alle stoppen"/>
                 <Property name="toolTipText" type="java.lang.String" value="alle Downloads stoppen"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadWartendeStoppen">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/download_stop_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="wartende stoppen"/>
                 <Property name="toolTipText" type="java.lang.String" value="wartende Downloads stoppen"/>
               </Properties>
@@ -202,17 +169,11 @@
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+W"/>
                 </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/view-refresh_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Liste der Downloads aktualisieren"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadsAufraeumen">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/download_clear_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Liste der Downloads aufr&#xe4;umen"/>
               </Properties>
             </MenuItem>
@@ -224,25 +185,16 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadStarten">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/download_start_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Downloads starten"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadStoppen">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/download_stop_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Downloads stoppen"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadVorziehen">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/move_up_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Downloads vorziehen"/>
               </Properties>
             </MenuItem>
@@ -250,9 +202,6 @@
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="BACK_SPACE"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/undo_16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Downloads zur&#xfc;ckstellen"/>
               </Properties>
@@ -262,17 +211,11 @@
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="DELETE"/>
                 </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/download_del_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Downloads aus Liste entfernen"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadAendern">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/configure_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Download &#xe4;ndern"/>
               </Properties>
             </MenuItem>
@@ -308,9 +251,6 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadAbspielen">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/film_start_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="gespeicherten Film abspielen"/>
               </Properties>
             </MenuItem>
@@ -327,9 +267,6 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadShutDown">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/beenden_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Rechner nach Downloads herunterfahren"/>
               </Properties>
             </MenuItem>
@@ -343,17 +280,11 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAbosEinschalten">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/ja_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="einschalten"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAbosAusschalten">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/nein_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="ausschalten"/>
               </Properties>
             </MenuItem>
@@ -361,9 +292,6 @@
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="DELETE"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/del_16.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="l&#xf6;schen"/>
               </Properties>
@@ -373,17 +301,11 @@
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="ENTER"/>
                 </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/configure_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="&#xe4;ndern"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAboNeu">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/add_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="neues Abo anlegen"/>
               </Properties>
             </MenuItem>
@@ -487,9 +409,6 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAnleitung">
               <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mediathek/res/programm/help_16.png"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Infos und Hilfe zum Programm"/>
               </Properties>
             </MenuItem>

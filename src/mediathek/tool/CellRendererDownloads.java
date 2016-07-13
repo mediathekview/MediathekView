@@ -38,9 +38,9 @@ import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import mSearch.tool.Log;
+import mediathek.config.Icons;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
-import mediathek.res.GetIcon;
 
 public class CellRendererDownloads extends DefaultTableCellRenderer {
 
@@ -69,20 +69,18 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
     private final MVSenderIconCache senderIconCache;
 
     public CellRendererDownloads() {
-        ja_16 = GetIcon.getProgramIcon("ja_16.png");
-//        nein_12 = GetIcon.getProgramIcon("nein_tabelle_12.png");
-//        nein_12 = GetIcon.getProgramIcon("nein_12.png");
-        nein_12 = GetIcon.getProgramIcon("nein_tabelle_5.png");
-        film_start_tab = GetIcon.getProgramIcon("film_start_tab.png");
-        film_start_sw_tab = GetIcon.getProgramIcon("film_start_sw_tab.png");
-        download_stop_tab = GetIcon.getProgramIcon("download_stop_tab.png");
-        download_stop_sw_tab = GetIcon.getProgramIcon("download_stop_sw_tab.png");
-        download_start_tab = GetIcon.getProgramIcon("download_start_tab.png");
-        download_start_sw_tab = GetIcon.getProgramIcon("download_start_sw_tab.png");
-        download_clear_tab = GetIcon.getProgramIcon("download_clear_tab.png");
-        download_clear_sw_tab = GetIcon.getProgramIcon("download_clear_sw_tab.png");
-        download_del_tab = GetIcon.getProgramIcon("download_del_tab.png");
-        download_del_sw_tab = GetIcon.getProgramIcon("download_del_sw_tab.png");
+        ja_16 = Icons.ICON_TABELLE_EIN;
+        nein_12 = Icons.ICON_TABELLE_AUS;
+        film_start_tab = Icons.ICON_TABELLE_FILM_START;
+        film_start_sw_tab = Icons.ICON_TABELLE_FILM_START_SW;
+        download_stop_tab = Icons.ICON_TABELLE_DOWNOAD_STOP;
+        download_stop_sw_tab = Icons.ICON_TABELLE_DOWNOAD_STOP_SW;
+        download_start_tab = Icons.ICON_TABELLE_DOWNOAD_START;
+        download_start_sw_tab = Icons.ICON_TABELLE_DOWNOAD_START_SW;
+        download_clear_tab = Icons.ICON_TABELLE_DOWNOAD_CLEAR;
+        download_clear_sw_tab = Icons.ICON_TABELLE_DOWNOAD_CLEAR_SW;
+        download_del_tab = Icons.ICON_TABELLE_DOWNOAD_DEL;
+        download_del_sw_tab = Icons.ICON_TABELLE_DOWNOAD_DEL_SW;
         geoMelden = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_GEO_MELDEN));
         Listener.addListener(new Listener(Listener.EREIGNIS_GEO, CellRendererDownloads.class.getSimpleName()) {
             @Override
@@ -309,7 +307,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     }
                     setText("");//im Modle brauchen wir den Text zum Sortieren
                     break;
-                    
+
                 case DatenDownload.DOWNLOAD_UT:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     if (datenDownload.film != null && datenDownload.film.hasUT()) {

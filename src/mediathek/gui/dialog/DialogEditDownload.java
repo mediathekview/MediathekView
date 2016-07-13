@@ -40,11 +40,11 @@ import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenProg;
 import mediathek.file.GetFile;
-import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.MVMessageDialog;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Log;
+import mediathek.config.Icons;
 
 public class DialogEditDownload extends javax.swing.JDialog {
     
@@ -333,11 +333,11 @@ public class DialogEditDownload extends javax.swing.JDialog {
                         
                         JButton jButtonReset = new JButton("");
                         jButtonReset.setToolTipText("Reset");
-                        jButtonReset.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
+                        jButtonReset.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
                         jButtonReset.addActionListener(e -> textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].setText(orgProgArray));
                         JButton jButtonHelp = new JButton("");
                         jButtonHelp.setToolTipText("Hilfe");
-                        jButtonHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
+                        jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
                         jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG)).setVisible(true));
                         
                         gc.gridy = 0;

@@ -39,11 +39,11 @@ import javax.swing.text.JTextComponent;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.file.GetFile;
-import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mSearch.tool.FilenameUtils;
 import mediathek.tool.GuiFunktionen;
 import mSearch.tool.MVColor;
+import mediathek.config.Icons;
 import mediathek.tool.MVMessageDialog;
 
 public class DialogEditAbo extends javax.swing.JDialog {
@@ -109,7 +109,8 @@ public class DialogEditAbo extends javax.swing.JDialog {
             }
         };
         setExtra();
-        jButtonHelp.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHelp.setText("");
         jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_ADD_ABO)).setVisible(true));
     }
 
@@ -278,7 +279,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
         );
         jPanelExtraLayout.setVerticalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 502, Short.MAX_VALUE)
+            .addGap(0, 503, Short.MAX_VALUE)
         );
 
         jScrollPane1.setViewportView(jPanelExtra);
@@ -287,7 +288,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
 
         jButtonBeenden.setText("Ok");
 
-        jButtonHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+        jButtonHelp.setText("H");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

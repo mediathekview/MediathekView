@@ -73,7 +73,7 @@
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jTextFieldPfad" pref="259" max="32767" attributes="2"/>
+                  <Component id="jTextFieldPfad" pref="275" max="32767" attributes="2"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jButtonZiel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -97,9 +97,7 @@
       <SubComponents>
         <Component class="javax.swing.JButton" name="jButtonZiel">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
-            </Property>
+            <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextFieldPfad">

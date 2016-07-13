@@ -214,9 +214,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonDateiAuswaehlen">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/fileopen_16.png"/>
-            </Property>
+            <Property name="text" type="java.lang.String" value="File"/>
             <Property name="toolTipText" type="java.lang.String" value="Lokale Filmliste ausw&#xe4;hlen"/>
           </Properties>
         </Component>
@@ -254,9 +252,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonUrl">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/icons_refresh_16.png"/>
-            </Property>
+            <Property name="text" type="java.lang.String" value="Ref"/>
             <Property name="toolTipText" type="java.lang.String" value="Neue URL suchen"/>
           </Properties>
         </Component>

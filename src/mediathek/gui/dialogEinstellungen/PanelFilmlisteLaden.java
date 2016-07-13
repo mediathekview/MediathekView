@@ -32,9 +32,9 @@ import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.MVColor;
 import mSearch.tool.MVConfig;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
-import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.Konstanten;
 import mediathek.tool.TextCopyPaste;
@@ -48,8 +48,11 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     }
 
     private void init() {
-        jButtonDateiAuswaehlen.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
-        jButtonUrl.setIcon(GetIcon.getProgramIcon("view-refresh_16.png"));
+        jButtonDateiAuswaehlen.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonDateiAuswaehlen.setText("");
+        jButtonUrl.setIcon(Icons.ICON_BUTTON_REFRESH);
+        jButtonUrl.setText("");
+        jButtonUrl.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
         initRadio();
         jButtonUrl.addActionListener(e -> jTextFieldUrl.setText(Daten.filmeLaden.getDownloadUrl_akt()));
         jButtonLoad.addActionListener(ae -> Daten.filmeLaden.importFilmliste(""));
@@ -150,7 +153,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         jLabel1.setText("URL/Datei:");
 
-        jButtonDateiAuswaehlen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
+        jButtonDateiAuswaehlen.setText("File");
         jButtonDateiAuswaehlen.setToolTipText("Lokale Filmliste auswählen");
 
         jButtonFilmeLaden.setText("Filme jetzt laden");
@@ -164,7 +167,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         jCheckBoxUpdate.setText("alte Filmliste nicht löschen, nur erweitern");
 
-        jButtonUrl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/icons_refresh_16.png"))); // NOI18N
+        jButtonUrl.setText("Ref");
         jButtonUrl.setToolTipText("Neue URL suchen");
 
         javax.swing.GroupLayout jPanelManuelLayout = new javax.swing.GroupLayout(jPanelManuel);

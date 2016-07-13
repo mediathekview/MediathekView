@@ -28,7 +28,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import mSearch.tool.Log;
-import mediathek.res.GetIcon;
+import mediathek.config.Icons;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 
@@ -52,7 +52,8 @@ public class DialogZiel extends javax.swing.JDialog {
         parent = pparent;
 //        ddaten = dd;
         initComponents();
-        jButtonZiel.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+        jButtonZiel.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonZiel.setText("");
         setTitle(titel);
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonAbbrechen.addActionListener(new AbbrechenBeobachter());
@@ -105,10 +106,10 @@ public class DialogZiel extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         jButtonZiel = new javax.swing.JButton();
         jTextFieldPfad = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jButtonAbbrechen = new javax.swing.JButton();
         jButtonOk = new javax.swing.JButton();
 
@@ -116,7 +117,7 @@ public class DialogZiel extends javax.swing.JDialog {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
+        jButtonZiel.setText("File");
 
         jLabel1.setText("Zielpfad:");
 
@@ -128,7 +129,7 @@ public class DialogZiel extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextFieldPfad, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+                .addComponent(jTextFieldPfad, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonZiel)
                 .addContainerGap())
@@ -185,8 +186,6 @@ public class DialogZiel extends javax.swing.JDialog {
     private javax.swing.JButton jButtonAbbrechen;
     private javax.swing.JButton jButtonOk;
     private javax.swing.JButton jButtonZiel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jTextFieldPfad;
     // End of variables declaration//GEN-END:variables
 

@@ -21,6 +21,7 @@ package mediathek.gui.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import mediathek.config.Icons;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscBeenden;
 
@@ -50,15 +51,17 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
         jTextArea1.setText(text);
         jTextFieldTitel.setText(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
         jButtonOk.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 beenden();
             }
         });
+        jLabelIcon.setText("");
+        jLabelIcon.setIcon(Icons.ICON_ACHTUNG_32);
         pack();
     }
-
+    
     private void beenden() {
         this.dispose();
     }
@@ -74,7 +77,7 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
         jButtonOk = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
+        jLabelIcon = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jTextFieldTitel = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
@@ -89,7 +92,7 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
         jTextArea1.setRows(4);
         jScrollPane1.setViewportView(jTextArea1);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/alert_32.png"))); // NOI18N
+        jLabelIcon.setText("Achtung");
 
         jLabel2.setText("Filmtitel:");
 
@@ -103,7 +106,7 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(jLabelIcon)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -111,7 +114,7 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButtonOk))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -132,7 +135,7 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonOk))
-                    .addComponent(jLabel1))
+                    .addComponent(jLabelIcon))
                 .addContainerGap())
         );
 
@@ -140,8 +143,8 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonOk;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabelIcon;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextArea jTextArea1;

@@ -28,10 +28,10 @@ import mSearch.daten.DatenFilm;
 import mSearch.tool.DebugMsg;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
-import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVTable;
@@ -42,6 +42,7 @@ import mediathek.tool.UrlHyperlinkAction;
  * @author emil
  */
 public class PanelFilmBeschreibung extends JPanel implements ListSelectionListener {
+
     private DatenFilm currentFilm = null;
     private MVTable table = null;
 
@@ -49,7 +50,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
         initComponents();
         this.table = table;
 
-        jCheckBoxBeschreibung.setIcon(GetIcon.getProgramIcon("close_15.png"));
+        jCheckBoxBeschreibung.setIcon(Icons.ICON_CHECKBOX_CLOSE);
         jCheckBoxBeschreibung.addActionListener(e -> {
             MVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.FALSE.toString());
             Listener.notify(Listener.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
@@ -62,7 +63,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
         }
         jXHyperlinkWebsite.addMouseListener(new BeobMausUrl(jXHyperlinkWebsite));
 
-        jCheckBoxChange.setIcon(GetIcon.getProgramIcon("edit_16.png"));
+        jCheckBoxChange.setIcon(Icons.ICON_CHECKBOX_EDIT);
         jCheckBoxChange.addActionListener(e -> {
             if (currentFilm != null) {
                 final String akt = currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG];
@@ -97,7 +98,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
 
             switch (table.getTableType()) {
                 case FILME:
-                    film = (DatenFilm)model.getValueAt(modelIndex, DatenFilm.FILM_REF);
+                    film = (DatenFilm) model.getValueAt(modelIndex, DatenFilm.FILM_REF);
                     break;
 
                 case DOWNLOADS:
@@ -110,8 +111,9 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
                     break;
             }
             displayFilmData(film);
-        } else
+        } else {
             displayFilmData(null);
+        }
     }
 
     private void displayFilmData(DatenFilm aaktFilm) {

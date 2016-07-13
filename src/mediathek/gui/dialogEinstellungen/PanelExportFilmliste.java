@@ -34,9 +34,9 @@ import mSearch.filmlisten.WriteFilmlistJson;
 import mSearch.tool.Duration;
 import mSearch.tool.Log;
 import mSearch.tool.MVConfig;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
-import mediathek.res.GetIcon;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TextCopyPaste;
 
@@ -51,7 +51,8 @@ public class PanelExportFilmliste extends PanelVorlage {
     }
 
     private void init() {
-        jButtonExportPfad.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+        jButtonExportPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonExportPfad.setText("");
         jTextFieldPfad.setText(MVConfig.get(MVConfig.SYSTEM_EXPORT_DATEI));
         jTextFieldPfad.getDocument().addDocumentListener(new BeobTextFeld());
         jTextFieldPfad.addMouseListener(new TextCopyPaste());
@@ -109,7 +110,7 @@ public class PanelExportFilmliste extends PanelVorlage {
 
         jPanel4.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jButtonExportPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
+        jButtonExportPfad.setText("File");
 
         jLabelDatei.setText("Datei:");
 
@@ -171,7 +172,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonExportieren)
-                .addContainerGap(66, Short.MAX_VALUE))
+                .addContainerGap(73, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

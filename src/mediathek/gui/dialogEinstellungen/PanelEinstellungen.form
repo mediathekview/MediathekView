@@ -41,7 +41,7 @@
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="pnlProgramUpdate" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="122" max="32767" attributes="0"/>
+              <EmptySpace pref="125" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -204,9 +204,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonRefresh">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/icons_refresh_16.png"/>
-            </Property>
+            <Property name="text" type="java.lang.String" value="Ref"/>
             <Property name="toolTipText" type="java.lang.String" value="neue Icons suchen"/>
           </Properties>
         </Component>
@@ -249,7 +247,7 @@
                               </Group>
                               <Component id="jCheckBoxTray" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="60" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="66" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -300,9 +298,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonHelpDays">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/programm/help_16.png"/>
-            </Property>
+            <Property name="text" type="java.lang.String" value="H"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonLoad">

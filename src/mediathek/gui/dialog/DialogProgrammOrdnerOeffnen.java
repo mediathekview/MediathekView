@@ -28,7 +28,7 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import mSearch.tool.Log;
-import mediathek.res.GetIcon;
+import mediathek.config.Icons;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
@@ -51,7 +51,8 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
         super(parent, modal);
         parentComponent = parent;
         initComponents();
-        jButtonZiel.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+        jButtonZiel.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonZiel.setText("");
         setTitle(titel);
         jTextArea1.setText(text);
         jButtonOk.addActionListener(new OkBeobachter());
@@ -115,7 +116,7 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
+        jButtonZiel.setText("File");
 
         jLabel1.setText("Programm:");
 
@@ -127,7 +128,7 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextFieldProgramm, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
+                .addComponent(jTextFieldProgramm, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonZiel)
                 .addContainerGap())
@@ -178,7 +179,7 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)

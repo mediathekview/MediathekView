@@ -31,12 +31,12 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
-import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.TextCopyPaste;
 
@@ -50,7 +50,8 @@ public class PanelPsetKurz extends PanelVorlage {
     public PanelPsetKurz(Daten d, JFrame parentComponent, ListePset llistePset) {
         super(d, parentComponent);
         initComponents();
-        jButtonZiel.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+        jButtonZiel.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonZiel.setText("");
         listePset = llistePset;
         jListPset.setModel(new DefaultComboBoxModel<String>(listePset.getObjectDataCombo()));
         if (listePset.size() > 0) {
@@ -185,7 +186,7 @@ public class PanelPsetKurz extends PanelVorlage {
         c.gridx = 2;
         c.weightx = 0;
         JButton button = new JButton();
-        button.setIcon(GetIcon.getProgramIcon("fileopen_16.png"));
+        button.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         button.addActionListener(new ZielBeobachter(textField, arr, idx));
         gridbag.setConstraints(button, c);
         panel.add(button);
@@ -211,7 +212,7 @@ public class PanelPsetKurz extends PanelVorlage {
         javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
-        jListPset = new javax.swing.JList<String>();
+        jListPset = new javax.swing.JList<>();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 255)));
 
@@ -228,7 +229,7 @@ public class PanelPsetKurz extends PanelVorlage {
         );
         jPanelExtraLayout.setVerticalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 260, Short.MAX_VALUE)
+            .addGap(0, 274, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -262,7 +263,7 @@ public class PanelPsetKurz extends PanelVorlage {
 
         jLabel2.setText("Zielpfad:");
 
-        jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/fileopen_16.png"))); // NOI18N
+        jButtonZiel.setText("File");
 
         jScrollPane2.setBorder(javax.swing.BorderFactory.createLineBorder(javax.swing.UIManager.getDefaults().getColor("TextField.selectionBackground")));
 

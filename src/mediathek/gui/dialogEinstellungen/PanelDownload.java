@@ -27,9 +27,9 @@ import mediathek.daten.Daten;
 import mediathek.gui.MVDownloadInfo;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
-import mediathek.res.GetIcon;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
+import mediathek.config.Icons;
 
 public class PanelDownload extends PanelVorlage {
 
@@ -39,7 +39,8 @@ public class PanelDownload extends PanelVorlage {
         daten = d;
         initSpinner();
         jSpinnerDownload.addChangeListener(new BeobSpinnerDownload());
-        jButtonHilfeAnzahl.setIcon(GetIcon.getProgramIcon("help_16.png"));
+        jButtonHilfeAnzahl.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHilfeAnzahl.setText("");
         jButtonHilfeAnzahl.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
                 + "Hier kann angegeben werden, wie viele\n"
                 + "Downloads gleichzeitig gestartet werden können.\n\n"
@@ -123,7 +124,7 @@ public class PanelDownload extends PanelVorlage {
 
         jSpinnerDownload.setModel(new javax.swing.SpinnerNumberModel(1, 1, 10, 1));
 
-        jButtonHilfeAnzahl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/programm/help_16.png"))); // NOI18N
+        jButtonHilfeAnzahl.setText("H");
 
         jCheckBoxBeep.setText("nach jedem Download einen \"Beep\" ausgeben");
 
@@ -251,7 +252,7 @@ public class PanelDownload extends PanelVorlage {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(249, Short.MAX_VALUE))
+                .addContainerGap(255, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
