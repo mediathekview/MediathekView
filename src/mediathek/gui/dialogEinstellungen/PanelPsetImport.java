@@ -54,9 +54,7 @@ public class PanelPsetImport extends PanelVorlage {
 
     private void init() {
         jButtonAktualisieren.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
-        jButtonAktualisieren.setText("");
         jButtonPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonPfad.setText("");
         jComboBoxBs.setModel(new DefaultComboBoxModel<>(ListePsetVorlagen.BS));
         jComboBoxBs.addActionListener(new ActionListener() {
             @Override
@@ -319,7 +317,7 @@ public class PanelPsetImport extends PanelVorlage {
 
         jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonImportVorlage, jTextFieldBs, jTextFieldName, jTextFieldUrl, jXHyperlinkInfos});
 
-        jButtonAktualisieren.setText("Akt");
+        jButtonAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-aktualisieren.png"))); // NOI18N
         jButtonAktualisieren.setToolTipText("Neu laden");
 
         jLabel4.setText("Vorlagen von der Website laden:");
@@ -355,7 +353,7 @@ public class PanelPsetImport extends PanelVorlage {
                     .addComponent(jLabel5)
                     .addComponent(jComboBoxBs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -393,14 +391,14 @@ public class PanelPsetImport extends PanelVorlage {
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonImportStandard)
-                .addContainerGap(295, Short.MAX_VALUE))
+                .addContainerGap(302, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Standardset", jPanel5);
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Set aus Datei importieren"));
 
-        jButtonPfad.setText("File");
+        jButtonPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
         jButtonPfad.setToolTipText("Datei auswählen");
 
         jButtonImportDatei.setText("Set importieren");
@@ -466,7 +464,7 @@ public class PanelPsetImport extends PanelVorlage {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextAreaImport, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
+                .addComponent(jTextAreaImport, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonImportText)
                 .addContainerGap())

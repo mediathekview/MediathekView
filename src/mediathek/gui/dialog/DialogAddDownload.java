@@ -93,7 +93,6 @@ public class DialogAddDownload extends JDialog {
 
     private void init() {
         jButtonDelHistory.setIcon(Icons.ICON_BUTTON_DEL);
-        jButtonDelHistory.setText("");
         jComboBoxPset.setModel(new DefaultComboBoxModel<>(Daten.listePset.getListeSpeichern().getObjectDataCombo()));
 
         jCheckBoxStarten.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN)));
@@ -510,7 +509,7 @@ public class DialogAddDownload extends JDialog {
         jComboBoxPfad.setEditable(true);
         jComboBoxPfad.setMaximumRowCount(15);
 
-        jButtonDelHistory.setText("Del");
+        jButtonDelHistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-del.png"))); // NOI18N
         jButtonDelHistory.setToolTipText("History löschen");
 
         jCheckBoxPfadSpeichern.setText("Zielpfad speichern");

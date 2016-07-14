@@ -103,7 +103,6 @@ public class DialogMediaDB extends javax.swing.JDialog {
         jButtonIndex.addActionListener(e -> Daten.mVMediaDB.makeIndex());
 
         jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHelp.setText("");
         jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_MEDIA_DB)).setVisible(true));
         jButtonSearch.addActionListener(e -> search());
         jButtonBeenden.addActionListener(e -> beenden());
@@ -258,7 +257,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
         jButtonBeenden.setText("Ok");
 
-        jButtonHelp.setText("H");
+        jButtonHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
 
         jButtonSearch.setText("Suchen");
 
@@ -350,7 +349,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
                         .addComponent(jLabel1)
                         .addComponent(jLabelSizeFound)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)

@@ -174,26 +174,16 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
     private void setIcon() {
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfe.setText("");
         jButtonHilfeNeuladen.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfeNeuladen.setText("");
         jButtonHilfeProgrammDateimanager.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfeProgrammDateimanager.setText("");
         jButtonHilfeVideoplayer.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfeVideoplayer.setText("");
         jButtonHilfeProgrammUrl.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfeProgrammUrl.setText("");
         jButtonHilfeProgrammShutdown.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfeProgrammShutdown.setText("");
 
         jButtonProgrammDateimanager.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonProgrammDateimanager.setText("");
         jButtonProgrammVideoplayer.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonProgrammVideoplayer.setText("");
         jButtonProgrammUrl.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonProgrammUrl.setText("");
         jButtonProgrammShutdown.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonProgrammShutdown.setText("");
     }
 
     /** This method is called from within the constructor to
@@ -240,7 +230,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jCheckBoxDownloadSofortStarten.setText("Downloads aus Abos sofort starten");
 
-        jButtonHilfeNeuladen.setText("H");
+        jButtonHilfeNeuladen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -269,7 +259,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("User-Agent"));
 
-        jButtonHilfe.setText("H");
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
 
         buttonGroup1.add(jRadioButtonAuto);
         jRadioButtonAuto.setText("Auto:");
@@ -316,17 +306,17 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Tab Downloads"));
 
-        jButtonProgrammDateimanager.setText("File");
+        jButtonProgrammDateimanager.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
 
-        jButtonHilfeProgrammDateimanager.setText("H");
+        jButtonHilfeProgrammDateimanager.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
 
         jLabel1.setText("Datei-Manager zum Öffnen des Downloadordners");
 
         jLabel2.setText("Videoplayer zum Abspielen gespeicherter Filme");
 
-        jButtonHilfeVideoplayer.setText("H");
+        jButtonHilfeVideoplayer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
 
-        jButtonProgrammVideoplayer.setText("File");
+        jButtonProgrammVideoplayer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -383,9 +373,9 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Webbrowser zum Öffnen von URLs"));
 
-        jButtonProgrammUrl.setText("File");
+        jButtonProgrammUrl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
 
-        jButtonHilfeProgrammUrl.setText("H");
+        jButtonHilfeProgrammUrl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -415,9 +405,9 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Linux: Aufruf zum Shutdown"));
 
-        jButtonHilfeProgrammShutdown.setText("H");
+        jButtonHilfeProgrammShutdown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
 
-        jButtonProgrammShutdown.setText("File");
+        jButtonProgrammShutdown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
 
         jTextFieldProgrammShutdown.setText("shutdown -h now");
 
@@ -474,7 +464,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(70, Short.MAX_VALUE))
+                .addContainerGap(85, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

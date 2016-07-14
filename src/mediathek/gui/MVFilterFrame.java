@@ -165,7 +165,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
             }
         });
         jButtonFilterLoeschen.setIcon(Icons.ICON_BUTTON_CLEAR);
-        jButtonFilterLoeschen.setText("");
         jButtonOk.addActionListener(e -> dispose());
 
         setIconBlacklist();
@@ -184,7 +183,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         });
 
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfe.setText("");
         jButtonHilfe.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true));
         setIcon(false); // erst mal alle aus
         jRadioButtonF1.addActionListener(new BeobRadio(0));
@@ -743,7 +741,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jComboBoxFilterSender, jComboBoxFilterThema, jTextFieldFilterThemaTitel, jTextFieldFilterTitel});
 
-        jButtonHilfe.setText("H");
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
         jButtonHilfe.setToolTipText("Hilfe");
 
         jButtonOk.setText("OK");
@@ -765,10 +763,10 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         jLabel6.setText("Filterprofile:");
 
-        jButtonFilterLoeschen.setText("Cl");
+        jButtonFilterLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); // NOI18N
         jButtonFilterLoeschen.setToolTipText("Filter löschen");
 
-        jToggleButtonBlacklist.setText("Bl");
+        jToggleButtonBlacklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-blacklist-aus.png"))); // NOI18N
         jToggleButtonBlacklist.setToolTipText("Blacklist ein/aus (Rechtsklick um Blacklist zu bearbeiten)");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);

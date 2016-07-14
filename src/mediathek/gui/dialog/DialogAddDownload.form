@@ -217,7 +217,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonDelHistory">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Del"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mediathek/res/muster/button-del.png"/>
+            </Property>
             <Property name="toolTipText" type="java.lang.String" value="History l&#xf6;schen"/>
           </Properties>
         </Component>

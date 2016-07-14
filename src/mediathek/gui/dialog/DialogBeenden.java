@@ -90,7 +90,6 @@ public class DialogBeenden extends JDialog {
         });
         
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfe.setText("");
         jButtonHilfe.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BEENDEN)).setVisible(true));
         jButtonHilfe.setEnabled(false);
         cbShutdownComputer.setEnabled(false);
@@ -265,7 +264,7 @@ public class DialogBeenden extends JDialog {
 
         btnCancel.setText("Zurück");
 
-        jButtonHilfe.setText("H");
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

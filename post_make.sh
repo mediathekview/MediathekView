@@ -7,6 +7,9 @@ if [ $(hostname) = "beta" ] || [ $(hostname) = "lt" ]
 then
 # nur für den Entwicklungsrechner sinnvoll
 
+# Icons ins res kopieren
+cp src/mediathek/res/programm/* res/Icons/Programm/Muster
+
 # Dateien ins dist-Verzeichnis kopieren
 cp -r res/* dist
 

@@ -22,33 +22,34 @@ package mediathek.res;
 import java.awt.Image;
 import java.io.File;
 import javax.swing.ImageIcon;
+import mSearch.tool.DebugMsg;
 import mSearch.tool.Log;
 import mSearch.tool.MVConfig;
 import mediathek.tool.GuiFunktionen;
 
 public class GetIcon {
-
-
+    
     private final static String PFAD_PROGRAMM = "/mediathek/res/programm/";
     private final static String PFAD_SENDER = "/mediathek/res/sender/";
     public final static String PFAD_RES = "/mediathek/res/";
-
+    
     public static ImageIcon getIcon(String strIcon) {
         return getIcon(strIcon, PFAD_RES, 0, 0);
     }
-
+    
     public static ImageIcon getSenderIcon(String strIcon) {
         return getIcon(strIcon, PFAD_SENDER, 0, 0);
     }
-
+    
     public static ImageIcon getProgramIcon(String strIcon, int w, int h) {
+        DebugMsg.print("getIcon");
         return getIcon(strIcon, PFAD_PROGRAMM, w, h);
     }
-
+    
     public static ImageIcon getProgramIcon(String strIcon) {
         return getIcon(strIcon, PFAD_PROGRAMM, 0, 0);
     }
-
+    
     public static ImageIcon getIcon(String strIcon, String path, int w, int h) {
         ImageIcon icon;
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ICON_STANDARD))) {
@@ -67,15 +68,15 @@ public class GetIcon {
             }
         }
         if (w > 0 && h > 0) {
-            icon.setImage(icon.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH));
+            icon.setImage(icon.getImage().getScaledInstance(w, h, Image.SCALE_AREA_AVERAGING));
         }
         return icon;
     }
-
+    
     public static ImageIcon getIcon(String strIcon, String path) {
         return getIcon(strIcon, path, 0, 0);
     }
-
+    
     private static ImageIcon getStandard(String strIcon, String path) {
         return new ImageIcon(GetIcon.class.getResource(path + strIcon));
     }

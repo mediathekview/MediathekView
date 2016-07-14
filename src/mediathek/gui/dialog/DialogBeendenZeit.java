@@ -148,7 +148,6 @@ public class DialogBeendenZeit extends JDialog {
         comboActions.addActionListener(e -> setCbShutdownCoputer());
         
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfe.setText("");
         jButtonHilfe.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BEENDEN)).setVisible(true));
         setCbShutdownCoputer();
         
@@ -348,7 +347,7 @@ public class DialogBeendenZeit extends JDialog {
 
         btnCancel.setText("Zurück");
 
-        jButtonHilfe.setText("H");
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
 
         jLabel2.setText("alle Downloads starten um: ");
 

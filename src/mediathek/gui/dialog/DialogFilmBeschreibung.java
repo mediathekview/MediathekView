@@ -55,7 +55,6 @@ public class DialogFilmBeschreibung extends javax.swing.JDialog {
             beenden();
         });
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfe.setText("");
         jButtonHilfe.addActionListener(e -> new DialogHilfe(paFrame, true, "\n"
                 + "Diese Funktion richtet sich z.B. an Benutzer,\n"
                 + "welche eine angepasste Beschreibung der Sendung in Form\n"
@@ -103,7 +102,7 @@ public class DialogFilmBeschreibung extends javax.swing.JDialog {
 
         jTextFieldTitel.setEditable(false);
 
-        jButtonHilfe.setText("H");
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
 
         jButtonSpeichern.setText("Speichern");
 

@@ -83,7 +83,6 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
             });
         }
         jButtonFilterLoeschen.setIcon(Icons.ICON_BUTTON_CLEAR);
-        jButtonFilterLoeschen.setText("");
         jButtonFilterLoeschen.setMnemonic(KeyEvent.VK_F8);
         setIconBlacklist();
         jToggleButtonBlacklist.addActionListener(e -> {
@@ -546,13 +545,13 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        jButtonHilfe.setText("H");
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
         jButtonHilfe.setToolTipText("Hilfe");
 
-        jButtonFilterLoeschen.setText("Cl");
+        jButtonFilterLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); // NOI18N
         jButtonFilterLoeschen.setToolTipText("Filter löschen");
 
-        jToggleButtonBlacklist.setText("Bl");
+        jToggleButtonBlacklist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-blacklist-aus.png"))); // NOI18N
         jToggleButtonBlacklist.setToolTipText("Blacklist ein/aus (Rechtsklick um Blacklist zu bearbeiten)");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

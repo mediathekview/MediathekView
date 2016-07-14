@@ -50,7 +50,6 @@ public class PanelImport extends PanelVorlage {
 
     private void init() {
         jButtonPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonPfad.setText("");
         jButtonImportDatei.setEnabled(false);
         jButtonPfad.addActionListener(new BeobPfad());
         jTextFieldDatei.getDocument().addDocumentListener(new BeobPfadDoc());
@@ -120,7 +119,7 @@ public class PanelImport extends PanelVorlage {
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Abos und Blacklist aus Datei importieren"));
 
-        jButtonPfad.setText("File");
+        jButtonPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
 
         jButtonImportDatei.setText("Import");
 
@@ -197,7 +196,7 @@ public class PanelImport extends PanelVorlage {
                 .addComponent(jCheckBoxBlack)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxErsetzungstabelle)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)

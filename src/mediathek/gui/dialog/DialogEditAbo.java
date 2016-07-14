@@ -110,7 +110,6 @@ public class DialogEditAbo extends javax.swing.JDialog {
         };
         setExtra();
         jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHelp.setText("");
         jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_ADD_ABO)).setVisible(true));
     }
 
@@ -288,7 +287,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
 
         jButtonBeenden.setText("Ok");
 
-        jButtonHelp.setText("H");
+        jButtonHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
