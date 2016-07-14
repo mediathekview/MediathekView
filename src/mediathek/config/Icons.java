@@ -86,7 +86,7 @@ public class Icons {
     public static final ImageIcon ICON_TABELLE_AUS = GetIcon.getProgramIcon("tabelle-aus.png", 5, 5);
     public static final ImageIcon ICON_TABELLE_DOWNOAD_CLEAR = GetIcon.getProgramIcon("tabelle-download-clear.png", 20, 20);
     public static final ImageIcon ICON_TABELLE_DOWNOAD_CLEAR_SW = GetIcon.getProgramIcon("tabelle-download-clear-sw.png", 14, 14);
-    public static final ImageIcon ICON_TABELLE_DOWNOAD_DEL = GetIcon.getProgramIcon("tabelle-download-del.png", 20, 20);
+    public static final ImageIcon ICON_TABELLE_DOWNOAD_DEL = GetIcon.getProgramIcon("tabelle-download-del.png", 16, 16);
     public static final ImageIcon ICON_TABELLE_DOWNOAD_DEL_SW = GetIcon.getProgramIcon("tabelle-download-del-sw.png", 14, 14);
     public static final ImageIcon ICON_TABELLE_DOWNOAD_START = GetIcon.getProgramIcon("tabelle-download-start.png", 20, 20);
     public static final ImageIcon ICON_TABELLE_DOWNOAD_START_SW = GetIcon.getProgramIcon("tabelle-download-start-sw.png", 14, 14);
