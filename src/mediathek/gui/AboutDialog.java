@@ -148,8 +148,7 @@ public class AboutDialog extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
 
         JLabel lblProgramIcon = new JLabel();
-        lblProgramIcon.setIcon(new ImageIcon(AboutDialog.class
-                .getResource("/mediathek/res/MediathekView.png")));
+        lblProgramIcon.setIcon(new ImageIcon(AboutDialog.class.getResource("/mediathek/res/MediathekView.png")));
 
         JLabel lblProgramName = new JLabel("MediathekView");
         lblProgramName.setFont(new Font("Lucida Grande", Font.BOLD, 24));

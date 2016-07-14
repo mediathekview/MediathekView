@@ -27,23 +27,24 @@ import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 import mSearch.tool.MVConfig;
 import mSearch.tool.MVFilmSize;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
 import mediathek.daten.DatenDownload;
-import mediathek.res.GetIcon;
 import net.sf.jcarrierpigeon.Notification;
 import net.sf.jcarrierpigeon.NotificationQueue;
 import net.sf.jcarrierpigeon.WindowPosition;
 
 public class MVNotification {
+
     public static void addNotification(Daten daten, DatenDownload datenDownload, boolean erfolgreich) {
         if (Daten.mediathekGui == null) {
             return; // dann gibts keine GUI
         }
         final String[] m = {
-                "Film:   " + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
-                "Sender: " + datenDownload.arr[DatenDownload.DOWNLOAD_SENDER],
-                "Größe:  " + MVFilmSize.humanReadableByteCount(datenDownload.mVFilmSize.getSize(), true),
-                (erfolgreich ? "Download war erfolgreich" : "Download war fehlerhaft")
+            "Film:   " + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
+            "Sender: " + datenDownload.arr[DatenDownload.DOWNLOAD_SENDER],
+            "Größe:  " + MVFilmSize.humanReadableByteCount(datenDownload.mVFilmSize.getSize(), true),
+            (erfolgreich ? "Download war erfolgreich" : "Download war fehlerhaft")
         };
         add(m, erfolgreich);
     }
@@ -63,7 +64,7 @@ public class MVNotification {
 
             messageFrame.setContentPane(panel);
 
-            final JLabel iconLabel = new JLabel(GetIcon.getIcon(fehler ? "mv-notification.png" : "mv-notification-fehler.png", GetIcon.PFAD_RES));
+            final JLabel iconLabel = new JLabel(fehler ? Icons.ICON_NOTIFICATION : Icons.ICON_NOTIFICATION_ERROR);
             iconLabel.setVerticalAlignment(SwingConstants.TOP);
             messageFrame.getContentPane().add(iconLabel, BorderLayout.WEST);
             final JLabel meldungsLabel = new JLabel(meldung);

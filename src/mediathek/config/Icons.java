@@ -19,6 +19,7 @@
  */
 package mediathek.config;
 
+import java.awt.Image;
 import javax.swing.ImageIcon;
 import mediathek.res.GetIcon;
 
@@ -170,6 +171,11 @@ public class Icons {
     public static final ImageIcon ICON_TAB_TOP_ABO_SW = GetIcon.getProgramIcon("tab-abo-sw.png", WT, HT);
     public static final ImageIcon ICON_TAB_TOP_MELDUNG_SW = GetIcon.getProgramIcon("tab-meldung-sw.png", WT, HT);
 
-    
-    
+    public static final ImageIcon ICON_NOTIFICATION = GetIcon.getProgramIcon("notification.png", 64, 64);
+    public static final ImageIcon ICON_NOTIFICATION_ERROR = GetIcon.getProgramIcon("notification-fehler.png", 64, 64);
+
+    public static final Image ICON_TRAY = GetIcon.getProgramIcon("tray.png", 256, 256).getImage();
+    public static final Image ICON_TRAY_ERROR = GetIcon.getProgramIcon("tray-fehler.png", 256, 256).getImage();
+    public static final Image ICON_TRAY_DOWNLOAD = GetIcon.getProgramIcon("tray-download.png", 256, 256).getImage();
+
 }
