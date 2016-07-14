@@ -66,7 +66,9 @@
   <SubComponents>
     <Component class="javax.swing.JButton" name="jButtonHelp">
       <Properties>
-        <Property name="text" type="java.lang.String" value="H"/>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/mediathek/res/muster/button-help.png"/>
+        </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JProgressBar" name="progress">
@@ -113,7 +115,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="303" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="310" max="32767" attributes="0"/>
                       <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                       <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -204,17 +206,23 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonPath">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="File"/>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
+                    </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonAdd">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Add"/>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/mediathek/res/muster/button-add.png"/>
+                    </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonRemove">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Mi"/>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/mediathek/res/muster/button-remove.png"/>
+                    </Property>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -253,7 +261,7 @@
                       <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jPanel7" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="176" max="32767" attributes="0"/>
+                      <EmptySpace pref="183" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -445,7 +453,9 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonExportPath">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="File"/>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
+                    </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonExport">
@@ -483,7 +493,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" pref="376" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" pref="384" max="32767" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jToggleButtonLoad" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>

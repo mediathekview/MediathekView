@@ -211,7 +211,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="jScrollPane4" pref="401" max="32767" attributes="0"/>
+                          <Component id="jScrollPane4" pref="434" max="32767" attributes="0"/>
                           <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="2" attributes="0">
                               <Component id="jLabelVon" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -315,22 +315,30 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonMinus">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Mi"/>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/mediathek/res/muster/button-remove.png"/>
+                    </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonPlus">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Add"/>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/mediathek/res/muster/button-add.png"/>
+                    </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonDown">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Do"/>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/mediathek/res/muster/button-move-down.png"/>
+                    </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonUp">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Up"/>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/mediathek/res/muster/button-move-up.png"/>
+                    </Property>
                   </Properties>
                 </Component>
               </SubComponents>

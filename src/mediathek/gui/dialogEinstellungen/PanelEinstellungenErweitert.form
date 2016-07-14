@@ -52,7 +52,7 @@
               <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="70" max="32767" attributes="0"/>
+              <EmptySpace pref="85" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -114,7 +114,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonHilfeNeuladen">
           <Properties>
-            <Property name="text" type="java.lang.String" value="H"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mediathek/res/muster/button-help.png"/>
+            </Property>
           </Properties>
         </Component>
       </SubComponents>
@@ -179,7 +181,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonHilfe">
           <Properties>
-            <Property name="text" type="java.lang.String" value="H"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mediathek/res/muster/button-help.png"/>
+            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JRadioButton" name="jRadioButtonAuto">
@@ -279,12 +283,16 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonProgrammDateimanager">
           <Properties>
-            <Property name="text" type="java.lang.String" value="File"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
+            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonHilfeProgrammDateimanager">
           <Properties>
-            <Property name="text" type="java.lang.String" value="H"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mediathek/res/muster/button-help.png"/>
+            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel1">
@@ -301,12 +309,16 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonHilfeVideoplayer">
           <Properties>
-            <Property name="text" type="java.lang.String" value="H"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mediathek/res/muster/button-help.png"/>
+            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonProgrammVideoplayer">
           <Properties>
-            <Property name="text" type="java.lang.String" value="File"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
+            </Property>
           </Properties>
         </Component>
       </SubComponents>
@@ -353,12 +365,16 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonProgrammUrl">
           <Properties>
-            <Property name="text" type="java.lang.String" value="File"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
+            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonHilfeProgrammUrl">
           <Properties>
-            <Property name="text" type="java.lang.String" value="H"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mediathek/res/muster/button-help.png"/>
+            </Property>
           </Properties>
         </Component>
       </SubComponents>
@@ -404,12 +420,16 @@
       <SubComponents>
         <Component class="javax.swing.JButton" name="jButtonHilfeProgrammShutdown">
           <Properties>
-            <Property name="text" type="java.lang.String" value="H"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mediathek/res/muster/button-help.png"/>
+            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonProgrammShutdown">
           <Properties>
-            <Property name="text" type="java.lang.String" value="File"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
+            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextFieldProgrammShutdown">

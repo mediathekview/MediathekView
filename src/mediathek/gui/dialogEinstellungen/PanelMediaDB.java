@@ -132,11 +132,8 @@ public class PanelMediaDB extends PanelVorlage {
             }
         });
         jButtonPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonPath.setText("");
-        jButtonAdd.setIcon(Icons.ICON_DIALOG_ADD);
-        jButtonAdd.setText("");
+        jButtonAdd.setIcon(Icons.ICON_BUTTON_ADD);
         jButtonRemove.setIcon(Icons.ICON_BUTTON_REMOVE);
-        jButtonRemove.setText("");
         jButtonPath.addActionListener(new BeobPath());
         jButtonAdd.addActionListener(new ActionListener() {
 
@@ -154,7 +151,6 @@ public class PanelMediaDB extends PanelVorlage {
         }
         );
         jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHelp.setText("");
         jButtonHelp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -163,7 +159,6 @@ public class PanelMediaDB extends PanelVorlage {
         });
 
         jButtonExportPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonExportPath.setText("");
         jTextFieldExportPath.setText(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_EXPORT_DATEI));
         jTextFieldExportPath.getDocument().addDocumentListener(new BeobTextFeld());
         jTextFieldExportPath.addMouseListener(new TextCopyPaste());
@@ -318,7 +313,7 @@ public class PanelMediaDB extends PanelVorlage {
 
         setMinimumSize(new java.awt.Dimension(2, 483));
 
-        jButtonHelp.setText("H");
+        jButtonHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
 
         jButtonMakeIndex.setText("Index neu aufbauen");
         jButtonMakeIndex.setToolTipText("");
@@ -339,11 +334,11 @@ public class PanelMediaDB extends PanelVorlage {
 
         jLabel4.setText("Pfad:");
 
-        jButtonPath.setText("File");
+        jButtonPath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
 
-        jButtonAdd.setText("Add");
+        jButtonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-add.png"))); // NOI18N
 
-        jButtonRemove.setText("Mi");
+        jButtonRemove.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-remove.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -398,7 +393,7 @@ public class PanelMediaDB extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -480,7 +475,7 @@ public class PanelMediaDB extends PanelVorlage {
 
         jLabel1.setText("Export Index:");
 
-        jButtonExportPath.setText("File");
+        jButtonExportPath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
 
         jButtonExport.setText("Exportieren");
 
@@ -538,7 +533,7 @@ public class PanelMediaDB extends PanelVorlage {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(176, Short.MAX_VALUE))
+                .addContainerGap(183, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Einrichten", jPanel4);
@@ -570,7 +565,7 @@ public class PanelMediaDB extends PanelVorlage {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jToggleButtonLoad)
                 .addContainerGap())

@@ -58,8 +58,7 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
         letztenPfadAnzeigen = letzterPfad;
         jButtonPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonDelPath.setIcon(Icons.ICON_BUTTON_DEL);
-        jButtonPath.setText("");
-        jLabelExists.setText("");
+         jLabelExists.setText("");
         jButtonPath.addActionListener(new ZielBeobachter());
         jButtonDelPath.addActionListener(e -> {
             MVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
@@ -226,9 +225,9 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
 
         jComboBoxPath.setEditable(true);
 
-        jButtonPath.setText("File");
+        jButtonPath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
 
-        jButtonDelPath.setText("Del");
+        jButtonDelPath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-del.png"))); // NOI18N
 
         jLabel2.setText("Dateiname:");
 
@@ -251,7 +250,7 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jComboBoxPath, 0, 413, Short.MAX_VALUE)
+                                .addComponent(jComboBoxPath, 0, 445, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonPath)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)

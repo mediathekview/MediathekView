@@ -201,16 +201,6 @@ public class MediathekGui extends JFrame {
         duration.ping("Daten");
 
         startMeldungen();
-        createStatusBar();
-
-        //create the Film Information HUD
-        if (SystemInfo.isMacOSX()) {
-            Daten.filmInfo = new MVFilmInformation(this, jTabbedPane, daten);
-        } else {
-            //klappte nicht auf allen Desktops
-            Daten.filmInfo = new MVFilmInformationLinux(this, jTabbedPane, daten);
-        }
-        duration.ping("HUD");
 
         if (daten.allesLaden()) {
             // alles geladen
@@ -222,6 +212,18 @@ public class MediathekGui extends JFrame {
             this.pack();
         }
         duration.ping("Alles laden");
+
+        createStatusBar();
+        duration.ping("Statusbar");
+        
+        //create the Film Information HUD
+        if (SystemInfo.isMacOSX()) {
+            Daten.filmInfo = new MVFilmInformation(this, jTabbedPane, daten);
+        } else {
+            //klappte nicht auf allen Desktops
+            Daten.filmInfo = new MVFilmInformationLinux(this, jTabbedPane, daten);
+        }
+        duration.ping("HUD");
 
         setOrgTitel();
         setLookAndFeel();

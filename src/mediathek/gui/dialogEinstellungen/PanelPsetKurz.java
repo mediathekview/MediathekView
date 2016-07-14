@@ -51,7 +51,6 @@ public class PanelPsetKurz extends PanelVorlage {
         super(d, parentComponent);
         initComponents();
         jButtonZiel.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonZiel.setText("");
         listePset = llistePset;
         jListPset.setModel(new DefaultComboBoxModel<String>(listePset.getObjectDataCombo()));
         if (listePset.size() > 0) {
@@ -229,7 +228,7 @@ public class PanelPsetKurz extends PanelVorlage {
         );
         jPanelExtraLayout.setVerticalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
+            .addGap(0, 286, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -263,7 +262,7 @@ public class PanelPsetKurz extends PanelVorlage {
 
         jLabel2.setText("Zielpfad:");
 
-        jButtonZiel.setText("File");
+        jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
 
         jScrollPane2.setBorder(javax.swing.BorderFactory.createLineBorder(javax.swing.UIManager.getDefaults().getColor("TextField.selectionBackground")));
 

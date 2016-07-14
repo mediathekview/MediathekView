@@ -52,7 +52,6 @@ public class PanelExportFilmliste extends PanelVorlage {
 
     private void init() {
         jButtonExportPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonExportPfad.setText("");
         jTextFieldPfad.setText(MVConfig.get(MVConfig.SYSTEM_EXPORT_DATEI));
         jTextFieldPfad.getDocument().addDocumentListener(new BeobTextFeld());
         jTextFieldPfad.addMouseListener(new TextCopyPaste());
@@ -110,7 +109,7 @@ public class PanelExportFilmliste extends PanelVorlage {
 
         jPanel4.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        jButtonExportPfad.setText("File");
+        jButtonExportPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
 
         jLabelDatei.setText("Datei:");
 
@@ -172,7 +171,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonExportieren)
-                .addContainerGap(73, Short.MAX_VALUE))
+                .addContainerGap(79, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

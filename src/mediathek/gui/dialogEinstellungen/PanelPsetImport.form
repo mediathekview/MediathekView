@@ -88,7 +88,7 @@
                           <Component id="jComboBoxBs" alignment="2" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" pref="193" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" pref="199" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -291,7 +291,9 @@
             </Container>
             <Component class="javax.swing.JButton" name="jButtonAktualisieren">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Akt"/>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mediathek/res/muster/button-aktualisieren.png"/>
+                </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Neu laden"/>
               </Properties>
             </Component>
@@ -361,7 +363,7 @@
                       <Component id="jScrollPane4" min="-2" pref="172" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonImportStandard" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="295" max="32767" attributes="0"/>
+                      <EmptySpace pref="302" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -492,7 +494,9 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonPfad">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="File"/>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
+                    </Property>
                     <Property name="toolTipText" type="java.lang.String" value="Datei ausw&#xe4;hlen"/>
                   </Properties>
                 </Component>
@@ -545,7 +549,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jTextAreaImport" pref="283" max="32767" attributes="0"/>
+                          <Component id="jTextAreaImport" pref="289" max="32767" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jButtonImportText" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>

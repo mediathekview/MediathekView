@@ -58,14 +58,10 @@ public class PanelDateinamen extends PanelVorlage {
         jLabelAlert.setVisible(false);
         jLabelAlert.setText("");
         jLabelAlert.setIcon(Icons.ICON_ACHTUNG_32);
-        jButtonPlus.setIcon(Icons.ICON_DIALOG_ADD);
-        jButtonPlus.setText("");
+        jButtonPlus.setIcon(Icons.ICON_BUTTON_ADD);
         jButtonMinus.setIcon(Icons.ICON_BUTTON_REMOVE);
-        jButtonMinus.setText("");
         jButtonUp.setIcon(Icons.ICON_BUTTON_MOVE_UP);
-        jButtonUp.setText("");
         jButtonDown.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
-        jButtonDown.setText("");
         jButtonReset.addActionListener(e -> {
             ReplaceList.init();
             tabelleLaden();
@@ -328,13 +324,13 @@ public class PanelDateinamen extends PanelVorlage {
 
         jLabelNach.setText("nach:");
 
-        jButtonMinus.setText("Mi");
+        jButtonMinus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-remove.png"))); // NOI18N
 
-        jButtonPlus.setText("Add");
+        jButtonPlus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-add.png"))); // NOI18N
 
-        jButtonDown.setText("Do");
+        jButtonDown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-move-down.png"))); // NOI18N
 
-        jButtonUp.setText("Up");
+        jButtonUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-move-up.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -373,7 +369,7 @@ public class PanelDateinamen extends PanelVorlage {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabelVon)

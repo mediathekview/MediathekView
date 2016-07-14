@@ -398,7 +398,9 @@
           <SubComponents>
             <Component class="javax.swing.JButton" name="jButtonHilfe">
               <Properties>
-                <Property name="text" type="java.lang.String" value="H"/>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mediathek/res/muster/button-help.png"/>
+                </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Hilfe"/>
               </Properties>
               <AuxValues>
@@ -407,7 +409,9 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButtonFilterLoeschen">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Cl"/>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mediathek/res/muster/button-clear.png"/>
+                </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Filter l&#xf6;schen"/>
               </Properties>
               <AuxValues>
@@ -416,7 +420,9 @@
             </Component>
             <Component class="javax.swing.JToggleButton" name="jToggleButtonBlacklist">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Bl"/>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mediathek/res/muster/button-blacklist-aus.png"/>
+                </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Blacklist ein/aus (Rechtsklick um Blacklist zu bearbeiten)"/>
               </Properties>
             </Component>

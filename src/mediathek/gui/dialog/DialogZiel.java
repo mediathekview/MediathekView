@@ -53,7 +53,6 @@ public class DialogZiel extends javax.swing.JDialog {
 //        ddaten = dd;
         initComponents();
         jButtonZiel.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonZiel.setText("");
         setTitle(titel);
         jButtonOk.addActionListener(new OkBeobachter());
         jButtonAbbrechen.addActionListener(new AbbrechenBeobachter());
@@ -117,7 +116,7 @@ public class DialogZiel extends javax.swing.JDialog {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jButtonZiel.setText("File");
+        jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
 
         jLabel1.setText("Zielpfad:");
 
@@ -129,7 +128,7 @@ public class DialogZiel extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextFieldPfad, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
+                .addComponent(jTextFieldPfad, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonZiel)
                 .addContainerGap())

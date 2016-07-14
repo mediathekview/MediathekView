@@ -54,13 +54,9 @@ public class PanelProgrammPfade extends JPanel {
 
     private void init() {
         jButtonVlcPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonVlcPfad.setText("");
         jButtonFlvPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonFlvPfad.setText("");
         jButtonFFmpegPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonFFmpegPfad.setText("");
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfe.setText("");
         jPanelVlc.setVisible(vlc);
         jPanelFlv.setVisible(flvstreamer);
         jPanelFFmpeg.setVisible(ffmpeg);
@@ -197,7 +193,7 @@ public class PanelProgrammPfade extends JPanel {
 
         jPanelVlc.setBorder(javax.swing.BorderFactory.createTitledBorder("Pfad zum VLC-Player auswählen"));
 
-        jButtonVlcPfad.setText("File");
+        jButtonVlcPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
 
         jButtonVlcSuchen.setText("suchen");
 
@@ -244,7 +240,7 @@ public class PanelProgrammPfade extends JPanel {
 
         jPanelFlv.setBorder(javax.swing.BorderFactory.createTitledBorder("Pfad zum flvstreamer auswählen"));
 
-        jButtonFlvPfad.setText("File");
+        jButtonFlvPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
 
         jButtonFlvSuchen.setText("suchen");
 
@@ -289,13 +285,13 @@ public class PanelProgrammPfade extends JPanel {
 
         jPanelFlvLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonFlvPfad, jTextFieldFlv});
 
-        jButtonHilfe.setText("H");
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
 
         jPanelFFmpeg.setBorder(javax.swing.BorderFactory.createTitledBorder("Pfad zu ffmpeg auswählen"));
 
         jButtonFFmpegSuchen.setText("suchen");
 
-        jButtonFFmpegPfad.setText("File");
+        jButtonFFmpegPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
 
         jLabel4.setText("Website:");
 

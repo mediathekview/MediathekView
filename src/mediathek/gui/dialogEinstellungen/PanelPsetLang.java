@@ -98,27 +98,16 @@ public class PanelPsetLang extends PanelVorlage {
 
     private void init() {
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfe.setText("");
         jButtonGruppePfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonGruppePfad.setText("");
         jButtonProgPlus.setIcon(Icons.ICON_DIALOG_ADD);
-        jButtonProgPlus.setText("");
         jButtonProgMinus.setIcon(Icons.ICON_BUTTON_REMOVE);
-        jButtonProgMinus.setText("");
         jButtonProgAuf.setIcon(Icons.ICON_BUTTON_MOVE_UP);
-        jButtonProgAuf.setText("");
         jButtonProgAb.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
-        jButtonProgAb.setText("");
         jButtonProgPfad.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonProgPfad.setText("");
         jButtonGruppeNeu.setIcon(Icons.ICON_DIALOG_ADD);
-        jButtonGruppeNeu.setText("");
         jButtonGruppeLoeschen.setIcon(Icons.ICON_BUTTON_REMOVE);
-        jButtonGruppeLoeschen.setText("");
         jButtonGruppeAuf.setIcon(Icons.ICON_BUTTON_MOVE_UP);
-        jButtonGruppeAuf.setText("");
         jButtonGruppeAb.setIcon(Icons.ICON_BUTTON_MOVE_DOWN);
-        jButtonGruppeAb.setText("");
         jLabelMeldungAbspielen.setIcon(Icons.ICON_ACHTUNG_16);
         jLabelMeldungSeichern.setIcon(Icons.ICON_ACHTUNG_16);
         //Programme
@@ -753,7 +742,7 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppeAuf = new javax.swing.JButton();
         jButtonGruppeAb = new javax.swing.JButton();
 
-        jButtonHilfe.setText("H");
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
         jButtonHilfe.setToolTipText("Hilfedialog anzeigen");
 
         jButtonPruefen.setText("Prüfen");
@@ -794,7 +783,7 @@ public class PanelPsetLang extends PanelVorlage {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelInfo)
@@ -958,7 +947,7 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(489, Short.MAX_VALUE))
+                .addContainerGap(490, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Aussehen", jPanel10);
@@ -967,7 +956,7 @@ public class PanelPsetLang extends PanelVorlage {
 
         jLabel7.setText("Zielpfad:");
 
-        jButtonGruppePfad.setText("File");
+        jButtonGruppePfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
         jButtonGruppePfad.setToolTipText("Pfad auswählen");
 
         jCheckBoxThema.setText("einen Unterordner mit dem Thema / Abo-Zielpfad anlegen");
@@ -1080,7 +1069,7 @@ public class PanelPsetLang extends PanelVorlage {
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(388, Short.MAX_VALUE))
+                .addContainerGap(387, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Speicherziel", jPanel9);
@@ -1234,19 +1223,19 @@ public class PanelPsetLang extends PanelVorlage {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jButtonProgPlus.setText("Add");
+        jButtonProgPlus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-add.png"))); // NOI18N
         jButtonProgPlus.setToolTipText("neues Programm anlegen");
 
-        jButtonProgMinus.setText("Mi");
+        jButtonProgMinus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-remove.png"))); // NOI18N
         jButtonProgMinus.setToolTipText("markiertes Programm löschen");
 
         jButtonProgDuplizieren.setText("Duplizieren");
         jButtonProgDuplizieren.setToolTipText("markierte Zeile duplizieren");
 
-        jButtonProgAuf.setText("Up");
+        jButtonProgAuf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-move-up.png"))); // NOI18N
         jButtonProgAuf.setToolTipText("markierte Zeile eins nach oben");
 
-        jButtonProgAb.setText("Do");
+        jButtonProgAb.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-move-down.png"))); // NOI18N
         jButtonProgAb.setToolTipText("markierte Zeile eins nach unten");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -1284,7 +1273,7 @@ public class PanelPsetLang extends PanelVorlage {
 
         jLabel.setText("Programm:");
 
-        jButtonProgPfad.setText("File");
+        jButtonProgPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
         jButtonProgPfad.setToolTipText("Pfad auswählen");
 
         jLabel1.setText("Schalter:");
@@ -1392,7 +1381,7 @@ public class PanelPsetLang extends PanelVorlage {
             jPanelProgrammeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelProgrammeLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1419,16 +1408,16 @@ public class PanelPsetLang extends PanelVorlage {
 
         jButtonExport.setText("Export");
 
-        jButtonGruppeNeu.setText("Add");
+        jButtonGruppeNeu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-add.png"))); // NOI18N
         jButtonGruppeNeu.setToolTipText("neue Programmgruppe anlegen");
 
-        jButtonGruppeLoeschen.setText("Mi");
+        jButtonGruppeLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-remove.png"))); // NOI18N
         jButtonGruppeLoeschen.setToolTipText("Programmgruppe löschen");
 
-        jButtonGruppeAuf.setText("Up");
+        jButtonGruppeAuf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-move-up.png"))); // NOI18N
         jButtonGruppeAuf.setToolTipText("Programmgruppe nach oben schieben");
 
-        jButtonGruppeAb.setText("Do");
+        jButtonGruppeAb.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-move-down.png"))); // NOI18N
         jButtonGruppeAb.setToolTipText("Programmgruppe nach unten schieben");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -1454,7 +1443,7 @@ public class PanelPsetLang extends PanelVorlage {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jButtonGruppeAuf)

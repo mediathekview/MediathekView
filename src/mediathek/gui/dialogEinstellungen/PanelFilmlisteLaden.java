@@ -49,9 +49,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
     private void init() {
         jButtonDateiAuswaehlen.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonDateiAuswaehlen.setText("");
-        jButtonUrl.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
-        jButtonUrl.setText("");
+          jButtonUrl.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
         initRadio();
         jButtonUrl.addActionListener(e -> jTextFieldUrl.setText(Daten.filmeLaden.getDownloadUrl_akt()));
         jButtonLoad.addActionListener(ae -> Daten.filmeLaden.importFilmliste(""));
@@ -152,7 +150,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         jLabel1.setText("URL/Datei:");
 
-        jButtonDateiAuswaehlen.setText("File");
+        jButtonDateiAuswaehlen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
         jButtonDateiAuswaehlen.setToolTipText("Lokale Filmliste auswählen");
 
         jButtonFilmeLaden.setText("Filme jetzt laden");
@@ -166,7 +164,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         jCheckBoxUpdate.setText("alte Filmliste nicht löschen, nur erweitern");
 
-        jButtonUrl.setText("Ref");
+        jButtonUrl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-aktualisieren.png"))); // NOI18N
         jButtonUrl.setToolTipText("Neue URL suchen");
 
         javax.swing.GroupLayout jPanelManuelLayout = new javax.swing.GroupLayout(jPanelManuel);

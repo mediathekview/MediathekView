@@ -58,11 +58,8 @@ public class PanelFilmlisten extends PanelVorlage {
             jButtonAkualisieren.setVisible(false);
         }
         jButtonAkualisieren.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
-        jButtonAkualisieren.setText("");
         jButtonDateiAuswaehlen.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonDateiAuswaehlen.setText("");
         jButtonUrl.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
-        jButtonUrl.setText("");
         tabelleLaden();
         jButtonUrl.addActionListener(new ActionListener() {
 
@@ -216,11 +213,11 @@ public class PanelFilmlisten extends PanelVorlage {
 
         jLabelAktListe.setText("Liste aktualisieren:");
 
-        jButtonAkualisieren.setText("Akt");
+        jButtonAkualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-aktualisieren.png"))); // NOI18N
 
         jLabel1.setText("URL/Datei:");
 
-        jButtonDateiAuswaehlen.setText("File");
+        jButtonDateiAuswaehlen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
         jButtonDateiAuswaehlen.setToolTipText("Lokale Filmliste auswählen");
 
         jButtonFilmeLaden.setText("Filme jetzt laden");
@@ -234,7 +231,7 @@ public class PanelFilmlisten extends PanelVorlage {
         buttonGroup2.add(jRadioButtonDiff);
         jRadioButtonDiff.setText("Differenzlisten");
 
-        jButtonUrl.setText("Ref");
+        jButtonUrl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-aktualisieren.png"))); // NOI18N
         jButtonUrl.setToolTipText("Neue URL suchen");
 
         javax.swing.GroupLayout jPanelManuelLayout = new javax.swing.GroupLayout(jPanelManuel);
@@ -261,7 +258,7 @@ public class PanelFilmlisten extends PanelVorlage {
                         .addComponent(jRadioButtonAkt)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jRadioButtonDiff)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 341, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 348, Short.MAX_VALUE)
                         .addComponent(jLabelAktListe)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonAkualisieren)))
@@ -277,7 +274,7 @@ public class PanelFilmlisten extends PanelVorlage {
                     .addComponent(jLabelAktListe)
                     .addComponent(jButtonAkualisieren))
                 .addGap(9, 9, 9)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanelManuelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)

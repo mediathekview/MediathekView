@@ -223,7 +223,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="jScrollPane2" pref="109" max="32767" attributes="0"/>
+                  <Component id="jScrollPane2" pref="108" max="32767" attributes="0"/>
                   <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonReplace" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
@@ -276,7 +276,9 @@
     </Container>
     <Component class="javax.swing.JButton" name="jButtonSetHelp">
       <Properties>
-        <Property name="text" type="java.lang.String" value="H"/>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/mediathek/res/muster/button-help.png"/>
+        </Property>
       </Properties>
     </Component>
   </SubComponents>

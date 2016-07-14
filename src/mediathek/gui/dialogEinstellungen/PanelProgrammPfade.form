@@ -160,7 +160,9 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonVlcPfad">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="File"/>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
+                    </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonVlcSuchen">
@@ -241,7 +243,9 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonFlvPfad">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="File"/>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
+                    </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonFlvSuchen">
@@ -267,7 +271,9 @@
             </Container>
             <Component class="javax.swing.JButton" name="jButtonHilfe">
               <Properties>
-                <Property name="text" type="java.lang.String" value="H"/>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mediathek/res/muster/button-help.png"/>
+                </Property>
               </Properties>
             </Component>
             <Container class="javax.swing.JPanel" name="jPanelFFmpeg">
@@ -332,7 +338,9 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonFFmpegPfad">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="File"/>
+                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                      <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
+                    </Property>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel4">

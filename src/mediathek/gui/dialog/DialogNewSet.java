@@ -115,7 +115,6 @@ public class DialogNewSet extends javax.swing.JDialog {
             }
         });
         jButtonSetHelp.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonSetHelp.setText("");
         jButtonSetHelp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -252,7 +251,7 @@ public class DialogNewSet extends javax.swing.JDialog {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonReplace)
                 .addGap(13, 13, 13))
@@ -264,7 +263,7 @@ public class DialogNewSet extends javax.swing.JDialog {
         jTextArea3.setRows(3);
         jScrollPane3.setViewportView(jTextArea3);
 
-        jButtonSetHelp.setText("H");
+        jButtonSetHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

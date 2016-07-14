@@ -57,9 +57,7 @@ public class PanelBlacklist extends PanelVorlage {
         initComponents();
         name = nname;
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfe.setText("");
         jButtonTabelleLoeschen.setIcon(Icons.ICON_BUTTON_DEL);
-        jButtonTabelleLoeschen.setText("");
         init_();
         init();
         Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_GEAENDERT, name) {
@@ -571,11 +569,11 @@ public class PanelBlacklist extends PanelVorlage {
         buttonGroup1.add(jRadioButtonWhitelist);
         jRadioButtonWhitelist.setText("nur diese \"Sender / Thema / Titel\" anzeigen (Whitelist)");
 
-        jButtonHilfe.setText("H");
+        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
 
         jLabel10.setText("alle Einträge löschen:");
 
-        jButtonTabelleLoeschen.setText("Del");
+        jButtonTabelleLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-del.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -590,7 +588,7 @@ public class PanelBlacklist extends PanelVorlage {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jRadioButtonWhitelist)
                             .addComponent(jRadioButtonBlacklist))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 260, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 254, Short.MAX_VALUE)
                         .addComponent(jButtonHilfe))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -610,7 +608,7 @@ public class PanelBlacklist extends PanelVorlage {
                         .addComponent(jRadioButtonWhitelist))
                     .addComponent(jButtonHilfe))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel10)

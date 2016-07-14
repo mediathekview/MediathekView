@@ -101,7 +101,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="274" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="286" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -221,7 +221,9 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonZiel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="File"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
+            </Property>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane2">

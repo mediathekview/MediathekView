@@ -40,7 +40,6 @@ public class PanelDownload extends PanelVorlage {
         initSpinner();
         jSpinnerDownload.addChangeListener(new BeobSpinnerDownload());
         jButtonHilfeAnzahl.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfeAnzahl.setText("");
         jButtonHilfeAnzahl.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
                 + "Hier kann angegeben werden, wie viele\n"
                 + "Downloads gleichzeitig gestartet werden können.\n\n"
@@ -124,7 +123,7 @@ public class PanelDownload extends PanelVorlage {
 
         jSpinnerDownload.setModel(new javax.swing.SpinnerNumberModel(1, 1, 10, 1));
 
-        jButtonHilfeAnzahl.setText("H");
+        jButtonHilfeAnzahl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
 
         jCheckBoxBeep.setText("nach jedem Download einen \"Beep\" ausgeben");
 
@@ -252,7 +251,7 @@ public class PanelDownload extends PanelVorlage {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(255, Short.MAX_VALUE))
+                .addContainerGap(260, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

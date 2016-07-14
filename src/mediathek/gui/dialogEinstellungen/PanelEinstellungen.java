@@ -48,7 +48,6 @@ public class PanelEinstellungen extends PanelVorlage {
         super(d, parent);
         initComponents();
         jButtonInfos.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
-        jButtonInfos.setText("");
         daten = d;
         initSpinner();
         jSpinnerDays.addChangeListener(new BeobSpinnerDays());
@@ -58,7 +57,6 @@ public class PanelEinstellungen extends PanelVorlage {
         });
         setupLookAndFeelComboBox();
         jButtonHelpDays.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHelpDays.setText("");
         jButtonHelpDays.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
                 + "Es werden nur Filme der letzten\n"
                 + "xx Tage geladen."
@@ -292,7 +290,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jLabel1.setText("Icon-Pack:");
 
-        jButtonRefresh.setText("Ref");
+        jButtonRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-aktualisieren.png"))); // NOI18N
         jButtonRefresh.setToolTipText("neue Icons suchen");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -336,7 +334,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jSpinnerDays.setModel(new javax.swing.SpinnerNumberModel(0, 0, 30, 1));
 
-        jButtonHelpDays.setText("H");
+        jButtonHelpDays.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
 
         jButtonLoad.setText("Filmliste jetzt neu laden");
 
@@ -366,7 +364,7 @@ public class PanelEinstellungen extends PanelVorlage {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonLoad))
                             .addComponent(jCheckBoxTray))
-                        .addGap(0, 66, Short.MAX_VALUE))))
+                        .addGap(0, 76, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -407,7 +405,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pnlProgramUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(125, Short.MAX_VALUE))
+                .addContainerGap(126, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

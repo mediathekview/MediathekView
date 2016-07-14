@@ -43,7 +43,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="120" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="126" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
@@ -77,7 +77,7 @@
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="jTextFieldProgramm" pref="384" max="32767" attributes="2"/>
+                  <Component id="jTextFieldProgramm" pref="409" max="32767" attributes="2"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonZiel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -101,7 +101,9 @@
       <SubComponents>
         <Component class="javax.swing.JButton" name="jButtonZiel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="File"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
+            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextFieldProgramm">

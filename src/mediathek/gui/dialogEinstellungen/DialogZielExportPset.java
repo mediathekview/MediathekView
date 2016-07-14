@@ -48,8 +48,7 @@ public class DialogZielExportPset extends javax.swing.JDialog {
         ddaten = dd;
         initComponents();
         jButtonZiel.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonZiel.setText("");
-        jButtonOk.addActionListener(new OkBeobachter());
+         jButtonOk.addActionListener(new OkBeobachter());
         jButtonZiel.addActionListener(new ZielBeobachter());
         if (name.equals("")) {
             name = "name.xml";
@@ -101,7 +100,7 @@ public class DialogZielExportPset extends javax.swing.JDialog {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jButtonZiel.setText("File");
+        jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
 
         jLabel1.setText("Ziel:");
 
@@ -113,7 +112,7 @@ public class DialogZielExportPset extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextFieldPfad, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
+                .addComponent(jTextFieldPfad, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButtonZiel)
                 .addContainerGap())
