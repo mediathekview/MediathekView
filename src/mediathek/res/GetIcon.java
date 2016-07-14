@@ -22,7 +22,6 @@ package mediathek.res;
 import java.awt.Image;
 import java.io.File;
 import javax.swing.ImageIcon;
-import mSearch.tool.DebugMsg;
 import mSearch.tool.Log;
 import mSearch.tool.MVConfig;
 import mediathek.tool.GuiFunktionen;
@@ -42,7 +41,7 @@ public class GetIcon {
     }
 
     public static ImageIcon getProgramIcon(String strIcon, int w, int h) {
-        DebugMsg.print("getIcon");
+//        DebugMsg.print("getIcon");
         return getIcon(strIcon, PFAD_PROGRAMM, w, h);
     }
 

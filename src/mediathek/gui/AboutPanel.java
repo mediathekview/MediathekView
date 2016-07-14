@@ -26,6 +26,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import static mSearch.tool.Functions.getPathJar;
 import mediathek.daten.Daten;
+import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.Konstanten;
 import mediathek.tool.MVFunctionSys;
@@ -53,10 +54,8 @@ public class AboutPanel extends javax.swing.JPanel {
         jPanel2.setBackground(Color.WHITE);
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-        ImageIcon ic = new ImageIcon(AboutPanel.class.getResource("/mediathek/res/MediathekView.png"));
-        ic.setImage(ic.getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
+        ImageIcon ic = GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 150, 150);
         lblProgramIcon.setIcon(ic);
-        //lblProgramIcon.setIcon(new ImageIcon(PanelAbout.class.getResource("/mediathek/res/MediathekView.png")));
         lblProgramIcon.setText("");
 
         lblProgramName.setFont(new Font("Lucida Grande", Font.BOLD, 24));

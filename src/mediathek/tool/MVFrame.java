@@ -20,13 +20,13 @@
 package mediathek.tool;
 
 import java.awt.BorderLayout;
-import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.WindowConstants;
 import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mediathek.gui.PanelVorlage;
+import mediathek.res.GetIcon;
 
 public class MVFrame extends javax.swing.JFrame {
 
@@ -39,7 +39,7 @@ public class MVFrame extends javax.swing.JFrame {
         daten = ddaten;
         this.state = state;
 
-        this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
+        this.setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
         switch (state) {
             case TAB_DOWNLOADS:
                 this.setTitle("Downloads");

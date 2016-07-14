@@ -23,7 +23,6 @@ import com.jidesoft.utils.SystemInfo;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -58,7 +57,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import mediathek.MediathekGui;
 import mediathek.daten.Daten;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
@@ -68,6 +66,7 @@ import mediathek.tool.GuiFunktionen;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
 import mediathek.config.Icons;
+import mediathek.res.GetIcon;
 import mediathek.tool.MVListeFilme;
 import mediathek.tool.TextCopyPaste;
 
@@ -155,7 +154,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 parent.setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
             }
         });
-        this.setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
+        this. setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
         this.setTitle("Filter");
         GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_FILTER, this, daten.mediathekGui);
         addWindowListener(new WindowAdapter() {

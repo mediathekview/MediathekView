@@ -29,8 +29,8 @@ import javax.swing.SwingConstants;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
 import mSearch.tool.SysMsg;
+import mediathek.config.Icons;
 import mediathek.daten.Daten;
-import mediathek.res.GetIcon;
 import net.sf.jcarrierpigeon.Notification;
 import net.sf.jcarrierpigeon.NotificationQueue;
 import net.sf.jcarrierpigeon.WindowPosition;
@@ -58,7 +58,7 @@ public final class MVTray {
             return null;
         } else {
             tray = SystemTray.getSystemTray();
-            trayIcon = new TrayIcon(GetIcon.getIcon("mv-tray.png").getImage());
+            trayIcon = new TrayIcon(Icons.ICON_TRAY);
             trayIcon.setImageAutoSize(true);
             trayIcon.setToolTip(getInfoTextDownloads());
             addListener();
@@ -133,19 +133,17 @@ public final class MVTray {
                     // es gibt welche mit Fehler
                     if (trayState != 2) {
                         trayState = 2;
-                        trayIcon.setImage(GetIcon.getIcon("mv-tray-fehler.png").getImage());
+                        trayIcon.setImage(Icons.ICON_TRAY_ERROR);
                     }
                 } else if (starts[4] > 0) {
                     // es laufen welche
                     if (trayState != 1) {
                         trayState = 1;
-                        trayIcon.setImage(GetIcon.getIcon("mv-tray-download.png").getImage());
+                        trayIcon.setImage(Icons.ICON_TRAY_DOWNLOAD);
                     }
-                } else {
-                    if (trayState != 0) {
-                        trayState = 0;
-                        trayIcon.setImage(GetIcon.getIcon("mv-tray.png").getImage());
-                    }
+                } else if (trayState != 0) {
+                    trayState = 0;
+                    trayIcon.setImage(Icons.ICON_TRAY);
                 }
             }
         });
@@ -225,7 +223,7 @@ public final class MVTray {
 
             messageFrame.setContentPane(panel);
 
-            final JLabel iconLabel = new JLabel(GetIcon.getIcon("mv-notification.png", GetIcon.PFAD_RES));
+            final JLabel iconLabel = new JLabel(Icons.ICON_NOTIFICATION);
             iconLabel.setVerticalAlignment(SwingConstants.TOP);
             messageFrame.getContentPane().add(iconLabel, BorderLayout.WEST);
             final JLabel meldungsLabel = new JLabel(meldung);
@@ -300,5 +298,4 @@ public final class MVTray {
 //            }
 //        }
 //    }
-
 }
