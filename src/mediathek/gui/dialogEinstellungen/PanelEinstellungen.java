@@ -32,9 +32,9 @@ import javax.swing.event.ChangeListener;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.MVConfig;
+import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.controller.ProgrammUpdateSuchen;
-import mediathek.config.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.MVFunctionSys;
@@ -43,12 +43,17 @@ import mediathek.tool.MVMessageDialog;
 public class PanelEinstellungen extends PanelVorlage {
 
     private final static String ICONSET_STANDARD = "Standard";
+    private final String ALLE = " Alle ";
 
     public PanelEinstellungen(Daten d, JFrame parent) {
         super(d, parent);
         initComponents();
         jButtonInfos.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
         daten = d;
+        SpinnerListModel lm = new SpinnerListModel(new Object[]{ALLE, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+            "12", "14", "16", "18", "20", "25", "30"});
+        jSpinnerDays.setModel(lm);
+        ((JSpinner.DefaultEditor) jSpinnerDays.getEditor()).getTextField().setEditable(false);
         initSpinner();
         jSpinnerDays.addChangeListener(new BeobSpinnerDays());
         jButtonLoad.addActionListener(ae -> {
@@ -61,7 +66,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 + "Es werden nur Filme der letzten\n"
                 + "xx Tage geladen."
                 + "\n"
-                + "Bei \"0\" werden alle Filme geladen.\n"
+                + "Bei \"Alle\" werden alle Filme geladen.\n"
                 + "\n"
                 + "(Eine kleinere Filmliste\n"
                 + "kann bei Rechnern mit wenig\n"
@@ -143,7 +148,11 @@ public class PanelEinstellungen extends PanelVorlage {
         if (MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE).equals("")) {
             MVConfig.add(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE, "0");
         }
-        jSpinnerDays.setValue(Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+        String s = MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE);
+        if (s.equals("0")) {
+            s = ALLE;
+        }
+        jSpinnerDays.setValue(s);
     }
 
     @SuppressWarnings("unchecked")
@@ -332,7 +341,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jLabel6.setText("nur die Filme der letzten Tage laden:");
 
-        jSpinnerDays.setModel(new javax.swing.SpinnerNumberModel(0, 0, 30, 1));
+        jSpinnerDays.setModel(new javax.swing.SpinnerListModel(new String[] {"Alles", "1", "2", "10", "15"}));
 
         jButtonHelpDays.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
 
@@ -358,13 +367,13 @@ public class PanelEinstellungen extends PanelVorlage {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jSpinnerDays, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jSpinnerDays, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonHelpDays)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonLoad))
                             .addComponent(jCheckBoxTray))
-                        .addGap(0, 76, Short.MAX_VALUE))))
+                        .addGap(0, 42, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -429,8 +438,11 @@ public class PanelEinstellungen extends PanelVorlage {
 
         @Override
         public void stateChanged(ChangeEvent arg0) {
-            MVConfig.add(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE,
-                    String.valueOf(((Number) jSpinnerDays.getModel().getValue()).intValue()));
+            String s = jSpinnerDays.getModel().getValue().toString();
+            if (s.equals(ALLE)) {
+                s = "0";
+            }
+            MVConfig.add(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE, s);
         }
     }
 
