@@ -71,7 +71,6 @@ public class GuiAbo extends PanelVorlage {
         }
     }
 
-
     public void aendern() {
         aboAendern();
     }
@@ -88,12 +87,17 @@ public class GuiAbo extends PanelVorlage {
         aboNeu();
     }
 
+    public void invertSelection() {
+        tabelle.invertSelection();
+    }
+
     //===================================
     //private
     //===================================
     private void setToolbarVisible() {
         toolBar.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
     }
+
     private void initBeobachter() {
         Listener.addListener(new Listener(Listener.EREIGNIS_TOOLBAR_VIS, GuiAbo.class.getSimpleName()) {
             @Override

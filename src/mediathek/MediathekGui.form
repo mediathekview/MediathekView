@@ -241,17 +241,17 @@
                 <Property name="text" type="java.lang.String" value="Filme als ungesehen markieren"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadAbspielen">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="gespeicherten Film abspielen"/>
+              </Properties>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadMediensammlung">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+M"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Titel in der Mediensammlung suchen"/>
-              </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadAbspielen">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="gespeicherten Film abspielen"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadInvertSelection">
@@ -307,6 +307,11 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAboNeu">
               <Properties>
                 <Property name="text" type="java.lang.String" value="neues Abo anlegen"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAboInvertSelection">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Auswahl umkehren"/>
               </Properties>
             </MenuItem>
           </SubComponents>
