@@ -241,7 +241,7 @@
                               <Group type="102" attributes="0">
                                   <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jSpinnerDays" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jSpinnerDays" min="-2" pref="78" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jButtonHelpDays" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -249,7 +249,7 @@
                               </Group>
                               <Component id="jCheckBoxTray" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="76" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="42" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -294,7 +294,13 @@
         <Component class="javax.swing.JSpinner" name="jSpinnerDays">
           <Properties>
             <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-              <SpinnerModel initial="0" maximum="30" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+              <SpinnerModel type="list">
+                <ListItem value="Alles"/>
+                <ListItem value="1"/>
+                <ListItem value="2"/>
+                <ListItem value="10"/>
+                <ListItem value="15"/>
+              </SpinnerModel>
             </Property>
           </Properties>
         </Component>
