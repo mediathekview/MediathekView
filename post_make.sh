@@ -8,7 +8,7 @@ then
 # nur für den Entwicklungsrechner sinnvoll
 
 # Icons ins res kopieren
-cp src/mediathek/res/programm/* res/Icons/Programm/Muster
+cp src/mediathek/res/programm/* res/Icons/Programm/Version-12
 
 # Dateien ins dist-Verzeichnis kopieren
 cp -r res/* dist

@@ -56,8 +56,8 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
         ja_16 = Icons.ICON_TABELLE_EIN;
         nein_12 = Icons.ICON_TABELLE_AUS;
         history = d.history;
-        film_start_tab = Icons.ICON_TABELLE_DOWNOAD_FILM_START;
-        film_start_sw_tab = Icons.ICON_TABELLE_DOWNOAD_FILM_START_SW;
+        film_start_tab = Icons.ICON_TABELLE_FILM_START;
+        film_start_sw_tab = Icons.ICON_TABELLE_FILM_START_SW;
         film_rec_tab = Icons.ICON_TABELLE_FILM_REC;
         film_rec_sw_tab = Icons.ICON_TABELLE_FILM_REC_SW;
         film_stop_tab = Icons.ICON_TABELLE_FILM_STOP;
