@@ -30,7 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import mediathek.config.Icons;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.file.GetFile;
 import mediathek.tool.EscBeenden;
 import org.jdesktop.swingx.JXBusyLabel;

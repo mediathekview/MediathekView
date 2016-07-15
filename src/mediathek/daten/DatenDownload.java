@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import mediathek.config.Daten;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ import mSearch.tool.*;
 import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Konstanten;
+import mediathek.config.Konstanten;
 
 public final class DatenDownload extends MVData<DatenDownload> {
 

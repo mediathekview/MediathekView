@@ -25,10 +25,10 @@ import java.net.URISyntaxException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import mediathek.config.Icons;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.file.GetFile;
 import mediathek.tool.EscBeenden;
-import mediathek.tool.Konstanten;
+import mediathek.config.Konstanten;
 import mediathek.tool.UrlHyperlinkAction;
 
 public class DialogNewSet extends javax.swing.JDialog {

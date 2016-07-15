@@ -21,7 +21,7 @@ package mediathek.tool;
 
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 
 public class MVListeFilme {
 

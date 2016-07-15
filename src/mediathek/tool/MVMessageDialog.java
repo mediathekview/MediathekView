@@ -22,7 +22,7 @@ package mediathek.tool;
 import java.awt.Component;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 
 public class MVMessageDialog {
 

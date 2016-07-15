@@ -20,7 +20,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import javax.swing.JFrame;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.ListePset;
 import mediathek.tool.EscBeenden;
 

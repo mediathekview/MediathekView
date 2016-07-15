@@ -29,7 +29,7 @@ import mSearch.tool.FilenameUtils;
 import mSearch.tool.Log;
 import mSearch.tool.MVConfig;
 import mSearch.tool.SysMsg;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;

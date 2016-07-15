@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mediathek.config.Konstanten;
 import java.io.File;
 import java.security.CodeSource;
 import java.util.ResourceBundle;
@@ -26,7 +27,7 @@ import mSearch.tool.Log;
 import static mSearch.tool.Log.LILNE;
 import mSearch.tool.SysMsg;
 import mediathek.Main;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 
 public class MVFunctionSys {
 

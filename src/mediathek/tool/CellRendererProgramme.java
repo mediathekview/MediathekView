@@ -25,7 +25,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenProg;
 
 public class CellRendererProgramme extends DefaultTableCellRenderer {

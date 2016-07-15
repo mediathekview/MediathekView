@@ -30,7 +30,7 @@ import javax.swing.JOptionPane;
 import mSearch.tool.Listener;
 import mSearch.Const;
 import mSearch.tool.Log;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenMediaDB;
 
 public class MVMediaDB {

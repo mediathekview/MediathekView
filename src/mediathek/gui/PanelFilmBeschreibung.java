@@ -29,7 +29,7 @@ import mSearch.tool.DebugMsg;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
 import mediathek.config.Icons;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
 import mediathek.tool.BeobMausUrl;

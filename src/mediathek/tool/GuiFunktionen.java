@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mediathek.config.Konstanten;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Dimension;
 import java.awt.Frame;

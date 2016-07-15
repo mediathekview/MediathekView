@@ -17,8 +17,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.daten;
+package mediathek.config;
 
+import mediathek.config.Konstanten;
 import com.jidesoft.utils.SystemInfo;
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +44,11 @@ import mSearch.tool.*;
 import mediathek.MediathekGui;
 import mediathek.controller.*;
 import mediathek.controller.starter.StarterClass;
+import mediathek.daten.DownloadInfos;
+import mediathek.daten.ListeAbo;
+import mediathek.daten.ListeBlacklist;
+import mediathek.daten.ListeDownloads;
+import mediathek.daten.ListePset;
 import mediathek.gui.*;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.MVFilmInfo;

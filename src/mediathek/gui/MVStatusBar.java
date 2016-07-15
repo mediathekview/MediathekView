@@ -14,7 +14,7 @@ import mSearch.tool.Functions;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
 

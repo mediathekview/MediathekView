@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import mediathek.config.Daten;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
@@ -36,7 +37,7 @@ import static mSearch.tool.Functions.getOsString;
 import mSearch.tool.Log;
 import mediathek.file.GetFile;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Konstanten;
+import mediathek.config.Konstanten;
 import mediathek.tool.TModel;
 
 public class ListePsetVorlagen extends LinkedList<String[]> {

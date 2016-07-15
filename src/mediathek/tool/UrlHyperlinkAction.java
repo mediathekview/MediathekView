@@ -29,7 +29,7 @@ import javax.swing.Action;
 import javax.swing.JFrame;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 
 public class UrlHyperlinkAction extends AbstractAction {

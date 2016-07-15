@@ -38,7 +38,7 @@ import mediathek.MediathekGui;
 import mediathek.config.Icons;
 import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;

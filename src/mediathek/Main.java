@@ -36,9 +36,9 @@ import javax.swing.RepaintManager;
 import mSearch.Config;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.mac.MediathekGuiMac;
-import mediathek.tool.Konstanten;
+import mediathek.config.Konstanten;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 import mSearch.tool.SingleInstance;
 

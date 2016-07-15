@@ -20,7 +20,7 @@
 package mediathek.gui;
 
 import javax.swing.JFrame;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.tool.MVTable;
 
 public class PanelVorlage extends javax.swing.JPanel {

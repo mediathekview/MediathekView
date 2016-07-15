@@ -26,7 +26,7 @@ import java.awt.Frame;
 import java.io.File;
 import javax.swing.JOptionPane;
 import mSearch.tool.Log;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 

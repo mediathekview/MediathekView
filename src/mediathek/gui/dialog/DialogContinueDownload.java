@@ -30,7 +30,7 @@ import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscBeenden;
-import mediathek.tool.Konstanten;
+import mediathek.config.Konstanten;
 import mediathek.tool.MVMessageDialog;
 
 public class DialogContinueDownload extends JDialog {

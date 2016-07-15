@@ -34,7 +34,7 @@ import javax.swing.event.DocumentListener;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
 import mediathek.controller.IoXmlLesen;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TextCopyPaste;

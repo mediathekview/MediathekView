@@ -25,12 +25,12 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import mSearch.tool.MVConfig;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Konstanten;
+import mediathek.config.Konstanten;
 
 public class DialogEinstellungen extends javax.swing.JFrame {
 

@@ -39,7 +39,7 @@ import javax.swing.event.ListSelectionListener;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
 import mediathek.config.Icons;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenMediaDB;
 import mediathek.file.GetFile;
 import mediathek.tool.*;

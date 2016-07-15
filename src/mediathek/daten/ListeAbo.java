@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import mediathek.config.Daten;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

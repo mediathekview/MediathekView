@@ -24,10 +24,10 @@ import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.gui.MVStatusBar;
 import mediathek.gui.PanelVorlage;
-import mediathek.tool.Konstanten;
+import mediathek.config.Konstanten;
 
 public class Einstellungen extends javax.swing.JPanel {
 

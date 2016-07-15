@@ -42,12 +42,12 @@ import javax.swing.text.JTextComponent;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.*;
 import mediathek.config.Icons;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.Konstanten;
+import mediathek.config.Konstanten;
 import mediathek.tool.MVMessageDialog;
 
 public class DialogAddDownload extends JDialog {

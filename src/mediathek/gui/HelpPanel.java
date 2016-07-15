@@ -25,7 +25,7 @@ import javax.swing.JOptionPane;
 import mSearch.log.Logfile;
 import mSearch.tool.Listener;
 import mediathek.config.Icons;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;

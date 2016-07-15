@@ -25,7 +25,7 @@ import java.util.Date;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import mSearch.tool.Log;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
