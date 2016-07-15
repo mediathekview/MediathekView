@@ -25,7 +25,7 @@ import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import mSearch.tool.MVConfig;
 import mSearch.tool.SysMsg;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 
 /**

@@ -2,7 +2,7 @@ package mediathek.mac;
 
 import com.apple.eawt.Application;
 import mediathek.controller.starter.Start;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
 
 import java.awt.*;

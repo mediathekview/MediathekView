@@ -19,6 +19,7 @@
  */
 package mediathek.controller;
 
+import mediathek.config.Konstanten;
 import mSearch.tool.MVConfig;
 import mSearch.tool.SysMsg;
 import java.text.SimpleDateFormat;
@@ -40,7 +41,7 @@ import mSearch.filmlisten.ImportFilmliste;
 import mSearch.tool.Duration;
 import mSearch.Config;
 import mSearch.tool.Log;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.tool.*;

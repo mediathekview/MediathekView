@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import mediathek.config.Daten;
 import java.awt.Frame;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -30,7 +31,7 @@ import mSearch.daten.DatenFilm;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
 import mediathek.controller.starter.Start;
-import mediathek.tool.Konstanten;
+import mediathek.config.Konstanten;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelDownload;

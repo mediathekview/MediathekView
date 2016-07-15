@@ -19,6 +19,7 @@
  */
 package mediathek.controller;
 
+import mediathek.config.Daten;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
@@ -32,7 +33,7 @@ import mSearch.Const;
 import mSearch.tool.Log;
 import mSearch.tool.ReplaceList;
 import mediathek.daten.*;
-import mediathek.tool.Konstanten;
+import mediathek.config.Konstanten;
 import mSearch.tool.MVConfig;
 import mSearch.tool.SysMsg;
 

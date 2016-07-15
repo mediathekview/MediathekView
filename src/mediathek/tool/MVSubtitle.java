@@ -32,7 +32,7 @@ import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
 
 public class MVSubtitle {

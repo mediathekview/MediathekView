@@ -19,6 +19,8 @@
  */
 package mediathek.gui;
 
+import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.PrinterException;

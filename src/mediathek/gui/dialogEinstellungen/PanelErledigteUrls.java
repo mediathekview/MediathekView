@@ -37,7 +37,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import mediathek.controller.MVUsedUrl;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogAddDownload;

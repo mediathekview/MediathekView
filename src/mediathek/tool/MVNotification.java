@@ -28,7 +28,7 @@ import javax.swing.SwingConstants;
 import mSearch.tool.MVConfig;
 import mSearch.tool.MVFilmSize;
 import mediathek.config.Icons;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
 import net.sf.jcarrierpigeon.Notification;
 import net.sf.jcarrierpigeon.NotificationQueue;

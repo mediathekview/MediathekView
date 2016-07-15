@@ -25,10 +25,10 @@ import java.net.URISyntaxException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import static mSearch.tool.Functions.getPathJar;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
-import mediathek.tool.Konstanten;
+import mediathek.config.Konstanten;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.UrlHyperlinkAction;
 

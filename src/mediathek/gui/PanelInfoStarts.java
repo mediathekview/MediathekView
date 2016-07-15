@@ -22,7 +22,7 @@ package mediathek.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JPanel;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.TModel;
 import mSearch.daten.DatenFilm;

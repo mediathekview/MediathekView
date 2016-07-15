@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import mediathek.config.Daten;
 import mediathek.tool.MVMediaDBFileSize;
 
 public class DatenMediaDB extends MVData<DatenMediaDB> {

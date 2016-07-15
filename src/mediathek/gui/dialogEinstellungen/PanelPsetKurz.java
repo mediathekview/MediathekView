@@ -32,7 +32,7 @@ import javax.swing.event.ListSelectionListener;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;

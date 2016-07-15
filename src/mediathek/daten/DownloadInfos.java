@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import mediathek.config.Daten;
 import java.text.DecimalFormat;
 import java.util.LinkedList;
 import mediathek.controller.starter.Start;

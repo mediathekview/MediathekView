@@ -30,7 +30,7 @@ import javax.swing.text.DefaultCaret;
 import mSearch.tool.Log;
 import mSearch.tool.MVConfig;
 import mSearch.tool.SysMsg;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.gui.PanelVorlage;
 
 public class PanelMeldungen extends PanelVorlage {

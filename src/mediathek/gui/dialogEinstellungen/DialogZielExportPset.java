@@ -30,7 +30,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;

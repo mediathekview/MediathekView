@@ -35,7 +35,7 @@ import mSearch.tool.MVConfig;
 import mediathek.config.Icons;
 import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.Start;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
 
 public class CellRendererFilme extends DefaultTableCellRenderer {

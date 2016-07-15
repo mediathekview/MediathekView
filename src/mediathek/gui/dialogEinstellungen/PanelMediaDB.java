@@ -31,7 +31,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mSearch.tool.Log;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenMediaDB;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;

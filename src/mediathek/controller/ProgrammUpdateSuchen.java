@@ -33,9 +33,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import mSearch.Const;
 import mSearch.tool.Log;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.gui.dialog.DialogHinweisUpdate;
-import mediathek.tool.Konstanten;
+import mediathek.config.Konstanten;
 import mSearch.tool.MVConfig;
 import mediathek.tool.MVFunctionSys;
 

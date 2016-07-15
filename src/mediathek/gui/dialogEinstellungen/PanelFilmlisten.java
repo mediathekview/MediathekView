@@ -36,7 +36,7 @@ import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.MVConfig;
 import mediathek.config.Icons;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.TModel;
 

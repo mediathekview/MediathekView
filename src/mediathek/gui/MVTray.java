@@ -30,7 +30,7 @@ import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
 import mSearch.tool.SysMsg;
 import mediathek.config.Icons;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import net.sf.jcarrierpigeon.Notification;
 import net.sf.jcarrierpigeon.NotificationQueue;
 import net.sf.jcarrierpigeon.WindowPosition;

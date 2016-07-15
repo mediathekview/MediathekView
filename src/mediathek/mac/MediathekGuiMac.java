@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
 import mediathek.gui.AboutDialog;

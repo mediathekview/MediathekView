@@ -19,12 +19,13 @@
  */
 package mediathek.tool;
 
+import mediathek.config.Konstanten;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.WindowConstants;
 import mediathek.MediathekGui;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 

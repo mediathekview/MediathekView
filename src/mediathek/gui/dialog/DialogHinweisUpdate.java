@@ -23,7 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import mediathek.tool.EscBeenden;
-import mediathek.tool.Konstanten;
+import mediathek.config.Konstanten;
 import mediathek.tool.UrlHyperlinkAction;
 
 public class DialogHinweisUpdate extends javax.swing.JDialog {

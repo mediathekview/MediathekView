@@ -18,6 +18,7 @@
  */
 package mediathek.gui;
 
+import mediathek.config.Konstanten;
 import com.jidesoft.swing.MarqueePane;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -31,7 +32,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.tool.*;
 import org.jdesktop.swingx.JXHyperlink;
 

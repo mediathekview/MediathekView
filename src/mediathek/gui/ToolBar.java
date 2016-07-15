@@ -30,7 +30,7 @@ import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
 import mediathek.MediathekGui;
 import mediathek.config.Icons;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.tool.Filter;
 import org.jdesktop.swingx.JXSearchField;
 
@@ -128,12 +128,10 @@ public final class ToolBar extends JToolBar {
 
     private void startupFilme() {
         // init
-        jButtonFilmlisteLaden = new MVButton("Filmliste laden", "neue Filmliste laden", Icons.ICON_TOOLBAR_FILME_FILMLISTE_LADEN_GR, Icons.ICON_TOOLBAR_FILME_FILMLISTE_LADEN_KL);
+        setFilmlisteLaden();
         jButtonInfo = new MVButton("Filminformation anzeigen", "Filminformation anzeigen", Icons.ICON_TOOLBAR_FILME_INFO_GR, Icons.ICON_TOOLBAR_FILME_INFO_KL);
         jButtonFilmAbspielen = new MVButton("Film abspielen", "Film abspielen", Icons.ICON_TOOLBAR_FILME_FILM_START_GR, Icons.ICON_TOOLBAR_FILME_FILM_START_KL);
         jButtonFilmSpeichern = new MVButton("Film aufzeichnen", "Film aufzeichnen", Icons.ICON_TOOLBAR_FILME_REC_GR, Icons.ICON_TOOLBAR_FILME_REC_KL);
-        this.add(filler__5);
-        this.add(jButtonFilmlisteLaden);
         this.add(filler__10);
         this.add(jButtonInfo);
         this.add(filler__10);
@@ -178,42 +176,6 @@ public final class ToolBar extends JToolBar {
         jButtonFilterPanel.setIcon(Icons.ICON_BUTTON_FILTER_ANZEIGEN);
         this.add(jButtonFilterPanel);
 
-        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
-            @Override
-            public void start(ListenerFilmeLadenEvent event) {
-                //ddaten.infoPanel.setProgress();
-                jButtonFilmlisteLaden.setEnabled(false);
-            }
-
-            @Override
-            public void progress(ListenerFilmeLadenEvent event) {
-            }
-
-            @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
-                jButtonFilmlisteLaden.setEnabled(true);
-            }
-        });
-        jButtonFilmlisteLaden.addActionListener(e -> Daten.filmeLaden.filmeLaden(daten, false));
-        jButtonFilmlisteLaden.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent arg0) {
-                if (arg0.isPopupTrigger()) {
-                    if (jButtonFilmlisteLaden.isEnabled()) {
-                        Daten.filmeLaden.filmeLaden(daten, true);
-                    }
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent arg0) {
-                if (arg0.isPopupTrigger()) {
-                    if (jButtonFilmlisteLaden.isEnabled()) {
-                        Daten.filmeLaden.filmeLaden(daten, true);
-                    }
-                }
-            }
-        });
         jButtonFilmSpeichern.addActionListener(e -> Daten.guiFilme.guiFilmeFilmSpeichern());
         jButtonFilmAbspielen.addActionListener(e -> Daten.guiFilme.guiFilmeFilmAbspielen());
         jButtonInfo.addActionListener(e -> Daten.filmInfo.showInfo());
@@ -227,6 +189,7 @@ public final class ToolBar extends JToolBar {
 
     private void startupDownload() {
         // init
+        setFilmlisteLaden();
         jButtonInfo = new MVButton("Filminformation anzeigen", "Filminformation anzeigen", Icons.ICON_TOOLBAR_DOWNLOAD_FILM_INFO_GR, Icons.ICON_TOOLBAR_DOWNLOAD_FILM_INFO_KL);
         jButtonDownloadAktualisieren = new MVButton("Liste der Downloads aktualisieren", "Liste der Downloads aktualisieren", Icons.ICON_TOOLBAR_DOWNLOAD_REFRESH_GR, Icons.ICON_TOOLBAR_DOWNLOAD_REFRESH_KL);
         jButtonDownloadAlleStarten = new MVButton("alle Downloads starten", "alle Downloads starten", Icons.ICON_TOOLBAR_DOWNLOAD_ALLE_STARTEN_GR, Icons.ICON_TOOLBAR_DOWNLOAD_ALLE_STARTEN_KL);
@@ -267,6 +230,49 @@ public final class ToolBar extends JToolBar {
         jButtonAbosAusschalten.addActionListener(e -> Daten.guiAbo.einAus(false));
         jButtonAbosLoeschen.addActionListener(e -> Daten.guiAbo.loeschen());
         jButtonAboAendern.addActionListener(e -> Daten.guiAbo.aendern());
+    }
+
+    private void setFilmlisteLaden() {
+        jButtonFilmlisteLaden = new MVButton("Filmliste laden", "neue Filmliste laden", Icons.ICON_TOOLBAR_FILME_FILMLISTE_LADEN_GR, Icons.ICON_TOOLBAR_FILME_FILMLISTE_LADEN_KL);
+        this.add(filler__5);
+        this.add(jButtonFilmlisteLaden);
+        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+            @Override
+            public void start(ListenerFilmeLadenEvent event) {
+                //ddaten.infoPanel.setProgress();
+                jButtonFilmlisteLaden.setEnabled(false);
+            }
+
+            @Override
+            public void progress(ListenerFilmeLadenEvent event) {
+            }
+
+            @Override
+            public void fertig(ListenerFilmeLadenEvent event) {
+                jButtonFilmlisteLaden.setEnabled(true);
+            }
+        });
+        jButtonFilmlisteLaden.addActionListener(e -> Daten.filmeLaden.filmeLaden(daten, false));
+        jButtonFilmlisteLaden.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent arg0) {
+                if (arg0.isPopupTrigger()) {
+                    if (jButtonFilmlisteLaden.isEnabled()) {
+                        Daten.filmeLaden.filmeLaden(daten, true);
+                    }
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent arg0) {
+                if (arg0.isPopupTrigger()) {
+                    if (jButtonFilmlisteLaden.isEnabled()) {
+                        Daten.filmeLaden.filmeLaden(daten, true);
+                    }
+                }
+            }
+        });
+
     }
 
     private final void setIcon(boolean klein) {

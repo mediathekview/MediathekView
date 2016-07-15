@@ -39,7 +39,7 @@ import mSearch.tool.DebugMsg;
 import mSearch.tool.Functions.OperatingSystemType;
 import static mSearch.tool.Functions.getOs;
 import mediathek.controller.MVBandwidthTokenBucket;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DownloadInfos;
 import mediathek.tool.*;
 

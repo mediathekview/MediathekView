@@ -19,6 +19,7 @@
  */
 package mediathek.daten;
 
+import mediathek.config.Daten;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
 import java.util.Iterator;

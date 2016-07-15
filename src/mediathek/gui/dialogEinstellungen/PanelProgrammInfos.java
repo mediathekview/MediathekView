@@ -25,10 +25,10 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import javax.swing.JFrame;
 import javax.swing.Timer;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.MVFunctionSys;
-import mediathek.tool.Konstanten;
+import mediathek.config.Konstanten;
 import mediathek.tool.UrlHyperlinkAction;
 
 public class PanelProgrammInfos extends PanelVorlage {

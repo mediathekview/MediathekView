@@ -33,10 +33,10 @@ import mSearch.tool.Log;
 import mSearch.tool.MVColor;
 import mSearch.tool.MVConfig;
 import mediathek.config.Icons;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Konstanten;
+import mediathek.config.Konstanten;
 import mediathek.tool.TextCopyPaste;
 
 public class PanelFilmlisteLaden extends PanelVorlage {

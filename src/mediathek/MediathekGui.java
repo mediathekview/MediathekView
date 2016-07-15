@@ -19,6 +19,7 @@
  */
 package mediathek;
 
+import mediathek.config.Konstanten;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -39,7 +40,7 @@ import mSearch.tool.*;
 import mediathek.config.Icons;
 import mediathek.controller.CheckUpdate;
 import mediathek.controller.starter.Start;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.*;
 import mediathek.gui.dialog.*;

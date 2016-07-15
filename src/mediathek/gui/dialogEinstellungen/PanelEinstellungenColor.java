@@ -26,7 +26,7 @@ import javax.swing.JFrame;
 import mSearch.tool.MVC;
 import mSearch.tool.MVColor;
 import static mSearch.tool.MVColor.*;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.CellRendererColor;
 import mediathek.tool.GuiFunktionen;

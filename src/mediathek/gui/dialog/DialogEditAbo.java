@@ -36,7 +36,7 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.file.GetFile;
 import mediathek.tool.EscBeenden;

@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import mediathek.config.Konstanten;
 import mSearch.tool.MVConfig;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;

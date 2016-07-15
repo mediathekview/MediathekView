@@ -26,7 +26,7 @@ import static javax.swing.Action.NAME;
 import static javax.swing.Action.SHORT_DESCRIPTION;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.tool.EscBeenden;
 
 public class HelpDialog extends javax.swing.JDialog {

@@ -37,7 +37,7 @@ import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
 import mediathek.config.Icons;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.daten.DatenBlacklist;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;

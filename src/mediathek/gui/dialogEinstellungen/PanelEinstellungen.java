@@ -34,7 +34,7 @@ import mSearch.tool.Log;
 import mSearch.tool.MVConfig;
 import mediathek.config.Icons;
 import mediathek.controller.ProgrammUpdateSuchen;
-import mediathek.daten.Daten;
+import mediathek.config.Daten;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.MVFunctionSys;
