@@ -8,9 +8,10 @@ import java.net.URISyntaxException;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import mSearch.daten.DatenFilm;
-import mediathek.config.Icons;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
 import mediathek.tool.BeobMausUrl;
+import mediathek.tool.EscBeenden;
 import mediathek.tool.UrlHyperlinkAction;
 import org.jdesktop.swingx.JXHyperlink;
 
@@ -64,12 +65,12 @@ public class MVFilmInformation implements MVFilmInfo {
         calculateHudPosition();
 
 //        tabbedPane.addChangeListener(this);
-//        new EscBeenden(dialog) {
-//            @Override
-//            public void beenden_(JDialog d) {
-//                d.dispose();
-//            }
-//        };
+        new EscBeenden(dialog) {
+            @Override
+            public void beenden_(JDialog d) {
+                d.dispose();
+            }
+        };
     }
 
     private JComponent setLable() {
@@ -104,22 +105,22 @@ public class MVFilmInformation implements MVFilmInfo {
         textAreaBeschreibung.setForeground(foreground);
         textAreaBeschreibung.setOpaque(false);
         textAreaBeschreibung.setRows(4);
-        
+
         jLabelFilmNeu = new JLabel();
         jLabelFilmNeu.setOpaque(false);
         jLabelFilmNeu.setVisible(false);
         jLabelFilmNeu.setIcon(ja_sw_16);
-        
+
         jLabelFilmHD = new JLabel();
         jLabelFilmHD.setOpaque(false);
         jLabelFilmHD.setVisible(false);
         jLabelFilmHD.setIcon(ja_sw_16);
-        
+
         jLabelFilmUT = new JLabel();
         jLabelFilmUT.setOpaque(false);
         jLabelFilmUT.setVisible(false);
         jLabelFilmUT.setIcon(ja_sw_16);
-        
+
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(4, 10, 4, 10);
         c.weighty = 0;

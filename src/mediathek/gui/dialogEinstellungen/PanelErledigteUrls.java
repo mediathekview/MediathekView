@@ -42,7 +42,6 @@ import mediathek.daten.DatenDownload;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogZiel;
-import mediathek.gui.dialog.MVFilmInfo;
 import mediathek.tool.GuiFunktionen;
 import mSearch.tool.Listener;
 import mediathek.tool.MVMessageDialog;
@@ -348,9 +347,9 @@ public class PanelErledigteUrls extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                MVFilmInfo filmInfoHud = Daten.filmInfo;
-                filmInfoHud.updateCurrentFilm(film);
-                filmInfoHud.showInfo();
+//                MVFilmInfo filmInfoHud = Daten.filmInfo;
+                Daten.filmInfo.updateCurrentFilm(film);
+                Daten.filmInfo.showInfo();
             }
         }
 

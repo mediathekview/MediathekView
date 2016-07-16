@@ -27,9 +27,10 @@ import java.net.URISyntaxException;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import mSearch.daten.DatenFilm;
-import mediathek.config.Icons;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
 import mediathek.tool.BeobMausUrl;
+import mediathek.tool.EscBeenden;
 import mediathek.tool.UrlHyperlinkAction;
 import org.jdesktop.swingx.JXHyperlink;
 
@@ -70,12 +71,12 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
         setExtra(jPanelExtra);
 
 //        tabbedPane.addChangeListener(this);
-//        new EscBeenden(this) {
-//            @Override
-//            public void beenden_(JDialog d) {
-//                d.dispose();
-//            }
-//        };
+        new EscBeenden(this) {
+            @Override
+            public void beenden_(JDialog d) {
+                d.dispose();
+            }
+        };
     }
 
     private void setExtra(JPanel jPanel) {
