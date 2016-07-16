@@ -96,10 +96,10 @@ public class Icons {
     public static final ImageIcon ICON_TABELLE_DOWNOAD_FILM_START = GetIcon.getProgramIcon("tabelle-download-film-start.png", 18, 18);
     public static final ImageIcon ICON_TABELLE_DOWNOAD_FILM_START_SW = GetIcon.getProgramIcon("tabelle-download-film-start-sw.png", 14, 14);
 
-    public static final ImageIcon ICON_TABELLE_FILM_REC = GetIcon.getProgramIcon("tabelle-film-rec.png", 19, 19);
-    public static final ImageIcon ICON_TABELLE_FILM_REC_SW = GetIcon.getProgramIcon("tabelle-film-rec-sw.png", 15, 15);
-    public static final ImageIcon ICON_TABELLE_FILM_START = GetIcon.getProgramIcon("tabelle-film-start.png", 18, 18);
-    public static final ImageIcon ICON_TABELLE_FILM_START_SW = GetIcon.getProgramIcon("tabelle-film-start-sw.png", 14, 14);
+    public static final ImageIcon ICON_TABELLE_FILM_REC = GetIcon.getProgramIcon("tabelle-film-rec.png", 18, 18);
+    public static final ImageIcon ICON_TABELLE_FILM_REC_SW = GetIcon.getProgramIcon("tabelle-film-rec-sw.png", 16, 16);
+    public static final ImageIcon ICON_TABELLE_FILM_START = GetIcon.getProgramIcon("tabelle-film-start.png", 20, 20);
+    public static final ImageIcon ICON_TABELLE_FILM_START_SW = GetIcon.getProgramIcon("tabelle-film-start-sw.png", 16, 16);
     public static final ImageIcon ICON_TABELLE_FILM_STOP = GetIcon.getProgramIcon("tabelle-film-stop.png", 17, 17);
     public static final ImageIcon ICON_TABELLE_FILM_STOP_SW = GetIcon.getProgramIcon("tabelle-film-stop-sw.png", 16, 16);
 
@@ -151,7 +151,7 @@ public class Icons {
     public static final ImageIcon ICON_TOOLBAR_ABO_CONFIG_GR = GetIcon.getProgramIcon("toolbar-abo-config.png", 32, 32);
 
     // Icons TABBED_PANE
-    private static final int W = 35, H = 35;
+    private static final int W = 30, H = 30;
     public static final ImageIcon ICON_TAB_FILM = GetIcon.getProgramIcon("tab-film.png", W, H);
     public static final ImageIcon ICON_TAB_DOWNLOAD = GetIcon.getProgramIcon("tab-download.png", W, H);
     public static final ImageIcon ICON_TAB_ABO = GetIcon.getProgramIcon("tab-abo.png", W, H);
@@ -161,7 +161,7 @@ public class Icons {
     public static final ImageIcon ICON_TAB_ABO_SW = GetIcon.getProgramIcon("tab-abo-sw.png", W, H);
     public static final ImageIcon ICON_TAB_MELDUNG_SW = GetIcon.getProgramIcon("tab-meldung-sw.png", W, H);
 
-    private static final int WT = 25, HT = 25;
+    private static final int WT = 20, HT = 20;
     public static final ImageIcon ICON_TAB_TOP_FILM = GetIcon.getProgramIcon("tab-film-top.png", WT, HT);
     public static final ImageIcon ICON_TAB_TOP_DOWNLOAD = GetIcon.getProgramIcon("tab-download-top.png", WT, HT);
     public static final ImageIcon ICON_TAB_TOP_ABO = GetIcon.getProgramIcon("tab-abo-top.png", WT, HT);
