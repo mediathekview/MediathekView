@@ -546,7 +546,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
-        jButtonHilfe.setToolTipText("Hilfe");
+        jButtonHilfe.setToolTipText("Hilfe anzeigen");
 
         jButtonFilterLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); // NOI18N
         jButtonFilterLoeschen.setToolTipText("Filter löschen");

@@ -265,6 +265,7 @@ public class DialogBeenden extends JDialog {
         btnCancel.setText("Zurück");
 
         jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
+        jButtonHilfe.setToolTipText("Hilfe anzeigen");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

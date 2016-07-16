@@ -258,6 +258,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
         jButtonBeenden.setText("Ok");
 
         jButtonHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
+        jButtonHelp.setToolTipText("Hilfe anzeigen");
 
         jButtonSearch.setText("Suchen");
 

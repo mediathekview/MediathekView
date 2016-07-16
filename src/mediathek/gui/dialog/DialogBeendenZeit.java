@@ -348,6 +348,7 @@ public class DialogBeendenZeit extends JDialog {
         btnCancel.setText("Zurück");
 
         jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
+        jButtonHilfe.setToolTipText("Hilfe anzeigen");
 
         jLabel2.setText("alle Downloads starten um: ");
 

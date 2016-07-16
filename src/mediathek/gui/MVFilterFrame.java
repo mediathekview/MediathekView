@@ -741,7 +741,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jComboBoxFilterSender, jComboBoxFilterThema, jTextFieldFilterThemaTitel, jTextFieldFilterTitel});
 
         jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
-        jButtonHilfe.setToolTipText("Hilfe");
+        jButtonHilfe.setToolTipText("Hilfe anzeigen");
 
         jButtonOk.setText("OK");
 

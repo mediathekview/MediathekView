@@ -114,6 +114,7 @@ public class HelpPanel extends javax.swing.JPanel {
         jButtonResetSets.setText("Einstellungen zum Abspielen/Aufzeichnen zurücksetzen");
 
         jButtonHilfeReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
+        jButtonHilfeReset.setToolTipText("Hilfe anzeigen");
 
         jLabel7.setText("Es werden alle Programmsets (auch eigene) zum Abspielen");
 

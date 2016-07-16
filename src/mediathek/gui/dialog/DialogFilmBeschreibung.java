@@ -103,6 +103,7 @@ public class DialogFilmBeschreibung extends javax.swing.JDialog {
         jTextFieldTitel.setEditable(false);
 
         jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
+        jButtonHilfe.setToolTipText("Hilfe anzeigen");
 
         jButtonSpeichern.setText("Speichern");
 

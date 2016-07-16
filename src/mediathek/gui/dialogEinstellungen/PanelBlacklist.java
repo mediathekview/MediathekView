@@ -570,6 +570,7 @@ public class PanelBlacklist extends PanelVorlage {
         jRadioButtonWhitelist.setText("nur diese \"Sender / Thema / Titel\" anzeigen (Whitelist)");
 
         jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
+        jButtonHilfe.setToolTipText("Hilfe anzeigen");
 
         jLabel10.setText("alle Einträge löschen:");
 

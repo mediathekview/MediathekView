@@ -161,6 +161,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
         jRadioButtonSonst.setText("sonst");
 
         jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
+        jButtonHilfe.setToolTipText("Hilfe anzeigen");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
