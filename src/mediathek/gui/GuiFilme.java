@@ -295,6 +295,7 @@ public class GuiFilme extends PanelVorlage {
         });
 
         tabelle.setModel(new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES));
+//        tabelle.setRowHeight(50);
         BeobMausTabelle beobMausTabelle = new BeobMausTabelle();
         tabelle.addMouseListener(beobMausTabelle);
         tabelle.getSelectionModel().addListSelectionListener(event -> {
