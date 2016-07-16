@@ -45,7 +45,6 @@ import mediathek.controller.starter.Start;
 import mediathek.daten.*;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogEditAbo;
-import mediathek.gui.dialog.MVFilmInfo;
 import mediathek.tool.*;
 
 public class GuiFilme extends PanelVorlage {
@@ -55,7 +54,7 @@ public class GuiFilme extends PanelVorlage {
     public static final int[] COMBO_ZEIT_INT = {0, 1, 2, 3, 7, 15, 20, 30};
     private static final int FILTER_ZEIT_STARTWERT = 5;
     private static final int FILTER_DAUER_STARTWERT = 0;
-    private final MVFilmInfo filmInfo;
+//    private final MVFilmInfo filmInfo;
     private MVFilter mVFilter;
     public MVFilterFrame mVFilterFrame;
     private final MVFilterPanel mVFilterPanel;
@@ -104,7 +103,7 @@ public class GuiFilme extends PanelVorlage {
         setupDescriptionPanel();
 
         jPanelFilter.setLayout(new BorderLayout());
-        filmInfo = Daten.filmInfo;
+//        filmInfo = Daten.filmInfo;
 
         toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_FILME);
         jPanelToolBar.setLayout(new BorderLayout());
@@ -227,8 +226,8 @@ public class GuiFilme extends PanelVorlage {
         this.getActionMap().put("info", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!filmInfo.isVisible()) {
-                    filmInfo.showInfo();
+                if (!Daten.filmInfo.isVisible()) {
+                    Daten.filmInfo.showInfo();
                 }
             }
         });
@@ -528,7 +527,7 @@ public class GuiFilme extends PanelVorlage {
      */
     private void updateFilmData() {
         final Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
-        filmSelection.ifPresent(filmInfo::updateCurrentFilm);
+        filmSelection.ifPresent(Daten.filmInfo::updateCurrentFilm);
     }
 
     private Optional<DatenFilm> getCurrentlySelectedFilm() {
@@ -1210,8 +1209,8 @@ public class GuiFilme extends PanelVorlage {
                     }
                 } else if (arg0.getClickCount() > 1) {
                     //filmAbspielen_();
-                    if (!filmInfo.isVisible()) {
-                        filmInfo.showInfo();
+                    if (!Daten.filmInfo.isVisible()) {
+                        Daten.filmInfo.showInfo();
                     }
                 }
             }
@@ -1481,8 +1480,8 @@ public class GuiFilme extends PanelVorlage {
             //Infos
             item = new JMenuItem("Filminformation anzeigen");
             item.addActionListener(e -> {
-                if (!filmInfo.isVisible()) {
-                    filmInfo.showInfo();
+                if (!Daten.filmInfo.isVisible()) {
+                    Daten.filmInfo.showInfo();
                 }
             });
             jPopupMenu.add(item);

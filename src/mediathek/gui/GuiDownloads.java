@@ -45,12 +45,11 @@ import mediathek.daten.DatenPset;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
-import mediathek.gui.dialog.MVFilmInfo;
 import mediathek.tool.*;
 
 public class GuiDownloads extends PanelVorlage {
 
-    private final MVFilmInfo filmInfoHud;
+//    private final MVFilmInfo filmInfoHud;
     private long lastUpdate = 0;
     private boolean showAbos = true;
     private boolean showDownloads = true;
@@ -83,7 +82,7 @@ public class GuiDownloads extends PanelVorlage {
 
         tabelle = new MVTable(MVTable.TableType.DOWNLOADS);
         jScrollPane1.setViewportView(tabelle);
-        filmInfoHud = Daten.filmInfo;
+//        filmInfoHud = Daten.filmInfo;
 
         setupDescriptionPanel();
 
@@ -217,8 +216,8 @@ public class GuiDownloads extends PanelVorlage {
         this.getActionMap().put("info", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!filmInfoHud.isVisible()) {
-                    filmInfoHud.showInfo();
+                if (!Daten.filmInfo.isVisible()) {
+                    Daten.filmInfo.showInfo();
                 }
             }
         });
@@ -759,7 +758,7 @@ public class GuiDownloads extends PanelVorlage {
                     aktFilm = datenDownload.film;
                 }
             }
-            filmInfoHud.updateCurrentFilm(aktFilm);
+            Daten.filmInfo.updateCurrentFilm(aktFilm);
         }
     }
 
@@ -1147,8 +1146,8 @@ public class GuiDownloads extends PanelVorlage {
             // Infos
             JMenuItem itemInfo = new JMenuItem("Filminformation anzeigen");
             itemInfo.addActionListener(e -> {
-                if (!filmInfoHud.isVisible()) {
-                    filmInfoHud.showInfo();
+                if (!Daten.filmInfo.isVisible()) {
+                    Daten.filmInfo.showInfo();
                 }
             });
             jPopupMenu.add(itemInfo);
