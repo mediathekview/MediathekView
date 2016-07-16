@@ -19,7 +19,6 @@
  */
 package mediathek.tool;
 
-import mediathek.config.Daten;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Point;
@@ -42,6 +41,7 @@ import mSearch.daten.DatenFilm;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.MVConfig;
+import mediathek.config.Daten;
 import mediathek.daten.*;
 
 public final class MVTable extends JTable {
@@ -180,23 +180,32 @@ public final class MVTable extends JTable {
     }
 
     public void setHeight() {
+        int sizeArea = 0;
+        int size;
+        switch (tabelle) {
+            case FILME:
+                if (spaltenAnzeigen[DatenFilm.FILM_BESCHREIBUNG]) {
+                    sizeArea = MVFont.fontSize * 5;
+                }
+        }
         if (!iconAnzeigen) {
             if (MVFont.fontSize < 15) {
-                setRowHeight(18);
+                size = 18;
             } else {
-                setRowHeight(MVFont.fontSize + MVFont.fontSize / 3);
+                size = MVFont.fontSize + MVFont.fontSize / 3;
             }
         } else if (iconKlein) {
             if (MVFont.fontSize < 18) {
-                setRowHeight(20);
+                size = 20;
             } else {
-                setRowHeight(MVFont.fontSize + MVFont.fontSize / 3);
+                size = MVFont.fontSize + MVFont.fontSize / 3;
             }
         } else if (MVFont.fontSize < 30) {
-            setRowHeight(36);
+            size = 36;
         } else {
-            setRowHeight(MVFont.fontSize + MVFont.fontSize / 3);
+            size = MVFont.fontSize + MVFont.fontSize / 3;
         }
+        setRowHeight(size > sizeArea ? size : sizeArea);
     }
 
     public void reorder(int index, int[] rowFrom) {
@@ -272,6 +281,7 @@ public final class MVTable extends JTable {
             if (ok) {
                 setSpaltenEinAus(breite, spaltenAnzeigen);
                 setSpalten();
+                setHeight();
             } else {
                 resetTabelle();
             }
@@ -551,6 +561,9 @@ public final class MVTable extends JTable {
             case DatenFilm.FILM_TITEL:
                 breite[i] = 300;
                 break;
+            case DatenFilm.FILM_BESCHREIBUNG:
+                breite[i] = 400;
+                break;
             case DatenFilm.FILM_DATUM:
             case DatenFilm.FILM_ZEIT:
             case DatenFilm.FILM_SENDER:
@@ -654,6 +667,7 @@ public final class MVTable extends JTable {
         spaltenAusschalten();
         setSpaltenEinAus(breite, spaltenAnzeigen);
         setSpalten();
+        setHeight();
     }
 
     private void spaltenAusschaltenFilme(int i) {

@@ -22,9 +22,7 @@ package mediathek.tool;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Component;
 import java.awt.Font;
-import javax.swing.ImageIcon;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
@@ -32,10 +30,10 @@ import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.MVColor;
 import mSearch.tool.MVConfig;
+import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.Start;
-import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
 
 public class CellRendererFilme extends DefaultTableCellRenderer {
@@ -51,6 +49,8 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
     private final MVSenderIconCache senderIconCache;
     private static ImageIcon ja_16 = null;
     private static ImageIcon nein_12 = null;
+
+    JTextArea textArea;
 
     public CellRendererFilme(Daten d) {
         ja_16 = Icons.ICON_TABELLE_EIN;
@@ -94,9 +94,6 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF);
             DatenDownload datenDownload = Daten.listeDownloadsButton.getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL]);
 
-            boolean live = datenFilm.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE);
-            boolean start = false;
-
             /*
              * On OS X do not change fonts as it violates HIG...
              */
@@ -106,6 +103,17 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 } else {
                     setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
                 }
+            }
+
+            if (columnModelIndex == DatenFilm.FILM_BESCHREIBUNG) {
+                textArea = new JTextArea();
+                textArea.setLineWrap(true);
+                textArea.setWrapStyleWord(true);
+                textArea.setText(value.toString());
+                textArea.setForeground(getForeground());
+                textArea.setBackground(getBackground());
+                setColor(textArea, datenFilm, datenDownload, isSelected);
+                return textArea;
             }
 
             switch (columnModelIndex) {
@@ -158,43 +166,114 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                     setText("");
                     break;
             }
-
+            setColor(this, datenFilm, datenDownload, isSelected);
+//            boolean live = datenFilm.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE);
+//            boolean start = false;
             // Farben setzen
-            if (datenDownload != null) {
-                // gestarteter Film
-                if (datenDownload.start != null) {
-                    start = true;
-                    setColor(this, datenDownload.start, isSelected);
-                }
-            }
-            if (!start) {
-                if (live) {
-                    // bei livestreams keine History anzeigen
-                    setForeground(MVColor.FILM_LIVESTREAM.color);
-                } else if (history.urlPruefen(datenFilm.getUrlHistory())) {
-                    if (!isSelected) {
-                        setBackground(MVColor.FILM_HISTORY.color);
-                    }
-                } else if (datenFilm.isNew()) {
-                    setForeground(MVColor.FILM_NEU.color);
-                }
-            }
-            if (!start && geoMelden) {
-                if (!datenFilm.arr[DatenFilm.FILM_GEO].isEmpty()) {
-                    if (!datenFilm.arr[DatenFilm.FILM_GEO].contains(MVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
-                        //setForeground(GuiKonstanten.FARBE_FILM_GEOBLOCK_FORGROUND);
-                        if (isSelected) {
-                            setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND_SEL.color);
-                        } else {
-                            setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND.color);
-                        }
-                    }
-                }
-            }
+//            if (datenDownload != null) {
+//                // gestarteter Film
+//                if (datenDownload.start != null) {
+//                    start = true;
+//                    setColor(this, datenDownload.start, isSelected);
+//                }
+//            }
+//            if (!start) {
+//                if (live) {
+//                    // bei livestreams keine History anzeigen
+//                    setForeground(MVColor.FILM_LIVESTREAM.color);
+//                } else if (history.urlPruefen(datenFilm.getUrlHistory())) {
+//                    if (!isSelected) {
+//                        setBackground(MVColor.FILM_HISTORY.color);
+//                    }
+//                } else if (datenFilm.isNew()) {
+//                    setForeground(MVColor.FILM_NEU.color);
+//                }
+//            }
+//            if (!start && geoMelden) {
+//                if (!datenFilm.arr[DatenFilm.FILM_GEO].isEmpty()) {
+//                    if (!datenFilm.arr[DatenFilm.FILM_GEO].contains(MVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
+//                        //setForeground(GuiKonstanten.FARBE_FILM_GEOBLOCK_FORGROUND);
+//                        if (isSelected) {
+//                            setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND_SEL.color);
+//                        } else {
+//                            setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND.color);
+//                        }
+//                    }
+//                }
+//            }
         } catch (Exception ex) {
             Log.errorLog(630098552, ex);
         }
         return this;
+    }
+
+    private void setColor(Component c, DatenFilm datenFilm, DatenDownload datenDownload, boolean isSelected) {
+        boolean live = datenFilm.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE);
+        boolean start = false;
+
+        if (datenDownload != null) {
+            // gestarteter Film
+            if (datenDownload.start != null) {
+                start = true;
+
+                switch (datenDownload.start.status) {
+                    case Start.STATUS_INIT:
+                        if (isSelected) {
+                            c.setBackground(MVColor.DOWNLOAD_WAIT_SEL.color);
+                        } else {
+                            c.setBackground(MVColor.DOWNLOAD_WAIT.color);
+                        }
+                        break;
+                    case Start.STATUS_RUN:
+                        if (isSelected) {
+                            c.setBackground(MVColor.DOWNLOAD_RUN_SEL.color);
+                        } else {
+                            c.setBackground(MVColor.DOWNLOAD_RUN.color);
+                        }
+                        break;
+                    case Start.STATUS_FERTIG:
+                        if (isSelected) {
+                            c.setBackground(MVColor.DOWNLOAD_FERTIG_SEL.color);
+                        } else {
+                            c.setBackground(MVColor.DOWNLOAD_FERTIG.color);
+                        }
+                        break;
+                    case Start.STATUS_ERR:
+                        if (isSelected) {
+                            c.setBackground(MVColor.DOWNLOAD_FEHLER_SEL.color);
+                        } else {
+                            c.setBackground(MVColor.DOWNLOAD_FEHLER.color);
+                        }
+                        break;
+                }
+
+            }
+        }
+        if (!start) {
+            if (live) {
+                // bei livestreams keine History anzeigen
+                c.setForeground(MVColor.FILM_LIVESTREAM.color);
+            } else if (history.urlPruefen(datenFilm.getUrlHistory())) {
+                if (!isSelected) {
+                    c.setBackground(MVColor.FILM_HISTORY.color);
+                }
+            } else if (datenFilm.isNew()) {
+                c.setForeground(MVColor.FILM_NEU.color);
+            }
+        }
+        if (!start && geoMelden) {
+            if (!datenFilm.arr[DatenFilm.FILM_GEO].isEmpty()) {
+                if (!datenFilm.arr[DatenFilm.FILM_GEO].contains(MVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
+                    //setForeground(GuiKonstanten.FARBE_FILM_GEOBLOCK_FORGROUND);
+                    if (isSelected) {
+                        c.setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND_SEL.color);
+                    } else {
+                        c.setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND.color);
+                    }
+                }
+            }
+        }
+
     }
 
     private void handleButtonStartColumn(final DatenDownload datenDownload, final boolean isSelected) {
@@ -244,39 +323,6 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
         if (icon != null) {
             setText("");
             setIcon(icon);
-        }
-    }
-
-    private void setColor(Component c, Start s, boolean isSelected) {
-        switch (s.status) {
-            case Start.STATUS_INIT:
-                if (isSelected) {
-                    c.setBackground(MVColor.DOWNLOAD_WAIT_SEL.color);
-                } else {
-                    c.setBackground(MVColor.DOWNLOAD_WAIT.color);
-                }
-                break;
-            case Start.STATUS_RUN:
-                if (isSelected) {
-                    c.setBackground(MVColor.DOWNLOAD_RUN_SEL.color);
-                } else {
-                    c.setBackground(MVColor.DOWNLOAD_RUN.color);
-                }
-                break;
-            case Start.STATUS_FERTIG:
-                if (isSelected) {
-                    c.setBackground(MVColor.DOWNLOAD_FERTIG_SEL.color);
-                } else {
-                    c.setBackground(MVColor.DOWNLOAD_FERTIG.color);
-                }
-                break;
-            case Start.STATUS_ERR:
-                if (isSelected) {
-                    c.setBackground(MVColor.DOWNLOAD_FEHLER_SEL.color);
-                } else {
-                    c.setBackground(MVColor.DOWNLOAD_FEHLER.color);
-                }
-                break;
         }
     }
 }

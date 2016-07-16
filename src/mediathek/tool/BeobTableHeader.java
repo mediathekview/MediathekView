@@ -78,7 +78,9 @@ public class BeobTableHeader extends MouseAdapter {
             }
             box[i] = new JCheckBoxMenuItem(columns[i]);
             box[i].setSelected(anzeigen(i));
-            box[i].addActionListener(e -> setSpalten());
+            box[i].addActionListener(e -> {
+                setSpalten();
+            });
             jPopupMenu.add(box[i]);
         }
         // jetzt evtl. noch die Button
@@ -102,7 +104,6 @@ public class BeobTableHeader extends MouseAdapter {
             item3.setSelected(tabelle.iconAnzeigen);
             item3.addActionListener(e -> {
                 tabelle.iconAnzeigen = item3.isSelected();
-                tabelle.setHeight();
                 setSpalten();
             });
             jPopupMenu.add(item3);
@@ -113,7 +114,6 @@ public class BeobTableHeader extends MouseAdapter {
             } else {
                 item2.addActionListener(e -> {
                     tabelle.iconKlein = item2.isSelected();
-                    tabelle.setHeight();
                     setSpalten();
                 });
             }
@@ -141,6 +141,7 @@ public class BeobTableHeader extends MouseAdapter {
             }
         }
         tabelle.spaltenEinAus();
+        tabelle.setHeight();
     }
 
     private void setSpalten(int k, boolean anz) {
