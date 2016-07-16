@@ -264,6 +264,7 @@ public class DialogNewSet extends javax.swing.JDialog {
         jScrollPane3.setViewportView(jTextArea3);
 
         jButtonSetHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
+        jButtonSetHelp.setToolTipText("Hilfe anzeigen");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

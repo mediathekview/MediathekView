@@ -336,8 +336,8 @@ public class DialogEditDownload extends javax.swing.JDialog {
                         jButtonReset.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
                         jButtonReset.addActionListener(e -> textfeldListe[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY].setText(orgProgArray));
                         JButton jButtonHelp = new JButton("");
-                        jButtonHelp.setToolTipText("Hilfe");
                         jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
+                        jButtonHelp.setToolTipText("Hilfe anzeigen");
                         jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_EDIT_DOWNLOAD_PROG)).setVisible(true));
                         
                         gc.gridy = 0;

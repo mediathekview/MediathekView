@@ -743,7 +743,7 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppeAb = new javax.swing.JButton();
 
         jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
-        jButtonHilfe.setToolTipText("Hilfedialog anzeigen");
+        jButtonHilfe.setToolTipText("Hilfe anzeigen");
 
         jButtonPruefen.setText("Prüfen");
         jButtonPruefen.setToolTipText("Programmpfade prüfen");

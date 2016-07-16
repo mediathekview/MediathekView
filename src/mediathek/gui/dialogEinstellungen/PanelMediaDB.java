@@ -314,6 +314,7 @@ public class PanelMediaDB extends PanelVorlage {
         setMinimumSize(new java.awt.Dimension(2, 483));
 
         jButtonHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
+        jButtonHelp.setToolTipText("Hilfe anzeigen");
 
         jButtonMakeIndex.setText("Index neu aufbauen");
         jButtonMakeIndex.setToolTipText("");

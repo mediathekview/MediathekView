@@ -23,13 +23,13 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import mSearch.tool.Listener;
+import mSearch.tool.MVConfig;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
 import mediathek.gui.MVDownloadInfo;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
-import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
-import mediathek.config.Icons;
 
 public class PanelDownload extends PanelVorlage {
 
@@ -124,6 +124,7 @@ public class PanelDownload extends PanelVorlage {
         jSpinnerDownload.setModel(new javax.swing.SpinnerNumberModel(1, 1, 10, 1));
 
         jButtonHilfeAnzahl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
+        jButtonHilfeAnzahl.setToolTipText("Hilfe anzeigen");
 
         jCheckBoxBeep.setText("nach jedem Download einen \"Beep\" ausgeben");
 

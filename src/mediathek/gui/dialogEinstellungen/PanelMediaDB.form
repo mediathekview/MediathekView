@@ -69,6 +69,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/mediathek/res/muster/button-help.png"/>
         </Property>
+        <Property name="toolTipText" type="java.lang.String" value="Hilfe anzeigen"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JProgressBar" name="progress">

@@ -344,6 +344,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jSpinnerDays.setModel(new javax.swing.SpinnerListModel(new String[] {"Alles", "1", "2", "10", "15"}));
 
         jButtonHelpDays.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
+        jButtonHelpDays.setToolTipText("Hilfe anzeigen");
 
         jButtonLoad.setText("Filmliste jetzt neu laden");
 
