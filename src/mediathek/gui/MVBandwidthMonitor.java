@@ -20,7 +20,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
-import mSearch.tool.DebugMsg;
+import mSearch.tool.DbgMsg;
 import mSearch.tool.Functions.OperatingSystemType;
 import static mSearch.tool.Functions.getOs;
 import mediathek.controller.starter.Start;
@@ -151,7 +151,7 @@ public class MVBandwidthMonitor {
                 timer.purge();
             }
         } catch (IllegalStateException ignored) {
-            DebugMsg.print(ignored.getMessage());
+            DbgMsg.print(ignored.getMessage());
         }
     }
 

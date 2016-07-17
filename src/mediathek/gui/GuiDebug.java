@@ -36,30 +36,27 @@ import javax.swing.JPanel;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmlisten.FilmlisteLesen;
-import mSearch.tool.Duration;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
-import mSearch.tool.MVConfig;
+import mSearch.tool.*;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisten;
 
 public class GuiDebug extends JPanel {
-
+    
     private final JButton[] buttonSender;
     private final String[] sender;
     private Daten daten;
-
+    
     public GuiDebug(Daten d) {
         super();
         initComponents();
         daten = d;
         sender = Daten.filmeLaden.getSenderNamen();
         buttonSender = new JButton[sender.length];
-
+        
         jPanelFilmlisteLaden.setLayout(new GridLayout(1, 1));
         jPanelFilmlisteLaden.add(new PanelFilmlisten(d, Daten.mediathekGui));
-
+        
         jPanelStarts.setLayout(new GridLayout(1, 1));
         jPanelStarts.add(new PanelInfoStarts());
 
@@ -70,7 +67,7 @@ public class GuiDebug extends JPanel {
         }
         addSender();
         jButtonNeuLaden.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Daten.listeFilme.clear();
@@ -110,7 +107,7 @@ public class GuiDebug extends JPanel {
                 Daten.listeFilme.check();
             }
         });
-
+        
         jButtonCheckUrl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -131,14 +128,14 @@ public class GuiDebug extends JPanel {
             }
         });
         jButtonClean.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Daten.listeFilme.cleanList();
             }
         });
         jToggleButtonFastAuto.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent ae) {
                 if (jToggleButtonFastAuto.isSelected()) {
@@ -150,7 +147,7 @@ public class GuiDebug extends JPanel {
         });
         jButtonDir.addActionListener(new BeobPfad());
         jButtonSize.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 String path = jTextFieldPath.getText();
@@ -175,7 +172,7 @@ public class GuiDebug extends JPanel {
             }
         });
         jButtonSearchUrl.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!jTextFieldSearchUrl.getText().isEmpty()) {
@@ -190,9 +187,9 @@ public class GuiDebug extends JPanel {
                 Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.NONE);
             }
         });
-
+        
         jButtonDoppelteUrls.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 ListeFilme listeFilme = new ListeFilme();
@@ -211,7 +208,7 @@ public class GuiDebug extends JPanel {
             }
         });
         jButtonNurDoppelte.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 ListeFilme listeFilme = new ListeFilme();
@@ -239,7 +236,7 @@ public class GuiDebug extends JPanel {
             }
         });
         jButtonHashOlddoppelt.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 ListeFilme listeFilme = new ListeFilme();
@@ -269,7 +266,7 @@ public class GuiDebug extends JPanel {
             }
         });
         jButtonTTUrl.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 ListeFilme listeFilme = new ListeFilme();
@@ -300,7 +297,7 @@ public class GuiDebug extends JPanel {
         });
         jButtonOldList.addActionListener(new BeobPfadOldUrl());
         jButtonAddOld.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 String url = jTextFieldOld.getText();
@@ -313,8 +310,28 @@ public class GuiDebug extends JPanel {
                 Listener.notify(Listener.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
             }
         });
+        jButtonAddOldFilm.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ArrayList<DatenFilm> list = Daten.guiFilme.selFilme();
+                if (list.size() <= 0) {
+                    return;
+                }
+                DatenFilm film = list.get(0);
+                DbgMsg.print("Anzahl Filme: " + Daten.listeFilme.size());
+                Daten.listeFilme.remove(film);
+                DbgMsg.print("Anzahl Filme: " + Daten.listeFilme.size());
+                ListeFilme ll = new ListeFilme();
+                ll.add(film);
+                Daten.listeFilme.updateListeOld(ll);
+                System.gc();
+                Daten.listeFilme.sort();
+                Listener.notify(Listener.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
+            }
+        });
         jButtonLiveStreams.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 String url = jTextFieldLiveStreams.getText();
@@ -328,10 +345,10 @@ public class GuiDebug extends JPanel {
             }
         });
         jButtonDelLive.addActionListener(new ActionListener() {
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                
                 Iterator<DatenFilm> it = Daten.listeFilme.iterator();
                 while (it.hasNext()) {
                     DatenFilm f = it.next();
@@ -343,7 +360,7 @@ public class GuiDebug extends JPanel {
             }
         });
     }
-
+    
     private String getHost(String uurl) {
         String host = "";
         try {
@@ -387,7 +404,7 @@ public class GuiDebug extends JPanel {
         }
         return host;
     }
-
+    
     private void addSender() {
         jPanelLoeschen.removeAll();
         jPanelLoeschen.setLayout(new GridLayout(0, 5));
@@ -436,17 +453,18 @@ public class GuiDebug extends JPanel {
         jButtonDelLive = new javax.swing.JButton();
         jButtonOldList = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jButtonAddOldFilm = new javax.swing.JButton();
         jPanelStarts = new javax.swing.JPanel();
 
         javax.swing.GroupLayout jPanelFilmlisteLadenLayout = new javax.swing.GroupLayout(jPanelFilmlisteLaden);
         jPanelFilmlisteLaden.setLayout(jPanelFilmlisteLadenLayout);
         jPanelFilmlisteLadenLayout.setHorizontalGroup(
             jPanelFilmlisteLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 705, Short.MAX_VALUE)
+            .addGap(0, 740, Short.MAX_VALUE)
         );
         jPanelFilmlisteLadenLayout.setVerticalGroup(
             jPanelFilmlisteLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 396, Short.MAX_VALUE)
+            .addGap(0, 437, Short.MAX_VALUE)
         );
 
         jTabbedSender.addTab("Filmliste laden", jPanelFilmlisteLaden);
@@ -478,7 +496,7 @@ public class GuiDebug extends JPanel {
             .addGroup(jPanelSenderLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanelLoeschen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(262, Short.MAX_VALUE))
+                .addContainerGap(303, Short.MAX_VALUE))
         );
 
         jButtonFilmlisteLoeschen.setText("gesamte Filmliste löschen");
@@ -572,6 +590,8 @@ public class GuiDebug extends JPanel {
         jLabel1.setText("5");
         jLabel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
+        jButtonAddOldFilm.setText("Add old Film (Sel. aus Liste)");
+
         javax.swing.GroupLayout jPanelToolsLayout = new javax.swing.GroupLayout(jPanelTools);
         jPanelTools.setLayout(jPanelToolsLayout);
         jPanelToolsLayout.setHorizontalGroup(
@@ -583,20 +603,6 @@ public class GuiDebug extends JPanel {
                         .addComponent(jButtonCheckUrl)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldUrl))
-                    .addGroup(jPanelToolsLayout.createSequentialGroup()
-                        .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanelToolsLayout.createSequentialGroup()
-                                .addComponent(jButtonNurDoppelte)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonHashOlddoppelt)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonTTUrl))
-                            .addComponent(jButtonDoppelteUrls, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanelToolsLayout.createSequentialGroup()
-                                .addComponent(jButtonFehler)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jToggleButtonFastAuto, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanelToolsLayout.createSequentialGroup()
                         .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jButtonLiveStreams, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -615,14 +621,29 @@ public class GuiDebug extends JPanel {
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelToolsLayout.createSequentialGroup()
                                 .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jTextFieldLiveStreams, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+                                    .addComponent(jTextFieldLiveStreams, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
                                     .addComponent(jTextFieldOld, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jTextFieldPath))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jButtonDir)
                                     .addComponent(jButtonDelLive, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jButtonOldList))))))
+                                    .addComponent(jButtonOldList)))))
+                    .addGroup(jPanelToolsLayout.createSequentialGroup()
+                        .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelToolsLayout.createSequentialGroup()
+                                .addComponent(jButtonNurDoppelte)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonHashOlddoppelt)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonTTUrl))
+                            .addComponent(jButtonDoppelteUrls, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanelToolsLayout.createSequentialGroup()
+                                .addComponent(jButtonFehler)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jToggleButtonFastAuto, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jButtonAddOldFilm))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -648,7 +669,9 @@ public class GuiDebug extends JPanel {
                     .addComponent(jButtonNurDoppelte)
                     .addComponent(jButtonHashOlddoppelt)
                     .addComponent(jButtonTTUrl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)
+                .addComponent(jButtonAddOldFilm)
+                .addGap(18, 18, 18)
                 .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelToolsLayout.createSequentialGroup()
                         .addComponent(jButtonLiveStreams)
@@ -692,11 +715,11 @@ public class GuiDebug extends JPanel {
         jPanelStarts.setLayout(jPanelStartsLayout);
         jPanelStartsLayout.setHorizontalGroup(
             jPanelStartsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 705, Short.MAX_VALUE)
+            .addGap(0, 740, Short.MAX_VALUE)
         );
         jPanelStartsLayout.setVerticalGroup(
             jPanelStartsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 396, Short.MAX_VALUE)
+            .addGap(0, 437, Short.MAX_VALUE)
         );
 
         jTabbedSender.addTab("Starts", jPanelStarts);
@@ -712,14 +735,16 @@ public class GuiDebug extends JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedSender))
+                .addComponent(jTabbedSender)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAddOld;
+    private javax.swing.JButton jButtonAddOldFilm;
     private javax.swing.JButton jButtonAllesSpeichern;
     private javax.swing.JButton jButtonCheck;
     private javax.swing.JButton jButtonCheckUrl;
@@ -751,22 +776,22 @@ public class GuiDebug extends JPanel {
     // End of variables declaration//GEN-END:variables
 
     private class BeobSenderLoeschen implements ActionListener {
-
+        
         private final String sender;
-
+        
         public BeobSenderLoeschen(String ssender) {
             sender = ssender;
         }
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             Daten.listeFilme.deleteAllFilms(sender);
             Listener.notify(Listener.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
         }
     }
-
+    
     private class BeobPfad implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
@@ -801,9 +826,9 @@ public class GuiDebug extends JPanel {
             }
         }
     }
-
+    
     private class BeobPfadOldUrl implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
@@ -838,5 +863,5 @@ public class GuiDebug extends JPanel {
             }
         }
     }
-
+    
 }

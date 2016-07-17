@@ -25,7 +25,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
 import mSearch.daten.DatenFilm;
-import mSearch.tool.DebugMsg;
+import mSearch.tool.DbgMsg;
 import mSearch.tool.Listener;
 import mSearch.tool.MVConfig;
 import mediathek.config.Icons;
@@ -106,7 +106,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
                     break;
 
                 default:
-                    DebugMsg.print("UNHANDLED TABLE TYPE!!!");
+                    DbgMsg.print("UNHANDLED TABLE TYPE!!!");
                     film = null;
                     break;
             }
