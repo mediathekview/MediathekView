@@ -101,6 +101,7 @@ public class DialogZielExportPset extends javax.swing.JDialog {
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
+        jButtonZiel.setToolTipText("Datei auswählen");
 
         jLabel1.setText("Ziel:");
 

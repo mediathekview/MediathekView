@@ -110,6 +110,7 @@ public class PanelExportFilmliste extends PanelVorlage {
         jPanel4.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jButtonExportPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
+        jButtonExportPfad.setToolTipText("Datei auswählen");
 
         jLabelDatei.setText("Datei:");
 

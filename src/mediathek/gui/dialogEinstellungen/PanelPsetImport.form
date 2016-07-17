@@ -497,7 +497,7 @@
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                       <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
                     </Property>
-                    <Property name="toolTipText" type="java.lang.String" value="Datei ausw&#xe4;hlen"/>
+                    <Property name="toolTipText" type="java.lang.String" value="URL/Datei ausw&#xe4;hlen"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonImportDatei">

@@ -116,6 +116,7 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
+        jButtonZiel.setToolTipText("Programm auswählen");
 
         jLabel1.setText("Programm:");
 

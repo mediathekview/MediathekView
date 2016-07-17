@@ -90,6 +90,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
         </Property>
+        <Property name="toolTipText" type="java.lang.String" value="Zielpfad ausw&#xe4;hlen"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonDelPath">
@@ -97,6 +98,7 @@
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
           <Image iconType="3" name="/mediathek/res/muster/button-del.png"/>
         </Property>
+        <Property name="toolTipText" type="java.lang.String" value="gespeicherte Pfade l&#xf6;schen"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">

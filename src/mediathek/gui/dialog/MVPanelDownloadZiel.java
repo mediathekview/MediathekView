@@ -35,13 +35,13 @@ import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
-import mSearch.tool.Log;
-import mediathek.daten.DatenDownload;
 import mSearch.tool.FilenameUtils;
-import mediathek.tool.GuiFunktionen;
+import mSearch.tool.Log;
 import mSearch.tool.MVColor;
 import mSearch.tool.MVConfig;
 import mediathek.config.Icons;
+import mediathek.daten.DatenDownload;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 
 public class MVPanelDownloadZiel extends javax.swing.JPanel {
@@ -226,8 +226,10 @@ public class MVPanelDownloadZiel extends javax.swing.JPanel {
         jComboBoxPath.setEditable(true);
 
         jButtonPath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
+        jButtonPath.setToolTipText("Zielpfad auswählen");
 
         jButtonDelPath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-del.png"))); // NOI18N
+        jButtonDelPath.setToolTipText("gespeicherte Pfade löschen");
 
         jLabel2.setText("Dateiname:");
 

@@ -309,6 +309,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Tab Downloads"));
 
         jButtonProgrammDateimanager.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
+        jButtonProgrammDateimanager.setToolTipText("Programm auswählen");
 
         jButtonHilfeProgrammDateimanager.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
         jButtonHilfeProgrammDateimanager.setToolTipText("Hilfe anzeigen");
@@ -321,6 +322,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jButtonHilfeVideoplayer.setToolTipText("Hilfe anzeigen");
 
         jButtonProgrammVideoplayer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
+        jButtonProgrammVideoplayer.setToolTipText("Programm auswählen");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -378,6 +380,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Webbrowser zum Öffnen von URLs"));
 
         jButtonProgrammUrl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
+        jButtonProgrammUrl.setToolTipText("Programm auswählen");
 
         jButtonHilfeProgrammUrl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
         jButtonHilfeProgrammUrl.setToolTipText("Hilfe anzeigen");
@@ -414,6 +417,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jButtonHilfeProgrammShutdown.setToolTipText("Hilfe anzeigen");
 
         jButtonProgrammShutdown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
+        jButtonProgrammShutdown.setToolTipText("Programm/Script auswählen");
 
         jTextFieldProgrammShutdown.setText("shutdown -h now");
 

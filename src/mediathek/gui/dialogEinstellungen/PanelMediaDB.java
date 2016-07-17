@@ -336,10 +336,13 @@ public class PanelMediaDB extends PanelVorlage {
         jLabel4.setText("Pfad:");
 
         jButtonPath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
+        jButtonPath.setToolTipText("Pfad auswählen");
 
         jButtonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-add.png"))); // NOI18N
+        jButtonAdd.setToolTipText("vorgegebenen Pfad hinzufügen");
 
         jButtonRemove.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-remove.png"))); // NOI18N
+        jButtonRemove.setToolTipText("ausgewählten Pfad entfernen");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -477,6 +480,7 @@ public class PanelMediaDB extends PanelVorlage {
         jLabel1.setText("Export Index:");
 
         jButtonExportPath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
+        jButtonExportPath.setToolTipText("Datei auswählen");
 
         jButtonExport.setText("Exportieren");
 

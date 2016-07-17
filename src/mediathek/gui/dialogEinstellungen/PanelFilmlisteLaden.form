@@ -217,7 +217,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
             </Property>
-            <Property name="toolTipText" type="java.lang.String" value="Lokale Filmliste ausw&#xe4;hlen"/>
+            <Property name="toolTipText" type="java.lang.String" value="URL oder lokale Filmliste ausw&#xe4;hlen"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButtonFilmeLaden">

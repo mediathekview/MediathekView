@@ -224,6 +224,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
             </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Pfad ausw&#xe4;hlen"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane2">

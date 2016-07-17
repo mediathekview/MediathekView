@@ -120,6 +120,7 @@ public class PanelImport extends PanelVorlage {
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Abos und Blacklist aus Datei importieren"));
 
         jButtonPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
+        jButtonPfad.setToolTipText("Datei auswählen");
 
         jButtonImportDatei.setText("Import");
 

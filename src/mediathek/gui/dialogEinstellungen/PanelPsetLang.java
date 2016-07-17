@@ -1274,7 +1274,7 @@ public class PanelPsetLang extends PanelVorlage {
         jLabel.setText("Programm:");
 
         jButtonProgPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
-        jButtonProgPfad.setToolTipText("Pfad auswählen");
+        jButtonProgPfad.setToolTipText("Programm auswählen");
 
         jLabel1.setText("Schalter:");
 
@@ -1407,6 +1407,7 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonGruppeDuplizieren.setToolTipText("Programmgruppe kopieren");
 
         jButtonExport.setText("Export");
+        jButtonExport.setToolTipText("Programmgruppe in Datei exportieren");
 
         jButtonGruppeNeu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-add.png"))); // NOI18N
         jButtonGruppeNeu.setToolTipText("neue Programmgruppe anlegen");
