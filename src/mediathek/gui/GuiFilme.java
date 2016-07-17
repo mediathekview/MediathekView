@@ -174,6 +174,10 @@ public class GuiFilme extends PanelVorlage {
         tabelle.invertSelection();
     }
 
+    public ArrayList<DatenFilm> selFilme() {
+        return getSelFilme();
+    }
+
     public void init() {
         showDescriptionPanel();
         Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {

@@ -35,7 +35,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.TimerTask;
 import javax.swing.*;
-import mSearch.tool.DebugMsg;
+import mSearch.tool.DbgMsg;
 import mSearch.tool.Functions.OperatingSystemType;
 import static mSearch.tool.Functions.getOs;
 import mediathek.controller.MVBandwidthTokenBucket;
@@ -308,7 +308,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
                 timer.purge();
             }
         } catch (IllegalStateException ignored) {
-            DebugMsg.print(ignored.getMessage());
+            DbgMsg.print(ignored.getMessage());
         }
     }
 
