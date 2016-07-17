@@ -151,7 +151,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jLabel1.setText("URL/Datei:");
 
         jButtonDateiAuswaehlen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
-        jButtonDateiAuswaehlen.setToolTipText("Lokale Filmliste auswählen");
+        jButtonDateiAuswaehlen.setToolTipText("URL oder lokale Filmliste auswählen");
 
         jButtonFilmeLaden.setText("Filme jetzt laden");
 

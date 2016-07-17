@@ -195,8 +195,10 @@ public class PanelProgrammPfade extends JPanel {
         jPanelVlc.setBorder(javax.swing.BorderFactory.createTitledBorder("Pfad zum VLC-Player auswählen"));
 
         jButtonVlcPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
+        jButtonVlcPfad.setToolTipText("Programm auswählen");
 
         jButtonVlcSuchen.setText("suchen");
+        jButtonVlcSuchen.setToolTipText("nach dem Programm suchen");
 
         jLabel1.setText("Website:");
 
@@ -242,8 +244,10 @@ public class PanelProgrammPfade extends JPanel {
         jPanelFlv.setBorder(javax.swing.BorderFactory.createTitledBorder("Pfad zum flvstreamer auswählen"));
 
         jButtonFlvPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
+        jButtonFlvPfad.setToolTipText("Programm auswählen");
 
         jButtonFlvSuchen.setText("suchen");
+        jButtonFlvSuchen.setToolTipText("nach dem Programm suchen");
 
         jLabel2.setText("Website:");
 
@@ -292,8 +296,10 @@ public class PanelProgrammPfade extends JPanel {
         jPanelFFmpeg.setBorder(javax.swing.BorderFactory.createTitledBorder("Pfad zu ffmpeg auswählen"));
 
         jButtonFFmpegSuchen.setText("suchen");
+        jButtonFFmpegSuchen.setToolTipText("nach dem Programm suchen");
 
         jButtonFFmpegPfad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
+        jButtonFFmpegPfad.setToolTipText("Programm auswählen");
 
         jLabel4.setText("Website:");
 

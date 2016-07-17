@@ -210,6 +210,7 @@
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                       <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
                     </Property>
+                    <Property name="toolTipText" type="java.lang.String" value="Pfad ausw&#xe4;hlen"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonAdd">
@@ -217,6 +218,7 @@
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                       <Image iconType="3" name="/mediathek/res/muster/button-add.png"/>
                     </Property>
+                    <Property name="toolTipText" type="java.lang.String" value="vorgegebenen Pfad hinzuf&#xfc;gen"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonRemove">
@@ -224,6 +226,7 @@
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                       <Image iconType="3" name="/mediathek/res/muster/button-remove.png"/>
                     </Property>
+                    <Property name="toolTipText" type="java.lang.String" value="ausgew&#xe4;hlten Pfad entfernen"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -457,6 +460,7 @@
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                       <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
                     </Property>
+                    <Property name="toolTipText" type="java.lang.String" value="Datei ausw&#xe4;hlen"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonExport">

@@ -163,11 +163,13 @@
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                       <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
                     </Property>
+                    <Property name="toolTipText" type="java.lang.String" value="Programm ausw&#xe4;hlen"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonVlcSuchen">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="suchen"/>
+                    <Property name="toolTipText" type="java.lang.String" value="nach dem Programm suchen"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel1">
@@ -246,11 +248,13 @@
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                       <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
                     </Property>
+                    <Property name="toolTipText" type="java.lang.String" value="Programm ausw&#xe4;hlen"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonFlvSuchen">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="suchen"/>
+                    <Property name="toolTipText" type="java.lang.String" value="nach dem Programm suchen"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel2">
@@ -335,6 +339,7 @@
                 <Component class="javax.swing.JButton" name="jButtonFFmpegSuchen">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="suchen"/>
+                    <Property name="toolTipText" type="java.lang.String" value="nach dem Programm suchen"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButtonFFmpegPfad">
@@ -342,6 +347,7 @@
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                       <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
                     </Property>
+                    <Property name="toolTipText" type="java.lang.String" value="Programm ausw&#xe4;hlen"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel4">

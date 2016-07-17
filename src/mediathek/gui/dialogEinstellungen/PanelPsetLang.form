@@ -1259,7 +1259,7 @@
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/mediathek/res/muster/button-file-open.png"/>
                         </Property>
-                        <Property name="toolTipText" type="java.lang.String" value="Pfad ausw&#xe4;hlen"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Programm ausw&#xe4;hlen"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JTextField" name="jTextFieldProgSchalter">
@@ -1426,6 +1426,7 @@
             <Component class="javax.swing.JButton" name="jButtonExport">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Export"/>
+                <Property name="toolTipText" type="java.lang.String" value="Programmgruppe in Datei exportieren"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="jButtonGruppeNeu">

@@ -187,6 +187,7 @@ public class PanelPsetKurz extends PanelVorlage {
         JButton button = new JButton();
         button.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         button.addActionListener(new ZielBeobachter(textField, arr, idx));
+        button.setToolTipText("Programm auswählen");
         gridbag.setConstraints(button, c);
         panel.add(button);
         // Dimension(int width, int height)
@@ -263,6 +264,7 @@ public class PanelPsetKurz extends PanelVorlage {
         jLabel2.setText("Zielpfad:");
 
         jButtonZiel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
+        jButtonZiel.setToolTipText("Pfad auswählen");
 
         jScrollPane2.setBorder(javax.swing.BorderFactory.createLineBorder(javax.swing.UIManager.getDefaults().getColor("TextField.selectionBackground")));
 
