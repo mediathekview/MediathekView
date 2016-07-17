@@ -19,8 +19,6 @@
  */
 package mediathek.gui;
 
-import mediathek.config.Daten;
-import mediathek.config.Konstanten;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.PrinterException;
@@ -40,7 +38,9 @@ import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.MVConfig;
 import mediathek.MediathekGui;
+import mediathek.config.Daten;
 import mediathek.config.Icons;
+import mediathek.config.Konstanten;
 import mediathek.controller.starter.Start;
 import mediathek.daten.*;
 import mediathek.gui.dialog.DialogAddDownload;
@@ -54,7 +54,6 @@ public class GuiFilme extends PanelVorlage {
     public static final int[] COMBO_ZEIT_INT = {0, 1, 2, 3, 7, 15, 20, 30};
     private static final int FILTER_ZEIT_STARTWERT = 5;
     private static final int FILTER_DAUER_STARTWERT = 0;
-//    private final MVFilmInfo filmInfo;
     private MVFilter mVFilter;
     public MVFilterFrame mVFilterFrame;
     private final MVFilterPanel mVFilterPanel;
@@ -103,7 +102,6 @@ public class GuiFilme extends PanelVorlage {
         setupDescriptionPanel();
 
         jPanelFilter.setLayout(new BorderLayout());
-//        filmInfo = Daten.filmInfo;
 
         toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_FILME);
         jPanelToolBar.setLayout(new BorderLayout());
@@ -128,7 +126,6 @@ public class GuiFilme extends PanelVorlage {
     @Override
     public void isShown() {
         super.isShown();
-//        Daten.mediathekGui.setTabShown(MediathekGui.TABS.TAB_FILME);
         Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.FILME);
         updateFilmData();
         setInfo();
@@ -298,7 +295,6 @@ public class GuiFilme extends PanelVorlage {
         });
 
         tabelle.setModel(new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES));
-//        tabelle.setRowHeight(50);
         BeobMausTabelle beobMausTabelle = new BeobMausTabelle();
         tabelle.addMouseListener(beobMausTabelle);
         tabelle.getSelectionModel().addListSelectionListener(event -> {
@@ -322,7 +318,6 @@ public class GuiFilme extends PanelVorlage {
         jCheckBoxProgamme.addActionListener(e -> {
             MVConfig.add(MVConfig.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, Boolean.FALSE.toString());
             Listener.notify(Listener.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName());
-//            Daten.mediathekGui.videoplayerAnzeigen(true);
             panelVideoplayerSetzen();
         });
         setSplitPane();

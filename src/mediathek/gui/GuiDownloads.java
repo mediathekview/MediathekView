@@ -543,8 +543,8 @@ public class GuiDownloads extends PanelVorlage {
             }
             Daten.listeDownloads.downloadLoeschen(arrayDownloadsLoeschen);
             reloadTable();
-            // ausrichten
-            tabelle.setSelRow(rows[0]);
+//            // ausrichten
+//            tabelle.setSelRow(rows[0]);
         } catch (Exception ex) {
             Log.errorLog(451203625, ex);
         }

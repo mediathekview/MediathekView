@@ -65,6 +65,8 @@ public final class MVTable extends JTable {
     private int[] selRows;
     private String[] indexWertSelection = null;
     private int[] selIndexes = null;
+    private int selIndex = -1;
+    private int selRow = -1;
     private boolean[] spaltenAnzeigen;
     private String iconAnzeigenStr = "";
     private String iconKleinStr = "";
@@ -392,13 +394,18 @@ public final class MVTable extends JTable {
 
     public void getSelected() {
         // Einstellungen der Tabelle merken
-        int selRow = this.getSelectedRow();
+        selRow = this.getSelectedRow();
+        if (selRow >= 0) {
+            selIndex = (Integer) this.getModel().getValueAt(this.convertRowIndexToModel(selRow), indexSpalte);
+        } else {
+            selIndex = -1;
+        }
         selRows = this.getSelectedRows();
         switch (tabelle) {
             case DOWNLOADS:
             case FILME:
             case ABOS:
-                if (selRow >= 0) {
+                if (selIndex >= 0) {
                     selIndexes = new int[selRows.length];
                     int k = 0;
                     for (int i : selRows) {
@@ -425,35 +432,36 @@ public final class MVTable extends JTable {
 
     private void setSelected() {
         // gemerkte Einstellungen der Tabelle wieder setzten
+        boolean found = false;
         switch (tabelle) {
             case DOWNLOADS:
             case FILME:
             case ABOS:
                 if (selIndexes != null) {
+                    int r;
                     this.selectionModel.setValueIsAdjusting(true);
                     TModel tModel = (TModel) this.getModel();
-                    int r;
                     for (int i : selIndexes) {
                         r = tModel.getIdxRow(i);
                         if (r >= 0) {
                             // ansonsten gibts die Zeile nicht mehr
                             r = this.convertRowIndexToView(r);
                             this.addRowSelectionInterval(r, r);
+                            found = true;
                         }
                     }
+                    if (!found && selRow >= 0 && this.getRowCount() > selRow) {
+                        // große Frage was da besser ist???
+                        for (int i = selRow; i >= 0; --i) {
+                            this.setRowSelectionInterval(i, i);
+                            break;
+                        }
+                    } else if (!found && selRow >= 0 && this.getRowCount() > 0) {
+                        this.setRowSelectionInterval(tModel.getRowCount() - 1, tModel.getRowCount() - 1);
+                    }
                     this.selectionModel.setValueIsAdjusting(false);
-//                    for (int i : selIndexes) {
-//                        //noch sel anzeigen
-//                        r = tModel.getIdxRow(i);
-//                        if (r >= 0) {
-//                            // ansonsten gibts die Zeile nicht mehr
-//                            r = this.convertRowIndexToView(r);
-//                            scrollToCenter(r);
-//                        }
-//                        break;
-//                    }
                 }
-                indexWertSelection = null;
+                selIndexes = null;
                 break;
             case MEDIA_DB:
                 break;
@@ -516,7 +524,7 @@ public final class MVTable extends JTable {
 
     public void setSpalten() {
         // gemerkte Einstellungen der Tabelle wieder setzten
-        setSelected();
+//        setSelected();
         try {
             for (int i = 0; i < breite.length && i < this.getColumnCount(); ++i) {
                 if (!anzeigen(i, spaltenAnzeigen)) {
@@ -545,6 +553,7 @@ public final class MVTable extends JTable {
                     this.getRowSorter().setSortKeys(listeSortKeys);
                 }
             }
+            setSelected();
             this.validate();
         } catch (Exception ex) {
             Log.errorLog(965001463, ex);
