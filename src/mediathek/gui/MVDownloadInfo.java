@@ -19,8 +19,8 @@
  */
 package mediathek.gui;
 
-import mSearch.tool.MVConfig;
-import mSearch.tool.MVFilmSize;
+import mediathek.config.MVConfig;
+import mediathek.tool.MVFilmSize;
 import mSearch.tool.Listener;
 import info.monitorenter.gui.chart.Chart2D;
 import info.monitorenter.gui.chart.IAxis;

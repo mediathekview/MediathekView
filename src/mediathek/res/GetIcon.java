@@ -23,7 +23,7 @@ import java.awt.Image;
 import java.io.File;
 import javax.swing.ImageIcon;
 import mSearch.tool.Log;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mediathek.tool.GuiFunktionen;
 
 public class GetIcon {

@@ -23,7 +23,7 @@ import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;

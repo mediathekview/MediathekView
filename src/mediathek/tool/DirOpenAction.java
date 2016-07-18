@@ -19,7 +19,7 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mSearch.tool.Listener;
 import java.awt.Desktop;
 import java.awt.Frame;

@@ -33,7 +33,7 @@ import javax.swing.SwingUtilities;
 import mSearch.tool.Functions.OperatingSystemType;
 import static mSearch.tool.Functions.getOs;
 import mSearch.tool.Log;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mediathek.MediathekGui;
 
 public class GuiFunktionen extends MVFunctionSys {

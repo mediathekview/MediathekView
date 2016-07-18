@@ -19,6 +19,7 @@
  */
 package mediathek.controller.starter;
 
+import mediathek.config.MVConfig;
 import com.apple.eawt.Application;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Toolkit;

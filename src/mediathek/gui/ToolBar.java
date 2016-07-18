@@ -27,7 +27,7 @@ import javax.swing.*;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mediathek.MediathekGui;
 import mediathek.config.Icons;
 import mediathek.config.Daten;

@@ -19,7 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
 import java.awt.Component;
@@ -54,7 +54,7 @@ import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.config.Konstanten;
 import mSearch.tool.Listener;
-import mSearch.tool.MVColor;
+import mediathek.config.MVColor;
 import mediathek.tool.MVTable;
 import mediathek.tool.TModel;
 import mediathek.tool.UrlHyperlinkAction;

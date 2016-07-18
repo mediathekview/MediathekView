@@ -21,7 +21,7 @@ package mediathek.tool;
 
 import javax.swing.JTable;
 import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 
 public class MVFont {
 

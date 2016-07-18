@@ -34,7 +34,7 @@ import javax.swing.event.DocumentListener;
 import mSearch.filmlisten.DatenFilmlisteUrl;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mediathek.config.Icons;
 import mediathek.config.Daten;
 import mediathek.gui.PanelVorlage;

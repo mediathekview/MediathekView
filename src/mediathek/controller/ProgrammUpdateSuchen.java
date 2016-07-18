@@ -36,7 +36,7 @@ import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.gui.dialog.DialogHinweisUpdate;
 import mediathek.config.Konstanten;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mediathek.tool.MVFunctionSys;
 
 public class ProgrammUpdateSuchen {

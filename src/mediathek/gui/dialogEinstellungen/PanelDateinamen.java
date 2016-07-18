@@ -28,7 +28,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mSearch.tool.ReplaceList;
 import mediathek.config.Icons;
 import mediathek.config.Daten;

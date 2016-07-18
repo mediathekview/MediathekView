@@ -19,6 +19,7 @@
  */
 package mediathek;
 
+import mediathek.config.MVConfig;
 import mediathek.config.Konstanten;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.*;

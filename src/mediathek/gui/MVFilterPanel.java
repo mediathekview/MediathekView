@@ -26,7 +26,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mediathek.config.Icons;
 import mediathek.config.Daten;
 import mediathek.file.GetFile;

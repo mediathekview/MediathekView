@@ -14,7 +14,7 @@ import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mediathek.gui.AboutDialog;
 
 /**

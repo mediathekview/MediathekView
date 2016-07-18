@@ -24,8 +24,7 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import mSearch.tool.Log;
-import mSearch.tool.MVC;
-import mSearch.tool.MVColor;
+import mediathek.config.MVColor;
 import mediathek.config.Daten;
 
 public class CellRendererColor extends DefaultTableCellRenderer {

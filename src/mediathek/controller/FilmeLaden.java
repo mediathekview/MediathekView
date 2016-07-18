@@ -20,7 +20,7 @@
 package mediathek.controller;
 
 import mediathek.config.Konstanten;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mSearch.tool.SysMsg;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

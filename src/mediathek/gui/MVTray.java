@@ -27,7 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mSearch.tool.SysMsg;
 import mediathek.config.Icons;
 import mediathek.config.Daten;

@@ -19,6 +19,7 @@
  */
 package mediathek.gui;
 
+import mediathek.config.MVConfig;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.FileDialog;
 import java.awt.GridLayout;

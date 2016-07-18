@@ -31,7 +31,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.controller.ProgrammUpdateSuchen;

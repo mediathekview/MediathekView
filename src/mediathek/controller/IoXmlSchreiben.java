@@ -34,7 +34,7 @@ import mSearch.tool.Log;
 import mSearch.tool.ReplaceList;
 import mediathek.daten.*;
 import mediathek.config.Konstanten;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mSearch.tool.SysMsg;
 
 public class IoXmlSchreiben {
