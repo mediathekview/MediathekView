@@ -40,7 +40,7 @@ import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.file.GetFile;
 import mediathek.tool.EscBeenden;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mediathek.config.Icons;
 import org.jdesktop.swingx.JXBusyLabel;
 

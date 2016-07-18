@@ -19,6 +19,9 @@
  */
 package mediathek.gui.dialog;
 
+import mediathek.tool.MVFilmSize;
+import mediathek.config.MVConfig;
+import mediathek.config.MVColor;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
 import java.awt.FileDialog;

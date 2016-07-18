@@ -27,7 +27,7 @@ import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mediathek.gui.GuiFilme;
 import mediathek.tool.Filter;
 import mediathek.tool.MVListeFilme;

@@ -40,7 +40,7 @@ import javax.swing.table.TableColumnModel;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mediathek.config.Daten;
 import mediathek.daten.*;
 

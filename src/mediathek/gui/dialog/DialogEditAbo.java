@@ -42,7 +42,7 @@ import mediathek.file.GetFile;
 import mediathek.tool.EscBeenden;
 import mSearch.tool.FilenameUtils;
 import mediathek.tool.GuiFunktionen;
-import mSearch.tool.MVColor;
+import mediathek.config.MVColor;
 import mediathek.config.Icons;
 import mediathek.tool.MVMessageDialog;
 

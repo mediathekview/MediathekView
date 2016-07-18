@@ -20,7 +20,6 @@
 package mediathek.tool;
 
 import mSearch.tool.Datum;
-import mSearch.tool.MVFilmSize;
 import mediathek.daten.DatenDownload;
 
 public class TModelDownload extends TModel {

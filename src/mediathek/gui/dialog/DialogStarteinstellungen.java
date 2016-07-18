@@ -25,7 +25,7 @@ import javax.swing.GroupLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import static mSearch.tool.Functions.getOs;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mediathek.config.Daten;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;

@@ -26,7 +26,7 @@ import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import javax.swing.JFrame;
 import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.tool.GuiFunktionen;

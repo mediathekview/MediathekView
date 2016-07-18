@@ -28,7 +28,7 @@ import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.FilmlisteLesen;
 import mSearch.tool.Log;
 import static mSearch.tool.Log.LILNE;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mSearch.tool.SysMsg;
 import mediathek.controller.IoXmlLesen;
 import mediathek.config.Daten;

@@ -19,7 +19,7 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mSearch.tool.SysMsg;
 import java.io.File;
 import java.io.FileOutputStream;

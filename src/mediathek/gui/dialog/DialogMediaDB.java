@@ -19,7 +19,7 @@
  */
 package mediathek.gui.dialog;
 
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mSearch.tool.Listener;
 import mSearch.tool.FilenameUtils;
 import java.awt.Point;

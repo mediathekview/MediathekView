@@ -19,6 +19,8 @@
  */
 package mediathek.daten;
 
+import mediathek.tool.MVFilmSize;
+import mediathek.config.MVConfig;
 import mediathek.config.Daten;
 import java.io.File;
 import java.text.SimpleDateFormat;

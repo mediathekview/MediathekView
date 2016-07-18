@@ -39,7 +39,7 @@ import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.CellRendererMediaDB;
 import mediathek.tool.HinweisKeineAuswahl;
 import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mediathek.config.Icons;
 import mediathek.tool.*;
 

@@ -27,7 +27,7 @@ import javax.swing.table.TableModel;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.DbgMsg;
 import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mediathek.config.Icons;
 import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;

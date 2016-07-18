@@ -31,7 +31,7 @@ import mSearch.Const;
 import mSearch.filmlisten.DatenFilmlisteUrl;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mSearch.tool.ReplaceList;
 import mediathek.daten.*;
 

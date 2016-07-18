@@ -2,7 +2,7 @@ package mediathek.controller;
 
 import java.util.concurrent.Semaphore;
 import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 
 /**
  * This singleton class provides the necessary tokens for direct file downloads.

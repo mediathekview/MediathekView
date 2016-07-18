@@ -19,6 +19,8 @@
  */
 package mediathek.gui;
 
+import mediathek.tool.MVFilmSize;
+import mediathek.config.MVConfig;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.BorderLayout;
 import java.awt.Point;

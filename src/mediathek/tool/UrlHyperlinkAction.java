@@ -19,7 +19,7 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.net.URI;

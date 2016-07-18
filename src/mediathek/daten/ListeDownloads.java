@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Listener;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.config.Konstanten;
 import mediathek.tool.MVMessageDialog;

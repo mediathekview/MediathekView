@@ -19,8 +19,8 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.MVColor;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVColor;
+import mediathek.config.MVConfig;
 import mSearch.tool.Listener;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.BorderLayout;

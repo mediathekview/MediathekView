@@ -26,7 +26,7 @@ import static mSearch.tool.Functions.getOs;
 import mediathek.controller.starter.Start;
 import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 
 /**
  * This class will manage and display the download bandwidth chart display.

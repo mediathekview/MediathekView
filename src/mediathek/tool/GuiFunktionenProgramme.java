@@ -19,7 +19,7 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.MVConfig;
+import mediathek.config.MVConfig;
 import java.awt.Cursor;
 import java.io.*;
 import java.net.URL;
