@@ -23,28 +23,25 @@ package mediathek.gui.dialog;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.SwingWorker;
-import mediathek.config.Icons;
+import javax.swing.*;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
 import mediathek.file.GetFile;
 import mediathek.tool.EscBeenden;
 import org.jdesktop.swingx.JXBusyLabel;
 
 public class DialogBeenden extends JDialog {
-    
+
     private static final String CANCEL_AND_TERMINATE_PROGRAM = "Downloads abbrechen und Programm beenden";
     private static final String WAIT_FOR_DOWNLOADS_AND_TERMINATE = "Auf Abschluß aller Downloads warten, danach beenden";
+    private static final String WAIT_FOR_RUNNING_DOWNLOADS_AND_TERMINATE = "Nur auf bereits laufende Downloads warten, danach beenden";
     private static final String DONT_TERMINATE = "Programm nicht beenden";
     private final JFrame parent;
     /**
      * Indicates whether the application can terminate.
      */
     private boolean applicationCanTerminate = false;
+    private boolean onlyRunningDownloads = false;
     /**
      * Indicate whether computer should be shut down.
      */
@@ -66,12 +63,12 @@ public class DialogBeenden extends JDialog {
     public boolean applicationCanTerminate() {
         return applicationCanTerminate;
     }
-    
+
     public DialogBeenden(JFrame pparent) {
         super(pparent, true);
         initComponents();
         this.parent = pparent;
-        
+
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
@@ -81,23 +78,24 @@ public class DialogBeenden extends JDialog {
                 escapeHandler();
             }
         };
-        
+
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 escapeHandler();
             }
         });
-        
+
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfe.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BEENDEN)).setVisible(true));
         jButtonHilfe.setEnabled(false);
         cbShutdownComputer.setEnabled(false);
-        
+
         comboActions.addActionListener(e -> {
             final String strSelectedItem = (String) comboActions.getSelectedItem();
             switch (strSelectedItem) {
                 case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
+                case WAIT_FOR_RUNNING_DOWNLOADS_AND_TERMINATE:
                     jButtonHilfe.setEnabled(true);
                     cbShutdownComputer.setEnabled(true);
                     break;
@@ -112,13 +110,17 @@ public class DialogBeenden extends JDialog {
                     break;
             }
         });
-        
+
         cbShutdownComputer.addActionListener(e -> shutdown = cbShutdownComputer.isSelected());
-        
+
         btnContinue.addActionListener(e -> {
             final String strSelectedItem = (String) comboActions.getSelectedItem();
             switch (strSelectedItem) {
                 case WAIT_FOR_DOWNLOADS_AND_TERMINATE:
+                    waitUntilDownloadsHaveFinished();
+                    break;
+                case WAIT_FOR_RUNNING_DOWNLOADS_AND_TERMINATE:
+                    onlyRunningDownloads = true;
                     waitUntilDownloadsHaveFinished();
                     break;
 
@@ -133,11 +135,11 @@ public class DialogBeenden extends JDialog {
                     break;
             }
         });
-        
+
         btnCancel.addActionListener(e -> escapeHandler());
-        
+
         pack();
-        
+
         getRootPane().setDefaultButton(btnContinue);
     }
 
@@ -149,11 +151,11 @@ public class DialogBeenden extends JDialog {
     public boolean isShutdownRequested() {
         return shutdown;
     }
-    
+
     public void setComboWaitAndTerminate() {
         comboActions.setSelectedItem(WAIT_FOR_DOWNLOADS_AND_TERMINATE);
         cbShutdownComputer.setSelected(true);
-        shutdown=true;
+        shutdown = true;
     }
 
     /**
@@ -162,7 +164,7 @@ public class DialogBeenden extends JDialog {
      * @return The model with all valid user actions.
      */
     private DefaultComboBoxModel<String> getComboBoxModel() {
-        return new DefaultComboBoxModel<>(new String[]{CANCEL_AND_TERMINATE_PROGRAM, WAIT_FOR_DOWNLOADS_AND_TERMINATE, DONT_TERMINATE});
+        return new DefaultComboBoxModel<>(new String[]{CANCEL_AND_TERMINATE_PROGRAM, WAIT_FOR_DOWNLOADS_AND_TERMINATE, WAIT_FOR_RUNNING_DOWNLOADS_AND_TERMINATE, DONT_TERMINATE});
     }
 
     /**
@@ -172,11 +174,11 @@ public class DialogBeenden extends JDialog {
         if (downloadMonitorWorker != null) {
             downloadMonitorWorker.cancel(true);
         }
-        
+
         if (glassPane != null) {
             glassPane.setVisible(false);
         }
-        
+
         applicationCanTerminate = false;
         dispose();
     }
@@ -192,7 +194,7 @@ public class DialogBeenden extends JDialog {
             strMessage += "<br><b>Der Rechner wird danach heruntergefahren.</b>";
         }
         strMessage += "<br>Sie können den Vorgang mit Escape abbrechen.</html>";
-        
+
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout(5, 5));
         JXBusyLabel lbl = new JXBusyLabel();
@@ -201,7 +203,7 @@ public class DialogBeenden extends JDialog {
         lbl.setVerticalAlignment(SwingConstants.CENTER);
         lbl.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(lbl, BorderLayout.CENTER);
-        
+
         return panel;
     }
 
@@ -213,17 +215,22 @@ public class DialogBeenden extends JDialog {
         glassPane = createGlassPane();
         setGlassPane(glassPane);
         glassPane.setVisible(true);
-        
+
+        if (onlyRunningDownloads) {
+            Daten.guiDownloads.wartendeStoppen();
+            onlyRunningDownloads = false;
+        }
+
         downloadMonitorWorker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
                 while ((Daten.listeDownloads.nochNichtFertigeDownloads() > 0) && !isCancelled()) {
                     Thread.sleep(1000);
                 }
-                
+
                 return null;
             }
-            
+
             @Override
             protected void done() {
                 applicationCanTerminate = true;
@@ -274,17 +281,18 @@ public class DialogBeenden extends JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE)
                     .addComponent(comboActions, 0, 0, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(cbShutdownComputer)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonHilfe))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButtonHilfe)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCancel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnContinue)))
+                        .addComponent(btnContinue))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(cbShutdownComputer)
+                        .addGap(0, 399, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -295,14 +303,14 @@ public class DialogBeenden extends JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(comboActions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbShutdownComputer)
+                .addComponent(cbShutdownComputer)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnContinue)
+                        .addComponent(btnCancel))
                     .addComponent(jButtonHilfe))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnContinue)
-                    .addComponent(btnCancel))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
