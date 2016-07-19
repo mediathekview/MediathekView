@@ -27,21 +27,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerDateModel;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+import javax.swing.*;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
+import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.file.GetFile;
 import mediathek.tool.EscBeenden;
-import mediathek.config.MVConfig;
-import mediathek.config.Icons;
 import org.jdesktop.swingx.JXBusyLabel;
 
 public class DialogBeendenZeit extends JDialog {
