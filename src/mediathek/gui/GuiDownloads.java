@@ -84,7 +84,6 @@ public class GuiDownloads extends PanelVorlage {
 
         tabelle = new MVTable(MVTable.TableType.DOWNLOADS);
         jScrollPane1.setViewportView(tabelle);
-//        filmInfoHud = Daten.filmInfo;
 
         setupDescriptionPanel();
 
@@ -114,7 +113,6 @@ public class GuiDownloads extends PanelVorlage {
     public void isShown() {
         super.isShown();
         if (!solo) {
-//            Daten.mediathekGui.setTabShown(MediathekGui.TABS.TAB_DOWNLOADS);
             Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.DOWNLOAD);
         }
         updateFilmData();
@@ -687,9 +685,14 @@ public class GuiDownloads extends PanelVorlage {
                                 text = "Film nochmal starten?  ==> " + download.arr[DatenDownload.DOWNLOAD_TITEL];
                             }
                             antwort = JOptionPane.showConfirmDialog(parentComponent, text,
-                                    "Fertiger Download", JOptionPane.YES_NO_OPTION);
+                                    "Fertiger Download", JOptionPane.YES_NO_CANCEL_OPTION);
                         }
-                        if (antwort != JOptionPane.YES_OPTION) {
+                        if (antwort == JOptionPane.CANCEL_OPTION) {
+                            //=============================
+                            //dann wars das
+                            return;
+                        }
+                        if (antwort == JOptionPane.NO_OPTION) {
                             // weiter mit der nächsten URL
                             continue;
                         }
