@@ -20,19 +20,18 @@
 package mediathek.daten;
 
 import mediathek.config.Daten;
-import java.awt.Frame;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
-import javax.swing.JOptionPane;
+import javax.swing.JFrame;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Listener;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.config.Konstanten;
-import mediathek.tool.MVMessageDialog;
+import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelDownload;
 
@@ -346,7 +345,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    public synchronized void abosSuchen(Frame parent) {
+    public synchronized void abosSuchen(JFrame parent) {
         // in der Filmliste nach passenden Filmen suchen und 
         // in die Liste der Downloads eintragen
         boolean gefunden = false;
@@ -395,8 +394,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 gefunden = true;
             } else if (parent != null) {
                 // sonst sind wir evtl. nur in einer Konsole ohne X
-                MVMessageDialog.showMessageDialog(parent, "Im Menü unter \"Datei->Einstellungen->Set bearbeiten\" ein Programm zum Aufzeichnen für Abos festlegen.",
-                        "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
+                new DialogAboNoSet(parent, daten).setVisible(true);
                 break;
             }
         }
