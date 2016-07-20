@@ -371,8 +371,8 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                             ret = true;
                             break;
                         }
-                    } else {
-                        //Suffix prüfen
+                    } else //Suffix prüfen
+                    {
                         if (url.endsWith(s1.toLowerCase())) {
                             ret = true;
                             break;
@@ -394,12 +394,10 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             }
             if (pfad.equals("")) {
             } else if (!testPfad.isDirectory()) {
-            } else {
-                if (testPfad.canWrite()) {
-                    File tmpFile = File.createTempFile("mediathek", "tmp", testPfad);
-                    tmpFile.delete();
-                    ret = true;
-                }
+            } else if (testPfad.canWrite()) {
+                File tmpFile = File.createTempFile("mediathek", "tmp", testPfad);
+                tmpFile.delete();
+                ret = true;
             }
         } catch (Exception ignored) {
         }
@@ -426,8 +424,8 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                     if (zielPfad.equals("")) {
                         ret = false;
                         text += PIPE + LEER + "Zielpfad fehlt!\n";
-                    } else {
-                        // Pfad beschreibbar?
+                    } else // Pfad beschreibbar?
+                    {
                         if (!checkPfadBeschreibbar(zielPfad)) {
                             //da Pfad-leer und "kein" Pfad schon abgeprüft
                             ret = false;
@@ -438,7 +436,12 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 }
                 for (DatenProg datenProg : datenPset.getListeProg()) {
                     // Programmpfad prüfen
-                    if (!new File(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]).canExecute()) {
+                    if (datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD].isEmpty()) {
+                        ret = false;
+                        text += PIPE + LEER + "Kein Programm angegeben!\n";
+                        text += PIPE + LEER + PFEIL + "Programmname: " + datenProg.arr[DatenProg.PROGRAMM_NAME] + "\n";
+                        text += PIPE + LEER + LEER + "Pfad: " + datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD] + "\n";
+                    } else if (!new File(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]).canExecute()) {
                         // dann noch mit RuntimeExec versuchen
                         RuntimeExec r = new RuntimeExec(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]);
                         Process pr = r.exec(false /*log*/);

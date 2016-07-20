@@ -40,8 +40,8 @@ import javax.swing.table.TableColumnModel;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
-import mediathek.config.MVConfig;
 import mediathek.config.Daten;
+import mediathek.config.MVConfig;
 import mediathek.daten.*;
 
 public final class MVTable extends JTable {
@@ -395,16 +395,16 @@ public final class MVTable extends JTable {
     public void getSelected() {
         // Einstellungen der Tabelle merken
         selRow = this.getSelectedRow();
-        if (selRow >= 0) {
-            selIndex = (Integer) this.getModel().getValueAt(this.convertRowIndexToModel(selRow), indexSpalte);
-        } else {
-            selIndex = -1;
-        }
         selRows = this.getSelectedRows();
         switch (tabelle) {
             case DOWNLOADS:
             case FILME:
             case ABOS:
+                if (selRow >= 0) {
+                    selIndex = (Integer) this.getModel().getValueAt(this.convertRowIndexToModel(selRow), indexSpalte);
+                } else {
+                    selIndex = -1;
+                }
                 if (selIndex >= 0) {
                     selIndexes = new int[selRows.length];
                     int k = 0;

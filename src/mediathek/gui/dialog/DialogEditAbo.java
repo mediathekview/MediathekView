@@ -19,31 +19,20 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.util.ArrayList;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
+import mSearch.tool.FilenameUtils;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
+import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
 import mediathek.file.GetFile;
 import mediathek.tool.EscBeenden;
-import mSearch.tool.FilenameUtils;
 import mediathek.tool.GuiFunktionen;
-import mediathek.config.MVColor;
-import mediathek.config.Icons;
 import mediathek.tool.MVMessageDialog;
 
 public class DialogEditAbo extends javax.swing.JDialog {
@@ -57,10 +46,12 @@ public class DialogEditAbo extends javax.swing.JDialog {
     private final JSlider sliderDauer = new JSlider(0, 100, 0);
     private final JLabel labelDauer = new JLabel("0");
     public boolean ok = false;
+    private final JFrame parent;
 
     public DialogEditAbo(final JFrame parent, boolean modal, Daten d, DatenAbo aktA) {
         super(parent, modal);
         initComponents();
+        this.parent = parent;
         aktAbo = aktA;
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
         comboboxPSet.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listePset.getListeAbo().getObjectDataCombo()));
@@ -108,9 +99,25 @@ public class DialogEditAbo extends javax.swing.JDialog {
                 beenden();
             }
         };
-        setExtra();
         jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_ADD_ABO)).setVisible(true));
+
+        if (comboboxPSet.getModel().getSize() == 0) {
+            // dann gibts kein Set zum Aufzeichnen
+            new DialogAboNoSet(parent, d).setVisible(true);
+        } else {
+            setExtra();
+        }
+    }
+
+    @Override
+    public void setVisible(boolean vis) {
+        if (comboboxPSet.getModel().getSize() == 0) {
+            // dann gibts kein Set zum Aufzeichnen
+            beenden();
+        } else {
+            super.setVisible(vis);
+        }
     }
 
     private void checkPfad() {

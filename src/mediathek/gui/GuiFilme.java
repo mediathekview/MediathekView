@@ -43,6 +43,7 @@ import mediathek.config.Icons;
 import mediathek.config.Konstanten;
 import mediathek.controller.starter.Start;
 import mediathek.daten.*;
+import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.tool.*;
@@ -462,8 +463,7 @@ public class GuiFilme extends PanelVorlage {
 
     private synchronized void saveFilm(DatenPset pSet) {
         if (Daten.listePset.getListeSpeichern().isEmpty()) {
-            MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Einstellungen->Set bearbeiten\" ein Programm zum Aufzeichnen festlegen.",
-                    "fehlende Einstellungen zum Speichern!", JOptionPane.INFORMATION_MESSAGE);
+            new DialogAboNoSet(parentComponent, daten).setVisible(true);
             // Satz mit x, war wohl nix
             return;
         }
@@ -1660,8 +1660,7 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (Daten.listePset.getListeAbo().isEmpty()) {
-                    MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
-                            "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
+                    new DialogAboNoSet(parentComponent, daten).setVisible(true);
                 } else {
                     final int nr = tabelle.rowAtPoint(p);
                     if (nr >= 0) {
@@ -1695,8 +1694,7 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (Daten.listePset.getListeAbo().isEmpty()) {
-                    MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
-                            "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
+                    new DialogAboNoSet(parentComponent, daten).setVisible(true);
                 } else {
                     final int nr = tabelle.rowAtPoint(p);
                     if (nr >= 0) {
@@ -1708,15 +1706,13 @@ public class GuiFilme extends PanelVorlage {
                                 //gibts schon, dann löschen
                                 Daten.listeAbo.aboLoeschen(datenAbo);
                             } else //neues Abo anlegen
-                            {
-                                if (mitTitel) {
+                             if (mitTitel) {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], film.arr[DatenFilm.FILM_TITEL]);
                                 } else {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], "");
                                 }
-                            }
                         });
                         stopBeob = false;
                     }
@@ -1729,8 +1725,7 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (Daten.listePset.getListeAbo().isEmpty()) {
-                    MVMessageDialog.showMessageDialog(parentComponent, "Im Menü unter \"Datei->Optionen->Videoplayer\" ein Programm zum Aufzeichnen festlegen.",
-                            "kein Videoplayer!", JOptionPane.INFORMATION_MESSAGE);
+                    new DialogAboNoSet(parentComponent, daten).setVisible(true);
                 } else {
                     final int nr = tabelle.rowAtPoint(p);
                     if (nr >= 0) {
