@@ -198,11 +198,11 @@ public class MediathekGui extends JFrame {
         im.put(KeyStroke.getKeyStroke("F10"), "none");
 
         updateSplashScreenText("Anwendungsdaten laden...");
-        Duration duration = new Duration(MediathekGui.class.getSimpleName());
-        duration.ping("Start");
+//        Duration duration = new Duration(MediathekGui.class.getSimpleName());
+        Duration.staticPing("Start");
 
         daten = new Daten(pfad, this);
-        duration.ping("Daten");
+        Duration.staticPing("Daten");
 
         startMeldungen();
 
@@ -215,10 +215,10 @@ public class MediathekGui extends JFrame {
             new DialogStarteinstellungen(this, daten).setVisible(true);
             this.pack();
         }
-        duration.ping("Alles laden");
+        Duration.staticPing("Alles laden");
 
         createStatusBar();
-        duration.ping("Statusbar");
+        Duration.staticPing("Statusbar");
 
         //create the Film Information HUD
         if (SystemInfo.isMacOSX()) {
@@ -227,15 +227,15 @@ public class MediathekGui extends JFrame {
             //klappte nicht auf allen Desktops
             Daten.filmInfo = new MVFilmInformationLinux(this, jTabbedPane, daten);
         }
-        duration.ping("HUD");
+        Duration.staticPing("HUD");
 
         setOrgTitel();
         setLookAndFeel();
-        duration.ping("LookAndFeel");
+        Duration.staticPing("LookAndFeel");
         init();
-        duration.ping("init");
+        Duration.staticPing("init");
         setSize();
-        duration.ping("setSize");
+        Duration.staticPing("setSize");
 
         // Dialog mit den Programmeinstellungen einrichten
         Daten.dialogEinstellungen = new DialogEinstellungen(this, daten);
@@ -244,7 +244,7 @@ public class MediathekGui extends JFrame {
 
         // Prüfen obs ein Programmupdate gibt
         new CheckUpdate(this, daten).checkProgUpdate();
-        duration.ping("CheckUpdate");
+        Duration.staticPing("CheckUpdate");
 
         if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO) {
             if (Daten.listeFilme.isTooOld()) {
@@ -252,7 +252,7 @@ public class MediathekGui extends JFrame {
                 Daten.filmeLaden.importFilmliste("", true);
             }
         }
-        duration.ping("Filmliste laden");
+        Duration.staticPing("Filmliste laden");
 
         addListener();
 
@@ -279,7 +279,7 @@ public class MediathekGui extends JFrame {
             cbBandwidthDisplay.addActionListener(e -> mvDownloadInfo.toggleVisibility());
 
         }
-        duration.ping("Gui steht!");
+        Duration.staticPing("Gui steht!");
 
     }
 

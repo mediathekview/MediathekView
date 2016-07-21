@@ -175,7 +175,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     }
 
     public synchronized void delDownloadButton(String url) {
-        ListIterator<DatenDownload> it = this.listIterator();
+        Iterator<DatenDownload> it = this.iterator();
         DatenDownload datenDownload;
         while (it.hasNext()) {
             datenDownload = it.next();
@@ -314,7 +314,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     @SuppressWarnings("unchecked")
     public synchronized void setModelProgress(TModelDownload tModel) {
-        ListIterator<List> it = tModel.getDataVector().listIterator();
+        Iterator<List> it = tModel.getDataVector().iterator();
         int row = 0;
         while (it.hasNext()) {
             List l = it.next();
@@ -351,10 +351,10 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         boolean gefunden = false;
         DatenFilm film;
         DatenAbo abo;
-        ListIterator<DatenFilm> itFilm;
+        Iterator<DatenFilm> itFilm;
         // prüfen ob in "alle Filme" oder nur "nach Blacklist" gesucht werden soll
         boolean checkWithBlackList = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO));
-        itFilm = Daten.listeFilme.listIterator();
+        itFilm = Daten.listeFilme.iterator();
         while (itFilm.hasNext()) {
             film = itFilm.next();
             abo = Daten.listeAbo.getAboFuerFilm_schnell(film, true /*auch die Länge überprüfen*/);
@@ -457,7 +457,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
      * @return number of queued Starts.
      */
     public synchronized int getNumberOfStartsNotFinished() {
-        ListIterator<DatenDownload> it = this.listIterator(0);
+        Iterator<DatenDownload> it = this.iterator();
         while (it.hasNext()) {
             Start s = it.next().start;
             if (s != null) {
@@ -586,7 +586,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     // ################################################################
     private boolean getDown(int max) {
         int count = 0;
-        ListIterator<DatenDownload> it = this.listIterator(0);
+        Iterator<DatenDownload> it = this.iterator();
         while (it.hasNext()) {
             Start s = it.next().start;
             if (s != null) {

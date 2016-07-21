@@ -21,10 +21,7 @@ package mediathek.daten;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.ListIterator;
+import java.util.*;
 import javax.swing.JOptionPane;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
@@ -126,7 +123,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         Object[] object;
         DatenAbo datenAbo;
         model.setRowCount(0);
-        ListIterator<DatenAbo> iterator = this.listIterator();
+        Iterator<DatenAbo> iterator = this.iterator();
         object = new Object[DatenAbo.MAX_ELEM];
         while (iterator.hasNext()) {
             datenAbo = iterator.next();
@@ -205,10 +202,10 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         // hier wird tatsächlich für jeden Film die Liste der Abos durchsucht
         // braucht länger
         DatenFilm datenFilm;
-        ListIterator<DatenFilm> iteratorFilm = listeFilme.listIterator();
+        Iterator<DatenFilm> iteratorFilm = listeFilme.iterator();
         DatenAbo datenAbo;
-        ListIterator<DatenAbo> iteratorAbo;
-        if (this.size() == 0 && aboLoeschen) {
+        Iterator<DatenAbo> iteratorAbo;
+        if (this.isEmpty() && aboLoeschen) {
             while (iteratorFilm.hasNext()) {
                 // für jeden Film Abo löschen
                 datenFilm = iteratorFilm.next();
@@ -221,7 +218,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 datenFilm = iteratorFilm.next();
                 datenFilm.arr[DatenFilm.FILM_ABO_NAME] = "";
                 datenFilm.abo = null;
-                iteratorAbo = this.listIterator();
+                iteratorAbo = this.iterator();
                 while (iteratorAbo.hasNext()) {
                     // jedes Abo prüfen
                     datenAbo = iteratorAbo.next();
