@@ -19,9 +19,6 @@
  */
 package mediathek.controller;
 
-import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
-import mSearch.tool.SysMsg;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,25 +27,29 @@ import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
+import mSearch.Config;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.FilmeSuchen;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.filmlisten.ListeFilmlistenUrls;
 import mSearch.filmlisten.FilmlisteLesen;
 import mSearch.filmlisten.ImportFilmliste;
+import mSearch.filmlisten.ListeFilmlistenUrls;
 import mSearch.tool.Duration;
-import mSearch.Config;
 import mSearch.tool.Log;
+import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
-import mediathek.tool.*;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.MVListeFilme;
+import mediathek.tool.MVMessageDialog;
 
 public class FilmeLaden {
 
-    private Duration duration = new Duration(FilmeLaden.class.getSimpleName());
     private final HashSet<String> hashSet = new HashSet<>();
     private final ListeFilme diffListe = new ListeFilme();
 
@@ -77,7 +78,7 @@ public class FilmeLaden {
             @Override
             public synchronized void fertig(ListenerFilmeLadenEvent event) {
                 // Ergebnisliste listeFilme eintragen -> Feierabend!
-                duration.stop("Filme laden, ende");
+                Duration.staticPing(FilmeLaden.class.getSimpleName(), "Filme laden, ende");
                 undEnde(event);
             }
         });
@@ -104,7 +105,7 @@ public class FilmeLaden {
 
     public void importFilmliste(String dateiUrl, boolean immerNeuLaden) {
         // damit wird die Filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
-        duration.start("Filme laden, start");
+        Duration.staticPing(FilmeLaden.class.getSimpleName(), "Filme laden, start");
         SysMsg.sysMsg("");
         SysMsg.sysMsg("Alte Liste erstellt am: " + Daten.listeFilme.genDate());
         SysMsg.sysMsg("  Anzahl Filme: " + Daten.listeFilme.size());
@@ -136,7 +137,7 @@ public class FilmeLaden {
     public void updateFilmliste(String dateiUrl) {
         // damit wird die Filmliste mit einer weiteren aktualisiert (die bestehende bleibt
         // erhalten) UND auch gleich im Konfig-Ordner gespeichert
-        duration.start("Filme laden (Update), start");
+        Duration.staticPing(FilmeLaden.class.getSimpleName(), "Filme laden (Update), start");
         SysMsg.sysMsg("");
         SysMsg.sysMsg("Alte Liste erstellt am: " + Daten.listeFilme.genDate());
         SysMsg.sysMsg("  Anzahl Filme: " + Daten.listeFilme.size());
