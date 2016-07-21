@@ -78,7 +78,7 @@ public class FilmeLaden {
             @Override
             public synchronized void fertig(ListenerFilmeLadenEvent event) {
                 // Ergebnisliste listeFilme eintragen -> Feierabend!
-                Duration.staticPing(FilmeLaden.class.getSimpleName(), "Filme laden, ende");
+                Duration.staticPing("Filme laden, ende");
                 undEnde(event);
             }
         });
@@ -105,7 +105,7 @@ public class FilmeLaden {
 
     public void importFilmliste(String dateiUrl, boolean immerNeuLaden) {
         // damit wird die Filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
-        Duration.staticPing(FilmeLaden.class.getSimpleName(), "Filme laden, start");
+        Duration.staticPing("Filme laden, start");
         SysMsg.sysMsg("");
         SysMsg.sysMsg("Alte Liste erstellt am: " + Daten.listeFilme.genDate());
         SysMsg.sysMsg("  Anzahl Filme: " + Daten.listeFilme.size());
@@ -137,7 +137,7 @@ public class FilmeLaden {
     public void updateFilmliste(String dateiUrl) {
         // damit wird die Filmliste mit einer weiteren aktualisiert (die bestehende bleibt
         // erhalten) UND auch gleich im Konfig-Ordner gespeichert
-        Duration.staticPing(FilmeLaden.class.getSimpleName(), "Filme laden (Update), start");
+        Duration.staticPing("Filme laden (Update), start");
         SysMsg.sysMsg("");
         SysMsg.sysMsg("Alte Liste erstellt am: " + Daten.listeFilme.genDate());
         SysMsg.sysMsg("  Anzahl Filme: " + Daten.listeFilme.size());
