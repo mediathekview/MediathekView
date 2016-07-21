@@ -23,7 +23,6 @@ import mediathek.config.Daten;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
 import java.util.Iterator;
-import java.util.ListIterator;
 import javax.swing.JOptionPane;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Log;
@@ -226,7 +225,7 @@ public class DatenPset extends MVData<DatenPset> {
         //es darf nur einen geben!
         ret.arr[PROGRAMMSET_NAME] = "Kopie-" + arr[PROGRAMMSET_NAME];
         ret.arr[PROGRAMMSET_IST_ABSPIELEN] = Boolean.toString(false);
-        ListIterator<DatenProg> it = getListeProg().listIterator(0);
+        Iterator<DatenProg> it = getListeProg().iterator();
         while (it.hasNext()) {
             ret.addProg(it.next().copy());
         }

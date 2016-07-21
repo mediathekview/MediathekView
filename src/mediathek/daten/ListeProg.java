@@ -21,7 +21,6 @@ package mediathek.daten;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.ListIterator;
 import mediathek.tool.TModel;
 
 public class ListeProg extends LinkedList<DatenProg> {
@@ -61,7 +60,7 @@ public class ListeProg extends LinkedList<DatenProg> {
         DatenProg daten;
         int i = 0;
         if (this.size() > 0) {
-            ListIterator<DatenProg> iterator = this.listIterator(0);
+            Iterator<DatenProg> iterator = this.iterator();
             object = new Object[this.size()][DatenProg.MAX_ELEM];
             while (iterator.hasNext()) {
                 daten = iterator.next();

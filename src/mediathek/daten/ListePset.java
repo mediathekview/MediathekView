@@ -20,8 +20,8 @@
 package mediathek.daten;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.ListIterator;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import javax.swing.JFrame;
@@ -57,12 +57,12 @@ public class ListePset extends LinkedList<DatenPset> {
         // liefert mit dem Namen eines Abos die passende Programmgruppe zurück
         // wird nichts gefunden, wird die erste Programmgruppe (der Abos) genommen
         DatenPset ret = null;
-        if (this.size() == 0) {
+        if (this.isEmpty()) {
             ret = null;
         } else if (this.size() == 1) {
             ret = this.getFirst();
         } else {
-            ListIterator<DatenPset> it = this.listIterator(0);
+            Iterator<DatenPset> it = this.iterator();
             while (it.hasNext()) {
                 DatenPset gruppe;
                 gruppe = it.next();
@@ -110,7 +110,7 @@ public class ListePset extends LinkedList<DatenPset> {
         String[] object;
         int i = 0;
         object = new String[this.size()];
-        ListIterator<DatenPset> it = this.listIterator(0);
+        Iterator<DatenPset> it = this.iterator();
         while (it.hasNext()) {
             object[i] = it.next().arr[DatenPset.PROGRAMMSET_NAME];
             ++i;
@@ -255,7 +255,7 @@ public class ListePset extends LinkedList<DatenPset> {
         DatenPset datenPset;
         int i = 0;
         if (this.size() > 0) {
-            ListIterator<DatenPset> iterator = this.listIterator(0);
+            Iterator<DatenPset> iterator = this.iterator();
             object = new Object[this.size()][DatenPset.MAX_ELEM];
             while (iterator.hasNext()) {
                 datenPset = iterator.next();

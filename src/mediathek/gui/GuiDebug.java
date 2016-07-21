@@ -72,11 +72,11 @@ public class GuiDebug extends JPanel {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Daten.listeFilme.clear();
-                Duration duration = new Duration(MediathekGui.class.getSimpleName());
-                duration.ping("Start");
+//                Duration duration = new Duration(MediathekGui.class.getSimpleName());
+                Duration.staticPing("Start");
                 new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
 //                    new FilmListReader().readFilmListe(new URI("http://www.wp11128329.server-he.de/filme/Filmliste-akt.xz"), Daten.listeFilme);
-                duration.ping("Fertig");
+                Duration.staticPing("Fertig");
                 Daten.listeFilme.themenLaden();
                 Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
                 Listener.notify(Listener.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
