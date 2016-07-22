@@ -47,8 +47,9 @@ then
 
 # Programmsets ins www-verzeichnis kopieren
 cp src/mediathek/file/*.xml /home/emil/daten/www/online/ZDFMediathekView/programmgruppen11/
+
 # Dateien ins share-Verzeichnis von VmWare kopieren
-rm -r /mnt/lager/virtualbox/share/aktMed/*.zip
+rm -r /mnt/lager/virtualbox/share/aktMed/*
 cp -r dist/* /mnt/lager/virtualbox/share/aktMed
 fi
 

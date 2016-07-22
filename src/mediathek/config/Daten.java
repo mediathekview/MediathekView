@@ -122,7 +122,7 @@ public class Daten {
 
         updateSplashScreen("Lade Blacklist...");
         listeFilmeNachBlackList = new ListeFilme();
-        listeBlacklist = new ListeBlacklist(this);
+        listeBlacklist = new ListeBlacklist();
 
         updateSplashScreen("Lade Programmsets...");
         listePset = new ListePset();

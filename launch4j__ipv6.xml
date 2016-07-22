@@ -3,9 +3,9 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>MediathekView.jar</jar>
-  <outfile>/home/emil/daten/software/mediathek/mediathek/res/Windows/MediathekView__ohne_Speicher__Portable.exe</outfile>
+  <outfile>/home/emil/daten/software/mediathek/mediathek/res/Windows/MediathekView__ipv6__Start.exe</outfile>
   <errTitle></errTitle>
-  <cmdLine>Einstellungen\.mediathek3</cmdLine>
+  <cmdLine></cmdLine>
   <chdir></chdir>
   <priority>normal</priority>
   <downloadUrl>https://www.java.com/de/</downloadUrl>
@@ -22,5 +22,9 @@
     <maxVersion></maxVersion>
     <jdkPreference>preferJre</jdkPreference>
     <runtimeBits>64/32</runtimeBits>
+    <initialHeapSize>256</initialHeapSize>
+    <maxHeapSize>2048</maxHeapSize>
+    <maxHeapPercent>80</maxHeapPercent>
+    <opt>-Djava.net.preferIPv6Addresses=true</opt>
   </jre>
 </launch4jConfig>
