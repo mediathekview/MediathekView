@@ -66,8 +66,9 @@ import mediathek.tool.GuiFunktionen;
 import mSearch.tool.Listener;
 import mediathek.config.MVConfig;
 import mediathek.config.Icons;
+import mediathek.daten.ListeBlacklist;
 import mediathek.res.GetIcon;
-import mediathek.tool.MVListeFilme;
+import mediathek.filmlisten.GetModelTabFilme;
 import mediathek.tool.TextCopyPaste;
 
 public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
@@ -169,7 +170,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         setIconBlacklist();
         jToggleButtonBlacklist.addActionListener(e -> {
             MVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.toString(jToggleButtonBlacklist.isSelected()));
-            MVListeFilme.checkBlacklist();
+            ListeBlacklist.checkBlacklist();
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterFrame.class.getSimpleName());
             setIconBlacklist();
         });

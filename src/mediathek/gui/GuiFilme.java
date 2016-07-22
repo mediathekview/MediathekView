@@ -19,6 +19,7 @@
  */
 package mediathek.gui;
 
+import mediathek.filmlisten.GetModelTabFilme;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.PrinterException;
@@ -396,7 +397,7 @@ public class GuiFilme extends PanelVorlage {
         Listener.addListener(new Listener(Listener.EREIGNIS_FILMLISTE_GEAENDERT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                MVListeFilme.checkBlacklist();
+                ListeBlacklist.checkBlacklist();
                 loadTable();
             }
         });
@@ -410,7 +411,7 @@ public class GuiFilme extends PanelVorlage {
         Listener.addListener(new Listener(Listener.EREIGNIS_GEO, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                MVListeFilme.checkBlacklist();
+                ListeBlacklist.checkBlacklist();
                 loadTable();
             }
         });
@@ -711,7 +712,7 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jComboBoxZeitraum().addActionListener(e -> {
             MVConfig.add(MVConfig.SYSTEM_FILTER__TAGE, String.valueOf(mVFilter.get_jComboBoxZeitraum().getSelectedIndex()));
             if (!stopBeob) {
-                MVListeFilme.checkBlacklist();
+                ListeBlacklist.checkBlacklist();
                 loadTable();
             }
         });
@@ -787,7 +788,7 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jTextFieldFilterMinuten().setText(String.valueOf(mVFilter.get_jSliderMinuten().getValue()));
 
         // und jetzt wieder laden
-        MVListeFilme.checkBlacklist();
+        ListeBlacklist.checkBlacklist();
 
         // erst jetzt da Sender/Thema evtl. in der Blacklist
         mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
@@ -811,7 +812,7 @@ public class GuiFilme extends PanelVorlage {
         delFilter_();
         stopBeob = false;
         // und jetzt wieder laden
-        MVListeFilme.checkBlacklist();
+        ListeBlacklist.checkBlacklist();
         loadTable();
     }
 
@@ -947,7 +948,7 @@ public class GuiFilme extends PanelVorlage {
         }
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_FILTER))) {
             // normal mit den Filtern aus dem Filterpanel suchen
-            MVListeFilme.getModelTabFilme(lf, daten, tabelle,
+            GetModelTabFilme.getModelTabFilme(lf, daten, tabelle,
                     mVFilter.get_jComboBoxFilterSender().getSelectedItem().toString(),
                     mVFilter.get_jComboBoxFilterThema().getSelectedItem().toString(), mVFilter.get_jTextFieldFilterTitel().getText(),
                     mVFilter.getThemaTitel() ? mVFilter.get_jTextFieldFilterThemaTitel().getText() : "",
@@ -957,7 +958,7 @@ public class GuiFilme extends PanelVorlage {
                     mVFilter.get_jCheckBoxNurHd().isSelected(), mVFilter.get_jToggleButtonLivestram().isSelected(), mVFilter.get_jCheckBoxNeue().isSelected());
         } else {
             // jetzt nur den Filter aus der Toolbar
-            MVListeFilme.getModelTabFilme(lf, daten, tabelle,
+            GetModelTabFilme.getModelTabFilme(lf, daten, tabelle,
                     "", "", "",
                     getFilterTextFromSearchField(),
                     "",
@@ -1384,7 +1385,7 @@ public class GuiFilme extends PanelVorlage {
             jCheckBoxBlackBoxOn.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_ON)));
             jCheckBoxBlackBoxOn.addActionListener(e -> {
                 MVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.toString(jCheckBoxBlackBoxOn.isSelected()));
-                MVListeFilme.checkBlacklist();
+                ListeBlacklist.checkBlacklist();
                 Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getName());
             });
             submenueBlack.add(jCheckBoxBlackBoxOn);

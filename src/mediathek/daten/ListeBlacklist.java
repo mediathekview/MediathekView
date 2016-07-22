@@ -19,7 +19,6 @@
  */
 package mediathek.daten;
 
-import mediathek.config.Daten;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -27,13 +26,16 @@ import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.GuiFilme;
 import mediathek.tool.Filter;
-import mediathek.tool.MVListeFilme;
 
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
-    //Tags Blacklist
+
+    public static void checkBlacklist() {
+        Daten.listeBlacklist.filterListe(Daten.listeFilme, Daten.listeFilmeNachBlackList);
+    }
 
     private long tage = 0;
     private long jetzt;
@@ -56,7 +58,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     }
 
     private void notifyBlack() {
-        MVListeFilme.checkBlacklist();
+        checkBlacklist();
         Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
     }
 

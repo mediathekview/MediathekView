@@ -29,12 +29,13 @@ import mSearch.tool.Listener;
 import mediathek.config.MVConfig;
 import mediathek.config.Icons;
 import mediathek.config.Daten;
+import mediathek.daten.ListeBlacklist;
 import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.res.GetIcon;
-import mediathek.tool.MVListeFilme;
+import mediathek.filmlisten.GetModelTabFilme;
 import mediathek.tool.TextCopyPaste;
 
 public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
@@ -87,7 +88,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         setIconBlacklist();
         jToggleButtonBlacklist.addActionListener(e -> {
             MVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.toString(jToggleButtonBlacklist.isSelected()));
-            MVListeFilme.checkBlacklist();
+            ListeBlacklist.checkBlacklist();
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterPanel.class.getSimpleName());
             setIconBlacklist();
         });
