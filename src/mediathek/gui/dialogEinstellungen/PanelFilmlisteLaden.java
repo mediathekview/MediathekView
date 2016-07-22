@@ -52,13 +52,13 @@ public class PanelFilmlisteLaden extends PanelVorlage {
           jButtonUrl.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
         initRadio();
         jButtonUrl.addActionListener(e -> jTextFieldUrl.setText(Daten.filmeLaden.getDownloadUrl_akt()));
-        jButtonLoad.addActionListener(ae -> Daten.filmeLaden.importFilmliste(""));
+        jButtonLoad.addActionListener(ae -> Daten.filmeLaden.loadFilmlist(""));
         jButtonDateiAuswaehlen.addActionListener(new BeobPfad());
         jButtonFilmeLaden.addActionListener(e -> {
             if (jCheckBoxUpdate.isSelected()) {
-                Daten.filmeLaden.updateFilmliste(jTextFieldUrl.getText());
+                Daten.filmeLaden.updateFilmlist(jTextFieldUrl.getText());
             } else {
-                Daten.filmeLaden.importFilmliste(jTextFieldUrl.getText());
+                Daten.filmeLaden.loadFilmlist(jTextFieldUrl.getText());
             }
         });
         jRadioButtonManuell.addActionListener(new BeobOption());

@@ -59,6 +59,7 @@ public class GuiDownloads extends PanelVorlage {
     private static final String COMBO_DISPLAY_DOWNLOADS_ONLY = "nur Downloads";
     private static final String COMBO_DISPLAY_ABOS_ONLY = "nur Abos";
     private ToolBar toolBar;
+    private boolean loadFilmlist = false;
     /**
      * The internally used model.
      */
@@ -89,6 +90,7 @@ public class GuiDownloads extends PanelVorlage {
 
         init();
         tabelle.initTabelle();
+        tabelle.setSpalten();
         if (tabelle.getRowCount() > 0) {
             tabelle.setRowSelectionInterval(0, 0);
         }
@@ -100,8 +102,7 @@ public class GuiDownloads extends PanelVorlage {
         jPanelToolBar.setLayout(new BorderLayout());
         jPanelToolBar.add(toolBar, BorderLayout.CENTER);
         setToolbarVisible();
-
-        SwingUtilities.invokeLater(this::downloadsAktualisieren);
+//        SwingUtilities.invokeLater(this::downloadsAktualisieren);//////
     }
 
     private void setupDescriptionPanel() {
@@ -275,7 +276,13 @@ public class GuiDownloads extends PanelVorlage {
 
         Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
+            public void start(ListenerFilmeLadenEvent event) {
+                loadFilmlist = true;
+            }
+
+            @Override
             public void fertig(ListenerFilmeLadenEvent event) {
+                loadFilmlist = false;
                 Daten.listeDownloads.filmEintragen();
                 if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN))) {
                     downloadsAktualisieren();
@@ -384,6 +391,10 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private synchronized void downloadsAktualisieren() {
+        if (loadFilmlist) {
+            // wird danach automatisch gemacht
+            return;
+        }
         // erledigte entfernen, nicht gestartete Abos entfernen und neu nach Abos suchen
         Daten.listeDownloads.abosAuffrischen();
         Daten.listeDownloads.abosSuchen(parentComponent);

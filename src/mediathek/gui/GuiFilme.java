@@ -65,8 +65,9 @@ public class GuiFilme extends PanelVorlage {
         initComponents();
         tabelle = new MVTable(MVTable.TableType.FILME);
         jScrollPane1.setViewportView(tabelle);
+
         jScrollPaneFilter.getVerticalScrollBar().setUnitIncrement(16);
-        panelVideoplayerSetzen();
+        jPanelFilter.setLayout(new BorderLayout());
         mVFilterPanel = new MVFilterPanel(parentComponent, daten) {
             @Override
             public void mvFfilter(int i) {
@@ -100,15 +101,12 @@ public class GuiFilme extends PanelVorlage {
             }
         };
 
+        panelVideoplayerSetzen();
         setupDescriptionPanel();
-
-        jPanelFilter.setLayout(new BorderLayout());
-
         toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_FILME);
         jPanelToolBar.setLayout(new BorderLayout());
         jPanelToolBar.add(toolBar, BorderLayout.CENTER);
         setToolbarVisible();
-
     }
 
     private void setupDescriptionPanel() {
@@ -696,7 +694,7 @@ public class GuiFilme extends PanelVorlage {
         setFilterAction();
         this.updateUI();
         //und jetzt noch alles laden
-        MVListeFilme.checkBlacklist();
+//        MVListeFilme.checkBlacklist();//////
         loadTable();
     }
 
@@ -1706,13 +1704,15 @@ public class GuiFilme extends PanelVorlage {
                                 //gibts schon, dann löschen
                                 Daten.listeAbo.aboLoeschen(datenAbo);
                             } else //neues Abo anlegen
-                             if (mitTitel) {
+                            {
+                                if (mitTitel) {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], film.arr[DatenFilm.FILM_TITEL]);
                                 } else {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], "");
                                 }
+                            }
                         });
                         stopBeob = false;
                     }

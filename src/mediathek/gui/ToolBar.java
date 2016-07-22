@@ -241,6 +241,9 @@ public final class ToolBar extends JToolBar {
             public void start(ListenerFilmeLadenEvent event) {
                 //ddaten.infoPanel.setProgress();
                 jButtonFilmlisteLaden.setEnabled(false);
+                if (jButtonDownloadAktualisieren != null) {
+                    jButtonDownloadAktualisieren.setEnabled(false);
+                }
             }
 
             @Override
@@ -250,15 +253,18 @@ public final class ToolBar extends JToolBar {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 jButtonFilmlisteLaden.setEnabled(true);
+                if (jButtonDownloadAktualisieren != null) {
+                    jButtonDownloadAktualisieren.setEnabled(true);
+                }
             }
         });
-        jButtonFilmlisteLaden.addActionListener(e -> Daten.filmeLaden.filmeLaden(daten, false));
+        jButtonFilmlisteLaden.addActionListener(e -> Daten.filmeLaden.loadFilmlistDialog(daten, false));
         jButtonFilmlisteLaden.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent arg0) {
                 if (arg0.isPopupTrigger()) {
                     if (jButtonFilmlisteLaden.isEnabled()) {
-                        Daten.filmeLaden.filmeLaden(daten, true);
+                        Daten.filmeLaden.loadFilmlistDialog(daten, true);
                     }
                 }
             }
@@ -267,7 +273,7 @@ public final class ToolBar extends JToolBar {
             public void mouseReleased(MouseEvent arg0) {
                 if (arg0.isPopupTrigger()) {
                     if (jButtonFilmlisteLaden.isEnabled()) {
-                        Daten.filmeLaden.filmeLaden(daten, true);
+                        Daten.filmeLaden.loadFilmlistDialog(daten, true);
                     }
                 }
             }
