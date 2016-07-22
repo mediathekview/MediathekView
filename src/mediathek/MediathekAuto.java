@@ -33,8 +33,9 @@ import mSearch.tool.SysMsg;
 import mediathek.controller.IoXmlLesen;
 import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
+import mediathek.daten.ListeBlacklist;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
-import mediathek.tool.MVListeFilme;
+import mediathek.filmlisten.GetModelTabFilme;
 
 public class MediathekAuto {
 
@@ -117,7 +118,7 @@ public class MediathekAuto {
             SysMsg.sysMsg("aktuelle Filmliste verwenden");
             // Liste erst mal aufbereiten
             Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
-            MVListeFilme.checkBlacklist();
+            ListeBlacklist.checkBlacklist();
             download();
         }
     }

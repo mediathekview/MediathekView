@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import mediathek.filmlisten.GetModelTabFilme;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -39,6 +40,7 @@ import mediathek.config.MVConfig;
 import mediathek.config.Icons;
 import mediathek.config.Daten;
 import mediathek.daten.DatenBlacklist;
+import mediathek.daten.ListeBlacklist;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
@@ -208,7 +210,7 @@ public class PanelBlacklist extends PanelVorlage {
     }
 
     private void notifyBlack() {
-        MVListeFilme.checkBlacklist();
+        ListeBlacklist.checkBlacklist();
         Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, name);
     }
 

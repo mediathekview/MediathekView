@@ -17,17 +17,18 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.tool;
+package mediathek.filmlisten;
 
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mediathek.config.Daten;
+import mediathek.tool.Filter;
+import mediathek.tool.MVTable;
+import mediathek.tool.TModel;
+import mediathek.tool.TModelFilm;
 
-public class MVListeFilme {
+public class GetModelTabFilme {
 
-    public static void checkBlacklist() {
-        Daten.listeBlacklist.filterListe(Daten.listeFilme, Daten.listeFilmeNachBlackList);
-    }
 
     public static synchronized void getModelTabFilme(ListeFilme listeFilme, Daten ddaten, MVTable table,
             String filterSender, String filterThema, String filterTitel, String filterThemaTitel, String filterIrgendwo,

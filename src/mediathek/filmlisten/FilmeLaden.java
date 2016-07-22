@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.controller;
+package mediathek.filmlisten;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,7 +34,6 @@ import mSearch.filmeSuchen.FilmeSuchen;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.FilmlisteLesen;
-import mSearch.filmlisten.ImportFilmliste;
 import mSearch.filmlisten.ListeFilmlistenUrls;
 import mSearch.tool.Duration;
 import mSearch.tool.Log;
@@ -42,10 +41,10 @@ import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
+import mediathek.daten.ListeBlacklist;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.MVListeFilme;
 import mediathek.tool.MVMessageDialog;
 
 public class FilmeLaden {
@@ -96,7 +95,7 @@ public class FilmeLaden {
 
         @Override
         public synchronized void run() {
-            Duration.staticDbgPing("Start Thread: Filmliste laden");
+            Duration.staticDbgPing("Thread: Filmliste laden");
             new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
 
             // Meldungen sind zwar doppelt, aber damit sie auch im Meldungsfenser erscheinen..
@@ -115,7 +114,7 @@ public class FilmeLaden {
                 loadFilmlist("", true);
             } else {
                 // entweder neue Liste laden oder es ist schon fertig, dann melden
-                MVListeFilme.checkBlacklist(); // beim Neuladen wird es dann erst gemacht
+                ListeBlacklist.checkBlacklist(); // beim Neuladen wird es dann erst gemacht
                 notifyFertig(new ListenerFilmeLadenEvent("", "", 0, 0, 0, false/*Fehler*/));
             }
         }
@@ -271,7 +270,7 @@ public class FilmeLaden {
         SysMsg.sysMsg("  Anzahl Neue:  " + Daten.listeFilme.countNewFilms());
         SysMsg.sysMsg("");
 
-        MVListeFilme.checkBlacklist();
+        ListeBlacklist.checkBlacklist();
         notifyFertig(event);
     }
 
