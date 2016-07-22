@@ -397,7 +397,7 @@ public class GuiFilme extends PanelVorlage {
         Listener.addListener(new Listener(Listener.EREIGNIS_FILMLISTE_GEAENDERT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-            Daten.listeBlacklist.filterListe();
+                Daten.listeBlacklist.filterListe();
                 loadTable();
             }
         });
@@ -411,7 +411,7 @@ public class GuiFilme extends PanelVorlage {
         Listener.addListener(new Listener(Listener.EREIGNIS_GEO, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-            Daten.listeBlacklist.filterListe();
+                Daten.listeBlacklist.filterListe();
                 loadTable();
             }
         });
@@ -712,6 +712,7 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jComboBoxZeitraum().addActionListener(e -> {
             MVConfig.add(MVConfig.SYSTEM_FILTER__TAGE, String.valueOf(mVFilter.get_jComboBoxZeitraum().getSelectedIndex()));
             if (!stopBeob) {
+                Daten.listeBlacklist.filterListe();
                 loadTable();
             }
         });
@@ -787,7 +788,7 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jTextFieldFilterMinuten().setText(String.valueOf(mVFilter.get_jSliderMinuten().getValue()));
 
         // und jetzt wieder laden
-            Daten.listeBlacklist.filterListe();
+        Daten.listeBlacklist.filterListe();
 
         // erst jetzt da Sender/Thema evtl. in der Blacklist
         mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
@@ -811,7 +812,7 @@ public class GuiFilme extends PanelVorlage {
         delFilter_();
         stopBeob = false;
         // und jetzt wieder laden
-            Daten.listeBlacklist.filterListe();
+        Daten.listeBlacklist.filterListe();
         loadTable();
     }
 
@@ -1384,7 +1385,7 @@ public class GuiFilme extends PanelVorlage {
             jCheckBoxBlackBoxOn.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_ON)));
             jCheckBoxBlackBoxOn.addActionListener(e -> {
                 MVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.toString(jCheckBoxBlackBoxOn.isSelected()));
-            Daten.listeBlacklist.filterListe();
+                Daten.listeBlacklist.filterListe();
                 Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getName());
             });
             submenueBlack.add(jCheckBoxBlackBoxOn);
@@ -1704,15 +1705,13 @@ public class GuiFilme extends PanelVorlage {
                                 //gibts schon, dann löschen
                                 Daten.listeAbo.aboLoeschen(datenAbo);
                             } else //neues Abo anlegen
-                            {
-                                if (mitTitel) {
+                             if (mitTitel) {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], film.arr[DatenFilm.FILM_TITEL]);
                                 } else {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], "");
                                 }
-                            }
                         });
                         stopBeob = false;
                     }
