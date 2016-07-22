@@ -111,7 +111,7 @@ public class MediathekAuto {
                     download();
                 }
             });
-            Daten.filmeLaden.importFilmliste("", true);
+            Daten.filmeLaden.loadFilmlist("", true);
         } else {
             // mit aktueller Filmliste starten
             SysMsg.sysMsg("aktuelle Filmliste verwenden");

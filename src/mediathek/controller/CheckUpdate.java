@@ -19,20 +19,20 @@
  */
 package mediathek.controller;
 
-import mSearch.tool.SysMsg;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
+import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.dialog.DialogNewSet;
 import mediathek.tool.GuiFunktionenProgramme;
-import mSearch.tool.Listener;
-import mediathek.config.MVConfig;
 import mediathek.tool.MVFunctionSys;
 
 public class CheckUpdate {

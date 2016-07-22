@@ -19,8 +19,6 @@
  */
 package mediathek;
 
-import mediathek.config.MVConfig;
-import mediathek.config.Konstanten;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -38,10 +36,12 @@ import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Functions.OperatingSystemType;
 import static mSearch.tool.Functions.getOs;
 import mSearch.tool.*;
+import mediathek.config.Daten;
 import mediathek.config.Icons;
+import mediathek.config.Konstanten;
+import mediathek.config.MVConfig;
 import mediathek.controller.CheckUpdate;
 import mediathek.controller.starter.Start;
-import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.*;
 import mediathek.gui.dialog.*;
@@ -191,14 +191,12 @@ public class MediathekGui extends JFrame {
         }
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE); // soll abgefangen werden
-//        setIconImage(Toolkit.getDefaultToolkit().getImage(MediathekGui.class.getResource("/mediathek/res/MediathekView_k.gif")));
         setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
         //Hier wird F10 default Funktion unterbunden:
         InputMap im = jMenuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         im.put(KeyStroke.getKeyStroke("F10"), "none");
 
         updateSplashScreenText("Anwendungsdaten laden...");
-//        Duration duration = new Duration(MediathekGui.class.getSimpleName());
         Duration.staticPing("Start");
 
         daten = new Daten(pfad, this);
@@ -218,8 +216,6 @@ public class MediathekGui extends JFrame {
         Duration.staticPing("Alles laden");
 
         createStatusBar();
-        Duration.staticPing("Statusbar");
-
         //create the Film Information HUD
         if (SystemInfo.isMacOSX()) {
             Daten.filmInfo = new MVFilmInformation(this, jTabbedPane, daten);
@@ -227,15 +223,12 @@ public class MediathekGui extends JFrame {
             //klappte nicht auf allen Desktops
             Daten.filmInfo = new MVFilmInformationLinux(this, jTabbedPane, daten);
         }
-        Duration.staticPing("HUD");
 
         setOrgTitel();
         setLookAndFeel();
-        Duration.staticPing("LookAndFeel");
         init();
-        Duration.staticPing("init");
         setSize();
-        Duration.staticPing("setSize");
+        Duration.staticPing("Init-GUI");
 
         // Dialog mit den Programmeinstellungen einrichten
         Daten.dialogEinstellungen = new DialogEinstellungen(this, daten);
@@ -246,14 +239,13 @@ public class MediathekGui extends JFrame {
         new CheckUpdate(this, daten).checkProgUpdate();
         Duration.staticPing("CheckUpdate");
 
-        if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO) {
-            if (Daten.listeFilme.isTooOld()) {
-                SysMsg.sysMsg("Neue Filmliste laden");
-                Daten.filmeLaden.importFilmliste("", true);
-            }
-        }
-        Duration.staticPing("Filmliste laden");
-
+//        if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO) {
+//            if (Daten.listeFilme.isTooOld()) {
+//                SysMsg.sysMsg("Neue Filmliste laden");
+//                Daten.filmeLaden.importFilmliste("", true);
+//            }
+//        }
+//        Duration.staticPing("Filmliste laden");
         addListener();
 
         // für den Mac
@@ -280,6 +272,9 @@ public class MediathekGui extends JFrame {
 
         }
         Duration.staticPing("Gui steht!");
+
+        Duration.staticPing("Filmliste laden");
+        Daten.filmeLaden.loadFilmlistProgStart();
 
     }
 
@@ -382,6 +377,7 @@ public class MediathekGui extends JFrame {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
                 jMenuItemFilmlisteLaden.setEnabled(false);
+                jMenuItemDownloadsAktualisieren.setEnabled(false);
             }
 
             @Override
@@ -391,6 +387,7 @@ public class MediathekGui extends JFrame {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 jMenuItemFilmlisteLaden.setEnabled(true);
+                jMenuItemDownloadsAktualisieren.setEnabled(true);
                 daten.allesSpeichern(); // damit nichts verlorengeht
             }
         });
@@ -719,7 +716,7 @@ public class MediathekGui extends JFrame {
         jMenuItemBeenden.addActionListener(e -> beenden(false, false));
 
         // Filme
-        jMenuItemFilmlisteLaden.addActionListener(e -> Daten.filmeLaden.filmeLaden(daten, false));
+        jMenuItemFilmlisteLaden.addActionListener(e -> Daten.filmeLaden.loadFilmlistDialog(daten, false));
         jMenuItemFilmAbspielen.addActionListener(e -> Daten.guiFilme.guiFilmeFilmAbspielen());
         jMenuItemFilmAufzeichnen.addActionListener(e -> Daten.guiFilme.guiFilmeFilmSpeichern());
         jMenuItemFilterLoeschen.addActionListener(e -> Daten.guiFilme.guiFilmeFilterLoeschen());

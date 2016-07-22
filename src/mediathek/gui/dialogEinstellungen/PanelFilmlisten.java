@@ -80,9 +80,9 @@ public class PanelFilmlisten extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (jCheckBoxUpdate.isSelected()) {
-                    Daten.filmeLaden.updateFilmliste(jTextFieldUrl.getText());
+                    Daten.filmeLaden.updateFilmlist(jTextFieldUrl.getText());
                 } else {
-                    Daten.filmeLaden.importFilmliste(jTextFieldUrl.getText());
+                    Daten.filmeLaden.loadFilmlist(jTextFieldUrl.getText());
                 }
             }
         });
@@ -176,9 +176,9 @@ public class PanelFilmlisten extends PanelVorlage {
             if (doppel) {
                 // dann wars ein Doppelklick, gleich laden
                 if (jCheckBoxUpdate.isSelected()) {
-                    Daten.filmeLaden.updateFilmliste(jTextFieldUrl.getText());
+                    Daten.filmeLaden.updateFilmlist(jTextFieldUrl.getText());
                 } else {
-                    Daten.filmeLaden.importFilmliste(jTextFieldUrl.getText());
+                    Daten.filmeLaden.loadFilmlist(jTextFieldUrl.getText());
                 }
             }
         }

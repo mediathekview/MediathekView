@@ -58,7 +58,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jSpinnerDays.addChangeListener(new BeobSpinnerDays());
         jButtonLoad.addActionListener(ae -> {
             Daten.listeFilme.clear(); // sonst wird evtl. nur eine Diff geladen
-            Daten.filmeLaden.importFilmliste("");
+            Daten.filmeLaden.loadFilmlist("");
         });
         setupLookAndFeelComboBox();
         jButtonHelpDays.setIcon(Icons.ICON_BUTTON_HELP);

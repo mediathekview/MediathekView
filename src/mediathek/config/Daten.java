@@ -37,7 +37,6 @@ import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
-import mSearch.filmlisten.FilmlisteLesen;
 import mSearch.filmlisten.WriteFilmlistJson;
 import static mSearch.tool.Functions.getPathJar;
 import mSearch.tool.*;
@@ -340,18 +339,18 @@ public class Daten {
 
         // erst die Systemdaten, dann die Filmliste
         updateSplashScreen("Lade Filmliste...");
-        new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), listeFilme, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
-        // Meldungen sind zwar doppelt, aber damit sie auch im Meldungsfenser erscheinen..
-        SysMsg.sysMsg("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-        SysMsg.sysMsg("  erstellt am: " + listeFilme.genDate());
-        SysMsg.sysMsg("  Anzahl Filme: " + listeFilme.size());
-        SysMsg.sysMsg("  Anzahl Neue: " + listeFilme.countNewFilms());
-
-        listeFilme.themenLaden();
-        Daten.listeAbo.setAboFuerFilm(listeFilme, false /*aboLoeschen*/);
-        Daten.listeDownloads.filmEintragen(); // Filme bei einmalDownloads eintragen
-        MVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
-        MVListeFilme.checkBlacklist(); // TODO brauchts das??
+//        new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), listeFilme, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+//        // Meldungen sind zwar doppelt, aber damit sie auch im Meldungsfenser erscheinen..
+//        SysMsg.sysMsg("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+//        SysMsg.sysMsg("  erstellt am: " + listeFilme.genDate());
+//        SysMsg.sysMsg("  Anzahl Filme: " + listeFilme.size());
+//        SysMsg.sysMsg("  Anzahl Neue: " + listeFilme.countNewFilms());
+//
+//        listeFilme.themenLaden();
+//        Daten.listeAbo.setAboFuerFilm(listeFilme, false /*aboLoeschen*/);
+//        Daten.listeDownloads.filmEintragen(); // Filme bei einmalDownloads eintragen
+//        MVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
+//        MVListeFilme.checkBlacklist(); // TODO brauchts das??
         return true;
     }
 
