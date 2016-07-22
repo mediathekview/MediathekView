@@ -41,7 +41,6 @@ import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
-import mediathek.daten.ListeBlacklist;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.tool.GuiFunktionen;
@@ -114,7 +113,7 @@ public class FilmeLaden {
                 loadFilmlist("", true);
             } else {
                 // entweder neue Liste laden oder es ist schon fertig, dann melden
-                ListeBlacklist.checkBlacklist(); // beim Neuladen wird es dann erst gemacht
+                Daten.listeBlacklist.filterListe(); // beim Neuladen wird es dann erst gemacht
                 notifyFertig(new ListenerFilmeLadenEvent("", "", 0, 0, 0, false/*Fehler*/));
             }
         }
@@ -270,7 +269,7 @@ public class FilmeLaden {
         SysMsg.sysMsg("  Anzahl Neue:  " + Daten.listeFilme.countNewFilms());
         SysMsg.sysMsg("");
 
-        ListeBlacklist.checkBlacklist();
+        Daten.listeBlacklist.filterListe();
         notifyFertig(event);
     }
 

@@ -33,50 +33,39 @@ import mediathek.tool.Filter;
 
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
-    public static void checkBlacklist() {
-        Daten.listeBlacklist.filterListe(Daten.listeFilme, Daten.listeFilmeNachBlackList);
-    }
-
     private long tage = 0;
     private long jetzt;
     private boolean zukunftNichtAnzeigen, geoNichtAnzeigen;
     private boolean blacklistOn;
     private long filmlaengeSoll = 0;
     private int nr = 0;
-    private final Daten daten;
 
-    public ListeBlacklist(Daten d) {
-        daten = d;
+    public ListeBlacklist() {
     }
 
     @Override
-    public boolean add(DatenBlacklist b) {
+    public synchronized boolean add(DatenBlacklist b) {
         b.arr[DatenBlacklist.BLACKLIST_NR] = getNr(nr++);
         boolean ret = super.add(b);
         notifyBlack();
         return ret;
     }
 
-    private void notifyBlack() {
-        checkBlacklist();
-        Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
-    }
-
     @Override
-    public boolean remove(Object b) {
+    public synchronized boolean remove(Object b) {
         boolean ret = super.remove(b);
         notifyBlack();
         return ret;
     }
 
     @Override
-    public DatenBlacklist remove(int idx) {
+    public synchronized DatenBlacklist remove(int idx) {
         DatenBlacklist ret = super.remove(idx);
         notifyBlack();
         return ret;
     }
 
-    public DatenBlacklist remove(String idx) {
+    public synchronized DatenBlacklist remove(String idx) {
         DatenBlacklist bl;
         if ((bl = get(idx)) != null) {
             remove(bl);
@@ -86,11 +75,11 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     }
 
     @Override
-    public DatenBlacklist get(int idx) {
+    public synchronized DatenBlacklist get(int idx) {
         return super.get(idx);
     }
 
-    public DatenBlacklist get(String nr) {
+    public synchronized DatenBlacklist get(String nr) {
         for (DatenBlacklist b : this) {
             if (b.arr[DatenBlacklist.BLACKLIST_NR].equals(nr)) {
                 return b;
@@ -100,12 +89,12 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     }
 
     @Override
-    public void clear() {
+    public synchronized void clear() {
         super.clear();
         notifyBlack();
     }
 
-    public Object[][] getObjectData() {
+    public synchronized Object[][] getObjectData() {
         Object[][] object;
         DatenBlacklist blacklist;
         int i = 0;
@@ -119,7 +108,11 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         return object;
     }
 
-    public void filterListe(ListeFilme listeFilme, ListeFilme listeRet) {
+    public synchronized void filterListe() {
+        filterListe(Daten.listeFilme, Daten.listeFilmeNachBlackList);
+    }
+
+    public synchronized void filterListe(ListeFilme listeFilme, ListeFilme listeRet) {
         listeRet.clear();
         setFilter();
         if (listeFilme != null) {
@@ -136,7 +129,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         }
     }
 
-    public boolean checkBlackOkFilme_Downloads(DatenFilm film) {
+    public synchronized boolean checkBlackOkFilme_Downloads(DatenFilm film) {
         // true wenn Film angezeigt wird!!
         // hier werden die Filme für Downloads gesucht, Zeit ist "0"
         // ob die Blackliste dafür verwendet werden soll, ist schon geklärt
@@ -147,6 +140,11 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         geoNichtAnzeigen = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN));
         jetzt = getZeitZukunftBlacklist();
         return checkFilm(film);
+    }
+
+    private void notifyBlack() {
+        filterListe();
+        Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
     }
 
     private void setFilter() {
@@ -199,7 +197,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             // wegen der Möglichkeit "Whiteliste" muss das extra geprüft werden
             return false;
         }
-        if (this.size() == 0) {
+        if (this.isEmpty()) {
             return true;
         }
         for (DatenBlacklist blacklistEntry : this) {
