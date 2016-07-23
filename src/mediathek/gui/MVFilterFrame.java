@@ -103,16 +103,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                     Daten.dialogEinstellungen.setVisible(true);
                 }
             });
-            im = jComboBoxZeitraum.getInputMap();
-            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), "einstellungen");
-            am = jComboBoxZeitraum.getActionMap();
-            am.put("einstellungen", new AbstractAction() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    Daten.dialogEinstellungen.setVisible(true);
-                }
-            });
         }
 
         mouseDownCompCoords = null;
@@ -153,7 +143,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 parent.setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
             }
         });
-        this. setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
+        this.setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
         this.setTitle("Filter");
         GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_FILTER, this, daten.mediathekGui);
         addWindowListener(new WindowAdapter() {
@@ -559,7 +549,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        jComboBoxZeitraum = new javax.swing.JComboBox<>();
         javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jTextFieldFilterMinuten = new javax.swing.JTextField();
         jSliderMinuten = new javax.swing.JSlider();
@@ -569,6 +558,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jCheckBoxNurHd = new javax.swing.JCheckBox();
         jToggleButtonHistory = new javax.swing.JToggleButton();
         jCheckBoxNurNeue = new javax.swing.JCheckBox();
+        jTextFieldFilterTage = new javax.swing.JTextField();
+        jSliderTage = new javax.swing.JSlider();
         javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jComboBoxFilterSender = new javax.swing.JComboBox<>();
@@ -616,41 +607,55 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         jCheckBoxNurNeue.setText("nur neue");
 
+        jTextFieldFilterTage.setEditable(false);
+
+        jSliderTage.setMaximum(30);
+        jSliderTage.setValue(15);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBoxZeitraum, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTextFieldFilterMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBoxNurNeue)
-                            .addComponent(jCheckBoxNurHd)
-                            .addComponent(jCheckBoxKeineAbos)
-                            .addComponent(jCheckBoxKeineGesehenen)
-                            .addComponent(jLabel1)
-                            .addComponent(jSliderMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jToggleButtonLivestram, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jToggleButtonHistory))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jTextFieldFilterMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jTextFieldFilterTage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jCheckBoxNurNeue)
+                                    .addComponent(jCheckBoxNurHd)
+                                    .addComponent(jCheckBoxKeineAbos)
+                                    .addComponent(jCheckBoxKeineGesehenen)
+                                    .addComponent(jToggleButtonLivestram, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jToggleButtonHistory))
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addComponent(jSliderTage, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
+                    .addComponent(jSliderMinuten, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jToggleButtonHistory, jToggleButtonLivestram});
 
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jTextFieldFilterMinuten, jTextFieldFilterTage});
+
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jTextFieldFilterTage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBoxZeitraum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jSliderTage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -669,10 +674,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 .addComponent(jCheckBoxNurHd)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxNurNeue)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
-
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jComboBoxZeitraum, jTextFieldFilterMinuten});
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
@@ -707,7 +710,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                     .addComponent(jRadioButtonIrgendwo, javax.swing.GroupLayout.Alignment.LEADING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBoxFilterSender, 0, 360, Short.MAX_VALUE)
+                    .addComponent(jComboBoxFilterSender, 0, 302, Short.MAX_VALUE)
                     .addComponent(jComboBoxFilterThema, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jTextFieldFilterTitel)
                     .addComponent(jTextFieldFilterThemaTitel))
@@ -734,7 +737,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                     .addComponent(jRadioButtonTT))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jRadioButtonIrgendwo)
-                .addContainerGap(144, Short.MAX_VALUE))
+                .addContainerGap(148, Short.MAX_VALUE))
         );
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jComboBoxFilterSender, jComboBoxFilterThema, jTextFieldFilterThemaTitel, jTextFieldFilterTitel});
@@ -852,7 +855,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     private javax.swing.JCheckBox jCheckBoxNurNeue;
     public javax.swing.JComboBox<String> jComboBoxFilterSender;
     public javax.swing.JComboBox<String> jComboBoxFilterThema;
-    public javax.swing.JComboBox<String> jComboBoxZeitraum;
     private javax.swing.JRadioButton jRadioButtonF1;
     private javax.swing.JRadioButton jRadioButtonF2;
     private javax.swing.JRadioButton jRadioButtonF3;
@@ -861,7 +863,9 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     private javax.swing.JRadioButton jRadioButtonIrgendwo;
     private javax.swing.JRadioButton jRadioButtonTT;
     public javax.swing.JSlider jSliderMinuten;
+    private javax.swing.JSlider jSliderTage;
     public javax.swing.JTextField jTextFieldFilterMinuten;
+    private javax.swing.JTextField jTextFieldFilterTage;
     public javax.swing.JTextField jTextFieldFilterThemaTitel;
     public javax.swing.JTextField jTextFieldFilterTitel;
     private javax.swing.JToggleButton jToggleButtonBlacklist;
@@ -942,8 +946,13 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     }
 
     @Override
-    public JComboBox<String> get_jComboBoxZeitraum() {
-        return jComboBoxZeitraum;
+    public JSlider get_jSliderTage() {
+        return jSliderTage;
+    }
+
+    @Override
+    public JTextField get_jTextFieldFilterTage() {
+        return jTextFieldFilterTage;
     }
 
     @Override
@@ -1003,8 +1012,11 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         for (ActionListener a : jComboBoxFilterThema.getActionListeners()) {
             jComboBoxFilterThema.removeActionListener(a);
         }
-        for (ActionListener a : jComboBoxZeitraum.getActionListeners()) {
-            jComboBoxZeitraum.removeActionListener(a);
+        for (ActionListener a : jTextFieldFilterTage.getActionListeners()) {
+            jTextFieldFilterTage.removeActionListener(a);
+        }
+        for (ChangeListener a : jSliderTage.getChangeListeners()) {
+            jSliderTage.removeChangeListener(a);
         }
         for (ChangeListener a : jSliderMinuten.getChangeListeners()) {
             jSliderMinuten.removeChangeListener(a);

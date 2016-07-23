@@ -43,7 +43,9 @@ public interface MVFilter {
 
     public JComboBox<String> get_jComboBoxFilterThema();
 
-    public JComboBox<String> get_jComboBoxZeitraum();
+    public JSlider get_jSliderTage();
+
+    public JTextField get_jTextFieldFilterTage();
 
     public JSlider get_jSliderMinuten();
 
