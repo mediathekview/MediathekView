@@ -94,7 +94,7 @@ public class FilmeLaden {
 
         @Override
         public synchronized void run() {
-            Duration.staticDbgPing("Thread: Filmliste laden");
+            Duration.staticPing("Thread: Filmliste laden");
             new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
 
             SysMsg.sysMsg("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));

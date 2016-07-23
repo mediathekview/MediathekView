@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import mSearch.tool.Listener;
@@ -77,7 +78,6 @@ public class MVMediaDB {
     public synchronized void makeIndex() {
         Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, MVMediaDB.class.getSimpleName());
         suffix = MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX).split(",");
-        Duration.staticDbgPing("Mediensammlung erstellen - start");
         for (int i = 0; i < suffix.length; ++i) {
             suffix[i] = suffix[i].toLowerCase();
             if (!suffix[i].isEmpty() && !suffix[i].startsWith(".")) {
@@ -95,6 +95,8 @@ public class MVMediaDB {
 
         @Override
         public synchronized void run() {
+            Date start = new Date();
+            Duration.staticPing("Mediensammlung erstellen - start");
             try {
                 String db = MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA);
                 if (!db.isEmpty()) {
@@ -124,7 +126,7 @@ public class MVMediaDB {
                 Log.errorLog(120321254, ex);
             }
             makeIndex = false;
-            Duration.staticDbgPing("Mediensammlung erstellen - **fertig**");
+            Duration.staticPing("Mediensammlung erstellen - **fertig**", start);
 
             Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, MVMediaDB.class.getSimpleName());
         }
