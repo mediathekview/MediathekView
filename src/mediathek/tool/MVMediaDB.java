@@ -29,8 +29,8 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import mSearch.tool.Listener;
 import mSearch.Const;
+import mSearch.tool.Duration;
 import mSearch.tool.Log;
-import mediathek.config.Daten;
 import mediathek.daten.DatenMediaDB;
 
 public class MVMediaDB {
@@ -77,6 +77,7 @@ public class MVMediaDB {
     public synchronized void makeIndex() {
         Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, MVMediaDB.class.getSimpleName());
         suffix = MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX).split(",");
+        Duration.staticDbgPing("Mediensammlung erstellen - start");
         for (int i = 0; i < suffix.length; ++i) {
             suffix[i] = suffix[i].toLowerCase();
             if (!suffix[i].isEmpty() && !suffix[i].startsWith(".")) {
@@ -123,6 +124,8 @@ public class MVMediaDB {
                 Log.errorLog(120321254, ex);
             }
             makeIndex = false;
+            Duration.staticDbgPing("Mediensammlung erstellen - **fertig**");
+
             Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, MVMediaDB.class.getSimpleName());
         }
 
@@ -135,10 +138,8 @@ public class MVMediaDB {
                 for (File file : files) {
                     if (file.isDirectory()) {
                         searchFile(file);
-                    } else {
-                        if (checkSuffix(suffix, file.getName())) {
-                            fileArray.add(new DatenMediaDB(file.getName(), file.getParent().intern(), file.length()));
-                        }
+                    } else if (checkSuffix(suffix, file.getName())) {
+                        fileArray.add(new DatenMediaDB(file.getName(), file.getParent().intern(), file.length()));
                     }
                 }
             }
