@@ -252,6 +252,20 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         });
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_G, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "gesehen");
+        this.getActionMap().put("gesehen", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filmGesehen();
+            }
+        });
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_N, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "ungesehen");
+        this.getActionMap().put("ungesehen", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filmUngesehen();
+            }
+        });
         panelBeschreibungSetzen();
 
         final CellRendererDownloads cellRenderer = new CellRendererDownloads();
