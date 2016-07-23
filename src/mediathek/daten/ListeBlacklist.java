@@ -127,7 +127,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             // Array mit Sendernamen/Themen füllen
             listeRet.themenLaden();
         }
-        Duration.staticDbgPing("Blacklist filtern - fertig");
+        Duration.staticDbgPing("Blacklist filtern - ****fertig****");
     }
 
     public synchronized boolean checkBlackOkFilme_Downloads(DatenFilm film) {

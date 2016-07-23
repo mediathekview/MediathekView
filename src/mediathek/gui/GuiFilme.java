@@ -724,16 +724,27 @@ public class GuiFilme extends PanelVorlage {
         });
 
         mVFilter.get_jToggleButtonLivestram().addActionListener(e -> {
-            if (!stopBeob) {
+            if (!stopBeob && mVFilter.get_jToggleButtonLivestram().isSelected()) {
                 stopBeob = true;
-                //auch die Filter löschen
-                mVFilter.get_jComboBoxFilterSender().setModel(new DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
-                mVFilter.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
-                mVFilter.get_jTextFieldFilterTitel().setText("");
+                delAlles();
+                mVFilter.get_jToggleButtonLivestram().setSelected(true);
+                stopBeob = false;
             }
+            Daten.listeBlacklist.filterListe();
             loadTable();
         });
-        mVFilter.get_jButtonFilterLoeschen().addActionListener(new BeobFilterLoeschen());
+        mVFilter.get_jToggleButtonHistory().addActionListener(e -> {
+            if (!stopBeob && mVFilter.get_jToggleButtonHistory().isSelected()) {
+                stopBeob = true;
+                delAlles();
+                mVFilter.get_jToggleButtonHistory().setSelected(true);
+                stopBeob = false;
+            }
+            Daten.listeBlacklist.filterListe();
+            loadTable();
+        });
+        mVFilter.get_jButtonFilterLoeschen().addActionListener(l -> delFilter());
+        mVFilter.get_jButtonClearAll().addActionListener(l -> delFilterAlles());
         mVFilter.get_jComboBoxFilterSender().addActionListener(new BeobFilter());
         mVFilter.get_jComboBoxFilterThema().addActionListener(new BeobFilter());
         mVFilter.get_jTextFieldFilterTitel().addActionListener(new BeobFilter());
@@ -744,7 +755,6 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jCheckBoxKeineGesehenen().addActionListener(new BeobFilter());
         mVFilter.get_jCheckBoxNurHd().addActionListener(new BeobFilter());
         mVFilter.get_jCheckBoxNeue().addActionListener(new BeobFilter());
-        mVFilter.get_jToggleButtonHistory().addActionListener(new BeobFilter());
         mVFilter.get_jRadioButtonTT().addActionListener(new BeobFilter());
         mVFilter.get_JRadioButtonIrgendwo().addActionListener(new BeobFilter());
 
@@ -769,19 +779,49 @@ public class GuiFilme extends PanelVorlage {
 
     private void delFilter() {
         stopBeob = true;
-        delFilter_();
+        delOben();
         stopBeob = false;
         // und jetzt wieder laden
-////        Daten.listeBlacklist.filterListe(); //brauchts eigentlich nicht
         loadTable();
     }
 
-    private void delFilter_() {
+    private void delFilterAlles() {
+        stopBeob = true;
+        delAlles();
+        stopBeob = false;
+        // und jetzt wieder laden
+        Daten.listeBlacklist.filterListe();
+        loadTable();
+    }
+
+    private void delOben() {
         mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
         mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
         mVFilter.get_jTextFieldFilterTitel().setText("");
         mVFilter.get_jTextFieldFilterThemaTitel().setText("");
         mVFilter.setThemaTitel(true);
+    }
+
+    private void delAlles() {
+        mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listeFilmeNachBlackList.sender));
+        mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
+        mVFilter.get_jTextFieldFilterTitel().setText("");
+        mVFilter.get_jTextFieldFilterThemaTitel().setText("");
+        mVFilter.setThemaTitel(true);
+        //untere Hälfte
+        mVFilter.get_jCheckBoxKeineAbos().setSelected(false);
+        mVFilter.get_jCheckBoxKeineGesehenen().setSelected(false);
+        mVFilter.get_jCheckBoxNurHd().setSelected(false);
+        mVFilter.get_jCheckBoxNeue().setSelected(false);
+
+        mVFilter.get_jToggleButtonHistory().setSelected(false);
+        mVFilter.get_jToggleButtonLivestram().setSelected(false);
+
+        mVFilter.get_jSliderMinuten().setValue(0);
+        mVFilter.get_jSliderTage().setValue(0);
+        MVConfig.add(MVConfig.SYSTEM_FILTER__TAGE, String.valueOf(mVFilter.get_jSliderTage().getValue()));
+        MVConfig.add(MVConfig.SYSTEM_FILTER__DAUER, String.valueOf(mVFilter.get_jSliderMinuten().getValue()));
+        setTextSlider();
     }
 
     public int getFilterTage() {
@@ -906,7 +946,7 @@ public class GuiFilme extends PanelVorlage {
             tabelle.getSpalten();
             if (Daten.listeFilmeNachBlackList.isEmpty()) {
                 // die Liste in leer
-                delFilter_();
+                delOben();
                 listeInModellLaden(); // zum löschen der Tabelle
             } else if (!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_FILTER))) {
                 // Filtern mit dem Filter in der Toolbar
@@ -1159,14 +1199,6 @@ public class GuiFilme extends PanelVorlage {
             if (!stopBeob) {
                 loadTable();
             }
-        }
-    }
-
-    private class BeobFilterLoeschen implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            guiFilmeFilterLoeschen();
         }
     }
 
