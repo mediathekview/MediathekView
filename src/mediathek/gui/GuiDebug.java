@@ -38,26 +38,25 @@ import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmlisten.FilmlisteLesen;
 import mSearch.tool.*;
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisten;
 
 public class GuiDebug extends JPanel {
-    
+
     private final JButton[] buttonSender;
     private final String[] sender;
     private Daten daten;
-    
+
     public GuiDebug(Daten d) {
         super();
         initComponents();
         daten = d;
         sender = Daten.filmeLaden.getSenderNamen();
         buttonSender = new JButton[sender.length];
-        
+
         jPanelFilmlisteLaden.setLayout(new GridLayout(1, 1));
         jPanelFilmlisteLaden.add(new PanelFilmlisten(d, Daten.mediathekGui));
-        
+
         jPanelStarts.setLayout(new GridLayout(1, 1));
         jPanelStarts.add(new PanelInfoStarts());
 
@@ -68,7 +67,7 @@ public class GuiDebug extends JPanel {
         }
         addSender();
         jButtonNeuLaden.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Daten.listeFilme.clear();
@@ -79,7 +78,8 @@ public class GuiDebug extends JPanel {
                 Duration.staticPing("Fertig");
                 Daten.listeFilme.themenLaden();
                 Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
-                Listener.notify(Listener.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
+                Daten.listeBlacklist.filterListe();
+                Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
             }
         });
         jButtonAllesSpeichern.addActionListener(new ActionListener() {
@@ -93,7 +93,8 @@ public class GuiDebug extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Daten.listeFilme.clear();
-                Listener.notify(Listener.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
+                Daten.listeBlacklist.filterListe();
+                Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
             }
         });
         jButtonFehler.addActionListener(new ActionListener() {
@@ -108,7 +109,7 @@ public class GuiDebug extends JPanel {
                 Daten.listeFilme.check();
             }
         });
-        
+
         jButtonCheckUrl.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -129,14 +130,14 @@ public class GuiDebug extends JPanel {
             }
         });
         jButtonClean.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Daten.listeFilme.cleanList();
             }
         });
         jToggleButtonFastAuto.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent ae) {
                 if (jToggleButtonFastAuto.isSelected()) {
@@ -148,7 +149,7 @@ public class GuiDebug extends JPanel {
         });
         jButtonDir.addActionListener(new BeobPfad());
         jButtonSize.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 String path = jTextFieldPath.getText();
@@ -173,7 +174,7 @@ public class GuiDebug extends JPanel {
             }
         });
         jButtonSearchUrl.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!jTextFieldSearchUrl.getText().isEmpty()) {
@@ -188,9 +189,9 @@ public class GuiDebug extends JPanel {
                 Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.NONE);
             }
         });
-        
+
         jButtonDoppelteUrls.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 ListeFilme listeFilme = new ListeFilme();
@@ -209,7 +210,7 @@ public class GuiDebug extends JPanel {
             }
         });
         jButtonNurDoppelte.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 ListeFilme listeFilme = new ListeFilme();
@@ -237,7 +238,7 @@ public class GuiDebug extends JPanel {
             }
         });
         jButtonHashOlddoppelt.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 ListeFilme listeFilme = new ListeFilme();
@@ -267,7 +268,7 @@ public class GuiDebug extends JPanel {
             }
         });
         jButtonTTUrl.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 ListeFilme listeFilme = new ListeFilme();
@@ -298,7 +299,7 @@ public class GuiDebug extends JPanel {
         });
         jButtonOldList.addActionListener(new BeobPfadOldUrl());
         jButtonAddOld.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 String url = jTextFieldOld.getText();
@@ -308,11 +309,12 @@ public class GuiDebug extends JPanel {
                 tmpListe.clear();
                 System.gc();
                 Daten.listeFilme.sort();
-                Listener.notify(Listener.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
+                Daten.listeBlacklist.filterListe();
+                Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
             }
         });
         jButtonAddOldFilm.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 ArrayList<DatenFilm> list = Daten.guiFilme.selFilme();
@@ -328,11 +330,12 @@ public class GuiDebug extends JPanel {
                 Daten.listeFilme.updateListeOld(ll);
                 System.gc();
                 Daten.listeFilme.sort();
-                Listener.notify(Listener.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
+                Daten.listeBlacklist.filterListe();
+                Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
             }
         });
         jButtonLiveStreams.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 String url = jTextFieldLiveStreams.getText();
@@ -342,14 +345,15 @@ public class GuiDebug extends JPanel {
                 tmpListe.clear();
                 System.gc();
                 Daten.listeFilme.sort();
-                Listener.notify(Listener.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
+                Daten.listeBlacklist.filterListe();
+                Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
             }
         });
         jButtonDelLive.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+
                 Iterator<DatenFilm> it = Daten.listeFilme.iterator();
                 while (it.hasNext()) {
                     DatenFilm f = it.next();
@@ -357,11 +361,12 @@ public class GuiDebug extends JPanel {
                         it.remove();
                     }
                 }
-                Listener.notify(Listener.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
+                Daten.listeBlacklist.filterListe();
+                Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
             }
         });
     }
-    
+
     private String getHost(String uurl) {
         String host = "";
         try {
@@ -405,7 +410,7 @@ public class GuiDebug extends JPanel {
         }
         return host;
     }
-    
+
     private void addSender() {
         jPanelLoeschen.removeAll();
         jPanelLoeschen.setLayout(new GridLayout(0, 5));
@@ -777,22 +782,23 @@ public class GuiDebug extends JPanel {
     // End of variables declaration//GEN-END:variables
 
     private class BeobSenderLoeschen implements ActionListener {
-        
+
         private final String sender;
-        
+
         public BeobSenderLoeschen(String ssender) {
             sender = ssender;
         }
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             Daten.listeFilme.deleteAllFilms(sender);
-            Listener.notify(Listener.EREIGNIS_FILMLISTE_GEAENDERT, MediathekGui.class.getSimpleName());
+            Daten.listeBlacklist.filterListe();
+            Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
         }
     }
-    
+
     private class BeobPfad implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
@@ -827,9 +833,9 @@ public class GuiDebug extends JPanel {
             }
         }
     }
-    
+
     private class BeobPfadOldUrl implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
@@ -864,5 +870,5 @@ public class GuiDebug extends JPanel {
             }
         }
     }
-    
+
 }

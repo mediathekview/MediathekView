@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
+import mSearch.tool.Duration;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
@@ -109,6 +110,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     }
 
     public synchronized void filterListe() {
+        Duration.staticDbgPing("Blacklist filtern - start");
         filterListe(Daten.listeFilme, Daten.listeFilmeNachBlackList);
     }
 
@@ -117,16 +119,16 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         setFilter();
         if (listeFilme != null) {
             listeRet.setMeta(listeFilme);
-            listeFilme.stream().filter(this::checkFilm)
-                    .forEach(filmEntry -> {
-                        listeRet.add(filmEntry);
-                        if (filmEntry.isNew()) {
-                            listeRet.neueFilme = true;
-                        }
-                    });
+            listeFilme.stream().filter(this::checkFilm).forEach(filmEntry -> {
+                listeRet.add(filmEntry);
+                if (filmEntry.isNew()) {
+                    listeRet.neueFilme = true;
+                }
+            });
             // Array mit Sendernamen/Themen füllen
             listeRet.themenLaden();
         }
+        Duration.staticDbgPing("Blacklist filtern - fertig");
     }
 
     public synchronized boolean checkBlackOkFilme_Downloads(DatenFilm film) {
@@ -176,10 +178,12 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     private boolean checkFilm(DatenFilm film) {
         // true wenn Film angezeigt wird!!
-        // erst mal den Filter Tage
+        // erst mal den Filter Tage, kommt aus dem Filter und deswegen immer
         if (!checkDate(film)) {
             return false;
         }
+
+        //===========================================
         // dann die Blacklist, nur wenn eingeschaltet
         if (!blacklistOn) {
             return true;
