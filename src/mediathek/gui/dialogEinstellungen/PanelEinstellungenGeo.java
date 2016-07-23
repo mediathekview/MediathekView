@@ -116,7 +116,10 @@ public class PanelEinstellungenGeo extends PanelVorlage {
     }
 
     private void melden() {
+        Daten.listeBlacklist.filterListe();
         Listener.notify(Listener.EREIGNIS_GEO, PanelEinstellungenGeo.class.getName());
+        Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, PanelEinstellungenGeo.class.getSimpleName());
+
     }
 
     /** This method is called from within the constructor to
