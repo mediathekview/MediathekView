@@ -35,14 +35,17 @@ import javax.swing.event.ListSelectionListener;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Listener;
-import mediathek.config.MVConfig;
-import mediathek.config.Icons;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
+import mediathek.config.MVConfig;
 import mediathek.daten.DatenBlacklist;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
-import mediathek.tool.*;
+import mediathek.tool.Filter;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.TModel;
+import mediathek.tool.TextCopyPaste;
 
 public class PanelBlacklist extends PanelVorlage {
 
@@ -188,8 +191,14 @@ public class PanelBlacklist extends PanelVorlage {
             MVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, "0");
         }
         jTextFieldMinuten.setText(String.valueOf(jSliderMinuten.getValue()));
+        if (jSliderMinuten.getValue() == 0) {
+            jTextFieldMinuten.setText("alles");
+        }
         jSliderMinuten.addChangeListener(e -> {
             jTextFieldMinuten.setText(String.valueOf(jSliderMinuten.getValue()));
+            if (jSliderMinuten.getValue() == 0) {
+                jTextFieldMinuten.setText("alles");
+            }
             if (!jSliderMinuten.getValueIsAdjusting()) {
                 MVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, String.valueOf(jSliderMinuten.getValue()));
                 notifyBlack();
@@ -290,8 +299,6 @@ public class PanelBlacklist extends PanelVorlage {
         jSliderMinuten = new javax.swing.JSlider();
         jLabel1 = new javax.swing.JLabel();
         jTextFieldMinuten = new javax.swing.JTextField();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -365,13 +372,9 @@ public class PanelBlacklist extends PanelVorlage {
 
         jSliderMinuten.setValue(0);
 
-        jLabel1.setText("Nur Filme mit einer Länge von mehr als:");
+        jLabel1.setText("Nur Filme anzeigen mit einer Länge von mehr als [min]:");
 
         jTextFieldMinuten.setEditable(false);
-
-        jLabel11.setText("Minuten anzeigen.");
-
-        jLabel12.setText("Beim Wert \"0\" werden alle Filme anzeigt.");
 
         jLabel13.setText("Filme, die keine Längenangabe haben, werden immer angezeigt.");
 
@@ -388,12 +391,9 @@ public class PanelBlacklist extends PanelVorlage {
                             .addGroup(jPanel6Layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextFieldMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel11))
-                            .addComponent(jLabel12)
+                                .addComponent(jTextFieldMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel13))
-                        .addGap(0, 194, Short.MAX_VALUE)))
+                        .addGap(0, 230, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -402,11 +402,8 @@ public class PanelBlacklist extends PanelVorlage {
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextFieldMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel12)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jTextFieldMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel13)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jSliderMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -468,7 +465,7 @@ public class PanelBlacklist extends PanelVorlage {
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(141, Short.MAX_VALUE))
+                .addContainerGap(156, Short.MAX_VALUE))
         );
 
         jTabbedPaneBlacklist.addTab("Blacklist allgemein", jPanel3);
@@ -677,8 +674,6 @@ public class PanelBlacklist extends PanelVorlage {
     private javax.swing.JComboBox<String> jComboBoxThema;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

@@ -70,16 +70,6 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                     Daten.dialogEinstellungen.setVisible(true);
                 }
             });
-            im = jComboBoxZeitraum.getInputMap();
-            im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), "einstellungen");
-            am = jComboBoxZeitraum.getActionMap();
-            am.put("einstellungen", new AbstractAction() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    Daten.dialogEinstellungen.setVisible(true);
-                }
-            });
         }
         jButtonFilterLoeschen.setIcon(Icons.ICON_BUTTON_CLEAR);
         jButtonFilterLoeschen.setMnemonic(KeyEvent.VK_F8);
@@ -478,7 +468,6 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jRadioButtonTT = new javax.swing.JRadioButton();
         jRadioButtonIrgendwo = new javax.swing.JRadioButton();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        jComboBoxZeitraum = new javax.swing.JComboBox<>();
         javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jTextFieldFilterMinuten = new javax.swing.JTextField();
         jSliderMinuten = new javax.swing.JSlider();
@@ -492,6 +481,8 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jButtonHilfe = new javax.swing.JButton();
         jButtonFilterLoeschen = new javax.swing.JButton();
         jToggleButtonBlacklist = new javax.swing.JToggleButton();
+        jSliderTage = new javax.swing.JSlider();
+        jTextFieldFilterTage = new javax.swing.JTextField();
         jRadioButtonF1 = new javax.swing.JRadioButton();
         jRadioButtonF2 = new javax.swing.JRadioButton();
         jRadioButtonF3 = new javax.swing.JRadioButton();
@@ -522,9 +513,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         buttonGroup2.add(jRadioButtonIrgendwo);
         jRadioButtonIrgendwo.setText("irgendwo:");
 
-        jLabel1.setText("Zeitraum:");
-
-        jComboBoxZeitraum.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "alles", "1 Tag", "2 Tage", "3 Tage", "7 Tage", "15 Tage", "20 Tage", "30 Tage" }));
+        jLabel1.setText("Zeitraum [Tage]:");
 
         jLabel3.setText("Mindestlänge [min]:");
 
@@ -577,6 +566,11 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jSliderTage.setMaximum(30);
+        jSliderTage.setValue(15);
+
+        jTextFieldFilterTage.setEditable(false);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -584,6 +578,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSliderTage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jComboBoxFilterSender, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jComboBoxFilterThema, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jTextFieldFilterTitel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -592,9 +587,12 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                         .addComponent(jRadioButtonTT)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jRadioButtonIrgendwo))
-                    .addComponent(jComboBoxZeitraum, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jSliderMinuten, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTextFieldFilterTage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
@@ -604,18 +602,19 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                             .addComponent(jCheckBoxKeineGesehenen)
                             .addComponent(jCheckBoxKeineAbos)
                             .addComponent(jCheckBoxNurHd)
-                            .addComponent(jLabel1)
                             .addComponent(jToggleButtonLivestram)
                             .addComponent(jToggleButtonHistory))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldFilterMinuten)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTextFieldFilterMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jToggleButtonHistory, jToggleButtonLivestram});
+
+        jPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jTextFieldFilterMinuten, jTextFieldFilterTage});
 
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -641,10 +640,12 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(40, 40, 40)
-                .addComponent(jLabel1)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jTextFieldFilterTage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBoxZeitraum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSliderTage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jTextFieldFilterMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -667,7 +668,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jComboBoxFilterSender, jComboBoxFilterThema, jTextFieldFilterThemaTitel, jTextFieldFilterTitel});
 
-        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jComboBoxZeitraum, jTextFieldFilterMinuten});
+        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jLabel1, jLabel3, jTextFieldFilterMinuten, jTextFieldFilterTage});
 
         buttonGroup1.add(jRadioButtonF1);
         jRadioButtonF1.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 1 speichern");
@@ -734,7 +735,6 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     private javax.swing.JCheckBox jCheckBoxNurNeue;
     public javax.swing.JComboBox<String> jComboBoxFilterSender;
     public javax.swing.JComboBox<String> jComboBoxFilterThema;
-    public javax.swing.JComboBox<String> jComboBoxZeitraum;
     private javax.swing.JRadioButton jRadioButtonF1;
     private javax.swing.JRadioButton jRadioButtonF2;
     private javax.swing.JRadioButton jRadioButtonF3;
@@ -743,7 +743,9 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     private javax.swing.JRadioButton jRadioButtonIrgendwo;
     private javax.swing.JRadioButton jRadioButtonTT;
     public javax.swing.JSlider jSliderMinuten;
+    private javax.swing.JSlider jSliderTage;
     public javax.swing.JTextField jTextFieldFilterMinuten;
+    private javax.swing.JTextField jTextFieldFilterTage;
     public javax.swing.JTextField jTextFieldFilterThemaTitel;
     public javax.swing.JTextField jTextFieldFilterTitel;
     private javax.swing.JToggleButton jToggleButtonBlacklist;
@@ -824,8 +826,13 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     }
 
     @Override
-    public JComboBox<String> get_jComboBoxZeitraum() {
-        return jComboBoxZeitraum;
+    public JSlider get_jSliderTage() {
+        return jSliderTage;
+    }
+
+    @Override
+    public JTextField get_jTextFieldFilterTage() {
+        return jTextFieldFilterTage;
     }
 
     @Override
@@ -885,8 +892,11 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         for (ActionListener a : jComboBoxFilterThema.getActionListeners()) {
             jComboBoxFilterThema.removeActionListener(a);
         }
-        for (ActionListener a : jComboBoxZeitraum.getActionListeners()) {
-            jComboBoxZeitraum.removeActionListener(a);
+        for (ActionListener a : jTextFieldFilterTage.getActionListeners()) {
+            jTextFieldFilterTage.removeActionListener(a);
+        }
+        for (ChangeListener a : jSliderTage.getChangeListeners()) {
+            jSliderTage.removeChangeListener(a);
         }
         for (ChangeListener a : jSliderMinuten.getChangeListeners()) {
             jSliderMinuten.removeChangeListener(a);

@@ -80,9 +80,10 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="jSliderTage" max="32767" attributes="0"/>
                       <Component id="jComboBoxFilterSender" alignment="0" max="32767" attributes="0"/>
                       <Component id="jComboBoxFilterThema" alignment="0" max="32767" attributes="0"/>
                       <Component id="jTextFieldFilterTitel" alignment="0" max="32767" attributes="0"/>
@@ -92,9 +93,13 @@
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="jRadioButtonIrgendwo" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="jComboBoxZeitraum" alignment="0" max="32767" attributes="0"/>
                       <Component id="jSliderMinuten" alignment="0" max="32767" attributes="0"/>
                       <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="jTextFieldFilterTage" linkSize="6" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -104,7 +109,6 @@
                               <Component id="jCheckBoxKeineGesehenen" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="jCheckBoxKeineAbos" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="jCheckBoxNurHd" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="jToggleButtonLivestram" linkSize="3" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="jToggleButtonHistory" linkSize="3" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -112,8 +116,8 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jTextFieldFilterMinuten" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="jTextFieldFilterMinuten" linkSize="6" min="-2" pref="64" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -145,13 +149,16 @@
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
-                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jComboBoxZeitraum" linkSize="2" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jTextFieldFilterMinuten" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel1" linkSize="5" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jTextFieldFilterTage" linkSize="5" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jSliderTage" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jLabel3" linkSize="5" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jTextFieldFilterMinuten" linkSize="5" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jSliderMinuten" min="-2" max="-2" attributes="0"/>
@@ -263,31 +270,11 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Zeitraum:"/>
+            <Property name="text" type="java.lang.String" value="Zeitraum [Tage]:"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
-          </AuxValues>
-        </Component>
-        <Component class="javax.swing.JComboBox" name="jComboBoxZeitraum">
-          <Properties>
-            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="8">
-                <StringItem index="0" value="alles"/>
-                <StringItem index="1" value="1 Tag"/>
-                <StringItem index="2" value="2 Tage"/>
-                <StringItem index="3" value="3 Tage"/>
-                <StringItem index="4" value="7 Tage"/>
-                <StringItem index="5" value="15 Tage"/>
-                <StringItem index="6" value="20 Tage"/>
-                <StringItem index="7" value="30 Tage"/>
-              </StringArray>
-            </Property>
-          </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
           </AuxValues>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel3">
@@ -428,6 +415,17 @@
             </Component>
           </SubComponents>
         </Container>
+        <Component class="javax.swing.JSlider" name="jSliderTage">
+          <Properties>
+            <Property name="maximum" type="int" value="30"/>
+            <Property name="value" type="int" value="15"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="jTextFieldFilterTage">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
     <Component class="javax.swing.JRadioButton" name="jRadioButtonF1">

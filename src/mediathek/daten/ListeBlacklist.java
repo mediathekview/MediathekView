@@ -29,7 +29,6 @@ import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
-import mediathek.gui.GuiFilme;
 import mediathek.tool.Filter;
 
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
@@ -155,7 +154,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             if (Daten.guiFilme.getFilterTage() == 0) {
                 tage = 0;
             } else {
-                long max = 1000L * 60L * 60L * 24L * GuiFilme.COMBO_ZEIT_INT[Daten.guiFilme.getFilterTage()];
+                long max = 1000L * 60L * 60L * 24L * Daten.guiFilme.getFilterTage();
                 tage = new Date().getTime() - max;
             }
         } catch (Exception ex) {

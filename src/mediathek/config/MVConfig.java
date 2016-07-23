@@ -124,7 +124,8 @@ public class MVConfig {
     public static final String SYSTEM_EXPORT_DATEI = "system-export-datei";
     public static final String SYSTEM_ANZ_TAGE_FILMLISTE = "system-anz-tage-filmilste"; // es werden nur die x letzten Tage geladen
     // Filter
-    public static final String SYSTEM_FILTER__TAGE = "filter-tage-start"; // index im Array GuiFilme.COMBO_ZEIT_INT
+    public static final String SYSTEM_FILTER__TAGE = "filter-tage-start"; // in Tagen
+    public static final String SYSTEM_FILTER__DAUER = "filter-dauer-start"; // in Minuten
     public static final String SYSTEM_FILTER_PROFILE__DAUER = "filter-dauer";
     public static final String SYSTEM_FILTER_PROFILE__TAGE = "filter-tage"; // index im Array GuiFilme.COMBO_ZEIT_INT
     public static final String SYSTEM_FILTER_PROFILE_KEINE_ABO = "filter-keineAbo";
