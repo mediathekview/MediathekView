@@ -97,7 +97,6 @@ public class FilmeLaden {
             Duration.staticDbgPing("Thread: Filmliste laden");
             new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
 
-            // Meldungen sind zwar doppelt, aber damit sie auch im Meldungsfenser erscheinen..
             SysMsg.sysMsg("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
             SysMsg.sysMsg("  erstellt am: " + Daten.listeFilme.genDate());
             SysMsg.sysMsg("  Anzahl Filme: " + Daten.listeFilme.size());

@@ -92,7 +92,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jToggleButtonBlacklist" linkSize="4" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButtonFilterLoeschen" linkSize="4" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButtonClearAll" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButtonOk" linkSize="4" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -109,7 +109,7 @@
                       <Component id="jPanel1" max="32767" attributes="0"/>
                       <Component id="jPanel2" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="jLabel6" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="jRadioButtonF1" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -118,9 +118,9 @@
                       <Component id="jRadioButtonF4" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="jRadioButtonF5" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonOk" linkSize="5" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonFilterLoeschen" linkSize="5" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonHilfe" linkSize="5" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="jToggleButtonBlacklist" linkSize="5" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButtonClearAll" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -146,36 +146,32 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="jSliderMinuten" pref="204" max="32767" attributes="0"/>
+                          <Component id="jSliderTage" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="32767" attributes="0"/>
-                                      <Component id="jTextFieldFilterMinuten" linkSize="6" min="-2" pref="34" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" attributes="0">
-                                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="32767" attributes="0"/>
-                                      <Component id="jTextFieldFilterTage" linkSize="6" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="jCheckBoxNurNeue" min="-2" max="-2" attributes="0"/>
-                                          <Component id="jCheckBoxNurHd" min="-2" max="-2" attributes="0"/>
-                                          <Component id="jCheckBoxKeineAbos" min="-2" max="-2" attributes="0"/>
-                                          <Component id="jCheckBoxKeineGesehenen" min="-2" max="-2" attributes="0"/>
-                                          <Component id="jToggleButtonLivestram" linkSize="3" alignment="0" max="32767" attributes="0"/>
-                                          <Component id="jToggleButtonHistory" linkSize="3" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      </Group>
-                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                  </Group>
-                              </Group>
+                              <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="jTextFieldFilterMinuten" linkSize="6" min="-2" pref="34" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jSliderTage" pref="212" max="32767" attributes="0"/>
-                          <Component id="jSliderMinuten" max="32767" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="jTextFieldFilterTage" linkSize="6" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jToggleButtonLivestram" linkSize="3" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="jToggleButtonHistory" linkSize="3" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jCheckBoxKeineGesehenen" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jCheckBoxKeineAbos" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jCheckBoxNurHd" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jCheckBoxNurNeue" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -198,11 +194,7 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jSliderMinuten" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="jToggleButtonLivestram" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jToggleButtonHistory" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                       <Component id="jCheckBoxKeineGesehenen" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jCheckBoxKeineAbos" min="-2" max="-2" attributes="0"/>
@@ -210,7 +202,11 @@
                       <Component id="jCheckBoxNurHd" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="jCheckBoxNurNeue" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="25" max="32767" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="jToggleButtonLivestram" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jToggleButtonHistory" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="14" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -323,15 +319,18 @@
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                          <Component id="jRadioButtonTT" min="-2" max="-2" attributes="0"/>
-                          <Component id="jRadioButtonIrgendwo" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" alignment="1" groupAlignment="1" attributes="0">
+                              <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
+                              <Component id="jRadioButtonTT" min="-2" max="-2" attributes="0"/>
+                              <Component id="jRadioButtonIrgendwo" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButtonFilterLoeschen" linkSize="4" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="jLabel2" alignment="1" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jComboBoxFilterSender" pref="302" max="32767" attributes="0"/>
+                          <Component id="jComboBoxFilterSender" pref="319" max="32767" attributes="0"/>
                           <Component id="jComboBoxFilterThema" max="32767" attributes="0"/>
                           <Component id="jTextFieldFilterTitel" alignment="0" max="32767" attributes="0"/>
                           <Component id="jTextFieldFilterThemaTitel" alignment="0" max="32767" attributes="0"/>
@@ -348,7 +347,7 @@
                           <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jComboBoxFilterSender" linkSize="1" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                           <Component id="jComboBoxFilterThema" linkSize="1" min="-2" max="-2" attributes="0"/>
@@ -365,7 +364,9 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jRadioButtonIrgendwo" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="148" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="jButtonFilterLoeschen" linkSize="5" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -443,6 +444,17 @@
                 <Property name="text" type="java.lang.String" value="irgendwo:"/>
               </Properties>
             </Component>
+            <Component class="javax.swing.JButton" name="jButtonFilterLoeschen">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mediathek/res/muster/button-clear.png"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" value="Filter l&#xf6;schen"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+              </AuxValues>
+            </Component>
           </SubComponents>
         </Container>
         <Component class="javax.swing.JButton" name="jButtonHilfe">
@@ -510,23 +522,20 @@
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
           </AuxValues>
         </Component>
-        <Component class="javax.swing.JButton" name="jButtonFilterLoeschen">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mediathek/res/muster/button-clear.png"/>
-            </Property>
-            <Property name="toolTipText" type="java.lang.String" value="Filter l&#xf6;schen"/>
-          </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
-          </AuxValues>
-        </Component>
         <Component class="javax.swing.JToggleButton" name="jToggleButtonBlacklist">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/mediathek/res/muster/button-blacklist-aus.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Blacklist ein/aus (Rechtsklick um Blacklist zu bearbeiten)"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButtonClearAll">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mediathek/res/muster/button-clear.png"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" value="Alles l&#xf6;schen"/>
           </Properties>
         </Component>
       </SubComponents>

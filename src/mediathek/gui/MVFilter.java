@@ -33,6 +33,8 @@ public interface MVFilter {
 
     public JButton get_jButtonFilterLoeschen();
 
+    public JButton get_jButtonClearAll();
+
     public JCheckBox get_jCheckBoxKeineAbos();
 
     public JCheckBox get_jCheckBoxKeineGesehenen();
