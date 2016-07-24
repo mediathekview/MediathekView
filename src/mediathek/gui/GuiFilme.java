@@ -859,6 +859,8 @@ public class GuiFilme extends PanelVorlage {
     private void setFilterProfile(int filter) {
         stopBeob = true;
         boolean geändert = false;
+        mVFilter.get_jToggleButtonHistory().setSelected(false);
+        mVFilter.get_jToggleButtonLivestram().setSelected(false);
         mVFilter.get_jTextFieldFilterTitel().setText(MVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__TITEL, filter));
         mVFilter.get_jTextFieldFilterThemaTitel().setText(MVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__THEMA_TITEL, filter));
         if (MVConfig.get(MVConfig.SYSTEM_FILTER_PROFILE__TT, filter).isEmpty()) {
@@ -1773,13 +1775,15 @@ public class GuiFilme extends PanelVorlage {
                                 //gibts schon, dann löschen
                                 Daten.listeAbo.aboLoeschen(datenAbo);
                             } else //neues Abo anlegen
-                             if (mitTitel) {
+                            {
+                                if (mitTitel) {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], film.arr[DatenFilm.FILM_TITEL]);
                                 } else {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], "");
                                 }
+                            }
                         });
                         stopBeob = false;
                     }
