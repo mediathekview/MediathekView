@@ -27,9 +27,9 @@ import javax.swing.table.TableModel;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.DbgMsg;
 import mSearch.tool.Listener;
-import mediathek.config.MVConfig;
-import mediathek.config.Icons;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
+import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
 import mediathek.tool.BeobMausUrl;
@@ -46,14 +46,19 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
     private DatenFilm currentFilm = null;
     private MVTable table = null;
 
-    public PanelFilmBeschreibung(Daten daten, MVTable table) {
+    public PanelFilmBeschreibung(Daten daten, MVTable table, boolean film) {
         initComponents();
         this.table = table;
 
         jCheckBoxBeschreibung.setIcon(Icons.ICON_CHECKBOX_CLOSE);
         jCheckBoxBeschreibung.addActionListener(e -> {
-            MVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.FALSE.toString());
-            Listener.notify(Listener.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
+            if (film) {
+                MVConfig.add(MVConfig.SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN, Boolean.FALSE.toString());
+                Listener.notify(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
+            } else {
+                MVConfig.add(MVConfig.SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN, Boolean.FALSE.toString());
+                Listener.notify(Listener.EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
+            }
         });
 
         try {

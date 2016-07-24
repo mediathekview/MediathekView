@@ -113,7 +113,7 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void setupDescriptionPanel() {
-        PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten, tabelle);
+        PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten, tabelle, true /*film*/);
         jPanelBeschreibung.setLayout(new BorderLayout());
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
     }
@@ -122,7 +122,7 @@ public class GuiFilme extends PanelVorlage {
      * Show description panel based on settings.
      */
     private void showDescriptionPanel() {
-        jPanelBeschreibung.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
+        jPanelBeschreibung.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN)));
     }
 
     @Override
@@ -131,6 +131,7 @@ public class GuiFilme extends PanelVorlage {
         Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.FILME);
         updateFilmData();
         setInfoStatusbar();
+        Listener.notify(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
     }
 
     public String getFilterTextFromSearchField() {
@@ -436,7 +437,7 @@ public class GuiFilme extends PanelVorlage {
                 setVisFilterPanelAndLoad();
             }
         });
-        Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, GuiFilme.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 showDescriptionPanel();

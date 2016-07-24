@@ -328,10 +328,13 @@
                 <Property name="text" type="java.lang.String" value="Toolbar"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCheckBoxMenuItemBeschreibung">
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="cbkBeschreibung">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="F10"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="99" green="33" red="0" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Beschreibung anzeigen"/>
               </Properties>
