@@ -31,9 +31,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
-import mediathek.config.MVConfig;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
+import mediathek.config.MVConfig;
 import mediathek.controller.ProgrammUpdateSuchen;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
@@ -92,6 +92,11 @@ public class PanelEinstellungen extends PanelVorlage {
         jCheckBoxTabsTop.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_TOP)));
         jCheckBoxTabsTop.addActionListener(ae -> {
             MVConfig.add(MVConfig.SYSTEM_TABS_TOP, Boolean.toString(jCheckBoxTabsTop.isSelected()));
+            Listener.notify(Listener.EREIGNIS_TABS_TOP, PanelEinstellungen.class.getSimpleName());
+        });
+        jCheckBoxTabIcon.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_ICON)));
+        jCheckBoxTabIcon.addActionListener(ae -> {
+            MVConfig.add(MVConfig.SYSTEM_TABS_ICON, Boolean.toString(jCheckBoxTabIcon.isSelected()));
             Listener.notify(Listener.EREIGNIS_TABS_TOP, PanelEinstellungen.class.getSimpleName());
         });
 
@@ -257,6 +262,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jButtonLoad = new javax.swing.JButton();
         jCheckBoxTray = new javax.swing.JCheckBox();
         jCheckBoxTabsTop = new javax.swing.JCheckBox();
+        jCheckBoxTabIcon = new javax.swing.JCheckBox();
 
         setMinimumSize(getPreferredSize());
 
@@ -352,6 +358,9 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jCheckBoxTabsTop.setText("Tabs oben anzeigen");
 
+        jCheckBoxTabIcon.setText("keine Icons im Tab");
+        jCheckBoxTabIcon.setToolTipText("Im Tab keine Icons anzeigen");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -364,7 +373,10 @@ public class PanelEinstellungen extends PanelVorlage {
                         .addGap(177, 177, 177))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBoxTabsTop)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jCheckBoxTabsTop)
+                                .addGap(18, 18, 18)
+                                .addComponent(jCheckBoxTabIcon))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -380,7 +392,9 @@ public class PanelEinstellungen extends PanelVorlage {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jCheckBoxTabsTop)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jCheckBoxTabsTop)
+                    .addComponent(jCheckBoxTabIcon))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxEchtzeit)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -428,6 +442,7 @@ public class PanelEinstellungen extends PanelVorlage {
     private javax.swing.JButton jButtonSuchen;
     private javax.swing.JCheckBox jCheckBoxEchtzeit;
     private javax.swing.JCheckBox jCheckBoxSuchen;
+    private javax.swing.JCheckBox jCheckBoxTabIcon;
     private javax.swing.JCheckBox jCheckBoxTabsTop;
     private javax.swing.JCheckBox jCheckBoxTray;
     private javax.swing.JComboBox<String> jComboBoxIcons;

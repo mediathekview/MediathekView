@@ -299,7 +299,14 @@ public class Daten {
         MVConfig.add(MVConfig.SYSTEM_TAB_ABO_ICON_KLEIN, Boolean.TRUE.toString());
         MVConfig.add(MVConfig.SYSTEM_FONT_SIZE, "0");
         MVConfig.add(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE, "0");
-        MVConfig.add(MVConfig.SYSTEM_TABS_TOP, Boolean.FALSE.toString());
+        if (Functions.getOs() == Functions.OperatingSystemType.MAC) {
+            // haben eigene Tabs
+            MVConfig.add(MVConfig.SYSTEM_TABS_TOP, Boolean.TRUE.toString());
+            MVConfig.add(MVConfig.SYSTEM_TABS_ICON, Boolean.FALSE.toString());
+        } else {
+            MVConfig.add(MVConfig.SYSTEM_TABS_TOP, Boolean.FALSE.toString());
+            MVConfig.add(MVConfig.SYSTEM_TABS_ICON, Boolean.TRUE.toString());
+        }
         // UserAgent
         MVConfig.add(MVConfig.SYSTEM_USER_AGENT_AUTO, Boolean.TRUE.toString());
         try {
