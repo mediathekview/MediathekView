@@ -297,10 +297,16 @@ public class MediathekGui extends JFrame {
                 setTitle("Ein Programmupdate ist verfügbar");
             }
         });
-        Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
-                jCheckBoxMenuItemBeschreibung.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
+                setCbBeschreibung();
+            }
+        });
+        Listener.addListener(new Listener(Listener.EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setCbBeschreibung();
             }
         });
         Listener.addListener(new Listener(Listener.EREIGNIS_DIALOG_MEDIA_DB, MediathekGui.class.getSimpleName()) {
@@ -367,6 +373,24 @@ public class MediathekGui extends JFrame {
             this.setExtendedState(Frame.MAXIMIZED_BOTH);
         } else {
             GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_GUI, this, null);
+        }
+    }
+
+    private void setCbBeschreibung() {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN))
+                && Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN))) {
+            //dann sind beide an
+            cbkBeschreibung.setSelected(true);
+            cbkBeschreibung.setForeground(null);
+        } else if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN))
+                || Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN))) {
+            //dann ists nur einer
+            cbkBeschreibung.setSelected(false);
+            cbkBeschreibung.setForeground(new java.awt.Color(0, 51, 153));
+        } else {
+            //keiner
+            cbkBeschreibung.setSelected(false);
+            cbkBeschreibung.setForeground(null);
         }
     }
 
@@ -677,6 +701,7 @@ public class MediathekGui extends JFrame {
     }
 
     protected void initMenue() {
+        setCbBeschreibung();
         jMenuFilme.addMenuListener(new MenuLST(TABS.TAB_FILME));
         jMenuDownload.addMenuListener(new MenuLST(TABS.TAB_DOWNLOADS));
         jMenuAbos.addMenuListener(new MenuLST(TABS.TAB_ABOS));
@@ -787,12 +812,16 @@ public class MediathekGui extends JFrame {
                 jCheckBoxMenuItemVideoplayer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
             }
         });
-
-        jCheckBoxMenuItemBeschreibung.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
-        jCheckBoxMenuItemBeschreibung.addActionListener(e -> {
-            MVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, String.valueOf(jCheckBoxMenuItemBeschreibung.isSelected()));
-            Listener.notify(Listener.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName());
+        cbkBeschreibung.addActionListener(l -> {
+            //Filme
+            MVConfig.add(MVConfig.SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN, String.valueOf(cbkBeschreibung.isSelected()));
+            Listener.notify(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName());
+            //Downloads
+            MVConfig.add(MVConfig.SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN, String.valueOf(cbkBeschreibung.isSelected()));
+            Listener.notify(Listener.EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName());
+            setCbBeschreibung();
         });
+
         jCheckBoxMenuItemMediaDb.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
         jCheckBoxMenuItemMediaDb.addActionListener(e -> {
             MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, String.valueOf(jCheckBoxMenuItemMediaDb.isSelected()));
@@ -1029,7 +1058,7 @@ public class MediathekGui extends JFrame {
         jMenuItemAboInvertSelection = new javax.swing.JMenuItem();
         jMenuAnsicht = new javax.swing.JMenu();
         jCheckBoxMenuItemToolBar = new javax.swing.JCheckBoxMenuItem();
-        jCheckBoxMenuItemBeschreibung = new javax.swing.JCheckBoxMenuItem();
+        cbkBeschreibung = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemVideoplayer = new javax.swing.JCheckBoxMenuItem();
         javax.swing.JMenu jMenu1 = new javax.swing.JMenu();
         jMenuItemSchriftGr = new javax.swing.JMenuItem();
@@ -1206,9 +1235,10 @@ public class MediathekGui extends JFrame {
         jCheckBoxMenuItemToolBar.setText("Toolbar");
         jMenuAnsicht.add(jCheckBoxMenuItemToolBar);
 
-        jCheckBoxMenuItemBeschreibung.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F10, 0));
-        jCheckBoxMenuItemBeschreibung.setText("Beschreibung anzeigen");
-        jMenuAnsicht.add(jCheckBoxMenuItemBeschreibung);
+        cbkBeschreibung.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F10, 0));
+        cbkBeschreibung.setForeground(new java.awt.Color(0, 51, 153));
+        cbkBeschreibung.setText("Beschreibung anzeigen");
+        jMenuAnsicht.add(cbkBeschreibung);
 
         jCheckBoxMenuItemVideoplayer.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F11, 0));
         jCheckBoxMenuItemVideoplayer.setText("Buttons anzeigen");
@@ -1267,7 +1297,7 @@ public class MediathekGui extends JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem cbBandwidthDisplay;
-    protected javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemBeschreibung;
+    protected javax.swing.JCheckBoxMenuItem cbkBeschreibung;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemMediaDb;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemToolBar;
     protected javax.swing.JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;

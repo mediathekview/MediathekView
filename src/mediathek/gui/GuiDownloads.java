@@ -106,7 +106,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void setupDescriptionPanel() {
-        PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten, tabelle);
+        PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten, tabelle, false/*film*/);
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
     }
 
@@ -117,6 +117,8 @@ public class GuiDownloads extends PanelVorlage {
             Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.DOWNLOAD);
         }
         updateFilmData();
+        Listener.notify(Listener.EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
+
     }
 
     public void aktualisieren() {
@@ -370,7 +372,7 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         });
-        Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_BESCHREIBUNG_ANZEIGEN, GuiDownloads.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 panelBeschreibungSetzen();
@@ -379,7 +381,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void panelBeschreibungSetzen() {
-        jPanelBeschreibung.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN)));
+        jPanelBeschreibung.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN)));
     }
 
     private synchronized void reloadTable() {

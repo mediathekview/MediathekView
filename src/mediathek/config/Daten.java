@@ -276,7 +276,8 @@ public class Daten {
         MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE, Boolean.TRUE.toString());
         MVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.FALSE.toString());
         MVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
-        MVConfig.add(MVConfig.SYSTEM_PANEL_BESCHREIBUNG_ANZEIGEN, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN, Boolean.TRUE.toString());
         MVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.FALSE.toString());
         MVConfig.add(MVConfig.SYSTEM_BLACKLIST_START_ON, Boolean.FALSE.toString());
         MVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, "0");
