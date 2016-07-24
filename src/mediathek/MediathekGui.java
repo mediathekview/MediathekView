@@ -41,6 +41,7 @@ import mediathek.config.Icons;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.CheckUpdate;
+import mediathek.controller.ProgStart;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.*;
@@ -273,8 +274,7 @@ public class MediathekGui extends JFrame {
         }
         Duration.staticPing("Gui steht!");
 
-        Duration.staticPing("Filmliste laden");
-        Daten.filmeLaden.loadFilmlistProgStart();
+        ProgStart.loadDataProgStart();
 
     }
 

@@ -109,11 +109,12 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     }
 
     public synchronized void filterListe() {
-        Duration.staticDbgPing("Blacklist filtern - start");
         filterListe(Daten.listeFilme, Daten.listeFilmeNachBlackList);
     }
 
     public synchronized void filterListe(ListeFilme listeFilme, ListeFilme listeRet) {
+        Duration.staticDbgPing("Blacklist filtern - start");
+        Date start = new Date();
         listeRet.clear();
         setFilter();
         if (listeFilme != null) {
@@ -124,10 +125,10 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                     listeRet.neueFilme = true;
                 }
             });
-            // Array mit Sendernamen/Themen füllen
-            listeRet.themenLaden();
+//            // Array mit Sendernamen/Themen füllen
+//            listeRet.themenLaden(); // da ja nur die "Daten.listeFilme" gefiltert wird, ..
         }
-        Duration.staticDbgPing("Blacklist filtern - ****fertig****");
+        Duration.staticDbgPing("Blacklist filtern - **fertig**", start);
     }
 
     public synchronized boolean checkBlackOkFilme_Downloads(DatenFilm film) {

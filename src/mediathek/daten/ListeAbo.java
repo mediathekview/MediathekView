@@ -25,10 +25,7 @@ import java.util.*;
 import javax.swing.JOptionPane;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
-import mSearch.tool.Datum;
-import mSearch.tool.FilenameUtils;
-import mSearch.tool.GermanStringSorter;
-import mSearch.tool.Listener;
+import mSearch.tool.*;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogEditAbo;
@@ -201,6 +198,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     public void setAboFuerFilm(ListeFilme listeFilme, boolean aboLoeschen) {
         // hier wird tatsächlich für jeden Film die Liste der Abos durchsucht
         // braucht länger
+        Duration.staticDbgPing("Abo in die Filmliste eintragen");
         DatenFilm datenFilm;
         Iterator<DatenFilm> iteratorFilm = listeFilme.iterator();
         DatenAbo datenAbo;
