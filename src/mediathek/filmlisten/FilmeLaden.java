@@ -82,43 +82,41 @@ public class FilmeLaden {
         });
     }
 
-    // #########################################################
-    // Filmliste beim Programmstart!! laden
-    // #########################################################
-    public void loadFilmlistProgStart() {
-        // Gui startet ein wenig flüssiger
-        new Thread(new loadFilmlistProgStart_()).start();
-    }
-
-    private class loadFilmlistProgStart_ implements Runnable {
-
-        @Override
-        public synchronized void run() {
-            Duration.staticPing("Thread: Filmliste laden");
-            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
-
-            SysMsg.sysMsg("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-            SysMsg.sysMsg("  erstellt am: " + Daten.listeFilme.genDate());
-            SysMsg.sysMsg("  Anzahl Filme: " + Daten.listeFilme.size());
-            SysMsg.sysMsg("  Anzahl Neue: " + Daten.listeFilme.countNewFilms());
-
-            Daten.listeFilme.themenLaden();
-            Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
-            Daten.listeDownloads.filmEintragen(); // Filme bei einmalDownloads eintragen
-            MVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
-
-            if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO && Daten.listeFilme.isTooOld()) {
-                SysMsg.sysMsg("Neue Filmliste laden");
-                loadFilmlist("", true);
-            } else {
-                // entweder neue Liste laden oder es ist schon fertig, dann melden
-                Daten.listeBlacklist.filterListe(); // beim Neuladen wird es dann erst gemacht
-                notifyFertig(new ListenerFilmeLadenEvent("", "", 0, 0, 0, false/*Fehler*/));
-            }
-        }
-
-    }
-
+//    // #########################################################
+//    // Filmliste beim Programmstart!! laden
+//    // #########################################################
+//    public void loadFilmlistProgStart() {
+//        // Gui startet ein wenig flüssiger
+//        new Thread(new loadFilmlistProgStart_()).start();
+//    }
+//    private class loadFilmlistProgStart_ implements Runnable {
+//
+//        @Override
+//        public synchronized void run() {
+//            Duration.staticPing("Thread: Filmliste laden");
+//            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+//
+//            SysMsg.sysMsg("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+//            SysMsg.sysMsg("  erstellt am: " + Daten.listeFilme.genDate());
+//            SysMsg.sysMsg("  Anzahl Filme: " + Daten.listeFilme.size());
+//            SysMsg.sysMsg("  Anzahl Neue: " + Daten.listeFilme.countNewFilms());
+//
+//            Daten.listeFilme.themenLaden();
+//            Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
+//            Daten.listeDownloads.filmEintragen(); // Filme bei einmalDownloads eintragen
+//            MVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
+//
+//            if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO && Daten.listeFilme.isTooOld()) {
+//                SysMsg.sysMsg("Neue Filmliste laden");
+//                loadFilmlist("", true);
+//            } else {
+//                // entweder neue Liste laden oder es ist schon fertig, dann melden
+//                Daten.listeBlacklist.filterListe(); // beim Neuladen wird es dann erst gemacht
+//                notifyFertig(new ListenerFilmeLadenEvent("", "", 0, 0, 0, false/*Fehler*/));
+//            }
+//        }
+//
+//    }
     // #########################################################
     // Filmliste importieren
     // #########################################################
@@ -246,8 +244,7 @@ public class FilmeLaden {
         }
 
         findAndMarkNewFilms(Daten.listeFilme);
-        Daten.listeFilme.themenLaden();
-        Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false/*aboLoeschen*/);
+
         istAmLaufen = false;
         if (event.fehler) {
             SysMsg.sysMsg("");
@@ -262,12 +259,13 @@ public class FilmeLaden {
             Daten.filmlisteSpeichern();
         }
         SysMsg.sysMsg("");
-
         SysMsg.sysMsg("Jetzige Liste erstellt am: " + Daten.listeFilme.genDate());
         SysMsg.sysMsg("  Anzahl Filme: " + Daten.listeFilme.size());
         SysMsg.sysMsg("  Anzahl Neue:  " + Daten.listeFilme.countNewFilms());
         SysMsg.sysMsg("");
 
+        Daten.listeFilme.themenLaden();
+        Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false/*aboLoeschen*/);
         Daten.listeBlacklist.filterListe();
         notifyFertig(event);
     }
@@ -293,7 +291,7 @@ public class FilmeLaden {
         hashSet.clear();
     }
 
-    private void notifyStart(ListenerFilmeLadenEvent event) {
+    public void notifyStart(ListenerFilmeLadenEvent event) {
         final ListenerFilmeLadenEvent e = event;
         try {
 //            if (SwingUtilities.isEventDispatchThread()) {
@@ -312,7 +310,7 @@ public class FilmeLaden {
         }
     }
 
-    private void notifyProgress(ListenerFilmeLadenEvent event) {
+    public void notifyProgress(ListenerFilmeLadenEvent event) {
         final ListenerFilmeLadenEvent e = event;
         try {
 //            if (SwingUtilities.isEventDispatchThread()) {
@@ -331,7 +329,7 @@ public class FilmeLaden {
         }
     }
 
-    private void notifyFertig(ListenerFilmeLadenEvent event) {
+    public void notifyFertig(ListenerFilmeLadenEvent event) {
         final ListenerFilmeLadenEvent e = event;
         try {
 //            if (SwingUtilities.isEventDispatchThread()) {

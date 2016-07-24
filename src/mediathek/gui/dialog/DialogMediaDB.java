@@ -47,7 +47,7 @@ import mediathek.tool.*;
 public class DialogMediaDB extends javax.swing.JDialog {
 
     private final JFrame parent;
-    private boolean init = false;
+//    private boolean init = false;
     private MVTable tabelleFilme;
 
     public DialogMediaDB(JFrame pparent) {
@@ -121,11 +121,11 @@ public class DialogMediaDB extends javax.swing.JDialog {
         if (vis && MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA).isEmpty()) {
             JOptionPane.showMessageDialog(parent, "Erst in den Einstellungen eine Mediensammlung einrichten.", "Mediensammlung leer!", JOptionPane.ERROR_MESSAGE);
         }
-        if (!init) {
-            // beim ersten anzeigen den Index bauen
-            Daten.mVMediaDB.makeIndex();
-            init = true;
-        }
+//        if (!init) {
+//            // beim ersten anzeigen den Index bauen
+//            Daten.mVMediaDB.makeIndex();
+//            init = true;
+//        }
     }
 
     public final void setVis() {
