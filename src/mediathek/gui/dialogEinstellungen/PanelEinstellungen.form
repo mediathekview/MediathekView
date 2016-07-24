@@ -237,7 +237,11 @@
                       </Group>
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jCheckBoxTabsTop" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <Component id="jCheckBoxTabsTop" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="jCheckBoxTabIcon" min="-2" max="-2" attributes="0"/>
+                              </Group>
                               <Group type="102" attributes="0">
                                   <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -259,7 +263,10 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jCheckBoxTabsTop" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jCheckBoxTabsTop" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jCheckBoxTabIcon" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jCheckBoxEchtzeit" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -325,6 +332,12 @@
         <Component class="javax.swing.JCheckBox" name="jCheckBoxTabsTop">
           <Properties>
             <Property name="text" type="java.lang.String" value="Tabs oben anzeigen"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="jCheckBoxTabIcon">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="keine Icons im Tab"/>
+            <Property name="toolTipText" type="java.lang.String" value="Im Tab keine Icons anzeigen"/>
           </Properties>
         </Component>
       </SubComponents>

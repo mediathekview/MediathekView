@@ -419,11 +419,13 @@ public class MediathekGui extends JFrame {
         Daten.guiMeldungen = new GuiMeldungen(daten, this);
         Daten.guiFilme = new GuiFilme(daten, Daten.mediathekGui);
 
-        jTabbedPane.addTab("Filme", Icons.ICON_TAB_FILM, Daten.guiFilme);
+        //jTabbedPane.addTab("Filme", Icons.ICON_TAB_FILM, Daten.guiFilme);
+        jTabbedPane.addTab("Filme", Daten.guiFilme);
 
         if (Daten.debug) {
             Daten.guiDebug = new GuiDebug(daten);
-            jTabbedPane.addTab("Debug", spacerIcon, Daten.guiDebug);
+            //jTabbedPane.addTab("Debug", spacerIcon, Daten.guiDebug);
+            jTabbedPane.addTab("Debug", Daten.guiDebug);
         }
 
         jTabbedPane.addChangeListener(l -> designTabs());
@@ -503,7 +505,8 @@ public class MediathekGui extends JFrame {
 
     private void setTab(MVFrame frame, PanelVorlage panel, String titel, int nrTab) {
         hide(frame, panel);
-        jTabbedPane.add(panel, spacerIcon, nrTab);
+        //jTabbedPane.add(panel, spacerIcon, nrTab);
+        jTabbedPane.add(panel, nrTab);
         jTabbedPane.setTitleAt(nrTab, titel);
         panel.solo = false;
     }
@@ -520,13 +523,13 @@ public class MediathekGui extends JFrame {
 
     private void designTabs() {
         boolean top = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_TOP));
+        boolean icon = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_ICON));
         if (top) {
             jTabbedPane.setTabPlacement(JTabbedPane.TOP);
         } else {
             jTabbedPane.setTabPlacement(JTabbedPane.LEFT);
         }
         jTabbedPane.updateUI();
-
         for (int i = 0; i < jTabbedPane.getTabCount(); ++i) {
             Component c = jTabbedPane.getComponentAt(i);
             ImageIcon ic = null;
@@ -567,7 +570,11 @@ public class MediathekGui extends JFrame {
             }
             String s = jTabbedPane.getTitleAt(i);
             JLabel lbl = makeLable(s, ic);
-            jTabbedPane.setTabComponentAt(i, lbl);
+            if (icon) {
+                jTabbedPane.setTabComponentAt(i, lbl);
+            } else {
+                jTabbedPane.setTabComponentAt(i, null);
+            }
         }
 
         jTabbedPane.updateUI();
