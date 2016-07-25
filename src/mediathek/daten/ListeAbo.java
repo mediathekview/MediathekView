@@ -198,7 +198,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     public void setAboFuerFilm(ListeFilme listeFilme, boolean aboLoeschen) {
         // hier wird tatsächlich für jeden Film die Liste der Abos durchsucht
         // braucht länger
-        Duration.staticDbgPing("Abo in die Filmliste eintragen");
+        Duration.counterStart("Abo in Filmliste eintragen");
         DatenFilm datenFilm;
         Iterator<DatenFilm> iteratorFilm = listeFilme.iterator();
         DatenAbo datenAbo;
@@ -264,5 +264,6 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 }
             }
         }
+        Duration.counterStop("Abo in Filmliste eintragen");
     }
 }

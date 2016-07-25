@@ -62,10 +62,13 @@ public class ProgStart {
                 // beim Neuladen wird es dann erst gemacht
                 Daten.filmeLaden.notifyStart(new ListenerFilmeLadenEvent("", "", 0, 0, 0, false/*Fehler*/));
                 Daten.filmeLaden.notifyProgress(new ListenerFilmeLadenEvent("", "Themen suchen", 0, 0, 0, false/*Fehler*/));
+
                 Daten.listeFilme.themenLaden();
                 Daten.filmeLaden.notifyProgress(new ListenerFilmeLadenEvent("", "Abos eintragen", 0, 0, 0, false/*Fehler*/));
+
                 Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
                 Daten.filmeLaden.notifyProgress(new ListenerFilmeLadenEvent("", "Blacklist filtern", 0, 0, 0, false/*Fehler*/));
+
                 Daten.listeBlacklist.filterListe();
                 Daten.filmeLaden.notifyFertig(new ListenerFilmeLadenEvent("", "", 0, 0, 0, false/*Fehler*/));
             }

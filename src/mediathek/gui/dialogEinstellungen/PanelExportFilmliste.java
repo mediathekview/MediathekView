@@ -31,7 +31,6 @@ import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mSearch.filmlisten.WriteFilmlistJson;
-import mSearch.tool.Duration;
 import mSearch.tool.Log;
 import mediathek.config.MVConfig;
 import mediathek.config.Icons;
@@ -76,10 +75,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                 if (ret == JOptionPane.OK_OPTION) {
                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     updateUI();
-                    Duration duration = new Duration(PanelExportFilmliste.class.getSimpleName());
-                    duration.start("Filmliste schreiben: " + exporDatei);
                     new WriteFilmlistJson().filmlisteSchreibenJson(exporDatei, Daten.listeFilme);
-                    duration.stop("fertig");
                     if (!new File(exporDatei).exists()) {
                         MVMessageDialog.showMessageDialog(parentComponent, "Datei:  " + "\"" + exporDatei + "\"" + "  Konnte nicht erstellt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }

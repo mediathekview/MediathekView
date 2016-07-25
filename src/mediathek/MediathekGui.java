@@ -946,7 +946,7 @@ public class MediathekGui extends JFrame {
             mvDownloadInfo.getDividerLocation();
         }
         // MediaDB
-        GuiFunktionen.getSize(MVConfig.SYSTEM_MEDIA_DB_DIALOG_GROESSE, daten.dialogMediaDB);
+        GuiFunktionen.getSize(MVConfig.SYSTEM_MEDIA_DB_DIALOG_GROESSE, Daten.dialogMediaDB);
 
 //        // Frames
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_DOWNLOAD, frameDownload);
@@ -957,6 +957,7 @@ public class MediathekGui extends JFrame {
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_FILTER, Daten.guiFilme.mVFilterFrame);
         daten.allesSpeichern();
         Log.endMsg();
+        Duration.printCounter();
 
         if (shutDown) {
             shutdownComputer();
