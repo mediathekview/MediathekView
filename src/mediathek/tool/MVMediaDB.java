@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import mSearch.tool.Listener;
@@ -95,8 +94,7 @@ public class MVMediaDB {
 
         @Override
         public synchronized void run() {
-            Date start = new Date();
-            Duration.staticPing("Mediensammlung erstellen - start");
+            Duration.counterStart("Mediensammlung erstellen");
             try {
                 String db = MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA);
                 if (!db.isEmpty()) {
@@ -126,7 +124,7 @@ public class MVMediaDB {
                 Log.errorLog(120321254, ex);
             }
             makeIndex = false;
-            Duration.staticPing("Mediensammlung erstellen - **fertig**", start);
+            Duration.counterStop("Mediensammlung erstellen");
 
             Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, MVMediaDB.class.getSimpleName());
         }

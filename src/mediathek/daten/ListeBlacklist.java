@@ -43,6 +43,13 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     public ListeBlacklist() {
     }
 
+    public synchronized boolean addProgStart(DatenBlacklist b) {
+        //nur beim Programmstart!!, wird nicht gemeldet
+        b.arr[DatenBlacklist.BLACKLIST_NR] = getNr(nr++);
+        boolean ret = super.add(b);
+        return ret;
+    }
+
     @Override
     public synchronized boolean add(DatenBlacklist b) {
         b.arr[DatenBlacklist.BLACKLIST_NR] = getNr(nr++);
@@ -113,8 +120,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     }
 
     public synchronized void filterListe(ListeFilme listeFilme, ListeFilme listeRet) {
-        Duration.staticDbgPing("Blacklist filtern - start");
-        Date start = new Date();
+        Duration.counterStart("Blacklist filtern");
         listeRet.clear();
         setFilter();
         if (listeFilme != null) {
@@ -125,10 +131,10 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                     listeRet.neueFilme = true;
                 }
             });
-//            // Array mit Sendernamen/Themen füllen
-//            listeRet.themenLaden(); // da ja nur die "Daten.listeFilme" gefiltert wird, ..
+            // Array mit Sendernamen/Themen füllen
+            listeRet.themenLaden();
         }
-        Duration.staticDbgPing("Blacklist filtern - **fertig**", start);
+        Duration.counterStop("Blacklist filtern");
     }
 
     public synchronized boolean checkBlackOkFilme_Downloads(DatenFilm film) {
@@ -144,7 +150,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         return checkFilm(film);
     }
 
-    private void notifyBlack() {
+    public synchronized void notifyBlack() {
         filterListe();
         Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, ListeBlacklist.class.getSimpleName());
     }

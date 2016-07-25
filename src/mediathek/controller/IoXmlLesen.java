@@ -98,7 +98,7 @@ public class IoXmlLesen {
                                 ListeBlacklist blacklist = Daten.listeBlacklist;
                                 DatenBlacklist datenBlacklist = new DatenBlacklist();
                                 if (get(parser, DatenBlacklist.TAG, DatenBlacklist.XML_NAMES, datenBlacklist.arr)) {
-                                    blacklist.add(datenBlacklist);
+                                    blacklist.addProgStart(datenBlacklist);
                                 }
                                 break;
                             case DatenFilmlisteUrl.FILM_UPDATE_SERVER:
@@ -164,7 +164,7 @@ public class IoXmlLesen {
                         DatenBlacklist datenBlacklist = new DatenBlacklist();
                         if (get(parser, DatenBlacklist.TAG, DatenBlacklist.XML_NAMES, datenBlacklist.arr)) {
                             ++found[1];
-                            blacklist.add(datenBlacklist);
+                            blacklist.addProgStart(datenBlacklist);
                         }
                     } else if (replace && parser.getLocalName().equals(ReplaceList.REPLACELIST)) {
                         //Ersetzungstabelle
@@ -182,6 +182,9 @@ public class IoXmlLesen {
         }
         if (found[0] > 0) {
             Daten.listeAbo.aenderungMelden();
+        }
+        if (found[1] > 0) {
+            Daten.listeBlacklist.notifyBlack();
         }
         if (found[2] > 0) {
             Listener.notify(Listener.EREIGNIS_REPLACELIST_CHANGED, IoXmlLesen.class.getSimpleName());
