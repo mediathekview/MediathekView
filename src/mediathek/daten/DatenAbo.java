@@ -49,6 +49,7 @@ public class DatenAbo extends MVData<DatenAbo> {
     public int mindestdauerMinuten = 0;
     public String[] arr;
     public int nr = 0;
+    String[] titel, thema, irgendwo;
 
     public DatenAbo() {
         makeArr();

@@ -195,75 +195,151 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         }
     }
 
+//    public void setAboFuerFilm__(ListeFilme listeFilme, boolean aboLoeschen) {
+//        // hier wird tatsächlich für jeden Film die Liste der Abos durchsucht
+//        // braucht länger
+//        Duration.counterStart("Abo in Filmliste eintragen ***ALT***");
+//        DatenFilm datenFilm;
+//        Iterator<DatenFilm> iteratorFilm = listeFilme.iterator();
+//        DatenAbo datenAbo;
+//        Iterator<DatenAbo> iteratorAbo;
+//        if (this.isEmpty() && aboLoeschen) {
+//            while (iteratorFilm.hasNext()) {
+//                // für jeden Film Abo löschen
+//                datenFilm = iteratorFilm.next();
+//                datenFilm.arr[DatenFilm.FILM_ABO_NAME] = "";
+//                datenFilm.abo = null;
+//            }
+//        } else {
+//            while (iteratorFilm.hasNext()) {
+//                // für jeden Film
+//                datenFilm = iteratorFilm.next();
+//                datenFilm.arr[DatenFilm.FILM_ABO_NAME] = "";
+//                datenFilm.abo = null;
+//                iteratorAbo = this.iterator();
+//                while (iteratorAbo.hasNext()) {
+//                    // jedes Abo prüfen
+//                    datenAbo = iteratorAbo.next();
+//                    if (datenAbo.isEmpty()) {
+//                        //dann ists kein richtiges Abo!!
+//                        continue;
+//                    }
+//                    if (datenAbo.arr[DatenAbo.ABO_TITEL].isEmpty()) {
+//                        titel = LEER;
+//                    } else {
+//                        titel = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_TITEL])
+//                                ? new String[]{datenAbo.arr[DatenAbo.ABO_TITEL]} : datenAbo.arr[DatenAbo.ABO_TITEL].toLowerCase().split(",");
+//                    }
+//                    if (datenAbo.arr[DatenAbo.ABO_THEMA_TITEL].isEmpty()) {
+//                        thema = LEER;
+//                    } else {
+//                        thema = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_THEMA_TITEL])
+//                                ? new String[]{datenAbo.arr[DatenAbo.ABO_THEMA_TITEL]} : datenAbo.arr[DatenAbo.ABO_THEMA_TITEL].toLowerCase().split(",");
+//                    }
+//                    if (datenAbo.arr[DatenAbo.ABO_IRGENDWO].isEmpty()) {
+//                        irgendwo = LEER;
+//                    } else {
+//                        irgendwo = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_IRGENDWO])
+//                                ? new String[]{datenAbo.arr[DatenAbo.ABO_IRGENDWO]} : datenAbo.arr[DatenAbo.ABO_IRGENDWO].toLowerCase().split(",");
+//                    }
+//                    if (Filter.filterAufFilmPruefen(datenAbo.arr[DatenAbo.ABO_SENDER], datenAbo.arr[DatenAbo.ABO_THEMA],
+//                            titel,
+//                            thema,
+//                            irgendwo,
+//                            datenAbo.mindestdauerMinuten,
+//                            datenFilm, false)) {
+//                        // das Abo im Film eintragen
+//                        // und noch die Filmlänge prüfen
+//                        if (!Filter.laengePruefen(datenAbo.mindestdauerMinuten, datenFilm.dauerL)) {
+//                            // dann ist der Film zu kurz
+//                            datenFilm.arr[DatenFilm.FILM_ABO_NAME] = datenAbo.arr[DatenAbo.ABO_NAME] + " [zu kurz]";
+//                            datenFilm.abo = datenAbo;
+//                        } else {
+//                            datenFilm.arr[DatenFilm.FILM_ABO_NAME] = datenAbo.arr[DatenAbo.ABO_NAME];
+//                            datenFilm.abo = datenAbo;
+//                        }
+//                        // und nichts wie weiter
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//        Duration.counterStop("Abo in Filmliste eintragen ***ALT***");
+//    }
     public void setAboFuerFilm(ListeFilme listeFilme, boolean aboLoeschen) {
         // hier wird tatsächlich für jeden Film die Liste der Abos durchsucht
         // braucht länger
+
         Duration.counterStart("Abo in Filmliste eintragen");
-        DatenFilm datenFilm;
-        Iterator<DatenFilm> iteratorFilm = listeFilme.iterator();
-        DatenAbo datenAbo;
-        Iterator<DatenAbo> iteratorAbo;
         if (this.isEmpty() && aboLoeschen) {
+            DatenFilm datenFilm;
+            Iterator<DatenFilm> iteratorFilm = listeFilme.iterator();
             while (iteratorFilm.hasNext()) {
                 // für jeden Film Abo löschen
                 datenFilm = iteratorFilm.next();
                 datenFilm.arr[DatenFilm.FILM_ABO_NAME] = "";
                 datenFilm.abo = null;
             }
-        } else {
-            while (iteratorFilm.hasNext()) {
-                // für jeden Film
-                datenFilm = iteratorFilm.next();
-                datenFilm.arr[DatenFilm.FILM_ABO_NAME] = "";
-                datenFilm.abo = null;
-                iteratorAbo = this.iterator();
-                while (iteratorAbo.hasNext()) {
-                    // jedes Abo prüfen
-                    datenAbo = iteratorAbo.next();
-                    if (datenAbo.isEmpty()) {
-                        //dann ists kein richtiges Abo!!
-                        continue;
-                    }
-                    if (datenAbo.arr[DatenAbo.ABO_TITEL].isEmpty()) {
-                        titel = LEER;
+            return;
+        }
+
+        // und jetzt erstellen
+        this.stream().forEach(datenAbo -> {
+            if (datenAbo.arr[DatenAbo.ABO_TITEL].isEmpty()) {
+                datenAbo.titel = LEER;
+            } else {
+                datenAbo.titel = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_TITEL])
+                        ? new String[]{datenAbo.arr[DatenAbo.ABO_TITEL]} : datenAbo.arr[DatenAbo.ABO_TITEL].toLowerCase().split(",");
+            }
+            if (datenAbo.arr[DatenAbo.ABO_THEMA_TITEL].isEmpty()) {
+                datenAbo.thema = LEER;
+            } else {
+                datenAbo.thema = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_THEMA_TITEL])
+                        ? new String[]{datenAbo.arr[DatenAbo.ABO_THEMA_TITEL]} : datenAbo.arr[DatenAbo.ABO_THEMA_TITEL].toLowerCase().split(",");
+            }
+            if (datenAbo.arr[DatenAbo.ABO_IRGENDWO].isEmpty()) {
+                datenAbo.irgendwo = LEER;
+            } else {
+                datenAbo.irgendwo = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_IRGENDWO])
+                        ? new String[]{datenAbo.arr[DatenAbo.ABO_IRGENDWO]} : datenAbo.arr[DatenAbo.ABO_IRGENDWO].toLowerCase().split(",");
+            }
+        });
+
+        listeFilme.stream().parallel().forEach(film -> {
+            // für jeden Film
+            film.arr[DatenFilm.FILM_ABO_NAME] = "";
+            film.abo = null;
+
+            try {
+                DatenAbo aa = this.stream().filter(a -> !a.isEmpty()).filter(abo
+                        -> Filter.filterAufFilmPruefen(abo.arr[DatenAbo.ABO_SENDER], abo.arr[DatenAbo.ABO_THEMA],
+                                abo.titel,
+                                abo.thema,
+                                abo.irgendwo,
+                                abo.mindestdauerMinuten,
+                                film, false)).findFirst().get();
+
+                if (aa != null) {
+                    if (!Filter.laengePruefen(aa.mindestdauerMinuten, film.dauerL)) {
+                        // dann ist der Film zu kurz
+                        film.arr[DatenFilm.FILM_ABO_NAME] = aa.arr[DatenAbo.ABO_NAME] + " [zu kurz]";
+                        film.abo = aa;
                     } else {
-                        titel = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_TITEL])
-                                ? new String[]{datenAbo.arr[DatenAbo.ABO_TITEL]} : datenAbo.arr[DatenAbo.ABO_TITEL].toLowerCase().split(",");
-                    }
-                    if (datenAbo.arr[DatenAbo.ABO_THEMA_TITEL].isEmpty()) {
-                        thema = LEER;
-                    } else {
-                        thema = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_THEMA_TITEL])
-                                ? new String[]{datenAbo.arr[DatenAbo.ABO_THEMA_TITEL]} : datenAbo.arr[DatenAbo.ABO_THEMA_TITEL].toLowerCase().split(",");
-                    }
-                    if (datenAbo.arr[DatenAbo.ABO_IRGENDWO].isEmpty()) {
-                        irgendwo = LEER;
-                    } else {
-                        irgendwo = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_IRGENDWO])
-                                ? new String[]{datenAbo.arr[DatenAbo.ABO_IRGENDWO]} : datenAbo.arr[DatenAbo.ABO_IRGENDWO].toLowerCase().split(",");
-                    }
-                    if (Filter.filterAufFilmPruefen(datenAbo.arr[DatenAbo.ABO_SENDER], datenAbo.arr[DatenAbo.ABO_THEMA],
-                            titel,
-                            thema,
-                            irgendwo,
-                            datenAbo.mindestdauerMinuten,
-                            datenFilm, false)) {
-                        // das Abo im Film eintragen
-                        // und noch die Filmlänge prüfen
-                        if (!Filter.laengePruefen(datenAbo.mindestdauerMinuten, datenFilm.dauerL)) {
-                            // dann ist der Film zu kurz
-                            datenFilm.arr[DatenFilm.FILM_ABO_NAME] = datenAbo.arr[DatenAbo.ABO_NAME] + " [zu kurz]";
-                            datenFilm.abo = datenAbo;
-                        } else {
-                            datenFilm.arr[DatenFilm.FILM_ABO_NAME] = datenAbo.arr[DatenAbo.ABO_NAME];
-                            datenFilm.abo = datenAbo;
-                        }
-                        // und nichts wie weiter
-                        break;
+                        film.arr[DatenFilm.FILM_ABO_NAME] = aa.arr[DatenAbo.ABO_NAME];
+                        film.abo = aa;
                     }
                 }
+            } catch (NoSuchElementException ignore) {
             }
-        }
+        });
+
+        // und jetzt wieder löschen
+        this.stream().forEach(datenAbo -> {
+            datenAbo.titel = LEER;
+            datenAbo.thema = LEER;
+            datenAbo.irgendwo = LEER;
+        });
+
         Duration.counterStop("Abo in Filmliste eintragen");
     }
 }

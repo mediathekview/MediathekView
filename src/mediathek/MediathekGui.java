@@ -198,24 +198,25 @@ public class MediathekGui extends JFrame {
         im.put(KeyStroke.getKeyStroke("F10"), "none");
 
         updateSplashScreenText("Anwendungsdaten laden...");
-        Duration.staticPing("Start");
 
         daten = new Daten(pfad, this);
-        Duration.staticPing("Daten");
 
         startMeldungen();
+        Duration.staticPing("Start");
 
         if (daten.allesLaden()) {
+            Duration.staticPing("Alles geladen");
             // alles geladen
             updateSplashScreenText("GUI Initialisieren...");
         } else {
+            Duration.staticPing("Erster Start");
             // erster Start
             ReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
             new DialogStarteinstellungen(this, daten).setVisible(true);
             this.pack();
         }
-        Duration.staticPing("Alles laden");
 
+        Duration.staticPing("Start Gui");
         createStatusBar();
         //create the Film Information HUD
         if (SystemInfo.isMacOSX()) {
@@ -229,7 +230,7 @@ public class MediathekGui extends JFrame {
         setLookAndFeel();
         init();
         setSize();
-        Duration.staticPing("Init-GUI");
+        Duration.staticPing("Init GUI");
 
         // Dialog mit den Programmeinstellungen einrichten
         Daten.dialogEinstellungen = new DialogEinstellungen(this, daten);
@@ -948,7 +949,7 @@ public class MediathekGui extends JFrame {
         // MediaDB
         GuiFunktionen.getSize(MVConfig.SYSTEM_MEDIA_DB_DIALOG_GROESSE, Daten.dialogMediaDB);
 
-//        // Frames
+        // Frames
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_DOWNLOAD, frameDownload);
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_ABO, frameAbo);
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_MELDUNGEN, frameMeldungen);
