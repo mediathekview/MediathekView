@@ -207,7 +207,6 @@ public class MediathekGui extends JFrame {
         Duration.staticPing("Start");
 
         if (daten.allesLaden()) {
-            Duration.staticPing("Alles geladen");
             // alles geladen
             updateSplashScreenText("GUI Initialisieren...");
         } else {
@@ -239,17 +238,6 @@ public class MediathekGui extends JFrame {
         Daten.dialogMediaDB = new DialogMediaDB(this);
         Daten.dialogMediaDB.setVis();
 
-        // Prüfen obs ein Programmupdate gibt
-        new CheckUpdate(this, daten).checkProgUpdate();
-        Duration.staticPing("CheckUpdate");
-
-//        if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO) {
-//            if (Daten.listeFilme.isTooOld()) {
-//                SysMsg.sysMsg("Neue Filmliste laden");
-//                Daten.filmeLaden.importFilmliste("", true);
-//            }
-//        }
-//        Duration.staticPing("Filmliste laden");
         addListener();
 
         // für den Mac
@@ -416,6 +404,10 @@ public class MediathekGui extends JFrame {
                 jMenuItemFilmlisteLaden.setEnabled(true);
                 jMenuItemDownloadsAktualisieren.setEnabled(true);
                 daten.allesSpeichern(); // damit nichts verlorengeht
+                // Prüfen obs ein Programmupdate gibt
+                Duration.staticPing("CheckUpdate");
+                new CheckUpdate(Daten.mediathekGui, daten).checkProgUpdate();
+                Daten.mVMediaDB.makeIndex();
             }
         });
         addWindowListener(new WindowAdapter() {
