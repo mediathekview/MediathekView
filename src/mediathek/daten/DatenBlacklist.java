@@ -19,6 +19,8 @@
  */
 package mediathek.daten;
 
+import mediathek.tool.Filter;
+
 public class DatenBlacklist extends MVData<DatenBlacklist> {
 
     public static final int BLACKLIST_NR = 0;
@@ -31,6 +33,8 @@ public class DatenBlacklist extends MVData<DatenBlacklist> {
     public static final String TAG = "Blacklist";
     public static final String[] COLUMN_NAMES = {"Nr", "Sender", "Thema", "Titel", "Thema-Titel"};
     public static final String[] XML_NAMES = {"black-nr", "black-sender", "black-thema", "black-titel", "black-thema-titel"};
+    public boolean patternTitle = true;
+    public boolean patternThema = true;
 
     public String[] arr;
 
@@ -47,6 +51,15 @@ public class DatenBlacklist extends MVData<DatenBlacklist> {
         arr[BLACKLIST_THEMA_TITEL] = themaTitel;
     }
 
+    public void hasPattern() {
+        patternTitle = Filter.isPattern(arr[BLACKLIST_TITEL]);
+        patternThema = Filter.isPattern(arr[BLACKLIST_THEMA_TITEL]);
+    }
+
+    public void toLower() {
+        arr[BLACKLIST_TITEL] = arr[BLACKLIST_TITEL].toLowerCase();
+        arr[BLACKLIST_THEMA_TITEL] = arr[BLACKLIST_THEMA_TITEL].toLowerCase();
+    }
     private void makeArr() {
         arr = new String[MAX_ELEM];
         for (int i = 0; i < arr.length; ++i) {

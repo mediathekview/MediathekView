@@ -44,9 +44,8 @@ public class ProgStart {
 
         @Override
         public synchronized void run() {
-            Duration.staticPing("Thread: Programmstart Daten laden");
+            Duration.staticPing("Programmstart Daten laden");
 
-            Duration.staticPing("Gespeicherte Filmliste lesen");
             new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
             SysMsg.sysMsg("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
             SysMsg.sysMsg("  erstellt am: " + Daten.listeFilme.genDate());
