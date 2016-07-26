@@ -191,6 +191,8 @@ public class MediathekGui extends JFrame {
             }
         }
 
+        Duration.counterStart("***Programmstart***");
+
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE); // soll abgefangen werden
         setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
         //Hier wird F10 default Funktion unterbunden:
@@ -438,6 +440,8 @@ public class MediathekGui extends JFrame {
         }
     }
 
+    private static boolean geklickt = false;
+
     private void initTabs() {
         Daten.guiDownloads = new GuiDownloads(daten, Daten.mediathekGui);
         Daten.guiAbo = new GuiAbo(daten, Daten.mediathekGui);
@@ -452,8 +456,15 @@ public class MediathekGui extends JFrame {
             //jTabbedPane.addTab("Debug", spacerIcon, Daten.guiDebug);
             jTabbedPane.addTab("Debug", Daten.guiDebug);
         }
+        jTabbedPane.addChangeListener(l -> {
 
-        jTabbedPane.addChangeListener(l -> designTabs());
+            if (!geklickt) {
+                geklickt = true;
+                Duration.counterStop("***Programmstart***");
+            }
+
+            designTabs();
+        });
 
         initFrames();
     }
