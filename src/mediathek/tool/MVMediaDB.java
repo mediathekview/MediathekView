@@ -19,18 +19,18 @@
  */
 package mediathek.tool;
 
-import mediathek.config.MVConfig;
-import mSearch.tool.SysMsg;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
-import mSearch.tool.Listener;
 import mSearch.Const;
 import mSearch.tool.Duration;
+import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mSearch.tool.SysMsg;
+import mediathek.config.MVConfig;
 import mediathek.daten.DatenMediaDB;
 
 public class MVMediaDB {
@@ -144,6 +144,38 @@ public class MVMediaDB {
                 }
             }
         }
+
+        //auch nicht schneller
+//        private void searchFile(File dir) {
+//            if (dir == null) {
+//                return;
+//            }
+//            List<File> files = searchFile_(dir);
+//            if (files != null) {
+//                for (File file : files) {
+//                    if (checkSuffix(suffix, file.getName())) {
+//                        fileArray.add(new DatenMediaDB(file.getName(), file.getParent().intern(), file.length()));
+//                    }
+//                }
+//            }
+//        }
+//
+//        private List<File> searchFile_(File dir) {
+//
+//            File[] files = dir.listFiles();
+//            List<File> matches = new ArrayList<>();
+//            if (files != null) {
+//                for (int i = 0; i < files.length; i++) {
+//                    if (files[i].isDirectory()) {
+//                        matches.addAll(searchFile_(files[i]));
+//                    } else {
+//                        matches.add(files[i]);
+//                    }
+//                }
+//            }
+//            return matches;
+//        }
+//
     }
 
     private boolean checkSuffix(String[] str, String uurl) {

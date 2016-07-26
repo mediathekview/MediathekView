@@ -264,9 +264,15 @@ public class FilmeLaden {
         SysMsg.sysMsg("  Anzahl Neue:  " + Daten.listeFilme.countNewFilms());
         SysMsg.sysMsg("");
 
+        Daten.filmeLaden.notifyProgress(new ListenerFilmeLadenEvent("", "Themen suchen", 0, 0, 0, false/*Fehler*/));
         Daten.listeFilme.themenLaden();
+
+        Daten.filmeLaden.notifyProgress(new ListenerFilmeLadenEvent("", "Abos eintragen", 0, 0, 0, false/*Fehler*/));
         Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false/*aboLoeschen*/);
+
+        Daten.filmeLaden.notifyProgress(new ListenerFilmeLadenEvent("", "Blacklist filtern", 0, 0, 0, false/*Fehler*/));
         Daten.listeBlacklist.filterListe();
+
         notifyFertig(event);
     }
 

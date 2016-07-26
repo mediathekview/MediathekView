@@ -272,6 +272,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         // braucht länger
 
         Duration.counterStart("Abo in Filmliste eintragen");
+
         if (this.isEmpty() && aboLoeschen) {
             DatenFilm datenFilm;
             Iterator<DatenFilm> iteratorFilm = listeFilme.iterator();
@@ -283,6 +284,11 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             }
             return;
         }
+
+        // leere Abos löschen, die sind Fehler
+        this.stream().filter((datenAbo) -> (datenAbo.isEmpty())).forEach((datenAbo) -> {
+            this.remove(datenAbo);
+        });
 
         // und jetzt erstellen
         this.stream().forEach(datenAbo -> {
@@ -306,13 +312,14 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             }
         });
 
+        // das kostet die Zeit!!
         listeFilme.stream().parallel().forEach(film -> {
             // für jeden Film
             film.arr[DatenFilm.FILM_ABO_NAME] = "";
             film.abo = null;
 
             try {
-                DatenAbo aa = this.stream().filter(a -> !a.isEmpty()).filter(abo
+                DatenAbo aa = this.stream().filter(abo
                         -> Filter.filterAufFilmPruefen(abo.arr[DatenAbo.ABO_SENDER], abo.arr[DatenAbo.ABO_THEMA],
                                 abo.titel,
                                 abo.thema,
