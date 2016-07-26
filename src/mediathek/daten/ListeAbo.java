@@ -73,6 +73,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 MVConfig.add(MVConfig.SYSTEM_ABO_MIN_SIZE, datenAbo.arr[DatenAbo.ABO_MINDESTDAUER]); // als Vorgabe merken
                 addAbo(datenAbo);
                 aenderungMelden();
+                sort();
                 ret = true;
             } else {
                 MVMessageDialog.showMessageDialog(null, "Abo existiert bereits", "Abo anlegen", JOptionPane.INFORMATION_MESSAGE);
@@ -92,7 +93,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         }
         datenAbo.setMindestDauerMinuten();
         super.add(datenAbo);
-        sort();
+//        sort();
     }
 
     public void aboLoeschen(DatenAbo abo) {
