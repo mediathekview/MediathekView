@@ -74,8 +74,8 @@ public class DialogMediaDB extends javax.swing.JDialog {
             public void ping() {
                 // neue DB liegt vor
                 setIndex(true);
-                jLabelSum.setText(Daten.mVMediaDB.getSizeFileArray() + "");
-                search();
+                jLabelSum.setText(Daten.listeMediaDB.size() + "");
+                searchFilmInDb();
             }
         });
 
@@ -97,14 +97,14 @@ public class DialogMediaDB extends javax.swing.JDialog {
         progress.setMinimum(0);
         progress.setValue(0);
 
-        jTextFieldSearch.addActionListener(e -> search());
+        jTextFieldSearch.addActionListener(e -> searchFilmInDb());
         jTextFieldSearch.getDocument().addDocumentListener(new BeobDoc());
 
-        jButtonIndex.addActionListener(e -> Daten.mVMediaDB.makeIndex());
+        jButtonIndex.addActionListener(e -> Daten.mVMediaDB.createMediaDB());
 
         jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_MEDIA_DB)).setVisible(true));
-        jButtonSearch.addActionListener(e -> search());
+        jButtonSearch.addActionListener(e -> searchFilmInDb());
         jButtonBeenden.addActionListener(e -> beenden());
         new EscBeenden(this) {
             @Override
@@ -146,13 +146,13 @@ public class DialogMediaDB extends javax.swing.JDialog {
         jTextFieldSearch.setText(titel);
     }
 
-    private void search() {
-        TModelMediaDB m = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
-        Daten.mVMediaDB.searchFiles(m, jTextFieldSearch.getText());
+    private void searchFilmInDb() {
+        TModelMediaDB model = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
+        Daten.mVMediaDB.searchFilmInDB(model, jTextFieldSearch.getText());
         tabelleFilme.getSpalten();
-        tabelleFilme.setModel(m);
+        tabelleFilme.setModel(model);
         tabelleFilme.setSpalten();
-        jLabelSizeFound.setText(m.getRowCount() + "");
+        jLabelSizeFound.setText(model.getRowCount() + "");
     }
 
     private void setIndex(boolean noIndex) {
@@ -418,7 +418,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
         private void tus() {
             Filter.checkPattern1(jTextFieldSearch);
             if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE))) {
-                search();
+                searchFilmInDb();
             }
         }
     }

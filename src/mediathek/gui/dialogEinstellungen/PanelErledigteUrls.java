@@ -31,23 +31,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
-import javax.swing.JFrame;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
-import mediathek.controller.MVUsedUrl;
+import javax.swing.*;
+import mSearch.daten.DatenFilm;
+import mSearch.tool.Listener;
 import mediathek.config.Daten;
+import mediathek.controller.MVUsedUrl;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogZiel;
 import mediathek.tool.GuiFunktionen;
-import mSearch.tool.Listener;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVRun;
 import mediathek.tool.TModel;
-import mSearch.daten.DatenFilm;
 
 public class PanelErledigteUrls extends PanelVorlage {
 

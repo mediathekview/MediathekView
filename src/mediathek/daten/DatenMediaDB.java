@@ -37,10 +37,29 @@ public class DatenMediaDB extends MVData<DatenMediaDB> {
 
     public DatenMediaDB(String name, String pfad, long size) {
         makeArr();
-        arr[MEDIA_DB_NAME] = name;
-        arr[MEDIA_DB_PATH] = pfad;
-        //arr[MEDIA_DB_SIZE_NR] = getGroesse(size);
+        arr[MEDIA_DB_NAME] = putzen(name);
+        arr[MEDIA_DB_PATH] = putzen(pfad);
         mVMediaDBFileSize = new MVMediaDBFileSize(size);
+        arr[MEDIA_DB_SIZE] = mVMediaDBFileSize.toString();
+    }
+
+    public Object[] getRow() {
+        Object[] ob = new Object[DatenMediaDB.MAX_ELEM];
+        for (int i = 0; i < DatenMediaDB.MAX_ELEM; ++i) {
+            if (i == DatenMediaDB.MEDIA_DB_SIZE) {
+                ob[i] = mVMediaDBFileSize;
+            } else {
+                ob[i] = arr[i];
+            }
+        }
+        return ob;
+    }
+
+    private static String putzen(String s) {
+        s = s.replace("\n", "");
+        s = s.replace("|", "");
+        s = s.replace(ListeMediaDB.TRENNER, "");
+        return s;
     }
 
     @Override
@@ -54,10 +73,6 @@ public class DatenMediaDB extends MVData<DatenMediaDB> {
             }
         }
         return ret;
-    }
-
-    public Object[] getRow() {
-        return new Object[]{arr[MEDIA_DB_NAME], arr[MEDIA_DB_PATH], mVMediaDBFileSize};
     }
 
     //===================================

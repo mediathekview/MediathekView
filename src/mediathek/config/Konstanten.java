@@ -30,6 +30,7 @@ public class Konstanten {
     public static final String CONFIG_FILE_COPY = "mediathek.xml_copy_";
     public static final String FILE_ERLEDIGTE_ABOS = "downloadAbos.txt";
     public static final String FILE_HISTORY = "history.txt";
+    public static final String FILE_MEDIA_DB = "mediadb.txt";
 
     // MediathekView URLs
     public static final String ADRESSE_FILMLISTEN_SERVER = "http://zdfmediathk.sourceforge.net/update.xml";
