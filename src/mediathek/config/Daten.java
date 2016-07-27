@@ -60,12 +60,9 @@ public class Daten {
     public static boolean auto = false; // Version: MediathekAuto
     public static boolean RESET = false; // Programm auf Starteinstellungen zurücksetzen
     //alle Programmeinstellungen
-//    public static MVConfig mVConfig = new MVConfig();
 
     // zentrale Klassen
     public static MVColor mVColor = new MVColor(); // verwendete Farben
-//    public static MVReplaceList mVReplaceList = new MVReplaceList(); // Ersetzungsliste für die Namen der Downloads
-    public static MVMediaDB mVMediaDB = new MVMediaDB();
     public static FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
     public static ListeFilme listeFilme = null;
     public static ListeFilme listeFilmeNachBlackList = null; // ist DIE Filmliste
@@ -74,6 +71,7 @@ public class Daten {
     public static ListeDownloads listeDownloadsButton = null; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
     public static ListeBlacklist listeBlacklist = null;
     public static ListeMediaDB listeMediaDB = null;
+    public static ListeMediaPath listeMediaPath = null;
     public static ListeAbo listeAbo = null;
     public static DownloadInfos downloadInfos = null;
 
@@ -139,6 +137,7 @@ public class Daten {
         history = new MVUsedUrls(Konstanten.FILE_HISTORY, getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT);
 
         listeMediaDB = new ListeMediaDB();////
+        listeMediaPath = new ListeMediaPath();
 
         downloadInfos = new DownloadInfos();
 

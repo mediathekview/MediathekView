@@ -100,7 +100,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
         jTextFieldSearch.addActionListener(e -> searchFilmInDb());
         jTextFieldSearch.getDocument().addDocumentListener(new BeobDoc());
 
-        jButtonIndex.addActionListener(e -> Daten.mVMediaDB.createMediaDB());
+        jButtonIndex.addActionListener(e -> Daten.listeMediaDB.createMediaDB());
 
         jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_MEDIA_DB)).setVisible(true));
@@ -118,7 +118,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
     @Override
     public void setVisible(boolean vis) {
         super.setVisible(vis);
-        if (vis && MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA).isEmpty()) {
+        if (vis && Daten.listeMediaPath.isEmpty()) {
             JOptionPane.showMessageDialog(parent, "Erst in den Einstellungen eine Mediensammlung einrichten.", "Mediensammlung leer!", JOptionPane.ERROR_MESSAGE);
         }
 //        if (!init) {
@@ -148,7 +148,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
     private void searchFilmInDb() {
         TModelMediaDB model = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
-        Daten.mVMediaDB.searchFilmInDB(model, jTextFieldSearch.getText());
+        Daten.listeMediaDB.searchFilmInDB(model, jTextFieldSearch.getText());
         tabelleFilme.getSpalten();
         tabelleFilme.setModel(model);
         tabelleFilme.setSpalten();

@@ -103,6 +103,13 @@ public class IoXmlLesen {
                                     Daten.listeBlacklist.addProgStart(datenBlacklist);
                                 }
                                 break;
+                            case DatenMediaPath.TAG:
+                                //Blacklist
+                                DatenMediaPath mp = new DatenMediaPath();
+                                if (get(parser, DatenMediaPath.TAG, DatenMediaPath.XML_NAMES, mp.arr)) {
+                                    Daten.listeMediaPath.add(mp);
+                                }
+                                break;
                             case DatenFilmlisteUrl.FILM_UPDATE_SERVER:
                                 //Urls Filmlisten
                                 DatenFilmlisteUrl datenFilmlisteUrl = new DatenFilmlisteUrl();

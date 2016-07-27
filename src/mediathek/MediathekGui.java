@@ -407,7 +407,7 @@ public class MediathekGui extends JFrame {
                 // Prüfen obs ein Programmupdate gibt
                 Duration.staticPing("CheckUpdate");
                 new CheckUpdate(Daten.mediathekGui, daten).checkProgUpdate();
-                Daten.mVMediaDB.createMediaDB();
+                Daten.listeMediaDB.createMediaDB();
             }
         });
         addWindowListener(new WindowAdapter() {
