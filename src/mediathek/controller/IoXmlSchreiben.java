@@ -97,6 +97,11 @@ public class IoXmlSchreiben {
             xmlSchreibenDownloads();
 
             writer.writeCharacters("\n\n");
+            writer.writeComment("Pfade MedienDB");
+            writer.writeCharacters("\n");
+            xmlSchreibenMediaPath();
+
+            writer.writeCharacters("\n\n");
             writer.writeComment("Update Filmliste");
             writer.writeCharacters("\n");
             xmlSchreibenFilmUpdateServer();
@@ -165,6 +170,13 @@ public class IoXmlSchreiben {
         //Abo schreiben
         for (DatenAbo datenAbo : Daten.listeAbo) {
             xmlSchreibenDaten(DatenAbo.TAG, DatenAbo.XML_NAMES, datenAbo.arr, false);
+        }
+    }
+
+    private static void xmlSchreibenMediaPath() {
+        //Pfade der MedienDB schreiben
+        for (DatenMediaPath mp : Daten.listeMediaPath) {
+            xmlSchreibenDaten(DatenMediaPath.TAG, DatenMediaPath.XML_NAMES, mp.arr, false);
         }
     }
 

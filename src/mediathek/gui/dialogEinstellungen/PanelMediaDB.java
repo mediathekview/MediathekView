@@ -25,6 +25,7 @@ import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Iterator;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -41,6 +42,7 @@ import mediathek.tool.HinweisKeineAuswahl;
 import mSearch.tool.Listener;
 import mediathek.config.MVConfig;
 import mediathek.config.Icons;
+import mediathek.daten.DatenMediaPath;
 import mediathek.tool.*;
 
 public class PanelMediaDB extends PanelVorlage {
@@ -128,7 +130,7 @@ public class PanelMediaDB extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 jLabelSizeIndex.setText("0");
-                Daten.mVMediaDB.createMediaDB();
+                Daten.listeMediaDB.createMediaDB();
             }
         });
         jButtonPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
@@ -219,56 +221,39 @@ public class PanelMediaDB extends PanelVorlage {
     }
 
     private void addPath() {
-        String db = MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA);
         String add = jTextFieldPath.getText();
         if (add.isEmpty()) {
             return;
         }
-        for (String s : db.split(Daten.mVMediaDB.FILE_SEPERATOR_MEDIA_PATH)) {
-            if (s.equals(add)) {
+        for (DatenMediaPath mp : Daten.listeMediaPath) {
+            if (mp.arr[DatenMediaPath.MEDIA_DB_PATH].equals(add)) {
                 return; // dann gibts den schon
             }
         }
-        if (db.isEmpty()) {
-            db = add;
-        } else {
-            db += Daten.mVMediaDB.FILE_SEPERATOR_MEDIA_PATH + add;
-        }
-        MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA, db);
+        Daten.listeMediaPath.add(new DatenMediaPath(add, false));
         setTablePath(); //neu aufbauen
     }
 
     private void removePath() {
         int row = jTablePath.getSelectedRow();
-        if (row >= 0) {
-            String p = jTablePath.getModel().getValueAt(jTablePath.convertRowIndexToModel(row), 0).toString();
-            String db = MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA);
-            String dbNew = "";
-            if (db.isEmpty()) {
-                return;
-            }
-            for (String s : db.split(Daten.mVMediaDB.FILE_SEPERATOR_MEDIA_PATH)) {
-                if (s.equals(p)) {
-                    continue;
-                }
-                dbNew += dbNew.isEmpty() ? s : Daten.mVMediaDB.FILE_SEPERATOR_MEDIA_PATH + s;
-            }
-            MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA, dbNew);
-            setTablePath(); //neu aufbauen
-        } else {
+        if (row < 0) {
             new HinweisKeineAuswahl().zeigen(Daten.mediathekGui);
+            return;
         }
+        String path = jTablePath.getModel().getValueAt(jTablePath.convertRowIndexToModel(row), 0).toString();
+        Iterator<DatenMediaPath> it = Daten.listeMediaPath.iterator();
+        while (it.hasNext()) {
+            DatenMediaPath mp = it.next();
+            if (mp.arr[DatenMediaPath.MEDIA_DB_PATH].equals(path)) {
+                it.remove();
+            }
+        }
+        setTablePath(); //neu aufbauen
     }
 
     private synchronized void setTablePath() {
-        // Tabelle mit den Pfaden bauen
-        String db = MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA);
-        modelPath.setRowCount(0);
-        if (!db.isEmpty()) {
-            for (String s : db.split(Daten.mVMediaDB.FILE_SEPERATOR_MEDIA_PATH)) {
-                modelPath.addRow(new Object[]{s});
-            }
-        }
+        Daten.listeMediaPath.addObjectData(modelPath);
+//        jTablePath.updateUI();
     }
 
 

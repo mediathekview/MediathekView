@@ -24,25 +24,152 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import mSearch.tool.Functions;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
+import mSearch.tool.*;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.config.MVConfig;
+import mediathek.tool.Filter;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelMediaDB;
 
 public class ListeMediaDB extends LinkedList<DatenMediaDB> {
 
     public final static String TRENNER = "  |###|  ";
+    public final String FILE_SEPERATOR_MEDIA_PATH = "<>";
+    private boolean makeIndex = false;
+    private String[] suffix = {""};
+    private boolean ohneSuffix = true;
 
     public synchronized void getModelMediaDB(TModelMediaDB modelMediaDB) {
         modelMediaDB.setRowCount(0);
         this.stream().forEach((mdb) -> {
             modelMediaDB.addRow(mdb.getRow());
         });
+    }
+
+    public synchronized void searchFilmInDB(TModelMediaDB foundModel, String title) {
+        foundModel.setRowCount(0);
+        if (!makeIndex && !title.isEmpty()) {
+            Pattern p = Filter.makePattern(title);
+            if (p != null) {
+                // dann mit RegEx prüfen
+                Daten.listeMediaDB.stream().filter(s -> p.matcher(s.arr[DatenMediaDB.MEDIA_DB_NAME]).matches()).forEach(s -> foundModel.addRow(s.getRow()));
+            } else {
+                title = title.toLowerCase();
+                for (DatenMediaDB s : Daten.listeMediaDB) {
+                    if (s.arr[DatenMediaDB.MEDIA_DB_NAME].toLowerCase().contains(title)) {
+                        foundModel.addRow(s.getRow());
+                    }
+                }
+            }
+        }
+    }
+
+    public synchronized void createMediaDB() {
+        Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, ListeMediaDB.class.getSimpleName());
+        suffix = MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX).split(",");
+        for (int i = 0; i < suffix.length; ++i) {
+            suffix[i] = suffix[i].toLowerCase();
+            if (!suffix[i].isEmpty() && !suffix[i].startsWith(".")) {
+                suffix[i] = "." + suffix[i];
+            }
+        }
+        ohneSuffix = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE));
+
+        makeIndex = true;
+        Daten.listeMediaDB.clear();
+        new Thread(new Index()).start();
+    }
+
+    private class Index implements Runnable {
+
+        @Override
+        public synchronized void run() {
+            Duration.counterStart("Mediensammlung erstellen");
+            try {
+                if (!Daten.listeMediaPath.isEmpty()) {
+                    String error = "";
+                    boolean more = false;
+                    for (DatenMediaPath mp : Daten.listeMediaPath) {
+                        File f = new File(mp.arr[DatenMediaPath.MEDIA_DB_PATH]);
+                        if (!f.canRead()) {
+                            if (!error.isEmpty()) {
+                                error = error + "\n";
+                                more = true;
+                            }
+                            error = error + f.getPath();
+                        }
+                    }
+                    if (!error.isEmpty()) {
+                        // Verzeichnisse können nicht durchsucht werden
+                        MVMessageDialog.showMessageDialog(null, (more ? "Die Pfade der Mediensammlung können nicht alle gelesen werden:\n"
+                                : "Der Pfad der Mediensammlung kann nicht gelesen werden:\n")
+                                + error, "Fehler beim Erstellen der Mediensammlung", JOptionPane.ERROR_MESSAGE);
+                    }
+                    for (DatenMediaPath mp : Daten.listeMediaPath) {
+                        File f = new File(mp.arr[DatenMediaPath.MEDIA_DB_PATH]);
+                        searchFile(f);
+                    }
+                }
+            } catch (Exception ex) {
+                Log.errorLog(120321254, ex);
+            }
+
+            Daten.listeMediaDB.exportListe("");
+            makeIndex = false;
+
+            Duration.counterStop("Mediensammlung erstellen");
+
+            Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
+        }
+
+        private void searchFile(File dir) {
+            if (dir == null) {
+                return;
+            }
+            File[] files = dir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        searchFile(file);
+                    } else if (checkSuffix(suffix, file.getName())) {
+                        Daten.listeMediaDB.add(new DatenMediaDB(file.getName(), file.getParent().intern(), file.length()));
+                    }
+                }
+            }
+        }
+
+    }
+
+    private boolean checkSuffix(String[] str, String uurl) {
+        // liefert TRUE wenn die Datei in die Mediensammlung kommt
+        // prüfen ob url mit einem Argument in str endet
+        // wenn str leer dann true
+        if (str.length == 1 && str[0].isEmpty()) {
+            return true;
+        }
+
+        boolean ret = true;
+        final String url = uurl.toLowerCase();
+        for (String s : str) {
+            //Suffix prüfen
+            if (ohneSuffix) {
+                if (url.endsWith(s)) {
+                    ret = false;
+                    break;
+                }
+            } else {
+                ret = false;
+                if (url.endsWith(s)) {
+                    ret = true;
+                    break;
+                }
+            }
+        }
+        return ret;
     }
 
 //    public void listeBauen() {
