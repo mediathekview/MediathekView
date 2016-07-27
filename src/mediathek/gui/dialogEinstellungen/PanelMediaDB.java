@@ -46,7 +46,7 @@ import mediathek.tool.*;
 public class PanelMediaDB extends PanelVorlage {
 
     private final TModel modelPath = new TModel(new Object[][]{}, new String[]{"Pfad"});
-    private final TModelMediaDB modelFilm = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
+    private final TModelMediaDB modelMediaDB = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
 
     public PanelMediaDB(Daten d, JFrame parent) {
         super(d, parent);
@@ -58,7 +58,7 @@ public class PanelMediaDB extends PanelVorlage {
             public void ping() {
                 // neue DB suchen
                 setIndex(false);
-                modelFilm.setRowCount(0);
+                modelMediaDB.setRowCount(0);
                 jToggleButtonLoad.setSelected(false);
             }
         });
@@ -66,7 +66,7 @@ public class PanelMediaDB extends PanelVorlage {
             @Override
             public void ping() {
                 // neue DB liegt vor
-                jLabelSizeIndex.setText(Daten.mVMediaDB.getSizeFileArray() + "");
+                jLabelSizeIndex.setText(Daten.listeMediaDB.size() + "");
                 setIndex(true);
             }
         });
@@ -79,7 +79,7 @@ public class PanelMediaDB extends PanelVorlage {
 
         final CellRendererMediaDB cellRenderer = new CellRendererMediaDB();
         jTableMediaDB.setDefaultRenderer(Object.class, cellRenderer);
-        jTableMediaDB.setModel(modelFilm);
+        jTableMediaDB.setModel(modelMediaDB);
         jTextFieldSuffix.setText(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX));
         jTextFieldSuffix.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -128,7 +128,7 @@ public class PanelMediaDB extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 jLabelSizeIndex.setText("0");
-                Daten.mVMediaDB.makeIndex();
+                Daten.mVMediaDB.createMediaDB();
             }
         });
         jButtonPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
@@ -172,9 +172,9 @@ public class PanelMediaDB extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (jToggleButtonLoad.isSelected()) {
-                    Daten.mVMediaDB.getModelMediaDB(modelFilm);
+                    Daten.listeMediaDB.getModelMediaDB(modelMediaDB);
                 } else {
-                    modelFilm.setRowCount(0);
+                    modelMediaDB.setRowCount(0);
                 }
             }
         });
@@ -197,7 +197,7 @@ public class PanelMediaDB extends PanelVorlage {
                 if (ret == JOptionPane.OK_OPTION) {
                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     updateUI();
-                    Daten.mVMediaDB.writeFileArray(exporDatei);
+                    Daten.listeMediaDB.exportListe(exporDatei);
                     if (!new File(exporDatei).exists()) {
                         MVMessageDialog.showMessageDialog(parentComponent, "Datei:  " + "\"" + exporDatei + "\"" + "  Konnte nicht erstellt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
@@ -224,7 +224,7 @@ public class PanelMediaDB extends PanelVorlage {
         if (add.isEmpty()) {
             return;
         }
-        for (String s : db.split(Daten.mVMediaDB.FILE_TRENNER)) {
+        for (String s : db.split(Daten.mVMediaDB.FILE_SEPERATOR_MEDIA_PATH)) {
             if (s.equals(add)) {
                 return; // dann gibts den schon
             }
@@ -232,7 +232,7 @@ public class PanelMediaDB extends PanelVorlage {
         if (db.isEmpty()) {
             db = add;
         } else {
-            db += Daten.mVMediaDB.FILE_TRENNER + add;
+            db += Daten.mVMediaDB.FILE_SEPERATOR_MEDIA_PATH + add;
         }
         MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA, db);
         setTablePath(); //neu aufbauen
@@ -247,11 +247,11 @@ public class PanelMediaDB extends PanelVorlage {
             if (db.isEmpty()) {
                 return;
             }
-            for (String s : db.split(Daten.mVMediaDB.FILE_TRENNER)) {
+            for (String s : db.split(Daten.mVMediaDB.FILE_SEPERATOR_MEDIA_PATH)) {
                 if (s.equals(p)) {
                     continue;
                 }
-                dbNew += dbNew.isEmpty() ? s : Daten.mVMediaDB.FILE_TRENNER + s;
+                dbNew += dbNew.isEmpty() ? s : Daten.mVMediaDB.FILE_SEPERATOR_MEDIA_PATH + s;
             }
             MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA, dbNew);
             setTablePath(); //neu aufbauen
@@ -265,7 +265,7 @@ public class PanelMediaDB extends PanelVorlage {
         String db = MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_PATH_MEDIA);
         modelPath.setRowCount(0);
         if (!db.isEmpty()) {
-            for (String s : db.split(Daten.mVMediaDB.FILE_TRENNER)) {
+            for (String s : db.split(Daten.mVMediaDB.FILE_SEPERATOR_MEDIA_PATH)) {
                 modelPath.addRow(new Object[]{s});
             }
         }

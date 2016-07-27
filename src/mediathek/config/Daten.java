@@ -44,11 +44,7 @@ import mSearch.tool.*;
 import mediathek.MediathekGui;
 import mediathek.controller.*;
 import mediathek.controller.starter.StarterClass;
-import mediathek.daten.DownloadInfos;
-import mediathek.daten.ListeAbo;
-import mediathek.daten.ListeBlacklist;
-import mediathek.daten.ListeDownloads;
-import mediathek.daten.ListePset;
+import mediathek.daten.*;
 import mediathek.gui.*;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.MVFilmInfo;
@@ -77,6 +73,7 @@ public class Daten {
     public static ListeDownloads listeDownloads = null; // Filme die als "Download: Tab Download" geladen werden sollen
     public static ListeDownloads listeDownloadsButton = null; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
     public static ListeBlacklist listeBlacklist = null;
+    public static ListeMediaDB listeMediaDB = null;
     public static ListeAbo listeAbo = null;
     public static DownloadInfos downloadInfos = null;
 
@@ -140,6 +137,8 @@ public class Daten {
 
         updateSplashScreen("Lade History...");
         history = new MVUsedUrls(Konstanten.FILE_HISTORY, getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT);
+
+        listeMediaDB = new ListeMediaDB();////
 
         downloadInfos = new DownloadInfos();
 

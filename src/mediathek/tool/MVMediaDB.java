@@ -20,23 +20,18 @@
 package mediathek.tool;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
-import mSearch.Const;
 import mSearch.tool.Duration;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
+import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenMediaDB;
 
 public class MVMediaDB {
 
-    private final ArrayList<DatenMediaDB> fileArray = new ArrayList<>(); //name-path-size
-    public final String FILE_TRENNER = "<>";
+    public final String FILE_SEPERATOR_MEDIA_PATH = "<>";
     private boolean makeIndex = false;
     private String[] suffix = {""};
     private boolean ohneSuffix = true;
@@ -44,37 +39,25 @@ public class MVMediaDB {
     public MVMediaDB() {
     }
 
-    public synchronized int getSizeFileArray() {
-        return fileArray.size();
-    }
-
-    public synchronized void getModelMediaDB(TModelMediaDB modelMediaDB) {
-        modelMediaDB.setRowCount(0);
-        for (DatenMediaDB s : fileArray) {
-            modelMediaDB.addRow(s.getRow());
-        }
-    }
-
-    public synchronized void searchFiles(TModelMediaDB modelFilm, String title) {
-
-        modelFilm.setRowCount(0);
+    public synchronized void searchFilmInDB(TModelMediaDB foundModel, String title) {
+        foundModel.setRowCount(0);
         if (!makeIndex && !title.isEmpty()) {
             Pattern p = Filter.makePattern(title);
             if (p != null) {
                 // dann mit RegEx prüfen
-                fileArray.stream().filter(s -> p.matcher(s.arr[DatenMediaDB.MEDIA_DB_NAME]).matches()).forEach(s -> modelFilm.addRow(s.getRow()));
+                Daten.listeMediaDB.stream().filter(s -> p.matcher(s.arr[DatenMediaDB.MEDIA_DB_NAME]).matches()).forEach(s -> foundModel.addRow(s.getRow()));
             } else {
                 title = title.toLowerCase();
-                for (DatenMediaDB s : fileArray) {
+                for (DatenMediaDB s : Daten.listeMediaDB) {
                     if (s.arr[DatenMediaDB.MEDIA_DB_NAME].toLowerCase().contains(title)) {
-                        modelFilm.addRow(s.getRow());
+                        foundModel.addRow(s.getRow());
                     }
                 }
             }
         }
     }
 
-    public synchronized void makeIndex() {
+    public synchronized void createMediaDB() {
         Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, MVMediaDB.class.getSimpleName());
         suffix = MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX).split(",");
         for (int i = 0; i < suffix.length; ++i) {
@@ -86,7 +69,7 @@ public class MVMediaDB {
         ohneSuffix = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE));
 
         makeIndex = true;
-        fileArray.clear();
+        Daten.listeMediaDB.clear();
         new Thread(new Index()).start();
     }
 
@@ -100,7 +83,7 @@ public class MVMediaDB {
                 if (!db.isEmpty()) {
                     String error = "";
                     boolean more = false;
-                    for (String s : db.split(FILE_TRENNER)) {
+                    for (String s : db.split(FILE_SEPERATOR_MEDIA_PATH)) {
                         File f = new File(s);
                         if (!f.canRead()) {
                             if (!error.isEmpty()) {
@@ -112,10 +95,11 @@ public class MVMediaDB {
                     }
                     if (!error.isEmpty()) {
                         // Verzeichnisse können nicht durchsucht werden
-                        MVMessageDialog.showMessageDialog(null, (more ? "Die Pfade der Mediensammlung können nicht gelesen werden:\n" : "Der Pfad der Mediensammlung kann nicht gelesen werden:\n")
+                        MVMessageDialog.showMessageDialog(null, (more ? "Die Pfade der Mediensammlung können nicht alle gelesen werden:\n"
+                                : "Der Pfad der Mediensammlung kann nicht gelesen werden:\n")
                                 + error, "Fehler beim Erstellen der Mediensammlung", JOptionPane.ERROR_MESSAGE);
                     }
-                    for (String s : db.split(FILE_TRENNER)) {
+                    for (String s : db.split(FILE_SEPERATOR_MEDIA_PATH)) {
                         File f = new File(s);
                         searchFile(f);
                     }
@@ -123,7 +107,10 @@ public class MVMediaDB {
             } catch (Exception ex) {
                 Log.errorLog(120321254, ex);
             }
+
+            Daten.listeMediaDB.exportListe("");
             makeIndex = false;
+
             Duration.counterStop("Mediensammlung erstellen");
 
             Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, MVMediaDB.class.getSimpleName());
@@ -139,7 +126,7 @@ public class MVMediaDB {
                     if (file.isDirectory()) {
                         searchFile(file);
                     } else if (checkSuffix(suffix, file.getName())) {
-                        fileArray.add(new DatenMediaDB(file.getName(), file.getParent().intern(), file.length()));
+                        Daten.listeMediaDB.add(new DatenMediaDB(file.getName(), file.getParent().intern(), file.length()));
                     }
                 }
             }
@@ -206,34 +193,34 @@ public class MVMediaDB {
         return ret;
     }
 
-    public synchronized void writeFileArray(String datei) {
-        OutputStreamWriter out = null;
-        try {
-            SysMsg.sysMsg("MediaDB schreiben (" + fileArray.size() + " Dateien) :");
-            File file = new File(datei);
-            File dir = new File(file.getParent());
-            if (!dir.exists()) {
-                if (!dir.mkdirs()) {
-                    Log.errorLog(945120365, "Kann den Pfad nicht anlegen: " + dir.toString());
-                }
-            }
-            SysMsg.sysMsg("   --> Start Schreiben nach: " + datei);
-            out = new OutputStreamWriter(new FileOutputStream(datei), Const.KODIERUNG_UTF);
-
-            for (DatenMediaDB s : fileArray) {
-                out.write(s.arr[DatenMediaDB.MEDIA_DB_NAME] + "\n");
-            }
-            SysMsg.sysMsg("   --> geschrieben!");
-        } catch (Exception ex) {
-            Log.errorLog(102035478, ex, "nach: " + datei);
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (Exception ignored) {
-            }
-        }
-    }
+//    public synchronized void writeFileArray(String datei) {
+//        OutputStreamWriter out = null;
+//        try {
+//            SysMsg.sysMsg("MediaDB schreiben (" + Daten.listeMediaDB.size() + " Dateien) :");
+//            File file = new File(datei);
+//            File dir = new File(file.getParent());
+//            if (!dir.exists()) {
+//                if (!dir.mkdirs()) {
+//                    Log.errorLog(945120365, "Kann den Pfad nicht anlegen: " + dir.toString());
+//                }
+//            }
+//            SysMsg.sysMsg("   --> Start Schreiben nach: " + datei);
+//            out = new OutputStreamWriter(new FileOutputStream(datei), Const.KODIERUNG_UTF);
+//
+//            for (DatenMediaDB s : Daten.listeMediaDB) {
+//                out.write(s.arr[DatenMediaDB.MEDIA_DB_NAME] + "\n");
+//            }
+//            SysMsg.sysMsg("   --> geschrieben!");
+//        } catch (Exception ex) {
+//            Log.errorLog(102035478, ex, "nach: " + datei);
+//        } finally {
+//            try {
+//                if (out != null) {
+//                    out.close();
+//                }
+//            } catch (Exception ignored) {
+//            }
+//        }
+//    }
 
 }
