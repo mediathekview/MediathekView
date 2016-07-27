@@ -945,8 +945,8 @@ public class MediathekGui extends JFrame {
         // Dialog Einstellungen
         GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_EINSTELLUNGEN, Daten.dialogEinstellungen);
         // Infodialog/Bandwidth
-        GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, mvDownloadInfo.getDialog());
         if (mvDownloadInfo != null) {
+            GuiFunktionen.getSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, mvDownloadInfo.getDialog());
             mvDownloadInfo.getDividerLocation();
         }
         // MediaDB
