@@ -59,6 +59,7 @@ public class FilmeLaden {
     private final ImportFilmliste importFilmliste;
     private final EventListenerList listeners = new EventListenerList();
     private boolean istAmLaufen = false;
+    private boolean onlyOne = false;
 
     public FilmeLaden() {
         importFilmliste = new ImportFilmliste();
@@ -300,17 +301,11 @@ public class FilmeLaden {
     public void notifyStart(ListenerFilmeLadenEvent event) {
         final ListenerFilmeLadenEvent e = event;
         try {
-//            if (SwingUtilities.isEventDispatchThread()) {
-//                for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-//                    l.start(event);
-//                }
-//            } else {
             SwingUtilities.invokeLater(() -> {
                 for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
                     l.start(e);
                 }
             });
-//            }
         } catch (Exception ex) {
             Log.errorLog(765213654, ex);
         }
@@ -319,17 +314,11 @@ public class FilmeLaden {
     public void notifyProgress(ListenerFilmeLadenEvent event) {
         final ListenerFilmeLadenEvent e = event;
         try {
-//            if (SwingUtilities.isEventDispatchThread()) {
-//                for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-//                    l.progress(e);
-//                }
-//            } else {
             SwingUtilities.invokeLater(() -> {
                 for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
                     l.progress(e);
                 }
             });
-//            }
         } catch (Exception ex) {
             Log.errorLog(201020369, ex);
         }
@@ -338,19 +327,25 @@ public class FilmeLaden {
     public void notifyFertig(ListenerFilmeLadenEvent event) {
         final ListenerFilmeLadenEvent e = event;
         try {
-//            if (SwingUtilities.isEventDispatchThread()) {
-//                for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
-//                    l.fertig(e);
-//                }
-//            } else {
             SwingUtilities.invokeLater(() -> {
                 for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
                     l.fertig(e);
                 }
             });
-//            }
         } catch (Exception ex) {
             Log.errorLog(945120303, ex);
+        }
+        try {
+            if (!onlyOne) {
+                onlyOne = true;
+                SwingUtilities.invokeLater(() -> {
+                    for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
+                        l.fertigOnlyOne(e);
+                    }
+                });
+            }
+        } catch (Exception ex) {
+            Log.errorLog(912045120, ex);
         }
     }
 }

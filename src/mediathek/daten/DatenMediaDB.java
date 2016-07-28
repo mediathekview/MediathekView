@@ -27,20 +27,22 @@ public class DatenMediaDB extends MVData<DatenMediaDB> {
     public final static int MEDIA_DB_NAME = 0;
     public final static int MEDIA_DB_PATH = 1;
     public final static int MEDIA_DB_SIZE = 2;
+    public final static int MEDIA_DB_SAVE = 3;
 
-    public final static int MAX_ELEM = 3;
-    public final static String[] COLUMN_NAMES = {"Name", "Pfad", "Größe [MB]"};
-    public final static String[] XML_NAMES = {"Name", "Pfad", "Groesse"};
+    public final static int MAX_ELEM = 4;
+    public final static String[] COLUMN_NAMES = {"Name", "Pfad", "Größe [MB]", "Sichern"};
+    public final static String[] XML_NAMES = {"Name", "Pfad", "Groesse", "Sichern"};
 
     public String[] arr;
     public MVMediaDBFileSize mVMediaDBFileSize;
 
-    public DatenMediaDB(String name, String pfad, long size) {
+    public DatenMediaDB(String name, String pfad, long size, boolean save) {
         makeArr();
         arr[MEDIA_DB_NAME] = putzen(name);
         arr[MEDIA_DB_PATH] = putzen(pfad);
         mVMediaDBFileSize = new MVMediaDBFileSize(size);
         arr[MEDIA_DB_SIZE] = mVMediaDBFileSize.toString();
+        arr[MEDIA_DB_SAVE] = Boolean.toString(save);
     }
 
     public Object[] getRow() {
@@ -53,6 +55,10 @@ public class DatenMediaDB extends MVData<DatenMediaDB> {
             }
         }
         return ob;
+    }
+
+    public boolean toSave() {
+        return Boolean.parseBoolean(arr[MEDIA_DB_SAVE]);
     }
 
     private static String putzen(String s) {

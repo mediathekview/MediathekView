@@ -406,6 +406,10 @@ public class MediathekGui extends JFrame {
                 daten.allesSpeichern(); // damit nichts verlorengeht
                 // Prüfen obs ein Programmupdate gibt
                 Duration.staticPing("CheckUpdate");
+            }
+
+            @Override
+            public void fertigOnlyOne(ListenerFilmeLadenEvent event) {
                 new CheckUpdate(Daten.mediathekGui, daten).checkProgUpdate();
                 Daten.listeMediaDB.createMediaDB();
             }

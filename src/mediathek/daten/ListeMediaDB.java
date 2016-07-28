@@ -94,7 +94,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                     String error = "";
                     boolean more = false;
                     for (DatenMediaPath mp : Daten.listeMediaPath) {
-                        File f = new File(mp.arr[DatenMediaPath.MEDIA_DB_PATH]);
+                        File f = new File(mp.arr[DatenMediaPath.MEDIA_PATH_PATH]);
                         if (!f.canRead()) {
                             if (!error.isEmpty()) {
                                 error = error + "\n";
@@ -110,8 +110,8 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                                 + error, "Fehler beim Erstellen der Mediensammlung", JOptionPane.ERROR_MESSAGE);
                     }
                     for (DatenMediaPath mp : Daten.listeMediaPath) {
-                        File f = new File(mp.arr[DatenMediaPath.MEDIA_DB_PATH]);
-                        searchFile(f);
+                        File f = new File(mp.arr[DatenMediaPath.MEDIA_PATH_PATH]);
+                        searchFile(f, mp.toSave());
                     }
                 }
             } catch (Exception ex) {
@@ -126,7 +126,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
             Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
         }
 
-        private void searchFile(File dir) {
+        private void searchFile(File dir, boolean save) {
             if (dir == null) {
                 return;
             }
@@ -134,9 +134,9 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
             if (files != null) {
                 for (File file : files) {
                     if (file.isDirectory()) {
-                        searchFile(file);
+                        searchFile(file, save);
                     } else if (checkSuffix(suffix, file.getName())) {
-                        Daten.listeMediaDB.add(new DatenMediaDB(file.getName(), file.getParent().intern(), file.length()));
+                        Daten.listeMediaDB.add(new DatenMediaDB(file.getName(), file.getParent().intern(), file.length(), save));
                     }
                 }
             }
@@ -213,8 +213,10 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
             bw.newLine();
             bw.newLine();
             for (DatenMediaDB entry : this) {
-                bw.write(getLine(entry, export));
-                bw.newLine();
+                if (entry.toSave()) {
+                    bw.write(getLine(entry, export));
+                    bw.newLine();
+                }
             }
             bw.newLine();
             //
