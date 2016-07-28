@@ -86,6 +86,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
             this.add(m);
         }
         tmp.clear();
+        Daten.listeMediaDB.exportListe("");
         makeIndex = false;
         Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
     }
@@ -103,6 +104,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         } else {
             clear();
         }
+        Daten.listeMediaDB.exportListe("");
         makeIndex = false;
         Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
     }
