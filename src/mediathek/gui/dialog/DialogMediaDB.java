@@ -100,7 +100,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
         jTextFieldSearch.addActionListener(e -> searchFilmInDb());
         jTextFieldSearch.getDocument().addDocumentListener(new BeobDoc());
 
-        jButtonIndex.addActionListener(e -> Daten.listeMediaDB.createMediaDB());
+        jButtonIndex.addActionListener(e -> Daten.listeMediaDB.createMediaDB(""));
 
         jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_MEDIA_DB)).setVisible(true));

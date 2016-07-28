@@ -4,7 +4,7 @@ mit der rechten Maustaste auf einen Film:
 nach einem Filmtitel durchsucht werden.
 
 Das Suchverhalten im "Dialog: Mediensammlung" kann im
-Tab "Einrichten" geändert werden.
+Tab "Verwaltung" geändert werden.
 "Echtzeitsuche" bedeutet sofortiges Suchen bei jeder Änderung im
 Feld Titel, sonst nur beim Klick auf "Suchen".
 
@@ -19,5 +19,18 @@ Suffixe können durch "Komma" getrennt angegeben werden:
 werden nicht - oder nur diese werden - in den Index
 aufgenommen.
 
+Die angegebenen Pfade zum Durchsuchen, werden beim Programmstart
+abgesucht, die müssen also verfügbar sein. Dafür ist der aktuelle
+Bestand an Filmen auch in der MedienDB enthalten.
+
+Externe Medien: Damit können Dateien von z.B. USB-Laufwerken
+die nicht immer am Rechner angeschlossen sind, in die Mediensammlung
+aufgenommen werden. Diese externen Medien werden vom Programm
+gespeichert. Die sind also auch wenn das USB-Laufwerk nicht angeschlossen
+ist, in der MedienDB enthalten und bleiben das auch nach einem
+Programmneustart.
+
 Mit "Export Index" kann man die Namen aller Dateien in
 der Mediensammlung (Index) in eine Textdatei schreiben.
+
+

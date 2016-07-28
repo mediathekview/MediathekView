@@ -21,9 +21,20 @@ package mediathek.daten;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import javax.swing.DefaultComboBoxModel;
 import mediathek.tool.TModel;
 
 public class ListeMediaPath extends LinkedList<DatenMediaPath> {
+
+    public boolean addSave(DatenMediaPath dmp) {
+        while (countSave() > 10) {
+            removeFirstSave();
+        }
+        if (!containSave(dmp)) {
+            return add(dmp);
+        }
+        return false;
+    }
 
     public void addObjectData(TModel model) {
         DatenMediaPath dmp;
@@ -31,7 +42,51 @@ public class ListeMediaPath extends LinkedList<DatenMediaPath> {
         Iterator<DatenMediaPath> iterator = this.iterator();
         while (iterator.hasNext()) {
             dmp = iterator.next();
-            model.addRow(dmp.arr);
+            if (!dmp.savePath()) {
+                model.addRow(dmp.arr);
+            }
         }
     }
+
+    public DefaultComboBoxModel<String> getComboModel() {
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        DatenMediaPath dmp;
+        Iterator<DatenMediaPath> iterator = this.iterator();
+        while (iterator.hasNext()) {
+            dmp = iterator.next();
+            if (dmp.savePath()) {
+                model.addElement(dmp.arr[DatenMediaPath.MEDIA_PATH_PATH]);
+            }
+        }
+        return model;
+    }
+
+    private boolean containSave(DatenMediaPath dm) {
+        for (DatenMediaPath dmp : this) {
+            if (dmp.savePath() && dmp.arr[DatenMediaPath.MEDIA_PATH_PATH].equals(dm.arr[DatenMediaPath.MEDIA_PATH_PATH])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int countSave() {
+        int ret = 0;
+        for (DatenMediaPath dmp : this) {
+            if (dmp.savePath()) {
+                ++ret;
+            }
+        }
+        return ret;
+    }
+
+    private void removeFirstSave() {
+        for (DatenMediaPath dmp : this) {
+            if (dmp.savePath()) {
+                this.remove(dmp);
+                return;
+            }
+        }
+    }
+
 }

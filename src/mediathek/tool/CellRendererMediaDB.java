@@ -20,13 +20,23 @@
 package mediathek.tool;
 
 import java.awt.Component;
+import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import mSearch.tool.Log;
+import mediathek.config.Icons;
 import mediathek.daten.DatenMediaDB;
 
 public class CellRendererMediaDB extends DefaultTableCellRenderer {
+
+    private static ImageIcon ja_16 = null;
+    private static ImageIcon nein_12 = null;
+
+    public CellRendererMediaDB() {
+        ja_16 = Icons.ICON_TABELLE_EIN;
+        nein_12 = Icons.ICON_TABELLE_AUS;
+    }
 
     @Override
     public Component getTableCellRendererComponent(
@@ -36,9 +46,6 @@ public class CellRendererMediaDB extends DefaultTableCellRenderer {
             boolean hasFocus,
             int row,
             int column) {
-        setBackground(null);
-        setForeground(null);
-        setFont(null);
         setIcon(null);
         setHorizontalAlignment(SwingConstants.LEADING);
         super.getTableCellRendererComponent(
@@ -47,9 +54,17 @@ public class CellRendererMediaDB extends DefaultTableCellRenderer {
             int c = table.convertColumnIndexToModel(column);
             if (c == DatenMediaDB.MEDIA_DB_SIZE) {
                 setHorizontalAlignment(SwingConstants.CENTER);
+            } else if (c == DatenMediaDB.MEDIA_DB_EXTERN) {
+                setHorizontalAlignment(CENTER);
+                if (getText().equals(Boolean.TRUE.toString())) {
+                    setIcon(ja_16);
+                } else {
+                    setIcon(nein_12);
+                }
+                setText("");
             }
         } catch (Exception ex) {
-            Log.errorLog(912034567, ex);
+            Log.errorLog(461203547, ex);
         }
         return this;
     }

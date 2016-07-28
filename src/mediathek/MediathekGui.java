@@ -411,7 +411,8 @@ public class MediathekGui extends JFrame {
             @Override
             public void fertigOnlyOne(ListenerFilmeLadenEvent event) {
                 new CheckUpdate(Daten.mediathekGui, daten).checkProgUpdate();
-                Daten.listeMediaDB.createMediaDB();
+                Daten.listeMediaDB.loadSavedList();
+                Daten.listeMediaDB.createMediaDB("");
             }
         });
         addWindowListener(new WindowAdapter() {
