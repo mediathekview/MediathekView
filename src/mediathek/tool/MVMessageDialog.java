@@ -36,4 +36,14 @@ public class MVMessageDialog {
         }
 
     }
+
+    public static int showConfirmDialog(Component parentComponent, Object message, String title, int optionType) {
+        final int ret;
+        if (!Daten.auto) {
+            ret = JOptionPane.showConfirmDialog(parentComponent, message, title, optionType);
+        } else {
+            ret = 0;
+        }
+        return ret;
+    }
 }

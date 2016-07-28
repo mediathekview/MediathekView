@@ -136,7 +136,7 @@ public class Daten {
         updateSplashScreen("Lade History...");
         history = new MVUsedUrls(Konstanten.FILE_HISTORY, getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT);
 
-        listeMediaDB = new ListeMediaDB();////
+        listeMediaDB = new ListeMediaDB();
         listeMediaPath = new ListeMediaPath();
 
         downloadInfos = new DownloadInfos();

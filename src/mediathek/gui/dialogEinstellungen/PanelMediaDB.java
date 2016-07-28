@@ -31,30 +31,28 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
+import mediathek.config.MVConfig;
 import mediathek.daten.DatenMediaDB;
+import mediathek.daten.DatenMediaPath;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
-import mediathek.tool.CellRendererMediaDB;
-import mediathek.tool.HinweisKeineAuswahl;
-import mSearch.tool.Listener;
-import mediathek.config.MVConfig;
-import mediathek.config.Icons;
-import mediathek.daten.DatenMediaPath;
 import mediathek.tool.*;
 
 public class PanelMediaDB extends PanelVorlage {
-
+    
     private final TModel modelPath = new TModel(new Object[][]{}, DatenMediaPath.COLUMN_NAMES);
     private final TModelMediaDB modelMediaDB = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
-
+    
     public PanelMediaDB(Daten d, JFrame parent) {
         super(d, parent);
         initComponents();
         daten = d;
-
+        
         Listener.addListener(new Listener(Listener.EREIGNIS_MEDIA_DB_START, PanelMediaDB.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -78,112 +76,104 @@ public class PanelMediaDB extends PanelVorlage {
         progress.setMinimum(0);
         progress.setValue(0);
         jTablePath.setModel(modelPath);
-        jTablePath.setDefaultRenderer(Object.class, new CellRendererMediaPath());
-
+        jTablePath.getColumnModel().getColumn(jTablePath.convertColumnIndexToView(DatenMediaPath.MEDIA_PATHE_SAVE)).setMinWidth(0);
+        jTablePath.getColumnModel().getColumn(jTablePath.convertColumnIndexToView(DatenMediaPath.MEDIA_PATHE_SAVE)).setPreferredWidth(0);
+        jTablePath.getColumnModel().getColumn(jTablePath.convertColumnIndexToView(DatenMediaPath.MEDIA_PATHE_SAVE)).setMaxWidth(0);
+        
         final CellRendererMediaDB cellRenderer = new CellRendererMediaDB();
         jTableMediaDB.setDefaultRenderer(Object.class, cellRenderer);
         jTableMediaDB.setModel(modelMediaDB);
+        
         jTextFieldSuffix.setText(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX));
         jTextFieldSuffix.getDocument().addDocumentListener(new DocumentListener() {
-
+            
             @Override
             public void insertUpdate(DocumentEvent e) {
                 MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
             }
-
+            
             @Override
             public void removeUpdate(DocumentEvent e) {
                 MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
             }
-
+            
             @Override
             public void changedUpdate(DocumentEvent e) {
                 MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
             }
         });
-        jRadioButtonOhneSuffix.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE)));
-        jRadioButtonMitSuffix.setSelected(!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE)));
-        jRadioButtonOhneSuffix.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE, Boolean.toString(jRadioButtonOhneSuffix.isSelected()));
-            }
-        });
-        jRadioButtonMitSuffix.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE, Boolean.toString(jRadioButtonOhneSuffix.isSelected()));
-            }
-        });
-        jCheckBoxMediaDB.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE)));
-        jCheckBoxMediaDB.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE, Boolean.toString(jCheckBoxMediaDB.isSelected()));
-            }
-        });
-
-        jButtonMakeIndex.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jLabelSizeIndex.setText("0");
-                Daten.listeMediaDB.createMediaDB();
-            }
-        });
-        jButtonPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonAdd.setIcon(Icons.ICON_BUTTON_ADD);
-        jButtonRemove.setIcon(Icons.ICON_BUTTON_REMOVE);
-        jButtonPath.addActionListener(new BeobPath());
-        jButtonAdd.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addPath();
-            }
-        });
-        jButtonRemove.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                removePath();
-            }
-        }
-        );
-        jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHelp.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(Daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PANEL_MEDIA_DB)).setVisible(true);
-            }
-        });
-
-        jButtonExportPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jTextFieldExportPath.setText(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_EXPORT_DATEI));
         jTextFieldExportPath.getDocument().addDocumentListener(new BeobTextFeld());
         jTextFieldExportPath.addMouseListener(new TextCopyPaste());
         jTextFieldPath.addMouseListener(new TextCopyPaste());
         jTextFieldSuffix.addMouseListener(new TextCopyPaste());
-
-        jButtonExport.addActionListener(new BeobExport());
-        jButtonExportPath.addActionListener(new BeobPfad());
-        jToggleButtonLoad.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (jToggleButtonLoad.isSelected()) {
-                    Daten.listeMediaDB.getModelMediaDB(modelMediaDB);
-                } else {
-                    modelMediaDB.setRowCount(0);
-                }
+        
+        jRadioButtonOhneSuffix.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE)));
+        jRadioButtonMitSuffix.setSelected(!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE)));
+        jRadioButtonOhneSuffix.addActionListener((ActionEvent e) -> {
+            MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE, Boolean.toString(jRadioButtonOhneSuffix.isSelected()));
+        });
+        jRadioButtonMitSuffix.addActionListener((ActionEvent e) -> {
+            MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE, Boolean.toString(jRadioButtonOhneSuffix.isSelected()));
+        });
+        
+        jCheckBoxMediaDB.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE)));
+        jCheckBoxMediaDB.addActionListener((ActionEvent ae) -> {
+            MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE, Boolean.toString(jCheckBoxMediaDB.isSelected()));
+        });
+        
+        jButtonMakeIndex.addActionListener((ActionEvent e) -> {
+            jLabelSizeIndex.setText("0");
+            Daten.listeMediaDB.createMediaDB("");
+        });
+        btnDel.addActionListener(l -> {
+            int ret = MVMessageDialog.showConfirmDialog(parentComponent, "Auch die Medien aus externen Laufwerken löschen?", "Löschen", JOptionPane.YES_NO_CANCEL_OPTION);
+            if (ret == JOptionPane.YES_OPTION) {
+                //alles löschen
+                Daten.listeMediaDB.delList(false);
+            } else if (ret == JOptionPane.NO_OPTION) {
+                //externe nicht löschen
+                Daten.listeMediaDB.delList(true);
             }
         });
+        jButtonPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonAdd.setIcon(Icons.ICON_BUTTON_ADD);
+        jButtonRemove.setIcon(Icons.ICON_BUTTON_REMOVE);
+        jButtonPath.addActionListener(new BeobPath(false/*ext*/));
+        jButtonAdd.addActionListener((ActionEvent e) -> {
+            addPath();
+        });
+        jButtonRemove.addActionListener((ActionEvent e) -> {
+            removePath();
+        });
+        jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
+        jButtonHelp.addActionListener((ActionEvent e) -> {
+            new DialogHilfe(Daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PANEL_MEDIA_DB)).setVisible(true);
+        });
+        jButtonExportPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
+        jButtonExport.addActionListener(new BeobExport());
+        jButtonExportPath.addActionListener(new BeobPfad());
+        btnExtAdd.addActionListener(l -> {
+            String s = (String) cbxExtMedien.getSelectedItem();
+            if (s != null && !s.isEmpty()) {
+                Daten.listeMediaDB.createMediaDB(s);
+            }
+        });
+        btnExtPath.addActionListener(new BeobPath(true/*ext*/));
+        btnClean.addActionListener(l -> Daten.listeMediaDB.cleanList());
+        
+        jToggleButtonLoad.addActionListener((ActionEvent e) -> {
+            if (jToggleButtonLoad.isSelected()) {
+                Daten.listeMediaDB.getModelMediaDB(modelMediaDB);
+            } else {
+                modelMediaDB.setRowCount(0);
+            }
+        });
+        
+        setCbkExt("");
         setTablePath();
     }
-
+    
     private void filmeExportieren() {
         int ret;
         String exporDatei = jTextFieldExportPath.getText();
@@ -211,7 +201,7 @@ public class PanelMediaDB extends PanelVorlage {
         }
         this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
-
+    
     private void setIndex(boolean noIndex) {
         progress.setVisible(!noIndex);
         jTextFieldPath.setEnabled(noIndex);
@@ -220,7 +210,7 @@ public class PanelMediaDB extends PanelVorlage {
         jButtonPath.setEnabled(noIndex);
         jButtonRemove.setEnabled(noIndex);
     }
-
+    
     private void addPath() {
         String add = jTextFieldPath.getText();
         if (add.isEmpty()) {
@@ -231,10 +221,10 @@ public class PanelMediaDB extends PanelVorlage {
                 return; // dann gibts den schon
             }
         }
-        Daten.listeMediaPath.add(new DatenMediaPath(add, jCheckBoxSave.isSelected()));
+        Daten.listeMediaPath.add(new DatenMediaPath(add, false));
         setTablePath(); //neu aufbauen
     }
-
+    
     private void removePath() {
         int row = jTablePath.getSelectedRow();
         if (row < 0) {
@@ -251,12 +241,20 @@ public class PanelMediaDB extends PanelVorlage {
         }
         setTablePath(); //neu aufbauen
     }
-
-    private synchronized void setTablePath() {
+    
+    private void setTablePath() {
         Daten.listeMediaPath.addObjectData(modelPath);
-//        jTablePath.updateUI();
     }
-
+    
+    private void setCbkExt(String add) {
+        if (!add.isEmpty()) {
+            Daten.listeMediaPath.addSave(new DatenMediaPath(add, true));
+            cbxExtMedien.setModel(Daten.listeMediaPath.getComboModel());
+            cbxExtMedien.setSelectedItem(add);
+        } else {
+            cbxExtMedien.setModel(Daten.listeMediaPath.getComboModel());
+        }
+    }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -275,11 +273,21 @@ public class PanelMediaDB extends PanelVorlage {
         jTextFieldPath = new javax.swing.JTextField();
         jButtonPath = new javax.swing.JButton();
         jButtonAdd = new javax.swing.JButton();
-        jCheckBoxSave = new javax.swing.JCheckBox();
         jButtonRemove = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        jPanel9 = new javax.swing.JPanel();
+        jPanel8 = new javax.swing.JPanel();
+        cbxExtMedien = new javax.swing.JComboBox<>();
+        btnExtAdd = new javax.swing.JButton();
+        btnExtPath = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTextArea2 = new javax.swing.JTextArea();
         jPanel4 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jCheckBoxMediaDB = new javax.swing.JCheckBox();
+        btnClean = new javax.swing.JButton();
+        btnDel = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jRadioButtonOhneSuffix = new javax.swing.JRadioButton();
         jRadioButtonMitSuffix = new javax.swing.JRadioButton();
@@ -328,10 +336,16 @@ public class PanelMediaDB extends PanelVorlage {
         jButtonAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-add.png"))); // NOI18N
         jButtonAdd.setToolTipText("vorgegebenen Pfad hinzufügen");
 
-        jCheckBoxSave.setText("Pfad nicht beim Programmstart durchsuchen, sondern Inhalt speichern");
-
         jButtonRemove.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-remove.png"))); // NOI18N
         jButtonRemove.setToolTipText("ausgewählten Pfad entfernen");
+
+        jTextArea1.setEditable(false);
+        jTextArea1.setColumns(20);
+        jTextArea1.setLineWrap(true);
+        jTextArea1.setRows(3);
+        jTextArea1.setText("Die Pfade werden beim Programmstart nach Medien durchsucht. Die Mediensammlung wird so aktuell gehalten.");
+        jTextArea1.setWrapStyleWord(true);
+        jScrollPane3.setViewportView(jTextArea1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -340,14 +354,12 @@ public class PanelMediaDB extends PanelVorlage {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jCheckBoxSave)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldPath)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonPath)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonAdd)
@@ -367,7 +379,7 @@ public class PanelMediaDB extends PanelVorlage {
                         .addComponent(jTextFieldPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jButtonRemove))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxSave)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -380,7 +392,7 @@ public class PanelMediaDB extends PanelVorlage {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 729, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jLabel5)
@@ -393,7 +405,7 @@ public class PanelMediaDB extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -401,9 +413,83 @@ public class PanelMediaDB extends PanelVorlage {
 
         jTabbedPane1.addTab("Pfade", jPanel6);
 
+        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)), "Externe Medien dauerhaft hinzufügen"));
+
+        cbxExtMedien.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        btnExtAdd.setText("Pfad absuchen");
+        btnExtAdd.setToolTipText("Ausgewählten Pfad nach Medien absuchen");
+
+        btnExtPath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-file-open.png"))); // NOI18N
+        btnExtPath.setToolTipText("Pfad auswählen");
+
+        jTextArea2.setEditable(false);
+        jTextArea2.setColumns(20);
+        jTextArea2.setLineWrap(true);
+        jTextArea2.setRows(3);
+        jTextArea2.setText("Hier können Medien aus externen Quellen hinzugefügt werden. Die gefundenen Medien werden gespeichert und sind  dann dauerhaft verfügbar.");
+        jTextArea2.setWrapStyleWord(true);
+        jScrollPane4.setViewportView(jTextArea2);
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                        .addComponent(cbxExtMedien, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnExtPath))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnExtAdd)))
+                .addContainerGap())
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbxExtMedien, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnExtPath))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnExtAdd)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(462, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Externe Medien", jPanel9);
+
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
         jCheckBoxMediaDB.setText("Echtzeitsuche in der Mediensammlung");
+
+        btnClean.setText("Doppelte Einträge löschen");
+        btnClean.setToolTipText("Doppelte Einträge in der Mediendatenbak löschen");
+
+        btnDel.setText("Index löschen");
+        btnDel.setToolTipText("Komplette Mediendatenbank löschen");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -411,13 +497,24 @@ public class PanelMediaDB extends PanelVorlage {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jCheckBoxMediaDB)
-                .addContainerGap(422, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jCheckBoxMediaDB)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(btnClean)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnDel, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnClean)
+                    .addComponent(btnDel))
+                .addGap(18, 18, 18)
                 .addComponent(jCheckBoxMediaDB)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -451,7 +548,7 @@ public class PanelMediaDB extends PanelVorlage {
                         .addComponent(jLabel7))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jRadioButtonOhneSuffix)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 334, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
                         .addComponent(jLabel6)))
                 .addContainerGap())
         );
@@ -506,7 +603,7 @@ public class PanelMediaDB extends PanelVorlage {
                     .addComponent(jLabel1)
                     .addComponent(jTextFieldExportPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonExportPath))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonExport)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -534,10 +631,10 @@ public class PanelMediaDB extends PanelVorlage {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(366, Short.MAX_VALUE))
+                .addContainerGap(340, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Einrichten", jPanel4);
+        jTabbedPane1.addTab("Verwalten", jPanel4);
 
         jToggleButtonLoad.setText("Laden");
 
@@ -559,14 +656,14 @@ public class PanelMediaDB extends PanelVorlage {
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jToggleButtonLoad)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 729, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 594, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jToggleButtonLoad)
                 .addContainerGap())
@@ -582,12 +679,12 @@ public class PanelMediaDB extends PanelVorlage {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jTabbedPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(progress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(progress, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -616,7 +713,12 @@ public class PanelMediaDB extends PanelVorlage {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnClean;
+    private javax.swing.JButton btnDel;
+    private javax.swing.JButton btnExtAdd;
+    private javax.swing.JButton btnExtPath;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JComboBox<String> cbxExtMedien;
     private javax.swing.JButton jButtonAdd;
     private javax.swing.JButton jButtonExport;
     private javax.swing.JButton jButtonExportPath;
@@ -625,7 +727,6 @@ public class PanelMediaDB extends PanelVorlage {
     private javax.swing.JButton jButtonPath;
     private javax.swing.JButton jButtonRemove;
     private javax.swing.JCheckBox jCheckBoxMediaDB;
-    private javax.swing.JCheckBox jCheckBoxSave;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
@@ -640,13 +741,19 @@ public class PanelMediaDB extends PanelVorlage {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JRadioButton jRadioButtonMitSuffix;
     private javax.swing.JRadioButton jRadioButtonOhneSuffix;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTableMediaDB;
     private javax.swing.JTable jTablePath;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextField jTextFieldExportPath;
     private javax.swing.JTextField jTextFieldPath;
     private javax.swing.JTextField jTextFieldSuffix;
@@ -655,7 +762,13 @@ public class PanelMediaDB extends PanelVorlage {
     // End of variables declaration//GEN-END:variables
 
     private class BeobPath implements ActionListener {
-
+        
+        boolean ext;
+        
+        public BeobPath(boolean ext) {
+            this.ext = ext;
+        }
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native directory chooser on Mac...
@@ -667,7 +780,12 @@ public class PanelMediaDB extends PanelVorlage {
                 if (chooser.getFile() != null) {
                     //A directory was selected, that means Cancel was not pressed
                     try {
-                        jTextFieldPath.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
+                        String path = new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath();
+                        if (ext) {
+                            setCbkExt(path);
+                        } else {
+                            jTextFieldPath.setText(path);
+                        }
                     } catch (Exception ex) {
                         Log.errorLog(951024789, ex);
                     }
@@ -684,7 +802,12 @@ public class PanelMediaDB extends PanelVorlage {
                 returnVal = chooser.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {
-                        jTextFieldPath.setText(chooser.getSelectedFile().getPath());
+                        String path = chooser.getSelectedFile().getPath();
+                        if (ext) {
+                            setCbkExt(path);
+                        } else {
+                            jTextFieldPath.setText(path);
+                        }
                     } catch (Exception ex) {
                         Log.errorLog(765212369, ex);
                     }
@@ -692,31 +815,31 @@ public class PanelMediaDB extends PanelVorlage {
             }
         }
     }
-
+    
     private class BeobTextFeld implements DocumentListener {
-
+        
         @Override
         public void changedUpdate(DocumentEvent e) {
             tusEinfach(e);
         }
-
+        
         @Override
         public void insertUpdate(DocumentEvent e) {
             tusEinfach(e);
         }
-
+        
         @Override
         public void removeUpdate(DocumentEvent e) {
             tusEinfach(e);
         }
-
+        
         void tusEinfach(DocumentEvent e) {
             MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_EXPORT_DATEI, jTextFieldExportPath.getText());
         }
     }
-
+    
     private class BeobPfad implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
@@ -751,13 +874,13 @@ public class PanelMediaDB extends PanelVorlage {
             }
         }
     }
-
+    
     private class BeobExport implements ActionListener {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             filmeExportieren();
         }
     }
-
+    
 }

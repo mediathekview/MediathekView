@@ -23,7 +23,9 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -68,7 +70,44 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         }
     }
 
-    public synchronized void createMediaDB() {
+    public void cleanList() {
+        Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, ListeMediaDB.class.getSimpleName());
+        makeIndex = true;
+        ListeMediaDB tmp = new ListeMediaDB();
+        Iterator<DatenMediaDB> it = iterator();
+        while (it.hasNext()) {
+            DatenMediaDB md = it.next();
+            if (!tmp.exists(md)) {
+                tmp.add(md);
+            }
+        }
+        this.clear();
+        for (DatenMediaDB m : tmp) {
+            this.add(m);
+        }
+        tmp.clear();
+        makeIndex = false;
+        Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
+    }
+
+    public void delList(boolean ohneSave) {
+        Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, ListeMediaDB.class.getSimpleName());
+        makeIndex = true;
+        if (ohneSave) {
+            Iterator<DatenMediaDB> it = this.iterator();
+            while (it.hasNext()) {
+                if (!it.next().isExtern()) {
+                    it.remove();
+                }
+            }
+        } else {
+            clear();
+        }
+        makeIndex = false;
+        Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
+    }
+
+    public synchronized void createMediaDB(String pfad) {
         Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, ListeMediaDB.class.getSimpleName());
         suffix = MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX).split(",");
         for (int i = 0; i < suffix.length; ++i) {
@@ -80,19 +119,58 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         ohneSuffix = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE));
 
         makeIndex = true;
-        Daten.listeMediaDB.clear();
-        new Thread(new Index()).start();
+        if (pfad.isEmpty()) {
+            Daten.listeMediaDB.delList(true /*ohneSave*/);
+            new Thread(new Index("")).start();
+        } else {
+            new Thread(new Index(pfad)).start();
+            //new Index(pfad).run();
+        }
+    }
+
+    private boolean exists(DatenMediaDB mdb) {
+        boolean ret = false;
+        try {
+            DatenMediaDB get = this.stream().filter(media -> media.equal(mdb)).findFirst().get();
+            if (get != null) {
+                ret = true;
+            }
+        } catch (NoSuchElementException ignore) {
+            ret = false;
+        }
+        return ret;
     }
 
     private class Index implements Runnable {
+
+        String pfad = "";
+        String error = "";
+        boolean more = false;
+
+        public Index(String pfad) {
+            this.pfad = pfad;
+        }
 
         @Override
         public synchronized void run() {
             Duration.counterStart("Mediensammlung erstellen");
             try {
-                if (!Daten.listeMediaPath.isEmpty()) {
-                    String error = "";
-                    boolean more = false;
+                if (!pfad.isEmpty()) {
+                    // dann nur einen Pfad hinzufügen
+                    File f = new File(pfad);
+                    if (!f.canRead()) {
+                        if (!error.isEmpty()) {
+                            error = error + "\n";
+                        }
+                        error = error + f.getPath();
+                    }
+                    if (!error.isEmpty()) {
+                        // Verzeichnisse können nicht durchsucht werden
+                        errorMsg();
+                    }
+                    searchFile(new File(pfad), true);
+
+                } else if (!Daten.listeMediaPath.isEmpty()) {
                     for (DatenMediaPath mp : Daten.listeMediaPath) {
                         File f = new File(mp.arr[DatenMediaPath.MEDIA_PATH_PATH]);
                         if (!f.canRead()) {
@@ -105,13 +183,12 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                     }
                     if (!error.isEmpty()) {
                         // Verzeichnisse können nicht durchsucht werden
-                        MVMessageDialog.showMessageDialog(null, (more ? "Die Pfade der Mediensammlung können nicht alle gelesen werden:\n"
-                                : "Der Pfad der Mediensammlung kann nicht gelesen werden:\n")
-                                + error, "Fehler beim Erstellen der Mediensammlung", JOptionPane.ERROR_MESSAGE);
+                        errorMsg();
                     }
                     for (DatenMediaPath mp : Daten.listeMediaPath) {
-                        File f = new File(mp.arr[DatenMediaPath.MEDIA_PATH_PATH]);
-                        searchFile(f, mp.toSave());
+                        if (!mp.savePath()) {
+                            searchFile(new File(mp.arr[DatenMediaPath.MEDIA_PATH_PATH]), false);
+                        }
                     }
                 }
             } catch (Exception ex) {
@@ -120,10 +197,14 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
 
             Daten.listeMediaDB.exportListe("");
             makeIndex = false;
-
             Duration.counterStop("Mediensammlung erstellen");
-
             Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
+        }
+
+        private void errorMsg() {
+            MVMessageDialog.showMessageDialog(null, (more ? "Die Pfade der Mediensammlung können nicht alle gelesen werden:\n"
+                    : "Der Pfad der Mediensammlung kann nicht gelesen werden:\n")
+                    + error, "Fehler beim Erstellen der Mediensammlung", JOptionPane.ERROR_MESSAGE);
         }
 
         private void searchFile(File dir, boolean save) {
@@ -172,19 +253,22 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         return ret;
     }
 
-//    public void listeBauen() {
-//        Path urlPath = getFilePath();
-//        //use Automatic Resource Management
-//        try (LineNumberReader in = new LineNumberReader(new InputStreamReader(Files.newInputStream(urlPath)))) {
-//            String zeile;
-//            while ((zeile = in.readLine()) != null) {
-//                DatenMediaDB mdb = getUrlAusZeile(zeile);
-//                add(mdb);
-//            }
-//        } catch (Exception ex) {
-//            Log.errorLog(926362547, ex);
-//        }
-//    }
+    public void loadSavedList() {
+        Path urlPath = getFilePath();
+        //use Automatic Resource Management
+        try (LineNumberReader in = new LineNumberReader(new InputStreamReader(Files.newInputStream(urlPath)))) {
+            String zeile;
+            while ((zeile = in.readLine()) != null) {
+                DatenMediaDB mdb = getUrlAusZeile(zeile);
+                if (mdb != null) {
+                    add(mdb);
+                }
+            }
+        } catch (Exception ex) {
+            Log.errorLog(461203787, ex);
+        }
+    }
+
     public void exportListe(String datei) {
         Path logFilePath = null;
         boolean export = false;
@@ -213,7 +297,12 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
             bw.newLine();
             bw.newLine();
             for (DatenMediaDB entry : this) {
-                if (entry.toSave()) {
+                if (!datei.isEmpty()) {
+                    //dann alles schreiben
+                    bw.write(getLine(entry, export));
+                    bw.newLine();
+                } else if (entry.isExtern()) {
+                    //in der Konfig nur die externen
                     bw.write(getLine(entry, export));
                     bw.newLine();
                 }
@@ -238,7 +327,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         String ret = "";
         ret += Functions.minTextLaenge(60, med.arr[DatenMediaDB.MEDIA_DB_NAME]) + TRENNER;
         ret += Functions.minTextLaenge(60, med.arr[DatenMediaDB.MEDIA_DB_PATH]) + TRENNER;
-        ret += Functions.minTextLaenge(6, med.arr[DatenMediaDB.MEDIA_DB_SIZE]);
+        ret += med.mVMediaDBFileSize.sizeL + "";
         return ret;
     }
 
@@ -255,28 +344,30 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         return urlPath;
     }
 
-//    private DatenMediaDB getUrlAusZeile(String zeile) {
-//        String name = "", pfad = "", s = "";
-//        long size = 0;
-//        try {
-//            if (zeile.contains(TRENNER)) {
-//                //neues Logfile-Format
-//                int a1 = zeile.lastIndexOf(TRENNER);
-//                a1 += TRENNER.length();
-//                pfad = zeile.substring(a1).trim();
-//                s = zeile.substring(zeile.lastIndexOf(TRENNER) + TRENNER.length(), zeile.lastIndexOf(TRENNER)).trim();
-//                name = zeile.substring(0, zeile.indexOf(TRENNER)).trim();
-//            }
-//        } catch (Exception ex) {
-//            Log.errorLog(912035647, ex);
-//        }
-//        if (!s.isEmpty()) {
-//            try {
-//                size = Integer.parseInt(s);
-//            } catch (Exception ignore) {
-//                size = 0;
-//            }
-//        }
-//        return new DatenMediaDB(name, pfad, size);
-//    }
+    private DatenMediaDB getUrlAusZeile(String zeile) {
+        //02-202.mp3     |###|  /tmp/John Grisham/Das Komplott 1    |###|  3     
+        if (zeile.isEmpty()) {
+            return null;
+        }
+        String name = "", pfad = "", s = "";
+        long size = 0;
+        try {
+            if (zeile.contains(TRENNER)) {
+                name = zeile.substring(0, zeile.indexOf(TRENNER)).trim();
+                pfad = zeile.substring(zeile.indexOf(TRENNER) + TRENNER.length(), zeile.lastIndexOf(TRENNER)).trim();
+                s = zeile.substring(zeile.lastIndexOf(TRENNER) + TRENNER.length()).trim();
+            }
+            if (!s.isEmpty()) {
+                try {
+                    size = Integer.parseInt(s);
+                } catch (Exception ignore) {
+                    size = 0;
+                }
+            }
+            return new DatenMediaDB(name, pfad, size, true /*extern*/);
+        } catch (Exception ex) {
+            Log.errorLog(912035647, ex);
+        }
+        return null;
+    }
 }

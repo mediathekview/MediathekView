@@ -40,7 +40,7 @@ public class DatenMediaPath extends MVData<DatenMediaPath> {
         makeArr();
     }
 
-    public boolean toSave() {
+    public boolean savePath() {
         return Boolean.parseBoolean(arr[MEDIA_PATHE_SAVE]);
     }
 
