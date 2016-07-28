@@ -146,7 +146,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
         jTextFieldSearch.setText(titel);
     }
 
-    private void searchFilmInDb() {
+    private synchronized void searchFilmInDb() {
         TModelMediaDB model = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
         Daten.listeMediaDB.searchFilmInDB(model, jTextFieldSearch.getText());
         tabelleFilme.getSpalten();

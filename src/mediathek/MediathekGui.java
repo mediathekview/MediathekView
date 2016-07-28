@@ -404,12 +404,12 @@ public class MediathekGui extends JFrame {
                 jMenuItemFilmlisteLaden.setEnabled(true);
                 jMenuItemDownloadsAktualisieren.setEnabled(true);
                 daten.allesSpeichern(); // damit nichts verlorengeht
-                // Prüfen obs ein Programmupdate gibt
-                Duration.staticPing("CheckUpdate");
             }
 
             @Override
             public void fertigOnlyOne(ListenerFilmeLadenEvent event) {
+                // Prüfen obs ein Programmupdate gibt
+                Duration.staticPing("CheckUpdate");
                 new CheckUpdate(Daten.mediathekGui, daten).checkProgUpdate();
                 Daten.listeMediaDB.loadSavedList();
                 Daten.listeMediaDB.createMediaDB("");
