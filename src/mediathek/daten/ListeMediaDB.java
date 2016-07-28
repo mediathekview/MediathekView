@@ -70,7 +70,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         }
     }
 
-    public void cleanList() {
+    public synchronized void cleanList() {
         Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, ListeMediaDB.class.getSimpleName());
         makeIndex = true;
         ListeMediaDB tmp = new ListeMediaDB();
@@ -90,7 +90,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
     }
 
-    public void delList(boolean ohneSave) {
+    public synchronized void delList(boolean ohneSave) {
         Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, ListeMediaDB.class.getSimpleName());
         makeIndex = true;
         if (ohneSave) {
@@ -121,11 +121,75 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         makeIndex = true;
         if (pfad.isEmpty()) {
             Daten.listeMediaDB.delList(true /*ohneSave*/);
-            new Thread(new Index("")).start();
-        } else {
-            new Thread(new Index(pfad)).start();
-            //new Index(pfad).run();
         }
+        new Thread(new Index(pfad)).start();
+    }
+
+    public synchronized void loadSavedList() {
+        Path urlPath = getFilePath();
+        //use Automatic Resource Management
+        try (LineNumberReader in = new LineNumberReader(new InputStreamReader(Files.newInputStream(urlPath)))) {
+            String zeile;
+            while ((zeile = in.readLine()) != null) {
+                DatenMediaDB mdb = getUrlAusZeile(zeile);
+                if (mdb != null) {
+                    add(mdb);
+                }
+            }
+        } catch (Exception ex) {
+            Log.errorLog(461203787, ex);
+        }
+    }
+
+    public synchronized void exportListe(String datei) {
+        Path logFilePath = null;
+        boolean export = false;
+        SysMsg.sysMsg("MediaDB schreiben (" + Daten.listeMediaDB.size() + " Dateien) :");
+        if (!datei.isEmpty()) {
+            export = true;
+            try {
+                File file = new File(datei);
+                File dir = new File(file.getParent());
+                if (!dir.exists()) {
+                    if (!dir.mkdirs()) {
+                        Log.errorLog(945120365, "Kann den Pfad nicht anlegen: " + dir.toString());
+                    }
+                }
+                SysMsg.sysMsg("   --> Start Schreiben nach: " + datei);
+                logFilePath = file.toPath();
+            } catch (Exception ex) {
+                Log.errorLog(102035478, ex, "nach: " + datei);
+            }
+        } else {
+            SysMsg.sysMsg("   --> Start Schreiben nach: " + getFilePath().toString());
+            logFilePath = getFilePath();
+        }
+
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(logFilePath)))) {
+            bw.newLine();
+            bw.newLine();
+            for (DatenMediaDB entry : this) {
+                if (!datei.isEmpty()) {
+                    //dann alles schreiben
+                    bw.write(getLine(entry, export));
+                    bw.newLine();
+                } else if (entry.isExtern()) {
+                    //in der Konfig nur die externen
+                    bw.write(getLine(entry, export));
+                    bw.newLine();
+                }
+            }
+            bw.newLine();
+            //
+            bw.flush();
+            bw.close();
+        } catch (Exception ex) {
+            SwingUtilities.invokeLater(() -> {
+                MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
+                        "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
+            });
+        }
+        SysMsg.sysMsg("   --> geschrieben!");
     }
 
     private boolean exists(DatenMediaDB mdb) {
@@ -172,6 +236,9 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
 
                 } else if (!Daten.listeMediaPath.isEmpty()) {
                     for (DatenMediaPath mp : Daten.listeMediaPath) {
+                        if (mp.savePath()) {
+                            continue;
+                        }
                         File f = new File(mp.arr[DatenMediaPath.MEDIA_PATH_PATH]);
                         if (!f.canRead()) {
                             if (!error.isEmpty()) {
@@ -185,11 +252,9 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                         // Verzeichnisse können nicht durchsucht werden
                         errorMsg();
                     }
-                    for (DatenMediaPath mp : Daten.listeMediaPath) {
-                        if (!mp.savePath()) {
-                            searchFile(new File(mp.arr[DatenMediaPath.MEDIA_PATH_PATH]), false);
-                        }
-                    }
+                    Daten.listeMediaPath.stream().filter((mp) -> (!mp.savePath())).forEach((mp) -> {
+                        searchFile(new File(mp.arr[DatenMediaPath.MEDIA_PATH_PATH]), false);
+                    });
                 }
             } catch (Exception ex) {
                 Log.errorLog(120321254, ex);
@@ -251,73 +316,6 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
             }
         }
         return ret;
-    }
-
-    public void loadSavedList() {
-        Path urlPath = getFilePath();
-        //use Automatic Resource Management
-        try (LineNumberReader in = new LineNumberReader(new InputStreamReader(Files.newInputStream(urlPath)))) {
-            String zeile;
-            while ((zeile = in.readLine()) != null) {
-                DatenMediaDB mdb = getUrlAusZeile(zeile);
-                if (mdb != null) {
-                    add(mdb);
-                }
-            }
-        } catch (Exception ex) {
-            Log.errorLog(461203787, ex);
-        }
-    }
-
-    public void exportListe(String datei) {
-        Path logFilePath = null;
-        boolean export = false;
-        SysMsg.sysMsg("MediaDB schreiben (" + Daten.listeMediaDB.size() + " Dateien) :");
-        if (!datei.isEmpty()) {
-            export = true;
-            try {
-                File file = new File(datei);
-                File dir = new File(file.getParent());
-                if (!dir.exists()) {
-                    if (!dir.mkdirs()) {
-                        Log.errorLog(945120365, "Kann den Pfad nicht anlegen: " + dir.toString());
-                    }
-                }
-                SysMsg.sysMsg("   --> Start Schreiben nach: " + datei);
-                logFilePath = file.toPath();
-            } catch (Exception ex) {
-                Log.errorLog(102035478, ex, "nach: " + datei);
-            }
-        } else {
-            SysMsg.sysMsg("   --> Start Schreiben nach: " + getFilePath().toString());
-            logFilePath = getFilePath();
-        }
-
-        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(logFilePath)))) {
-            bw.newLine();
-            bw.newLine();
-            for (DatenMediaDB entry : this) {
-                if (!datei.isEmpty()) {
-                    //dann alles schreiben
-                    bw.write(getLine(entry, export));
-                    bw.newLine();
-                } else if (entry.isExtern()) {
-                    //in der Konfig nur die externen
-                    bw.write(getLine(entry, export));
-                    bw.newLine();
-                }
-            }
-            bw.newLine();
-            //
-            bw.flush();
-            bw.close();
-        } catch (Exception ex) {
-            SwingUtilities.invokeLater(() -> {
-                MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
-                        "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
-            });
-        }
-        SysMsg.sysMsg("   --> geschrieben!");
     }
 
     private String getLine(DatenMediaDB med, boolean export) {
