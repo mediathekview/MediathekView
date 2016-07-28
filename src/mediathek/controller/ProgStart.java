@@ -31,13 +31,14 @@ import mediathek.config.MVConfig;
 import mediathek.tool.GuiFunktionen;
 
 public class ProgStart {
+
     // #########################################################
     // Filmliste beim Programmstart!! laden
     // #########################################################
-
     public static void loadDataProgStart() {
         // Gui startet ein wenig flüssiger
         new Thread(new loadFilmlistProgStart_()).start();
+
     }
 
     private static class loadFilmlistProgStart_ implements Runnable {
