@@ -67,6 +67,10 @@ public class DatenMediaDB extends MVData<DatenMediaDB> {
                 && m.arr[MEDIA_DB_SIZE].equals(this.arr[MEDIA_DB_SIZE]);
     }
 
+    public String getEqual() {
+        return arr[MEDIA_DB_NAME] + arr[MEDIA_DB_PATH] + arr[MEDIA_DB_SIZE];
+    }
+
     private static String putzen(String s) {
         s = s.replace("\n", "");
         s = s.replace("|", "");

@@ -23,6 +23,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
@@ -71,24 +72,37 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
     }
 
     public synchronized void cleanList() {
+        new Thread(() -> {
+            clean();
+        }).start();
+    }
+
+    private void clean() {
+        Duration.counterStart("Clean MediaDB");
+        final HashSet<String> hash = new HashSet<>();
         Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, ListeMediaDB.class.getSimpleName());
         makeIndex = true;
+
         ListeMediaDB tmp = new ListeMediaDB();
-        Iterator<DatenMediaDB> it = iterator();
-        while (it.hasNext()) {
-            DatenMediaDB md = it.next();
-            if (!tmp.exists(md)) {
-                tmp.add(md);
+        this.stream().forEach(m -> {
+            final String s = m.getEqual();
+            if (!hash.contains(s)) {
+                hash.add(s);
+                tmp.add(m);
             }
-        }
+        });
+
         this.clear();
-        for (DatenMediaDB m : tmp) {
+        tmp.stream().forEach((m) -> {
             this.add(m);
-        }
+        });
         tmp.clear();
+        hash.clear();
+
         Daten.listeMediaDB.exportListe("");
         makeIndex = false;
         Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
+        Duration.counterStop("Clean MediaDB");
     }
 
     public synchronized void delList(boolean ohneSave) {
