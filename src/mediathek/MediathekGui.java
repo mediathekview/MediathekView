@@ -453,17 +453,13 @@ public class MediathekGui extends JFrame {
             //jTabbedPane.addTab("Debug", spacerIcon, Daten.guiDebug);
             jTabbedPane.addTab("Debug", Daten.guiDebug);
         }
+        initFrames();
         jTabbedPane.addChangeListener(l -> {
-
             if (!geklickt) {
                 geklickt = true;
                 Duration.counterStop("***Programmstart***");
             }
-
-            designTabs();
         });
-
-        initFrames();
     }
 
     public void hideFrame(TABS state) {
