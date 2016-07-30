@@ -336,7 +336,7 @@
         </Component>
         <Component class="javax.swing.JCheckBox" name="jCheckBoxTabIcon">
           <Properties>
-            <Property name="text" type="java.lang.String" value="keine Icons im Tab"/>
+            <Property name="text" type="java.lang.String" value="Icons im Tab anzeigen"/>
             <Property name="toolTipText" type="java.lang.String" value="Im Tab keine Icons anzeigen"/>
           </Properties>
         </Component>

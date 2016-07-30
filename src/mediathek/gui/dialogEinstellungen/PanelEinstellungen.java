@@ -56,6 +56,7 @@ public class PanelEinstellungen extends PanelVorlage {
         ((JSpinner.DefaultEditor) jSpinnerDays.getEditor()).getTextField().setEditable(false);
         initSpinner();
         jSpinnerDays.addChangeListener(new BeobSpinnerDays());
+
         jButtonLoad.addActionListener(ae -> {
             Daten.listeFilme.clear(); // sonst wird evtl. nur eine Diff geladen
             Daten.filmeLaden.loadFilmlist("");
@@ -74,6 +75,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 + "\n\n"
                 + "Auswirkung hat das erst nach dem\n"
                 + "Neuladen der kompletten Filmliste.").setVisible(true));
+
         Listener.addListener(new Listener(Listener.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -110,11 +112,13 @@ public class PanelEinstellungen extends PanelVorlage {
                 Daten.mediathekGui.setTray();
             });
         }
+
         jCheckBoxSuchen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_UPDATE_SUCHEN)));
         jCheckBoxSuchen.addActionListener(ae -> MVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBoxSuchen.isSelected())));
         jButtonSuchen.addActionListener(new BeobSuchen(false));
         jButtonInfos.addActionListener(new BeobSuchen(true));
         jButtonRefresh.addActionListener(e -> fillIconList());
+
         fillIconList();
         jComboBoxIcons.addItemListener(evt -> {
             if (evt.getStateChange() == 1) {
@@ -358,7 +362,7 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jCheckBoxTabsTop.setText("Tabs oben anzeigen");
 
-        jCheckBoxTabIcon.setText("keine Icons im Tab");
+        jCheckBoxTabIcon.setText("Icons im Tab anzeigen");
         jCheckBoxTabIcon.setToolTipText("Im Tab keine Icons anzeigen");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
