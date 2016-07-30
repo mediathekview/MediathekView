@@ -19,16 +19,19 @@
 package mediathek.gui;
 
 import com.jidesoft.swing.MarqueePane;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.net.URISyntaxException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import static mSearch.tool.Functions.getPathJar;
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
-import mediathek.config.Konstanten;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.UrlHyperlinkAction;
 
