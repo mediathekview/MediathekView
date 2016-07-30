@@ -34,9 +34,9 @@ import javax.xml.stream.XMLStreamReader;
 import mSearch.Const;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
-import mediathek.gui.dialog.DialogHinweisUpdate;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
+import mediathek.gui.dialog.DialogHinweisUpdate;
 import mediathek.tool.MVFunctionSys;
 
 public class ProgrammUpdateSuchen {
@@ -50,54 +50,46 @@ public class ProgrammUpdateSuchen {
     private String version;
     private String release;
     private String downloadUrlProgramm;
-    private String[] ret;
-    private boolean anzeigen;
-    private boolean hinweis;
-    private boolean hinweiseAlleAnzeigen;
+    private String[] progInfoArr;
     private boolean neueVersion = false;
 
-    public boolean checkVersion(boolean aanzeigen, boolean hhinweis, boolean hhinweiseAlleAnzeigen) {
+    public boolean checkVersion(boolean anzeigen, boolean hinweisAnzeigen, boolean alleHinweiseAnzeigen) {
         // prüft auf neue Version, aneigen: wenn true, dann AUCH wenn es keine neue Version gibt ein Fenster
-        anzeigen = aanzeigen;
-        hinweis = hhinweis;
-        hinweiseAlleAnzeigen = hhinweiseAlleAnzeigen;
         neueVersion = false;
-        try {
-            ret = suchen();
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public synchronized void run() {
 
-                    // Hinweise anzeigen
-                    if (hinweis) {
-                        hinweiseAnzeigen(hinweiseAlleAnzeigen);
-                    }
-                    // Update-Info anzeigen
-                    version = ret[0];
-                    release = ret[1];
-                    downloadUrlProgramm = ret[2];
-                    if (!version.equals("")) {
-                        MVConfig.add(MVConfig.SYSTEM_BUILD_NR, MVFunctionSys.getBuildNr());
-                        MVConfig.add(MVConfig.SYSTEM_UPDATE_DATUM, new SimpleDateFormat("yyyyMMdd").format(new Date()));
-                        if (checkObNeueVersion(version, Konstanten.VERSION)) {
-                            neueVersion = true;
-                            // DialogHinweisUpdate(java.awt.Frame parent, boolean modal, String ttext, String dialogTitel, Daten ddaten) {
-                            new DialogHinweisUpdate(null, true, "Eine neue Version liegt vor",
-                                    "   ==================================================\n"
-                                    + "   Neue Version:\n" + "   " + version + "\n\n"
-                                    + "   ==================================================\n"
-                                    + "   Änderungen:\n" + "   " + release + "\n\n"
-                                    + "   ==================================================\n"
-                                    + "   URL:\n"
-                                    + "   " + downloadUrlProgramm + "\n\n").setVisible(true);
-                        } else {
-                            DialogHinweisUpdate dialog = new DialogHinweisUpdate(null, true, "Update suchen", "Alles aktuell!");
-                            if (anzeigen) {
-                                dialog.setVisible(true);
-                            }
-                        }
-                    } else {
-                        new DialogHinweisUpdate(null, true, "Fehler bei der Versionsprüfung!", "Es ist ein Fehler aufgetreten!" + "\n\n" + "").setVisible(true);
+        try {
+            progInfoArr = progInfosSuchen();
+            // Update-Info anzeigen
+            version = progInfoArr[0];
+            release = progInfoArr[1];
+            downloadUrlProgramm = progInfoArr[2];
+
+            SwingUtilities.invokeLater(() -> {
+                // Hinweise anzeigen
+                if (hinweisAnzeigen) {
+                    hinweiseAnzeigen(alleHinweiseAnzeigen);
+                }
+
+                if (version.equals("")) {
+                    new DialogHinweisUpdate(null, true, "Fehler bei der Versionsprüfung!", "Es ist ein Fehler aufgetreten!" + "\n\n" + "").setVisible(true);
+                } else {
+                    MVConfig.add(MVConfig.SYSTEM_BUILD_NR, MVFunctionSys.getBuildNr());
+                    MVConfig.add(MVConfig.SYSTEM_UPDATE_DATUM, new SimpleDateFormat("yyyyMMdd").format(new Date()));
+
+                    if (checkObNeueVersion(version, Konstanten.VERSION)) {
+                        neueVersion = true;
+                        // DialogHinweisUpdate(java.awt.Frame parent, boolean modal, String ttext, String dialogTitel, Daten ddaten) {
+                        new DialogHinweisUpdate(null, true, "Eine neue Version liegt vor",
+                                "   ==================================================\n"
+                                + "   Neue Version:\n" + "   " + version + "\n\n"
+                                + "   ==================================================\n"
+                                + "   Änderungen:\n" + "   " + release + "\n\n"
+                                + "   ==================================================\n"
+                                + "   URL:\n"
+                                + "   " + downloadUrlProgramm + "\n\n").setVisible(true);
+
+                    } else if (anzeigen) {
+                        new DialogHinweisUpdate(null, true, "Update suchen", "Alles aktuell!").setVisible(true);
                     }
                 }
             });
@@ -117,8 +109,10 @@ public class ProgrammUpdateSuchen {
                 } else {
                     angezeigt = Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT));
                 }
+                int idx = 0;
                 for (String[] h : listInfos) {
-                    if (alleAnzeigen || angezeigt < Integer.parseInt(h[0])) {
+                    idx = Integer.parseInt(h[0]);
+                    if (alleAnzeigen || angezeigt < idx) {
                         text.append("=======================================\n");
                         text.append(h[1]);
                         text.append("\n");
@@ -127,7 +121,7 @@ public class ProgrammUpdateSuchen {
                 }
                 if (text.length() > 0) {
                     new DialogHinweisUpdate(null, true, "Infos", text.toString()).setVisible(true);
-                    MVConfig.add(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(listInfos.size()));
+                    MVConfig.add(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(idx));
                 }
             } catch (Exception ex) {
                 Log.errorLog(693298731, ex);
@@ -160,8 +154,8 @@ public class ProgrammUpdateSuchen {
         return false;
     }
 
-    private String[] suchen() throws IOException, XMLStreamException {
-        String[] ret = new String[]{""/* version */, ""/* release */, ""/* updateUrl */};
+    private String[] progInfosSuchen() throws IOException, XMLStreamException {
+        String[] retArr = new String[]{""/* version */, ""/* release */, ""/* updateUrl */};
         //String parsername = "";
         int event;
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
@@ -180,27 +174,34 @@ public class ProgrammUpdateSuchen {
             event = parser.next();
             if (event == XMLStreamConstants.START_ELEMENT) {
                 //parsername = parser.getLocalName();
-                if (parser.getLocalName().equals(PROGRAM_VERSION)) {
-                    ret[0] = parser.getElementText();
-                } else if (parser.getLocalName().equals(PROGRAM_RELEASE_INFO)) {
-                    ret[1] = parser.getElementText();
-                } else if (parser.getLocalName().equals(DOWNLOAD_PROGRAM)) {
-                    ret[2] = parser.getElementText();
-                } else if (parser.getLocalName().equals(INFO)) {
-                    int count = parser.getAttributeCount();
-                    String nummer = "";
-                    for (int i = 0; i < count; ++i) {
-                        if (parser.getAttributeName(i).toString().equals(INFO_NO)) {
-                            nummer = parser.getAttributeValue(i);
+                switch (parser.getLocalName()) {
+                    case PROGRAM_VERSION:
+                        retArr[0] = parser.getElementText();
+                        break;
+                    case PROGRAM_RELEASE_INFO:
+                        retArr[1] = parser.getElementText();
+                        break;
+                    case DOWNLOAD_PROGRAM:
+                        retArr[2] = parser.getElementText();
+                        break;
+                    case INFO:
+                        int count = parser.getAttributeCount();
+                        String nummer = "";
+                        for (int i = 0; i < count; ++i) {
+                            if (parser.getAttributeName(i).toString().equals(INFO_NO)) {
+                                nummer = parser.getAttributeValue(i);
+                            }
                         }
-                    }
-                    String info = parser.getElementText();
-                    if (!nummer.equals("") && !info.equals("")) {
-                        listInfos.add(new String[]{nummer, info});
-                    }
+                        String info = parser.getElementText();
+                        if (!nummer.equals("") && !info.equals("")) {
+                            listInfos.add(new String[]{nummer, info});
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
         }
-        return ret;
+        return retArr;
     }
 }

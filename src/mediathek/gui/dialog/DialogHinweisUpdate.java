@@ -22,8 +22,8 @@ package mediathek.gui.dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
-import mediathek.tool.EscBeenden;
 import mediathek.config.Konstanten;
+import mediathek.tool.EscBeenden;
 import mediathek.tool.UrlHyperlinkAction;
 
 public class DialogHinweisUpdate extends javax.swing.JDialog {
@@ -35,7 +35,7 @@ public class DialogHinweisUpdate extends javax.swing.JDialog {
         super(pparent, modal);
         parent = pparent;
         text = ttext;
-        this.setTitle(dialogTitel);
+        setTitle(dialogTitel);
         initComponents();
         initBeob();
     }
@@ -78,8 +78,10 @@ public class DialogHinweisUpdate extends javax.swing.JDialog {
 
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
+        jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
         jTextArea1.setText("\n\n");
+        jTextArea1.setWrapStyleWord(true);
         jScrollPane1.setViewportView(jTextArea1);
 
         jButtonOk.setText("OK");
