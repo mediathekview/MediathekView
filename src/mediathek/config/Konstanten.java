@@ -33,11 +33,11 @@ public class Konstanten {
     public static final String FILE_MEDIA_DB = "mediadb.txt";
 
     // MediathekView URLs
-    public static final String ADRESSE_FILMLISTEN_SERVER = "http://zdfmediathk.sourceforge.net/update.xml";
-    public static final String ADRESSE_PROGRAMM_VERSION = "http://zdfmediathk.sourceforge.net/prog-info.xml"; // ab Version 4, einstellig!
+//    public static final String ADRESSE_FILMLISTEN_SERVER = "http://zdfmediathk.sourceforge.net/update.xml";
+    public static final String ADRESSE_PROGRAMM_VERSION = "http://zdfmediathk.sourceforge.net/prog-info-12.xml";
     public static final String ADRESSE_DOWNLAD = "http://sourceforge.net/projects/zdfmediathk/";
     public static final String ADRESSE_ANLEITUNG = "http://sourceforge.net/p/zdfmediathk/wiki/Home/";
-    public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "http://zdfmediathk.sourceforge.net/programmgruppen11/programmgruppen.xml";
+    public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "http://zdfmediathk.sourceforge.net/programmgruppen12/programmgruppen.xml";
     public static final String ADRESSE_WEBSITE = "http://zdfmediathk.sourceforge.net/";
     public static final String ADRESSE_FORUM = "http://zdfmediathk.sourceforge.net/forum/";
     public static final String ADRESSE_DONATION = "http://zdfmediathk.sourceforge.net/index.html#donate";
