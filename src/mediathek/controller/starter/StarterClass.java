@@ -19,7 +19,6 @@
  */
 package mediathek.controller.starter;
 
-import mediathek.config.MVConfig;
 import com.apple.eawt.Application;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Toolkit;
@@ -37,15 +36,19 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.swing.SwingUtilities;
 import mSearch.daten.DatenFilm;
-import mSearch.tool.*;
+import mSearch.tool.Datum;
+import mSearch.tool.Listener;
+import mSearch.tool.Log;
+import mSearch.tool.SysMsg;
+import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import mediathek.config.MVConfig;
 import mediathek.controller.MVBandwidthTokenBucket;
 import mediathek.controller.MVInputStream;
-import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.gui.dialog.DialogContinueDownload;
 import mediathek.gui.dialog.MeldungDownloadfehler;
-import mediathek.config.Konstanten;
 import mediathek.tool.MVInfoFile;
 import mediathek.tool.MVNotification;
 import mediathek.tool.MVSubtitle;
@@ -370,7 +373,7 @@ public class StarterClass {
                 } catch (Exception ex) {
                     Log.errorLog(613822015, ex);
                 }
-            } //while(true)
+            }
         }
 
         private synchronized DatenDownload getNextStart() throws InterruptedException {

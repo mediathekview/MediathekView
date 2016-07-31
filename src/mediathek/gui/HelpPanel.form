@@ -83,14 +83,14 @@
         <Component class="javax.swing.JTextField" name="jTextField1">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="ff" green="cc" red="cc" type="rgb"/>
-            </Property>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Dialog" size="14" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="text" type="java.lang.String" value="Hilfe zum Programm finden"/>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="cc" red="cc" type="rgb"/>
+            </Property>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">
@@ -103,8 +103,10 @@
             <Component class="javax.swing.JTextArea" name="jTextArea1">
               <Properties>
                 <Property name="columns" type="int" value="20"/>
+                <Property name="lineWrap" type="boolean" value="true"/>
                 <Property name="rows" type="int" value="5"/>
                 <Property name="text" type="java.lang.String" value="Bei Problemen sollten die Anleitung oder die FAQ &#xa;die erste Anlaufstelle sein. F&#xfc;hrt das zu keiner L&#xf6;sung,&#xa;kann auch eine Suche im Forum weiterhelfen.&#xa;&#xa;Wenn auch das nicht weiterhilft, sollte man eine Anfrage&#xa;im Forum stellen. Damit die Frage auch beantwortet &#xa;werden kann, sind ein paar Infos wichtig:&#xa;&#xa; * M&#xf6;glichst genaue Beschreibung des Problems&#xa;      (was geht nicht, welcher Film, ..)&#xa;&#xa; * Infos &#xfc;ber das Betriebssystem und die Programmversion&#xa;      ODER BESSER:&#xa;      das generierte Logfile an den Post im Forum anh&#xe4;ngen&#xa;"/>
+                <Property name="wrapStyleWord" type="boolean" value="true"/>
               </Properties>
             </Component>
           </SubComponents>

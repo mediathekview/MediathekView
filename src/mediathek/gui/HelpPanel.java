@@ -101,8 +101,10 @@ public class HelpPanel extends javax.swing.JPanel {
         jTextField1.setText("Hilfe zum Programm finden");
 
         jTextArea1.setColumns(20);
+        jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
         jTextArea1.setText("Bei Problemen sollten die Anleitung oder die FAQ \ndie erste Anlaufstelle sein. Führt das zu keiner Lösung,\nkann auch eine Suche im Forum weiterhelfen.\n\nWenn auch das nicht weiterhilft, sollte man eine Anfrage\nim Forum stellen. Damit die Frage auch beantwortet \nwerden kann, sind ein paar Infos wichtig:\n\n * Möglichst genaue Beschreibung des Problems\n      (was geht nicht, welcher Film, ..)\n\n * Infos über das Betriebssystem und die Programmversion\n      ODER BESSER:\n      das generierte Logfile an den Post im Forum anhängen\n");
+        jTextArea1.setWrapStyleWord(true);
         jScrollPane1.setViewportView(jTextArea1);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
