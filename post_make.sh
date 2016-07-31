@@ -46,7 +46,7 @@ then
 # nur für den Entwicklungsrechner sinnvoll
 
 # Programmsets ins www-verzeichnis kopieren
-cp src/mediathek/file/*.xml /home/emil/daten/www/online/ZDFMediathekView/programmgruppen12/
+cp src/mediathek/file/*.xml /home/emil/daten/www/online/ZDFMediathekView/programmgruppen11/
 
 # Dateien ins share-Verzeichnis von VmWare kopieren
 rm -r /mnt/lager/virtualbox/share/aktMed/*
