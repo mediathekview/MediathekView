@@ -19,6 +19,8 @@ http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/
   fehlen, da Dateien aus dem MediathekView-Programmordner gelöscht oder verschoben 
   wurden, ->dann eine Neuinstallation.
 
+* Für Windows gibt noch weitere Infos im Ordner "Windows"
+
 ============================================================
 
 
@@ -38,8 +40,8 @@ In den Einstellungen->"Set bearbeiten" oder Einstellungen->"Set importieren"
 kann man das Update auch von Hand vornehmen.
 
 Geändert:
-Im Feld Programm darf NUR noch "PFAD/PROGRAMM" stehen, die Parameter müssen
-im Feld Schalter stehen. Z.B.:
+Im Feld "Programm" darf NUR noch "PFAD/PROGRAMM" stehen, die Parameter müssen
+im Feld "Schalter" stehen. Z.B.:
 
 Aufzeichnen mit dem VLC
 Programm: cmd

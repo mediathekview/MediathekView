@@ -23,7 +23,7 @@ ZIP-Datei ist quasi die Installation:
 - die heruntergeladene ZIP-Datei in einen Ordner entpacken
 - den entpackten Ordner ins Benutzerverzeichnis verschieben
 - den eben verschobenen MediathekView-Ordner öffnen, 
-	die Datei "MediathekView.exe" ansteuern und per Rechtsklick in "Senden an"
+	die Datei "MediathekView__Start.exe" ansteuern und per Rechtsklick in "Senden an"
 	eine Verknüpfung auf den Desktop legen. Von dort aus kann MediathekView 
 	dann jeweils gestartet werden.
 - die ZIP-Datei kann nach dem Entpacken gelöscht werden
@@ -44,7 +44,7 @@ http://sourceforge.net/p/zdfmediathk/wiki/Linux/#manuelle-installation
 ---------------------------------------------------------------------------
 Starten
 ---------------------------------------------------------
-Für Windows (MediathekView.exe), Linux (MediathekView.sh) sind eigene 
+Für Windows (MediathekView__Start.exe), Linux (MediathekView__Linux.sh) sind eigene 
 
 Startdateien enthalten, mit welchen MediathekView direkt gestartet werden kann. 
 
@@ -53,7 +53,7 @@ für OS X 10.6 liegt die Startdatei "MediathekView__Mac_Start.command" vor.
 
 
 Ansonsten kann man die Programmdatei auch so starten:
-Windows: Doppelklick auf "MediathekView-ipv4.exe" oder "MediathekView.jar"
+Windows: Doppelklick auf "MediathekView.jar"
 Linux (in der Konsole): java -jar MediathekView.jar
 OS X: Doppelklick auf die separate Startdatei "MediathekView__Mac_Start.command"
     oder via Terminalbefehl: java -jar MediathekView.jar
@@ -118,7 +118,7 @@ Menüs
 ======
 alt+d		Datei
 alt+f		Filme
-alt+w		Downloads
+alt+o		Downloads
 alt+b		Abos
 alt+a		Ansicht
 alt+h		Hilfe
@@ -204,7 +204,7 @@ Dann kann das Projekt übersetzt und gestartet werden.
 
 
 --------------------------------------------------------------------------------
-Die Windows-Startdatei "Starten_Windows.exe" wurde mit:
+Die Windows-Startdatei "MediathekView__Start.exe" wurde mit:
 ++ Launch4j ++ (Cross-platform Java application wrapper, 
 http://launch4j.sourceforge.net )
 erstellt. Das Config-File dafür ist "launch4j.xml"
