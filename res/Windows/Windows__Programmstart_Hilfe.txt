@@ -14,24 +14,20 @@ darüber starten.
    Damit werden keine Vorgaben für den Speicher
    den das Programm vom Betriebssystem bekommt, gemacht.
    
-* "MediathekView__ohne_Speicher__Portable.exe"
-   wie oben, aber als Ersatzt für die Version "Portable"
-   im Ordner "Portable"
-
 * "MediathekView__ipv4__Start.exe"
    kann unter Windows als Startdatei bei Problemen beim Laden der 
    Filmliste verwendet werden (Problem beim Erkennen des
    verwendeten Network Stacks: IPv4 vs. IPv6).
 
-* "MediathekView__ipv6__Start.exe"
-   kann unter Windows als Startdatei verwendet werden, wenn
-   beispielsweise ausschließlich IPv6 in der lokalen Infrastruktur
-   zugelassen ist.
-   
 * "MediathekView__Start.bat"
    das ist eine Startdatei mit der man eigene Vorgaben für den Start 
    des Programms machen kann. Beispiele sind darin enthalten.
 
+* "Eigene Startdatei erstellen .."
+   Mit dem Programm "launch4j" wurden die Startdateien erstellt.
+   Damit ist es leicht möglich, nach eigenen Vorgaben eine eigene zu erstellen.
+   Das Programm kann kostenlos da geladen werden:
+   http://launch4j.sourceforge.net/
 
 Erfahrungsgemäß können Startprobleme auch daraus resultieren:
 

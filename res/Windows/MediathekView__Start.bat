@@ -1,6 +1,6 @@
 :: Wenn man in den Einstellungen (nicht im Filter!!), das
 :: Laden der Filmliste auf die letzten 14 Tage reduziert,
-:: bekommt man eine Filmliste mit weniger al 18.000 
+:: bekommt man eine Filmliste mit weniger als 18.000 
 :: Einträgen. Damit läßt sich MV leicht mit nur wenig
 :: Speicher starten, und ohne Einschränkung anwenden.
 :: Nachdem die Einstellungen geändert wurden, und
@@ -20,6 +20,7 @@
 
 :: Start in einer extra Dos-Box die minimiert startet
 :: Die Parameter "-Xms128M -Xmx1G" helfen bei geringem Arbeitsspeicher. 
+
 start /min javaw -Xms128m -Xmx1024m -jar "C:\Users\PFAD\MediathekView.jar"
 
 
@@ -52,5 +53,19 @@ start /min javaw -Xms128m -Xmx1024m -jar "C:\Users\PFAD\MediathekView.jar"
 :: Verbindung zum Internet, wenn der verwendete Netzwerk-Stack von Java nicht automatisch 
 :: richtig erkannt wird, wodurch die Filmliste nicht geladen werden könnte.
 :: java -Djava.net.preferIPv4Stack=true -Xms128M -Xmx1G -jar "C:\Users\PFAD\MediathekView.jar"
-:: java -Djava.net.preferIPv6Addresses=true -jar "C:\Users\PFAD\MediathekView.jar"
+:: java -Djava.net.preferIPv6Addresses=true -Xms128M -Xmx1G -jar "C:\Users\PFAD\MediathekView.jar"
+
+
+:: -Dhttp.proxyHost=proxyserver
+:: -Dhttp.proxyPort=8080
+:: -Djava.net.preferIPv4Stack=true
+:: -Djava.net.preferIPv6Addresses=true
+:: -Xms128M
+:: -Xmx1G
+
+:: Weitere Infos können z.B. hier gefunden werden
+:: https://docs.oracle.com/javase/7/docs/api/java/net/doc-files/net-properties.html
+:: https://docs.oracle.com/javase/8/docs/technotes/tools/windows/java.html
+:: http://www.heise.de/developer/artikel/Feintuning-der-Speicherbelegung-von-Java-Programmen-mit-visualgc-227258.html
+
 

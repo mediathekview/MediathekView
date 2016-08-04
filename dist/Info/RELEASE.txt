@@ -18,6 +18,49 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+	# Version 12
+	AB JETZT --> Wechsel auf Java 8
+
+	- Im Tab Filme kann mit der rechte Maustaste die Untertitel-Url kopiert werden
+	- Im Tab Filme ist die Spalte Beschreibung jetzt mehrzeilig
+	- Es gibt neue Spalten in der Filmliste: HD (Film ist auch in HD verfügbar) und UT (Film hat einen Untertitel)
+				wird auch im Info-Fenster angezeigt
+	- Es gibt neue Spalten auch bei den Downloads: HD (Film ist auch in HD verfügbar) und UT (Film hat einen Untertitel)
+				(nicht gemeint: der Download ist auf HD gestellt!!)
+	- Beim Abschließen der Downloads wird jetzt in der Tabelle Download die tatsächliche Dateigröße eingetragen
+	- Beschreibung im Tab Filme/Download wird getrennt gespeichert ([un]sichtbar)
+	- Die Selektion der Tabelle kann man im Menü umkehren (bei Downloads/Abos)
+	- Nach dem Neuladen der Tabelle wird versucht, markierte Zeile wieder setzten (oder wenn nicht mehr vorhanden die nächste)
+
+	- Suffix der konvertierten Untertiteldateien: xx.xml.srt -> xx.srt
+	- Bei weiteren Sendern werden jetzt auch die Untertiteldateien ins srt-Format konvertiert
+	- Die Startdateien für Windows wurden neu erstellt, im Ordner "Windows" gibt es weitere Infos
+	- Startdialog (für den ersten Start zum Programmeinrichten) wurde überarbeitet
+				(mit Standardeinstellungen starten ist nur noch aktiv, wenn alle Programme (VLC, ..) gefunden werden)
+			
+	- Anordnung der Tabs (Oben/Links und die Anzeige eines Icon kann in den Einstellungen geändert werden)
+	- Statusbar wurde überarbeitet: Anzahl selektierter Zeilen, Anordnung der Infos
+	- Toolbar wurde überarbeitet
+	- In den Textfeldern ist jetzt copy-paste mit der Maus möglich
+	- Icons wurden überarbeitet
+	- im Ordner "Icons/Programm" gibts jetzt ein paar Iconset als "Muster" und ist gedacht als Start für eigene Versuche.
+				Die Icongröße ist ab jetzt im Programm hinterlegt und wird bei Bedarf angepasst. Heißt: die eigenen Icons
+				können auch eine abweichende Größe vom Original haben.
+
+	- Option beim Beenden: Noch nicht gestartete Downloads kann man nicht mehr starten lassen
+	- Dialog Fertiger Download, nochmal starten: Option Abbrechen
+	- Dialog AddAbo und keine Sets vorhanden: Möglichkeit Standardsets zu importieren
+	- In der Ausgabe der Konsole lässt sich besser verfolgen, wo das Programm Zeit verbraucht
+	- Der Ablauf beim Programmstart ist überarbeitet (läuft jetzt etwas "flüssiger")
+	- In der MedienDB können jetzt auch externe Medien eingelesen werden. Das Programm speichert diese und sie sind 
+				so auch ohne das Laufwerk in der DB vorhanden
+
+	- Filter Tage ist jetzt ein Slider, stufenlos von 0 (Alles) bis 30 Tage
+	- Filter Länge wird gespeichert
+	- Neuer Button im Filter: alles Löschen -> der gesamte Filter wird gelöscht
+
+ 
 	# Version 11
 	- Tab Download: neuer Menüpunkt: Filme als gesehen/ungesehen markieren
 	- Set: Neuer Schalter für Pfad, Dateiname: %a, %b
