@@ -49,13 +49,16 @@ import mediathek.gui.dialog.*;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.res.GetIcon;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.MVFont;
+import mediathek.tool.MVFrame;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
-import mediathek.tool.*;
+import mediathek.tool.MVMessageDialog;
 
 public class MediathekGui extends JFrame {
 
     private final Daten daten;
-    private final SpacerIcon spacerIcon = new SpacerIcon(30);
+//    private final SpacerIcon spacerIcon = new SpacerIcon(30);
     private final JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
     private final JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
     private final JPanel jPanelAnzahl = new JPanel();
@@ -707,10 +710,12 @@ public class MediathekGui extends JFrame {
 
     protected void initMenue() {
         setCbBeschreibung();
-        jMenuFilme.addMenuListener(new MenuLST(TABS.TAB_FILME));
-        jMenuDownload.addMenuListener(new MenuLST(TABS.TAB_DOWNLOADS));
-        jMenuAbos.addMenuListener(new MenuLST(TABS.TAB_ABOS));
-
+        if (Functions.getOs() != Functions.OperatingSystemType.MAC) {
+            // soll bei OS X nicht sein
+            jMenuFilme.addMenuListener(new MenuLST(TABS.TAB_FILME));
+            jMenuDownload.addMenuListener(new MenuLST(TABS.TAB_DOWNLOADS));
+            jMenuAbos.addMenuListener(new MenuLST(TABS.TAB_ABOS));
+        }
         //Icons setzen
         jMenuItemFilmlisteLaden.setIcon(Icons.ICON_MENUE_FILMLISTE_LADEN);
         jMenuItemEinstellungen.setIcon(Icons.ICON_MENUE_EINSTELLUNGEN);
