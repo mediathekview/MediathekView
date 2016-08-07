@@ -26,7 +26,6 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -73,16 +72,20 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
 
     public synchronized void cleanList() {
         new Thread(() -> {
+            Duration.counterStart("Clean MediaDB");
+            Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, ListeMediaDB.class.getSimpleName());
+            makeIndex = true;
+
             clean();
+
+            makeIndex = false;
+            Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
+            Duration.counterStop("Clean MediaDB");
         }).start();
     }
 
     private void clean() {
-        Duration.counterStart("Clean MediaDB");
         final HashSet<String> hash = new HashSet<>();
-        Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, ListeMediaDB.class.getSimpleName());
-        makeIndex = true;
-
         ListeMediaDB tmp = new ListeMediaDB();
         this.stream().forEach(m -> {
             final String s = m.getEqual();
@@ -99,15 +102,20 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         tmp.clear();
         hash.clear();
 
-        Daten.listeMediaDB.exportListe("");
-        makeIndex = false;
-        Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
-        Duration.counterStop("Clean MediaDB");
+        exportListe("");
     }
 
     public synchronized void delList(boolean ohneSave) {
         Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, ListeMediaDB.class.getSimpleName());
         makeIndex = true;
+
+        del(ohneSave);
+
+        makeIndex = false;
+        Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
+    }
+
+    private void del(boolean ohneSave) {
         if (ohneSave) {
             Iterator<DatenMediaDB> it = this.iterator();
             while (it.hasNext()) {
@@ -117,10 +125,8 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
             }
         } else {
             clear();
+            exportListe("");
         }
-        Daten.listeMediaDB.exportListe("");
-        makeIndex = false;
-        Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
     }
 
     public synchronized void createMediaDB(String pfad) {
@@ -136,7 +142,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
 
         makeIndex = true;
         if (pfad.isEmpty()) {
-            Daten.listeMediaDB.delList(true /*ohneSave*/);
+            del(true /*ohneSave*/);
         }
         new Thread(new Index(pfad)).start();
     }
@@ -208,19 +214,18 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         SysMsg.sysMsg("   --> geschrieben!");
     }
 
-    private boolean exists(DatenMediaDB mdb) {
-        boolean ret = false;
-        try {
-            DatenMediaDB get = this.stream().filter(media -> media.equal(mdb)).findFirst().get();
-            if (get != null) {
-                ret = true;
-            }
-        } catch (NoSuchElementException ignore) {
-            ret = false;
-        }
-        return ret;
-    }
-
+//    private boolean exists(DatenMediaDB mdb) {
+//        boolean ret = false;
+//        try {
+//            DatenMediaDB get = this.stream().filter(media -> media.equal(mdb)).findFirst().get();
+//            if (get != null) {
+//                ret = true;
+//            }
+//        } catch (NoSuchElementException ignore) {
+//            ret = false;
+//        }
+//        return ret;
+//    }
     private class Index implements Runnable {
 
         String pfad = "";
