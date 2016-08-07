@@ -19,9 +19,6 @@
  */
 package mediathek.gui.dialog;
 
-import mediathek.config.MVConfig;
-import mSearch.tool.Listener;
-import mSearch.tool.FilenameUtils;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -36,10 +33,13 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import mSearch.tool.FilenameUtils;
+import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
-import mediathek.config.Icons;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
+import mediathek.config.MVConfig;
 import mediathek.daten.DatenMediaDB;
 import mediathek.file.GetFile;
 import mediathek.tool.*;
@@ -65,7 +65,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
             @Override
             public void ping() {
                 // neue DB suchen
-                setIndex(false);
+                makeIndex(true);
                 jLabelSum.setText("0");
             }
         });
@@ -73,7 +73,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
             @Override
             public void ping() {
                 // neue DB liegt vor
-                setIndex(true);
+                makeIndex(false);
                 jLabelSum.setText(Daten.listeMediaDB.size() + "");
                 searchFilmInDb();
             }
@@ -155,11 +155,11 @@ public class DialogMediaDB extends javax.swing.JDialog {
         jLabelSizeFound.setText(model.getRowCount() + "");
     }
 
-    private void setIndex(boolean noIndex) {
-        progress.setVisible(!noIndex);
-        jTextFieldSearch.setEnabled(noIndex);
-        jButtonSearch.setEnabled(noIndex);
-        jButtonIndex.setEnabled(noIndex);
+    private void makeIndex(boolean makeIndex) {
+        progress.setVisible(makeIndex);
+        jTextFieldSearch.setEnabled(!makeIndex);
+        jButtonSearch.setEnabled(!makeIndex);
+        jButtonIndex.setEnabled(!makeIndex);
     }
 
     private void zielordnerOeffnen() {
