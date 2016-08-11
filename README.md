@@ -1,5 +1,5 @@
 # MediathekView
-Das Programm **MediathekView** durchsucht die Mediatheken verschiedener überwiegend deutschsprachiger öffentlich-rechtlicher Sender, lädt Beiträge daraus herunter oder spielt diese ab (mit [VLC Media Player](http://videolan.org/vlc/) oder mit einem Programm eigener Wahl). Es können auch Sendereihen/Serien abonniert werden.
+Das Programm **MediathekView** durchsucht die Mediatheken verschiedener überwiegend deutschsprachiger öffentlich-rechtlicher Sender, lädt Beiträge daraus herunter oder spielt diese ab (mit [VLC Media Player](https://videolan.org/vlc/) oder mit einem Programm eigener Wahl). Es können auch Sendereihen/Serien abonniert werden.
 
 ## Sender
 Derzeit werden die Mediatheken der folgenden Sender unterstützt:
@@ -24,16 +24,16 @@ Derzeit werden die Mediatheken der folgenden Sender unterstützt:
 
 # Sourceforge
 
-- [Website](http://zdfmediathk.sourceforge.net)
-- [Screenshots](http://zdfmediathk.sourceforge.net/screenshots.html)
-- [Download](http://sourceforge.net/projects/zdfmediathk/) Installationspakete
+- [Website](https://zdfmediathk.sourceforge.net)
+- [Screenshots](https://zdfmediathk.sourceforge.net/screenshots.html)
+- [Download](https://sourceforge.net/projects/zdfmediathk/) Installationspakete
 
 # License
 
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
- Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
+ Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
  Everyone is permitted to copy and distribute verbatim copies
  of this license document, but changing it is not allowed.
 
