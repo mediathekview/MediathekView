@@ -53,8 +53,6 @@ public class ProgStart {
             SysMsg.sysMsg("  Anzahl Filme: " + Daten.listeFilme.size());
             SysMsg.sysMsg("  Anzahl Neue: " + Daten.listeFilme.countNewFilms());
 
-            MVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
-
             if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO && Daten.listeFilme.isTooOld()) {
                 SysMsg.sysMsg("Filmliste zu alt, neue Filmliste laden");
                 Daten.filmeLaden.loadFilmlist("", true);
