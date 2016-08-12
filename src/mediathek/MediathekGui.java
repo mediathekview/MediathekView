@@ -458,6 +458,7 @@ public class MediathekGui extends JFrame {
         }
         initFrames();
         jTabbedPane.addChangeListener(l -> {
+            designTabs(); //damit das sel. Tab das richtige Icon bekommt
             if (!geklickt) {
                 geklickt = true;
                 Duration.counterStop("***Programmstart***");
@@ -561,7 +562,7 @@ public class MediathekGui extends JFrame {
         } else {
             jTabbedPane.setTabPlacement(JTabbedPane.LEFT);
         }
-        jTabbedPane.updateUI();
+//            jTabbedPane.updateUI();
         for (int i = 0; i < jTabbedPane.getTabCount(); ++i) {
             Component c = jTabbedPane.getComponentAt(i);
             ImageIcon ic = null;
@@ -609,7 +610,7 @@ public class MediathekGui extends JFrame {
             }
         }
 
-        jTabbedPane.updateUI();
+//            jTabbedPane.updateUI();
     }
 
     private JLabel makeLable(String text, ImageIcon ic) {
