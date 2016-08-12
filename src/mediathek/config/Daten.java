@@ -19,8 +19,6 @@
  */
 package mediathek.config;
 
-import mediathek.filmlisten.FilmeLaden;
-import mediathek.config.Konstanten;
 import com.jidesoft.utils.SystemInfo;
 import java.io.File;
 import java.io.IOException;
@@ -42,14 +40,21 @@ import mSearch.filmlisten.WriteFilmlistJson;
 import static mSearch.tool.Functions.getPathJar;
 import mSearch.tool.*;
 import mediathek.MediathekGui;
-import mediathek.controller.*;
+import mediathek.controller.IoXmlLesen;
+import mediathek.controller.IoXmlSchreiben;
+import mediathek.controller.MVBandwidthTokenBucket;
+import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
+import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.*;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.MVFilmInfo;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
-import mediathek.tool.*;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.GuiFunktionenProgramme;
+import mediathek.tool.MVFont;
+import mediathek.tool.MVMessageDialog;
 
 public class Daten {
 
@@ -341,6 +346,7 @@ public class Daten {
         }
 
         SysMsg.sysMsg("Konfig wurde gelesen!");
+        MVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
         mVColor.load(); // Farben einrichten
         MVFont.initFont(); // Fonts einrichten
 
