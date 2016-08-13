@@ -76,7 +76,7 @@ public class ProgrammUpdateSuchen {
                     MVConfig.add(MVConfig.SYSTEM_BUILD_NR, MVFunctionSys.getBuildNr());
                     MVConfig.add(MVConfig.SYSTEM_UPDATE_DATUM, new SimpleDateFormat("yyyyMMdd").format(new Date()));
 
-                    if (checkObNeueVersion(version, Konstanten.VERSION)) {
+                    if (checkObNeueVersion(version, Const.VERSION)) {
                         neueVersion = true;
                         // DialogHinweisUpdate(java.awt.Frame parent, boolean modal, String ttext, String dialogTitel, Daten ddaten) {
                         new DialogHinweisUpdate(null, true, "Eine neue Version liegt vor",

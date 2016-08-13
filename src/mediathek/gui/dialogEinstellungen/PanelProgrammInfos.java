@@ -25,10 +25,11 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import javax.swing.JFrame;
 import javax.swing.Timer;
+import mSearch.Const;
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.MVFunctionSys;
-import mediathek.config.Konstanten;
 import mediathek.tool.UrlHyperlinkAction;
 
 public class PanelProgrammInfos extends PanelVorlage {
@@ -40,7 +41,7 @@ public class PanelProgrammInfos extends PanelVorlage {
         try {
             lblProgrammversion.setText(MVFunctionSys.getProgVersionString() + " vom: " + MVFunctionSys.getCompileDate());
         } catch (Exception ignored) {
-            lblProgrammversion.setText(Konstanten.VERSION);
+            lblProgrammversion.setText(Const.VERSION);
         }
 
         lblProgramPath.setText(MVFunctionSys.getPathJar());

@@ -31,6 +31,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import mSearch.Const;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Functions.OperatingSystemType;
@@ -359,7 +360,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void setOrgTitel() {
-        this.setTitle(Konstanten.PROGRAMMNAME + " " + Konstanten.VERSION);
+        this.setTitle(Konstanten.PROGRAMMNAME + " " + Const.VERSION);
     }
 
     private void setSize() {
