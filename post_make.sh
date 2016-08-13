@@ -31,17 +31,15 @@ cp -r res/* build
 
 # release
 ver=$(cat src/version.properties | grep VERSION | sed 's#VERSION=##g')
-nr=$(cat src/version.properties | grep BUILD | sed 's#BUILD=##g')
+release=$(cat src/version.properties | grep BUILD | sed 's#BUILD=##g')
 buildDate=$(date +%d.%m.%Y )
 dateToday=$(date +%Y.%m.%d )
 
-release=$ver-$nr
 fileName=MediathekView_${ver}__${dateToday}.zip
 pathName=MediathekView_${ver}
 
 echo ===========================
 echo Version: $ver
-echo Nr: $nr
 echo Datum: $buildDate
 echo Release: $release
 echo Filename: $fileName
