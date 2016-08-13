@@ -71,15 +71,19 @@
     nbproject/build-impl.xml file. 
 
     -->
-	<target name="-pre-compile" >
-		<propertyfile file="${src.dir}\version.properties">
-			<entry key="VERSION" value="13" type="int" />
-            <entry key="BUILD" value="1" type="int" operation="+"/>
-			<entry key="DATE" type="date" pattern="dd.MM.yyyy / HH:mm:ss" value="now"/>
-		</propertyfile>
-	</target>
-	<target name="-post-jar">
-		<exec executable="./post_make.sh">
-		</exec>
-	</target>
+    <target name="-pre-compile" >
+        <exec executable="./pre_make.sh">
+        </exec>
+        <!--
+        <propertyfile file="${src.dir}\version.properties">
+            <entry key="VERSION" value="13" type="string" />
+            <entry key="BUILD" value="1" type="int" operation="+" pattern="000"/>
+            <entry key="DATE" type="date" pattern="dd.MM.yyyy / HH:mm:ss" value="now"/>
+        </propertyfile>
+        -->
+    </target>
+    <target name="-post-jar">
+        <exec executable="./post_make.sh">
+        </exec>
+    </target>
 </project>

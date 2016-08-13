@@ -18,7 +18,6 @@
  */
 package mediathek.gui;
 
-import mediathek.config.Konstanten;
 import com.jidesoft.swing.MarqueePane;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -32,8 +31,13 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import mSearch.Const;
 import mediathek.config.Daten;
-import mediathek.tool.*;
+import mediathek.config.Konstanten;
+import mediathek.tool.BeobMausUrl;
+import mediathek.tool.EscBeenden;
+import mediathek.tool.MVFunctionSys;
+import mediathek.tool.UrlHyperlinkAction;
 import org.jdesktop.swingx.JXHyperlink;
 
 @SuppressWarnings("serial")
@@ -51,7 +55,7 @@ public class AboutDialog extends JDialog {
 
     private void setupVersionString() {
         String strVersion = "Version ";
-        strVersion += Konstanten.VERSION;
+        strVersion += Const.VERSION;
         strVersion += " (";
         strVersion += MVFunctionSys.getBuildNr();
         strVersion += ")";
