@@ -73,7 +73,8 @@
     -->
 	<target name="-pre-compile" >
 		<propertyfile file="${src.dir}\version.properties">
-			<entry key="BUILD" value="1" type="int" operation="+"/>
+			<entry key="VERSION" value="13" type="int" />
+            <entry key="BUILD" value="1" type="int" operation="+"/>
 			<entry key="DATE" type="date" pattern="dd.MM.yyyy / HH:mm:ss" value="now"/>
 		</propertyfile>
 	</target>

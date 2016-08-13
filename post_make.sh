@@ -1,16 +1,21 @@
 #!/bin/sh
 
+if [ $(hostname) != "beta" ] && [ $(hostname) != "lt" ]
+then
+    # nur für den Entwicklungsrechner sinnvoll
+    echo nix zu tun
+    exit
+fi
+
+
 dir=`dirname "$0"`
 cd "$dir"
 
-if [ $(hostname) = "beta" ] || [ $(hostname) = "lt" ]
-then
-# nur für den Entwicklungsrechner sinnvoll
-
 # Icons ins res kopieren
-cp src/mediathek/res/programm/* res/Icons/Programm/Version-12
+cp src/mediathek/res/programm/* res/Icons/Programm/Version-13
 
 # Dateien ins dist-Verzeichnis kopieren
+rm dist/README.TXT  #Aufräumen
 cp -r res/* dist
 
 # libs-Verzeichnis füllen
@@ -23,34 +28,53 @@ rm dist/lib/orange-extensions-1.3.0.jar
 # für Netbeans nochmal
 cp -r res/* build
 
-# Aufräumen
-rm dist/README.TXT
 
 # release
-relNr=$(cat src/version.properties | grep BUILD | sed 's#BUILD=##g')
-datum=$(date +%d.%m.%Y )
-echo Datum: $datum >> dist/Info/$relNr.build
-echo MediathekView Buildnummer: $relNr >> dist/Info/$relNr.build
+ver=$(cat src/version.properties | grep VERSION | sed 's#VERSION=##g')
+nr=$(cat src/version.properties | grep BUILD | sed 's#BUILD=##g')
+buildDate=$(date +%d.%m.%Y )
+dateToday=$(date +%Y.%m.%d )
+
+release=$ver-$nr
+fileName=MediathekView_${ver}__${dateToday}.zip
+pathName=MediathekView_${ver}
+
+echo ===========================
+echo Version: $ver
+echo Nr: $nr
+echo Datum: $buildDate
+echo Release: $release
+echo Filename: $fileName
+echo Pathname: $pathName
+echo ===========================
+
+echo Datum: $buildDate >> dist/Info/$release.build
+echo Version: $ver >> dist/Info/$release.build
+echo Buildnummer: $release >> dist/Info/$release.build
 
 # zip erstellen
-cd dist/
-datum=$(date +%Y.%m.%d )
-zip -r MediathekView_12_$datum.zip .
-cd ..
 
-fi
+mv dist $pathName
+zip -r $fileName $pathName  > /dev/null
+mv $pathName dist
+mv $fileName dist
+
+
 
 
 if [ $(hostname) = "beta" ]
 then
 # nur für den Entwicklungsrechner sinnvoll
 
-# Programmsets ins www-verzeichnis kopieren
-cp src/mediathek/file/*.xml /home/emil/daten/www/online/ZDFMediathekView/programmgruppen11/
+    # Programmsets ins www-verzeichnis kopieren
+    cp src/mediathek/file/*.xml /home/emil/daten/www/online/ZDFMediathekView/programmgruppen11/
 
-# Dateien ins share-Verzeichnis von VmWare kopieren
-rm -r /mnt/lager/virtualbox/share/aktMed/*
-cp -r dist/* /mnt/lager/virtualbox/share/aktMed
+    # Dateien ins share-Verzeichnis von VmWare kopieren
+    rm -r /mnt/lager/virtualbox/share/aktMed/*
+    cp -r dist/* /mnt/lager/virtualbox/share/aktMed
+
 fi
 
 cd $OLDPWD
+
+
