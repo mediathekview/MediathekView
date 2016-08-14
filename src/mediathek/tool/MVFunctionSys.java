@@ -21,7 +21,6 @@ package mediathek.tool;
 
 import java.io.File;
 import java.security.CodeSource;
-import java.util.ResourceBundle;
 import mSearch.Const;
 import mSearch.tool.Functions;
 import mSearch.tool.Log;
@@ -84,29 +83,29 @@ public class MVFunctionSys {
         return Konstanten.PROGRAMMNAME + " " + Const.VERSION;
     }
 
-    public static String[] getJavaVersion() {
-        String[] ret = new String[4];
+//    public static String[] getJavaVersion() {
+//        String[] ret = new String[4];
+//
+//        ret[0] = "Vendor: " + System.getProperty("java.vendor");
+//        ret[1] = "VMname: " + System.getProperty("java.vm.name");
+//        ret[2] = "Version: " + System.getProperty("java.version");
+//        ret[3] = "Runtimeversion: " + System.getProperty("java.runtime.version");
+//        return ret;
+//    }
 
-        ret[0] = "Vendor: " + System.getProperty("java.vendor");
-        ret[1] = "VMname: " + System.getProperty("java.vm.name");
-        ret[2] = "Version: " + System.getProperty("java.version");
-        ret[3] = "Runtimeversion: " + System.getProperty("java.runtime.version");
-        return ret;
-    }
-
-    public static String getCompileDate() {
-        final ResourceBundle rb;
-        String propToken = "DATE";
-        String msg = "";
-        try {
-            ResourceBundle.clearCache();
-            rb = ResourceBundle.getBundle("version");
-            msg = rb.getString(propToken);
-        } catch (Exception e) {
-            Log.errorLog(807293847, e);
-        }
-        return msg;
-    }
+//    public static String getCompileDate() {
+//        final ResourceBundle rb;
+//        String propToken = "DATE";
+//        String msg = "";
+//        try {
+//            ResourceBundle.clearCache();
+//            rb = ResourceBundle.getBundle("version");
+//            msg = rb.getString(propToken);
+//        } catch (Exception e) {
+//            Log.errorLog(807293847, e);
+//        }
+//        return msg;
+//    }
 
 //    public static String getBuildNr() {
 //        final ResourceBundle rb;
