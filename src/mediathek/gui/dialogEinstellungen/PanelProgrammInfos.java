@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 import mSearch.Const;
+import mSearch.tool.Functions;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.gui.PanelVorlage;
@@ -39,7 +40,7 @@ public class PanelProgrammInfos extends PanelVorlage {
         initComponents();
 
         try {
-            lblProgrammversion.setText(MVFunctionSys.getProgVersionString() + " vom: " + MVFunctionSys.getCompileDate());
+            lblProgrammversion.setText(MVFunctionSys.getProgVersionString() + " vom: " + Functions.getCompileDate());
         } catch (Exception ignored) {
             lblProgrammversion.setText(Const.VERSION);
         }
