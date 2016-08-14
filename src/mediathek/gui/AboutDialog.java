@@ -32,11 +32,11 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import mSearch.Const;
+import mSearch.tool.Functions;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.EscBeenden;
-import mediathek.tool.MVFunctionSys;
 import mediathek.tool.UrlHyperlinkAction;
 import org.jdesktop.swingx.JXHyperlink;
 
@@ -57,7 +57,7 @@ public class AboutDialog extends JDialog {
         String strVersion = "Version ";
         strVersion += Const.VERSION;
         strVersion += " (";
-        strVersion += MVFunctionSys.getBuildNr();
+        strVersion += Functions.getBuildNr();
         strVersion += ")";
 
         lblVersion.setText(strVersion);

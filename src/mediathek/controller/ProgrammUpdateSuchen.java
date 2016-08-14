@@ -32,12 +32,12 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import mSearch.Const;
+import mSearch.tool.Functions;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogHinweisUpdate;
-import mediathek.tool.MVFunctionSys;
 
 public class ProgrammUpdateSuchen {
 
@@ -73,7 +73,7 @@ public class ProgrammUpdateSuchen {
                 if (version.equals("")) {
                     new DialogHinweisUpdate(null, true, "Fehler bei der Versionsprüfung!", "Es ist ein Fehler aufgetreten!" + "\n\n" + "").setVisible(true);
                 } else {
-                    MVConfig.add(MVConfig.SYSTEM_BUILD_NR, MVFunctionSys.getBuildNr());
+                    MVConfig.add(MVConfig.SYSTEM_BUILD_NR, Functions.getBuildNr());
                     MVConfig.add(MVConfig.SYSTEM_UPDATE_DATUM, new SimpleDateFormat("yyyyMMdd").format(new Date()));
 
                     if (checkObNeueVersion(version, Const.VERSION)) {

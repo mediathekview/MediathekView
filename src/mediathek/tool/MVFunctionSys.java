@@ -23,6 +23,7 @@ import java.io.File;
 import java.security.CodeSource;
 import java.util.ResourceBundle;
 import mSearch.Const;
+import mSearch.tool.Functions;
 import mSearch.tool.Log;
 import static mSearch.tool.Log.LILNE;
 import mSearch.tool.SysMsg;
@@ -76,7 +77,7 @@ public class MVFunctionSys {
     }
 
     public static String getProgVersionString() {
-        return Konstanten.PROGRAMMNAME + " " + Const.VERSION + "  [Buildnummer: " + getBuildNr() + "]";
+        return Konstanten.PROGRAMMNAME + " " + Const.VERSION + "  [Buildnummer: " + Functions.getBuildNr() + "]";
     }
 
     public static String getProgName() {
@@ -107,18 +108,17 @@ public class MVFunctionSys {
         return msg;
     }
 
-    public static String getBuildNr() {
-        final ResourceBundle rb;
-        String propToken = "BUILD";
-        String msg = "";
-        try {
-            ResourceBundle.clearCache();
-            rb = ResourceBundle.getBundle("version");
-            msg = rb.getString(propToken);
-        } catch (Exception e) {
-            Log.errorLog(134679898, e);
-        }
-        return msg;
-    }
-
+//    public static String getBuildNr() {
+//        final ResourceBundle rb;
+//        String propToken = "BUILD";
+//        String msg = "";
+//        try {
+//            ResourceBundle.clearCache();
+//            rb = ResourceBundle.getBundle("version");
+//            msg = rb.getString(propToken);
+//        } catch (Exception e) {
+//            Log.errorLog(134679898, e);
+//        }
+//        return msg;
+//    }
 }

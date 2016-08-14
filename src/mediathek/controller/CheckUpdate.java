@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import mSearch.tool.Functions;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
@@ -33,7 +34,6 @@ import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.dialog.DialogNewSet;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.MVFunctionSys;
 
 public class CheckUpdate {
 
@@ -60,7 +60,7 @@ public class CheckUpdate {
 //            if (!MVConfig.get(MVConfig.SYSTEM_BUILD_NR).equals(MVFunctionSys.getBuildNr())) {
 //                Log.sysLog("BuildNr geändert, von: " + MVConfig.get(MVConfig.SYSTEM_BUILD_NR) + " auf: " + MVFunctionSys.getBuildNr());
 //            }
-            if (MVConfig.get(MVConfig.SYSTEM_BUILD_NR).equals(MVFunctionSys.getBuildNr())
+            if (MVConfig.get(MVConfig.SYSTEM_BUILD_NR).equals(Functions.getBuildNr())
                     && MVConfig.get(MVConfig.SYSTEM_UPDATE_DATUM).equals(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
                 // keine neue Version und heute schon gemacht
                 return;
