@@ -28,12 +28,12 @@ import java.net.URISyntaxException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import mSearch.Const;
+import mSearch.tool.Functions;
 import static mSearch.tool.Functions.getPathJar;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.res.GetIcon;
 import mediathek.tool.BeobMausUrl;
-import mediathek.tool.MVFunctionSys;
 import mediathek.tool.UrlHyperlinkAction;
 
 public class AboutPanel extends javax.swing.JPanel {
@@ -180,7 +180,7 @@ public class AboutPanel extends javax.swing.JPanel {
         lblProgramPath.setForeground(greyColor);
 
         try {
-            lblVersion.setText("Version " + Const.VERSION + " (" + MVFunctionSys.getBuildNr() + ")");
+            lblVersion.setText("Version " + Const.VERSION + " (" + Functions.getBuildNr() + ")");
 
             lblSettingsFilePath.setText(Daten.getMediathekXmlFilePath().toAbsolutePath().toString());
             lblFilmlistPath.setText(Daten.getDateiFilmliste());

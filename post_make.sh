@@ -51,13 +51,10 @@ echo Version: $ver >> dist/Info/$release.build
 echo Buildnummer: $release >> dist/Info/$release.build
 
 # zip erstellen
-
 mv dist $pathName
 zip -r $fileName $pathName  > /dev/null
 mv $pathName dist
 mv $fileName dist
-
-
 
 
 if [ $(hostname) = "beta" ]
