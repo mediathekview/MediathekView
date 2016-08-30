@@ -50,7 +50,23 @@ echo Datum: $buildDate >> dist/Info/$release.build
 echo Version: $ver >> dist/Info/$release.build
 echo Buildnummer: $release >> dist/Info/$release.build
 
-# zip erstellen
+
+echo ===========================
+echo Hash erstellen
+echo ===========================
+cd dist
+find . -type f -exec md5sum {} > /tmp/MD5SUM \;
+find . -type f -exec sha1sum {} > /tmp/SHA1SUM \;
+mv /tmp/MD5SUM ./Info/MD5SUM 
+mv /tmp/SHA1SUM ./Info/SHA1SUM
+#sed -i 's:\./:../:g' ./Info/MD5SUM  
+#sed -i 's:\./:../:g' ./Info/SHA1SUM  
+cd ..
+
+
+echo ===========================
+echo Zip erstellen
+echo ===========================
 mv dist $pathName
 zip -r $fileName $pathName  > /dev/null
 mv $pathName dist
