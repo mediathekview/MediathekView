@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.tool.Duration;
@@ -128,28 +127,15 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         if (listeFilme != null) {
             listeRet.setMeta(listeFilme);
 
-//            Duration.counterStart("Black-alt");
-//            listeFilme.stream().filter(this::checkFilm).forEach(filmEntry -> {
-//                listeRet.add(filmEntry);
-//                if (filmEntry.isNew()) {
-//                    listeRet.neueFilme = true;
-//                }
-//            });
-//            Duration.counterStop("Black-alt");
-//            listeRet.clear();
-
-            this.parallelStream().forEach(entry -> {
+            this.stream().forEach(entry -> {
                 entry.toLower();
                 entry.hasPattern();
             });
             listeRet.neueFilme = false;
 
-//            Duration.counterStart("Black-neu parallel");
-
             final List<DatenFilm> col = listeFilme.parallelStream().filter(this::checkFilm_).collect(Collectors.toList());
             col.parallelStream().filter(DatenFilm::isNew).findFirst().ifPresent(ignored -> listeRet.neueFilme = true);
             listeRet.addAll(col);
-//            Duration.counterStop("Black-neu parallel");
             col.clear();
 
             // Array mit Sendernamen/Themen füllen
