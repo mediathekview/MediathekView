@@ -19,8 +19,6 @@
  */
 package mediathek.gui;
 
-import mediathek.tool.MVFilmSize;
-import mediathek.config.MVConfig;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.BorderLayout;
 import java.awt.Point;
@@ -35,12 +33,16 @@ import javax.swing.*;
 import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.tool.*;
+import mSearch.tool.Datum;
+import mSearch.tool.Listener;
+import mSearch.tool.Log;
+import mSearch.tool.SysMsg;
 import mediathek.MediathekGui;
+import mediathek.config.Daten;
 import mediathek.config.Icons;
+import mediathek.config.MVConfig;
 import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
-import mediathek.config.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
@@ -198,6 +200,14 @@ public class GuiDownloads extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 downloadAendern();
+            }
+        });
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "loeschen");
+        am.put("loeschen", new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                downloadLoeschen(true);
             }
         });
 

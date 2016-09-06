@@ -29,10 +29,10 @@ import java.awt.event.MouseEvent;
 import javax.swing.*;
 import mSearch.tool.Datum;
 import mSearch.tool.Listener;
-import mediathek.config.MVConfig;
 import mediathek.MediathekGui;
-import mediathek.config.Icons;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
+import mediathek.config.MVConfig;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.tool.*;
@@ -136,6 +136,15 @@ public class GuiAbo extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 aendern();
+            }
+        });
+        //löschen
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "loeschen");
+        am.put("loeschen", new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                aboLoeschen();
             }
         });
     }
