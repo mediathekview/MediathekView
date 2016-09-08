@@ -21,11 +21,15 @@ package mediathek.gui.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.Timer;
 import mediathek.config.Icons;
+import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscBeenden;
 
 public class MeldungDownloadfehler extends javax.swing.JDialog {
+
+    private Timer countdownTimer = null;
 
     /**
      *
@@ -51,7 +55,7 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
         jTextArea1.setText(text);
         jTextFieldTitel.setText(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
         jButtonOk.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 beenden();
@@ -59,9 +63,15 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
         });
         jLabelIcon.setText("");
         jLabelIcon.setIcon(Icons.ICON_ACHTUNG_32);
+
+        //start the countdown...
+        countdownTimer = new Timer(0, new CountdownAction());
+        countdownTimer.setRepeats(true);
+        countdownTimer.start();
+
         pack();
     }
-    
+
     private void beenden() {
         this.dispose();
     }
@@ -81,6 +91,7 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         jTextFieldTitel = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
+        jLabelTime = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -100,6 +111,8 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
+        jLabelTime.setText("0 s");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -112,7 +125,8 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabelTime)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonOk))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
@@ -134,7 +148,9 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButtonOk))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jLabelTime)
+                            .addComponent(jButtonOk)))
                     .addComponent(jLabelIcon))
                 .addContainerGap())
         );
@@ -145,10 +161,31 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
     private javax.swing.JButton jButtonOk;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabelIcon;
+    private javax.swing.JLabel jLabelTime;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextFieldTitel;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * Implements the countdown based on Swing Timer for automatic placement on EDT.
+     */
+    private class CountdownAction implements ActionListener {
+
+        private int w = MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN, MVConfig.PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN);
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (w > 0) {
+                jLabelTime.setText("noch " + w + "s anzeigen");
+                if (countdownTimer != null) {
+                    countdownTimer.setDelay(1000);
+                }
+            } else {
+                beenden();
+            }
+            w--;
+        }
+    }
 }

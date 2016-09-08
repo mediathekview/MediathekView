@@ -27,8 +27,15 @@ public class MVConfig {
 
     //Programmparameter fürs Konfigfile
     public static final int PARAMETER_TIMEOUT_SEKUNDEN = 250; //250 Sekunden, wie bei Firefox
-    public static final int PARAMETER_DOWNLOAD_MAX_RESTART = 2; // max. Startversuche für fehlgeschlagene Downloads
+    public static final int PARAMETER_DOWNLOAD_MAX_RESTART = 5; // max. Startversuche für fehlgeschlagene Downloads
     public static final int PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN = 100; //Beim Dialog "Download weiterführen" wird in dieser Zeit der Download weitergeführt
+    public static final int PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN = 100; //Downloadfehlermeldung wird xx Sedunden lang angezeigt
+
+    //Programmparameter
+    public static final String SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN = "__system-parameter__download-timeout-sekunden";
+    public static final String SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART = "__system-parameter__download-max-restart";
+    public static final String SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN = "__system-parameter__download-weiterfuehren-sekunden";
+    public static final String SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN = "__system-parameter__download-fehlermeldung-sekunden";
 
     public final static String TRENNER = "#=#";
 
@@ -179,11 +186,6 @@ public class MVConfig {
     public static final String SYSTEM_MEDIA_DB_SUFFIX = "Media_DB_Suffix";
     public static final String SYSTEM_MEDIA_DB_SUFFIX_OHNE = "Media_DB_ohne-Suffix";
     public static final String SYSTEM_MEDIA_DB_EXPORT_DATEI = "Media_DB_export-datei";
-
-    //Programmparameter
-    public static final String SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN = "__system-parameter__download-timeout-sekunden";
-    public static final String SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART = "__system-parameter__download-max-restart";
-    public static final String SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN = "__system-parameter__download-weiterfuehren-sekunden";
 
     private static final HashMap<String, String> hashmap = new HashMap<>();
 
