@@ -168,9 +168,9 @@ public class StarterClass {
         SysMsg.sysMsg(text.toArray(new String[text.size()]));
     }
 
-    private void reStartmeldung(DatenDownload datenDownload, Start start) {
+    private void reStartmeldung(DatenDownload datenDownload) {
         ArrayList<String> text = new ArrayList<>();
-        text.add("Fehlerhaften Download neu starten - Restart (Summe Starts: " + start.countRestarted + ")");
+        text.add("Fehlerhaften Download neu starten - Restart (Summe Starts: " + datenDownload.start.countRestarted + ")");
         text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
         SysMsg.sysMsg(text.toArray(new String[text.size()]));
@@ -399,7 +399,7 @@ public class StarterClass {
                 // dann versuchen einen Fehlerhaften nochmal zu starten
                 download = Daten.listeDownloads.getRestartDownload();
                 if (download != null) {
-                    reStartmeldung(download, download.start);
+                    reStartmeldung(download);
                 }
             }
             return download;

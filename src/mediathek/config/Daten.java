@@ -367,6 +367,7 @@ public class Daten {
         Log.sysLog("Download-Timeout [s]: " + MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN));
         Log.sysLog("max. Download-Restart: " + MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART, MVConfig.PARAMETER_DOWNLOAD_MAX_RESTART));
         Log.sysLog("Download weiterführen in [s]: " + MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN, MVConfig.PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN));
+        Log.sysLog("Download Fehlermeldung anzeigen [s]: " + MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN, MVConfig.PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN));
         Log.sysLog("=======================================");
         Log.sysLog("");
     }
