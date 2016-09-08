@@ -23,7 +23,6 @@ import mediathek.tool.MVFunctionSys;
 
 public class Konstanten {
 
-  
     public static final String PROGRAMMNAME = "MediathekView";
     public static final String USER_AGENT_DEFAULT = MVFunctionSys.getProgVersionString();
     public static final String CONFIG_FILE = "mediathek.xml";
@@ -57,7 +56,6 @@ public class Konstanten {
     public static final int MIN_DATEI_GROESSE_FILM = 256 * 1000; //minimale Größe (256 kB) eines Films um nicht als Fehler zu gelten
     public static final String XML_START = "Mediathek";
     public static final int MAX_SENDER_FILME_LADEN = 2; //es können maximal soviele Filme eines Senders/Servers gleichzeitig geladen werden
-    public static final int DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN = 100; //Beim Dialog "Download weiterführen" wird in dieser Zeit der Download weitergeführt
 
     public static final int MAX_PFADE_DIALOG_DOWNLOAD = 15;
     public static final String GUIFILME_DIVIDER_LOCATION = "260";

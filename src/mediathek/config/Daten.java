@@ -343,7 +343,7 @@ public class Daten {
             return false;
         }
         SysMsg.sysMsg("Konfig wurde gelesen!");
-        loadSystemConfig();
+        loadSystemParameter();
         MVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
         mVColor.load(); // Farben einrichten
         MVFont.initFont(); // Fonts einrichten
@@ -353,26 +353,20 @@ public class Daten {
         return true;
     }
 
-    private void loadSystemConfig() {
+    private void loadSystemParameter() {
         // download-timeout Wert zwischen 5s und 1000s möglich
-        if (MVConfig.get(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN).isEmpty()) {
-            MVConfig.add(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, Parameter.TIMEOUT_SEKUNDEN + "");
+        int timeout = MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN);
+        if (timeout < 5 || timeout > 1000) {
+            MVConfig.add(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN + "");
         }
-        try {
-            Parameter.timeout_msekunden = 1_000 * Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN));
-        } catch (Exception ignore) {
-            MVConfig.add(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, Parameter.TIMEOUT_SEKUNDEN + "");
-            Parameter.timeout_msekunden = 1_000 * Parameter.TIMEOUT_SEKUNDEN; //250 Sekunden, wie bei Firefox
-        }
-        if (Parameter.timeout_msekunden < 5_000 || Parameter.timeout_msekunden > 1000_000) {
-            MVConfig.add(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, Parameter.TIMEOUT_SEKUNDEN + "");
-            Parameter.timeout_msekunden = 1_000 * Parameter.TIMEOUT_SEKUNDEN; //250 Sekunden, wie bei Firefox
-        }
+
         Log.sysLog("");
         Log.sysLog("=======================================");
         Log.sysLog("Systemparameter");
         Log.sysLog("-----------------");
-        Log.sysLog("Download-Timeout [s]: " + Parameter.timeout_msekunden / 1000);
+        Log.sysLog("Download-Timeout [s]: " + MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN));
+        Log.sysLog("max. Download-Restart: " + MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART, MVConfig.PARAMETER_DOWNLOAD_MAX_RESTART));
+        Log.sysLog("Download weiterführen in [s]: " + MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN, MVConfig.PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN));
         Log.sysLog("=======================================");
         Log.sysLog("");
     }

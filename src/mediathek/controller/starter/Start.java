@@ -35,6 +35,8 @@ public class Start {
     public long bandbreite = -1; // Downloadbandbreite: bytes per second
     public boolean stoppen = false;
     public boolean beginnAnschauen = false;
+    public int countRestarted = 0;
+
     public Datum startZeit = null;
     public long restSekunden = -1;
     public MVInputStream mVInputStream = null;

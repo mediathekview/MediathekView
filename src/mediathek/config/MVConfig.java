@@ -25,6 +25,11 @@ import java.util.LinkedList;
 
 public class MVConfig {
 
+    //Programmparameter fürs Konfigfile
+    public static final int PARAMETER_TIMEOUT_SEKUNDEN = 250; //250 Sekunden, wie bei Firefox
+    public static final int PARAMETER_DOWNLOAD_MAX_RESTART = 2; // max. Startversuche für fehlgeschlagene Downloads
+    public static final int PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN = 100; //Beim Dialog "Download weiterführen" wird in dieser Zeit der Download weitergeführt
+
     public final static String TRENNER = "#=#";
 
     // ################################
@@ -177,6 +182,8 @@ public class MVConfig {
 
     //Programmparameter
     public static final String SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN = "__system-parameter__download-timeout-sekunden";
+    public static final String SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART = "__system-parameter__download-max-restart";
+    public static final String SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN = "__system-parameter__download-weiterfuehren-sekunden";
 
     private static final HashMap<String, String> hashmap = new HashMap<>();
 
@@ -224,6 +231,17 @@ public class MVConfig {
     public static synchronized String get(String key) {
         String s = hashmap.get(key);
         return s == null ? "" : s;
+    }
+
+    public static synchronized int getInt(String key, int def) {
+        int ret;
+        try {
+            ret = Integer.parseInt(hashmap.get(key));
+        } catch (Exception ignore) {
+            MVConfig.add(key, def + "");
+            ret = def;
+        }
+        return ret;
     }
 
     public static synchronized String get(String key, int i) {

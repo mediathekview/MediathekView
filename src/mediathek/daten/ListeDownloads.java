@@ -35,10 +35,10 @@ import mediathek.tool.TModel;
 import mediathek.tool.TModelDownload;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
-    
+
     private final Daten daten;
     private final LinkedList<DatenDownload> aktivDownloads = new LinkedList<>();
-    
+
     public ListeDownloads(Daten daten_) {
         this.daten = daten_;
     }
@@ -49,7 +49,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     public void sort() {
         Collections.sort(this);
     }
-    
+
     public synchronized boolean addMitNummer(DatenDownload e) {
         boolean ret = super.add(e);
         listeNummerieren();
@@ -65,7 +65,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         this.stream().filter(d -> d.film == null)
                 .forEach(d -> d.film = Daten.listeFilme.getFilmByUrl_klein_hoch_hd(d.arr[DatenDownload.DOWNLOAD_URL]));
     }
-    
+
     public synchronized void listePutzen() {
         // fertige Downloads löschen
         // fehlerhafte zurücksetzen
@@ -90,7 +90,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         }
     }
-    
+
     public synchronized void listePutzen(DatenDownload datenDownload) {
         // fertigen Download löschen
         boolean gefunden = false;
@@ -109,7 +109,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         }
     }
-    
+
     public synchronized void abosAuffrischen() {
         // fehlerhafte und nicht gestartete löschen, wird nicht gemeldet ob was gefunden wurde
         boolean gefunden = false;
@@ -140,7 +140,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
         this.parallelStream().forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString());
     }
-    
+
     public synchronized int nochNichtFertigeDownloads() {
         // es wird nach noch nicht fertigen gestarteten Downloads gesucht
         int ret = 0;
@@ -153,7 +153,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
         return ret;
     }
-    
+
     public synchronized void downloadsVorziehen(ArrayList<DatenDownload> download) {
         for (DatenDownload datenDownload : download) {
             this.remove(datenDownload);
@@ -161,7 +161,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
         Listener.notify(Listener.EREIGNIS_REIHENFOLGE_DOWNLOAD, this.getClass().getSimpleName());
     }
-    
+
     public synchronized DatenDownload getDownloadByUrl(String url) {
         DatenDownload ret = null;
         for (DatenDownload download : this) {
@@ -172,7 +172,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
         return ret;
     }
-    
+
     public synchronized void delDownloadButton(String url) {
         Iterator<DatenDownload> it = this.iterator();
         DatenDownload datenDownload;
@@ -191,7 +191,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
     }
-    
+
     public synchronized void downloadAbbrechen(ArrayList<DatenDownload> download) {
         boolean gefunden = false;
         if (download != null) {
@@ -215,7 +215,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             Listener.notify(Listener.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
         }
     }
-    
+
     public synchronized void downloadLoeschen(ArrayList<DatenDownload> download) {
         boolean gefunden = false;
         if (download != null) {
@@ -234,7 +234,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         }
     }
-    
+
     public synchronized DatenDownload getDownloadUrlFilm(String urlFilm) {
         for (DatenDownload datenDownload : this) {
             if (datenDownload.arr[DatenDownload.DOWNLOAD_FILM_URL].equals(urlFilm)) {
@@ -243,7 +243,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
         return null;
     }
-    
+
     public synchronized void getModel(TModelDownload tModel, boolean abos, boolean downloads) {
         Object[] object;
         tModel.setRowCount(0);
@@ -294,7 +294,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
     }
-    
+
     private String setProgress(DatenDownload download) {
         if (download.start != null) {
             if (1 < download.start.percent && download.start.percent < Start.PROGRESS_FERTIG) {
@@ -310,7 +310,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             return "";
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     public synchronized void setModelProgress(TModelDownload tModel) {
         Iterator<List> it = tModel.getDataVector().iterator();
@@ -329,7 +329,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             ++row;
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     public synchronized void setModelProgressAlleStart(TModelDownload tModel) {
         for (List l : (Iterable<List>) tModel.getDataVector()) {
@@ -343,7 +343,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
     }
-    
+
     public synchronized void abosSuchen(JFrame parent) {
         // in der Filmliste nach passenden Filmen suchen und 
         // in die Liste der Downloads eintragen
@@ -401,14 +401,14 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             listeNummerieren();
         }
     }
-    
+
     public synchronized void listeNummerieren() {
         int i = 1;
         for (DatenDownload datenDownload : this) {
             datenDownload.nr = i++;
         }
     }
-    
+
     public synchronized int[] getStarts() {
         // liefert die Anzahl Starts die:
         // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
@@ -431,15 +431,15 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                         case Start.STATUS_INIT:
                             ++ret[3];
                             break;
-                        
+
                         case Start.STATUS_RUN:
                             ++ret[4];
                             break;
-                        
+
                         case Start.STATUS_FERTIG:
                             ++ret[5];
                             break;
-                        
+
                         case Start.STATUS_ERR:
                             ++ret[6];
                             break;
@@ -483,7 +483,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
             }
         }
-        
+
         return rem;
     }
 
@@ -516,11 +516,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 .filter(download -> quelle == DatenDownload.QUELLE_ALLE || download.quelle == quelle)
                 .collect(Collectors.toList()));
     }
-    
+
     public synchronized TModel getModelStarts(TModel model) {
         model.setRowCount(0);
         Object[] object;
-        
+
         if (!this.isEmpty()) {
             final int objLen = DatenDownload.MAX_ELEM + 1;
             object = new Object[objLen];
@@ -541,7 +541,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
         return model;
     }
-    
+
     public synchronized void buttonStartsPutzen() {
         // Starts durch Button die fertig sind, löschen
         boolean gefunden = false;
@@ -562,7 +562,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             Listener.notify(Listener.EREIGNIS_START_EVENT_BUTTON, this.getClass().getSimpleName());
         }
     }
-    
+
     public synchronized DatenDownload getNextStart() {
         // get: erstes passendes Element der Liste zurückgeben oder null
         // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
@@ -578,6 +578,33 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         return ret;
+    }
+
+    public DatenDownload getRestartDownload() {
+        // Versuch einen Fehlgeschlagenen Download zu finden um ihn wieder zu starten
+        // die Fehler laufen aber einzeln, vorsichtshalber
+        if (!getDown(1)) {
+            return null;
+        }
+        for (DatenDownload datenDownload : this) {
+            if (datenDownload.start == null) {
+                continue;
+            }
+
+            if (datenDownload.start.status == Start.STATUS_ERR
+                    && datenDownload.start.countRestarted < MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART, MVConfig.PARAMETER_DOWNLOAD_MAX_RESTART)
+                    && !maxSenderLaufen(datenDownload, 1)) {
+                int restarted = datenDownload.start.countRestarted;
+                if (datenDownload.art == DatenDownload.ART_PROGRAMM && datenDownload.isRestart()
+                        || datenDownload.art == DatenDownload.ART_DOWNLOAD) {
+                    datenDownload.resetDownload();
+                    datenDownload.startDownload(daten);
+                    datenDownload.start.countRestarted = ++restarted;
+                    return datenDownload;
+                }
+            }
+        }
+        return null;
     }
 
     // ################################################################
@@ -599,7 +626,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
         return true;
     }
-    
+
     private DatenDownload naechsterStart() {
         Iterator<DatenDownload> it = iterator();
         //erster Versuch, Start mit einem anderen Sender
@@ -613,7 +640,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
             }
         }
-        
+
         int maxProSender = Konstanten.MAX_SENDER_FILME_LADEN;
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER))) {
             // dann darf nur ein Download pro Server gestartet werden
@@ -634,7 +661,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
         return null;
     }
-    
+
     private boolean maxSenderLaufen(DatenDownload d, int max) {
         //true wenn bereits die maxAnzahl pro Sender läuft
         try {
@@ -656,7 +683,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             return false;
         }
     }
-    
+
     private String getHost(DatenDownload datenDownload) {
         String host = "";
         try {
@@ -701,7 +728,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
         return host;
     }
-    
+
     private synchronized boolean checkUrlExists(String url) {
         //prüfen, ob der Film schon in der Liste ist, (manche Filme sind in verschiedenen Themen)
         for (DatenDownload download : this) {
