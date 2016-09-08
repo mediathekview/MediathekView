@@ -30,7 +30,7 @@ import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscBeenden;
-import mediathek.config.Konstanten;
+import mediathek.config.MVConfig;
 import mediathek.tool.MVMessageDialog;
 
 public class DialogContinueDownload extends JDialog {
@@ -246,7 +246,7 @@ public class DialogContinueDownload extends JDialog {
      */
     private class CountdownAction implements ActionListener {
 
-        private int w = Konstanten.DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN;
+        private int w = MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN, MVConfig.PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN);
 
         @Override
         public void actionPerformed(ActionEvent e) {

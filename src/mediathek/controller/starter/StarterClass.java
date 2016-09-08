@@ -43,7 +43,6 @@ import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
-import mediathek.config.Parameter;
 import mediathek.controller.MVBandwidthTokenBucket;
 import mediathek.controller.MVInputStream;
 import mediathek.daten.DatenDownload;
@@ -166,6 +165,14 @@ public class StarterClass {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF]);
             text.add("Programmaufruf[]: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]);
         }
+        SysMsg.sysMsg(text.toArray(new String[text.size()]));
+    }
+
+    private void reStartmeldung(DatenDownload datenDownload, Start start) {
+        ArrayList<String> text = new ArrayList<>();
+        text.add("Fehlerhaften Download neu starten - Restart (Summe Starts: " + start.countRestarted + ")");
+        text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+        text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
         SysMsg.sysMsg(text.toArray(new String[text.size()]));
     }
 
@@ -386,7 +393,16 @@ public class StarterClass {
                 sleep(5 * 1000);
                 pause = false;
             }
-            return Daten.listeDownloads.getNextStart();
+
+            DatenDownload download = Daten.listeDownloads.getNextStart();
+            if (Daten.debug && download == null) {
+                // dann versuchen einen Fehlerhaften nochmal zu starten
+                download = Daten.listeDownloads.getRestartDownload();
+                if (download != null) {
+                    reStartmeldung(download, download.start);
+                }
+            }
+            return download;
         }
 
         /**
@@ -841,8 +857,8 @@ public class StarterClass {
                 datenDownload.mVFilmSize.setSize(getContentLength(url));
                 datenDownload.mVFilmSize.setAktSize(0);
                 conn = (HttpURLConnection) url.openConnection();
-                conn.setConnectTimeout(Parameter.timeout_msekunden);
-                conn.setReadTimeout(Parameter.timeout_msekunden);
+                conn.setConnectTimeout(1000 * MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN));
+                conn.setReadTimeout(1000 * MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN));
                 file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
                 if (!cancelDownload()) {
                     setupHttpConnection(conn);
