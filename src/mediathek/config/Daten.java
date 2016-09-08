@@ -289,8 +289,6 @@ public class Daten {
         MVConfig.add(MVConfig.SYSTEM_NOTIFICATION, Boolean.TRUE.toString());
         MVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, Boolean.TRUE.toString());
         MVConfig.add(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.TRUE.toString());
-//        MVConfig.add(MVConfig.SYSTEM_VIS_DOWNLOAD, Boolean.TRUE.toString());
-//        MVConfig.add(MVConfig.SYSTEM_VIS_ABO, Boolean.TRUE.toString());
         MVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.TRUE.toString());
         MVConfig.add(MVConfig.SYSTEM_GEO_MELDEN, Boolean.TRUE.toString());
         MVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);
@@ -344,8 +342,8 @@ public class Daten {
             clearKonfig();
             return false;
         }
-
         SysMsg.sysMsg("Konfig wurde gelesen!");
+        loadSystemConfig();
         MVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
         mVColor.load(); // Farben einrichten
         MVFont.initFont(); // Fonts einrichten
@@ -353,6 +351,30 @@ public class Daten {
         // erst die Systemdaten, dann die Filmliste
         updateSplashScreen("Lade Filmliste...");
         return true;
+    }
+
+    private void loadSystemConfig() {
+        // download-timeout Wert zwischen 5s und 1000s möglich
+        if (MVConfig.get(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN).isEmpty()) {
+            MVConfig.add(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, Parameter.TIMEOUT_SEKUNDEN + "");
+        }
+        try {
+            Parameter.timeout_msekunden = 1_000 * Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN));
+        } catch (Exception ignore) {
+            MVConfig.add(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, Parameter.TIMEOUT_SEKUNDEN + "");
+            Parameter.timeout_msekunden = 1_000 * Parameter.TIMEOUT_SEKUNDEN; //250 Sekunden, wie bei Firefox
+        }
+        if (Parameter.timeout_msekunden < 5_000 || Parameter.timeout_msekunden > 1000_000) {
+            MVConfig.add(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, Parameter.TIMEOUT_SEKUNDEN + "");
+            Parameter.timeout_msekunden = 1_000 * Parameter.TIMEOUT_SEKUNDEN; //250 Sekunden, wie bei Firefox
+        }
+        Log.sysLog("");
+        Log.sysLog("=======================================");
+        Log.sysLog("Systemparameter");
+        Log.sysLog("-----------------");
+        Log.sysLog("Download-Timeout [s]: " + Parameter.timeout_msekunden / 1000);
+        Log.sysLog("=======================================");
+        Log.sysLog("");
     }
 
     private void clearKonfig() {

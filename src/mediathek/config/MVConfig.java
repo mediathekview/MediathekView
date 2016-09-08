@@ -75,7 +75,6 @@ public class MVConfig {
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS = "Eigenschaften-Tabellen-Abos";
     public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_MEDIA_DB = "Eigenschaften-Tabellen-MediaDB";
     public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN = "Meldungsfenster-Systemmeldungen";
-////    public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_FEHLERMELDUNGEN = "Meldungsfenster-Fehlermeldungen";
     public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN = "Meldungsfenster-Playermeldungen";
     public static final String SYSTEM_ANSICHT_SET_LANG = "Ansicht-Set-lang";
     public static final String SYSTEM_BANDWIDTH_MONITOR_VISIBLE = "Bandwidthmonitor-visible";
@@ -108,10 +107,8 @@ public class MVConfig {
     public static final String SYSTEM_TAB_ABO_ICON_KLEIN = "system-tab-abo-icon-klein";
     // Extrafenster
     public static final String SYSTEM_FENSTER_DOWNLOAD = "Fenster-Download";
-//    public static final String SYSTEM_VIS_DOWNLOAD = "Vis-Download";
     public static final String SYSTEM_GROESSE_DOWNLOAD = "Groesse-Download";
     public static final String SYSTEM_FENSTER_ABO = "Fenster-Abo";
-//    public static final String SYSTEM_VIS_ABO = "Vis-Abo";
     public static final String SYSTEM_GROESSE_ABO = "Groesse-Abo";
     public static final String SYSTEM_FENSTER_MELDUNGEN = "Fenster-Meldungen";
     public static final String SYSTEM_VIS_MELDUNGEN = "Vis-Meldungen";
@@ -174,10 +171,12 @@ public class MVConfig {
     public static final String SYSTEM_MEDIA_DB_DIALOG_GROESSE = "Media_DB_Dialog-Groesse";
     public static final String SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN = "Media_DB_Dialog-anzeigen";
     public static final String SYSTEM_MEDIA_DB_ECHTZEITSUCHE = "Media_DB_Echtzeitsuche";
-//    public static final String SYSTEM_MEDIA_DB_PATH_MEDIA = "Media_DB_Pfade-Medien";
     public static final String SYSTEM_MEDIA_DB_SUFFIX = "Media_DB_Suffix";
     public static final String SYSTEM_MEDIA_DB_SUFFIX_OHNE = "Media_DB_ohne-Suffix";
     public static final String SYSTEM_MEDIA_DB_EXPORT_DATEI = "Media_DB_export-datei";
+
+    //Programmparameter
+    public static final String SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN = "__system-parameter__download-timeout-sekunden";
 
     private static final HashMap<String, String> hashmap = new HashMap<>();
 

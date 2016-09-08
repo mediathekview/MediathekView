@@ -43,6 +43,7 @@ import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
+import mediathek.config.Parameter;
 import mediathek.controller.MVBandwidthTokenBucket;
 import mediathek.controller.MVInputStream;
 import mediathek.daten.DatenDownload;
@@ -674,7 +675,6 @@ public class StarterClass {
         private final DatenDownload datenDownload;
         private final Start start;
         private HttpURLConnection conn = null;
-        private static final int TIMEOUT = 250_000; //250 Sekunden, wie bei Firefox
         private HttpDownloadState state = HttpDownloadState.DOWNLOAD;
         private long downloaded = 0;
         private File file = null;
@@ -841,8 +841,8 @@ public class StarterClass {
                 datenDownload.mVFilmSize.setSize(getContentLength(url));
                 datenDownload.mVFilmSize.setAktSize(0);
                 conn = (HttpURLConnection) url.openConnection();
-                conn.setConnectTimeout(TIMEOUT);
-                conn.setReadTimeout(TIMEOUT);
+                conn.setConnectTimeout(Parameter.timeout_msekunden);
+                conn.setReadTimeout(Parameter.timeout_msekunden);
                 file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
                 if (!cancelDownload()) {
                     setupHttpConnection(conn);
