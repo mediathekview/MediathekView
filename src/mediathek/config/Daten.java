@@ -44,7 +44,7 @@ import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
 import mediathek.controller.MVBandwidthTokenBucket;
 import mediathek.controller.MVUsedUrls;
-import mediathek.controller.starter.StarterClass;
+import mediathek.controller.starter.StarterClass_new;
 import mediathek.daten.*;
 import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.*;
@@ -86,7 +86,7 @@ public class Daten {
     public MVUsedUrls history = null; // alle angesehenen Filme
     public MVUsedUrls erledigteAbos = null; // erfolgreich geladenen Abos
 
-    public StarterClass starterClass = null; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
+    public StarterClass_new starterClass = null; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
 
     // Gui
     public static MediathekGui mediathekGui = null; // JFrame der Gui
@@ -145,8 +145,8 @@ public class Daten {
         listeMediaPath = new ListeMediaPath();
 
         downloadInfos = new DownloadInfos();
+        starterClass = new StarterClass_new(this);
 
-        starterClass = new StarterClass(this);
         Timer timer = new Timer(1000, e -> {
             downloadInfos.makeDownloadInfos();
             Listener.notify(Listener.EREIGNIS_TIMER, Daten.class.getName());
