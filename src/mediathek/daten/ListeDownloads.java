@@ -592,11 +592,10 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
 
             if (datenDownload.start.status == Start.STATUS_ERR
-                    && datenDownload.start.countRestarted < MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART, MVConfig.PARAMETER_DOWNLOAD_MAX_RESTART)
+                    && datenDownload.start.countRestarted < MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART.fValue, MVConfig.PARAMETER_DOWNLOAD_MAX_RESTART)
                     && !maxSenderLaufen(datenDownload, 1)) {
                 int restarted = datenDownload.start.countRestarted;
-                if (datenDownload.art == DatenDownload.ART_PROGRAMM && datenDownload.isRestart()
-                        || datenDownload.art == DatenDownload.ART_DOWNLOAD) {
+                if ( /*datenDownload.art == DatenDownload.ART_PROGRAMM && datenDownload.isRestart()   || */datenDownload.art == DatenDownload.ART_DOWNLOAD) {
                     datenDownload.resetDownload();
                     datenDownload.startDownload(daten);
                     datenDownload.start.countRestarted = ++restarted;

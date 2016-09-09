@@ -25,9 +25,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JWindow;
 import javax.swing.SwingConstants;
-import mediathek.config.MVConfig;
-import mediathek.config.Icons;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
+import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import net.sf.jcarrierpigeon.Notification;
 import net.sf.jcarrierpigeon.NotificationQueue;
@@ -35,7 +35,7 @@ import net.sf.jcarrierpigeon.WindowPosition;
 
 public class MVNotification {
 
-    public static void addNotification(Daten daten, DatenDownload datenDownload, boolean erfolgreich) {
+    public static void addNotification(DatenDownload datenDownload, boolean erfolgreich) {
         if (Daten.mediathekGui == null) {
             return; // dann gibts keine GUI
         }
