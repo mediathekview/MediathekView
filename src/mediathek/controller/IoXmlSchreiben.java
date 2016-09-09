@@ -240,16 +240,17 @@ public class IoXmlSchreiben {
                 writer.writeCharacters("\n"); //neue Zeile
             }
             for (String[] xmlSpalte : xmlSpalten) {
-                if (!xmlSpalte[1].equals("")) {
-                    if (newLine) {
-                        writer.writeCharacters("\t"); //Tab
-                    }
-                    writer.writeStartElement(xmlSpalte[0]);
-                    writer.writeCharacters(xmlSpalte[1]);
-                    writer.writeEndElement();
-                    if (newLine) {
-                        writer.writeCharacters("\n"); //neue Zeile
-                    }
+                if (MVConfig.Configs.find(xmlSpalte[0]) == null) {
+                    continue; //nur Configs schreiben die es noch gibt
+                }
+                if (newLine) {
+                    writer.writeCharacters("\t"); //Tab
+                }
+                writer.writeStartElement(xmlSpalte[0]);
+                writer.writeCharacters(xmlSpalte[1]);
+                writer.writeEndElement();
+                if (newLine) {
+                    writer.writeCharacters("\n"); //neue Zeile
                 }
             }
             writer.writeEndElement();

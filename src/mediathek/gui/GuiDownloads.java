@@ -104,7 +104,6 @@ public class GuiDownloads extends PanelVorlage {
         jPanelToolBar.setLayout(new BorderLayout());
         jPanelToolBar.add(toolBar, BorderLayout.CENTER);
         setToolbarVisible();
-//        SwingUtilities.invokeLater(this::downloadsAktualisieren);//////
     }
 
     private void setupDescriptionPanel() {

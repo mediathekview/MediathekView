@@ -222,7 +222,7 @@ public class StarterClass {
         SysMsg.sysMsg(text.toArray(new String[text.size()]));
         if (!start.stoppen && !abgebrochen) {
             if (datenDownload.quelle != DatenDownload.QUELLE_BUTTON) {
-                SwingUtilities.invokeLater(() -> MVNotification.addNotification(daten, datenDownload, start.status != Start.STATUS_ERR));
+                SwingUtilities.invokeLater(() -> MVNotification.addNotification(datenDownload, start.status != Start.STATUS_ERR));
             }
         }
     }
@@ -524,18 +524,15 @@ public class StarterClass {
                                         filesize = file.length();
                                         stat = stat_start;
                                     } else // counter prüfen und bei einem Maxwert cancelDownload, sonst endlos
-                                    {
-                                        if (start.startcounter < Start.STARTCOUNTER_MAX) {
+                                     if (start.startcounter < Start.STARTCOUNTER_MAX) {
                                             // dann nochmal von vorne
                                             stat = stat_start;
                                         } else {
                                             // dann wars das
                                             stat = stat_fertig_fehler;
                                         }
-                                    }
                                 } else //jetzt muss das File wachsen, sonst kein Restart
-                                {
-                                    if (!file.exists()) {
+                                 if (!file.exists()) {
                                         // dann wars das
                                         stat = stat_fertig_fehler;
                                     } else if (file.length() > filesize) {
@@ -546,7 +543,6 @@ public class StarterClass {
                                         // dann wars das
                                         stat = stat_fertig_fehler;
                                     }
-                                }
                                 break;
                             case stat_pruefen:
                                 if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON || datenDownload.isDownloadManager()) {
@@ -853,8 +849,8 @@ public class StarterClass {
                 datenDownload.mVFilmSize.setSize(getContentLength(url));
                 datenDownload.mVFilmSize.setAktSize(0);
                 conn = (HttpURLConnection) url.openConnection();
-                conn.setConnectTimeout(1000 * MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN));
-                conn.setReadTimeout(1000 * MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN));
+                conn.setConnectTimeout(1000 * MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.fValue, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN));
+                conn.setReadTimeout(1000 * MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.fValue, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN));
                 file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
                 if (!cancelDownload()) {
                     setupHttpConnection(conn);

@@ -355,19 +355,20 @@ public class Daten {
 
     private void loadSystemParameter() {
         // download-timeout Wert zwischen 5s und 1000s möglich
-        int timeout = MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN);
+        int timeout = MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.fValue, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN);
         if (timeout < 5 || timeout > 1000) {
-            MVConfig.add(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN + "");
+            MVConfig.add(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.fValue, "");
         }
 
         Log.sysLog("");
         Log.sysLog("=======================================");
         Log.sysLog("Systemparameter");
         Log.sysLog("-----------------");
-        Log.sysLog("Download-Timeout [s]: " + MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN));
-        Log.sysLog("max. Download-Restart: " + MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART, MVConfig.PARAMETER_DOWNLOAD_MAX_RESTART));
-        Log.sysLog("Download weiterführen in [s]: " + MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN, MVConfig.PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN));
-        Log.sysLog("Download Fehlermeldung anzeigen [s]: " + MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN, MVConfig.PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN));
+        Log.sysLog("Download-Timeout [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.fValue, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN));
+        Log.sysLog("max. Download-Restart: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART.fValue, MVConfig.PARAMETER_DOWNLOAD_MAX_RESTART));
+        Log.sysLog("max. Download-Restart-Http: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP.fValue, MVConfig.PARAMETER_DOWNLOAD_MAX_RESTART_HTTP));
+        Log.sysLog("Download weiterführen in [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN.fValue, MVConfig.PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN));
+        Log.sysLog("Download Fehlermeldung anzeigen [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.fValue, MVConfig.PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN));
         Log.sysLog("=======================================");
         Log.sysLog("");
     }
