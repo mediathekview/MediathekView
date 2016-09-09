@@ -178,7 +178,7 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (w > 0) {
-                jLabelTime.setText("noch " + w + "s anzeigen");
+                jLabelTime.setText(w + " s");
                 if (countdownTimer != null) {
                     countdownTimer.setDelay(1000);
                 }

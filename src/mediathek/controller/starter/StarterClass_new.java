@@ -53,7 +53,7 @@ import mediathek.tool.MVInfoFile;
 import mediathek.tool.MVNotification;
 import mediathek.tool.MVSubtitle;
 
-public class StarterClass {
+public class StarterClass_new {
     //Tags Filme
 
     private final Daten daten;
@@ -63,7 +63,7 @@ public class StarterClass {
     //===================================
     // Public
     //===================================
-    public StarterClass(Daten daten) {
+    public StarterClass_new(Daten daten) {
         this.daten = daten;
         starten = new Starten();
         starten.start();
@@ -205,6 +205,7 @@ public class StarterClass {
         }
         text.add("Startzeit: " + new SimpleDateFormat("HH:mm:ss").format(start.startZeit));
         text.add("Endzeit: " + new SimpleDateFormat("HH:mm:ss").format(new Datum().getTime()));
+        text.add("Restarts: " + start.countRestarted);
         text.add("Dauer: " + start.startZeit.diffInSekunden() + " s");
         long dauer = start.startZeit.diffInMinuten();
         if (dauer == 0) {
@@ -334,10 +335,10 @@ public class StarterClass {
     }
 
     private void notifyStartEvent(DatenDownload datenDownload) {
-        Listener.notify(Listener.EREIGNIS_START_EVENT, StarterClass.class.getSimpleName());
+        Listener.notify(Listener.EREIGNIS_START_EVENT, StarterClass_new.class.getSimpleName());
         if (datenDownload != null) {
             if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON) {
-                Listener.notify(Listener.EREIGNIS_START_EVENT_BUTTON, StarterClass.class.getSimpleName());
+                Listener.notify(Listener.EREIGNIS_START_EVENT_BUTTON, StarterClass_new.class.getSimpleName());
             }
         }
     }
@@ -394,7 +395,15 @@ public class StarterClass {
                 pause = false;
             }
 
-            return Daten.listeDownloads.getNextStart();
+            DatenDownload download = Daten.listeDownloads.getNextStart();
+            if (Daten.debug && download == null) {
+                // dann versuchen einen Fehlerhaften nochmal zu starten
+                download = Daten.listeDownloads.getRestartDownload();
+                if (download != null) {
+                    reStartmeldung(download);
+                }
+            }
+            return download;
         }
 
         /**
@@ -404,7 +413,7 @@ public class StarterClass {
          */
         private void startStarten(DatenDownload datenDownload) {
             datenDownload.start.startZeit = new Datum();
-            Listener.notify(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
+            Listener.notify(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass_new.class.getName());
             Thread downloadThread;
 
             switch (datenDownload.art) {
@@ -524,18 +533,15 @@ public class StarterClass {
                                         filesize = file.length();
                                         stat = stat_start;
                                     } else // counter prüfen und bei einem Maxwert cancelDownload, sonst endlos
-                                    {
-                                        if (start.startcounter < Start.STARTCOUNTER_MAX) {
+                                     if (start.startcounter < Start.STARTCOUNTER_MAX) {
                                             // dann nochmal von vorne
                                             stat = stat_start;
                                         } else {
                                             // dann wars das
                                             stat = stat_fertig_fehler;
                                         }
-                                    }
                                 } else //jetzt muss das File wachsen, sonst kein Restart
-                                {
-                                    if (!file.exists()) {
+                                 if (!file.exists()) {
                                         // dann wars das
                                         stat = stat_fertig_fehler;
                                     } else if (file.length() > filesize) {
@@ -546,7 +552,6 @@ public class StarterClass {
                                         // dann wars das
                                         stat = stat_fertig_fehler;
                                     }
-                                }
                                 break;
                             case stat_pruefen:
                                 if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON || datenDownload.isDownloadManager()) {
@@ -821,7 +826,7 @@ public class StarterClass {
                     melden = true;
                 }
                 if (melden) {
-                    Listener.notify(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
+                    Listener.notify(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass_new.class.getName());
                     melden = false;
                 }
             }
@@ -850,13 +855,16 @@ public class StarterClass {
 
             try {
                 final URL url = new URL(datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
-                datenDownload.mVFilmSize.setSize(getContentLength(url));
-                datenDownload.mVFilmSize.setAktSize(0);
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setConnectTimeout(1000 * MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN));
-                conn.setReadTimeout(1000 * MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN));
                 file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+
                 if (!cancelDownload()) {
+
+                    datenDownload.mVFilmSize.setSize(getContentLength(url));
+                    datenDownload.mVFilmSize.setAktSize(0);
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.setConnectTimeout(1000 * MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN));
+                    conn.setReadTimeout(1000 * MVConfig.getInt(MVConfig.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN));
+
                     setupHttpConnection(conn);
                     conn.connect();
                     final int httpResponseCode = conn.getResponseCode();

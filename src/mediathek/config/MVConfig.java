@@ -27,7 +27,7 @@ public class MVConfig {
 
     //Programmparameter fürs Konfigfile
     public static final int PARAMETER_TIMEOUT_SEKUNDEN = 250; //250 Sekunden, wie bei Firefox
-    public static final int PARAMETER_DOWNLOAD_MAX_RESTART = 5; // max. Startversuche für fehlgeschlagene Downloads
+    public static final int PARAMETER_DOWNLOAD_MAX_RESTART = 10; // max. Startversuche für fehlgeschlagene Downloads
     public static final int PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN = 100; //Beim Dialog "Download weiterführen" wird in dieser Zeit der Download weitergeführt
     public static final int PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN = 100; //Downloadfehlermeldung wird xx Sedunden lang angezeigt
 
