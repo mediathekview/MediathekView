@@ -29,6 +29,24 @@ public class MVConfig {
     public static final String SYSTEM = "system";
     private static final HashMap<String, String> HASHMAP = new HashMap<>();
 
+    public static String PARAMETER_INFO = "\n"
+            + "\t" + "\"__system-parameter__xxx\" können nur im Konfigfile geändert werden\n"
+            + "\t" + "und sind auch nicht für ständige Änderungen gedacht.\n"
+            + "\t" + "Wird eine Zeile gelöscht, wird der Parameter wieder mit dem Standardwert angelegt.\n"
+            + "\n"
+            + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.cValue + "\n"
+            + "\t" + "Timeout für direkte Downloads, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.initValue + "\n\n"
+            + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART.cValue + "\n"
+            + "\t" + "max. Startversuche für fehlgeschlagene Downloads, am Ende aller Downloads\n"
+            + "\t" + "(Versuche insgesamt: DOWNLOAD_MAX_RESTART * DOWNLOAD_MAX_RESTART_HTTP), Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART.initValue + "\n\n"
+            + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP.cValue + "\n"
+            + "\t" + "max. Startversuche für fehlgeschlagene Downloads, direkt beim Download,\n"
+            + "\t" + "(Versuche insgesamt: DOWNLOAD_MAX_RESTART * DOWNLOAD_MAX_RESTART_HTTP), Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP.initValue + "\n\n"
+            + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN.cValue + "\n"
+            + "\t" + "Beim Dialog \"Download weiterführen\" wird nach dieser Zeit der Download weitergeführt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN.initValue + "\n\n"
+            + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.cValue + "\n"
+            + "\t" + "Downloadfehlermeldung wird xx Sedunden lang angezeigt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.initValue + "\n";
+
     public enum Configs {
         //============================================
         //Programm-Configs, änderbar nur im Konfig-File
