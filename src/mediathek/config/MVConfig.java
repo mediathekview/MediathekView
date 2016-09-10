@@ -25,12 +25,20 @@ import java.util.LinkedList;
 
 public class MVConfig {
 
+    public final static String TRENNER = "#=#";
+    public static final String SYSTEM = "system";
+    private static final HashMap<String, String> HASHMAP = new HashMap<>();
+
     public enum Configs {
+        //============================================
+        //Programm-Configs, änderbar nur im Konfig-File
         SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN("__system-parameter__download-timeout-sekunden", "250"),//250 Sekunden, wie bei Firefox
         SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART("__system-parameter__download-max-restart", "5"),// max. Startversuche für fehlgeschlagene Downloads (insgesamt: restart * restart_http Versuche)
         SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP("__system-parameter__download-max-restart-http", "10"),// max. Startversuche für fehlgeschlagene Downloads, direkt beim Download
         SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN("__system-parameter__download-weiterfuehren-sekunden", "60"), //Beim Dialog "Download weiterführen" wird in dieser Zeit der Download weitergeführt
         SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN("__system-parameter__download-fehlermeldung-sekunden", "120"),//Downloadfehlermeldung wird xx Sedunden lang angezeigt
+        //============================================
+        //Programm-Configs, änderbar über Gui
         SYSTEM_BUILD_NR("BuildNr"),
         SYSTEM_ECHTZEITSUCHE("Echtzeitsuche"),
         SYSTEM_TABS_TOP("Tabs-oben"),
@@ -53,6 +61,7 @@ public class MVConfig {
         SYSTEM_PLAYER_ABSPIELEN("Player-zum-Abspielen"),
         SYSTEM_GEO_MELDEN("Geo-melden"),
         SYSTEM_GEO_STANDORT("Geo-Standort"),
+        // Fenstereinstellungen
         SYSTEM_GROESSE_GUI("Groesse"),
         SYSTEM_GROESSE_EINSTELLUNGEN("Groesse-Einstellungen"),
         SYSTEM_GROESSE_INFODIALOG("Groesse-Infodialog"),
@@ -62,7 +71,6 @@ public class MVConfig {
         SYSTEM_PANEL_MELDUNGEN_ANZEIGEN("system-panel-meldungen-anzeigen"),
         SYSTEM_PANEL_FILME_DIVIDER("system-panel-filme-divider"),
         SYSTEM_FONT_SIZE("system-font-size"), // -5 ... 0 .... 5
-
         SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN("system-filme-beschreibung-anzeigen"),
         SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN("system-download-beschreibung-anzeigen"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_FILME("Eigenschaften-Tabellen-Filme"),
@@ -97,6 +105,7 @@ public class MVConfig {
         SYSTEM_TAB_FILME_ICON_KLEIN("system-tab-filme-icon-klein"),
         SYSTEM_TAB_DOWNLOAD_ICON_KLEIN("system-tab-download-icon-klein"),
         SYSTEM_TAB_ABO_ICON_KLEIN("system-tab-abo-icon-klein"),
+        // Extrafenster
         SYSTEM_FENSTER_DOWNLOAD("Fenster-Download"),
         SYSTEM_GROESSE_DOWNLOAD("Groesse-Download"),
         SYSTEM_FENSTER_ABO("Fenster-Abo"),
@@ -107,12 +116,13 @@ public class MVConfig {
         SYSTEM_FENSTER_FILTER("Fenster-Filter"),
         SYSTEM_VIS_FILTER("Vis-Filter"),
         SYSTEM_GROESSE_FILTER("Groesse-Filter"),
+        //Einstellungen Filmliste
         SYSTEM_IMPORT_ART_FILME("update-filme"), // url automatisch suchen - oder nur manuell
         SYSTEM_URL_FILMLISTEN("system-url-filmlisten"),
         SYSTEM_IMPORT_URL_MANUELL("system-import-url-manuell"),
         SYSTEM_EXPORT_DATEI("system-export-datei"),
         SYSTEM_ANZ_TAGE_FILMLISTE("system-anz-tage-filmilste"), // es werden nur die x letzten Tage geladen
-
+        // Filter
         SYSTEM_FILTER_TAGE("filter-tage-start"), // in Tagen
         SYSTEM_FILTER_DAUER("filter-dauer-start"), // in Minuten
         SYSTEM_FILTER_PROFILE__DAUER("filter-dauer"),
@@ -129,10 +139,12 @@ public class MVConfig {
         SYSTEM_FILTER_PROFILE__THEMA_TITEL("filter-themaTitel"),
         SYSTEM_FILTER_PROFILE__TT("filter-TT-oder-irgendwo"),
         SYSTEM_FILTER_PROFILE__ANZAHL_FILTER("filter-anzahl"),
+        // Programmpfade
         SYSTEM_PFAD_VLC("pfad-vlc"),
         SYSTEM_PFAD_FLVSTREAMER("pfad-flvstreamer"),
         SYSTEM_PFAD_FFMPEG("pfad-ffmpeg"),
         SYSTEM_VERSION_PROGRAMMSET("Version-Programmset"),
+        // Blacklist
         SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN("Blacklist-Zukunft-nicht-anzeigen"),
         SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN("Blacklist-Geo-nicht-anzeigen"),
         SYSTEM_BLACKLIST_AUCH_ABO("Blacklist-auch-Abo"),
@@ -140,6 +152,7 @@ public class MVConfig {
         SYSTEM_BLACKLIST_ON("Blacklist-ausgeschaltet"),
         SYSTEM_BLACKLIST_IST_WHITELIST("Blacklist-ist-Whitelist"),
         SYSTEM_BLACKLIST_FILMLAENGE("Blacklist-Filmlaenge"),
+        // Download
         SYSTEM_DIALOG_DOWNLOAD_D_STARTEN("Dialog-Download-D-Starten"), // DialogDownload: Download sofort starten
         SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT("Dialog-Download-Starten-Zeit"),
         SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN("Dialog-Download-Shutdown"),
@@ -150,20 +163,48 @@ public class MVConfig {
         SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER("max1DownloadProServer"), // nur ein Download pro Server - sonst max 2
         SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN("Pfade-zum-Speichern"), // gesammelten Downloadpfade im Downloaddialog
         SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN("Letzen-Pfad-anzeigen"),
+        // Abo
         SYSTEM_ABO_MIN_SIZE("Abo-Mindestdauer-Minuten"),
+        // MediaDB
         SYSTEM_MEDIA_DB_DIALOG_GROESSE("Media_DB_Dialog-Groesse"),
         SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN("Media_DB_Dialog-anzeigen"),
         SYSTEM_MEDIA_DB_ECHTZEITSUCHE("Media_DB_Echtzeitsuche"),
         SYSTEM_MEDIA_DB_SUFFIX("Media_DB_Suffix"),
         SYSTEM_MEDIA_DB_SUFFIX_OHNE("Media_DB_ohne-Suffix"),
-        SYSTEM_MEDIA_DB_EXPORT_DATEI("Media_DB_export-datei");
+        SYSTEM_MEDIA_DB_EXPORT_DATEI("Media_DB_export-datei"),
+        //Farben
+        FARBE__FILM_LIVESTREAM("FARBE_FILM_LIVESTREAM"),
+        FARBE__FILM_HISTORY("FARBE_FILM_HISTORY"),
+        FARBE__FILM_NEU("FARBE_FILM_NEU"),
+        FARBE__FILM_GEOBLOCK_BACKGROUND("FARBE_FILM_GEOBLOCK_BACKGROUND"),
+        FARBE__FILM_GEOBLOCK_BACKGROUND_SEL("FARBE_FILM_GEOBLOCK_BACKGROUND_SEL"),
+        FARBE__DOWNLOAD_IST_ABO("FARBE_DOWNLOAD_IST_ABO"),
+        FARBE__DOWNLOAD_IST_DIREKTER_DOWNLOAD("FARBE_DOWNLOAD_IST_DIREKTER_DOWNLOAD"),
+        FARBE__DOWNLOAD_ANSEHEN("FARBE_DOWNLOAD_ANSEHEN"),
+        FARBE__DOWNLOAD_WAIT("FARBE_DOWNLOAD_WAIT"),
+        FARBE__DOWNLOAD_WAIT_SEL("FARBE_DOWNLOAD_WAIT_SEL"),
+        FARBE__DOWNLOAD_RUN("FARBE_DOWNLOAD_RUN"),
+        FARBE__DOWNLOAD_RUN_SEL("FARBE_DOWNLOAD_RUN_SEL"),
+        FARBE__DOWNLOAD_FERTIG("FARBE_DOWNLOAD_FERTIG"),
+        FARBE__DOWNLOAD_FERTIG_SEL("FARBE_DOWNLOAD_FERTIG_SEL"),
+        FARBE__DOWNLOAD_FEHLER("FARBE_DOWNLOAD_FEHLER"),
+        FARBE__DOWNLOAD_FEHLER_SEL("FARBE_DOWNLOAD_FEHLER_SEL"),
+        FARBE__ABO_AUSGESCHALTET("FARBE_ABO_AUSGESCHALTET"),
+        FARBE__ABO_AUSGESCHALTET_SEL("FARBE_ABO_AUSGESCHALTET_SEL"),
+        FARBE__FILTER_REGEX("FARBE_FILTER_REGEX"),
+        FARBE__FILTER_REGEX_FEHLER("FARBE_FILTER_REGEX_FEHLER"),
+        FARBE__BUTTON_SET_ABSPIELEN("FARBE_BUTTON_SET_ABSPIELEN"),
+        FARBE__FILMLISTE_LADEN_AKTIV("FARBE_FILMLISTE_LADEN_AKTIV"),
+        FARBE__DOWNLOAD_DATEINAME_EXISTIERT("FARBE_DOWNLOAD_DATEINAME_EXISTIERT"),
+        FARBE__DOWNLOAD_DATEINAME_NEU("FARBE_DOWNLOAD_DATEINAME_NEU"),
+        FARBE__DOWNLOAD_DATEINAME_ALT("FARBE_DOWNLOAD_DATEINAME_ALT");
 
         public final String cValue;
         public final String initValue;
 
         Configs(String value) {
             cValue = value;
-            initValue = "";
+            initValue = "0";
         }
 
         Configs(String value, String init) {
@@ -171,184 +212,28 @@ public class MVConfig {
             initValue = init;
         }
 
-        public static Configs find(String value) {
+        public static boolean find(String value) {
             for (Configs conf : values()) {
                 if (conf.cValue.equals(value)) {
-                    return conf;
+                    return true;
                 }
             }
-            return null;
+            return false;
         }
     }
 
-//    //Programmparameter fürs Konfigfile
-//    public static final int PARAMETER_TIMEOUT_SEKUNDEN = 250; //250 Sekunden, wie bei Firefox
-//    public static final int PARAMETER_DOWNLOAD_MAX_RESTART = 5; // max. Startversuche für fehlgeschlagene Downloads (insgesamt: restart * restart_http Versuche)
-//    public static final int PARAMETER_DOWNLOAD_MAX_RESTART_HTTP = 10; // max. Startversuche für fehlgeschlagene Downloads, direkt beim Download
-//    public static final int PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN = 60; //Beim Dialog "Download weiterführen" wird in dieser Zeit der Download weitergeführt
-//    public static final int PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN = 120; //Downloadfehlermeldung wird xx Sedunden lang angezeigt
-    //Programmparameter
-//    public static final String SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN = "__system-parameter__download-timeout-sekunden__" + PARAMETER_TIMEOUT_SEKUNDEN;
-//    public static final String SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART = "__system-parameter__download-max-restart__" + PARAMETER_DOWNLOAD_MAX_RESTART;
-//    public static final String SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP = "__system-parameter__download-max-restart-http__" + PARAMETER_DOWNLOAD_MAX_RESTART_HTTP;
-//    public static final String SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN = "__system-parameter__download-weiterfuehren-sekunden__" + PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN;
-//    public static final String SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN = "__system-parameter__download-fehlermeldung-sekunden__" + PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN;
-    public final static String TRENNER = "#=#";
-
-    // ################################
-    // Tags System
-    // ################################
-    public static final String SYSTEM = "system";
-    // allgemein
-//    public static final String SYSTEM_BUILD_NR = "BuildNr";
-//    public static final String SYSTEM_ECHTZEITSUCHE = "Echtzeitsuche";
-//    public static final String SYSTEM_TABS_TOP = "Tabs-oben";
-//    public static final String SYSTEM_TABS_ICON = "Tabs-Icon";
-//    public static final String SYSTEM_USE_TRAY = "Tray-anzeigen";
-//    public static final String SYSTEM_LOOK = "System-look";
-//    public static final String SYSTEM_USER_AGENT_AUTO = "User-Agent-Auto";
-//    public static final String SYSTEM_USER_AGENT = "User-Agent";
-//    public static final String SYSTEM_UPDATE_SUCHEN = "update-suchen";
-//    public static final String SYSTEM_UPDATE_DATUM = "update-datum";
-//    public static final String SYSTEM_ABOS_SOFORT_SUCHEN = "Abos-sofort-suchen";
-//    public static final String SYSTEM_ZIELNAMEN_ANPASSEN = "Zielnamen-anpassen";
-//    public static final String SYSTEM_USE_REPLACETABLE = "Ersetzungstabelle-verwenden";
-//    public static final String SYSTEM_ONLY_ASCII = "nur-ascii";
-//    public static final String SYSTEM_HINWEIS_NR_ANGEZEIGT = "Hinweis-Nr-angezeigt";
-//    public static final String SYSTEM_ORDNER_OEFFNEN = "Download-Ordner-oeffnen";
-//    public static final String SYSTEM_URL_OEFFNEN = "Programm-Url-oeffnen";
-//    public static final String SYSTEM_LINUX_SHUTDOWN = "Programm-Linux-Shutdown";
-//    public static final String SYSTEM_NOTIFICATION = "Notification-anzeigen";
-//    public static final String SYSTEM_PLAYER_ABSPIELEN = "Player-zum-Abspielen";
-//    public static final String SYSTEM_GEO_MELDEN = "Geo-melden";
-//    public static final String SYSTEM_GEO_STANDORT = "Geo-Standort";
-    // Fenstereinstellungen
-//    public static final String SYSTEM_GROESSE_GUI = "Groesse";
-//    public static final String SYSTEM_GROESSE_EINSTELLUNGEN = "Groesse-Einstellungen";
-
-//    public static final String SYSTEM_GROESSE_INFODIALOG = "Groesse-Infodialog";
-//    public static final String SYSTEM_DIVIDER_INFODIALOG = "Divider-Infodialog";
-//    public static final String SYSTEM_FENSTER_MAX = "programmfenster-maximieren";
-//    public static final String SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN = "system-panel-videoplayer-anzeigen";
-//    public static final String SYSTEM_PANEL_MELDUNGEN_ANZEIGEN = "system-panel-meldungen-anzeigen";
-//    public static final String SYSTEM_PANEL_FILME_DIVIDER = "system-panel-filme-divider";
-//    public static final String SYSTEM_FONT_SIZE = "system-font-size"; // -5 ... 0 .... 5
-//    public static final String SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN = "system-filme-beschreibung-anzeigen";
-//    public static final String SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN = "system-download-beschreibung-anzeigen";
-//    public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_FILME = "Eigenschaften-Tabellen-Filme";
-//    public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS = "Eigenschaften-Tabellen-Downloads";
-//    public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS = "Eigenschaften-Tabellen-Abos";
-//    public static final String SYSTEM_EIGENSCHAFTEN_TABELLE_MEDIA_DB = "Eigenschaften-Tabellen-MediaDB";
-//    public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN = "Meldungsfenster-Systemmeldungen";
-//    public static final String SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN = "Meldungsfenster-Playermeldungen";
-//    public static final String SYSTEM_ANSICHT_SET_LANG = "Ansicht-Set-lang";
-//    public static final String SYSTEM_BANDWIDTH_MONITOR_VISIBLE = "Bandwidthmonitor-visible";
-//    public static final String SYSTEM_ICON_STANDARD = "Icon-Standard";
-//    public static final String SYSTEM_ICON_PFAD = "Icon-Pfad";
-//    public static final String SYSTEM_BREITE_MELDUNGEN = "breite-Meldungen";
-//    public static final String SYSTEM_TOOLBAR_ALLES_ANZEIGEN = "Toolbar-Alles-anzeigen";
-//    public static final String SYSTEM_TOOLBAR_ALLES = "Toolbar-Alles";
-//    public static final String SYSTEM_TOOLBAR_DOWNLOAD_EXTERN = "Toolbar-Download-Extern";
-//    public static final String SYSTEM_TOOLBAR_ABO_EXTERN = "Toolbar-Abo-Extern";
-//    public static final String SYSTEM_TOOLBAR_MELDUNGEN = "Toolbar-Meldungen";
-//    public static final String SYSTEM_ICON_KLEIN_ALLES = "system-icon-groesse-alles";
-//    public static final String SYSTEM_ICON_KLEIN_DOWNLOADS_EXTERN = "system-icon-groesse-Download-Extern";
-//    public static final String SYSTEM_ICON_KLEIN_ABOS_EXTERN = "system-icon-groesse-Abos-Extern";
-//    public static final String SYSTEM_ICON_KLEIN = "system-icon-klein";
-//    public static final String SYSTEM_TOOLBAR_FILME = "Toolbar-Filme";
-//    public static final String SYSTEM_ICON_KLEIN_FILME = "system-icon-groesse-Filme";
-//    public static final String SYSTEM_TOOLBAR_DOWNLOAD = "Toolbar-Download";
-//    public static final String SYSTEM_ICON_KLEIN_DOWNLOAD = "system-icon-groesse-Download";
-//    public static final String SYSTEM_TOOLBAR_ABO = "Toolbar-Abo";
-//    public static final String SYSTEM_ICON_KLEIN_ABO = "system-icon-groesse-Abo";
-//    public static final String SYSTEM_TAB_FILME_ICON_ANZEIGEN = "system-tab-filme-icon-anzeigen";
-//    public static final String SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN = "system-tab-download-icon-anzeigen";
-//    public static final String SYSTEM_TAB_ABO_ICON_ANZEIGEN = "system-tab-abo-icon-anzeigen";
-//    public static final String SYSTEM_TAB_FILME_ICON_KLEIN = "system-tab-filme-icon-klein";
-//    public static final String SYSTEM_TAB_DOWNLOAD_ICON_KLEIN = "system-tab-download-icon-klein";
-//    public static final String SYSTEM_TAB_ABO_ICON_KLEIN = "system-tab-abo-icon-klein";
-    // Extrafenster
-//    public static final String SYSTEM_FENSTER_DOWNLOAD = "Fenster-Download";
-//    public static final String SYSTEM_GROESSE_DOWNLOAD = "Groesse-Download";
-//    public static final String SYSTEM_FENSTER_ABO = "Fenster-Abo";
-//    public static final String SYSTEM_GROESSE_ABO = "Groesse-Abo";
-//    public static final String SYSTEM_FENSTER_MELDUNGEN = "Fenster-Meldungen";
-//    public static final String SYSTEM_VIS_MELDUNGEN = "Vis-Meldungen";
-//    public static final String SYSTEM_GROESSE_MELDUNGEN = "Groesse-Meldungen";
-//    public static final String SYSTEM_FENSTER_FILTER = "Fenster-Filter";
-//    public static final String SYSTEM_VIS_FILTER = "Vis-Filter";
-//    public static final String SYSTEM_GROESSE_FILTER = "Groesse-Filter";
-    //Einstellungen Filmliste
-//    public static final String SYSTEM_IMPORT_ART_FILME = "update-filme"; // url automatisch suchen - oder nur manuell
-//    public static final String SYSTEM_URL_FILMLISTEN = "system-url-filmlisten";
-//    public static final String SYSTEM_IMPORT_URL_MANUELL = "system-import-url-manuell";
-//    public static final String SYSTEM_EXPORT_DATEI = "system-export-datei";
-//    public static final String SYSTEM_ANZ_TAGE_FILMLISTE = "system-anz-tage-filmilste"; // es werden nur die x letzten Tage geladen
-    // Filter
-//    public static final String SYSTEM_FILTER_TAGE = "filter-tage-start"; // in Tagen
-//    public static final String SYSTEM_FILTER_DAUER = "filter-dauer-start"; // in Minuten
-//    public static final String SYSTEM_FILTER_PROFILE__DAUER = "filter-dauer";
-//    public static final String SYSTEM_FILTER_PROFILE__TAGE = "filter-tage"; // index im Array GuiFilme.COMBO_ZEIT_INT
-//    public static final String SYSTEM_FILTER_PROFILE__KEINE_ABO = "filter-keineAbo";
-//    public static final String SYSTEM_FILTER_PROFILE__KEINE_GESEHENE = "filter-keineGesehen";
-//    public static final String SYSTEM_FILTER_PROFILE__NUR_HD = "filter-nurHd";
-//    public static final String SYSTEM_FILTER_PROFILE__NUR_NEUE = "filter-nurNeue";
-//    public static final String SYSTEM_FILTER_PROFILE__BLACKLIST_ON = "filter-blacklist-aus";
-//    public static final String SYSTEM_FILTER_PROFILE__NAME = "filter-name";
-    //
-//    public static final String SYSTEM_FILTER_PROFILE__SENDER = "filter-sender";
-//    public static final String SYSTEM_FILTER_PROFILE__THEMA = "filter-thema";
-//    public static final String SYSTEM_FILTER_PROFILE__TITEL = "filter-titel";
-//    public static final String SYSTEM_FILTER_PROFILE__THEMA_TITEL = "filter-themaTitel";
-//    public static final String SYSTEM_FILTER_PROFILE__TT = "filter-TT-oder-irgendwo";
-//    public static final String SYSTEM_FILTER_PROFILE__ANZAHL_FILTER = "filter-anzahl";
-    // Programmpfade
-//    public static final String SYSTEM_PFAD_VLC = "pfad-vlc";
-//    public static final String SYSTEM_PFAD_FLVSTREAMER = "pfad-flvstreamer";
-//    public static final String SYSTEM_PFAD_FFMPEG = "pfad-ffmpeg";
-//    public static final String SYSTEM_VERSION_PROGRAMMSET = "Version-Programmset";
-    // Blacklist
-//    public static final String SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN = "Blacklist-Zukunft-nicht-anzeigen";
-//    public static final String SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN = "Blacklist-Geo-nicht-anzeigen";
-//    public static final String SYSTEM_BLACKLIST_AUCH_ABO = "Blacklist-auch-Abo";
-//    public static final String SYSTEM_BLACKLIST_START_ON = "Blacklist-Start-ausgeschaltet";
-//    public static final String SYSTEM_BLACKLIST_ON = "Blacklist-ausgeschaltet";
-//    public static final String SYSTEM_BLACKLIST_IST_WHITELIST = "Blacklist-ist-Whitelist";
-//    public static final String SYSTEM_BLACKLIST_FILMLAENGE = "Blacklist-Filmlaenge";
-    // Download
-//    public static final String SYSTEM_DIALOG_DOWNLOAD_D_STARTEN = "Dialog-Download-D-Starten"; // DialogDownload: Download sofort starten
-//    public static final String SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT = "Dialog-Download-Starten-Zeit";
-//    public static final String SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN = "Dialog-Download-Shutdown";
-//    public static final String SYSTEM_DOWNLOAD_SOFORT_STARTEN = "Download-sofort-starten";
-//    public static final String SYSTEM_DOWNLOAD_BEEP = "Download-Beep";
-//    public static final String SYSTEM_BANDBREITE_KBYTE = "maxBandbreite";
-//    public static final String SYSTEM_MAX_DOWNLOAD = "maxDownload";
-//    public static final String SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER = "max1DownloadProServer"; // nur ein Download pro Server - sonst max 2
-//    public static final String SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN = "Pfade-zum-Speichern"; // gesammelten Downloadpfade im Downloaddialog
-//    public static final String SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN = "Letzen-Pfad-anzeigen";
-    // Abo
-//    public static final String SYSTEM_ABO_MIN_SIZE = "Abo-Mindestdauer-Minuten";
-    // MediaDB
-//    public static final String SYSTEM_MEDIA_DB_DIALOG_GROESSE = "Media_DB_Dialog-Groesse";
-//    public static final String SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN = "Media_DB_Dialog-anzeigen";
-//    public static final String SYSTEM_MEDIA_DB_ECHTZEITSUCHE = "Media_DB_Echtzeitsuche";
-//    public static final String SYSTEM_MEDIA_DB_SUFFIX = "Media_DB_Suffix";
-//    public static final String SYSTEM_MEDIA_DB_SUFFIX_OHNE = "Media_DB_ohne-Suffix";
-//    public static final String SYSTEM_MEDIA_DB_EXPORT_DATEI = "Media_DB_export-datei";
-    private static final HashMap<String, String> hashmap = new HashMap<>();
-
     public static synchronized void add(String key, String value) {
-        hashmap.put(key, value);
+        HASHMAP.put(key, value);
     }
 
     public static synchronized void add(Configs key, String value) {
-        hashmap.put(key.cValue, value);
+        HASHMAP.put(key.cValue, value);
     }
 
     public static synchronized void add(Configs key, String value, int i, int max) {
         boolean ok = false;
         String[] sa = {""};
-        String s = hashmap.get(key.cValue);
+        String s = HASHMAP.get(key.cValue);
         if (s != null) {
             sa = split(s);
             if (sa.length == max) {
@@ -372,27 +257,22 @@ public class MVConfig {
                 s += TRENNER;
             }
         }
-        hashmap.put(key.cValue, s);
-    }
-
-    public static synchronized String get(String key) {
-        String s = hashmap.get(key);
-        return s == null ? "" : s;
+        HASHMAP.put(key.cValue, s);
     }
 
     public static synchronized String get(Configs key) {
-        String s = hashmap.get(key.cValue);
+        String s = HASHMAP.get(key.cValue);
         return s == null ? "" : s;
     }
 
     public static synchronized int getInt(Configs key) {
         int ret;
         try {
-            ret = Integer.parseInt(hashmap.get(key.cValue));
+            ret = Integer.parseInt(HASHMAP.get(key.cValue));
         } catch (Exception ignore) {
             MVConfig.add(key.cValue, key.initValue);
             try {
-                ret = Integer.parseInt(hashmap.get(key.cValue));
+                ret = Integer.parseInt(HASHMAP.get(key.cValue));
             } catch (Exception ig) {
                 ret = 0;
             }
@@ -402,14 +282,14 @@ public class MVConfig {
 
     public static synchronized String get(Configs key, int i) {
         String[] sa;
-        String s = hashmap.get(key.cValue);
+        String s = HASHMAP.get(key.cValue);
         if (s == null) {
             return "";
         } else {
             sa = split(s);
         }
         if (sa.length <= i) {
-            hashmap.remove(key.cValue);
+            HASHMAP.remove(key.cValue);
             return "";
         } else {
             return sa[i];
@@ -418,11 +298,11 @@ public class MVConfig {
 
     public static synchronized String[][] getAll() {
         LinkedList<String[]> liste = new LinkedList<>();
-        String[] setArray = hashmap.keySet().toArray(new String[]{});
+        String[] setArray = HASHMAP.keySet().toArray(new String[]{});
         for (String entry : setArray) {
             String[] s = new String[2];
             s[0] = entry;
-            s[1] = hashmap.get(entry);
+            s[1] = HASHMAP.get(entry);
             liste.add(s);
         }
         listeSort(liste, 0);

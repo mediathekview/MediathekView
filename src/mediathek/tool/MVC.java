@@ -20,23 +20,17 @@
 package mediathek.tool;
 
 import java.awt.Color;
+import mediathek.config.MVConfig;
 
 public class MVC {
 
-    public String name = "";
+    public MVConfig.Configs configs = null;
     public String text = "";
     public Color color = new Color(0);
     public Color colorReset = new Color(0);
 
-    public MVC(Color ccolor, String ttext) {
-        name = "FARBE__" + ttext.replace(" ", "");
-        name = name.replace(",", "");
-        name = name.replace("ä", "ae");
-        name = name.replace("ö", "oe");
-        name = name.replace("ü", "ue");
-        name = name.replace("Ä", "Ae");
-        name = name.replace("Ö", "Oe");
-        name = name.replace("Ü", "Ue");
+    public MVC(MVConfig.Configs configs, Color ccolor, String ttext) {
+        this.configs = configs;
         text = ttext;
         color = ccolor;
         colorReset = ccolor;

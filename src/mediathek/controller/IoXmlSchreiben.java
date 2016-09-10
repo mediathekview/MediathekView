@@ -240,7 +240,7 @@ public class IoXmlSchreiben {
                 writer.writeCharacters("\n"); //neue Zeile
             }
             for (String[] xmlSpalte : xmlSpalten) {
-                if (MVConfig.Configs.find(xmlSpalte[0]) == null) {
+                if (!MVConfig.Configs.find(xmlSpalte[0])) {
                     continue; //nur Configs schreiben die es noch gibt
                 }
                 if (newLine) {

@@ -357,7 +357,7 @@ public class Daten {
         // download-timeout Wert zwischen 5s und 1000s möglich
         int timeout = MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN);
         if (timeout < 5 || timeout > 1000) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.cValue, "");
+            MVConfig.add(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.initValue);
         }
 
         Log.sysLog("");
