@@ -15,18 +15,14 @@ import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.TimerTask;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import mSearch.tool.DbgMsg;
 import mSearch.tool.Functions.OperatingSystemType;
 import static mSearch.tool.Functions.getOs;
-import mediathek.controller.starter.Start;
 import mediathek.config.Daten;
-import mediathek.daten.DatenDownload;
 import mediathek.config.MVConfig;
+import mediathek.controller.starter.Start;
+import mediathek.daten.DatenDownload;
 
 /**
  * This class will manage and display the download bandwidth chart display.
@@ -115,7 +111,7 @@ public class MVBandwidthMonitor {
      */
     public void toggleVisibility() {
         final boolean isSelected = menuItem.isSelected();
-        MVConfig.add(MVConfig.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(menuItem.isSelected()));
+        MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(menuItem.isSelected()));
         hudWindow.getJDialog().setVisible(isSelected);
         try {
             if (menuItem.isSelected()) {

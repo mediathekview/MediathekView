@@ -19,9 +19,6 @@
  */
 package mediathek.gui;
 
-import mediathek.config.MVConfig;
-import mediathek.tool.MVFilmSize;
-import mSearch.tool.Listener;
 import info.monitorenter.gui.chart.Chart2D;
 import info.monitorenter.gui.chart.IAxis;
 import info.monitorenter.gui.chart.labelformatters.LabelFormatterAutoUnits;
@@ -38,10 +35,13 @@ import javax.swing.*;
 import mSearch.tool.DbgMsg;
 import mSearch.tool.Functions.OperatingSystemType;
 import static mSearch.tool.Functions.getOs;
-import mediathek.controller.MVBandwidthTokenBucket;
+import mSearch.tool.Listener;
 import mediathek.config.Daten;
+import mediathek.config.MVConfig;
+import mediathek.controller.MVBandwidthTokenBucket;
 import mediathek.daten.DownloadInfos;
-import mediathek.tool.*;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.MVFilmSize;
 
 public class MVDownloadInfo extends javax.swing.JPanel {
 
@@ -137,7 +137,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
             }
             int b = jSliderBandwidth.getValue() * 10;
             jLabelBandwidth.setText(b + " kByte/s");
-            MVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
+            MVConfig.add(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
             Listener.notify(Listener.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getName());
         });
 
@@ -148,9 +148,9 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         // size
         jPanelChart.setMinimumSize(new Dimension());
         jPanelInfo.setMinimumSize(new Dimension());
-        if (GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_INFODIALOG, jDialog, parent)) {
+        if (GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_INFODIALOG, jDialog, parent)) {
             try {
-                final double divider = Double.parseDouble(MVConfig.get(MVConfig.SYSTEM_DIVIDER_INFODIALOG));
+                final double divider = Double.parseDouble(MVConfig.get(MVConfig.Configs.SYSTEM_DIVIDER_INFODIALOG));
                 addWL(divider);
             } catch (Exception ignored) {
                 addWL(0.5);
@@ -229,7 +229,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
             divider = 1.0;
         }
 
-        MVConfig.add(MVConfig.SYSTEM_DIVIDER_INFODIALOG, String.valueOf(divider));
+        MVConfig.add(MVConfig.Configs.SYSTEM_DIVIDER_INFODIALOG, String.valueOf(divider));
 
     }
 
@@ -244,10 +244,10 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         int bandbreiteKByte;
         String ret;
         try {
-            bandbreiteKByte = Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
+            bandbreiteKByte = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE));
         } catch (Exception ex) {
             bandbreiteKByte = MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE;
-            MVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE + "");
+            MVConfig.add(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE, MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE + "");
         }
         slider.setValue(bandbreiteKByte / 10);
 
@@ -267,10 +267,10 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         int bandbreiteKByte;
         String ret;
         try {
-            bandbreiteKByte = Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_BANDBREITE_KBYTE));
+            bandbreiteKByte = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE));
         } catch (Exception ex) {
             bandbreiteKByte = MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE;
-            MVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE + "");
+            MVConfig.add(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE, MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE + "");
         }
         if (bandbreiteKByte == MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE) {
             ret = "aus";
@@ -285,7 +285,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
      */
     public void toggleVisibility() {
         final boolean isSelected = menuItem.isSelected();
-        MVConfig.add(MVConfig.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(menuItem.isSelected()));
+        MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(menuItem.isSelected()));
         jDialog.setVisible(isSelected);
         try {
             if (menuItem.isSelected()) {

@@ -49,7 +49,7 @@ public class MVNotification {
     }
 
     private static void add(String[] mmeldung, boolean fehler) {
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_NOTIFICATION))) {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_NOTIFICATION))) {
             String meldung = "<html><head></head><body><p>";
             for (String s : mmeldung) {
                 meldung += s + "<br />";

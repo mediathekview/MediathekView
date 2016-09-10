@@ -27,9 +27,9 @@ import javax.swing.JFrame;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.FilenameUtils;
 import mSearch.tool.Log;
-import mediathek.config.MVConfig;
 import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
+import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
@@ -40,8 +40,8 @@ public class MVInfoFile {
     public static void writeInfoFile(JFrame paFrame, Daten daten, DatenFilm film) {
         String titel = film.arr[DatenFilm.FILM_TITEL];
         titel = FilenameUtils.replaceLeerDateiname(titel, false /*pfad*/,
-                Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)),
-                Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ONLY_ASCII)));
+                Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
+                Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
         String pfad = "";
         ListePset lp = Daten.listePset.getListeSpeichern();
         if (lp.size() > 0) {

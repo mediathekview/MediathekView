@@ -112,7 +112,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
                 beenden();
             }
         };
-        GuiFunktionen.setSize(MVConfig.SYSTEM_MEDIA_DB_DIALOG_GROESSE, this, parent);
+        GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, this, parent);
     }
 
     @Override
@@ -129,7 +129,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
     }
 
     public final void setVis() {
-        this.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
+        this.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
         Listener.notify(Listener.EREIGNIS_DIALOG_MEDIA_DB, DialogMediaDB.class.getName());
     }
 
@@ -141,8 +141,8 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
     public void setFilter(String titel) {
         titel = FilenameUtils.replaceLeerDateiname(titel, false /*pfad*/,
-                Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)),
-                Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ONLY_ASCII))); // mit den eingestellten Ersetzungen bearbeiten
+                Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
+                Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII))); // mit den eingestellten Ersetzungen bearbeiten
         jTextFieldSearch.setText(titel);
     }
 
@@ -229,7 +229,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
     }
 
     private void beenden() {
-        MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.FALSE.toString());
+        MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.FALSE.toString());
         setVis();
     }
 
@@ -417,7 +417,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
         private void tus() {
             Filter.checkPattern1(jTextFieldSearch);
-            if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE))) {
+            if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_ECHTZEITSUCHE))) {
                 searchFilmInDb();
             }
         }

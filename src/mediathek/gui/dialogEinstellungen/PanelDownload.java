@@ -24,9 +24,9 @@ import javax.swing.JFrame;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import mSearch.tool.Listener;
-import mediathek.config.MVConfig;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
+import mediathek.config.MVConfig;
 import mediathek.gui.MVDownloadInfo;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
@@ -61,12 +61,12 @@ public class PanelDownload extends PanelVorlage {
                 setSliderBandwith();
             }
         });
-        jCheckBoxNotification.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_NOTIFICATION)));
-        jCheckBoxNotification.addActionListener(e -> MVConfig.add(MVConfig.SYSTEM_NOTIFICATION, Boolean.toString(jCheckBoxNotification.isSelected())));
-        jCheckBoxBeep.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DOWNLOAD_BEEP)));
-        jCheckBoxBeep.addActionListener(ae -> MVConfig.add(MVConfig.SYSTEM_DOWNLOAD_BEEP, String.valueOf(jCheckBoxBeep.isSelected())));
-        jCheckBoxServer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER)));
-        jCheckBoxServer.addActionListener(ae -> MVConfig.add(MVConfig.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER, String.valueOf(jCheckBoxServer.isSelected())));
+        jCheckBoxNotification.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_NOTIFICATION)));
+        jCheckBoxNotification.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_NOTIFICATION, Boolean.toString(jCheckBoxNotification.isSelected())));
+        jCheckBoxBeep.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_BEEP)));
+        jCheckBoxBeep.addActionListener(ae -> MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_BEEP, String.valueOf(jCheckBoxBeep.isSelected())));
+        jCheckBoxServer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER)));
+        jCheckBoxServer.addActionListener(ae -> MVConfig.add(MVConfig.Configs.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER, String.valueOf(jCheckBoxServer.isSelected())));
         jButtonBeep.addActionListener(ae -> Toolkit.getDefaultToolkit().beep());
         jSliderBandbreite.setMinimum(5); //50 kByte/s
         jSliderBandbreite.setMaximum(100); //1.000 kByte/s
@@ -77,7 +77,7 @@ public class PanelDownload extends PanelVorlage {
             }
             int bandbreiteKByte = jSliderBandbreite.getValue() * 10;
             jLabelBandwidth.setText(bandbreiteKByte + " kByte/s");
-            MVConfig.add(MVConfig.SYSTEM_BANDBREITE_KBYTE, String.valueOf(bandbreiteKByte));
+            MVConfig.add(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE, String.valueOf(bandbreiteKByte));
             Listener.notify(Listener.EREIGNIS_BANDBREITE, PanelDownload.class.getName());
         });
     }
@@ -89,10 +89,10 @@ public class PanelDownload extends PanelVorlage {
     }
 
     private void initSpinner() {
-        if (MVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD).equals("")) {
-            MVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
+        if (MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD).equals("")) {
+            MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD, "1");
         }
-        jSpinnerDownload.setValue(Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD)));
+        jSpinnerDownload.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)));
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -277,7 +277,7 @@ public class PanelDownload extends PanelVorlage {
 
         @Override
         public void stateChanged(ChangeEvent arg0) {
-            MVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD,
+            MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD,
                     String.valueOf(((Number) jSpinnerDownload.getModel().getValue()).intValue()));
             Listener.notify(Listener.EREIGNIS_ANZAHL_DOWNLOADS, PanelDownload.class.getSimpleName());
         }

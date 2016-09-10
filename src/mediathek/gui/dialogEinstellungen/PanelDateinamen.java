@@ -28,10 +28,10 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import mSearch.tool.Listener;
-import mediathek.config.MVConfig;
 import mSearch.tool.ReplaceList;
-import mediathek.config.Icons;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
+import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.TModel;
@@ -124,17 +124,17 @@ public class PanelDateinamen extends PanelVorlage {
         jTextFieldVon.addMouseListener(new TextCopyPaste());
 
         jCheckBoxTable.addActionListener(e -> {
-            MVConfig.add(MVConfig.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected()));
+            MVConfig.add(MVConfig.Configs.SYSTEM_USE_REPLACETABLE, Boolean.toString(jCheckBoxTable.isSelected()));
             setColor(jCheckBoxTable, jCheckBoxTable.isSelected());
         });
-        jCheckBoxTable.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)));
+        jCheckBoxTable.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)));
         setColor(jCheckBoxTable, jCheckBoxTable.isSelected());
 
         jCheckBoxAscii.addActionListener(e -> {
-            MVConfig.add(MVConfig.SYSTEM_ONLY_ASCII, Boolean.toString(jCheckBoxAscii.isSelected()));
+            MVConfig.add(MVConfig.Configs.SYSTEM_ONLY_ASCII, Boolean.toString(jCheckBoxAscii.isSelected()));
             setColor(jCheckBoxAscii, jCheckBoxAscii.isSelected());
         });
-        jCheckBoxAscii.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ONLY_ASCII)));
+        jCheckBoxAscii.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
         setColor(jCheckBoxAscii, jCheckBoxAscii.isSelected());
     }
 

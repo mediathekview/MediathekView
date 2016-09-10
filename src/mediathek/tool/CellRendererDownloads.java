@@ -19,26 +19,20 @@
  */
 package mediathek.tool;
 
-import mediathek.config.MVColor;
-import mediathek.config.MVConfig;
-import mSearch.tool.Listener;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 import javax.swing.table.DefaultTableCellRenderer;
+import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
+import mediathek.config.MVColor;
+import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 
@@ -81,11 +75,11 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
         download_clear_sw_tab = Icons.ICON_TABELLE_DOWNOAD_CLEAR_SW;
         download_del_tab = Icons.ICON_TABELLE_DOWNOAD_DEL;
         download_del_sw_tab = Icons.ICON_TABELLE_DOWNOAD_DEL_SW;
-        geoMelden = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_GEO_MELDEN));
+        geoMelden = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_GEO_MELDEN));
         Listener.addListener(new Listener(Listener.EREIGNIS_GEO, CellRendererDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                geoMelden = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_GEO_MELDEN));
+                geoMelden = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_GEO_MELDEN));
             }
         });
 
@@ -409,7 +403,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
         if (datenDownload.start == null
                 && geoMelden
                 && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO].isEmpty()
-                && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO].contains(MVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
+                && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO].contains(MVConfig.get(MVConfig.Configs.SYSTEM_GEO_STANDORT))) {
             if (isSelected) {
                 setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND_SEL.color);
             } else {

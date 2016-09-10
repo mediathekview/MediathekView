@@ -352,7 +352,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         DatenAbo abo;
         Iterator<DatenFilm> itFilm;
         // prüfen ob in "alle Filme" oder nur "nach Blacklist" gesucht werden soll
-        boolean checkWithBlackList = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO));
+        boolean checkWithBlackList = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO));
         itFilm = Daten.listeFilme.iterator();
         while (itFilm.hasNext()) {
             film = itFilm.next();
@@ -567,7 +567,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // get: erstes passendes Element der Liste zurückgeben oder null
         // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
         DatenDownload ret = null;
-        if (this.size() > 0 && getDown(Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD)))) {
+        if (this.size() > 0 && getDown(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)))) {
             DatenDownload datenDownload = naechsterStart();
             if (datenDownload != null) {
                 if (datenDownload.start != null) {
@@ -592,7 +592,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
 
             if (datenDownload.start.status == Start.STATUS_ERR
-                    && datenDownload.start.countRestarted < MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART.fValue, MVConfig.PARAMETER_DOWNLOAD_MAX_RESTART)
+                    && datenDownload.start.countRestarted < MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART)
                     && !maxSenderLaufen(datenDownload, 1)) {
                 int restarted = datenDownload.start.countRestarted;
                 if ( /*datenDownload.art == DatenDownload.ART_PROGRAMM && datenDownload.isRestart()   || */datenDownload.art == DatenDownload.ART_DOWNLOAD) {
@@ -641,7 +641,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
 
         int maxProSender = Konstanten.MAX_SENDER_FILME_LADEN;
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER))) {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER))) {
             // dann darf nur ein Download pro Server gestartet werden
             maxProSender = 1;
         }

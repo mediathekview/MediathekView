@@ -216,7 +216,7 @@ public class DirectHttpDownload extends Thread {
         } catch (IOException ignored) {
         }
 
-        int restartCount = MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP.fValue, MVConfig.PARAMETER_DOWNLOAD_MAX_RESTART_HTTP);
+        int restartCount = MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP);
         boolean restart = true;
         while (restart) {
             restart = false;
@@ -229,8 +229,8 @@ public class DirectHttpDownload extends Thread {
                     datenDownload.mVFilmSize.setSize(getContentLength(url));
                     datenDownload.mVFilmSize.setAktSize(0);
                     conn = (HttpURLConnection) url.openConnection();
-                    conn.setConnectTimeout(1000 * MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.fValue, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN));
-                    conn.setReadTimeout(1000 * MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.fValue, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN));
+                    conn.setConnectTimeout(1000 * MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN));
+                    conn.setReadTimeout(1000 * MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN));
 
                     setupHttpConnection(conn);
                     conn.connect();

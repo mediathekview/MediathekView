@@ -24,8 +24,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import mediathek.config.Daten;
-import mediathek.gui.PanelVorlage;
 import mediathek.config.MVConfig;
+import mediathek.gui.PanelVorlage;
 
 public class PanelPset extends PanelVorlage {
 
@@ -35,11 +35,11 @@ public class PanelPset extends PanelVorlage {
         jCheckBoxAlleEinstellungen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MVConfig.add(MVConfig.SYSTEM_ANSICHT_SET_LANG, Boolean.toString(jCheckBoxAlleEinstellungen.isSelected()));
+                MVConfig.add(MVConfig.Configs.SYSTEM_ANSICHT_SET_LANG, Boolean.toString(jCheckBoxAlleEinstellungen.isSelected()));
                 pset();
             }
         });
-        jCheckBoxAlleEinstellungen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ANSICHT_SET_LANG)));
+        jCheckBoxAlleEinstellungen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ANSICHT_SET_LANG)));
         pset();
     }
 

@@ -52,16 +52,16 @@ public class CheckUpdate {
 
     private synchronized void prog() {
         try {
-            if (!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_UPDATE_SUCHEN))) {
+            if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_UPDATE_SUCHEN))) {
                 // will der User nicht
                 return;
             }
 
-//            if (!MVConfig.get(MVConfig.SYSTEM_BUILD_NR).equals(MVFunctionSys.getBuildNr())) {
-//                Log.sysLog("BuildNr geändert, von: " + MVConfig.get(MVConfig.SYSTEM_BUILD_NR) + " auf: " + MVFunctionSys.getBuildNr());
+//            if (!MVConfig.get(MVConfig.Configs.SYSTEM_BUILD_NR).equals(MVFunctionSys.getBuildNr())) {
+//                Log.sysLog("BuildNr geändert, von: " + MVConfig.get(MVConfig.Configs.SYSTEM_BUILD_NR) + " auf: " + MVFunctionSys.getBuildNr());
 //            }
-            if (MVConfig.get(MVConfig.SYSTEM_BUILD_NR).equals(Functions.getBuildNr())
-                    && MVConfig.get(MVConfig.SYSTEM_UPDATE_DATUM).equals(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
+            if (MVConfig.get(MVConfig.Configs.SYSTEM_BUILD_NR).equals(Functions.getBuildNr())
+                    && MVConfig.get(MVConfig.Configs.SYSTEM_UPDATE_DATUM).equals(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
                 // keine neue Version und heute schon gemacht
                 return;
             }
@@ -97,7 +97,7 @@ public class CheckUpdate {
         try {
             SwingUtilities.invokeLater(() -> {
                 ListePset listePsetStandard = ListePsetVorlagen.getStandarset(parent, daten, false /*replaceMuster*/);
-                String version = MVConfig.get(MVConfig.SYSTEM_VERSION_PROGRAMMSET);
+                String version = MVConfig.get(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET);
                 if (listePsetStandard != null) {
                     if (Daten.listePset.size() > 0) {
                         // ansonsten ist die Liste leer und dann gibts immer was
@@ -116,7 +116,7 @@ public class CheckUpdate {
                                 if (!dialogNewSet.morgen) {
                                     // dann auch die Versionsnummer aktualisieren
                                     SysMsg.sysMsg("Setanlegen: Nicht wieder nachfragen");
-                                    MVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
+                                    MVConfig.add(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
                                 }
                                 SysMsg.sysMsg("==========================================");
                                 // dann halt nicht
@@ -130,7 +130,7 @@ public class CheckUpdate {
                     // damit die Variablen ersetzt werden
                     ListePset.progMusterErsetzen(parent, listePsetStandard);
 
-                    MVConfig.add(MVConfig.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
+                    MVConfig.add(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
                     // die Zielpafade anpassen
                     ListePset listePsetOrgSpeichern = Daten.listePset.getListeSpeichern();
                     if (listePsetOrgSpeichern.size() > 0) {

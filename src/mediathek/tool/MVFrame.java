@@ -19,13 +19,14 @@
  */
 package mediathek.tool;
 
-import mediathek.config.Konstanten;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.WindowConstants;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import mediathek.config.MVConfig.Configs;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 
@@ -33,7 +34,7 @@ public class MVFrame extends javax.swing.JFrame {
 
     private final Daten daten;
     private final MediathekGui.TABS state;
-    private String nrGroesse = "";
+    private Configs nrGroesse = null;
 
     public MVFrame(Daten ddaten, PanelVorlage jPanel, MediathekGui.TABS state) {
         initComponents();
@@ -74,13 +75,13 @@ public class MVFrame extends javax.swing.JFrame {
 
     @Override
     public void dispose() {
-        if (!nrGroesse.isEmpty()) {
+        if (nrGroesse == null) {
             GuiFunktionen.getSize(nrGroesse, this);
         }
         super.dispose();
     }
 
-    public void setSize(String nr) {
+    public void setSize(Configs nr) {
         nrGroesse = nr;
         GuiFunktionen.setSize(nr, this, Daten.mediathekGui);
     }

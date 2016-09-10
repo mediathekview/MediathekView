@@ -19,7 +19,6 @@
  */
 package mediathek.gui;
 
-import mediathek.config.MVConfig;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.FileDialog;
 import java.awt.GridLayout;
@@ -37,8 +36,12 @@ import javax.swing.JPanel;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmlisten.FilmlisteLesen;
-import mSearch.tool.*;
+import mSearch.tool.DbgMsg;
+import mSearch.tool.Duration;
+import mSearch.tool.Listener;
+import mSearch.tool.Log;
 import mediathek.config.Daten;
+import mediathek.config.MVConfig;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisten;
 
 public class GuiDebug extends JPanel {
@@ -73,7 +76,7 @@ public class GuiDebug extends JPanel {
                 Daten.listeFilme.clear();
 //                Duration duration = new Duration(MediathekGui.class.getSimpleName());
                 Duration.staticPing("Start");
-                new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+                new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
 //                    new FilmListReader().readFilmListe(new URI("http://www.wp11128329.server-he.de/filme/Filmliste-akt.xz"), Daten.listeFilme);
                 Duration.staticPing("Fertig");
                 Daten.listeFilme.themenLaden();

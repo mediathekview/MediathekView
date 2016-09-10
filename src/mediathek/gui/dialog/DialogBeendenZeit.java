@@ -114,10 +114,10 @@ public class DialogBeendenZeit extends JDialog {
         Date endDate = cal.getTime();
         SpinnerDateModel model = new SpinnerDateModel(now, startDate, endDate, Calendar.MINUTE);
         
-        if (!MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT).isEmpty()) {
+        if (!MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT).isEmpty()) {
             try {
                 String heute = new SimpleDateFormat("yyyyMMdd").format(new Date());
-                heute = heute + MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT);
+                heute = heute + MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT);
                 Date start = new SimpleDateFormat("yyyyMMddHH:mm").parse(heute);
                 
                 if (start.after(startDate)) {
@@ -144,18 +144,18 @@ public class DialogBeendenZeit extends JDialog {
         setCbShutdownCoputer();
         
         cbShutdownComputer.addActionListener(e -> shutdown = cbShutdownComputer.isSelected());
-        cbShutdownComputer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN)));
+        cbShutdownComputer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN)));
         
         btnContinue.addActionListener(e -> {
             final String strSelectedItem = comboActions.getSelectedItem().toString();
-            MVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN, String.valueOf(cbShutdownComputer.isSelected()));
+            MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN, String.valueOf(cbShutdownComputer.isSelected()));
 
             SimpleDateFormat format = ((JSpinner.DateEditor) jSpinnerTime.getEditor()).getFormat();
             format.applyPattern("HH:mm");
             Date sp = (Date) jSpinnerTime.getValue();
             String strDate = format.format(sp);
 
-            MVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT, strDate);
+            MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT, strDate);
 
             switch (strSelectedItem) {
                 case WAIT_FOR_DOWNLOADS_AND_TERMINATE:

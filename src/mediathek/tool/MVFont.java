@@ -32,10 +32,10 @@ public class MVFont {
         int f;
         fontNormal = new JTable().getFont().getSize();
         try {
-            f = Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_FONT_SIZE));
+            f = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_FONT_SIZE));
         } catch (Exception ignore) {
             f = 0;
-            MVConfig.add(MVConfig.SYSTEM_FONT_SIZE, "0");
+            MVConfig.add(MVConfig.Configs.SYSTEM_FONT_SIZE, "0");
         }
         fontSize = getFontSize(f);
     }
@@ -49,7 +49,7 @@ public class MVFont {
     }
 
     public static void resetFontSize() {
-        MVConfig.add(MVConfig.SYSTEM_FONT_SIZE, "0");
+        MVConfig.add(MVConfig.Configs.SYSTEM_FONT_SIZE, "0");
         MVFont.fontSize = getFontSize(0);
         Listener.notify(Listener.EREIGNIS_FONT, GuiFunktionen.class.getSimpleName());
     }
@@ -57,7 +57,7 @@ public class MVFont {
     public static void setFontSize(boolean up) {
         int size;
         try {
-            size = Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_FONT_SIZE));
+            size = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_FONT_SIZE));
         } catch (Exception ex) {
             size = 0;
         }
@@ -70,7 +70,7 @@ public class MVFont {
                 ++size;
             }
         }
-        MVConfig.add(MVConfig.SYSTEM_FONT_SIZE, String.valueOf(size));
+        MVConfig.add(MVConfig.Configs.SYSTEM_FONT_SIZE, String.valueOf(size));
         MVFont.fontSize = getFontSize(size);
         Listener.notify(Listener.EREIGNIS_FONT, GuiFunktionen.class.getSimpleName());
     }

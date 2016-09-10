@@ -85,20 +85,20 @@ public class PanelEinstellungen extends PanelVorlage {
         Listener.addListener(new Listener(Listener.EREIGNIS_TRAYICON, PanelEinstellungen.class.getSimpleName()) {
             @Override
             public void ping() {
-                jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_USE_TRAY)));
+                jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY)));
             }
         });
-        jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ECHTZEITSUCHE)));
-        jCheckBoxEchtzeit.addActionListener(ae -> MVConfig.add(MVConfig.SYSTEM_ECHTZEITSUCHE, Boolean.toString(jCheckBoxEchtzeit.isSelected())));
+        jCheckBoxEchtzeit.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ECHTZEITSUCHE)));
+        jCheckBoxEchtzeit.addActionListener(ae -> MVConfig.add(MVConfig.Configs.SYSTEM_ECHTZEITSUCHE, Boolean.toString(jCheckBoxEchtzeit.isSelected())));
 
-        jCheckBoxTabsTop.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_TOP)));
+        jCheckBoxTabsTop.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TABS_TOP)));
         jCheckBoxTabsTop.addActionListener(ae -> {
-            MVConfig.add(MVConfig.SYSTEM_TABS_TOP, Boolean.toString(jCheckBoxTabsTop.isSelected()));
+            MVConfig.add(MVConfig.Configs.SYSTEM_TABS_TOP, Boolean.toString(jCheckBoxTabsTop.isSelected()));
             Listener.notify(Listener.EREIGNIS_TABS_TOP, PanelEinstellungen.class.getSimpleName());
         });
-        jCheckBoxTabIcon.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TABS_ICON)));
+        jCheckBoxTabIcon.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TABS_ICON)));
         jCheckBoxTabIcon.addActionListener(ae -> {
-            MVConfig.add(MVConfig.SYSTEM_TABS_ICON, Boolean.toString(jCheckBoxTabIcon.isSelected()));
+            MVConfig.add(MVConfig.Configs.SYSTEM_TABS_ICON, Boolean.toString(jCheckBoxTabIcon.isSelected()));
             Listener.notify(Listener.EREIGNIS_TABS_TOP, PanelEinstellungen.class.getSimpleName());
         });
 
@@ -106,15 +106,15 @@ public class PanelEinstellungen extends PanelVorlage {
             jCheckBoxTray.setSelected(false);
             jCheckBoxTray.setEnabled(false);
         } else {
-            jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_USE_TRAY)));
+            jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY)));
             jCheckBoxTray.addActionListener(ae -> {
-                MVConfig.add(MVConfig.SYSTEM_USE_TRAY, Boolean.toString(jCheckBoxTray.isSelected()));
+                MVConfig.add(MVConfig.Configs.SYSTEM_USE_TRAY, Boolean.toString(jCheckBoxTray.isSelected()));
                 Daten.mediathekGui.setTray();
             });
         }
 
-        jCheckBoxSuchen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_UPDATE_SUCHEN)));
-        jCheckBoxSuchen.addActionListener(ae -> MVConfig.add(MVConfig.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBoxSuchen.isSelected())));
+        jCheckBoxSuchen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_UPDATE_SUCHEN)));
+        jCheckBoxSuchen.addActionListener(ae -> MVConfig.add(MVConfig.Configs.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBoxSuchen.isSelected())));
         jButtonSuchen.addActionListener(new BeobSuchen(false));
         jButtonInfos.addActionListener(new BeobSuchen(true));
         jButtonRefresh.addActionListener(e -> fillIconList());
@@ -131,33 +131,33 @@ public class PanelEinstellungen extends PanelVorlage {
         MVMessageDialog.showMessageDialog(this, "Sie müssen die Applikation neu starten damit die Icons genutzt werden können.", "MediathekView", JOptionPane.WARNING_MESSAGE);
         String iconName = jComboBoxIcons.getModel().getElementAt(jComboBoxIcons.getSelectedIndex());
         if (iconName.equals(ICONSET_STANDARD)) {
-            MVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
-            MVConfig.add(MVConfig.SYSTEM_ICON_PFAD, "");
+            MVConfig.add(MVConfig.Configs.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
+            MVConfig.add(MVConfig.Configs.SYSTEM_ICON_PFAD, "");
         } else {
-            MVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.FALSE.toString());
+            MVConfig.add(MVConfig.Configs.SYSTEM_ICON_STANDARD, Boolean.FALSE.toString());
         }
         try {
             File[] files = new File(MVFunctionSys.pathProgramIcons()).listFiles();
             if (files != null) {
                 for (File file : files) {
                     if (file.isDirectory() && file.getName().equals(iconName)) {
-                        MVConfig.add(MVConfig.SYSTEM_ICON_PFAD, file.getAbsolutePath());
+                        MVConfig.add(MVConfig.Configs.SYSTEM_ICON_PFAD, file.getAbsolutePath());
                         break;
                     }
                 }
             }
         } catch (Exception ex) {
-            MVConfig.add(MVConfig.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
-            MVConfig.add(MVConfig.SYSTEM_ICON_PFAD, "");
+            MVConfig.add(MVConfig.Configs.SYSTEM_ICON_STANDARD, Boolean.TRUE.toString());
+            MVConfig.add(MVConfig.Configs.SYSTEM_ICON_PFAD, "");
             Log.errorLog(829304789, ex);
         }
     }
 
     private void initSpinner() {
-        if (MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE).equals("")) {
-            MVConfig.add(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE, "0");
+        if (MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE).equals("")) {
+            MVConfig.add(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE, "0");
         }
-        String s = MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE);
+        String s = MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE);
         if (s.equals("0")) {
             s = ALLE;
         }
@@ -210,7 +210,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-                MVConfig.add(MVConfig.SYSTEM_LOOK, lafClass);  //
+                MVConfig.add(MVConfig.Configs.SYSTEM_LOOK, lafClass);  //
             };
             jComboBoxLookAndFeel.addActionListener(lst);
 
@@ -237,9 +237,9 @@ public class PanelEinstellungen extends PanelVorlage {
 
         jComboBoxIcons.setModel(model);
 
-        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ICON_STANDARD))) {
-            if (!MVConfig.get(MVConfig.SYSTEM_ICON_PFAD).equals("")) {
-                File f = new File(MVConfig.get(MVConfig.SYSTEM_ICON_PFAD));
+        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ICON_STANDARD))) {
+            if (!MVConfig.get(MVConfig.Configs.SYSTEM_ICON_PFAD).equals("")) {
+                File f = new File(MVConfig.get(MVConfig.Configs.SYSTEM_ICON_PFAD));
                 jComboBoxIcons.setSelectedItem(f.getName());
             }
         }
@@ -462,7 +462,7 @@ public class PanelEinstellungen extends PanelVorlage {
             if (s.equals(ALLE)) {
                 s = "0";
             }
-            MVConfig.add(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE, s);
+            MVConfig.add(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE, s);
         }
     }
 

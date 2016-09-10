@@ -19,9 +19,6 @@
  */
 package mediathek.gui.dialog;
 
-import mediathek.tool.MVFilmSize;
-import mediathek.config.MVConfig;
-import mediathek.config.MVColor;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
 import java.awt.FileDialog;
@@ -43,14 +40,15 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import mSearch.daten.DatenFilm;
-import mSearch.tool.*;
-import mediathek.config.Icons;
-import mediathek.config.Daten;
+import mSearch.tool.FilenameUtils;
+import mSearch.tool.Listener;
+import mSearch.tool.Log;
+import mediathek.config.*;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.config.Konstanten;
+import mediathek.tool.MVFilmSize;
 import mediathek.tool.MVMessageDialog;
 
 public class DialogAddDownload extends JDialog {
@@ -98,8 +96,8 @@ public class DialogAddDownload extends JDialog {
         jButtonDelHistory.setIcon(Icons.ICON_BUTTON_DEL);
         jComboBoxPset.setModel(new DefaultComboBoxModel<>(Daten.listePset.getListeSpeichern().getObjectDataCombo()));
 
-        jCheckBoxStarten.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN)));
-        jCheckBoxStarten.addActionListener(e -> MVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, String.valueOf(jCheckBoxStarten.isSelected())));
+        jCheckBoxStarten.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN)));
+        jCheckBoxStarten.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, String.valueOf(jCheckBoxStarten.isSelected())));
         jButtonZiel.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonZiel.setText("");
         if (Daten.listePset.getListeSpeichern().size() == 0) {
@@ -224,11 +222,11 @@ public class DialogAddDownload extends JDialog {
             }
         }
         jButtonDelHistory.addActionListener(e -> {
-            MVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
+            MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
             jComboBoxPfad.setModel(new DefaultComboBoxModel<>(new String[]{orgPfad}));
         });
-        jCheckBoxPfadSpeichern.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)));
-        jCheckBoxPfadSpeichern.addActionListener(e -> MVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN, Boolean.toString(jCheckBoxPfadSpeichern.isSelected())));
+        jCheckBoxPfadSpeichern.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)));
+        jCheckBoxPfadSpeichern.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN, Boolean.toString(jCheckBoxPfadSpeichern.isSelected())));
         setupResolutionButtons();
         calculateAndCheckDiskSpace();
         nameGeaendert = false;
@@ -332,20 +330,20 @@ public class DialogAddDownload extends JDialog {
     private void setModelPfad(String pfad) {
         ArrayList<String> pfade = new ArrayList<>();
         // wenn gewünscht, den letzten verwendeten Pfad an den Anfang setzen
-        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)) && !pfad.isEmpty()) {
+        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)) && !pfad.isEmpty()) {
             // aktueller Pfad an Platz 1
             pfade.add(pfad);
 
         }
-        if (!MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).isEmpty()) {
-            String[] p = MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).split("<>");
+        if (!MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).isEmpty()) {
+            String[] p = MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).split("<>");
             for (String s : p) {
                 if (!pfade.contains(s)) {
                     pfade.add(s);
                 }
             }
         }
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)) && !pfad.isEmpty()) {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)) && !pfad.isEmpty()) {
             // aktueller Pfad zum Schluss
             if (!pfade.contains(pfad)) {
                 pfade.add(pfad);
@@ -374,7 +372,7 @@ public class DialogAddDownload extends JDialog {
                 }
             }
         }
-        MVConfig.add(MVConfig.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, s);
+        MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, s);
     }
 
     /**

@@ -95,7 +95,7 @@ public class GuiAbo extends PanelVorlage {
     //private
     //===================================
     private void setToolbarVisible() {
-        toolBar.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
+        toolBar.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
     }
 
     private void initBeobachter() {

@@ -10,10 +10,10 @@ import java.net.URL;
 import java.util.Enumeration;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
-import mSearch.tool.Listener;
 import mediathek.config.MVConfig;
 import mediathek.gui.AboutDialog;
 
@@ -159,11 +159,11 @@ public class MediathekGuiMac extends MediathekGui {
 
     private int getNumberOfDownloads() {
         int numDownloads;
-        if (MVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD).equals("")) {
-            MVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, "1");
+        if (MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD).equals("")) {
+            MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD, "1");
             numDownloads = 1;
         } else {
-            numDownloads = Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_MAX_DOWNLOAD));
+            numDownloads = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD));
         }
 
         return numDownloads;
@@ -181,7 +181,7 @@ public class MediathekGuiMac extends MediathekGui {
             menuItem.addActionListener(e -> {
                 final AbstractButton btn = (AbstractButton) e.getSource();
                 if (btn != null) {
-                    MVConfig.add(MVConfig.SYSTEM_MAX_DOWNLOAD, btn.getText());
+                    MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD, btn.getText());
                     Listener.notify(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
                 }
             });

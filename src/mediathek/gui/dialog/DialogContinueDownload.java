@@ -246,7 +246,7 @@ public class DialogContinueDownload extends JDialog {
      */
     private class CountdownAction implements ActionListener {
 
-        private int w = MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN.fValue, MVConfig.PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN);
+        private int w = MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN);
 
         @Override
         public void actionPerformed(ActionEvent e) {

@@ -95,7 +95,7 @@ public class FilmeLaden {
 //        @Override
 //        public synchronized void run() {
 //            Duration.staticPing("Thread: Filmliste laden");
-//            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+//            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
 //
 //            SysMsg.sysMsg("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
 //            SysMsg.sysMsg("  erstellt am: " + Daten.listeFilme.genDate());
@@ -105,7 +105,7 @@ public class FilmeLaden {
 //            Daten.listeFilme.themenLaden();
 //            Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
 //            Daten.listeDownloads.filmEintragen(); // Filme bei einmalDownloads eintragen
-//            MVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
+//            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
 //
 //            if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO && Daten.listeFilme.isTooOld()) {
 //                SysMsg.sysMsg("Neue Filmliste laden");
@@ -158,12 +158,12 @@ public class FilmeLaden {
             if (dateiUrl.equals("")) {
                 // Filme als Liste importieren, Url automatisch ermitteln
                 SysMsg.sysMsg("Filmliste laden (auto)");
-                importFilmliste.filmeImportierenAuto(Daten.listeFilme, diffListe, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+                importFilmliste.filmeImportierenAuto(Daten.listeFilme, diffListe, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
             } else {
                 // Filme als Liste importieren, feste URL/Datei
                 SysMsg.sysMsg("Filmliste laden von: " + dateiUrl);
                 Daten.listeFilme.clear();
-                importFilmliste.filmeImportierenDatei(dateiUrl, Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+                importFilmliste.filmeImportierenDatei(dateiUrl, Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
             }
         }
     }
@@ -186,7 +186,7 @@ public class FilmeLaden {
             Daten.listeFilmeNachBlackList.clear();
             // Filme als Liste importieren, feste URL/Datei
             SysMsg.sysMsg("Filmliste laden von: " + dateiUrl);
-            importFilmliste.filmeImportierenDatei(dateiUrl, diffListe, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+            importFilmliste.filmeImportierenDatei(dateiUrl, diffListe, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
         }
     }
 
@@ -254,7 +254,7 @@ public class FilmeLaden {
             // dann die alte Liste wieder laden
             Daten.listeFilme.clear();
             Config.setStop(false);
-            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
             SysMsg.sysMsg("");
         } else {
             Daten.filmlisteSpeichern();

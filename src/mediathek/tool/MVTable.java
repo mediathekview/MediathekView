@@ -57,7 +57,7 @@ public final class MVTable extends JTable {
     public boolean iconKlein = false;
     private final int[] breite;
     private final int[] reihe;
-    private String nrDatenSystem = "";
+    private MVConfig.Configs nrDatenSystem = null;
     private TableType tabelle;
     private int maxSpalten;
     private List<? extends RowSorter.SortKey> listeSortKeys = null;
@@ -68,8 +68,8 @@ public final class MVTable extends JTable {
     private int selIndex = -1;
     private int selRow = -1;
     private boolean[] spaltenAnzeigen;
-    private String iconAnzeigenStr = "";
-    private String iconKleinStr = "";
+    private MVConfig.Configs iconAnzeigenStr = null;
+    private MVConfig.Configs iconKleinStr = null;
 
     /**
      * Return the type of this MVTable.
@@ -92,9 +92,9 @@ public final class MVTable extends JTable {
                 maxSpalten = DatenFilm.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenFilm.spaltenAnzeigen, DatenFilm.MAX_ELEM);
                 indexSpalte = DatenFilm.FILM_NR;
-                nrDatenSystem = MVConfig.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME;
-                iconAnzeigenStr = MVConfig.SYSTEM_TAB_FILME_ICON_ANZEIGEN;
-                iconKleinStr = MVConfig.SYSTEM_TAB_FILME_ICON_KLEIN;
+                nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_FILME;
+                iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_FILME_ICON_ANZEIGEN;
+                iconKleinStr = MVConfig.Configs.SYSTEM_TAB_FILME_ICON_KLEIN;
                 this.setModel(new TModelFilm(new Object[][]{}, spaltenTitel));
                 this.getTableHeader().addMouseListener(new WidthAdjuster(this));
                 break;
@@ -103,9 +103,9 @@ public final class MVTable extends JTable {
                 maxSpalten = DatenDownload.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenDownload.spaltenAnzeigen, DatenDownload.MAX_ELEM);
                 indexSpalte = DatenDownload.DOWNLOAD_NR;
-                nrDatenSystem = MVConfig.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS;
-                iconAnzeigenStr = MVConfig.SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN;
-                iconKleinStr = MVConfig.SYSTEM_TAB_DOWNLOAD_ICON_KLEIN;
+                nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS;
+                iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN;
+                iconKleinStr = MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_ICON_KLEIN;
                 setDragEnabled(true);
                 setDropMode(DropMode.INSERT_ROWS);
                 setTransferHandler(new TableRowTransferHandlerDownload(this));
@@ -117,9 +117,9 @@ public final class MVTable extends JTable {
                 maxSpalten = DatenAbo.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenAbo.spaltenAnzeigen, DatenAbo.MAX_ELEM);
                 indexSpalte = DatenAbo.ABO_NR;
-                nrDatenSystem = MVConfig.SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS;
-                iconAnzeigenStr = MVConfig.SYSTEM_TAB_ABO_ICON_ANZEIGEN;
-                iconKleinStr = MVConfig.SYSTEM_TAB_ABO_ICON_KLEIN;
+                nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS;
+                iconAnzeigenStr = MVConfig.Configs.SYSTEM_TAB_ABO_ICON_ANZEIGEN;
+                iconKleinStr = MVConfig.Configs.SYSTEM_TAB_ABO_ICON_KLEIN;
                 this.setModel(new TModelAbo(new Object[][]{}, spaltenTitel));
                 this.getTableHeader().addMouseListener(new WidthAdjuster(this));
                 break;
@@ -128,7 +128,7 @@ public final class MVTable extends JTable {
                 maxSpalten = DatenPset.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenPset.spaltenAnzeigen, DatenPset.MAX_ELEM);
                 indexSpalte = 0;
-                nrDatenSystem = "";
+                nrDatenSystem = null;
                 this.setModel(new TModel(new Object[][]{}, spaltenTitel));
                 this.setRowSorter(null);
                 this.setAutoCreateRowSorter(false); // Reihenfolge ist die Anzeige der Button!
@@ -139,7 +139,7 @@ public final class MVTable extends JTable {
                 maxSpalten = DatenProg.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(DatenProg.spaltenAnzeigen, DatenProg.MAX_ELEM);
                 indexSpalte = 0;
-                nrDatenSystem = "";
+                nrDatenSystem = null;
                 this.setModel(new TModel(new Object[][]{}, spaltenTitel));
                 this.getTableHeader().addMouseListener(new WidthAdjuster(this));
                 break;
@@ -148,17 +148,17 @@ public final class MVTable extends JTable {
                 maxSpalten = DatenMediaDB.MAX_ELEM;
                 spaltenAnzeigen = getSpaltenEinAus(new boolean[DatenMediaDB.MAX_ELEM], DatenMediaDB.MAX_ELEM);
                 indexSpalte = 0;
-                nrDatenSystem = MVConfig.SYSTEM_EIGENSCHAFTEN_TABELLE_MEDIA_DB;
+                nrDatenSystem = MVConfig.Configs.SYSTEM_EIGENSCHAFTEN_TABELLE_MEDIA_DB;
                 this.setModel(new TModel(new Object[][]{}, spaltenTitel));
                 this.getTableHeader().addMouseListener(new WidthAdjuster(this));
                 break;
         }
         breite = getArray(maxSpalten);
         reihe = getArray(maxSpalten);
-        if (!iconAnzeigenStr.isEmpty()) {
+        if (iconAnzeigenStr!=null) {
             iconAnzeigen = Boolean.parseBoolean(MVConfig.get(iconAnzeigenStr));
         }
-        if (!iconKleinStr.isEmpty()) {
+        if (iconKleinStr!=null) {
             iconKlein = Boolean.parseBoolean(MVConfig.get(iconKleinStr));
         }
         setHeight();
@@ -247,7 +247,7 @@ public final class MVTable extends JTable {
         // den Standardwerten
         // erst die Breite, dann die Reihenfolge
         try {
-            if (nrDatenSystem.isEmpty()) {
+            if (nrDatenSystem==null) {
                 // wird nur für eingerichtete Tabellen gemacht
                 return;
             }
@@ -768,10 +768,10 @@ public final class MVTable extends JTable {
             }
         }
         MVConfig.add(nrDatenSystem, b + FELDTRENNER + r + FELDTRENNER + s + FELDTRENNER + upDown);
-        if (!iconAnzeigenStr.isEmpty()) {
+        if (iconAnzeigenStr!=null) {
             MVConfig.add(iconAnzeigenStr, String.valueOf(iconAnzeigen));
         }
-        if (!iconKleinStr.isEmpty()) {
+        if (iconKleinStr!=null) {
             MVConfig.add(iconKleinStr, String.valueOf(iconKlein));
         }
     }

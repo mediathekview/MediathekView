@@ -151,8 +151,8 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         setFilter();
         tage = 0; // soll nur im TabFilme ausgewertet werden (Filter: Tage)
         blacklistOn = true; // Blacklist nur wenn "auch für Abos" geklickt, egal ob ein- oder ausgeschaltet
-        zukunftNichtAnzeigen = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
-        geoNichtAnzeigen = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN));
+        zukunftNichtAnzeigen = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
+        geoNichtAnzeigen = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN));
         jetzt = getZeitZukunftBlacklist();
         return checkFilm(film);
     }
@@ -164,7 +164,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     private void setFilter() {
         try {
-            //if (MVConfig.get(MVConfig.SYSTEM_FILTER_TAGE).equals("") || MVConfig.get(MVConfig.SYSTEM_FILTER_TAGE).equals("0")) {
+            //if (MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_TAGE).equals("") || MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_TAGE).equals("0")) {
             if (Daten.guiFilme.getFilterTage() == 0) {
                 tage = 0;
             } else {
@@ -175,13 +175,13 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             tage = 0;
         }
         try {
-            filmlaengeSoll = Long.valueOf(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE)) * 60; // Minuten
+            filmlaengeSoll = Long.valueOf(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE)) * 60; // Minuten
         } catch (Exception ex) {
             filmlaengeSoll = 0;
         }
-        blacklistOn = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_ON));
-        zukunftNichtAnzeigen = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
-        geoNichtAnzeigen = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN));
+        blacklistOn = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON));
+        zukunftNichtAnzeigen = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
+        geoNichtAnzeigen = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN));
         jetzt = getZeitZukunftBlacklist();
     }
 
@@ -203,7 +203,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         }
         // keine Geo-gesperrten Filme
         if (geoNichtAnzeigen) {
-            if (!film.arr[DatenFilm.FILM_GEO].isEmpty() && !film.arr[DatenFilm.FILM_GEO].contains(MVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
+            if (!film.arr[DatenFilm.FILM_GEO].isEmpty() && !film.arr[DatenFilm.FILM_GEO].contains(MVConfig.get(MVConfig.Configs.SYSTEM_GEO_STANDORT))) {
                 return false;
             }
         }
@@ -225,10 +225,10 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                     ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL].toLowerCase().split(","),
                     new String[]{""}, 0, film, true /*auch die Länge prüfen*/
             )) {
-                return Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST));
+                return Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
             }
         }
-        return !Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST));
+        return !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
     }
 
     private boolean checkFilm_(DatenFilm film) {
@@ -245,7 +245,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         }
         // keine Geo-gesperrten Filme
         if (geoNichtAnzeigen) {
-            if (!film.arr[DatenFilm.FILM_GEO].isEmpty() && !film.arr[DatenFilm.FILM_GEO].contains(MVConfig.get(MVConfig.SYSTEM_GEO_STANDORT))) {
+            if (!film.arr[DatenFilm.FILM_GEO].isEmpty() && !film.arr[DatenFilm.FILM_GEO].contains(MVConfig.get(MVConfig.Configs.SYSTEM_GEO_STANDORT))) {
                 return false;
             }
         }
@@ -267,10 +267,10 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                             ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL].split(","),
                     new String[]{""}, 0, film, true /*auch die Länge prüfen*/
             )) {
-                return Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST));
+                return Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
             }
         }
-        return !Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST));
+        return !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
     }
 
     private boolean checkDate(DatenFilm film) {
