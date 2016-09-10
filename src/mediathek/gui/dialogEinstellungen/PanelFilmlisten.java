@@ -34,9 +34,9 @@ import javax.swing.event.DocumentListener;
 import mSearch.filmlisten.DatenFilmlisteUrl;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
-import mediathek.config.MVConfig;
-import mediathek.config.Icons;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
+import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.TModel;
 
@@ -405,7 +405,7 @@ public class PanelFilmlisten extends PanelVorlage {
         }
 
         private void tus() {
-            MVConfig.add(MVConfig.SYSTEM_IMPORT_URL_MANUELL, jTextFieldUrl.getText());
+            MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_URL_MANUELL, jTextFieldUrl.getText());
         }
     }
 }

@@ -131,14 +131,14 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
 
     public synchronized void createMediaDB(String pfad) {
         Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, ListeMediaDB.class.getSimpleName());
-        suffix = MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX).split(",");
+        suffix = MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX).split(",");
         for (int i = 0; i < suffix.length; ++i) {
             suffix[i] = suffix[i].toLowerCase();
             if (!suffix[i].isEmpty() && !suffix[i].startsWith(".")) {
                 suffix[i] = "." + suffix[i];
             }
         }
-        ohneSuffix = Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE));
+        ohneSuffix = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX_OHNE));
 
         makeIndex = true;
         if (pfad.isEmpty()) {

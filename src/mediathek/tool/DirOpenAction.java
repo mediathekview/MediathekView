@@ -26,7 +26,6 @@ import java.awt.Frame;
 import java.io.File;
 import javax.swing.JOptionPane;
 import mSearch.tool.Log;
-import mediathek.config.Daten;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 
@@ -48,8 +47,8 @@ public class DirOpenAction {
             if (!sFile.exists()) {
                 sFile = sFile.getParentFile();
             }
-            if (!MVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN).isEmpty()) {
-                String programm = MVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN);
+            if (!MVConfig.get(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN).isEmpty()) {
+                String programm = MVConfig.get(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN);
                 arrProgCallArray[0] = programm;
                 arrProgCallArray[1] = sFile.getAbsolutePath();
                 Runtime.getRuntime().exec(arrProgCallArray);
@@ -68,7 +67,7 @@ public class DirOpenAction {
             try {
                 gut = false;
                 String programm = "";
-                if (MVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN).equals("")) {
+                if (MVConfig.get(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN).equals("")) {
                     String text = "\n Der Dateimanager zum Anzeigen des Speicherordners wird nicht gefunden.\n Dateimanager selbst auswählen.";
                     DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(parent, true, "", "Dateimanager suchen", text);
                     dialog.setVisible(true);
@@ -76,14 +75,14 @@ public class DirOpenAction {
                         programm = dialog.ziel;
                     }
                 } else {
-                    programm = MVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN);
+                    programm = MVConfig.get(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN);
                 }
                 if (sFile != null) {
                     arrProgCallArray[0] = programm;
                     arrProgCallArray[1] = sFile.getAbsolutePath();
                     Runtime.getRuntime().exec(arrProgCallArray);
                     //Runtime.getRuntime().exec(programm + " " + sFile.getAbsolutePath());
-                    MVConfig.add(MVConfig.SYSTEM_ORDNER_OEFFNEN, programm);
+                    MVConfig.add(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, programm);
                     Listener.notify(Listener.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
                     gut = true;
                 }
@@ -92,7 +91,7 @@ public class DirOpenAction {
             }
         } finally {
             if (!gut) {
-                MVConfig.add(MVConfig.SYSTEM_ORDNER_OEFFNEN, "");
+                MVConfig.add(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, "");
                 Listener.notify(Listener.EREIGNIS_PROGRAMM_OEFFNEN, GuiDownloads.class.getSimpleName());
                 MVMessageDialog.showMessageDialog(parent, "Kann den Dateimanager nicht öffnen!",
                         "Fehler", JOptionPane.ERROR_MESSAGE);

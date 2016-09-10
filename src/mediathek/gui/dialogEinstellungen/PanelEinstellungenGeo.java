@@ -22,14 +22,14 @@ package mediathek.gui.dialogEinstellungen;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
+import mSearch.daten.DatenFilm;
+import mSearch.tool.Listener;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
+import mediathek.config.MVConfig;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
-import mSearch.tool.Listener;
-import mediathek.config.MVConfig;
-import mSearch.daten.DatenFilm;
-import mediathek.config.Icons;
 
 public class PanelEinstellungenGeo extends PanelVorlage {
 
@@ -41,7 +41,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
     }
 
     private void init() {
-        switch (MVConfig.get(MVConfig.SYSTEM_GEO_STANDORT)) {
+        switch (MVConfig.get(MVConfig.Configs.SYSTEM_GEO_STANDORT)) {
             case DatenFilm.GEO_CH:
                 jRadioButtonCH.setSelected(true);
                 break;
@@ -61,7 +61,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                MVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);
+                MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);
                 melden();
             }
         });
@@ -69,7 +69,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                MVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_CH);
+                MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_CH);
                 melden();
             }
         });
@@ -77,7 +77,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                MVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_AT);
+                MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_AT);
                 melden();
             }
         });
@@ -85,7 +85,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                MVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_EU);
+                MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_EU);
                 melden();
             }
         });
@@ -93,16 +93,16 @@ public class PanelEinstellungenGeo extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                MVConfig.add(MVConfig.SYSTEM_GEO_STANDORT, DatenFilm.GEO_WELT);
+                MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_WELT);
                 melden();
             }
         });
-        jCheckBoxMarkieren.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_GEO_MELDEN)));
+        jCheckBoxMarkieren.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_GEO_MELDEN)));
         jCheckBoxMarkieren.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                MVConfig.add(MVConfig.SYSTEM_GEO_MELDEN, String.valueOf(jCheckBoxMarkieren.isSelected()));
+                MVConfig.add(MVConfig.Configs.SYSTEM_GEO_MELDEN, String.valueOf(jCheckBoxMarkieren.isSelected()));
                 melden();
             }
         });

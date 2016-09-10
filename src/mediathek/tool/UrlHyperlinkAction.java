@@ -29,7 +29,6 @@ import javax.swing.Action;
 import javax.swing.JFrame;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
-import mediathek.config.Daten;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 
 public class UrlHyperlinkAction extends AbstractAction {
@@ -65,7 +64,7 @@ public class UrlHyperlinkAction extends AbstractAction {
             }
             try {
                 String programm = "";
-                if (MVConfig.get(MVConfig.SYSTEM_URL_OEFFNEN).equals("")) {
+                if (MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN).equals("")) {
                     String text = "\n Der Browser zum Anzeigen der URL wird nicht gefunden.\n Browser selbst auswählen.";
                     DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(paFrame, true, "", "Browser suchen", text);
                     dialog.setVisible(true);
@@ -73,14 +72,14 @@ public class UrlHyperlinkAction extends AbstractAction {
                         programm = dialog.ziel;
                     }
                 } else {
-                    programm = MVConfig.get(MVConfig.SYSTEM_URL_OEFFNEN);
+                    programm = MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN);
                 }
                 String[] cmd = {programm, url};
                 Runtime.getRuntime().exec(cmd);
-                MVConfig.add(MVConfig.SYSTEM_URL_OEFFNEN, programm);
+                MVConfig.add(MVConfig.Configs.SYSTEM_URL_OEFFNEN, programm);
                 Listener.notify(Listener.EREIGNIS_PROGRAMM_OEFFNEN, UrlHyperlinkAction.class.getSimpleName());
             } catch (Exception ex) {
-                MVConfig.add(MVConfig.SYSTEM_URL_OEFFNEN, ""); // dann wars wohl nix
+                MVConfig.add(MVConfig.Configs.SYSTEM_URL_OEFFNEN, ""); // dann wars wohl nix
                 Log.errorLog(316497658, ex, "URL öffnen: " + url);
             }
         }

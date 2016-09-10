@@ -84,42 +84,42 @@ public class PanelMediaDB extends PanelVorlage {
         jTableMediaDB.setDefaultRenderer(Object.class, cellRenderer);
         jTableMediaDB.setModel(modelMediaDB);
         
-        jTextFieldSuffix.setText(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX));
+        jTextFieldSuffix.setText(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX));
         jTextFieldSuffix.getDocument().addDocumentListener(new DocumentListener() {
             
             @Override
             public void insertUpdate(DocumentEvent e) {
-                MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
+                MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
             }
             
             @Override
             public void removeUpdate(DocumentEvent e) {
-                MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
+                MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
             }
             
             @Override
             public void changedUpdate(DocumentEvent e) {
-                MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
+                MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX, jTextFieldSuffix.getText());
             }
         });
-        jTextFieldExportPath.setText(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_EXPORT_DATEI));
+        jTextFieldExportPath.setText(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_EXPORT_DATEI));
         jTextFieldExportPath.getDocument().addDocumentListener(new BeobTextFeld());
         jTextFieldExportPath.addMouseListener(new TextCopyPaste());
         jTextFieldPath.addMouseListener(new TextCopyPaste());
         jTextFieldSuffix.addMouseListener(new TextCopyPaste());
         
-        jRadioButtonOhneSuffix.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE)));
-        jRadioButtonMitSuffix.setSelected(!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE)));
+        jRadioButtonOhneSuffix.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX_OHNE)));
+        jRadioButtonMitSuffix.setSelected(!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX_OHNE)));
         jRadioButtonOhneSuffix.addActionListener((ActionEvent e) -> {
-            MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE, Boolean.toString(jRadioButtonOhneSuffix.isSelected()));
+            MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX_OHNE, Boolean.toString(jRadioButtonOhneSuffix.isSelected()));
         });
         jRadioButtonMitSuffix.addActionListener((ActionEvent e) -> {
-            MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_SUFFIX_OHNE, Boolean.toString(jRadioButtonOhneSuffix.isSelected()));
+            MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX_OHNE, Boolean.toString(jRadioButtonOhneSuffix.isSelected()));
         });
         
-        jCheckBoxMediaDB.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE)));
+        jCheckBoxMediaDB.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_ECHTZEITSUCHE)));
         jCheckBoxMediaDB.addActionListener((ActionEvent ae) -> {
-            MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_ECHTZEITSUCHE, Boolean.toString(jCheckBoxMediaDB.isSelected()));
+            MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_ECHTZEITSUCHE, Boolean.toString(jCheckBoxMediaDB.isSelected()));
         });
         
         jButtonMakeIndex.addActionListener((ActionEvent e) -> {
@@ -834,7 +834,7 @@ public class PanelMediaDB extends PanelVorlage {
         }
         
         void tusEinfach(DocumentEvent e) {
-            MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_EXPORT_DATEI, jTextFieldExportPath.getText());
+            MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_EXPORT_DATEI, jTextFieldExportPath.getText());
         }
     }
     

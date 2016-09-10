@@ -24,13 +24,13 @@ import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-import mediathek.config.MVConfig;
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
-import mediathek.config.Konstanten;
 
 public class DialogEinstellungen extends javax.swing.JFrame {
 
@@ -113,7 +113,7 @@ public class DialogEinstellungen extends javax.swing.JFrame {
         ddaten = d;
         init();
         initTree();
-        GuiFunktionen.setSize(MVConfig.SYSTEM_GROESSE_EINSTELLUNGEN, this, Daten.mediathekGui);
+        GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, this, Daten.mediathekGui);
         this. setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
         jButtonBeenden.addActionListener(e -> beenden());
         new EscBeenden(this) {

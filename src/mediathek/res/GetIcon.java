@@ -51,11 +51,11 @@ public class GetIcon {
 
     public static ImageIcon getIcon(String strIcon, String path, int w, int h) {
         ImageIcon icon;
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ICON_STANDARD))) {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ICON_STANDARD))) {
             icon = getStandard(strIcon, path);
         } else {
             try {
-                String pfad = GuiFunktionen.addsPfad(MVConfig.get(MVConfig.SYSTEM_ICON_PFAD), strIcon);
+                String pfad = GuiFunktionen.addsPfad(MVConfig.get(MVConfig.Configs.SYSTEM_ICON_PFAD), strIcon);
                 if (new File(pfad).exists()) {
                     icon = new ImageIcon(pfad);
                 } else {

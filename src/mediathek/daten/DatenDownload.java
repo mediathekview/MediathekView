@@ -19,9 +19,6 @@
  */
 package mediathek.daten;
 
-import mediathek.tool.MVFilmSize;
-import mediathek.config.MVConfig;
-import mediathek.config.Daten;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,10 +26,13 @@ import java.util.Date;
 import java.util.LinkedList;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.*;
+import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import mediathek.config.MVConfig;
 import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
 import mediathek.tool.GuiFunktionen;
-import mediathek.config.Konstanten;
+import mediathek.tool.MVFilmSize;
 
 public final class DatenDownload extends MVData<DatenDownload> {
 
@@ -511,8 +511,8 @@ public final class DatenDownload extends MVData<DatenDownload> {
             }
 
             name = FilenameUtils.replaceLeerDateiname(name, false /*pfad*/,
-                    Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)),
-                    Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ONLY_ASCII)));
+                    Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
+                    Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
             name = name + suff;
 
             // prüfen ob das Suffix 2x vorkommt
@@ -562,8 +562,8 @@ public final class DatenDownload extends MVData<DatenDownload> {
                 if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN])) {
                     //und den Namen des Themas an den Zielpfad anhängen
                     path = GuiFunktionen.addsPfad(path, FilenameUtils.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA], true /*pfad*/,
-                            Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)),
-                            Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ONLY_ASCII))));
+                            Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
+                            Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII))));
                 }
             }
 
@@ -653,8 +653,8 @@ public final class DatenDownload extends MVData<DatenDownload> {
 
     private String getField(String name, int length) {
         name = FilenameUtils.replaceLeerDateiname(name, false /*pfad*/,
-                Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)),
-                Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ONLY_ASCII)));
+                Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
+                Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
 
         if (length < 0) {
             return name;

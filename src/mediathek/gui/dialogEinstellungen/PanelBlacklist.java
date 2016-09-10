@@ -72,7 +72,7 @@ public class PanelBlacklist extends PanelVorlage {
         Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_START_GEAENDERT, name) {
             @Override
             public void ping() {
-                jCheckBoxStart.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)));
+                jCheckBoxStart.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)));
                 setCheckBlacklist();
             }
         });
@@ -91,18 +91,18 @@ public class PanelBlacklist extends PanelVorlage {
     }
 
     private void init_() {
-        jCheckBoxAbo.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO)));
-        jCheckBoxStart.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_START_ON)));
-        jCheckBoxBlacklistEingeschaltet.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_ON)));
+        jCheckBoxAbo.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO)));
+        jCheckBoxStart.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)));
+        jCheckBoxBlacklistEingeschaltet.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON)));
 
         setCheckBlacklist();
-        jCheckBoxZukunftNichtAnzeigen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN)));
-        jCheckBoxGeo.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN)));
+        jCheckBoxZukunftNichtAnzeigen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN)));
+        jCheckBoxGeo.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN)));
         try {
-            jSliderMinuten.setValue(Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE)));
+            jSliderMinuten.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE)));
         } catch (Exception ex) {
             jSliderMinuten.setValue(0);
-            MVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, "0");
+            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE, "0");
         }
         tabelleLaden();
     }
@@ -110,38 +110,38 @@ public class PanelBlacklist extends PanelVorlage {
     private void init() {
         jTableBlacklist.addMouseListener(new BeobMausTabelle());
         jTableBlacklist.getSelectionModel().addListSelectionListener(new BeobachterTableSelect());
-        jRadioButtonWhitelist.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST)));
+        jRadioButtonWhitelist.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST)));
         jRadioButtonWhitelist.addActionListener(e -> {
-            MVConfig.add(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
+            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
             notifyBlack();
         });
         jRadioButtonBlacklist.addActionListener(e -> {
-            MVConfig.add(MVConfig.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
+            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST, Boolean.toString(jRadioButtonWhitelist.isSelected()));
             notifyBlack();
         });
         jCheckBoxZukunftNichtAnzeigen.addActionListener(e -> {
-            MVConfig.add(MVConfig.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxZukunftNichtAnzeigen.isSelected()));
+            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxZukunftNichtAnzeigen.isSelected()));
             notifyBlack();
         });
         jCheckBoxGeo.addActionListener(e -> {
-            MVConfig.add(MVConfig.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxGeo.isSelected()));
+            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN, Boolean.toString(jCheckBoxGeo.isSelected()));
             notifyBlack();
         });
         jCheckBoxAbo.addActionListener(e -> {
             setCheckBlacklist();
-            MVConfig.add(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO, Boolean.toString(jCheckBoxAbo.isSelected()));
+            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO, Boolean.toString(jCheckBoxAbo.isSelected()));
             // bei den Downloads melden
             // damit die Änderungen im Eigenschaftendialog auch übernommen werden
             Listener.notify(Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS, name);
         });
         jCheckBoxStart.addActionListener(e -> {
             setCheckBlacklist();
-            MVConfig.add(MVConfig.SYSTEM_BLACKLIST_START_ON, Boolean.toString(jCheckBoxStart.isSelected()));
+            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON, Boolean.toString(jCheckBoxStart.isSelected()));
             Listener.notify(Listener.EREIGNIS_BLACKLIST_START_GEAENDERT, name);
         });
         jCheckBoxBlacklistEingeschaltet.addActionListener(e -> {
             setCheckBlacklist();
-            MVConfig.add(MVConfig.SYSTEM_BLACKLIST_ON, Boolean.toString(jCheckBoxBlacklistEingeschaltet.isSelected()));
+            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.toString(jCheckBoxBlacklistEingeschaltet.isSelected()));
             notifyBlack();
         });
         jButtonHinzufuegen.addActionListener(e -> {
@@ -185,10 +185,10 @@ public class PanelBlacklist extends PanelVorlage {
         jTextFieldTitel.getDocument().addDocumentListener(new BeobFilterTitelDoc());
         jTextFieldThemaTitel.getDocument().addDocumentListener(new BeobFilterTitelDoc());
         try {
-            jSliderMinuten.setValue(Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE)));
+            jSliderMinuten.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE)));
         } catch (Exception ex) {
             jSliderMinuten.setValue(0);
-            MVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, "0");
+            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE, "0");
         }
         jTextFieldMinuten.setText(String.valueOf(jSliderMinuten.getValue()));
         if (jSliderMinuten.getValue() == 0) {
@@ -200,7 +200,7 @@ public class PanelBlacklist extends PanelVorlage {
                 jTextFieldMinuten.setText("alles");
             }
             if (!jSliderMinuten.getValueIsAdjusting()) {
-                MVConfig.add(MVConfig.SYSTEM_BLACKLIST_FILMLAENGE, String.valueOf(jSliderMinuten.getValue()));
+                MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_FILMLAENGE, String.valueOf(jSliderMinuten.getValue()));
                 notifyBlack();
             }
         });

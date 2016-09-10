@@ -167,7 +167,7 @@ public class StarterClass_new {
     }
 
     private static void fertigmeldung(final DatenDownload datenDownload, final Start start, boolean abgebrochen) {
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DOWNLOAD_BEEP))) {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_BEEP))) {
             try {
                 Toolkit.getDefaultToolkit().beep();
             } catch (Exception ignored) {

@@ -19,7 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.config.MVConfig;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
 import java.awt.Component;
@@ -30,37 +29,23 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import mSearch.daten.DatenFilm;
+import mSearch.tool.FilenameUtils;
+import mSearch.tool.Listener;
+import mSearch.tool.Log;
+import mediathek.config.*;
 import mediathek.controller.IoXmlSchreiben;
-import mediathek.config.Daten;
 import mediathek.daten.DatenProg;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
-import mediathek.tool.CellRendererProgramme;
-import mediathek.tool.CellRendererPset;
-import mSearch.tool.FilenameUtils;
-import mediathek.tool.GuiFunktionenProgramme;
-import mediathek.tool.HinweisKeineAuswahl;
-import mediathek.config.Konstanten;
-import mSearch.tool.Listener;
-import mediathek.config.MVColor;
-import mediathek.tool.MVTable;
-import mediathek.tool.TModel;
-import mediathek.tool.UrlHyperlinkAction;
-import mSearch.daten.DatenFilm;
-import mSearch.tool.Log;
-import mediathek.config.Icons;
 import mediathek.tool.*;
 
 public class PanelPsetLang extends PanelVorlage {
@@ -605,8 +590,8 @@ public class PanelPsetLang extends PanelVorlage {
             }
             String name = liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME].equals("") ? "Name.xml" : liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME] + ".xml";
             DialogZielExportPset dialogZiel = new DialogZielExportPset(null, daten, true, exportPfad, FilenameUtils.replaceLeerDateiname(name, false /*pfad*/,
-                    Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_USE_REPLACETABLE)),
-                    Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ONLY_ASCII))));
+                    Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
+                    Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII))));
             dialogZiel.setVisible(true);
             if (dialogZiel.ok) {
                 if (dialogZiel.ziel.contains(File.separator)) {

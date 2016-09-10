@@ -34,13 +34,13 @@ import mSearch.tool.Functions.OperatingSystemType;
 import static mSearch.tool.Functions.getOs;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
-import mediathek.config.MVConfig;
-import mediathek.config.Icons;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
+import mediathek.config.Konstanten;
+import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.GuiFunktionen;
-import mediathek.config.Konstanten;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TextCopyPaste;
 
@@ -65,35 +65,35 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 init();
             }
         });
-        jCheckBoxAboSuchen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN)));
-        jCheckBoxAboSuchen.addActionListener(e -> MVConfig.add(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.toString(jCheckBoxAboSuchen.isSelected())));
-        jCheckBoxDownloadSofortStarten.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN)));
-        jCheckBoxDownloadSofortStarten.addActionListener(e -> MVConfig.add(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.toString(jCheckBoxDownloadSofortStarten.isSelected())));
+        jCheckBoxAboSuchen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN)));
+        jCheckBoxAboSuchen.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN, Boolean.toString(jCheckBoxAboSuchen.isSelected())));
+        jCheckBoxDownloadSofortStarten.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN)));
+        jCheckBoxDownloadSofortStarten.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN, Boolean.toString(jCheckBoxDownloadSofortStarten.isSelected())));
 
         // ====================================
-        jButtonProgrammDateimanager.addActionListener(new BeobPfad(MVConfig.SYSTEM_ORDNER_OEFFNEN, "Dateimanager suchen", jTextFieldProgrammDateimanager));
-        jButtonProgrammVideoplayer.addActionListener(new BeobPfad(MVConfig.SYSTEM_PLAYER_ABSPIELEN, "Videoplayer suchen", jTextFieldVideoplayer));
-        jButtonProgrammUrl.addActionListener(new BeobPfad(MVConfig.SYSTEM_URL_OEFFNEN, "Browser suchen", jTextFieldProgrammUrl));
-        jButtonProgrammShutdown.addActionListener(new BeobPfad(MVConfig.SYSTEM_LINUX_SHUTDOWN, "Shutdown Befehl", jTextFieldProgrammShutdown));
+        jButtonProgrammDateimanager.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, "Dateimanager suchen", jTextFieldProgrammDateimanager));
+        jButtonProgrammVideoplayer.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN, "Videoplayer suchen", jTextFieldVideoplayer));
+        jButtonProgrammUrl.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_URL_OEFFNEN, "Browser suchen", jTextFieldProgrammUrl));
+        jButtonProgrammShutdown.addActionListener(new BeobPfad(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN, "Shutdown Befehl", jTextFieldProgrammShutdown));
 
-        jTextFieldProgrammDateimanager.setText(MVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN));
-        jTextFieldProgrammDateimanager.getDocument().addDocumentListener(new BeobDoc(MVConfig.SYSTEM_ORDNER_OEFFNEN, jTextFieldProgrammDateimanager));
+        jTextFieldProgrammDateimanager.setText(MVConfig.get(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN));
+        jTextFieldProgrammDateimanager.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN, jTextFieldProgrammDateimanager));
         jTextFieldProgrammDateimanager.addMouseListener(new TextCopyPaste());
 
-        jTextFieldVideoplayer.setText(MVConfig.get(MVConfig.SYSTEM_PLAYER_ABSPIELEN));
-        jTextFieldVideoplayer.getDocument().addDocumentListener(new BeobDoc(MVConfig.SYSTEM_PLAYER_ABSPIELEN, jTextFieldVideoplayer));
+        jTextFieldVideoplayer.setText(MVConfig.get(MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN));
+        jTextFieldVideoplayer.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_PLAYER_ABSPIELEN, jTextFieldVideoplayer));
         jTextFieldVideoplayer.addMouseListener(new TextCopyPaste());
 
-        jTextFieldProgrammUrl.setText(MVConfig.get(MVConfig.SYSTEM_URL_OEFFNEN));
-        jTextFieldProgrammUrl.getDocument().addDocumentListener(new BeobDoc(MVConfig.SYSTEM_URL_OEFFNEN, jTextFieldProgrammUrl));
+        jTextFieldProgrammUrl.setText(MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN));
+        jTextFieldProgrammUrl.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_URL_OEFFNEN, jTextFieldProgrammUrl));
         jTextFieldProgrammUrl.addMouseListener(new TextCopyPaste());
 
-        jTextFieldProgrammShutdown.setText(MVConfig.get(MVConfig.SYSTEM_LINUX_SHUTDOWN));
+        jTextFieldProgrammShutdown.setText(MVConfig.get(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN));
         if (jTextFieldProgrammShutdown.getText().isEmpty()) {
             jTextFieldProgrammShutdown.setText(Konstanten.SHUTDOWN_LINUX);
-            MVConfig.add(MVConfig.SYSTEM_LINUX_SHUTDOWN, Konstanten.SHUTDOWN_LINUX);
+            MVConfig.add(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN, Konstanten.SHUTDOWN_LINUX);
         }
-        jTextFieldProgrammShutdown.getDocument().addDocumentListener(new BeobDoc(MVConfig.SYSTEM_LINUX_SHUTDOWN, jTextFieldProgrammShutdown));
+        jTextFieldProgrammShutdown.getDocument().addDocumentListener(new BeobDoc(MVConfig.Configs.SYSTEM_LINUX_SHUTDOWN, jTextFieldProgrammShutdown));
         jTextFieldProgrammShutdown.addMouseListener(new TextCopyPaste());
 
         if (getOs() != OperatingSystemType.LINUX) {
@@ -110,11 +110,11 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jRadioButtonManuel.setSelected(!Daten.isUserAgentAuto());
 
         jTextFieldUserAgent.setEditable(!Daten.isUserAgentAuto());
-        jTextFieldUserAgent.setText(MVConfig.get(MVConfig.SYSTEM_USER_AGENT));
+        jTextFieldUserAgent.setText(MVConfig.get(MVConfig.Configs.SYSTEM_USER_AGENT));
         jTextFieldAuto.setText(Konstanten.USER_AGENT_DEFAULT);
 
-        jTextFieldProgrammDateimanager.setText(MVConfig.get(MVConfig.SYSTEM_ORDNER_OEFFNEN));
-        jTextFieldProgrammUrl.setText(MVConfig.get(MVConfig.SYSTEM_URL_OEFFNEN));
+        jTextFieldProgrammDateimanager.setText(MVConfig.get(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN));
+        jTextFieldProgrammUrl.setText(MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN));
     }
 
     private void setUserAgent() {
@@ -530,10 +530,10 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
     private class BeobDoc implements DocumentListener {
 
-        String config;
+        MVConfig.Configs config;
         JTextField txt;
 
-        public BeobDoc(String config, JTextField txt) {
+        public BeobDoc(MVConfig.Configs config, JTextField txt) {
             this.config = config;
             this.txt = txt;
         }
@@ -561,11 +561,11 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
 
     private class BeobPfad implements ActionListener {
 
-        String config;
+        MVConfig.Configs config;
         String title;
         JTextField textField;
 
-        public BeobPfad(String config, String title, JTextField textField) {
+        public BeobPfad(MVConfig.Configs config, String title, JTextField textField) {
             this.config = config;
             this.title = title;
             this.textField = textField;

@@ -19,7 +19,6 @@
  */
 package mediathek.tool;
 
-import mediathek.config.Konstanten;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -33,8 +32,10 @@ import javax.swing.SwingUtilities;
 import mSearch.tool.Functions.OperatingSystemType;
 import static mSearch.tool.Functions.getOs;
 import mSearch.tool.Log;
-import mediathek.config.MVConfig;
 import mediathek.MediathekGui;
+import mediathek.config.Konstanten;
+import mediathek.config.MVConfig;
+import mediathek.config.MVConfig.Configs;
 
 public class GuiFunktionen extends MVFunctionSys {
 
@@ -56,7 +57,7 @@ public class GuiFunktionen extends MVFunctionSys {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
     }
 
-    public static void getSize(String nr, JFrame jFrame) {
+    public static void getSize(Configs nr, JFrame jFrame) {
         if (jFrame != null) {
             MVConfig.add(nr, jFrame.getSize().width + ":"
                     + jFrame.getSize().height + ":"
@@ -65,7 +66,7 @@ public class GuiFunktionen extends MVFunctionSys {
         }
     }
 
-    public static void getSize(String nr, JDialog jDialog) {
+    public static void getSize(Configs nr, JDialog jDialog) {
         if (jDialog != null) {
             MVConfig.add(nr, jDialog.getSize().width + ":"
                     + jDialog.getSize().height + ":"
@@ -74,7 +75,7 @@ public class GuiFunktionen extends MVFunctionSys {
         }
     }
 
-    public static void setSize(String nr, JFrame jFrame, JFrame relativFrame) {
+    public static void setSize(Configs nr, JFrame jFrame, JFrame relativFrame) {
         int breite, hoehe, posX, posY;
         breite = 0;
         hoehe = 0;
@@ -104,7 +105,7 @@ public class GuiFunktionen extends MVFunctionSys {
         }
     }
 
-    public static boolean setSize(String nr, JDialog jDialog, JFrame relativFrame) {
+    public static boolean setSize(Configs nr, JDialog jDialog, JFrame relativFrame) {
         boolean ret = false;
         int breite, hoehe, posX, posY;
         breite = 0;
@@ -327,9 +328,9 @@ public class GuiFunktionen extends MVFunctionSys {
     public static int getImportArtFilme() {
         int ret;
         try {
-            ret = Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_IMPORT_ART_FILME));
+            ret = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME));
         } catch (Exception ex) {
-            MVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUTO));
+            MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUTO));
             ret = Konstanten.UPDATE_FILME_AUTO;
         }
         return ret;

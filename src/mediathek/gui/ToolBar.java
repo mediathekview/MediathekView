@@ -27,10 +27,10 @@ import javax.swing.*;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Listener;
-import mediathek.config.MVConfig;
 import mediathek.MediathekGui;
-import mediathek.config.Icons;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
+import mediathek.config.MVConfig;
 import mediathek.tool.Filter;
 import org.jdesktop.swingx.JXSearchField;
 
@@ -57,8 +57,8 @@ public final class ToolBar extends JToolBar {
     MVButton jButtonInfo = null;
     public JXSearchField jTextFieldFilter;
 
-    private String nrToolbar = "";
-    private String nrIconKlein = MVConfig.SYSTEM_ICON_KLEIN;
+    private MVConfig.Configs nrToolbar = null;
+   private MVConfig.Configs nrIconKlein = MVConfig.Configs.SYSTEM_ICON_KLEIN;
     private final Daten daten;
     BeobMausToolBar beobMausToolBar = new BeobMausToolBar();
     boolean extern = false;
@@ -72,17 +72,17 @@ public final class ToolBar extends JToolBar {
         this.state = state;
         switch (state) {
             case TAB_FILME:
-                nrToolbar = MVConfig.SYSTEM_TOOLBAR_FILME;
+                nrToolbar = MVConfig.Configs.SYSTEM_TOOLBAR_FILME;
                 break;
             case TAB_DOWNLOADS:
-                nrToolbar = MVConfig.SYSTEM_TOOLBAR_DOWNLOAD;
+                nrToolbar = MVConfig.Configs.SYSTEM_TOOLBAR_DOWNLOAD;
                 break;
             case TAB_ABOS:
-                nrToolbar = MVConfig.SYSTEM_TOOLBAR_ABO;
+                nrToolbar = MVConfig.Configs.SYSTEM_TOOLBAR_ABO;
                 break;
             default:
-                nrToolbar = "";
-                nrIconKlein = "";
+                nrToolbar = null;
+                nrIconKlein = null;
         }
         startup();
         setToolbar();
@@ -180,8 +180,8 @@ public final class ToolBar extends JToolBar {
         jButtonFilmAbspielen.addActionListener(e -> Daten.guiFilme.guiFilmeFilmAbspielen());
         jButtonInfo.addActionListener(e -> Daten.filmInfo.showInfo());
         jButtonFilterPanel.addActionListener(e -> {
-            boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_FILTER));
-            MVConfig.add(MVConfig.SYSTEM_VIS_FILTER, Boolean.toString(b));
+            boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER));
+            MVConfig.add(MVConfig.Configs.SYSTEM_VIS_FILTER, Boolean.toString(b));
             filterAnzeigen();
             Listener.notify(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, ToolBar.class.getName());
         });
@@ -299,12 +299,12 @@ public final class ToolBar extends JToolBar {
 
     private void filterAnzeigen() {
         if (state.equals(MediathekGui.TABS.TAB_FILME)) {
-            jTextFieldFilter.setVisible(!Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_VIS_FILTER)));
+            jTextFieldFilter.setVisible(!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER)));
         }
     }
 
     private void loadVisible() {
-        if (!nrToolbar.isEmpty()) {
+        if (nrToolbar!=null) {
             String[] b = MVConfig.get(nrToolbar).split(":");
             if (buttonList.size() == b.length) {
                 // ansonsten gibt es neue Button: dann alle anzeigen
@@ -315,13 +315,13 @@ public final class ToolBar extends JToolBar {
             }
         }
         setToolbar();
-        if (!nrIconKlein.isEmpty()) {
+        if (nrIconKlein!=null) {
             setIcon(Boolean.parseBoolean(MVConfig.get(nrIconKlein)));
         }
     }
 
     private void storeVisible() {
-        if (!nrToolbar.isEmpty()) {
+        if (nrToolbar!=null) {
             MVConfig.add(nrToolbar, "");
             for (MVButton b : buttonList) {
                 if (!MVConfig.get(nrToolbar).isEmpty()) {
@@ -353,7 +353,7 @@ public final class ToolBar extends JToolBar {
         }
 
         void setIcon() {
-            if (!nrIconKlein.isEmpty()) {
+            if (nrIconKlein!=null) {
                 if (Boolean.parseBoolean(MVConfig.get(nrIconKlein))) {
                     this.setIcon(imageIconKlein);
                 } else {
@@ -370,7 +370,7 @@ public final class ToolBar extends JToolBar {
         JCheckBoxMenuItem[] checkBoxMenuItems;
 
         public BeobMausToolBar() {
-            if (!nrIconKlein.isEmpty()) {
+            if (nrIconKlein!=null) {
                 itemKlein.setSelected(Boolean.parseBoolean(MVConfig.get(nrIconKlein)));
             }
         }

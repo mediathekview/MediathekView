@@ -108,14 +108,14 @@ public class PanelMeldungen extends PanelVorlage {
         stopBeob = false;
     }
 
-    private String getNrSystem() {
-        String nr = MVConfig.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN;
+    private MVConfig.Configs getNrSystem() {
+        MVConfig.Configs nr = MVConfig.Configs.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN;
         switch (logArt) {
             case SysMsg.LOG_SYSTEM:
-                nr = MVConfig.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN;
+                nr = MVConfig.Configs.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN;
                 break;
             case SysMsg.LOG_PLAYER:
-                nr = MVConfig.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN;
+                nr = MVConfig.Configs.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN;
                 break;
         }
         return nr;

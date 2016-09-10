@@ -23,9 +23,9 @@ import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
-import mediathek.config.MVConfig;
 import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
+import mediathek.config.MVConfig;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 
 /**
@@ -48,14 +48,14 @@ public class GuiMeldungen extends PanelVorlage {
         setLayout(new BorderLayout());
         add(splitPane, BorderLayout.CENTER);
         try {
-            int divider = Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_BREITE_MELDUNGEN));
+            int divider = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_BREITE_MELDUNGEN));
             if (divider > 0) {
                 splitPane.setDividerLocation(divider);
             }
         } catch (NumberFormatException ignored) {
         }
         splitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, (PropertyChangeEvent pce) -> {
-            MVConfig.add(MVConfig.SYSTEM_BREITE_MELDUNGEN, String.valueOf(splitPane.getDividerLocation()));
+            MVConfig.add(MVConfig.Configs.SYSTEM_BREITE_MELDUNGEN, String.valueOf(splitPane.getDividerLocation()));
         });
     }
 

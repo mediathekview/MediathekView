@@ -177,7 +177,7 @@ public class StarterClass {
     }
 
     private void fertigmeldung(final DatenDownload datenDownload, final Start start, boolean abgebrochen) {
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DOWNLOAD_BEEP))) {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_BEEP))) {
             try {
                 Toolkit.getDefaultToolkit().beep();
             } catch (Exception ignored) {
@@ -849,8 +849,8 @@ public class StarterClass {
                 datenDownload.mVFilmSize.setSize(getContentLength(url));
                 datenDownload.mVFilmSize.setAktSize(0);
                 conn = (HttpURLConnection) url.openConnection();
-                conn.setConnectTimeout(1000 * MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.fValue, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN));
-                conn.setReadTimeout(1000 * MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.fValue, MVConfig.PARAMETER_TIMEOUT_SEKUNDEN));
+                conn.setConnectTimeout(1000 * MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN));
+                conn.setReadTimeout(1000 * MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN));
                 file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
                 if (!cancelDownload()) {
                     setupHttpConnection(conn);

@@ -47,7 +47,7 @@ public class ProgStart {
         public synchronized void run() {
             Duration.staticPing("Programmstart Daten laden");
 
-            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_ANZ_TAGE_FILMLISTE)));
+            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
             SysMsg.sysMsg("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
             SysMsg.sysMsg("  erstellt am: " + Daten.listeFilme.genDate());
             SysMsg.sysMsg("  Anzahl Filme: " + Daten.listeFilme.size());

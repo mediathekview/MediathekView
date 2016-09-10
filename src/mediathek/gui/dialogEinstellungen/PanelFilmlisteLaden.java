@@ -30,13 +30,9 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
-import mediathek.config.MVColor;
-import mediathek.config.MVConfig;
-import mediathek.config.Icons;
-import mediathek.config.Daten;
+import mediathek.config.*;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
-import mediathek.config.Konstanten;
 import mediathek.tool.TextCopyPaste;
 
 public class PanelFilmlisteLaden extends PanelVorlage {
@@ -79,7 +75,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         } else {
             jRadioButtonAuto.setSelected(true);
         }
-        jTextFieldUrl.setText(MVConfig.get(MVConfig.SYSTEM_IMPORT_URL_MANUELL));
+        jTextFieldUrl.setText(MVConfig.get(MVConfig.Configs.SYSTEM_IMPORT_URL_MANUELL));
         setPanelTabelle(jRadioButtonManuell.isSelected());
     }
 
@@ -260,9 +256,9 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             if (!stopBeob) {
                 if (jRadioButtonManuell.isSelected()) {
-                    MVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUS));
+                    MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUS));
                 } else {
-                    MVConfig.add(MVConfig.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUTO));
+                    MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUTO));
                 }
                 // den Dialog gibts 2x
                 Listener.notify(Listener.EREIGNIS_ART_IMPORT_FILMLISTE, this.getClass().getSimpleName());
@@ -325,7 +321,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         }
 
         private void tus() {
-            MVConfig.add(MVConfig.SYSTEM_IMPORT_URL_MANUELL, jTextFieldUrl.getText());
+            MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_URL_MANUELL, jTextFieldUrl.getText());
         }
     }
 }

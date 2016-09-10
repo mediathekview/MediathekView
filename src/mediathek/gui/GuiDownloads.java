@@ -186,7 +186,7 @@ public class GuiDownloads extends PanelVorlage {
     //private
     //===================================
     private void setToolbarVisible() {
-        toolBar.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
+        toolBar.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
     }
 
     private void init() {
@@ -252,7 +252,7 @@ public class GuiDownloads extends PanelVorlage {
             public void actionPerformed(ActionEvent e) {
                 int row = tabelle.getSelectedRow();
                 if (row >= 0) {
-                    MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
+                    MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
                     Daten.dialogMediaDB.setVis();
 
                     DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
@@ -309,7 +309,7 @@ public class GuiDownloads extends PanelVorlage {
             public void fertig(ListenerFilmeLadenEvent event) {
                 loadFilmlist = false;
                 Daten.listeDownloads.filmEintragen();
-                if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN))) {
+                if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN))) {
                     downloadsAktualisieren();
                 } else {
                     reloadTable(); // damit die Filmnummern richtig angezeigt werden
@@ -330,8 +330,8 @@ public class GuiDownloads extends PanelVorlage {
         Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN))
-                        && Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_BLACKLIST_AUCH_ABO))) {
+                if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN))
+                        && Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO))) {
                     // nur auf Blacklist reagieren, wenn auch für Abos eingeschaltet
                     downloadsAktualisieren();
                 }
@@ -341,7 +341,7 @@ public class GuiDownloads extends PanelVorlage {
             Listener.EREIGNIS_LISTE_ABOS}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_ABOS_SOFORT_SUCHEN))) {
+                if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN))) {
                     downloadsAktualisieren();
                 }
             }
@@ -390,7 +390,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void panelBeschreibungSetzen() {
-        jPanelBeschreibung.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN)));
+        jPanelBeschreibung.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN)));
     }
 
     private synchronized void reloadTable() {
@@ -407,7 +407,7 @@ public class GuiDownloads extends PanelVorlage {
 
     private void mediensammlung() {
         DatenDownload datenDownload = getSelDownload();
-        MVConfig.add(MVConfig.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
+        MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
         Daten.dialogMediaDB.setVis();
 
         if (datenDownload != null) {
@@ -424,7 +424,7 @@ public class GuiDownloads extends PanelVorlage {
         Daten.listeDownloads.abosAuffrischen();
         Daten.listeDownloads.abosSuchen(parentComponent);
         reloadTable();
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.SYSTEM_DOWNLOAD_SOFORT_STARTEN))) {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN))) {
             // und wenn gewollt auch gleich starten
             filmStartenWiederholenStoppen(true /*alle*/, true /*starten*/, false /*fertige wieder starten*/);
         }

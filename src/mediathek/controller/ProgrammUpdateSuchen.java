@@ -73,8 +73,8 @@ public class ProgrammUpdateSuchen {
                 if (version.equals("")) {
                     new DialogHinweisUpdate(null, true, "Fehler bei der Versionsprüfung!", "Es ist ein Fehler aufgetreten!" + "\n\n" + "").setVisible(true);
                 } else {
-                    MVConfig.add(MVConfig.SYSTEM_BUILD_NR, Functions.getBuildNr());
-                    MVConfig.add(MVConfig.SYSTEM_UPDATE_DATUM, new SimpleDateFormat("yyyyMMdd").format(new Date()));
+                    MVConfig.add(MVConfig.Configs.SYSTEM_BUILD_NR, Functions.getBuildNr());
+                    MVConfig.add(MVConfig.Configs.SYSTEM_UPDATE_DATUM, new SimpleDateFormat("yyyyMMdd").format(new Date()));
 
                     if (checkObNeueVersion(version, Const.VERSION)) {
                         neueVersion = true;
@@ -104,10 +104,10 @@ public class ProgrammUpdateSuchen {
             try {
                 StringBuilder text = new StringBuilder();
                 int angezeigt = 0;
-                if (MVConfig.get(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT).equals("")) {
-                    MVConfig.add(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(-1));
+                if (MVConfig.get(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT).equals("")) {
+                    MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(-1));
                 } else {
-                    angezeigt = Integer.parseInt(MVConfig.get(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT));
+                    angezeigt = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT));
                 }
                 int idx = 0;
                 for (String[] h : listInfos) {
@@ -121,7 +121,7 @@ public class ProgrammUpdateSuchen {
                 }
                 if (text.length() > 0) {
                     new DialogHinweisUpdate(null, true, "Infos", text.toString()).setVisible(true);
-                    MVConfig.add(MVConfig.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(idx));
+                    MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(idx));
                 }
             } catch (Exception ex) {
                 Log.errorLog(693298731, ex);
