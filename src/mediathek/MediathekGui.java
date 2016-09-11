@@ -218,6 +218,7 @@ public class MediathekGui extends JFrame {
             // erster Start
             ReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
             new DialogStarteinstellungen(this, daten).setVisible(true);
+            MVConfig.loadSystemParameter();
             this.pack();
         }
 

@@ -19,9 +19,17 @@
  */
 package mediathek.config;
 
+import com.jidesoft.utils.SystemInfo;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import mSearch.Const;
+import mSearch.daten.DatenFilm;
+import static mSearch.tool.Functions.getPathJar;
+import mSearch.tool.Log;
+import mediathek.controller.MVBandwidthTokenBucket;
+import mediathek.tool.GuiFunktionenProgramme;
 
 public class MVConfig {
 
@@ -45,40 +53,42 @@ public class MVConfig {
             + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN.cValue + "\n"
             + "\t" + "Beim Dialog \"Download weiterführen\" wird nach dieser Zeit der Download weitergeführt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN.initValue + "\n\n"
             + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.cValue + "\n"
-            + "\t" + "Downloadfehlermeldung wird xx Sedunden lang angezeigt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.initValue + "\n";
+            + "\t" + "Downloadfehlermeldung wird xx Sedunden lang angezeigt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.initValue + "\n"
+            + "\t" + Configs.SYSTEM_PARAMETER_USERAGENT.cValue + "\n"
+            + "\t" + "Useragent für direkte Downloads, Standardwert: " + Configs.SYSTEM_PARAMETER_USERAGENT.initValue + "\n";
 
     public enum Configs {
         //============================================
         //Programm-Configs, änderbar nur im Konfig-File
-        SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN("__system-parameter__download-timeout-sekunden", "250"),//250 Sekunden, wie bei Firefox
-        SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART("__system-parameter__download-max-restart", "5"),// max. Startversuche für fehlgeschlagene Downloads (insgesamt: restart * restart_http Versuche)
-        SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP("__system-parameter__download-max-restart-http", "10"),// max. Startversuche für fehlgeschlagene Downloads, direkt beim Download
-        SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN("__system-parameter__download-weiterfuehren-sekunden", "60"), //Beim Dialog "Download weiterführen" wird in dieser Zeit der Download weitergeführt
-        SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN("__system-parameter__download-fehlermeldung-sekunden", "120"),//Downloadfehlermeldung wird xx Sedunden lang angezeigt
+        SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN("__system-parameter__download-timeout-sekunden_250__", "250"),//250 Sekunden, wie bei Firefox
+        SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART("__system-parameter__download-max-restart_5__", "5"),// max. Startversuche für fehlgeschlagene Downloads (insgesamt: restart * restart_http Versuche)
+        SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP("__system-parameter__download-max-restart-http_10__", "10"),// max. Startversuche für fehlgeschlagene Downloads, direkt beim Download
+        SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN("__system-parameter__download-weiterfuehren-sekunden_60__", "60"), //Beim Dialog "Download weiterführen" wird in dieser Zeit der Download weitergeführt
+        SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN("__system-parameter__download-fehlermeldung-sekunden_120__", "120"),//Downloadfehlermeldung wird xx Sedunden lang angezeigt
+        SYSTEM_PARAMETER_USERAGENT("__system-parameter__useragent_" + Const.VERSION + "__", Konstanten.USER_AGENT_DEFAULT),//Useragent für direkte Downloads
+
         //============================================
         //Programm-Configs, änderbar über Gui
         SYSTEM_BUILD_NR("BuildNr"),
-        SYSTEM_ECHTZEITSUCHE("Echtzeitsuche"),
-        SYSTEM_TABS_TOP("Tabs-oben"),
-        SYSTEM_TABS_ICON("Tabs-Icon"),
-        SYSTEM_USE_TRAY("Tray-anzeigen"),
-        SYSTEM_LOOK("System-look"),
-        SYSTEM_USER_AGENT_AUTO("User-Agent-Auto"),
-        SYSTEM_USER_AGENT("User-Agent"),
-        SYSTEM_UPDATE_SUCHEN("update-suchen"),
+        SYSTEM_ECHTZEITSUCHE("Echtzeitsuche", Boolean.TRUE.toString()),
+        SYSTEM_TABS_TOP("Tabs-oben", SystemInfo.isMacOSX() ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),
+        SYSTEM_TABS_ICON("Tabs-Icon", SystemInfo.isMacOSX() ? Boolean.FALSE.toString() : Boolean.TRUE.toString()),
+        SYSTEM_USE_TRAY("Tray-anzeigen", Boolean.FALSE.toString()),
+        SYSTEM_LOOK("System-look", "0"),
+        SYSTEM_UPDATE_SUCHEN("update-suchen", Boolean.TRUE.toString()),
         SYSTEM_UPDATE_DATUM("update-datum"),
-        SYSTEM_ABOS_SOFORT_SUCHEN("Abos-sofort-suchen"),
+        SYSTEM_ABOS_SOFORT_SUCHEN("Abos-sofort-suchen", Boolean.TRUE.toString()),
         SYSTEM_ZIELNAMEN_ANPASSEN("Zielnamen-anpassen"),
-        SYSTEM_USE_REPLACETABLE("Ersetzungstabelle-verwenden"),
-        SYSTEM_ONLY_ASCII("nur-ascii"),
+        SYSTEM_USE_REPLACETABLE("Ersetzungstabelle-verwenden", SystemInfo.isLinux() || SystemInfo.isMacOSX() ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),// wegen des Problems mit ext. Programmaufrufen und Leerzeichen
+        SYSTEM_ONLY_ASCII("nur-ascii", Boolean.FALSE.toString()),
         SYSTEM_HINWEIS_NR_ANGEZEIGT("Hinweis-Nr-angezeigt"),
         SYSTEM_ORDNER_OEFFNEN("Download-Ordner-oeffnen"),
         SYSTEM_URL_OEFFNEN("Programm-Url-oeffnen"),
         SYSTEM_LINUX_SHUTDOWN("Programm-Linux-Shutdown"),
-        SYSTEM_NOTIFICATION("Notification-anzeigen"),
+        SYSTEM_NOTIFICATION("Notification-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_PLAYER_ABSPIELEN("Player-zum-Abspielen"),
-        SYSTEM_GEO_MELDEN("Geo-melden"),
-        SYSTEM_GEO_STANDORT("Geo-Standort"),
+        SYSTEM_GEO_MELDEN("Geo-melden", Boolean.TRUE.toString()),
+        SYSTEM_GEO_STANDORT("Geo-Standort", DatenFilm.GEO_DE),
         // Fenstereinstellungen
         SYSTEM_GROESSE_GUI("Groesse"),
         SYSTEM_GROESSE_EINSTELLUNGEN("Groesse-Einstellungen"),
@@ -87,10 +97,10 @@ public class MVConfig {
         SYSTEM_FENSTER_MAX("programmfenster-maximieren"),
         SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN("system-panel-videoplayer-anzeigen"),
         SYSTEM_PANEL_MELDUNGEN_ANZEIGEN("system-panel-meldungen-anzeigen"),
-        SYSTEM_PANEL_FILME_DIVIDER("system-panel-filme-divider"),
-        SYSTEM_FONT_SIZE("system-font-size"), // -5 ... 0 .... 5
-        SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN("system-filme-beschreibung-anzeigen"),
-        SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN("system-download-beschreibung-anzeigen"),
+        SYSTEM_PANEL_FILME_DIVIDER("system-panel-filme-divider", Konstanten.GUIFILME_DIVIDER_LOCATION),
+        SYSTEM_FONT_SIZE("system-font-size", "0"), // -5 ... 0 .... 5
+        SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN("system-filme-beschreibung-anzeigen", Boolean.TRUE.toString()),
+        SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN("system-download-beschreibung-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_EIGENSCHAFTEN_TABELLE_FILME("Eigenschaften-Tabellen-Filme"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS("Eigenschaften-Tabellen-Downloads"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS("Eigenschaften-Tabellen-Abos"),
@@ -99,10 +109,10 @@ public class MVConfig {
         SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN("Meldungsfenster-Playermeldungen"),
         SYSTEM_ANSICHT_SET_LANG("Ansicht-Set-lang"),
         SYSTEM_BANDWIDTH_MONITOR_VISIBLE("Bandwidthmonitor-visible"),
-        SYSTEM_ICON_STANDARD("Icon-Standard"),
-        SYSTEM_ICON_PFAD("Icon-Pfad"),
+        SYSTEM_ICON_STANDARD("Icon-Standard", Boolean.TRUE.toString()),
+        SYSTEM_ICON_PFAD("Icon-Pfad", getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss"),
         SYSTEM_BREITE_MELDUNGEN("breite-Meldungen"),
-        SYSTEM_TOOLBAR_ALLES_ANZEIGEN("Toolbar-Alles-anzeigen"),
+        SYSTEM_TOOLBAR_ALLES_ANZEIGEN("Toolbar-Alles-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_TOOLBAR_ALLES("Toolbar-Alles"),
         SYSTEM_TOOLBAR_DOWNLOAD_EXTERN("Toolbar-Download-Extern"),
         SYSTEM_TOOLBAR_ABO_EXTERN("Toolbar-Abo-Extern"),
@@ -117,12 +127,12 @@ public class MVConfig {
         SYSTEM_ICON_KLEIN_DOWNLOAD("system-icon-groesse-Download"),
         SYSTEM_TOOLBAR_ABO("Toolbar-Abo"),
         SYSTEM_ICON_KLEIN_ABO("system-icon-groesse-Abo"),
-        SYSTEM_TAB_FILME_ICON_ANZEIGEN("system-tab-filme-icon-anzeigen"),
-        SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN("system-tab-download-icon-anzeigen"),
-        SYSTEM_TAB_ABO_ICON_ANZEIGEN("system-tab-abo-icon-anzeigen"),
-        SYSTEM_TAB_FILME_ICON_KLEIN("system-tab-filme-icon-klein"),
-        SYSTEM_TAB_DOWNLOAD_ICON_KLEIN("system-tab-download-icon-klein"),
-        SYSTEM_TAB_ABO_ICON_KLEIN("system-tab-abo-icon-klein"),
+        SYSTEM_TAB_FILME_ICON_ANZEIGEN("system-tab-filme-icon-anzeigen", Boolean.TRUE.toString()),
+        SYSTEM_TAB_DOWNLOAD_ICON_ANZEIGEN("system-tab-download-icon-anzeigen", Boolean.TRUE.toString()),
+        SYSTEM_TAB_ABO_ICON_ANZEIGEN("system-tab-abo-icon-anzeigen", Boolean.TRUE.toString()),
+        SYSTEM_TAB_FILME_ICON_KLEIN("system-tab-filme-icon-klein", Boolean.TRUE.toString()),
+        SYSTEM_TAB_DOWNLOAD_ICON_KLEIN("system-tab-download-icon-klein", Boolean.TRUE.toString()),
+        SYSTEM_TAB_ABO_ICON_KLEIN("system-tab-abo-icon-klein", Boolean.TRUE.toString()),
         // Extrafenster
         SYSTEM_FENSTER_DOWNLOAD("Fenster-Download"),
         SYSTEM_GROESSE_DOWNLOAD("Groesse-Download"),
@@ -132,14 +142,14 @@ public class MVConfig {
         SYSTEM_VIS_MELDUNGEN("Vis-Meldungen"),
         SYSTEM_GROESSE_MELDUNGEN("Groesse-Meldungen"),
         SYSTEM_FENSTER_FILTER("Fenster-Filter"),
-        SYSTEM_VIS_FILTER("Vis-Filter"),
+        SYSTEM_VIS_FILTER("Vis-Filter", Boolean.TRUE.toString()),
         SYSTEM_GROESSE_FILTER("Groesse-Filter"),
         //Einstellungen Filmliste
         SYSTEM_IMPORT_ART_FILME("update-filme"), // url automatisch suchen - oder nur manuell
         SYSTEM_URL_FILMLISTEN("system-url-filmlisten"),
         SYSTEM_IMPORT_URL_MANUELL("system-import-url-manuell"),
         SYSTEM_EXPORT_DATEI("system-export-datei"),
-        SYSTEM_ANZ_TAGE_FILMLISTE("system-anz-tage-filmilste"), // es werden nur die x letzten Tage geladen
+        SYSTEM_ANZ_TAGE_FILMLISTE("system-anz-tage-filmilste", "0"), // es werden nur die x letzten Tage geladen
         // Filter
         SYSTEM_FILTER_TAGE("filter-tage-start"), // in Tagen
         SYSTEM_FILTER_DAUER("filter-dauer-start"), // in Minuten
@@ -158,26 +168,26 @@ public class MVConfig {
         SYSTEM_FILTER_PROFILE__TT("filter-TT-oder-irgendwo"),
         SYSTEM_FILTER_PROFILE__ANZAHL_FILTER("filter-anzahl"),
         // Programmpfade
-        SYSTEM_PFAD_VLC("pfad-vlc"),
-        SYSTEM_PFAD_FLVSTREAMER("pfad-flvstreamer"),
-        SYSTEM_PFAD_FFMPEG("pfad-ffmpeg"),
+        SYSTEM_PFAD_VLC("pfad-vlc", GuiFunktionenProgramme.getMusterPfadVlc()),
+        SYSTEM_PFAD_FLVSTREAMER("pfad-flvstreamer", GuiFunktionenProgramme.getMusterPfadFlv()),
+        SYSTEM_PFAD_FFMPEG("pfad-ffmpeg", GuiFunktionenProgramme.getMusterPfadFFmpeg()),
         SYSTEM_VERSION_PROGRAMMSET("Version-Programmset"),
         // Blacklist
         SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN("Blacklist-Zukunft-nicht-anzeigen"),
         SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN("Blacklist-Geo-nicht-anzeigen"),
         SYSTEM_BLACKLIST_AUCH_ABO("Blacklist-auch-Abo"),
-        SYSTEM_BLACKLIST_START_ON("Blacklist-Start-ausgeschaltet"),
-        SYSTEM_BLACKLIST_ON("Blacklist-ausgeschaltet"),
+        SYSTEM_BLACKLIST_START_ON("Blacklist-Start-ausgeschaltet", Boolean.FALSE.toString()),
+        SYSTEM_BLACKLIST_ON("Blacklist-ausgeschaltet", Boolean.FALSE.toString()),
         SYSTEM_BLACKLIST_IST_WHITELIST("Blacklist-ist-Whitelist"),
-        SYSTEM_BLACKLIST_FILMLAENGE("Blacklist-Filmlaenge"),
+        SYSTEM_BLACKLIST_FILMLAENGE("Blacklist-Filmlaenge", "0"),
         // Download
-        SYSTEM_DIALOG_DOWNLOAD_D_STARTEN("Dialog-Download-D-Starten"), // DialogDownload: Download sofort starten
+        SYSTEM_DIALOG_DOWNLOAD_D_STARTEN("Dialog-Download-D-Starten", Boolean.TRUE.toString()), // DialogDownload: Download sofort starten
         SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT("Dialog-Download-Starten-Zeit"),
         SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN("Dialog-Download-Shutdown"),
-        SYSTEM_DOWNLOAD_SOFORT_STARTEN("Download-sofort-starten"),
+        SYSTEM_DOWNLOAD_SOFORT_STARTEN("Download-sofort-starten", Boolean.FALSE.toString()),
         SYSTEM_DOWNLOAD_BEEP("Download-Beep"),
-        SYSTEM_BANDBREITE_KBYTE("maxBandbreite"),
-        SYSTEM_MAX_DOWNLOAD("maxDownload"),
+        SYSTEM_BANDBREITE_KBYTE("maxBandbreite", String.valueOf(MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE)),
+        SYSTEM_MAX_DOWNLOAD("maxDownload", "1"),
         SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER("max1DownloadProServer"), // nur ein Download pro Server - sonst max 2
         SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN("Pfade-zum-Speichern"), // gesammelten Downloadpfade im Downloaddialog
         SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN("Letzen-Pfad-anzeigen"),
@@ -186,7 +196,7 @@ public class MVConfig {
         // MediaDB
         SYSTEM_MEDIA_DB_DIALOG_GROESSE("Media_DB_Dialog-Groesse"),
         SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN("Media_DB_Dialog-anzeigen"),
-        SYSTEM_MEDIA_DB_ECHTZEITSUCHE("Media_DB_Echtzeitsuche"),
+        SYSTEM_MEDIA_DB_ECHTZEITSUCHE("Media_DB_Echtzeitsuche", Boolean.TRUE.toString()),
         SYSTEM_MEDIA_DB_SUFFIX("Media_DB_Suffix"),
         SYSTEM_MEDIA_DB_SUFFIX_OHNE("Media_DB_ohne-Suffix"),
         SYSTEM_MEDIA_DB_EXPORT_DATEI("Media_DB_export-datei"),
@@ -222,7 +232,7 @@ public class MVConfig {
 
         Configs(String value) {
             cValue = value;
-            initValue = "0";
+            initValue = "";
         }
 
         Configs(String value, String init) {
@@ -238,6 +248,40 @@ public class MVConfig {
             }
             return false;
         }
+    }
+
+    public static void loadSystemParameter() {
+        //einmal die leeren mit den inits füllen
+        for (Configs key : Configs.values()) {
+            String s = HASHMAP.get(key.cValue);
+            if (s == null || s.isEmpty()) {
+                MVConfig.add(key.cValue, key.initValue);
+            }
+        }
+
+        if (Daten.debug) {
+            MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUS));
+        }
+        MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
+
+        // download-timeout Wert zwischen 5s und 1000s möglich
+        int timeout = MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN);
+        if (timeout < 5 || timeout > 1000) {
+            MVConfig.add(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.initValue);
+        }
+
+        Log.sysLog("");
+        Log.sysLog("=======================================");
+        Log.sysLog("Systemparameter");
+        Log.sysLog("-----------------");
+        Log.sysLog("Download-Timeout [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN));
+        Log.sysLog("max. Download-Restart: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART));
+        Log.sysLog("max. Download-Restart-Http: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP));
+        Log.sysLog("Download weiterführen in [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN));
+        Log.sysLog("Download Fehlermeldung anzeigen [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN));
+        Log.sysLog("Useragent: " + MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_USERAGENT));
+        Log.sysLog("=======================================");
+        Log.sysLog("");
     }
 
     public static synchronized void add(String key, String value) {
@@ -288,12 +332,7 @@ public class MVConfig {
         try {
             ret = Integer.parseInt(HASHMAP.get(key.cValue));
         } catch (Exception ignore) {
-            MVConfig.add(key.cValue, key.initValue);
-            try {
-                ret = Integer.parseInt(HASHMAP.get(key.cValue));
-            } catch (Exception ig) {
-                ret = 0;
-            }
+            ret = 0;
         }
         return ret;
     }

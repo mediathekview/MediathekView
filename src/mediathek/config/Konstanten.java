@@ -19,12 +19,12 @@
  */
 package mediathek.config;
 
-import mediathek.tool.MVFunctionSys;
+import mSearch.Const;
 
 public class Konstanten {
 
     public static final String PROGRAMMNAME = "MediathekView";
-    public static final String USER_AGENT_DEFAULT = MVFunctionSys.getProgVersionString();
+    public static final String USER_AGENT_DEFAULT = Konstanten.PROGRAMMNAME + " " + Const.VERSION;
     public static final String CONFIG_FILE = "mediathek.xml";
     public static final String CONFIG_FILE_COPY = "mediathek.xml_copy_";
     public static final String FILE_ERLEDIGTE_ABOS = "downloadAbos.txt";
