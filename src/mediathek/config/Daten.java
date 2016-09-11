@@ -113,8 +113,6 @@ public class Daten {
     }
 
     private void start() {
-//        init();
-
         listeFilme = new ListeFilme();
         filmeLaden = new FilmeLaden();
         listeFilmeHistory = new ListeFilme();
@@ -134,7 +132,6 @@ public class Daten {
         listeDownloadsButton = new ListeDownloads(this);
 
         updateSplashScreen("Lade erledigte Abos...");
-        //erledigteAbos = new ErledigteAbos();
         erledigteAbos = new MVUsedUrls(Konstanten.FILE_ERLEDIGTE_ABOS, getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_ERLEDIGTE_ABOS);
 
         updateSplashScreen("Lade History...");
@@ -330,7 +327,6 @@ public class Daten {
     }
 
     private void clearKonfig() {
-//        init();
         listePset.clear();
         ReplaceList.list.clear();
         listeAbo.clear();

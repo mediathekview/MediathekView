@@ -41,7 +41,6 @@ public class GetIcon {
     }
 
     public static ImageIcon getProgramIcon(String strIcon, int w, int h) {
-//        DebugMsg.print("getIcon");
         return getIcon(strIcon, PFAD_PROGRAMM, w, h);
     }
 
