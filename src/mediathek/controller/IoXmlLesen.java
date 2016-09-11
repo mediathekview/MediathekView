@@ -138,6 +138,7 @@ public class IoXmlLesen {
             //ListeFilmUpdateServer aufbauen
             Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().sort();
             Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().sort();
+            MVConfig.loadSystemParameter();
         }
 
         Duration.counterStop("Konfig lesen");

@@ -55,10 +55,10 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         setIcon();
         setHelp();
 
-        jRadioButtonAuto.addActionListener(e -> setUserAgent());
-        jRadioButtonManuel.addActionListener(e -> setUserAgent());
-
-        jTextFieldUserAgent.getDocument().addDocumentListener(new BeobUserAgent());
+//        jRadioButtonAuto.addActionListener(e -> setUserAgent());
+//        jRadioButtonManuel.addActionListener(e -> setUserAgent());
+//
+//        jTextFieldUserAgent.getDocument().addDocumentListener(new BeobUserAgent());
         Listener.addListener(new Listener(Listener.EREIGNIS_PROGRAMM_OEFFNEN, PanelEinstellungenErweitert.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -105,32 +105,32 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     }
 
     private void init() {
-        // UserAgent
-        jRadioButtonAuto.setSelected(Daten.isUserAgentAuto());
-        jRadioButtonManuel.setSelected(!Daten.isUserAgentAuto());
-
-        jTextFieldUserAgent.setEditable(!Daten.isUserAgentAuto());
-        jTextFieldUserAgent.setText(MVConfig.get(MVConfig.Configs.SYSTEM_USER_AGENT));
-        jTextFieldAuto.setText(Konstanten.USER_AGENT_DEFAULT);
+//        // UserAgent
+//        jRadioButtonAuto.setSelected(Daten.isUserAgentAuto());
+//        jRadioButtonManuel.setSelected(!Daten.isUserAgentAuto());
+//
+//        jTextFieldUserAgent.setEditable(!Daten.isUserAgentAuto());
+//        jTextFieldUserAgent.setText(MVConfig.get(MVConfig.Configs.SYSTEM_USER_AGENT));
+//        jTextFieldAuto.setText(Konstanten.USER_AGENT_DEFAULT);
 
         jTextFieldProgrammDateimanager.setText(MVConfig.get(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN));
         jTextFieldProgrammUrl.setText(MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN));
     }
 
-    private void setUserAgent() {
-        if (jRadioButtonAuto.isSelected()) {
-            Daten.setUserAgentAuto();
-        } else {
-            Daten.setUserAgentManuel(jTextFieldUserAgent.getText());
-        }
-        jTextFieldUserAgent.setEditable(!Daten.isUserAgentAuto());
-    }
+//    private void setUserAgent() {
+//        if (jRadioButtonAuto.isSelected()) {
+//            Daten.setUserAgentAuto();
+//        } else {
+//            Daten.setUserAgentManuel(jTextFieldUserAgent.getText());
+//        }
+//        jTextFieldUserAgent.setEditable(!Daten.isUserAgentAuto());
+//    }
 
     private void setHelp() {
-        jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
-                + "Dieser Text wird als User-Agent\n"
-                + "an den Webserver übertragen. Das entspricht\n"
-                + "der Kennung, die auch die Browser senden.").setVisible(true));
+//        jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
+//                + "Dieser Text wird als User-Agent\n"
+//                + "an den Webserver übertragen. Das entspricht\n"
+//                + "der Kennung, die auch die Browser senden.").setVisible(true));
         jButtonHilfeProgrammDateimanager.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
                 + "Im Tab \"Downloads\" kann man mit der rechten\n"
                 + "Maustaste den Downloadordner (Zielordner)\n"
@@ -173,7 +173,7 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     }
 
     private void setIcon() {
-        jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
+//        jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfeNeuladen.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfeProgrammDateimanager.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfeVideoplayer.setIcon(Icons.ICON_BUTTON_HELP);
@@ -200,12 +200,6 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
         jCheckBoxAboSuchen = new javax.swing.JCheckBox();
         jCheckBoxDownloadSofortStarten = new javax.swing.JCheckBox();
         jButtonHilfeNeuladen = new javax.swing.JButton();
-        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
-        jTextFieldUserAgent = new javax.swing.JTextField();
-        jButtonHilfe = new javax.swing.JButton();
-        jRadioButtonAuto = new javax.swing.JRadioButton();
-        jRadioButtonManuel = new javax.swing.JRadioButton();
-        jTextFieldAuto = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jTextFieldProgrammDateimanager = new javax.swing.JTextField();
         jButtonProgrammDateimanager = new javax.swing.JButton();
@@ -257,54 +251,6 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
                 .addComponent(jCheckBoxDownloadSofortStarten)
                 .addContainerGap(17, Short.MAX_VALUE))
         );
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("User-Agent"));
-
-        jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
-        jButtonHilfe.setToolTipText("Hilfe anzeigen");
-
-        buttonGroup1.add(jRadioButtonAuto);
-        jRadioButtonAuto.setText("Auto:");
-
-        buttonGroup1.add(jRadioButtonManuel);
-
-        jTextFieldAuto.setEditable(false);
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jRadioButtonManuel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldUserAgent))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jRadioButtonAuto)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldAuto)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonHilfe)))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(13, 13, 13)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jRadioButtonAuto)
-                    .addComponent(jTextFieldAuto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonHilfe))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jRadioButtonManuel)
-                    .addComponent(jTextFieldUserAgent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(34, Short.MAX_VALUE))
-        );
-
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfe, jTextFieldAuto, jTextFieldUserAgent});
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Tab Downloads"));
 
@@ -454,7 +400,6 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -466,20 +411,17 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(85, Short.MAX_VALUE))
+                .addContainerGap(218, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup2;
-    private javax.swing.JButton jButtonHilfe;
     private javax.swing.JButton jButtonHilfeNeuladen;
     private javax.swing.JButton jButtonHilfeProgrammDateimanager;
     private javax.swing.JButton jButtonHilfeProgrammShutdown;
@@ -496,37 +438,33 @@ public class PanelEinstellungenErweitert extends PanelVorlage {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JRadioButton jRadioButtonAuto;
-    private javax.swing.JRadioButton jRadioButtonManuel;
-    private javax.swing.JTextField jTextFieldAuto;
     private javax.swing.JTextField jTextFieldProgrammDateimanager;
     private javax.swing.JTextField jTextFieldProgrammShutdown;
     private javax.swing.JTextField jTextFieldProgrammUrl;
-    private javax.swing.JTextField jTextFieldUserAgent;
     private javax.swing.JTextField jTextFieldVideoplayer;
     // End of variables declaration//GEN-END:variables
 
-    private class BeobUserAgent implements DocumentListener {
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        private void tus() {
-            Daten.setUserAgentManuel(jTextFieldUserAgent.getText());
-        }
-    }
+//    private class BeobUserAgent implements DocumentListener {
+//
+//        @Override
+//        public void insertUpdate(DocumentEvent e) {
+//            tus();
+//        }
+//
+//        @Override
+//        public void removeUpdate(DocumentEvent e) {
+//            tus();
+//        }
+//
+//        @Override
+//        public void changedUpdate(DocumentEvent e) {
+//            tus();
+//        }
+//
+//        private void tus() {
+//            Daten.setUserAgentManuel(jTextFieldUserAgent.getText());
+//        }
+//    }
 
     private class BeobDoc implements DocumentListener {
 

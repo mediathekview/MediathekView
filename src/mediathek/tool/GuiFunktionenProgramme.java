@@ -74,31 +74,34 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         final String PFAD_MAC_VLC = "/Applications/VLC.app/Contents/MacOS/VLC";
         final String PFAD_WIN = "\\VideoLAN\\VLC\\vlc.exe";
         String pfad = "";
-        switch (getOs()) {
-            case LINUX:
-                if (System.getProperty("os.name").toLowerCase().contains("freebsd")) {
-                    pfad = PFAD_FREEBSD;
-                } else {
-                    pfad = PFAD_LINUX_VLC;
-                }
-                break;
-            case MAC:
-                pfad = PFAD_MAC_VLC;
-                break;
-            default:
-                setWinProgPfade();
-                for (String s : winPfade) {
-                    pfad = s + PFAD_WIN;
-                    if (new File(pfad).exists()) {
-                        break;
+        try {
+            switch (getOs()) {
+                case LINUX:
+                    if (System.getProperty("os.name").toLowerCase().contains("freebsd")) {
+                        pfad = PFAD_FREEBSD;
+                    } else {
+                        pfad = PFAD_LINUX_VLC;
                     }
-                }
-        }
-        if (!new File(pfad).exists() && System.getenv("PATH_VLC") != null) {
-            pfad = System.getenv("PATH_VLC");
-        }
-        if (!new File(pfad).exists()) {
-            pfad = "";
+                    break;
+                case MAC:
+                    pfad = PFAD_MAC_VLC;
+                    break;
+                default:
+                    setWinProgPfade();
+                    for (String s : winPfade) {
+                        pfad = s + PFAD_WIN;
+                        if (new File(pfad).exists()) {
+                            break;
+                        }
+                    }
+            }
+            if (!new File(pfad).exists() && System.getenv("PATH_VLC") != null) {
+                pfad = System.getenv("PATH_VLC");
+            }
+            if (!new File(pfad).exists()) {
+                pfad = "";
+            }
+        } catch (Exception ignore) {
         }
         return pfad;
     }
@@ -112,26 +115,29 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         final String PFAD_FREEBSD = "/usr/local/bin/flvstreamer";
         final String PFAD_MAC_FLV = "bin/flvstreamer_macosx_intel_32bit_latest";
         final String PFAD_WINDOWS_FLV = "bin\\flvstreamer_win32_latest.exe";
-        String pfad;
-        switch (getOs()) {
-            case LINUX:
-                if (System.getProperty("os.name").toLowerCase().contains("freebsd")) {
-                    pfad = PFAD_FREEBSD;
-                } else {
-                    pfad = PFAD_LINUX_FLV;
-                }
-                break;
-            case MAC:
-                pfad = MVFunctionSys.getPathJar() + PFAD_MAC_FLV;
-                break;
-            default:
-                pfad = PFAD_WINDOWS_FLV;
-        }
-        if (!new File(pfad).exists() && System.getenv("PATH_FLVSTREAMER") != null) {
-            pfad = System.getenv("PATH_FLVSTREAMER");
-        }
-        if (!new File(pfad).exists()) {
-            pfad = "";
+        String pfad = "";
+        try {
+            switch (getOs()) {
+                case LINUX:
+                    if (System.getProperty("os.name").toLowerCase().contains("freebsd")) {
+                        pfad = PFAD_FREEBSD;
+                    } else {
+                        pfad = PFAD_LINUX_FLV;
+                    }
+                    break;
+                case MAC:
+                    pfad = MVFunctionSys.getPathJar() + PFAD_MAC_FLV;
+                    break;
+                default:
+                    pfad = PFAD_WINDOWS_FLV;
+            }
+            if (!new File(pfad).exists() && System.getenv("PATH_FLVSTREAMER") != null) {
+                pfad = System.getenv("PATH_FLVSTREAMER");
+            }
+            if (!new File(pfad).exists()) {
+                pfad = "";
+            }
+        } catch (Exception ignore) {
         }
         return pfad;
     }
@@ -145,26 +151,29 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         final String PFAD_FREEBSD_FFMPEG = "/usr/local/bin/ffmpeg";
         final String PFAD_MAC_FFMPEG = "bin/ffmpeg";
         final String PFAD_WINDOWS_FFMPEG = "bin\\ffmpeg.exe";
-        String pfad;
-        switch (getOs()) {
-            case LINUX:
-                if (System.getProperty("os.name").toLowerCase().contains("freebsd")) {
-                    pfad = PFAD_FREEBSD_FFMPEG;
-                } else {
-                    pfad = PFAD_LINUX_FFMPEG;
-                }
-                break;
-            case MAC:
-                pfad = MVFunctionSys.getPathJar() + PFAD_MAC_FFMPEG;
-                break;
-            default:
-                pfad = PFAD_WINDOWS_FFMPEG;
-        }
-        if (!new File(pfad).exists() && System.getenv("PATH_FFMPEG") != null) {
-            pfad = System.getenv("PATH_FFMPEG");
-        }
-        if (!new File(pfad).exists()) {
-            pfad = "";
+        String pfad = "";
+        try {
+            switch (getOs()) {
+                case LINUX:
+                    if (System.getProperty("os.name").toLowerCase().contains("freebsd")) {
+                        pfad = PFAD_FREEBSD_FFMPEG;
+                    } else {
+                        pfad = PFAD_LINUX_FFMPEG;
+                    }
+                    break;
+                case MAC:
+                    pfad = MVFunctionSys.getPathJar() + PFAD_MAC_FFMPEG;
+                    break;
+                default:
+                    pfad = PFAD_WINDOWS_FFMPEG;
+            }
+            if (!new File(pfad).exists() && System.getenv("PATH_FFMPEG") != null) {
+                pfad = System.getenv("PATH_FFMPEG");
+            }
+            if (!new File(pfad).exists()) {
+                pfad = "";
+            }
+        } catch (Exception ignore) {
         }
         return pfad;
     }
@@ -372,12 +381,10 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                             break;
                         }
                     } else //Suffix prüfen
-                    {
-                        if (url.endsWith(s1.toLowerCase())) {
+                     if (url.endsWith(s1.toLowerCase())) {
                             ret = true;
                             break;
                         }
-                    }
                     s1 = "";
                 }
             }
@@ -425,14 +432,12 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                         ret = false;
                         text += PIPE + LEER + "Zielpfad fehlt!\n";
                     } else // Pfad beschreibbar?
-                    {
-                        if (!checkPfadBeschreibbar(zielPfad)) {
+                     if (!checkPfadBeschreibbar(zielPfad)) {
                             //da Pfad-leer und "kein" Pfad schon abgeprüft
                             ret = false;
                             text += PIPE + LEER + "Falscher Zielpfad!\n";
                             text += PIPE + LEER + PFEIL + "Zielpfad \"" + zielPfad + "\" nicht beschreibbar!" + "\n";
                         }
-                    }
                 }
                 for (DatenProg datenProg : datenPset.getListeProg()) {
                     // Programmpfad prüfen
