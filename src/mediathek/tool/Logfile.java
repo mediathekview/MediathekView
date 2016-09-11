@@ -33,7 +33,7 @@ import mSearch.tool.SysMsg;
 
 public class Logfile {
 
-    public static boolean LogDateiSchreiben(String ziel, String progVersion, String settingsDir, ArrayList<String> progs) {
+    public static boolean LogDateiSchreiben(String ziel, String progVersion, String settingsDir, ArrayList<String> progs, String[][] configs) {
         boolean ret;
 
         ArrayList<String> retList;
@@ -48,7 +48,6 @@ public class Logfile {
             //  | |\/| |/ _ \/ _` | |/ _` | __| '_ \ / _ \ |/ / | | | |/ _ \ \ /\ / /
             //  | |  | |  __/ (_| | | (_| | |_| | | |  __/   <\ \_/ / |  __/\ V  V / 
             //  \_|  |_/\___|\__,_|_|\__,_|\__|_| |_|\___|_|\_\\___/|_|\___| \_/\_/  
-
             bw.write("___  ___         _ _       _   _          _    _   _ _               ");
             bw.newLine();
             bw.write("|  \\/  |        | (_)     | | | |        | |  | | | (_)              ");
@@ -118,6 +117,24 @@ public class Logfile {
             bw.newLine();
             bw.newLine();
 
+            //
+            bw.write("#####################################################");
+            bw.newLine();
+            bw.write("## Programmeinstellungen ##########################");
+            bw.newLine();
+            bw.write("#####################################################");
+            bw.newLine();
+            bw.newLine();
+            for (String[] s : configs) {
+                if (!s[1].isEmpty()) {
+                    bw.write(s[0] + "\t" + s[1]);
+                    bw.newLine();
+                }
+            }
+            bw.newLine();
+            bw.newLine();
+            bw.newLine();
+            bw.newLine();
             //
             bw.write("#####################################################");
             bw.newLine();

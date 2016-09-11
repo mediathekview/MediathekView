@@ -20,13 +20,11 @@
 package mediathek.config;
 
 import com.jidesoft.utils.SystemInfo;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import mSearch.Const;
 import mSearch.daten.DatenFilm;
-import static mSearch.tool.Functions.getPathJar;
 import mSearch.tool.Log;
 import mediathek.controller.MVBandwidthTokenBucket;
 import mediathek.tool.GuiFunktionenProgramme;
@@ -53,7 +51,7 @@ public class MVConfig {
             + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN.cValue + "\n"
             + "\t" + "Beim Dialog \"Download weiterführen\" wird nach dieser Zeit der Download weitergeführt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN.initValue + "\n\n"
             + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.cValue + "\n"
-            + "\t" + "Downloadfehlermeldung wird xx Sedunden lang angezeigt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.initValue + "\n"
+            + "\t" + "Downloadfehlermeldung wird xx Sedunden lang angezeigt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.initValue + "\n\n"
             + "\t" + Configs.SYSTEM_PARAMETER_USERAGENT.cValue + "\n"
             + "\t" + "Useragent für direkte Downloads, Standardwert: " + Configs.SYSTEM_PARAMETER_USERAGENT.initValue + "\n";
 
@@ -110,7 +108,7 @@ public class MVConfig {
         SYSTEM_ANSICHT_SET_LANG("Ansicht-Set-lang"),
         SYSTEM_BANDWIDTH_MONITOR_VISIBLE("Bandwidthmonitor-visible"),
         SYSTEM_ICON_STANDARD("Icon-Standard", Boolean.TRUE.toString()),
-        SYSTEM_ICON_PFAD("Icon-Pfad", getPathJar() + File.separator + "Icons" + File.separator + "SchwarzWeiss"),
+        SYSTEM_ICON_PFAD("Icon-Pfad"),
         SYSTEM_BREITE_MELDUNGEN("breite-Meldungen"),
         SYSTEM_TOOLBAR_ALLES_ANZEIGEN("Toolbar-Alles-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_TOOLBAR_ALLES("Toolbar-Alles"),
