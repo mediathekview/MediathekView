@@ -28,7 +28,7 @@ import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.controller.starter.DirectHttpDownload.HttpDownloadState;
-import static mediathek.controller.starter.StarterClass_new.*;
+import static mediathek.controller.starter.StarterClass.*;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
 import static mediathek.gui.dialog.DialogContinueDownload.DownloadResult.*;

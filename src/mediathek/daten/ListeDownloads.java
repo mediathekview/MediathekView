@@ -598,7 +598,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 if ( /*datenDownload.art == DatenDownload.ART_PROGRAMM && datenDownload.isRestart()   || */datenDownload.art == DatenDownload.ART_DOWNLOAD) {
                     datenDownload.resetDownload();
                     datenDownload.startDownload(daten);
-                    datenDownload.start.countRestarted = ++restarted;
+                    datenDownload.start.countRestarted = ++restarted; //datenDownload.start ist neu!!!
                     return datenDownload;
                 }
             }

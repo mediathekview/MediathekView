@@ -34,7 +34,7 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.MVBandwidthTokenBucket;
 import mediathek.controller.MVInputStream;
-import static mediathek.controller.starter.StarterClass_new.*;
+import static mediathek.controller.starter.StarterClass.*;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
 import static mediathek.gui.dialog.DialogContinueDownload.DownloadResult.*;
@@ -189,7 +189,7 @@ public class DirectHttpDownload extends Thread {
                 melden = true;
             }
             if (melden) {
-                Listener.notify(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass_new.class.getName());
+                Listener.notify(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
                 melden = false;
             }
         }
@@ -308,7 +308,7 @@ public class DirectHttpDownload extends Thread {
         } catch (Exception ignored) {
         }
 
-        StarterClass_new.finalizeDownload(datenDownload, start, state);
+        StarterClass.finalizeDownload(datenDownload, start, state);
     }
 
     private boolean cancelDownload() {
