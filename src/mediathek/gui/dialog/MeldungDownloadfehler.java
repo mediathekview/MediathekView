@@ -72,6 +72,16 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
         pack();
     }
 
+    @Override
+    public void setVisible(boolean vis) {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG))
+                && MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN) > 0) {
+            super.setVisible(vis);
+        } else {
+            beenden();
+        }
+    }
+
     private void beenden() {
         this.dispose();
     }
