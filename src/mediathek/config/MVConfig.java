@@ -58,6 +58,8 @@ public class MVConfig {
     public enum Configs {
         //============================================
         //Programm-Configs, änderbar nur im Konfig-File
+//============================================
+        //Programm-Configs, änderbar nur im Konfig-File
         SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN("__system-parameter__download-timeout-sekunden_250__", "250"),//250 Sekunden, wie bei Firefox
         SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART("__system-parameter__download-max-restart_5__", "5"),// max. Startversuche für fehlgeschlagene Downloads (insgesamt: restart * restart_http Versuche)
         SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP("__system-parameter__download-max-restart-http_10__", "10"),// max. Startversuche für fehlgeschlagene Downloads, direkt beim Download
@@ -99,6 +101,7 @@ public class MVConfig {
         SYSTEM_FONT_SIZE("system-font-size", "0"), // -5 ... 0 .... 5
         SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN("system-filme-beschreibung-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN("system-download-beschreibung-anzeigen", Boolean.TRUE.toString()),
+        SYSTEM_TAB_FILME_ANZAHL_BUTTON("system-tab-filme-anzahl-button", "4"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_FILME("Eigenschaften-Tabellen-Filme"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS("Eigenschaften-Tabellen-Downloads"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS("Eigenschaften-Tabellen-Abos"),
