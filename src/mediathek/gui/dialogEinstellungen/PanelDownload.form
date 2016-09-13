@@ -65,6 +65,7 @@
                       </Group>
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="cbkDownloadError" min="-2" max="-2" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
                                   <Component id="jCheckBoxServer" min="-2" max="-2" attributes="0"/>
@@ -94,6 +95,8 @@
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="jCheckBoxNotification" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
+                  <Component id="cbkDownloadError" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jCheckBoxBeep" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButtonBeep" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -154,6 +157,11 @@
         <Component class="javax.swing.JCheckBox" name="jCheckBoxServer">
           <Properties>
             <Property name="text" type="java.lang.String" value="nur ein Download pro Downloadserver"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="cbkDownloadError">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Bei Downloadfehler, Fehlermeldung anzeigen"/>
           </Properties>
         </Component>
       </SubComponents>

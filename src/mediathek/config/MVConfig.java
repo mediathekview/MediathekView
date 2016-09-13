@@ -184,6 +184,7 @@ public class MVConfig {
         SYSTEM_DIALOG_DOWNLOAD_SHUTDOWN("Dialog-Download-Shutdown"),
         SYSTEM_DOWNLOAD_SOFORT_STARTEN("Download-sofort-starten", Boolean.FALSE.toString()),
         SYSTEM_DOWNLOAD_BEEP("Download-Beep"),
+        SYSTEM_DOWNLOAD_ERRORMSG("download-error-msg", Boolean.TRUE.toString()),
         SYSTEM_BANDBREITE_KBYTE("maxBandbreite", String.valueOf(MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE)),
         SYSTEM_MAX_DOWNLOAD("maxDownload", "1"),
         SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER("max1DownloadProServer"), // nur ein Download pro Server - sonst max 2
@@ -262,11 +263,11 @@ public class MVConfig {
         }
         MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
 
-        // download-timeout Wert zwischen 5s und 1000s möglich
-        int timeout = MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN);
-        if (timeout < 5 || timeout > 1000) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.initValue);
-        }
+        check(Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN, 5, 1000);
+        check(Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART, 0, 100);
+        check(Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP, 0, 100);
+        check(Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN, 5, 1000);
+        check(Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN, 5, 1000);
 
         Log.sysLog("");
         Log.sysLog("=======================================");
@@ -280,6 +281,13 @@ public class MVConfig {
         Log.sysLog("Useragent: " + MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_USERAGENT));
         Log.sysLog("=======================================");
         Log.sysLog("");
+    }
+
+    public static void check(Configs key, int min, int max) {
+        int v = getInt(key);
+        if (v < min || v > max) {
+            add(key, key.initValue);
+        }
     }
 
     public static synchronized void add(String key, String value) {

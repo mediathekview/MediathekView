@@ -63,6 +63,8 @@ public class PanelDownload extends PanelVorlage {
         });
         jCheckBoxNotification.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_NOTIFICATION)));
         jCheckBoxNotification.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_NOTIFICATION, Boolean.toString(jCheckBoxNotification.isSelected())));
+        cbkDownloadError.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG)));
+        cbkDownloadError.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG, Boolean.toString(cbkDownloadError.isSelected())));
         jCheckBoxBeep.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_BEEP)));
         jCheckBoxBeep.addActionListener(ae -> MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_BEEP, String.valueOf(jCheckBoxBeep.isSelected())));
         jCheckBoxServer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER)));
@@ -106,6 +108,7 @@ public class PanelDownload extends PanelVorlage {
         jCheckBoxBeep = new javax.swing.JCheckBox();
         jButtonBeep = new javax.swing.JButton();
         jCheckBoxServer = new javax.swing.JCheckBox();
+        cbkDownloadError = new javax.swing.JCheckBox();
         jPanel1 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabelBandwidth = new javax.swing.JLabel();
@@ -132,6 +135,8 @@ public class PanelDownload extends PanelVorlage {
 
         jCheckBoxServer.setText("nur ein Download pro Downloadserver");
 
+        cbkDownloadError.setText("Bei Downloadfehler, Fehlermeldung anzeigen");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -144,6 +149,7 @@ public class PanelDownload extends PanelVorlage {
                         .addGap(64, 64, 64))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbkDownloadError)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(12, 12, 12)
                                 .addComponent(jCheckBoxServer))
@@ -165,6 +171,8 @@ public class PanelDownload extends PanelVorlage {
                 .addContainerGap()
                 .addComponent(jCheckBoxNotification)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbkDownloadError)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jCheckBoxBeep)
                     .addComponent(jButtonBeep))
@@ -258,6 +266,7 @@ public class PanelDownload extends PanelVorlage {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox cbkDownloadError;
     private javax.swing.JButton jButtonBeep;
     private javax.swing.JButton jButtonHilfeAnzahl;
     private javax.swing.JCheckBox jCheckBoxBeep;
