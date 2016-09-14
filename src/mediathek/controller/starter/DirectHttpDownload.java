@@ -26,6 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import javax.swing.SwingUtilities;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
@@ -216,7 +217,7 @@ public class DirectHttpDownload extends Thread {
         } catch (IOException ignored) {
         }
 
-        int restartCount = MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP);
+        int restartCount = 0;
         boolean restart = true;
         while (restart) {
             restart = false;
@@ -278,8 +279,19 @@ public class DirectHttpDownload extends Thread {
                         break;
                 }
             } catch (Exception ex) {
-                if ((ex instanceof java.net.SocketTimeoutException || ex instanceof java.io.IOException) && restartCount > 0) {
-                    restartCount--;
+                if ((ex instanceof java.io.IOException || ex instanceof java.net.SocketTimeoutException)
+                        && restartCount < MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP)) {
+
+                    if (ex instanceof java.net.SocketTimeoutException) {
+                        //Timeout Fehlermeldung für zxd :)
+                        ArrayList<String> text = new ArrayList<>();
+                        text.add("Timeout, Download Restarts: " + restartCount);
+                        text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+                        text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
+                        SysMsg.sysMsg(text.toArray(new String[text.size()]));
+                    }
+
+                    restartCount++;
                     restart = true;
                 } else {
                     // dann weiß der Geier!
