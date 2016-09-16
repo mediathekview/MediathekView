@@ -20,12 +20,10 @@
 package mediathek.tool;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Toolkit;
-import java.awt.Window;
+import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
+import java.lang.reflect.Field;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -186,12 +184,10 @@ public class GuiFunktionen extends MVFunctionSys {
                 pathName[1] = cutName(pathName[1], maxNameL);
             }
         } else // für X-Systeme
-        {
-            if ((pathName[1].length()) > X_MAX_NAME_LENGTH) {
+         if ((pathName[1].length()) > X_MAX_NAME_LENGTH) {
                 Log.errorLog(823012012, "Name zu lang: " + pathName[1]);
                 pathName[1] = cutName(pathName[1], X_MAX_NAME_LENGTH);
             }
-        }
         return pathName;
     }
 
@@ -335,4 +331,15 @@ public class GuiFunktionen extends MVFunctionSys {
         }
         return ret;
     }
+
+    public static void setParent(Dialog dialog, Container aParent) {
+        try {
+            Field declaredField = Component.class.getDeclaredField("parent");
+            declaredField.setAccessible(true);
+            declaredField.set(dialog, aParent);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+    }
+
 }

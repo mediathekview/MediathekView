@@ -4,14 +4,18 @@ import com.explodingpixels.macwidgets.HudWidgetFactory;
 import com.explodingpixels.macwidgets.HudWindow;
 import com.explodingpixels.macwidgets.plaf.HudPaintingUtils;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.net.URISyntaxException;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import mSearch.daten.DatenFilm;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
+import mediathek.config.MVConfig;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.EscBeenden;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.UrlHyperlinkAction;
 import org.jdesktop.swingx.JXHyperlink;
 
@@ -40,7 +44,7 @@ public class MVFilmInformation implements MVFilmInfo {
         foreground = Color.WHITE;
         background = Color.BLACK;
         ja_sw_16 = Icons.ICON_DIALOG_EIN_SW;
-        hud = new HudWindow("Filminformation", owner);
+        hud = new HudWindow("Filminformation", MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP) ? owner : (Frame) null);
         hud.makeResizeable();
         for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {
             labelArrNames[i] = HudWidgetFactory.createHudLabel(DatenFilm.COLUMN_NAMES[i] + ":");
@@ -64,13 +68,22 @@ public class MVFilmInformation implements MVFilmInfo {
         dialog.setSize(size);
         calculateHudPosition();
 
-//        tabbedPane.addChangeListener(this);
         new EscBeenden(dialog) {
             @Override
             public void beenden_(JDialog d) {
                 d.dispose();
             }
         };
+        dialog.addMouseListener(new BeobMaus());
+    }
+
+    private void setDialogOwner() {
+        if (MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP)) {
+            GuiFunktionen.setParent(dialog, parent);
+        } else {
+            GuiFunktionen.setParent(dialog, new Frame());
+        }
+        dialog.dispose();
     }
 
     private JComponent setLable() {
@@ -257,4 +270,39 @@ public class MVFilmInformation implements MVFilmInfo {
         updateCurrentFilm(emptyFilm);
     }
 
+    private class BeobMaus extends MouseAdapter {
+
+        JCheckBox cbk = new JCheckBox("Immer im Fordergrund");
+
+        public BeobMaus() {
+            cbk.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP));
+            cbk.addActionListener(l -> {
+                MVConfig.add(MVConfig.Configs.SYSTEM_FILM_INFO_TOP, Boolean.toString(cbk.isSelected()));
+                setDialogOwner();
+            });
+        }
+
+        @Override
+        public void mousePressed(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        private void showMenu(MouseEvent evt) {
+            JPopupMenu jPopupMenu = new JPopupMenu();
+
+            jPopupMenu.add(cbk);
+
+            //anzeigen
+            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+    }
 }

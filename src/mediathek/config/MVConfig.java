@@ -102,6 +102,8 @@ public class MVConfig {
         SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN("system-filme-beschreibung-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN("system-download-beschreibung-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_TAB_FILME_ANZAHL_BUTTON("system-tab-filme-anzahl-button", "4"),
+        SYSTEM_FILM_INFO_TOP("system-film-info-top", Boolean.TRUE.toString()),
+        SYSTEM_DOWNLOAD_INFO_TOP("system-download-info-top", Boolean.TRUE.toString()),
         SYSTEM_EIGENSCHAFTEN_TABELLE_FILME("Eigenschaften-Tabellen-Filme"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS("Eigenschaften-Tabellen-Downloads"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS("Eigenschaften-Tabellen-Abos"),
@@ -344,6 +346,10 @@ public class MVConfig {
             ret = 0;
         }
         return ret;
+    }
+
+    public static synchronized boolean getBool(Configs key) {
+        return Boolean.parseBoolean(HASHMAP.get(key.cValue));
     }
 
     public static synchronized String get(Configs key, int i) {
