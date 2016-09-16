@@ -779,9 +779,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                         .addComponent(jButtonOk)))
                 .addContainerGap())
         );
-
-        jPanel3Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonHilfe, jButtonOk, jToggleButtonBlacklist});
-
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
@@ -803,8 +800,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                     .addComponent(jButtonClearAll))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonHilfe, jButtonOk, jToggleButtonBlacklist});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

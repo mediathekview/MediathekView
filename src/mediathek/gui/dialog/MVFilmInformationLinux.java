@@ -22,6 +22,8 @@ package mediathek.gui.dialog;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.net.URISyntaxException;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -48,6 +50,7 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
     private DatenFilm aktFilm = new DatenFilm();
     private final JFrame parent;
     private static ImageIcon ja_sw_16 = null;
+    static Point mouseDownCompCoords;
 
     public MVFilmInformationLinux(JFrame owner, JTabbedPane tabbedPane, Daten ddaten) {
         super(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP) ? owner : (Frame) null, false);
@@ -79,15 +82,67 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
                 d.dispose();
             }
         };
+
+        mouseDownCompCoords = null;
+        jPanelExtra.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                mouseDownCompCoords = null;
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                mouseDownCompCoords = e.getPoint();
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
+        });
+        jPanelExtra.addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                Point currCoords = e.getLocationOnScreen();
+                setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
+            }
+        });
+        setDialogBorder();
     }
 
     private void setDialogOwner() {
+        dispose();
         if (MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP)) {
             GuiFunktionen.setParent(this, parent);
         } else {
             GuiFunktionen.setParent(this, new Frame());
         }
+        setVisible(true);
+    }
+
+    private void setDialogBorder() {
         dispose();
+        if (MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_BORDER)) {
+            setUndecorated(false);
+            jPanelOut.setBorder(null);
+            jPanelExtra.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102), 2));
+        } else {
+            setUndecorated(true);
+            jPanelOut.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102), 2));
+            jPanelExtra.setBorder(null);
+        }
+        setVisible(true);
     }
 
     private void setExtra(JPanel jPanel) {
@@ -262,14 +317,24 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
 
     private class BeobMaus extends MouseAdapter {
 
-        JCheckBox cbk = new JCheckBox("Immer im Fordergrund");
+        JCheckBox cbkTop = new JCheckBox("Immer im Fordergrund");
+        JCheckBox cbkBorder = new JCheckBox("Rand anzeigen");
+        JMenuItem itemClose = new JMenuItem("Ausblenden");
 
         public BeobMaus() {
-            cbk.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP));
-            cbk.addActionListener(l -> {
-                MVConfig.add(MVConfig.Configs.SYSTEM_FILM_INFO_TOP, Boolean.toString(cbk.isSelected()));
+            cbkTop.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP));
+            cbkTop.addActionListener(l -> {
+                MVConfig.add(MVConfig.Configs.SYSTEM_FILM_INFO_TOP, Boolean.toString(cbkTop.isSelected()));
                 setDialogOwner();
             });
+
+            cbkBorder.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_BORDER));
+            cbkBorder.addActionListener(l -> {
+                MVConfig.add(MVConfig.Configs.SYSTEM_FILM_INFO_BORDER, Boolean.toString(cbkBorder.isSelected()));
+                setDialogBorder();
+            });
+            itemClose.addActionListener(l -> dispose());
+
         }
 
         @Override
@@ -289,7 +354,10 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
         private void showMenu(MouseEvent evt) {
             JPopupMenu jPopupMenu = new JPopupMenu();
 
-            jPopupMenu.add(cbk);
+            jPopupMenu.add(cbkTop);
+            jPopupMenu.add(cbkBorder);
+            jPopupMenu.addSeparator();
+            jPopupMenu.add(itemClose);
 
             //anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
@@ -300,6 +368,7 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanelOut = new javax.swing.JPanel();
         jPanelExtra = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -317,21 +386,32 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
             .addGap(0, 650, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanelOutLayout = new javax.swing.GroupLayout(jPanelOut);
+        jPanelOut.setLayout(jPanelOutLayout);
+        jPanelOutLayout.setHorizontalGroup(
+            jPanelOutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelOutLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanelExtra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        jPanelOutLayout.setVerticalGroup(
+            jPanelOutLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelOutLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanelExtra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanelOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanelOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -339,5 +419,6 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanelExtra;
+    private javax.swing.JPanel jPanelOut;
     // End of variables declaration//GEN-END:variables
 }

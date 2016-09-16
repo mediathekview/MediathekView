@@ -24,10 +24,7 @@ import info.monitorenter.gui.chart.IAxis;
 import info.monitorenter.gui.chart.labelformatters.LabelFormatterAutoUnits;
 import info.monitorenter.gui.chart.rangepolicies.RangePolicyForcedPoint;
 import info.monitorenter.gui.chart.traces.Trace2DLtd;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Frame;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.TimerTask;
 import javax.swing.*;
@@ -50,7 +47,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
     private boolean stopBeob = false;
     private JDialog jDialog = null;
     private JFrame parent = null;
-
+    static Point mouseDownCompCoords;
     /**
      * Timer for collecting sample data.
      */
@@ -169,16 +166,66 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         jPanelInfo.addMouseListener(new BeobMaus());
         jEditorPaneInfo.addMouseListener((new BeobMaus()));
 
+        mouseDownCompCoords = null;
+        chart.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                mouseDownCompCoords = null;
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                mouseDownCompCoords = e.getPoint();
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
+        });
+        chart.addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                Point currCoords = e.getLocationOnScreen();
+                jDialog.setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
+            }
+        });
+        setDialogBorder();
         setVisibility();
     }
 
     private void setDialogOwner() {
+        jDialog.dispose();
         if (MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP)) {
             GuiFunktionen.setParent(jDialog, parent);
         } else {
             GuiFunktionen.setParent(jDialog, new Frame());
         }
-        beenden();
+        jDialog.setVisible(true);
+        //beenden();
+    }
+
+    private void setDialogBorder() {
+        jDialog.dispose();
+        if (MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_BORDER)) {
+            jDialog.setUndecorated(false);
+            setBorder(null);
+        } else {
+            jDialog.setUndecorated(true);
+            setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102), 2));
+        }
+        jDialog.setVisible(true);
     }
 
     private void beenden() {
@@ -417,14 +464,22 @@ public class MVDownloadInfo extends javax.swing.JPanel {
 
     private class BeobMaus extends MouseAdapter {
 
-        JCheckBox cbk = new JCheckBox("Immer im Fordergrund");
+        JCheckBox cbkTop = new JCheckBox("Immer im Fordergrund");
+        JCheckBox cbkBorder = new JCheckBox("Rand anzeigen");
+        JMenuItem itemClose = new JMenuItem("Ausblenden");
 
         public BeobMaus() {
-            cbk.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP));
-            cbk.addActionListener(l -> {
-                MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP, Boolean.toString(cbk.isSelected()));
+            cbkTop.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP));
+            cbkTop.addActionListener(l -> {
+                MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP, Boolean.toString(cbkTop.isSelected()));
                 setDialogOwner();
             });
+            cbkBorder.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_BORDER));
+            cbkBorder.addActionListener(l -> {
+                MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_BORDER, Boolean.toString(cbkBorder.isSelected()));
+                setDialogBorder();
+            });
+            itemClose.addActionListener(l -> beenden());
         }
 
         @Override
@@ -444,7 +499,10 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         private void showMenu(MouseEvent evt) {
             JPopupMenu jPopupMenu = new JPopupMenu();
 
-            jPopupMenu.add(cbk);
+            jPopupMenu.add(cbkTop);
+            jPopupMenu.add(cbkBorder);
+            jPopupMenu.addSeparator();
+            jPopupMenu.add(itemClose);
 
             //anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
