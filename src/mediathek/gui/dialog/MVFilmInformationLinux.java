@@ -19,18 +19,19 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.net.URISyntaxException;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import mSearch.daten.DatenFilm;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
+import mediathek.config.MVConfig;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.EscBeenden;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.UrlHyperlinkAction;
 import org.jdesktop.swingx.JXHyperlink;
 
@@ -49,8 +50,9 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
     private static ImageIcon ja_sw_16 = null;
 
     public MVFilmInformationLinux(JFrame owner, JTabbedPane tabbedPane, Daten ddaten) {
-        super(owner, false);
+        super(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP) ? owner : (Frame) null, false);
         initComponents();
+
         parent = owner;
         this.setTitle("Filminformation");
 
@@ -69,14 +71,23 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
         this.setSize(size);
 
         setExtra(jPanelExtra);
+        jPanelExtra.addMouseListener(new BeobMaus());
 
-//        tabbedPane.addChangeListener(this);
         new EscBeenden(this) {
             @Override
             public void beenden_(JDialog d) {
                 d.dispose();
             }
         };
+    }
+
+    private void setDialogOwner() {
+        if (MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP)) {
+            GuiFunktionen.setParent(this, parent);
+        } else {
+            GuiFunktionen.setParent(this, new Frame());
+        }
+        dispose();
     }
 
     private void setExtra(JPanel jPanel) {
@@ -249,6 +260,42 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
         updateCurrentFilm(emptyFilm);
     }
 
+    private class BeobMaus extends MouseAdapter {
+
+        JCheckBox cbk = new JCheckBox("Immer im Fordergrund");
+
+        public BeobMaus() {
+            cbk.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP));
+            cbk.addActionListener(l -> {
+                MVConfig.add(MVConfig.Configs.SYSTEM_FILM_INFO_TOP, Boolean.toString(cbk.isSelected()));
+                setDialogOwner();
+            });
+        }
+
+        @Override
+        public void mousePressed(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        private void showMenu(MouseEvent evt) {
+            JPopupMenu jPopupMenu = new JPopupMenu();
+
+            jPopupMenu.add(cbk);
+
+            //anzeigen
+            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+
+    }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

@@ -27,9 +27,8 @@ import info.monitorenter.gui.chart.traces.Trace2DLtd;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.Frame;
+import java.awt.event.*;
 import java.util.TimerTask;
 import javax.swing.*;
 import mSearch.tool.DbgMsg;
@@ -46,7 +45,6 @@ import mediathek.tool.MVFilmSize;
 public class MVDownloadInfo extends javax.swing.JPanel {
 
     private double counter = 0; // double sonst "läuft" die Chart nicht
-    private JCheckBoxMenuItem menuItem = null;
     private Trace2DLtd m_trace = new Trace2DLtd(300);
     private IAxis x_achse = null;
     private boolean stopBeob = false;
@@ -63,17 +61,15 @@ public class MVDownloadInfo extends javax.swing.JPanel {
      *
      * @param parent
      * @param menuItem */
-    public MVDownloadInfo(JFrame parent, final JCheckBoxMenuItem menuItem) {
+    public MVDownloadInfo(JFrame parent) {
         initComponents();
         this.parent = parent;
-        this.menuItem = menuItem;
-        jDialog = new JDialog(parent, "Bandbreite");
-        jDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        jDialog = new JDialog(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP) ? parent : (Frame) null, "Bandbreite");
+        jDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         jDialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                menuItem.setSelected(false);
-                toggleVisibility();
+                beenden();
             }
         });
 
@@ -123,6 +119,12 @@ public class MVDownloadInfo extends javax.swing.JPanel {
                 setSlider();
             }
         });
+        Listener.addListener(new Listener(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitor.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setVisibility();
+            }
+        });
         jEditorPaneInfo.setText("");
         jEditorPaneInfo.setEditable(false);
         jEditorPaneInfo.setFocusable(false);
@@ -163,6 +165,26 @@ public class MVDownloadInfo extends javax.swing.JPanel {
             jDialog.setSize(dim);
             addWL(0.5);
         }
+        chart.addMouseListener(new BeobMaus());
+        jPanelInfo.addMouseListener(new BeobMaus());
+        jEditorPaneInfo.addMouseListener((new BeobMaus()));
+
+        setVisibility();
+    }
+
+    private void setDialogOwner() {
+        if (MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP)) {
+            GuiFunktionen.setParent(jDialog, parent);
+        } else {
+            GuiFunktionen.setParent(jDialog, new Frame());
+        }
+        beenden();
+    }
+
+    private void beenden() {
+        MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(false));
+        Listener.notify(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVDownloadInfo.class.getSimpleName());
+        setVisibility();
     }
 
     private void addWL(final double divider) {
@@ -283,17 +305,15 @@ public class MVDownloadInfo extends javax.swing.JPanel {
     /**
      * Show/hide bandwidth display. Take also care about the used timer.
      */
-    public void toggleVisibility() {
-        final boolean isSelected = menuItem.isSelected();
-        MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(menuItem.isSelected()));
-        jDialog.setVisible(isSelected);
+    private void setVisibility() {
+        final boolean isVis = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE));
+        jDialog.setVisible(isVis);
         try {
-            if (menuItem.isSelected()) {
+            if (isVis) {
                 timerTask = new TimerTask() {
 
                     @Override
                     public void run() {
-
                         counter++;
                         m_trace.addPoint(counter / 60, Daten.downloadInfos.bandwidth); // minutes
                         x_achse.getAxisTitle().setTitle(Daten.downloadInfos.roundBandwidth((long) counter));
@@ -309,6 +329,9 @@ public class MVDownloadInfo extends javax.swing.JPanel {
             }
         } catch (IllegalStateException ignored) {
             DbgMsg.print(ignored.getMessage());
+        }
+        if (!isVis) {
+            jDialog.dispose();
         }
     }
 
@@ -390,6 +413,42 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         }
         textLinks += "<br /></span>";
         return textLinks;
+    }
+
+    private class BeobMaus extends MouseAdapter {
+
+        JCheckBox cbk = new JCheckBox("Immer im Fordergrund");
+
+        public BeobMaus() {
+            cbk.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP));
+            cbk.addActionListener(l -> {
+                MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP, Boolean.toString(cbk.isSelected()));
+                setDialogOwner();
+            });
+        }
+
+        @Override
+        public void mousePressed(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        private void showMenu(MouseEvent evt) {
+            JPopupMenu jPopupMenu = new JPopupMenu();
+
+            jPopupMenu.add(cbk);
+
+            //anzeigen
+            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
     }
 
     @SuppressWarnings("unchecked")

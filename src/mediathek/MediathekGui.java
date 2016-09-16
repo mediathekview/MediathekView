@@ -257,17 +257,12 @@ public class MediathekGui extends JFrame {
 
         setFocusSuchfeld();
 
-        cbBandwidthDisplay.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE)));
         if (SystemInfo.isMacOSX()) {
-            bandwidthMonitor = new MVBandwidthMonitor(this, cbBandwidthDisplay);
-            bandwidthMonitor.toggleVisibility();
-            cbBandwidthDisplay.addActionListener(e -> bandwidthMonitor.toggleVisibility());
+            bandwidthMonitor = new MVBandwidthMonitor(this);
         } else {
-            mvDownloadInfo = new MVDownloadInfo(this, cbBandwidthDisplay);
-            mvDownloadInfo.toggleVisibility();
-            cbBandwidthDisplay.addActionListener(e -> mvDownloadInfo.toggleVisibility());
-
+            mvDownloadInfo = new MVDownloadInfo(this);
         }
+
         Duration.staticPing("Gui steht!");
 
         ProgStart.loadDataProgStart();
@@ -322,6 +317,12 @@ public class MediathekGui extends JFrame {
             @Override
             public void ping() {
                 designTabs();
+            }
+        });
+        Listener.addListener(new Listener(Listener.EREIGNIS_BANDWIDTH_MONITOR, MediathekGui.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                cbBandwidthDisplay.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE)));
             }
         });
     }
@@ -906,6 +907,12 @@ public class MediathekGui extends JFrame {
         });
         jMenuAnsicht.add(jCheckBoxMeldungenAnzeigen);
         jMenuAnsicht.add(jCheckBoxMeldungenExtrafenster);
+
+        cbBandwidthDisplay.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE)));
+        cbBandwidthDisplay.addActionListener(e -> {
+            MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(cbBandwidthDisplay.isSelected()));
+            Listener.notify(Listener.EREIGNIS_BANDWIDTH_MONITOR, MediathekGui.class.getSimpleName());
+        });
 
         // Hilfe
         jMenuItemAnleitung.addActionListener(e -> {

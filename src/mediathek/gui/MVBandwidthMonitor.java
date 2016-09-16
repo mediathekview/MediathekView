@@ -1,7 +1,6 @@
 package mediathek.gui;
 
 import com.explodingpixels.macwidgets.HudWindow;
-import com.jidesoft.utils.SystemInfo;
 import info.monitorenter.gui.chart.Chart2D;
 import info.monitorenter.gui.chart.IAxis;
 import info.monitorenter.gui.chart.labelformatters.LabelFormatterAutoUnits;
@@ -10,6 +9,9 @@ import info.monitorenter.gui.chart.traces.Trace2DLtd;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
@@ -19,10 +21,12 @@ import javax.swing.*;
 import mSearch.tool.DbgMsg;
 import mSearch.tool.Functions.OperatingSystemType;
 import static mSearch.tool.Functions.getOs;
+import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.GuiFunktionen;
 
 /**
  * This class will manage and display the download bandwidth chart display.
@@ -31,20 +35,18 @@ public class MVBandwidthMonitor {
 
     private double counter = 0; // double sonst "läuft" die Chart nicht
     private HudWindow hudWindow = null;
-    private JCheckBoxMenuItem menuItem = null;
     private final Trace2DLtd m_trace = new Trace2DLtd(300);
     private IAxis x_achse = null;
+    private JFrame parent = null;
+
     /**
      * Timer for collecting sample data.
      */
     private final java.util.Timer timer = new java.util.Timer(false);
     private TimerTask timerTask = null;
 
-    public MVBandwidthMonitor(JFrame parent, final JCheckBoxMenuItem menuItem) {
-        this.menuItem = menuItem;
-        if (!SystemInfo.isMacOSX()) {
-            parent = null;
-        }
+    public MVBandwidthMonitor(JFrame parent) {
+        this.parent = parent;
         hudWindow = new HudWindow("Bandbreite", parent);
         hudWindow.makeResizeable();
 
@@ -54,8 +56,7 @@ public class MVBandwidthMonitor {
         hudDialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                menuItem.setSelected(false);
-                toggleVisibility();
+                beenden();
             }
         });
 
@@ -104,17 +105,39 @@ public class MVBandwidthMonitor {
         dim.height = 150;
         dim.width = 300;
         hudDialog.setSize(dim);
+        Listener.addListener(new Listener(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitor.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setVisibility();
+            }
+        });
+        setVisibility();
+        chart.addMouseListener(new BeobMaus());
+    }
+
+    private void setDialogOwner() {
+        if (MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP)) {
+            GuiFunktionen.setParent(hudWindow.getJDialog(), parent);
+        } else {
+            GuiFunktionen.setParent(hudWindow.getJDialog(), new Frame());
+        }
+        beenden();
+    }
+
+    private void beenden() {
+        MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(false));
+        Listener.notify(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVDownloadInfo.class.getSimpleName());
+        setVisibility();
     }
 
     /**
      * Show/hide bandwidth display. Take also care about the used timer.
      */
-    public void toggleVisibility() {
-        final boolean isSelected = menuItem.isSelected();
-        MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(menuItem.isSelected()));
-        hudWindow.getJDialog().setVisible(isSelected);
+    public void setVisibility() {
+        final boolean isVis = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE));
+        hudWindow.getJDialog().setVisible(isVis);
         try {
-            if (menuItem.isSelected()) {
+            if (isVis) {
                 timerTask = new TimerTask() {
                     @Override
                     public void run() {
@@ -149,6 +172,10 @@ public class MVBandwidthMonitor {
         } catch (IllegalStateException ignored) {
             DbgMsg.print(ignored.getMessage());
         }
+        if (!isVis) {
+            hudWindow.getJDialog().dispose();
+        }
+
     }
 
     private String roundBandwidth(double bandw, long time) {
@@ -158,6 +185,42 @@ public class MVBandwidthMonitor {
             return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + Math.round(bandw / 1_000.0) + " kByte/s";
         } else {
             return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + Math.round(bandw) + " Byte/s";
+        }
+    }
+
+    private class BeobMaus extends MouseAdapter {
+
+        JCheckBox cbk = new JCheckBox("Immer im Fordergrund");
+
+        public BeobMaus() {
+            cbk.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP));
+            cbk.addActionListener(l -> {
+                MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP, Boolean.toString(cbk.isSelected()));
+                setDialogOwner();
+            });
+        }
+
+        @Override
+        public void mousePressed(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent arg0) {
+            if (arg0.isPopupTrigger()) {
+                showMenu(arg0);
+            }
+        }
+
+        private void showMenu(MouseEvent evt) {
+            JPopupMenu jPopupMenu = new JPopupMenu();
+
+            jPopupMenu.add(cbk);
+
+            //anzeigen
+            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }
 
