@@ -185,12 +185,10 @@ public class GuiFunktionen extends MVFunctionSys {
                 pathName[1] = cutName(pathName[1], maxNameL);
             }
         } else // für X-Systeme
-        {
-            if ((pathName[1].length()) > X_MAX_NAME_LENGTH) {
+         if ((pathName[1].length()) > X_MAX_NAME_LENGTH) {
                 Log.errorLog(823012012, "Name zu lang: " + pathName[1]);
                 pathName[1] = cutName(pathName[1], X_MAX_NAME_LENGTH);
             }
-        }
         return pathName;
     }
 
@@ -358,6 +356,16 @@ public class GuiFunktionen extends MVFunctionSys {
             panel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102), 2));
         }
         dialog.setVisible(vis);
+    }
+
+    public static void enableComponents(Container container, boolean enable) {
+        Component[] components = container.getComponents();
+        for (Component component : components) {
+            component.setEnabled(enable);
+            if (component instanceof Container) {
+                enableComponents((Container) component, enable);
+            }
+        }
     }
 
 }

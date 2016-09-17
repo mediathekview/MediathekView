@@ -453,6 +453,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         }
     }
 
+   
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -776,11 +777,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
     @Override
     public void enableFilter(boolean enable) {
-        jRadioButtonF1.setEnabled(enable);
-        jRadioButtonF2.setEnabled(enable);
-        jRadioButtonF3.setEnabled(enable);
-        jRadioButtonF4.setEnabled(enable);
-        jRadioButtonF5.setEnabled(enable);
+//        setPanelEnabled(this, enable);
     }
 
     @Override

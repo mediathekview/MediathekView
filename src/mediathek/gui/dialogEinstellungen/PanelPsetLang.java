@@ -21,8 +21,6 @@ package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -347,22 +345,12 @@ public class PanelPsetLang extends PanelVorlage {
         }
     }
 
-    private void enableComponents(Container container, boolean enable) {
-        Component[] components = container.getComponents();
-        for (Component component : components) {
-            component.setEnabled(enable);
-            if (component instanceof Container) {
-                enableComponents((Container) component, enable);
-            }
-        }
-    }
-
     private void tabelleProgramme() {
         //Tabelle mit den Programmen füllen
         DatenPset pSet = getPset();
         stopBeob = true;
 
-        enableComponents(jTabbedPane, pSet != null);
+        GuiFunktionen.enableComponents(jTabbedPane, pSet != null);
         jButtonAbspielen.setBackground(null);
         if (pSet != null) {
             jTabbedPane.setTitleAt(0, "Set Name: " + pSet.arr[DatenPset.PROGRAMMSET_NAME]);
