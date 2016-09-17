@@ -47,7 +47,7 @@ public class MVBandwidthMonitorOSX {
 
     public MVBandwidthMonitorOSX(JFrame parent) {
         this.parent = parent;
-        hudWindow = new HudWindow("Bandbreite", parent);
+        hudWindow = new HudWindow("Bandbreite", MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP) ? parent : (Frame) null);
         hudWindow.makeResizeable();
 
         JDialog hudDialog = hudWindow.getJDialog();
@@ -115,15 +115,14 @@ public class MVBandwidthMonitorOSX {
         chart.addMouseListener(new BeobMaus());
     }
 
-    private void setDialogOwner() {
-        if (MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP)) {
-            GuiFunktionen.setParent(hudWindow.getJDialog(), parent);
-        } else {
-            GuiFunktionen.setParent(hudWindow.getJDialog(), new Frame());
-        }
-        beenden();
-    }
-
+//    private void setDialogOwner() {
+//        if (MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP)) {
+//            GuiFunktionen.setParent(hudWindow.getJDialog(), parent);
+//        } else {
+//            GuiFunktionen.setParent(hudWindow.getJDialog(), new Frame());
+//        }
+//        beenden();
+//    }
     private void beenden() {
         MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(false));
         Listener.notify(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitorLWin.class.getSimpleName());
@@ -190,14 +189,16 @@ public class MVBandwidthMonitorOSX {
 
     private class BeobMaus extends MouseAdapter {
 
-        JCheckBox cbk = new JCheckBox("Immer im Fordergrund");
+        JCheckBox cbkTop = new JCheckBox("Immer im Fordergrund");
+        JMenuItem itemClose = new JMenuItem("Ausblenden");
 
         public BeobMaus() {
-            cbk.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP));
-            cbk.addActionListener(l -> {
-                MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP, Boolean.toString(cbk.isSelected()));
-                setDialogOwner();
+            cbkTop.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP));
+            cbkTop.addActionListener(l -> {
+                MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP, Boolean.toString(cbkTop.isSelected()));
+                GuiFunktionen.setParent(hudWindow.getJDialog(), MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP) ? parent : (Frame) null);
             });
+            itemClose.addActionListener(l -> beenden());
         }
 
         @Override
@@ -217,7 +218,9 @@ public class MVBandwidthMonitorOSX {
         private void showMenu(MouseEvent evt) {
             JPopupMenu jPopupMenu = new JPopupMenu();
 
-            jPopupMenu.add(cbk);
+            jPopupMenu.add(cbkTop);
+            jPopupMenu.addSeparator();
+            jPopupMenu.add(itemClose);
 
             //anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
