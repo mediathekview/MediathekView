@@ -193,14 +193,18 @@ public class GuiFilme extends PanelVorlage {
         Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
-                mVFilter.enableFilter(false);
+                GuiFunktionen.enableComponents(mVFilterFrame, false);
+                GuiFunktionen.enableComponents(mVFilterPanel, false);
+                //mVFilter.enableFilter(false);
                 loadTable();
             }
 
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 loadTable();
-                mVFilter.enableFilter(true);
+                GuiFunktionen.enableComponents(mVFilterFrame, true);
+                GuiFunktionen.enableComponents(mVFilterPanel, true);
+                //mVFilter.enableFilter(true);
             }
         });
         Daten.mediathekGui.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "sender");
