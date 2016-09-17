@@ -1,4 +1,4 @@
-package mediathek.gui.dialog;
+package mediathek.gui;
 
 import javax.swing.event.ChangeListener;
 import mSearch.daten.DatenFilm;

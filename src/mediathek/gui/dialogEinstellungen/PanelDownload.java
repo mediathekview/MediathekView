@@ -27,7 +27,7 @@ import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
-import mediathek.gui.MVDownloadInfo;
+import mediathek.gui.MVBandwidthMonitorLWin;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 
@@ -86,7 +86,7 @@ public class PanelDownload extends PanelVorlage {
 
     private void setSliderBandwith() {
         stopBeob = true;
-        MVDownloadInfo.setSliderBandwith(jSliderBandbreite, jLabelBandwidth);
+        MVBandwidthMonitorLWin.setSliderBandwith(jSliderBandbreite, jLabelBandwidth);
         stopBeob = false;
     }
 

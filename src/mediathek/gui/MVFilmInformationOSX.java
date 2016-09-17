@@ -1,4 +1,4 @@
-package mediathek.gui.dialog;
+package mediathek.gui;
 
 import com.explodingpixels.macwidgets.HudWidgetFactory;
 import com.explodingpixels.macwidgets.HudWindow;
@@ -22,7 +22,7 @@ import org.jdesktop.swingx.JXHyperlink;
 /**
  * Display the current film information in a Apple-style HUD window.
  */
-public class MVFilmInformation implements MVFilmInfo {
+public class MVFilmInformationOSX implements MVFilmInfo {
 
     private HudWindow hud = null;
     private JDialog dialog = null;
@@ -39,7 +39,7 @@ public class MVFilmInformation implements MVFilmInfo {
     private final JFrame parent;
     private static ImageIcon ja_sw_16 = null;
 
-    public MVFilmInformation(JFrame owner, JTabbedPane tabbedPane, Daten ddaten) {
+    public MVFilmInformationOSX(JFrame owner, JTabbedPane tabbedPane, Daten ddaten) {
         parent = owner;
         foreground = Color.WHITE;
         background = Color.BLACK;
@@ -61,6 +61,7 @@ public class MVFilmInformation implements MVFilmInfo {
         content.setOpaque(false);
         hud.setContentPane(content);
         dialog = hud.getJDialog();
+
         // dialog.pack(); --> Exception in thread "AWT-EventQueue-0" sun.awt.X11.XException: Cannot write XdndAware property
         Dimension size = dialog.getSize();
         size.width = 600;
@@ -75,15 +76,6 @@ public class MVFilmInformation implements MVFilmInfo {
             }
         };
         dialog.addMouseListener(new BeobMaus());
-    }
-
-    private void setDialogOwner() {
-        if (MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP)) {
-            GuiFunktionen.setParent(dialog, parent);
-        } else {
-            GuiFunktionen.setParent(dialog, new Frame());
-        }
-        dialog.dispose();
     }
 
     private JComponent setLable() {
@@ -272,14 +264,16 @@ public class MVFilmInformation implements MVFilmInfo {
 
     private class BeobMaus extends MouseAdapter {
 
-        JCheckBox cbk = new JCheckBox("Immer im Fordergrund");
+        JCheckBox cbkTop = new JCheckBox("Immer im Fordergrund");
+        JMenuItem itemClose = new JMenuItem("Ausblenden");
 
         public BeobMaus() {
-            cbk.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP));
-            cbk.addActionListener(l -> {
-                MVConfig.add(MVConfig.Configs.SYSTEM_FILM_INFO_TOP, Boolean.toString(cbk.isSelected()));
-                setDialogOwner();
+            cbkTop.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP));
+            cbkTop.addActionListener(l -> {
+                MVConfig.add(MVConfig.Configs.SYSTEM_FILM_INFO_TOP, Boolean.toString(cbkTop.isSelected()));
+                GuiFunktionen.setParent(dialog, MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP) ? parent : (Frame) null);
             });
+            itemClose.addActionListener(l -> dialog.dispose());
         }
 
         @Override
@@ -299,10 +293,13 @@ public class MVFilmInformation implements MVFilmInfo {
         private void showMenu(MouseEvent evt) {
             JPopupMenu jPopupMenu = new JPopupMenu();
 
-            jPopupMenu.add(cbk);
+            jPopupMenu.add(cbkTop);
+            jPopupMenu.addSeparator();
+            jPopupMenu.add(itemClose);
 
             //anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
         }
+
     }
 }

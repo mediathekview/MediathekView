@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.gui.dialog;
+package mediathek.gui;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -37,7 +37,7 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.UrlHyperlinkAction;
 import org.jdesktop.swingx.JXHyperlink;
 
-public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFilmInfo {
+public class MVFilmInformationLWin extends javax.swing.JDialog implements MVFilmInfo {
 
     private JXHyperlink lblUrlThemaField;
     private JXHyperlink lblUrlSubtitle;
@@ -51,11 +51,13 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
     private final JFrame parent;
     private static ImageIcon ja_sw_16 = null;
     static Point mouseDownCompCoords;
+    private JDialog dialog;
 
-    public MVFilmInformationLinux(JFrame owner, JTabbedPane tabbedPane, Daten ddaten) {
+    public MVFilmInformationLWin(JFrame owner, JTabbedPane tabbedPane, Daten ddaten) {
         super(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP) ? owner : (Frame) null, false);
         initComponents();
 
+        dialog = this;
         parent = owner;
         this.setTitle("Filminformation");
 
@@ -118,31 +120,7 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
                 setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
             }
         });
-        setDialogBorder();
-    }
-
-    private void setDialogOwner() {
-        dispose();
-        if (MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP)) {
-            GuiFunktionen.setParent(this, parent);
-        } else {
-            GuiFunktionen.setParent(this, new Frame());
-        }
-        setVisible(true);
-    }
-
-    private void setDialogBorder() {
-        dispose();
-        if (MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_BORDER)) {
-            setUndecorated(false);
-            jPanelOut.setBorder(null);
-            jPanelExtra.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102), 2));
-        } else {
-            setUndecorated(true);
-            jPanelOut.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102), 2));
-            jPanelExtra.setBorder(null);
-        }
-        setVisible(true);
+        GuiFunktionen.setDialogDecorated(dialog, jPanelOut, MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_DECORATED));
     }
 
     private void setExtra(JPanel jPanel) {
@@ -325,16 +303,16 @@ public class MVFilmInformationLinux extends javax.swing.JDialog implements MVFil
             cbkTop.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP));
             cbkTop.addActionListener(l -> {
                 MVConfig.add(MVConfig.Configs.SYSTEM_FILM_INFO_TOP, Boolean.toString(cbkTop.isSelected()));
-                setDialogOwner();
+                GuiFunktionen.setParent(dialog, MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP) ? parent : (Frame) null);
             });
 
-            cbkBorder.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_BORDER));
+            cbkBorder.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_DECORATED));
             cbkBorder.addActionListener(l -> {
-                MVConfig.add(MVConfig.Configs.SYSTEM_FILM_INFO_BORDER, Boolean.toString(cbkBorder.isSelected()));
-                setDialogBorder();
+                MVConfig.add(MVConfig.Configs.SYSTEM_FILM_INFO_DECORATED, Boolean.toString(cbkBorder.isSelected()));
+                GuiFunktionen.setDialogDecorated(dialog, jPanelOut, MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_DECORATED));
+                //setDialogBorder();
             });
             itemClose.addActionListener(l -> dispose());
-
         }
 
         @Override
