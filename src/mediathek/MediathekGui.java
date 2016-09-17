@@ -46,7 +46,10 @@ import mediathek.controller.ProgStart;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.*;
-import mediathek.gui.dialog.*;
+import mediathek.gui.dialog.DialogBeenden;
+import mediathek.gui.dialog.DialogLeer;
+import mediathek.gui.dialog.DialogMediaDB;
+import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.res.GetIcon;
@@ -84,8 +87,8 @@ public class MediathekGui extends JFrame {
     /**
      * Bandwidth monitoring for downloads.
      */
-    private MVBandwidthMonitor bandwidthMonitor = null;
-    private MVDownloadInfo mvDownloadInfo = null;
+    private MVBandwidthMonitorOSX bandwidthMonitorOSX = null;
+    private MVBandwidthMonitorLWin bandwidthMonitorLWin = null;
 
     /**
      * Legt die statusbar an.
@@ -226,10 +229,10 @@ public class MediathekGui extends JFrame {
         createStatusBar();
         //create the Film Information HUD
         if (SystemInfo.isMacOSX()) {
-            Daten.filmInfo = new MVFilmInformation(this, jTabbedPane, daten);
+            Daten.filmInfo = new MVFilmInformationOSX(this, jTabbedPane, daten);
         } else {
             //klappte nicht auf allen Desktops
-            Daten.filmInfo = new MVFilmInformationLinux(this, jTabbedPane, daten);
+            Daten.filmInfo = new MVFilmInformationLWin(this, jTabbedPane, daten);
         }
 
         setOrgTitel();
@@ -258,9 +261,9 @@ public class MediathekGui extends JFrame {
         setFocusSuchfeld();
 
         if (SystemInfo.isMacOSX()) {
-            bandwidthMonitor = new MVBandwidthMonitor(this);
+            bandwidthMonitorOSX = new MVBandwidthMonitorOSX(this);
         } else {
-            mvDownloadInfo = new MVDownloadInfo(this);
+            bandwidthMonitorLWin = new MVBandwidthMonitorLWin(this);
         }
 
         Duration.staticPing("Gui steht!");
@@ -650,12 +653,12 @@ public class MediathekGui extends JFrame {
     }
 
     private void setSlider() {
-        MVDownloadInfo.setSliderBandwith(jSliderBandbreite, null);
+        MVBandwidthMonitorLWin.setSliderBandwith(jSliderBandbreite, null);
         setSliderText();
     }
 
     private void setSliderText() {
-        String s = MVDownloadInfo.getTextBandwith();
+        String s = MVBandwidthMonitorLWin.getTextBandwith();
         s = " [" + s + "]: ";
         while (s.length() < 20) {
             s = s + " ";
@@ -961,9 +964,9 @@ public class MediathekGui extends JFrame {
         // Dialog Einstellungen
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, Daten.dialogEinstellungen);
         // Infodialog/Bandwidth
-        if (mvDownloadInfo != null) {
-            GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_INFODIALOG, mvDownloadInfo.getDialog());
-            mvDownloadInfo.getDividerLocation();
+        if (bandwidthMonitorLWin != null) {
+            GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_INFODIALOG, bandwidthMonitorLWin.getDialog());
+            bandwidthMonitorLWin.getDividerLocation();
         }
         // MediaDB
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, Daten.dialogMediaDB);

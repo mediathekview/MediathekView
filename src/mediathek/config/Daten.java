@@ -49,7 +49,7 @@ import mediathek.daten.*;
 import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.*;
 import mediathek.gui.dialog.DialogMediaDB;
-import mediathek.gui.dialog.MVFilmInfo;
+import mediathek.gui.MVFilmInfo;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFont;

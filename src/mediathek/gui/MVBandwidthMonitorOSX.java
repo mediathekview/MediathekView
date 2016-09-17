@@ -31,7 +31,7 @@ import mediathek.tool.GuiFunktionen;
 /**
  * This class will manage and display the download bandwidth chart display.
  */
-public class MVBandwidthMonitor {
+public class MVBandwidthMonitorOSX {
 
     private double counter = 0; // double sonst "läuft" die Chart nicht
     private HudWindow hudWindow = null;
@@ -45,7 +45,7 @@ public class MVBandwidthMonitor {
     private final java.util.Timer timer = new java.util.Timer(false);
     private TimerTask timerTask = null;
 
-    public MVBandwidthMonitor(JFrame parent) {
+    public MVBandwidthMonitorOSX(JFrame parent) {
         this.parent = parent;
         hudWindow = new HudWindow("Bandbreite", parent);
         hudWindow.makeResizeable();
@@ -105,7 +105,7 @@ public class MVBandwidthMonitor {
         dim.height = 150;
         dim.width = 300;
         hudDialog.setSize(dim);
-        Listener.addListener(new Listener(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitor.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitorOSX.class.getSimpleName()) {
             @Override
             public void ping() {
                 setVisibility();
@@ -126,7 +126,7 @@ public class MVBandwidthMonitor {
 
     private void beenden() {
         MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(false));
-        Listener.notify(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVDownloadInfo.class.getSimpleName());
+        Listener.notify(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitorLWin.class.getSimpleName());
         setVisibility();
     }
 

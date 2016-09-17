@@ -39,7 +39,7 @@ import mediathek.daten.DownloadInfos;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFilmSize;
 
-public class MVDownloadInfo extends javax.swing.JPanel {
+public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
 
     private double counter = 0; // double sonst "läuft" die Chart nicht
     private Trace2DLtd m_trace = new Trace2DLtd(300);
@@ -58,7 +58,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
      *
      * @param parent
      * @param menuItem */
-    public MVDownloadInfo(JFrame parent) {
+    public MVBandwidthMonitorLWin(JFrame parent) {
         initComponents();
         this.parent = parent;
         jDialog = new JDialog(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP) ? parent : (Frame) null, "Bandbreite");
@@ -110,13 +110,13 @@ public class MVDownloadInfo extends javax.swing.JPanel {
         jPanelChart.add(chart, BorderLayout.CENTER);
 
         // Slider zum Einstellen der Bandbreite
-        Listener.addListener(new Listener(Listener.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_BANDBREITE, MVBandwidthMonitorOSX.class.getSimpleName()) {
             @Override
             public void ping() {
                 setSlider();
             }
         });
-        Listener.addListener(new Listener(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitor.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitorOSX.class.getSimpleName()) {
             @Override
             public void ping() {
                 setVisibility();
@@ -137,7 +137,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
             int b = jSliderBandwidth.getValue() * 10;
             jLabelBandwidth.setText(b + " kByte/s");
             MVConfig.add(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
-            Listener.notify(Listener.EREIGNIS_BANDBREITE, MVBandwidthMonitor.class.getName());
+            Listener.notify(Listener.EREIGNIS_BANDBREITE, MVBandwidthMonitorOSX.class.getName());
         });
 
         jDialog.setContentPane(this);
@@ -218,7 +218,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
 
     private void setDialogBorder() {
         jDialog.dispose();
-        if (MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_BORDER)) {
+        if (MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_DECORATED)) {
             jDialog.setUndecorated(false);
             setBorder(null);
         } else {
@@ -230,7 +230,7 @@ public class MVDownloadInfo extends javax.swing.JPanel {
 
     private void beenden() {
         MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(false));
-        Listener.notify(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVDownloadInfo.class.getSimpleName());
+        Listener.notify(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitorLWin.class.getSimpleName());
         setVisibility();
     }
 
@@ -474,9 +474,9 @@ public class MVDownloadInfo extends javax.swing.JPanel {
                 MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP, Boolean.toString(cbkTop.isSelected()));
                 setDialogOwner();
             });
-            cbkBorder.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_BORDER));
+            cbkBorder.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_DECORATED));
             cbkBorder.addActionListener(l -> {
-                MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_BORDER, Boolean.toString(cbkBorder.isSelected()));
+                MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_DECORATED, Boolean.toString(cbkBorder.isSelected()));
                 setDialogBorder();
             });
             itemClose.addActionListener(l -> beenden());
