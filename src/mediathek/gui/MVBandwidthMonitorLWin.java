@@ -47,7 +47,9 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
     private boolean stopBeob = false;
     private JDialog jDialog = null;
     private JFrame parent = null;
-    static Point mouseDownCompCoords;
+    private static Point mouseDownCompCoords;
+    private JPanel panel;
+
     /**
      * Timer for collecting sample data.
      */
@@ -56,11 +58,11 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
 
     /** Creates new form MVBandwidthInfo_
      *
-     * @param parent
-     * @param menuItem */
+     * @param parent */
     public MVBandwidthMonitorLWin(JFrame parent) {
         initComponents();
         this.parent = parent;
+        this.panel = this;
         jDialog = new JDialog(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP) ? parent : (Frame) null, "Bandbreite");
         jDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         jDialog.addWindowListener(new WindowAdapter() {
@@ -162,9 +164,10 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
             jDialog.setSize(dim);
             addWL(0.5);
         }
-        chart.addMouseListener(new BeobMaus());
-        jPanelInfo.addMouseListener(new BeobMaus());
-        jEditorPaneInfo.addMouseListener((new BeobMaus()));
+        BeobMaus bom = new BeobMaus();
+        chart.addMouseListener(bom);
+        jPanelInfo.addMouseListener(bom);
+        jEditorPaneInfo.addMouseListener(bom);
 
         mouseDownCompCoords = null;
         chart.addMouseListener(new MouseListener() {
@@ -201,31 +204,9 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
                 jDialog.setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
             }
         });
-        setDialogBorder();
+
+        GuiFunktionen.setDialogDecorated(jDialog, this, MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_DECORATED));
         setVisibility();
-    }
-
-    private void setDialogOwner() {
-        jDialog.dispose();
-        if (MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP)) {
-            GuiFunktionen.setParent(jDialog, parent);
-        } else {
-            GuiFunktionen.setParent(jDialog, new Frame());
-        }
-        jDialog.setVisible(true);
-        //beenden();
-    }
-
-    private void setDialogBorder() {
-        jDialog.dispose();
-        if (MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_DECORATED)) {
-            jDialog.setUndecorated(false);
-            setBorder(null);
-        } else {
-            jDialog.setUndecorated(true);
-            setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102), 2));
-        }
-        jDialog.setVisible(true);
     }
 
     private void beenden() {
@@ -472,12 +453,12 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
             cbkTop.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP));
             cbkTop.addActionListener(l -> {
                 MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP, Boolean.toString(cbkTop.isSelected()));
-                setDialogOwner();
+                GuiFunktionen.setParent(jDialog, MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP) ? parent : (Frame) null);
             });
             cbkBorder.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_DECORATED));
             cbkBorder.addActionListener(l -> {
                 MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_DECORATED, Boolean.toString(cbkBorder.isSelected()));
-                setDialogBorder();
+                GuiFunktionen.setDialogDecorated(jDialog, panel, MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_DECORATED));
             });
             itemClose.addActionListener(l -> beenden());
         }
