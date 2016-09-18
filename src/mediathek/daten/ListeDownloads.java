@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import javax.swing.JFrame;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Listener;
+import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -62,8 +63,12 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     public synchronized void filmEintragen() {
         // bei einmal Downloads nach einem Programmstart/Neuladen der Filmliste
         // den Film wieder eintragen
+        SysMsg.sysMsg("Filme in Downloads eintragen");
         this.stream().filter(d -> d.film == null)
-                .forEach(d -> d.film = Daten.listeFilme.getFilmByUrl_klein_hoch_hd(d.arr[DatenDownload.DOWNLOAD_URL]));
+                .forEach(d -> {
+                    d.film = Daten.listeFilme.getFilmByUrl_klein_hoch_hd(d.arr[DatenDownload.DOWNLOAD_URL]);
+                    d.setGroesseFromFilm();
+                });
     }
 
     public synchronized void listePutzen() {
