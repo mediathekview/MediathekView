@@ -153,7 +153,7 @@ public class DownloadInfos {
                 text += "-";
             }
             text += " ]  " + MVFilmSize.getGroesse(byteAktDownloads) + " von " + MVFilmSize.getGroesse(byteAlleDownloads) + " MByte /";
-            text += " Donwloads: " + Daten.downloadInfos.anzDownloadsRun + " /";
+            text += " Downloads: " + Daten.downloadInfos.anzDownloadsRun + " /";
             text += " Bandbreite: " + roundBandwidth();
             Log.progress(text);
         }
