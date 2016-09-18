@@ -135,7 +135,7 @@ public class DownloadInfos {
             percent = (int) (byteAktDownloads * 100 / byteAlleDownloads);
             progressMsg();
         }
-        Daten.downloadInfos.roundBandwidth();
+        roundBandwidth();
     }
 
     private void progressMsg() {
@@ -152,14 +152,10 @@ public class DownloadInfos {
             for (int i = 0; i < (10 - a); ++i) {
                 text += "-";
             }
-            text += " ]  " + MVFilmSize.getGroesse(byteAktDownloads) + " von " + MVFilmSize.getGroesse(byteAlleDownloads) + " MByte / ";
-            if (Daten.downloadInfos.anzDownloadsRun == 1) {
-                text += "1 Donwload läuft";
-                Log.progress(text);
-            } else if (Daten.downloadInfos.anzDownloadsRun > 1) {
-                text += Daten.downloadInfos.anzDownloadsRun + " Donwloads laufen";
-                Log.progress(text);
-            }
+            text += " ]  " + MVFilmSize.getGroesse(byteAktDownloads) + " von " + MVFilmSize.getGroesse(byteAlleDownloads) + " MByte /";
+            text += " Donwloads: " + Daten.downloadInfos.anzDownloadsRun + " /";
+            text += " Bandbreite: " + roundBandwidth();
+            Log.progress(text);
         }
     }
 
