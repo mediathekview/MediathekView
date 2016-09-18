@@ -19,10 +19,13 @@
  */
 package mediathek.daten;
 
-import mediathek.config.Daten;
 import java.text.DecimalFormat;
 import java.util.LinkedList;
+import mSearch.tool.Log;
+import mediathek.config.Daten;
+import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
+import mediathek.tool.MVFilmSize;
 
 public class DownloadInfos {
 
@@ -37,6 +40,8 @@ public class DownloadInfos {
     // Bandbreite
     public long bandwidth = 0; //Bandbreite: bytes per second
     public String bandwidthStr = "";
+    // Prozent fertig (alle)
+    public int percent = -1;
 
     // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
     public int[] downloadStarts = new int[]{0, 0, 0, 0, 0, 0, 0};
@@ -126,7 +131,36 @@ public class DownloadInfos {
                 Daten.downloadInfos.timeRestAllDownloads = 0; // gibt ja nur noch einen
             }
         }
+        if (byteAlleDownloads > 0) {
+            percent = (int) (byteAktDownloads * 100 / byteAlleDownloads);
+            progressMsg();
+        }
         Daten.downloadInfos.roundBandwidth();
+    }
+
+    private void progressMsg() {
+        if (!MVConfig.getBool(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS)) {
+            return;
+        }
+        int progress = Daten.downloadInfos.percent;
+        if (progress >= 0) {
+            String text = "  [ ";
+            int a = progress / 10;
+            for (int i = 0; i < a; ++i) {
+                text += "#";
+            }
+            for (int i = 0; i < (10 - a); ++i) {
+                text += "-";
+            }
+            text += " ]  " + MVFilmSize.getGroesse(byteAktDownloads) + " von " + MVFilmSize.getGroesse(byteAlleDownloads) + " MByte / ";
+            if (Daten.downloadInfos.anzDownloadsRun == 1) {
+                text += "1 Donwload läuft";
+                Log.progress(text);
+            } else if (Daten.downloadInfos.anzDownloadsRun > 1) {
+                text += Daten.downloadInfos.anzDownloadsRun + " Donwloads laufen";
+                Log.progress(text);
+            }
+        }
     }
 
     private void clean() {
@@ -136,6 +170,7 @@ public class DownloadInfos {
         timeRestAktDownloads = 0;
         timeRestAllDownloads = 0;
         bandwidth = 0;
+        percent = -1;
     }
 
 }

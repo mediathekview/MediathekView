@@ -33,6 +33,7 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.IoXmlLesen;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.MVFilmSize;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 public class MediathekAuto {
@@ -128,6 +129,7 @@ public class MediathekAuto {
         try {
             SysMsg.playerMeldungenAus = true;
             Daten.listeDownloads.abosSuchen(null);
+            Daten.listeDownloads.filmEintragen(); //für gespeicherte Downloads
 
             SysMsg.sysMsg(Daten.listeDownloads.size() + " Filme zum Laden");
             SysMsg.sysMsg("");
@@ -138,6 +140,10 @@ public class MediathekAuto {
                 SysMsg.sysMsg("\tSender: " + d.arr[DatenDownload.DOWNLOAD_SENDER]);
                 SysMsg.sysMsg("\tThema: " + d.arr[DatenDownload.DOWNLOAD_THEMA]);
                 SysMsg.sysMsg("\tTitel: " + d.arr[DatenDownload.DOWNLOAD_TITEL]);
+                String size = MVFilmSize.getGroesse(d.mVFilmSize.getSize());
+                if (!size.isEmpty()) {
+                    SysMsg.sysMsg("\tGröße: " + size + " MByte");
+                }
                 SysMsg.sysMsg("");
             }
             SysMsg.sysMsg(LILNE);

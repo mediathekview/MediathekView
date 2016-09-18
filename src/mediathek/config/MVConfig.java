@@ -52,73 +52,13 @@ public class MVConfig {
             + "\t" + "Beim Dialog \"Download weiterführen\" wird nach dieser Zeit der Download weitergeführt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN.initValue + "\n\n"
             + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.cValue + "\n"
             + "\t" + "Downloadfehlermeldung wird xx Sedunden lang angezeigt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.initValue + "\n\n"
+            + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS.cValue + "\n"
+            + "\t" + "Downloadprogress im Terminal (-auto) anzeigen: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS.initValue + "\n\n"
             + "\t" + Configs.SYSTEM_PARAMETER_USERAGENT.cValue + "\n"
             + "\t" + "Useragent für direkte Downloads, Standardwert: " + Configs.SYSTEM_PARAMETER_USERAGENT.initValue + "\n";
 
     public enum Configs {
         //============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
         //Programm-Configs, änderbar nur im Konfig-File
         SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN("__system-parameter__download-timeout-sekunden_250__", "250"),//250 Sekunden, wie bei Firefox
         SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART("__system-parameter__download-max-restart_5__", "5"),// max. Startversuche für fehlgeschlagene Downloads (insgesamt: restart * restart_http Versuche)
@@ -126,6 +66,7 @@ public class MVConfig {
         SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN("__system-parameter__download-weiterfuehren-sekunden_60__", "60"), //Beim Dialog "Download weiterführen" wird in dieser Zeit der Download weitergeführt
         SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN("__system-parameter__download-fehlermeldung-sekunden_120__", "120"),//Downloadfehlermeldung wird xx Sedunden lang angezeigt
         SYSTEM_PARAMETER_USERAGENT("__system-parameter__useragent_" + Const.VERSION + "__", Konstanten.USER_AGENT_DEFAULT),//Useragent für direkte Downloads
+        SYSTEM_PARAMETER_DOWNLOAD_PROGRESS("__system-parameter__dl_progress_", Boolean.TRUE.toString()), //Downloadprogress im Terminal (-auto) anzeigen
 
         //============================================
         //Programm-Configs, änderbar über Gui
@@ -345,6 +286,7 @@ public class MVConfig {
         Log.sysLog("max. Download-Restart-Http: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP));
         Log.sysLog("Download weiterführen in [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN));
         Log.sysLog("Download Fehlermeldung anzeigen [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN));
+        Log.sysLog("Downoadprogress anzeigen: " + MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS));
         Log.sysLog("Useragent: " + MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_USERAGENT));
         Log.sysLog("=======================================");
         Log.sysLog("");
