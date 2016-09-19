@@ -41,6 +41,8 @@ public interface MVFilter {
 
     public JCheckBox get_jCheckBoxNurHd();
 
+    public JCheckBox get_jCheckBoxNurUt();
+
     public JComboBox<String> get_jComboBoxFilterSender();
 
     public JComboBox<String> get_jComboBoxFilterThema();

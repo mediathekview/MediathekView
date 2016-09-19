@@ -113,11 +113,15 @@
                               <Component id="jCheckBoxNurNeue" min="-2" max="-2" attributes="0"/>
                               <Component id="jCheckBoxKeineGesehenen" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="jCheckBoxKeineAbos" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="jCheckBoxNurHd" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="jToggleButtonLivestram" linkSize="3" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
                                   <Component id="jButtonClearAll" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jToggleButtonHistory" linkSize="3" alignment="0" max="32767" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jCheckBoxNurHd" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="chkUt" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -170,7 +174,10 @@
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jCheckBoxKeineAbos" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="jCheckBoxNurHd" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jCheckBoxNurHd" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="chkUt" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jCheckBoxNurNeue" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
@@ -321,7 +328,8 @@
         </Component>
         <Component class="javax.swing.JCheckBox" name="jCheckBoxNurHd">
           <Properties>
-            <Property name="text" type="java.lang.String" value="nur HD anzeigen"/>
+            <Property name="text" type="java.lang.String" value="nur HD"/>
+            <Property name="toolTipText" type="java.lang.String" value="nur Filme in HD anzeigen"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
@@ -330,6 +338,7 @@
         <Component class="javax.swing.JCheckBox" name="jCheckBoxNurNeue">
           <Properties>
             <Property name="text" type="java.lang.String" value="nur neue"/>
+            <Property name="toolTipText" type="java.lang.String" value="nur neue Filme anzeigen"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JToggleButton" name="jToggleButtonLivestram">
@@ -436,6 +445,12 @@
               <Image iconType="3" name="/mediathek/res/muster/button-clear.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Alles l&#xf6;schen"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="chkUt">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="nur UT"/>
+            <Property name="toolTipText" type="java.lang.String" value="nur Filme mit Untertitel anzeigen"/>
           </Properties>
         </Component>
       </SubComponents>
