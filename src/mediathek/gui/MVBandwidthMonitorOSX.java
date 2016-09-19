@@ -1,17 +1,12 @@
 package mediathek.gui;
 
-import com.explodingpixels.macwidgets.HudWindow;
 import info.monitorenter.gui.chart.Chart2D;
 import info.monitorenter.gui.chart.IAxis;
 import info.monitorenter.gui.chart.labelformatters.LabelFormatterAutoUnits;
 import info.monitorenter.gui.chart.rangepolicies.RangePolicyForcedPoint;
 import info.monitorenter.gui.chart.traces.Trace2DLtd;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
@@ -19,14 +14,11 @@ import java.util.LinkedList;
 import java.util.TimerTask;
 import javax.swing.*;
 import mSearch.tool.DbgMsg;
-import mSearch.tool.Functions.OperatingSystemType;
-import static mSearch.tool.Functions.getOs;
 import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.GuiFunktionen;
 
 /**
  * This class will manage and display the download bandwidth chart display.
@@ -34,10 +26,9 @@ import mediathek.tool.GuiFunktionen;
 public class MVBandwidthMonitorOSX {
 
     private double counter = 0; // double sonst "läuft" die Chart nicht
-    private HudWindow hudWindow = null;
+    private JDialog hudDialog = null;
     private final Trace2DLtd m_trace = new Trace2DLtd(300);
     private IAxis x_achse = null;
-    private JFrame parent = null;
 
     /**
      * Timer for collecting sample data.
@@ -45,13 +36,11 @@ public class MVBandwidthMonitorOSX {
     private final java.util.Timer timer = new java.util.Timer(false);
     private TimerTask timerTask = null;
 
-    public MVBandwidthMonitorOSX(JFrame parent) {
-        this.parent = parent;
-        hudWindow = new HudWindow("Bandbreite", MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP) ? parent : (Frame) null);
-        hudWindow.makeResizeable();
-
-        JDialog hudDialog = hudWindow.getJDialog();
-
+    private void createDialog(JFrame parent) {
+        hudDialog = new JDialog(parent);
+        hudDialog.setTitle("Bandbreite");
+        hudDialog.setResizable(true);
+        hudDialog.setType(Window.Type.UTILITY);
         hudDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         hudDialog.addWindowListener(new WindowAdapter() {
             @Override
@@ -60,21 +49,20 @@ public class MVBandwidthMonitorOSX {
             }
         });
 
+    }
+
+    private void calculateHudPosition() {
+        final GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        final DisplayMode dm = gd.getDisplayMode();
+        hudDialog.setLocation(dm.getWidth() - DEFAULT_WIDTH, 0);
+    }
+
+    private Chart2D createChart() {
         Chart2D chart = new Chart2D();
         chart.setPaintLabels(true);
         chart.setUseAntialiasing(true);
         chart.setToolTipType(Chart2D.ToolTipType.VALUE_SNAP_TO_TRACEPOINTS);
 
-        JPanel panel = new JPanel();
-        if (getOs() == OperatingSystemType.LINUX) {
-            hudDialog.setBackground(null);
-            chart.setOpaque(true);
-            panel.setOpaque(true);
-        } else {
-            //a transparent chart is a HUGE GPU performance killer and will BURN GPU resources :(
-            //panel.setOpaque(false);
-            panel.setBackground(Color.WHITE);
-        }
         x_achse = chart.getAxisX();
         x_achse.getAxisTitle().setTitle("Minuten");
         x_achse.setPaintScale(true);
@@ -96,33 +84,32 @@ public class MVBandwidthMonitorOSX {
         m_trace.setName("");
         m_trace.setColor(Color.RED);
         chart.addTrace(m_trace);
-        panel.setLayout(new BorderLayout(0, 0));
-        panel.add(chart, BorderLayout.CENTER);
 
-        hudWindow.setContentPane(panel);
+        return chart;
+    }
 
-        final Dimension dim = hudDialog.getSize();
-        dim.height = 150;
-        dim.width = 300;
-        hudDialog.setSize(dim);
+    public MVBandwidthMonitorOSX(JFrame parent) {
+        createDialog(parent);
+
+        hudDialog.setLayout(new BorderLayout(0, 0));
+        hudDialog.getContentPane().add(createChart(),BorderLayout.CENTER);
+        hudDialog.setSize(DEFAULT_WIDTH,DEFAULT_HEIGHT);
+
         Listener.addListener(new Listener(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitorOSX.class.getSimpleName()) {
             @Override
             public void ping() {
                 setVisibility();
             }
         });
+
+        calculateHudPosition();
+
         setVisibility();
-        chart.addMouseListener(new BeobMaus());
     }
 
-//    private void setDialogOwner() {
-//        if (MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP)) {
-//            GuiFunktionen.setParent(hudWindow.getJDialog(), parent);
-//        } else {
-//            GuiFunktionen.setParent(hudWindow.getJDialog(), new Frame());
-//        }
-//        beenden();
-//    }
+    private static final int DEFAULT_WIDTH = 300;
+    private static final int DEFAULT_HEIGHT = 150;
+
     private void beenden() {
         MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(false));
         Listener.notify(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitorLWin.class.getSimpleName());
@@ -134,7 +121,7 @@ public class MVBandwidthMonitorOSX {
      */
     public void setVisibility() {
         final boolean isVis = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE));
-        hudWindow.getJDialog().setVisible(isVis);
+        hudDialog.setVisible(isVis);
         try {
             if (isVis) {
                 timerTask = new TimerTask() {
@@ -155,8 +142,6 @@ public class MVBandwidthMonitorOSX {
 
                         counter++;
 
-//                        m_trace.addPoint(counter, Daten.guiDebug.getJSpinner().getValue()); // minutes
-//                        x_achse.getAxisTitle().setTitle(roundBandwidth(Daten.guiDebug.getJSpinner().getValue(), counter));
                         m_trace.addPoint(counter / 60, bandwidth); // minutes
                         x_achse.getAxisTitle().setTitle(roundBandwidth(bandwidth, (long) counter));
                     }
@@ -172,7 +157,7 @@ public class MVBandwidthMonitorOSX {
             DbgMsg.print(ignored.getMessage());
         }
         if (!isVis) {
-            hudWindow.getJDialog().dispose();
+            hudDialog.dispose();
         }
 
     }
@@ -186,45 +171,5 @@ public class MVBandwidthMonitorOSX {
             return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + Math.round(bandw) + " Byte/s";
         }
     }
-
-    private class BeobMaus extends MouseAdapter {
-
-        JCheckBox cbkTop = new JCheckBox("Immer im Fordergrund");
-        JMenuItem itemClose = new JMenuItem("Ausblenden");
-
-        public BeobMaus() {
-            cbkTop.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP));
-            cbkTop.addActionListener(l -> {
-                MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP, Boolean.toString(cbkTop.isSelected()));
-                GuiFunktionen.setParent(hudWindow.getJDialog(), MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP) ? parent : (Frame) null);
-            });
-            itemClose.addActionListener(l -> beenden());
-        }
-
-        @Override
-        public void mousePressed(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        private void showMenu(MouseEvent evt) {
-            JPopupMenu jPopupMenu = new JPopupMenu();
-
-            jPopupMenu.add(cbkTop);
-            jPopupMenu.addSeparator();
-            jPopupMenu.add(itemClose);
-
-            //anzeigen
-            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
     }
 
-}

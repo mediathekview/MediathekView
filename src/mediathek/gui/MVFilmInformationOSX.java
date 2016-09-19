@@ -1,128 +1,100 @@
 package mediathek.gui;
 
-import com.explodingpixels.macwidgets.HudWidgetFactory;
-import com.explodingpixels.macwidgets.HudWindow;
-import com.explodingpixels.macwidgets.plaf.HudPaintingUtils;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.net.URISyntaxException;
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
 import mSearch.daten.DatenFilm;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
-import mediathek.config.MVConfig;
 import mediathek.tool.BeobMausUrl;
-import mediathek.tool.EscBeenden;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.UrlHyperlinkAction;
 import org.jdesktop.swingx.JXHyperlink;
 
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import java.awt.*;
+import java.net.URISyntaxException;
+
 /**
- * Display the current film information in a Apple-style HUD window.
+ * Display the current film information as a utility window.
  */
 public class MVFilmInformationOSX implements MVFilmInfo {
 
-    private HudWindow hud = null;
-    private JDialog dialog = null;
+    private JDialog hudDialog = null;
     private JXHyperlink lblUrlThemaField;
     private JXHyperlink lblUrlSubtitle;
     private JTextArea textAreaBeschreibung;
     private JLabel jLabelFilmNeu;
     private JLabel jLabelFilmHD;
     private JLabel jLabelFilmUT;
+    private JFrame parent = null;
     private final JLabel[] labelArrNames = new JLabel[DatenFilm.MAX_ELEM];
     private final JTextField[] txtArrCont = new JTextField[DatenFilm.MAX_ELEM];
-    private final Color foreground, background;
     private DatenFilm aktFilm = new DatenFilm();
-    private final JFrame parent;
-    private static ImageIcon ja_sw_16 = null;
+    private static ImageIcon ja_sw_16 = Icons.ICON_DIALOG_EIN_SW;
+
+    private void createDialog(JFrame parent) {
+        hudDialog = new JDialog(parent);
+        hudDialog.setTitle("Filminformation");
+        hudDialog.setResizable(true);
+        hudDialog.setType(Window.Type.UTILITY);
+        hudDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    }
 
     public MVFilmInformationOSX(JFrame owner, JTabbedPane tabbedPane, Daten ddaten) {
         parent = owner;
-        foreground = Color.WHITE;
-        background = Color.BLACK;
-        ja_sw_16 = Icons.ICON_DIALOG_EIN_SW;
-        hud = new HudWindow("Filminformation", MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP) ? owner : (Frame) null);
-        hud.makeResizeable();
+
+        createDialog(owner);
+        final Border emptyBorder = BorderFactory.createEmptyBorder(0, 0, 0, 0);
         for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {
-            labelArrNames[i] = HudWidgetFactory.createHudLabel(DatenFilm.COLUMN_NAMES[i] + ":");
-            labelArrNames[i].setHorizontalAlignment(SwingConstants.RIGHT);
-            labelArrNames[i].setDoubleBuffered(true);
-            txtArrCont[i] = HudWidgetFactory.createHudTextField("");
-            txtArrCont[i].setEditable(false);
-            txtArrCont[i].setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-            txtArrCont[i].setDoubleBuffered(true);
+            final JLabel lbl = new JLabel(DatenFilm.COLUMN_NAMES[i] + ":");
+            lbl.setHorizontalAlignment(SwingConstants.RIGHT);
+            labelArrNames[i] = lbl;
+
+            final JTextField tf = new JTextField("");
+            tf.setEditable(false);
+            tf.setBorder(emptyBorder);
+            txtArrCont[i] = tf;
         }
-        JComponent content = setLable();
-        content.setDoubleBuffered(true);
-        //prevents flickering in JDK7, JDK6 is still buggy :(
-        content.setOpaque(false);
-        hud.setContentPane(content);
-        dialog = hud.getJDialog();
 
-        // dialog.pack(); --> Exception in thread "AWT-EventQueue-0" sun.awt.X11.XException: Cannot write XdndAware property
-        Dimension size = dialog.getSize();
-        size.width = 600;
-        size.height = 450;
-        dialog.setSize(size);
+        hudDialog.setContentPane(buildLayout());
+        hudDialog.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+
         calculateHudPosition();
-
-        new EscBeenden(dialog) {
-            @Override
-            public void beenden_(JDialog d) {
-                d.dispose();
-            }
-        };
-        dialog.addMouseListener(new BeobMaus());
     }
 
-    private JComponent setLable() {
+    final private static int DEFAULT_WIDTH = 600;
+    final private static int DEFAULT_HEIGHT = 450;
+
+    private JComponent buildLayout() {
         JPanel panel = new JPanel();
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
         lblUrlThemaField = new JXHyperlink();
-        lblUrlThemaField.setDoubleBuffered(true);
-        lblUrlThemaField.setForeground(foreground);
         try {
             lblUrlThemaField.setAction(new UrlHyperlinkAction(parent, ""));
         } catch (URISyntaxException ignored) {
         }
         lblUrlThemaField.addMouseListener(new BeobMausUrl(lblUrlThemaField));
 
-        lblUrlThemaField.setFont(HudPaintingUtils.getHudFont());
-
         lblUrlSubtitle = new JXHyperlink();
-        lblUrlSubtitle.setDoubleBuffered(true);
-        lblUrlSubtitle.setForeground(foreground);
         try {
             lblUrlSubtitle.setAction(new UrlHyperlinkAction(parent, ""));
         } catch (URISyntaxException ignored) {
         }
         lblUrlSubtitle.addMouseListener(new BeobMausUrl(lblUrlSubtitle));
-        lblUrlSubtitle.setFont(HudPaintingUtils.getHudFont());
         textAreaBeschreibung = new JTextArea();
-        textAreaBeschreibung.setDoubleBuffered(true);
         textAreaBeschreibung.setLineWrap(true);
         textAreaBeschreibung.setWrapStyleWord(true);
-        textAreaBeschreibung.setBackground(background);
-        textAreaBeschreibung.setForeground(foreground);
-        textAreaBeschreibung.setOpaque(false);
         textAreaBeschreibung.setRows(4);
 
         jLabelFilmNeu = new JLabel();
-        jLabelFilmNeu.setOpaque(false);
         jLabelFilmNeu.setVisible(false);
         jLabelFilmNeu.setIcon(ja_sw_16);
 
         jLabelFilmHD = new JLabel();
-        jLabelFilmHD.setOpaque(false);
         jLabelFilmHD.setVisible(false);
         jLabelFilmHD.setIcon(ja_sw_16);
 
         jLabelFilmUT = new JLabel();
-        jLabelFilmUT.setOpaque(false);
         jLabelFilmUT.setVisible(false);
         jLabelFilmUT.setIcon(ja_sw_16);
 
@@ -146,7 +118,7 @@ public class MVFilmInformationOSX implements MVFilmInfo {
                 continue;
             }
             c.gridy = zeile;
-            addLable(i, gridbag, c, panel);
+            addComponentWithLayoutConstraints(i, gridbag, c, panel);
             ++zeile;
         }
 
@@ -161,7 +133,7 @@ public class MVFilmInformationOSX implements MVFilmInfo {
         return panel;
     }
 
-    private void addLable(int i, GridBagLayout gridbag, GridBagConstraints c, JPanel panel) {
+    private void addComponentWithLayoutConstraints(int i, GridBagLayout gridbag, GridBagConstraints c, JPanel panel) {
         c.gridx = 0;
         c.weightx = 0;
         gridbag.setConstraints(labelArrNames[i], c);
@@ -201,46 +173,50 @@ public class MVFilmInformationOSX implements MVFilmInfo {
     }
 
     private void calculateHudPosition() {
-        //FIXME calculate the HUD position
+        final GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        final DisplayMode dm = gd.getDisplayMode();
+        hudDialog.setLocation(dm.getWidth() - DEFAULT_WIDTH, 0);
     }
 
     @Override
     public void showInfo() {
-        setAktFilm();
-        dialog.setVisible(true);
+        updateTextFields();
+        hudDialog.setVisible(true);
     }
 
     @Override
     public boolean isVisible() {
-        return dialog.isVisible();
+        return hudDialog.isVisible();
     }
 
     @Override
     public void updateCurrentFilm(DatenFilm film) {
         aktFilm = film;
-        if (this.isVisible()) {
-            setAktFilm();
+        if (isVisible()) {
+            updateTextFields();
         }
     }
 
-    private void setAktFilm() {
-        lblUrlThemaField.setForeground(foreground);
-        lblUrlSubtitle.setForeground(foreground);
+    private void clearAllFields() {
+        for (JTextField aTxtArrCont : txtArrCont) {
+            aTxtArrCont.setText("");
+        }
+        textAreaBeschreibung.setText(" ");
+        lblUrlThemaField.setText("");
+        lblUrlSubtitle.setText("");
+        jLabelFilmNeu.setVisible(false);
+        jLabelFilmHD.setVisible(false);
+        jLabelFilmUT.setVisible(false);
+    }
+
+    private void updateTextFields() {
         if (aktFilm == null) {
-            for (JTextField aTxtArrCont : txtArrCont) {
-                aTxtArrCont.setText("");
-            }
-            textAreaBeschreibung.setText(" ");
-            lblUrlThemaField.setText("");
-            lblUrlSubtitle.setText("");
-            jLabelFilmNeu.setVisible(false);
-            jLabelFilmHD.setVisible(false);
-            jLabelFilmUT.setVisible(false);
+            clearAllFields();
         } else {
             for (int i = 0; i < txtArrCont.length; ++i) {
                 txtArrCont[i].setText(aktFilm.arr[i]);
             }
-            if (aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG].equals("")) {
+            if (aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG].isEmpty()) {
                 // sonst müsste die Größe gesetzt werden
                 textAreaBeschreibung.setText(" ");
             } else {
@@ -252,7 +228,7 @@ public class MVFilmInformationOSX implements MVFilmInfo {
             jLabelFilmHD.setVisible(aktFilm.isHD());
             jLabelFilmUT.setVisible(aktFilm.hasUT());
         }
-        dialog.repaint();
+        hudDialog.repaint();
     }
 
     @Override
@@ -260,46 +236,5 @@ public class MVFilmInformationOSX implements MVFilmInfo {
         //Whenever there is a change event, reset HUD info to nothing
         DatenFilm emptyFilm = new DatenFilm();
         updateCurrentFilm(emptyFilm);
-    }
-
-    private class BeobMaus extends MouseAdapter {
-
-        JCheckBox cbkTop = new JCheckBox("Immer im Fordergrund");
-        JMenuItem itemClose = new JMenuItem("Ausblenden");
-
-        public BeobMaus() {
-            cbkTop.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP));
-            cbkTop.addActionListener(l -> {
-                MVConfig.add(MVConfig.Configs.SYSTEM_FILM_INFO_TOP, Boolean.toString(cbkTop.isSelected()));
-                GuiFunktionen.setParent(dialog, MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP) ? parent : (Frame) null);
-            });
-            itemClose.addActionListener(l -> dialog.dispose());
-        }
-
-        @Override
-        public void mousePressed(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent arg0) {
-            if (arg0.isPopupTrigger()) {
-                showMenu(arg0);
-            }
-        }
-
-        private void showMenu(MouseEvent evt) {
-            JPopupMenu jPopupMenu = new JPopupMenu();
-
-            jPopupMenu.add(cbkTop);
-            jPopupMenu.addSeparator();
-            jPopupMenu.add(itemClose);
-
-            //anzeigen
-            jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
-
     }
 }
