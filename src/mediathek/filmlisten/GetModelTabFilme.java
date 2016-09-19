@@ -29,10 +29,9 @@ import mediathek.tool.TModelFilm;
 
 public class GetModelTabFilme {
 
-
     public static synchronized void getModelTabFilme(ListeFilme listeFilme, Daten ddaten, MVTable table,
             String filterSender, String filterThema, String filterTitel, String filterThemaTitel, String filterIrgendwo,
-            int laenge, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean live, boolean nurNeue) {
+            int laenge, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean nurUt, boolean live, boolean nurNeue) {
         // Model für die Tabelle Filme zusammenbauen
         if (listeFilme.isEmpty()) {
             // wenn die Liste leer ist, dann Tschüss
@@ -42,7 +41,7 @@ public class GetModelTabFilme {
         // dann ein neues Model anlegen
         TModel tModel = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
         if (filterSender.isEmpty() && filterThema.isEmpty() && filterTitel.isEmpty() && filterThemaTitel.isEmpty() && filterIrgendwo.isEmpty() && laenge == 0
-                && !keineAbos && !kGesehen && !nurHd && !live && !nurNeue) {
+                && !keineAbos && !kGesehen && !nurHd && !nurUt && !live && !nurNeue) {
             // dann ganze Liste laden
             addObjectDataTabFilme(listeFilme, tModel);
         } else {
@@ -89,6 +88,11 @@ public class GetModelTabFilme {
                 }
                 if (nurHd) {
                     if (!film.isHD()) {
+                        continue;
+                    }
+                }
+                if (nurUt) {
+                    if (!film.hasUT()) {
                         continue;
                     }
                 }

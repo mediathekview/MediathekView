@@ -164,6 +164,7 @@ public class MVConfig {
         SYSTEM_FILTER_PROFILE__KEINE_ABO("filter-keineAbo"),
         SYSTEM_FILTER_PROFILE__KEINE_GESEHENE("filter-keineGesehen"),
         SYSTEM_FILTER_PROFILE__NUR_HD("filter-nurHd"),
+        SYSTEM_FILTER_PROFILE__NUR_UT("filter-nurUt"),
         SYSTEM_FILTER_PROFILE__NUR_NEUE("filter-nurNeue"),
         SYSTEM_FILTER_PROFILE__BLACKLIST_ON("filter-blacklist-aus"),
         SYSTEM_FILTER_PROFILE__NAME("filter-name"),

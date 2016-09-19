@@ -48,6 +48,7 @@ import mediathek.daten.*;
 import mediathek.filmlisten.GetModelTabFilme;
 import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
+import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.tool.*;
 
@@ -486,6 +487,21 @@ public class GuiFilme extends PanelVorlage {
         }
 
         ArrayList<DatenFilm> liste = getSelFilme();
+        boolean standard = false;
+        String pfad = "";
+        if (liste.size() > 1) {
+            if (pSet == null) {
+                pSet = Daten.listePset.getListeSpeichern().getFirst();
+            }
+            DialogAddMoreDownload damd = new DialogAddMoreDownload(Daten.mediathekGui, pSet);
+            damd.setVisible(true);
+            standard = damd.addAll;
+            pfad = damd.getPath();
+            if (damd.cancel) {
+                return;
+            }
+        }
+
         for (DatenFilm datenFilm : liste) {
             // erst mal schauen obs den schon gibt
             DatenDownload datenDownload = Daten.listeDownloads.getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL]);
@@ -497,13 +513,28 @@ public class GuiFilme extends PanelVorlage {
                 }
             }
 
-            // weiter
-            String aufloesung = "";
-            if (mVFilter.get_jCheckBoxNurHd().isSelected()) {
-                aufloesung = DatenFilm.AUFLOESUNG_HD;
+            if (standard) {
+                if (pSet == null) {
+                    pSet = Daten.listePset.getListeSpeichern().getFirst();
+                }
+                datenDownload = new DatenDownload(pSet, datenFilm, DatenDownload.QUELLE_DOWNLOAD, null, "", pfad, ""/*Auflösung*/);
+                datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = pSet.arr[DatenPset.PROGRAMMSET_INFODATEI];
+                datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE];
+                Daten.listeDownloads.addMitNummer(datenDownload);
+                Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
+                if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN))) {
+                    // und evtl. auch gleich starten
+                    datenDownload.startDownload(daten);
+                }
+            } else {
+                //dann alle Downloads im Dialog abfragen
+                String aufloesung = "";
+                if (mVFilter.get_jCheckBoxNurHd().isSelected()) {
+                    aufloesung = DatenFilm.AUFLOESUNG_HD;
+                }
+                DialogAddDownload dialog = new DialogAddDownload(Daten.mediathekGui, daten, datenFilm, pSet, aufloesung);
+                dialog.setVisible(true);
             }
-            DialogAddDownload dialog = new DialogAddDownload(Daten.mediathekGui, daten, datenFilm, pSet, aufloesung);
-            dialog.setVisible(true);
         }
     }
 
@@ -824,6 +855,7 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jCheckBoxKeineAbos().addActionListener(new BeobFilter());
         mVFilter.get_jCheckBoxKeineGesehenen().addActionListener(new BeobFilter());
         mVFilter.get_jCheckBoxNurHd().addActionListener(new BeobFilter());
+        mVFilter.get_jCheckBoxNurUt().addActionListener(new BeobFilter());
         mVFilter.get_jCheckBoxNeue().addActionListener(new BeobFilter());
         mVFilter.get_jRadioButtonTT().addActionListener(new BeobFilter());
         mVFilter.get_JRadioButtonIrgendwo().addActionListener(new BeobFilter());
@@ -880,6 +912,7 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jCheckBoxKeineAbos().setSelected(false);
         mVFilter.get_jCheckBoxKeineGesehenen().setSelected(false);
         mVFilter.get_jCheckBoxNurHd().setSelected(false);
+        mVFilter.get_jCheckBoxNurUt().setSelected(false);
         mVFilter.get_jCheckBoxNeue().setSelected(false);
 
         mVFilter.get_jToggleButtonHistory().setSelected(false);
@@ -924,6 +957,7 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jCheckBoxKeineAbos().setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_ABO, filter)));
         mVFilter.get_jCheckBoxKeineGesehenen().setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_GESEHENE, filter)));
         mVFilter.get_jCheckBoxNurHd().setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_HD, filter)));
+        mVFilter.get_jCheckBoxNurUt().setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_UT, filter)));
         mVFilter.get_jCheckBoxNeue().setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_NEUE, filter)));
 
         try {
@@ -1000,6 +1034,7 @@ public class GuiFilme extends PanelVorlage {
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_ABO, String.valueOf(mVFilter.get_jCheckBoxKeineAbos().isSelected()), filter, MVFilter.MAX_FILTER);
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_GESEHENE, String.valueOf(mVFilter.get_jCheckBoxKeineGesehenen().isSelected()), filter, MVFilter.MAX_FILTER);
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_HD, String.valueOf(mVFilter.get_jCheckBoxNurHd().isSelected()), filter, MVFilter.MAX_FILTER);
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_UT, String.valueOf(mVFilter.get_jCheckBoxNurUt().isSelected()), filter, MVFilter.MAX_FILTER);
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_NEUE, String.valueOf(mVFilter.get_jCheckBoxNeue().isSelected()), filter, MVFilter.MAX_FILTER);
 
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TAGE, String.valueOf(mVFilter.get_jSliderTage().getValue()), filter, MVFilter.MAX_FILTER);
@@ -1086,7 +1121,8 @@ public class GuiFilme extends PanelVorlage {
                     mVFilter.getThemaTitel() ? "" : mVFilter.get_jTextFieldFilterThemaTitel().getText(),
                     mVFilter.get_jSliderMinuten().getValue(),
                     mVFilter.get_jCheckBoxKeineAbos().isSelected(), mVFilter.get_jCheckBoxKeineGesehenen().isSelected(),
-                    mVFilter.get_jCheckBoxNurHd().isSelected(), mVFilter.get_jToggleButtonLivestram().isSelected(), mVFilter.get_jCheckBoxNeue().isSelected());
+                    mVFilter.get_jCheckBoxNurHd().isSelected(), mVFilter.get_jCheckBoxNurUt().isSelected(),
+                    mVFilter.get_jToggleButtonLivestram().isSelected(), mVFilter.get_jCheckBoxNeue().isSelected());
         } else {
             // jetzt nur den Filter aus der Toolbar
             GetModelTabFilme.getModelTabFilme(lf, daten, tabelle,
@@ -1095,7 +1131,8 @@ public class GuiFilme extends PanelVorlage {
                     "",
                     mVFilter.get_jSliderMinuten().getValue(),
                     mVFilter.get_jCheckBoxKeineAbos().isSelected(), mVFilter.get_jCheckBoxKeineGesehenen().isSelected(),
-                    mVFilter.get_jCheckBoxNurHd().isSelected(), mVFilter.get_jToggleButtonLivestram().isSelected(), mVFilter.get_jCheckBoxNeue().isSelected());
+                    mVFilter.get_jCheckBoxNurHd().isSelected(), mVFilter.get_jCheckBoxNurUt().isSelected(),
+                    mVFilter.get_jToggleButtonLivestram().isSelected(), mVFilter.get_jCheckBoxNeue().isSelected());
         }
     }
 

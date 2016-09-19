@@ -453,7 +453,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         }
     }
 
-   
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -486,6 +486,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jSliderTage = new javax.swing.JSlider();
         jTextFieldFilterTage = new javax.swing.JTextField();
         jButtonClearAll = new javax.swing.JButton();
+        chkUt = new javax.swing.JCheckBox();
         jRadioButtonF1 = new javax.swing.JRadioButton();
         jRadioButtonF2 = new javax.swing.JRadioButton();
         jRadioButtonF3 = new javax.swing.JRadioButton();
@@ -526,9 +527,11 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
         jCheckBoxKeineAbos.setText("Abos nicht anzeigen");
 
-        jCheckBoxNurHd.setText("nur HD anzeigen");
+        jCheckBoxNurHd.setText("nur HD");
+        jCheckBoxNurHd.setToolTipText("nur Filme in HD anzeigen");
 
         jCheckBoxNurNeue.setText("nur neue");
+        jCheckBoxNurNeue.setToolTipText("nur neue Filme anzeigen");
 
         jToggleButtonLivestram.setText("Livestreams");
 
@@ -577,6 +580,9 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         jButtonClearAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); // NOI18N
         jButtonClearAll.setToolTipText("Alles löschen");
 
+        chkUt.setText("nur UT");
+        chkUt.setToolTipText("nur Filme mit Untertitel anzeigen");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -611,11 +617,14 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                             .addComponent(jCheckBoxNurNeue)
                             .addComponent(jCheckBoxKeineGesehenen)
                             .addComponent(jCheckBoxKeineAbos)
-                            .addComponent(jCheckBoxNurHd)
                             .addComponent(jToggleButtonLivestram)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(jButtonClearAll, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jToggleButtonHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addComponent(jToggleButtonHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jCheckBoxNurHd)
+                                .addGap(18, 18, 18)
+                                .addComponent(chkUt)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -664,7 +673,9 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxKeineAbos)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxNurHd)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jCheckBoxNurHd)
+                    .addComponent(chkUt))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBoxNurNeue)
                 .addGap(12, 12, 12)
@@ -736,6 +747,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox chkUt;
     private javax.swing.JButton jButtonClearAll;
     public javax.swing.JButton jButtonFilterLoeschen;
     public javax.swing.JButton jButtonHilfe;
@@ -803,6 +815,11 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     @Override
     public JCheckBox get_jCheckBoxNurHd() {
         return jCheckBoxNurHd;
+    }
+
+    @Override
+    public JCheckBox get_jCheckBoxNurUt() {
+        return chkUt;
     }
 
     @Override
