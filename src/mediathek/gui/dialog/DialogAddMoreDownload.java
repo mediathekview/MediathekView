@@ -25,7 +25,6 @@ import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -35,7 +34,6 @@ import javax.swing.text.JTextComponent;
 import mSearch.tool.FilenameUtils;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
-import mediathek.config.Konstanten;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
@@ -45,6 +43,9 @@ public class DialogAddMoreDownload extends javax.swing.JDialog {
 
     public boolean addAll = false;
     public boolean cancel = false;
+    public boolean info;
+    public boolean subtitle;
+
     private JFrame parent = null;
     private final DatenPset pSet;
     private String orgPfad = "";
@@ -58,7 +59,12 @@ public class DialogAddMoreDownload extends javax.swing.JDialog {
         setTitle("Alle Downloads starten");
 
         chkSubtitle.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE]));
+        subtitle = chkSubtitle.isSelected();
+        chkSubtitle.addActionListener(l -> subtitle = chkSubtitle.isSelected());
+
         chkInfo.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_INFODATEI]));
+        info = chkInfo.isSelected();
+        chkInfo.addActionListener(l -> info = chkInfo.isSelected());
 
         chkStart.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN)));
         chkStart.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN, String.valueOf(chkStart.isSelected())));
@@ -66,13 +72,6 @@ public class DialogAddMoreDownload extends javax.swing.JDialog {
         jCheckBoxPfadSpeichern.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)));
         jCheckBoxPfadSpeichern.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN, Boolean.toString(jCheckBoxPfadSpeichern.isSelected())));
 
-        this.pack();
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                beenden();
-            }
-        };
         btnChange.addActionListener(l -> beenden());
         btnOk.addActionListener(e -> {
             addAll = true;
@@ -90,7 +89,7 @@ public class DialogAddMoreDownload extends javax.swing.JDialog {
             MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, "");
             jComboBoxPath.setModel(new DefaultComboBoxModel<>(new String[]{pSet.getZielPfad()}));
         });
-        setModelPfad(pSet.getZielPfad());
+        DialogAddDownload.setModelPfad(pSet.getZielPfad(), jComboBoxPath);
         orgPfad = pSet.getZielPfad();
         ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).setOpaque(true);
         ((JTextComponent) jComboBoxPath.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentListener() {
@@ -119,6 +118,13 @@ public class DialogAddMoreDownload extends javax.swing.JDialog {
                 }
             }
         });
+        new EscBeenden(this) {
+            @Override
+            public void beenden_() {
+                beenden();
+            }
+        };
+        this.pack();
     }
 
     public String getPath() {
@@ -130,56 +136,8 @@ public class DialogAddMoreDownload extends javax.swing.JDialog {
     }
 
     private void beenden() {
-        saveComboPfad();
+        DialogAddDownload.saveComboPfad(jComboBoxPath, orgPfad);
         this.dispose();
-    }
-
-    private void setModelPfad(String pfad) {
-        ArrayList<String> pfade = new ArrayList<>();
-        // wenn gewünscht, den letzten verwendeten Pfad an den Anfang setzen
-        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)) && !pfad.isEmpty()) {
-            // aktueller Pfad an Platz 1
-            pfade.add(pfad);
-
-        }
-        if (!MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).isEmpty()) {
-            String[] p = MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN).split("<>");
-            for (String s : p) {
-                if (!pfade.contains(s)) {
-                    pfade.add(s);
-                }
-            }
-        }
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)) && !pfad.isEmpty()) {
-            // aktueller Pfad zum Schluss
-            if (!pfade.contains(pfad)) {
-                pfade.add(pfad);
-            }
-        }
-        jComboBoxPath.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[pfade.size()])));
-    }
-
-    private void saveComboPfad() {
-        ArrayList<String> pfade = new ArrayList<>();
-        String s = jComboBoxPath.getSelectedItem().toString();
-        if (!s.equals(orgPfad) || Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN))) {
-            pfade.add(s);
-        }
-        for (int i = 0; i < jComboBoxPath.getItemCount(); ++i) {
-            s = jComboBoxPath.getItemAt(i);
-            if (!s.equals(orgPfad) && !pfade.contains(s)) {
-                pfade.add(s);
-            }
-        }
-        if (pfade.size() > 0) {
-            s = pfade.get(0);
-            for (int i = 1; i < Konstanten.MAX_PFADE_DIALOG_DOWNLOAD && i < pfade.size(); ++i) {
-                if (!pfade.get(i).isEmpty()) {
-                    s += "<>" + pfade.get(i);
-                }
-            }
-        }
-        MVConfig.add(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__PFADE_ZUM_SPEICHERN, s);
     }
 
     /** This method is called from within the constructor to
@@ -213,10 +171,8 @@ public class DialogAddMoreDownload extends javax.swing.JDialog {
         jLabel1.setText("Speicherpfad:");
 
         chkInfo.setText("Infodatei anlegen: \"Filmname.txt\"");
-        chkInfo.setEnabled(false);
 
         chkSubtitle.setText("Untertitel speichern: \"Filmname.xxx\"");
-        chkSubtitle.setEnabled(false);
 
         jComboBoxPath.setEditable(true);
         jComboBoxPath.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
