@@ -489,6 +489,9 @@ public class GuiFilme extends PanelVorlage {
         ArrayList<DatenFilm> liste = getSelFilme();
         boolean standard = false;
         String pfad = "";
+        boolean info = false;
+        boolean subtitle = false;
+
         if (liste.size() > 1) {
             if (pSet == null) {
                 pSet = Daten.listePset.getListeSpeichern().getFirst();
@@ -497,6 +500,8 @@ public class GuiFilme extends PanelVorlage {
             damd.setVisible(true);
             standard = damd.addAll;
             pfad = damd.getPath();
+            info = damd.info;
+            subtitle = damd.subtitle;
             if (damd.cancel) {
                 return;
             }
@@ -518,8 +523,9 @@ public class GuiFilme extends PanelVorlage {
                     pSet = Daten.listePset.getListeSpeichern().getFirst();
                 }
                 datenDownload = new DatenDownload(pSet, datenFilm, DatenDownload.QUELLE_DOWNLOAD, null, "", pfad, ""/*Auflösung*/);
-                datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = pSet.arr[DatenPset.PROGRAMMSET_INFODATEI];
-                datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE];
+                datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(info);
+                datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(subtitle);
+
                 Daten.listeDownloads.addMitNummer(datenDownload);
                 Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
                 if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_D_STARTEN))) {

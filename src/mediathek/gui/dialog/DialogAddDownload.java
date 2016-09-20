@@ -31,10 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -250,7 +247,7 @@ public class DialogAddDownload extends JDialog {
                 jComboBoxPfad.setEnabled(true);
                 jButtonZiel.setEnabled(true);
                 jTextFieldName.setText(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME]);
-                setModelPfad(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]);
+                setModelPfad(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD], jComboBoxPfad);
                 orgPfad = datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD];
             }
             stopBeob = false;
@@ -327,7 +324,7 @@ public class DialogAddDownload extends JDialog {
         }
     }
 
-    private void setModelPfad(String pfad) {
+    public static void setModelPfad(String pfad, JComboBox<String> jcb) {
         ArrayList<String> pfade = new ArrayList<>();
         // wenn gewünscht, den letzten verwendeten Pfad an den Anfang setzen
         if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN)) && !pfad.isEmpty()) {
@@ -349,18 +346,18 @@ public class DialogAddDownload extends JDialog {
                 pfade.add(pfad);
             }
         }
-        jComboBoxPfad.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[pfade.size()])));
+        jcb.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[pfade.size()])));
     }
 
-    private void saveComboPfad() {
+    public static void saveComboPfad(JComboBox<String> jcb, String orgPath) {
         ArrayList<String> pfade = new ArrayList<>();
-        String s = jComboBoxPfad.getSelectedItem().toString();
-        if (!s.equals(orgPfad) || jCheckBoxPfadSpeichern.isSelected()) {
+        String s = jcb.getSelectedItem().toString();
+        if (!s.equals(orgPath) || Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD__LETZTEN_PFAD_ANZEIGEN))) {
             pfade.add(s);
         }
-        for (int i = 0; i < jComboBoxPfad.getItemCount(); ++i) {
-            s = jComboBoxPfad.getItemAt(i);
-            if (!s.equals(orgPfad) && !pfade.contains(s)) {
+        for (int i = 0; i < jcb.getItemCount(); ++i) {
+            s = jcb.getItemAt(i);
+            if (!s.equals(orgPath) && !pfade.contains(s)) {
                 pfade.add(s);
             }
         }
@@ -459,7 +456,7 @@ public class DialogAddDownload extends JDialog {
                 datenDownload.startDownload(daten);
             }
         }
-        saveComboPfad();
+        saveComboPfad(jComboBoxPfad, orgPfad);
         this.dispose();
     }
 

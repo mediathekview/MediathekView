@@ -139,13 +139,11 @@
         <Component class="javax.swing.JCheckBox" name="chkInfo">
           <Properties>
             <Property name="text" type="java.lang.String" value="Infodatei anlegen: &quot;Filmname.txt&quot;"/>
-            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JCheckBox" name="chkSubtitle">
           <Properties>
             <Property name="text" type="java.lang.String" value="Untertitel speichern: &quot;Filmname.xxx&quot;"/>
-            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JComboBox" name="jComboBoxPath">
