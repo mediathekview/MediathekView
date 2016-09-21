@@ -445,7 +445,7 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
 
     private class BeobMaus extends MouseAdapter {
 
-        JCheckBox cbkTop = new JCheckBox("Immer im Fordergrund");
+        JCheckBox cbkTop = new JCheckBox("Immer im Vordergrund");
         JCheckBox cbkBorder = new JCheckBox("Rand anzeigen");
         JMenuItem itemClose = new JMenuItem("Ausblenden");
 

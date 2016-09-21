@@ -295,7 +295,7 @@ public class MVFilmInformationLWin extends javax.swing.JDialog implements MVFilm
 
     private class BeobMaus extends MouseAdapter {
 
-        JCheckBox cbkTop = new JCheckBox("Immer im Fordergrund");
+        JCheckBox cbkTop = new JCheckBox("Immer im Vordergrund");
         JCheckBox cbkBorder = new JCheckBox("Rand anzeigen");
         JMenuItem itemClose = new JMenuItem("Ausblenden");
 
