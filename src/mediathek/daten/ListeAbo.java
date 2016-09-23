@@ -140,7 +140,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 } else if (m == DatenAbo.ABO_EINGESCHALTET) {
                     object[m] = ""; //Boolean.valueOf(datenAbo.aboIstEingeschaltet());
                 } else if (m == DatenAbo.ABO_MIN) {
-                    object[m] = datenAbo.min ? "Min" : "Max";
+                    object[m] = datenAbo.min ? "min" : "max";
                 } else if (m != DatenAbo.ABO_NAME && !DatenAbo.anzeigen(m)) {
                     // Name immer füllen, egal ob angezeigt
                     object[m] = "";
