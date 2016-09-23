@@ -31,7 +31,7 @@ public class GetModelTabFilme {
 
     public static synchronized void getModelTabFilme(ListeFilme listeFilme, Daten ddaten, MVTable table,
             String filterSender, String filterThema, String filterTitel, String filterThemaTitel, String filterIrgendwo,
-            int laenge, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean nurUt, boolean live, boolean nurNeue) {
+            int laenge, boolean min, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean nurUt, boolean live, boolean nurNeue) {
         // Model für die Tabelle Filme zusammenbauen
         if (listeFilme.isEmpty()) {
             // wenn die Liste leer ist, dann Tschüss
@@ -106,7 +106,7 @@ public class GetModelTabFilme {
                         continue;
                     }
                 }
-                if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, film, true /*länge nicht prüfen*/)) {
+                if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, min, film, true /*länge nicht prüfen*/)) {
                     addObjectDataTabFilme(tModel, film);
                 }
             }

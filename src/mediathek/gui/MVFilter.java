@@ -53,6 +53,10 @@ public interface MVFilter {
 
     public JSlider get_jSliderMinuten();
 
+    public JRadioButton get_rbMin();
+
+    public JRadioButton get_rbMax();
+
     public JTextField get_jTextFieldFilterMinuten();
 
     public boolean getThemaTitel();

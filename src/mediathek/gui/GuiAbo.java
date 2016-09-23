@@ -329,8 +329,6 @@ public class GuiAbo extends PanelVorlage {
                     tabelle.getSpalten();
                     tabelleLaden();
                     tabelle.setSpalten();
-//                    tabelle.clearSelection();
-//                    tabelle.addRowSelectionInterval(row, row);
                     setInfo();
                     Daten.listeAbo.aenderungMelden();
                 }

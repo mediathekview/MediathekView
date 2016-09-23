@@ -157,10 +157,12 @@ public class MVConfig {
         SYSTEM_EXPORT_DATEI("system-export-datei"),
         SYSTEM_ANZ_TAGE_FILMLISTE("system-anz-tage-filmilste", "0"), // es werden nur die x letzten Tage geladen
         // Filter
-        SYSTEM_FILTER_TAGE("filter-tage-start"), // in Tagen
-        SYSTEM_FILTER_DAUER("filter-dauer-start"), // in Minuten
-        SYSTEM_FILTER_PROFILE__DAUER("filter-dauer"),
-        SYSTEM_FILTER_PROFILE__TAGE("filter-tage"), // index im Array GuiFilme.COMBO_ZEIT_INT
+        SYSTEM_FILTER_TAGE("filter-tage-start", "15"), // in Tagen
+        SYSTEM_FILTER_DAUER("filter-dauer-start", "0"), // in Minuten
+        SYSTEM_FILTER_DAUER_MIN("filter-dauer-min-start", Boolean.TRUE.toString()), // Dauer ist Min 
+        SYSTEM_FILTER_PROFILE__DAUER("filter-dauer", "0"),
+        SYSTEM_FILTER_PROFILE__DAUER_MIN("filter-dauer-min", Boolean.TRUE.toString()),
+        SYSTEM_FILTER_PROFILE__TAGE("filter-tage", "15"), // index im Array GuiFilme.COMBO_ZEIT_INT
         SYSTEM_FILTER_PROFILE__KEINE_ABO("filter-keineAbo"),
         SYSTEM_FILTER_PROFILE__KEINE_GESEHENE("filter-keineGesehen"),
         SYSTEM_FILTER_PROFILE__NUR_HD("filter-nurHd"),
@@ -340,13 +342,16 @@ public class MVConfig {
 
     public static synchronized String get(Configs key) {
         String s = HASHMAP.get(key.cValue);
+        if (s == null) {
+            s = key.initValue;
+        }
         return s == null ? "" : s;
     }
 
     public static synchronized int getInt(Configs key) {
         int ret;
         try {
-            ret = Integer.parseInt(HASHMAP.get(key.cValue));
+            ret = Integer.parseInt(get(key));
         } catch (Exception ignore) {
             ret = 0;
         }
@@ -354,23 +359,33 @@ public class MVConfig {
     }
 
     public static synchronized boolean getBool(Configs key) {
-        return Boolean.parseBoolean(HASHMAP.get(key.cValue));
+        return Boolean.parseBoolean(get(key));
     }
 
     public static synchronized String get(Configs key, int i) {
         String[] sa;
         String s = HASHMAP.get(key.cValue);
         if (s == null) {
-            return "";
+            return key.initValue;
         } else {
             sa = split(s);
         }
         if (sa.length <= i) {
             HASHMAP.remove(key.cValue);
-            return "";
+            return key.initValue;
         } else {
             return sa[i];
         }
+    }
+
+    public static synchronized int getInt(Configs key, int i) {
+        int ret;
+        try {
+            ret = Integer.parseInt(get(key, i));
+        } catch (Exception ignore) {
+            ret = 0;
+        }
+        return ret;
     }
 
     public static synchronized String[][] getAll() {

@@ -33,20 +33,22 @@ public class DatenAbo extends MVData<DatenAbo> {
     public static final int ABO_THEMA_TITEL = 6;
     public static final int ABO_IRGENDWO = 7;
     public static final int ABO_MINDESTDAUER = 8;
-    public static final int ABO_ZIELPFAD = 9;
-    public static final int ABO_DOWN_DATUM = 10;
-    public static final int ABO_PSET = 11;
+    public static final int ABO_MIN = 9;
+    public static final int ABO_ZIELPFAD = 10;
+    public static final int ABO_DOWN_DATUM = 11;
+    public static final int ABO_PSET = 12;
     public static final String[] COLUMN_NAMES = {"Nr", "aktiv", "Name",
         "Sender", "Thema", "Titel", "Thema-Titel",
-        "Irgendwo", "Mindestdauer", "Zielpfad", "letztes Abo", "Programmset"};
+        "Irgendwo", "Dauer", "Min/Max", "Zielpfad", "letztes Abo", "Programmset"};
     public static final String[] XML_NAMES = {"Nr", "aktiv", "Name",
         "Sender", "Thema", "Titel", "Thema-Titel",
-        "Irgendwo", "Mindestdauer", "Zielpfad", "letztes_Abo", "Programmset"};
+        "Irgendwo", "Mindestdauer", "Min_Max", "Zielpfad", "letztes_Abo", "Programmset"};
 
-    public static final int MAX_ELEM = 12;
+    public static final int MAX_ELEM = 13;
     public static final String TAG = "Abonnement";
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public int mindestdauerMinuten = 0;
+    public boolean min = true;
     public String[] arr;
     public int nr = 0;
     String[] titel, thema, irgendwo;
@@ -55,7 +57,7 @@ public class DatenAbo extends MVData<DatenAbo> {
         makeArr();
     }
 
-    public DatenAbo(String name, String sender, String thema, String titel, String themaTitel, String irgendwo, int mmindestdauerMinuten, String ziel, String pset) {
+    public DatenAbo(String name, String sender, String thema, String titel, String themaTitel, String irgendwo, int mmindestdauerMinuten, boolean min, String ziel, String pset) {
         makeArr();
         arr[ABO_NAME] = name;
         arr[ABO_SENDER] = sender;
@@ -64,6 +66,8 @@ public class DatenAbo extends MVData<DatenAbo> {
         arr[ABO_THEMA_TITEL] = themaTitel;
         arr[ABO_IRGENDWO] = irgendwo;
         setMindestDauerMinuten(mmindestdauerMinuten);
+        arr[ABO_MIN] = Boolean.toString(min);
+        this.min = min;
         arr[ABO_ZIELPFAD] = ziel;
         arr[ABO_PSET] = pset;
     }
@@ -72,6 +76,7 @@ public class DatenAbo extends MVData<DatenAbo> {
         DatenAbo ret = new DatenAbo();
         System.arraycopy(this.arr, 0, ret.arr, 0, arr.length);
         ret.mindestdauerMinuten = this.mindestdauerMinuten;
+        ret.min = this.min;
         return ret;
     }
 
@@ -145,6 +150,7 @@ public class DatenAbo extends MVData<DatenAbo> {
     public void aufMichKopieren(DatenAbo datenAbo) {
         System.arraycopy(datenAbo.arr, 0, arr, 0, arr.length);
         this.mindestdauerMinuten = datenAbo.mindestdauerMinuten;
+        this.min = datenAbo.min;
     }
 
     private void makeArr() {
