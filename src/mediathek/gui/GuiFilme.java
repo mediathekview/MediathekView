@@ -264,7 +264,7 @@ public class GuiFilme extends PanelVorlage {
         });
 
         if (SystemInfo.isMacOSX()) {
-            this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_H, Event.CTRL_MASK + Event.SHIFT_MASK), "url-hd-copy");
+            this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_H, Event.SHIFT_MASK + Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-hd-copy");
         } else {
             this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_H, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-hd-copy");
         }
@@ -1587,7 +1587,7 @@ public class GuiFilme extends PanelVorlage {
                             item = new JMenuItem("in HD-Auflösung");
                             KeyStroke ctrlH;
                             if (SystemInfo.isMacOSX()) {
-                                ctrlH = KeyStroke.getKeyStroke(KeyEvent.VK_H, Event.CTRL_MASK + Event.SHIFT_MASK);
+                                ctrlH = KeyStroke.getKeyStroke(KeyEvent.VK_H, Event.SHIFT_MASK + Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
                             } else {
                                 ctrlH = KeyStroke.getKeyStroke(KeyEvent.VK_H, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
                             }
@@ -1875,13 +1875,15 @@ public class GuiFilme extends PanelVorlage {
                                 //gibts schon, dann löschen
                                 Daten.listeAbo.aboLoeschen(datenAbo);
                             } else //neues Abo anlegen
-                             if (mitTitel) {
+                            {
+                                if (mitTitel) {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], film.arr[DatenFilm.FILM_TITEL]);
                                 } else {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], "");
                                 }
+                            }
                         });
                         stopBeob = false;
                     }
