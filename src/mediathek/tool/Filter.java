@@ -19,11 +19,11 @@
  */
 package mediathek.tool;
 
-import mediathek.config.MVColor;
 import java.awt.Color;
 import java.util.regex.Pattern;
 import javax.swing.JTextField;
 import mSearch.daten.DatenFilm;
+import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
 
 public class Filter {
@@ -66,7 +66,7 @@ public class Filter {
     }
 
     public static boolean filterAufFilmPruefen(String senderSuchen, String themaSuchen,
-            String[] titelSuchen, String[] themaTitelSuchen, String[] irgendwoSuchen, int laengeMinutenSuchen,
+            String[] titelSuchen, String[] themaTitelSuchen, String[] irgendwoSuchen, int laengeMinutenSuchen, boolean min,
             DatenFilm film, boolean mitLaenge) {
         // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen
         // senderSuchen exakt mit sender
@@ -90,7 +90,7 @@ public class Filter {
                             // || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_WEBSEITE_NR])) { kostet 25% Zeit zusätzlich!
                             if (mitLaenge) {
                                 // die Länge soll mit gefrüft werden
-                                if (laengePruefen(laengeMinutenSuchen, film.dauerL)) {
+                                if (laengePruefen(laengeMinutenSuchen, film.dauerL, min)) {
                                     return true;
                                 }
                             } else {
@@ -104,8 +104,12 @@ public class Filter {
         return false;
     }
 
-    public static boolean laengePruefen(int filterLaengeInMinuten, long filmLaenge) {
-        return filterLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge > (filterLaengeInMinuten * 60);
+    public static boolean laengePruefen(int filterLaengeInMinuten, long filmLaenge, boolean min) {
+        if (min) {
+            return filterLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge > (filterLaengeInMinuten * 60);
+        } else {
+            return filterLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge < (filterLaengeInMinuten * 60);
+        }
     }
 
     private static boolean pruefen(String[] filter, String im) {

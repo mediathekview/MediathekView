@@ -26,9 +26,9 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import mSearch.tool.Log;
-import mediathek.config.MVColor;
-import mediathek.config.Icons;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
+import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
 
 public class CellRendererAbo extends DefaultTableCellRenderer {
@@ -60,10 +60,8 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
                 table, value, isSelected, hasFocus, row, column);
         try {
             if (isSelected) {
-                // setFont(new java.awt.Font("Dialog", Font.BOLD, getFont().getSize()));
                 setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
             } else {
-                // setFont(getFont());
                 setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
             }
             int r = table.convertRowIndexToModel(row);
@@ -78,7 +76,6 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
             }
             if (!eingeschaltet) {
                 setFont(new java.awt.Font("Dialog", Font.ITALIC, getFont().getSize()));
-                //setFont(new java.awt.Font("Dialog", Font.ITALIC, 12));
                 if (isSelected) {
                     setBackground(MVColor.ABO_AUSGESCHALTET_SEL.color);
                 } else {
@@ -93,6 +90,9 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
                     } else {
                         setIcon(nein_12);
                     }
+                    break;
+                case DatenAbo.ABO_MIN:
+                    setHorizontalAlignment(SwingConstants.CENTER);
                     break;
                 case DatenAbo.ABO_SENDER:
                     if (((MVTable) table).iconAnzeigen) {

@@ -43,6 +43,9 @@ public class DialogEditAbo extends javax.swing.JDialog {
     private final JComboBox<String> comboboxSender = new JComboBox<>();
     private final JComboBox<String> comboboxPfad = new JComboBox<>();
     private final JCheckBox checkBoxEingeschaltet = new JCheckBox();
+    private final JRadioButton rbMin = new JRadioButton("Mindestdauer");
+    private final JRadioButton rbMax = new JRadioButton("Maximaldauer");
+    private final ButtonGroup gr = new ButtonGroup();
     private final JSlider sliderDauer = new JSlider(0, 100, 0);
     private final JLabel labelDauer = new JLabel("0");
     public boolean ok = false;
@@ -53,6 +56,8 @@ public class DialogEditAbo extends javax.swing.JDialog {
         initComponents();
         this.parent = parent;
         aktAbo = aktA;
+        gr.add(rbMin);
+        gr.add(rbMax);
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
         comboboxPSet.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listePset.getListeAbo().getObjectDataCombo()));
         comboboxSender.setModel(new javax.swing.DefaultComboBoxModel<>(GuiFunktionen.addLeerListe(Daten.filmeLaden.getSenderNamen())));
@@ -188,6 +193,14 @@ public class DialogEditAbo extends javax.swing.JDialog {
             checkBoxEingeschaltet.setSelected(Boolean.parseBoolean(aktAbo.arr[i]));
             gridbag.setConstraints(checkBoxEingeschaltet, c);
             panel.add(checkBoxEingeschaltet);
+        } else if (i == DatenAbo.ABO_MIN) {
+            rbMin.setSelected(aktAbo.min);
+            rbMax.setSelected(!aktAbo.min);
+            JPanel p = new JPanel(new BorderLayout());
+            p.add(rbMin, BorderLayout.NORTH);
+            p.add(rbMax, BorderLayout.CENTER);
+            gridbag.setConstraints(p, c);
+            panel.add(p);
         } else {
             JTextField textfeld = new JTextField();
             textfeldListe[i] = textfeld;
@@ -248,6 +261,10 @@ public class DialogEditAbo extends javax.swing.JDialog {
                     break;
                 case (DatenAbo.ABO_EINGESCHALTET):
                     abo.arr[DatenAbo.ABO_EINGESCHALTET] = Boolean.toString(checkBoxEingeschaltet.isSelected());
+                    break;
+                case (DatenAbo.ABO_MIN):
+                    abo.arr[DatenAbo.ABO_MIN] = Boolean.toString(rbMin.isSelected());
+                    abo.min = rbMin.isSelected();
                     break;
                 case (DatenAbo.ABO_MINDESTDAUER):
                     abo.setMindestDauerMinuten(sliderDauer.getValue());

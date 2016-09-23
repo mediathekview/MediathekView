@@ -155,10 +155,10 @@ public final class MVTable extends JTable {
         }
         breite = getArray(maxSpalten);
         reihe = getArray(maxSpalten);
-        if (iconAnzeigenStr!=null) {
+        if (iconAnzeigenStr != null) {
             iconAnzeigen = Boolean.parseBoolean(MVConfig.get(iconAnzeigenStr));
         }
-        if (iconKleinStr!=null) {
+        if (iconKleinStr != null) {
             iconKlein = Boolean.parseBoolean(MVConfig.get(iconKleinStr));
         }
         setHeight();
@@ -247,7 +247,7 @@ public final class MVTable extends JTable {
         // den Standardwerten
         // erst die Breite, dann die Reihenfolge
         try {
-            if (nrDatenSystem==null) {
+            if (nrDatenSystem == null) {
                 // wird nur für eingerichtete Tabellen gemacht
                 return;
             }
@@ -642,7 +642,8 @@ public final class MVTable extends JTable {
         reihe[i] = i;
         breite[i] = 200;
         if (i == DatenAbo.ABO_NR
-                || i == DatenAbo.ABO_EINGESCHALTET) {
+                || i == DatenAbo.ABO_EINGESCHALTET
+                || i == DatenAbo.ABO_MIN) {
             breite[i] = 75;
         } else if (i == DatenAbo.ABO_DOWN_DATUM
                 || i == DatenAbo.ABO_SENDER) {
@@ -768,10 +769,10 @@ public final class MVTable extends JTable {
             }
         }
         MVConfig.add(nrDatenSystem, b + FELDTRENNER + r + FELDTRENNER + s + FELDTRENNER + upDown);
-        if (iconAnzeigenStr!=null) {
+        if (iconAnzeigenStr != null) {
             MVConfig.add(iconAnzeigenStr, String.valueOf(iconAnzeigen));
         }
-        if (iconKleinStr!=null) {
+        if (iconKleinStr != null) {
             MVConfig.add(iconKleinStr, String.valueOf(iconKlein));
         }
     }
