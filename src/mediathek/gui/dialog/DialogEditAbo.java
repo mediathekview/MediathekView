@@ -155,83 +155,100 @@ public class DialogEditAbo extends javax.swing.JDialog {
         c.gridx = 0;
         c.weightx = 0;
         JLabel label;
-        if (i == DatenAbo.ABO_SENDER || i == DatenAbo.ABO_THEMA || i == DatenAbo.ABO_TITEL || i == DatenAbo.ABO_THEMA_TITEL || i == DatenAbo.ABO_IRGENDWO) {
-            label = new JLabel("  " + DatenAbo.COLUMN_NAMES[i] + ": ");
-            label.setForeground(Color.BLUE);
-        } else {
-            label = new JLabel(DatenAbo.COLUMN_NAMES[i] + ": ");
+        switch (i) {
+            case DatenAbo.ABO_SENDER:
+            case DatenAbo.ABO_THEMA:
+            case DatenAbo.ABO_TITEL:
+            case DatenAbo.ABO_THEMA_TITEL:
+            case DatenAbo.ABO_IRGENDWO:
+                label = new JLabel("  " + DatenAbo.COLUMN_NAMES[i] + ": ");
+                label.setForeground(Color.BLUE);
+                break;
+            case DatenAbo.ABO_MINDESTDAUER:
+                label = new JLabel("Dauer [min]: ");
+                break;
+            default:
+                label = new JLabel(DatenAbo.COLUMN_NAMES[i] + ": ");
+                break;
         }
         gridbag.setConstraints(label, c);
         panel.add(label);
         //Textfeld
         c.gridx = 1;
         c.weightx = 10;
-        if (i == DatenAbo.ABO_PSET) {
-            comboboxPSet.setSelectedItem(aktAbo.arr[i]);
-            //falls das Feld leer war, wird es jetzt auf den ersten Eintrag gesetzt
-            aktAbo.arr[DatenAbo.ABO_PSET] = comboboxPSet.getSelectedItem().toString(); // damit immer eine Set eingetragen ist!
-            gridbag.setConstraints(comboboxPSet, c);
-            panel.add(comboboxPSet);
-        } else if (i == DatenAbo.ABO_SENDER) {
-            comboboxSender.setSelectedItem(aktAbo.arr[i]);
-            gridbag.setConstraints(comboboxSender, c);
-            panel.add(comboboxSender);
-        } else if (i == DatenAbo.ABO_ZIELPFAD) {
-            comboboxPfad.setSelectedItem(aktAbo.arr[i]);
-            gridbag.setConstraints(comboboxPfad, c);
-            panel.add(comboboxPfad);
-        } else if (i == DatenAbo.ABO_MINDESTDAUER) {
-            sliderDauer.setValue(aktAbo.mindestdauerMinuten);
-            labelDauer.setText(String.valueOf(aktAbo.mindestdauerMinuten));
-            sliderDauer.addChangeListener(e -> labelDauer.setText("  " + sliderDauer.getValue() + " "));
-            JPanel p = new JPanel(new BorderLayout());
-            p.add(sliderDauer, BorderLayout.CENTER);
-            p.add(labelDauer, BorderLayout.EAST);
-            gridbag.setConstraints(p, c);
-            panel.add(p);
-        } else if (i == DatenAbo.ABO_EINGESCHALTET) {
-            checkBoxEingeschaltet.setSelected(Boolean.parseBoolean(aktAbo.arr[i]));
-            gridbag.setConstraints(checkBoxEingeschaltet, c);
-            panel.add(checkBoxEingeschaltet);
-        } else if (i == DatenAbo.ABO_MIN) {
-            rbMin.setSelected(aktAbo.min);
-            rbMax.setSelected(!aktAbo.min);
-            JPanel p = new JPanel(new BorderLayout());
-            p.add(rbMin, BorderLayout.NORTH);
-            p.add(rbMax, BorderLayout.CENTER);
-            gridbag.setConstraints(p, c);
-            panel.add(p);
-        } else {
-            JTextField textfeld = new JTextField();
-            textfeldListe[i] = textfeld;
-            if (i == DatenAbo.ABO_NR
-                    || i == DatenAbo.ABO_DOWN_DATUM) {
-                textfeld.setEditable(false);
-            }
-            if (i == DatenAbo.ABO_NAME) {
-                textfeld.getDocument().addDocumentListener(new DocumentListener() {
-                    @Override
-                    public void insertUpdate(DocumentEvent e) {
-                        textfeldListe[DatenAbo.ABO_NAME].setBackground(textfeldListe[DatenAbo.ABO_NAME].getText().isEmpty() ? Color.red : Color.white);
-                        jButtonBeenden.setEnabled(!textfeldListe[DatenAbo.ABO_NAME].getText().isEmpty());
-                    }
+        switch (i) {
+            case DatenAbo.ABO_PSET:
+                comboboxPSet.setSelectedItem(aktAbo.arr[i]);
+                //falls das Feld leer war, wird es jetzt auf den ersten Eintrag gesetzt
+                aktAbo.arr[DatenAbo.ABO_PSET] = comboboxPSet.getSelectedItem().toString(); // damit immer eine Set eingetragen ist!
+                gridbag.setConstraints(comboboxPSet, c);
+                panel.add(comboboxPSet);
+                break;
+            case DatenAbo.ABO_SENDER:
+                comboboxSender.setSelectedItem(aktAbo.arr[i]);
+                gridbag.setConstraints(comboboxSender, c);
+                panel.add(comboboxSender);
+                break;
+            case DatenAbo.ABO_ZIELPFAD:
+                comboboxPfad.setSelectedItem(aktAbo.arr[i]);
+                gridbag.setConstraints(comboboxPfad, c);
+                panel.add(comboboxPfad);
+                break;
+            case DatenAbo.ABO_MINDESTDAUER:
+                sliderDauer.setValue(aktAbo.mindestdauerMinuten);
+                labelDauer.setText(String.valueOf(aktAbo.mindestdauerMinuten == 0 ? " alles " : aktAbo.mindestdauerMinuten));
+                sliderDauer.addChangeListener(e -> labelDauer.setText("  " + (sliderDauer.getValue() == 0 ? "alles" : sliderDauer.getValue()) + " "));
+                JPanel p = new JPanel(new BorderLayout());
+                p.add(sliderDauer, BorderLayout.CENTER);
+                p.add(labelDauer, BorderLayout.EAST);
+                gridbag.setConstraints(p, c);
+                panel.add(p);
+                break;
+            case DatenAbo.ABO_EINGESCHALTET:
+                checkBoxEingeschaltet.setSelected(Boolean.parseBoolean(aktAbo.arr[i]));
+                gridbag.setConstraints(checkBoxEingeschaltet, c);
+                panel.add(checkBoxEingeschaltet);
+                break;
+            case DatenAbo.ABO_MIN:
+                rbMin.setSelected(aktAbo.min);
+                rbMax.setSelected(!aktAbo.min);
+                p = new JPanel(new BorderLayout());
+                p.add(rbMin, BorderLayout.NORTH);
+                p.add(rbMax, BorderLayout.CENTER);
+                gridbag.setConstraints(p, c);
+                panel.add(p);
+                break;
+            default:
+                JTextField textfeld = new JTextField();
+                textfeldListe[i] = textfeld;
+                if (i == DatenAbo.ABO_NR || i == DatenAbo.ABO_DOWN_DATUM) {
+                    textfeld.setEditable(false);
+                }
+                if (i == DatenAbo.ABO_NAME) {
+                    textfeld.getDocument().addDocumentListener(new DocumentListener() {
+                        @Override
+                        public void insertUpdate(DocumentEvent e) {
+                            textfeldListe[DatenAbo.ABO_NAME].setBackground(textfeldListe[DatenAbo.ABO_NAME].getText().isEmpty() ? Color.red : Color.white);
+                            jButtonBeenden.setEnabled(!textfeldListe[DatenAbo.ABO_NAME].getText().isEmpty());
+                        }
 
-                    @Override
-                    public void removeUpdate(DocumentEvent e) {
-                        textfeldListe[DatenAbo.ABO_NAME].setBackground(textfeldListe[DatenAbo.ABO_NAME].getText().isEmpty() ? Color.red : Color.white);
-                        jButtonBeenden.setEnabled(!textfeldListe[DatenAbo.ABO_NAME].getText().isEmpty());
-                    }
+                        @Override
+                        public void removeUpdate(DocumentEvent e) {
+                            textfeldListe[DatenAbo.ABO_NAME].setBackground(textfeldListe[DatenAbo.ABO_NAME].getText().isEmpty() ? Color.red : Color.white);
+                            jButtonBeenden.setEnabled(!textfeldListe[DatenAbo.ABO_NAME].getText().isEmpty());
+                        }
 
-                    @Override
-                    public void changedUpdate(DocumentEvent e) {
-                        textfeldListe[DatenAbo.ABO_NAME].setBackground(textfeldListe[DatenAbo.ABO_NAME].getText().isEmpty() ? Color.red : Color.white);
-                        jButtonBeenden.setEnabled(!textfeldListe[DatenAbo.ABO_NAME].getText().isEmpty());
-                    }
-                });
-            }
-            textfeld.setText(aktAbo.arr[i]);
-            gridbag.setConstraints(textfeld, c);
-            panel.add(textfeld);
+                        @Override
+                        public void changedUpdate(DocumentEvent e) {
+                            textfeldListe[DatenAbo.ABO_NAME].setBackground(textfeldListe[DatenAbo.ABO_NAME].getText().isEmpty() ? Color.red : Color.white);
+                            jButtonBeenden.setEnabled(!textfeldListe[DatenAbo.ABO_NAME].getText().isEmpty());
+                        }
+                    });
+                }
+                textfeld.setText(aktAbo.arr[i]);
+                gridbag.setConstraints(textfeld, c);
+                panel.add(textfeld);
+                break;
         }
     }
 

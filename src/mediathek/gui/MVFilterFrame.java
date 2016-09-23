@@ -533,6 +533,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         chkUt = new javax.swing.JCheckBox();
         rbMin = new javax.swing.JRadioButton();
         rbMax = new javax.swing.JRadioButton();
+        jLabel3 = new javax.swing.JLabel();
         javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jComboBoxFilterSender = new javax.swing.JComboBox<>();
@@ -573,12 +574,12 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         jCheckBoxKeineAbos.setText("Abos nicht anzeigen");
 
-        jCheckBoxNurHd.setText("nur HD");
+        jCheckBoxNurHd.setText("HD");
         jCheckBoxNurHd.setToolTipText("nur Filme in HD anzeigen");
 
         jToggleButtonHistory.setText("aktuelle History");
 
-        jCheckBoxNurNeue.setText("nur neue");
+        jCheckBoxNurNeue.setText("Neue");
         jCheckBoxNurNeue.setToolTipText("nur neue Filme anzeigen");
 
         jTextFieldFilterTage.setEditable(false);
@@ -586,7 +587,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         jSliderTage.setMaximum(30);
         jSliderTage.setValue(15);
 
-        chkUt.setText("nur UT");
+        chkUt.setText("UT");
         chkUt.setToolTipText("nur Filme mit Untertitel anzeigen");
 
         buttonGroup3.add(rbMin);
@@ -594,6 +595,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         buttonGroup3.add(rbMax);
         rbMax.setText("Maximallänge");
+
+        jLabel3.setText("nur:");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -616,11 +619,14 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                                     .addComponent(jToggleButtonHistory, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jCheckBoxKeineGesehenen, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jCheckBoxKeineAbos, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jCheckBoxNurNeue, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jCheckBoxNurHd)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(chkUt)))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(chkUt)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jCheckBoxNurNeue)))
                                 .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(rbMin)
@@ -660,9 +666,9 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jCheckBoxNurHd)
-                    .addComponent(chkUt))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxNurNeue)
+                    .addComponent(chkUt)
+                    .addComponent(jCheckBoxNurNeue)
+                    .addComponent(jLabel3))
                 .addGap(18, 18, 18)
                 .addComponent(jToggleButtonLivestram)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -853,6 +859,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     private javax.swing.JCheckBox jCheckBoxNurNeue;
     public javax.swing.JComboBox<String> jComboBoxFilterSender;
     public javax.swing.JComboBox<String> jComboBoxFilterThema;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JRadioButton jRadioButtonF1;
     private javax.swing.JRadioButton jRadioButtonF2;
     private javax.swing.JRadioButton jRadioButtonF3;
