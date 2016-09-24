@@ -27,6 +27,7 @@ import mSearch.Const;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Log;
 import mediathek.controller.MVBandwidthTokenBucket;
+import mediathek.gui.MVFilter;
 import mediathek.tool.GuiFunktionenProgramme;
 
 public class MVConfig {
@@ -174,7 +175,7 @@ public class MVConfig {
         SYSTEM_FILTER_PROFILE__THEMA("filter-thema"),
         SYSTEM_FILTER_PROFILE__TITEL("filter-titel"),
         SYSTEM_FILTER_PROFILE__THEMA_TITEL("filter-themaTitel"),
-        SYSTEM_FILTER_PROFILE__TT("filter-TT-oder-irgendwo"),
+        SYSTEM_FILTER_PROFILE__TT("filter-TT-oder-irgendwo", Boolean.TRUE.toString()),
         SYSTEM_FILTER_PROFILE__ANZAHL_FILTER("filter-anzahl"),
         // Programmpfade
         SYSTEM_PFAD_VLC("pfad-vlc", GuiFunktionenProgramme.getMusterPfadVlc()),
@@ -265,7 +266,7 @@ public class MVConfig {
         for (Configs key : Configs.values()) {
             String s = HASHMAP.get(key.cValue);
             if (s == null || s.isEmpty()) {
-                MVConfig.add(key.cValue, key.initValue);
+                MVConfig.add(key, key.initValue);
             }
         }
 
@@ -310,33 +311,24 @@ public class MVConfig {
         HASHMAP.put(key.cValue, value);
     }
 
-    public static synchronized void add(Configs key, String value, int i, int max) {
+    public static synchronized void add(Configs key, String value, int i) {
         boolean ok = false;
         String[] sa = {""};
         String s = HASHMAP.get(key.cValue);
         if (s != null) {
             sa = split(s);
-            if (sa.length == max) {
+            if (sa.length == MVFilter.MAX_FILTER) {
                 sa[i] = value;
                 ok = true;
             }
         }
         if (!ok) {
             // dann anlegen
-            sa = new String[max];
-            for (int k = 0; k < max; ++k) {
-                sa[k] = "";
-            }
+            sa = initArray(key);
             sa[i] = value;
         }
         // und jetzt eintragen
-        s = "";
-        for (int k = 0; k < max; ++k) {
-            s += sa[k];
-            if (k < max - 1) {
-                s += TRENNER;
-            }
-        }
+        s = addArray(sa);
         HASHMAP.put(key.cValue, s);
     }
 
@@ -388,6 +380,10 @@ public class MVConfig {
         return ret;
     }
 
+    public static synchronized boolean getBool(Configs key, int i) {
+        return Boolean.parseBoolean(get(key, i));
+    }
+
     public static synchronized String[][] getAll() {
         LinkedList<String[]> liste = new LinkedList<>();
         String[] setArray = HASHMAP.keySet().toArray(new String[]{});
@@ -411,6 +407,28 @@ public class MVConfig {
         l.add(s);
         return l.toArray(new String[]{});
 
+    }
+
+    private static String addArray(String[] arr) {
+        if (arr == null) {
+            return "";
+        }
+        String s = "";
+        for (int k = 0; k < arr.length; ++k) {
+            s += arr[k];
+            if (k < arr.length - 1) {
+                s += TRENNER;
+            }
+        }
+        return s;
+    }
+
+    private static String[] initArray(Configs key) {
+        String[] sa = new String[MVFilter.MAX_FILTER];
+        for (int k = 0; k < MVFilter.MAX_FILTER; ++k) {
+            sa[k] = key.initValue;
+        }
+        return sa;
     }
 
     private static void listeSort(LinkedList<String[]> liste, int stelle) {
