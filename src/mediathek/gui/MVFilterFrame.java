@@ -360,9 +360,9 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (r1.isSelected()) {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__BLACKLIST_ON, Boolean.TRUE.toString(), filter, MVFilter.MAX_FILTER);
+                    MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__BLACKLIST_ON, Boolean.TRUE.toString(), filter);
                 } else if (r2.isSelected()) {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__BLACKLIST_ON, Boolean.FALSE.toString(), filter, MVFilter.MAX_FILTER);
+                    MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__BLACKLIST_ON, Boolean.FALSE.toString(), filter);
                 }
             }
         }
@@ -380,17 +380,17 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
                 @Override
                 public void insertUpdate(DocumentEvent e) {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NAME, name.getText(), filter, MVFilter.MAX_FILTER);
+                    MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NAME, name.getText(), filter);
                 }
 
                 @Override
                 public void removeUpdate(DocumentEvent e) {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NAME, name.getText(), filter, MVFilter.MAX_FILTER);
+                    MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NAME, name.getText(), filter);
                 }
 
                 @Override
                 public void changedUpdate(DocumentEvent e) {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NAME, name.getText(), filter, MVFilter.MAX_FILTER);
+                    MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NAME, name.getText(), filter);
                 }
             });
             name.addActionListener(e -> jPopupMenu.setVisible(false));
