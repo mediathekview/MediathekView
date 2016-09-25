@@ -194,7 +194,7 @@ public class DirectHttpDownload extends Thread {
                 melden = false;
             }
         }
-        SysMsg.sysMsg(start.mVInputStream.toString());
+        start.bandbreite = start.mVInputStream.getSumBandwidth();
         if (!start.stoppen) {
             if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON) {
                 // direkter Start mit dem Button
