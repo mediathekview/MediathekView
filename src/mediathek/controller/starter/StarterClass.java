@@ -197,6 +197,11 @@ public class StarterClass {
         text.add("Endzeit: " + new SimpleDateFormat("HH:mm:ss").format(new Datum().getTime()));
         text.add("Restarts: " + start.countRestarted);
         text.add("Dauer: " + start.startZeit.diffInSekunden() + " s");
+        if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
+            if (start.mVInputStream != null) {
+                text.add(start.mVInputStream.toString());
+            }
+        }
         long dauer = start.startZeit.diffInMinuten();
         if (dauer == 0) {
             text.add("Dauer: <1 Min.");

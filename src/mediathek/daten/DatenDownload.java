@@ -379,23 +379,27 @@ public final class DatenDownload extends MVData<DatenDownload> {
     public String getTextBandbreite() {
         // start.bandbreite -->> bytes per second
         if (start != null) {
-            if (start.status < Start.STATUS_FERTIG && start.status >= Start.STATUS_RUN) {
-                if (start.bandbreite > 1000 * 1000) {
-                    String s = String.valueOf(start.bandbreite / 1000);
-                    if (s.length() >= 4) {
-                        s = s.substring(0, s.length() - 3) + "," + s.substring(s.length() - 3);
-                    }
-                    return s + " MB/s";
-                } else if (start.bandbreite > 1000) {
-                    return (start.bandbreite / 1000) + " kB/s";
-                } else if (start.bandbreite > 1) {
-                    return start.bandbreite + " B/s";
-                } else {
-                    return "";
-                }
+            if (/*start.status < Start.STATUS_FERTIG &&*/ start.status >= Start.STATUS_RUN) {
+                return getTextBandbreite(start.bandbreite);
             }
         }
         return "";
+    }
+
+    public static String getTextBandbreite(long b) {
+        if (b > 1000 * 1000) {
+            String s = String.valueOf(b / 1000);
+            if (s.length() >= 4) {
+                s = s.substring(0, s.length() - 3) + "," + s.substring(s.length() - 3);
+            }
+            return s + " MB/s";
+        } else if (b > 1000) {
+            return (b / 1000) + " kB/s";
+        } else if (b > 1) {
+            return b + " B/s";
+        } else {
+            return "";
+        }
     }
 
     public boolean checkAufrufBauen() {
@@ -558,14 +562,12 @@ public final class DatenDownload extends MVData<DatenDownload> {
                     path = GuiFunktionen.addsPfad(path, FilenameUtils.removeIllegalCharacters(abo.arr[DatenAbo.ABO_ZIELPFAD], true));
                 }
             } else //Downloads
-            {
-                if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN])) {
+             if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN])) {
                     //und den Namen des Themas an den Zielpfad anhängen
                     path = GuiFunktionen.addsPfad(path, FilenameUtils.replaceLeerDateiname(arr[DatenDownload.DOWNLOAD_THEMA], true /*pfad*/,
                             Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
                             Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII))));
                 }
-            }
 
             path = replaceString(path, film); // %D ... ersetzen
         }

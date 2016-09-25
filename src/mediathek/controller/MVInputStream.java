@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.TimerTask;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import mediathek.daten.DatenDownload;
+import mediathek.tool.MVFilmSize;
 
 public class MVInputStream extends InputStream {
 
@@ -75,22 +77,49 @@ public class MVInputStream extends InputStream {
     }
 
     /**
-     * Return the bandwidth used by this InputStream.
+     * Return the akt bandwidth used by this InputStream.
      *
-     * @return Bandwidth in bytes per second.
+     * @return akt Bandwidth in bytes per second.
      */
     public long getBandwidth() {
         return calculationTask.getBandwidth();
     }
 
+    /**
+     * Return the sum time used by this InputStream.
+     *
+     * @return time in second.
+     */
+    public long getSumTime() {
+        return calculationTask.getSumTime();
+    }
+
+    /**
+     * Return the bandwidth used by this InputStream.
+     *
+     * @return Bandwidth in bytes per second for the complete download.
+     */
+    public long getSumBandwidth() {
+        final long bytesRead = calculationTask.getTotalBytesRead();
+        final long time = calculationTask.getSumTime();
+        final long b = bytesRead <= 0 ? 0 : bytesRead / time;
+        return b;
+    }
+
     @Override
     public String toString() {
         final long bytesRead = calculationTask.getTotalBytesRead();
-        final long bandwidth = calculationTask.getBandwidth();
+        final long b = getSumBandwidth();
+        String s = MVFilmSize.humanReadableByteCount(bytesRead, true);
+        return "Download: Bytes gelesen: " + s + "  Bandbreite: " + DatenDownload.getTextBandbreite(b);
+    }
 
-        return "Download: "
-                + "gelesen: " + (bytesRead > 0 ? bytesRead / 1000 : 0) + " kB, "
-                + "Bandbreite: " + (bandwidth > 0 ? bandwidth / 1000 : 0) + " kB/s ";
+    public String[] getMsg() {
+        final long bytesRead = calculationTask.getTotalBytesRead();
+        final long b = getSumBandwidth();
+        String s = MVFilmSize.humanReadableByteCount(bytesRead, true);
+        String[] sa = {"Download", "Bytes gelesen: " + s, "Bandbreite: " + DatenDownload.getTextBandbreite(b)};
+        return sa;
     }
 
     /**
@@ -102,6 +131,7 @@ public class MVInputStream extends InputStream {
         private long oldTotalBytes = 0;
         private long totalBytesRead = 0;
         private long bandwidth = 0;
+        private long sumTime = 0;
         private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
         @Override
@@ -109,6 +139,7 @@ public class MVInputStream extends InputStream {
             lock.writeLock().lock();
             bandwidth = totalBytesRead - oldTotalBytes;
             oldTotalBytes = totalBytesRead;
+            ++sumTime;
             lock.writeLock().unlock();
         }
 
@@ -140,6 +171,18 @@ public class MVInputStream extends InputStream {
             final long bw = bandwidth;
             lock.readLock().unlock();
             return bw;
+        }
+
+        /**
+         * Return the sum of time used by this stream.
+         *
+         * @return Time in s
+         */
+        public long getSumTime() {
+            lock.readLock().lock();
+            final long t = sumTime;
+            lock.readLock().unlock();
+            return t;
         }
     }
 }
