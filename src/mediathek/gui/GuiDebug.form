@@ -409,7 +409,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="jTextFieldOld">
               <Properties>
-                <Property name="text" type="java.lang.String" value="/tmp/usb/2016-06-03-filme.xz"/>
+                <Property name="text" type="java.lang.String" value="/tmp/usb/2016-09-10-filme.xz"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="jButtonNurDoppelte">

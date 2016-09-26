@@ -41,6 +41,7 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
+import mediathek.tool.MVFilmSize;
 import mediathek.tool.MVNotification;
 
 public class StarterClass {
@@ -197,16 +198,17 @@ public class StarterClass {
         text.add("Endzeit: " + new SimpleDateFormat("HH:mm:ss").format(new Datum().getTime()));
         text.add("Restarts: " + start.countRestarted);
         text.add("Dauer: " + start.startZeit.diffInSekunden() + " s");
-        if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
-            if (start.mVInputStream != null) {
-                text.add(start.mVInputStream.toString());
-            }
-        }
         long dauer = start.startZeit.diffInMinuten();
         if (dauer == 0) {
             text.add("Dauer: <1 Min.");
         } else {
             text.add("Dauer: " + start.startZeit.diffInMinuten() + " Min");
+        }
+        if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
+            if (start.mVInputStream != null) {
+                text.add("Bytes gelesen: " + MVFilmSize.humanReadableByteCount(start.mVInputStream.getSumByte(), true));
+                text.add("Bandbreite: " + DatenDownload.getTextBandbreite(start.mVInputStream.getSumBandwidth()));
+            }
         }
         text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
         if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
