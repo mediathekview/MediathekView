@@ -301,20 +301,39 @@ public class GuiDebug extends JPanel {
             }
         });
         jButtonOldList.addActionListener(new BeobPfadOldUrl());
-        jButtonAddOld.addActionListener(new ActionListener() {
+        jButtonAddOld.addActionListener((ActionEvent e) -> {
+            String url = jTextFieldOld.getText();
+            ListeFilme listeEinsortieren = new ListeFilme();
+            new FilmlisteLesen().readFilmListe(url, listeEinsortieren, 0 /*all days*/);
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String url = jTextFieldOld.getText();
-                ListeFilme tmpListe = new ListeFilme();
-                new FilmlisteLesen().readFilmListe(url, tmpListe, 0 /*all days*/);
-                Daten.listeFilme.updateListeOld(tmpListe);
-                tmpListe.clear();
-                System.gc();
-                Daten.listeFilme.sort();
-                Daten.listeBlacklist.filterListe();
-                Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
-            }
+            HashSet<String> hash = new HashSet<>(listeEinsortieren.size() + 1, 1);
+            HashSet<String> hash2 = new HashSet<>(listeEinsortieren.size() + 1, 1);
+
+            // ==============================================
+            // nach "Thema-Titel" suchen
+            Daten.listeFilme.stream().forEach((f) -> hash.add(f.getIndexAddOld_()));
+            listeEinsortieren.removeIf((f) -> hash.contains(f.getIndexAddOld_()));
+            DbgMsg.print("Anzahl Filme: " + Daten.listeFilme.size());
+
+            hash.clear();
+            ListeFilme lf = new ListeFilme();
+            listeEinsortieren.stream().forEach((f) -> {
+                if (hash2.contains(f.getIndexAddOld())) {
+                    lf.add(f);
+                } else {
+                    hash2.add(f.getIndexAddOld());
+                }
+            });
+            Daten.listeFilme = lf;
+            hash.clear();
+            DbgMsg.print("Anzahl Filme: " + Daten.listeFilme.size());
+
+////                Daten.listeFilme.updateListeOld(listeEinsortieren);
+////                listeEinsortieren.clear();
+////                System.gc();
+            Daten.listeFilme.sort();
+            Daten.listeBlacklist.filterListe();
+            Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
         });
         jButtonAddOldFilm.addActionListener(new ActionListener() {
 
@@ -580,7 +599,7 @@ public class GuiDebug extends JPanel {
 
         jButtonAddOld.setText("Alte Filmliste");
 
-        jTextFieldOld.setText("/tmp/usb/2016-06-03-filme.xz");
+        jTextFieldOld.setText("/tmp/usb/2016-09-10-filme.xz");
 
         jButtonNurDoppelte.setText("NUR doppelte URLs");
 

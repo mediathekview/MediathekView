@@ -94,6 +94,10 @@ public class MVInputStream extends InputStream {
         return calculationTask.getSumTime();
     }
 
+    public long getSumByte() {
+        return calculationTask.getTotalBytesRead();
+    }
+
     /**
      * Return the bandwidth used by this InputStream.
      *
