@@ -23,7 +23,7 @@
               <Component id="jPanelFilter" max="32767" attributes="0"/>
           </Group>
           <Component id="jPanelBeschreibung" max="32767" attributes="0"/>
-          <Component id="jScrollPane1" pref="544" max="32767" attributes="0"/>
+          <Component id="jScrollPane1" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -31,9 +31,9 @@
           <Group type="102" attributes="0">
               <Component id="jPanelToolBar" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="2" attributes="0">
-                  <Component id="jcbFilter" alignment="2" min="-2" max="-2" attributes="0"/>
-                  <Component id="jPanelFilter" alignment="2" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jPanelFilter" min="-2" max="-2" attributes="0"/>
+                  <Component id="jcbFilter" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jScrollPane1" pref="346" max="32767" attributes="0"/>
@@ -162,6 +162,13 @@
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
     </Container>
     <Component class="javax.swing.JCheckBox" name="jcbFilter">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+            <EmptyBorder bottom="3" left="3" right="3" top="3"/>
+          </Border>
+        </Property>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>
