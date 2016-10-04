@@ -96,6 +96,9 @@ public class Icons {
     public static final ImageIcon ICON_TABELLE_DOWNOAD_FILM_START = GetIcon.getProgramIcon("tabelle-download-film-start.png", 18, 18);
     public static final ImageIcon ICON_TABELLE_DOWNOAD_FILM_START_SW = GetIcon.getProgramIcon("tabelle-download-film-start-sw.png", 14, 14);
 
+    public static final ImageIcon ICON_TABELLE_DOWNOAD_FILTER_UP = GetIcon.getProgramIcon("tabelle-download-filter-up.png", 14, 14);
+    public static final ImageIcon ICON_TABELLE_DOWNOAD_FILTER_DOWN = GetIcon.getProgramIcon("tabelle-download-filter-down.png", 14, 14);
+
     public static final ImageIcon ICON_TABELLE_FILM_REC = GetIcon.getProgramIcon("tabelle-film-rec.png", 18, 18);
     public static final ImageIcon ICON_TABELLE_FILM_REC_SW = GetIcon.getProgramIcon("tabelle-film-rec-sw.png", 16, 16);
     public static final ImageIcon ICON_TABELLE_FILM_START = GetIcon.getProgramIcon("tabelle-film-start.png", 20, 20);
