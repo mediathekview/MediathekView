@@ -112,13 +112,13 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
         jPanelChart.add(chart, BorderLayout.CENTER);
 
         // Slider zum Einstellen der Bandbreite
-        Listener.addListener(new Listener(Listener.EREIGNIS_BANDBREITE, MVBandwidthMonitorOSX.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_BANDBREITE, MVBandwidthMonitorLWin.class.getSimpleName()) {
             @Override
             public void ping() {
                 setSlider();
             }
         });
-        Listener.addListener(new Listener(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitorOSX.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitorLWin.class.getSimpleName()) {
             @Override
             public void ping() {
                 setVisibility();
@@ -139,7 +139,7 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
             int b = jSliderBandwidth.getValue() * 10;
             jLabelBandwidth.setText(b + " kByte/s");
             MVConfig.add(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
-            Listener.notify(Listener.EREIGNIS_BANDBREITE, MVBandwidthMonitorOSX.class.getName());
+            Listener.notify(Listener.EREIGNIS_BANDBREITE, MVBandwidthMonitorLWin.class.getName());
         });
 
         jDialog.setContentPane(this);
