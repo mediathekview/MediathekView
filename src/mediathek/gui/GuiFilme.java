@@ -41,7 +41,6 @@ import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
-import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.daten.*;
@@ -354,7 +353,7 @@ public class GuiFilme extends PanelVorlage {
             Listener.notify(Listener.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName());
             panelVideoplayerSetzen();
         });
-        setSplitPane();
+        jSplitPane1.setDividerLocation(MVConfig.getInt(MVConfig.Configs.SYSTEM_PANEL_FILME_DIVIDER));
         jSplitPane1.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, pce -> {
             if (jScrollPaneFilter.isVisible()) {
                 MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_FILME_DIVIDER, String.valueOf(jSplitPane1.getDividerLocation()));
@@ -565,15 +564,6 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
-    private void setSplitPane() {
-        try {
-            jSplitPane1.setDividerLocation(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_FILME_DIVIDER)));
-        } catch (Exception ignore) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_FILME_DIVIDER, Konstanten.GUIFILME_DIVIDER_LOCATION);
-            jSplitPane1.setDividerLocation(Integer.parseInt(Konstanten.GUIFILME_DIVIDER_LOCATION));
-        }
-    }
-
     /**
      * Return the film object from a table row.
      * As this can also be null we will return an Optional to prevent NPEs inside the caller.
@@ -774,7 +764,7 @@ public class GuiFilme extends PanelVorlage {
             jPanelFilter.add(mVFilterPanel, BorderLayout.CENTER);
             jScrollPaneFilter.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER)));
             if (jScrollPaneFilter.isVisible()) {
-                setSplitPane();
+                jSplitPane1.setDividerLocation(MVConfig.getInt(MVConfig.Configs.SYSTEM_PANEL_FILME_DIVIDER));
             }
         }
         // einrichten
@@ -1866,13 +1856,15 @@ public class GuiFilme extends PanelVorlage {
                                 //gibts schon, dann löschen
                                 Daten.listeAbo.aboLoeschen(datenAbo);
                             } else //neues Abo anlegen
-                             if (mitTitel) {
+                            {
+                                if (mitTitel) {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], film.arr[DatenFilm.FILM_TITEL]);
                                 } else {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], "");
                                 }
+                            }
                         });
                         stopBeob = false;
                     }

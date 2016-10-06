@@ -248,6 +248,13 @@ public final class DatenDownload extends MVData<DatenDownload> {
         return (start != null) && (start.status == Start.STATUS_FERTIG);
     }
 
+    public boolean runNotFinished() {
+        if (start != null && start.status < Start.STATUS_FERTIG) {
+            return true;
+        }
+        return false;
+    }
+
     public void resetDownload() {
         mVFilmSize.reset();
         start = null;
@@ -379,7 +386,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
     public String getTextBandbreite() {
         // start.bandbreite -->> bytes per second
         if (start != null) {
-            if (/*start.status < Start.STATUS_FERTIG &&*/ start.status >= Start.STATUS_RUN) {
+            if (/*start.status < Start.STATUS_FERTIG &&*/start.status >= Start.STATUS_RUN) {
                 return getTextBandbreite(start.bandbreite);
             }
         }

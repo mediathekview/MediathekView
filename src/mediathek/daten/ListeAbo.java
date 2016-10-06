@@ -320,6 +320,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
 
         // das kostet die Zeit!!
         listeFilme.stream().parallel().forEach(film -> {
+        //listeFilme.stream().forEach(film -> {
             // für jeden Film
             film.arr[DatenFilm.FILM_ABO_NAME] = "";
             film.abo = null;

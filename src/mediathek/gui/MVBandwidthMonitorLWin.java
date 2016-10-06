@@ -285,12 +285,12 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
 
     private void setSlider() {
         stopBeob = true;
-        setSliderBandwith(jSliderBandwidth, jLabelBandwidth);
+        setSliderBandwith(jSliderBandwidth, jLabelBandwidth, null);
         stopBeob = false;
 
     }
 
-    public static String setSliderBandwith(JSlider slider, JLabel label) {
+    public static String setSliderBandwith(JSlider slider, JLabel label, JTextField txt) {
         int bandbreiteKByte;
         String ret;
         try {
@@ -308,6 +308,14 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
                 label.setForeground(Color.red);
             } else {
                 label.setForeground(Color.black);
+            }
+        }
+        if (txt != null) {
+            txt.setText(ret);
+            if (bandbreiteKByte > MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE) {
+                txt.setForeground(Color.red);
+            } else {
+                txt.setForeground(Color.black);
             }
         }
         return ret;

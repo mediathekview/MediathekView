@@ -37,8 +37,9 @@ public class PanelDownload extends PanelVorlage {
         super(d, parent);
         initComponents();
         daten = d;
-        initSpinner();
-        jSpinnerDownload.addChangeListener(new BeobSpinnerDownload());
+        jSpinnerAnzahlDownload.setModel(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
+        jSpinnerAnzahlDownload.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)));
+        jSpinnerAnzahlDownload.addChangeListener(new BeobSpinnerDownload());
         jButtonHilfeAnzahl.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfeAnzahl.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
                 + "Hier kann angegeben werden, wie viele\n"
@@ -52,7 +53,7 @@ public class PanelDownload extends PanelVorlage {
         Listener.addListener(new Listener(Listener.EREIGNIS_ANZAHL_DOWNLOADS, PanelDownload.class.getSimpleName()) {
             @Override
             public void ping() {
-                initSpinner();
+                jSpinnerAnzahlDownload.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)));
             }
         });
         Listener.addListener(new Listener(Listener.EREIGNIS_BANDBREITE, PanelDownload.class.getSimpleName()) {
@@ -86,15 +87,8 @@ public class PanelDownload extends PanelVorlage {
 
     private void setSliderBandwith() {
         stopBeob = true;
-        MVBandwidthMonitorLWin.setSliderBandwith(jSliderBandbreite, jLabelBandwidth);
+        MVBandwidthMonitorLWin.setSliderBandwith(jSliderBandbreite, jLabelBandwidth, null);
         stopBeob = false;
-    }
-
-    private void initSpinner() {
-        if (MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD).equals("")) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD, "1");
-        }
-        jSpinnerDownload.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)));
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -103,7 +97,7 @@ public class PanelDownload extends PanelVorlage {
         jPanel2 = new javax.swing.JPanel();
         jCheckBoxNotification = new javax.swing.JCheckBox();
         javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
-        jSpinnerDownload = new javax.swing.JSpinner();
+        jSpinnerAnzahlDownload = new javax.swing.JSpinner();
         jButtonHilfeAnzahl = new javax.swing.JButton();
         jCheckBoxBeep = new javax.swing.JCheckBox();
         jButtonBeep = new javax.swing.JButton();
@@ -124,7 +118,7 @@ public class PanelDownload extends PanelVorlage {
 
         jLabel3.setText("gleichzeitige Downloads laden:");
 
-        jSpinnerDownload.setModel(new javax.swing.SpinnerNumberModel(1, 1, 10, 1));
+        jSpinnerAnzahlDownload.setModel(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
 
         jButtonHilfeAnzahl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
         jButtonHilfeAnzahl.setToolTipText("Hilfe anzeigen");
@@ -160,7 +154,7 @@ public class PanelDownload extends PanelVorlage {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addGap(51, 51, 51)
-                                .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jSpinnerAnzahlDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonHilfeAnzahl)))
                         .addGap(0, 0, Short.MAX_VALUE))))
@@ -179,7 +173,7 @@ public class PanelDownload extends PanelVorlage {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel3)
-                    .addComponent(jSpinnerDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jSpinnerAnzahlDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonHilfeAnzahl))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBoxServer)
@@ -278,7 +272,7 @@ public class PanelDownload extends PanelVorlage {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JSlider jSliderBandbreite;
-    private javax.swing.JSpinner jSpinnerDownload;
+    private javax.swing.JSpinner jSpinnerAnzahlDownload;
     private javax.swing.JTextField jTextFieldWarnung;
     // End of variables declaration//GEN-END:variables
 
@@ -287,7 +281,7 @@ public class PanelDownload extends PanelVorlage {
         @Override
         public void stateChanged(ChangeEvent arg0) {
             MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD,
-                    String.valueOf(((Number) jSpinnerDownload.getModel().getValue()).intValue()));
+                    String.valueOf(((Number) jSpinnerAnzahlDownload.getModel().getValue()).intValue()));
             Listener.notify(Listener.EREIGNIS_ANZAHL_DOWNLOADS, PanelDownload.class.getSimpleName());
         }
     }
