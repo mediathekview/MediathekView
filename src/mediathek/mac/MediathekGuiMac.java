@@ -7,9 +7,9 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Enumeration;
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.ButtonGroup;
+import javax.swing.KeyStroke;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
@@ -169,64 +169,64 @@ public class MediathekGuiMac extends MediathekGui {
         return numDownloads;
     }
 
-    @Override
-    protected void setupMaximumNumberOfDownloadsMenuItem() {
-        jMenuDownload.addSeparator();
-
-        final JMenu numDownloadsMenu = new JMenu("Anzahl gleichzeitiger Downloads");
-        group = new ButtonGroup();
-
-        for (int i = 1; i <= 10; i++) {
-            JRadioButtonMenuItem menuItem = new JRadioButtonMenuItem(Integer.toString(i));
-            menuItem.addActionListener(e -> {
-                final AbstractButton btn = (AbstractButton) e.getSource();
-                if (btn != null) {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD, btn.getText());
-                    Listener.notify(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
-                }
-            });
-            group.add(menuItem);
-            numDownloadsMenu.add(menuItem);
-        }
-        jMenuDownload.add(numDownloadsMenu);
-
-        Listener.addListener(new Listener(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                //FIXME selection is not properly changed when JFrame settings dialog is displayed...needs to be JDialog in the future...
-                //JMenuBar gets destroyed when a JFrame is shown
-                //modal JDialog will keep it
-                //System.out.println("LISTENER NUM DOWNLOADS CALLED with " + getNumberOfDownloads());
-                setupMaxDownloadButtonSelection(getNumberOfDownloads());
-            }
-        });
-
-        setupMaxDownloadButtonSelection(getNumberOfDownloads());
-    }
-
-    private void setupMaxDownloadButtonSelection(int numDownloads) {
-        if (group == null) {
-            //System.out.println("GROUP IS NULL");
-            return;
-        }
-
-        final Enumeration<AbstractButton> elem = group.getElements();
-        while (elem.hasMoreElements()) {
-            final AbstractButton btn = elem.nextElement();
-            if (btn.getText().equals(Integer.toString(numDownloads))) {
-                btn.doClick();
-                btn.setSelected(true);
-                break;
-            }
-        }
-    }
-
-    @Override
-    protected void setupBandwidthMenuItem() {
-    }
-
-    @Override
-    protected void initSpinner() {
-        //unused in OS X
-    }
+//    @Override
+//    protected void setupMaximumNumberOfDownloadsMenuItem() {
+//        jMenuDownload.addSeparator();
+//
+//        final JMenu numDownloadsMenu = new JMenu("Anzahl gleichzeitiger Downloads");
+//        group = new ButtonGroup();
+//
+//        for (int i = 1; i <= 10; i++) {
+//            JRadioButtonMenuItem menuItem = new JRadioButtonMenuItem(Integer.toString(i));
+//            menuItem.addActionListener(e -> {
+//                final AbstractButton btn = (AbstractButton) e.getSource();
+//                if (btn != null) {
+//                    MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD, btn.getText());
+//                    Listener.notify(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
+//                }
+//            });
+//            group.add(menuItem);
+//            numDownloadsMenu.add(menuItem);
+//        }
+//        jMenuDownload.add(numDownloadsMenu);
+//
+//        Listener.addListener(new Listener(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
+//            @Override
+//            public void ping() {
+//                //FIXME selection is not properly changed when JFrame settings dialog is displayed...needs to be JDialog in the future...
+//                //JMenuBar gets destroyed when a JFrame is shown
+//                //modal JDialog will keep it
+//                //System.out.println("LISTENER NUM DOWNLOADS CALLED with " + getNumberOfDownloads());
+//                setupMaxDownloadButtonSelection(getNumberOfDownloads());
+//            }
+//        });
+//
+//        setupMaxDownloadButtonSelection(getNumberOfDownloads());
+//    }
+//
+//    private void setupMaxDownloadButtonSelection(int numDownloads) {
+//        if (group == null) {
+//            //System.out.println("GROUP IS NULL");
+//            return;
+//        }
+//
+//        final Enumeration<AbstractButton> elem = group.getElements();
+//        while (elem.hasMoreElements()) {
+//            final AbstractButton btn = elem.nextElement();
+//            if (btn.getText().equals(Integer.toString(numDownloads))) {
+//                btn.doClick();
+//                btn.setSelected(true);
+//                break;
+//            }
+//        }
+//    }
+//
+//    @Override
+//    protected void setupBandwidthMenuItem() {
+//    }
+//
+//    @Override
+//    protected void initSpinner() {
+//        //unused in OS X
+//    }
 }

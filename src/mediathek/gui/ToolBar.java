@@ -58,7 +58,7 @@ public final class ToolBar extends JToolBar {
     public JXSearchField jTextFieldFilter;
 
     private MVConfig.Configs nrToolbar = null;
-   private MVConfig.Configs nrIconKlein = MVConfig.Configs.SYSTEM_ICON_KLEIN;
+    private MVConfig.Configs nrIconKlein = MVConfig.Configs.SYSTEM_ICON_KLEIN;
     private final Daten daten;
     BeobMausToolBar beobMausToolBar = new BeobMausToolBar();
     boolean extern = false;
@@ -213,6 +213,28 @@ public final class ToolBar extends JToolBar {
         jButtonDownloadAlleStarten.addActionListener(e -> Daten.guiDownloads.starten(true));
         jButtonDownloadFilmStarten.addActionListener(e -> Daten.guiDownloads.filmAbspielen());
         jButtonDownloadZurueckstellen.addActionListener(e -> Daten.guiDownloads.zurueckstellen());
+
+        this.add(filler__trenner);
+
+        // Button Filter
+        jButtonFilterPanel = new JButton();
+        jButtonFilterPanel.setToolTipText("Erweiterte Suche (Filter) anzeigen/ausblenden");
+        jButtonFilterPanel.setBorder(null);
+        jButtonFilterPanel.setBorderPainted(false);
+        jButtonFilterPanel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonFilterPanel.setMaximumSize(new java.awt.Dimension(40, 40));
+        jButtonFilterPanel.setMinimumSize(new java.awt.Dimension(40, 40));
+        jButtonFilterPanel.setOpaque(false);
+        jButtonFilterPanel.setPreferredSize(new java.awt.Dimension(40, 40));
+        jButtonFilterPanel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButtonFilterPanel.setIcon(Icons.ICON_BUTTON_FILTER_ANZEIGEN);
+        this.add(jButtonFilterPanel);
+        jButtonFilterPanel.addActionListener(e -> {
+            boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS));
+            MVConfig.add(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS, Boolean.toString(b));
+            Listener.notify(Listener.EREIGNIS_PANEL_DOWNLOAD_FILTER_ANZEIGEN, ToolBar.class.getName());
+        });
+
     }
 
     private void startupAbo() {
@@ -304,7 +326,7 @@ public final class ToolBar extends JToolBar {
     }
 
     private void loadVisible() {
-        if (nrToolbar!=null) {
+        if (nrToolbar != null) {
             String[] b = MVConfig.get(nrToolbar).split(":");
             if (buttonList.size() == b.length) {
                 // ansonsten gibt es neue Button: dann alle anzeigen
@@ -315,13 +337,13 @@ public final class ToolBar extends JToolBar {
             }
         }
         setToolbar();
-        if (nrIconKlein!=null) {
+        if (nrIconKlein != null) {
             setIcon(Boolean.parseBoolean(MVConfig.get(nrIconKlein)));
         }
     }
 
     private void storeVisible() {
-        if (nrToolbar!=null) {
+        if (nrToolbar != null) {
             MVConfig.add(nrToolbar, "");
             for (MVButton b : buttonList) {
                 if (!MVConfig.get(nrToolbar).isEmpty()) {
@@ -353,7 +375,7 @@ public final class ToolBar extends JToolBar {
         }
 
         void setIcon() {
-            if (nrIconKlein!=null) {
+            if (nrIconKlein != null) {
                 if (Boolean.parseBoolean(MVConfig.get(nrIconKlein))) {
                     this.setIcon(imageIconKlein);
                 } else {
@@ -370,7 +392,7 @@ public final class ToolBar extends JToolBar {
         JCheckBoxMenuItem[] checkBoxMenuItems;
 
         public BeobMausToolBar() {
-            if (nrIconKlein!=null) {
+            if (nrIconKlein != null) {
                 itemKlein.setSelected(Boolean.parseBoolean(MVConfig.get(nrIconKlein)));
             }
         }

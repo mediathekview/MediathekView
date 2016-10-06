@@ -100,6 +100,7 @@ public class MVConfig {
         SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN("system-panel-videoplayer-anzeigen"),
         SYSTEM_PANEL_MELDUNGEN_ANZEIGEN("system-panel-meldungen-anzeigen"),
         SYSTEM_PANEL_FILME_DIVIDER("system-panel-filme-divider", Konstanten.GUIFILME_DIVIDER_LOCATION),
+        SYSTEM_PANEL_DOWNLOAD_DIVIDER("system-panel-download-divider", Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION),
         SYSTEM_FONT_SIZE("system-font-size", "0"), // -5 ... 0 .... 5
         SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN("system-filme-beschreibung-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN("system-download-beschreibung-anzeigen", Boolean.TRUE.toString()),

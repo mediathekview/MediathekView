@@ -59,6 +59,7 @@ public class Konstanten {
 
     public static final int MAX_PFADE_DIALOG_DOWNLOAD = 15;
     public static final String GUIFILME_DIVIDER_LOCATION = "260";
+    public static final String GUIDOWNLOAD_DIVIDER_LOCATION = "200";
 
     public static final int LAENGE_DATEINAME = 25; // Standardwert für die Länge des Zieldateinamens
     public static final int LAENGE_FELD = 10; // Standardwert für die Länge des Feldes des Zieldateinamens zB. %T

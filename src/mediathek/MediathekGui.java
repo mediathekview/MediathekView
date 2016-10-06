@@ -643,77 +643,68 @@ public class MediathekGui extends JFrame {
         return lbl;
     }
 
-    protected void initSpinner() {
-        if (MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD).equals("")) {
-            jSpinnerAnzahl.setValue(1);
-            MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD, "1");
-        } else {
-            jSpinnerAnzahl.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)));
-        }
-    }
+//    private void setSlider() {
+//        MVBandwidthMonitorLWin.setSliderBandwith(jSliderBandbreite, null, null);
+//        setSliderText();
+//    }
+//
+//    private void setSliderText() {
+//        String s = MVBandwidthMonitorLWin.getTextBandwith();
+//        s = " [" + s + "]: ";
+//        while (s.length() < 20) {
+//            s = s + " ";
+//        }
+//        jLabelBandbreite.setText("Bandbreite pro Download" + s);
+//    }
 
-    private void setSlider() {
-        MVBandwidthMonitorLWin.setSliderBandwith(jSliderBandbreite, null);
-        setSliderText();
-    }
+//    protected void setupBandwidthMenuItem() {
+//        // Bandbreite pro Downloads
+//        jPanelBandbreite.setLayout(new BorderLayout());
+//        jPanelBandbreite.setBorder(new EmptyBorder(3, 5, 3, 5));
+//        jPanelBandbreite.add(jLabelBandbreite, BorderLayout.WEST);
+//        jPanelBandbreite.add(jSliderBandbreite, BorderLayout.EAST);
+//        jLabelBandbreite.setIcon(Icons.ICON_MENUE_DOWNLOAD_BANDWITH);
+//        jSliderBandbreite.setMinimum(5); //50 kByte/s
+//        jSliderBandbreite.setMaximum(100); //1.000 kByte/s
+//        setSlider();
+//        jSliderBandbreite.addChangeListener(e -> {
+//            int bandbreiteKByte = jSliderBandbreite.getValue() * 10;
+//            MVConfig.add(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE, String.valueOf(bandbreiteKByte));
+//            setSliderText();
+//            Listener.notify(Listener.EREIGNIS_BANDBREITE, MediathekGui.class.getSimpleName());
+//        });
+//        Listener.addListener(new Listener(Listener.EREIGNIS_BANDBREITE, MediathekGui.class.getSimpleName()) {
+//            @Override
+//            public void ping() {
+//                setSlider();
+//            }
+//        });
+//        jMenuDownload.add(jPanelBandbreite);
+//    }
 
-    private void setSliderText() {
-        String s = MVBandwidthMonitorLWin.getTextBandwith();
-        s = " [" + s + "]: ";
-        while (s.length() < 20) {
-            s = s + " ";
-        }
-        jLabelBandbreite.setText("Bandbreite pro Download" + s);
-    }
-
-    protected void setupBandwidthMenuItem() {
-        // Bandbreite pro Downloads
-        jPanelBandbreite.setLayout(new BorderLayout());
-        jPanelBandbreite.setBorder(new EmptyBorder(3, 5, 3, 5));
-        jPanelBandbreite.add(jLabelBandbreite, BorderLayout.WEST);
-        jPanelBandbreite.add(jSliderBandbreite, BorderLayout.EAST);
-        jLabelBandbreite.setIcon(Icons.ICON_MENUE_DOWNLOAD_BANDWITH);
-        jSliderBandbreite.setMinimum(5); //50 kByte/s
-        jSliderBandbreite.setMaximum(100); //1.000 kByte/s
-        setSlider();
-        jSliderBandbreite.addChangeListener(e -> {
-            int bandbreiteKByte = jSliderBandbreite.getValue() * 10;
-            MVConfig.add(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE, String.valueOf(bandbreiteKByte));
-            setSliderText();
-            Listener.notify(Listener.EREIGNIS_BANDBREITE, MediathekGui.class.getSimpleName());
-        });
-        Listener.addListener(new Listener(Listener.EREIGNIS_BANDBREITE, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setSlider();
-            }
-        });
-        jMenuDownload.add(jPanelBandbreite);
-    }
-
-    protected void setupMaximumNumberOfDownloadsMenuItem() {
-        // Anzahl gleichzeitiger Downloads
-        initSpinner();
-
-        jMenuDownload.add(new javax.swing.JPopupMenu.Separator());
-        jPanelAnzahl.setLayout(new BorderLayout());
-        jPanelAnzahl.setBorder(new EmptyBorder(3, 5, 3, 5));
-        jPanelAnzahl.add(jLabelAnzahl, BorderLayout.WEST);
-        jPanelAnzahl.add(jSpinnerAnzahl, BorderLayout.EAST);
-        jLabelAnzahl.setIcon(Icons.ICON_MENUE_UP_DOWN);
-        jSpinnerAnzahl.addChangeListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD,
-                    String.valueOf(((Number) jSpinnerAnzahl.getModel().getValue()).intValue()));
-            Listener.notify(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
-        });
-        Listener.addListener(new Listener(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                initSpinner();
-            }
-        });
-        jMenuDownload.add(jPanelAnzahl);
-    }
+//    protected void setupMaximumNumberOfDownloadsMenuItem() {
+//        // Anzahl gleichzeitiger Downloads
+//        jSpinnerAnzahl.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)));
+//
+//        jMenuDownload.add(new javax.swing.JPopupMenu.Separator());
+//        jPanelAnzahl.setLayout(new BorderLayout());
+//        jPanelAnzahl.setBorder(new EmptyBorder(3, 5, 3, 5));
+//        jPanelAnzahl.add(jLabelAnzahl, BorderLayout.WEST);
+//        jPanelAnzahl.add(jSpinnerAnzahl, BorderLayout.EAST);
+//        jLabelAnzahl.setIcon(Icons.ICON_MENUE_UP_DOWN);
+//        jSpinnerAnzahl.addChangeListener(e -> {
+//            MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD,
+//                    String.valueOf(((Number) jSpinnerAnzahl.getModel().getValue()).intValue()));
+//            Listener.notify(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
+//        });
+//        Listener.addListener(new Listener(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
+//            @Override
+//            public void ping() {
+//                jSpinnerAnzahl.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)));
+//            }
+//        });
+//        jMenuDownload.add(jPanelAnzahl);
+//    }
 
     protected void initMenue() {
         setCbBeschreibung();
@@ -756,8 +747,8 @@ public class MediathekGui extends JFrame {
         jMenuItemAboNeu.setIcon(Icons.ICON_MENUE_ABO_NEU);
         jMenuItemAnleitung.setIcon(Icons.ICON_MENUE_HELP);
 
-        setupMaximumNumberOfDownloadsMenuItem();
-        setupBandwidthMenuItem();
+//        setupMaximumNumberOfDownloadsMenuItem();
+//        setupBandwidthMenuItem();
 
         // Datei
         jMenuItemEinstellungen.addActionListener(e -> Daten.dialogEinstellungen.setVisible(true));
