@@ -150,10 +150,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // es wird nach noch nicht fertigen gestarteten Downloads gesucht
         int ret = 0;
         for (DatenDownload download : this) {
-            if (download.start != null) {
-                if (download.start.status < Start.STATUS_FERTIG) {
-                    ++ret;
-                }
+            if (download.runNotFinished()) {
+                ++ret;
             }
         }
         return ret;
@@ -249,7 +247,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return null;
     }
 
-    public synchronized void getModel(TModelDownload tModel, boolean abos, boolean downloads) {
+    public synchronized void getModel(TModelDownload tModel, boolean nurAbos, boolean nurDownloads, boolean nurRun, boolean nurFertig) {
         Object[] object;
         tModel.setRowCount(0);
         for (DatenDownload download : this) {
@@ -257,46 +255,56 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 continue;
             }
             boolean istAbo = download.istAbo();
-            if (abos && istAbo || downloads && !istAbo) {
-                object = new Object[DatenDownload.MAX_ELEM];
-                for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
-                    if (i == DatenDownload.DOWNLOAD_NR) {
-                        object[i] = download.nr;
-                    } else if (i == DatenDownload.DOWNLOAD_FILM_NR) {
-                        if (download.film != null) {
-                            object[i] = download.film.nr;
-                        } else {
-                            object[i] = 0;
-                        }
-                    } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART
-                            || i == DatenDownload.DOWNLOAD_UNTERBROCHEN
-                            || i == DatenDownload.DOWNLOAD_SPOTLIGHT
-                            || i == DatenDownload.DOWNLOAD_INFODATEI
-                            || i == DatenDownload.DOWNLOAD_SUBTITLE
-                            || i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT
-                            || i == DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER) {
-                        object[i] = "";
-                    } else if (i == DatenDownload.DOWNLOAD_DATUM) {
-                        object[i] = download.datumFilm;
-                    } else if (i == DatenDownload.DOWNLOAD_RESTZEIT) {
-                        object[i] = download.getTextRestzeit();
-                    } else if (i == DatenDownload.DOWNLOAD_BANDBREITE) {
-                        object[i] = download.getTextBandbreite();
-                    } else if (i == DatenDownload.DOWNLOAD_PROGRESS) {
-                        object[i] = setProgress(download);
-                    } else if (i == DatenDownload.DOWNLOAD_GROESSE) {
-                        object[i] = download.mVFilmSize;
-                    } else if (i == DatenDownload.DOWNLOAD_REF) {
-                        object[i] = download;
-                    } else if (i != DatenDownload.DOWNLOAD_URL && !DatenDownload.anzeigen(i)) {
-                        // Filmnr und URL immer füllen, egal ob angezeigt
-                        object[i] = "";
-                    } else {
-                        object[i] = download.arr[i];
-                    }
-                }
-                tModel.addRow(object);
+            if (nurAbos && !istAbo) {
+                continue;
             }
+            if (nurDownloads && istAbo) {
+                continue;
+            }
+            if (nurRun && !download.runNotFinished()) {
+                continue;
+            }
+            if (nurFertig && !download.isFinished()) {
+                continue;
+            }
+            object = new Object[DatenDownload.MAX_ELEM];
+            for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
+                if (i == DatenDownload.DOWNLOAD_NR) {
+                    object[i] = download.nr;
+                } else if (i == DatenDownload.DOWNLOAD_FILM_NR) {
+                    if (download.film != null) {
+                        object[i] = download.film.nr;
+                    } else {
+                        object[i] = 0;
+                    }
+                } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART
+                        || i == DatenDownload.DOWNLOAD_UNTERBROCHEN
+                        || i == DatenDownload.DOWNLOAD_SPOTLIGHT
+                        || i == DatenDownload.DOWNLOAD_INFODATEI
+                        || i == DatenDownload.DOWNLOAD_SUBTITLE
+                        || i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT
+                        || i == DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER) {
+                    object[i] = "";
+                } else if (i == DatenDownload.DOWNLOAD_DATUM) {
+                    object[i] = download.datumFilm;
+                } else if (i == DatenDownload.DOWNLOAD_RESTZEIT) {
+                    object[i] = download.getTextRestzeit();
+                } else if (i == DatenDownload.DOWNLOAD_BANDBREITE) {
+                    object[i] = download.getTextBandbreite();
+                } else if (i == DatenDownload.DOWNLOAD_PROGRESS) {
+                    object[i] = setProgress(download);
+                } else if (i == DatenDownload.DOWNLOAD_GROESSE) {
+                    object[i] = download.mVFilmSize;
+                } else if (i == DatenDownload.DOWNLOAD_REF) {
+                    object[i] = download;
+                } else if (i != DatenDownload.DOWNLOAD_URL && !DatenDownload.anzeigen(i)) {
+                    // Filmnr und URL immer füllen, egal ob angezeigt
+                    object[i] = "";
+                } else {
+                    object[i] = download.arr[i];
+                }
+            }
+            tModel.addRow(object);
         }
     }
 
@@ -352,15 +360,18 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     public synchronized void abosSuchen(JFrame parent) {
         // in der Filmliste nach passenden Filmen suchen und 
         // in die Liste der Downloads eintragen
+        final HashSet<String> listeUrls = new HashSet<>();
         boolean gefunden = false;
         DatenFilm film;
         DatenAbo abo;
         Iterator<DatenFilm> itFilm;
         // prüfen ob in "alle Filme" oder nur "nach Blacklist" gesucht werden soll
         boolean checkWithBlackList = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO));
+        DatenPset pSet_ = Daten.listePset.getPsetAbo("");
         itFilm = Daten.listeFilme.iterator();
         while (itFilm.hasNext()) {
             film = itFilm.next();
+
             abo = Daten.listeAbo.getAboFuerFilm_schnell(film, true /*auch die Länge überprüfen*/);
             if (abo == null) {
                 // dann gibts dafür kein Abo
@@ -379,15 +390,22 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 // ist schon mal geladen worden
                 continue;
             }
-            DatenPset pSet = Daten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET]);
+            DatenPset pSet = abo.arr[DatenAbo.ABO_PSET].isEmpty() ? pSet_ : Daten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET]);
+            //DatenPset pSet = Daten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET]);
             if (pSet != null) {
+
                 // mit der tatsächlichen URL prüfen, ob die URL schon in der Downloadliste ist
                 String urlDownload = film.getUrlFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG]);
-                if (checkUrlExists(urlDownload)) {
-                    // haben wir schon in der Downloadliste
+                if (listeUrls.contains(urlDownload)) {
                     continue;
                 }
-                //diesen Film in die Downloadliste eintragen
+                listeUrls.add(urlDownload);
+//                if (checkUrlExists(urlDownload)) {
+//                    // haben wir schon in der Downloadliste
+//                    continue;
+//                }
+
+//diesen Film in die Downloadliste eintragen
                 abo.arr[DatenAbo.ABO_DOWN_DATUM] = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
                 if (!abo.arr[DatenAbo.ABO_PSET].equals(pSet.arr[DatenPset.PROGRAMMSET_NAME])) {
                     // nur den Namen anpassen, falls geändert
@@ -405,6 +423,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         if (gefunden) {
             listeNummerieren();
         }
+        listeUrls.clear();
     }
 
     public synchronized void listeNummerieren() {
@@ -733,13 +752,13 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return host;
     }
 
-    private synchronized boolean checkUrlExists(String url) {
-        //prüfen, ob der Film schon in der Liste ist, (manche Filme sind in verschiedenen Themen)
-        for (DatenDownload download : this) {
-            if (download.arr[DatenDownload.DOWNLOAD_URL].equals(url)) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    private synchronized boolean checkUrlExists(String url) {
+//        //prüfen, ob der Film schon in der Liste ist, (manche Filme sind in verschiedenen Themen)
+//        for (DatenDownload download : this) {
+//            if (download.arr[DatenDownload.DOWNLOAD_URL].equals(url)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 }
