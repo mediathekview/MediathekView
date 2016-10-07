@@ -244,12 +244,27 @@ public final class DatenDownload extends MVData<DatenDownload> {
         Listener.notify(Listener.EREIGNIS_RESET_INTERRUPT, DatenDownload.class.getName());
     }
 
+    public boolean notStarted() {
+        return (start == null);
+    }
+
+    public boolean isWaiting() {
+        return (start != null) && (start.status == Start.STATUS_INIT);
+    }
+
     public boolean isFinished() {
         return (start != null) && (start.status == Start.STATUS_FERTIG);
     }
 
     public boolean runNotFinished() {
         if (start != null && start.status < Start.STATUS_FERTIG) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean running() {
+        if (start != null && start.status == Start.STATUS_RUN) {
             return true;
         }
         return false;
