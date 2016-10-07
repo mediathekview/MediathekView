@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.8" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <NonVisualComponents>
+    <Container class="javax.swing.JPanel" name="jPanel2">
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <EmptySpace min="0" pref="100" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <EmptySpace min="0" pref="100" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+    </Container>
+  </NonVisualComponents>
   <Properties>
     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
       <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
@@ -76,18 +93,13 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jPanelChart" alignment="0" max="32767" attributes="0"/>
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jSliderBandwidth" pref="0" max="32767" attributes="0"/>
                               <Component id="cbDisplayCategories" alignment="0" max="32767" attributes="0"/>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="45" max="32767" attributes="0"/>
-                                  <Component id="jSpinnerAnzahlDownloads" min="-2" max="-2" attributes="0"/>
-                              </Group>
                               <Component id="txtBandwidth" alignment="1" max="32767" attributes="0"/>
+                              <Component id="cbView" alignment="0" max="32767" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="lblAnzeigen" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -95,10 +107,15 @@
                                   </Group>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
-                              <Component id="cbView" alignment="0" max="32767" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace pref="25" max="32767" attributes="0"/>
+                                  <Component id="jSpinnerAnzahlDownloads" min="-2" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
+                      <Component id="jPanelChart" alignment="0" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
@@ -110,7 +127,7 @@
                           <Component id="cbDisplayCategories" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="cbView" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="165" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="2" attributes="0">
                               <Component id="jLabel3" alignment="2" min="-2" max="-2" attributes="0"/>
                               <Component id="jSpinnerAnzahlDownloads" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -121,8 +138,8 @@
                           <Component id="jSliderBandwidth" min="-2" pref="16" max="-2" attributes="0"/>
                           <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                           <Component id="txtBandwidth" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="16" max="32767" attributes="0"/>
-                          <Component id="jPanelChart" min="-2" pref="170" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="jPanelChart" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -162,11 +179,6 @@
                   </Properties>
                 </Component>
                 <Container class="javax.swing.JPanel" name="jPanelChart">
-                  <Properties>
-                    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                      <Dimension value="[100, 250]"/>
-                    </Property>
-                  </Properties>
 
                   <Layout>
                     <DimensionLayout dim="0">
@@ -176,7 +188,7 @@
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="150" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                   </Layout>
