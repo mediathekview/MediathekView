@@ -63,13 +63,21 @@ public class GuiDownloads extends PanelVorlage {
     private long lastUpdate = 0;
     private boolean onlyAbos = false;
     private boolean onlyDownloads = false;
+    private boolean onlyWaiting = false;
+    private boolean onlyNotStarted = false;
+    private boolean onlyStarted = false;
     private boolean onlyFinished = false;
     private boolean onlyRun = false;
     private static final String COMBO_DISPLAY_ALL = "alles";
     private static final String COMBO_DISPLAY_DOWNLOADS_ONLY = "nur Downloads";
     private static final String COMBO_DISPLAY_ABOS_ONLY = "nur Abos";
-    private static final String COMBO_DISPLAY_RUN_ONLY = "nur laufende";
-    private static final String COMBO_DISPLAY_FINISHED_ONLY = "nur abgeschlossene";
+
+    private static final String COMBO_VIEW_ALL = "alles ";
+    private static final String COMBO_VIEW_NOT_STARTED = "nicht gestartet";
+    private static final String COMBO_VIEW_STARTED = "gestartet";
+    private static final String COMBO_VIEW_WAITING = "nur wartende";
+    private static final String COMBO_VIEW_RUN_ONLY = "nur laufende";
+    private static final String COMBO_VIEW_FINISHED_ONLY = "nur abgeschlossene";
     private final ToolBar toolBar;
     private boolean loadFilmlist = false;
     private double counter = 0; // double sonst "läuft" die Chart nicht
@@ -115,6 +123,9 @@ public class GuiDownloads extends PanelVorlage {
         addListenerMediathekView();
         cbDisplayCategories.setModel(getDisplaySelectionModel());
         cbDisplayCategories.addActionListener(new DisplayCategoryListener());
+
+        cbView.setModel(getViewModel());
+        cbView.addActionListener(new DisplayCategoryListener());
 
         toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_DOWNLOADS);
         jPanelToolBar.setLayout(new BorderLayout());
@@ -525,7 +536,7 @@ public class GuiDownloads extends PanelVorlage {
         stopBeob = true;
         tabelle.getSpalten();
 
-        Daten.listeDownloads.getModel(model, onlyAbos, onlyDownloads, onlyRun, onlyFinished);
+        Daten.listeDownloads.getModel(model, onlyAbos, onlyDownloads, onlyNotStarted, onlyStarted, onlyWaiting, onlyRun, onlyFinished);
         tabelle.setSpalten();
         stopBeob = false;
         updateFilmData();
@@ -914,7 +925,11 @@ public class GuiDownloads extends PanelVorlage {
      * @return The selection model.
      */
     private DefaultComboBoxModel<String> getDisplaySelectionModel() {
-        return new DefaultComboBoxModel<>(new String[]{COMBO_DISPLAY_ALL, COMBO_DISPLAY_DOWNLOADS_ONLY, COMBO_DISPLAY_ABOS_ONLY, COMBO_DISPLAY_RUN_ONLY, COMBO_DISPLAY_FINISHED_ONLY});
+        return new DefaultComboBoxModel<>(new String[]{COMBO_DISPLAY_ALL, COMBO_DISPLAY_DOWNLOADS_ONLY, COMBO_DISPLAY_ABOS_ONLY});
+    }
+
+    private DefaultComboBoxModel<String> getViewModel() {
+        return new DefaultComboBoxModel<>(new String[]{COMBO_VIEW_ALL, COMBO_VIEW_NOT_STARTED, COMBO_VIEW_STARTED, COMBO_VIEW_WAITING, COMBO_VIEW_RUN_ONLY, COMBO_VIEW_FINISHED_ONLY});
     }
 
     private void updateFilmData() {
@@ -968,6 +983,7 @@ public class GuiDownloads extends PanelVorlage {
         jSliderBandwidth = new javax.swing.JSlider();
         txtBandwidth = new javax.swing.JTextField();
         jPanelChart = new javax.swing.JPanel();
+        cbView = new javax.swing.JComboBox<>();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
@@ -1009,27 +1025,30 @@ public class GuiDownloads extends PanelVorlage {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
+        cbView.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout jPanelFilterExternLayout = new javax.swing.GroupLayout(jPanelFilterExtern);
         jPanelFilterExtern.setLayout(jPanelFilterExternLayout);
         jPanelFilterExternLayout.setHorizontalGroup(
             jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanelChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanelFilterExternLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSliderBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(cbDisplayCategories, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanelFilterExternLayout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+                        .addComponent(jSpinnerAnzahlDownloads, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtBandwidth, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanelFilterExternLayout.createSequentialGroup()
                         .addGroup(jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblAnzeigen)
                             .addComponent(lblBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(cbDisplayCategories, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanelFilterExternLayout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jSpinnerAnzahlDownloads, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtBandwidth, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(cbView, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
-            .addComponent(jPanelChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanelFilterExternLayout.setVerticalGroup(
             jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1039,6 +1058,8 @@ public class GuiDownloads extends PanelVorlage {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbDisplayCategories, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addComponent(cbView, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(165, 165, 165)
                 .addGroup(jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jSpinnerAnzahlDownloads, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1048,7 +1069,7 @@ public class GuiDownloads extends PanelVorlage {
                 .addComponent(jSliderBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(txtBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 82, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                 .addComponent(jPanelChart, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -1098,6 +1119,7 @@ public class GuiDownloads extends PanelVorlage {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> cbDisplayCategories;
+    private javax.swing.JComboBox<String> cbView;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelBeschreibung;
@@ -1419,26 +1441,60 @@ public class GuiDownloads extends PanelVorlage {
             JComboBox<String> box = (JComboBox<String>) e.getSource();
             final String action = (String) box.getSelectedItem();
 
-            onlyAbos = false;
-            onlyDownloads = false;
-            onlyFinished = false;
-            onlyRun = false;
-
             switch (action) {
                 case COMBO_DISPLAY_ALL:
+                    onlyAbos = false;
+                    onlyDownloads = false;
                     break;
-
                 case COMBO_DISPLAY_DOWNLOADS_ONLY:
+                    onlyAbos = false;
                     onlyDownloads = true;
                     break;
-
                 case COMBO_DISPLAY_ABOS_ONLY:
                     onlyAbos = true;
+                    onlyDownloads = false;
                     break;
-                case COMBO_DISPLAY_FINISHED_ONLY:
+
+                case COMBO_VIEW_ALL:
+                    onlyNotStarted = false;
+                    onlyStarted = false;
+                    onlyWaiting = false;
+                    onlyFinished = false;
+                    onlyRun = false;
+                    break;
+                case COMBO_VIEW_NOT_STARTED:
+                    onlyNotStarted = true;
+                    onlyStarted = false;
+                    onlyWaiting = false;
+                    onlyFinished = false;
+                    onlyRun = false;
+                    break;
+                case COMBO_VIEW_STARTED:
+                    onlyNotStarted = false;
+                    onlyStarted = true;
+                    onlyWaiting = false;
+                    onlyFinished = false;
+                    onlyRun = false;
+                    break;
+                case COMBO_VIEW_WAITING:
+                    onlyNotStarted = false;
+                    onlyStarted = false;
+                    onlyWaiting = true;
+                    onlyFinished = false;
+                    onlyRun = false;
+                    break;
+                case COMBO_VIEW_FINISHED_ONLY:
+                    onlyNotStarted = false;
+                    onlyStarted = false;
+                    onlyWaiting = false;
                     onlyFinished = true;
+                    onlyRun = false;
                     break;
-                case COMBO_DISPLAY_RUN_ONLY:
+                case COMBO_VIEW_RUN_ONLY:
+                    onlyNotStarted = false;
+                    onlyStarted = false;
+                    onlyWaiting = false;
+                    onlyFinished = false;
                     onlyRun = true;
                     break;
             }
@@ -1446,4 +1502,5 @@ public class GuiDownloads extends PanelVorlage {
             reloadTable();
         }
     }
+
 }

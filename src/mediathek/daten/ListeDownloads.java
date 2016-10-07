@@ -247,26 +247,40 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return null;
     }
 
-    public synchronized void getModel(TModelDownload tModel, boolean nurAbos, boolean nurDownloads, boolean nurRun, boolean nurFertig) {
+    public synchronized void getModel(TModelDownload tModel, boolean onlyAbos, boolean onlyDownloads,
+            boolean onlyNotStarted, boolean onlyStarted, boolean onlyWaiting, boolean onlyRun, boolean onlyFinished) {
         Object[] object;
         tModel.setRowCount(0);
         for (DatenDownload download : this) {
             if (download.istZurueckgestellt()) {
                 continue;
             }
+
             boolean istAbo = download.istAbo();
-            if (nurAbos && !istAbo) {
+            if (onlyAbos && !istAbo) {
                 continue;
             }
-            if (nurDownloads && istAbo) {
+            if (onlyDownloads && istAbo) {
                 continue;
             }
-            if (nurRun && !download.runNotFinished()) {
+
+            if (onlyNotStarted && !download.notStarted()) {
                 continue;
             }
-            if (nurFertig && !download.isFinished()) {
+            if (onlyStarted && download.notStarted()) {
                 continue;
             }
+
+            if (onlyWaiting && !download.isWaiting()) {
+                continue;
+            }
+            if (onlyRun && !download.running()) {
+                continue;
+            }
+            if (onlyFinished && !download.isFinished()) {
+                continue;
+            }
+
             object = new Object[DatenDownload.MAX_ELEM];
             for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
                 if (i == DatenDownload.DOWNLOAD_NR) {
