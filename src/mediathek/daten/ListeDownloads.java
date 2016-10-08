@@ -143,7 +143,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         if (gefunden) {
 //            Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         }
-        this.parallelStream().forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString());
+        this.stream().forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString());
     }
 
     public synchronized int nochNichtFertigeDownloads() {
@@ -375,6 +375,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // in der Filmliste nach passenden Filmen suchen und 
         // in die Liste der Downloads eintragen
         final HashSet<String> listeUrls = new HashSet<>();
+        this.stream().forEach((download) -> {
+            // mit den bereits enthaltenen URL füllen
+            listeUrls.add(download.arr[DatenDownload.DOWNLOAD_URL]);
+        });
+
         boolean gefunden = false;
         DatenFilm film;
         DatenAbo abo;
