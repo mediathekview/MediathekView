@@ -49,7 +49,9 @@ import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
+import static mediathek.tool.MVTable.*;
 import mediathek.tool.*;
+import static mediathek.tool.MVTable.*;
 
 public class GuiFilme extends PanelVorlage {
 
@@ -975,6 +977,14 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jComboBoxFilterSender().setSelectedItem(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SENDER, filter));
         mVFilter.get_jComboBoxFilterThema().setSelectedItem(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA, filter));
 
+        SortKey sk = sortKeyLesen(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SORT_KEY, filter),
+                MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SORT_KEY_UPDOWN, filter));
+        if (sk != null) {
+            LinkedList<SortKey> lst = new LinkedList<>();
+            lst.add(sk);
+            tabelle.getRowSorter().setSortKeys(lst);
+        }
+
         stopBeob = false;
 
         if (geändert) {
@@ -1004,6 +1014,9 @@ public class GuiFilme extends PanelVorlage {
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER, MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER.initValue, filter);
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER_MIN, MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER_MIN.initValue, filter);
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__BLACKLIST_ON, Boolean.FALSE.toString(), filter);
+
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SORT_KEY, "", filter);
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SORT_KEY_UPDOWN, "", filter);
     }
 
     private void saveFilterProfile(int filter) {
@@ -1024,6 +1037,22 @@ public class GuiFilme extends PanelVorlage {
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TAGE, String.valueOf(mVFilter.get_jSliderTage().getValue()), filter);
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER, String.valueOf(mVFilter.get_jSliderMinuten().getValue()), filter);
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER_MIN, String.valueOf(mVFilter.get_rbMin().isSelected()), filter);
+
+        java.util.List<? extends RowSorter.SortKey> listeSortKeys = null;
+        listeSortKeys = tabelle.getRowSorter().getSortKeys();
+        String key = "";
+        String upDown = "";
+
+        if (listeSortKeys != null) {
+            if (!listeSortKeys.isEmpty()) {
+                SortKey sk = listeSortKeys.get(0);
+                key = String.valueOf(sk.getColumn());
+                upDown = sk.getSortOrder().equals(SortOrder.ASCENDING) ? SORT_ASCENDING : SORT_DESCENDING;
+            }
+        }
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SORT_KEY, key, filter);
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SORT_KEY_UPDOWN, upDown, filter);
+
     }
 
     // ####################################
