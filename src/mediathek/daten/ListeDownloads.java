@@ -424,7 +424,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 //                    continue;
 //                }
 
-//diesen Film in die Downloadliste eintragen
+                //diesen Film in die Downloadliste eintragen
                 abo.arr[DatenAbo.ABO_DOWN_DATUM] = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
                 if (!abo.arr[DatenAbo.ABO_PSET].equals(pSet.arr[DatenPset.PROGRAMMSET_NAME])) {
                     // nur den Namen anpassen, falls geändert

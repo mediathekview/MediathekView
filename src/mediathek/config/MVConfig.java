@@ -61,6 +61,20 @@ public class MVConfig {
     public enum Configs {
         //============================================
         //Programm-Configs, änderbar nur im Konfig-File
+//============================================
+        //Programm-Configs, änderbar nur im Konfig-File
+//============================================
+        //Programm-Configs, änderbar nur im Konfig-File
+//============================================
+        //Programm-Configs, änderbar nur im Konfig-File
+//============================================
+        //Programm-Configs, änderbar nur im Konfig-File
+//============================================
+        //Programm-Configs, änderbar nur im Konfig-File
+//============================================
+        //Programm-Configs, änderbar nur im Konfig-File
+//============================================
+        //Programm-Configs, änderbar nur im Konfig-File
         SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN("__system-parameter__download-timeout-sekunden_250__", "250"),//250 Sekunden, wie bei Firefox
         SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART("__system-parameter__download-max-restart_5__", "5"),// max. Startversuche für fehlgeschlagene Downloads (insgesamt: restart * restart_http Versuche)
         SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP("__system-parameter__download-max-restart-http_10__", "10"),// max. Startversuche für fehlgeschlagene Downloads, direkt beim Download
@@ -178,6 +192,8 @@ public class MVConfig {
         SYSTEM_FILTER_PROFILE__TITEL("filter-titel"),
         SYSTEM_FILTER_PROFILE__THEMA_TITEL("filter-themaTitel"),
         SYSTEM_FILTER_PROFILE__TT("filter-TT-oder-irgendwo", Boolean.TRUE.toString()),
+        SYSTEM_FILTER_PROFILE__SORT_KEY("filter-sortkey"),
+        SYSTEM_FILTER_PROFILE__SORT_KEY_UPDOWN("filter-sortkey-updown"),
         SYSTEM_FILTER_PROFILE__ANZAHL_FILTER("filter-anzahl"),
         // Programmpfade
         SYSTEM_PFAD_VLC("pfad-vlc", GuiFunktionenProgramme.getMusterPfadVlc()),

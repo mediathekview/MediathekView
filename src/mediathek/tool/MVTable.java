@@ -811,7 +811,7 @@ public final class MVTable extends JTable {
         return true;
     }
 
-    private SortKey sortKeyLesen(String s, String upDown) {
+    public static SortKey sortKeyLesen(String s, String upDown) {
         SortKey sk;
         int sp;
         try {
