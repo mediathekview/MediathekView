@@ -343,11 +343,11 @@ public class GuiFilme extends PanelVorlage {
         tabelle.setDefaultRenderer(Object.class, cellRenderer);
         tabelle.setDefaultRenderer(Datum.class, cellRenderer);
         tabelle.setDefaultRenderer(Integer.class, cellRenderer);
-
+        tabelle.lineBreak = MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK);
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenFilm.COLUMN_NAMES, DatenFilm.spaltenAnzeigen,
                 new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_DATUM_LONG, DatenFilm.FILM_REF},
                 new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN},
-                true /*Icon*/));
+                true /*Icon*/, MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK));
 
         jCheckBoxProgamme.setIcon(Icons.ICON_CHECKBOX_CLOSE);
         jCheckBoxProgamme.addActionListener(e -> {
@@ -1885,15 +1885,13 @@ public class GuiFilme extends PanelVorlage {
                                 //gibts schon, dann löschen
                                 Daten.listeAbo.aboLoeschen(datenAbo);
                             } else //neues Abo anlegen
-                            {
-                                if (mitTitel) {
+                             if (mitTitel) {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], film.arr[DatenFilm.FILM_TITEL]);
                                 } else {
                                     Daten.listeAbo.addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], "");
                                 }
-                            }
                         });
                         stopBeob = false;
                     }

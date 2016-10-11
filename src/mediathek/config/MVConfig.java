@@ -61,20 +61,6 @@ public class MVConfig {
     public enum Configs {
         //============================================
         //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
-//============================================
-        //Programm-Configs, änderbar nur im Konfig-File
         SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN("__system-parameter__download-timeout-sekunden_250__", "250"),//250 Sekunden, wie bei Firefox
         SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART("__system-parameter__download-max-restart_5__", "5"),// max. Startversuche für fehlgeschlagene Downloads (insgesamt: restart * restart_http Versuche)
         SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP("__system-parameter__download-max-restart-http_10__", "10"),// max. Startversuche für fehlgeschlagene Downloads, direkt beim Download
@@ -156,6 +142,9 @@ public class MVConfig {
         SYSTEM_TAB_DOWNLOAD_ICON_KLEIN("system-tab-download-icon-klein", Boolean.TRUE.toString()),
         SYSTEM_TAB_DOWNLOAD_FILTER_VIS("system-tab-download-filter-vis", Boolean.TRUE.toString()),
         SYSTEM_TAB_ABO_ICON_KLEIN("system-tab-abo-icon-klein", Boolean.TRUE.toString()),
+        SYSTEM_TAB_FILME_LINEBREAK("system-tab-filme-linebreak", Boolean.FALSE.toString()),
+        SYSTEM_TAB_DOWNLOAD_LINEBREAK("system-tab-download-linebreak", Boolean.FALSE.toString()),
+        SYSTEM_TAB_ABO_LINEBREAK("system-tab-abo-linebreak", Boolean.FALSE.toString()),
         // Extrafenster
         SYSTEM_FENSTER_DOWNLOAD("Fenster-Download"),
         SYSTEM_GROESSE_DOWNLOAD("Groesse-Download"),

@@ -19,10 +19,12 @@
  */
 package mediathek.tool;
 
+import com.jidesoft.utils.SystemInfo;
 import java.awt.Component;
 import java.awt.Font;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import mSearch.tool.Log;
@@ -59,15 +61,54 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
         super.getTableCellRendererComponent(
                 table, value, isSelected, hasFocus, row, column);
         try {
-            if (isSelected) {
-                setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
-            } else {
-                setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
-            }
             int r = table.convertRowIndexToModel(row);
             int c = table.convertColumnIndexToModel(column);
             DatenAbo abo = Daten.listeAbo.getAboNr(r);
             boolean eingeschaltet = abo.aboIstEingeschaltet();
+
+            if (((MVTable) table).lineBreak) {
+                JTextArea textArea;
+                switch (c) {
+                    case DatenAbo.ABO_IRGENDWO:
+                    case DatenAbo.ABO_NAME:
+                    case DatenAbo.ABO_THEMA:
+                    case DatenAbo.ABO_THEMA_TITEL:
+                    case DatenAbo.ABO_TITEL:
+                    case DatenAbo.ABO_ZIELPFAD:
+                        textArea = new JTextArea();
+                        textArea.setLineWrap(true);
+                        textArea.setWrapStyleWord(true);
+                        textArea.setText(value.toString());
+                        textArea.setForeground(getForeground());
+                        textArea.setBackground(getBackground());
+                        if (!SystemInfo.isMacOSX()) {
+                            // On OS X do not change fonts as it violates HIG...
+                            if (isSelected) {
+                                textArea.setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
+                            } else {
+                                textArea.setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
+                            }
+                        }
+                        if (!eingeschaltet) {
+                            setFont(new java.awt.Font("Dialog", Font.ITALIC, getFont().getSize()));
+                            if (isSelected) {
+                                textArea.setBackground(MVColor.ABO_AUSGESCHALTET_SEL.color);
+                            } else {
+                                textArea.setBackground(MVColor.ABO_AUSGESCHALTET.color);
+                            }
+                        }
+                        return textArea;
+                }
+            }
+
+            if (!SystemInfo.isMacOSX()) {
+                // On OS X do not change fonts as it violates HIG...
+                if (isSelected) {
+                    setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
+                } else {
+                    setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
+                }
+            }
             if (c == DatenAbo.ABO_NR) {
                 setHorizontalAlignment(SwingConstants.CENTER);
             }
@@ -75,7 +116,10 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
                 setHorizontalAlignment(SwingConstants.CENTER);
             }
             if (!eingeschaltet) {
-                setFont(new java.awt.Font("Dialog", Font.ITALIC, getFont().getSize()));
+                if (!SystemInfo.isMacOSX()) {
+                    // On OS X do not change fonts as it violates HIG...
+                    setFont(new java.awt.Font("Dialog", Font.ITALIC, getFont().getSize()));
+                }
                 if (isSelected) {
                     setBackground(MVColor.ABO_AUSGESCHALTET_SEL.color);
                 } else {
