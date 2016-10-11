@@ -24,6 +24,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import mediathek.config.MVConfig;
 
 public class BeobTableHeader extends MouseAdapter {
     //rechhte Maustaste in der Tabelle
@@ -35,13 +36,15 @@ public class BeobTableHeader extends MouseAdapter {
     int[] ausblenden;
     int[] button;
     boolean icon = false;
+    MVConfig.Configs configs;
 
-    public BeobTableHeader(MVTable tabelle, String[] columns, boolean[] spalten, int[] aausblenden, int[] bbutton, boolean icon) {
+    public BeobTableHeader(MVTable tabelle, String[] columns, boolean[] spalten, int[] aausblenden, int[] bbutton, boolean icon, MVConfig.Configs configs) {
         this.tabelle = tabelle;
         this.columns = columns;
         this.icon = icon;
         spaltenAnzeigen = spalten;
         this.ausblenden = aausblenden;
+        this.configs = configs;
         button = bbutton;
     }
 
@@ -121,7 +124,18 @@ public class BeobTableHeader extends MouseAdapter {
         }
         //##Trenner##
         jPopupMenu.addSeparator();
+        // Tabellenspalten umbrechen
+        JCheckBoxMenuItem itemBr = new JCheckBoxMenuItem("Zeilen umbrechen");
+        itemBr.setSelected(tabelle.lineBreak);
+        itemBr.addActionListener(e -> {
+            tabelle.lineBreak = itemBr.isSelected();
+            MVConfig.add(configs, Boolean.toString(itemBr.isSelected()));
+            setSpalten();
+        });
+        jPopupMenu.add(itemBr);
+
         //##Trenner##
+        jPopupMenu.addSeparator();
         // Tabellenspalten zurücksetzen
         JMenuItem item1 = new JMenuItem("Spalten zurücksetzen");
         item1.addActionListener(e -> tabelle.resetTabelle());

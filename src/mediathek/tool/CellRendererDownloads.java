@@ -120,18 +120,53 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
 
             final int rowModelIndex = table.convertRowIndexToModel(row);
             final int columnModelIndex = table.convertColumnIndexToModel(column);
-
             DatenDownload datenDownload = (DatenDownload) table.getModel().getValueAt(rowModelIndex, DatenDownload.DOWNLOAD_REF);
-            if (!SystemInfo.isMacOSX()) {
-                if (isSelected) {
-                    // setFont(new java.awt.Font("Dialog", Font.BOLD, getFont().getSize()));
-                    setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
-                } else {
-                    // setFont(getFont());
-                    setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
+
+            if (((MVTable) table).lineBreak) {
+                JTextArea textArea;
+                switch (columnModelIndex) {
+                    case DatenDownload.DOWNLOAD_TITEL:
+                    case DatenDownload.DOWNLOAD_THEMA:
+                    case DatenDownload.DOWNLOAD_URL:
+                    case DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF:
+                    case DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY:
+                    case DatenDownload.DOWNLOAD_FILM_URL:
+                    case DatenDownload.DOWNLOAD_URL_SUBTITLE:
+                    case DatenDownload.DOWNLOAD_ZIEL_DATEINAME:
+                    case DatenDownload.DOWNLOAD_ZIEL_PFAD:
+                    case DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME:
+                    case DatenDownload.DOWNLOAD_ABO:
+                        textArea = new JTextArea();
+                        textArea.setLineWrap(true);
+                        textArea.setWrapStyleWord(true);
+                        textArea.setText(value.toString());
+                        textArea.setForeground(getForeground());
+                        textArea.setBackground(getBackground());
+                        if (columnModelIndex == DatenDownload.DOWNLOAD_ABO) {
+                            handleAboColumn(textArea, datenDownload);
+                        }
+                        setColor(textArea, datenDownload.start, isSelected);
+                        handleGeoBlocking(textArea, datenDownload, isSelected);
+                        if (!SystemInfo.isMacOSX()) {
+                            // On OS X do not change fonts as it violates HIG...
+                            if (isSelected) {
+                                textArea.setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
+                            } else {
+                                textArea.setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
+                            }
+                        }
+                        return textArea;
                 }
             }
 
+            if (!SystemInfo.isMacOSX()) {
+                // On OS X do not change fonts as it violates HIG...
+                if (isSelected) {
+                    setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
+                } else {
+                    setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
+                }
+            }
             switch (columnModelIndex) {
                 case DatenDownload.DOWNLOAD_PROGRESS:
                     setHorizontalAlignment(SwingConstants.CENTER);
@@ -314,7 +349,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
             }
 
             setColor(this, datenDownload.start, isSelected);
-            handleGeoBlocking(datenDownload, isSelected);
+            handleGeoBlocking(this, datenDownload, isSelected);
         } catch (Exception ex) {
             Log.errorLog(758200166, ex);
         }
@@ -389,6 +424,15 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
         }
     }
 
+    private void handleAboColumn(JTextArea a, final DatenDownload datenDownload) {
+        if (!datenDownload.arr[DatenDownload.DOWNLOAD_ABO].equals("")) {
+            a.setForeground(MVColor.DOWNLOAD_IST_ABO.color);
+        } else {
+            a.setForeground(MVColor.DOWNLOAD_IST_DIREKTER_DOWNLOAD.color);
+            a.setText("Download");
+        }
+    }
+
     private void handleAboColumn(final DatenDownload datenDownload) {
         setHorizontalAlignment(SwingConstants.CENTER);
         if (!datenDownload.arr[DatenDownload.DOWNLOAD_ABO].equals("")) {
@@ -399,15 +443,15 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
         }
     }
 
-    private void handleGeoBlocking(final DatenDownload datenDownload, final boolean isSelected) {
+    private void handleGeoBlocking(Component c, final DatenDownload datenDownload, final boolean isSelected) {
         if (datenDownload.start == null
                 && geoMelden
                 && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO].isEmpty()
                 && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO].contains(MVConfig.get(MVConfig.Configs.SYSTEM_GEO_STANDORT))) {
             if (isSelected) {
-                setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND_SEL.color);
+                c.setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND_SEL.color);
             } else {
-                setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND.color);
+                c.setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND.color);
             }
         }
     }

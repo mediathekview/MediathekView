@@ -70,6 +70,7 @@ public final class MVTable extends JTable {
     private boolean[] spaltenAnzeigen;
     private MVConfig.Configs iconAnzeigenStr = null;
     private MVConfig.Configs iconKleinStr = null;
+    public boolean lineBreak = true;
 
     /**
      * Return the type of this MVTable.
@@ -170,6 +171,10 @@ public final class MVTable extends JTable {
         });
     }
 
+    public void setLineBreak(boolean lb) {
+        lineBreak = lb;
+    }
+
     public void invertSelection() {
         ListSelectionModel mdl = getSelectionModel();
         int[] selected = getSelectedRows();
@@ -188,6 +193,13 @@ public final class MVTable extends JTable {
             case FILME:
                 if (spaltenAnzeigen[DatenFilm.FILM_BESCHREIBUNG]) {
                     sizeArea = MVFont.fontSize * 5;
+                } else if (lineBreak) {
+                    sizeArea = MVFont.fontSize * 4;
+                }
+            case DOWNLOADS:
+            case ABOS:
+                if (lineBreak) {
+                    sizeArea = MVFont.fontSize * 4;
                 }
         }
         if (!iconAnzeigen) {

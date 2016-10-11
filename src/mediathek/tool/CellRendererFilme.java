@@ -53,8 +53,6 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
     private static ImageIcon ja_16 = null;
     private static ImageIcon nein_12 = null;
 
-    JTextArea textArea;
-
     public CellRendererFilme(Daten d) {
         ja_16 = Icons.ICON_TABELLE_EIN;
         nein_12 = Icons.ICON_TABELLE_AUS;
@@ -93,32 +91,43 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
 
             final int rowModelIndex = table.convertRowIndexToModel(row);
             final int columnModelIndex = table.convertColumnIndexToModel(column);
-
             DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF);
             DatenDownload datenDownload = Daten.listeDownloadsButton.getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL]);
 
-            /*
-             * On OS X do not change fonts as it violates HIG...
-             */
+            if (((MVTable) table).lineBreak) {
+                JTextArea textArea;
+                switch (columnModelIndex) {
+                    case DatenFilm.FILM_BESCHREIBUNG:
+                    case DatenFilm.FILM_THEMA:
+                    case DatenFilm.FILM_TITEL:
+                    case DatenFilm.FILM_URL:
+                        textArea = new JTextArea();
+                        textArea.setLineWrap(true);
+                        textArea.setWrapStyleWord(true);
+                        textArea.setText(value.toString());
+                        textArea.setForeground(getForeground());
+                        textArea.setBackground(getBackground());
+                        if (!SystemInfo.isMacOSX()) {
+                            // On OS X do not change fonts as it violates HIG...
+                            if (isSelected) {
+                                textArea.setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
+                            } else {
+                                textArea.setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
+                            }
+                        }
+                        setColor(textArea, datenFilm, datenDownload, isSelected);
+                        return textArea;
+                }
+            }
+
             if (!SystemInfo.isMacOSX()) {
+                // On OS X do not change fonts as it violates HIG...
                 if (isSelected) {
                     setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
                 } else {
                     setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
                 }
             }
-
-            if (columnModelIndex == DatenFilm.FILM_BESCHREIBUNG) {
-                textArea = new JTextArea();
-                textArea.setLineWrap(true);
-                textArea.setWrapStyleWord(true);
-                textArea.setText(value.toString());
-                textArea.setForeground(getForeground());
-                textArea.setBackground(getBackground());
-                setColor(textArea, datenFilm, datenDownload, isSelected);
-                return textArea;
-            }
-
             switch (columnModelIndex) {
                 case DatenFilm.FILM_NR:
                 case DatenFilm.FILM_DATUM:
@@ -170,40 +179,6 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                     break;
             }
             setColor(this, datenFilm, datenDownload, isSelected);
-//            boolean live = datenFilm.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE);
-//            boolean start = false;
-            // Farben setzen
-//            if (datenDownload != null) {
-//                // gestarteter Film
-//                if (datenDownload.start != null) {
-//                    start = true;
-//                    setColor(this, datenDownload.start, isSelected);
-//                }
-//            }
-//            if (!start) {
-//                if (live) {
-//                    // bei livestreams keine History anzeigen
-//                    setForeground(MVColor.FILM_LIVESTREAM.color);
-//                } else if (history.urlPruefen(datenFilm.getUrlHistory())) {
-//                    if (!isSelected) {
-//                        setBackground(MVColor.FILM_HISTORY.color);
-//                    }
-//                } else if (datenFilm.isNew()) {
-//                    setForeground(MVColor.FILM_NEU.color);
-//                }
-//            }
-//            if (!start && geoMelden) {
-//                if (!datenFilm.arr[DatenFilm.FILM_GEO].isEmpty()) {
-//                    if (!datenFilm.arr[DatenFilm.FILM_GEO].contains(MVConfig.get(MVConfig.Configs.SYSTEM_GEO_STANDORT))) {
-//                        //setForeground(GuiKonstanten.FARBE_FILM_GEOBLOCK_FORGROUND);
-//                        if (isSelected) {
-//                            setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND_SEL.color);
-//                        } else {
-//                            setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND.color);
-//                        }
-//                    }
-//                }
-//            }
         } catch (Exception ex) {
             Log.errorLog(630098552, ex);
         }
