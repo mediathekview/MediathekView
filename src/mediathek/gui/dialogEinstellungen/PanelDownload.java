@@ -87,7 +87,8 @@ public class PanelDownload extends PanelVorlage {
 
     private void setSliderBandwith() {
         stopBeob = true;
-        MVBandwidthMonitorLWin.setSliderBandwith(jSliderBandbreite, jLabelBandwidth, null);
+        MVBandwidthMonitorLWin.setSliderBandwith(jSliderBandbreite);
+        MVBandwidthMonitorLWin.setTextBandwith("", jLabelBandwidth, null);
         stopBeob = false;
     }
 

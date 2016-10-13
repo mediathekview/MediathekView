@@ -95,7 +95,7 @@ public class MVConfig {
         SYSTEM_GROESSE_GUI("Groesse"),
         SYSTEM_GROESSE_EINSTELLUNGEN("Groesse-Einstellungen"),
         SYSTEM_GROESSE_INFODIALOG("Groesse-Infodialog"),
-        SYSTEM_DIVIDER_INFODIALOG("Divider-Infodialog"),
+//        SYSTEM_DIVIDER_INFODIALOG("Divider-Infodialog"),
         SYSTEM_FENSTER_MAX("programmfenster-maximieren"),
         SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN("system-panel-videoplayer-anzeigen"),
         SYSTEM_PANEL_MELDUNGEN_ANZEIGEN("system-panel-meldungen-anzeigen"),
@@ -108,7 +108,7 @@ public class MVConfig {
         SYSTEM_FILM_INFO_TOP("system-film-info-top", Boolean.TRUE.toString()), //immer onTop anzeigen
         SYSTEM_FILM_INFO_DECORATED("system-film-info-border", Boolean.TRUE.toString()),
         SYSTEM_DOWNLOAD_INFO_TOP("system-download-info-top", Boolean.TRUE.toString()), //immer onTop anzeigen
-        SYSTEM_DOWNLOAD_INFO_DECORATED("system-download-info-border", Boolean.TRUE.toString()),
+        SYSTEM_DOWNLOAD_INFO_DECORATED("system-download-info-border", Boolean.FALSE.toString()),
         SYSTEM_EIGENSCHAFTEN_TABELLE_FILME("Eigenschaften-Tabellen-Filme"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS("Eigenschaften-Tabellen-Downloads"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS("Eigenschaften-Tabellen-Abos"),
