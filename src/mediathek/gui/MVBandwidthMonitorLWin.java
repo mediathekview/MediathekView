@@ -35,9 +35,7 @@ import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.MVBandwidthTokenBucket;
-import mediathek.daten.DownloadInfos;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.MVFilmSize;
 
 public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
 
@@ -111,63 +109,26 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
         jPanelChart.setLayout(new BorderLayout(0, 0));
         jPanelChart.add(chart, BorderLayout.CENTER);
 
-        // Slider zum Einstellen der Bandbreite
-        Listener.addListener(new Listener(Listener.EREIGNIS_BANDBREITE, MVBandwidthMonitorLWin.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setSlider();
-            }
-        });
         Listener.addListener(new Listener(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitorLWin.class.getSimpleName()) {
             @Override
             public void ping() {
                 setVisibility();
             }
         });
-        jEditorPaneInfo.setText("");
-        jEditorPaneInfo.setEditable(false);
-        jEditorPaneInfo.setFocusable(false);
-        jEditorPaneInfo.setContentType("text/html");
-        jSliderBandwidth.setMinimum(5); //50 kByte/s
-        jSliderBandwidth.setMaximum(100); //1_000 kByte/s
-        jSliderBandwidth.setToolTipText("");
-        setSlider();
-        jSliderBandwidth.addChangeListener(e -> {
-            if (stopBeob) {
-                return;
-            }
-            int b = jSliderBandwidth.getValue() * 10;
-            jLabelBandwidth.setText(b + " kByte/s");
-            MVConfig.add(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
-            Listener.notify(Listener.EREIGNIS_BANDBREITE, MVBandwidthMonitorLWin.class.getName());
-        });
 
         jDialog.setContentPane(this);
 
-        jSplitPane1.setDividerSize(15);
-        jSplitPane1.setResizeWeight(1.0d);
         // size
         jPanelChart.setMinimumSize(new Dimension());
-        jPanelInfo.setMinimumSize(new Dimension());
-        if (GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_INFODIALOG, jDialog, parent)) {
-            try {
-                final double divider = Double.parseDouble(MVConfig.get(MVConfig.Configs.SYSTEM_DIVIDER_INFODIALOG));
-                addWL(divider);
-            } catch (Exception ignored) {
-                addWL(0.5);
-            }
-        } else {
+        if (!GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_INFODIALOG, jDialog, parent)) {
             // erster Programmstart
             final Dimension dim = jDialog.getSize();
             dim.height = 250;
-            dim.width = 300;
+            dim.width = 400;
             jDialog.setSize(dim);
-            addWL(0.5);
         }
         BeobMaus bom = new BeobMaus();
         chart.addMouseListener(bom);
-        jPanelInfo.addMouseListener(bom);
-        jEditorPaneInfo.addMouseListener(bom);
 
         mouseDownCompCoords = null;
         chart.addMouseListener(new MouseListener() {
@@ -215,82 +176,11 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
         setVisibility();
     }
 
-    private void addWL(final double divider) {
-        jDialog.addWindowListener(new WindowListener() {
-            boolean done = false;
-
-            @Override
-            public void windowOpened(WindowEvent e) {
-            }
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-                // nur beim ersten Start
-                if (done) {
-                    return;
-                }
-                done = true;
-                // erst wenn das Programm geladen ist
-                if (divider < 0 || divider > 1) {
-                    // für den Versionswechsel
-                    jSplitPane1.setDividerLocation(0.5);
-                } else {
-                    jSplitPane1.setDividerLocation(divider);
-                }
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-            }
-        });
-    }
-
     public JDialog getDialog() {
         return jDialog;
     }
 
-    public void getDividerLocation() {
-        jPanelChart.setMinimumSize(new Dimension());
-        jPanelInfo.setMinimumSize(new Dimension()); // nur dann ist der Divider zwischen 1...MAX
-        final double MIN = jSplitPane1.getMinimumDividerLocation(); // 1
-        final double MAX = jSplitPane1.getMaximumDividerLocation(); // MAX
-        final double akt = jSplitPane1.getDividerLocation();        // akt Pos zwischen 1 .... MAX
-
-        double divider = (akt - MIN) / (MAX - MIN);
-        if (divider < 0.05) {
-            divider = 0.0;
-        } else if (divider > 0.95) {
-            divider = 1.0;
-        }
-
-        MVConfig.add(MVConfig.Configs.SYSTEM_DIVIDER_INFODIALOG, String.valueOf(divider));
-
-    }
-
-    private void setSlider() {
-        stopBeob = true;
-        setSliderBandwith(jSliderBandwidth, jLabelBandwidth, null);
-        stopBeob = false;
-
-    }
-
-    public static String setSliderBandwith(JSlider slider, JLabel label, JTextField txt) {
+    public static void setSliderBandwith(JSlider slider) {
         int bandbreiteKByte;
         String ret;
         try {
@@ -300,28 +190,9 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
             MVConfig.add(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE, MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE + "");
         }
         slider.setValue(bandbreiteKByte / 10);
-
-        ret = getTextBandwith();
-        if (label != null) {
-            label.setText(ret);
-            if (bandbreiteKByte > MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE) {
-                label.setForeground(Color.red);
-            } else {
-                label.setForeground(Color.black);
-            }
-        }
-        if (txt != null) {
-            txt.setText(ret);
-            if (bandbreiteKByte > MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE) {
-                txt.setForeground(Color.red);
-            } else {
-                txt.setForeground(Color.black);
-            }
-        }
-        return ret;
     }
 
-    public static String getTextBandwith() {
+    public static String setTextBandwith(String txtBefore, JLabel label, JTextField txt) {
         int bandbreiteKByte;
         String ret;
         try {
@@ -334,6 +205,22 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
             ret = "aus";
         } else {
             ret = bandbreiteKByte + " kByte/s";
+        }
+        if (label != null) {
+            label.setText(txtBefore + ret);
+            if (bandbreiteKByte > MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE) {
+                label.setForeground(Color.red);
+            } else {
+                label.setForeground(Color.black);
+            }
+        }
+        if (txt != null) {
+            txt.setText(txtBefore + ret);
+            if (bandbreiteKByte > MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE) {
+                txt.setForeground(Color.red);
+            } else {
+                txt.setForeground(Color.black);
+            }
         }
         return ret;
     }
@@ -353,7 +240,7 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
                         counter++;
                         m_trace.addPoint(counter / 60, Daten.downloadInfos.bandwidth); // minutes
                         x_achse.getAxisTitle().setTitle(Daten.downloadInfos.roundBandwidth((long) counter));
-                        SwingUtilities.invokeLater(() -> setInfoText(Daten.downloadInfos));
+//                        SwingUtilities.invokeLater(() -> setInfoText(Daten.downloadInfos));
                     }
                 };
                 timer.schedule(timerTask, 0, 1_000);
@@ -371,91 +258,93 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
         }
     }
 
-    private void setInfoText(DownloadInfos di) {
-        final String HEAD = "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head>"
-                + "<style type=\"text/css\" .sans {font-family: Verdana, Geneva, sans-serif;}</style></head><body>";
-        final String END = "</body></html>";
-
-        String info = HEAD;
-        info += getInfoText();
-        if (di.timeRestAktDownloads > 0 && di.timeRestAllDownloads > 0) {
-            info += "<span class=\"sans\"><b>Restzeit: </b>" + "laufende: " + di.getRestzeit() + ", alle: " + di.getGesamtRestzeit() + "<br /></span>";
-        } else if (di.timeRestAktDownloads > 0) {
-            info += "<span class=\"sans\"><b>Restzeit: </b>laufende: " + di.getRestzeit() + "<br /></span>";
-        } else if (di.timeRestAllDownloads > 0) {
-            info += "<span class=\"sans\"><b>Restzeit: </b>alle: " + di.getGesamtRestzeit() + "<br /></span>";
-        }
-
-        if (di.byteAlleDownloads > 0 || di.byteAktDownloads > 0) {
-            info += "<span class=\"sans\"><b>Größe: </b>";
-            if (di.byteAktDownloads > 0) {
-                info += MVFilmSize.getGroesse(di.byteAktDownloads) + " von " + MVFilmSize.getGroesse(di.byteAlleDownloads) + " MByte" + "<br /></span>";
-            } else {
-                info += MVFilmSize.getGroesse(di.byteAlleDownloads) + " MByte" + "<br /></span>";
-            }
-        }
-        if (di.bandwidth > 0) {
-            info += "<span class=\"sans\"><b>Bandbreite: </b>";
-            info += di.bandwidthStr + "<br /></span>";
-        }
-        info += END;
-        jEditorPaneInfo.setText(info);
-    }
-
-    private String getInfoText() {
-        String textLinks;
-        // Text links: Zeilen Tabelle
-        // nicht gestarted, laufen, fertig OK, fertig fehler
-        int[] starts = Daten.downloadInfos.downloadStarts;
-        if (starts[0] == 1) {
-            textLinks = "<span class=\"sans\"><b>Download:</b> 1";
-        } else {
-            textLinks = "<span class=\"sans\"><b>Downloads:</b> " + starts[0];
-        }
-        boolean print = false;
-        for (int ii = 1; ii < starts.length; ++ii) {
-            if (starts[ii] > 0) {
-                print = true;
-                break;
-            }
-        }
-        if (print) {
-            textLinks += "&nbsp;&nbsp;( ";
-            if (starts[4] == 1) {
-                textLinks += "1 läuft";
-            } else {
-                textLinks += starts[4] + " laufen";
-            }
-            if (starts[3] == 1) {
-                textLinks += ", 1 wartet";
-            } else {
-                textLinks += ", " + starts[3] + " warten";
-            }
-            if (starts[5] > 0) {
-                if (starts[5] == 1) {
-                    textLinks += ", 1 fertig";
-                } else {
-                    textLinks += ", " + starts[5] + " fertig";
-                }
-            }
-            if (starts[6] > 0) {
-                if (starts[6] == 1) {
-                    textLinks += ", 1 fehlerhaft";
-                } else {
-                    textLinks += ", " + starts[6] + " fehlerhaft";
-                }
-            }
-            textLinks += " )";
-        }
-        textLinks += "<br /></span>";
-        return textLinks;
-    }
+//    public static String setInfoText(DownloadInfos di) {
+//        final String HEAD = "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head>"
+//                + "<style type=\"text/css\" .sans {font-family: Verdana, Geneva, sans-serif;}</style></head><body>";
+//        final String END = "</body></html>";
+//
+//        String info = HEAD;
+//        info += getInfoText();
+//        if (di.timeRestAktDownloads > 0 && di.timeRestAllDownloads > 0) {
+//            info += "<span class=\"sans\"><b>Restzeit: </b>" + "laufende: " + di.getRestzeit() + ", alle: " + di.getGesamtRestzeit() + "<br /></span>";
+//        } else if (di.timeRestAktDownloads > 0) {
+//            info += "<span class=\"sans\"><b>Restzeit: </b>laufende: " + di.getRestzeit() + "<br /></span>";
+//        } else if (di.timeRestAllDownloads > 0) {
+//            info += "<span class=\"sans\"><b>Restzeit: </b>alle: " + di.getGesamtRestzeit() + "<br /></span>";
+//        }
+//
+//        if (di.byteAlleDownloads > 0 || di.byteAktDownloads > 0) {
+//            info += "<span class=\"sans\"><b>Größe: </b>";
+//            if (di.byteAktDownloads > 0) {
+//                info += MVFilmSize.getGroesse(di.byteAktDownloads) + " von " + MVFilmSize.getGroesse(di.byteAlleDownloads) + " MByte" + "<br /></span>";
+//            } else {
+//                info += MVFilmSize.getGroesse(di.byteAlleDownloads) + " MByte" + "<br /></span>";
+//            }
+//        }
+//        if (di.bandwidth > 0) {
+//            info += "<span class=\"sans\"><b>Bandbreite: </b>";
+//            info += di.bandwidthStr + "<br /></span>";
+//        }
+//        info += END;
+//        return info;
+//    }
+//
+//    private static String getInfoText() {
+//        String textLinks;
+//        // Text links: Zeilen Tabelle
+//        // nicht gestarted, laufen, fertig OK, fertig fehler
+//        int[] starts = Daten.downloadInfos.downloadStarts;
+//        if (starts[0] == 1) {
+//            textLinks = "<span class=\"sans\"><b>Download:</b> 1";
+//        } else {
+//            textLinks = "<span class=\"sans\"><b>Downloads:</b> " + starts[0];
+//        }
+//        boolean print = false;
+//        for (int ii = 1; ii < starts.length; ++ii) {
+//            if (starts[ii] > 0) {
+//                print = true;
+//                break;
+//            }
+//        }
+//        if (print) {
+//            textLinks += "&nbsp;&nbsp;( ";
+//            if (starts[4] == 1) {
+//                textLinks += "1 läuft";
+//            } else {
+//                textLinks += starts[4] + " laufen";
+//            }
+//            if (starts[3] == 1) {
+//                textLinks += ", 1 wartet";
+//            } else {
+//                textLinks += ", " + starts[3] + " warten";
+//            }
+//            if (starts[5] > 0) {
+//                if (starts[5] == 1) {
+//                    textLinks += ", 1 fertig";
+//                } else {
+//                    textLinks += ", " + starts[5] + " fertig";
+//                }
+//            }
+//            if (starts[6] > 0) {
+//                if (starts[6] == 1) {
+//                    textLinks += ", 1 fehlerhaft";
+//                } else {
+//                    textLinks += ", " + starts[6] + " fehlerhaft";
+//                }
+//            }
+//            textLinks += " )";
+//        }
+//        textLinks += "<br /></span>";
+//        return textLinks;
+//    }
 
     private class BeobMaus extends MouseAdapter {
 
         JCheckBox cbkTop = new JCheckBox("Immer im Vordergrund");
         JCheckBox cbkBorder = new JCheckBox("Rand anzeigen");
         JMenuItem itemClose = new JMenuItem("Ausblenden");
+        JSlider jSliderBandwidth = new JSlider();
+        JLabel lblBandwidth = new JLabel("Bandbreite");
 
         public BeobMaus() {
             cbkTop.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP));
@@ -469,6 +358,35 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
                 GuiFunktionen.setDialogDecorated(jDialog, panel, MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_DECORATED));
             });
             itemClose.addActionListener(l -> beenden());
+
+            jSliderBandwidth.setMinimum(5); //50 kByte/s
+            jSliderBandwidth.setMaximum(100); //1_000 kByte/s
+            jSliderBandwidth.setToolTipText("");
+            setSlider();
+            jSliderBandwidth.addChangeListener(e -> {
+                if (stopBeob) {
+                    return;
+                }
+                int b = jSliderBandwidth.getValue() * 10;
+                MVConfig.add(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
+                Listener.notify(Listener.EREIGNIS_BANDBREITE, MVBandwidthMonitorLWin.class.getName());
+                setTextBandwith("Bandbreite: ", lblBandwidth, null);
+            });
+//            // Slider zum Einstellen der Bandbreite
+//            Listener.addListener(new Listener(Listener.EREIGNIS_BANDBREITE, MVBandwidthMonitorLWin.class.getSimpleName()) {
+//                @Override
+//                public void ping() {
+//                    setSlider();
+//                }
+//            });
+        }
+
+        private void setSlider() {
+            stopBeob = true;
+            setSliderBandwith(jSliderBandwidth);
+            setTextBandwith("Bandbreite: ", lblBandwidth, null);
+            stopBeob = false;
+
         }
 
         @Override
@@ -488,6 +406,9 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
         private void showMenu(MouseEvent evt) {
             JPopupMenu jPopupMenu = new JPopupMenu();
 
+            jPopupMenu.add(lblBandwidth);
+            jPopupMenu.add(jSliderBandwidth);
+            jPopupMenu.addSeparator();
             jPopupMenu.add(cbkTop);
             jPopupMenu.add(cbkBorder);
             jPopupMenu.addSeparator();
@@ -502,89 +423,35 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jSplitPane1 = new javax.swing.JSplitPane();
         jPanelChart = new javax.swing.JPanel();
-        jPanelInfo = new javax.swing.JPanel();
-        jSliderBandwidth = new javax.swing.JSlider();
-        jLabelBandwidth = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jEditorPaneInfo = new javax.swing.JEditorPane();
 
-        jSplitPane1.setDividerLocation(100);
-        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        jSplitPane1.setResizeWeight(1.0);
+        jPanelChart.setPreferredSize(new java.awt.Dimension(32767, 32767));
 
         javax.swing.GroupLayout jPanelChartLayout = new javax.swing.GroupLayout(jPanelChart);
         jPanelChart.setLayout(jPanelChartLayout);
         jPanelChartLayout.setHorizontalGroup(
             jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 398, Short.MAX_VALUE)
+            .addGap(0, 400, Short.MAX_VALUE)
         );
         jPanelChartLayout.setVerticalGroup(
             jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 99, Short.MAX_VALUE)
+            .addGap(0, 250, Short.MAX_VALUE)
         );
-
-        jSplitPane1.setTopComponent(jPanelChart);
-
-        jSliderBandwidth.setMaximum(1000);
-        jSliderBandwidth.setMinimum(50);
-        jSliderBandwidth.setPaintTicks(true);
-        jSliderBandwidth.setSnapToTicks(true);
-
-        jLabelBandwidth.setText("100 kByte/s");
-        jLabelBandwidth.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-
-        jScrollPane1.setViewportView(jEditorPaneInfo);
-
-        javax.swing.GroupLayout jPanelInfoLayout = new javax.swing.GroupLayout(jPanelInfo);
-        jPanelInfo.setLayout(jPanelInfoLayout);
-        jPanelInfoLayout.setHorizontalGroup(
-            jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelInfoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(jPanelInfoLayout.createSequentialGroup()
-                        .addComponent(jLabelBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSliderBandwidth, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanelInfoLayout.setVerticalGroup(
-            jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelInfoLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSliderBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabelBandwidth))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jSplitPane1.setRightComponent(jPanelInfo);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1)
+            .addComponent(jPanelChart, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1)
+            .addComponent(jPanelChart, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JEditorPane jEditorPaneInfo;
-    private javax.swing.JLabel jLabelBandwidth;
     private javax.swing.JPanel jPanelChart;
-    private javax.swing.JPanel jPanelInfo;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSlider jSliderBandwidth;
-    private javax.swing.JSplitPane jSplitPane1;
     // End of variables declaration//GEN-END:variables
 }

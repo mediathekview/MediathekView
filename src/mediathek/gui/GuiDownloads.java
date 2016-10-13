@@ -20,13 +20,7 @@
 package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
-import info.monitorenter.gui.chart.Chart2D;
-import info.monitorenter.gui.chart.IAxis;
-import info.monitorenter.gui.chart.labelformatters.LabelFormatterAutoUnits;
-import info.monitorenter.gui.chart.rangepolicies.RangePolicyForcedPoint;
-import info.monitorenter.gui.chart.traces.Trace2DLtd;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.*;
@@ -40,8 +34,6 @@ import javax.swing.*;
 import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.tool.Functions.OperatingSystemType;
-import static mSearch.tool.Functions.getOs;
 import mSearch.tool.*;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
@@ -52,6 +44,7 @@ import mediathek.controller.starter.Start;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
+import mediathek.daten.DownloadInfos;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
@@ -80,9 +73,9 @@ public class GuiDownloads extends PanelVorlage {
     private static final String COMBO_VIEW_FINISHED_ONLY = "nur abgeschlossene";
     private final ToolBar toolBar;
     private boolean loadFilmlist = false;
-    private double counter = 0; // double sonst "läuft" die Chart nicht
-    private final Trace2DLtd m_trace = new Trace2DLtd(300);
-    private IAxis x_achse = null;
+//    private double counter = 0; // double sonst "läuft" die Chart nicht
+//    private final Trace2DLtd m_trace = new Trace2DLtd(300);
+//    private IAxis x_achse = null;
     private final java.util.Timer timer = new java.util.Timer(false);
     private TimerTask timerTask = null;
 
@@ -327,6 +320,12 @@ public class GuiDownloads extends PanelVorlage {
                 new int[]{DatenDownload.DOWNLOAD_BUTTON_START, DatenDownload.DOWNLOAD_BUTTON_DEL},
                 true /*Icon*/, MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_LINEBREAK));
 
+        btnClear.setIcon(Icons.ICON_BUTTON_CLEAR);
+        btnClear.addActionListener(l -> {
+            cbDisplayCategories.setSelectedIndex(0);
+            cbView.setSelectedIndex(0);
+        });
+
         jSpinnerAnzahlDownloads.setModel(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
         jSpinnerAnzahlDownloads.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)));
         jSpinnerAnzahlDownloads.addChangeListener(l -> {
@@ -340,7 +339,7 @@ public class GuiDownloads extends PanelVorlage {
             if (jScrollPaneFilter.isVisible()) {
                 MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_DOWNLOAD_DIVIDER, String.valueOf(jSplitPane1.getDividerLocation()));
             }
-            setTimer();
+//            setTimer();
         });
         jScrollPaneFilter.setVisible(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS));
         Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_DOWNLOAD_FILTER_ANZEIGEN, GuiDownloads.class.getSimpleName()) {
@@ -359,7 +358,8 @@ public class GuiDownloads extends PanelVorlage {
         jSliderBandwidth.setMaximum(100); //1.000 kByte/s
         jSliderBandwidth.setMajorTickSpacing(10);
         jSliderBandwidth.setMinorTickSpacing(10);
-        MVBandwidthMonitorLWin.setSliderBandwith(jSliderBandwidth, null, txtBandwidth);
+        MVBandwidthMonitorLWin.setSliderBandwith(jSliderBandwidth);
+        MVBandwidthMonitorLWin.setTextBandwith("", null, txtBandwidth);
         jSliderBandwidth.addChangeListener(e -> {
             if (stopBeob) {
                 return;
@@ -372,46 +372,47 @@ public class GuiDownloads extends PanelVorlage {
         Listener.addListener(new Listener(Listener.EREIGNIS_BANDBREITE, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                MVBandwidthMonitorLWin.setSliderBandwith(jSliderBandwidth, null, txtBandwidth);
+                MVBandwidthMonitorLWin.setSliderBandwith(jSliderBandwidth);
+                MVBandwidthMonitorLWin.setTextBandwith("", null, txtBandwidth);
             }
         });
 
-        Chart2D chart = new Chart2D();
-        chart.setPaintLabels(true);
-        chart.setUseAntialiasing(true);
-        chart.setToolTipType(Chart2D.ToolTipType.VALUE_SNAP_TO_TRACEPOINTS);
-        if (getOs() == OperatingSystemType.LINUX) {
-            chart.setOpaque(false);
-        } else {
-            //a transparent chart is a HUGE GPU performance killer and will BURN GPU resources :(
-        }
-
-        x_achse = chart.getAxisX();
-        x_achse.getAxisTitle().setTitle("Minuten");
-        x_achse.setPaintScale(true);
-        x_achse.setVisible(true);
-        x_achse.setPaintGrid(false);
-        x_achse.setMajorTickSpacing(10);
-        x_achse.setMinorTickSpacing(1);
-
-        IAxis y_achse = chart.getAxisY();
-        y_achse.getAxisTitle().setTitle("");
-        y_achse.setPaintScale(true);
-        y_achse.setVisible(true);
-        y_achse.setPaintGrid(true);
-        y_achse.setMajorTickSpacing(5);
-        y_achse.setMinorTickSpacing(1);
-        y_achse.setFormatter(new LabelFormatterAutoUnits());
-        y_achse.setRangePolicy(new RangePolicyForcedPoint());
-
-        m_trace.setName("");
-        m_trace.setColor(Color.RED);
-        chart.addTrace(m_trace);
-        jPanelChart.setMinimumSize(new java.awt.Dimension(100, 100));
-        jPanelChart.setPreferredSize(new java.awt.Dimension(100, 250));
-//        jPanelChart.setBackground(Color.WHITE);
-        jPanelChart.setLayout(new BorderLayout(0, 0));
-        jPanelChart.add(chart, BorderLayout.CENTER);
+//        Chart2D chart = new Chart2D();
+//        chart.setPaintLabels(true);
+//        chart.setUseAntialiasing(true);
+//        chart.setToolTipType(Chart2D.ToolTipType.VALUE_SNAP_TO_TRACEPOINTS);
+//        if (getOs() == OperatingSystemType.LINUX) {
+//            chart.setOpaque(false);
+//        } else {
+//            //a transparent chart is a HUGE GPU performance killer and will BURN GPU resources :(
+//        }
+//
+//        x_achse = chart.getAxisX();
+//        x_achse.getAxisTitle().setTitle("Minuten");
+//        x_achse.setPaintScale(true);
+//        x_achse.setVisible(true);
+//        x_achse.setPaintGrid(false);
+//        x_achse.setMajorTickSpacing(10);
+//        x_achse.setMinorTickSpacing(1);
+//
+//        IAxis y_achse = chart.getAxisY();
+//        y_achse.getAxisTitle().setTitle("");
+//        y_achse.setPaintScale(true);
+//        y_achse.setVisible(true);
+//        y_achse.setPaintGrid(true);
+//        y_achse.setMajorTickSpacing(5);
+//        y_achse.setMinorTickSpacing(1);
+//        y_achse.setFormatter(new LabelFormatterAutoUnits());
+//        y_achse.setRangePolicy(new RangePolicyForcedPoint());
+//
+//        m_trace.setName("");
+//        m_trace.setColor(Color.RED);
+//        chart.addTrace(m_trace);
+//        jPanelChart.setMinimumSize(new java.awt.Dimension(100, 100));
+//        jPanelChart.setPreferredSize(new java.awt.Dimension(100, 250));
+////        jPanelChart.setBackground(Color.WHITE);
+//        jPanelChart.setLayout(new BorderLayout(0, 0));
+//        jPanelChart.add(chart, BorderLayout.CENTER);
         setTimer();
         Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
             @Override
@@ -435,15 +436,21 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void setTimer() {
+        jEditorPane.setText("");
+        jEditorPane.setEditable(false);
+        jEditorPane.setFocusable(false);
+        jEditorPane.setContentType("text/html");
         try {
             if (jScrollPaneFilter.isVisible()) {
                 timerTask = new TimerTask() {
 
                     @Override
                     public void run() {
-                        counter++;
-                        m_trace.addPoint(counter / 60, Daten.downloadInfos.bandwidth); // minutes
-                        x_achse.getAxisTitle().setTitle(Daten.downloadInfos.roundBandwidth((long) counter));
+//                        counter++;
+//                        m_trace.addPoint(counter / 60, Daten.downloadInfos.bandwidth); // minutes
+//                        x_achse.getAxisTitle().setTitle(Daten.downloadInfos.roundBandwidth((long) counter));
+                        SwingUtilities.invokeLater(() -> jEditorPane.setText(setInfoText(Daten.downloadInfos)));
+
                     }
                 };
                 timer.schedule(timerTask, 0, 1_000);
@@ -456,6 +463,86 @@ public class GuiDownloads extends PanelVorlage {
         } catch (IllegalStateException ignored) {
             DbgMsg.print(ignored.getMessage());
         }
+    }
+
+    private static String setInfoText(DownloadInfos di) {
+        final String HEAD = "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head>"
+                + "<style type=\"text/css\" .sans {font-family: Verdana, Geneva, sans-serif;}</style></head><body>";
+        final String END = "</body></html>";
+
+        String info = HEAD;
+        info += getInfoText();
+        if (di.timeRestAktDownloads > 0 && di.timeRestAllDownloads > 0) {
+            info += "<br /><span class=\"sans\"><b>Restzeit:</b><br />" + "laufende: " + di.getRestzeit() + ", alle: " + di.getGesamtRestzeit() + "<br /></span>";
+        } else if (di.timeRestAktDownloads > 0) {
+            info += "<br /><span class=\"sans\"><b>Restzeit:</b><br />laufende: " + di.getRestzeit() + "<br /></span>";
+        } else if (di.timeRestAllDownloads > 0) {
+            info += "<br /><span class=\"sans\"><b>Restzeit:</b><br />alle: " + di.getGesamtRestzeit() + "<br /></span>";
+        }
+
+        if (di.byteAlleDownloads > 0 || di.byteAktDownloads > 0) {
+            info += "<span class=\"sans\"><b>Größe:</b><br />";
+            if (di.byteAktDownloads > 0) {
+                info += MVFilmSize.getGroesse(di.byteAktDownloads) + " von " + MVFilmSize.getGroesse(di.byteAlleDownloads) + " MByte" + "<br /></span>";
+            } else {
+                info += MVFilmSize.getGroesse(di.byteAlleDownloads) + " MByte" + "<br /></span>";
+            }
+        }
+        if (di.bandwidth > 0) {
+            info += "<span class=\"sans\"><b>Bandbreite:</b><br />";
+            info += di.bandwidthStr + "<br /></span>";
+        }
+        info += END;
+        return info;
+    }
+
+    private static String getInfoText() {
+        String textLinks;
+        // Text links: Zeilen Tabelle
+        // nicht gestarted, laufen, fertig OK, fertig fehler
+        int[] starts = Daten.downloadInfos.downloadStarts;
+        if (starts[0] == 1) {
+            textLinks = "<span class=\"sans\"><b>Download:</b><br />1";
+        } else {
+            textLinks = "<span class=\"sans\"><b>Downloads:</b><br />" + starts[0];
+        }
+        boolean print = false;
+        for (int ii = 1; ii < starts.length; ++ii) {
+            if (starts[ii] > 0) {
+                print = true;
+                break;
+            }
+        }
+        if (print) {
+            textLinks += "&nbsp;&nbsp;( ";
+            if (starts[4] == 1) {
+                textLinks += "1 läuft";
+            } else {
+                textLinks += starts[4] + " laufen";
+            }
+            if (starts[3] == 1) {
+                textLinks += ", 1 wartet";
+            } else {
+                textLinks += ", " + starts[3] + " warten";
+            }
+            if (starts[5] > 0) {
+                if (starts[5] == 1) {
+                    textLinks += ", 1 fertig";
+                } else {
+                    textLinks += ", " + starts[5] + " fertig";
+                }
+            }
+            if (starts[6] > 0) {
+                if (starts[6] == 1) {
+                    textLinks += ", 1 fehlerhaft";
+                } else {
+                    textLinks += ", " + starts[6] + " fehlerhaft";
+                }
+            }
+            textLinks += " )";
+        }
+        textLinks += "<br /></span>";
+        return textLinks;
     }
 
     private void addListenerMediathekView() {
@@ -973,6 +1060,8 @@ public class GuiDownloads extends PanelVorlage {
     private void initComponents() {
 
         jPanel2 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jEditorPane1 = new javax.swing.JEditorPane();
         jPanelToolBar = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
         jScrollPaneFilter = new javax.swing.JScrollPane();
@@ -984,8 +1073,10 @@ public class GuiDownloads extends PanelVorlage {
         lblBandwidth = new javax.swing.JLabel();
         jSliderBandwidth = new javax.swing.JSlider();
         txtBandwidth = new javax.swing.JTextField();
-        jPanelChart = new javax.swing.JPanel();
         cbView = new javax.swing.JComboBox<>();
+        btnClear = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jEditorPane = new javax.swing.JEditorPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
@@ -1001,6 +1092,8 @@ public class GuiDownloads extends PanelVorlage {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 100, Short.MAX_VALUE)
         );
+
+        jScrollPane2.setViewportView(jEditorPane1);
 
         setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 255)));
 
@@ -1025,18 +1118,16 @@ public class GuiDownloads extends PanelVorlage {
 
         txtBandwidth.setEditable(false);
 
-        javax.swing.GroupLayout jPanelChartLayout = new javax.swing.GroupLayout(jPanelChart);
-        jPanelChart.setLayout(jPanelChartLayout);
-        jPanelChartLayout.setHorizontalGroup(
-            jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanelChartLayout.setVerticalGroup(
-            jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 150, Short.MAX_VALUE)
-        );
-
         cbView.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        btnClear.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); // NOI18N
+        btnClear.setToolTipText("Alles löschen");
+
+        jEditorPane.setEditable(false);
+        jEditorPane.setMinimumSize(new java.awt.Dimension(10, 10));
+        jEditorPane.setOpaque(false);
+        jEditorPane.setPreferredSize(new java.awt.Dimension(10, 10));
+        jScrollPane3.setViewportView(jEditorPane);
 
         javax.swing.GroupLayout jPanelFilterExternLayout = new javax.swing.GroupLayout(jPanelFilterExtern);
         jPanelFilterExtern.setLayout(jPanelFilterExternLayout);
@@ -1050,16 +1141,19 @@ public class GuiDownloads extends PanelVorlage {
                     .addComponent(txtBandwidth, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(cbView, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanelFilterExternLayout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jSpinnerAnzahlDownloads, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFilterExternLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnClear))
+                    .addGroup(jPanelFilterExternLayout.createSequentialGroup()
                         .addGroup(jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblAnzeigen)
                             .addComponent(lblBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanelFilterExternLayout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
-                        .addComponent(jSpinnerAnzahlDownloads, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
-            .addComponent(jPanelChart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanelFilterExternLayout.setVerticalGroup(
             jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1070,7 +1164,9 @@ public class GuiDownloads extends PanelVorlage {
                 .addComponent(cbDisplayCategories, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(cbView, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(60, 60, 60)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnClear)
+                .addGap(30, 30, 30)
                 .addGroup(jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jSpinnerAnzahlDownloads, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1079,9 +1175,10 @@ public class GuiDownloads extends PanelVorlage {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSliderBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(txtBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtBandwidth, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanelChart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jScrollPaneFilter.setViewportView(jPanelFilterExtern);
@@ -1105,7 +1202,7 @@ public class GuiDownloads extends PanelVorlage {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -1124,21 +1221,25 @@ public class GuiDownloads extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanelToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSplitPane1))
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnClear;
     private javax.swing.JComboBox<String> cbDisplayCategories;
     private javax.swing.JComboBox<String> cbView;
+    private javax.swing.JEditorPane jEditorPane;
+    private javax.swing.JEditorPane jEditorPane1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanelBeschreibung;
-    private javax.swing.JPanel jPanelChart;
     private javax.swing.JPanel jPanelFilterExtern;
     private javax.swing.JPanel jPanelToolBar;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPaneFilter;
     private javax.swing.JSlider jSliderBandwidth;
     private javax.swing.JSpinner jSpinnerAnzahlDownloads;
