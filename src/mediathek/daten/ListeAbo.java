@@ -320,7 +320,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
 
         // das kostet die Zeit!!
         listeFilme.stream().parallel().forEach(film -> {
-        //listeFilme.stream().forEach(film -> {
+            //listeFilme.stream().forEach(film -> {
             // für jeden Film
             film.arr[DatenFilm.FILM_ABO_NAME] = "";
             film.abo = null;
@@ -338,7 +338,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 if (aa != null) {
                     if (!Filter.laengePruefen(aa.mindestdauerMinuten, film.dauerL, aa.min)) {
                         // dann ist der Film zu kurz
-                        film.arr[DatenFilm.FILM_ABO_NAME] = aa.arr[DatenAbo.ABO_NAME] + " [zu kurz]";
+                        film.arr[DatenFilm.FILM_ABO_NAME] = aa.arr[DatenAbo.ABO_NAME] + (aa.min ? " [zu kurz]" : " [zu lang]");
                         film.abo = aa;
                     } else {
                         film.arr[DatenFilm.FILM_ABO_NAME] = aa.arr[DatenAbo.ABO_NAME];
