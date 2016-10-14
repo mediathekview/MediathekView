@@ -54,12 +54,8 @@ public class PanelErledigteUrls extends PanelVorlage {
         initComponents();
         jTable1.addMouseListener(new BeobMausTabelle());
         jButtonLoeschen.setEnabled(false);
-        jButtonExport.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                export();
-            }
+        jButtonExport.addActionListener((ActionEvent e) -> {
+            export();
         });
     }
 
@@ -74,24 +70,21 @@ public class PanelErledigteUrls extends PanelVorlage {
                 }
             }
         });
-        jButtonLoeschen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        jButtonLoeschen.addActionListener((ActionEvent e) -> {
+            int ret = JOptionPane.showConfirmDialog(parentComponent, "Alle Einträge werden gelöscht.", "Löschen?", JOptionPane.YES_NO_OPTION);
+            if (ret == JOptionPane.OK_OPTION) {
                 daten.erledigteAbos.alleLoeschen();
             }
         });
-        jToggleButtonLaden.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (jToggleButtonLaden.isSelected()) {
-                    jButtonLoeschen.setEnabled(true);
-                    jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), MVUsedUrl.title));
-                    setsum();
-                } else {
-                    jButtonLoeschen.setEnabled(false);
-                    jTable1.setModel(new TModel(null, MVUsedUrl.title));
-                    setsum();
-                }
+        jToggleButtonLaden.addActionListener((ActionEvent e) -> {
+            if (jToggleButtonLaden.isSelected()) {
+                jButtonLoeschen.setEnabled(true);
+                jTable1.setModel(new TModel(daten.erledigteAbos.getObjectData(), MVUsedUrl.title));
+                setsum();
+            } else {
+                jButtonLoeschen.setEnabled(false);
+                jTable1.setModel(new TModel(null, MVUsedUrl.title));
+                setsum();
             }
         });
     }
@@ -107,24 +100,21 @@ public class PanelErledigteUrls extends PanelVorlage {
                 }
             }
         });
-        jButtonLoeschen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        jButtonLoeschen.addActionListener((ActionEvent e) -> {
+            int ret = JOptionPane.showConfirmDialog(parentComponent, "Alle Einträge werden gelöscht.", "Löschen?", JOptionPane.YES_NO_OPTION);
+            if (ret == JOptionPane.OK_OPTION) {
                 daten.history.alleLoeschen();
             }
         });
-        jToggleButtonLaden.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (jToggleButtonLaden.isSelected()) {
-                    jButtonLoeschen.setEnabled(true);
-                    jTable1.setModel(new TModel(daten.history.getObjectData(), MVUsedUrl.title));
-                    setsum();
-                } else {
-                    jButtonLoeschen.setEnabled(false);
-                    jTable1.setModel(new TModel(null, MVUsedUrl.title));
-                    setsum();
-                }
+        jToggleButtonLaden.addActionListener((ActionEvent e) -> {
+            if (jToggleButtonLaden.isSelected()) {
+                jButtonLoeschen.setEnabled(true);
+                jTable1.setModel(new TModel(daten.history.getObjectData(), MVUsedUrl.title));
+                setsum();
+            } else {
+                jButtonLoeschen.setEnabled(false);
+                jTable1.setModel(new TModel(null, MVUsedUrl.title));
+                setsum();
             }
         });
     }
