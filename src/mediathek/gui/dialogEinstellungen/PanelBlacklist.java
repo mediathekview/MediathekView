@@ -27,6 +27,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -178,8 +179,11 @@ public class PanelBlacklist extends PanelVorlage {
         });
         jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BLACKLIST)).setVisible(true));
         jButtonTabelleLoeschen.addActionListener(e -> {
-            Daten.listeBlacklist.clear();
-            tabelleLaden();
+            int ret = JOptionPane.showConfirmDialog(parentComponent, "Alle Einträge werden gelöscht.", "Löschen?", JOptionPane.YES_NO_OPTION);
+            if (ret == JOptionPane.OK_OPTION) {
+                Daten.listeBlacklist.clear();
+                tabelleLaden();
+            }
         });
         jComboBoxSender.addActionListener(e -> comboThemaLaden());
         jTextFieldTitel.getDocument().addDocumentListener(new BeobFilterTitelDoc());
