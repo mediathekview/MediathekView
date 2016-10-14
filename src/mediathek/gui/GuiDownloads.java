@@ -436,10 +436,10 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void setTimer() {
-        jEditorPane.setText("");
-        jEditorPane.setEditable(false);
-        jEditorPane.setFocusable(false);
-        jEditorPane.setContentType("text/html");
+        txtDownload.setText("");
+        txtDownload.setEditable(false);
+        txtDownload.setFocusable(false);
+        txtDownload.setContentType("text/html");
         try {
             if (jScrollPaneFilter.isVisible()) {
                 timerTask = new TimerTask() {
@@ -449,7 +449,7 @@ public class GuiDownloads extends PanelVorlage {
 //                        counter++;
 //                        m_trace.addPoint(counter / 60, Daten.downloadInfos.bandwidth); // minutes
 //                        x_achse.getAxisTitle().setTitle(Daten.downloadInfos.roundBandwidth((long) counter));
-                        SwingUtilities.invokeLater(() -> jEditorPane.setText(setInfoText(Daten.downloadInfos)));
+                        SwingUtilities.invokeLater(() -> txtDownload.setText(setInfoText(Daten.downloadInfos)));
 
                     }
                 };
@@ -471,26 +471,34 @@ public class GuiDownloads extends PanelVorlage {
         final String END = "</body></html>";
 
         String info = HEAD;
+        // Downloads
         info += getInfoText();
-        if (di.timeRestAktDownloads > 0 && di.timeRestAllDownloads > 0) {
-            info += "<br /><span class=\"sans\"><b>Restzeit:</b><br />" + "laufende: " + di.getRestzeit() + ", alle: " + di.getGesamtRestzeit() + "<br /></span>";
-        } else if (di.timeRestAktDownloads > 0) {
-            info += "<br /><span class=\"sans\"><b>Restzeit:</b><br />laufende: " + di.getRestzeit() + "<br /></span>";
-        } else if (di.timeRestAllDownloads > 0) {
-            info += "<br /><span class=\"sans\"><b>Restzeit:</b><br />alle: " + di.getGesamtRestzeit() + "<br /></span>";
-        }
-
+        // Größe
         if (di.byteAlleDownloads > 0 || di.byteAktDownloads > 0) {
+            info += "<br />";
             info += "<span class=\"sans\"><b>Größe:</b><br />";
             if (di.byteAktDownloads > 0) {
-                info += MVFilmSize.getGroesse(di.byteAktDownloads) + " von " + MVFilmSize.getGroesse(di.byteAlleDownloads) + " MByte" + "<br /></span>";
+                info += MVFilmSize.getGroesse(di.byteAktDownloads) + " von " + MVFilmSize.getGroesse(di.byteAlleDownloads) + " MByte" + "</span>";
             } else {
-                info += MVFilmSize.getGroesse(di.byteAlleDownloads) + " MByte" + "<br /></span>";
+                info += MVFilmSize.getGroesse(di.byteAlleDownloads) + " MByte" + "</span>";
             }
         }
+        // Restzeit
+        if (di.timeRestAktDownloads > 0 && di.timeRestAllDownloads > 0) {
+            info += "<br />";
+            info += "<span class=\"sans\"><b>Restzeit:</b><br />" + "laufende: " + di.getRestzeit() + ",<br />alle: " + di.getGesamtRestzeit() + "</span>";
+        } else if (di.timeRestAktDownloads > 0) {
+            info += "<br />";
+            info += "<span class=\"sans\"><b>Restzeit:</b><br />laufende: " + di.getRestzeit() + "</span>";
+        } else if (di.timeRestAllDownloads > 0) {
+            info += "<br />";
+            info += "<span class=\"sans\"><b>Restzeit:</b><br />alle: " + di.getGesamtRestzeit() + "</span>";
+        }
+        // Bandbreite
         if (di.bandwidth > 0) {
+            info += "<br />";
             info += "<span class=\"sans\"><b>Bandbreite:</b><br />";
-            info += di.bandwidthStr + "<br /></span>";
+            info += di.bandwidthStr + "</span>";
         }
         info += END;
         return info;
@@ -501,11 +509,11 @@ public class GuiDownloads extends PanelVorlage {
         // Text links: Zeilen Tabelle
         // nicht gestarted, laufen, fertig OK, fertig fehler
         int[] starts = Daten.downloadInfos.downloadStarts;
-        if (starts[0] == 1) {
-            textLinks = "<span class=\"sans\"><b>Download:</b><br />1";
-        } else {
-            textLinks = "<span class=\"sans\"><b>Downloads:</b><br />" + starts[0];
-        }
+//        if (starts[0] == 1) {
+//            textLinks = "<span class=\"sans\"><b>Download:</b>1<br />";
+//        } else {
+        textLinks = "<span class=\"sans\"><b>Downloads:  </b>" + starts[0] + "<br />";
+//        }
         boolean print = false;
         for (int ii = 1; ii < starts.length; ++ii) {
             if (starts[ii] > 0) {
@@ -1076,7 +1084,7 @@ public class GuiDownloads extends PanelVorlage {
         cbView = new javax.swing.JComboBox<>();
         btnClear = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jEditorPane = new javax.swing.JEditorPane();
+        txtDownload = new javax.swing.JEditorPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
@@ -1123,11 +1131,9 @@ public class GuiDownloads extends PanelVorlage {
         btnClear.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); // NOI18N
         btnClear.setToolTipText("Alles löschen");
 
-        jEditorPane.setEditable(false);
-        jEditorPane.setMinimumSize(new java.awt.Dimension(10, 10));
-        jEditorPane.setOpaque(false);
-        jEditorPane.setPreferredSize(new java.awt.Dimension(10, 10));
-        jScrollPane3.setViewportView(jEditorPane);
+        txtDownload.setEditable(false);
+        txtDownload.setOpaque(false);
+        jScrollPane3.setViewportView(txtDownload);
 
         javax.swing.GroupLayout jPanelFilterExternLayout = new javax.swing.GroupLayout(jPanelFilterExtern);
         jPanelFilterExtern.setLayout(jPanelFilterExternLayout);
@@ -1152,7 +1158,7 @@ public class GuiDownloads extends PanelVorlage {
                             .addComponent(lblAnzeigen)
                             .addComponent(lblBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3))
                 .addContainerGap())
         );
         jPanelFilterExternLayout.setVerticalGroup(
@@ -1164,9 +1170,9 @@ public class GuiDownloads extends PanelVorlage {
                 .addComponent(cbDisplayCategories, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(cbView, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(btnClear)
-                .addGap(30, 30, 30)
+                .addGap(24, 24, 24)
                 .addGroup(jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jSpinnerAnzahlDownloads, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1176,8 +1182,8 @@ public class GuiDownloads extends PanelVorlage {
                 .addComponent(jSliderBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(txtBandwidth, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1202,7 +1208,7 @@ public class GuiDownloads extends PanelVorlage {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 548, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -1221,7 +1227,7 @@ public class GuiDownloads extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanelToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE))
+                .addComponent(jSplitPane1))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -1229,7 +1235,6 @@ public class GuiDownloads extends PanelVorlage {
     private javax.swing.JButton btnClear;
     private javax.swing.JComboBox<String> cbDisplayCategories;
     private javax.swing.JComboBox<String> cbView;
-    private javax.swing.JEditorPane jEditorPane;
     private javax.swing.JEditorPane jEditorPane1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
@@ -1246,6 +1251,7 @@ public class GuiDownloads extends PanelVorlage {
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JLabel lblBandwidth;
     private javax.swing.JTextField txtBandwidth;
+    private javax.swing.JEditorPane txtDownload;
     // End of variables declaration//GEN-END:variables
 
     public class BeobMausTabelle extends MouseAdapter {
