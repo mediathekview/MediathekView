@@ -734,6 +734,16 @@ public final class MVTable extends JTable {
         }
     }
 
+    private void spaltenAusschaltenAbos(int i) {
+        if (i == DatenAbo.ABO_ZIELPFAD
+                || i == DatenAbo.ABO_PSET
+                || i == DatenAbo.ABO_MINDESTDAUER
+                || i == DatenAbo.ABO_MIN
+                || i == DatenAbo.ABO_DOWN_DATUM) {
+            breite[i] = 0;
+        }
+    }
+
     private void spaltenAusschalten() {
         for (int i = 0; i < maxSpalten; ++i) {
             switch (tabelle) {
@@ -744,6 +754,8 @@ public final class MVTable extends JTable {
                     spaltenAusschaltenDownloads(i);
                     break;
                 case ABOS:
+                    spaltenAusschaltenAbos(i);
+                    break;
                 case STANDARD:
                     break;
             }
