@@ -218,7 +218,7 @@ public final class ToolBar extends JToolBar {
 
         // Button Filter
         jButtonFilterPanel = new JButton();
-        jButtonFilterPanel.setToolTipText("Erweiterte Suche (Filter) anzeigen/ausblenden");
+        jButtonFilterPanel.setToolTipText("Filter anzeigen/ausblenden");
         jButtonFilterPanel.setBorder(null);
         jButtonFilterPanel.setBorderPainted(false);
         jButtonFilterPanel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
