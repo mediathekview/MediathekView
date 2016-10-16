@@ -252,6 +252,28 @@ public final class ToolBar extends JToolBar {
         jButtonAbosAusschalten.addActionListener(e -> Daten.guiAbo.einAus(false));
         jButtonAbosLoeschen.addActionListener(e -> Daten.guiAbo.loeschen());
         jButtonAboAendern.addActionListener(e -> Daten.guiAbo.aendern());
+
+        this.add(filler__trenner);
+
+        // Button Filter
+        jButtonFilterPanel = new JButton();
+        jButtonFilterPanel.setToolTipText("Filter anzeigen/ausblenden");
+        jButtonFilterPanel.setBorder(null);
+        jButtonFilterPanel.setBorderPainted(false);
+        jButtonFilterPanel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButtonFilterPanel.setMaximumSize(new java.awt.Dimension(40, 40));
+        jButtonFilterPanel.setMinimumSize(new java.awt.Dimension(40, 40));
+        jButtonFilterPanel.setOpaque(false);
+        jButtonFilterPanel.setPreferredSize(new java.awt.Dimension(40, 40));
+        jButtonFilterPanel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButtonFilterPanel.setIcon(Icons.ICON_BUTTON_FILTER_ANZEIGEN);
+        this.add(jButtonFilterPanel);
+        jButtonFilterPanel.addActionListener(e -> {
+            boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TAB_ABO_FILTER_VIS));
+            MVConfig.add(MVConfig.Configs.SYSTEM_TAB_ABO_FILTER_VIS, Boolean.toString(b));
+            Listener.notify(Listener.EREIGNIS_PANEL_ABO_FILTER_ANZEIGEN, ToolBar.class.getName());
+        });
+
     }
 
     private void setFilmlisteLaden() {

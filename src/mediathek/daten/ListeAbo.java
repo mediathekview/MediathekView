@@ -66,7 +66,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
         DatenAbo datenAbo = new DatenAbo(namePfad /* name */, filmSender, filmThema, filmTitel, filmThemaTitel, irgendwo, mindestdauer, min, namePfad, "");
-        DialogEditAbo dialogEditAbo = new DialogEditAbo(Daten.mediathekGui, true, daten, datenAbo);
+        DialogEditAbo dialogEditAbo = new DialogEditAbo(Daten.mediathekGui, true, daten, datenAbo, -1 /*onlyOne*/);
         dialogEditAbo.setVisible(true);
         if (dialogEditAbo.ok) {
             if (!aboExistiertBereits(datenAbo)) {
@@ -121,7 +121,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         Collections.sort(this);
     }
 
-    public void addObjectData(TModelAbo model) {
+    public void addObjectData(TModelAbo model, String sender) {
         Object[] object;
         DatenAbo datenAbo;
         model.setRowCount(0);
@@ -129,26 +129,29 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         object = new Object[DatenAbo.MAX_ELEM];
         while (iterator.hasNext()) {
             datenAbo = iterator.next();
-            //object[i] = datenAbo.arr;
-            for (int m = 0; m < DatenAbo.MAX_ELEM; ++m) {
-                if (m == DatenAbo.ABO_NR) {
-                    object[m] = datenAbo.nr;
-                } else if (m == DatenAbo.ABO_MINDESTDAUER) {
-                    object[m] = datenAbo.mindestdauerMinuten;
-                } else if (m == DatenAbo.ABO_DOWN_DATUM) {
-                    object[m] = getDatumForObject(datenAbo.arr[DatenAbo.ABO_DOWN_DATUM]);
-                } else if (m == DatenAbo.ABO_EINGESCHALTET) {
-                    object[m] = ""; //Boolean.valueOf(datenAbo.aboIstEingeschaltet());
-                } else if (m == DatenAbo.ABO_MIN) {
-                    object[m] = datenAbo.min ? "min" : "max";
-                } else if (m != DatenAbo.ABO_NAME && !DatenAbo.anzeigen(m)) {
-                    // Name immer füllen, egal ob angezeigt
-                    object[m] = "";
-                } else {
-                    object[m] = datenAbo.arr[m];
+            if (!sender.isEmpty() && !sender.endsWith(datenAbo.arr[DatenAbo.ABO_SENDER])) {
+                continue;
+            } else {
+                for (int m = 0; m < DatenAbo.MAX_ELEM; ++m) {
+                    if (m == DatenAbo.ABO_NR) {
+                        object[m] = datenAbo.nr;
+                    } else if (m == DatenAbo.ABO_MINDESTDAUER) {
+                        object[m] = datenAbo.mindestdauerMinuten;
+                    } else if (m == DatenAbo.ABO_DOWN_DATUM) {
+                        object[m] = getDatumForObject(datenAbo.arr[DatenAbo.ABO_DOWN_DATUM]);
+                    } else if (m == DatenAbo.ABO_EINGESCHALTET) {
+                        object[m] = ""; //Boolean.valueOf(datenAbo.aboIstEingeschaltet());
+                    } else if (m == DatenAbo.ABO_MIN) {
+                        object[m] = datenAbo.min ? "min" : "max";
+                    } else if (m != DatenAbo.ABO_NAME && !DatenAbo.anzeigen(m)) {
+                        // Name immer füllen, egal ob angezeigt
+                        object[m] = "";
+                    } else {
+                        object[m] = datenAbo.arr[m];
+                    }
                 }
+                model.addRow(object);
             }
-            model.addRow(object);
         }
     }
 

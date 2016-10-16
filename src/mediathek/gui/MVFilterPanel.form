@@ -210,7 +210,7 @@
         </Component>
         <Component class="javax.swing.JComboBox" name="jComboBoxFilterSender">
           <Properties>
-            <Property name="maximumRowCount" type="int" value="20"/>
+            <Property name="maximumRowCount" type="int" value="25"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[184, 24]"/>
             </Property>

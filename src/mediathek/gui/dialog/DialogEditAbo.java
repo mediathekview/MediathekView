@@ -49,12 +49,14 @@ public class DialogEditAbo extends javax.swing.JDialog {
     private final JSlider sliderDauer = new JSlider(0, 100, 0);
     private final JLabel labelDauer = new JLabel("0");
     public boolean ok = false;
+    private final int change;
     private final JFrame parent;
 
-    public DialogEditAbo(final JFrame parent, boolean modal, Daten d, DatenAbo aktA) {
+    public DialogEditAbo(final JFrame parent, boolean modal, Daten d, DatenAbo aktA, int change) {
         super(parent, modal);
         initComponents();
         this.parent = parent;
+        this.change = change;
         aktAbo = aktA;
         gr.add(rbMin);
         gr.add(rbMax);
@@ -143,6 +145,9 @@ public class DialogEditAbo extends javax.swing.JDialog {
         jPanelExtra.setLayout(gridbag);
         int zeile = 0;
         for (int i = 0; i < DatenAbo.MAX_ELEM; ++i) {
+            if (change >= 0 && change != i) {
+                continue;
+            }
             addExtraFeld(i, gridbag, c, jPanelExtra);
             ++zeile;
             c.gridy = zeile;
@@ -253,7 +258,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
     }
 
     private boolean check() {
-        DatenAbo test = new DatenAbo();
+        DatenAbo test = aktAbo.getCopy();
         get(test);
         if (test.isEmpty()) {
             ok = false;
@@ -266,6 +271,9 @@ public class DialogEditAbo extends javax.swing.JDialog {
 
     private void get(DatenAbo abo) {
         for (int i = 0; i < DatenAbo.MAX_ELEM; ++i) {
+            if (change >= 0 && change != i) {
+                continue;
+            }
             switch (i) {
                 case (DatenAbo.ABO_ZIELPFAD):
                     abo.arr[DatenAbo.ABO_ZIELPFAD] = comboboxPfad.getSelectedItem().toString();

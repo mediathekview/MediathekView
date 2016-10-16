@@ -51,7 +51,6 @@ import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
 import static mediathek.tool.MVTable.*;
 import mediathek.tool.*;
-import static mediathek.tool.MVTable.*;
 
 public class GuiFilme extends PanelVorlage {
 
@@ -1849,7 +1848,7 @@ public class GuiFilme extends PanelVorlage {
                             DatenAbo datenAbo;
                             if ((datenAbo = Daten.listeAbo.getAboFuerFilm_schnell(film, false /*ohne Länge*/)) != null) {
                                 //gibts schon, dann löschen
-                                DialogEditAbo dialog = new DialogEditAbo(daten.mediathekGui, true, daten, datenAbo);
+                                DialogEditAbo dialog = new DialogEditAbo(daten.mediathekGui, true, daten, datenAbo, -1 /*onlyOne*/);
                                 dialog.setVisible(true);
                                 if (dialog.ok) {
                                     Daten.listeAbo.aenderungMelden();

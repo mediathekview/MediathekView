@@ -425,7 +425,7 @@
             </Component>
             <Component class="javax.swing.JComboBox" name="jComboBoxFilterSender">
               <Properties>
-                <Property name="maximumRowCount" type="int" value="20"/>
+                <Property name="maximumRowCount" type="int" value="25"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
