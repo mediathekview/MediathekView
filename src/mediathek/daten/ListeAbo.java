@@ -129,9 +129,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         object = new Object[DatenAbo.MAX_ELEM];
         while (iterator.hasNext()) {
             datenAbo = iterator.next();
-            if (!sender.isEmpty() && !sender.endsWith(datenAbo.arr[DatenAbo.ABO_SENDER])) {
-                continue;
-            } else {
+            if (sender.isEmpty() || sender.equals(datenAbo.arr[DatenAbo.ABO_SENDER])) {
                 for (int m = 0; m < DatenAbo.MAX_ELEM; ++m) {
                     if (m == DatenAbo.ABO_NR) {
                         object[m] = datenAbo.nr;
