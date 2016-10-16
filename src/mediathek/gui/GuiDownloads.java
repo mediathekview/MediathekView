@@ -344,12 +344,7 @@ public class GuiDownloads extends PanelVorlage {
         Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_DOWNLOAD_FILTER_ANZEIGEN, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                // Panel anzeigen und die Filmliste anpassen
-                jScrollPaneFilter.setVisible(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS));
-                if (jScrollPaneFilter.isVisible()) {
-                    jSplitPane1.setDividerLocation(MVConfig.getInt(MVConfig.Configs.SYSTEM_PANEL_DOWNLOAD_DIVIDER));
-                }
-
+                setFilter();
             }
         });
 
@@ -432,6 +427,15 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         });
+    }
+
+    private void setFilter() {
+        // Panel anzeigen und die Filmliste anpassen
+        jScrollPaneFilter.setVisible(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS));
+        if (jScrollPaneFilter.isVisible()) {
+            jSplitPane1.setDividerLocation(MVConfig.getInt(MVConfig.Configs.SYSTEM_PANEL_DOWNLOAD_DIVIDER));
+        }
+        this.updateUI();
     }
 
     private void setTimer() {
@@ -1486,7 +1490,7 @@ public class GuiDownloads extends PanelVorlage {
                     itemDelAbo.addActionListener(e -> Daten.listeAbo.aboLoeschen(datenAbo));
                     itemChangeAbo.addActionListener(e -> {
                         stopBeob = true;
-                        DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, datenAbo);
+                        DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, datenAbo, -1 /*onlyOne*/);
                         dialog.setVisible(true);
                         if (dialog.ok) {
                             Daten.listeAbo.aenderungMelden();

@@ -680,7 +680,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         jLabel2.setText("Sender:");
 
-        jComboBoxFilterSender.setMaximumRowCount(20);
+        jComboBoxFilterSender.setMaximumRowCount(25);
 
         jLabel4.setText("Thema:");
 

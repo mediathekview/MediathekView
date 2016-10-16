@@ -499,7 +499,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
         jLabel2.setText("Sender:");
 
-        jComboBoxFilterSender.setMaximumRowCount(20);
+        jComboBoxFilterSender.setMaximumRowCount(25);
         jComboBoxFilterSender.setPreferredSize(new java.awt.Dimension(184, 24));
 
         jLabel4.setText("Thema:");

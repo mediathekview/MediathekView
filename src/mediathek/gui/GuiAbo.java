@@ -148,11 +148,43 @@ public class GuiAbo extends PanelVorlage {
                 aboLoeschen();
             }
         });
+
+        //Filter
+        final String[] sender = GuiFunktionen.addLeerListe(Daten.filmeLaden.getSenderNamen());
+        jcbSender.setModel(new javax.swing.DefaultComboBoxModel<>(sender));
+        jcbSender.addActionListener(l -> tabelleLaden());
+
+        jSplitPane1.setDividerLocation(MVConfig.getInt(MVConfig.Configs.SYSTEM_PANEL_ABO_DIVIDER));
+        jSplitPane1.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, pce -> {
+            if (jScrollPaneFilter.isVisible()) {
+                MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_ABO_DIVIDER, String.valueOf(jSplitPane1.getDividerLocation()));
+            }
+        });
+        jScrollPaneFilter.setVisible(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_ABO_FILTER_VIS));
+        Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_ABO_FILTER_ANZEIGEN, GuiAbo.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setFilter();
+            }
+        });
+        btnDest.addActionListener(l -> abosAendern(DatenAbo.ABO_ZIELPFAD));
+        btnSet.addActionListener(l -> abosAendern(DatenAbo.ABO_PSET));
+        btnMinMax.addActionListener(l -> abosAendern(DatenAbo.ABO_MIN));
+        btnTime.addActionListener(l -> abosAendern(DatenAbo.ABO_MINDESTDAUER));
+    }
+
+    private void setFilter() {
+        // Panel anzeigen und die Filmliste anpassen
+        jScrollPaneFilter.setVisible(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_ABO_FILTER_VIS));
+        if (jScrollPaneFilter.isVisible()) {
+            jSplitPane1.setDividerLocation(MVConfig.getInt(MVConfig.Configs.SYSTEM_PANEL_ABO_DIVIDER));
+        }
+        updateUI();
     }
 
     private void tabelleLaden() {
         tabelle.getSpalten();
-        Daten.listeAbo.addObjectData((TModelAbo) tabelle.getModel());
+        Daten.listeAbo.addObjectData((TModelAbo) tabelle.getModel(), jcbSender.getSelectedItem().toString());
         tabelle.setSpalten();
         setInfo();
     }
@@ -198,7 +230,7 @@ public class GuiAbo extends PanelVorlage {
         if (row >= 0) {
             int modelRow = tabelle.convertRowIndexToModel(row);
             DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
-            DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, akt);
+            DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, akt, -1 /*onlyOne*/);
             dialog.setVisible(true);
             if (dialog.ok) {
                 tabelleLaden();
@@ -208,6 +240,43 @@ public class GuiAbo extends PanelVorlage {
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
+    }
+
+    private void abosAendern(int change) {
+        int row = tabelle.getSelectedRow();
+        int[] rows = tabelle.getSelectedRows();
+
+        if (row < 0) {
+            new HinweisKeineAuswahl().zeigen(parentComponent);
+            return;
+        }
+
+        int modelRow = tabelle.convertRowIndexToModel(row);
+        DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
+        DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, akt, change);
+        dialog.setVisible(true);
+        if (!dialog.ok) {
+            return;
+        }
+
+        for (int i : rows) {
+            if (i == row) {
+                continue;
+            }
+            modelRow = tabelle.convertRowIndexToModel(i);
+            DatenAbo sel = Daten.listeAbo.getAboNr(modelRow);
+            sel.arr[change] = akt.arr[change];
+            if (change == DatenAbo.ABO_MINDESTDAUER) {
+                sel.setMindestDauerMinuten();
+            }
+            if (change == DatenAbo.ABO_MIN) {
+                sel.min = Boolean.parseBoolean(sel.arr[DatenAbo.ABO_MIN]);
+            }
+        }
+
+        tabelleLaden();
+        Daten.listeAbo.aenderungMelden();
+        setInfo();
     }
 
     private void aboNeu() {
@@ -250,42 +319,127 @@ public class GuiAbo extends PanelVorlage {
     private void initComponents() {
 
         jPanelToolBar = new javax.swing.JPanel();
+        jSplitPane1 = new javax.swing.JSplitPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
+        jScrollPaneFilter = new javax.swing.JScrollPane();
+        jPanelFilter = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jcbSender = new javax.swing.JComboBox<>();
+        btnDest = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        btnSet = new javax.swing.JButton();
+        btnMinMax = new javax.swing.JButton();
+        btnTime = new javax.swing.JButton();
 
         javax.swing.GroupLayout jPanelToolBarLayout = new javax.swing.GroupLayout(jPanelToolBar);
         jPanelToolBar.setLayout(jPanelToolBarLayout);
         jPanelToolBarLayout.setHorizontalGroup(
             jPanelToolBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 416, Short.MAX_VALUE)
+            .addGap(0, 758, Short.MAX_VALUE)
         );
         jPanelToolBarLayout.setVerticalGroup(
             jPanelToolBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 13, Short.MAX_VALUE)
         );
 
+        jSplitPane1.setDividerLocation(200);
+
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(jTable1);
+
+        jSplitPane1.setRightComponent(jScrollPane1);
+
+        jLabel1.setText("Abos für Sender:");
+
+        jcbSender.setMaximumRowCount(25);
+        jcbSender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        btnDest.setText("Zielpfad");
+
+        jLabel2.setText("markierte Abos ändern");
+
+        btnSet.setText("Set");
+
+        btnMinMax.setText("Min/Max");
+
+        btnTime.setText("Dauer");
+
+        javax.swing.GroupLayout jPanelFilterLayout = new javax.swing.GroupLayout(jPanelFilter);
+        jPanelFilter.setLayout(jPanelFilterLayout);
+        jPanelFilterLayout.setHorizontalGroup(
+            jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelFilterLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jcbSender, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnDest, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnSet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnMinMax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanelFilterLayout.createSequentialGroup()
+                        .addGroup(jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(btnTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanelFilterLayout.setVerticalGroup(
+            jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelFilterLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jcbSender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 212, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnDest)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSet)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnMinMax)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnTime)
+                .addContainerGap())
+        );
+
+        jScrollPaneFilter.setViewportView(jPanelFilter);
+
+        jSplitPane1.setLeftComponent(jScrollPaneFilter);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addComponent(jPanelToolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jSplitPane1)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanelToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jSplitPane1)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDest;
+    private javax.swing.JButton btnMinMax;
+    private javax.swing.JButton btnSet;
+    private javax.swing.JButton btnTime;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanelFilter;
     private javax.swing.JPanel jPanelToolBar;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPaneFilter;
+    private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JComboBox<String> jcbSender;
     // End of variables declaration//GEN-END:variables
 
     private class BeobMausTabelle1 extends MouseAdapter {
