@@ -66,7 +66,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
         DatenAbo datenAbo = new DatenAbo(namePfad /* name */, filmSender, filmThema, filmTitel, filmThemaTitel, irgendwo, mindestdauer, min, namePfad, "");
-        DialogEditAbo dialogEditAbo = new DialogEditAbo(Daten.mediathekGui, true, daten, datenAbo, -1 /*onlyOne*/);
+        DialogEditAbo dialogEditAbo = new DialogEditAbo(Daten.mediathekGui, true, daten, datenAbo, false /*onlyOne*/);
         dialogEditAbo.setVisible(true);
         if (dialogEditAbo.ok) {
             if (!aboExistiertBereits(datenAbo)) {

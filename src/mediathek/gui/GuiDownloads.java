@@ -1490,7 +1490,7 @@ public class GuiDownloads extends PanelVorlage {
                     itemDelAbo.addActionListener(e -> Daten.listeAbo.aboLoeschen(datenAbo));
                     itemChangeAbo.addActionListener(e -> {
                         stopBeob = true;
-                        DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, datenAbo, -1 /*onlyOne*/);
+                        DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, datenAbo, false/*onlyOne*/);
                         dialog.setVisible(true);
                         if (dialog.ok) {
                             Daten.listeAbo.aenderungMelden();

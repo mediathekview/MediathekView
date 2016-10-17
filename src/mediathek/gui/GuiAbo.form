@@ -99,17 +99,10 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jcbSender" max="32767" attributes="0"/>
-                              <Component id="btnDest" max="32767" attributes="0"/>
-                              <Component id="btnSet" alignment="0" max="32767" attributes="0"/>
-                              <Component id="btnMinMax" alignment="0" max="32767" attributes="0"/>
                               <Group type="102" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="0" pref="57" max="32767" attributes="0"/>
                               </Group>
-                              <Component id="btnTime" alignment="0" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -122,17 +115,7 @@
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jcbSender" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="212" max="32767" attributes="0"/>
-                          <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="btnDest" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="btnSet" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="btnMinMax" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="btnTime" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="363" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -158,31 +141,6 @@
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                   </AuxValues>
-                </Component>
-                <Component class="javax.swing.JButton" name="btnDest">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Zielpfad"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="jLabel2">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="markierte Abos &#xe4;ndern"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JButton" name="btnSet">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Set"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JButton" name="btnMinMax">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Min/Max"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JButton" name="btnTime">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Dauer"/>
-                  </Properties>
                 </Component>
               </SubComponents>
             </Container>

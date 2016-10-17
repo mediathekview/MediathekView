@@ -48,11 +48,13 @@ public class DialogEditAbo extends javax.swing.JDialog {
     private final ButtonGroup gr = new ButtonGroup();
     private final JSlider sliderDauer = new JSlider(0, 100, 0);
     private final JLabel labelDauer = new JLabel("0");
-    public boolean ok = false;
-    private final int change;
+    private final boolean change;
     private final JFrame parent;
 
-    public DialogEditAbo(final JFrame parent, boolean modal, Daten d, DatenAbo aktA, int change) {
+    public boolean ok = false;
+    public boolean[] ch = new boolean[DatenAbo.MAX_ELEM];
+
+    public DialogEditAbo(final JFrame parent, boolean modal, Daten d, DatenAbo aktA, boolean change) {
         super(parent, modal);
         initComponents();
         this.parent = parent;
@@ -60,6 +62,9 @@ public class DialogEditAbo extends javax.swing.JDialog {
         aktAbo = aktA;
         gr.add(rbMin);
         gr.add(rbMax);
+        for (boolean b : ch) {
+            b = false;
+        }
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
         comboboxPSet.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listePset.getListeAbo().getObjectDataCombo()));
         comboboxSender.setModel(new javax.swing.DefaultComboBoxModel<>(GuiFunktionen.addLeerListe(Daten.filmeLaden.getSenderNamen())));
@@ -114,6 +119,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
             new DialogAboNoSet(parent, d).setVisible(true);
         } else {
             setExtra();
+            this.pack();
         }
     }
 
@@ -143,19 +149,27 @@ public class DialogEditAbo extends javax.swing.JDialog {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5, 10, 10, 5);
         jPanelExtra.setLayout(gridbag);
-        int zeile = 0;
+
+        int zeile = 1;
+        if (change) {
+            c.gridx = 2;
+            c.weightx = 0;
+            JLabel label = new JLabel("<html>bei allen<br />ändern</html>");
+            gridbag.setConstraints(label, c);
+            jPanelExtra.add(label);
+            c.gridy = 1;
+        } else {
+            zeile = 0;
+            c.gridy = 0;
+        }
         for (int i = 0; i < DatenAbo.MAX_ELEM; ++i) {
-            if (change >= 0 && change != i) {
-                continue;
-            }
             addExtraFeld(i, gridbag, c, jPanelExtra);
             ++zeile;
             c.gridy = zeile;
         }
     }
 
-    private void addExtraFeld(int i, GridBagLayout gridbag, GridBagConstraints c,
-            JPanel panel) {
+    private void addExtraFeld(int i, GridBagLayout gridbag, GridBagConstraints c, JPanel panel) {
         //Label
         c.gridx = 0;
         c.weightx = 0;
@@ -181,7 +195,16 @@ public class DialogEditAbo extends javax.swing.JDialog {
         //Textfeld
         c.gridx = 1;
         c.weightx = 10;
+        JTextField textfeld;
         switch (i) {
+            case DatenAbo.ABO_NR:
+                textfeld = new JTextField();
+                textfeldListe[i] = textfeld;
+                textfeld.setEditable(false);
+                textfeld.setText(aktAbo.nr + "");
+                gridbag.setConstraints(textfeld, c);
+                panel.add(textfeld);
+                break;
             case DatenAbo.ABO_PSET:
                 comboboxPSet.setSelectedItem(aktAbo.arr[i]);
                 //falls das Feld leer war, wird es jetzt auf den ersten Eintrag gesetzt
@@ -224,12 +247,11 @@ public class DialogEditAbo extends javax.swing.JDialog {
                 panel.add(p);
                 break;
             default:
-                JTextField textfeld = new JTextField();
+                textfeld = new JTextField();
                 textfeldListe[i] = textfeld;
-                if (i == DatenAbo.ABO_NR || i == DatenAbo.ABO_DOWN_DATUM) {
+                if (i == DatenAbo.ABO_DOWN_DATUM) {
                     textfeld.setEditable(false);
-                }
-                if (i == DatenAbo.ABO_NAME) {
+                } else if (i == DatenAbo.ABO_NAME) {
                     textfeld.getDocument().addDocumentListener(new DocumentListener() {
                         @Override
                         public void insertUpdate(DocumentEvent e) {
@@ -255,6 +277,24 @@ public class DialogEditAbo extends javax.swing.JDialog {
                 panel.add(textfeld);
                 break;
         }
+        if (change) {
+            //Checkbox
+            c.gridx = 2;
+            c.weightx = 0;
+            JCheckBox jcb;
+            switch (i) {
+                case DatenAbo.ABO_EINGESCHALTET:
+                case DatenAbo.ABO_MIN:
+                case DatenAbo.ABO_MINDESTDAUER:
+                case DatenAbo.ABO_PSET:
+                case DatenAbo.ABO_ZIELPFAD:
+                    jcb = new JCheckBox();
+                    jcb.addActionListener(l -> ch[i] = jcb.isSelected());
+                    gridbag.setConstraints(jcb, c);
+                    panel.add(jcb);
+                    break;
+            }
+        }
     }
 
     private boolean check() {
@@ -271,9 +311,6 @@ public class DialogEditAbo extends javax.swing.JDialog {
 
     private void get(DatenAbo abo) {
         for (int i = 0; i < DatenAbo.MAX_ELEM; ++i) {
-            if (change >= 0 && change != i) {
-                continue;
-            }
             switch (i) {
                 case (DatenAbo.ABO_ZIELPFAD):
                     abo.arr[DatenAbo.ABO_ZIELPFAD] = comboboxPfad.getSelectedItem().toString();
@@ -323,11 +360,11 @@ public class DialogEditAbo extends javax.swing.JDialog {
         jPanelExtra.setLayout(jPanelExtraLayout);
         jPanelExtraLayout.setHorizontalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 513, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         jPanelExtraLayout.setVerticalGroup(
             jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 503, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         jScrollPane1.setViewportView(jPanelExtra);
