@@ -167,10 +167,6 @@ public class GuiAbo extends PanelVorlage {
                 setFilter();
             }
         });
-        btnDest.addActionListener(l -> abosAendern(DatenAbo.ABO_ZIELPFAD));
-        btnSet.addActionListener(l -> abosAendern(DatenAbo.ABO_PSET));
-        btnMinMax.addActionListener(l -> abosAendern(DatenAbo.ABO_MIN));
-        btnTime.addActionListener(l -> abosAendern(DatenAbo.ABO_MINDESTDAUER));
     }
 
     private void setFilter() {
@@ -225,53 +221,57 @@ public class GuiAbo extends PanelVorlage {
         }
     }
 
+//    private void aboAendern() {
+//        if (tabelle.getSelectedRowCount() == 1) {
+//            int modelRow = tabelle.convertRowIndexToModel(row);
+//            DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
+//            DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, akt, false /*onlyOne*/);
+//            dialog.setVisible(true);
+//            if (dialog.ok) {
+//                tabelleLaden();
+//                Daten.listeAbo.aenderungMelden();
+//            }
+//            setInfo();
+//        } else {
+//            new HinweisKeineAuswahl().zeigen(parentComponent);
+//        }
+//    }
     private void aboAendern() {
-        int row = tabelle.getSelectedRow();
-        if (row >= 0) {
-            int modelRow = tabelle.convertRowIndexToModel(row);
-            DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
-            DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, akt, -1 /*onlyOne*/);
-            dialog.setVisible(true);
-            if (dialog.ok) {
-                tabelleLaden();
-                Daten.listeAbo.aenderungMelden();
-            }
-            setInfo();
-        } else {
-            new HinweisKeineAuswahl().zeigen(parentComponent);
-        }
-    }
-
-    private void abosAendern(int change) {
-        int row = tabelle.getSelectedRow();
-        int[] rows = tabelle.getSelectedRows();
-
-        if (row < 0) {
+        // nichts selektiert
+        if (tabelle.getSelectedRowCount() == 0) {
             new HinweisKeineAuswahl().zeigen(parentComponent);
             return;
         }
 
+        int row = tabelle.getSelectedRow();
+        int[] rows = tabelle.getSelectedRows();
         int modelRow = tabelle.convertRowIndexToModel(row);
         DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
-        DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, akt, change);
+        DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, akt, tabelle.getSelectedRowCount() > 1 /*onlyOne*/);
         dialog.setVisible(true);
         if (!dialog.ok) {
             return;
         }
 
-        for (int i : rows) {
-            if (i == row) {
-                continue;
+        if (tabelle.getSelectedRowCount() > 1) {
+            // bei mehreren selektierten Zeilen
+            for (int i = 0; i < rows.length; ++i) {
+                for (int b = 0; b < dialog.ch.length; ++b) {
+                    if (!dialog.ch[b]) {
+                        continue;
+                    }
+                    modelRow = tabelle.convertRowIndexToModel(rows[i]);
+                    DatenAbo sel = Daten.listeAbo.getAboNr(modelRow);
+                    sel.arr[b] = akt.arr[b];
+                    if (b == DatenAbo.ABO_MINDESTDAUER) {
+                        sel.setMindestDauerMinuten();
+                    }
+                    if (b == DatenAbo.ABO_MIN) {
+                        sel.min = Boolean.parseBoolean(sel.arr[DatenAbo.ABO_MIN]);
+                    }
+                }
             }
-            modelRow = tabelle.convertRowIndexToModel(i);
-            DatenAbo sel = Daten.listeAbo.getAboNr(modelRow);
-            sel.arr[change] = akt.arr[change];
-            if (change == DatenAbo.ABO_MINDESTDAUER) {
-                sel.setMindestDauerMinuten();
-            }
-            if (change == DatenAbo.ABO_MIN) {
-                sel.min = Boolean.parseBoolean(sel.arr[DatenAbo.ABO_MIN]);
-            }
+
         }
 
         tabelleLaden();
@@ -326,11 +326,6 @@ public class GuiAbo extends PanelVorlage {
         jPanelFilter = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jcbSender = new javax.swing.JComboBox<>();
-        btnDest = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        btnSet = new javax.swing.JButton();
-        btnMinMax = new javax.swing.JButton();
-        btnTime = new javax.swing.JButton();
 
         javax.swing.GroupLayout jPanelToolBarLayout = new javax.swing.GroupLayout(jPanelToolBar);
         jPanelToolBar.setLayout(jPanelToolBarLayout);
@@ -356,16 +351,6 @@ public class GuiAbo extends PanelVorlage {
         jcbSender.setMaximumRowCount(25);
         jcbSender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        btnDest.setText("Zielpfad");
-
-        jLabel2.setText("markierte Abos ändern");
-
-        btnSet.setText("Set");
-
-        btnMinMax.setText("Min/Max");
-
-        btnTime.setText("Dauer");
-
         javax.swing.GroupLayout jPanelFilterLayout = new javax.swing.GroupLayout(jPanelFilter);
         jPanelFilter.setLayout(jPanelFilterLayout);
         jPanelFilterLayout.setHorizontalGroup(
@@ -374,15 +359,9 @@ public class GuiAbo extends PanelVorlage {
                 .addContainerGap()
                 .addGroup(jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jcbSender, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnDest, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnMinMax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanelFilterLayout.createSequentialGroup()
-                        .addGroup(jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(btnTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jLabel1)
+                        .addGap(0, 57, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanelFilterLayout.setVerticalGroup(
@@ -392,17 +371,7 @@ public class GuiAbo extends PanelVorlage {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jcbSender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 212, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnDest)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSet)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnMinMax)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnTime)
-                .addContainerGap())
+                .addContainerGap(363, Short.MAX_VALUE))
         );
 
         jScrollPaneFilter.setViewportView(jPanelFilter);
@@ -428,12 +397,7 @@ public class GuiAbo extends PanelVorlage {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnDest;
-    private javax.swing.JButton btnMinMax;
-    private javax.swing.JButton btnSet;
-    private javax.swing.JButton btnTime;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanelFilter;
     private javax.swing.JPanel jPanelToolBar;
     private javax.swing.JScrollPane jScrollPane1;
