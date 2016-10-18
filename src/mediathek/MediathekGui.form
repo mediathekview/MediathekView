@@ -136,7 +136,7 @@
         <Menu class="javax.swing.JMenu" name="jMenuDownload">
           <Properties>
             <Property name="mnemonic" type="int" value="79"/>
-            <Property name="text" type="java.lang.String" value="Download"/>
+            <Property name="text" type="java.lang.String" value="Downloads"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
@@ -275,7 +275,7 @@
         <Menu class="javax.swing.JMenu" name="jMenuAbos">
           <Properties>
             <Property name="mnemonic" type="int" value="98"/>
-            <Property name="text" type="java.lang.String" value="Abo"/>
+            <Property name="text" type="java.lang.String" value="Abos"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAbosEinschalten">

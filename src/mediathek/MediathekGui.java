@@ -1149,7 +1149,7 @@ public class MediathekGui extends JFrame {
         jMenuBar.add(jMenuFilme);
 
         jMenuDownload.setMnemonic('O');
-        jMenuDownload.setText("Download");
+        jMenuDownload.setText("Downloads");
 
         jMenuItemDownloadsAlleStarten.setText("alle Downloads starten");
         jMenuDownload.add(jMenuItemDownloadsAlleStarten);
@@ -1219,7 +1219,7 @@ public class MediathekGui extends JFrame {
         jMenuBar.add(jMenuDownload);
 
         jMenuAbos.setMnemonic('b');
-        jMenuAbos.setText("Abo");
+        jMenuAbos.setText("Abos");
 
         jMenuItemAbosEinschalten.setText("einschalten");
         jMenuAbos.add(jMenuItemAbosEinschalten);
