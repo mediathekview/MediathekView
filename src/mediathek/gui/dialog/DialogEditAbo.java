@@ -22,6 +22,8 @@ package mediathek.gui.dialog;
 import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.*;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
@@ -153,8 +155,10 @@ public class DialogEditAbo extends javax.swing.JDialog {
         int zeile = 1;
         if (change) {
             c.gridx = 2;
-            c.weightx = 0;
-            JLabel label = new JLabel("<html>bei allen<br />ändern</html>");
+            c.weightx = 1;
+            JLabel label = new JLabel("<html><style type=\"text/css\"> p { text-align: center; }</style><p>bei allen<br />ändern</p></html>");
+            label.setBorder(new CompoundBorder(BorderFactory.createLineBorder(new java.awt.Color(204, 204, 255), 4, true),
+                    new EmptyBorder(5, 5, 5, 5)));
             gridbag.setConstraints(label, c);
             jPanelExtra.add(label);
             c.gridy = 1;
@@ -163,6 +167,8 @@ public class DialogEditAbo extends javax.swing.JDialog {
             c.gridy = 0;
         }
         for (int i = 0; i < DatenAbo.MAX_ELEM; ++i) {
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.anchor = GridBagConstraints.WEST;
             addExtraFeld(i, gridbag, c, jPanelExtra);
             ++zeile;
             c.gridy = zeile;
@@ -288,8 +294,13 @@ public class DialogEditAbo extends javax.swing.JDialog {
                 case DatenAbo.ABO_MINDESTDAUER:
                 case DatenAbo.ABO_PSET:
                 case DatenAbo.ABO_ZIELPFAD:
+                    c.fill = GridBagConstraints.NONE;
+                    c.anchor = GridBagConstraints.CENTER;
                     jcb = new JCheckBox();
+                    jcb.setBorder(new EmptyBorder(5, 15, 5, 15));
+                    jcb.setHorizontalTextPosition(JCheckBox.CENTER);
                     jcb.addActionListener(l -> ch[i] = jcb.isSelected());
+                    jcb.setBackground(new Color(204, 204, 255));
                     gridbag.setConstraints(jcb, c);
                     panel.add(jcb);
                     break;
