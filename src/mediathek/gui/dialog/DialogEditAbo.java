@@ -297,7 +297,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
                     c.fill = GridBagConstraints.NONE;
                     c.anchor = GridBagConstraints.CENTER;
                     jcb = new JCheckBox();
-                    jcb.setBorder(new EmptyBorder(5, 15, 5, 15));
+                    jcb.setBorder(new EmptyBorder(5, 5, 5, 5));
                     jcb.setHorizontalTextPosition(JCheckBox.CENTER);
                     jcb.addActionListener(l -> ch[i] = jcb.isSelected());
                     jcb.setBackground(new Color(204, 204, 255));
