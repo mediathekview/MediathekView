@@ -30,9 +30,9 @@ Derzeit werden die Mediatheken der folgenden Sender unterstützt:
 
 # Sourceforge
 
-- [Website](https://zdfmediathk.sourceforge.net)
-- [Screenshots](https://zdfmediathk.sourceforge.net/screenshots.html)
-- [Download](https://sourceforge.net/projects/zdfmediathk/) Installationspakete
+- [Website](http://zdfmediathk.sourceforge.net)
+- [Screenshots](http://zdfmediathk.sourceforge.net/screenshots.html)
+- [Download](https://sourceforge.net/projects/zdfmediathk/files/) Installationspakete
 
 # License
 
