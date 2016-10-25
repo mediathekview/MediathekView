@@ -1,3 +1,5 @@
 language: java
 jdk:
     - oraclejdk8
+install:
+    - git clone git@github.com:mediathekview/msearch.git mSearch
