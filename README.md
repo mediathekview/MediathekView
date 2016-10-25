@@ -23,7 +23,10 @@ Derzeit werden die Mediatheken der folgenden Sender unterstützt:
 - SRF (Schweizer Rundfunk) inkl. Podcasts
 
 # Status
- - Travis-ci: [![Build Status](https://travis-ci.org/mediathekview/MediathekView.svg?branch=master)](https://travis-ci.org/mediathekview/MediathekView)
+- Travis-ci: [![Build Status](https://travis-ci.org/mediathekview/MediathekView.svg?branch=master)](https://travis-ci.org/mediathekview/MediathekView)
+
+# Projektmanagment
+- [MediathekView Hub](https://hub.mediathekview.de)
 
 # Sourceforge
 
