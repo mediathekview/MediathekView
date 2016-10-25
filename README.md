@@ -22,6 +22,9 @@ Derzeit werden die Mediatheken der folgenden Sender unterstützt:
 - ORF (Österreichischer Rundfunk)
 - SRF (Schweizer Rundfunk) inkl. Podcasts
 
+# Status
+ - Travis-ci: [![Build Status](https://travis-ci.org/mediathekview/MediathekView.svg?branch=master)](https://travis-ci.org/mediathekview/MediathekView)
+
 # Sourceforge
 
 - [Website](https://zdfmediathk.sourceforge.net)
