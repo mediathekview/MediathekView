@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/mediathekview/MediathekView.svg?branch=master)](https://travis-ci.org/mediathekview/MediathekView)
 # MediathekView
 Das Programm **MediathekView** durchsucht die Mediatheken verschiedener überwiegend deutschsprachiger öffentlich-rechtlicher Sender, lädt Beiträge daraus herunter oder spielt diese ab (mit [VLC Media Player](https://videolan.org/vlc/) oder mit einem Programm eigener Wahl). Es können auch Sendereihen/Serien abonniert werden.
 
@@ -21,9 +22,6 @@ Derzeit werden die Mediatheken der folgenden Sender unterstützt:
 - DW TV (Deutsche Welle)
 - ORF (Österreichischer Rundfunk)
 - SRF (Schweizer Rundfunk) inkl. Podcasts
-
-# Status
-- Travis-ci: [![Build Status](https://travis-ci.org/mediathekview/MediathekView.svg?branch=master)](https://travis-ci.org/mediathekview/MediathekView)
 
 # Projektmanagment
 - [MediathekView Hub](https://hub.mediathekview.de)
