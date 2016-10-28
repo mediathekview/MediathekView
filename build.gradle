@@ -1,0 +1,58 @@
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+mainClassName = 'mediathek.Main'
+version = '0.0.1-SNAPSHOT'
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+        resources {
+            srcDirs = ['src']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['test']
+        }
+        resources {
+            srcDirs = ['test']
+        }
+    }
+}
+
+compileJava {
+    options.compilerArgs = ['-Xlint:all']
+}
+compileTestJava {
+    options.compilerArgs = ['-Xlint:all']
+}
+
+repositories {
+    jcenter()
+}
+
+ext {
+  swingxVersion = '1.6.5-1'
+}
+
+dependencies {
+    compile project(':MSearch')
+    compile "org.swinglabs.swingx:swingx-action:$swingxVersion"
+    compile "org.swinglabs.swingx:swingx-autocomplete:$swingxVersion"
+    compile "org.swinglabs.swingx:swingx-beaninfo:$swingxVersion"
+    compile "org.swinglabs.swingx:swingx-common:$swingxVersion"
+    compile "org.swinglabs.swingx:swingx-core:$swingxVersion"
+    compile "org.swinglabs.swingx:swingx-graphics:$swingxVersion"
+    compile "org.swinglabs.swingx:swingx-painters:$swingxVersion"
+    compile "org.swinglabs.swingx:swingx-plaf:$swingxVersion"
+
+    compile 'com.jgoodies:jgoodies-forms:1.9.0'
+    compile 'com.yuvimasory:orange-extensions:1.3.0'
+    compile 'net.sf.jchart2d:jchart2d:3.3.2'
+}
