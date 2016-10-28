@@ -1,6 +1,6 @@
-
 apply plugin: 'java'
 apply plugin: 'application'
+apply from: "${project.rootDir}/gradle/eclipse.gradle"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
