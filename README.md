@@ -29,6 +29,9 @@ Derzeit werden die Mediatheken der folgenden Sender unterstützt:
 
 # Projektmanagment
 - [MediathekView Hub](https://hub.mediathekview.de)
+- XMPP/Jabber @ elaon.de ([Registrieren](https://elaon.de/info/services/xmpp.html)).
+  + Nutzer: mediathekview@conference.elaon.de
+  + Entwickler: mediathekviewdev@conference.elaon.de
 
 # Sourceforge
 
