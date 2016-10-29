@@ -2,26 +2,21 @@ package mediathek.mac;
 
 import com.apple.eawt.Application;
 import com.jidesoft.utils.SystemInfo;
+
+import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import javax.imageio.ImageIO;
-import javax.swing.ButtonGroup;
 import javax.swing.KeyStroke;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
-import mediathek.config.MVConfig;
 import mediathek.gui.AboutDialog;
 
-/**
- * User: crystalpalace1977
- * Date: 07.03.15
- * Time: 23:12
- */
 public class MediathekGuiMac extends MediathekGui {
 
     /**
@@ -29,13 +24,24 @@ public class MediathekGuiMac extends MediathekGui {
      */
     private Thread osxProgressIndicatorThread = null;
 
-    /**
-     * Group manager for maximum number of Downloads Radio Buttons.
-     * */
-    private ButtonGroup group = null;
-
     public MediathekGuiMac(String[] ar) {
         super(ar);
+        //Window must be fully initialized to become fullscreen cadidate...
+        setWindowFullscreenCapability();
+    }
+
+    /**
+     * Enable Fullscreen window mode on OS X.
+     * Depends on OS X only java classes.
+     */
+    private void setWindowFullscreenCapability() {
+        try {
+            Class.forName("com.apple.eawt.FullScreenUtilities")
+                    .getMethod("setWindowCanFullScreen",Window.class,boolean.class)
+                    .invoke(null, this,true);
+        }
+        catch (Exception ignored) {
+        }
     }
 
     @Override
@@ -156,77 +162,4 @@ public class MediathekGuiMac extends MediathekGui {
         } catch (Exception ignored) {
         }
     }
-
-    private int getNumberOfDownloads() {
-        int numDownloads;
-        if (MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD).equals("")) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD, "1");
-            numDownloads = 1;
-        } else {
-            numDownloads = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD));
-        }
-
-        return numDownloads;
-    }
-
-//    @Override
-//    protected void setupMaximumNumberOfDownloadsMenuItem() {
-//        jMenuDownload.addSeparator();
-//
-//        final JMenu numDownloadsMenu = new JMenu("Anzahl gleichzeitiger Downloads");
-//        group = new ButtonGroup();
-//
-//        for (int i = 1; i <= 10; i++) {
-//            JRadioButtonMenuItem menuItem = new JRadioButtonMenuItem(Integer.toString(i));
-//            menuItem.addActionListener(e -> {
-//                final AbstractButton btn = (AbstractButton) e.getSource();
-//                if (btn != null) {
-//                    MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD, btn.getText());
-//                    Listener.notify(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
-//                }
-//            });
-//            group.add(menuItem);
-//            numDownloadsMenu.add(menuItem);
-//        }
-//        jMenuDownload.add(numDownloadsMenu);
-//
-//        Listener.addListener(new Listener(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
-//            @Override
-//            public void ping() {
-//                //FIXME selection is not properly changed when JFrame settings dialog is displayed...needs to be JDialog in the future...
-//                //JMenuBar gets destroyed when a JFrame is shown
-//                //modal JDialog will keep it
-//                //System.out.println("LISTENER NUM DOWNLOADS CALLED with " + getNumberOfDownloads());
-//                setupMaxDownloadButtonSelection(getNumberOfDownloads());
-//            }
-//        });
-//
-//        setupMaxDownloadButtonSelection(getNumberOfDownloads());
-//    }
-//
-//    private void setupMaxDownloadButtonSelection(int numDownloads) {
-//        if (group == null) {
-//            //System.out.println("GROUP IS NULL");
-//            return;
-//        }
-//
-//        final Enumeration<AbstractButton> elem = group.getElements();
-//        while (elem.hasMoreElements()) {
-//            final AbstractButton btn = elem.nextElement();
-//            if (btn.getText().equals(Integer.toString(numDownloads))) {
-//                btn.doClick();
-//                btn.setSelected(true);
-//                break;
-//            }
-//        }
-//    }
-//
-//    @Override
-//    protected void setupBandwidthMenuItem() {
-//    }
-//
-//    @Override
-//    protected void initSpinner() {
-//        //unused in OS X
-//    }
 }
