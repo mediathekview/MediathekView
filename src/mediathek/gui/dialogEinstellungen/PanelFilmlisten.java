@@ -136,7 +136,7 @@ public class PanelFilmlisten extends PanelVorlage {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(10);
                 jTable1.getColumnModel().getColumn(i).setMaxWidth(3000);
                 jTable1.getColumnModel().getColumn(i).setPreferredWidth(400);
-            } else if (!Daten.debug && (i == DatenFilmlisteUrl.FILM_UPDATE_SERVER_PRIO_NR || i == DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR)) {
+            } else if (i == DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR) {
                 jTable1.getColumnModel().getColumn(i).setMinWidth(0);
                 jTable1.getColumnModel().getColumn(i).setMaxWidth(0);
                 jTable1.getColumnModel().getColumn(i).setPreferredWidth(0);
@@ -153,9 +153,9 @@ public class PanelFilmlisten extends PanelVorlage {
             jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_ZEIT_NR)).setMinWidth(0);
             jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_ZEIT_NR)).setPreferredWidth(0);
             jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_ZEIT_NR)).setMaxWidth(0);
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_PRIO_NR)).setMinWidth(0);
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_PRIO_NR)).setPreferredWidth(0);
-            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_PRIO_NR)).setMaxWidth(0);
+//            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_PRIO_NR)).setMinWidth(0);
+//            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_PRIO_NR)).setPreferredWidth(0);
+//            jTable1.getColumnModel().getColumn(jTable1.convertColumnIndexToView(DatenFilmlisteUrl.FILM_UPDATE_SERVER_PRIO_NR)).setMaxWidth(0);
         }
     }
 
