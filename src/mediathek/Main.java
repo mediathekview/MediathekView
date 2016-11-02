@@ -60,6 +60,27 @@ public class Main {
         } catch (Exception ignored) {
         }
     }
+    
+    /**
+     * Tests if javafx is in the classpath by loading a well known class.
+     */
+    private static void testForJavaFx() {
+        try {
+            Class.forName("javafx.collections.FXCollections");
+        } catch (ClassNotFoundException e) {
+            final String[] javaFxErrorMsg = {
+                    "===========================================",
+                    "JavaFX wurde nicht im klassenpfad gefunden.",
+                    "Stellen Sie sicher, dass Sie ein Java JRE ab Version 8 benutzen.",
+                    "Falls Sie Linux nutzen, installieren Sie das openjfx-Paket ihres Package-Managers,",
+                    "oder nutzen Sie eine eigene JRE-Installation.",
+                    "===========================================" };
+            SysMsg.sysMsg(javaFxErrorMsg);
+
+            System.exit(1);
+        }
+
+    }
 
     /*
      * Aufruf:
@@ -166,6 +187,7 @@ public class Main {
 
             case GUI:
                 EventQueue.invokeLater(() -> {
+                    testForJavaFx();
                     //JavaFX stuff
                     Platform.setImplicitExit(false);
 
