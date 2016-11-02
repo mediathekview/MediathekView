@@ -1,0 +1,7 @@
+build
+dist/javadoc
+/.gradle/
+/bin/
+.classpath
+.project
+.settings/
