@@ -1,0 +1,19 @@
+language: java
+jdk:
+    - oraclejdk8
+install:
+    - cd ..
+    - git clone https://github.com/mediathekview/MSearch.git MSearch
+    - cd -
+
+
+addons:
+  sonarqube: true
+env:
+  global:
+    - secure: "jghiJcW8NWhRSYUL2cnK+sMSgVkH7cAxG0VzKhSmyNKD6nRiDwR3gouiZX2ouRA9n71Pqqk/555zjUpdx/jF5CMhJNxhrlFVd5yh2M8hOqoqYhrF3OnJlfQv74bynGsn9VuCwbTlq3ZUXugs8S+Pjy3+6auyVl9eqNmFpcyarliccx0VkAeocqnMRse7mYNuQhJ73x7Swcgn9C5M8WQ1UoZYMEJkcBsancfxqFBzKdj8esIsd1/gK1jRrH2dZ2XE7WaC8EGz1x4Y3zy4lHaSgfWVGxKkPzOIJ1w2ojrf4FWB+DgeSf+JO3gSKPVYQRpl5TCqUUVahK6MdNB92nylZ6jN1tRAJ+vaifZjq296ADqJv00angBdsMPejNYjrUvMrWXMhgcmMXCrc/MIfZaOsdjHPO3SEknYsF4s6v+uWWgd+FM/U02eKfA+JgNdk6chWzqAUnNeBqg86vEmNiebwoUp6PHl2k114ZdHbhQS5+co/4oFLDdYLNYRtCYSi060jeu/ght9OtMW8Y1RL+nu0I7QuQQIxU16o4U/r+tF9CeYH4yAyBT1QbK8Bpc5ghyyvIO3rC13CbpKjBrb8Pt2Fg3JlodM3zUiLfdsdxIW4R1O6a+ECPjEe/Y525dzopY3wOA4+SLU8+6vXucShOBeRZH5pSLObuvO/8We19k0zpc="
+script:
+  # other script steps might be done before running the actual SonarQube analysis
+  - ./gradlew assemble
+  - ./gradlew check
+  - sonar-scanner -Dsonar.login=$SONAR_TOKEN
