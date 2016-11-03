@@ -187,7 +187,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 days = 0;
             } else {
                 long max = 1000L * 60L * 60L * 24L * Daten.guiFilme.getFilterTage();
-                days = new Date().getTime() - max;
+                days = System.currentTimeMillis() - max;
             }
         } catch (Exception ex) {
             days = 0;
