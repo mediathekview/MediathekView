@@ -54,12 +54,12 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="740" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="725" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="437" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="419" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -157,7 +157,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanelLoeschen" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="303" max="32767" attributes="0"/>
+                          <EmptySpace pref="285" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -222,40 +222,35 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="jButtonCheckUrl" linkSize="6" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jTextFieldUrl" max="32767" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="1" max="-2" attributes="0">
                                   <Component id="jButtonLiveStreams" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jButtonAddOld" alignment="0" max="32767" attributes="0"/>
                                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
                                       <Component id="jButtonAllesSpeichern" linkSize="6" alignment="0" pref="154" max="32767" attributes="0"/>
-                                      <Component id="jButtonSize" linkSize="6" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="jButtonSearchUrl" linkSize="6" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="btnDiff" linkSize="6" alignment="0" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jTextFieldSearchUrl" max="32767" attributes="0"/>
                                   <Group type="102" attributes="0">
                                       <Component id="jButtonGc" linkSize="6" min="-2" pref="154" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="1" attributes="0">
                                       <Group type="103" groupAlignment="1" attributes="0">
-                                          <Component id="jTextFieldLiveStreams" alignment="0" pref="411" max="32767" attributes="0"/>
+                                          <Component id="jTextFieldLiveStreams" alignment="0" pref="351" max="32767" attributes="0"/>
                                           <Component id="jTextFieldOld" alignment="0" max="32767" attributes="0"/>
-                                          <Component id="jTextFieldPath" max="32767" attributes="0"/>
+                                          <Component id="txtDiff" pref="351" max="32767" attributes="0"/>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="jButtonDir" min="-2" max="-2" attributes="0"/>
                                           <Component id="jButtonDelLive" alignment="1" min="-2" max="-2" attributes="0"/>
                                           <Component id="jButtonOldList" min="-2" max="-2" attributes="0"/>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="btnPathDiff" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                              <Component id="cbkUrl" min="-2" max="-2" attributes="0"/>
+                                          </Group>
                                       </Group>
                                   </Group>
                               </Group>
@@ -263,19 +258,18 @@
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jButtonNurDoppelte" linkSize="6" min="-2" max="-2" attributes="0"/>
+                                      <Component id="btnNurDoppelte" linkSize="6" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="jButtonHashOlddoppelt" linkSize="6" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="jButtonTTUrl" linkSize="6" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="jButtonDoppelteUrls" linkSize="6" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="btnDelDoppelteUrls" linkSize="6" alignment="0" max="32767" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jButtonFehler" linkSize="6" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="jToggleButtonFastAuto" linkSize="6" min="-2" pref="154" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="jButtonAddOldFilm" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
@@ -288,12 +282,9 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jButtonAllesSpeichern" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="jButtonGc" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jButtonAllesSpeichern" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButtonGc" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -301,16 +292,14 @@
                           <Component id="jToggleButtonFastAuto" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButtonDoppelteUrls" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnDelDoppelteUrls" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jButtonNurDoppelte" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnNurDoppelte" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jButtonHashOlddoppelt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jButtonTTUrl" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="55" max="32767" attributes="0"/>
-                      <Component id="jButtonAddOldFilm" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="76" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <Component id="jButtonLiveStreams" linkSize="8" min="-2" max="-2" attributes="0"/>
@@ -322,19 +311,10 @@
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jButtonSize" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jTextFieldPath" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jButtonDir" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jButtonSearchUrl" linkSize="5" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jTextFieldSearchUrl" linkSize="5" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jButtonCheckUrl" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jTextFieldUrl" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnDiff" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtDiff" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnPathDiff" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="cbkUrl" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="103" groupAlignment="3" attributes="0">
@@ -342,19 +322,12 @@
                               <Component id="jButtonDelLive" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace pref="102" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JButton" name="jButtonCheckUrl">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="get URL Filesize:"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JTextField" name="jTextFieldUrl">
-            </Component>
             <Component class="javax.swing.JButton" name="jButtonGc">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Gc"/>
@@ -375,29 +348,22 @@
                 <Property name="text" type="java.lang.String" value="-FASTAUTO"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="jButtonSize">
+            <Component class="javax.swing.JButton" name="btnDiff">
               <Properties>
-                <Property name="text" type="java.lang.String" value="getTotalSpace"/>
+                <Property name="text" type="java.lang.String" value="was fehlt in der Liste:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="jTextFieldPath">
+            <Component class="javax.swing.JTextField" name="txtDiff">
               <Properties>
-                <Property name="text" type="java.lang.String" value="/"/>
+                <Property name="text" type="java.lang.String" value="/home/emil/Desktop/thsch&#xfc;ss/filmlisten/alex/filme.json-summe"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="jButtonDir">
+            <Component class="javax.swing.JButton" name="btnPathDiff">
               <Properties>
                 <Property name="text" type="java.lang.String" value=":::"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="jButtonSearchUrl">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="URL suchen"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JTextField" name="jTextFieldSearchUrl">
-            </Component>
-            <Component class="javax.swing.JButton" name="jButtonDoppelteUrls">
+            <Component class="javax.swing.JButton" name="btnDelDoppelteUrls">
               <Properties>
                 <Property name="text" type="java.lang.String" value="doppelte URLs l&#xf6;schen"/>
               </Properties>
@@ -412,7 +378,7 @@
                 <Property name="text" type="java.lang.String" value="/tmp/usb/2016-09-10-filme.xz"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="jButtonNurDoppelte">
+            <Component class="javax.swing.JButton" name="btnNurDoppelte">
               <Properties>
                 <Property name="text" type="java.lang.String" value="NUR doppelte URLs"/>
               </Properties>
@@ -447,19 +413,9 @@
                 <Property name="text" type="java.lang.String" value=":::"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="jLabel1">
+            <Component class="javax.swing.JCheckBox" name="cbkUrl">
               <Properties>
-                <Property name="text" type="java.lang.String" value="5"/>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
-                    <BevelBorder bevelType="1"/>
-                  </Border>
-                </Property>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JButton" name="jButtonAddOldFilm">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Add old Film (Sel. aus Liste)"/>
+                <Property name="text" type="java.lang.String" value="nur URL"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -476,12 +432,12 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="740" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="725" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="437" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="419" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
