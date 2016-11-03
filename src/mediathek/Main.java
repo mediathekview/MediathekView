@@ -61,6 +61,24 @@ public class Main {
         }
     }
 
+    /**
+     * Tests if javafx is in the classpath by loading a well known class.
+     */
+    private static void testForJavaFx() {
+        try {
+            Class.forName("javafx.application.Platform");
+        } catch (ClassNotFoundException e) {
+            System.out.println("===========================================");
+            System.out.println("JavaFX wurde nicht im klassenpfad gefunden.");
+            System.out.println("Stellen Sie sicher, dass Sie ein Java JRE ab Version 8 benutzen.");
+            System.out.println("Falls Sie Linux nutzen, installieren Sie das openjfx-Paket ihres Package-Managers,");
+            System.out.println("oder nutzen Sie eine eigene JRE-Installation.");
+            System.out.println("===========================================");
+
+            System.exit(1);
+        }
+    }
+
     /*
      * Aufruf:
      * java -jar Mediathek [Pfad zur Konfigdatei, sonst homeverzeichnis] [Schalter]
@@ -76,6 +94,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(final String args[]) {
+    	testForJavaFx();
         StartupMode state = StartupMode.GUI;
 
         try {

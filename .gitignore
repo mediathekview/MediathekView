@@ -2,6 +2,7 @@ build
 dist/javadoc
 /.gradle/
 /bin/
+/.checkstyle
 .classpath
 .project
 .settings/
