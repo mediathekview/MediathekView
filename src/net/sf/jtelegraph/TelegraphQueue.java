@@ -80,11 +80,10 @@ import javax.swing.Timer;
  * @version 1.0
  * @since 1.0
  */
-@SuppressWarnings("unchecked")
 public class TelegraphQueue implements ActionListener {
 
     // a queue, a timer and a notification
-    private Queue queue;
+    private Queue<Telegraph> queue;
     private Timer timer;
     private Telegraph current;
 
@@ -93,7 +92,7 @@ public class TelegraphQueue implements ActionListener {
      * the local attributes.
      */
     public TelegraphQueue() {
-        queue = new LinkedList();
+        queue = new LinkedList<>();
         timer = new Timer(50, this);
         current = null;
     }

@@ -32,6 +32,7 @@
 package org.jdesktop.animation.timing.interpolation;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Stores a list of times from 0 to 1 (the elapsed fraction of an animation
@@ -44,7 +45,7 @@ import java.util.ArrayList;
  */
 public class KeyTimes {
     
-    private ArrayList<Float> times = new ArrayList<>();
+    private List<Float> times = new ArrayList<>();
     
     /** 
      * Creates a new instance of KeyTimes.  Times should be in increasing
@@ -74,7 +75,7 @@ public class KeyTimes {
         }
     }
     
-    ArrayList getTimes() {
+    List<Float> getTimes() {
         return times;
     }
     

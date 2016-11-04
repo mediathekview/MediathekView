@@ -166,7 +166,6 @@ public class PanelEinstellungen extends PanelVorlage {
         jSpinnerDays.setValue(s);
     }
 
-    @SuppressWarnings("unchecked")
     private void setupLookAndFeelComboBox() {
         try {
             //query all installed LAFs
@@ -185,7 +184,7 @@ public class PanelEinstellungen extends PanelVorlage {
                     idx = i;
                 }
             }
-            DefaultComboBoxModel<String> model = new DefaultComboBoxModel(themeList.toArray());
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(themeList.toArray(new String[0]));
             jComboBoxLookAndFeel.setModel(model);
             jComboBoxLookAndFeel.setSelectedIndex(idx);
 

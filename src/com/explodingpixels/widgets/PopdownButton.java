@@ -49,7 +49,7 @@ public class PopdownButton {
 
         // this is a trick to get hold of the client property which prevents
         // closing of the popup when the button is pressed.
-        JComboBox box = new JComboBox();
+        JComboBox<?> box = new JComboBox<>();
         Object preventHide = box.getClientProperty("doNotCancelPopup");
         fButton.putClientProperty("doNotCancelPopup", preventHide);
     }

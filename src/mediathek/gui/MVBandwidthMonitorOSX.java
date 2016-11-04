@@ -28,7 +28,7 @@ public class MVBandwidthMonitorOSX {
     private double counter = 0; // double sonst "läuft" die Chart nicht
     private JDialog hudDialog = null;
     private final Trace2DLtd m_trace = new Trace2DLtd(300);
-    private IAxis x_achse = null;
+    private IAxis<?> x_achse = null;
 
     /**
      * Timer for collecting sample data.
@@ -71,7 +71,7 @@ public class MVBandwidthMonitorOSX {
         x_achse.setMajorTickSpacing(10);
         x_achse.setMinorTickSpacing(1);
 
-        IAxis y_achse = chart.getAxisY();
+        IAxis<?> y_achse = chart.getAxisY();
         y_achse.getAxisTitle().setTitle("");
         y_achse.setPaintScale(true);
         y_achse.setVisible(true);

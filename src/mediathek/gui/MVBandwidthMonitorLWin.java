@@ -43,7 +43,7 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
 
     private double counter = 0; // double sonst "läuft" die Chart nicht
     private Trace2DLtd m_trace = new Trace2DLtd(300);
-    private IAxis x_achse = null;
+    private IAxis<?> x_achse = null;
     private boolean stopBeob = false;
     private JDialog jDialog = null;
     private JFrame parent = null;
@@ -94,7 +94,7 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
         x_achse.setMajorTickSpacing(10);
         x_achse.setMinorTickSpacing(1);
 
-        IAxis y_achse = chart.getAxisY();
+        IAxis<?> y_achse = chart.getAxisY();
         y_achse.getAxisTitle().setTitle("");
         y_achse.setPaintScale(true);
         y_achse.setVisible(true);
@@ -421,7 +421,6 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
         }
     }
 
-    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
