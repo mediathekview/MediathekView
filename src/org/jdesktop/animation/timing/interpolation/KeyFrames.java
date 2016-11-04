@@ -42,7 +42,7 @@ package org.jdesktop.animation.timing.interpolation;
  */
 public class KeyFrames {
     
-    private KeyValues keyValues;
+    private KeyValues<Object> keyValues;
     private KeyTimes keyTimes;
     private KeyInterpolators interpolators;
     
@@ -52,7 +52,7 @@ public class KeyFrames {
      * assumes LINEAR interpolation.
      * @param keyValues values that will be assumed at each time in keyTimes
      */
-    public KeyFrames(KeyValues keyValues) {
+    public KeyFrames(KeyValues<Object> keyValues) {
         init(keyValues, null, (Interpolator)null);
     }
     
@@ -67,7 +67,7 @@ public class KeyFrames {
      * same number of elements since these structures are meant to have
      * corresponding entries; an exception is thrown otherwise.
      */
-    public KeyFrames(KeyValues keyValues, KeyTimes keyTimes) {
+    public KeyFrames(KeyValues<Object> keyValues, KeyTimes keyTimes) {
         init(keyValues, keyTimes, (Interpolator)null);
     }
     
@@ -94,7 +94,7 @@ public class KeyFrames {
      * be zero (interpolators == null), one, or one less than the size of 
      * keyTimes.
      */
-    public KeyFrames(KeyValues keyValues, KeyTimes keyTimes,
+    public KeyFrames(KeyValues<Object> keyValues, KeyTimes keyTimes,
             Interpolator... interpolators) {
         init(keyValues, keyTimes, interpolators);
     }
@@ -116,7 +116,7 @@ public class KeyFrames {
      * be zero (interpolators == null), one, or one less than the size of 
      * keyTimes.
      */
-    public KeyFrames(KeyValues keyValues, Interpolator... interpolators) {
+    public KeyFrames(KeyValues<Object> keyValues, Interpolator... interpolators) {
         init(keyValues, null, interpolators);
     }
 
@@ -124,7 +124,7 @@ public class KeyFrames {
      * Utility function called by constructors to perform common
      * initialization chores
      */
-    private void init(KeyValues keyValues, KeyTimes keyTimes,
+    private void init(KeyValues<Object> keyValues, KeyTimes keyTimes,
             Interpolator... interpolators) {
         int numFrames = keyValues.getSize();
         // If keyTimes null, create our own
@@ -158,11 +158,11 @@ public class KeyFrames {
         this.interpolators = new KeyInterpolators(numFrames - 1, interpolators);
     }
         
-    Class getType() {
+    Class<?> getType() {
         return keyValues.getType();
     }
     
-    KeyValues getKeyValues() {
+    KeyValues<Object> getKeyValues() {
         return keyValues;
     }
     

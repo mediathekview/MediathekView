@@ -24,7 +24,9 @@ import mSearch.tool.Datum;
 
 public class TModelFilm extends TModel {
 
-    Class[] types;
+    private static final long serialVersionUID = 1L;
+    
+    private Class<?>[] types;
 
     public TModelFilm(Object[][] data, Object[] columnNames) {
         super(data, columnNames);

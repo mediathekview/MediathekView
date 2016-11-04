@@ -34,6 +34,8 @@ import mediathek.tool.GuiFunktionen;
 
 public class DialogZiel extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+    
     public boolean ok = false;
     public String ziel;
 //    private Component parentComponent = null;

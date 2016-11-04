@@ -23,7 +23,9 @@ import mediathek.config.MVColor;
 
 public class TModelColor extends TModel {
 
-    Class[] types;
+    private static final long serialVersionUID = 1L;
+    
+    private Class<?>[] types;
 
     public TModelColor(Object[][] data, Object[] columnNames) {
         super(data, columnNames);

@@ -35,6 +35,8 @@ import mediathek.tool.UrlHyperlinkAction;
 
 public class PanelProgrammInfos extends PanelVorlage {
 
+    private static final long serialVersionUID = 1L;
+    
     public PanelProgrammInfos(Daten dd, JFrame parentComponent) {
         super(dd, parentComponent);
         initComponents();

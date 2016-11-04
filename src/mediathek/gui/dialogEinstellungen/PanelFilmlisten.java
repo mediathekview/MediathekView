@@ -42,6 +42,8 @@ import mediathek.tool.TModel;
 
 public class PanelFilmlisten extends PanelVorlage {
 
+    private static final long serialVersionUID = 1L;
+    
     public PanelFilmlisten(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();

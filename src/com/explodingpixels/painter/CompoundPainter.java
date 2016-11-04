@@ -16,6 +16,7 @@ public class CompoundPainter<T> implements MacWidgetsPainter<T> {
      * @param painters the {@code Painter}s to delegate to.
      */
     @SafeVarargs
+    @SuppressWarnings("varargs")
     public CompoundPainter(MacWidgetsPainter<T>... painters) {
         fPainters = painters;
     }

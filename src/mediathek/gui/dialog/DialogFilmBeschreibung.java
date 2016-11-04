@@ -28,6 +28,8 @@ import mediathek.config.Icons;
 
 public class DialogFilmBeschreibung extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+    
     DatenFilm datenFilm;
     JFrame paFrame;
     Daten daten;

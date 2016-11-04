@@ -39,6 +39,8 @@ import org.jdesktop.swingx.JXHyperlink;
 
 public class MVFilmInformationLWin extends javax.swing.JDialog implements MVFilmInfo {
 
+    private static final long serialVersionUID = 1L;
+
     private JXHyperlink lblUrlThemaField;
     private JXHyperlink lblUrlSubtitle;
     private JTextArea textAreaBeschreibung;

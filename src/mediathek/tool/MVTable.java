@@ -46,6 +46,8 @@ import mediathek.daten.*;
 
 public final class MVTable extends JTable {
 
+    private static final long serialVersionUID = 1L;
+    
     public enum TableType {
         STANDARD, FILME, DOWNLOADS, ABOS, PSET, PROG, MEDIA_DB
     };
@@ -186,6 +188,7 @@ public final class MVTable extends JTable {
         mdl.setValueIsAdjusting(false);
     }
 
+    @SuppressWarnings("fallthrough")
     public void setHeight() {
         int sizeArea = 0;
         int size;
@@ -861,8 +864,10 @@ public final class MVTable extends JTable {
         return ++ret;
     }
 
-    class TableRowTransferHandlerDownload extends TransferHandler {
+    private class TableRowTransferHandlerDownload extends TransferHandler {
 
+        private static final long serialVersionUID = 1L;
+        
         //private final DataFlavor localObjectFlavor = new ActivationDataFlavor(Integer.class, DataFlavor.javaJVMLocalObjectMimeType, "Integer Row Index");
         private final DataFlavor localObjectFlavor = new DataFlavor(Integer.class, "Integer Row Index");
         private JTable table = null;

@@ -24,6 +24,8 @@ import javax.swing.SwingUtilities;
 
 public class MVRun extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+    
     /**
      *
      * @param parent

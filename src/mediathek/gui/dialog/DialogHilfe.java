@@ -25,6 +25,8 @@ import mediathek.tool.EscBeenden;
 
 public class DialogHilfe extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+    
     public DialogHilfe(JFrame parent, boolean modal, String text) {
         super(parent, modal);
         initComponents();

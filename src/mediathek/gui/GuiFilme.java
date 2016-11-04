@@ -55,6 +55,8 @@ import static mediathek.tool.MVTable.*;
 
 public class GuiFilme extends PanelVorlage {
 
+    private static final long serialVersionUID = 1L;
+
     private JButton buttonArray[];
 //    private static final int FILTER_ZEIT_STARTWERT = 15;
 //    private static final int FILTER_DAUER_STARTWERT = 0;
@@ -72,6 +74,8 @@ public class GuiFilme extends PanelVorlage {
         jScrollPaneFilter.getVerticalScrollBar().setUnitIncrement(16);
         jPanelFilter.setLayout(new BorderLayout());
         mVFilterPanel = new MVFilterPanel(parentComponent, daten) {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void mvFfilter(int i) {
                 setFilterProfile(i);
@@ -88,6 +92,8 @@ public class GuiFilme extends PanelVorlage {
             }
         };
         mVFilterFrame = new MVFilterFrame(d) {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void mvFfilter(int i) {
                 setFilterProfile(i);
@@ -209,6 +215,8 @@ public class GuiFilme extends PanelVorlage {
         });
         Daten.mediathekGui.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "sender");
         Daten.mediathekGui.getRootPane().getActionMap().put("sender", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -221,6 +229,8 @@ public class GuiFilme extends PanelVorlage {
         });
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "abspielen");
         this.getActionMap().put("abspielen", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 playFilm();
@@ -228,6 +238,8 @@ public class GuiFilme extends PanelVorlage {
         });
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "download");
         this.getActionMap().put("download", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 saveFilm();
@@ -235,6 +247,8 @@ public class GuiFilme extends PanelVorlage {
         });
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "tabelle");
         this.getActionMap().put("tabelle", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 tabelle.requestFocusSelelct(jScrollPane1);
@@ -242,6 +256,8 @@ public class GuiFilme extends PanelVorlage {
         });
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_I, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "info");
         this.getActionMap().put("info", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!Daten.filmInfo.isVisible()) {
@@ -252,6 +268,8 @@ public class GuiFilme extends PanelVorlage {
 
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-copy");
         this.getActionMap().put("url-copy", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
@@ -268,6 +286,8 @@ public class GuiFilme extends PanelVorlage {
             this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_H, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-hd-copy");
         }
         this.getActionMap().put("url-hd-copy", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
@@ -280,6 +300,8 @@ public class GuiFilme extends PanelVorlage {
 
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_K, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-k-copy");
         this.getActionMap().put("url-k-copy", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
@@ -292,6 +314,8 @@ public class GuiFilme extends PanelVorlage {
 
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_M, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mediensammlung");
         this.getActionMap().put("mediensammlung", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
@@ -305,6 +329,8 @@ public class GuiFilme extends PanelVorlage {
         });
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_G, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "gesehen");
         this.getActionMap().put("gesehen", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 filmGesehen();
@@ -312,6 +338,8 @@ public class GuiFilme extends PanelVorlage {
         });
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_N, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "ungesehen");
         this.getActionMap().put("ungesehen", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 filmUngesehen();
@@ -322,6 +350,7 @@ public class GuiFilme extends PanelVorlage {
         InputMap im = tabelle.getInputMap();
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "film_starten");
         am.put("film_starten", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1849,7 +1878,7 @@ public class GuiFilme extends PanelVorlage {
                             DatenAbo datenAbo;
                             if ((datenAbo = Daten.listeAbo.getAboFuerFilm_schnell(film, false /*ohne Länge*/)) != null) {
                                 //gibts schon, dann löschen
-                                DialogEditAbo dialog = new DialogEditAbo(daten.mediathekGui, true, daten, datenAbo, false/*onlyOne*/);
+                                DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, datenAbo, false/*onlyOne*/);
                                 dialog.setVisible(true);
                                 if (dialog.ok) {
                                     Daten.listeAbo.aenderungMelden();

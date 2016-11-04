@@ -359,7 +359,7 @@ public class Daten {
                 Files.deleteIfExists(path1);
             } catch (IOException e) {
                 SysMsg.sysMsg("Die Einstellungen konnten nicht zurückgesetzt werden.");
-                MVMessageDialog.showMessageDialog(this.mediathekGui, "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
+                MVMessageDialog.showMessageDialog(Daten.mediathekGui, "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
                         + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
                         + getSettingsDirectory_String() + "\n"
                         + "von Hand löschen und dann das Programm wieder starten.\n\n"

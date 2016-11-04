@@ -34,7 +34,9 @@ import mediathek.gui.dialogEinstellungen.PanelMeldungen;
  */
 public class GuiMeldungen extends PanelVorlage {
 
-    JSplitPane splitPane = null;
+    private static final long serialVersionUID = 1L;
+    
+    private JSplitPane splitPane = null;
 
     public GuiMeldungen(Daten d, JFrame parentComponent) {
         super(d, parentComponent);

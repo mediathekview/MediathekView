@@ -39,6 +39,8 @@ import mediathek.tool.TextCopyPaste;
 
 public class PanelDateinamen extends PanelVorlage {
 
+    private static final long serialVersionUID = 1L;
+    
     public boolean ok = false;
     public String ziel = "";
     private final Color cGruen = new Color(0, 153, 51);

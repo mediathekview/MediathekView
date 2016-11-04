@@ -44,7 +44,9 @@ import mediathek.tool.*;
 
 public class PanelPsetImport extends PanelVorlage {
 
-    ListePsetVorlagen listePsetVorlagen = new ListePsetVorlagen();
+    private static final long serialVersionUID = 1L;
+    
+    private ListePsetVorlagen listePsetVorlagen = new ListePsetVorlagen();
 
     public PanelPsetImport(Daten d, JFrame parentComponent) {
         super(d, parentComponent);

@@ -29,6 +29,8 @@ import mediathek.tool.EscBeenden;
 
 public class DialogFarbe extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+
     public Color farbe = null;
 
     public DialogFarbe(JFrame parent, boolean modal, Color color) {

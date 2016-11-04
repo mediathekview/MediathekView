@@ -32,6 +32,8 @@ import org.jdesktop.swingx.JXBusyLabel;
 
 public class DialogBeenden extends JDialog {
 
+    private static final long serialVersionUID = 1L;
+    
     private static final String CANCEL_AND_TERMINATE_PROGRAM = "Downloads abbrechen und Programm beenden";
     private static final String WAIT_FOR_DOWNLOADS_AND_TERMINATE = "Auf Abschluß aller Downloads warten, danach beenden";
     private static final String WAIT_FOR_RUNNING_DOWNLOADS_AND_TERMINATE = "Nur auf bereits laufende Downloads warten, danach beenden";

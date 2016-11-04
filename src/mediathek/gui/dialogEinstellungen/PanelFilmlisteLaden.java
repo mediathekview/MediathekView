@@ -36,7 +36,9 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.TextCopyPaste;
 
 public class PanelFilmlisteLaden extends PanelVorlage {
-
+    
+    private static final long serialVersionUID = 1L;
+    
     public PanelFilmlisteLaden(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();

@@ -12,6 +12,8 @@ import javax.swing.JComponent;
  */
 public class TrackingSpacer extends JComponent {
 
+    private static final long serialVersionUID = 1L;
+    
     private final JComponent fComponent;
     private final TrackingDimension fTrackingDimension;
     private final int fDelta;
