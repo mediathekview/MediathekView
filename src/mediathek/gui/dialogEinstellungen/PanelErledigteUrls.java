@@ -179,7 +179,6 @@ public class PanelErledigteUrls extends PanelVorlage {
                 bw.newLine();
                 //
                 bw.flush();
-                bw.close();
             } catch (Exception ex) {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
