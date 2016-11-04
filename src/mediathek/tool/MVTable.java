@@ -188,6 +188,7 @@ public final class MVTable extends JTable {
         mdl.setValueIsAdjusting(false);
     }
 
+    @SuppressWarnings("fallthrough")
     public void setHeight() {
         int sizeArea = 0;
         int size;
