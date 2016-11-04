@@ -206,7 +206,6 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
             bw.newLine();
             //
             bw.flush();
-            bw.close();
         } catch (Exception ex) {
             SwingUtilities.invokeLater(() -> {
                 MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
