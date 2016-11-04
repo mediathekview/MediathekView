@@ -11,6 +11,8 @@ import com.explodingpixels.widgets.WindowUtils;
 
 public class FocusStateMatteBorder extends MatteBorder {
 
+    private static final long serialVersionUID = 1L;
+    
     private final Color fFocusedColor;
 
     private final Color fUnfocusedColor;

@@ -25,6 +25,8 @@ import mediathek.tool.TModel;
 
 public class ListeProg extends LinkedList<DatenProg> {
 
+    private static final long serialVersionUID = 1L;
+
     public DatenProg remove(String name) {
         DatenProg ret = null;
         Iterator<DatenProg> it = this.iterator();

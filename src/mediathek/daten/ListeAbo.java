@@ -35,9 +35,11 @@ import mediathek.tool.TModelAbo;
 
 public class ListeAbo extends LinkedList<DatenAbo> {
 
-    Daten daten;
-    final String[] LEER = {""};
-    String[] titel, thema, irgendwo;
+    private static final long serialVersionUID = 1L;
+
+    private Daten daten;
+    private final String[] LEER = {""};
+    private String[] titel, thema, irgendwo;
 
     public ListeAbo(Daten ddaten) {
         daten = ddaten;

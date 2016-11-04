@@ -36,6 +36,8 @@ import mediathek.tool.TModel;
 public class ListePset extends LinkedList<DatenPset> {
     // Liste aller Programmsets
 
+    private static final long serialVersionUID = 1L;
+
     public static final String MUSTER_PFAD_ZIEL = "ZIELPFAD";
     public static final String MUSTER_PFAD_VLC = "PFAD_VLC";
     public static final String MUSTER_PFAD_FLV = "PFAD_FLVSTREAMER";

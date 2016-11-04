@@ -35,6 +35,8 @@ import mediathek.tool.MVMessageDialog;
 
 public class DialogContinueDownload extends JDialog {
 
+    private static final long serialVersionUID = 1L;
+    
     public enum DownloadResult {
 
         CANCELLED, CONTINUE, RESTART_WITH_NEW_NAME

@@ -124,8 +124,8 @@ public class FilmeLaden {
     public void loadFilmlistDialog(Daten daten, boolean manuell) {
         if (manuell || GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUS) {
             // Dialog zum Laden der Filme anzeigen
-            DialogLeer dialog = new DialogLeer(daten.mediathekGui, true);
-            dialog.init("Einstellungen zum Laden der Filme", new PanelFilmlisteLaden(daten, daten.mediathekGui));
+            DialogLeer dialog = new DialogLeer(Daten.mediathekGui, true);
+            dialog.init("Einstellungen zum Laden der Filme", new PanelFilmlisteLaden(daten, Daten.mediathekGui));
             dialog.setVisible(true);
         } else {
             // Filme werden automatisch geladen

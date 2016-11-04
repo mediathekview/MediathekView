@@ -37,6 +37,8 @@ import mediathek.tool.TModelDownload;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
 
+    private static final long serialVersionUID = 1L;
+
     private final Daten daten;
     private final LinkedList<DatenDownload> aktivDownloads = new LinkedList<>();
 
@@ -340,10 +342,10 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     @SuppressWarnings("unchecked")
     public synchronized void setModelProgress(TModelDownload tModel) {
-        Iterator<List> it = tModel.getDataVector().iterator();
+        Iterator<List<?>> it = tModel.getDataVector().iterator();
         int row = 0;
         while (it.hasNext()) {
-            List l = it.next();
+            List<?> l = it.next();
             DatenDownload datenDownload = (DatenDownload) l.get(DatenDownload.DOWNLOAD_REF);
             if (datenDownload.start != null) {
                 if (datenDownload.start.status == Start.STATUS_RUN) {
@@ -359,7 +361,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     @SuppressWarnings("unchecked")
     public synchronized void setModelProgressAlleStart(TModelDownload tModel) {
-        for (List l : (Iterable<List>) tModel.getDataVector()) {
+        for (List<Object> l : (Iterable<List<Object>>) tModel.getDataVector()) {
             DatenDownload datenDownload = (DatenDownload) l.get(DatenDownload.DOWNLOAD_REF);
             if (datenDownload.start != null) {
                 l.set(DatenDownload.DOWNLOAD_RESTZEIT, datenDownload.getTextRestzeit());

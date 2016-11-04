@@ -25,6 +25,8 @@ import mediathek.daten.DatenDownload;
  */
 public final class MVStatusBar extends JPanel {
 
+    private static final long serialVersionUID = 1L;
+
     private boolean stopTimer = false;
     private final EnumMap<MVStatusBar.StatusbarIndex, String> displayListForLeftLabel = new EnumMap<>(MVStatusBar.StatusbarIndex.class);
     private MVStatusBar.StatusbarIndex currentIndex = MVStatusBar.StatusbarIndex.NONE;
@@ -235,7 +237,7 @@ public final class MVStatusBar extends JPanel {
     }
 
     private void setInfoDownload() {
-        lblSel.setText(daten.guiDownloads.tabelle.getSelectedRowCount() + "");
+        lblSel.setText(Daten.guiDownloads.tabelle.getSelectedRowCount() + "");
         String textLinks = getInfoTextDownloads(true /*mitAbo*/);
 
         displayListForLeftLabel.put(MVStatusBar.StatusbarIndex.DOWNLOAD, textLinks);

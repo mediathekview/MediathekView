@@ -39,6 +39,8 @@ import mediathek.tool.*;
 
 public class GuiAbo extends PanelVorlage {
 
+    private static final long serialVersionUID = 1L;
+    
     private ToolBar toolBar;
 
     public GuiAbo(Daten d, JFrame parentComponent) {
@@ -123,6 +125,8 @@ public class GuiAbo extends PanelVorlage {
                 true /*Icon*/, MVConfig.Configs.SYSTEM_TAB_ABO_LINEBREAK));
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "tabelle");
         this.getActionMap().put("tabelle", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 tabelle.requestFocusSelelct(jScrollPane1);
@@ -133,6 +137,7 @@ public class GuiAbo extends PanelVorlage {
         InputMap im = tabelle.getInputMap();
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "aendern");
         am.put("aendern", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -142,6 +147,7 @@ public class GuiAbo extends PanelVorlage {
         //löschen
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "loeschen");
         am.put("loeschen", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
 
             @Override
             public void actionPerformed(ActionEvent e) {

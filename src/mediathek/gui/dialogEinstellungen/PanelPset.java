@@ -29,6 +29,8 @@ import mediathek.gui.PanelVorlage;
 
 public class PanelPset extends PanelVorlage {
 
+    private static final long serialVersionUID = 1L;
+    
     public PanelPset(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();

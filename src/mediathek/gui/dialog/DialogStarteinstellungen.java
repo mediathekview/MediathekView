@@ -37,14 +37,16 @@ import mediathek.tool.GuiFunktionenProgramme;
 
 public class DialogStarteinstellungen extends javax.swing.JDialog {
 
-    Daten daten;
+    private static final long serialVersionUID = 1L;
+    
+    private Daten daten;
     private final static int STAT_START = 1;
     private final static int STAT_PFAD = 2;
     private final static int STAT_PSET = 3;
     private final static int STAT_FERTIG = 4;
     private int status = STAT_START;
     private final JFrame parentComponent;
-    JCheckBox jCheckBox = new JCheckBox("Einmal am Tag nach einer neuen Programmversion suchen");
+    private JCheckBox jCheckBox = new JCheckBox("Einmal am Tag nach einer neuen Programmversion suchen");
     private boolean anpassen = false;
 
     public DialogStarteinstellungen(JFrame parent, Daten dd) {

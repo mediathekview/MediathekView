@@ -42,6 +42,8 @@ import mediathek.tool.TextCopyPaste;
 
 public class PanelPsetKurz extends PanelVorlage {
 
+    private static final long serialVersionUID = 1L;
+    
     public boolean ok = false;
     public String zielPfad = "";
     private DatenPset pSet = null;

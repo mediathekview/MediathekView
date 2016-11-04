@@ -63,7 +63,7 @@ public class KeyValues<T> {
 
     private final List<T> values = new ArrayList<>();
     private final Evaluator<T> evaluator;
-    private final Class<?> type;
+    private final Class<T> type;
     private T startValue;
 
     /**
@@ -79,7 +79,7 @@ public class KeyValues<T> {
      * found that can interpolate between the value types supplied
      */
     public static <T> KeyValues<T> create(T... params) {
-        return new KeyValues(params);
+        return new KeyValues<>(params);
     }
 
     /**
@@ -93,8 +93,8 @@ public class KeyValues<T> {
      * @throws IllegalArgumentException if params does not have at least
      * one value.
      */
-    public static <T> KeyValues<T> create(Evaluator evaluator, T... params) {
-        return new KeyValues(evaluator, params);
+    public static <T> KeyValues<T> create(Evaluator<T> evaluator, T... params) {
+        return new KeyValues<>(evaluator, params);
     }
 
     /**
@@ -108,7 +108,7 @@ public class KeyValues<T> {
     /**
      * Private constructor, called by factory method
      */
-    private KeyValues(Evaluator evaluator, T... params) {
+    private KeyValues(Evaluator<T> evaluator, T... params) {
         if (params == null) {
             throw new IllegalArgumentException("params array cannot be null");
         } else if (params.length == 0) {
@@ -120,7 +120,7 @@ public class KeyValues<T> {
             values.add(null);
         }
         Collections.addAll(values, params);
-        this.type = params.getClass().getComponentType();
+        this.type = (Class<T>) params.getClass().getComponentType();
         this.evaluator = evaluator;
     }
     
@@ -139,7 +139,7 @@ public class KeyValues<T> {
      * @return a Class value representing the type of values stored in this
      *         object
      */
-    Class<?> getType() {
+    Class<T> getType() {
         return this.type;
     }
 

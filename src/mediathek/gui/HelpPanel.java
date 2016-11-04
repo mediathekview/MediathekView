@@ -34,6 +34,8 @@ import mediathek.tool.*;
 
 public class HelpPanel extends javax.swing.JPanel {
 
+    private static final long serialVersionUID = 1L;
+
     private Daten daten;
     private JFrame parent;
 

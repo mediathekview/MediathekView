@@ -41,6 +41,8 @@ import mediathek.daten.DatenDownload;
 
 public class CellRendererFilme extends DefaultTableCellRenderer {
 
+    private static final long serialVersionUID = 1L;
+    
     private static ImageIcon film_start_tab = null;
     private static ImageIcon film_start_sw_tab = null;
     private static ImageIcon film_rec_tab = null;

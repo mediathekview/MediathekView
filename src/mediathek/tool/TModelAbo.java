@@ -24,7 +24,9 @@ import mSearch.tool.Datum;
 
 public class TModelAbo extends TModel {
 
-    Class[] types;
+    private static final long serialVersionUID = 1L;
+    
+    private Class<?>[] types;
 
     public TModelAbo(Object[][] data, Object[] columnNames) {
         super(data, columnNames);

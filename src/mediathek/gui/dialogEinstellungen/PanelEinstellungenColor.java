@@ -35,6 +35,8 @@ import mediathek.tool.TModelColor;
 
 public class PanelEinstellungenColor extends PanelVorlage {
 
+    private static final long serialVersionUID = 1L;
+    
     public PanelEinstellungenColor(Daten d, JFrame pparentComponent) {
         super(d, pparentComponent);
         initComponents();

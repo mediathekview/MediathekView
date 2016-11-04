@@ -48,6 +48,8 @@ import mediathek.tool.*;
 
 public class PanelPsetLang extends PanelVorlage {
 
+    private static final long serialVersionUID = 1L;
+    
     private int neuZaehler = 0;
     private String exportPfad = "";
     private ListePset listePset;
