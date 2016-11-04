@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     private long days = 0;
-    private long now;
     private boolean doNotShowFutureFilms, doNotShowGeoBlockedFilms;
     private boolean blacklistIsActive;
     private long filmlaengeSoll = 0;
@@ -164,7 +163,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         blacklistIsActive = true; // Blacklist nur wenn "auch für Abos" geklickt, egal ob ein- oder ausgeschaltet
         doNotShowFutureFilms = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
         doNotShowGeoBlockedFilms = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN));
-        now = System.currentTimeMillis();
+
         return checkFilm(film);
     }
 
@@ -185,7 +184,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             if (Daten.guiFilme.getFilterTage() == 0) {
                 days = 0;
             } else {
-                long max = 1000L * 60L * 60L * 24L * Daten.guiFilme.getFilterTage();
+                final long max = 1000L * 60L * 60L * 24L * Daten.guiFilme.getFilterTage();
                 days = System.currentTimeMillis() - max;
             }
         } catch (Exception ex) {
@@ -199,7 +198,6 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         blacklistIsActive = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON));
         doNotShowFutureFilms = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
         doNotShowGeoBlockedFilms = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN));
-        now = System.currentTimeMillis();
     }
 
     private boolean checkFilm(DatenFilm film) {
@@ -313,7 +311,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         try {
             // Blacklist Zukunft
             if (doNotShowFutureFilms) {
-                if (film.datumFilm.getTime() > now) {
+                if (film.datumFilm.getTime() > System.currentTimeMillis()) {
                     return false;
                 }
             }
