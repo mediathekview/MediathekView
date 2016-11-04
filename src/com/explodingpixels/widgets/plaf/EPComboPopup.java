@@ -34,7 +34,7 @@ import javax.swing.plaf.basic.ComboPopup;
  */
 public class EPComboPopup implements ComboPopup {
 
-    private final JComboBox fComboBox;
+    private final JComboBox<?> fComboBox;
     private JPopupMenu fPopupMenu = new JPopupMenu();
     private Font fFont;
     private ComboBoxVerticalCenterProvider fComboBoxVerticalCenterProvider =
@@ -42,7 +42,7 @@ public class EPComboPopup implements ComboPopup {
 
     private static final int LEFT_SHIFT = 5;
 
-    public EPComboPopup(JComboBox comboBox) {
+    public EPComboPopup(JComboBox<?> comboBox) {
         fComboBox = comboBox;
         fFont = comboBox.getFont();
         fPopupMenu.addPopupMenuListener(createPopupMenuListener());
@@ -202,7 +202,7 @@ public class EPComboPopup implements ComboPopup {
      *
      * @return null.
      */
-    public JList getList() {
+    public JList<?> getList() {
         return null;
     }
 
@@ -242,13 +242,13 @@ public class EPComboPopup implements ComboPopup {
     // An interface to allow a third-party to provide the center of a given compoennt. ////////////
 
     public interface ComboBoxVerticalCenterProvider {
-        int provideCenter(JComboBox comboBox);
+        int provideCenter(JComboBox<?> comboBox);
     }
 
     // A default implementation of ComboBoxVerticalCenterProvider. ////////////////////////////////
 
     private static class DefaultVerticalCenterProvider implements ComboBoxVerticalCenterProvider {
-        public int provideCenter(JComboBox comboBox) {
+        public int provideCenter(JComboBox<?> comboBox) {
             return comboBox.getHeight() / 2;
         }
     }

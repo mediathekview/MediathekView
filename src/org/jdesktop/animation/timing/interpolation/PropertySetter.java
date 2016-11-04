@@ -170,7 +170,7 @@ public class PropertySetter extends TimingTargetAdapter {
      */
     public static <T> Animator createAnimator(int duration, 
             Object object, String propertyName, 
-            Evaluator evaluator, T... params) {
+            Evaluator<?> evaluator, T... params) {
         PropertySetter ps = new PropertySetter(object, propertyName, evaluator, 
                 params);
         return new Animator(duration, ps);
@@ -251,7 +251,7 @@ public class PropertySetter extends TimingTargetAdapter {
      * cannot be found for propertyName.
      */
     public <T> PropertySetter(Object object, String propertyName, 
-            Evaluator evaluator, T... params) {
+            Evaluator<?> evaluator, T... params) {
         this(object, propertyName, 
                 new KeyFrames(KeyValues.create(evaluator, params)));
     }
@@ -360,7 +360,7 @@ public class PropertySetter extends TimingTargetAdapter {
      * Returns the type used in this property setter (defers to KeyFrames
      * for this information).
      */
-    private Class getType() {
+    private Class<?> getType() {
         return keyFrames.getType();
     }
     
