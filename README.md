@@ -39,5 +39,5 @@ Derzeit werden die Mediatheken der folgenden Sender unterstützt:
 - [Screenshots](http://zdfmediathk.sourceforge.net/screenshots.html)
 - [Download](https://sourceforge.net/projects/zdfmediathk/files/) Installationspakete
 
-# ([Entwicklung](https://github.com/mediathekview/MediathekView/wiki/Entwicklung))
-Siehe / See: ([Wiki | Entwicklung](https://github.com/mediathekview/MediathekView/wiki/Entwicklung))
+# [Entwicklung](https://github.com/mediathekview/MediathekView/wiki/Entwicklung)
+Siehe / See: [Wiki | Entwicklung](https://github.com/mediathekview/MediathekView/wiki/Entwicklung)
