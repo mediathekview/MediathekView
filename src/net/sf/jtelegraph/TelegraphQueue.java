@@ -147,7 +147,7 @@ public class TelegraphQueue implements ActionListener {
             if ((!queue.isEmpty()) && (!current.isRunning())) {
 
                 // poll a notification from the queue
-                current = (Telegraph) queue.poll();
+                current = queue.poll();
 
                 // animate
                 current.animate();
