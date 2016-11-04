@@ -183,7 +183,7 @@ public class DialogZielExportPset extends javax.swing.JDialog {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Logdatei speichern");
+                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Logdatei speichern");
                 chooser.setMode(FileDialog.SAVE);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {

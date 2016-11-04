@@ -118,7 +118,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         });
         this.setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
         this.setTitle("Filter");
-        GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_FILTER, this, daten.mediathekGui);
+        GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_FILTER, this, Daten.mediathekGui);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {

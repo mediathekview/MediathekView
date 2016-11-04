@@ -1878,7 +1878,7 @@ public class GuiFilme extends PanelVorlage {
                             DatenAbo datenAbo;
                             if ((datenAbo = Daten.listeAbo.getAboFuerFilm_schnell(film, false /*ohne Länge*/)) != null) {
                                 //gibts schon, dann löschen
-                                DialogEditAbo dialog = new DialogEditAbo(daten.mediathekGui, true, daten, datenAbo, false/*onlyOne*/);
+                                DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, datenAbo, false/*onlyOne*/);
                                 dialog.setVisible(true);
                                 if (dialog.ok) {
                                     Daten.listeAbo.aenderungMelden();
