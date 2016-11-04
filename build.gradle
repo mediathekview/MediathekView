@@ -34,7 +34,9 @@ compileTestJava {
 }
 
 repositories {
-    jcenter()
+    maven {
+          url "https://repo.mediathekview.de/repository/maven-public/"
+    }
 }
 
 ext {
