@@ -139,6 +139,7 @@ public class PropertySetter extends TimingTargetAdapter {
      * cannot be found for propertyName.
      */
     @SafeVarargs
+    @SuppressWarnings("varargs")
     public static <T> Animator createAnimator(int duration, 
             Object object, String propertyName, T... params) {
         PropertySetter ps = new PropertySetter(object, propertyName, params);
@@ -170,6 +171,7 @@ public class PropertySetter extends TimingTargetAdapter {
      * cannot be found for propertyName.
      */
     @SafeVarargs
+    @SuppressWarnings("varargs")
     public static <T> Animator createAnimator(int duration, 
             Object object, String propertyName, 
             Evaluator<?> evaluator, T... params) {
@@ -226,6 +228,7 @@ public class PropertySetter extends TimingTargetAdapter {
      * cannot be found for propertyName.
      */
     @SafeVarargs
+    @SuppressWarnings("varargs")
     public <T> PropertySetter(Object object, String propertyName, T... params) {
         this(object, propertyName, new KeyFrames(KeyValues.create(params)));
     }
@@ -254,6 +257,7 @@ public class PropertySetter extends TimingTargetAdapter {
      * cannot be found for propertyName.
      */
     @SafeVarargs
+    @SuppressWarnings("varargs")
     public <T> PropertySetter(Object object, String propertyName, 
             Evaluator<?> evaluator, T... params) {
         this(object, propertyName, 
