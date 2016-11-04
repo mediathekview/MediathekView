@@ -30,6 +30,8 @@ import mediathek.daten.DatenMediaDB;
 
 public class CellRendererMediaDB extends DefaultTableCellRenderer {
 
+    private static final long serialVersionUID = 1L;
+    
     private static ImageIcon ja_16 = null;
     private static ImageIcon nein_12 = null;
 

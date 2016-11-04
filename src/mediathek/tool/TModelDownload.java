@@ -23,6 +23,7 @@ import mSearch.tool.Datum;
 import mediathek.daten.DatenDownload;
 
 public class TModelDownload extends TModel {
+    private static final long serialVersionUID = 1L;
 
     private Class[] types;
 

@@ -19,6 +19,8 @@ import mediathek.gui.AboutDialog;
 
 public class MediathekGuiMac extends MediathekGui {
 
+    private static final long serialVersionUID = 1L;
+    
     /**
      * Repaint-Thread for progress indicator on OS X.
      */

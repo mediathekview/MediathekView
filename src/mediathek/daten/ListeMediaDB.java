@@ -39,6 +39,8 @@ import mediathek.tool.TModelMediaDB;
 
 public class ListeMediaDB extends LinkedList<DatenMediaDB> {
 
+    private static final long serialVersionUID = 1L;
+
     public final static String TRENNER = "  |###|  ";
     public final String FILE_SEPERATOR_MEDIA_PATH = "<>";
     private boolean makeIndex = false;

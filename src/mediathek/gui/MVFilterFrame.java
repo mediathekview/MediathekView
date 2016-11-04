@@ -40,9 +40,11 @@ import mediathek.tool.TextCopyPaste;
 
 public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
-    Daten daten;
+    private static final long serialVersionUID = 1L;
+
+    private Daten daten;
     static Point mouseDownCompCoords;
-    JFrame parent;
+    private JFrame parent;
     private int aktFilter = -1;
 
     public MVFilterFrame(Daten d) {
@@ -56,7 +58,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), "einstellungen");
             ActionMap am = jComboBoxFilterSender.getActionMap();
             am.put("einstellungen", new AbstractAction() {
-
+                private static final long serialVersionUID = 1L;
+                
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Daten.dialogEinstellungen.setVisible(true);
@@ -66,7 +69,8 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), "einstellungen");
             am = jComboBoxFilterThema.getActionMap();
             am.put("einstellungen", new AbstractAction() {
-
+                private static final long serialVersionUID = 1L;
+                
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Daten.dialogEinstellungen.setVisible(true);

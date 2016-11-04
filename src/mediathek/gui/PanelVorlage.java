@@ -25,6 +25,8 @@ import mediathek.tool.MVTable;
 
 public class PanelVorlage extends javax.swing.JPanel {
 
+    private static final long serialVersionUID = 1L;
+    
     public Daten daten;
     public boolean stopBeob = false;
     public JFrame parentComponent = null;

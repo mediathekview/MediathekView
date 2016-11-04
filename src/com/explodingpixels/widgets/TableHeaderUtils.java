@@ -34,6 +34,8 @@ public class TableHeaderUtils {
      */
     public static JComponent createCornerComponent(final JTable table) {
         return new JComponent() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             protected void paintComponent(Graphics g) {
                 paintHeader(g, table, 0, getWidth());
@@ -79,6 +81,8 @@ public class TableHeaderUtils {
      */
     private static Border createTableHeaderEmptyColumnPainter(final JTable table) {
         return new AbstractBorder() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
                 // if this JTableHeader is parented in a JViewport, then paint the table header

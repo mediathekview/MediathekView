@@ -37,6 +37,8 @@ import mediathek.tool.MVMessageDialog;
 
 public class DialogZielExportPset extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+
     public boolean ok = false;
     public String ziel = "";
     private Component parentComponent = null;

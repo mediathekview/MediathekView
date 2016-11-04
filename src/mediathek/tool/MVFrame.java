@@ -32,6 +32,8 @@ import mediathek.res.GetIcon;
 
 public class MVFrame extends javax.swing.JFrame {
 
+    private static final long serialVersionUID = 1L;
+    
     private final Daten daten;
     private final MediathekGui.TABS state;
     private Configs nrGroesse = null;

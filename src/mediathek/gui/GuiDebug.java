@@ -44,6 +44,8 @@ import mediathek.gui.dialogEinstellungen.PanelFilmlisten;
 
 public class GuiDebug extends JPanel {
 
+    private static final long serialVersionUID = 1L;
+    
     private final JButton[] buttonSender;
     private final String[] sender;
     private Daten daten;

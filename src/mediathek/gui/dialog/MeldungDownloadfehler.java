@@ -29,6 +29,8 @@ import mediathek.tool.EscBeenden;
 
 public class MeldungDownloadfehler extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+    
     private Timer countdownTimer = null;
 
     /**

@@ -38,6 +38,8 @@ import org.jdesktop.swingx.JXBusyLabel;
 
 public class DialogBeendenZeit extends JDialog {
     
+    private static final long serialVersionUID = 1L;
+    
     private static final String WAIT_FOR_DOWNLOADS_AND_TERMINATE = "Auf Abschluß aller Downloads warten und danach Programm beenden";
     private static final String WAIT_FOR_DOWNLOADS_AND_DONT_TERMINATE_PROGRAM = "Auf Abschluß aller Downloads warten, Programm danach NICHT beenden";
     private static final String DONT_START = "Downloads nicht starten";

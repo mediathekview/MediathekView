@@ -23,7 +23,9 @@ import mediathek.daten.DatenMediaDB;
 
 public class TModelMediaDB extends TModel {
 
-    Class[] types;
+    private static final long serialVersionUID = 1L;
+    
+    private Class[] types;
 
     public TModelMediaDB(Object[][] data, Object[] columnNames) {
         super(data, columnNames);

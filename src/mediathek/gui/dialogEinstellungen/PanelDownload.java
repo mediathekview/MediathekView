@@ -33,6 +33,8 @@ import mediathek.gui.dialog.DialogHilfe;
 
 public class PanelDownload extends PanelVorlage {
 
+    private static final long serialVersionUID = 1L;
+    
     public PanelDownload(Daten d, JFrame parent) {
         super(d, parent);
         initComponents();

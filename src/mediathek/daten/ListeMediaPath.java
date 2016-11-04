@@ -26,6 +26,8 @@ import mediathek.tool.TModel;
 
 public class ListeMediaPath extends LinkedList<DatenMediaPath> {
 
+    private static final long serialVersionUID = 1L;
+
     public boolean addSave(DatenMediaPath dmp) {
         while (countSave() > 10) {
             removeFirstSave();

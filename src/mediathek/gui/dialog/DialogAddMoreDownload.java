@@ -41,6 +41,8 @@ import mediathek.tool.EscBeenden;
 
 public class DialogAddMoreDownload extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+    
     public boolean addAll = false;
     public boolean cancel = false;
     public boolean info;

@@ -35,6 +35,8 @@ import mediathek.tool.MVMessageDialog;
 
 public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+    
     public boolean ok = false;
     public String ziel;
     private Frame parentComponent = null;

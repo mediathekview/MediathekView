@@ -45,7 +45,8 @@ public class MVUsedUrls {
         this.notifyEvent = notifyEvent;
         listeUrlsSortDate = new LinkedList<>();
         listeUrls = new HashSet<String>() {
-
+            private static final long serialVersionUID = 1L;
+            
             @Override
             public void clear() {
                 listeUrlsSortDate.clear();

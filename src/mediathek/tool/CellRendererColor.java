@@ -29,6 +29,8 @@ import mediathek.config.Daten;
 
 public class CellRendererColor extends DefaultTableCellRenderer {
 
+    private static final long serialVersionUID = 1L;
+    
     @Override
     public Component getTableCellRendererComponent(
             JTable table,

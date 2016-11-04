@@ -42,6 +42,8 @@ import mediathek.tool.MVMessageDialog;
 
 public class PanelEinstellungen extends PanelVorlage {
 
+    private static final long serialVersionUID = 1L;
+    
     private final static String ICONSET_STANDARD = "Standard";
     private final String ALLE = " Alle ";
 

@@ -39,6 +39,8 @@ import mediathek.tool.MVMessageDialog;
 
 public class DialogEditAbo extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+    
     private final DatenAbo aktAbo;
     private JTextField[] textfeldListe;
     private final JComboBox<String> comboboxPSet = new JComboBox<>();
