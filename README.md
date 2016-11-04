@@ -39,25 +39,5 @@ Derzeit werden die Mediatheken der folgenden Sender unterstützt:
 - [Screenshots](http://zdfmediathk.sourceforge.net/screenshots.html)
 - [Download](https://sourceforge.net/projects/zdfmediathk/files/) Installationspakete
 
-# Entwicklung
-
-## Code auschecken
-```bash
-mkdir mediathekview
-cd mediathekview
-git clone https://github.com/mediathekview/MediathekView.git
-git clone https://github.com/mediathekview/MSearch.git
-```
-
-## Bauen und starten an der Kommandozeile
-```bash
-cd MediathekView
-./gradlew run
-```
-
-## Entwicklung mit Netbeans
-* Verzeichnisse `MSearch` und `MediathekView` mit Netbeans öffnen
-
-## Entwicklung mit Eclipse
-* Falls noch nicht vorhanden: [Plugin buildship](https://projects.eclipse.org/projects/tools.buildship) installieren
-* Projekt `MediathekView` als Gradle-Projekt importieren. `MSearch` wird automatisch mit importiert.
+# ([Entwicklung](https://github.com/mediathekview/MediathekView/wiki/Entwicklung))
+Siehe / See: ([Wiki | Entwicklung](https://github.com/mediathekview/MediathekView/wiki/Entwicklung))
