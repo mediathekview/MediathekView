@@ -44,7 +44,7 @@ public class TModel extends DefaultTableModel {
         // die Indexspalte ist die SPALTE 0!!!!
         int ret = 0;
         for (List<Integer> list : (Iterable<List<Integer>>) getDataVector()) {
-            if ((Integer) list.get(0) == idxWert) {
+            if (list.get(0) == idxWert) {
                 return ret;
             }
             ++ret;
