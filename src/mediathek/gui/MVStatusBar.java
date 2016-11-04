@@ -237,7 +237,7 @@ public final class MVStatusBar extends JPanel {
     }
 
     private void setInfoDownload() {
-        lblSel.setText(daten.guiDownloads.tabelle.getSelectedRowCount() + "");
+        lblSel.setText(Daten.guiDownloads.tabelle.getSelectedRowCount() + "");
         String textLinks = getInfoTextDownloads(true /*mitAbo*/);
 
         displayListForLeftLabel.put(MVStatusBar.StatusbarIndex.DOWNLOAD, textLinks);
