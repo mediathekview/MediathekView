@@ -45,6 +45,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     /**
      * Add item without notifying registered listeners.
+     *
      * @param b {@link DatenBlacklist} item.
      * @return true if collection is changed
      */
@@ -120,14 +121,18 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         return object;
     }
 
+    /**
+     * Main filtering routine
+     */
     public synchronized void filterListe() {
-        filterListe(Daten.listeFilme, Daten.listeFilmeNachBlackList);
-    }
+        final ListeFilme listeFilme = Daten.listeFilme;
+        final ListeFilme listeRet = Daten.listeFilmeNachBlackList;
 
-    public synchronized void filterListe(ListeFilme listeFilme, ListeFilme listeRet) {
+        loadCurrentFilterSettings();
+
         Duration.counterStart("Blacklist filtern");
         listeRet.clear();
-        loadCurrentFilterSettings();
+
         if (listeFilme != null) {
             listeRet.setMeta(listeFilme);
 
@@ -138,8 +143,13 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             listeRet.neueFilme = false;
 
             final List<DatenFilm> col = listeFilme.parallelStream()
-                    .filter(this::checkFilm_)
+                    //always filter for date
+                    .filter(this::checkDate)
+                    //then the rest...
+                    .filter(this::applyFilters)
                     .collect(Collectors.toList());
+
+            //are there new film entries?
             col.parallelStream()
                     .filter(DatenFilm::isNew)
                     .findFirst()
@@ -154,6 +164,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         Duration.counterStop("Blacklist filtern");
     }
 
+    //Filterfunktion für Abos! :D
     public synchronized boolean checkBlackOkFilme_Downloads(DatenFilm film) {
         // true wenn Film angezeigt wird!!
         // hier werden die Filme für Downloads gesucht, Zeit ist "0"
@@ -164,7 +175,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         doNotShowFutureFilms = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ZUKUNFT_NICHT_ANZEIGEN));
         doNotShowGeoBlockedFilms = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN));
 
-        return checkFilm(film);
+        return applyFiltersForAbos(film);
     }
 
     /**
@@ -200,8 +211,12 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         doNotShowGeoBlockedFilms = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_GEO_NICHT_ANZEIGEN));
     }
 
-    private boolean checkFilm(DatenFilm film) {
-        // true wenn Film angezeigt wird!!
+    /**
+     * Apply filters for ABOS if check box is active
+     * @param film item to be filtered
+     * @return true if film shall be displayed
+     */
+    private boolean applyFiltersForAbos(DatenFilm film) {
         // erst mal den Filter Tage, kommt aus dem Filter und deswegen immer
         if (!checkDate(film)) {
             return false;
@@ -212,12 +227,10 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         if (!blacklistIsActive) {
             return true;
         }
-        // keine Geo-gesperrten Filme
-        if (doNotShowGeoBlockedFilms) {
-            if (!film.arr[DatenFilm.FILM_GEO].isEmpty() && !film.arr[DatenFilm.FILM_GEO].contains(MVConfig.get(MVConfig.Configs.SYSTEM_GEO_STANDORT))) {
-                return false;
-            }
-        }
+
+        if (!checkGeoBlockedFilm(film))
+            return false;
+
         if (!checkIfFilmIsInFuture(film)) {
             return false;
         }
@@ -231,9 +244,9 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         for (DatenBlacklist blacklistEntry : this) {
             if (Filter.filterAufFilmPruefen(blacklistEntry.arr[DatenBlacklist.BLACKLIST_SENDER], blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA],
                     Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL])
-                    ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL].toLowerCase().split(","),
+                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL].toLowerCase().split(","),
                     Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL])
-                    ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL].toLowerCase().split(","),
+                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL].toLowerCase().split(","),
                     new String[]{""}, 0, true /*min*/, film, true /*auch die Länge prüfen*/
             )) {
                 return Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
@@ -242,40 +255,56 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         return !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
     }
 
-    private boolean checkFilm_(DatenFilm film) {
-        // true wenn Film angezeigt wird!!
-        // erst mal den Filter Tage, kommt aus dem Filter und deswegen immer
-        if (!checkDate(film)) {
-            return false;
+    /**
+     * Check if film would be geoblocked for user
+     *
+     * @param film item to be checked
+     * @return true if it is NOT blocked, false if it IS blocked
+     */
+    private boolean checkGeoBlockedFilm(DatenFilm film) {
+        boolean result = true;
+        if (doNotShowGeoBlockedFilms) {
+            if (!film.arr[DatenFilm.FILM_GEO].isEmpty() && !film.arr[DatenFilm.FILM_GEO].contains(MVConfig.get(MVConfig.Configs.SYSTEM_GEO_STANDORT))) {
+                result = false;
+            }
         }
+        return result;
+    }
 
+    /**
+     * Apply filters to film.
+     *
+     * @param film item to be filtered
+     * @return true if film can be displayed
+     */
+    private boolean applyFilters(DatenFilm film) {
+        // true wenn Film angezeigt wird!!
         //===========================================
         // dann die Blacklist, nur wenn eingeschaltet
         if (!blacklistIsActive) {
             return true;
         }
-        // keine Geo-gesperrten Filme
-        if (doNotShowGeoBlockedFilms) {
-            if (!film.arr[DatenFilm.FILM_GEO].isEmpty() && !film.arr[DatenFilm.FILM_GEO].contains(MVConfig.get(MVConfig.Configs.SYSTEM_GEO_STANDORT))) {
-                return false;
-            }
-        }
+
+        if (!checkGeoBlockedFilm(film))
+            return false;
+
         if (!checkIfFilmIsInFuture(film)) {
             return false;
         }
+
         if (!checkFilmLength(film)) {
             // wegen der Möglichkeit "Whiteliste" muss das extra geprüft werden
             return false;
         }
-        if (this.isEmpty()) {
+        if (this.isEmpty())
             return true;
-        }
-        for (DatenBlacklist blacklistEntry : this) {
-            if (Filter.filterAufFilmPruefen(blacklistEntry.arr[DatenBlacklist.BLACKLIST_SENDER], blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA],
-                    blacklistEntry.patternTitle
-                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL].split(","),
-                    blacklistEntry.patternThema
-                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL].split(","),
+
+        for (DatenBlacklist entry : this) {
+            if (Filter.filterAufFilmPruefen(entry.arr[DatenBlacklist.BLACKLIST_SENDER], entry.arr[DatenBlacklist.BLACKLIST_THEMA],
+                    entry.patternTitle
+                            ? new String[]{entry.arr[DatenBlacklist.BLACKLIST_TITEL]} : entry.arr[DatenBlacklist.BLACKLIST_TITEL].split(","),
+                    entry.patternThema
+                            ? new String[]{entry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]} : entry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL].split(","),
                     new String[]{""}, 0, true /*min*/, film, true /*auch die Länge prüfen*/
             )) {
                 return Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
@@ -286,6 +315,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     /**
      * Check film based on date
+     *
      * @param film item to be checked
      * @return true if film can be displayed
      */
@@ -303,6 +333,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     /**
      * Check if a future film should be displayed.
+     *
      * @param film item to be checked.
      * @return true if it should be displayed.
      */
@@ -323,6 +354,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     /**
      * Filter based on film length.
+     *
      * @param film item to check
      * @return true if film should be displayed
      */
