@@ -28,6 +28,8 @@ import mediathek.tool.UrlHyperlinkAction;
 
 public class DialogHinweisUpdate extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+    
     private String text = "";
     private final JFrame parent;
 

@@ -43,6 +43,8 @@ import mediathek.tool.UrlHyperlinkAction;
  */
 public class PanelFilmBeschreibung extends JPanel implements ListSelectionListener {
 
+    private static final long serialVersionUID = 1L;
+    
     private DatenFilm currentFilm = null;
     private MVTable table = null;
 

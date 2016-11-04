@@ -190,7 +190,6 @@ public class Logfile {
             bw.newLine();
             bw.newLine();
             //
-            bw.close();
             ret = true;
         } catch (Exception ex) {
             Log.errorLog(319865493, ex);

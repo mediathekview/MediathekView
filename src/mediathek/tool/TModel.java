@@ -24,6 +24,8 @@ import javax.swing.table.DefaultTableModel;
 
 public class TModel extends DefaultTableModel {
 
+    private static final long serialVersionUID = 1L;
+    
     public TModel() {
     }
 
@@ -41,8 +43,8 @@ public class TModel extends DefaultTableModel {
         // liefert die Zeile in der die erste Spalte idx enthält
         // die Indexspalte ist die SPALTE 0!!!!
         int ret = 0;
-        for (List list : (Iterable<List>) getDataVector()) {
-            if ((Integer) list.get(0) == idxWert) {
+        for (List<Integer> list : (Iterable<List<Integer>>) getDataVector()) {
+            if (list.get(0) == idxWert) {
                 return ret;
             }
             ++ret;

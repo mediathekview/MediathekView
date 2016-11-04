@@ -18,6 +18,8 @@ import javax.swing.plaf.basic.BasicButtonUI;
  */
 public class ImageButton extends JButton {
 
+    private static final long serialVersionUID = 1L;
+    
     // create a static index for the alpha channel of a raster image. i'm not exactly sure where
     // it's specified that red = channel 0, green = channel 1, blue = channel 2, and
     // alpha = channel 3, but this have been the values i've observed.

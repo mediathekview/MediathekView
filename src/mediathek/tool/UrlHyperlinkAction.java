@@ -33,8 +33,10 @@ import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 
 public class UrlHyperlinkAction extends AbstractAction {
 
-    String url;
-    JFrame jFrameParent;
+    private static final long serialVersionUID = 1L;
+    
+    private String url;
+    private JFrame jFrameParent;
 
     public UrlHyperlinkAction(JFrame jjFrameParent, String uurl) throws URISyntaxException {
         url = uurl;

@@ -37,6 +37,8 @@ import mediathek.tool.MVMessageDialog;
 
 public class DialogZielExportPset extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+
     public boolean ok = false;
     public String ziel = "";
     private Component parentComponent = null;
@@ -181,7 +183,7 @@ public class DialogZielExportPset extends javax.swing.JDialog {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(ddaten.mediathekGui, "Logdatei speichern");
+                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Logdatei speichern");
                 chooser.setMode(FileDialog.SAVE);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {

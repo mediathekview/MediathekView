@@ -46,6 +46,8 @@ import mediathek.tool.*;
 
 public class DialogMediaDB extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+    
     private final JFrame parent;
 //    private boolean init = false;
     private MVTable tabelleFilme;

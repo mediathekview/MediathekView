@@ -72,6 +72,8 @@ public class SourceListCountBadgeRenderer {
 
     private class CustomJLabel extends JLabel {
 
+        private static final long serialVersionUID = 1L;
+        
         private Color getSelectedBadgeColor() {
             return fSelectedColor;
         }

@@ -38,6 +38,8 @@ import mediathek.tool.UrlHyperlinkAction;
 
 public class AboutPanel extends javax.swing.JPanel {
 
+    private static final long serialVersionUID = 1L;
+    
     private MarqueePane marqueePane;
     private final JFrame parentFrame;
     final private Color greyColor = new Color(159, 159, 159);
@@ -416,7 +418,8 @@ public class AboutPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private class WebsiteHyperlinkAction extends AbstractAction {
-
+        private static final long serialVersionUID = 1L;
+        
         public WebsiteHyperlinkAction() throws URISyntaxException {
             putValue(SHORT_DESCRIPTION, Konstanten.ADRESSE_WEBSITE);
             putValue(LONG_DESCRIPTION, Konstanten.ADRESSE_WEBSITE);
@@ -432,7 +435,8 @@ public class AboutPanel extends javax.swing.JPanel {
     }
 
     private class DonationHyperlinkAction extends AbstractAction {
-
+        private static final long serialVersionUID = 1L;
+        
         public DonationHyperlinkAction() throws URISyntaxException {
             putValue(SHORT_DESCRIPTION, Konstanten.ADRESSE_DONATION);
             putValue(LONG_DESCRIPTION, Konstanten.ADRESSE_DONATION);
@@ -448,7 +452,8 @@ public class AboutPanel extends javax.swing.JPanel {
     }
 
     private class ForumHyperlinkAction extends AbstractAction {
-
+        private static final long serialVersionUID = 1L;
+        
         public ForumHyperlinkAction() throws URISyntaxException {
             putValue(SHORT_DESCRIPTION, Konstanten.ADRESSE_FORUM);
             putValue(LONG_DESCRIPTION, Konstanten.ADRESSE_FORUM);
@@ -464,7 +469,8 @@ public class AboutPanel extends javax.swing.JPanel {
     }
 
     private class AnleitungHyperlinkAction extends AbstractAction {
-
+        private static final long serialVersionUID = 1L;
+        
         public AnleitungHyperlinkAction() throws URISyntaxException {
             putValue(SHORT_DESCRIPTION, Konstanten.ADRESSE_ANLEITUNG);
             putValue(LONG_DESCRIPTION, Konstanten.ADRESSE_ANLEITUNG);

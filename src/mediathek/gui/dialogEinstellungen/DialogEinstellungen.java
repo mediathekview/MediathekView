@@ -34,7 +34,9 @@ import mediathek.tool.GuiFunktionen;
 
 public class DialogEinstellungen extends javax.swing.JFrame {
 
-    Daten ddaten;
+    private static final long serialVersionUID = 1L;
+
+    private Daten ddaten;
     public boolean ok = false;
     private PanelEinstellungen panelEinstellungen;
     private PanelDownload panelDownload;

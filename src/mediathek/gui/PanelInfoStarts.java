@@ -29,6 +29,8 @@ import mSearch.daten.DatenFilm;
 
 public class PanelInfoStarts extends JPanel {
 
+    private static final long serialVersionUID = 1L;
+    
     private TModel tModel;
 
     public PanelInfoStarts() {

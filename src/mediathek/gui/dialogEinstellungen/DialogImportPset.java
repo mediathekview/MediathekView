@@ -26,6 +26,8 @@ import mediathek.tool.EscBeenden;
 
 public class DialogImportPset extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+
     public boolean ok = false;
     private ListePset liste;
     private Daten ddaten;

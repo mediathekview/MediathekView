@@ -30,7 +30,9 @@ import mediathek.daten.DatenProg;
 
 public class CellRendererProgramme extends DefaultTableCellRenderer {
 
-    Daten daten;
+    private static final long serialVersionUID = 1L;
+    
+    private Daten daten;
     private static ImageIcon ja_16 = null;
     private static ImageIcon nein_12 = null;
 

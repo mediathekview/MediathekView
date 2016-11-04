@@ -190,6 +190,8 @@ public class PopupButton<E> {
 
 	private static class CustomJButton extends JButton {
 
+	    private static final long serialVersionUID = 1L;
+	    
 		@Override
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);

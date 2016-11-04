@@ -35,6 +35,8 @@ import mediathek.daten.DatenAbo;
 
 public class CellRendererAbo extends DefaultTableCellRenderer {
 
+    private static final long serialVersionUID = 1L;
+    
     private final MVSenderIconCache senderIconCache;
     private static ImageIcon ja_16 = null;
     private static ImageIcon nein_12 = null;

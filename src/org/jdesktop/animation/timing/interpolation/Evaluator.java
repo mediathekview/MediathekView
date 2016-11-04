@@ -75,7 +75,7 @@ public abstract class Evaluator<T> {
     /**
      * HashMap that holds all registered evaluators
      */
-    private static final Map<Class<?>, Class<? extends Evaluator>> 
+    private static final Map<Class<?>, Class<? extends Evaluator<?>>> 
             impls = new HashMap<>();
     
     /**
@@ -101,7 +101,7 @@ public abstract class Evaluator<T> {
     }
 
     private static void register(Class<?> type,
-                                Class<? extends Evaluator> impl)
+                                Class<? extends Evaluator<?>> impl)
     {
         impls.put(type, impl);
     }
@@ -112,7 +112,7 @@ public abstract class Evaluator<T> {
 
     @SuppressWarnings("unchecked")
     static <T> Evaluator<T> create(Class<?> type) {
-        Class<? extends Evaluator> interpClass = null;
+        Class<? extends Evaluator<?>> interpClass = null;
         for (Class<?> klass : impls.keySet()) {
             if (klass.isAssignableFrom(type)) {
                 interpClass = impls.get(klass);
@@ -126,7 +126,7 @@ public abstract class Evaluator<T> {
                     " Evaluator");
         }
         try {
-            Constructor<? extends Evaluator> ctor =
+            Constructor<? extends Evaluator<?>> ctor =
                 interpClass.getConstructor();
             return (Evaluator<T>)ctor.newInstance();
         } catch (Exception e) {

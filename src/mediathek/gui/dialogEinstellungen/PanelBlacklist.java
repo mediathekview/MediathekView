@@ -50,6 +50,8 @@ import mediathek.tool.TextCopyPaste;
 
 public class PanelBlacklist extends PanelVorlage {
 
+    private static final long serialVersionUID = 1L;
+    
     public boolean ok = false;
     public String ziel;
     private final String name;

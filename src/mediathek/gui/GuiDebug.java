@@ -44,6 +44,8 @@ import mediathek.gui.dialogEinstellungen.PanelFilmlisten;
 
 public class GuiDebug extends JPanel {
 
+    private static final long serialVersionUID = 1L;
+    
     private final JButton[] buttonSender;
     private final String[] sender;
     private Daten daten;
@@ -714,7 +716,7 @@ public class GuiDebug extends JPanel {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(daten.mediathekGui, "Pfad");
+                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Pfad");
                 chooser.setMode(FileDialog.SAVE);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
