@@ -323,7 +323,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         }
 
         ZipFile zipFile = new ZipFile(archive);
-        Enumeration entries = zipFile.entries();
+        Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
         byte[] buffer = new byte[16384];
         int len;

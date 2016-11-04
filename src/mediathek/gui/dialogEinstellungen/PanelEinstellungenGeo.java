@@ -33,6 +33,8 @@ import mediathek.gui.dialog.DialogHilfe;
 
 public class PanelEinstellungenGeo extends PanelVorlage {
 
+    private static final long serialVersionUID = 1L;
+    
     public PanelEinstellungenGeo(Daten d, JFrame pparentComponent) {
         super(d, pparentComponent);
         initComponents();

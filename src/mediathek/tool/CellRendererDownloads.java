@@ -38,6 +38,8 @@ import mediathek.daten.DatenDownload;
 
 public class CellRendererDownloads extends DefaultTableCellRenderer {
 
+    private static final long serialVersionUID = 1L;
+    
     private final static String DOWNLOAD_STARTEN = "Download starten";
     private final static String DOWNLOAD_LOESCHEN = "Download aus Liste entfernen";
     private final static String DOWNLOAD_STOPPEN = "Download stoppen";

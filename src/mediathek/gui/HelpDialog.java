@@ -31,6 +31,8 @@ import mediathek.tool.EscBeenden;
 
 public class HelpDialog extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+
     private final JFrame parentFrame;
 
     public HelpDialog(JFrame parent, Daten daten) {
@@ -63,6 +65,8 @@ public class HelpDialog extends javax.swing.JDialog {
 
     private class CloseDialogAction extends AbstractAction {
 
+        private static final long serialVersionUID = 1L;
+        
         private final JDialog dlg;
 
         public CloseDialogAction(JDialog dlg) {

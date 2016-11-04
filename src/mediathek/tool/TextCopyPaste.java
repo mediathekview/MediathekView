@@ -50,7 +50,8 @@ public class TextCopyPaste extends MouseAdapter {
 
     public TextCopyPaste() {
         undoAction = new AbstractAction("Zurück") {
-
+            private static final long serialVersionUID = 1L;
+            
             @Override
             public void actionPerformed(ActionEvent ae) {
                 textComponent.setText("");
@@ -64,7 +65,8 @@ public class TextCopyPaste extends MouseAdapter {
         popup.addSeparator();
 
         cutAction = new AbstractAction("Ausschneiden") {
-
+            private static final long serialVersionUID = 1L;
+            
             @Override
             public void actionPerformed(ActionEvent ae) {
                 lastActionSelected = Actions.CUT;
@@ -76,7 +78,8 @@ public class TextCopyPaste extends MouseAdapter {
         popup.add(cutAction);
 
         copyAction = new AbstractAction("Kopieren") {
-
+            private static final long serialVersionUID = 1L;
+            
             @Override
             public void actionPerformed(ActionEvent ae) {
                 lastActionSelected = Actions.COPY;
@@ -87,7 +90,8 @@ public class TextCopyPaste extends MouseAdapter {
         popup.add(copyAction);
 
         pasteAction = new AbstractAction("Einfügen") {
-
+            private static final long serialVersionUID = 1L;
+            
             @Override
             public void actionPerformed(ActionEvent ae) {
                 lastActionSelected = Actions.PASTE;
@@ -100,7 +104,8 @@ public class TextCopyPaste extends MouseAdapter {
         popup.addSeparator();
 
         selectAllAction = new AbstractAction("Alles markieren") {
-
+            private static final long serialVersionUID = 1L;
+            
             @Override
             public void actionPerformed(ActionEvent ae) {
                 lastActionSelected = Actions.SELECT_ALL;

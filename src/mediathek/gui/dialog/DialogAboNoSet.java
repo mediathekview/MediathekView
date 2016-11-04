@@ -29,6 +29,8 @@ import mediathek.tool.GuiFunktionenProgramme;
 
 public class DialogAboNoSet extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+    
     /**
      *
      * @param parent

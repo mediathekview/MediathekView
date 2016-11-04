@@ -106,7 +106,7 @@ public final class MVTray {
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     if (e.getClickCount() == 1) {
-                        Daten.mediathekGui.setVisible(!daten.mediathekGui.isVisible());
+                        Daten.mediathekGui.setVisible(!Daten.mediathekGui.isVisible());
                         if (Daten.mediathekGui.isVisible()) {
                             Daten.mediathekGui.toFront();
                             Daten.mediathekGui.requestFocus();

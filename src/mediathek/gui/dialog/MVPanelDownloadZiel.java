@@ -46,6 +46,8 @@ import mediathek.tool.MVMessageDialog;
 
 public class MVPanelDownloadZiel extends javax.swing.JPanel {
 
+    private static final long serialVersionUID = 1L;
+    
     public boolean nameGeaendert = false;
     private DatenDownload datenDownload;
     private JFrame parent = null;

@@ -51,7 +51,9 @@ import mediathek.tool.*;
 
 public class GuiDownloads extends PanelVorlage {
 
-//    private final MVFilmInfo filmInfoHud;
+    private static final long serialVersionUID = 1L;
+    
+    //    private final MVFilmInfo filmInfoHud;
     private long lastUpdate = 0;
     private boolean onlyAbos = false;
     private boolean onlyDownloads = false;
@@ -93,6 +95,7 @@ public class GuiDownloads extends PanelVorlage {
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), "einstellungen");
             ActionMap am = cbDisplayCategories.getActionMap();
             am.put("einstellungen", new AbstractAction() {
+                private static final long serialVersionUID = 1L;
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -214,6 +217,7 @@ public class GuiDownloads extends PanelVorlage {
         InputMap im = tabelle.getInputMap();
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "aendern");
         am.put("aendern", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -222,6 +226,7 @@ public class GuiDownloads extends PanelVorlage {
         });
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "loeschen");
         am.put("loeschen", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -231,6 +236,8 @@ public class GuiDownloads extends PanelVorlage {
 
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "tabelle");
         this.getActionMap().put("tabelle", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 tabelle.requestFocusSelelct(jScrollPane1);
@@ -238,6 +245,8 @@ public class GuiDownloads extends PanelVorlage {
         });
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "download");
         this.getActionMap().put("download", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 filmStartenWiederholenStoppen(false, true /* starten */);
@@ -245,6 +254,8 @@ public class GuiDownloads extends PanelVorlage {
         });
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_I, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "info");
         this.getActionMap().put("info", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!Daten.filmInfo.isVisible()) {
@@ -255,6 +266,8 @@ public class GuiDownloads extends PanelVorlage {
 
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-copy");
         this.getActionMap().put("url-copy", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 int row = tabelle.getSelectedRow();
@@ -267,6 +280,8 @@ public class GuiDownloads extends PanelVorlage {
 
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_M, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mediensammlung");
         this.getActionMap().put("mediensammlung", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 int row = tabelle.getSelectedRow();
@@ -284,6 +299,8 @@ public class GuiDownloads extends PanelVorlage {
         });
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_G, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "gesehen");
         this.getActionMap().put("gesehen", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 filmGesehen();
@@ -291,6 +308,8 @@ public class GuiDownloads extends PanelVorlage {
         });
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_N, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "ungesehen");
         this.getActionMap().put("ungesehen", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 filmUngesehen();

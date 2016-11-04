@@ -33,6 +33,8 @@ import mediathek.tool.UrlHyperlinkAction;
 
 public class DialogNewSet extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+    
     public boolean ok = false;
     public boolean morgen = true;
     private JFrame parent;

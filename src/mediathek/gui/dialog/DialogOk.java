@@ -27,6 +27,8 @@ import mediathek.tool.EscBeenden;
 
 public class DialogOk extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+    
     /**
      *
      * @param parent

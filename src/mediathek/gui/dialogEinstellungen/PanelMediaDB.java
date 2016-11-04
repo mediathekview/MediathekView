@@ -45,6 +45,8 @@ import mediathek.tool.*;
 
 public class PanelMediaDB extends PanelVorlage {
     
+    private static final long serialVersionUID = 1L;
+    
     private final TModel modelPath = new TModel(new Object[][]{}, DatenMediaPath.COLUMN_NAMES);
     private final TModelMediaDB modelMediaDB = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
     
