@@ -12,6 +12,8 @@ import com.explodingpixels.painter.MacWidgetsPainter;
 
 public class EPToggleButton extends JToggleButton {
 
+    private static final long serialVersionUID = 1L;
+    
     private MacWidgetsPainter<AbstractButton> fBackgroundPainter;
 
     public EPToggleButton() {

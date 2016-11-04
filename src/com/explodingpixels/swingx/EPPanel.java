@@ -10,6 +10,8 @@ import com.explodingpixels.painter.MacWidgetsPainter;
 
 public class EPPanel extends JPanel {
 
+    private static final long serialVersionUID = 1L;
+    
     private MacWidgetsPainter<Component> fBackgroundPainter;
 
     public EPPanel() {

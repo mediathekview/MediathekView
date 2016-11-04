@@ -39,6 +39,8 @@ import mediathek.tool.GuiFunktionen;
 
 public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
 
+    private static final long serialVersionUID = 1L;
+
     private double counter = 0; // double sonst "läuft" die Chart nicht
     private Trace2DLtd m_trace = new Trace2DLtd(300);
     private IAxis x_achse = null;

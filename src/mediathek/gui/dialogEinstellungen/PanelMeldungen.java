@@ -35,6 +35,8 @@ import mediathek.gui.PanelVorlage;
 
 public class PanelMeldungen extends PanelVorlage {
 
+    private static final long serialVersionUID = 1L;
+    
     private final ObservableList<String> text;
     private final int logArt;
     private int firstScroll = 25;

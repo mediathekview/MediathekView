@@ -46,6 +46,8 @@ import mediathek.tool.TextCopyPaste;
 
 public class PanelEinstellungenErweitert extends PanelVorlage {
 
+    private static final long serialVersionUID = 1L;
+    
     public PanelEinstellungenErweitert(Daten d, JFrame pparentComponent) {
         super(d, pparentComponent);
         initComponents();

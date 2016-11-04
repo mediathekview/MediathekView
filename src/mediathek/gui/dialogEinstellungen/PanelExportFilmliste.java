@@ -41,6 +41,8 @@ import mediathek.tool.TextCopyPaste;
 
 public class PanelExportFilmliste extends PanelVorlage {
 
+    private static final long serialVersionUID = 1L;
+    
     public String ziel;
 
     public PanelExportFilmliste(Daten d, JFrame parent) {

@@ -41,6 +41,8 @@ import mediathek.tool.TextCopyPaste;
 
 public class PanelImport extends PanelVorlage {
 
+    private static final long serialVersionUID = 1L;
+    
     //ListePsetVorlagen listeVorlagen = new ListePsetVorlagen();
     public PanelImport(Daten d, JFrame parentComponent) {
         super(d, parentComponent);

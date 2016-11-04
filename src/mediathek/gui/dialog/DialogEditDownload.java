@@ -42,6 +42,8 @@ import mediathek.tool.MVMessageDialog;
 
 public class DialogEditDownload extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 1L;
+    
     private final DatenDownload datenDownload;
     public boolean ok = false;
     private final JTextField[] textfeldListe = new JTextField[DatenDownload.MAX_ELEM];

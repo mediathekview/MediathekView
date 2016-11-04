@@ -37,6 +37,8 @@ import mediathek.tool.TModelDownload;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
 
+    private static final long serialVersionUID = 1L;
+
     private final Daten daten;
     private final LinkedList<DatenDownload> aktivDownloads = new LinkedList<>();
 

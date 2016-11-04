@@ -41,6 +41,8 @@ import mediathek.tool.UrlHyperlinkAction;
 
 public class PanelProgrammPfade extends JPanel {
 
+    private static final long serialVersionUID = 1L;
+    
     public JDialog dialog = null;
     private final boolean vlc, flvstreamer, ffmpeg;
     private final JFrame parentComponent;

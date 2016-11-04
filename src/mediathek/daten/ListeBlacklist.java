@@ -34,6 +34,8 @@ import java.util.stream.Collectors;
 
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
+    private static final long serialVersionUID = 1L;
+
     private long days = 0;
     private long now;
     private boolean doNotShowFutureFilms, doNotShowGeoBlockedFilms;

@@ -47,6 +47,8 @@ import mediathek.tool.TModel;
 
 public class PanelErledigteUrls extends PanelVorlage {
 
+    private static final long serialVersionUID = 1L;
+    
     private boolean abo;
 
     public PanelErledigteUrls(Daten d, JFrame parentComponent) {

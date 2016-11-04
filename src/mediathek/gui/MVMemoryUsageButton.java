@@ -8,6 +8,8 @@ import static mSearch.tool.Functions.getOs;
 
 public class MVMemoryUsageButton extends JButton {
 
+    private static final long serialVersionUID = 1L;
+
     private final Runtime rt = Runtime.getRuntime();
     private final String MEMORY_STRING;
 

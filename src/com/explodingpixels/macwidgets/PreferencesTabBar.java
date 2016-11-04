@@ -33,6 +33,8 @@ public class PreferencesTabBar {
 
     public void addTab(String title, Icon icon, ActionListener listener) {
         AbstractButton button = new JToggleButton(title, icon) {
+            private static final long serialVersionUID = 1L;
+            
             @Override
             public void updateUI() {
                 setUI(new PreferencesTabBarButtonUI());

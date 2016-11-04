@@ -8,6 +8,8 @@ import com.explodingpixels.swingx.EPPanel;
 
 public class ImageBasedJComponent extends EPPanel {
 
+    private static final long serialVersionUID = 1L;
+
     private final ImagePainter fPainter;
 
     public ImageBasedJComponent(Image image) {

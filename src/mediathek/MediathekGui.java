@@ -61,6 +61,8 @@ import mediathek.tool.MVMessageDialog;
 
 public class MediathekGui extends JFrame {
 
+    private static final long serialVersionUID = 1L;
+    
     private final Daten daten;
 //    private final SpacerIcon spacerIcon = new SpacerIcon(30);
     private final JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
@@ -252,6 +254,8 @@ public class MediathekGui extends JFrame {
         final JRootPane rootPane = getRootPane();
         rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mac-f");
         rootPane.getActionMap().put("mac-f", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 setFocusSuchfeld();

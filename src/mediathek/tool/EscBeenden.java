@@ -34,6 +34,8 @@ public class EscBeenden {
         // ESC zum Beenden
         frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "x");
         frame.getRootPane().getActionMap().put("x", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 beenden_();
@@ -43,6 +45,8 @@ public class EscBeenden {
         // für den Mac
         frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_W, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mac-cancel");
         frame.getRootPane().getActionMap().put("mac-cancel", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 beenden_();
@@ -56,6 +60,8 @@ public class EscBeenden {
         // ESC zum Beenden
         dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "x");
         dialog.getRootPane().getActionMap().put("x", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 beenden_();
@@ -65,6 +71,8 @@ public class EscBeenden {
         // für den Mac
         dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_W, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mac-cancel");
         dialog.getRootPane().getActionMap().put("mac-cancel", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 beenden_();

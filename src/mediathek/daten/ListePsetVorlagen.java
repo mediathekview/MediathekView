@@ -42,6 +42,8 @@ import mediathek.tool.TModel;
 
 public class ListePsetVorlagen extends LinkedList<String[]> {
 
+    private static final long serialVersionUID = 1L;
+
     public static final String BS_WIN_32 = "Windows-32Bit";
     public static final String BS_WIN_64 = "Windows-64Bit";
     public static final String BS_LINUX = "Linux";

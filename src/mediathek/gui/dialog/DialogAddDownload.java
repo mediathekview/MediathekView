@@ -49,7 +49,9 @@ import mediathek.tool.MVFilmSize;
 import mediathek.tool.MVMessageDialog;
 
 public class DialogAddDownload extends JDialog {
-
+    
+    private static final long serialVersionUID = 1L;
+    
     private DatenPset pSet = null;
     private boolean ok = false;
     private DatenDownload datenDownload = null;

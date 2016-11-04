@@ -805,6 +805,8 @@ public class SourceList {
     // Custom JTree implementation that always returns SourceListTreeUI delegate. /////////////////
 
     private class CustomJTree extends JTree {
+        private static final long serialVersionUID = 1L;
+        
         public CustomJTree(TreeModel newModel) {
             super(newModel);
             ToolTipManager.sharedInstance().registerComponent(this);

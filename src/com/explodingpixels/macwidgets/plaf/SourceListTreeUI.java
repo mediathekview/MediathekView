@@ -326,6 +326,8 @@ public class SourceListTreeUI extends BasicTreeUI {
 
     private Action createNextAction() {
         return new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = tree.getLeadSelectionRow();
                 int rowToSelect = selectedRow + 1;
@@ -343,6 +345,8 @@ public class SourceListTreeUI extends BasicTreeUI {
 
     private Action createPreviousAction() {
         return new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = tree.getLeadSelectionRow();
                 int rowToSelect = selectedRow - 1;
@@ -529,6 +533,8 @@ public class SourceListTreeUI extends BasicTreeUI {
     // SourceListTreeSelectionModel implementation. ///////////////////////////////////////////////
 
     private class SourceListTreeSelectionModel extends DefaultTreeSelectionModel {
+        private static final long serialVersionUID = 1L;
+
         public SourceListTreeSelectionModel() {
             setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         }
