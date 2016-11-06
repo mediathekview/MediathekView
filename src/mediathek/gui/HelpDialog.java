@@ -22,8 +22,6 @@ package mediathek.gui;
 import com.jidesoft.utils.SystemInfo;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
-import static javax.swing.Action.NAME;
-import static javax.swing.Action.SHORT_DESCRIPTION;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import mediathek.config.Daten;
@@ -33,13 +31,10 @@ public class HelpDialog extends javax.swing.JDialog {
 
     private static final long serialVersionUID = 1L;
 
-    private final JFrame parentFrame;
-
     public HelpDialog(JFrame parent, Daten daten) {
         super(parent);
         initComponents();
 
-        parentFrame = parent;
         setModal(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         this.setTitle("Infos und Hilfe zum Programm");
@@ -56,8 +51,10 @@ public class HelpDialog extends javax.swing.JDialog {
         }
         jButtonOk.setAction(new CloseDialogAction(this));
 
-        jTabbedPane.add("Über", new AboutPanel(parentFrame));
-        jTabbedPane.add("Hilfe", new HelpPanel(parentFrame, daten));
+        //This is found the about menu entry on OSX...
+        if (!SystemInfo.isMacOSX())
+            jTabbedPane.add("Über", new AboutPanel(parent));
+        jTabbedPane.add("Hilfe", new HelpPanel(parent, daten));
 
         pack();
 
@@ -85,12 +82,9 @@ public class HelpDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
         jTabbedPane = new javax.swing.JTabbedPane();
         jPanelQuitt = new javax.swing.JPanel();
         jButtonOk = new javax.swing.JButton();
-
-        jButton1.setText("jButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -137,7 +131,6 @@ public class HelpDialog extends javax.swing.JDialog {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonOk;
     private javax.swing.JPanel jPanelQuitt;
     private javax.swing.JTabbedPane jTabbedPane;
