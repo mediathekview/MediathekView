@@ -19,23 +19,22 @@
  */
 package mediathek.gui;
 
-import java.awt.BorderLayout;
-import java.beans.PropertyChangeEvent;
-import javax.swing.JFrame;
-import javax.swing.JSplitPane;
 import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
 
+import javax.swing.*;
+import java.awt.*;
+import java.beans.PropertyChangeEvent;
+
 /**
- *
  * @author emil
  */
 public class GuiMeldungen extends PanelVorlage {
 
     private static final long serialVersionUID = 1L;
-    
+
     private JSplitPane splitPane = null;
 
     public GuiMeldungen(Daten d, JFrame parentComponent) {
@@ -56,9 +55,8 @@ public class GuiMeldungen extends PanelVorlage {
             }
         } catch (NumberFormatException ignored) {
         }
-        splitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, (PropertyChangeEvent pce) -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_BREITE_MELDUNGEN, String.valueOf(splitPane.getDividerLocation()));
-        });
+        splitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, (PropertyChangeEvent pce) ->
+                MVConfig.add(MVConfig.Configs.SYSTEM_BREITE_MELDUNGEN, String.valueOf(splitPane.getDividerLocation())));
     }
 
     @Override
