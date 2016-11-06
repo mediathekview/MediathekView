@@ -1,27 +1,36 @@
 language: java
 jdk:
-    - oraclejdk8
+- oraclejdk8
 install:
-    - cd ..
-    - git clone https://github.com/mediathekview/MSearch.git MSearch
-    - cd -
-
-
+- cd ..
+- git clone https://github.com/mediathekview/MSearch.git MSearch
+- cd -
 addons:
   sonarqube: true
 env:
   global:
-    - secure: "jghiJcW8NWhRSYUL2cnK+sMSgVkH7cAxG0VzKhSmyNKD6nRiDwR3gouiZX2ouRA9n71Pqqk/555zjUpdx/jF5CMhJNxhrlFVd5yh2M8hOqoqYhrF3OnJlfQv74bynGsn9VuCwbTlq3ZUXugs8S+Pjy3+6auyVl9eqNmFpcyarliccx0VkAeocqnMRse7mYNuQhJ73x7Swcgn9C5M8WQ1UoZYMEJkcBsancfxqFBzKdj8esIsd1/gK1jRrH2dZ2XE7WaC8EGz1x4Y3zy4lHaSgfWVGxKkPzOIJ1w2ojrf4FWB+DgeSf+JO3gSKPVYQRpl5TCqUUVahK6MdNB92nylZ6jN1tRAJ+vaifZjq296ADqJv00angBdsMPejNYjrUvMrWXMhgcmMXCrc/MIfZaOsdjHPO3SEknYsF4s6v+uWWgd+FM/U02eKfA+JgNdk6chWzqAUnNeBqg86vEmNiebwoUp6PHl2k114ZdHbhQS5+co/4oFLDdYLNYRtCYSi060jeu/ght9OtMW8Y1RL+nu0I7QuQQIxU16o4U/r+tF9CeYH4yAyBT1QbK8Bpc5ghyyvIO3rC13CbpKjBrb8Pt2Fg3JlodM3zUiLfdsdxIW4R1O6a+ECPjEe/Y525dzopY3wOA4+SLU8+6vXucShOBeRZH5pSLObuvO/8We19k0zpc="
+  - secure: jghiJcW8NWhRSYUL2cnK+sMSgVkH7cAxG0VzKhSmyNKD6nRiDwR3gouiZX2ouRA9n71Pqqk/555zjUpdx/jF5CMhJNxhrlFVd5yh2M8hOqoqYhrF3OnJlfQv74bynGsn9VuCwbTlq3ZUXugs8S+Pjy3+6auyVl9eqNmFpcyarliccx0VkAeocqnMRse7mYNuQhJ73x7Swcgn9C5M8WQ1UoZYMEJkcBsancfxqFBzKdj8esIsd1/gK1jRrH2dZ2XE7WaC8EGz1x4Y3zy4lHaSgfWVGxKkPzOIJ1w2ojrf4FWB+DgeSf+JO3gSKPVYQRpl5TCqUUVahK6MdNB92nylZ6jN1tRAJ+vaifZjq296ADqJv00angBdsMPejNYjrUvMrWXMhgcmMXCrc/MIfZaOsdjHPO3SEknYsF4s6v+uWWgd+FM/U02eKfA+JgNdk6chWzqAUnNeBqg86vEmNiebwoUp6PHl2k114ZdHbhQS5+co/4oFLDdYLNYRtCYSi060jeu/ght9OtMW8Y1RL+nu0I7QuQQIxU16o4U/r+tF9CeYH4yAyBT1QbK8Bpc5ghyyvIO3rC13CbpKjBrb8Pt2Fg3JlodM3zUiLfdsdxIW4R1O6a+ECPjEe/Y525dzopY3wOA4+SLU8+6vXucShOBeRZH5pSLObuvO/8We19k0zpc=
 script:
-  # other script steps might be done before running the actual SonarQube analysis
-  - ./gradlew assemble
-  - ./gradlew check
-  - sonar-scanner -Dsonar.login=$SONAR_TOKEN
-
+- "./gradlew assemble"
+- "./gradlew check"
+- sonar-scanner -Dsonar.login=$SONAR_TOKEN
 before_cache:
-  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 cache:
   directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-    - $HOME/.sonar/cache/
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+  - "$HOME/.sonar/cache/"
+
+deploy:
+  provider: releases
+  api_key:
+    secure: Nhuc1AdNA0fNpbdTyuJfhK4JKenFNLlDD2zQxu1oFCzJ2m47u8XePZnClOJMw/EWL0SSj1av75P/ZPms/CNkCQjwVb3pViJT459TOUKSVte9KNTEFk8lPX3uEpvYvZDKRCXpoAkn4TtiR9MkJP5v3OPiGnIKobS41KAAaK/D2DAh04MNuFm8JN4uwt+X60mYejsOi7lQ+ej/GuGGGQz5h+5cXdpPujQICqWaLzOxrZn/X+H1pCFx3g2oBtNF91ex63odOYeUbFXaRvnSTLMK2Glsn5y5kqi42ialmERFQp1aJ3VGBl6MAKOQU2iuxaFKqVIIXrZF+nl+uBbzct3Luew2cPimgOPKTDoHUOMVTXvm5ME1fbbDfSkn3O8YOWxBkRSpteNRIQguhGj8euj/agueZ4ILJNAQ1dtbV3Sjk44Xo8kgw3PdhQdFveAdyjnHi+MpSEFSk8FVbcnY3QXvFIMzPBuOu9Ft5DyzEKT9wUHKEJt0PxjRfPh8BA5Zqb3gu5ghAmX1aKa4ZCyEdH0yq6wLJNL5yJfufR0G+fmOw9t3GsCr1WqOnZRrpSLxEPJEUyK4quBmHDZgMkZDQXfDJv14ROPF+OHd2pOopzUiSKsJibjaskxMQjlr2kn5Oa41EeV88WjNeuYwlRzvA2TVEcHVdivkmWEvW5ZmgbIsfxI=
+  file_glob: true
+  file:
+      - "build/libs/MediathekView-.*.jar*"
+      - "build/MediathekView.*.zip*"
+      - "build/MediathekView.*.tar*"
+  skip_cleanup: true
+  on:
+    tags: true
