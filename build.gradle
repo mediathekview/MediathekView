@@ -1,30 +1,15 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+plugins {
+    id "com.github.jk1.dependency-license-report" version "0.3.5"
+}
 apply plugin: 'java'
-apply plugin: 'application'
+apply plugin: 'distribution'
 apply from: "${project.rootDir}/gradle/eclipse.gradle"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-mainClassName = 'mediathek.Main'
-version = '0.0.1-SNAPSHOT'
-
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src']
-        }
-        resources {
-            srcDirs = ['src']
-        }
-    }
-    test {
-        java {
-            srcDirs = ['test']
-        }
-        resources {
-            srcDirs = ['test']
-        }
-    }
-}
+version = '13'
 
 compileJava {
     options.compilerArgs = ['-Xlint:all']
@@ -45,7 +30,90 @@ repositories {
 ext {
   swingxVersion = '1.6.6-SNAPSHOT'
   swingxGroup = ''
+  propsFile = file('src/main/resources/version.properties').absoluteFile
 }
+
+def loadVersionProperties() {
+    Properties props = new Properties()
+    props.load(propsFile.newDataInputStream())
+    return props
+}
+
+task updateVersion << {
+    Properties props = loadVersionProperties()
+    int nr = Integer.parseInt(props.getProperty('NR')) + 1
+    String buildDate = new Date().format('dd.MM.yyyy HH:mm:ss')
+
+    logger.lifecycle "==========================="
+    logger.lifecycle "Version: $version"
+    logger.lifecycle "Datum:    $buildDate"
+    logger.lifecycle "Realese: $nr"
+    logger.lifecycle "==========================="
+
+    props.setProperty('VERSION', project.version)
+    props.setProperty('NR', "$nr")
+    props.setProperty('BUILD', "${project.version}-${nr}")
+    props.setProperty('DATE', buildDate)
+
+    props.store(propsFile.newWriter(), null)
+}
+
+processResources.dependsOn updateVersion
+
+task renameAndFillBuildFile(dependsOn: updateVersion) << {
+    Properties props = loadVersionProperties()
+
+    String nr = props.getProperty('NR')
+    String buildInfo = "${project.version}-$nr"
+    File buildFile = file("res/Info/${buildInfo}.build").absoluteFile
+    String date = new Date().format('dd.MM.yyyy HH:mm:ss')
+    logger.lifecycle "Writing build info to $buildFile"
+
+    project.delete(fileTree('res/Info') {
+        include '*.build'
+    })
+
+    def buildFileWriter = buildFile.newWriter()
+    buildFileWriter << "Datum: ${date}\n"
+    buildFileWriter << "Version: ${version}\n"
+    buildFileWriter << "Buildnummer: ${buildInfo}\n"
+    buildFileWriter.close()
+}
+
+processResources.dependsOn renameAndFillBuildFile
+
+licenseReport  {
+    outputDir = "res/Copyright/"
+    excludes = [':MSearch']
+    configurations = ['compile']
+}
+
+processResources.dependsOn generateLicenseReport
+
+tasks.withType(Zip) { task ->
+    task.doLast {
+        ant.checksum(algorithm: 'SHA-1', file: it.archivePath)
+        ant.checksum(algorithm: 'MD5', file: it.archivePath)
+    }
+}
+
+task copyProgrammIconsInRes (type: Copy) {
+    logger.lifecycle 'Copying Programm icons.'
+    from 'src/main/resources/mediathek/res/programm'
+    into 'res/Icons/Programm/Version-'+version
+}
+
+processResources.dependsOn copyProgrammIconsInRes
+
+task copySenderIconsInRes (type: Copy) {
+    logger.lifecycle 'Copying Sender icons.'
+    from 'src/main/resources/mediathek/res/sender'
+    into 'res/Icons/Sender'
+    include '*.png'
+    exclude '*.xcv'
+}
+
+processResources.dependsOn copySenderIconsInRes
 
 dependencies {
     compile project(':MSearch')
@@ -58,7 +126,42 @@ dependencies {
     compile "$swingxGroup:swingx-painters:$swingxVersion"
     compile "$swingxGroup:swingx-plaf:$swingxVersion"
 
+    compile 'org.apache.commons:commons-lang3:3.5'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.7.0'
+    compile 'com.jidesoft:jide-oss:3.6.16'
+    compile 'org.tukaani:xz:1.5'
     compile 'com.jgoodies:jgoodies-forms:1.9.0'
-    compile 'com.yuvimasory:orange-extensions:1.3.0'
     compile 'net.sf.jchart2d:jchart2d:3.3.2'
+
+    compileOnly 'com.yuvimasory:orange-extensions:1.3.0'
+}
+
+[distZip, distTar]*.shouldRunAfter compileJava, updateVersion, renameAndFillBuildFile, jar
+
+jar {
+    manifest {
+        attributes(
+                'SplashScreen-Image': 'mediathek/res/splash.png',
+                'Main-Class': 'mediathek.Main',
+                'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
+        )
+    }
+}
+
+distributions {
+    main {
+        baseName = 'MediathekView_'+version+'__'+new Date().format('dd.MM.yyyy')
+        contents {
+            into('lib')
+                    {
+                        from configurations.compile
+                    }
+            from{'res'}
+            from('build/libs')
+                    {
+                        include '*.jar'
+                    }
+        }
+    }
+
 }
