@@ -19,6 +19,11 @@
  */
 package mediathek.controller;
 
+import mSearch.daten.DatenFilm;
+import mSearch.daten.ListeFilme;
+import mSearch.tool.Listener;
+import mSearch.tool.Log;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,10 +31,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
 
 public class MVUsedUrls {
 
@@ -62,17 +63,14 @@ public class MVUsedUrls {
         }
         if (!gesehen) {
             urlAusLogfileLoeschen(arrayFilms);
-            for (DatenFilm film : arrayFilms) {
-                listeFilmeHistory.remove(film);
-            }
+            arrayFilms.forEach(listeFilmeHistory::remove);
         } else {
             ArrayList<DatenFilm> neueFilme = new ArrayList<>();
-            for (DatenFilm film : arrayFilms) {
-                if (!urlPruefen(film.getUrlHistory())) {
-                    neueFilme.add(film);
-                    listeFilmeHistory.add(film);
-                }
-            }
+            arrayFilms.stream().filter(film -> !urlPruefen(film.getUrlHistory()))
+                    .forEach(film -> {
+                        neueFilme.add(film);
+                        listeFilmeHistory.add(film);
+                    });
             zeileSchreiben(neueFilme);
         }
     }
@@ -106,10 +104,9 @@ public class MVUsedUrls {
 
     public synchronized LinkedList<MVUsedUrl> getSortList() {
         LinkedList<MVUsedUrl> ret = new LinkedList<>();
-        for (MVUsedUrl aListeUrlsSortDate : listeUrlsSortDate) {
-            ret.add(aListeUrlsSortDate);
-        }
+        ret.addAll(listeUrlsSortDate);
         Collections.sort(ret);
+
         return ret;
     }
 
@@ -159,7 +156,7 @@ public class MVUsedUrls {
         //Logfile einlesen, entsprechende Zeile Filtern und dann Logfile überschreiben
         //wenn die URL im Logfiel ist, dann true zurück
         String zeile;
-        boolean gefunden = false, gef = false;
+        boolean gefunden = false, gef;
         LinkedList<String> newListe = new LinkedList<>();
 
         //Use Automatic Resource Management
