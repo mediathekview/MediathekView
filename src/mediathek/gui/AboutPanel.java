@@ -39,8 +39,7 @@ import mediathek.tool.UrlHyperlinkAction;
 public class AboutPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 1L;
-    
-    private MarqueePane marqueePane;
+
     private final JFrame parentFrame;
     final private Color greyColor = new Color(159, 159, 159);
 
@@ -118,7 +117,7 @@ public class AboutPanel extends javax.swing.JPanel {
                 + "<span class=\"sans\"><b>http://zdfmediathk.sourceforge.net</b><br /></span>\n"
                 + "<p><span class=\"sans\"><b>Autoren:</b><br />\n"
                 + "Xaver W. (W.Xaver [at] googlemail [dot] com)<br />\n"
-                + "Christian F. (crystalpalace1977 [at] googlemail [dot] com)<br />\n"
+                + "Christian F.<br />\n"
                 + "siedlerchr<br /></span><p>\n"
                 + "<span class=\"sans\"><b>Dokumentation / Test:</b><br />\n"
                 + "styrol<br />\n"
@@ -134,7 +133,7 @@ public class AboutPanel extends javax.swing.JPanel {
                 + "die zu dieser Software beigetragen haben.</b></span>\n"
                 + "<br /><br /><br /></body></html>");
 
-        marqueePane = new MarqueePane(messagePane);
+        MarqueePane marqueePane = new MarqueePane(messagePane);
         marqueePane.setStayDelay(3000);
         marqueePane.setScrollDirection(MarqueePane.SCROLL_DIRECTION_UP);
         marqueePane.setScrollAmount(1);
