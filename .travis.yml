@@ -31,6 +31,6 @@ deploy:
       - "build/libs/MediathekView-.*.jar*"
       - "build/MediathekView.*.zip*"
       - "build/MediathekView.*.tar*"
-    skip_cleanup: true
-    on:
-      tags: true
+  skip_cleanup: true
+  on:
+    tags: true
