@@ -21,16 +21,6 @@ package mediathek.controller.starter;
 
 import com.apple.eawt.Application;
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Toolkit;
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.swing.SwingUtilities;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Datum;
 import mSearch.tool.Listener;
@@ -41,8 +31,15 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
+import mediathek.mac.SpotlightCommentWriter;
 import mediathek.tool.MVFilmSize;
 import mediathek.tool.MVNotification;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 public class StarterClass {
     //Tags Filme
@@ -225,74 +222,16 @@ public class StarterClass {
         }
     }
 
-    /**
-     * This will write the content of the film description into the OS X Finder Info Comment Field.
-     * This enables Spotlight to search for these tags.
-     * THIS IS AN OS X specific functionality!
-     *
-     * @param datenDownload The download information object
-     * @param wasCancelled Was the download cancelled?
-     */
-    private static void writeSpotlightComment(final DatenDownload datenDownload, final boolean wasCancelled) {
-        //no need to run when not OS X...
-        if (wasCancelled || (!SystemInfo.isMacOSX())) {
-            return;
-        }
-        if (datenDownload.film == null) {
-            // kann bei EinmalDownloads nach einem Neuladen der Filmliste/Programmneustart der Fall sein
-            return;
-        }
-        final Path filmPath = Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
-        if (Files.exists(filmPath)) {
-            final String strFilePath = filmPath.toString();
-            String strComment = datenDownload.film.arr[DatenFilm.FILM_BESCHREIBUNG];
-            if (strComment != null) {
-                //no need to write spotlight data when there is no description...
-                if (strComment.isEmpty()) {
-                    return;
-                }
-
-                //replace quotation marks...
-                strComment = strComment.replace("\"", "\\\"");
-
-                final String script = "tell application \"Finder\"\n"
-                        + "set my_file to POSIX file \"" + strFilePath + "\" as alias\n"
-                        + "set comment of my_file to \"" + strComment + "\"\n"
-                        + "end tell\n";
-                try {
-                    ScriptEngineManager mgr = new ScriptEngineManager();
-                    ScriptEngine engine = mgr.getEngineByName("AppleScript");
-                    engine.eval(script);
-                } catch (Exception ex) {
-                    Log.errorLog(915263987, "Fehler beim Spotlight schreiben" + filmPath.toString());
-                    //AppleScript may not be available if user does not use the official MacApp.
-                    //We need to log that as well if there are error reports.
-                    try {
-                        if (!System.getProperty("OSX_OFFICIAL_APP").equalsIgnoreCase("true")) {
-                            logUnofficialMacAppUse();
-                        }
-                    } catch (NullPointerException ignored) {
-                        logUnofficialMacAppUse();
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Log that MV wasn´t used via the official mac app.
-     * This is relevant to know for bug reports.
-     */
-    private static void logUnofficialMacAppUse() {
-        Log.errorLog(915263987, "MV wird NICHT über die offizielle Mac App genutzt.");
-    }
-
     static void finalizeDownload(DatenDownload datenDownload, Start start /* wegen "datenDownload.start=null" beim stoppen */, DirectHttpDownload.HttpDownloadState state) {
         deleteIfEmpty(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]));
         setFileSize(datenDownload);
 
-        if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT])) {
-            writeSpotlightComment(datenDownload, state == DirectHttpDownload.HttpDownloadState.CANCEL);
+        if (SystemInfo.isMacOSX() && state != DirectHttpDownload.HttpDownloadState.CANCEL) {
+            //we don´t write comments if download was cancelled...
+            if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT])) {
+                final SpotlightCommentWriter writer = new SpotlightCommentWriter();
+                writer.writeComment(datenDownload);
+            }
         }
 
         fertigmeldung(datenDownload, start, state == DirectHttpDownload.HttpDownloadState.CANCEL);
@@ -316,14 +255,15 @@ public class StarterClass {
     /**
      * tatsächliche Dateigröße eintragen
      *
-     * @param DatenDownload with the info of the file
+     * @param datenDownload {@link DatenDownload} with the info of the file
      */
     static void setFileSize(DatenDownload datenDownload) {
         try {
-            if (new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]).exists()) {
-                long l = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]).length();
-                if (l > 0) {
-                    datenDownload.mVFilmSize.setSize(l);
+            final File testFile = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+            if (testFile.exists()) {
+                final long length = testFile.length();
+                if (length > 0) {
+                    datenDownload.mVFilmSize.setSize(length);
                 }
             }
         } catch (Exception ex) {
@@ -348,7 +288,7 @@ public class StarterClass {
 
         private DatenDownload datenDownload;
         /**
-         * The only {@link java.util.Timer} used for all {@link mediathek.tool.MVInputStream.BandwidthCalculationTask}
+         * The only {@link java.util.Timer} used for all {@link mediathek.controller.MVInputStream.BandwidthCalculationTask}
          * calculation tasks.
          */
         private java.util.Timer bandwidthCalculationTimer;
