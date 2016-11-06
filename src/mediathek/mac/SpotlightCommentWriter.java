@@ -7,8 +7,6 @@ import mediathek.daten.DatenDownload;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.swing.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -59,11 +57,9 @@ public class SpotlightCommentWriter {
                         + "set comment of my_file to \"" + strComment + "\"\n"
                         + "end tell\n";
                 try {
-                    //FIXME AppleScript support not available when Java6 Apple ist not installed
-                    //solution -> use osascript process
-                    final ScriptEngineManager mgr = new ScriptEngineManager();
-                    final ScriptEngine engine = mgr.getEngineByName("AppleScript");
-                    engine.eval(script);
+                    final ProcessBuilder builder = new ProcessBuilder("/usr/bin/osascript", "-e");
+                    builder.command().add(script);
+                    builder.start();
                 } catch (Exception ex) {
                     if (Daten.mediathekGui != null) {
                         SwingUtilities.invokeLater(() -> {
