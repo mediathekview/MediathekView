@@ -74,7 +74,7 @@ public class AboutDialog extends JDialog {
                 + "<span class=\"sans\"><b>http://zdfmediathk.sourceforge.net</b><br /></span>\n"
                 + "<p><span class=\"sans\"><b>Autoren:</b><br />\n"
                 + "Xaver W. (W.Xaver [at] googlemail [dot] com)<br />\n"
-                + "Christian F. (crystalpalace1977 [at] googlemail [dot] com)<br />\n"
+                + "Christian F.<br />\n"
                 + "Patrick<br />\n"
                 + "thausherr<br />\n"
                 + "Andreas M.<br />\n"
