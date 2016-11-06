@@ -6,3 +6,7 @@ dist/javadoc
 .classpath
 .project
 .settings/
+*.build
+*.exe
+res/Icons/Sender
+/.idea/

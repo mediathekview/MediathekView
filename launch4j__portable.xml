@@ -3,7 +3,7 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>MediathekView.jar</jar>
-  <outfile>/home/emil/daten/software/mediathek/mediathek/res/Portable/MediathekView__Portable.exe</outfile>
+  <outfile>res/Windows/MediathekView__Portable.exe</outfile>
   <errTitle></errTitle>
   <cmdLine>Einstellungen\.mediathek3</cmdLine>
   <chdir></chdir>
@@ -13,7 +13,7 @@
   <stayAlive>false</stayAlive>
   <restartOnCrash>false</restartOnCrash>
   <manifest></manifest>
-  <icon>/home/emil/daten/software/mediathek/mediathek/res/Info/MediathekView.ico</icon>
+  <icon>res/Info/MediathekView.ico</icon>
   <jre>
     <path></path>
     <bundledJre64Bit>false</bundledJre64Bit>
