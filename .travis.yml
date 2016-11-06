@@ -13,7 +13,7 @@ env:
 script:
 - "./gradlew assemble"
 - "./gradlew check"
-- sonar-scanner -Dsonar.login=$SONAR_TOKEN
+- 'if [ "$SONAR_TOKEN" ]; then bash -c "sonar-scanner -Dsonar.login=$SONAR_TOKEN"; fi'
 before_cache:
 - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 cache:
