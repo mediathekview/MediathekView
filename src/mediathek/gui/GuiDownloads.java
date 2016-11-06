@@ -534,8 +534,6 @@ public class GuiDownloads extends PanelVorlage {
         info += END;
 
         txtDownload.setText(info);
-
-        return;
     }
 
     private String getInfoText() {
@@ -822,7 +820,7 @@ public class GuiDownloads extends PanelVorlage {
             if (arrayDownloads.isEmpty()) {
                 return;
             }
-            int[] rows = tabelle.getSelectedRows();
+
             String zeit = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
 
             ArrayList<DatenDownload> arrayDownloadsLoeschen = new ArrayList<>();
@@ -1101,27 +1099,27 @@ public class GuiDownloads extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jEditorPane1 = new javax.swing.JEditorPane();
+        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
+        javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
+        javax.swing.JEditorPane jEditorPane1 = new javax.swing.JEditorPane();
         jPanelToolBar = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
         jScrollPaneFilter = new javax.swing.JScrollPane();
-        jPanelFilterExtern = new javax.swing.JPanel();
+        javax.swing.JPanel jPanelFilterExtern = new javax.swing.JPanel();
         javax.swing.JLabel lblAnzeigen = new javax.swing.JLabel();
         cbDisplayCategories = new javax.swing.JComboBox<>();
-        jLabel3 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jSpinnerAnzahlDownloads = new javax.swing.JSpinner();
-        lblBandwidth = new javax.swing.JLabel();
+        javax.swing.JLabel lblBandwidth = new javax.swing.JLabel();
         jSliderBandwidth = new javax.swing.JSlider();
         txtBandwidth = new javax.swing.JTextField();
         cbView = new javax.swing.JComboBox<>();
         btnClear = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JSeparator();
-        jSeparator2 = new javax.swing.JSeparator();
-        spDownload = new javax.swing.JScrollPane();
+        javax.swing.JSeparator jSeparator1 = new javax.swing.JSeparator();
+        javax.swing.JSeparator jSeparator2 = new javax.swing.JSeparator();
+        javax.swing.JScrollPane spDownload = new javax.swing.JScrollPane();
         txtDownload = new javax.swing.JEditorPane();
-        jPanel1 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
         jPanelBeschreibung = new javax.swing.JPanel();
@@ -1185,7 +1183,7 @@ public class GuiDownloads extends PanelVorlage {
                     .addComponent(cbView, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanelFilterExternLayout.createSequentialGroup()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
                         .addComponent(jSpinnerAnzahlDownloads, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFilterExternLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -1197,7 +1195,7 @@ public class GuiDownloads extends PanelVorlage {
                             .addComponent(lblBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jSliderBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(spDownload, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(spDownload))
                 .addContainerGap())
         );
         jPanelFilterExternLayout.setVerticalGroup(
@@ -1251,7 +1249,7 @@ public class GuiDownloads extends PanelVorlage {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 548, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -1278,23 +1276,13 @@ public class GuiDownloads extends PanelVorlage {
     private javax.swing.JButton btnClear;
     private javax.swing.JComboBox<String> cbDisplayCategories;
     private javax.swing.JComboBox<String> cbView;
-    private javax.swing.JEditorPane jEditorPane1;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanelBeschreibung;
-    private javax.swing.JPanel jPanelFilterExtern;
     private javax.swing.JPanel jPanelToolBar;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPaneFilter;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSlider jSliderBandwidth;
     private javax.swing.JSpinner jSpinnerAnzahlDownloads;
     private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JLabel lblBandwidth;
-    private javax.swing.JScrollPane spDownload;
     private javax.swing.JTextField txtBandwidth;
     private javax.swing.JEditorPane txtDownload;
     // End of variables declaration//GEN-END:variables

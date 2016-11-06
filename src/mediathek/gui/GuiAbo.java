@@ -249,9 +249,8 @@ public class GuiAbo extends PanelVorlage {
             return;
         }
 
-        int row = tabelle.getSelectedRow();
         int[] rows = tabelle.getSelectedRows();
-        int modelRow = tabelle.convertRowIndexToModel(row);
+        int modelRow = tabelle.convertRowIndexToModel(tabelle.getSelectedRow());
         DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
         DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, akt, tabelle.getSelectedRowCount() > 1 /*onlyOne*/);
         dialog.setVisible(true);
@@ -261,12 +260,12 @@ public class GuiAbo extends PanelVorlage {
 
         if (tabelle.getSelectedRowCount() > 1) {
             // bei mehreren selektierten Zeilen
-            for (int i = 0; i < rows.length; ++i) {
+            for (int row : rows) {
                 for (int b = 0; b < dialog.ch.length; ++b) {
                     if (!dialog.ch[b]) {
                         continue;
                     }
-                    modelRow = tabelle.convertRowIndexToModel(rows[i]);
+                    modelRow = tabelle.convertRowIndexToModel(row);
                     DatenAbo sel = Daten.listeAbo.getAboNr(modelRow);
                     sel.arr[b] = akt.arr[b];
                     if (b == DatenAbo.ABO_MINDESTDAUER) {
@@ -329,8 +328,8 @@ public class GuiAbo extends PanelVorlage {
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
         jScrollPaneFilter = new javax.swing.JScrollPane();
-        jPanelFilter = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanelFilter = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jcbSender = new javax.swing.JComboBox<>();
 
         javax.swing.GroupLayout jPanelToolBarLayout = new javax.swing.GroupLayout(jPanelToolBar);
@@ -403,8 +402,6 @@ public class GuiAbo extends PanelVorlage {
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanelFilter;
     private javax.swing.JPanel jPanelToolBar;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPaneFilter;
