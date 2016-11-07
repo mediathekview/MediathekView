@@ -61,8 +61,6 @@ import mediathek.tool.MVMessageDialog;
 
 public class MediathekGui extends JFrame {
 
-    private static final long serialVersionUID = 1L;
-    
     private final Daten daten;
 //    private final SpacerIcon spacerIcon = new SpacerIcon(30);
     private final JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
@@ -83,17 +81,18 @@ public class MediathekGui extends JFrame {
     private final JCheckBoxMenuItem jCheckBoxMeldungenExtrafenster = new JCheckBoxMenuItem();
     private MVTray tray = null;
 
-    public static enum TABS {
+    public enum TABS {
         TAB_NIX, TAB_FILME, TAB_DOWNLOADS, TAB_ABOS, TAB_MELDUNGEN
     };
+
     /**
      * Bandwidth monitoring for downloads.
      */
-    private MVBandwidthMonitorOSX bandwidthMonitorOSX = null;
+    //FIXME redesign Bandwidth monitors
     private MVBandwidthMonitorLWin bandwidthMonitorLWin = null;
 
     /**
-     * Legt die statusbar an.
+     * Create the status bar item.
      */
     private void createStatusBar() {
         statusBar = new MVStatusBar(daten);
@@ -229,13 +228,8 @@ public class MediathekGui extends JFrame {
 
         Duration.staticPing("Start Gui");
         createStatusBar();
-        //create the Film Information HUD
-        if (SystemInfo.isMacOSX()) {
-            Daten.filmInfo = new MVFilmInformationOSX(this, jTabbedPane, daten);
-        } else {
-            //klappte nicht auf allen Desktops
-            Daten.filmInfo = new MVFilmInformationLWin(this, jTabbedPane, daten);
-        }
+
+        createFilmInformationHUD(this, jTabbedPane, daten);
 
         setOrgTitel();
         setLookAndFeel();
@@ -264,16 +258,27 @@ public class MediathekGui extends JFrame {
 
         setFocusSuchfeld();
 
-        if (SystemInfo.isMacOSX()) {
-            bandwidthMonitorOSX = new MVBandwidthMonitorOSX(this);
-        } else {
-            bandwidthMonitorLWin = new MVBandwidthMonitorLWin(this);
-        }
+        createBandwidthMonitor(this);
 
         Duration.staticPing("Gui steht!");
 
         ProgStart.loadDataProgStart();
 
+    }
+
+    protected void createBandwidthMonitor(JFrame parent)
+    {
+        //klappte nicht auf allen Desktops
+        //FIXME unify bandwidth monitoring...
+        bandwidthMonitorLWin = new MVBandwidthMonitorLWin(parent);
+    }
+
+    /**
+     * Create the film information tool window.
+     */
+    protected void createFilmInformationHUD(JFrame parent, JTabbedPane tabPane, Daten daten) {
+            //klappte nicht auf allen Desktops
+            Daten.filmInfo = new MVFilmInformationLWin(parent, tabPane, daten);
     }
 
     private void addListener() {
@@ -1028,7 +1033,7 @@ public class MediathekGui extends JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanelCont = new javax.swing.JPanel();
+        javax.swing.JPanel jPanelCont = new javax.swing.JPanel();
         jPanelInfo = new javax.swing.JPanel();
         jTabbedPane = new javax.swing.JTabbedPane();
         jMenuBar = new javax.swing.JMenuBar();
@@ -1333,7 +1338,7 @@ public class MediathekGui extends JFrame {
     private javax.swing.JMenuItem jMenuItemAbosAusschalten;
     private javax.swing.JMenuItem jMenuItemAbosEinschalten;
     private javax.swing.JMenuItem jMenuItemAbosLoeschen;
-    private javax.swing.JMenuItem jMenuItemAnleitung;
+    protected javax.swing.JMenuItem jMenuItemAnleitung;
     protected javax.swing.JMenuItem jMenuItemBeenden;
     protected javax.swing.JMenuItem jMenuItemBlacklist;
     private javax.swing.JMenuItem jMenuItemDownloadAbspielen;
@@ -1365,7 +1370,6 @@ public class MediathekGui extends JFrame {
     private javax.swing.JMenuItem jMenuItemSchriftGr;
     private javax.swing.JMenuItem jMenuItemSchriftKl;
     private javax.swing.JMenuItem jMenuItemSchriftNormal;
-    private javax.swing.JPanel jPanelCont;
     private javax.swing.JPanel jPanelInfo;
     protected javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JTabbedPane jTabbedPane;

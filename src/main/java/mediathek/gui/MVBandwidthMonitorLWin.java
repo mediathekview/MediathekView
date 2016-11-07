@@ -37,10 +37,7 @@ import mediathek.config.MVConfig;
 import mediathek.controller.MVBandwidthTokenBucket;
 import mediathek.tool.GuiFunktionen;
 
-public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
-
-    private static final long serialVersionUID = 1L;
-
+public class MVBandwidthMonitorLWin extends JPanel {
     private double counter = 0; // double sonst "läuft" die Chart nicht
     private Trace2DLtd m_trace = new Trace2DLtd(300);
     private IAxis<?> x_achse = null;
@@ -56,14 +53,16 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
     private final java.util.Timer timer = new java.util.Timer(false);
     private TimerTask timerTask = null;
 
-    /** Creates new form MVBandwidthInfo_
+    /**
+     * Creates new form MVBandwidthMonitorLWin
      *
-     * @param parent */
+     * @param parent
+     **/
     public MVBandwidthMonitorLWin(JFrame parent) {
         initComponents();
         this.parent = parent;
         this.panel = this;
-        jDialog = new JDialog(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP) ? parent : (Frame) null, "Bandbreite");
+        jDialog = new JDialog(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP) ? parent : null, "Bandbreite");
         jDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         jDialog.addWindowListener(new WindowAdapter() {
             @Override
@@ -184,7 +183,7 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
 
     public static void setSliderBandwith(JSlider slider) {
         int bandbreiteKByte;
-        String ret;
+
         try {
             bandbreiteKByte = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE));
         } catch (Exception ex) {
@@ -352,7 +351,7 @@ public class MVBandwidthMonitorLWin extends javax.swing.JPanel {
             cbkTop.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP));
             cbkTop.addActionListener(l -> {
                 MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP, Boolean.toString(cbkTop.isSelected()));
-                GuiFunktionen.setParent(jDialog, MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP) ? parent : (Frame) null);
+                GuiFunktionen.setParent(jDialog, MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP) ? parent : null);
             });
             cbkBorder.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_DECORATED));
             cbkBorder.addActionListener(l -> {
