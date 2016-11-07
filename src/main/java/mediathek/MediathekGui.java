@@ -84,13 +84,12 @@ public class MediathekGui extends JFrame {
 
     public enum TABS {
         TAB_NIX, TAB_FILME, TAB_DOWNLOADS, TAB_ABOS, TAB_MELDUNGEN
-    };
+    }
 
     /**
      * Bandwidth monitoring for downloads.
      */
-    //FIXME redesign Bandwidth monitors
-    private MVBandwidthMonitorLWin bandwidthMonitorLWin = null;
+    protected IBandwidthMonitor bandwidthMonitor = null;
 
     /**
      * Create the status bar item.
@@ -270,8 +269,7 @@ public class MediathekGui extends JFrame {
     protected void createBandwidthMonitor(JFrame parent)
     {
         //klappte nicht auf allen Desktops
-        //FIXME unify bandwidth monitoring...
-        bandwidthMonitorLWin = new MVBandwidthMonitorLWin(parent);
+        bandwidthMonitor = new MVBandwidthMonitorLWin(parent);
     }
 
     /**
@@ -965,10 +963,7 @@ public class MediathekGui extends JFrame {
         // Dialog Einstellungen
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, Daten.dialogEinstellungen);
         // Infodialog/Bandwidth
-        if (bandwidthMonitorLWin != null) {
-            GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_INFODIALOG, bandwidthMonitorLWin.getDialog());
-//            bandwidthMonitorLWin.getDividerLocation();
-        }
+        bandwidthMonitor.writeConfig();
         // MediaDB
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, Daten.dialogMediaDB);
 

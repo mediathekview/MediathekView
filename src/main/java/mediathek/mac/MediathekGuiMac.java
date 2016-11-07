@@ -24,11 +24,6 @@ import mediathek.gui.MVFilmInformationOSX;
 public class MediathekGuiMac extends MediathekGui {
 
     /**
-     * Bandwidth monitoring for downloads.
-     */
-    private MVBandwidthMonitorOSX bandwidthMonitorOSX = null;
-
-    /**
      * Repaint-Thread for progress indicator on OS X.
      */
     private Thread osxProgressIndicatorThread = null;
@@ -74,7 +69,7 @@ public class MediathekGuiMac extends MediathekGui {
     @Override
     protected void createBandwidthMonitor(JFrame parent)
     {
-            bandwidthMonitorOSX = new MVBandwidthMonitorOSX(this);
+        bandwidthMonitor = new MVBandwidthMonitorOSX(this);
     }
 
     /**
