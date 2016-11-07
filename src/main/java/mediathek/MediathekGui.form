@@ -419,6 +419,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Infos und Hilfe zum Programm"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+              </AuxValues>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -462,6 +465,10 @@
   </Layout>
   <SubComponents>
     <Container class="javax.swing.JPanel" name="jPanelCont">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+      </AuxValues>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
       <SubComponents>
