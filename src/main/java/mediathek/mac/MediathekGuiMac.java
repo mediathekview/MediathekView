@@ -10,17 +10,23 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import javax.imageio.ImageIO;
-import javax.swing.KeyStroke;
+import javax.swing.*;
+
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.gui.AboutDialog;
+import mediathek.gui.MVBandwidthMonitorOSX;
+import mediathek.gui.MVFilmInformationOSX;
 
 public class MediathekGuiMac extends MediathekGui {
 
-    private static final long serialVersionUID = 1L;
-    
+    /**
+     * Bandwidth monitoring for downloads.
+     */
+    private MVBandwidthMonitorOSX bandwidthMonitorOSX = null;
+
     /**
      * Repaint-Thread for progress indicator on OS X.
      */
@@ -52,7 +58,22 @@ public class MediathekGuiMac extends MediathekGui {
         if (SystemInfo.isMacOSX()) {
             setupUserInterfaceForOsx();
             setupAcceleratorsForOsx();
+
+            jMenuItemAnleitung.setText("Hilfe zum Programm...");
         }
+    }
+
+
+    @Override
+    protected void createFilmInformationHUD(JFrame parent, JTabbedPane tabPane, Daten daten)
+    {
+        Daten.filmInfo = new MVFilmInformationOSX(parent, tabPane, daten);
+    }
+
+    @Override
+    protected void createBandwidthMonitor(JFrame parent)
+    {
+            bandwidthMonitorOSX = new MVBandwidthMonitorOSX(this);
     }
 
     /**
