@@ -20,6 +20,7 @@ import mediathek.gui.AboutDialog;
 import mediathek.gui.MVBandwidthMonitorOSX;
 import mediathek.gui.MVFilmInformationOSX;
 
+@SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
 
     /**

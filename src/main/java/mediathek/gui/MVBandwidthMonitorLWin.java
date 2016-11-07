@@ -37,6 +37,7 @@ import mediathek.config.MVConfig;
 import mediathek.controller.MVBandwidthTokenBucket;
 import mediathek.tool.GuiFunktionen;
 
+@SuppressWarnings("serial")
 public class MVBandwidthMonitorLWin extends JPanel {
     private double counter = 0; // double sonst "läuft" die Chart nicht
     private Trace2DLtd m_trace = new Trace2DLtd(300);
