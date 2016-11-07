@@ -59,6 +59,7 @@ import mediathek.tool.MVFrame;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 import mediathek.tool.MVMessageDialog;
 
+@SuppressWarnings("serial")
 public class MediathekGui extends JFrame {
 
     private final Daten daten;
