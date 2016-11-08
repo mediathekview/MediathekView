@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.gui;
+package mediathek.gui.bandwidth;
 
 import info.monitorenter.gui.chart.Chart2D;
 import info.monitorenter.gui.chart.IAxis;
@@ -38,7 +38,7 @@ import mediathek.controller.MVBandwidthTokenBucket;
 import mediathek.tool.GuiFunktionen;
 
 @SuppressWarnings("serial")
-public class MVBandwidthMonitorLWin extends JPanel {
+public class MVBandwidthMonitorLWin extends JPanel implements IBandwidthMonitor {
     private double counter = 0; // double sonst "läuft" die Chart nicht
     private Trace2DLtd m_trace = new Trace2DLtd(300);
     private IAxis<?> x_achse = null;
@@ -258,6 +258,11 @@ public class MVBandwidthMonitorLWin extends JPanel {
         if (!isVis) {
             jDialog.dispose();
         }
+    }
+
+    @Override
+    public void writeConfig() {
+        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_INFODIALOG, getDialog());
     }
 
 //    public static String setInfoText(DownloadInfos di) {

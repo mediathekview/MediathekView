@@ -17,16 +17,11 @@ import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.gui.AboutDialog;
-import mediathek.gui.MVBandwidthMonitorOSX;
-import mediathek.gui.MVFilmInformationOSX;
+import mediathek.gui.bandwidth.MVBandwidthMonitorOSX;
+import mediathek.gui.filmInformation.MVFilmInformationOSX;
 
 @SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
-
-    /**
-     * Bandwidth monitoring for downloads.
-     */
-    private MVBandwidthMonitorOSX bandwidthMonitorOSX = null;
 
     /**
      * Repaint-Thread for progress indicator on OS X.
@@ -68,13 +63,13 @@ public class MediathekGuiMac extends MediathekGui {
     @Override
     protected void createFilmInformationHUD(JFrame parent, JTabbedPane tabPane, Daten daten)
     {
-        Daten.filmInfo = new MVFilmInformationOSX(parent, tabPane, daten);
+        Daten.filmInfo = new MVFilmInformationOSX(parent);
     }
 
     @Override
     protected void createBandwidthMonitor(JFrame parent)
     {
-            bandwidthMonitorOSX = new MVBandwidthMonitorOSX(this);
+        bandwidthMonitor = new MVBandwidthMonitorOSX(this);
     }
 
     /**
