@@ -41,7 +41,7 @@ import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
-import mediathek.controller.CheckUpdate;
+import mediathek.update.CheckUpdate;
 import mediathek.controller.ProgStart;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
@@ -450,7 +450,7 @@ public class MediathekGui extends JFrame {
 
     public void setTray() {
         if (tray == null && Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY))) {
-            tray = new MVTray(daten).systemTray();
+            tray = new MVTray().systemTray();
         } else if (tray != null && !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY))) {
             tray.beenden();
             tray = null;
