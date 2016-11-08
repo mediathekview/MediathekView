@@ -98,7 +98,7 @@ public class MediathekGui extends JFrame {
      * Create the status bar item.
      */
     private void createStatusBar() {
-        statusBar = new MVStatusBar(daten);
+        statusBar = new MVStatusBar();
         JScrollPane js = new JScrollPane();
         js.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         js.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);

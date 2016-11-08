@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 import java.util.EnumMap;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.border.SoftBevelBorder;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
@@ -23,10 +22,8 @@ import mediathek.daten.DatenDownload;
  * Date: 02.03.13
  * Time: 19:54
  */
+@SuppressWarnings("serial")
 public final class MVStatusBar extends JPanel {
-
-    private static final long serialVersionUID = 1L;
-
     private boolean stopTimer = false;
     private final EnumMap<MVStatusBar.StatusbarIndex, String> displayListForLeftLabel = new EnumMap<>(MVStatusBar.StatusbarIndex.class);
     private MVStatusBar.StatusbarIndex currentIndex = MVStatusBar.StatusbarIndex.NONE;
@@ -37,15 +34,12 @@ public final class MVStatusBar extends JPanel {
     private final JProgressBar progress;
     private final JButton stopButton;
     private final BottomBar bottomBar;
-    private final Daten daten;
     private final String TRENNER = "  ||  ";
 
-    public MVStatusBar(Daten daten) {
-        this.daten = daten;
+    public MVStatusBar() {
         bottomBar = new BottomBar(BottomBarSize.LARGE);
 
         EmptyBorder eBorder = new EmptyBorder(0, 5, 0, 5); // oben, rechts, unten, links
-        LineBorder lb = new LineBorder(new java.awt.Color(153, 153, 153), 2, true);
         SoftBevelBorder sbb = new SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED);
 
         lblSel = new JLabel("0");
