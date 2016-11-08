@@ -1,4 +1,4 @@
-package mediathek.gui;
+package mediathek.gui.filmInformation;
 
 import javax.swing.event.ChangeListener;
 import mSearch.daten.DatenFilm;
@@ -6,7 +6,7 @@ import mSearch.daten.DatenFilm;
 /**
  * Display the current film information
  */
-public interface MVFilmInfo extends ChangeListener {
+public interface IFilmInformation extends ChangeListener {
 
     void showInfo();
 

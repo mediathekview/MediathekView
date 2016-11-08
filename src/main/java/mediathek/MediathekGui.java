@@ -46,12 +46,15 @@ import mediathek.controller.ProgStart;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.*;
+import mediathek.gui.bandwidth.IBandwidthMonitor;
+import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
+import mediathek.gui.filmInformation.MVFilmInformationLWin;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFont;
@@ -84,19 +87,18 @@ public class MediathekGui extends JFrame {
 
     public enum TABS {
         TAB_NIX, TAB_FILME, TAB_DOWNLOADS, TAB_ABOS, TAB_MELDUNGEN
-    };
+    }
 
     /**
      * Bandwidth monitoring for downloads.
      */
-    //FIXME redesign Bandwidth monitors
-    private MVBandwidthMonitorLWin bandwidthMonitorLWin = null;
+    protected IBandwidthMonitor bandwidthMonitor = null;
 
     /**
      * Create the status bar item.
      */
     private void createStatusBar() {
-        statusBar = new MVStatusBar(daten);
+        statusBar = new MVStatusBar();
         JScrollPane js = new JScrollPane();
         js.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         js.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -270,8 +272,7 @@ public class MediathekGui extends JFrame {
     protected void createBandwidthMonitor(JFrame parent)
     {
         //klappte nicht auf allen Desktops
-        //FIXME unify bandwidth monitoring...
-        bandwidthMonitorLWin = new MVBandwidthMonitorLWin(parent);
+        bandwidthMonitor = new MVBandwidthMonitorLWin(parent);
     }
 
     /**
@@ -965,10 +966,7 @@ public class MediathekGui extends JFrame {
         // Dialog Einstellungen
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, Daten.dialogEinstellungen);
         // Infodialog/Bandwidth
-        if (bandwidthMonitorLWin != null) {
-            GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_INFODIALOG, bandwidthMonitorLWin.getDialog());
-//            bandwidthMonitorLWin.getDividerLocation();
-        }
+        bandwidthMonitor.writeConfig();
         // MediaDB
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, Daten.dialogMediaDB);
 

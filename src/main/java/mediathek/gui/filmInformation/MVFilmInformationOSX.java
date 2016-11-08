@@ -1,7 +1,6 @@
-package mediathek.gui;
+package mediathek.gui.filmInformation;
 
 import mSearch.daten.DatenFilm;
-import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.UrlHyperlinkAction;
@@ -16,7 +15,7 @@ import java.net.URISyntaxException;
 /**
  * Display the current film information as a utility window.
  */
-public class MVFilmInformationOSX implements MVFilmInfo {
+public class MVFilmInformationOSX implements IFilmInformation {
 
     private JDialog hudDialog = null;
     private JXHyperlink lblUrlThemaField;
@@ -39,7 +38,7 @@ public class MVFilmInformationOSX implements MVFilmInfo {
         hudDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     }
 
-    public MVFilmInformationOSX(JFrame owner, JTabbedPane tabbedPane, Daten ddaten) {
+    public MVFilmInformationOSX(JFrame owner) {
         parent = owner;
 
         createDialog(owner);

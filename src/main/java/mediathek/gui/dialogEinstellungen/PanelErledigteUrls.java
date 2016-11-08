@@ -334,7 +334,6 @@ public class PanelErledigteUrls extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-//                MVFilmInfo filmInfoHud = Daten.filmInfo;
                 Daten.filmInfo.updateCurrentFilm(film);
                 Daten.filmInfo.showInfo();
             }

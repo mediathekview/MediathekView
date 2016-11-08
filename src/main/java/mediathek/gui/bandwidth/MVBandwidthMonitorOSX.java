@@ -1,4 +1,4 @@
-package mediathek.gui;
+package mediathek.gui.bandwidth;
 
 import info.monitorenter.gui.chart.Chart2D;
 import info.monitorenter.gui.chart.IAxis;
@@ -23,7 +23,7 @@ import mediathek.daten.DatenDownload;
 /**
  * This class will manage and display the download bandwidth chart display.
  */
-public class MVBandwidthMonitorOSX {
+public class MVBandwidthMonitorOSX implements IBandwidthMonitor {
 
     private double counter = 0; // double sonst "läuft" die Chart nicht
     private JDialog hudDialog = null;
@@ -171,5 +171,10 @@ public class MVBandwidthMonitorOSX {
             return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + Math.round(bandw) + " Byte/s";
         }
     }
+
+    @Override
+    public void writeConfig() {
+        //do nothing for OSX
     }
+}
 
