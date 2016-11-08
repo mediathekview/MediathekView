@@ -24,7 +24,11 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -63,34 +67,37 @@ public class AboutDialog extends JDialog {
         lblVersion.setText(strVersion);
     }
 
+    /**
+     * Read the credits HTML file from resources
+     * @return
+     */
+    private String loadCredits()
+    {
+        String content;
+
+        final StringBuilder contentBuilder = new StringBuilder();
+        URL url = this.getClass().getResource("/mediathek/res/programm/about/credits.html");
+        try (InputStreamReader isr = new InputStreamReader(url.openStream());
+             BufferedReader in = new BufferedReader(isr))
+        {
+            String str;
+            while ((str = in.readLine()) != null) {
+                contentBuilder.append(str);
+            }
+        } catch (IOException ignored) {
+            ignored.printStackTrace();
+        }
+        content = contentBuilder.toString();
+
+        return content;
+    }
+
     private void initMarqueePane() {
         final JEditorPane messagePane = new JEditorPane();
         messagePane.setEditable(false);
         messagePane.setFocusable(false);
         messagePane.setContentType("text/html");
-        messagePane.setText("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-                + "<head><style type=\"text/css\"> .sans { font-family: Verdana, Geneva, sans-serif; }</style></head>\n"
-                + "<body>\n"
-                + "<span class=\"sans\"><b>http://zdfmediathk.sourceforge.net</b><br /></span>\n"
-                + "<p><span class=\"sans\"><b>Autoren:</b><br />\n"
-                + "Xaver W. (W.Xaver [at] googlemail [dot] com)<br />\n"
-                + "Christian F.<br />\n"
-                + "Patrick<br />\n"
-                + "thausherr<br />\n"
-                + "Andreas M.<br />\n"
-                + "siedlerchr<br /></span><p>\n"
-                + "<span class=\"sans\"><b>Dokumentation / Test:</b><br />\n"
-                + "styrol<br />\n"
-                + "hostis<br />\n"
-                + "pmshell<br />\n"
-                + "thausherr<br />\n"
-                + "apoleon<br />\n"
-                + "siedlerchr<br />\n"
-                + "werner252<br />\n"
-                + "thomas5<br />\n"
-                + "frankypsilon</span><p>\n"
-                + "<span class=\"sans\"><b>Ein Dankeschön an alle, die zu dieser Software beigetragen haben.</b></span>\n"
-                + "<br /><br /><br /></body></html>");
+        messagePane.setText(loadCredits());
 
         marqueePane = new MarqueePane(messagePane);
         marqueePane.setStayDelay(3000);
@@ -396,7 +403,7 @@ public class AboutDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                UrlHyperlinkAction.urlOeffnen(parentFrame, Konstanten.ADRESSE_WEBSITE);
+                UrlHyperlinkAction.openURL(parentFrame, Konstanten.ADRESSE_WEBSITE);
             } catch (URISyntaxException ignored) {
             }
         }
@@ -412,7 +419,7 @@ public class AboutDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                UrlHyperlinkAction.urlOeffnen(parentFrame, Konstanten.ADRESSE_DONATION);
+                UrlHyperlinkAction.openURL(parentFrame, Konstanten.ADRESSE_DONATION);
             } catch (URISyntaxException ignored) {
             }
         }
@@ -428,7 +435,7 @@ public class AboutDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                UrlHyperlinkAction.urlOeffnen(parentFrame, Konstanten.ADRESSE_FORUM);
+                UrlHyperlinkAction.openURL(parentFrame, Konstanten.ADRESSE_FORUM);
             } catch (URISyntaxException ignored) {
             }
         }
@@ -444,7 +451,7 @@ public class AboutDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                UrlHyperlinkAction.urlOeffnen(parentFrame, Konstanten.ADRESSE_ANLEITUNG);
+                UrlHyperlinkAction.openURL(parentFrame, Konstanten.ADRESSE_ANLEITUNG);
             } catch (URISyntaxException ignored) {
             }
         }

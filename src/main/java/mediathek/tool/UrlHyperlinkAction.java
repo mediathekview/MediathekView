@@ -31,17 +31,14 @@ import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 
+@SuppressWarnings("serial")
 public class UrlHyperlinkAction extends AbstractAction {
 
-    private static final long serialVersionUID = 1L;
-    
-    private String url;
     private JFrame jFrameParent;
 
-    public UrlHyperlinkAction(JFrame jjFrameParent, String uurl) throws URISyntaxException {
-        url = uurl;
+    public UrlHyperlinkAction(JFrame jjFrameParent, String url) throws URISyntaxException {
         jFrameParent = jjFrameParent;
-        super.putValue(Action.NAME, uurl);
+        super.putValue(Action.NAME, url);
         super.putValue(SHORT_DESCRIPTION, url);
 //        super.putValue(LONG_DESCRIPTION, url);
     }
@@ -49,12 +46,18 @@ public class UrlHyperlinkAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            urlOeffnen(jFrameParent, e.getActionCommand());
+            openURL(jFrameParent, e.getActionCommand());
         } catch (URISyntaxException ignored) {
         }
     }
 
-    public static void urlOeffnen(JFrame paFrame, String url) throws URISyntaxException {
+    /**
+     * Try to open a browser window.
+     * @param paFrame the parent window.
+     * @param url URL to be opened. Here in string format.
+     * @throws URISyntaxException when URL is malformed.
+     */
+    public static void openURL(JFrame paFrame, String url) throws URISyntaxException {
         if (Desktop.isDesktopSupported()) {
             Desktop d = Desktop.getDesktop();
             try {
