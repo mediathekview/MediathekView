@@ -41,7 +41,7 @@ import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
-import mediathek.controller.CheckUpdate;
+import mediathek.update.CheckUpdate;
 import mediathek.controller.ProgStart;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;

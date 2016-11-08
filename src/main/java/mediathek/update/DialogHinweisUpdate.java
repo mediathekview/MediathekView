@@ -17,7 +17,7 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.gui.dialog;
+package mediathek.update;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,10 +26,8 @@ import mediathek.config.Konstanten;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.UrlHyperlinkAction;
 
+@SuppressWarnings("serial")
 public class DialogHinweisUpdate extends javax.swing.JDialog {
-
-    private static final long serialVersionUID = 1L;
-    
     private String text = "";
     private final JFrame parent;
 
