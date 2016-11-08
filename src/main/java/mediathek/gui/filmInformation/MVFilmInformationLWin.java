@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.gui;
+package mediathek.gui.filmInformation;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -37,10 +37,8 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.UrlHyperlinkAction;
 import org.jdesktop.swingx.JXHyperlink;
 
-public class MVFilmInformationLWin extends javax.swing.JDialog implements MVFilmInfo {
-
-    private static final long serialVersionUID = 1L;
-
+@SuppressWarnings("serial")
+public class MVFilmInformationLWin extends javax.swing.JDialog implements IFilmInformation {
     private JXHyperlink lblUrlThemaField;
     private JXHyperlink lblUrlSubtitle;
     private JTextArea textAreaBeschreibung;
@@ -56,7 +54,7 @@ public class MVFilmInformationLWin extends javax.swing.JDialog implements MVFilm
     private JDialog dialog;
 
     public MVFilmInformationLWin(JFrame owner, JTabbedPane tabbedPane, Daten ddaten) {
-        super(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP) ? owner : (Frame) null, false);
+        super(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP) ? owner : null, false);
         initComponents();
 
         dialog = this;
@@ -305,7 +303,7 @@ public class MVFilmInformationLWin extends javax.swing.JDialog implements MVFilm
             cbkTop.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP));
             cbkTop.addActionListener(l -> {
                 MVConfig.add(MVConfig.Configs.SYSTEM_FILM_INFO_TOP, Boolean.toString(cbkTop.isSelected()));
-                GuiFunktionen.setParent(dialog, MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP) ? parent : (Frame) null);
+                GuiFunktionen.setParent(dialog, MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP) ? parent : null);
             });
 
             cbkBorder.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_DECORATED));
