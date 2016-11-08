@@ -84,7 +84,7 @@ processResources.dependsOn renameAndFillBuildFile
 
 licenseReport  {
     outputDir = "res/Copyright/"
-    excludes = [':MSearch']
+    excludes = [':MSearch', 'MediathekView:MSearch']
     configurations = ['compile']
 }
 
