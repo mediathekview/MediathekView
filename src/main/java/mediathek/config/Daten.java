@@ -50,6 +50,7 @@ import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.*;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
+import mediathek.gui.filmInformation.IFilmInformation;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVMessageDialog;
@@ -95,7 +96,7 @@ public class Daten {
     public static GuiMeldungen guiMeldungen = null;
     public static DialogEinstellungen dialogEinstellungen = null;
 
-    public static MVFilmInfo filmInfo = null; // Infos zum Film
+    public static IFilmInformation filmInfo = null; // Infos zum Film
     public static DialogMediaDB dialogMediaDB = null;
 
     private boolean alreadyMadeBackup = false;

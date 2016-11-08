@@ -44,6 +44,7 @@ import mediathek.controller.starter.Start;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
+import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
@@ -53,7 +54,6 @@ public class GuiDownloads extends PanelVorlage {
 
     private static final long serialVersionUID = 1L;
     
-    //    private final MVFilmInfo filmInfoHud;
     private long lastUpdate = 0;
     private boolean onlyAbos = false;
     private boolean onlyDownloads = false;

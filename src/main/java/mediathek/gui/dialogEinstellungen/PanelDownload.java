@@ -27,7 +27,7 @@ import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
-import mediathek.gui.MVBandwidthMonitorLWin;
+import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 

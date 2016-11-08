@@ -1,4 +1,4 @@
-package mediathek.gui;
+package mediathek.gui.bandwidth;
 
 /**
  * Base interface for all bandwidth monitor classes.
