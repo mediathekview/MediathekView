@@ -37,13 +37,11 @@ import net.sf.jcarrierpigeon.WindowPosition;
 
 public final class MVTray {
 
-    private final Daten daten;
     private int trayState = 0; // 0, 1=Download, 2=Download mit Fehler
     private SystemTray tray = null;
     private TrayIcon trayIcon = null;
 
-    public MVTray(Daten daten) {
-        this.daten = daten;
+    public MVTray() {
     }
 
     public void beenden() {

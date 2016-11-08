@@ -34,16 +34,14 @@ import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
-import mediathek.controller.ProgrammUpdateSuchen;
+import mediathek.update.ProgrammUpdateSuchen;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVMessageDialog;
 
+@SuppressWarnings("serial")
 public class PanelEinstellungen extends PanelVorlage {
-
-    private static final long serialVersionUID = 1L;
-    
     private final static String ICONSET_STANDARD = "Standard";
     private final String ALLE = " Alle ";
 
