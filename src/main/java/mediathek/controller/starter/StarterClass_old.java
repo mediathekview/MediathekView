@@ -79,9 +79,9 @@ public class StarterClass_old {
             starten.startStarten(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
             daten.history.zeileSchreiben(ersterFilm.arr[DatenFilm.FILM_THEMA], ersterFilm.arr[DatenFilm.FILM_TITEL], d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
-            Daten.listeFilmeHistory.add(ersterFilm);
+            daten.getListeFilmeHistory().add(ersterFilm);
             // und jetzt noch in die Downloadliste damit die Farbe im Tab Filme passt
-            Daten.listeDownloadsButton.addMitNummer(d);
+            daten.getListeDownloadsButton().addMitNummer(d);
         }
     }
 
@@ -310,7 +310,7 @@ public class StarterClass_old {
         }
         notifyStartEvent(datenDownload);
 
-        if (SystemInfo.isMacOSX() && Daten.mediathekGui != null) {
+        if (SystemInfo.isMacOSX() && Daten.getInstance().getMediathekGui() != null) {
             Application.getApplication().requestUserAttention(false);
         }
     }
@@ -376,7 +376,7 @@ public class StarterClass_old {
                         //alle 5 Sekunden einen Download starten
                         sleep(5 * 1000);
                     }
-                    Daten.listeDownloadsButton.buttonStartsPutzen(); // Button Starts aus der Liste löschen
+                    daten.getListeDownloadsButton().buttonStartsPutzen(); // Button Starts aus der Liste löschen
                     sleep(3 * 1000);
                 } catch (Exception ex) {
                     Log.errorLog(613822015, ex);
@@ -394,7 +394,7 @@ public class StarterClass_old {
                 pause = false;
             }
 
-            return Daten.listeDownloads.getNextStart();
+            return daten.getListeDownloads().getNextStart();
         }
 
         /**
@@ -571,8 +571,8 @@ public class StarterClass_old {
                 exMessage = ex.getLocalizedMessage();
                 Log.errorLog(395623710, ex);
                 SwingUtilities.invokeLater(() -> {
-                    if (!Daten.auto) {
-                        new MeldungDownloadfehler(Daten.mediathekGui, exMessage, datenDownload).setVisible(true);
+                    if (!Daten.isAuto()) {
+                        new MeldungDownloadfehler(Daten.getInstance().getMediathekGui(), exMessage, datenDownload).setVisible(true);
                     }
                 });
             }
@@ -602,7 +602,7 @@ public class StarterClass_old {
                 // dann ist alles OK
                 return false;
             }
-            if (Daten.auto) {
+            if (Daten.isAuto()) {
                 // dann mit gleichem Namen und Datei vorher löschen
                 try {
                     Files.deleteIfExists(file.toPath());
@@ -636,7 +636,7 @@ public class StarterClass_old {
         private boolean abbrechen_() {
             boolean result = false;
             if (file.exists()) {
-                DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(Daten.mediathekGui, datenDownload, false /*weiterführen*/);
+                DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(Daten.getInstance().getMediathekGui(), datenDownload, false /*weiterführen*/);
                 dialogContinueDownload.setVisible(true);
 
                 switch (dialogContinueDownload.getResult()) {
@@ -877,8 +877,8 @@ public class StarterClass_old {
                             responseCode = "Responsecode: " + conn.getResponseCode() + "\n" + conn.getResponseMessage();
                             Log.errorLog(915236798, "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
                             SwingUtilities.invokeLater(() -> {
-                                if (!Daten.auto) {
-                                    new MeldungDownloadfehler(Daten.mediathekGui, "URL des Films:\n"
+                                if (!Daten.isAuto()) {
+                                    new MeldungDownloadfehler(Daten.getInstance().getMediathekGui(), "URL des Films:\n"
                                             + datenDownload.arr[DatenDownload.DOWNLOAD_URL] + "\n\n"
                                             + responseCode + "\n", datenDownload).setVisible(true);
                                 }
@@ -903,8 +903,8 @@ public class StarterClass_old {
                 Log.errorLog(316598941, ex, "Fehler");
                 start.status = Start.STATUS_ERR;
                 SwingUtilities.invokeLater(() -> {
-                    if (!Daten.auto) {
-                        new MeldungDownloadfehler(Daten.mediathekGui, exMessage, datenDownload).setVisible(true);
+                    if (!Daten.isAuto()) {
+                        new MeldungDownloadfehler(Daten.getInstance().getMediathekGui(), exMessage, datenDownload).setVisible(true);
                     }
                 });
             }
@@ -930,7 +930,7 @@ public class StarterClass_old {
                 // dann ist alles OK
                 return false;
             }
-            if (Daten.auto) {
+            if (Daten.isAuto()) {
                 return false; // immer überschreiben, keine GUI!!!
             }
 
@@ -957,7 +957,7 @@ public class StarterClass_old {
         private boolean abbrechen_() {
             boolean result = false;
             if (file.exists()) {
-                DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(Daten.mediathekGui, datenDownload, true /*weiterführen*/);
+                DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(Daten.getInstance().getMediathekGui(), datenDownload, true /*weiterführen*/);
                 dialogContinueDownload.setVisible(true);
 
                 switch (dialogContinueDownload.getResult()) {

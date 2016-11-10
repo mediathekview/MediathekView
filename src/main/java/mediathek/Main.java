@@ -21,30 +21,30 @@ package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
-import java.awt.EventQueue;
-import java.awt.GraphicsEnvironment;
-import java.awt.Toolkit;
-import java.io.File;
+import javafx.application.Platform;
+import mSearch.Config;
+import mSearch.tool.Log;
+import mSearch.tool.SingleInstance;
+import mSearch.tool.SysMsg;
+import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import mediathek.mac.MediathekGuiMac;
+
+import javax.swing.*;
+import java.awt.*;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import javafx.application.Platform;
-import javax.swing.JOptionPane;
-import javax.swing.RepaintManager;
-import mSearch.Config;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
-import mediathek.config.Daten;
-import mediathek.mac.MediathekGuiMac;
-import mediathek.config.Konstanten;
+
 import static mediathek.tool.MVFunctionSys.startMeldungen;
-import mSearch.tool.SingleInstance;
 
 public class Main {
 
-    public enum StartupMode {
+    private static final String JAVAFX_CLASSNAME_APPLICATION_PLATFORM = "javafx.application.Platform";
+
+    private enum StartupMode {
 
         GUI, AUTO, FASTAUTO
     }
@@ -55,7 +55,7 @@ public class Main {
      */
     private static void cleanupOsxFiles() {
         try {
-            Path oldFilmList = Paths.get(Daten.getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME);
+            Path oldFilmList = Paths.get(Daten.getSettingsDirectory_String(), Konstanten.JSON_DATEI_FILME);
             Files.deleteIfExists(oldFilmList);
         } catch (Exception ignored) {
         }
@@ -64,9 +64,11 @@ public class Main {
     /**
      * Tests if javafx is in the classpath by loading a well known class.
      */
-    private static void testForJavaFx() {
+    private static boolean hasJavaFx() {
         try {
-            Class.forName("javafx.application.Platform");
+           Class.forName(JAVAFX_CLASSNAME_APPLICATION_PLATFORM);
+            return true;
+
         } catch (ClassNotFoundException e) {
             System.out.println("===========================================");
             System.out.println("JavaFX wurde nicht im klassenpfad gefunden.");
@@ -75,7 +77,7 @@ public class Main {
             System.out.println("oder nutzen Sie eine eigene JRE-Installation.");
             System.out.println("===========================================");
 
-            System.exit(1);
+            return false;
         }
     }
 
@@ -93,136 +95,161 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static void main(final String args[]) {
-    	testForJavaFx();
-        StartupMode state = StartupMode.GUI;
+    public static void main(final String args[])
+    {
+        if (hasJavaFx())
+        {
+            StartupMode state = StartupMode.GUI;
 
-        try {
-            String tmp = System.getProperty("http.proxyUser", System.getProperty("https.proxyUser"));
-            if (tmp != null) {
-                Authenticator.setDefault(new Authenticator() {
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        String proxyUser = System.getProperty("http.proxyUser");
-                        String proxyPassword = System.getProperty("http.proxyPassword");
-                        return new PasswordAuthentication(proxyUser, proxyPassword.toCharArray());
-                    }
-                });
-                SysMsg.sysMsg("Proxy Authentication: (" + System.getProperty("http.proxyUser") + ")");
-            } else {
-                SysMsg.sysMsg("Proxy Authentication: not configured");
+            try
+            {
+                String tmp = System.getProperty("http.proxyUser", System.getProperty("https.proxyUser"));
+                if (tmp != null)
+                {
+                    Authenticator.setDefault(new Authenticator()
+                    {
+                        @Override
+                        protected PasswordAuthentication getPasswordAuthentication()
+                        {
+                            String proxyUser = System.getProperty("http.proxyUser");
+                            String proxyPassword = System.getProperty("http.proxyPassword");
+                            return new PasswordAuthentication(proxyUser, proxyPassword.toCharArray());
+                        }
+                    });
+                    SysMsg.sysMsg("Proxy Authentication: (" + System.getProperty("http.proxyUser") + ")");
+                } else
+                {
+                    SysMsg.sysMsg("Proxy Authentication: not configured");
+                }
+
+            } catch (SecurityException se)
+            {
+                SysMsg.sysMsg("Proxy Authentication: cannot access proxyUser / proxyPassword" + se.toString());
             }
 
-        } catch (SecurityException se) {
-            SysMsg.sysMsg("Proxy Authentication: cannot access proxyUser / proxyPassword" + se.toString());
-        }
+            if (args != null)
+            {
+                for (String s : args)
+                {
+                    s = s.toLowerCase();
+                    switch (s)
+                    {
+                        case "-auto":
+                            state = StartupMode.AUTO;
+                            break;
 
-        if (args != null) {
-            for (String s : args) {
-                s = s.toLowerCase();
-                switch (s) {
-                    case "-auto":
-                        state = StartupMode.AUTO;
-                        break;
+                        case "-fastauto":
+                            state = StartupMode.FASTAUTO;
+                            break;
 
-                    case "-fastauto":
-                        state = StartupMode.FASTAUTO;
-                        break;
+                        case "-v":
+                            EventQueue.invokeLater(() ->
+                            {
+                                startMeldungen();
+                                SysMsg.sysMsg("Systemmeldung");
+                                Log.errorLog(100000000, "Fehlermeldung");
+                                Log.endMsg();
+                                System.exit(0);
+                            });
+                            break;
 
-                    case "-v":
-                        EventQueue.invokeLater(() -> {
-                            startMeldungen();
-                            SysMsg.sysMsg("Systemmeldung");
-                            Log.errorLog(100000000, "Fehlermeldung");
-                            Log.endMsg();
-                            System.exit(0);
-                        });
-                        break;
+                        case "-d":
+                            Daten.setDebug(true);
+                            Config.debug = true;
 
-                    case "-d":
-                        Daten.debug = true;
-                        Config.debug = true;
+                            //                        EventQueue.invokeLater(() -> {
+                            //                            // zum Test
+                            //                            Log.startMeldungen();
+                            //                            Log.systemMeldung("Test 0");
+                            //                            MSLog.fehlerMeldung(100000000, "Test 1");
+                            //                            MSLog.fehlerMeldung(200000000, "Test 2");
+                            //                            MSLog.fehlerMeldung(0, "Test 3");
+                            //                        });
 
-//                        EventQueue.invokeLater(() -> {
-//                            // zum Test
-//                            Log.startMeldungen();
-//                            Log.systemMeldung("Test 0");
-//                            MSLog.fehlerMeldung(100000000, "Test 1");
-//                            MSLog.fehlerMeldung(200000000, "Test 2");
-//                            MSLog.fehlerMeldung(0, "Test 3");
-//                        });
+                            break;
 
-                        break;
-
-                    case "-m":
-                        Daten.startMaximized = true;
-                        break;
+                        case "-m":
+                            Daten.setStartMaximized(true);
+                            break;
+                    }
                 }
             }
-        }
 
         /*
          If user tries to start MV from command-line without proper options,
          instead of crashing while trying to open Swing windows, just change to CLI mode and warn the user.
          */
-        if (GraphicsEnvironment.isHeadless() && (state == StartupMode.GUI)) {
-            System.err.println("MediathekView wurde nicht als Kommandozeilenprogramm gestartet.");
-            System.err.println("Startmodus wurde auf -auto geändert.");
-            System.err.println();
-            state = StartupMode.AUTO;
-        }
+            if (GraphicsEnvironment.isHeadless() && (state == StartupMode.GUI))
+            {
+                System.err.println("MediathekView wurde nicht als Kommandozeilenprogramm gestartet.");
+                System.err.println("Startmodus wurde auf -auto geändert.");
+                System.err.println();
+                state = StartupMode.AUTO;
+            }
 
-        switch (state) {
-            case AUTO:
-                new MediathekAuto(args).starten();
-                break;
+            switch (state)
+            {
+                case AUTO:
+                    new MediathekAuto(args).starten();
+                    break;
 
-            case FASTAUTO:
-                final MediathekAuto mvAuto = new MediathekAuto(args);
-                mvAuto.setFastAuto(true);
-                mvAuto.starten();
-                break;
+                case FASTAUTO:
+                    final MediathekAuto mvAuto = new MediathekAuto(args);
+                    mvAuto.setFastAuto(true);
+                    mvAuto.starten();
+                    break;
 
-            case GUI:
-                EventQueue.invokeLater(() -> {
-                    //JavaFX stuff
-                    Platform.setImplicitExit(false);
+                case GUI:
+                    EventQueue.invokeLater(() ->
+                    {
+                        //JavaFX stuff
+                        Platform.setImplicitExit(false);
 
-                    if (SystemInfo.isMacOSX()) {
-                        System.setProperty("apple.laf.useScreenMenuBar", "true");
-                        cleanupOsxFiles();
-                    }
+                        if (SystemInfo.isMacOSX())
+                        {
+                            System.setProperty("apple.laf.useScreenMenuBar", "true");
+                            cleanupOsxFiles();
+                        }
 
-                    if (Daten.debug) {
-                        // use for debugging EDT violations
-                        RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
+                        if (Daten.isDebug())
+                        {
+                            // use for debugging EDT violations
+                            RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
 
-                        if (SystemInfo.isMacOSX()) {
-                            //prevent startup of multiple instances...useful during debugging :(
-                            SingleInstance singleInstanceWatcher = new SingleInstance();
-                            if (singleInstanceWatcher.isAppAlreadyActive()) {
-                                JOptionPane.showMessageDialog(null, "MediathekView is already running!");
-                                //System.exit(1);
+                            if (SystemInfo.isMacOSX())
+                            {
+                                //prevent startup of multiple instances...useful during debugging :(
+                                SingleInstance singleInstanceWatcher = new SingleInstance();
+                                if (singleInstanceWatcher.isAppAlreadyActive())
+                                {
+                                    JOptionPane.showMessageDialog(null, "MediathekView is already running!");
+                                    //System.exit(1);
+                                }
                             }
                         }
-                    }
-                    if (SystemInfo.isMacOSX()) {
-                        new MediathekGuiMac(args).setVisible(true);
-                    } else {
-                        if (SystemInfo.isLinux()) {
-                            try {
-                                Toolkit xToolkit = Toolkit.getDefaultToolkit();
-                                java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
-                                awtAppClassNameField.setAccessible(true);
-                                awtAppClassNameField.set(xToolkit, "MediathekView");
-                            } catch (Exception ignored) {
-                                System.err.println("Couldn't set awtAppClassName");
+                        if (SystemInfo.isMacOSX())
+                        {
+                            new MediathekGuiMac(args).setVisible(true);
+                        } else
+                        {
+                            if (SystemInfo.isLinux())
+                            {
+                                try
+                                {
+                                    Toolkit xToolkit = Toolkit.getDefaultToolkit();
+                                    java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
+                                    awtAppClassNameField.setAccessible(true);
+                                    awtAppClassNameField.set(xToolkit, "MediathekView");
+                                } catch (Exception ignored)
+                                {
+                                    System.err.println("Couldn't set awtAppClassName");
+                                }
                             }
+                            new MediathekGui(args).setVisible(true);
                         }
-                        new MediathekGui(args).setVisible(true);
-                    }
-                });
-                break;
+                    });
+                    break;
+            }
         }
     }
 }

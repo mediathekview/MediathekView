@@ -42,6 +42,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
     private static final long serialVersionUID = 1L;
     
     private final DatenAbo aktAbo;
+    private final Daten daten;
     private JTextField[] textfeldListe;
     private final JComboBox<String> comboboxPSet = new JComboBox<>();
     private final JComboBox<String> comboboxSender = new JComboBox<>();
@@ -53,7 +54,7 @@ public class DialogEditAbo extends javax.swing.JDialog {
     private final JSlider sliderDauer = new JSlider(0, 100, 0);
     private final JLabel labelDauer = new JLabel("0");
     private final boolean change;
-    private final JFrame parent;
+    private final JFrame frameParent;
 
     public boolean ok = false;
     public boolean[] ch = new boolean[DatenAbo.MAX_ELEM];
@@ -61,7 +62,8 @@ public class DialogEditAbo extends javax.swing.JDialog {
     public DialogEditAbo(final JFrame parent, boolean modal, Daten d, DatenAbo aktA, boolean change) {
         super(parent, modal);
         initComponents();
-        this.parent = parent;
+        daten = Daten.getInstance();
+        this.frameParent = parent;
         this.change = change;
         aktAbo = aktA;
         gr.add(rbMin);
@@ -71,9 +73,9 @@ public class DialogEditAbo extends javax.swing.JDialog {
         }
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
         comboboxPSet.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listePset.getListeAbo().getObjectDataCombo()));
-        comboboxSender.setModel(new javax.swing.DefaultComboBoxModel<>(GuiFunktionen.addLeerListe(Daten.filmeLaden.getSenderNamen())));
+        comboboxSender.setModel(new javax.swing.DefaultComboBoxModel<>(GuiFunktionen.addLeerListe(daten.getFilmeLaden().getSenderNamen())));
         // Zeilpfad ========================
-        ArrayList<String> pfade = Daten.listeAbo.getPfade();
+        ArrayList<String> pfade = daten.getListeAbo().getPfade();
         if (!pfade.contains(aktAbo.arr[DatenAbo.ABO_ZIELPFAD])) {
             pfade.add(0, aktAbo.arr[DatenAbo.ABO_ZIELPFAD]);
         }

@@ -212,7 +212,7 @@ public class MediathekGui extends JFrame {
 
         updateSplashScreenText("Anwendungsdaten laden...");
 
-        daten = new Daten(pfad, this);
+        daten = Daten.getInstance(pfad,this);
 
         startMeldungen();
         Duration.staticPing("Start");
@@ -380,7 +380,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void setSize() {
-        if (Daten.startMaximized || Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_MAX))) {
+        if (Daten.isStartMaximized() || Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_MAX))) {
             this.setExtendedState(Frame.MAXIMIZED_BOTH);
         } else {
             GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_GUI, this, null);
@@ -408,7 +408,7 @@ public class MediathekGui extends JFrame {
     private void init() {
         initTabs();
         initMenue();
-        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
                 jMenuItemFilmlisteLaden.setEnabled(false);
@@ -430,16 +430,16 @@ public class MediathekGui extends JFrame {
             public void fertigOnlyOne(ListenerFilmeLadenEvent event) {
                 // Prüfen obs ein Programmupdate gibt
                 Duration.staticPing("CheckUpdate");
-                new CheckUpdate(Daten.mediathekGui, daten).checkProgUpdate();
-                Daten.listeMediaDB.loadSavedList();
-                Daten.listeMediaDB.createMediaDB("");
+                new CheckUpdate(daten.getMediathekGui(), daten).checkProgUpdate();
+                daten.getListeMediaDB().loadSavedList();
+                daten.getListeMediaDB().createMediaDB("");
             }
         });
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
                 if (tray != null && !SystemInfo.isMacOSX() && Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY))) {
-                    Daten.mediathekGui.setVisible(false);
+                    daten.getMediathekGui().setVisible(false);
                 } else {
                     beenden(false, false);
                 }
@@ -460,15 +460,15 @@ public class MediathekGui extends JFrame {
     private static boolean geklickt = false;
 
     private void initTabs() {
-        Daten.guiDownloads = new GuiDownloads(daten, Daten.mediathekGui);
-        Daten.guiAbo = new GuiAbo(daten, Daten.mediathekGui);
+        Daten.guiDownloads = new GuiDownloads(daten, daten.getMediathekGui());
+        Daten.guiAbo = new GuiAbo(daten, daten.getMediathekGui());
         Daten.guiMeldungen = new GuiMeldungen(daten, this);
-        Daten.guiFilme = new GuiFilme(daten, Daten.mediathekGui);
+        Daten.guiFilme = new GuiFilme(daten, daten.getMediathekGui());
 
         //jTabbedPane.addTab("Filme", Icons.ICON_TAB_FILM, Daten.guiFilme);
         jTabbedPane.addTab("Filme", Daten.guiFilme);
 
-        if (Daten.debug) {
+        if (Daten.isDebug()) {
             Daten.guiDebug = new GuiDebug(daten);
             //jTabbedPane.addTab("Debug", spacerIcon, Daten.guiDebug);
             jTabbedPane.addTab("Debug", Daten.guiDebug);
@@ -766,13 +766,13 @@ public class MediathekGui extends JFrame {
         jMenuItemBeenden.addActionListener(e -> beenden(false, false));
 
         // Filme
-        jMenuItemFilmlisteLaden.addActionListener(e -> Daten.filmeLaden.loadFilmlistDialog(daten, false));
+        jMenuItemFilmlisteLaden.addActionListener(e -> daten.getFilmeLaden().loadFilmlistDialog(daten, false));
         jMenuItemFilmAbspielen.addActionListener(e -> Daten.guiFilme.guiFilmeFilmAbspielen());
         jMenuItemFilmAufzeichnen.addActionListener(e -> Daten.guiFilme.guiFilmeFilmSpeichern());
         jMenuItemFilterLoeschen.addActionListener(e -> Daten.guiFilme.guiFilmeFilterLoeschen());
         jMenuItemBlacklist.addActionListener(e -> {
-            DialogLeer dialog = new DialogLeer(Daten.mediathekGui, true);
-            dialog.init("Blacklist", new PanelBlacklist(daten, Daten.mediathekGui, PanelBlacklist.class.getName() + "_2"));
+            DialogLeer dialog = new DialogLeer(daten.getMediathekGui(), true);
+            dialog.init("Blacklist", new PanelBlacklist(daten, daten.getMediathekGui(), PanelBlacklist.class.getName() + "_2"));
             dialog.setVisible(true);
         });
         jMenuItemFilmeGesehen.addActionListener(e -> Daten.guiFilme.filmGesehen());
@@ -794,11 +794,11 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadWartendeStoppen.addActionListener(e -> Daten.guiDownloads.wartendeStoppen());
         jMenuItemDownloadStoppen.addActionListener(e -> Daten.guiDownloads.stoppen(false /* alle */));
         jMenuItemDownloadShutDown.addActionListener(e -> {
-            if (Daten.listeDownloads.nochNichtFertigeDownloads() > 0) {
+            if (daten.getListeDownloads().nochNichtFertigeDownloads() > 0) {
                 // ansonsten gibts keine laufenden Downloads auf die man warten sollte
                 beenden(true /*Dialog auf "warten" einstellen*/, false /*shutdown computer*/);
             } else {
-                MVMessageDialog.showMessageDialog(Daten.mediathekGui, "Die Downloads müssen zuerst gestartet werden.",
+                MVMessageDialog.showMessageDialog(daten.getMediathekGui(), "Die Downloads müssen zuerst gestartet werden.",
                         "Keine laufenden Downloads!", JOptionPane.ERROR_MESSAGE);
             }
         });
@@ -921,13 +921,13 @@ public class MediathekGui extends JFrame {
 
         // Hilfe
         jMenuItemAnleitung.addActionListener(e -> {
-            HelpDialog dialogOk = new HelpDialog(Daten.mediathekGui, daten);
+            HelpDialog dialogOk = new HelpDialog(daten.getMediathekGui(), daten);
             dialogOk.setVisible(true);
         });
     }
 
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
-        if (Daten.listeDownloads.nochNichtFertigeDownloads() > 0) {
+        if (daten.getListeDownloads().nochNichtFertigeDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
             DialogBeenden dialogBeenden = new DialogBeenden(this);
             if (showOptionTerminate) {
@@ -946,9 +946,9 @@ public class MediathekGui extends JFrame {
         Daten.guiAbo.tabelleSpeichern();
         Daten.dialogMediaDB.tabelleSpeichern();
 
-        if (Daten.listeDownloads != null) {
+        if (daten.getListeDownloads() != null) {
             // alle laufenden Downloads/Programme stoppen
-            for (DatenDownload download : Daten.listeDownloads) {
+            for (DatenDownload download : daten.getListeDownloads()) {
                 Start s = download.start;
                 if (s != null) {
                     s.stoppen = true;

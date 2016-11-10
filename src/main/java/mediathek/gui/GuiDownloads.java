@@ -137,7 +137,7 @@ public class GuiDownloads extends PanelVorlage {
     public void isShown() {
         super.isShown();
         if (!solo) {
-            Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.DOWNLOAD);
+            daten.getMediathekGui().getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.DOWNLOAD);
         }
         updateFilmData();
         Listener.notify(Listener.EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
@@ -193,11 +193,11 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     public void filmGesehen() {
-        daten.history.setGesehen(true, getSelFilme(), Daten.listeFilmeHistory);
+        daten.history.setGesehen(true, getSelFilme(), daten.getListeFilmeHistory());
     }
 
     public void filmUngesehen() {
-        daten.history.setGesehen(false, getSelFilme(), Daten.listeFilmeHistory);
+        daten.history.setGesehen(false, getSelFilme(), daten.getListeFilmeHistory());
     }
 
     public void invertSelection() {
@@ -427,7 +427,7 @@ public class GuiDownloads extends PanelVorlage {
 //        jPanelChart.setLayout(new BorderLayout(0, 0));
 //        jPanelChart.add(chart, BorderLayout.CENTER);
         setTimer();
-        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
                 loadFilmlist = true;
@@ -436,7 +436,7 @@ public class GuiDownloads extends PanelVorlage {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 loadFilmlist = false;
-                Daten.listeDownloads.filmEintragen();
+                daten.getListeDownloads().filmEintragen();
                 if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN))) {
                     downloadsAktualisieren();
                 } else {
@@ -469,8 +469,8 @@ public class GuiDownloads extends PanelVorlage {
                     @Override
                     public void run() {
 //                        counter++;
-//                        m_trace.addPoint(counter / 60, Daten.downloadInfos.bandwidth); // minutes
-//                        x_achse.getAxisTitle().setTitle(Daten.downloadInfos.roundBandwidth((long) counter));
+//                        m_trace.addPoint(counter / 60, daten.getDownloadInfos().bandwidth); // minutes
+//                        x_achse.getAxisTitle().setTitle(daten.getDownloadInfos().roundBandwidth((long) counter));
                         SwingUtilities.invokeLater(() -> setInfoText());
 
                     }
@@ -488,7 +488,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void setInfoText() {
-        int[] starts = Daten.downloadInfos.downloadStarts;
+        int[] starts = daten.getDownloadInfos().downloadStarts;
         if (starts[0] == 0) {
             txtDownload.setText("");
             return;
@@ -503,33 +503,33 @@ public class GuiDownloads extends PanelVorlage {
         // Downloads
         info += getInfoText();
         // Größe
-        if (Daten.downloadInfos.byteAlleDownloads > 0 || Daten.downloadInfos.byteAktDownloads > 0) {
+        if (daten.getDownloadInfos().byteAlleDownloads > 0 || daten.getDownloadInfos().byteAktDownloads > 0) {
             info += "<br />";
             info += "<span class=\"sans\"><b>Größe:</b><br />";
-            if (Daten.downloadInfos.byteAktDownloads > 0) {
-                info += MVFilmSize.getGroesse(Daten.downloadInfos.byteAktDownloads) + " von "
-                        + MVFilmSize.getGroesse(Daten.downloadInfos.byteAlleDownloads) + " MByte" + "</span>";
+            if (daten.getDownloadInfos().byteAktDownloads > 0) {
+                info += MVFilmSize.getGroesse(daten.getDownloadInfos().byteAktDownloads) + " von "
+                        + MVFilmSize.getGroesse(daten.getDownloadInfos().byteAlleDownloads) + " MByte" + "</span>";
             } else {
-                info += MVFilmSize.getGroesse(Daten.downloadInfos.byteAlleDownloads) + " MByte" + "</span>";
+                info += MVFilmSize.getGroesse(daten.getDownloadInfos().byteAlleDownloads) + " MByte" + "</span>";
             }
         }
         // Restzeit
-        if (Daten.downloadInfos.timeRestAktDownloads > 0 && Daten.downloadInfos.timeRestAllDownloads > 0) {
+        if (daten.getDownloadInfos().timeRestAktDownloads > 0 && daten.getDownloadInfos().timeRestAllDownloads > 0) {
             info += "<br />";
             info += "<span class=\"sans\"><b>Restzeit:</b><br />" + "laufende: "
-                    + Daten.downloadInfos.getRestzeit() + ",<br />alle: " + Daten.downloadInfos.getGesamtRestzeit() + "</span>";
-        } else if (Daten.downloadInfos.timeRestAktDownloads > 0) {
+                    + daten.getDownloadInfos().getRestzeit() + ",<br />alle: " + daten.getDownloadInfos().getGesamtRestzeit() + "</span>";
+        } else if (daten.getDownloadInfos().timeRestAktDownloads > 0) {
             info += "<br />";
-            info += "<span class=\"sans\"><b>Restzeit:</b><br />laufende: " + Daten.downloadInfos.getRestzeit() + "</span>";
-        } else if (Daten.downloadInfos.timeRestAllDownloads > 0) {
+            info += "<span class=\"sans\"><b>Restzeit:</b><br />laufende: " + daten.getDownloadInfos().getRestzeit() + "</span>";
+        } else if (daten.getDownloadInfos().timeRestAllDownloads > 0) {
             info += "<br />";
-            info += "<span class=\"sans\"><b>Restzeit:</b><br />alle: " + Daten.downloadInfos.getGesamtRestzeit() + "</span>";
+            info += "<span class=\"sans\"><b>Restzeit:</b><br />alle: " + daten.getDownloadInfos().getGesamtRestzeit() + "</span>";
         }
         // Bandbreite
-        if (Daten.downloadInfos.bandwidth > 0) {
+        if (daten.getDownloadInfos().bandwidth > 0) {
             info += "<br />";
             info += "<span class=\"sans\"><b>Bandbreite:</b><br />";
-            info += Daten.downloadInfos.bandwidthStr + "</span>";
+            info += daten.getDownloadInfos().bandwidthStr + "</span>";
         }
         info += END;
 
@@ -540,7 +540,7 @@ public class GuiDownloads extends PanelVorlage {
         String textLinks;
         // Text links: Zeilen Tabelle
         // nicht gestarted, laufen, fertig OK, fertig fehler
-        int[] starts = Daten.downloadInfos.downloadStarts;
+        int[] starts = daten.getDownloadInfos().downloadStarts;
 //        if (starts[0] == 1) {
 //            textLinks = "<span class=\"sans\"><b>Download:</b>1<br />";
 //        } else {
@@ -623,7 +623,7 @@ public class GuiDownloads extends PanelVorlage {
             @Override
             public void ping() {
                 reloadTable();
-//                Daten.listeDownloads.setModelProgressAlleStart(model);
+//                daten.getListeDownloads().setModelProgressAlleStart(model);
 //                tabelle.fireTableDataChanged(true /*setSpalten*/);
 //                setInfo();
             }
@@ -641,7 +641,7 @@ public class GuiDownloads extends PanelVorlage {
                 if (lastUpdate < (new Date().getTime() - 500)) {
                     // nur alle 500ms aufrufen
                     lastUpdate = new Date().getTime();
-                    Daten.listeDownloads.setModelProgress(model);
+                    daten.getListeDownloads().setModelProgress(model);
                     // ist ein Kompromiss: beim Sortieren nach Progress wird die Tabelle nicht neu sortiert!
                     //tabelle.fireTableDataChanged(true /*setSpalten*/);
                 }
@@ -664,7 +664,7 @@ public class GuiDownloads extends PanelVorlage {
         stopBeob = true;
         tabelle.getSpalten();
 
-        Daten.listeDownloads.getModel(model, onlyAbos, onlyDownloads, onlyNotStarted, onlyStarted, onlyWaiting, onlyRun, onlyFinished);
+        daten.getListeDownloads().getModel(model, onlyAbos, onlyDownloads, onlyNotStarted, onlyStarted, onlyWaiting, onlyRun, onlyFinished);
         tabelle.setSpalten();
         stopBeob = false;
         updateFilmData();
@@ -687,8 +687,8 @@ public class GuiDownloads extends PanelVorlage {
             return;
         }
         // erledigte entfernen, nicht gestartete Abos entfernen und neu nach Abos suchen
-        Daten.listeDownloads.abosAuffrischen();
-        Daten.listeDownloads.abosSuchen(parentComponent);
+        daten.getListeDownloads().abosAuffrischen();
+        daten.getListeDownloads().abosSuchen(parentComponent);
         reloadTable();
 
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN))) {
@@ -700,13 +700,13 @@ public class GuiDownloads extends PanelVorlage {
     private synchronized void downloadsAufraeumen() {
         // abgeschlossene Downloads werden aus der Tabelle/Liste entfernt
         // die Starts dafür werden auch gelöscht
-        Daten.listeDownloads.listePutzen();
+        daten.getListeDownloads().listePutzen();
     }
 
     private synchronized void downloadsAufraeumen(DatenDownload datenDownload) {
         // abgeschlossene Downloads werden aus der Tabelle/Liste entfernt
         // die Starts dafür werden auch gelöscht
-        Daten.listeDownloads.listePutzen(datenDownload);
+        daten.getListeDownloads().listePutzen(datenDownload);
     }
 
     private ArrayList<DatenDownload> getSelDownloads() {
@@ -759,7 +759,7 @@ public class GuiDownloads extends PanelVorlage {
         if (arrayDownloads.isEmpty()) {
             return;
         }
-        Daten.listeDownloads.downloadsVorziehen(arrayDownloads);
+        daten.getListeDownloads().downloadsVorziehen(arrayDownloads);
     }
 
     private void zielordnerOeffnen() {
@@ -844,7 +844,7 @@ public class GuiDownloads extends PanelVorlage {
             if (!urlAboList.isEmpty()) {
                 daten.erledigteAbos.zeilenSchreiben(urlAboList);
             }
-            Daten.listeDownloads.downloadLoeschen(arrayDownloadsLoeschen);
+            daten.getListeDownloads().downloadLoeschen(arrayDownloadsLoeschen);
             reloadTable();
 //            // ausrichten
 //            tabelle.setSelRow(rows[0]);
@@ -870,8 +870,8 @@ public class GuiDownloads extends PanelVorlage {
             // um in der Reihenfolge zu starten
             DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
             listeAllDownloads.add(datenDownload);
-            Daten.listeDownloads.remove(datenDownload);
-            Daten.listeDownloads.add(datenDownload);
+            daten.getListeDownloads().remove(datenDownload);
+            daten.getListeDownloads().add(datenDownload);
         }
         // ========================
         // und jetzt abarbeiten
@@ -904,15 +904,15 @@ public class GuiDownloads extends PanelVorlage {
         }
         // ========================
         // jetzt noch die Starts stoppen
-        Daten.listeDownloads.downloadAbbrechen(listeUrlsDownloadsAbbrechen);
+        daten.getListeDownloads().downloadAbbrechen(listeUrlsDownloadsAbbrechen);
 
         // und die Downloads starten oder stoppen
         //alle Downloads starten/wiederstarten
-        DialogBeendenZeit dialogBeenden = new DialogBeendenZeit(Daten.mediathekGui, daten, listeDownloadsStarten);
+        DialogBeendenZeit dialogBeenden = new DialogBeendenZeit(daten.getMediathekGui(), daten, listeDownloadsStarten);
         dialogBeenden.setVisible(true);
         if (dialogBeenden.applicationCanTerminate()) {
             // fertig und beenden
-            Daten.mediathekGui.beenden(false /*Dialog auf "sofort beenden" einstellen*/, dialogBeenden.isShutdownRequested());
+            daten.getMediathekGui().beenden(false /*Dialog auf "sofort beenden" einstellen*/, dialogBeenden.isShutdownRequested());
         }
 
         reloadTable();
@@ -942,8 +942,8 @@ public class GuiDownloads extends PanelVorlage {
             //Liste in der Reihenfolge wie in der Tabelle sortieren
             for (int i = 0; i < tabelle.getRowCount(); ++i) {
                 DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
-                Daten.listeDownloads.remove(datenDownload);
-                Daten.listeDownloads.add(datenDownload);
+                daten.getListeDownloads().remove(datenDownload);
+                daten.getListeDownloads().add(datenDownload);
             }
         }
 
@@ -1019,7 +1019,7 @@ public class GuiDownloads extends PanelVorlage {
         }
         // ========================
         // jetzt noch die Starts stoppen
-        Daten.listeDownloads.downloadAbbrechen(listeDownloadsLoeschen);
+        daten.getListeDownloads().downloadAbbrechen(listeDownloadsLoeschen);
         // und die Downloads starten oder stoppen
         if (starten) {
             //alle Downloads starten/wiederstarten
@@ -1039,12 +1039,12 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         }
-        Daten.listeDownloads.downloadAbbrechen(listeStopDownload);
+        daten.getListeDownloads().downloadAbbrechen(listeStopDownload);
     }
 
     private void setInfo() {
         // Infopanel setzen
-        Daten.mediathekGui.getStatusBar().setTextForLeftDisplay();
+        daten.getMediathekGui().getStatusBar().setTextForLeftDisplay();
     }
 
     /**
@@ -1487,20 +1487,20 @@ public class GuiDownloads extends PanelVorlage {
                 itemChangeAbo.setEnabled(false);
                 itemDelAbo.setEnabled(false);
             } else {
-                final DatenAbo datenAbo = Daten.listeAbo.getAboFuerFilm_schnell(datenDownload.film, false /*die Länge nicht prüfen*/);
+                final DatenAbo datenAbo = daten.getListeAbo().getAboFuerFilm_schnell(datenDownload.film, false /*die Länge nicht prüfen*/);
                 if (datenAbo == null) {
                     submenueAbo.setEnabled(false);
                     itemChangeAbo.setEnabled(false);
                     itemDelAbo.setEnabled(false);
                 } else {
                     // dann können wir auch ändern
-                    itemDelAbo.addActionListener(e -> Daten.listeAbo.aboLoeschen(datenAbo));
+                    itemDelAbo.addActionListener(e -> daten.getListeAbo().aboLoeschen(datenAbo));
                     itemChangeAbo.addActionListener(e -> {
                         stopBeob = true;
-                        DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, datenAbo, false/*onlyOne*/);
+                        DialogEditAbo dialog = new DialogEditAbo(daten.getMediathekGui(), true, daten, datenAbo, false/*onlyOne*/);
                         dialog.setVisible(true);
                         if (dialog.ok) {
-                            Daten.listeAbo.aenderungMelden();
+                            daten.getListeAbo().aenderungMelden();
                         }
                         stopBeob = false;
                     });

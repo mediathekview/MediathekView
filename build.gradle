@@ -117,6 +117,7 @@ processResources.dependsOn copySenderIconsInRes
 
 dependencies {
     compile project(':MSearch')
+
     compile "$swingxGroup:swingx-action:$swingxVersion"
     compile "$swingxGroup:swingx-autocomplete:$swingxVersion"
     compile "$swingxGroup:swingx-beaninfo:$swingxVersion"

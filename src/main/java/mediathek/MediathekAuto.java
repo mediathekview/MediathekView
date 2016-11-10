@@ -75,8 +75,8 @@ public class MediathekAuto {
     }
 
     public void starten() {
-        daten = new Daten(pfad);
-        Daten.auto = true;
+        daten = Daten.getInstance(pfad);
+        daten.setAuto(true);
         startMeldungen();
 
         if (!IoXmlLesen.einstellungenExistieren()) {
@@ -100,24 +100,24 @@ public class MediathekAuto {
             //do not read film descriptions in FASTAUTO mode as they won´t be used...
             FilmlisteLesen.setWorkMode(FilmlisteLesen.WorkMode.FASTAUTO);
         }
-        filmList.readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+        filmList.readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
 
-        if (Daten.listeFilme.isTooOld()) {
+        if (daten.getListeFilme().isTooOld()) {
             // erst neue Filmliste laden
             SysMsg.sysMsg("Neue Filmliste laden");
-            Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+            daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
                 @Override
                 public void fertig(ListenerFilmeLadenEvent event) {
                     download();
                 }
             });
-            Daten.filmeLaden.loadFilmlist("", true);
+            daten.getFilmeLaden().loadFilmlist("", true);
         } else {
             // mit aktueller Filmliste starten
             SysMsg.sysMsg("aktuelle Filmliste verwenden");
             // Liste erst mal aufbereiten
-            Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
-            Daten.listeBlacklist.filterListe();
+            daten.getListeAbo().setAboFuerFilm(daten.getListeFilme(), false /*aboLoeschen*/);
+            daten.getListeBlacklist().filterListe();
             download();
         }
     }
@@ -128,14 +128,14 @@ public class MediathekAuto {
     private synchronized void download() {
         try {
             SysMsg.playerMeldungenAus = true;
-            Daten.listeDownloads.abosSuchen(null);
-            Daten.listeDownloads.filmEintragen(); //für gespeicherte Downloads
+            daten.getListeDownloads().abosSuchen(null);
+            daten.getListeDownloads().filmEintragen(); //für gespeicherte Downloads
 
-            SysMsg.sysMsg(Daten.listeDownloads.size() + " Filme zum Laden");
+            SysMsg.sysMsg(daten.getListeDownloads().size() + " Filme zum Laden");
             SysMsg.sysMsg("");
             // erst mal die Filme schreiben
             int i = 1;
-            for (DatenDownload d : Daten.listeDownloads) {
+            for (DatenDownload d : daten.getListeDownloads()) {
                 SysMsg.sysMsg("Film " + (i++) + ": ");
                 SysMsg.sysMsg("\tSender: " + d.arr[DatenDownload.DOWNLOAD_SENDER]);
                 SysMsg.sysMsg("\tThema: " + d.arr[DatenDownload.DOWNLOAD_THEMA]);
@@ -148,12 +148,12 @@ public class MediathekAuto {
             }
             SysMsg.sysMsg(LILNE);
             // und jetzt starten
-            for (DatenDownload d : Daten.listeDownloads) {
+            for (DatenDownload d : daten.getListeDownloads()) {
                 d.startDownload(daten);
             }
 
-            while (Daten.listeDownloads.getNumberOfStartsNotFinished() > 0) {
-                long remTime = Daten.listeDownloads.getMaximumFinishTimeOfRunningStarts();
+            while (daten.getListeDownloads().getNumberOfStartsNotFinished() > 0) {
+                long remTime = daten.getListeDownloads().getMaximumFinishTimeOfRunningStarts();
                 if (remTime == 0 || (remTime < 10)) {
                     remTime = SLEEP_VALUE;
                 } else {

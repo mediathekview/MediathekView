@@ -134,8 +134,9 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      */
     @SuppressWarnings("unchecked")
     public synchronized void filterListe() {
-        final ListeFilme listeFilme = Daten.listeFilme;
-        final ListeFilme listeRet = Daten.listeFilmeNachBlackList;
+        Daten daten = Daten.getInstance();
+        final ListeFilme listeFilme = daten.getListeFilme();
+        final ListeFilme listeRet = daten.getListeFilmeNachBlackList();
 
         loadCurrentFilterSettings();
 
@@ -166,7 +167,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
                 if (!isEmpty())
                     filterList.add(this::applyBlacklistFilters);
 
-                for (Predicate pred : filterList) {
+                for (Predicate<DatenFilm> pred : filterList) {
                     initialStream = initialStream.filter(pred);
                 }
             }
