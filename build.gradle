@@ -4,13 +4,14 @@ plugins {
     id "com.github.jk1.dependency-license-report" version "0.3.5"
 }
 apply plugin: 'java'
+apply plugin: 'application'
 apply plugin: 'distribution'
 apply from: "${project.rootDir}/gradle/eclipse.gradle"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-mainClassName = 'mediathek.Main'
 version = '13'
+mainClassName = 'mediathek.Main'
 
 compileJava {
     options.compilerArgs = ['-Xlint:all']
