@@ -29,6 +29,7 @@ import mediathek.tool.MVFilmSize;
 
 public class DownloadInfos {
 
+    private final Daten daten;
     // Anzahl
     public int anzDownloadsRun = 0; //Anzahl gestarteter Downloads
     // Größe
@@ -47,6 +48,11 @@ public class DownloadInfos {
     public int[] downloadStarts = new int[]{0, 0, 0, 0, 0, 0, 0};
 
     private LinkedList<DatenDownload> aktivDownloads; // Liste gestarteter Downloads
+
+    public DownloadInfos()
+    {
+        daten = Daten.getInstance();
+    }
 
     public String roundBandwidth(long time) {
         roundBandwidth();
@@ -95,40 +101,40 @@ public class DownloadInfos {
     public synchronized void makeDownloadInfos() {
         clean();
 
-        downloadStarts = Daten.listeDownloads.getStarts();
+        downloadStarts = daten.getListeDownloads().getStarts();
 
-        aktivDownloads = Daten.listeDownloads.getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
+        aktivDownloads = daten.getListeDownloads().getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
         for (DatenDownload download : aktivDownloads) {
-            ++Daten.downloadInfos.anzDownloadsRun;
-            Daten.downloadInfos.byteAlleDownloads += (download.mVFilmSize.getSize() > 0 ? download.mVFilmSize.getSize() : 0);
+            ++daten.getDownloadInfos().anzDownloadsRun;
+            daten.getDownloadInfos().byteAlleDownloads += (download.mVFilmSize.getSize() > 0 ? download.mVFilmSize.getSize() : 0);
             if (download.start != null && download.start.status == Start.STATUS_RUN) {
                 // die Downlaods laufen gerade
-                Daten.downloadInfos.bandwidth += download.start.bandbreite; // bytes per second
-                Daten.downloadInfos.byteAktDownloads += (download.mVFilmSize.getAktSize() > 0 ? download.mVFilmSize.getAktSize() : 0);
-                if (download.start.restSekunden > Daten.downloadInfos.timeRestAktDownloads) {
+                daten.getDownloadInfos().bandwidth += download.start.bandbreite; // bytes per second
+                daten.getDownloadInfos().byteAktDownloads += (download.mVFilmSize.getAktSize() > 0 ? download.mVFilmSize.getAktSize() : 0);
+                if (download.start.restSekunden > daten.getDownloadInfos().timeRestAktDownloads) {
                     // der längeste gibt die aktuelle Restzeit vor
-                    Daten.downloadInfos.timeRestAktDownloads = download.start.restSekunden;
+                    daten.getDownloadInfos().timeRestAktDownloads = download.start.restSekunden;
                 }
             }
         }
 
-        if (Daten.downloadInfos.bandwidth < 0) {
-            Daten.downloadInfos.bandwidth = 0;
+        if (daten.getDownloadInfos().bandwidth < 0) {
+            daten.getDownloadInfos().bandwidth = 0;
         }
 
-        if (Daten.downloadInfos.bandwidth > 0) {
+        if (daten.getDownloadInfos().bandwidth > 0) {
             // sonst macht die Restzeit keinen Sinn
-            final long b = Daten.downloadInfos.byteAlleDownloads - Daten.downloadInfos.byteAktDownloads;
+            final long b = daten.getDownloadInfos().byteAlleDownloads - daten.getDownloadInfos().byteAktDownloads;
             if (b <= 0) {
-                Daten.downloadInfos.timeRestAllDownloads = 0;
+                daten.getDownloadInfos().timeRestAllDownloads = 0;
             } else {
-                Daten.downloadInfos.timeRestAllDownloads = b / Daten.downloadInfos.bandwidth;
+                daten.getDownloadInfos().timeRestAllDownloads = b / daten.getDownloadInfos().bandwidth;
             }
-            if (Daten.downloadInfos.timeRestAllDownloads < Daten.downloadInfos.timeRestAktDownloads) {
-                Daten.downloadInfos.timeRestAllDownloads = Daten.downloadInfos.timeRestAktDownloads; // falsch geraten oder es gibt nur einen
+            if (daten.getDownloadInfos().timeRestAllDownloads < daten.getDownloadInfos().timeRestAktDownloads) {
+                daten.getDownloadInfos().timeRestAllDownloads = daten.getDownloadInfos().timeRestAktDownloads; // falsch geraten oder es gibt nur einen
             }
-            if (Daten.downloadInfos.anzDownloadsRun == 1) {
-                Daten.downloadInfos.timeRestAllDownloads = 0; // gibt ja nur noch einen
+            if (daten.getDownloadInfos().anzDownloadsRun == 1) {
+                daten.getDownloadInfos().timeRestAllDownloads = 0; // gibt ja nur noch einen
             }
         }
         if (byteAlleDownloads > 0) {
@@ -142,7 +148,7 @@ public class DownloadInfos {
         if (!MVConfig.getBool(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS)) {
             return;
         }
-        int progress = Daten.downloadInfos.percent;
+        int progress = daten.getDownloadInfos().percent;
         if (progress >= 0) {
             String text = "  [ ";
             int a = progress / 10;
@@ -153,7 +159,7 @@ public class DownloadInfos {
                 text += "-";
             }
             text += " ]  " + MVFilmSize.getGroesse(byteAktDownloads) + " von " + MVFilmSize.getGroesse(byteAlleDownloads) + " MByte /";
-            text += " Downloads: " + Daten.downloadInfos.anzDownloadsRun + " /";
+            text += " Downloads: " + daten.getDownloadInfos().anzDownloadsRun + " /";
             text += " Bandbreite: " + roundBandwidth();
             Log.progress(text);
         }

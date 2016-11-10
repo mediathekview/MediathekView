@@ -67,9 +67,9 @@ public class StarterClass {
             starten.startStarten(d);
             // gestartete Filme (originalURL des Films) auch in die History eintragen
             daten.history.zeileSchreiben(ersterFilm.arr[DatenFilm.FILM_THEMA], ersterFilm.arr[DatenFilm.FILM_TITEL], d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
-            Daten.listeFilmeHistory.add(ersterFilm);
+            daten.getListeFilmeHistory().add(ersterFilm);
             // und jetzt noch in die Downloadliste damit die Farbe im Tab Filme passt
-            Daten.listeDownloadsButton.addMitNummer(d);
+            daten.getListeDownloadsButton().addMitNummer(d);
         }
     }
 
@@ -247,7 +247,7 @@ public class StarterClass {
         }
         notifyStartEvent(datenDownload);
 
-        if (SystemInfo.isMacOSX() && Daten.mediathekGui != null) {
+        if (SystemInfo.isMacOSX() && Daten.getInstance().getMediathekGui() != null) {
             Application.getApplication().requestUserAttention(false);
         }
     }
@@ -309,7 +309,7 @@ public class StarterClass {
                         //alle 5 Sekunden einen Download starten
                         sleep(5 * 1000);
                     }
-                    Daten.listeDownloadsButton.buttonStartsPutzen(); // Button Starts aus der Liste löschen
+                    daten.getListeDownloadsButton().buttonStartsPutzen(); // Button Starts aus der Liste löschen
                     sleep(3 * 1000);
                 } catch (Exception ex) {
                     Log.errorLog(613822015, ex);
@@ -327,10 +327,10 @@ public class StarterClass {
                 pause = false;
             }
 
-            DatenDownload download = Daten.listeDownloads.getNextStart();
+            DatenDownload download = daten.getListeDownloads().getNextStart();
             if (download == null) {
                 // dann versuchen einen Fehlerhaften nochmal zu starten
-                download = Daten.listeDownloads.getRestartDownload();
+                download = daten.getListeDownloads().getRestartDownload();
                 if (download != null) {
                     reStartmeldung(download);
                 }

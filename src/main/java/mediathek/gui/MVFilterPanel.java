@@ -81,7 +81,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         setIconBlacklist();
         jToggleButtonBlacklist.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.toString(jToggleButtonBlacklist.isSelected()));
-            Daten.listeBlacklist.filterListe();
+            daten.getListeBlacklist().filterListe();
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterPanel.class.getSimpleName());
             setIconBlacklist();
         });

@@ -47,6 +47,13 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
     private String[] suffix = {""};
     private boolean ohneSuffix = true;
 
+    private  Daten daten;
+
+    public ListeMediaDB()
+    {
+        daten = Daten.getInstance();
+    }
+
     public synchronized void getModelMediaDB(TModelMediaDB modelMediaDB) {
         modelMediaDB.setRowCount(0);
         this.stream().forEach((mdb) -> {
@@ -60,10 +67,10 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
             Pattern p = Filter.makePattern(title);
             if (p != null) {
                 // dann mit RegEx prüfen
-                Daten.listeMediaDB.stream().filter(s -> p.matcher(s.arr[DatenMediaDB.MEDIA_DB_NAME]).matches()).forEach(s -> foundModel.addRow(s.getRow()));
+                daten.getListeMediaDB().stream().filter(s -> p.matcher(s.arr[DatenMediaDB.MEDIA_DB_NAME]).matches()).forEach(s -> foundModel.addRow(s.getRow()));
             } else {
                 title = title.toLowerCase();
-                for (DatenMediaDB s : Daten.listeMediaDB) {
+                for (DatenMediaDB s : daten.getListeMediaDB()) {
                     if (s.arr[DatenMediaDB.MEDIA_DB_NAME].toLowerCase().contains(title)) {
                         foundModel.addRow(s.getRow());
                     }
@@ -152,23 +159,27 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
     public synchronized void loadSavedList() {
         Path urlPath = getFilePath();
         //use Automatic Resource Management
-        try (LineNumberReader in = new LineNumberReader(new InputStreamReader(Files.newInputStream(urlPath)))) {
-            String zeile;
-            while ((zeile = in.readLine()) != null) {
-                DatenMediaDB mdb = getUrlAusZeile(zeile);
-                if (mdb != null) {
-                    add(mdb);
+            try (LineNumberReader in = new LineNumberReader(Files.newBufferedReader(urlPath)))
+            {
+                String zeile;
+                while ((zeile = in.readLine()) != null)
+                {
+                    DatenMediaDB mdb = getUrlAusZeile(zeile);
+                    if (mdb != null)
+                    {
+                        add(mdb);
+                    }
                 }
+            } catch (Exception ex)
+            {
+                Log.errorLog(461203787, ex);
             }
-        } catch (Exception ex) {
-            Log.errorLog(461203787, ex);
-        }
     }
 
     public synchronized void exportListe(String datei) {
         Path logFilePath = null;
         boolean export = false;
-        SysMsg.sysMsg("MediaDB schreiben (" + Daten.listeMediaDB.size() + " Dateien) :");
+        SysMsg.sysMsg("MediaDB schreiben (" + daten.getListeMediaDB().size() + " Dateien) :");
         if (!datei.isEmpty()) {
             export = true;
             try {
@@ -189,7 +200,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
             logFilePath = getFilePath();
         }
 
-        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(logFilePath)))) {
+        try (BufferedWriter bw = Files.newBufferedWriter(logFilePath)) {
             bw.newLine();
             bw.newLine();
             for (DatenMediaDB entry : this) {
@@ -256,8 +267,8 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                     }
                     searchFile(new File(pfad), true);
 
-                } else if (!Daten.listeMediaPath.isEmpty()) {
-                    for (DatenMediaPath mp : Daten.listeMediaPath) {
+                } else if (!daten.getListeMediaPath().isEmpty()) {
+                    for (DatenMediaPath mp : daten.getListeMediaPath()) {
                         if (mp.savePath()) {
                             continue;
                         }
@@ -274,7 +285,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                         // Verzeichnisse können nicht durchsucht werden
                         errorMsg();
                     }
-                    Daten.listeMediaPath.stream().filter((mp) -> (!mp.savePath())).forEach((mp) -> {
+                    daten.getListeMediaPath().stream().filter((mp) -> (!mp.savePath())).forEach((mp) -> {
                         searchFile(new File(mp.arr[DatenMediaPath.MEDIA_PATH_PATH]), false);
                     });
                 }
@@ -282,7 +293,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                 Log.errorLog(120321254, ex);
             }
 
-            Daten.listeMediaDB.exportListe("");
+            daten.getListeMediaDB().exportListe("");
             makeIndex = false;
             Duration.counterStop("Mediensammlung erstellen");
             Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
@@ -304,7 +315,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                     if (file.isDirectory()) {
                         searchFile(file, save);
                     } else if (checkSuffix(suffix, file.getName())) {
-                        Daten.listeMediaDB.add(new DatenMediaDB(file.getName(), file.getParent().intern(), file.length(), save));
+                        daten.getListeMediaDB().add(new DatenMediaDB(file.getName(), file.getParent().intern(), file.length(), save));
                     }
                 }
             }
