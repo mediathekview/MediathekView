@@ -19,18 +19,6 @@
  */
 package mediathek.update;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import javax.swing.SwingUtilities;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import mSearch.Const;
 import mSearch.tool.Functions;
 import mSearch.tool.Log;
@@ -38,68 +26,81 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 
-public class ProgrammUpdateSuchen {
+import javax.swing.*;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Optional;
 
-    private final static String PROGRAM_VERSION = "Program_Version";
-    private final static String PROGRAM_RELEASE_INFO = "Program_Release_Info";
-    private final static String DOWNLOAD_PROGRAM = "Download_Programm";
-    private final static String INFO = "Info";
-    private final static String INFO_NO = "number";
-    private final LinkedList<String[]> listInfos = new LinkedList<>(); // String[] info = {Nummer, Info};
-    private String version;
-    private String release;
-    private String downloadUrlProgramm;
-    private String[] progInfoArr;
+public class ProgrammUpdateSuchen {
+    private static final String UPDATE_SEARCH_TITLE = "Software-Aktualisierung";
+    private static final String UPDATE_ERROR_MESSAGE = "<html>Es ist ein Fehler bei der Softwareaktualisierung aufgetreten.<br>" +
+            "Die aktuelle Version konnte nicht ermittelt werden.</html>";
+    /**
+     * Connection timeout in milliseconds.
+     */
+    private static final int TIMEOUT = 10_000;
+    private final ArrayList<String[]> listInfos = new ArrayList<>();
     private boolean neueVersion = false;
 
-    public boolean checkVersion(boolean anzeigen, boolean hinweisAnzeigen, boolean alleHinweiseAnzeigen) {
+    public boolean checkVersion(boolean anzeigen, boolean showProgramInformation, boolean showAllInformation) {
         // prüft auf neue Version, aneigen: wenn true, dann AUCH wenn es keine neue Version gibt ein Fenster
         neueVersion = false;
 
-        try {
-            progInfoArr = progInfosSuchen();
+        Optional<ServerProgramInformation> opt = retrieveProgramInformation();
+        if (!opt.isPresent())
+            SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, UPDATE_ERROR_MESSAGE, UPDATE_SEARCH_TITLE, JOptionPane.ERROR_MESSAGE));
+        else {
             // Update-Info anzeigen
-            version = progInfoArr[0];
-            release = progInfoArr[1];
-            downloadUrlProgramm = progInfoArr[2];
-
+            final ServerProgramInformation progInfo = opt.get();
             SwingUtilities.invokeLater(() -> {
-                // Hinweise anzeigen
-                if (hinweisAnzeigen) {
-                    hinweiseAnzeigen(alleHinweiseAnzeigen);
-                }
+                if (showProgramInformation)
+                    showProgramInformation(showAllInformation);
 
-                if (version.equals("")) {
-                    new DialogHinweisUpdate(null, true, "Fehler bei der Versionsprüfung!", "Es ist ein Fehler aufgetreten!" + "\n\n" + "").setVisible(true);
-                } else {
+                if (progInfo.getVersion() == -1)
+                    JOptionPane.showMessageDialog(null, UPDATE_ERROR_MESSAGE, UPDATE_SEARCH_TITLE, JOptionPane.ERROR_MESSAGE);
+                else {
                     MVConfig.add(MVConfig.Configs.SYSTEM_BUILD_NR, Functions.getBuildNr());
                     MVConfig.add(MVConfig.Configs.SYSTEM_UPDATE_DATUM, new SimpleDateFormat("yyyyMMdd").format(new Date()));
 
-                    if (checkObNeueVersion(version, Const.VERSION)) {
+                    if (checkForNewerVersion(progInfo.getVersion())) {
                         neueVersion = true;
-                        // DialogHinweisUpdate(java.awt.Frame parent, boolean modal, String ttext, String dialogTitel, Daten ddaten) {
+                        //TODO beautify this dialog. Looks really ugly.
                         new DialogHinweisUpdate(null, true, "Eine neue Version liegt vor",
                                 "   ==================================================\n"
-                                + "   Neue Version:\n" + "   " + version + "\n\n"
-                                + "   ==================================================\n"
-                                + "   Änderungen:\n" + "   " + release + "\n\n"
-                                + "   ==================================================\n"
-                                + "   URL:\n"
-                                + "   " + downloadUrlProgramm + "\n\n").setVisible(true);
+                                        + "   Neue Version:\n" + "   " + progInfo.getVersion() + "\n\n"
+                                        + "   ==================================================\n"
+                                        + "   Änderungen:\n" + "   " + progInfo.getReleaseNotes() + "\n\n"
+                                        + "   ==================================================\n"
+                                        + "   URL:\n"
+                                        + "   " + progInfo.getUpdateUrl() + "\n\n").setVisible(true);
 
                     } else if (anzeigen) {
-                        new DialogHinweisUpdate(null, true, "Update suchen", "Alles aktuell!").setVisible(true);
+                        JOptionPane.showMessageDialog(null, "Sie benutzen die neueste Version von MediathekView.", UPDATE_SEARCH_TITLE, JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
             });
-        } catch (Exception ex) {
-            Log.errorLog(159002583, ex);
         }
+
         return neueVersion;
     }
 
-    private void hinweiseAnzeigen(boolean alleAnzeigen) {
-        if (listInfos.size() > 0) {
+    private void showProgramInformation(boolean showAll) {
+        if (listInfos.isEmpty()) {
+            //no info available
+            if (showAll) {
+                JOptionPane.showMessageDialog(null, "Es liegen keine Programminfos vor.", UPDATE_SEARCH_TITLE, JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else {
+            //display available info...
             try {
                 StringBuilder text = new StringBuilder();
                 int angezeigt = 0;
@@ -108,10 +109,10 @@ public class ProgrammUpdateSuchen {
                 } else {
                     angezeigt = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT));
                 }
-                int idx = 0;
+                int index = 0;
                 for (String[] h : listInfos) {
-                    idx = Integer.parseInt(h[0]);
-                    if (alleAnzeigen || angezeigt < idx) {
+                    index = Integer.parseInt(h[0]);
+                    if (showAll || angezeigt < index) {
                         text.append("=======================================\n");
                         text.append(h[1]);
                         text.append("\n");
@@ -120,87 +121,101 @@ public class ProgrammUpdateSuchen {
                 }
                 if (text.length() > 0) {
                     new DialogHinweisUpdate(null, true, "Infos", text.toString()).setVisible(true);
-                    MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(idx));
+                    MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(index));
                 }
             } catch (Exception ex) {
                 Log.errorLog(693298731, ex);
             }
-        } else if (alleAnzeigen) {
-            // dann wenigstens einen Hinweis, dass es keine gibt
-            new DialogHinweisUpdate(null, true, "Infos", "keine vorhanden").setVisible(true);
         }
     }
 
     /**
      * Check if a newer version exists.
      *
-     * @param infoVersion
-     * @param currentVersion
+     * @param info the remote version number.
      * @return true if there is a newer version
      */
-    private boolean checkObNeueVersion(String infoVersion, String currentVersion) {
-        //FIXME Get rid of the strings as we are converting to int anyway!!!!
+    private boolean checkForNewerVersion(int info) {
+        boolean result = false;
+
         try {
-            // erste stelle
-            int info = Integer.parseInt(infoVersion);
-            int ich = Integer.parseInt(currentVersion);
-            if (info > ich) {
-                return true;
+            final int currentVersion = Integer.parseInt(Const.VERSION);
+            if (info > currentVersion) {
+                result = true;
             }
-        } catch (Exception ex) {
+        } catch (NumberFormatException ex) {
             Log.errorLog(683021193, ex);
         }
-        return false;
+
+        return result;
     }
 
-    private String[] progInfosSuchen() throws IOException, XMLStreamException {
-        String[] retArr = new String[]{""/* version */, ""/* release */, ""/* updateUrl */};
-        //String parsername = "";
+    private InputStream connectToServer() throws IOException {
+        URLConnection conn = new URL(Konstanten.ADRESSE_PROGRAMM_VERSION).openConnection();
+        conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+        conn.setReadTimeout(TIMEOUT);
+        conn.setConnectTimeout(TIMEOUT);
+
+        return conn.getInputStream();
+    }
+
+    /**
+     * Load and parse the update information.
+     *
+     * @return parsed update info for further use when successful
+     */
+    private Optional<ServerProgramInformation> retrieveProgramInformation() {
         int event;
+        XMLStreamReader parser = null;
+        ServerProgramInformation progInfo;
+
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
         inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
-        XMLStreamReader parser;
-        InputStreamReader inReader;
-        int timeout = 10000;
-        URLConnection conn;
-        conn = new URL(Konstanten.ADRESSE_PROGRAMM_VERSION).openConnection();
-        conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-        conn.setReadTimeout(timeout);
-        conn.setConnectTimeout(timeout);
-        inReader = new InputStreamReader(conn.getInputStream(), Const.KODIERUNG_UTF);
-        parser = inFactory.createXMLStreamReader(inReader);
-        while (parser.hasNext()) {
-            event = parser.next();
-            if (event == XMLStreamConstants.START_ELEMENT) {
-                //parsername = parser.getLocalName();
-                switch (parser.getLocalName()) {
-                    case PROGRAM_VERSION:
-                        retArr[0] = parser.getElementText();
-                        break;
-                    case PROGRAM_RELEASE_INFO:
-                        retArr[1] = parser.getElementText();
-                        break;
-                    case DOWNLOAD_PROGRAM:
-                        retArr[2] = parser.getElementText();
-                        break;
-                    case INFO:
-                        int count = parser.getAttributeCount();
-                        String nummer = "";
-                        for (int i = 0; i < count; ++i) {
-                            if (parser.getAttributeName(i).toString().equals(INFO_NO)) {
-                                nummer = parser.getAttributeValue(i);
+
+        try (InputStreamReader inReader = new InputStreamReader(connectToServer(), Const.KODIERUNG_UTF)) {
+            parser = inFactory.createXMLStreamReader(inReader);
+            progInfo = new ServerProgramInformation();
+
+            while (parser.hasNext()) {
+                event = parser.next();
+                if (event == XMLStreamConstants.START_ELEMENT) {
+                    switch (parser.getLocalName()) {
+                        case ServerProgramInformation.ParserTags.VERSION:
+                            progInfo.setVersion(parser.getElementText());
+                            break;
+                        case ServerProgramInformation.ParserTags.RELEASE_NOTES:
+                            progInfo.setReleaseNotes(parser.getElementText());
+                            break;
+                        case ServerProgramInformation.ParserTags.UPDATE_URL:
+                            progInfo.setUpdateUrl(parser.getElementText());
+                            break;
+                        case ServerProgramInformation.ParserTags.INFO:
+                            int count = parser.getAttributeCount();
+                            String nummer = "";
+                            for (int i = 0; i < count; ++i) {
+                                if (parser.getAttributeName(i).toString().equals(ServerProgramInformation.ParserTags.INFO_NO)) {
+                                    nummer = parser.getAttributeValue(i);
+                                }
                             }
-                        }
-                        String info = parser.getElementText();
-                        if (!nummer.equals("") && !info.equals("")) {
-                            listInfos.add(new String[]{nummer, info});
-                        }
-                        break;
-                    default:
-                        break;
+                            String info = parser.getElementText();
+                            if (!nummer.equals("") && !info.equals("")) {
+                                listInfos.add(new String[]{nummer, info});
+                            }
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
+            return Optional.of(progInfo);
+        } catch (Exception ex) {
+            return Optional.empty();
+        } finally {
+            try {
+                if (parser != null)
+                    parser.close();
+            } catch (Exception ignored) {
+            }
         }
-        return retArr;
     }
 }
