@@ -19,10 +19,6 @@
  */
 package mediathek.update;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 import mSearch.tool.Functions;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
@@ -35,15 +31,21 @@ import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.dialog.DialogNewSet;
 import mediathek.tool.GuiFunktionenProgramme;
 
+import javax.swing.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static java.lang.Thread.sleep;
+
 public class CheckUpdate {
 
+    private static boolean updateCheckAlreadyPerformed = false;
     private final Daten daten;
     private final JFrame parent;
-    private static boolean run = false;
 
-    public CheckUpdate(JFrame pparent, Daten dd) {
-        daten = dd;
-        parent = pparent;
+    public CheckUpdate(JFrame parent, Daten daten) {
+        this.daten = daten;
+        this.parent = parent;
     }
 
     public void checkProgUpdate() {
@@ -57,9 +59,6 @@ public class CheckUpdate {
                 return;
             }
 
-//            if (!MVConfig.get(MVConfig.Configs.SYSTEM_BUILD_NR).equals(MVFunctionSys.getBuildNr())) {
-//                Log.sysLog("BuildNr geändert, von: " + MVConfig.get(MVConfig.Configs.SYSTEM_BUILD_NR) + " auf: " + MVFunctionSys.getBuildNr());
-//            }
             if (MVConfig.get(MVConfig.Configs.SYSTEM_BUILD_NR).equals(Functions.getBuildNr())
                     && MVConfig.get(MVConfig.Configs.SYSTEM_UPDATE_DATUM).equals(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
                 // keine neue Version und heute schon gemacht
@@ -67,7 +66,6 @@ public class CheckUpdate {
             }
             // damit geänderte Sets gleich gemeldet werden und nicht erst morgen
             final ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
-
             if (pgrUpdate.checkVersion(false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
                 Listener.notify(Listener.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, CheckUpdate.class.getSimpleName());
             } else {
@@ -76,11 +74,11 @@ public class CheckUpdate {
 
             //==============================================
             // Sets auf Update prüfen
-            checkSet();
+            checkForPsetUpdates();
 
             try {
-                this.wait(10 * 1000); // 10 Sekunden den Titel anzeigen
-            } catch (Exception ignored) {
+                sleep(10_000);
+            } catch (InterruptedException ignored) {
             }
             Listener.notify(Listener.EREIGNIS_MEDIATHEKGUI_ORG_TITEL, CheckUpdate.class.getSimpleName());
 
@@ -89,11 +87,12 @@ public class CheckUpdate {
         }
     }
 
-    private void checkSet() {
-        if (run) {
+    private void checkForPsetUpdates() {
+        if (updateCheckAlreadyPerformed) {
             return;// nur einmal laufen
-        }
-        run = true;
+        } else
+            updateCheckAlreadyPerformed = true;
+
         try {
             SwingUtilities.invokeLater(() -> {
                 ListePset listePsetStandard = ListePsetVorlagen.getStandarset(parent, daten, false /*replaceMuster*/);
@@ -154,16 +153,14 @@ public class CheckUpdate {
                         }
                         // damit man sie auch findet :)
                         String date = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
-                        listePsetStandard.stream().forEach((psNew) -> {
-                            psNew.arr[DatenPset.PROGRAMMSET_NAME] = psNew.arr[DatenPset.PROGRAMMSET_NAME] + ", neu: " + date;
-                        });
+                        listePsetStandard.forEach((psNew) -> psNew.arr[DatenPset.PROGRAMMSET_NAME] = psNew.arr[DatenPset.PROGRAMMSET_NAME] + ", neu: " + date);
                     }
                     GuiFunktionenProgramme.addSetVorlagen(Daten.mediathekGui, daten, listePsetStandard, true /*auto*/, true /*setVersion*/); // damit auch AddOns geladen werden
                     SysMsg.sysMsg("Setanlegen: OK");
                     SysMsg.sysMsg("==========================================");
                 }
             });
-        } catch (Exception ignor) {
+        } catch (Exception ignored) {
         }
     }
 
