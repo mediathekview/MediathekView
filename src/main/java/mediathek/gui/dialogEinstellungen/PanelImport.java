@@ -268,7 +268,7 @@ public class PanelImport extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Konfigdatei auswählen");
+                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Konfigdatei auswählen");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {

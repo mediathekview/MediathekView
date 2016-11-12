@@ -85,7 +85,7 @@ public class PanelBlacklist extends PanelVorlage {
                 init_();
             }
         });
-        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 comboThemaLaden();
@@ -153,7 +153,7 @@ public class PanelBlacklist extends PanelVorlage {
             String ti = jTextFieldTitel.getText().trim();
             String thti = jTextFieldThemaTitel.getText().trim();
             if (!se.equals("") || !th.equals("") || !ti.equals("") || !thti.equals("")) {
-                Daten.listeBlacklist.add(new DatenBlacklist(se, th, ti, thti));
+                daten.getListeBlacklist().add(new DatenBlacklist(se, th, ti, thti));
                 tabelleLaden();
             }
         });
@@ -167,7 +167,7 @@ public class PanelBlacklist extends PanelVorlage {
                 if (selectedTableRow >= 0) {
                     int row = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
                     String delNr = jTableBlacklist.getModel().getValueAt(row, DatenBlacklist.BLACKLIST_NR).toString();
-                    DatenBlacklist bl = Daten.listeBlacklist.get(delNr);
+                    DatenBlacklist bl = daten.getListeBlacklist().get(delNr);
                     bl.arr[DatenBlacklist.BLACKLIST_SENDER] = se;
                     bl.arr[DatenBlacklist.BLACKLIST_THEMA] = th;
                     bl.arr[DatenBlacklist.BLACKLIST_TITEL] = ti;
@@ -183,7 +183,7 @@ public class PanelBlacklist extends PanelVorlage {
         jButtonTabelleLoeschen.addActionListener(e -> {
             int ret = JOptionPane.showConfirmDialog(parentComponent, "Alle Einträge werden gelöscht.", "Löschen?", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
-                Daten.listeBlacklist.clear();
+                daten.getListeBlacklist().clear();
                 tabelleLaden();
             }
         });
@@ -223,7 +223,7 @@ public class PanelBlacklist extends PanelVorlage {
     }
 
     private void notifyBlack() {
-        Daten.listeBlacklist.filterListe();
+        daten.getListeBlacklist().filterListe();
         Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, name);
     }
 
@@ -238,23 +238,23 @@ public class PanelBlacklist extends PanelVorlage {
     }
 
     private String[] getThemen(String ssender) {
-        for (int i = 1; i < Daten.listeFilme.themenPerSender.length; ++i) {
-            if (Daten.listeFilme.sender[i].equals(ssender)) {
-                return Daten.listeFilme.themenPerSender[i];
+        for (int i = 1; i < daten.getListeFilme().themenPerSender.length; ++i) {
+            if (daten.getListeFilme().sender[i].equals(ssender)) {
+                return daten.getListeFilme().themenPerSender[i];
             }
         }
         //return alleThemen;
-        return Daten.listeFilme.themenPerSender[0];
+        return daten.getListeFilme().themenPerSender[0];
     }
 
     private void initCombo() {
         // der erste Sender ist ""
-        final String[] sender = GuiFunktionen.addLeerListe(Daten.filmeLaden.getSenderNamen());
+        final String[] sender = GuiFunktionen.addLeerListe(daten.getFilmeLaden().getSenderNamen());
         jComboBoxSender.setModel(new javax.swing.DefaultComboBoxModel<>(sender));
     }
 
     private void tabelleLaden() {
-        jTableBlacklist.setModel(new TModel(Daten.listeBlacklist.getObjectData(), DatenBlacklist.COLUMN_NAMES));
+        jTableBlacklist.setModel(new TModel(daten.getListeBlacklist().getObjectData(), DatenBlacklist.COLUMN_NAMES));
     }
 
     private void tableSelect() {
@@ -263,7 +263,7 @@ public class PanelBlacklist extends PanelVorlage {
         if (selectedTableRow >= 0) {
             int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
             String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR).toString();
-            bl = Daten.listeBlacklist.get(delNr);
+            bl = daten.getListeBlacklist().get(delNr);
         }
         if (bl != null) {
             jComboBoxSender.setSelectedItem(bl.arr[DatenBlacklist.BLACKLIST_SENDER]);
@@ -279,7 +279,7 @@ public class PanelBlacklist extends PanelVorlage {
         if (selectedTableRow >= 0) {
             int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
             String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR).toString();
-            ret = Daten.listeBlacklist.remove(delNr);
+            ret = daten.getListeBlacklist().remove(delNr);
             tabelleLaden();
         }
         return ret;

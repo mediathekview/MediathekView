@@ -49,9 +49,9 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
 
     private  Daten daten;
 
-    public ListeMediaDB()
+    public ListeMediaDB(Daten aDaten)
     {
-        daten = Daten.getInstance();
+        daten = aDaten;
     }
 
     public synchronized void getModelMediaDB(TModelMediaDB modelMediaDB) {
@@ -95,7 +95,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
 
     private void clean() {
         final HashSet<String> hash = new HashSet<>();
-        ListeMediaDB tmp = new ListeMediaDB();
+        ListeMediaDB tmp = new ListeMediaDB(daten);
         this.stream().forEach(m -> {
             final String s = m.getEqual();
             if (!hash.contains(s)) {
