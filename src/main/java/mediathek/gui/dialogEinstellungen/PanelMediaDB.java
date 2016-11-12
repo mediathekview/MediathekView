@@ -68,7 +68,7 @@ public class PanelMediaDB extends PanelVorlage {
             @Override
             public void ping() {
                 // neue DB liegt vor
-                jLabelSizeIndex.setText(Daten.listeMediaDB.size() + "");
+                jLabelSizeIndex.setText(daten.getListeMediaDB().size() + "");
                 setIndex(true);
             }
         });
@@ -126,16 +126,16 @@ public class PanelMediaDB extends PanelVorlage {
         
         jButtonMakeIndex.addActionListener((ActionEvent e) -> {
             jLabelSizeIndex.setText("0");
-            Daten.listeMediaDB.createMediaDB("");
+            daten.getListeMediaDB().createMediaDB("");
         });
         btnDel.addActionListener(l -> {
             int ret = MVMessageDialog.showConfirmDialog(parentComponent, "Auch die Medien aus externen Laufwerken löschen?", "Löschen", JOptionPane.YES_NO_CANCEL_OPTION);
             if (ret == JOptionPane.YES_OPTION) {
                 //alles löschen
-                Daten.listeMediaDB.delList(false);
+                daten.getListeMediaDB().delList(false);
             } else if (ret == JOptionPane.NO_OPTION) {
                 //externe nicht löschen
-                Daten.listeMediaDB.delList(true);
+                daten.getListeMediaDB().delList(true);
             }
         });
         jButtonPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
@@ -150,7 +150,7 @@ public class PanelMediaDB extends PanelVorlage {
         });
         jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHelp.addActionListener((ActionEvent e) -> {
-            new DialogHilfe(Daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PANEL_MEDIA_DB)).setVisible(true);
+            new DialogHilfe(daten.getMediathekGui(), true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PANEL_MEDIA_DB)).setVisible(true);
         });
         jButtonExportPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonExport.addActionListener(new BeobExport());
@@ -158,15 +158,15 @@ public class PanelMediaDB extends PanelVorlage {
         btnExtAdd.addActionListener(l -> {
             String s = (String) cbxExtMedien.getSelectedItem();
             if (s != null && !s.isEmpty()) {
-                Daten.listeMediaDB.createMediaDB(s);
+                daten.getListeMediaDB().createMediaDB(s);
             }
         });
         btnExtPath.addActionListener(new BeobPath(true/*ext*/));
-        btnClean.addActionListener(l -> Daten.listeMediaDB.cleanList());
+        btnClean.addActionListener(l -> daten.getListeMediaDB().cleanList());
         
         jToggleButtonLoad.addActionListener((ActionEvent e) -> {
             if (jToggleButtonLoad.isSelected()) {
-                Daten.listeMediaDB.getModelMediaDB(modelMediaDB);
+                daten.getListeMediaDB().getModelMediaDB(modelMediaDB);
             } else {
                 modelMediaDB.setRowCount(0);
             }
@@ -192,7 +192,7 @@ public class PanelMediaDB extends PanelVorlage {
                 if (ret == JOptionPane.OK_OPTION) {
                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     updateUI();
-                    Daten.listeMediaDB.exportListe(exporDatei);
+                    daten.getListeMediaDB().exportListe(exporDatei);
                     if (!new File(exporDatei).exists()) {
                         MVMessageDialog.showMessageDialog(parentComponent, "Datei:  " + "\"" + exporDatei + "\"" + "  Konnte nicht erstellt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
@@ -218,23 +218,23 @@ public class PanelMediaDB extends PanelVorlage {
         if (add.isEmpty()) {
             return;
         }
-        for (DatenMediaPath mp : Daten.listeMediaPath) {
+        for (DatenMediaPath mp : daten.getListeMediaPath()) {
             if (mp.arr[DatenMediaPath.MEDIA_PATH_PATH].equals(add)) {
                 return; // dann gibts den schon
             }
         }
-        Daten.listeMediaPath.add(new DatenMediaPath(add, false));
+        daten.getListeMediaPath().add(new DatenMediaPath(add, false));
         setTablePath(); //neu aufbauen
     }
     
     private void removePath() {
         int row = jTablePath.getSelectedRow();
         if (row < 0) {
-            new HinweisKeineAuswahl().zeigen(Daten.mediathekGui);
+            new HinweisKeineAuswahl().zeigen(daten.getMediathekGui());
             return;
         }
         String path = jTablePath.getModel().getValueAt(jTablePath.convertRowIndexToModel(row), 0).toString();
-        Iterator<DatenMediaPath> it = Daten.listeMediaPath.iterator();
+        Iterator<DatenMediaPath> it = daten.getListeMediaPath().iterator();
         while (it.hasNext()) {
             DatenMediaPath mp = it.next();
             if (mp.arr[DatenMediaPath.MEDIA_PATH_PATH].equals(path)) {
@@ -245,16 +245,16 @@ public class PanelMediaDB extends PanelVorlage {
     }
     
     private void setTablePath() {
-        Daten.listeMediaPath.addObjectData(modelPath);
+        daten.getListeMediaPath().addObjectData(modelPath);
     }
     
     private void setCbkExt(String add) {
         if (!add.isEmpty()) {
-            Daten.listeMediaPath.addSave(new DatenMediaPath(add, true));
-            cbxExtMedien.setModel(Daten.listeMediaPath.getComboModel());
+            daten.getListeMediaPath().addSave(new DatenMediaPath(add, true));
+            cbxExtMedien.setModel(daten.getListeMediaPath().getComboModel());
             cbxExtMedien.setSelectedItem(add);
         } else {
-            cbxExtMedien.setModel(Daten.listeMediaPath.getComboModel());
+            cbxExtMedien.setModel(daten.getListeMediaPath().getComboModel());
         }
     }
 
@@ -777,7 +777,7 @@ public class PanelMediaDB extends PanelVorlage {
             if (SystemInfo.isMacOSX()) {
                 //we want to select a directory only, so temporarily change properties
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
-                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Pfad zu den Filmen wählen");
+                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Pfad zu den Filmen wählen");
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     //A directory was selected, that means Cancel was not pressed
@@ -846,7 +846,7 @@ public class PanelMediaDB extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Filme exportieren");
+                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Filme exportieren");
                 chooser.setMode(FileDialog.SAVE);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {

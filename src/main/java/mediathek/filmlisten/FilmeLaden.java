@@ -53,6 +53,7 @@ public class FilmeLaden
     private final HashSet<String> hashSet = new HashSet<>();
     private final ListeFilme diffListe = new ListeFilme();
 
+
     private enum ListenerMelden
     {
 
@@ -66,9 +67,9 @@ public class FilmeLaden
     private boolean istAmLaufen = false;
     private boolean onlyOne = false;
 
-    public FilmeLaden()
+    public FilmeLaden(Daten aDaten)
     {
-        daten = Daten.getInstance();
+        daten = aDaten;
         importFilmliste = new ImportFilmliste();
         importFilmliste.addAdListener(new ListenerFilmeLaden()
         {
@@ -115,7 +116,7 @@ public class FilmeLaden
     //
     //            daten.getListeFilme().themenLaden();
     //            Daten.listeAbo.setAboFuerFilm(daten.getListeFilme(), false /*aboLoeschen*/);
-    //            Daten.listeDownloads.filmEintragen(); // Filme bei einmalDownloads eintragen
+    //            daten.getListeDownloads().filmEintragen(); // Filme bei einmalDownloads eintragen
     //            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
     //
     //            if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO && daten.getListeFilme().isTooOld()) {
@@ -123,7 +124,7 @@ public class FilmeLaden
     //                loadFilmlist("", true);
     //            } else {
     //                // entweder neue Liste laden oder es ist schon fertig, dann melden
-    //                Daten.listeBlacklist.filterListe(); // beim Neuladen wird es dann erst gemacht
+    //                daten.getListeBlacklist().filterListe(); // beim Neuladen wird es dann erst gemacht
     //                notifyFertig(new ListenerFilmeLadenEvent("", "", 0, 0, 0, false/*Fehler*/));
     //            }
     //        }

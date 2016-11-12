@@ -155,7 +155,7 @@ public class CheckUpdate {
                         String date = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
                         listePsetStandard.forEach((psNew) -> psNew.arr[DatenPset.PROGRAMMSET_NAME] = psNew.arr[DatenPset.PROGRAMMSET_NAME] + ", neu: " + date);
                     }
-                    GuiFunktionenProgramme.addSetVorlagen(Daten.mediathekGui, daten, listePsetStandard, true /*auto*/, true /*setVersion*/); // damit auch AddOns geladen werden
+                    GuiFunktionenProgramme.addSetVorlagen(daten.getMediathekGui(), daten, listePsetStandard, true /*auto*/, true /*setVersion*/); // damit auch AddOns geladen werden
                     SysMsg.sysMsg("Setanlegen: OK");
                     SysMsg.sysMsg("==========================================");
                 }

@@ -91,7 +91,7 @@ public class Daten
     public StarterClass starterClass = null; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
 
     // Gui
-    public MediathekGui mediathekGui; // JFrame der Gui
+    private MediathekGui mediathekGui; // JFrame der Gui
     public static GuiFilme guiFilme = null; // Tab mit den Filmen
     public static GuiDownloads guiDownloads = null; // Tab mit den Downloads
     public static GuiAbo guiAbo = null; // Tab mit den Abos
@@ -182,7 +182,7 @@ public class Daten
     private void start()
     {
         listeFilme = new ListeFilme();
-        filmeLaden = new FilmeLaden();
+        filmeLaden = new FilmeLaden(this);
         listeFilmeHistory = new ListeFilme();
 
         updateSplashScreen("Lade Blacklist...");
@@ -205,10 +205,10 @@ public class Daten
         updateSplashScreen("Lade History...");
         history = new MVUsedUrls(Konstanten.FILE_HISTORY, getSettingsDirectory_String(), Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT);
 
-        listeMediaDB = new ListeMediaDB();
+        listeMediaDB = new ListeMediaDB(this);
         listeMediaPath = new ListeMediaPath();
 
-        downloadInfos = new DownloadInfos();
+        downloadInfos = new DownloadInfos(this);
         starterClass = new StarterClass(this);
 
         Timer timer = new Timer(1000, e ->
@@ -256,7 +256,7 @@ public class Daten
     public static Path getSettingsDirectory() throws IllegalStateException
     {
         final Path baseDirectoryPath;
-        if (basisverzeichnis.isEmpty())
+        if (basisverzeichnis == null || basisverzeichnis.isEmpty())
         {
             baseDirectoryPath = Paths.get(System.getProperty("user.home"), Konstanten.VERZEICHNIS_EINSTELLUNGEN);
         } else
@@ -457,7 +457,7 @@ public class Daten
             } catch (IOException e)
             {
                 SysMsg.sysMsg("Die Einstellungen konnten nicht zurückgesetzt werden.");
-                if(mediathekGui != null)
+                if (mediathekGui != null)
                 {
                     MVMessageDialog.showMessageDialog(mediathekGui, "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
                             + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"

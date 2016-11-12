@@ -49,9 +49,9 @@ public class DownloadInfos {
 
     private LinkedList<DatenDownload> aktivDownloads; // Liste gestarteter Downloads
 
-    public DownloadInfos()
+    public DownloadInfos(Daten aDaten)
     {
-        daten = Daten.getInstance();
+        daten = aDaten;
     }
 
     public String roundBandwidth(long time) {

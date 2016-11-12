@@ -282,7 +282,7 @@ public final class ToolBar extends JToolBar {
         jButtonFilmlisteLaden = new MVButton("Filmliste laden", "neue Filmliste laden", Icons.ICON_TOOLBAR_FILME_FILMLISTE_LADEN_GR, Icons.ICON_TOOLBAR_FILME_FILMLISTE_LADEN_KL);
         this.add(filler__5);
         this.add(jButtonFilmlisteLaden);
-        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
                 //ddaten.infoPanel.setProgress();
@@ -304,13 +304,13 @@ public final class ToolBar extends JToolBar {
                 }
             }
         });
-        jButtonFilmlisteLaden.addActionListener(e -> Daten.filmeLaden.loadFilmlistDialog(daten, false));
+        jButtonFilmlisteLaden.addActionListener(e -> daten.getFilmeLaden().loadFilmlistDialog(daten, false));
         jButtonFilmlisteLaden.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent arg0) {
                 if (arg0.isPopupTrigger()) {
                     if (jButtonFilmlisteLaden.isEnabled()) {
-                        Daten.filmeLaden.loadFilmlistDialog(daten, true);
+                        daten.getFilmeLaden().loadFilmlistDialog(daten, true);
                     }
                 }
             }
@@ -319,7 +319,7 @@ public final class ToolBar extends JToolBar {
             public void mouseReleased(MouseEvent arg0) {
                 if (arg0.isPopupTrigger()) {
                     if (jButtonFilmlisteLaden.isEnabled()) {
-                        Daten.filmeLaden.loadFilmlistDialog(daten, true);
+                        daten.getFilmeLaden().loadFilmlistDialog(daten, true);
                     }
                 }
             }

@@ -64,7 +64,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
         });
 
         try {
-            jXHyperlinkWebsite.setAction(new UrlHyperlinkAction(Daten.mediathekGui, ""));
+            jXHyperlinkWebsite.setAction(new UrlHyperlinkAction(daten.getMediathekGui(), ""));
         } catch (URISyntaxException ignored) {
             jXHyperlinkWebsite.setText("");
         }
@@ -74,11 +74,11 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
         jCheckBoxChange.addActionListener(e -> {
             if (currentFilm != null) {
                 final String akt = currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG];
-                new DialogFilmBeschreibung(Daten.mediathekGui, daten, currentFilm).setVisible(true);
+                new DialogFilmBeschreibung(daten.getMediathekGui(), daten, currentFilm).setVisible(true);
                 if (!currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG].equals(akt)) {
                     // dann hat sich die Beschreibung geändert
                     setText();
-                    Daten.filmlisteSpeichern();
+                    daten.filmlisteSpeichern();
                     Listener.notify(Listener.EREIGNIS_BESCHREIBUNG, PanelFilmBeschreibung.class.getSimpleName());
                 }
             }
