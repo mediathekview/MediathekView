@@ -65,6 +65,8 @@ import mediathek.tool.MVMessageDialog;
 @SuppressWarnings("serial")
 public class MediathekGui extends JFrame {
 
+    public static final String TEXT_LINE = "==========================================";
+    public static final String LOG_TEXT_STARTPARAMETER_PATTERN = "Startparameter: %s";
     private final Daten daten;
 //    private final SpacerIcon spacerIcon = new SpacerIcon(30);
     private final JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
@@ -73,6 +75,7 @@ public class MediathekGui extends JFrame {
     private final JLabel jLabelBandbreite = new JLabel("Bandbreite pro Download");
     private final JPanel jPanelBandbreite = new JPanel();
     private final JSlider jSliderBandbreite = new JSlider();
+    private final SplashScreenManager splashScreenManager;
     private MVStatusBar statusBar;
     private MVFrame frameDownload = null;
     private MVFrame frameAbo = null;
@@ -84,6 +87,16 @@ public class MediathekGui extends JFrame {
     private final JCheckBoxMenuItem jCheckBoxMeldungenAnzeigen = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxMeldungenExtrafenster = new JCheckBoxMenuItem();
     private MVTray tray = null;
+
+    public void updateSplashScreenText(final String aSplashScreenText)
+    {
+        splashScreenManager.updateSplashScreenText(aSplashScreenText);
+    }
+
+    public void closeSplashScreen()
+    {
+        splashScreenManager.closeSplashScreen();
+    }
 
     public enum TABS {
         TAB_NIX, TAB_FILME, TAB_DOWNLOADS, TAB_ABOS, TAB_MELDUNGEN
@@ -99,108 +112,29 @@ public class MediathekGui extends JFrame {
      */
     private void createStatusBar() {
         statusBar = new MVStatusBar();
-        JScrollPane js = new JScrollPane();
-        js.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        js.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        js.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        js.setViewportView(statusBar.getComponent());
-        jPanelInfo.add(js, BorderLayout.CENTER);
+        JScrollPane statusBarScrollPane = new JScrollPane();
+        statusBarScrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        statusBarScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        statusBarScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        statusBarScrollPane.setViewportView(statusBar.getComponent());
+        jPanelInfo.add(statusBarScrollPane, BorderLayout.CENTER);
     }
 
     public MVStatusBar getStatusBar() {
         return statusBar;
     }
 
-    /**
-     * The JVM {@link java.awt.SplashScreen} storage
-     */
-    private SplashScreen splash = null;
-    /**
-     * Store the splash screen {@link Graphics2D} context here for reuse
-     */
-    private Graphics2D splashScreenContext = null;
-    /**
-     * helper variable to calculate splash screen progress
-     */
-    private int splashScreenProgress = 0;
 
-    /**
-     * wegeb der möglichen Abfrage: "Backup laden.."
-     */
-    public void closeSplashScreen() {
-        splashScreenContext = null;
-    }
 
-    public void updateSplashScreenText(final String text) {
-        //bail out when we don´ have a splash screen...
-        if (splashScreenContext == null) {
-            return;
-        }
 
-        final int y = 430;
-        final int x = 120;
-        final int width = 300;
-        final int maxSteps = 11; // KEEP THIS CURRENT!
 
-        splashScreenProgress++;
-
-        splashScreenContext.setRenderingHint(
-                RenderingHints.KEY_TEXT_ANTIALIASING,
-                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        //clear the drawing area...
-        splashScreenContext.setComposite(AlphaComposite.Clear);
-        splashScreenContext.fillRect(x, (y - 10), width, 40);
-        splashScreenContext.setPaintMode();
-        //paint the text string...
-        splashScreenContext.setFont(new Font("SansSerif", Font.BOLD, 12));
-        splashScreenContext.setColor(Color.WHITE);
-        splashScreenContext.drawString(text, x, y + 2);
-        // paint the full progress indicator...
-        splashScreenContext.setColor(Color.BLUE);
-        splashScreenContext.fillRect(x, y - 15, width, 5);
-        //paint how much is done...
-        splashScreenContext.setColor(Color.GREEN);
-        splashScreenContext.fillRect(x, y - 15, splashScreenProgress * (width / maxSteps), 5);
-        splash.update();
-    }
-
-    /**
-     * Initialize the Splash Screen variables.
-     */
-    private void initializeSplashScreen() {
-        try {
-            splash = SplashScreen.getSplashScreen();
-            if (splash != null) {
-                splashScreenContext = splash.createGraphics();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public MediathekGui(String[] ar) {
+    public MediathekGui(String... aArguments) {
         super();
-        initializeSplashScreen();
+        splashScreenManager = new SplashScreenManager();
+        splashScreenManager.initializeSplashScreen();
 
-        String pfad = "";
         initComponents();
-        if (ar != null) {
-            SysMsg.sysMsg("");
-            SysMsg.sysMsg("==========================================");
-            for (String s : ar) {
-                SysMsg.sysMsg("Startparameter: " + s);
-            }
-            SysMsg.sysMsg("==========================================");
-            SysMsg.sysMsg("");
-            if (ar.length > 0) {
-                if (!ar[0].startsWith("-")) {
-                    if (!ar[0].endsWith(File.separator)) {
-                        ar[0] += File.separator;
-                    }
-                    pfad = ar[0];
-                }
-            }
-        }
+        String pfad = readPfadFromArguments(aArguments);
 
         Duration.counterStart("***Programmstart***");
 
@@ -210,7 +144,7 @@ public class MediathekGui extends JFrame {
         InputMap im = jMenuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         im.put(KeyStroke.getKeyStroke("F10"), "none");
 
-        updateSplashScreenText("Anwendungsdaten laden...");
+        splashScreenManager.updateSplashScreenText("Anwendungsdaten laden...");
 
         daten = Daten.getInstance(pfad,this);
 
@@ -219,7 +153,7 @@ public class MediathekGui extends JFrame {
 
         if (daten.allesLaden()) {
             // alles geladen
-            updateSplashScreenText("GUI Initialisieren...");
+            splashScreenManager.updateSplashScreenText("GUI Initialisieren...");
         } else {
             Duration.staticPing("Erster Start");
             // erster Start
@@ -267,6 +201,41 @@ public class MediathekGui extends JFrame {
 
         ProgStart.loadDataProgStart();
 
+    }
+
+    private String readPfadFromArguments(final String[] aArguments)
+    {
+        String pfad;
+        if (aArguments != null)
+        {
+            pfad = "";
+        }else{
+            printArguments(aArguments);
+            if (aArguments.length > 0) {
+                if (!aArguments[0].startsWith("-")) {
+                    if (!aArguments[0].endsWith(File.separator)) {
+                        aArguments[0] += File.separator;
+                    }
+                    pfad = aArguments[0];
+                }else {
+                    pfad = "";
+                }
+            }else{
+                pfad = "";
+            }
+        }
+        return pfad;
+    }
+
+    private void printArguments(final String[] aArguments)
+    {
+        SysMsg.sysMsg("");
+        SysMsg.sysMsg(TEXT_LINE);
+        for (String argument : aArguments) {
+            SysMsg.sysMsg(String.format(LOG_TEXT_STARTPARAMETER_PATTERN, argument));
+        }
+        SysMsg.sysMsg(TEXT_LINE);
+        SysMsg.sysMsg("");
     }
 
     protected void createBandwidthMonitor(JFrame parent)
@@ -987,8 +956,7 @@ public class MediathekGui extends JFrame {
 
         dispose();
         System.exit(0);
-
-        return false;
+    return false;
     }
 
     /**
