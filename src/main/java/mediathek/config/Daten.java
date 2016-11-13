@@ -158,12 +158,12 @@ public class Daten
 
     private static final Daten getInstance(MediathekGui aMediathekGui)
     {
-        return instance == null ? new Daten(aMediathekGui) : instance;
+        return instance == null ? instance = new Daten(aMediathekGui) : instance;
     }
 
     public static final Daten getInstance()
     {
-        return instance == null ? new Daten() : instance;
+        return instance == null ? instance =  new Daten() : instance;
     }
 
 
