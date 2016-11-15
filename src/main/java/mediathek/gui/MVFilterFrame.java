@@ -62,7 +62,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.dialogEinstellungen.setVisible(true);
+                    daten.getDialogEinstellungen().setVisible(true);
                 }
             });
             im = jComboBoxFilterThema.getInputMap();
@@ -73,7 +73,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.dialogEinstellungen.setVisible(true);
+                    daten.getDialogEinstellungen().setVisible(true);
                 }
             });
         }

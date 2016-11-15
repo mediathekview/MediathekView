@@ -1,12 +1,14 @@
 package mediathek.gui;
 
 import java.awt.*;
+import java.io.Serializable;
 
 /**
- * Created by nicklas on 13.11.16.
+ * A class to manage the splash screen.
  */
-public class SplashScreenManager
+public class SplashScreenManager implements Serializable
 {
+    private static final long serialVersionUID = -8105599082316487113L;
     /**
      * The JVM {@link java.awt.SplashScreen} storage
      */

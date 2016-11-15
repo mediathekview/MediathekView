@@ -322,8 +322,8 @@ public class GuiFilme extends PanelVorlage {
                 if (filmSelection.isPresent()) {
                     final DatenFilm film = filmSelection.get();
                     MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-                    Daten.dialogMediaDB.setVis();
-                    Daten.dialogMediaDB.setFilter(film.arr[DatenFilm.FILM_TITEL]);
+                    daten.getDialogMediaDB().setVis();
+                    daten.getDialogMediaDB().setFilter(film.arr[DatenFilm.FILM_TITEL]);
                 }
             }
         });
@@ -590,8 +590,8 @@ public class GuiFilme extends PanelVorlage {
         final Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
         if (filmSelection.isPresent()) {
             MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-            Daten.dialogMediaDB.setVis();
-            Daten.dialogMediaDB.setFilter(filmSelection.get().arr[DatenFilm.FILM_TITEL]);
+            daten.getDialogMediaDB().setVis();
+            daten.getDialogMediaDB().setFilter(filmSelection.get().arr[DatenFilm.FILM_TITEL]);
         }
     }
 
