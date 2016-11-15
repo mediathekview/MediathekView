@@ -60,7 +60,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.dialogEinstellungen.setVisible(true);
+                    daten.getDialogEinstellungen().setVisible(true);
                 }
             });
             im = jComboBoxFilterThema.getInputMap();
@@ -71,7 +71,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.dialogEinstellungen.setVisible(true);
+                    daten.getDialogEinstellungen().setVisible(true);
                 }
             });
         }

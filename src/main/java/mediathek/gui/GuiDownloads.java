@@ -99,7 +99,7 @@ public class GuiDownloads extends PanelVorlage {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.dialogEinstellungen.setVisible(true);
+                    daten.getDialogEinstellungen().setVisible(true);
                 }
             });
         }
@@ -287,11 +287,11 @@ public class GuiDownloads extends PanelVorlage {
                 int row = tabelle.getSelectedRow();
                 if (row >= 0) {
                     MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-                    Daten.dialogMediaDB.setVis();
+                    daten.getDialogMediaDB().setVis();
 
                     DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
                     if (datenDownload != null) {
-                        Daten.dialogMediaDB.setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
+                        daten.getDialogMediaDB().setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
                     }
 
                 }
@@ -674,10 +674,10 @@ public class GuiDownloads extends PanelVorlage {
     private void mediensammlung() {
         DatenDownload datenDownload = getSelDownload();
         MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-        Daten.dialogMediaDB.setVis();
+        daten.getDialogMediaDB().setVis();
 
         if (datenDownload != null) {
-            Daten.dialogMediaDB.setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
+            daten.getDialogMediaDB().setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
         }
     }
 
