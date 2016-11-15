@@ -65,15 +65,15 @@ public class GuiFilme extends PanelVorlage {
     private final MVFilterPanel mVFilterPanel;
     ToolBar toolBar;
 
-    public GuiFilme(Daten d, JFrame parentComponent) {
-        super(d, parentComponent);
+    public GuiFilme(Daten aDaten, MediathekGui aMediathekGui) {
+        super(aDaten, aMediathekGui);
         initComponents();
         tabelle = new MVTable(MVTable.TableType.FILME);
         jScrollPane1.setViewportView(tabelle);
 
         jScrollPaneFilter.getVerticalScrollBar().setUnitIncrement(16);
         jPanelFilter.setLayout(new BorderLayout());
-        mVFilterPanel = new MVFilterPanel(parentComponent, daten) {
+        mVFilterPanel = new MVFilterPanel(parentComponent, daten,aMediathekGui) {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -91,7 +91,7 @@ public class GuiFilme extends PanelVorlage {
                 saveFilterProfile(i);
             }
         };
-        mVFilterFrame = new MVFilterFrame(d) {
+        mVFilterFrame = new MVFilterFrame(aDaten,aMediathekGui) {
             private static final long serialVersionUID = 1L;
 
             @Override

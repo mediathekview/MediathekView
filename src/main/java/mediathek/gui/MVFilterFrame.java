@@ -27,6 +27,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import mSearch.tool.Listener;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -47,10 +48,10 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     private JFrame parent;
     private int aktFilter = -1;
 
-    public MVFilterFrame(Daten d) {
+    public MVFilterFrame(Daten aDaten, MediathekGui aMediathekGui) {
         initComponents();
         parent = this;
-        daten = d;
+        daten = aDaten;
         jToggleButtonBlacklist.setText("");
         if (SystemInfo.isWindows()) {
             // zum Abfangen der Win-F4 für comboboxen
@@ -62,7 +63,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    daten.getDialogEinstellungen().setVisible(true);
+                    aMediathekGui.showSettingsDialog();
                 }
             });
             im = jComboBoxFilterThema.getInputMap();
@@ -73,7 +74,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    daten.getDialogEinstellungen().setVisible(true);
+                    aMediathekGui.showSettingsDialog();
                 }
             });
         }
