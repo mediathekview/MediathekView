@@ -97,7 +97,6 @@ public class Daten
     public static GuiAbo guiAbo = null; // Tab mit den Abos
     public static GuiDebug guiDebug = null;
     public static GuiMeldungen guiMeldungen = null;
-    private DialogEinstellungen dialogEinstellungen;
 
     public static IFilmInformation filmInfo = null; // Infos zum Film
     private DialogMediaDB dialogMediaDB;
@@ -612,19 +611,9 @@ public class Daten
         this.listeFilme = listeFilme;
     }
 
-    public void setDialogEinstellungen(final DialogEinstellungen aDialogEinstellungen)
-    {
-        dialogEinstellungen = aDialogEinstellungen;
-    }
-
     public void setDialogMediaDB(final DialogMediaDB aDialogMediaDB)
     {
         dialogMediaDB = aDialogMediaDB;
-    }
-
-    public DialogEinstellungen getDialogEinstellungen()
-    {
-        return dialogEinstellungen;
     }
 
     public DialogMediaDB getDialogMediaDB()

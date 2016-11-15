@@ -120,6 +120,8 @@ public class MediathekGui extends JFrame {
     private final JCheckBoxMenuItem jCheckBoxAboExtrafenster = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxMeldungenAnzeigen = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxMeldungenExtrafenster = new JCheckBoxMenuItem();
+
+    private DialogEinstellungen dialogEinstellungen;
     private MVTray tray = null;
 
     public void updateSplashScreenText(final String aSplashScreenText)
@@ -209,7 +211,7 @@ public class MediathekGui extends JFrame {
     private void initializeSettingsDialog()
     {
         // Dialog mit den Programmeinstellungen einrichten
-        daten.setDialogEinstellungen(new DialogEinstellungen(this, daten));
+        dialogEinstellungen = new DialogEinstellungen(this, daten);
         daten.setDialogMediaDB(new DialogMediaDB(this));
         daten.getDialogMediaDB().setVis();
     }
@@ -472,10 +474,10 @@ public class MediathekGui extends JFrame {
     private static boolean geklickt = false;
 
     private void initTabs() {
-        Daten.guiDownloads = new GuiDownloads(daten, daten.getMediathekGui());
-        Daten.guiAbo = new GuiAbo(daten, daten.getMediathekGui());
+        Daten.guiDownloads = new GuiDownloads(daten, this);
+        Daten.guiAbo = new GuiAbo(daten, this);
         Daten.guiMeldungen = new GuiMeldungen(daten, this);
-        Daten.guiFilme = new GuiFilme(daten, daten.getMediathekGui());
+        Daten.guiFilme = new GuiFilme(daten, this);
 
         //jTabbedPane.addTab("Filme", Icons.ICON_TAB_FILM, Daten.guiFilme);
         jTabbedPane.addTab(TABNAME_FILME, Daten.guiFilme);
@@ -943,8 +945,18 @@ public class MediathekGui extends JFrame {
     private void initializeDateiMenu()
     {
         // Datei
-        jMenuItemEinstellungen.addActionListener(e -> daten.getDialogEinstellungen().setVisible(true));
+        jMenuItemEinstellungen.addActionListener(e -> showSettingsDialog());
         jMenuItemBeenden.addActionListener(e -> beenden(false, false));
+    }
+
+    public void showSettingsDialog()
+    {
+        dialogEinstellungen.setVisible(true);
+    }
+
+    public void hideSettingsDialog()
+    {
+        dialogEinstellungen.setVisible(false);
     }
 
     private void setMenuIcons()
@@ -1021,7 +1033,7 @@ public class MediathekGui extends JFrame {
         // Hauptfenster
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_GUI, this);
         // Dialog Einstellungen
-        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, daten.getDialogEinstellungen());
+        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, dialogEinstellungen);
         // Infodialog/Bandwidth
         bandwidthMonitor.writeConfig();
         // MediaDB

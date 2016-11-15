@@ -85,8 +85,8 @@ public class GuiDownloads extends PanelVorlage {
      */
     private TModelDownload model;
 
-    public GuiDownloads(Daten d, JFrame parentComponent) {
-        super(d, parentComponent);
+    public GuiDownloads(Daten aDaten, MediathekGui aMediathekGui) {
+        super(aDaten, aMediathekGui);
         initComponents();
 
         if (SystemInfo.isWindows()) {
@@ -99,7 +99,7 @@ public class GuiDownloads extends PanelVorlage {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    daten.getDialogEinstellungen().setVisible(true);
+                    aMediathekGui.showSettingsDialog();
                 }
             });
         }

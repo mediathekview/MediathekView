@@ -131,7 +131,7 @@ public class MediathekGuiMac extends MediathekGui {
         final Application application = Application.getApplication();
         application.disableSuddenTermination();
         application.setAboutHandler(aboutEvent -> showAboutDialog());
-        application.setPreferencesHandler(preferencesEvent -> daten.getDialogEinstellungen().setVisible(true));
+        application.setPreferencesHandler(preferencesEvent -> showSettingsDialog());
         application.setQuitHandler((quitEvent, quitResponse) -> {
             if (!beenden(false, false)) {
                 quitResponse.cancelQuit();
