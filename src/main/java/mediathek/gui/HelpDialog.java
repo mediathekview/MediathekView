@@ -19,63 +19,36 @@
  */
 package mediathek.gui;
 
-import com.jidesoft.utils.SystemInfo;
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import mediathek.config.Daten;
+import mediathek.gui.actions.DisposeDialogAction;
 import mediathek.tool.EscBeenden;
 
-public class HelpDialog extends javax.swing.JDialog {
+import javax.swing.*;
 
-    private static final long serialVersionUID = 1L;
-
+@SuppressWarnings("serial")
+public class HelpDialog extends JDialog {
     public HelpDialog(JFrame parent, Daten daten) {
         super(parent);
         initComponents();
 
         setModal(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        this.setTitle("Infos und Hilfe zum Programm");
+        setTitle("Infos und Hilfe zum Programm");
 
-//        jTabbedPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         new EscBeenden(this) {
             @Override
             public void beenden_(JDialog d) {
                 d.dispose();
             }
         };
-        if (SystemInfo.isMacOSX()) {
-            this.remove(jPanelQuitt);
-        }
-        jButtonOk.setAction(new CloseDialogAction(this));
 
-        //This is found the about menu entry on OSX...
-        if (!SystemInfo.isMacOSX())
-            jTabbedPane.add("Über", new AboutPanel(parent));
+        jButtonOk.setAction(new DisposeDialogAction(this, "Schlie\u00DFen", "Dialog schlie\u00DFen"));
+
+        jTabbedPane.add("Über", new AboutPanel(parent));
         jTabbedPane.add("Hilfe", new HelpPanel(parent, daten));
 
         pack();
 
-    }
-
-    private class CloseDialogAction extends AbstractAction {
-
-        private static final long serialVersionUID = 1L;
-        
-        private final JDialog dlg;
-
-        public CloseDialogAction(JDialog dlg) {
-            super();
-            putValue(NAME, "Schließen");
-            putValue(SHORT_DESCRIPTION, "Dialog schließen");
-            this.dlg = dlg;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            dlg.dispose();
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -83,7 +56,7 @@ public class HelpDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         jTabbedPane = new javax.swing.JTabbedPane();
-        jPanelQuitt = new javax.swing.JPanel();
+        javax.swing.JPanel jPanelQuitt = new javax.swing.JPanel();
         jButtonOk = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -132,7 +105,6 @@ public class HelpDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonOk;
-    private javax.swing.JPanel jPanelQuitt;
     private javax.swing.JTabbedPane jTabbedPane;
     // End of variables declaration//GEN-END:variables
 }
