@@ -10,10 +10,10 @@ public class DisposeDialogAction extends AbstractAction {
 
     private final JDialog dlg;
 
-    public DisposeDialogAction(JDialog dlg) {
+    public DisposeDialogAction(JDialog dlg, String description, String shortDescription) {
         super();
-        putValue(NAME, "Schließen");
-        putValue(SHORT_DESCRIPTION, "Dialog schließen");
+        putValue(NAME, description);
+        putValue(SHORT_DESCRIPTION, shortDescription);
         this.dlg = dlg;
     }
 
