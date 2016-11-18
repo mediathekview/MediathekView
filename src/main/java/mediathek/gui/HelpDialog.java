@@ -20,17 +20,14 @@
 package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import mediathek.config.Daten;
+import mediathek.gui.actions.DisposeDialogAction;
 import mediathek.tool.EscBeenden;
 
-public class HelpDialog extends javax.swing.JDialog {
+import javax.swing.*;
 
-    private static final long serialVersionUID = 1L;
-
+@SuppressWarnings("serial")
+public class HelpDialog extends JDialog {
     public HelpDialog(JFrame parent, Daten daten) {
         super(parent);
         initComponents();
@@ -49,7 +46,7 @@ public class HelpDialog extends javax.swing.JDialog {
         if (SystemInfo.isMacOSX()) {
             this.remove(jPanelQuitt);
         }
-        jButtonOk.setAction(new CloseDialogAction(this));
+        jButtonOk.setAction(new DisposeDialogAction(this));
 
         //This is found the about menu entry on OSX...
         if (!SystemInfo.isMacOSX())
@@ -58,24 +55,6 @@ public class HelpDialog extends javax.swing.JDialog {
 
         pack();
 
-    }
-
-    private class CloseDialogAction extends AbstractAction {
-
-        private static final long serialVersionUID = 1L;
-        
-        private final JDialog dlg;
-
-        public CloseDialogAction(JDialog dlg) {
-            super();
-            putValue(NAME, "Schließen");
-            putValue(SHORT_DESCRIPTION, "Dialog schließen");
-            this.dlg = dlg;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            dlg.dispose();
-        }
     }
 
     @SuppressWarnings("unchecked")
