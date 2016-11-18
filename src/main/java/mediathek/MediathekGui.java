@@ -67,14 +67,14 @@ import static mediathek.tool.MVFunctionSys.startMeldungen;
 @SuppressWarnings("serial")
 public class MediathekGui extends JFrame {
 
-    private final Daten daten;
+    protected final Daten daten;
 //    private final SpacerIcon spacerIcon = new SpacerIcon(30);
-    private final JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
+/*    private final JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
     private final JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
     private final JPanel jPanelAnzahl = new JPanel();
     private final JLabel jLabelBandbreite = new JLabel("Bandbreite pro Download");
     private final JPanel jPanelBandbreite = new JPanel();
-    private final JSlider jSliderBandbreite = new JSlider();
+    private final JSlider jSliderBandbreite = new JSlider();*/
     private MVStatusBar statusBar;
     private MVFrame frameDownload = null;
     private MVFrame frameAbo = null;

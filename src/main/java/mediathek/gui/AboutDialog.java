@@ -365,7 +365,7 @@ public class AboutDialog extends JDialog {
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
             {
                 JButton okButton = new JButton("Schlie\u00DFen");
-                okButton.setAction(new DisposeDialogAction(this));
+                okButton.setAction(new DisposeDialogAction(this, "Schlie\u00DFen", "Dialog schlie\u00DFen"));
                 buttonPane.add(okButton);
                 getRootPane().setDefaultButton(okButton);
             }

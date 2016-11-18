@@ -19,7 +19,6 @@
  */
 package mediathek.gui;
 
-import com.jidesoft.utils.SystemInfo;
 import mediathek.config.Daten;
 import mediathek.gui.actions.DisposeDialogAction;
 import mediathek.tool.EscBeenden;
@@ -34,23 +33,18 @@ public class HelpDialog extends JDialog {
 
         setModal(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        this.setTitle("Infos und Hilfe zum Programm");
+        setTitle("Infos und Hilfe zum Programm");
 
-//        jTabbedPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         new EscBeenden(this) {
             @Override
             public void beenden_(JDialog d) {
                 d.dispose();
             }
         };
-        if (SystemInfo.isMacOSX()) {
-            this.remove(jPanelQuitt);
-        }
-        jButtonOk.setAction(new DisposeDialogAction(this));
 
-        //This is found the about menu entry on OSX...
-        if (!SystemInfo.isMacOSX())
-            jTabbedPane.add("Über", new AboutPanel(parent));
+        jButtonOk.setAction(new DisposeDialogAction(this, "Schlie\u00DFen", "Dialog schlie\u00DFen"));
+
+        jTabbedPane.add("Über", new AboutPanel(parent));
         jTabbedPane.add("Hilfe", new HelpPanel(parent, daten));
 
         pack();
@@ -62,7 +56,7 @@ public class HelpDialog extends JDialog {
     private void initComponents() {
 
         jTabbedPane = new javax.swing.JTabbedPane();
-        jPanelQuitt = new javax.swing.JPanel();
+        javax.swing.JPanel jPanelQuitt = new javax.swing.JPanel();
         jButtonOk = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -111,7 +105,6 @@ public class HelpDialog extends JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonOk;
-    private javax.swing.JPanel jPanelQuitt;
     private javax.swing.JTabbedPane jTabbedPane;
     // End of variables declaration//GEN-END:variables
 }
