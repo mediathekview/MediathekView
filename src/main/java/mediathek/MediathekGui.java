@@ -20,28 +20,15 @@
 package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 import mSearch.Const;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.tool.Functions.OperatingSystemType;
-import static mSearch.tool.Functions.getOs;
 import mSearch.tool.*;
+import mSearch.tool.Functions.OperatingSystemType;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
-import mediathek.update.CheckUpdate;
 import mediathek.controller.ProgStart;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
@@ -59,20 +46,35 @@ import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVFrame;
-import static mediathek.tool.MVFunctionSys.startMeldungen;
 import mediathek.tool.MVMessageDialog;
+import mediathek.update.CheckUpdate;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+
+import static mSearch.tool.Functions.getOs;
+import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 @SuppressWarnings("serial")
 public class MediathekGui extends JFrame {
 
-    private final Daten daten;
+    protected final Daten daten;
 //    private final SpacerIcon spacerIcon = new SpacerIcon(30);
-    private final JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
+/*    private final JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
     private final JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
     private final JPanel jPanelAnzahl = new JPanel();
     private final JLabel jLabelBandbreite = new JLabel("Bandbreite pro Download");
     private final JPanel jPanelBandbreite = new JPanel();
-    private final JSlider jSliderBandbreite = new JSlider();
+    private final JSlider jSliderBandbreite = new JSlider();*/
     private MVStatusBar statusBar;
     private MVFrame frameDownload = null;
     private MVFrame frameAbo = null;
@@ -920,10 +922,15 @@ public class MediathekGui extends JFrame {
         });
 
         // Hilfe
-        jMenuItemAnleitung.addActionListener(e -> {
-            HelpDialog dialogOk = new HelpDialog(Daten.mediathekGui, daten);
-            dialogOk.setVisible(true);
-        });
+        jMenuItemAnleitung.addActionListener(e -> showHelperGuide());
+    }
+
+    /**
+     * Display the current Help Guidance dialog.
+     */
+    protected void showHelperGuide() {
+        HelpDialog dialogOk = new HelpDialog(Daten.mediathekGui, daten);
+        dialogOk.setVisible(true);
     }
 
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {

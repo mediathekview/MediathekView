@@ -158,9 +158,9 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             filterList.clear();
             if (blacklistIsActive) {
                 //add the filter predicates to the list
-                if (!doNotShowGeoBlockedFilms)
+                if (doNotShowGeoBlockedFilms)
                     filterList.add(this::checkGeoBlockedFilm);
-                if (!doNotShowFutureFilms)
+                if (doNotShowFutureFilms)
                     filterList.add(this::checkIfFilmIsInFuture);
                 filterList.add(this::checkFilmLength);
                 if (!isEmpty())
