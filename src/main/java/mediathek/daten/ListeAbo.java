@@ -37,10 +37,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+@SuppressWarnings("serial")
 public class ListeAbo extends LinkedList<DatenAbo> {
-
-    private static final long serialVersionUID = 1L;
-
     private Daten daten;
     private static final String[] LEER = {""};
     //private String[] titel, thema, irgendwo;
