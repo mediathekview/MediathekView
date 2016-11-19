@@ -16,9 +16,10 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.gui;
+package mediathek.gui.dialog;
 
 import com.jidesoft.swing.MarqueePane;
+import com.jidesoft.utils.SystemInfo;
 import mSearch.Const;
 import mSearch.tool.Functions;
 import mediathek.config.Daten;
@@ -50,7 +51,6 @@ public class AboutDialog extends JDialog {
     private final JPanel buttonPane = new JPanel();
     private final JLabel lblFilmlistPath = new JLabel();
     private final JLabel lblSettingsFilePath = new JLabel();
-    private final Boolean isRunningOnMac;
     private final JLabel lblJavaVersion = new JLabel();
     private final JLabel lblVmType = new JLabel();
     private MarqueePane marqueePane;
@@ -124,7 +124,7 @@ public class AboutDialog extends JDialog {
             lblFilmlistPath.setText(Daten.getDateiFilmliste());
 
             // auf dem Mac brauchen wir den Schließen Button nicht..
-            if (isRunningOnMac) {
+            if (SystemInfo.isMacOSX()) {
                 this.remove(buttonPane);
             }
 
@@ -133,12 +133,12 @@ public class AboutDialog extends JDialog {
         }
     }
 
-    public AboutDialog(JFrame parent, final Boolean isRunningOnMac) {
+    public AboutDialog(JFrame parent) {
         super(parent);
 
         setModal(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        this.isRunningOnMac = isRunningOnMac;
+
         new EscBeenden(this) {
             @Override
             public void beenden_(JDialog d) {

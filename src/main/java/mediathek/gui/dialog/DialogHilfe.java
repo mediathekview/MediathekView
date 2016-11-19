@@ -19,33 +19,32 @@
  */
 package mediathek.gui.dialog;
 
-import javax.swing.JFrame;
-import javax.swing.text.DefaultCaret;
 import mediathek.tool.EscBeenden;
 
-public class DialogHilfe extends javax.swing.JDialog {
+import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class DialogHilfe extends JDialog {
+
     public DialogHilfe(JFrame parent, boolean modal, String text) {
         super(parent, modal);
         initComponents();
-        this.setTitle("Hilfe");
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
         DefaultCaret caret = (DefaultCaret) jTextArea1.getCaret();
         caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         jTextArea1.setText(text);
-        jButtonOk.addActionListener(e -> beenden());
-        getRootPane().setDefaultButton(jButtonOk);
+
         new EscBeenden(this) {
             @Override
             public void beenden_() {
-                beenden();
+                dispose();
             }
         };
-    }
 
-    void beenden() {
-        this.dispose();
+        jButtonOk.addActionListener(e -> dispose());
+        getRootPane().setDefaultButton(jButtonOk);
     }
 
     /** This method is called from within the constructor to
@@ -56,11 +55,12 @@ public class DialogHilfe extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
+        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jButtonOk = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Hilfe");
 
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
@@ -96,7 +96,6 @@ public class DialogHilfe extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonOk;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }
