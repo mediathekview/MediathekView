@@ -25,10 +25,10 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
-              <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="jPanelExtra" max="32767" attributes="0"/>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jPanelExtra" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -53,7 +53,6 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jTextField1" max="32767" attributes="0"/>
                       <Component id="jScrollPane1" max="32767" attributes="0"/>
                       <Component id="jPanel2" alignment="0" max="32767" attributes="0"/>
                   </Group>
@@ -64,11 +63,9 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="jTextField1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" min="-2" pref="268" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jScrollPane1" min="-2" pref="243" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -76,23 +73,6 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JTextField" name="jTextField1">
-          <Properties>
-            <Property name="editable" type="boolean" value="false"/>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="ff" green="cc" red="cc" type="rgb"/>
-            </Property>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Dialog" size="14" style="1"/>
-            </Property>
-            <Property name="horizontalAlignment" type="int" value="0"/>
-            <Property name="text" type="java.lang.String" value="Hilfe zum Programm finden"/>
-          </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
-          </AuxValues>
-        </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
@@ -104,10 +84,11 @@
           <SubComponents>
             <Component class="javax.swing.JTextArea" name="jTextArea1">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="columns" type="int" value="20"/>
                 <Property name="lineWrap" type="boolean" value="true"/>
                 <Property name="rows" type="int" value="5"/>
-                <Property name="text" type="java.lang.String" value="Bei Problemen sollten die Anleitung oder die FAQ &#xa;die erste Anlaufstelle sein. F&#xfc;hrt das zu keiner L&#xf6;sung,&#xa;kann auch eine Suche im Forum weiterhelfen.&#xa;&#xa;Wenn auch das nicht weiterhilft, sollte man eine Anfrage&#xa;im Forum stellen. Damit die Frage auch beantwortet &#xa;werden kann, sind ein paar Infos wichtig:&#xa;&#xa; * M&#xf6;glichst genaue Beschreibung des Problems&#xa;      (was geht nicht, welcher Film, ..)&#xa;&#xa; * Infos &#xfc;ber das Betriebssystem und die Programmversion&#xa;      ODER BESSER:&#xa;      das generierte Logfile an den Post im Forum anh&#xe4;ngen&#xa;"/>
+                <Property name="text" type="java.lang.String" value="Bei Problemen sollten die Anleitung oder die FAQ &#xa;die erste Anlaufstelle sein. F&#xfc;hrt das zu keiner L&#xf6;sung,&#xa;kann auch eine Suche im Forum weiterhelfen.&#xa;&#xa;Wenn auch das nicht weiterhilft, sollte man eine Anfrage&#xa;im Forum stellen. Damit die Frage auch beantwortet &#xa;werden kann, sind ein paar Infos wichtig:&#xa;&#xa; * M&#xf6;glichst genaue Beschreibung des Problems&#xa;      (was geht nicht, welcher Film, ..)&#xa;&#xa; * Infos &#xfc;ber das Betriebssystem und die Programmversion&#xa;      ODER BESSER:&#xa;      das generierte Logfile an den Post im Forum anh&#xe4;ngen"/>
                 <Property name="wrapStyleWord" type="boolean" value="true"/>
               </Properties>
               <AuxValues>
