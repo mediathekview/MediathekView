@@ -40,7 +40,7 @@ public class ResetSettingsPanel extends JPanel {
         daten = ddaten;
 
         jButtonHilfeReset.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfeReset.addActionListener(e -> new DialogHilfe(Daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET)).setVisible(true));
+        jButtonHilfeReset.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET)).setVisible(true));
         jButtonResetSets.addActionListener(e -> {
             Daten.listePset.clear();
             //GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
