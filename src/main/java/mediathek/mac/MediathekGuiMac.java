@@ -1,22 +1,16 @@
 package mediathek.mac;
 
 import com.apple.eawt.Application;
-import com.jidesoft.dialog.ButtonPanel;
-import com.jidesoft.dialog.StandardDialog;
 import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
-import mediathek.gui.AboutDialog;
-import mediathek.gui.HelpPanel;
-import mediathek.gui.actions.DisposeDialogAction;
 import mediathek.gui.bandwidth.MVBandwidthMonitorOSX;
 import mediathek.gui.filmInformation.MVFilmInformationOSX;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -55,12 +49,17 @@ public class MediathekGuiMac extends MediathekGui {
     @Override
     protected void initMenue() {
         super.initMenue();
-        if (SystemInfo.isMacOSX()) {
-            setupUserInterfaceForOsx();
-            setupAcceleratorsForOsx();
 
-            jMenuItemAnleitung.setText("Hilfe zum Programm...");
-        }
+        setupUserInterfaceForOsx();
+        setupAcceleratorsForOsx();
+    }
+
+    @Override
+    protected void setupHelpMenu() {
+        super.setupHelpMenu();
+        //not needed on OSX, located in apple menu
+        jMenuHilfe.remove(jSeparatorAboutApplication);
+        jMenuHilfe.remove(jMenuItemAboutApplication);
     }
 
 
@@ -115,58 +114,6 @@ public class MediathekGuiMac extends MediathekGui {
                 }
             }
         });
-    }
-
-    /**
-     * Display the About Box
-     */
-    protected void showAboutDialog() {
-        AboutDialog aboutDialog = new AboutDialog(this, SystemInfo.isMacOSX());
-        aboutDialog.setVisible(true);
-        aboutDialog.dispose();
-    }
-
-    /**
-     * Mac-specific helper guide dialog.
-     */
-    private class MacHelperGuideDialog extends StandardDialog {
-        private Daten daten = null;
-
-        public MacHelperGuideDialog(Frame owner, Daten daten) {
-            super(owner, "Programm zurücksetzen", true);
-            this.daten = daten;
-
-            setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            setResizable(false);
-
-            pack();
-        }
-
-        @Override
-        public JComponent createBannerPanel() {
-            return null;
-        }
-
-        @Override
-        public JComponent createContentPanel() {
-            return new HelpPanel(null, daten);
-        }
-
-        @Override
-        public ButtonPanel createButtonPanel() {
-            ButtonPanel pnl = new ButtonPanel();
-            JButton btn = new JButton(new DisposeDialogAction(this, "Schließen", "Dialog schließen"));
-            getRootPane().setDefaultButton(btn);
-            pnl.addButton(btn);
-            pnl.setBorder(new EmptyBorder(5, 5, 5, 5));
-            return pnl;
-        }
-    }
-
-    @Override
-    protected void showHelperGuide() {
-        MacHelperGuideDialog dialog = new MacHelperGuideDialog(this, daten);
-        dialog.setVisible(true);
     }
 
     /**

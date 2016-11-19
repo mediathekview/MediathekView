@@ -415,9 +415,38 @@
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
           </AuxValues>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAnleitung">
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemShowOnlineHelp">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Infos und Hilfe zum Programm"/>
+                <Property name="text" type="java.lang.String" value="Online-Hilfe anzeigen"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator4">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemCreateProtocolFile">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Protokolldatei erstellen..."/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemResetSettings">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Einstellungen zur&#xfc;cksetzen..."/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+              </AuxValues>
+            </MenuItem>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparatorAboutApplication">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+              </AuxValues>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAboutApplication">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="&#xdc;ber dieses Programm..."/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>

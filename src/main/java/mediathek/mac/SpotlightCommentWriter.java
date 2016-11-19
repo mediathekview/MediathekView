@@ -68,7 +68,7 @@ public class SpotlightCommentWriter {
                                             "Sollte dieser häufiger auftreten kontaktieren Sie bitte " +
                                             "das Entwicklerteam.</html>",
                                     null,
-                                    "category",
+                                    null,
                                     ex,
                                     Level.SEVERE,
                                     null);

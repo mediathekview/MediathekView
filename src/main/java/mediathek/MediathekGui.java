@@ -35,19 +35,15 @@ import mediathek.daten.DatenDownload;
 import mediathek.gui.*;
 import mediathek.gui.bandwidth.IBandwidthMonitor;
 import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
-import mediathek.gui.dialog.DialogBeenden;
-import mediathek.gui.dialog.DialogLeer;
-import mediathek.gui.dialog.DialogMediaDB;
-import mediathek.gui.dialog.DialogStarteinstellungen;
+import mediathek.gui.dialog.*;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.filmInformation.MVFilmInformationLWin;
 import mediathek.res.GetIcon;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.MVFont;
-import mediathek.tool.MVFrame;
-import mediathek.tool.MVMessageDialog;
+import mediathek.tool.*;
 import mediathek.update.CheckUpdate;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -60,6 +56,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.util.logging.Level;
 
 import static mSearch.tool.Functions.getOs;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
@@ -758,7 +756,6 @@ public class MediathekGui extends JFrame {
         jMenuItemAbosLoeschen.setIcon(Icons.ICON_MENUE_ABO_LOESCHEN);
         jMenuItemAbosAendern.setIcon(Icons.ICON_MENUE_ABO_AENDERN);
         jMenuItemAboNeu.setIcon(Icons.ICON_MENUE_ABO_NEU);
-        jMenuItemAnleitung.setIcon(Icons.ICON_MENUE_HELP);
 
 //        setupMaximumNumberOfDownloadsMenuItem();
 //        setupBandwidthMenuItem();
@@ -922,15 +919,59 @@ public class MediathekGui extends JFrame {
         });
 
         // Hilfe
-        jMenuItemAnleitung.addActionListener(e -> showHelperGuide());
+        setupHelpMenu();
+    }
+
+    protected void setupHelpMenu() {
+        jMenuItemResetSettings.addActionListener(e -> {
+            ResetSettingsDialog dialog = new ResetSettingsDialog(this, daten);
+            dialog.setVisible(true);
+        });
+
+        jMenuItemShowOnlineHelp.setIcon(Icons.ICON_MENUE_HELP);
+        jMenuItemShowOnlineHelp.addActionListener(e -> {
+            if (Desktop.isDesktopSupported()) {
+                Desktop d = Desktop.getDesktop();
+                try {
+                    if (d.isSupported(Desktop.Action.BROWSE)) {
+                        d.browse(new URI(Konstanten.ADRESSE_ONLINE_HELP));
+                    }
+                } catch (Exception ex) {
+                    final ErrorInfo info = new ErrorInfo("Online-Hilfe",
+                            "<html>Es trat ein Fehler beim Öffnen der Online-Hilfe auf.<br>" +
+                                    "Sollte dieser häufiger auftreten kontaktieren Sie bitte " +
+                                    "das Entwicklerteam.</html>",
+                            null,
+                            null,
+                            ex,
+                            Level.SEVERE,
+                            null);
+                    JXErrorPane.showDialog(Daten.mediathekGui, info);
+                }
+            }
+        });
+
+        jMenuItemCreateProtocolFile.addActionListener(e -> {
+            DialogZiel dialog = new DialogZiel(this, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek.log", "Logdatei speichern");
+            dialog.setVisible(true);
+            if (!dialog.ok) {
+                return;
+            }
+            if (!Logfile.LogDateiSchreiben(dialog.ziel, MVFunctionSys.getProgVersionString(), Daten.getSettingsDirectory_String(), Daten.listePset.getListProg(), MVConfig.getAll())) {
+                MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!", "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        jMenuItemAboutApplication.addActionListener(e -> showAboutDialog());
     }
 
     /**
-     * Display the current Help Guidance dialog.
+     * Display the About Box
      */
-    protected void showHelperGuide() {
-        HelpDialog dialogOk = new HelpDialog(Daten.mediathekGui, daten);
-        dialogOk.setVisible(true);
+    protected void showAboutDialog() {
+        AboutDialog aboutDialog = new AboutDialog(this);
+        aboutDialog.setVisible(true);
+        aboutDialog.dispose();
     }
 
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
@@ -1098,7 +1139,12 @@ public class MediathekGui extends JFrame {
         cbBandwidthDisplay = new javax.swing.JCheckBoxMenuItem();
         jCheckBoxMenuItemMediaDb = new javax.swing.JCheckBoxMenuItem();
         jMenuHilfe = new javax.swing.JMenu();
-        jMenuItemAnleitung = new javax.swing.JMenuItem();
+        jMenuItemShowOnlineHelp = new javax.swing.JMenuItem();
+        javax.swing.JPopupMenu.Separator jSeparator4 = new javax.swing.JPopupMenu.Separator();
+        jMenuItemCreateProtocolFile = new javax.swing.JMenuItem();
+        jMenuItemResetSettings = new javax.swing.JMenuItem();
+        jSeparatorAboutApplication = new javax.swing.JPopupMenu.Separator();
+        jMenuItemAboutApplication = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -1302,8 +1348,19 @@ public class MediathekGui extends JFrame {
         jMenuHilfe.setMnemonic('h');
         jMenuHilfe.setText("Hilfe");
 
-        jMenuItemAnleitung.setText("Infos und Hilfe zum Programm");
-        jMenuHilfe.add(jMenuItemAnleitung);
+        jMenuItemShowOnlineHelp.setText("Online-Hilfe anzeigen");
+        jMenuHilfe.add(jMenuItemShowOnlineHelp);
+        jMenuHilfe.add(jSeparator4);
+
+        jMenuItemCreateProtocolFile.setText("Protokolldatei erstellen...");
+        jMenuHilfe.add(jMenuItemCreateProtocolFile);
+
+        jMenuItemResetSettings.setText("Einstellungen zurücksetzen...");
+        jMenuHilfe.add(jMenuItemResetSettings);
+        jMenuHilfe.add(jSeparatorAboutApplication);
+
+        jMenuItemAboutApplication.setText("Über dieses Programm...");
+        jMenuHilfe.add(jMenuItemAboutApplication);
 
         jMenuBar.add(jMenuHilfe);
 
@@ -1344,9 +1401,10 @@ public class MediathekGui extends JFrame {
     private javax.swing.JMenuItem jMenuItemAbosAusschalten;
     private javax.swing.JMenuItem jMenuItemAbosEinschalten;
     private javax.swing.JMenuItem jMenuItemAbosLoeschen;
-    protected javax.swing.JMenuItem jMenuItemAnleitung;
+    protected javax.swing.JMenuItem jMenuItemAboutApplication;
     protected javax.swing.JMenuItem jMenuItemBeenden;
     protected javax.swing.JMenuItem jMenuItemBlacklist;
+    private javax.swing.JMenuItem jMenuItemCreateProtocolFile;
     private javax.swing.JMenuItem jMenuItemDownloadAbspielen;
     private javax.swing.JMenuItem jMenuItemDownloadAendern;
     private javax.swing.JMenuItem jMenuItemDownloadAlleStoppen;
@@ -1373,11 +1431,14 @@ public class MediathekGui extends JFrame {
     private javax.swing.JMenuItem jMenuItemFilmeUngesehen;
     private javax.swing.JMenuItem jMenuItemFilmlisteLaden;
     protected javax.swing.JMenuItem jMenuItemFilterLoeschen;
+    protected javax.swing.JMenuItem jMenuItemResetSettings;
     private javax.swing.JMenuItem jMenuItemSchriftGr;
     private javax.swing.JMenuItem jMenuItemSchriftKl;
     private javax.swing.JMenuItem jMenuItemSchriftNormal;
+    private javax.swing.JMenuItem jMenuItemShowOnlineHelp;
     private javax.swing.JPanel jPanelInfo;
     protected javax.swing.JPopupMenu.Separator jSeparator2;
+    protected javax.swing.JPopupMenu.Separator jSeparatorAboutApplication;
     private javax.swing.JTabbedPane jTabbedPane;
     // End of variables declaration//GEN-END:variables
 
