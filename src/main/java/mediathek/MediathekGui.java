@@ -925,6 +925,7 @@ public class MediathekGui extends JFrame {
     protected void setupHelpMenu() {
         jMenuItemResetSettings.addActionListener(e -> {
             ResetSettingsDialog dialog = new ResetSettingsDialog(this, daten);
+            GuiFunktionen.centerOnScreen(dialog, false);
             dialog.setVisible(true);
         });
 
@@ -970,6 +971,7 @@ public class MediathekGui extends JFrame {
      */
     protected void showAboutDialog() {
         AboutDialog aboutDialog = new AboutDialog(this);
+        GuiFunktionen.centerOnScreen(aboutDialog, false);
         aboutDialog.setVisible(true);
         aboutDialog.dispose();
     }
