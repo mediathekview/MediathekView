@@ -3,7 +3,7 @@ package mediathek.gui.dialog;
 import com.jidesoft.dialog.ButtonPanel;
 import com.jidesoft.dialog.StandardDialog;
 import mediathek.config.Daten;
-import mediathek.gui.HelpPanel;
+import mediathek.gui.ResetSettingsPanel;
 import mediathek.gui.actions.DisposeDialogAction;
 import mediathek.tool.EscBeenden;
 
@@ -38,7 +38,7 @@ public class ResetSettingsDialog extends StandardDialog {
 
     @Override
     public JComponent createContentPanel() {
-        return new HelpPanel(null, daten);
+        return new ResetSettingsPanel(null, daten);
     }
 
     @Override

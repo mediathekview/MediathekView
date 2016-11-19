@@ -30,11 +30,11 @@ import mediathek.tool.GuiFunktionenProgramme;
 import javax.swing.*;
 
 @SuppressWarnings("serial")
-public class HelpPanel extends JPanel {
+public class ResetSettingsPanel extends JPanel {
     private Daten daten;
     private JFrame parent;
 
-    public HelpPanel(JFrame pparent, Daten ddaten) {
+    public ResetSettingsPanel(JFrame pparent, Daten ddaten) {
         initComponents();
         parent = pparent;
         daten = ddaten;
@@ -45,7 +45,7 @@ public class HelpPanel extends JPanel {
             Daten.listePset.clear();
             //GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
             GuiFunktionenProgramme.addSetVorlagen(parent, daten, ListePsetVorlagen.getStandarset(parent, daten, true /*replaceMuster*/), false /*auto*/, true /*setVersion*/);
-            Listener.notify(Listener.EREIGNIS_LISTE_PSET, HelpPanel.class.getSimpleName());
+            Listener.notify(Listener.EREIGNIS_LISTE_PSET, ResetSettingsPanel.class.getSimpleName());
         });
         jButtonResetAll.addActionListener(e -> {
             int ret = JOptionPane.showConfirmDialog(parent, "Alle Einstellungen zurücksetzen?", "Alle Einstellungen zurücksetzen!", JOptionPane.YES_NO_OPTION);
