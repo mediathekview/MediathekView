@@ -19,18 +19,7 @@
  */
 package mediathek.tool;
 
-import java.awt.Cursor;
-import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import mSearch.Const;
-import static mSearch.tool.Functions.getOs;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.RuntimeExec;
@@ -39,6 +28,18 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.dialogEinstellungen.DialogImportPset;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import static mSearch.tool.Functions.getOs;
 
 public class GuiFunktionenProgramme extends GuiFunktionen {
 
@@ -268,14 +269,13 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                         return false;
                     }
                 } else {
-                    FileInputStream in = new FileInputStream(datei);
-                    FileOutputStream fOut = new FileOutputStream(GuiFunktionen.addsPfad(zielPfad, datei));
-                    final byte[] buffer = new byte[1024];
-                    while ((n = in.read(buffer)) != -1) {
-                        fOut.write(buffer, 0, n);
+                    try (FileInputStream in = new FileInputStream(datei);
+                         FileOutputStream fOut = new FileOutputStream(GuiFunktionen.addsPfad(zielPfad, datei))) {
+                        final byte[] buffer = new byte[1024];
+                        while ((n = in.read(buffer)) != -1) {
+                            fOut.write(buffer, 0, n);
+                        }
                     }
-                    fOut.close();
-                    in.close();
                 }
             } else {
                 conn = new URL(datei).openConnection();
@@ -286,13 +286,12 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
 
                     File tmpFile = File.createTempFile("mediathek", null);
                     tmpFile.deleteOnExit();
-                    try (BufferedInputStream in = new BufferedInputStream(conn.getInputStream())) {
-                        FileOutputStream fOut = new FileOutputStream(tmpFile);
+                    try (BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
+                         FileOutputStream fOut = new FileOutputStream(tmpFile)) {
                         final byte[] buffer = new byte[1024];
                         while ((n = in.read(buffer)) != -1) {
                             fOut.write(buffer, 0, n);
                         }
-                        fOut.close();
                     }
                     if (!entpacken(tmpFile, new File(zielPfad))) {
                         // und Tschüss
@@ -302,13 +301,12 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 } else {
                     String file = GuiFunktionen.getDateiName(datei);
                     File f = new File(GuiFunktionen.addsPfad(zielPfad, file));
-                    try (BufferedInputStream in = new BufferedInputStream(conn.getInputStream())) {
-                        FileOutputStream fOut = new FileOutputStream(f);
+                    try (BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
+                         FileOutputStream fOut = new FileOutputStream(f)) {
                         final byte[] buffer = new byte[1024];
                         while ((n = in.read(buffer)) != -1) {
                             fOut.write(buffer, 0, n);
                         }
-                        fOut.close();
                     }
                 }
             }
@@ -322,35 +320,34 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             return false;
         }
 
-        ZipFile zipFile = new ZipFile(archive);
-        Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
-        byte[] buffer = new byte[16384];
-        int len;
-        while (entries.hasMoreElements()) {
-            ZipEntry entry = (ZipEntry) entries.nextElement();
+        try (ZipFile zipFile = new ZipFile(archive)) {
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
-            String entryFileName = entry.getName();
+            byte[] buffer = new byte[16384];
+            int len;
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
 
-            File dir = buildDirectoryHierarchyFor(entryFileName, destDir);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
+                String entryFileName = entry.getName();
 
-            if (!entry.isDirectory()) {
-                BufferedInputStream bis;
-                try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(new File(destDir, entryFileName)))) {
-                    bis = new BufferedInputStream(zipFile
-                            .getInputStream(entry));
-                    while ((len = bis.read(buffer)) > 0) {
-                        bos.write(buffer, 0, len);
-                    }
-                    bos.flush();
+                File dir = buildDirectoryHierarchyFor(entryFileName, destDir);
+                if (!dir.exists()) {
+                    dir.mkdirs();
                 }
-                bis.close();
+
+                if (!entry.isDirectory()) {
+                    try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(new File(destDir, entryFileName)));
+                         BufferedInputStream bis = new BufferedInputStream(zipFile.getInputStream(entry))) {
+                        while ((len = bis.read(buffer)) > 0) {
+                            bos.write(buffer, 0, len);
+                        }
+                        bos.flush();
+                    }
+                }
             }
         }
-        zipFile.close();
+
         return true;
     }
 
