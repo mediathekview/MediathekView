@@ -19,6 +19,15 @@
  */
 package mediathek.daten;
 
+import mSearch.tool.*;
+import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import mediathek.config.MVConfig;
+import mediathek.tool.Filter;
+import mediathek.tool.MVMessageDialog;
+import mediathek.tool.TModelMediaDB;
+
+import javax.swing.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,15 +36,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import mSearch.tool.*;
-import mediathek.config.Daten;
-import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
-import mediathek.tool.Filter;
-import mediathek.tool.MVMessageDialog;
-import mediathek.tool.TModelMediaDB;
 
 public class ListeMediaDB extends LinkedList<DatenMediaDB> {
 
@@ -49,9 +49,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
 
     public synchronized void getModelMediaDB(TModelMediaDB modelMediaDB) {
         modelMediaDB.setRowCount(0);
-        this.stream().forEach((mdb) -> {
-            modelMediaDB.addRow(mdb.getRow());
-        });
+        this.forEach((mdb) -> modelMediaDB.addRow(mdb.getRow()));
     }
 
     public synchronized void searchFilmInDB(TModelMediaDB foundModel, String title) {
@@ -98,9 +96,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         });
 
         this.clear();
-        tmp.stream().forEach((m) -> {
-            this.add(m);
-        });
+        tmp.forEach(this::add);
         tmp.clear();
         hash.clear();
 
@@ -207,10 +203,8 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
             //
             bw.flush();
         } catch (Exception ex) {
-            SwingUtilities.invokeLater(() -> {
-                MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
-                        "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
-            });
+            SwingUtilities.invokeLater(() -> MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
+                    "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE));
         }
         SysMsg.sysMsg("   --> geschrieben!");
     }
@@ -274,9 +268,9 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                         // Verzeichnisse können nicht durchsucht werden
                         errorMsg();
                     }
-                    Daten.listeMediaPath.stream().filter((mp) -> (!mp.savePath())).forEach((mp) -> {
-                        searchFile(new File(mp.arr[DatenMediaPath.MEDIA_PATH_PATH]), false);
-                    });
+                    Daten.listeMediaPath.stream()
+                            .filter((mp) -> (!mp.savePath()))
+                            .forEach((mp) -> searchFile(new File(mp.arr[DatenMediaPath.MEDIA_PATH_PATH]), false));
                 }
             } catch (Exception ex) {
                 Log.errorLog(120321254, ex);
