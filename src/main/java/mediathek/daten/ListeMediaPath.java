@@ -19,47 +19,33 @@
  */
 package mediathek.daten;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import javax.swing.DefaultComboBoxModel;
 import mediathek.tool.TModel;
 
+import javax.swing.*;
+import java.util.LinkedList;
+
+@SuppressWarnings("serial")
 public class ListeMediaPath extends LinkedList<DatenMediaPath> {
-
-    private static final long serialVersionUID = 1L;
-
     public boolean addSave(DatenMediaPath dmp) {
         while (countSave() > 10) {
             removeFirstSave();
         }
         if (!containSave(dmp)) {
             return add(dmp);
-        }
-        return false;
+        } else
+            return false;
     }
 
     public void addObjectData(TModel model) {
-        DatenMediaPath dmp;
         model.setRowCount(0);
-        Iterator<DatenMediaPath> iterator = this.iterator();
-        while (iterator.hasNext()) {
-            dmp = iterator.next();
-            if (!dmp.savePath()) {
-                model.addRow(dmp.arr);
-            }
-        }
+        this.stream().filter(datenMediaPath -> !datenMediaPath.savePath())
+                .forEach(datenMediaPath -> model.addRow(datenMediaPath.arr));
     }
 
     public DefaultComboBoxModel<String> getComboModel() {
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-        DatenMediaPath dmp;
-        Iterator<DatenMediaPath> iterator = this.iterator();
-        while (iterator.hasNext()) {
-            dmp = iterator.next();
-            if (dmp.savePath()) {
-                model.addElement(dmp.arr[DatenMediaPath.MEDIA_PATH_PATH]);
-            }
-        }
+        this.stream().filter(DatenMediaPath::savePath)
+                .forEach(datenMediaPath -> model.addElement(datenMediaPath.arr[DatenMediaPath.MEDIA_PATH_PATH]));
         return model;
     }
 
