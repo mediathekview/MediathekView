@@ -20,17 +20,6 @@
 package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Cursor;
-import java.awt.FileDialog;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.Iterator;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
@@ -42,6 +31,15 @@ import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.*;
+
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.Iterator;
 
 public class PanelMediaDB extends PanelVorlage {
     
@@ -112,17 +110,11 @@ public class PanelMediaDB extends PanelVorlage {
         
         jRadioButtonOhneSuffix.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX_OHNE)));
         jRadioButtonMitSuffix.setSelected(!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX_OHNE)));
-        jRadioButtonOhneSuffix.addActionListener((ActionEvent e) -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX_OHNE, Boolean.toString(jRadioButtonOhneSuffix.isSelected()));
-        });
-        jRadioButtonMitSuffix.addActionListener((ActionEvent e) -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX_OHNE, Boolean.toString(jRadioButtonOhneSuffix.isSelected()));
-        });
+        jRadioButtonOhneSuffix.addActionListener((ActionEvent e) -> MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX_OHNE, Boolean.toString(jRadioButtonOhneSuffix.isSelected())));
+        jRadioButtonMitSuffix.addActionListener((ActionEvent e) -> MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX_OHNE, Boolean.toString(jRadioButtonOhneSuffix.isSelected())));
         
         jCheckBoxMediaDB.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_ECHTZEITSUCHE)));
-        jCheckBoxMediaDB.addActionListener((ActionEvent ae) -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_ECHTZEITSUCHE, Boolean.toString(jCheckBoxMediaDB.isSelected()));
-        });
+        jCheckBoxMediaDB.addActionListener((ActionEvent ae) -> MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_ECHTZEITSUCHE, Boolean.toString(jCheckBoxMediaDB.isSelected())));
         
         jButtonMakeIndex.addActionListener((ActionEvent e) -> {
             jLabelSizeIndex.setText("0");
@@ -142,16 +134,10 @@ public class PanelMediaDB extends PanelVorlage {
         jButtonAdd.setIcon(Icons.ICON_BUTTON_ADD);
         jButtonRemove.setIcon(Icons.ICON_BUTTON_REMOVE);
         jButtonPath.addActionListener(new BeobPath(false/*ext*/));
-        jButtonAdd.addActionListener((ActionEvent e) -> {
-            addPath();
-        });
-        jButtonRemove.addActionListener((ActionEvent e) -> {
-            removePath();
-        });
+        jButtonAdd.addActionListener((ActionEvent e) -> addPath());
+        jButtonRemove.addActionListener((ActionEvent e) -> removePath());
         jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHelp.addActionListener((ActionEvent e) -> {
-            new DialogHilfe(Daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PANEL_MEDIA_DB)).setVisible(true);
-        });
+        jButtonHelp.addActionListener((ActionEvent e) -> new DialogHilfe(Daten.mediathekGui, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PANEL_MEDIA_DB)).setVisible(true));
         jButtonExportPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonExport.addActionListener(new BeobExport());
         jButtonExportPath.addActionListener(new BeobPfad());
