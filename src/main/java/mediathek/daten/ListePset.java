@@ -19,12 +19,6 @@
  */
 package mediathek.daten;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
-import javax.swing.JFrame;
 import mSearch.tool.Listener;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogOk;
@@ -32,6 +26,13 @@ import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.TModel;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 public class ListePset extends LinkedList<DatenPset> {
     // Liste aller Programmsets
@@ -64,13 +65,10 @@ public class ListePset extends LinkedList<DatenPset> {
         } else if (this.size() == 1) {
             ret = this.getFirst();
         } else {
-            Iterator<DatenPset> it = this.iterator();
-            while (it.hasNext()) {
-                DatenPset gruppe;
-                gruppe = it.next();
-                if (gruppe.istAbo()) {
-                    if (gruppe.arr[DatenPset.PROGRAMMSET_NAME].equals(name)) {
-                        ret = gruppe;
+            for (DatenPset pset : this) {
+                if (pset.istAbo()) {
+                    if (pset.arr[DatenPset.PROGRAMMSET_NAME].equals(name)) {
+                        ret = pset;
                     }
                 }
             }
@@ -112,9 +110,8 @@ public class ListePset extends LinkedList<DatenPset> {
         String[] object;
         int i = 0;
         object = new String[this.size()];
-        Iterator<DatenPset> it = this.iterator();
-        while (it.hasNext()) {
-            object[i] = it.next().arr[DatenPset.PROGRAMMSET_NAME];
+        for (DatenPset datenPset : this) {
+            object[i] = datenPset.arr[DatenPset.PROGRAMMSET_NAME];
             ++i;
         }
         return object;
@@ -272,10 +269,6 @@ public class ListePset extends LinkedList<DatenPset> {
     }
 
     public ArrayList<String> getListProg() {
-        ArrayList<String> prog = new ArrayList<>();
-        for (int i = 0; i < size(); ++i) {
-            prog.add(get(i).toString());
-        }
-        return prog;
+        return this.stream().map(DatenPset::toString).collect(Collectors.toCollection(ArrayList::new));
     }
 }
