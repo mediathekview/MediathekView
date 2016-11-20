@@ -39,7 +39,7 @@ import java.util.LinkedList;
 
 @SuppressWarnings("serial")
 public class ListeAbo extends LinkedList<DatenAbo> {
-    private Daten daten;
+    private final Daten daten;
     private static final String[] LEER = {""};
     //private String[] titel, thema, irgendwo;
 
@@ -47,7 +47,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         daten = ddaten;
     }
 
-    private int nr = 0;
+    private int nr;
 
     public boolean addAbo(String aboName) {
         return addAbo(aboName, "", "", "");

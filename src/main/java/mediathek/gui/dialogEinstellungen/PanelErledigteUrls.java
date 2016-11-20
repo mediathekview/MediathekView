@@ -19,19 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.LinkedList;
-import javax.swing.*;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Listener;
 import mediathek.config.Daten;
@@ -45,6 +32,20 @@ import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVRun;
 import mediathek.tool.TModel;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.LinkedList;
+
 public class PanelErledigteUrls extends PanelVorlage {
 
     private static final long serialVersionUID = 1L;
@@ -56,9 +57,7 @@ public class PanelErledigteUrls extends PanelVorlage {
         initComponents();
         jTable1.addMouseListener(new BeobMausTabelle());
         jButtonLoeschen.setEnabled(false);
-        jButtonExport.addActionListener((ActionEvent e) -> {
-            export();
-        });
+        jButtonExport.addActionListener((ActionEvent e) -> export());
     }
 
     public void initAbo() {
@@ -180,13 +179,8 @@ public class PanelErledigteUrls extends PanelVorlage {
                 //
                 bw.flush();
             } catch (Exception ex) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
-                                "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
-                    }
-                });
+                SwingUtilities.invokeLater(() -> MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
+                        "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE));
             } finally {
                 mVRun.dispose();
             }
@@ -261,7 +255,7 @@ public class PanelErledigteUrls extends PanelVorlage {
         BeobLoeschen beobLoeschen = new BeobLoeschen();
         BeobUrl beobUrl = new BeobUrl();
         private Point p;
-        DatenFilm film = null;
+        DatenFilm film;
 
         @Override
         public void mousePressed(MouseEvent arg0) {
