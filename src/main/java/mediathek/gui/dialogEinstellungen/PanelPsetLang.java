@@ -217,7 +217,7 @@ public class PanelPsetLang extends PanelVorlage {
                 nurtabellePset();
             }
         });
-        jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX() || Daten.debug);
+        jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX() || Daten.getInstance().isDebug());
         jCheckBoxSpotlight.addActionListener(e -> {
             DatenPset pset = getPset();
             if (pset != null) {
@@ -373,7 +373,7 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxThema.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN]));
             jCheckBoxInfodatei.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_INFODATEI]));
             jCheckBoxSubtitle.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE]));
-            jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX() || Daten.debug);
+            jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX() || Daten.getInstance().isDebug());
             jCheckBoxSpotlight.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT]));
             jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Set Name: " + pSet.arr[DatenPset.PROGRAMMSET_NAME], javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
             jTextFieldSetName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME]);
@@ -1619,7 +1619,7 @@ public class PanelPsetLang extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Programm auswählen");
+                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Programm auswählen");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
@@ -1657,7 +1657,7 @@ public class PanelPsetLang extends PanelVorlage {
             if (SystemInfo.isMacOSX()) {
                 //we want to select a directory only, so temporarily change properties
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
-                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Film speichern");
+                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Film speichern");
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     //A directory was selected, that means Cancel was not pressed

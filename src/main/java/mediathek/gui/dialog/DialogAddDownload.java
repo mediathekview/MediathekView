@@ -451,7 +451,7 @@ public class DialogAddDownload extends JDialog {
             datenDownload.setGroesse(getFilmSize());
             datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI] = Boolean.toString(jCheckBoxInfodatei.isSelected());
             datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE] = Boolean.toString(jCheckBoxSubtitle.isSelected());
-            Daten.listeDownloads.addMitNummer(datenDownload);
+            daten.getListeDownloads().addMitNummer(datenDownload);
             Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
             if (jCheckBoxStarten.isSelected()) {
                 // und evtl. auch gleich starten
@@ -699,7 +699,7 @@ public class DialogAddDownload extends JDialog {
             if (SystemInfo.isMacOSX()) {
                 //we want to select a directory only, so temporarily change properties
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
-                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Film speichern");
+                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Film speichern");
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     //A directory was selected, that means Cancel was not pressed

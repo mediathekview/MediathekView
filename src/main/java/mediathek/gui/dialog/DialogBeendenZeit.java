@@ -43,7 +43,7 @@ public class DialogBeendenZeit extends JDialog {
     private static final String WAIT_FOR_DOWNLOADS_AND_TERMINATE = "Auf Abschluß aller Downloads warten und danach Programm beenden";
     private static final String WAIT_FOR_DOWNLOADS_AND_DONT_TERMINATE_PROGRAM = "Auf Abschluß aller Downloads warten, Programm danach NICHT beenden";
     private static final String DONT_START = "Downloads nicht starten";
-    private final JFrame parent;
+    private final JFrame frameParent;
     private final Daten daten;
     private final ArrayList<DatenDownload> listeDownloadsStarten;
     /**
@@ -85,12 +85,12 @@ public class DialogBeendenZeit extends JDialog {
     public DialogBeendenZeit(JFrame pparent, final Daten daten_, final ArrayList<DatenDownload> listeDownloadsStarten_) {
         super(pparent, true);
         initComponents();
-        this.parent = pparent;
+        this.frameParent = pparent;
         daten = daten_;
         listeDownloadsStarten = listeDownloadsStarten_;
         this.setTitle("Zeitverzögerter Download-Start");
-        if (parent != null) {
-            setLocationRelativeTo(parent);
+        if (frameParent != null) {
+            setLocationRelativeTo(frameParent);
         }
         new EscBeenden(this) {
             @Override
@@ -142,7 +142,7 @@ public class DialogBeendenZeit extends JDialog {
         comboActions.addActionListener(e -> setCbShutdownCoputer());
         
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfe.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BEENDEN)).setVisible(true));
+        jButtonHilfe.addActionListener(e -> new DialogHilfe(frameParent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_BEENDEN)).setVisible(true));
         setCbShutdownCoputer();
         
         cbShutdownComputer.addActionListener(e -> shutdown = cbShutdownComputer.isSelected());
@@ -300,7 +300,7 @@ public class DialogBeendenZeit extends JDialog {
                 setTextDownload();
                 DatenDownload.startenDownloads(daten, listeDownloadsStarten);
                 
-                while ((Daten.listeDownloads.nochNichtFertigeDownloads() > 0) && !isCancelled()) {
+                while ((Daten.getInstance().getListeDownloads().nochNichtFertigeDownloads() > 0) && !isCancelled()) {
                     Thread.sleep(1000);
                 }
                 

@@ -275,14 +275,14 @@ public final class DatenDownload extends MVData<DatenDownload> {
         start = null;
     }
 
-    public void startDownload(Daten ddaten) {
+    public void startDownload(Daten aDaten) {
         // Start erstellen und zur Liste hinzufügen
         this.start = new Start();
         // gestartete Filme (originalURL des Films) auch in die History eintragen
         if (film != null) {
-            Daten.listeFilmeHistory.add(film);
+            aDaten.getListeFilmeHistory().add(film);
         }
-        ddaten.history.zeileSchreiben(arr[DatenDownload.DOWNLOAD_THEMA], arr[DatenDownload.DOWNLOAD_TITEL], arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+        aDaten.history.zeileSchreiben(arr[DatenDownload.DOWNLOAD_THEMA], arr[DatenDownload.DOWNLOAD_TITEL], arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
         Listener.notify(Listener.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
     }
 

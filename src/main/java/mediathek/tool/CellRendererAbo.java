@@ -65,7 +65,7 @@ public class CellRendererAbo extends DefaultTableCellRenderer {
         try {
             int r = table.convertRowIndexToModel(row);
             int c = table.convertColumnIndexToModel(column);
-            DatenAbo abo = Daten.listeAbo.getAboNr(r);
+            DatenAbo abo = Daten.getInstance().getListeAbo().getAboNr(r);
             boolean eingeschaltet = abo.aboIstEingeschaltet();
 
             if (((MVTable) table).lineBreak) {

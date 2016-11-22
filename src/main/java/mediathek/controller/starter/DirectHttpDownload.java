@@ -254,8 +254,8 @@ public class DirectHttpDownload extends Thread {
                             responseCode = "Responsecode: " + conn.getResponseCode() + "\n" + conn.getResponseMessage();
                             Log.errorLog(915236798, "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
                             SwingUtilities.invokeLater(() -> {
-                                if (!Daten.auto) {
-                                    new MeldungDownloadfehler(Daten.mediathekGui, "URL des Films:\n"
+                                if (!Daten.isAuto()) {
+                                    new MeldungDownloadfehler(Daten.getInstance().getMediathekGui(), "URL des Films:\n"
                                             + datenDownload.arr[DatenDownload.DOWNLOAD_URL] + "\n\n"
                                             + responseCode + "\n", datenDownload).setVisible(true);
                                 }
@@ -296,8 +296,8 @@ public class DirectHttpDownload extends Thread {
                     Log.errorLog(316598941, ex, "Fehler");
                     start.status = Start.STATUS_ERR;
                     SwingUtilities.invokeLater(() -> {
-                        if (!Daten.auto) {
-                            new MeldungDownloadfehler(Daten.mediathekGui, exMessage, datenDownload).setVisible(true);
+                        if (!Daten.isAuto()) {
+                            new MeldungDownloadfehler(Daten.getInstance().getMediathekGui(), exMessage, datenDownload).setVisible(true);
                         }
                     });
                 }
@@ -325,7 +325,7 @@ public class DirectHttpDownload extends Thread {
             // dann ist alles OK
             return false;
         }
-        if (Daten.auto) {
+        if (Daten.isAuto()) {
             return false; // immer überschreiben, keine GUI!!!
         }
 
@@ -352,7 +352,7 @@ public class DirectHttpDownload extends Thread {
     private boolean abbrechen_() {
         boolean result = false;
         if (file.exists()) {
-            DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(Daten.mediathekGui, datenDownload, true /*weiterführen*/);
+            DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(Daten.getInstance().getMediathekGui(), datenDownload, true /*weiterführen*/);
             dialogContinueDownload.setVisible(true);
 
             switch (dialogContinueDownload.getResult()) {

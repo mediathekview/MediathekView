@@ -138,7 +138,7 @@ public class PanelErledigteUrls extends PanelVorlage {
         if (!dialog.ok) {
             return;
         }
-        mVRun = new MVRun(Daten.mediathekGui, "Datei: \"" + dialog.ziel + "\" erstellen");
+        mVRun = new MVRun(daten.getMediathekGui(), "Datei: \"" + dialog.ziel + "\" erstellen");
         mVRun.setVisible(true);
         new Thread(new Export_(dialog.ziel, mVRun)).start();
     }
@@ -277,7 +277,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             if (nr >= 0) {
                 jTable1.setRowSelectionInterval(nr, nr);
                 String url = jTable1.getValueAt(jTable1.convertRowIndexToModel(nr), MVUsedUrl.USED_URL_URL).toString();
-                film = Daten.listeFilme.getFilmByUrl(url);
+                film = daten.getListeFilme().getFilmByUrl(url);
             }
             JPopupMenu jPopupMenu = new JPopupMenu();
             //löschen
@@ -309,7 +309,7 @@ public class PanelErledigteUrls extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                DatenDownload datenDownload = Daten.listeDownloads.getDownloadUrlFilm(film.arr[DatenFilm.FILM_URL]);
+                DatenDownload datenDownload = daten.getListeDownloads().getDownloadUrlFilm(film.arr[DatenFilm.FILM_URL]);
                 if (datenDownload != null) {
                     int ret = JOptionPane.showConfirmDialog(parentComponent, "Download für den Film existiert bereits.\n"
                             + "Noch einmal anlegen?", "Anlegen?", JOptionPane.YES_NO_OPTION);
@@ -318,7 +318,7 @@ public class PanelErledigteUrls extends PanelVorlage {
                     }
                 }
                 // weiter
-                DialogAddDownload dialog = new DialogAddDownload(Daten.mediathekGui, daten, film, null, "");
+                DialogAddDownload dialog = new DialogAddDownload(daten.getMediathekGui(), daten, film, null, "");
                 dialog.setVisible(true);
             }
 

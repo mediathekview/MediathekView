@@ -40,7 +40,9 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Iterator;
 
-public class GuiDebug extends JPanel {
+
+public class GuiDebug extends JPanel
+{
 
     private static final long serialVersionUID = 1L;
 
@@ -48,202 +50,232 @@ public class GuiDebug extends JPanel {
     private final String[] sender;
     private Daten daten;
 
-    public GuiDebug(Daten d) {
+    public GuiDebug(Daten d)
+    {
         super();
         initComponents();
         daten = d;
-        sender = Daten.filmeLaden.getSenderNamen();
+        sender = daten.getFilmeLaden().getSenderNamen();
         buttonSender = new JButton[sender.length];
 
         jPanelFilmlisteLaden.setLayout(new GridLayout(1, 1));
-        jPanelFilmlisteLaden.add(new PanelFilmlisten(d, Daten.mediathekGui));
+        jPanelFilmlisteLaden.add(new PanelFilmlisten(d, daten.getMediathekGui()));
 
         jPanelStarts.setLayout(new GridLayout(1, 1));
         jPanelStarts.add(new PanelInfoStarts());
 
         //Tab1 Sender löschen Panel füllen
-        for (int i = 0; i < Daten.filmeLaden.getSenderNamen().length; ++i) {
+        for (int i = 0; i < daten.getFilmeLaden().getSenderNamen().length; ++i)
+        {
             buttonSender[i] = new JButton(sender[i]);
             buttonSender[i].addActionListener(new BeobSenderLoeschen(sender[i]));
         }
         addSender();
-        jButtonNeuLaden.addActionListener(ae -> {
-            Daten.listeFilme.clear();
+        jButtonNeuLaden.addActionListener(ae ->
+        {
+            daten.getListeFilme().clear();
             Duration.staticPing("Start");
-            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
             Duration.staticPing("Fertig");
-            Daten.listeFilme.themenLaden();
-            Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
-            Daten.listeBlacklist.filterListe();
+            daten.getListeFilme().themenLaden();
+            daten.getListeAbo().setAboFuerFilm(daten.getListeFilme(), false /*aboLoeschen*/);
+            daten.getListeBlacklist().filterListe();
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
         });
-        jButtonAllesSpeichern.addActionListener(e -> {
+        jButtonAllesSpeichern.addActionListener(e ->
+        {
             daten.allesSpeichern();
-            Daten.filmlisteSpeichern();
+            daten.filmlisteSpeichern();
         });
-        jButtonFilmlisteLoeschen.addActionListener(e -> {
-            Daten.listeFilme.clear();
-            Daten.listeBlacklist.filterListe();
+        jButtonFilmlisteLoeschen.addActionListener(e ->
+        {
+            daten.getListeFilme().clear();
+            daten.getListeBlacklist().filterListe();
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
         });
         jButtonFehler.addActionListener(e -> Log.endMsg());
-        jButtonCheck.addActionListener(e -> Daten.listeFilme.check());
+        jButtonCheck.addActionListener(e -> daten.getListeFilme().check());
 
-        jButtonClean.addActionListener(ae -> Daten.listeFilme.cleanList());
-        jToggleButtonFastAuto.addActionListener(ae -> {
-            if (jToggleButtonFastAuto.isSelected()) {
+        jButtonClean.addActionListener(ae -> daten.getListeFilme().cleanList());
+        jToggleButtonFastAuto.addActionListener(ae ->
+        {
+            if (jToggleButtonFastAuto.isSelected())
+            {
                 FilmlisteLesen.setWorkMode(FilmlisteLesen.WorkMode.FASTAUTO);
-            } else {
+            } else
+            {
                 FilmlisteLesen.setWorkMode(FilmlisteLesen.WorkMode.NORMAL);
             }
         });
         btnPathDiff.addActionListener(new BeobPfad());
-        btnDiff.addActionListener((ActionEvent e) -> {
+        btnDiff.addActionListener((ActionEvent e) ->
+        {
             ListeFilme listeFilme = new ListeFilme();
             final HashSet<String> hash = new HashSet<>(listeFilme.size() + 1, 1);
             new FilmlisteLesen().readFilmListe(txtDiff.getText(), listeFilme, 0);
 
             // ==========================================
-            for (DatenFilm f : listeFilme) {
-                if (f.arr[DatenFilm.FILM_SENDER].equals(MediathekKika.SENDERNAME)) {
+            for (DatenFilm f : listeFilme)
+            {
+                if (f.arr[DatenFilm.FILM_SENDER].equals(MediathekKika.SENDERNAME))
+                {
                     // beim KIKA ändern sich die URLs laufend
                     hash.add(f.arr[DatenFilm.FILM_THEMA] + f.arr[DatenFilm.FILM_TITEL]);
-                } else if (!cbkUrl.isSelected()) {
+                } else if (!cbkUrl.isSelected())
+                {
                     hash.add(f.getIndex());
-                } else {
+                } else
+                {
                     hash.add(DatenFilm.getUrl(f));
                 }
             }
 
             System.out.println("---------------------");
-            System.out.println("vorher: " + Daten.listeFilme.size());
+            System.out.println("vorher: " + daten.getListeFilme().size());
 
-            Iterator<DatenFilm> it = Daten.listeFilme.iterator();
-            while (it.hasNext()) {
+            Iterator<DatenFilm> it = daten.getListeFilme().iterator();
+            while (it.hasNext())
+            {
                 DatenFilm f = it.next();
-                if (f.arr[DatenFilm.FILM_SENDER].equals(MediathekKika.SENDERNAME)) {
+                if (f.arr[DatenFilm.FILM_SENDER].equals(MediathekKika.SENDERNAME))
+                {
                     // beim KIKA ändern sich die URLs laufend
-                    if (hash.contains(f.arr[DatenFilm.FILM_THEMA] + f.arr[DatenFilm.FILM_TITEL])) {
+                    if (hash.contains(f.arr[DatenFilm.FILM_THEMA] + f.arr[DatenFilm.FILM_TITEL]))
+                    {
                         it.remove();
                     }
-                } else if (!cbkUrl.isSelected()) {
-                    if (hash.contains(f.getIndex())) {
+                } else if (!cbkUrl.isSelected())
+                {
+                    if (hash.contains(f.getIndex()))
+                    {
                         it.remove();
                     }
-                } else if (hash.contains(DatenFilm.getUrl(f))) {
+                } else if (hash.contains(DatenFilm.getUrl(f)))
+                {
                     it.remove();
                 }
             }
 
-            System.out.println("danach: " + Daten.listeFilme.size());
-            Daten.filmlisteSpeichern();
+            System.out.println("danach: " + daten.getListeFilme().size());
+            daten.filmlisteSpeichern();
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
             hash.clear();
         });
 
-        addComponentListener(new java.awt.event.ComponentAdapter() {
+        addComponentListener(new java.awt.event.ComponentAdapter()
+        {
             @Override
-            public void componentShown(java.awt.event.ComponentEvent evt) {
-//                Daten.mediathekGui.setTabShown(MediathekGui.TABS.TAB_NIX);
-                Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.NONE);
+            public void componentShown(java.awt.event.ComponentEvent evt)
+            {
+                //                daten.getMediathekGui().setTabShown(MediathekGui.TABS.TAB_NIX);
+                daten.getMediathekGui().getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.NONE);
             }
         });
 
-        btnDelDoppelteUrls.addActionListener(e -> {
+        btnDelDoppelteUrls.addActionListener(e ->
+        {
             System.out.println("---------------------");
-            System.out.println("vorher: " + Daten.listeFilme.size());
+            System.out.println("vorher: " + daten.getListeFilme().size());
 
             ListeFilme listeFilme = new ListeFilme();
             HashSet<String> hash = new HashSet<>();
-            Daten.listeFilme.stream().filter(film -> !hash.contains(film.arr[DatenFilm.FILM_URL]))
-                    .forEach(film -> {
+            daten.getListeFilme().stream().filter(film -> !hash.contains(film.arr[DatenFilm.FILM_URL]))
+                    .forEach(film ->
+                    {
                         hash.add(film.arr[DatenFilm.FILM_URL]);
                         listeFilme.add(film);
                     });
             hash.clear();
             // ==========================================
-            Daten.listeFilme = listeFilme;
-            System.out.println("danach: " + Daten.listeFilme.size());
-            Daten.filmlisteSpeichern();
+            daten.setListeFilme(listeFilme);
+            System.out.println("danach: " + daten.getListeFilme().size());
+            daten.filmlisteSpeichern();
         });
-        btnNurDoppelte.addActionListener(e -> {
+        btnNurDoppelte.addActionListener(e ->
+        {
             ListeFilme listeFilme = new ListeFilme();
             HashSet<String> hash = new HashSet<>();
             HashSet<String> hashDoppelt = new HashSet<>();
-            for (DatenFilm film : Daten.listeFilme) {
-                if (hash.contains(film.arr[DatenFilm.FILM_URL])) {
+            for (DatenFilm film : daten.getListeFilme())
+            {
+                if (hash.contains(film.arr[DatenFilm.FILM_URL]))
+                {
                     hashDoppelt.add(film.arr[DatenFilm.FILM_URL]);
-                } else {
+                } else
+                {
                     hash.add(film.arr[DatenFilm.FILM_URL]);
                 }
             }
             hash.clear();
-            for (DatenFilm film : Daten.listeFilme) {
-                if (hashDoppelt.contains(film.arr[DatenFilm.FILM_URL])) {
+            for (DatenFilm film : daten.getListeFilme())
+            {
+                if (hashDoppelt.contains(film.arr[DatenFilm.FILM_URL]))
+                {
                     listeFilme.add(film);
                 }
             }
             hashDoppelt.clear();
-            System.out.println("---------------------");
-            System.out.println("vorher: " + Daten.listeFilme.size());
-            Daten.listeFilme = listeFilme;
-            System.out.println("danach: " + Daten.listeFilme.size());
-            Daten.filmlisteSpeichern();
+            saveNewListeFilme(listeFilme);
         });
-        jButtonHashOlddoppelt.addActionListener(e -> {
+        jButtonHashOlddoppelt.addActionListener(e ->
+        {
             ListeFilme listeFilme = new ListeFilme();
             HashSet<String> hash = new HashSet<>();
             HashSet<String> hashDoppelt = new HashSet<>();
-            for (DatenFilm film : Daten.listeFilme) {
+            for (DatenFilm film : daten.getListeFilme())
+            {
                 String tt = film.getIndexAddOld();
-                if (hash.contains(tt)) {
+                if (hash.contains(tt))
+                {
                     hashDoppelt.add(tt);
-                } else {
+                } else
+                {
                     hash.add(tt);
                 }
             }
             hash.clear();
-            for (DatenFilm film : Daten.listeFilme) {
+            for (DatenFilm film : daten.getListeFilme())
+            {
                 String tt = film.getIndexAddOld();
-                if (hashDoppelt.contains(tt)) {
+                if (hashDoppelt.contains(tt))
+                {
                     listeFilme.add(film);
                 }
             }
             hashDoppelt.clear();
-            System.out.println("---------------------");
-            System.out.println("vorher: " + Daten.listeFilme.size());
-            Daten.listeFilme = listeFilme;
-            System.out.println("danach: " + Daten.listeFilme.size());
-            Daten.filmlisteSpeichern();
+            saveNewListeFilme(listeFilme);
         });
-        jButtonTTUrl.addActionListener(e -> {
+        jButtonTTUrl.addActionListener(e ->
+        {
             ListeFilme listeFilme = new ListeFilme();
             HashSet<String> hash = new HashSet<>();
             HashSet<String> hashDoppelt = new HashSet<>();
-            for (DatenFilm film : Daten.listeFilme) {
+            for (DatenFilm film : daten.getListeFilme())
+            {
                 String tt = film.arr[DatenFilm.FILM_THEMA].toLowerCase() + film.arr[DatenFilm.FILM_TITEL].toLowerCase() + film.arr[DatenFilm.FILM_URL];
-                if (hash.contains(tt)) {
+                if (hash.contains(tt))
+                {
                     hashDoppelt.add(tt);
-                } else {
+                } else
+                {
                     hash.add(tt);
                 }
             }
             hash.clear();
-            for (DatenFilm film : Daten.listeFilme) {
+            for (DatenFilm film : daten.getListeFilme())
+            {
                 String tt = film.arr[DatenFilm.FILM_THEMA].toLowerCase() + film.arr[DatenFilm.FILM_TITEL].toLowerCase() + film.arr[DatenFilm.FILM_URL];
-                if (hashDoppelt.contains(tt)) {
+                if (hashDoppelt.contains(tt))
+                {
                     listeFilme.add(film);
                 }
             }
             hashDoppelt.clear();
-            System.out.println("---------------------");
-            System.out.println("vorher: " + Daten.listeFilme.size());
-            Daten.listeFilme = listeFilme;
-            System.out.println("danach: " + Daten.listeFilme.size());
-            Daten.filmlisteSpeichern();
+            saveNewListeFilme(listeFilme);
         });
         jButtonOldList.addActionListener(new BeobPfadOldUrl());
-        jButtonAddOld.addActionListener((ActionEvent e) -> {
+        jButtonAddOld.addActionListener((ActionEvent e) ->
+        {
             String url = jTextFieldOld.getText();
             ListeFilme listeEinsortieren = new ListeFilme();
             new FilmlisteLesen().readFilmListe(url, listeEinsortieren, 0 /*all days*/);
@@ -253,57 +285,75 @@ public class GuiDebug extends JPanel {
 
             // ==============================================
             // nach "Thema-Titel" suchen
-            Daten.listeFilme.forEach((f) -> hash.add(f.getIndexAddOld_()));
+            daten.getListeFilme().forEach((f) -> hash.add(f.getIndexAddOld_()));
             listeEinsortieren.removeIf((f) -> hash.contains(f.getIndexAddOld_()));
-            DbgMsg.print("Anzahl Filme: " + Daten.listeFilme.size());
+            DbgMsg.print("Anzahl Filme: " + daten.getListeFilme().size());
 
             hash.clear();
             ListeFilme lf = new ListeFilme();
-            listeEinsortieren.forEach((f) -> {
-                if (hash2.contains(f.getIndexAddOld())) {
+            listeEinsortieren.forEach((f) ->
+            {
+                if (hash2.contains(f.getIndexAddOld()))
+                {
                     lf.add(f);
-                } else {
+                } else
+                {
                     hash2.add(f.getIndexAddOld());
                 }
             });
-            Daten.listeFilme = lf;
+            daten.setListeFilme(lf);
             hash.clear();
-            DbgMsg.print("Anzahl Filme: " + Daten.listeFilme.size());
+            DbgMsg.print("Anzahl Filme: " + daten.getListeFilme().size());
 
-            Daten.listeFilme.sort();
-            Daten.listeBlacklist.filterListe();
+            daten.getListeFilme().sort();
+            daten.getListeBlacklist().filterListe();
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
         });
-        jButtonLiveStreams.addActionListener(e -> {
+        jButtonLiveStreams.addActionListener(e ->
+        {
             String url = jTextFieldLiveStreams.getText();
             ListeFilme tmpListe = new ListeFilme();
             new FilmlisteLesen().readFilmListe(url, tmpListe, 0 /*all days*/);
-            Daten.listeFilme.addLive(tmpListe);
+            daten.getListeFilme().addLive(tmpListe);
             tmpListe.clear();
             System.gc();
-            Daten.listeFilme.sort();
-            Daten.listeBlacklist.filterListe();
+            daten.getListeFilme().sort();
+            daten.getListeBlacklist().filterListe();
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
         });
-        jButtonDelLive.addActionListener(e -> {
+        jButtonDelLive.addActionListener(e ->
+        {
 
-            Iterator<DatenFilm> it = Daten.listeFilme.iterator();
-            while (it.hasNext()) {
+            Iterator<DatenFilm> it = daten.getListeFilme().iterator();
+            while (it.hasNext())
+            {
                 DatenFilm f = it.next();
-                if (f.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE)) {
+                if (f.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE))
+                {
                     it.remove();
                 }
             }
-            Daten.listeBlacklist.filterListe();
+            daten.getListeBlacklist().filterListe();
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
         });
     }
 
-    private void addSender() {
+    private void saveNewListeFilme(final ListeFilme listeFilme)
+    {
+        System.out.println("---------------------");
+        System.out.println("vorher: " + daten.getListeFilme().size());
+        daten.setListeFilme(listeFilme);
+        System.out.println("danach: " + daten.getListeFilme().size());
+        daten.filmlisteSpeichern();
+    }
+
+    private void addSender()
+    {
         jPanelLoeschen.removeAll();
         jPanelLoeschen.setLayout(new GridLayout(0, 5));
         int nr = 0;
-        for (String aSender : sender) {
+        for (String aSender : sender)
+        {
             JButton btn = buttonSender[nr];
             btn.setText(aSender);
             jPanelLoeschen.add(btn);
@@ -313,7 +363,8 @@ public class GuiDebug extends JPanel {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
         javax.swing.JTabbedPane jTabbedSender = new javax.swing.JTabbedPane();
         jPanelFilmlisteLaden = new javax.swing.JPanel();
@@ -347,12 +398,12 @@ public class GuiDebug extends JPanel {
         javax.swing.GroupLayout jPanelFilmlisteLadenLayout = new javax.swing.GroupLayout(jPanelFilmlisteLaden);
         jPanelFilmlisteLaden.setLayout(jPanelFilmlisteLadenLayout);
         jPanelFilmlisteLadenLayout.setHorizontalGroup(
-            jPanelFilmlisteLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 725, Short.MAX_VALUE)
+                jPanelFilmlisteLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 725, Short.MAX_VALUE)
         );
         jPanelFilmlisteLadenLayout.setVerticalGroup(
-            jPanelFilmlisteLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 419, Short.MAX_VALUE)
+                jPanelFilmlisteLadenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 419, Short.MAX_VALUE)
         );
 
         jTabbedSender.addTab("Filmliste laden", jPanelFilmlisteLaden);
@@ -362,29 +413,29 @@ public class GuiDebug extends JPanel {
         javax.swing.GroupLayout jPanelLoeschenLayout = new javax.swing.GroupLayout(jPanelLoeschen);
         jPanelLoeschen.setLayout(jPanelLoeschenLayout);
         jPanelLoeschenLayout.setHorizontalGroup(
-            jPanelLoeschenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+                jPanelLoeschenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 0, Short.MAX_VALUE)
         );
         jPanelLoeschenLayout.setVerticalGroup(
-            jPanelLoeschenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+                jPanelLoeschenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanelSenderLayout = new javax.swing.GroupLayout(jPanelSender);
         jPanelSender.setLayout(jPanelSenderLayout);
         jPanelSenderLayout.setHorizontalGroup(
-            jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelSenderLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanelLoeschen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanelSenderLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jPanelLoeschen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelSenderLayout.setVerticalGroup(
-            jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelSenderLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanelLoeschen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(285, Short.MAX_VALUE))
+                jPanelSenderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanelSenderLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jPanelLoeschen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(285, Short.MAX_VALUE))
         );
 
         jButtonFilmlisteLoeschen.setText("gesamte Filmliste löschen");
@@ -398,41 +449,41 @@ public class GuiDebug extends JPanel {
         javax.swing.GroupLayout jPanelFilmlisteLayout = new javax.swing.GroupLayout(jPanelFilmliste);
         jPanelFilmliste.setLayout(jPanelFilmlisteLayout);
         jPanelFilmlisteLayout.setHorizontalGroup(
-            jPanelFilmlisteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelFilmlisteLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelFilmlisteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelSender, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanelFilmlisteLayout.createSequentialGroup()
-                        .addGroup(jPanelFilmlisteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanelFilmlisteLayout.createSequentialGroup()
-                                .addComponent(jButtonFilmlisteLoeschen)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButtonNeuLaden))
-                            .addGroup(jPanelFilmlisteLayout.createSequentialGroup()
-                                .addComponent(jButtonCheck)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButtonClean, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                jPanelFilmlisteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanelFilmlisteLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanelFilmlisteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jPanelSender, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(jPanelFilmlisteLayout.createSequentialGroup()
+                                                .addGroup(jPanelFilmlisteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                        .addGroup(jPanelFilmlisteLayout.createSequentialGroup()
+                                                                .addComponent(jButtonFilmlisteLoeschen)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                .addComponent(jButtonNeuLaden))
+                                                        .addGroup(jPanelFilmlisteLayout.createSequentialGroup()
+                                                                .addComponent(jButtonCheck)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                .addComponent(jButtonClean, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                                .addGap(0, 0, Short.MAX_VALUE)))
+                                .addContainerGap())
         );
 
-        jPanelFilmlisteLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonCheck, jButtonFilmlisteLoeschen, jButtonNeuLaden});
+        jPanelFilmlisteLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[]{jButtonCheck, jButtonFilmlisteLoeschen, jButtonNeuLaden});
 
         jPanelFilmlisteLayout.setVerticalGroup(
-            jPanelFilmlisteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFilmlisteLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelFilmlisteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonFilmlisteLoeschen)
-                    .addComponent(jButtonNeuLaden))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanelFilmlisteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonCheck)
-                    .addComponent(jButtonClean))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanelSender, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                jPanelFilmlisteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFilmlisteLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanelFilmlisteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jButtonFilmlisteLoeschen)
+                                        .addComponent(jButtonNeuLaden))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanelFilmlisteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jButtonCheck)
+                                        .addComponent(jButtonClean))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jPanelSender, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addContainerGap())
         );
 
         jTabbedSender.addTab("Filmliste", jPanelFilmliste);
@@ -474,103 +525,103 @@ public class GuiDebug extends JPanel {
         javax.swing.GroupLayout jPanelToolsLayout = new javax.swing.GroupLayout(jPanelTools);
         jPanelTools.setLayout(jPanelToolsLayout);
         jPanelToolsLayout.setHorizontalGroup(
-            jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelToolsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelToolsLayout.createSequentialGroup()
-                        .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jButtonLiveStreams, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButtonAddOld, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jButtonAllesSpeichern, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
-                                .addComponent(btnDiff, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jTextFieldLiveStreams, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE)
-                            .addComponent(jTextFieldOld, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtDiff, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButtonDelLive, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButtonOldList)
-                            .addGroup(jPanelToolsLayout.createSequentialGroup()
-                                .addComponent(btnPathDiff)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(cbkUrl))))
-                    .addGroup(jPanelToolsLayout.createSequentialGroup()
-                        .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanelToolsLayout.createSequentialGroup()
-                                .addComponent(btnNurDoppelte)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonHashOlddoppelt)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonTTUrl))
-                            .addComponent(btnDelDoppelteUrls, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanelToolsLayout.createSequentialGroup()
-                                .addComponent(jButtonFehler)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jToggleButtonFastAuto, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanelToolsLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanelToolsLayout.createSequentialGroup()
+                                                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                        .addComponent(jButtonLiveStreams, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(jButtonAddOld, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                                .addComponent(jButtonAllesSpeichern, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+                                                                .addComponent(btnDiff, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                        .addComponent(jTextFieldLiveStreams, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE)
+                                                        .addComponent(jTextFieldOld, javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(txtDiff, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(jButtonDelLive, javax.swing.GroupLayout.Alignment.TRAILING)
+                                                        .addComponent(jButtonOldList)
+                                                        .addGroup(jPanelToolsLayout.createSequentialGroup()
+                                                                .addComponent(btnPathDiff)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                .addComponent(cbkUrl))))
+                                        .addGroup(jPanelToolsLayout.createSequentialGroup()
+                                                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addGroup(jPanelToolsLayout.createSequentialGroup()
+                                                                .addComponent(btnNurDoppelte)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(jButtonHashOlddoppelt)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(jButtonTTUrl))
+                                                        .addComponent(btnDelDoppelteUrls, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addGroup(jPanelToolsLayout.createSequentialGroup()
+                                                                .addComponent(jButtonFehler)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(jToggleButtonFastAuto, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addGap(0, 0, Short.MAX_VALUE)))
+                                .addContainerGap())
         );
 
-        jPanelToolsLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnDelDoppelteUrls, btnDiff, btnNurDoppelte, jButtonAllesSpeichern, jButtonFehler, jButtonHashOlddoppelt, jButtonTTUrl, jToggleButtonFastAuto});
+        jPanelToolsLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[]{btnDelDoppelteUrls, btnDiff, btnNurDoppelte, jButtonAllesSpeichern, jButtonFehler, jButtonHashOlddoppelt, jButtonTTUrl, jToggleButtonFastAuto});
 
         jPanelToolsLayout.setVerticalGroup(
-            jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelToolsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButtonAllesSpeichern)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonFehler)
-                    .addComponent(jToggleButtonFastAuto))
-                .addGap(18, 18, 18)
-                .addComponent(btnDelDoppelteUrls)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnNurDoppelte)
-                    .addComponent(jButtonHashOlddoppelt)
-                    .addComponent(jButtonTTUrl))
-                .addGap(76, 76, 76)
-                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelToolsLayout.createSequentialGroup()
-                        .addComponent(jButtonLiveStreams)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButtonAddOld)
-                            .addComponent(jTextFieldOld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButtonOldList))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnDiff)
-                            .addComponent(txtDiff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnPathDiff)
-                            .addComponent(cbkUrl)))
-                    .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextFieldLiveStreams, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButtonDelLive)))
-                .addContainerGap(102, Short.MAX_VALUE))
+                jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanelToolsLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jButtonAllesSpeichern)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jButtonFehler)
+                                        .addComponent(jToggleButtonFastAuto))
+                                .addGap(18, 18, 18)
+                                .addComponent(btnDelDoppelteUrls)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(btnNurDoppelte)
+                                        .addComponent(jButtonHashOlddoppelt)
+                                        .addComponent(jButtonTTUrl))
+                                .addGap(76, 76, 76)
+                                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanelToolsLayout.createSequentialGroup()
+                                                .addComponent(jButtonLiveStreams)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                        .addComponent(jButtonAddOld)
+                                                        .addComponent(jTextFieldOld, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jButtonOldList))
+                                                .addGap(18, 18, 18)
+                                                .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                        .addComponent(btnDiff)
+                                                        .addComponent(txtDiff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(btnPathDiff)
+                                                        .addComponent(cbkUrl)))
+                                        .addGroup(jPanelToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                .addComponent(jTextFieldLiveStreams, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(jButtonDelLive)))
+                                .addContainerGap(102, Short.MAX_VALUE))
         );
 
-        jPanelToolsLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnPathDiff, txtDiff});
+        jPanelToolsLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[]{btnPathDiff, txtDiff});
 
-        jPanelToolsLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonAddOld, jTextFieldOld});
+        jPanelToolsLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[]{jButtonAddOld, jTextFieldOld});
 
-        jPanelToolsLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonLiveStreams, jTextFieldLiveStreams});
+        jPanelToolsLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[]{jButtonLiveStreams, jTextFieldLiveStreams});
 
         jTabbedSender.addTab("Tool", jPanelTools);
 
         javax.swing.GroupLayout jPanelStartsLayout = new javax.swing.GroupLayout(jPanelStarts);
         jPanelStarts.setLayout(jPanelStartsLayout);
         jPanelStartsLayout.setHorizontalGroup(
-            jPanelStartsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 725, Short.MAX_VALUE)
+                jPanelStartsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 725, Short.MAX_VALUE)
         );
         jPanelStartsLayout.setVerticalGroup(
-            jPanelStartsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 419, Short.MAX_VALUE)
+                jPanelStartsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 419, Short.MAX_VALUE)
         );
 
         jTabbedSender.addTab("Starts", jPanelStarts);
@@ -578,18 +629,18 @@ public class GuiDebug extends JPanel {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTabbedSender)
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jTabbedSender)
+                                .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTabbedSender)
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jTabbedSender)
+                                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -620,52 +671,66 @@ public class GuiDebug extends JPanel {
     private javax.swing.JTextField txtDiff;
     // End of variables declaration//GEN-END:variables
 
-    private class BeobSenderLoeschen implements ActionListener {
+    private class BeobSenderLoeschen implements ActionListener
+    {
 
         private final String sender;
 
-        public BeobSenderLoeschen(String ssender) {
+        public BeobSenderLoeschen(String ssender)
+        {
             sender = ssender;
         }
 
         @Override
-        public void actionPerformed(ActionEvent e) {
-            Daten.listeFilme.deleteAllFilms(sender);
-            Daten.listeBlacklist.filterListe();
+        public void actionPerformed(ActionEvent e)
+        {
+            daten.getListeFilme().deleteAllFilms(sender);
+            daten.getListeBlacklist().filterListe();
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
         }
     }
 
-    private class BeobPfad implements ActionListener {
+    private class BeobPfad implements ActionListener
+    {
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent e)
+        {
             //we can use native chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Pfad");
+            if (SystemInfo.isMacOSX())
+            {
+                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Pfad");
                 chooser.setMode(FileDialog.SAVE);
                 chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    try {
+                if (chooser.getFile() != null)
+                {
+                    try
+                    {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         txtDiff.setText(destination.getAbsolutePath());
-                    } catch (Exception ex) {
+                    } catch (Exception ex)
+                    {
                         Log.errorLog(679890147, ex);
                     }
                 }
-            } else {
+            } else
+            {
                 int returnVal;
                 JFileChooser chooser = new JFileChooser();
-                if (!txtDiff.getText().equals("")) {
+                if (!txtDiff.getText().equals(""))
+                {
                     chooser.setCurrentDirectory(new File(txtDiff.getText()));
                 }
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 chooser.setFileHidingEnabled(false);
                 returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
+                if (returnVal == JFileChooser.APPROVE_OPTION)
+                {
+                    try
+                    {
                         txtDiff.setText(chooser.getSelectedFile().getAbsolutePath());
-                    } catch (Exception ex) {
+                    } catch (Exception ex)
+                    {
                         Log.errorLog(911025463, ex);
                     }
                 }
@@ -673,36 +738,47 @@ public class GuiDebug extends JPanel {
         }
     }
 
-    private class BeobPfadOldUrl implements ActionListener {
+    private class BeobPfadOldUrl implements ActionListener
+    {
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent e)
+        {
             //we can use native chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Pfad");
+            if (SystemInfo.isMacOSX())
+            {
+                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Pfad");
                 chooser.setMode(FileDialog.SAVE);
                 chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    try {
+                if (chooser.getFile() != null)
+                {
+                    try
+                    {
                         File destination = new File(chooser.getDirectory() + chooser.getFile());
                         jTextFieldOld.setText(destination.getAbsolutePath());
-                    } catch (Exception ex) {
+                    } catch (Exception ex)
+                    {
                         Log.errorLog(679890147, ex);
                     }
                 }
-            } else {
+            } else
+            {
                 int returnVal;
                 JFileChooser chooser = new JFileChooser();
-                if (!jTextFieldOld.getText().equals("")) {
+                if (!jTextFieldOld.getText().equals(""))
+                {
                     chooser.setCurrentDirectory(new File(jTextFieldOld.getText()));
                 }
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 chooser.setFileHidingEnabled(false);
                 returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
+                if (returnVal == JFileChooser.APPROVE_OPTION)
+                {
+                    try
+                    {
                         jTextFieldOld.setText(chooser.getSelectedFile().getAbsolutePath());
-                    } catch (Exception ex) {
+                    } catch (Exception ex)
+                    {
                         Log.errorLog(911025463, ex);
                     }
                 }

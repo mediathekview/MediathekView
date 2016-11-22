@@ -14,6 +14,7 @@ import java.util.LinkedList;
  */
 class OsxIndicatorThread extends Thread {
 
+    private final Daten daten;
     /**
      * The Image of the OS X application icon.
      */
@@ -30,6 +31,7 @@ class OsxIndicatorThread extends Thread {
 
     public OsxIndicatorThread() {
         setName("OSX dock icon update thread");
+        daten = Daten.getInstance();
 
         OsxApplicationIconImage = application.getDockIconImage();
         appIconWidth = OsxApplicationIconImage.getWidth(null);
@@ -61,7 +63,7 @@ class OsxIndicatorThread extends Thread {
                 double accumPercentage = 0.0;
 
                 //only count running/active downloads and calc accumulated progress..
-                LinkedList<DatenDownload> activeDownloadList = Daten.listeDownloads.getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
+                LinkedList<DatenDownload> activeDownloadList = daten.getListeDownloads().getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
                 for (DatenDownload download : activeDownloadList) {
                     if (download.start != null && download.start.status == Start.STATUS_RUN) {
                         numOfDownloadsActive++;

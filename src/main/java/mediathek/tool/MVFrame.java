@@ -35,16 +35,16 @@ public class MVFrame extends javax.swing.JFrame {
     private static final long serialVersionUID = 1L;
     
     private final Daten daten;
-    private final MediathekGui.TABS state;
+    private final MediathekGui.TABS tabsState;
     private Configs nrGroesse = null;
 
-    public MVFrame(Daten ddaten, PanelVorlage jPanel, MediathekGui.TABS state) {
+    public MVFrame(Daten ddaten, PanelVorlage jPanel, MediathekGui.TABS astate) {
         initComponents();
         daten = ddaten;
-        this.state = state;
+        tabsState = astate;
 
         this.setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
-        switch (state) {
+        switch (tabsState) {
             case TAB_DOWNLOADS:
                 this.setTitle("Downloads");
                 break;
@@ -63,12 +63,12 @@ public class MVFrame extends javax.swing.JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
-                Daten.mediathekGui.hideFrame(state);
+                daten.getMediathekGui().hideFrame(tabsState);
                 dispose();
             }
 
 //            public void windowClosed(WindowEvent evt) {
-//                Daten.mediathekGui.hideFrame(state);
+//                daten.getMediathekGui().hideFrame(state);
 //                dispose();
 //            }
         });
@@ -85,7 +85,7 @@ public class MVFrame extends javax.swing.JFrame {
 
     public void setSize(Configs nr) {
         nrGroesse = nr;
-        GuiFunktionen.setSize(nr, this, Daten.mediathekGui);
+        GuiFunktionen.setSize(nr, this, daten.getMediathekGui());
     }
 
 

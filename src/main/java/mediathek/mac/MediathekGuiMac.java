@@ -21,6 +21,7 @@ import java.net.URL;
 @SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
 
+    private final Daten daten;
     /**
      * Repaint-Thread for progress indicator on OS X.
      */
@@ -28,6 +29,7 @@ public class MediathekGuiMac extends MediathekGui {
 
     public MediathekGuiMac(String[] ar) {
         super(ar);
+        daten = Daten.getInstance();
         //Window must be fully initialized to become fullscreen cadidate...
         setWindowFullscreenCapability();
     }
@@ -96,7 +98,7 @@ public class MediathekGuiMac extends MediathekGui {
             Listener.EREIGNIS_START_EVENT, Listener.EREIGNIS_LISTE_DOWNLOADS}, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
-                final int activeDownloads = Daten.downloadInfos.downloadStarts[4];
+                final int activeDownloads = daten.getDownloadInfos().downloadStarts[4];
                 final Application application = Application.getApplication();
                 if (activeDownloads > 0) {
                     application.setDockIconBadge(String.valueOf(activeDownloads));
@@ -123,7 +125,7 @@ public class MediathekGuiMac extends MediathekGui {
         final Application application = Application.getApplication();
         application.disableSuddenTermination();
         application.setAboutHandler(aboutEvent -> showAboutDialog());
-        application.setPreferencesHandler(preferencesEvent -> Daten.dialogEinstellungen.setVisible(true));
+        application.setPreferencesHandler(preferencesEvent -> showSettingsDialog());
         application.setQuitHandler((quitEvent, quitResponse) -> {
             if (!beenden(false, false)) {
                 quitResponse.cancelQuit();
