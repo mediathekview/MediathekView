@@ -33,7 +33,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
 
@@ -87,7 +86,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
     private void clean() {
         final HashSet<String> hash = new HashSet<>();
         ListeMediaDB tmp = new ListeMediaDB();
-        this.stream().forEach(m -> {
+        this.forEach(m -> {
             final String s = m.getEqual();
             if (!hash.contains(s)) {
                 hash.add(s);
@@ -115,12 +114,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
 
     private void del(boolean ohneSave) {
         if (ohneSave) {
-            Iterator<DatenMediaDB> it = this.iterator();
-            while (it.hasNext()) {
-                if (!it.next().isExtern()) {
-                    it.remove();
-                }
-            }
+            this.removeIf(datenMediaDB -> !datenMediaDB.isExtern());
         } else {
             clear();
             exportListe("");

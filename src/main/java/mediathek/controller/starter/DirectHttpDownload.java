@@ -19,6 +19,20 @@
  */
 package mediathek.controller.starter;
 
+import mSearch.tool.Listener;
+import mSearch.tool.Log;
+import mSearch.tool.SysMsg;
+import mediathek.config.Daten;
+import mediathek.config.MVConfig;
+import mediathek.controller.MVBandwidthTokenBucket;
+import mediathek.controller.MVInputStream;
+import mediathek.daten.DatenDownload;
+import mediathek.gui.dialog.DialogContinueDownload;
+import mediathek.gui.dialog.MeldungDownloadfehler;
+import mediathek.tool.MVInfoFile;
+import mediathek.tool.MVSubtitle;
+
+import javax.swing.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,21 +41,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import javax.swing.SwingUtilities;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
-import mediathek.config.Daten;
-import mediathek.config.MVConfig;
-import mediathek.controller.MVBandwidthTokenBucket;
-import mediathek.controller.MVInputStream;
+
 import static mediathek.controller.starter.StarterClass.*;
-import mediathek.daten.DatenDownload;
-import mediathek.gui.dialog.DialogContinueDownload;
-import static mediathek.gui.dialog.DialogContinueDownload.DownloadResult.*;
-import mediathek.gui.dialog.MeldungDownloadfehler;
-import mediathek.tool.MVInfoFile;
-import mediathek.tool.MVSubtitle;
 
 public class DirectHttpDownload extends Thread {
 
@@ -61,7 +62,7 @@ public class DirectHttpDownload extends Thread {
     private boolean retAbbrechen;
     private boolean dialogAbbrechenIsVis;
 
-    static enum HttpDownloadState {
+    enum HttpDownloadState {
 
         CANCEL, ERROR, DOWNLOAD
     }
@@ -246,11 +247,7 @@ public class DirectHttpDownload extends Thread {
                             setupHttpConnection(conn);
                             conn.connect();
                             //hier war es dann nun wirklich...
-                            if (conn.getResponseCode() >= HttpURLConnection.HTTP_BAD_REQUEST) {
-                                state = HttpDownloadState.ERROR;
-                            } else {
-                                state = HttpDownloadState.DOWNLOAD;
-                            }
+                            state = conn.getResponseCode() >= HttpURLConnection.HTTP_BAD_REQUEST ? HttpDownloadState.ERROR : HttpDownloadState.DOWNLOAD;
                         } else {
                             // ==================================
                             // dann wars das

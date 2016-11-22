@@ -114,8 +114,8 @@ public class DatenPset extends MVData<DatenPset> {
 
     public boolean isEmpty() {
         boolean ret = true;
-        for (int i = 0; i < arr.length; ++i) {
-            if (!arr[i].isEmpty()) {
+        for (String s : arr) {
+            if (!s.isEmpty()) {
                 ret = false;
             }
         }
