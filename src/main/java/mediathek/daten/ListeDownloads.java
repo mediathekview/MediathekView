@@ -143,10 +143,10 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 gefunden = true;
             }
         }
-        if (gefunden) {
+//        if (gefunden) {
 //            Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
-        }
-        this.stream().forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString());
+//        }
+        this.forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString());
     }
 
     public synchronized int nochNichtFertigeDownloads() {
@@ -378,22 +378,15 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // in der Filmliste nach passenden Filmen suchen und 
         // in die Liste der Downloads eintragen
         final HashSet<String> listeUrls = new HashSet<>();
-        this.stream().forEach((download) -> {
-            // mit den bereits enthaltenen URL füllen
-            listeUrls.add(download.arr[DatenDownload.DOWNLOAD_URL]);
-        });
+        // mit den bereits enthaltenen URL füllen
+        this.forEach((download) -> listeUrls.add(download.arr[DatenDownload.DOWNLOAD_URL]));
 
         boolean gefunden = false;
-        DatenFilm film;
         DatenAbo abo;
-        Iterator<DatenFilm> itFilm;
         // prüfen ob in "alle Filme" oder nur "nach Blacklist" gesucht werden soll
         boolean checkWithBlackList = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO));
         DatenPset pSet_ = Daten.listePset.getPsetAbo("");
-        itFilm = Daten.listeFilme.iterator();
-        while (itFilm.hasNext()) {
-            film = itFilm.next();
-
+        for (DatenFilm film : Daten.listeFilme) {
             abo = Daten.listeAbo.getAboFuerFilm_schnell(film, true /*auch die Länge überprüfen*/);
             if (abo == null) {
                 // dann gibts dafür kein Abo
