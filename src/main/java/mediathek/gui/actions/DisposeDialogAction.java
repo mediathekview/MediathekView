@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 /**
  * Generic action for disposing dialogs.
  */
+@SuppressWarnings("serial")
 public class DisposeDialogAction extends AbstractAction {
 
     private final JDialog dlg;

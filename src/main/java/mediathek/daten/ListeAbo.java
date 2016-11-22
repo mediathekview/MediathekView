@@ -19,10 +19,6 @@
  */
 package mediathek.daten;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import javax.swing.JOptionPane;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.tool.*;
@@ -33,18 +29,24 @@ import mediathek.tool.Filter;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelAbo;
 
+import javax.swing.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+
+@SuppressWarnings("serial")
 public class ListeAbo extends LinkedList<DatenAbo> {
-
-    private static final long serialVersionUID = 1L;
-
-    private Daten daten;
-    private final String[] LEER = {""};
-    private String[] titel, thema, irgendwo;
+    private final Daten daten;
+    private static final String[] LEER = {""};
+    //private String[] titel, thema, irgendwo;
 
     public ListeAbo(Daten ddaten) {
         daten = ddaten;
     }
-    private int nr = 0;
+
+    private int nr;
 
     public boolean addAbo(String aboName) {
         return addAbo(aboName, "", "", "");
@@ -124,13 +126,9 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     }
 
     public void addObjectData(TModelAbo model, String sender) {
-        Object[] object;
-        DatenAbo datenAbo;
         model.setRowCount(0);
-        Iterator<DatenAbo> iterator = this.iterator();
-        object = new Object[DatenAbo.MAX_ELEM];
-        while (iterator.hasNext()) {
-            datenAbo = iterator.next();
+        Object[] object = new Object[DatenAbo.MAX_ELEM];
+        for (DatenAbo datenAbo : this) {
             if (sender.isEmpty() || sender.equals(datenAbo.arr[DatenAbo.ABO_SENDER])) {
                 for (int m = 0; m < DatenAbo.MAX_ELEM; ++m) {
                     if (m == DatenAbo.ABO_NR) {
@@ -176,7 +174,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             }
         }
         GermanStringSorter sorter = GermanStringSorter.getInstance();
-        Collections.sort(pfade, sorter);
+        pfade.sort(sorter);
         return pfade;
     }
 
@@ -205,7 +203,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         }
     }
 
-//    public void setAboFuerFilm__(ListeFilme listeFilme, boolean aboLoeschen) {
+    //    public void setAboFuerFilm__(ListeFilme listeFilme, boolean aboLoeschen) {
 //        // hier wird tatsächlich für jeden Film die Liste der Abos durchsucht
 //        // braucht länger
 //        Duration.counterStart("Abo in Filmliste eintragen ***ALT***");
@@ -276,6 +274,64 @@ public class ListeAbo extends LinkedList<DatenAbo> {
 //        }
 //        Duration.counterStop("Abo in Filmliste eintragen ***ALT***");
 //    }
+
+    private void deleteAboInFilm(DatenFilm film) {
+        // für jeden Film Abo löschen
+        film.arr[DatenFilm.FILM_ABO_NAME] = "";
+        film.abo = null;
+    }
+
+    private void createAbo(DatenAbo abo) {
+        if (abo.arr[DatenAbo.ABO_TITEL].isEmpty()) {
+            abo.titel = LEER;
+        } else {
+            abo.titel = Filter.isPattern(abo.arr[DatenAbo.ABO_TITEL])
+                    ? new String[]{abo.arr[DatenAbo.ABO_TITEL]} : abo.arr[DatenAbo.ABO_TITEL].toLowerCase().split(",");
+        }
+        if (abo.arr[DatenAbo.ABO_THEMA_TITEL].isEmpty()) {
+            abo.thema = LEER;
+        } else {
+            abo.thema = Filter.isPattern(abo.arr[DatenAbo.ABO_THEMA_TITEL])
+                    ? new String[]{abo.arr[DatenAbo.ABO_THEMA_TITEL]} : abo.arr[DatenAbo.ABO_THEMA_TITEL].toLowerCase().split(",");
+        }
+        if (abo.arr[DatenAbo.ABO_IRGENDWO].isEmpty()) {
+            abo.irgendwo = LEER;
+        } else {
+            abo.irgendwo = Filter.isPattern(abo.arr[DatenAbo.ABO_IRGENDWO])
+                    ? new String[]{abo.arr[DatenAbo.ABO_IRGENDWO]} : abo.arr[DatenAbo.ABO_IRGENDWO].toLowerCase().split(",");
+        }
+    }
+
+    /**
+     * Assign found abo to the film objects.
+     * Time-intensive procedure!
+     *
+     * @param film assignee
+     */
+    private void assignAboToFilm(DatenFilm film) {
+        final DatenAbo foundAbo = this.stream().filter(abo
+                -> Filter.filterAufFilmPruefen(abo.arr[DatenAbo.ABO_SENDER], abo.arr[DatenAbo.ABO_THEMA],
+                abo.titel,
+                abo.thema,
+                abo.irgendwo,
+                abo.mindestdauerMinuten,
+                abo.min,
+                film, false)).findFirst().orElse(null);
+
+        if (foundAbo != null) {
+            if (!Filter.laengePruefen(foundAbo.mindestdauerMinuten, film.dauerL, foundAbo.min)) {
+                // dann ist der Film zu kurz
+                film.arr[DatenFilm.FILM_ABO_NAME] = foundAbo.arr[DatenAbo.ABO_NAME] + (foundAbo.min ? " [zu kurz]" : " [zu lang]");
+                film.abo = foundAbo;
+            } else {
+                film.arr[DatenFilm.FILM_ABO_NAME] = foundAbo.arr[DatenAbo.ABO_NAME];
+                film.abo = foundAbo;
+            }
+        } else {
+            deleteAboInFilm(film);
+        }
+    }
+
     public void setAboFuerFilm(ListeFilme listeFilme, boolean aboLoeschen) {
         // hier wird tatsächlich für jeden Film die Liste der Abos durchsucht
         // braucht länger
@@ -283,77 +339,21 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         Duration.counterStart("Abo in Filmliste eintragen");
 
         if (this.isEmpty() && aboLoeschen) {
-            DatenFilm datenFilm;
-            Iterator<DatenFilm> iteratorFilm = listeFilme.iterator();
-            while (iteratorFilm.hasNext()) {
-                // für jeden Film Abo löschen
-                datenFilm = iteratorFilm.next();
-                datenFilm.arr[DatenFilm.FILM_ABO_NAME] = "";
-                datenFilm.abo = null;
-            }
+            listeFilme.parallelStream().forEach(this::deleteAboInFilm);
             return;
         }
 
         // leere Abos löschen, die sind Fehler
-        this.stream().filter((datenAbo) -> (datenAbo.isEmpty())).forEach((datenAbo) -> {
-            this.remove(datenAbo);
-        });
+        this.stream().filter((datenAbo) -> (datenAbo.isEmpty())).forEach(this::remove);
 
         // und jetzt erstellen
-        this.stream().forEach(datenAbo -> {
-            if (datenAbo.arr[DatenAbo.ABO_TITEL].isEmpty()) {
-                datenAbo.titel = LEER;
-            } else {
-                datenAbo.titel = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_TITEL])
-                        ? new String[]{datenAbo.arr[DatenAbo.ABO_TITEL]} : datenAbo.arr[DatenAbo.ABO_TITEL].toLowerCase().split(",");
-            }
-            if (datenAbo.arr[DatenAbo.ABO_THEMA_TITEL].isEmpty()) {
-                datenAbo.thema = LEER;
-            } else {
-                datenAbo.thema = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_THEMA_TITEL])
-                        ? new String[]{datenAbo.arr[DatenAbo.ABO_THEMA_TITEL]} : datenAbo.arr[DatenAbo.ABO_THEMA_TITEL].toLowerCase().split(",");
-            }
-            if (datenAbo.arr[DatenAbo.ABO_IRGENDWO].isEmpty()) {
-                datenAbo.irgendwo = LEER;
-            } else {
-                datenAbo.irgendwo = Filter.isPattern(datenAbo.arr[DatenAbo.ABO_IRGENDWO])
-                        ? new String[]{datenAbo.arr[DatenAbo.ABO_IRGENDWO]} : datenAbo.arr[DatenAbo.ABO_IRGENDWO].toLowerCase().split(",");
-            }
-        });
+        forEach(this::createAbo);
 
         // das kostet die Zeit!!
-        listeFilme.stream().parallel().forEach(film -> {
-            //listeFilme.stream().forEach(film -> {
-            // für jeden Film
-            film.arr[DatenFilm.FILM_ABO_NAME] = "";
-            film.abo = null;
-
-            try {
-                DatenAbo aa = this.stream().filter(abo
-                        -> Filter.filterAufFilmPruefen(abo.arr[DatenAbo.ABO_SENDER], abo.arr[DatenAbo.ABO_THEMA],
-                                abo.titel,
-                                abo.thema,
-                                abo.irgendwo,
-                                abo.mindestdauerMinuten,
-                                abo.min,
-                                film, false)).findFirst().get();
-
-                if (aa != null) {
-                    if (!Filter.laengePruefen(aa.mindestdauerMinuten, film.dauerL, aa.min)) {
-                        // dann ist der Film zu kurz
-                        film.arr[DatenFilm.FILM_ABO_NAME] = aa.arr[DatenAbo.ABO_NAME] + (aa.min ? " [zu kurz]" : " [zu lang]");
-                        film.abo = aa;
-                    } else {
-                        film.arr[DatenFilm.FILM_ABO_NAME] = aa.arr[DatenAbo.ABO_NAME];
-                        film.abo = aa;
-                    }
-                }
-            } catch (NoSuchElementException ignore) {
-            }
-        });
+        listeFilme.parallelStream().forEach(this::assignAboToFilm);
 
         // und jetzt wieder löschen
-        this.stream().forEach(datenAbo -> {
+        forEach(datenAbo -> {
             datenAbo.titel = LEER;
             datenAbo.thema = LEER;
             datenAbo.irgendwo = LEER;

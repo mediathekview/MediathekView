@@ -19,11 +19,6 @@
  */
 package mediathek.tool;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import javax.swing.JFrame;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.FilenameUtils;
 import mSearch.tool.Log;
@@ -35,6 +30,12 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialog.DialogZiel;
 
+import javax.swing.*;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class MVInfoFile {
 
     public static void writeInfoFile(JFrame paFrame, Daten daten, DatenFilm film) {
@@ -44,7 +45,7 @@ public class MVInfoFile {
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
         String pfad = "";
         ListePset lp = Daten.listePset.getListeSpeichern();
-        if (lp.size() > 0) {
+        if (!lp.isEmpty()) {
             DatenPset p = lp.get(0);
             pfad = p.getZielPfad();
         }
@@ -110,12 +111,13 @@ public class MVInfoFile {
     }
 
     public static void writeInfoFile(DatenDownload datenDownload) {
-        try {
-            SysMsg.sysMsg(new String[]{"Infofile schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]});
+        SysMsg.sysMsg(new String[]{"Infofile schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]});
 
-            new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]).mkdirs();
-            Path path = Paths.get(datenDownload.getFileNameWithoutSuffix() + ".txt");
-            BufferedWriter br = new BufferedWriter(new OutputStreamWriter(new DataOutputStream(Files.newOutputStream(path))));
+        new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]).mkdirs();
+        Path path = Paths.get(datenDownload.getFileNameWithoutSuffix() + ".txt");
+        try (DataOutputStream dos = new DataOutputStream(Files.newOutputStream(path));
+             OutputStreamWriter osw = new OutputStreamWriter(dos);
+             BufferedWriter br = new BufferedWriter(osw)) {
             if (datenDownload.film != null) {
                 br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_SENDER] + ":      " + datenDownload.film.arr[DatenFilm.FILM_SENDER]);
                 br.write("\n");
@@ -160,7 +162,6 @@ public class MVInfoFile {
             }
             br.write("\n\n");
             br.flush();
-            br.close();
             SysMsg.sysMsg(new String[]{"Infofile", "  geschrieben"});
         } catch (IOException ex) {
             Log.errorLog(975410369, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);

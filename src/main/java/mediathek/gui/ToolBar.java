@@ -19,11 +19,6 @@
  */
 package mediathek.gui;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.LinkedList;
-import javax.swing.Box.Filler;
-import javax.swing.*;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Listener;
@@ -33,6 +28,12 @@ import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.tool.Filter;
 import org.jdesktop.swingx.JXSearchField;
+
+import javax.swing.Box.Filler;
+import javax.swing.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.LinkedList;
 
 public final class ToolBar extends JToolBar {
 
@@ -327,7 +328,7 @@ public final class ToolBar extends JToolBar {
 
     }
 
-    private final void setIcon(boolean klein) {
+    private void setIcon(boolean klein) {
         MVConfig.add(nrIconKlein, Boolean.toString(klein));
         beobMausToolBar.itemKlein.setSelected(klein);
         for (MVButton b : buttonList) {

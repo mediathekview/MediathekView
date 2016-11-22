@@ -19,11 +19,6 @@
  */
 package mediathek.daten;
 
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.swing.JFrame;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Listener;
 import mSearch.tool.SysMsg;
@@ -34,6 +29,12 @@ import mediathek.controller.starter.Start;
 import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelDownload;
+
+import javax.swing.*;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ListeDownloads extends LinkedList<DatenDownload> {
 
@@ -501,9 +502,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
      * @return number of queued Starts.
      */
     public synchronized int getNumberOfStartsNotFinished() {
-        Iterator<DatenDownload> it = this.iterator();
-        while (it.hasNext()) {
-            Start s = it.next().start;
+        for (DatenDownload datenDownload : this) {
+            Start s = datenDownload.start;
             if (s != null) {
                 if (s.status < Start.STATUS_FERTIG) {
                     return this.size();
@@ -656,9 +656,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     // ################################################################
     private boolean getDown(int max) {
         int count = 0;
-        Iterator<DatenDownload> it = this.iterator();
-        while (it.hasNext()) {
-            Start s = it.next().start;
+        for (DatenDownload datenDownload : this) {
+            Start s = datenDownload.start;
             if (s != null) {
                 if (s.status == Start.STATUS_RUN) {
                     ++count;

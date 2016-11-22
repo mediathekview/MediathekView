@@ -74,16 +74,16 @@ public class MediathekGui extends JFrame {
     private final JPanel jPanelBandbreite = new JPanel();
     private final JSlider jSliderBandbreite = new JSlider();*/
     private MVStatusBar statusBar;
-    private MVFrame frameDownload = null;
-    private MVFrame frameAbo = null;
-    private MVFrame frameMeldungen = null;
+    private MVFrame frameDownload;
+    private MVFrame frameAbo;
+    private MVFrame frameMeldungen;
     private final JCheckBoxMenuItem jCheckBoxFilterAnzeigen = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxFilterExtrafenster = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxDownloadExtrafenster = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxAboExtrafenster = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxMeldungenAnzeigen = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxMeldungenExtrafenster = new JCheckBoxMenuItem();
-    private MVTray tray = null;
+    private MVTray tray;
 
     public enum TABS {
         TAB_NIX, TAB_FILME, TAB_DOWNLOADS, TAB_ABOS, TAB_MELDUNGEN
@@ -92,7 +92,7 @@ public class MediathekGui extends JFrame {
     /**
      * Bandwidth monitoring for downloads.
      */
-    protected IBandwidthMonitor bandwidthMonitor = null;
+    protected IBandwidthMonitor bandwidthMonitor;
 
     /**
      * Create the status bar item.
@@ -114,15 +114,15 @@ public class MediathekGui extends JFrame {
     /**
      * The JVM {@link java.awt.SplashScreen} storage
      */
-    private SplashScreen splash = null;
+    private SplashScreen splash;
     /**
      * Store the splash screen {@link Graphics2D} context here for reuse
      */
-    private Graphics2D splashScreenContext = null;
+    private Graphics2D splashScreenContext;
     /**
      * helper variable to calculate splash screen progress
      */
-    private int splashScreenProgress = 0;
+    private int splashScreenProgress;
 
     /**
      * wegeb der möglichen Abfrage: "Backup laden.."
@@ -457,7 +457,7 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    private static boolean geklickt = false;
+    private static boolean geklickt;
 
     private void initTabs() {
         Daten.guiDownloads = new GuiDownloads(daten, Daten.mediathekGui);
@@ -537,7 +537,6 @@ public class MediathekGui extends JFrame {
         panelVorlage.solo = true;
         if (frame != null) {
             frame.dispose();
-            frame = null;
         }
         if (tabContain(panelVorlage)) {
             jTabbedPane.remove(panelVorlage);
@@ -1446,7 +1445,7 @@ public class MediathekGui extends JFrame {
 
     private class MenuLST implements MenuListener {
 
-        private TABS tabs;
+        private final TABS tabs;
 
         public MenuLST(TABS tabs) {
             this.tabs = tabs;
