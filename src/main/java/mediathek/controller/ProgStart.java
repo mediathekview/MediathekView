@@ -47,29 +47,31 @@ public class ProgStart {
         public synchronized void run() {
             Duration.staticPing("Programmstart Daten laden");
 
-            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), Daten.listeFilme, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
-            SysMsg.sysMsg("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-            SysMsg.sysMsg("  erstellt am: " + Daten.listeFilme.genDate());
-            SysMsg.sysMsg("  Anzahl Filme: " + Daten.listeFilme.size());
-            SysMsg.sysMsg("  Anzahl Neue: " + Daten.listeFilme.countNewFilms());
+            Daten daten = Daten.getInstance();
 
-            if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO && Daten.listeFilme.isTooOld()) {
+            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+            SysMsg.sysMsg("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+            SysMsg.sysMsg("  erstellt am: " + daten.getListeFilme().genDate());
+            SysMsg.sysMsg("  Anzahl Filme: " + daten.getListeFilme().size());
+            SysMsg.sysMsg("  Anzahl Neue: " + daten.getListeFilme().countNewFilms());
+
+            if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO && daten.getListeFilme().isTooOld()) {
                 SysMsg.sysMsg("Filmliste zu alt, neue Filmliste laden");
-                Daten.filmeLaden.loadFilmlist("", true);
+                daten.getFilmeLaden().loadFilmlist("", true);
             } else {
                 // beim Neuladen wird es dann erst gemacht
-                Daten.filmeLaden.notifyStart(new ListenerFilmeLadenEvent("", "", 0, 0, 0, false/*Fehler*/));
+                daten.getFilmeLaden().notifyStart(new ListenerFilmeLadenEvent("", "", 0, 0, 0, false/*Fehler*/));
 
-                Daten.filmeLaden.notifyProgress(new ListenerFilmeLadenEvent("", "Themen suchen", 0, 0, 0, false/*Fehler*/));
-                Daten.listeFilme.themenLaden();
+                daten.getFilmeLaden().notifyProgress(new ListenerFilmeLadenEvent("", "Themen suchen", 0, 0, 0, false/*Fehler*/));
+                daten.getListeFilme().themenLaden();
 
-                Daten.filmeLaden.notifyProgress(new ListenerFilmeLadenEvent("", "Abos eintragen", 0, 0, 0, false/*Fehler*/));
-                Daten.listeAbo.setAboFuerFilm(Daten.listeFilme, false /*aboLoeschen*/);
+                daten.getFilmeLaden().notifyProgress(new ListenerFilmeLadenEvent("", "Abos eintragen", 0, 0, 0, false/*Fehler*/));
+                daten.getListeAbo().setAboFuerFilm(daten.getListeFilme(), false /*aboLoeschen*/);
 
-                Daten.filmeLaden.notifyProgress(new ListenerFilmeLadenEvent("", "Blacklist filtern", 0, 0, 0, false/*Fehler*/));
-                Daten.listeBlacklist.filterListe();
+                daten.getFilmeLaden().notifyProgress(new ListenerFilmeLadenEvent("", "Blacklist filtern", 0, 0, 0, false/*Fehler*/));
+                daten.getListeBlacklist().filterListe();
 
-                Daten.filmeLaden.notifyFertig(new ListenerFilmeLadenEvent("", "", 0, 0, 0, false/*Fehler*/));
+                daten.getFilmeLaden().notifyFertig(new ListenerFilmeLadenEvent("", "", 0, 0, 0, false/*Fehler*/));
             }
         }
 

@@ -20,12 +20,8 @@
 package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
 import mSearch.tool.Listener;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -36,18 +32,23 @@ import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.res.GetIcon;
 import mediathek.tool.TextCopyPaste;
 
+import javax.swing.*;
+import javax.swing.event.*;
+import java.awt.*;
+import java.awt.event.*;
+
 public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
     private static final long serialVersionUID = 1L;
 
     private int aktFilter = -1;
-    private final JFrame parent;
+    private final JFrame parentComponent;
     private final Daten daten;
 
-    public MVFilterPanel(final JFrame parent, final Daten daten) {
+    public MVFilterPanel(final JFrame aParentComponent, final Daten aDaten,MediathekGui aMediathekGui) {
+        parentComponent=aParentComponent;
         initComponents();
-        this.parent = parent;
-        this.daten = daten;
+        daten = aDaten;
 
         jToggleButtonBlacklist.setText("");
         if (SystemInfo.isWindows()) {
@@ -60,7 +61,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.dialogEinstellungen.setVisible(true);
+                    aMediathekGui.showSettingsDialog();
                 }
             });
             im = jComboBoxFilterThema.getInputMap();
@@ -71,7 +72,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.dialogEinstellungen.setVisible(true);
+                    aMediathekGui.showSettingsDialog();
                 }
             });
         }
@@ -81,7 +82,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         setIconBlacklist();
         jToggleButtonBlacklist.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.toString(jToggleButtonBlacklist.isSelected()));
-            Daten.listeBlacklist.filterListe();
+            daten.getListeBlacklist().filterListe();
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterPanel.class.getSimpleName());
             setIconBlacklist();
         });
@@ -95,7 +96,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfe.setText("");
-        jButtonHilfe.addActionListener(e -> new DialogHilfe(parent, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true));
+        jButtonHilfe.addActionListener(e -> new DialogHilfe(aMediathekGui, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true));
         setIcon(false); // erst mal alle aus
         jRadioButtonF1.addActionListener(new BeobRadio(0));
         jRadioButtonF2.addActionListener(new BeobRadio(1));
@@ -446,8 +447,8 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
             JMenuItem item = new JMenuItem("Blacklist bearbeiten");
             item.addActionListener(e -> {
-                DialogLeer dialog = new DialogLeer(parent, true);
-                dialog.init("Blacklist", new PanelBlacklist(daten, parent, PanelBlacklist.class.getName() + "_3"));
+                DialogLeer dialog = new DialogLeer(parentComponent, true);
+                dialog.init("Blacklist", new PanelBlacklist(daten, parentComponent, PanelBlacklist.class.getName() + "_3"));
                 dialog.setVisible(true);
             });
             jPopupMenu.add(item);

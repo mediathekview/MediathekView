@@ -101,6 +101,7 @@ task copyProgrammIconsInRes (type: Copy) {
     logger.lifecycle 'Copying Programm icons.'
     from 'src/main/resources/mediathek/res/programm'
     into 'res/Icons/Programm/Version-'+version
+    include '*.png'
 }
 
 processResources.dependsOn copyProgrammIconsInRes
@@ -117,6 +118,7 @@ processResources.dependsOn copySenderIconsInRes
 
 dependencies {
     compile project(':MSearch')
+
     compile "$swingxGroup:swingx-action:$swingxVersion"
     compile "$swingxGroup:swingx-autocomplete:$swingxVersion"
     compile "$swingxGroup:swingx-beaninfo:$swingxVersion"

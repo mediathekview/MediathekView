@@ -49,14 +49,14 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         jButtonDateiAuswaehlen.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
           jButtonUrl.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
         initRadio();
-        jButtonUrl.addActionListener(e -> jTextFieldUrl.setText(Daten.filmeLaden.getDownloadUrl_akt()));
-        jButtonLoad.addActionListener(ae -> Daten.filmeLaden.loadFilmlist(""));
+        jButtonUrl.addActionListener(e -> jTextFieldUrl.setText(daten.getFilmeLaden().getDownloadUrl_akt()));
+        jButtonLoad.addActionListener(ae -> daten.getFilmeLaden().loadFilmlist(""));
         jButtonDateiAuswaehlen.addActionListener(new BeobPfad());
         jButtonFilmeLaden.addActionListener(e -> {
             if (jCheckBoxUpdate.isSelected()) {
-                Daten.filmeLaden.updateFilmlist(jTextFieldUrl.getText());
+                daten.getFilmeLaden().updateFilmlist(jTextFieldUrl.getText());
             } else {
-                Daten.filmeLaden.loadFilmlist(jTextFieldUrl.getText());
+                daten.getFilmeLaden().loadFilmlist(jTextFieldUrl.getText());
             }
         });
         jRadioButtonManuell.addActionListener(new BeobOption());
@@ -274,7 +274,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Filmliste laden");
+                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Filmliste laden");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {

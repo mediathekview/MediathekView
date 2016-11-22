@@ -68,8 +68,8 @@ public class GuiAbo extends PanelVorlage {
     public void isShown() {
         super.isShown();
         if (!solo) {
-//            Daten.mediathekGui.setTabShown(MediathekGui.TABS.TAB_ABOS);
-            Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.ABO);
+//            daten.getMediathekGui().setTabShown(MediathekGui.TABS.TAB_ABOS);
+            daten.getMediathekGui().getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.ABO);
         }
     }
 
@@ -156,7 +156,7 @@ public class GuiAbo extends PanelVorlage {
         });
 
         //Filter
-        final String[] sender = GuiFunktionen.addLeerListe(Daten.filmeLaden.getSenderNamen());
+        final String[] sender = GuiFunktionen.addLeerListe(daten.getFilmeLaden().getSenderNamen());
         jcbSender.setModel(new javax.swing.DefaultComboBoxModel<>(sender));
         jcbSender.addActionListener(l -> tabelleLaden());
 
@@ -186,7 +186,7 @@ public class GuiAbo extends PanelVorlage {
 
     private void tabelleLaden() {
         tabelle.getSpalten();
-        Daten.listeAbo.addObjectData((TModelAbo) tabelle.getModel(), jcbSender.getSelectedItem().toString());
+        daten.getListeAbo().addObjectData((TModelAbo) tabelle.getModel(), jcbSender.getSelectedItem().toString());
         tabelle.setSpalten();
         setInfo();
     }
@@ -206,12 +206,12 @@ public class GuiAbo extends PanelVorlage {
                 for (int i = rows.length - 1; i >= 0; --i) {
                     int delRow = tabelle.convertRowIndexToModel(rows[i]);
                     ((TModelAbo) tabelle.getModel()).removeRow(delRow);
-                    Daten.listeAbo.remove(delRow);
+                    daten.getListeAbo().remove(delRow);
                 }
             }
             tabelleLaden();
             zeileMarkieren(0);
-            Daten.listeAbo.aenderungMelden();
+            daten.getListeAbo().aenderungMelden();
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
@@ -230,12 +230,12 @@ public class GuiAbo extends PanelVorlage {
 //    private void aboAendern() {
 //        if (tabelle.getSelectedRowCount() == 1) {
 //            int modelRow = tabelle.convertRowIndexToModel(row);
-//            DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
-//            DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, akt, false /*onlyOne*/);
+//            DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
+//            DialogEditAbo dialog = new DialogEditAbo(daten.getMediathekGui(), true, daten, akt, false /*onlyOne*/);
 //            dialog.setVisible(true);
 //            if (dialog.ok) {
 //                tabelleLaden();
-//                Daten.listeAbo.aenderungMelden();
+//                daten.getListeAbo().aenderungMelden();
 //            }
 //            setInfo();
 //        } else {
@@ -251,8 +251,8 @@ public class GuiAbo extends PanelVorlage {
 
         int[] rows = tabelle.getSelectedRows();
         int modelRow = tabelle.convertRowIndexToModel(tabelle.getSelectedRow());
-        DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
-        DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, akt, tabelle.getSelectedRowCount() > 1 /*onlyOne*/);
+        DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
+        DialogEditAbo dialog = new DialogEditAbo(daten.getMediathekGui(), true, daten, akt, tabelle.getSelectedRowCount() > 1 /*onlyOne*/);
         dialog.setVisible(true);
         if (!dialog.ok) {
             return;
@@ -266,7 +266,7 @@ public class GuiAbo extends PanelVorlage {
                         continue;
                     }
                     modelRow = tabelle.convertRowIndexToModel(row);
-                    DatenAbo sel = Daten.listeAbo.getAboNr(modelRow);
+                    DatenAbo sel = daten.getListeAbo().getAboNr(modelRow);
                     sel.arr[b] = akt.arr[b];
                     if (b == DatenAbo.ABO_MINDESTDAUER) {
                         sel.setMindestDauerMinuten();
@@ -280,12 +280,12 @@ public class GuiAbo extends PanelVorlage {
         }
 
         tabelleLaden();
-        Daten.listeAbo.aenderungMelden();
+        daten.getListeAbo().aenderungMelden();
         setInfo();
     }
 
     private void aboNeu() {
-        Daten.listeAbo.addAbo("Neu" /*Abonamer*/);
+        daten.getListeAbo().addAbo("Neu" /*Abonamer*/);
     }
 
     private void aboEinAus(boolean ein) {
@@ -293,7 +293,7 @@ public class GuiAbo extends PanelVorlage {
         if (rows.length > 0) {
             for (int row : rows) {
                 int modelRow = tabelle.convertRowIndexToModel(row);
-                DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
+                DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
                 akt.arr[DatenAbo.ABO_EINGESCHALTET] = String.valueOf(ein);
             }
             tabelleLaden();
@@ -303,7 +303,7 @@ public class GuiAbo extends PanelVorlage {
                 tabelle.addRowSelectionInterval(row, row);
             }
             setInfo();
-            Daten.listeAbo.aenderungMelden();
+            daten.getListeAbo().aenderungMelden();
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
@@ -311,7 +311,7 @@ public class GuiAbo extends PanelVorlage {
 
     private void setInfo() {
         // Infopanel setzen
-        Daten.mediathekGui.getStatusBar().setTextForLeftDisplay();
+        daten.getMediathekGui().getStatusBar().setTextForLeftDisplay();
     }
 
     /**
@@ -446,13 +446,13 @@ public class GuiAbo extends PanelVorlage {
         private void buttonTable(int row, int column) {
             if (row != -1) {
                 if (tabelle.convertColumnIndexToModel(column) == DatenAbo.ABO_EINGESCHALTET) {
-                    DatenAbo akt = Daten.listeAbo.getAboNr(tabelle.convertRowIndexToModel(row));
+                    DatenAbo akt = daten.getListeAbo().getAboNr(tabelle.convertRowIndexToModel(row));
                     akt.arr[DatenAbo.ABO_EINGESCHALTET] = Boolean.toString(!Boolean.parseBoolean(akt.arr[DatenAbo.ABO_EINGESCHALTET]));
                     tabelle.getSpalten();
                     tabelleLaden();
                     tabelle.setSpalten();
                     setInfo();
-                    Daten.listeAbo.aenderungMelden();
+                    daten.getListeAbo().aenderungMelden();
                 }
             }
         }
@@ -464,7 +464,7 @@ public class GuiAbo extends PanelVorlage {
             if (nr >= 0) {
                 tabelle.setRowSelectionInterval(nr, nr);
                 int modelRow = tabelle.convertRowIndexToModel(nr);
-                DatenAbo akt = Daten.listeAbo.getAboNr(modelRow);
+                DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
                 ein = Boolean.parseBoolean(akt.arr[DatenAbo.ABO_EINGESCHALTET]);
             }
             JPopupMenu jPopupMenu = new JPopupMenu();

@@ -58,8 +58,8 @@ public class PanelEinstellungen extends PanelVorlage {
         jSpinnerDays.addChangeListener(new BeobSpinnerDays());
 
         jButtonLoad.addActionListener(ae -> {
-            Daten.listeFilme.clear(); // sonst wird evtl. nur eine Diff geladen
-            Daten.filmeLaden.loadFilmlist("");
+            daten.getListeFilme().clear(); // sonst wird evtl. nur eine Diff geladen
+            daten.getFilmeLaden().loadFilmlist("");
         });
         setupLookAndFeelComboBox();
         jButtonHelpDays.setIcon(Icons.ICON_BUTTON_HELP);
@@ -109,7 +109,7 @@ public class PanelEinstellungen extends PanelVorlage {
             jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY)));
             jCheckBoxTray.addActionListener(ae -> {
                 MVConfig.add(MVConfig.Configs.SYSTEM_USE_TRAY, Boolean.toString(jCheckBoxTray.isSelected()));
-                Daten.mediathekGui.setTray();
+                daten.getMediathekGui().setTray();
             });
         }
 
@@ -199,7 +199,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 //and now switch it...
                 try {
                     UIManager.setLookAndFeel(lafClass);
-                    SwingUtilities.updateComponentTreeUI(Daten.mediathekGui);
+                    SwingUtilities.updateComponentTreeUI(daten.getMediathekGui());
                     for (Frame f : Frame.getFrames()) {
                         SwingUtilities.updateComponentTreeUI(f);
                         for (Window w : f.getOwnedWindows()) {

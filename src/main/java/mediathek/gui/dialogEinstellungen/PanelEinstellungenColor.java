@@ -50,7 +50,7 @@ public class PanelEinstellungenColor extends PanelVorlage {
         jTable1.setModel(getModel());
         jButtonReset.addActionListener(e -> {
             Daten.mVColor.reset();
-            GuiFunktionen.updateGui(Daten.mediathekGui);
+            GuiFunktionen.updateGui(daten.getMediathekGui());
             Daten.mVColor.save();
         });
     }
@@ -62,7 +62,7 @@ public class PanelEinstellungenColor extends PanelVorlage {
             if (!dialog.farbe.equals(mvc.color)) {
                 mvc.set(dialog.farbe);
                 jTable1.setModel(getModel());
-                GuiFunktionen.updateGui(Daten.mediathekGui);
+                GuiFunktionen.updateGui(daten.getMediathekGui());
                 Daten.mVColor.save();
             }
         }

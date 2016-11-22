@@ -27,6 +27,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import mSearch.tool.Listener;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -47,10 +48,10 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     private JFrame parent;
     private int aktFilter = -1;
 
-    public MVFilterFrame(Daten d) {
+    public MVFilterFrame(Daten aDaten, MediathekGui aMediathekGui) {
         initComponents();
         parent = this;
-        daten = d;
+        daten = aDaten;
         jToggleButtonBlacklist.setText("");
         if (SystemInfo.isWindows()) {
             // zum Abfangen der Win-F4 für comboboxen
@@ -62,7 +63,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.dialogEinstellungen.setVisible(true);
+                    aMediathekGui.showSettingsDialog();
                 }
             });
             im = jComboBoxFilterThema.getInputMap();
@@ -73,7 +74,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
                 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.dialogEinstellungen.setVisible(true);
+                    aMediathekGui.showSettingsDialog();
                 }
             });
         }
@@ -118,7 +119,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         });
         this.setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
         this.setTitle("Filter");
-        GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_FILTER, this, Daten.mediathekGui);
+        GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_FILTER, this, daten.getMediathekGui());
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
@@ -131,7 +132,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         setIconBlacklist();
         jToggleButtonBlacklist.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.toString(jToggleButtonBlacklist.isSelected()));
-            Daten.listeBlacklist.filterListe();
+            daten.getListeBlacklist().filterListe();
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterFrame.class.getSimpleName());
             setIconBlacklist();
         });

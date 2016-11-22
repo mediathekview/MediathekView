@@ -47,7 +47,7 @@ import mediathek.daten.*;
 public final class MVTable extends JTable {
 
     private static final long serialVersionUID = 1L;
-    
+
     public enum TableType {
         STANDARD, FILME, DOWNLOADS, ABOS, PSET, PROG, MEDIA_DB
     };
@@ -74,6 +74,9 @@ public final class MVTable extends JTable {
     private MVConfig.Configs iconKleinStr = null;
     public boolean lineBreak = true;
 
+    private final Daten daten;
+
+
     /**
      * Return the type of this MVTable.
      *
@@ -85,6 +88,7 @@ public final class MVTable extends JTable {
 
     public MVTable(TableType tabelle) {
         this.tabelle = tabelle;
+        daten = Daten.getInstance();
         setAutoCreateRowSorter(true);
         setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
@@ -232,8 +236,8 @@ public final class MVTable extends JTable {
         for (int i = 0; i < this.getRowCount(); ++i) {
             DatenDownload d = ((DatenDownload) tModel.getValueAt(this.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF));
             if (d != null) {
-                Daten.listeDownloads.remove(d);
-                Daten.listeDownloads.add(d);
+                daten.getListeDownloads().remove(d);
+                daten.getListeDownloads().add(d);
             }
         }
         // Downloads zum Verschieben suchen
@@ -244,10 +248,10 @@ public final class MVTable extends JTable {
             }
             DatenDownload d = ((DatenDownload) tModel.getValueAt(this.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF));
             liste.add(d);
-            Daten.listeDownloads.remove(d);
+            daten.getListeDownloads().remove(d);
         }
         // an der richtigen Stellei einfügen
-        Daten.listeDownloads.addAll(index, liste);
+        daten.getListeDownloads().addAll(index, liste);
         // die Tabellensortierung löschen, die wird jetzt mit der Liste wieder gefüllt
         this.getRowSorter().setSortKeys(null);
         this.setRowSorter(null);

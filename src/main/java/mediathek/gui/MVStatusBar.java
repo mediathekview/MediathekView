@@ -24,6 +24,7 @@ import mediathek.daten.DatenDownload;
  */
 @SuppressWarnings("serial")
 public final class MVStatusBar extends JPanel {
+    private final Daten daten;
     private boolean stopTimer = false;
     private final EnumMap<MVStatusBar.StatusbarIndex, String> displayListForLeftLabel = new EnumMap<>(MVStatusBar.StatusbarIndex.class);
     private MVStatusBar.StatusbarIndex currentIndex = MVStatusBar.StatusbarIndex.NONE;
@@ -37,9 +38,9 @@ public final class MVStatusBar extends JPanel {
     private final String TRENNER = "  ||  ";
 
     public MVStatusBar() {
+        daten = Daten.getInstance();
+                EmptyBorder eBorder = new EmptyBorder(0, 5, 0, 5); // oben, rechts, unten, links
         bottomBar = new BottomBar(BottomBarSize.LARGE);
-
-        EmptyBorder eBorder = new EmptyBorder(0, 5, 0, 5); // oben, rechts, unten, links
         SoftBevelBorder sbb = new SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED);
 
         lblSel = new JLabel("0");
@@ -49,7 +50,7 @@ public final class MVStatusBar extends JPanel {
         lblLeft = new JLabel();
         bottomBar.addComponentToLeft(lblLeft);
 
-        if (Daten.debug) {
+        if (Daten.isDebug()) {
             bottomBar.addComponentToCenter(new MVMemoryUsageButton());
         }
 
@@ -68,7 +69,7 @@ public final class MVStatusBar extends JPanel {
         stopButton = new JButton();
         stopButton.setIcon(Icons.ICON_STATUSBAR_STOP);
         stopButton.setToolTipText("Abbrechen");
-        stopButton.addActionListener(e -> Daten.filmeLaden.setStop(true));
+        stopButton.addActionListener(e -> daten.getFilmeLaden().setStop(true));
 
         progressPanel.add(stopButton);
         bottomBar.addComponentToRight(progressPanel);
@@ -87,7 +88,7 @@ public final class MVStatusBar extends JPanel {
                 }
             }
         });
-        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
             }
@@ -145,7 +146,7 @@ public final class MVStatusBar extends JPanel {
             progress.setStringPainted(true);
             progress.setString(event.text);
         }
-        if (Daten.debug) {
+        if (Daten.isDebug()) {
             lblRight.setText(Functions.textLaenge(60, event.senderUrl, true /* mitte */, true /*addVorne*/));
         } else {
             lblRight.setVisible(false);
@@ -183,7 +184,7 @@ public final class MVStatusBar extends JPanel {
 
     private void setInfoDefault() {
         String textLinks;
-        int gesamt = Daten.listeFilme.size();
+        int gesamt = daten.getListeFilme().size();
         lblSel.setText("");
         // Anzahl der Filme
         if (gesamt == 1) {
@@ -196,9 +197,9 @@ public final class MVStatusBar extends JPanel {
 
     private void setInfoFilme() {
         String textLinks;
-        int gesamt = Daten.listeFilme.size();
+        int gesamt = daten.getListeFilme().size();
         int anzListe = Daten.guiFilme.getTableRowCount();
-        int runs = Daten.listeDownloadsButton.getListOfStartsNotFinished(DatenDownload.QUELLE_BUTTON).size();
+        int runs = daten.getListeDownloadsButton().getListOfStartsNotFinished(DatenDownload.QUELLE_BUTTON).size();
         lblSel.setText(Daten.guiFilme.tabelle.getSelectedRowCount() + "");
         // Anzahl der Filme
         if (gesamt == anzListe) {
@@ -243,8 +244,8 @@ public final class MVStatusBar extends JPanel {
         String textLinks;
         int ein = 0;
         int aus = 0;
-        int gesamt = Daten.listeAbo.size();
-        for (DatenAbo abo : Daten.listeAbo) {
+        int gesamt = daten.getListeAbo().size();
+        for (DatenAbo abo : daten.getListeAbo()) {
             if (abo.aboIstEingeschaltet()) {
                 ++ein;
             } else {
@@ -265,8 +266,8 @@ public final class MVStatusBar extends JPanel {
         String textLinks;
         // Text links: Zeilen Tabelle
         // nicht gestarted, laufen, fertig OK, fertig fehler
-        int[] starts = Daten.downloadInfos.downloadStarts;
-        int anz = Daten.listeDownloads.size();
+        int[] starts = daten.getDownloadInfos().downloadStarts;
+        int anz = daten.getListeDownloads().size();
         int diff = anz - starts[0];
 
         boolean print = false;
@@ -312,7 +313,7 @@ public final class MVStatusBar extends JPanel {
             }
 
             if (starts[4] > 0) {
-                textLinks += " (" + Daten.downloadInfos.bandwidthStr + ")";
+                textLinks += " (" + daten.getDownloadInfos().bandwidthStr + ")";
             }
 
             if (starts[3] == 1) {
@@ -341,10 +342,10 @@ public final class MVStatusBar extends JPanel {
     private void setTextForRightDisplay() {
         // Text rechts: alter/neuladenIn anzeigen
         String strText = "Filmliste erstellt: ";
-        strText += Daten.listeFilme.genDate();
+        strText += daten.getListeFilme().genDate();
         strText += " Uhr  ";
 
-        final int sekunden = Daten.listeFilme.getAge();
+        final int sekunden = daten.getListeFilme().getAge();
 
         if (sekunden != 0) {
             strText += "||  Alter: ";

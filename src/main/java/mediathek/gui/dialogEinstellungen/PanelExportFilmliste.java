@@ -77,7 +77,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                 if (ret == JOptionPane.OK_OPTION) {
                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     updateUI();
-                    new WriteFilmlistJson().filmlisteSchreibenJson(exporDatei, Daten.listeFilme);
+                    new WriteFilmlistJson().filmlisteSchreibenJson(exporDatei, daten.getListeFilme());
                     if (!new File(exporDatei).exists()) {
                         MVMessageDialog.showMessageDialog(parentComponent, "Datei:  " + "\"" + exporDatei + "\"" + "  Konnte nicht erstellt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
@@ -207,7 +207,7 @@ public class PanelExportFilmliste extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Filme exportieren");
+                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Filme exportieren");
                 chooser.setMode(FileDialog.SAVE);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
