@@ -9,7 +9,6 @@ apply from: "${project.rootDir}/gradle/eclipse.gradle"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-mainClassName = 'mediathek.Main'
 version = '13'
 
 compileJava {
