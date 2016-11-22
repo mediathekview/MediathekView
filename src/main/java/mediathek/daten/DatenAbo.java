@@ -47,10 +47,10 @@ public class DatenAbo extends MVData<DatenAbo> {
     public static final int MAX_ELEM = 13;
     public static final String TAG = "Abonnement";
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
-    public int mindestdauerMinuten = 0;
+    public int mindestdauerMinuten;
     public boolean min = true;
     public String[] arr;
-    public int nr = 0;
+    public int nr;
     String[] titel, thema, irgendwo;
 
     public DatenAbo() {

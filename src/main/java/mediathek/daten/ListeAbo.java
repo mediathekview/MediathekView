@@ -179,7 +179,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             }
         }
         GermanStringSorter sorter = GermanStringSorter.getInstance();
-        Collections.sort(pfade, sorter);
+        pfade.sort(sorter);
         return pfade;
     }
 
