@@ -34,7 +34,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 @SuppressWarnings("serial")
@@ -127,13 +126,9 @@ public class ListeAbo extends LinkedList<DatenAbo> {
     }
 
     public void addObjectData(TModelAbo model, String sender) {
-        Object[] object;
-        DatenAbo datenAbo;
         model.setRowCount(0);
-        Iterator<DatenAbo> iterator = this.iterator();
-        object = new Object[DatenAbo.MAX_ELEM];
-        while (iterator.hasNext()) {
-            datenAbo = iterator.next();
+        Object[] object = new Object[DatenAbo.MAX_ELEM];
+        for (DatenAbo datenAbo : this) {
             if (sender.isEmpty() || sender.equals(datenAbo.arr[DatenAbo.ABO_SENDER])) {
                 for (int m = 0; m < DatenAbo.MAX_ELEM; ++m) {
                     if (m == DatenAbo.ABO_NR) {
