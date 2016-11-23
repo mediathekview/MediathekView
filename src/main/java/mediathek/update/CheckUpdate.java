@@ -98,7 +98,7 @@ public class CheckUpdate {
                 ListePset listePsetStandard = ListePsetVorlagen.getStandarset(parent, daten, false /*replaceMuster*/);
                 String version = MVConfig.get(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET);
                 if (listePsetStandard != null) {
-                    if (Daten.listePset.size() > 0) {
+                    if (!Daten.listePset.isEmpty()) {
                         // ansonsten ist die Liste leer und dann gibts immer was
                         if (listePsetStandard.version.isEmpty()) {
                             // dann hat das Laden der aktuellen Standardversion nicht geklappt
@@ -132,7 +132,7 @@ public class CheckUpdate {
                     MVConfig.add(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
                     // die Zielpafade anpassen
                     ListePset listePsetOrgSpeichern = Daten.listePset.getListeSpeichern();
-                    if (listePsetOrgSpeichern.size() > 0) {
+                    if (!listePsetOrgSpeichern.isEmpty()) {
                         for (DatenPset psNew : listePsetStandard.getListeSpeichern()) {
                             psNew.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = listePsetOrgSpeichern.get(0).arr[DatenPset.PROGRAMMSET_ZIEL_PFAD];
                             psNew.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN] = listePsetOrgSpeichern.get(0).arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN];
