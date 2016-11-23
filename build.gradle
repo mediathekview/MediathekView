@@ -1,17 +1,18 @@
 import java.nio.file.Files
 import java.nio.file.Paths
+
 plugins {
     id "com.github.jk1.dependency-license-report" version "0.3.5"
 }
 apply plugin: 'java'
-apply plugin: 'application'
 apply plugin: 'distribution'
 apply from: "${project.rootDir}/gradle/eclipse.gradle"
+import org.apache.tools.ant.filters.ReplaceTokens
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 version = '13'
-mainClassName = 'mediathek.Main'
+def jarName = 'MediathekView.jar'
 
 compileJava {
     options.compilerArgs = ['-Xlint:all']
@@ -30,9 +31,9 @@ repositories {
 }
 
 ext {
-  swingxVersion = '1.6.6-SNAPSHOT'
-  swingxGroup = ''
-  propsFile = file('src/main/resources/version.properties').absoluteFile
+    swingxVersion = '1.6.6-SNAPSHOT'
+    swingxGroup = ''
+    propsFile = file('src/main/resources/version.properties').absoluteFile
 }
 
 def loadVersionProperties() {
@@ -84,7 +85,7 @@ task renameAndFillBuildFile(dependsOn: updateVersion) << {
 
 processResources.dependsOn renameAndFillBuildFile
 
-licenseReport  {
+licenseReport {
     outputDir = "res/Copyright/"
     excludes = [':MSearch', 'MediathekView:MSearch']
     configurations = ['compile']
@@ -99,15 +100,15 @@ tasks.withType(Zip) { task ->
     }
 }
 
-task copyProgrammIconsInRes (type: Copy) {
+task copyProgrammIconsInRes(type: Copy) {
     logger.lifecycle 'Copying Programm icons.'
     from 'src/main/resources/mediathek/res/programm'
-    into 'res/Icons/Programm/Version-'+version
+    into 'res/Icons/Programm/Version-' + version
 }
 
 processResources.dependsOn copyProgrammIconsInRes
 
-task copySenderIconsInRes (type: Copy) {
+task copySenderIconsInRes(type: Copy) {
     logger.lifecycle 'Copying Sender icons.'
     from 'src/main/resources/mediathek/res/sender'
     into 'res/Icons/Sender'
@@ -148,22 +149,51 @@ jar {
                 'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
         )
     }
+    archiveName = jarName
 }
 
 distributions {
     main {
-        baseName = 'MediathekView_'+version+'__'+new Date().format('dd.MM.yyyy')
+        baseName = 'MediathekView' + '__' + new Date().format('dd.MM.yyyy')
         contents {
             into('lib')
                     {
                         from configurations.compile
                     }
-            from{'res'}
+            from('res')
+                    {
+                        filesMatching('**/*.sh')
+                                {
+                                    filter(ReplaceTokens, tokens:[JARNAME:jarName])
+                                }
+                        filesMatching('**/*.txt')
+                                {
+                                    filter(ReplaceTokens, tokens:[JARNAME:jarName])
+                                }
+                        filesMatching('**/*.command')
+                                {
+                                    filter(ReplaceTokens, tokens:[JARNAME:jarName])
+                                }
+                    }
+
             from('build/libs')
                     {
                         include '*.jar'
                     }
+
         }
+    }
+
+    /**
+     * HOWTO debug:
+     *  1. run "gradle debug"
+     *  2. Call your IDE to connect to a remote java application on port 5005.
+     */
+    run{
+        main = 'mSearch.Main'
+        classpath = sourceSets.main.runtimeClasspath
+        args '-gui'
+        debug true
     }
 
 }
