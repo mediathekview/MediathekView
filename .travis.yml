@@ -28,7 +28,7 @@ deploy:
     secure: Nhuc1AdNA0fNpbdTyuJfhK4JKenFNLlDD2zQxu1oFCzJ2m47u8XePZnClOJMw/EWL0SSj1av75P/ZPms/CNkCQjwVb3pViJT459TOUKSVte9KNTEFk8lPX3uEpvYvZDKRCXpoAkn4TtiR9MkJP5v3OPiGnIKobS41KAAaK/D2DAh04MNuFm8JN4uwt+X60mYejsOi7lQ+ej/GuGGGQz5h+5cXdpPujQICqWaLzOxrZn/X+H1pCFx3g2oBtNF91ex63odOYeUbFXaRvnSTLMK2Glsn5y5kqi42ialmERFQp1aJ3VGBl6MAKOQU2iuxaFKqVIIXrZF+nl+uBbzct3Luew2cPimgOPKTDoHUOMVTXvm5ME1fbbDfSkn3O8YOWxBkRSpteNRIQguhGj8euj/agueZ4ILJNAQ1dtbV3Sjk44Xo8kgw3PdhQdFveAdyjnHi+MpSEFSk8FVbcnY3QXvFIMzPBuOu9Ft5DyzEKT9wUHKEJt0PxjRfPh8BA5Zqb3gu5ghAmX1aKa4ZCyEdH0yq6wLJNL5yJfufR0G+fmOw9t3GsCr1WqOnZRrpSLxEPJEUyK4quBmHDZgMkZDQXfDJv14ROPF+OHd2pOopzUiSKsJibjaskxMQjlr2kn5Oa41EeV88WjNeuYwlRzvA2TVEcHVdivkmWEvW5ZmgbIsfxI=
   file_glob: true
   file:
-      - "build/libs/MediathekView-.*.jar*"
+      - "build/libs/MediathekView.*.jar*"
       - "build/MediathekView.*.zip*"
       - "build/MediathekView.*.tar*"
   skip_cleanup: true
