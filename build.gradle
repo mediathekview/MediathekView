@@ -12,7 +12,9 @@ import org.apache.tools.ant.filters.ReplaceTokens
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 version = '13'
+
 def jarName = 'MediathekView.jar'
+def mainClass = 'mediathek.Main'
 
 compileJava {
     options.compilerArgs = ['-Xlint:all']
@@ -145,7 +147,7 @@ jar {
     manifest {
         attributes(
                 'SplashScreen-Image': 'mediathek/res/splash.png',
-                'Main-Class': 'mediathek.Main',
+                'Main-Class': mainClass,
                 'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
         )
     }
@@ -184,16 +186,19 @@ distributions {
         }
     }
 
+    task run (type: JavaExec, dependsOn: classes){
+        main = mainClass
+        classpath = sourceSets.main.runtimeClasspath
+    }
+
     /**
      * HOWTO debug:
      *  1. run "gradle debug"
      *  2. Call your IDE to connect to a remote java application on port 5005.
      */
-    run{
-        main = 'mSearch.Main'
+    task debug (type: JavaExec, dependsOn: classes){
+        main = mainClass
         classpath = sourceSets.main.runtimeClasspath
-        args '-gui'
         debug true
     }
-
 }
