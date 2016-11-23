@@ -248,13 +248,11 @@ public class MediathekGui extends JFrame {
         jPanelInfo.add(js, BorderLayout.CENTER);
     }
 
-    private String readPfadFromArguments(final String[] aArguments)
-    {
+    private String readPfadFromArguments(final String[] aArguments) {
         String pfad;
-        if (aArguments != null)
-        {
+        if (aArguments == null) {
             pfad = "";
-        }else{
+        } else {
             printArguments(aArguments);
             if (aArguments.length > 0) {
                 if (!aArguments[0].startsWith(ARGUMENT_PREFIX)) {
@@ -262,10 +260,10 @@ public class MediathekGui extends JFrame {
                         aArguments[0] += File.separator;
                     }
                     pfad = aArguments[0];
-                }else {
+                } else {
                     pfad = "";
                 }
-            }else{
+            } else {
                 pfad = "";
             }
         }
@@ -1003,11 +1001,6 @@ public class MediathekGui extends JFrame {
     public void showSettingsDialog()
     {
         dialogEinstellungen.setVisible(true);
-    }
-
-    public void hideSettingsDialog()
-    {
-        dialogEinstellungen.setVisible(false);
     }
 
     private void setMenuIcons()
