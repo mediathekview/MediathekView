@@ -19,17 +19,16 @@
  */
 package mediathek.gui.dialog;
 
-import javax.swing.JFrame;
+import mSearch.daten.DatenFilm;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.MVInfoFile;
-import mSearch.daten.DatenFilm;
-import mediathek.config.Icons;
 
-public class DialogFilmBeschreibung extends javax.swing.JDialog {
+import javax.swing.*;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class DialogFilmBeschreibung extends JDialog {
     DatenFilm datenFilm;
     JFrame paFrame;
     Daten daten;

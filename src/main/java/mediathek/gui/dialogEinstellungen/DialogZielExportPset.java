@@ -20,36 +20,31 @@
 package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Component;
-import java.awt.FileDialog;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import mSearch.tool.Log;
-import mediathek.config.Icons;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 
-public class DialogZielExportPset extends javax.swing.JDialog {
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
-    private static final long serialVersionUID = 1L;
+@SuppressWarnings("serial")
+public class DialogZielExportPset extends javax.swing.JDialog {
     private final Daten daten;
 
     public boolean ok = false;
     public String ziel = "";
     private Component parentComponent = null;
-    private Daten ddaten = null;
 
-    public DialogZielExportPset(JFrame parent, Daten dd, boolean modal, String pfad, String name) {
+    public DialogZielExportPset(JFrame parent, boolean modal, String pfad, String name) {
         super(parent, modal);
         daten = Daten.getInstance();
         parentComponent = parent;
-        ddaten = dd;
         initComponents();
         jButtonZiel.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
          jButtonOk.addActionListener(new OkBeobachter());

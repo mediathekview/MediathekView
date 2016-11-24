@@ -260,7 +260,7 @@ public class PanelPsetLang extends PanelVorlage {
         jRadioButtonAufloesungHD.addActionListener(e -> setAufloesung());
         jButtonPruefen.addActionListener(new BeobPuefen());
         tabelleProgramme.getSelectionModel().addListSelectionListener(new BeobTableSelect());
-        tabelleProgramme.setDefaultRenderer(Object.class, new CellRendererProgramme(daten));
+        tabelleProgramme.setDefaultRenderer(Object.class, new CellRendererProgramme());
         tabellePset.setDefaultRenderer(Object.class, new CellRendererPset());
         tabellePset.getSelectionModel().addListSelectionListener(new BeobTableSelectPset());
         tabellePset();
@@ -578,7 +578,7 @@ public class PanelPsetLang extends PanelVorlage {
                 }
             }
             String name = liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME].equals("") ? "Name.xml" : liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME] + ".xml";
-            DialogZielExportPset dialogZiel = new DialogZielExportPset(null, daten, true, exportPfad, FilenameUtils.replaceLeerDateiname(name, false /*pfad*/,
+            DialogZielExportPset dialogZiel = new DialogZielExportPset(null, true, exportPfad, FilenameUtils.replaceLeerDateiname(name, false /*pfad*/,
                     Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
                     Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII))));
             dialogZiel.setVisible(true);

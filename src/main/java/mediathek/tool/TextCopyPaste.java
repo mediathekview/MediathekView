@@ -19,17 +19,16 @@
  */
 package mediathek.tool;
 
-import java.awt.Toolkit;
+import javax.swing.*;
+import javax.swing.text.JTextComponent;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JPopupMenu;
-import javax.swing.text.JTextComponent;
 
+@SuppressWarnings("serial")
 public class TextCopyPaste extends MouseAdapter {
 
     private final JPopupMenu popup = new JPopupMenu();
@@ -50,8 +49,6 @@ public class TextCopyPaste extends MouseAdapter {
 
     public TextCopyPaste() {
         undoAction = new AbstractAction("Zurück") {
-            private static final long serialVersionUID = 1L;
-            
             @Override
             public void actionPerformed(ActionEvent ae) {
                 textComponent.setText("");
@@ -65,8 +62,6 @@ public class TextCopyPaste extends MouseAdapter {
         popup.addSeparator();
 
         cutAction = new AbstractAction("Ausschneiden") {
-            private static final long serialVersionUID = 1L;
-            
             @Override
             public void actionPerformed(ActionEvent ae) {
                 lastActionSelected = Actions.CUT;
@@ -78,8 +73,6 @@ public class TextCopyPaste extends MouseAdapter {
         popup.add(cutAction);
 
         copyAction = new AbstractAction("Kopieren") {
-            private static final long serialVersionUID = 1L;
-            
             @Override
             public void actionPerformed(ActionEvent ae) {
                 lastActionSelected = Actions.COPY;
@@ -90,8 +83,6 @@ public class TextCopyPaste extends MouseAdapter {
         popup.add(copyAction);
 
         pasteAction = new AbstractAction("Einfügen") {
-            private static final long serialVersionUID = 1L;
-            
             @Override
             public void actionPerformed(ActionEvent ae) {
                 lastActionSelected = Actions.PASTE;
@@ -104,8 +95,6 @@ public class TextCopyPaste extends MouseAdapter {
         popup.addSeparator();
 
         selectAllAction = new AbstractAction("Alles markieren") {
-            private static final long serialVersionUID = 1L;
-            
             @Override
             public void actionPerformed(ActionEvent ae) {
                 lastActionSelected = Actions.SELECT_ALL;

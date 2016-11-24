@@ -19,9 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JFrame;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Listener;
 import mediathek.config.Daten;
@@ -31,10 +28,12 @@ import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 
-public class PanelEinstellungenGeo extends PanelVorlage {
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class PanelEinstellungenGeo extends PanelVorlage {
     public PanelEinstellungenGeo(Daten d, JFrame pparentComponent) {
         super(d, pparentComponent);
         initComponents();

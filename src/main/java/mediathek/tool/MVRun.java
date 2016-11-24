@@ -19,18 +19,10 @@
  */
 package mediathek.tool;
 
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
+@SuppressWarnings("serial")
 public class MVRun extends javax.swing.JDialog {
-
-    private static final long serialVersionUID = 1L;
-    
-    /**
-     *
-     * @param parent
-     * @param title
-     */
     public MVRun(JFrame parent, String title) {
         super(parent, false);
         initComponents();
@@ -45,12 +37,7 @@ public class MVRun extends javax.swing.JDialog {
         if (SwingUtilities.isEventDispatchThread()) {
             beenden();
         } else {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    beenden();
-                }
-            });
+            SwingUtilities.invokeLater(this::beenden);
         }
     }
 

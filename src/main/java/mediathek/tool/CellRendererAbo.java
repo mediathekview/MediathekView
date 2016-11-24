@@ -20,23 +20,18 @@
 package mediathek.tool;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Component;
-import java.awt.Font;
-import javax.swing.ImageIcon;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
 
-public class CellRendererAbo extends DefaultTableCellRenderer {
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class CellRendererAbo extends DefaultTableCellRenderer {
     private final MVSenderIconCache senderIconCache;
     private static ImageIcon ja_16 = null;
     private static ImageIcon nein_12 = null;

@@ -35,9 +35,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@SuppressWarnings("serial")
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
-
-    private static final long serialVersionUID = 1L;
     /**
      * List for dynamic application of filters
      */

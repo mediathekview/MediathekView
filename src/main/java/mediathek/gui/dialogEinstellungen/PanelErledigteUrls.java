@@ -46,10 +46,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 
+@SuppressWarnings("serial")
 public class PanelErledigteUrls extends PanelVorlage {
-
-    private static final long serialVersionUID = 1L;
-    
     private boolean abo;
 
     public PanelErledigteUrls(Daten d, JFrame parentComponent) {

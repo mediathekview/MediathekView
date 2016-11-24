@@ -19,14 +19,12 @@
  */
 package mediathek.tool;
 
-import mediathek.daten.DatenAbo;
 import mSearch.tool.Datum;
+import mediathek.daten.DatenAbo;
 
+@SuppressWarnings("serial")
 public class TModelAbo extends TModel {
-
-    private static final long serialVersionUID = 1L;
-    
-    private Class<?>[] types;
+    private final Class<?>[] types;
 
     public TModelAbo(Object[][] data, Object[] columnNames) {
         super(data, columnNames);

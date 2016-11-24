@@ -56,8 +56,6 @@ public class MVFilterFrame extends JFrame implements MVFilter {
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), "einstellungen");
             ActionMap am = jComboBoxFilterSender.getActionMap();
             am.put("einstellungen", new AbstractAction() {
-                private static final long serialVersionUID = 1L;
-                
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     aMediathekGui.showSettingsDialog();
@@ -67,8 +65,6 @@ public class MVFilterFrame extends JFrame implements MVFilter {
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), "einstellungen");
             am = jComboBoxFilterThema.getActionMap();
             am.put("einstellungen", new AbstractAction() {
-                private static final long serialVersionUID = 1L;
-                
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     aMediathekGui.showSettingsDialog();
