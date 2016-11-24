@@ -19,10 +19,6 @@
  */
 package mediathek.tool;
 
-import java.awt.BorderLayout;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import javax.swing.WindowConstants;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
@@ -30,10 +26,13 @@ import mediathek.config.MVConfig.Configs;
 import mediathek.gui.PanelVorlage;
 import mediathek.res.GetIcon;
 
-public class MVFrame extends javax.swing.JFrame {
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class MVFrame extends JFrame {
     private final Daten daten;
     private final MediathekGui.TABS tabsState;
     private Configs nrGroesse = null;

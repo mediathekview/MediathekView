@@ -3,6 +3,10 @@
 <Form version="1.5" maxVersion="1.5" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <NonVisualComponents>
     <Container class="javax.swing.JPanel" name="jPanel2">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+      </AuxValues>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -17,12 +21,11 @@
         </DimensionLayout>
       </Layout>
     </Container>
-    <Component class="java.awt.Label" name="label1">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="label1"/>
-      </Properties>
-    </Component>
     <Component class="javax.swing.ButtonGroup" name="buttonGroup1">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+      </AuxValues>
     </Component>
   </NonVisualComponents>
   <AuxValues>
@@ -83,10 +86,18 @@
   </Layout>
   <SubComponents>
     <Container class="javax.swing.JTabbedPane" name="jTabbedPaneBlacklist">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+      </AuxValues>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
       <SubComponents>
         <Container class="javax.swing.JPanel" name="jPanel3">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+          </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
               <JTabbedPaneConstraints tabName="Blacklist allgemein">
@@ -132,6 +143,10 @@
                   </Border>
                 </Property>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
 
               <Layout>
                 <DimensionLayout dim="0">
@@ -163,6 +178,10 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Filme, deren Datum in der Zukunft liegt, sind meist nur Trailer"/>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="jCheckBoxZukunftNichtAnzeigen">
                   <Properties>
@@ -179,6 +198,10 @@
                   </Border>
                 </Property>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
 
               <Layout>
                 <DimensionLayout dim="0">
@@ -230,6 +253,10 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Nur Filme anzeigen mit einer L&#xe4;nge von mehr als [min]:"/>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JTextField" name="jTextFieldMinuten">
                   <Properties>
@@ -240,6 +267,10 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Filme, die keine L&#xe4;ngenangabe haben, werden immer angezeigt."/>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                  </AuxValues>
                 </Component>
               </SubComponents>
             </Container>
@@ -251,6 +282,10 @@
                   </Border>
                 </Property>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
 
               <Layout>
                 <DimensionLayout dim="0">
@@ -288,6 +323,10 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Geogeblockte Filme k&#xf6;nnen im jeweiligen &quot;Ausland&quot; nicht abgerufen werden."/>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="jCheckBoxGeo">
                   <Properties>
@@ -298,12 +337,20 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="(Dazu muss die eigene Position in den Einstellungen angegeben werden)"/>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                  </AuxValues>
                 </Component>
               </SubComponents>
             </Container>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="jPanel1">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+          </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
               <JTabbedPaneConstraints tabName="Sender-Thema-Titel">
@@ -390,6 +437,10 @@
                   </Border>
                 </Property>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
 
               <Layout>
                 <DimensionLayout dim="0">
@@ -480,6 +531,10 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Sender:"/>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JComboBox" name="jComboBoxSender">
                   <Properties>
@@ -495,6 +550,10 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Thema:"/>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JComboBox" name="jComboBoxThema">
                   <Properties>
@@ -515,11 +574,19 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Sender, Thema, Titel oder Thema/Titel:"/>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel8">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Titel:"/>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JTextField" name="jTextFieldTitel">
                 </Component>
@@ -527,6 +594,10 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Thema oder Titel:"/>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+                  </AuxValues>
                 </Component>
                 <Component class="javax.swing.JTextField" name="jTextFieldThemaTitel">
                 </Component>
@@ -566,6 +637,10 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="alle Eintr&#xe4;ge l&#xf6;schen:"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
             </Component>
             <Component class="javax.swing.JButton" name="jButtonTabelleLoeschen">
               <Properties>
