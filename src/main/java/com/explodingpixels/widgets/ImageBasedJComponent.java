@@ -1,15 +1,12 @@
 package com.explodingpixels.widgets;
 
-import java.awt.Dimension;
-import java.awt.Image;
-
 import com.explodingpixels.painter.ImagePainter;
 import com.explodingpixels.swingx.EPPanel;
 
+import java.awt.*;
+
+@SuppressWarnings("serial")
 public class ImageBasedJComponent extends EPPanel {
-
-    private static final long serialVersionUID = 1L;
-
     private final ImagePainter fPainter;
 
     public ImageBasedJComponent(Image image) {

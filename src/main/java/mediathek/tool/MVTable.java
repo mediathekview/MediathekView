@@ -19,24 +19,6 @@
  */
 package mediathek.tool;
 
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.dnd.DragSource;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.LinkedList;
-import java.util.List;
-import javax.activation.DataHandler;
-import javax.swing.RowSorter.SortKey;
-import javax.swing.*;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
@@ -44,10 +26,24 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.*;
 
+import javax.activation.DataHandler;
+import javax.swing.*;
+import javax.swing.RowSorter.SortKey;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DragSource;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.LinkedList;
+import java.util.List;
+
+@SuppressWarnings("serial")
 public final class MVTable extends JTable {
-
-    private static final long serialVersionUID = 1L;
-
     public enum TableType {
         STANDARD, FILME, DOWNLOADS, ABOS, PSET, PROG, MEDIA_DB
     };
@@ -65,9 +61,7 @@ public final class MVTable extends JTable {
     private List<? extends RowSorter.SortKey> listeSortKeys = null;
     private int indexSpalte = 0;
     private int[] selRows;
-    private String[] indexWertSelection = null;
     private int[] selIndexes = null;
-    private int selIndex = -1;
     private int selRow = -1;
     private boolean[] spaltenAnzeigen;
     private MVConfig.Configs iconAnzeigenStr = null;
@@ -419,6 +413,7 @@ public final class MVTable extends JTable {
             case DOWNLOADS:
             case FILME:
             case ABOS:
+                int selIndex = -1;
                 if (selRow >= 0) {
                     selIndex = (Integer) this.getModel().getValueAt(this.convertRowIndexToModel(selRow), indexSpalte);
                 } else {
@@ -439,7 +434,7 @@ public final class MVTable extends JTable {
             default:
                 if (selRows != null) {
                     if (selRows.length > 0) {
-                        indexWertSelection = new String[selRows.length];
+                        String[] indexWertSelection = new String[selRows.length];
                         for (int i = 0; i < selRows.length; ++i) {
                             indexWertSelection[i] = this.getModel().getValueAt(this.convertRowIndexToModel(selRows[i]), indexSpalte).toString();
                         }
@@ -869,9 +864,6 @@ public final class MVTable extends JTable {
     }
 
     private class TableRowTransferHandlerDownload extends TransferHandler {
-
-        private static final long serialVersionUID = 1L;
-        
         //private final DataFlavor localObjectFlavor = new ActivationDataFlavor(Integer.class, DataFlavor.javaJVMLocalObjectMimeType, "Integer Row Index");
         private final DataFlavor localObjectFlavor = new DataFlavor(Integer.class, "Integer Row Index");
         private JTable table = null;

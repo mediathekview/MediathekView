@@ -1,16 +1,11 @@
 package com.explodingpixels.widgets;
 
-import java.awt.Component;
-import java.awt.Graphics;
-
-import javax.swing.CellRendererPane;
-import javax.swing.JComponent;
-import javax.swing.JTable;
-import javax.swing.JViewport;
+import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import javax.swing.border.Border;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import java.awt.*;
 
 public class TableHeaderUtils {
 
@@ -32,10 +27,9 @@ public class TableHeaderUtils {
      * @param table the {@link JTable} to create the corner component for.
      * @return a {@link JComponent} that paints the given table's table header background.
      */
+    @SuppressWarnings("serial")
     public static JComponent createCornerComponent(final JTable table) {
         return new JComponent() {
-            private static final long serialVersionUID = 1L;
-
             @Override
             protected void paintComponent(Graphics g) {
                 paintHeader(g, table, 0, getWidth());
@@ -79,10 +73,9 @@ public class TableHeaderUtils {
      * Creates a {@link Border} that paints any empty space to the right of the last column header
      * in the given {@link JTable}'s {@link JTableHeader}.
      */
+    @SuppressWarnings("serial")
     private static Border createTableHeaderEmptyColumnPainter(final JTable table) {
         return new AbstractBorder() {
-            private static final long serialVersionUID = 1L;
-
             @Override
             public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
                 // if this JTableHeader is parented in a JViewport, then paint the table header

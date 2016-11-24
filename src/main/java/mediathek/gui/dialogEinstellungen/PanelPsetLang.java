@@ -261,7 +261,7 @@ public class PanelPsetLang extends PanelVorlage {
         jButtonPruefen.addActionListener(new BeobPuefen());
         tabelleProgramme.getSelectionModel().addListSelectionListener(new BeobTableSelect());
         tabelleProgramme.setDefaultRenderer(Object.class, new CellRendererProgramme(daten));
-        tabellePset.setDefaultRenderer(Object.class, new CellRendererPset(daten));
+        tabellePset.setDefaultRenderer(Object.class, new CellRendererPset());
         tabellePset.getSelectionModel().addListSelectionListener(new BeobTableSelectPset());
         tabellePset();
 //        spaltenSetzen();

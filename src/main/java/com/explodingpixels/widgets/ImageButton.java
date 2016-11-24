@@ -1,25 +1,16 @@
 package com.explodingpixels.widgets;
 
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
-
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
+import javax.swing.*;
 import javax.swing.plaf.basic.BasicButtonUI;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * A button backed by an image. Additionally, a click mask can be provided. Any fully
  * non-transparent pixels in the mask will not be clickable.
  */
+@SuppressWarnings("serial")
 public class ImageButton extends JButton {
-
-    private static final long serialVersionUID = 1L;
-    
     // create a static index for the alpha channel of a raster image. i'm not exactly sure where
     // it's specified that red = channel 0, green = channel 1, blue = channel 2, and
     // alpha = channel 3, but this have been the values i've observed.
