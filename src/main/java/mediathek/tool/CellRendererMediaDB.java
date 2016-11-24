@@ -19,25 +19,20 @@
  */
 package mediathek.tool;
 
-import java.awt.Component;
-import javax.swing.ImageIcon;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
 import mediathek.daten.DatenMediaDB;
 
-public class CellRendererMediaDB extends DefaultTableCellRenderer {
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
 
-    private static final long serialVersionUID = 1L;
-    
-    private static ImageIcon ja_16 = null;
-    private static ImageIcon nein_12 = null;
+@SuppressWarnings("serial")
+public class CellRendererMediaDB extends DefaultTableCellRenderer {
+    private static final ImageIcon ja_16 = Icons.ICON_TABELLE_EIN;
+    private static final ImageIcon nein_12 = Icons.ICON_TABELLE_AUS;
 
     public CellRendererMediaDB() {
-        ja_16 = Icons.ICON_TABELLE_EIN;
-        nein_12 = Icons.ICON_TABELLE_AUS;
     }
 
     @Override

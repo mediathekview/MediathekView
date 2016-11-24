@@ -36,28 +36,23 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("serial")
 public class ListeDownloads extends LinkedList<DatenDownload> {
-
-    private static final long serialVersionUID = 1L;
-
     private final Daten daten;
     private final LinkedList<DatenDownload> aktivDownloads = new LinkedList<>();
 
-    public ListeDownloads(Daten daten_)
-    {
+    public ListeDownloads(Daten daten_) {
         this.daten = daten_;
     }
 
     //===================================
     // public
     //===================================
-    public void sort()
-    {
+    public void sort() {
         Collections.sort(this);
     }
 
-    public synchronized boolean addMitNummer(DatenDownload e)
-    {
+    public synchronized boolean addMitNummer(DatenDownload e) {
         boolean ret = super.add(e);
         listeNummerieren();
         return ret;
@@ -66,8 +61,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     //    public synchronized void zurueckgestellteWiederAktivieren() {
     //        this.parallelStream().forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString());
     //    }
-    public synchronized void filmEintragen()
-    {
+    public synchronized void filmEintragen() {
         // bei einmal Downloads nach einem Programmstart/Neuladen der Filmliste
         // den Film wieder eintragen
         SysMsg.sysMsg("Filme in Downloads eintragen");
@@ -79,90 +73,73 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 });
     }
 
-    public synchronized void listePutzen()
-    {
+    public synchronized void listePutzen() {
         // fertige Downloads löschen
         // fehlerhafte zurücksetzen
         boolean gefunden = false;
         Iterator<DatenDownload> it = this.iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             DatenDownload d = it.next();
-            if (d.start == null)
-            {
+            if (d.start == null) {
                 continue;
             }
-            if (d.start.status == Start.STATUS_FERTIG)
-            {
+            if (d.start.status == Start.STATUS_FERTIG) {
                 // alles was fertig/fehlerhaft ist, kommt beim putzen weg
                 it.remove();
                 gefunden = true;
-            } else if (d.start.status == Start.STATUS_ERR)
-            {
+            } else if (d.start.status == Start.STATUS_ERR) {
                 // fehlerhafte werden zurückgesetzt
                 d.resetDownload();
                 gefunden = true;
             }
         }
-        if (gefunden)
-        {
+        if (gefunden) {
             Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         }
     }
 
-    public synchronized void listePutzen(DatenDownload datenDownload)
-    {
+    public synchronized void listePutzen(DatenDownload datenDownload) {
         // fertigen Download löschen
         boolean gefunden = false;
-        if (datenDownload.start != null)
-        {
-            if (datenDownload.start.status == Start.STATUS_FERTIG)
-            {
+        if (datenDownload.start != null) {
+            if (datenDownload.start.status == Start.STATUS_FERTIG) {
                 // alles was fertig/fehlerhaft ist, kommt beim putzen weg
                 remove(datenDownload);
                 gefunden = true;
-            } else if (datenDownload.start.status == Start.STATUS_ERR)
-            {
+            } else if (datenDownload.start.status == Start.STATUS_ERR) {
                 // fehlerhafte werden zurückgesetzt
                 datenDownload.resetDownload();
                 gefunden = true;
             }
         }
-        if (gefunden)
-        {
+        if (gefunden) {
             Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         }
     }
 
-    public synchronized void abosAuffrischen()
-    {
+    public synchronized void abosAuffrischen() {
         // fehlerhafte und nicht gestartete löschen, wird nicht gemeldet ob was gefunden wurde
-        boolean gefunden = false;
+        //boolean gefunden = false;
         Iterator<DatenDownload> it = this.iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             DatenDownload d = it.next();
-            if (d.isInterrupted())
-            {
+            if (d.isInterrupted()) {
                 // guter Rat teuer was da besser wäre??
                 // wird auch nach dem Neuladen der Filmliste aufgerufen: also Finger weg
                 d.setGroesseFromFilm();//bei den Abgebrochenen wird die tatsächliche Dateigröße angezeigt
                 continue;
             }
-            if (!d.istAbo())
-            {
+            if (!d.istAbo()) {
                 continue;
             }
-            if (d.start == null)
-            {
+            if (d.start == null) {
                 // noch nicht gestartet
                 it.remove();
-                gefunden = true;
-            } else if (d.start.status == Start.STATUS_ERR)
-            {
+                //gefunden = true;
+            } else if (d.start.status == Start.STATUS_ERR) {
                 // fehlerhafte
                 d.resetDownload();
-                gefunden = true;
+                //gefunden = true;
             }
         }
 //        if (gefunden) {
@@ -171,37 +148,29 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         this.forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString());
     }
 
-    public synchronized int nochNichtFertigeDownloads()
-    {
+    public synchronized int nochNichtFertigeDownloads() {
         // es wird nach noch nicht fertigen gestarteten Downloads gesucht
         int ret = 0;
-        for (DatenDownload download : this)
-        {
-            if (download.runNotFinished())
-            {
+        for (DatenDownload download : this) {
+            if (download.runNotFinished()) {
                 ++ret;
             }
         }
         return ret;
     }
 
-    public synchronized void downloadsVorziehen(ArrayList<DatenDownload> download)
-    {
-        for (DatenDownload datenDownload : download)
-        {
+    public synchronized void downloadsVorziehen(ArrayList<DatenDownload> download) {
+        for (DatenDownload datenDownload : download) {
             this.remove(datenDownload);
             this.addFirst(datenDownload);
         }
         Listener.notify(Listener.EREIGNIS_REIHENFOLGE_DOWNLOAD, this.getClass().getSimpleName());
     }
 
-    public synchronized DatenDownload getDownloadByUrl(String url)
-    {
+    public synchronized DatenDownload getDownloadByUrl(String url) {
         DatenDownload ret = null;
-        for (DatenDownload download : this)
-        {
-            if (download.arr[DatenDownload.DOWNLOAD_URL].equals(url))
-            {
+        for (DatenDownload download : this) {
+            if (download.arr[DatenDownload.DOWNLOAD_URL].equals(url)) {
                 ret = download;
                 break;
             }
@@ -209,19 +178,14 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return ret;
     }
 
-    public synchronized void delDownloadButton(String url)
-    {
+    public synchronized void delDownloadButton(String url) {
         Iterator<DatenDownload> it = this.iterator();
         DatenDownload datenDownload;
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             datenDownload = it.next();
-            if (datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(url))
-            {
-                if (datenDownload.start != null)
-                {
-                    if (datenDownload.start.status < Start.STATUS_FERTIG)
-                    {
+            if (datenDownload.arr[DatenDownload.DOWNLOAD_URL].equals(url)) {
+                if (datenDownload.start != null) {
+                    if (datenDownload.start.status < Start.STATUS_FERTIG) {
                         datenDownload.start.stoppen = true;
                     }
                 }
@@ -233,24 +197,17 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    public synchronized void downloadAbbrechen(ArrayList<DatenDownload> download)
-    {
+    public synchronized void downloadAbbrechen(ArrayList<DatenDownload> download) {
         boolean gefunden = false;
-        if (download != null)
-        {
-            for (DatenDownload down : download)
-            {
-                if (this.contains(down))
-                {
+        if (download != null) {
+            for (DatenDownload down : download) {
+                if (this.contains(down)) {
                     // nur dann ist er in der Liste
-                    if (down.start != null)
-                    {
-                        if (down.start.status < Start.STATUS_FERTIG)
-                        {
+                    if (down.start != null) {
+                        if (down.start.status < Start.STATUS_FERTIG) {
                             down.start.stoppen = true;
                         }
-                        if (down.start.status == Start.STATUS_RUN)
-                        {
+                        if (down.start.status == Start.STATUS_RUN) {
                             down.interrupt();
                         }
                     }
@@ -259,44 +216,33 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
             }
         }
-        if (gefunden)
-        {
+        if (gefunden) {
             Listener.notify(Listener.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
         }
     }
 
-    public synchronized void downloadLoeschen(ArrayList<DatenDownload> download)
-    {
+    public synchronized void downloadLoeschen(ArrayList<DatenDownload> download) {
         boolean gefunden = false;
-        if (download != null)
-        {
-            for (DatenDownload down : download)
-            {
-                if (down.start != null)
-                {
-                    if (down.start.status < Start.STATUS_FERTIG)
-                    {
+        if (download != null) {
+            for (DatenDownload down : download) {
+                if (down.start != null) {
+                    if (down.start.status < Start.STATUS_FERTIG) {
                         down.start.stoppen = true;
                     }
                 }
-                if (remove(down))
-                {
+                if (remove(down)) {
                     gefunden = true;
                 }
             }
         }
-        if (gefunden)
-        {
+        if (gefunden) {
             Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
         }
     }
 
-    public synchronized DatenDownload getDownloadUrlFilm(String urlFilm)
-    {
-        for (DatenDownload datenDownload : this)
-        {
-            if (datenDownload.arr[DatenDownload.DOWNLOAD_FILM_URL].equals(urlFilm))
-            {
+    public synchronized DatenDownload getDownloadUrlFilm(String urlFilm) {
+        for (DatenDownload datenDownload : this) {
+            if (datenDownload.arr[DatenDownload.DOWNLOAD_FILM_URL].equals(urlFilm)) {
                 return datenDownload;
             }
         }
@@ -304,62 +250,47 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     }
 
     public synchronized void getModel(TModelDownload tModel, boolean onlyAbos, boolean onlyDownloads,
-                                      boolean onlyNotStarted, boolean onlyStarted, boolean onlyWaiting, boolean onlyRun, boolean onlyFinished)
-    {
+                                      boolean onlyNotStarted, boolean onlyStarted, boolean onlyWaiting, boolean onlyRun, boolean onlyFinished) {
         Object[] object;
         tModel.setRowCount(0);
-        for (DatenDownload download : this)
-        {
-            if (download.istZurueckgestellt())
-            {
+        for (DatenDownload download : this) {
+            if (download.istZurueckgestellt()) {
                 continue;
             }
 
             boolean istAbo = download.istAbo();
-            if (onlyAbos && !istAbo)
-            {
+            if (onlyAbos && !istAbo) {
                 continue;
             }
-            if (onlyDownloads && istAbo)
-            {
-                continue;
-            }
-
-            if (onlyNotStarted && !download.notStarted())
-            {
-                continue;
-            }
-            if (onlyStarted && download.notStarted())
-            {
+            if (onlyDownloads && istAbo) {
                 continue;
             }
 
-            if (onlyWaiting && !download.isWaiting())
-            {
+            if (onlyNotStarted && !download.notStarted()) {
                 continue;
             }
-            if (onlyRun && !download.running())
-            {
+            if (onlyStarted && download.notStarted()) {
                 continue;
             }
-            if (onlyFinished && !download.isFinished())
-            {
+
+            if (onlyWaiting && !download.isWaiting()) {
+                continue;
+            }
+            if (onlyRun && !download.running()) {
+                continue;
+            }
+            if (onlyFinished && !download.isFinished()) {
                 continue;
             }
 
             object = new Object[DatenDownload.MAX_ELEM];
-            for (int i = 0; i < DatenDownload.MAX_ELEM; ++i)
-            {
-                if (i == DatenDownload.DOWNLOAD_NR)
-                {
+            for (int i = 0; i < DatenDownload.MAX_ELEM; ++i) {
+                if (i == DatenDownload.DOWNLOAD_NR) {
                     object[i] = download.nr;
-                } else if (i == DatenDownload.DOWNLOAD_FILM_NR)
-                {
-                    if (download.film != null)
-                    {
+                } else if (i == DatenDownload.DOWNLOAD_FILM_NR) {
+                    if (download.film != null) {
                         object[i] = download.film.nr;
-                    } else
-                    {
+                    } else {
                         object[i] = 0;
                     }
                 } else if (i == DatenDownload.DOWNLOAD_PROGRAMM_RESTART
@@ -368,33 +299,24 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                         || i == DatenDownload.DOWNLOAD_INFODATEI
                         || i == DatenDownload.DOWNLOAD_SUBTITLE
                         || i == DatenDownload.DOWNLOAD_ZURUECKGESTELLT
-                        || i == DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER)
-                {
+                        || i == DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER) {
                     object[i] = "";
-                } else if (i == DatenDownload.DOWNLOAD_DATUM)
-                {
+                } else if (i == DatenDownload.DOWNLOAD_DATUM) {
                     object[i] = download.datumFilm;
-                } else if (i == DatenDownload.DOWNLOAD_RESTZEIT)
-                {
+                } else if (i == DatenDownload.DOWNLOAD_RESTZEIT) {
                     object[i] = download.getTextRestzeit();
-                } else if (i == DatenDownload.DOWNLOAD_BANDBREITE)
-                {
+                } else if (i == DatenDownload.DOWNLOAD_BANDBREITE) {
                     object[i] = download.getTextBandbreite();
-                } else if (i == DatenDownload.DOWNLOAD_PROGRESS)
-                {
+                } else if (i == DatenDownload.DOWNLOAD_PROGRESS) {
                     object[i] = setProgress(download);
-                } else if (i == DatenDownload.DOWNLOAD_GROESSE)
-                {
+                } else if (i == DatenDownload.DOWNLOAD_GROESSE) {
                     object[i] = download.mVFilmSize;
-                } else if (i == DatenDownload.DOWNLOAD_REF)
-                {
+                } else if (i == DatenDownload.DOWNLOAD_REF) {
                     object[i] = download;
-                } else if (i != DatenDownload.DOWNLOAD_URL && !DatenDownload.anzeigen(i))
-                {
+                } else if (i != DatenDownload.DOWNLOAD_URL && !DatenDownload.anzeigen(i)) {
                     // Filmnr und URL immer füllen, egal ob angezeigt
                     object[i] = "";
-                } else
-                {
+                } else {
                     object[i] = download.arr[i];
                 }
             }
@@ -402,41 +324,31 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    private String setProgress(DatenDownload download)
-    {
-        if (download.start != null)
-        {
-            if (1 < download.start.percent && download.start.percent < Start.PROGRESS_FERTIG)
-            {
+    private String setProgress(DatenDownload download) {
+        if (download.start != null) {
+            if (1 < download.start.percent && download.start.percent < Start.PROGRESS_FERTIG) {
                 String s = Double.toString(download.start.percent / 10.0) + "%";
-                while (s.length() < 5)
-                {
+                while (s.length() < 5) {
                     s = "0" + s;
                 }
                 return s;
-            } else
-            {
+            } else {
                 return Start.getTextProgress(download.isDownloadManager(), download.start);
             }
-        } else
-        {
+        } else {
             return "";
         }
     }
 
     @SuppressWarnings("unchecked")
-    public synchronized void setModelProgress(TModelDownload tModel)
-    {
+    public synchronized void setModelProgress(TModelDownload tModel) {
         Iterator<List<?>> it = tModel.getDataVector().iterator();
         int row = 0;
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             List<?> l = it.next();
             DatenDownload datenDownload = (DatenDownload) l.get(DatenDownload.DOWNLOAD_REF);
-            if (datenDownload.start != null)
-            {
-                if (datenDownload.start.status == Start.STATUS_RUN)
-                {
+            if (datenDownload.start != null) {
+                if (datenDownload.start.status == Start.STATUS_RUN) {
                     tModel.setValueAt(datenDownload.getTextRestzeit(), row, DatenDownload.DOWNLOAD_RESTZEIT);
                     tModel.setValueAt(datenDownload.getTextBandbreite(), row, DatenDownload.DOWNLOAD_BANDBREITE);
                     tModel.setValueAt(setProgress(datenDownload), row, DatenDownload.DOWNLOAD_PROGRESS);
@@ -448,13 +360,10 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     }
 
     @SuppressWarnings("unchecked")
-    public synchronized void setModelProgressAlleStart(TModelDownload tModel)
-    {
-        for (List<Object> l : (Iterable<List<Object>>) tModel.getDataVector())
-        {
+    public synchronized void setModelProgressAlleStart(TModelDownload tModel) {
+        for (List<Object> l : (Iterable<List<Object>>) tModel.getDataVector()) {
             DatenDownload datenDownload = (DatenDownload) l.get(DatenDownload.DOWNLOAD_REF);
-            if (datenDownload.start != null)
-            {
+            if (datenDownload.start != null) {
                 l.set(DatenDownload.DOWNLOAD_RESTZEIT, datenDownload.getTextRestzeit());
                 l.set(DatenDownload.DOWNLOAD_BANDBREITE, datenDownload.getTextBandbreite());
                 l.set(DatenDownload.DOWNLOAD_PROGRESS, setProgress(datenDownload));
@@ -464,8 +373,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    public synchronized void abosSuchen(JFrame parent)
-    {
+    public synchronized void abosSuchen(JFrame parent) {
         // in der Filmliste nach passenden Filmen suchen und 
         // in die Liste der Downloads eintragen
         final HashSet<String> listeUrls = new HashSet<>();
@@ -483,32 +391,26 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 // dann gibts dafür kein Abo
                 continue;
             }
-            if (!abo.aboIstEingeschaltet())
-            {
+            if (!abo.aboIstEingeschaltet()) {
                 continue;
             }
-            if (checkWithBlackList)
-            {
+            if (checkWithBlackList) {
                 //Blacklist auch bei Abos anwenden
-                if (!daten.getListeBlacklist().checkBlackOkFilme_Downloads(film))
-                {
+                if (!daten.getListeBlacklist().checkBlackOkFilme_Downloads(film)) {
                     continue;
                 }
             }
-            if (daten.erledigteAbos.urlPruefen(film.getUrlHistory()))
-            {
+            if (daten.erledigteAbos.urlPruefen(film.getUrlHistory())) {
                 // ist schon mal geladen worden
                 continue;
             }
             DatenPset pSet = abo.arr[DatenAbo.ABO_PSET].isEmpty() ? pSet_ : Daten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET]);
             //DatenPset pSet = Daten.listePset.getPsetAbo(abo.arr[DatenAbo.ABO_PSET]);
-            if (pSet != null)
-            {
+            if (pSet != null) {
 
                 // mit der tatsächlichen URL prüfen, ob die URL schon in der Downloadliste ist
                 String urlDownload = film.getUrlFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG]);
-                if (listeUrls.contains(urlDownload))
-                {
+                if (listeUrls.contains(urlDownload)) {
                     continue;
                 }
                 listeUrls.add(urlDownload);
@@ -519,64 +421,51 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
                 //diesen Film in die Downloadliste eintragen
                 abo.arr[DatenAbo.ABO_DOWN_DATUM] = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
-                if (!abo.arr[DatenAbo.ABO_PSET].equals(pSet.arr[DatenPset.PROGRAMMSET_NAME]))
-                {
+                if (!abo.arr[DatenAbo.ABO_PSET].equals(pSet.arr[DatenPset.PROGRAMMSET_NAME])) {
                     // nur den Namen anpassen, falls geändert
                     abo.arr[DatenAbo.ABO_PSET] = pSet.arr[DatenPset.PROGRAMMSET_NAME];
                 }
                 //dann in die Liste schreiben
                 add(new DatenDownload(pSet, film, DatenDownload.QUELLE_ABO, abo, "", "", "" /*Aufloesung*/));
                 gefunden = true;
-            } else if (parent != null)
-            {
+            } else if (parent != null) {
                 // sonst sind wir evtl. nur in einer Konsole ohne X
                 new DialogAboNoSet(parent, daten).setVisible(true);
                 break;
             }
         }
-        if (gefunden)
-        {
+        if (gefunden) {
             listeNummerieren();
         }
         listeUrls.clear();
     }
 
-    public synchronized void listeNummerieren()
-    {
+    public synchronized void listeNummerieren() {
         int i = 1;
-        for (DatenDownload datenDownload : this)
-        {
+        for (DatenDownload datenDownload : this) {
             datenDownload.nr = i++;
         }
     }
 
-    public synchronized int[] getStarts()
-    {
+    public synchronized int[] getStarts() {
         // liefert die Anzahl Starts die:
         // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
         // Downloads und Abos
 
         int[] ret = new int[]{0, 0, 0, 0, 0, 0, 0};
-        for (DatenDownload download : this)
-        {
-            if (!download.istZurueckgestellt())
-            {
+        for (DatenDownload download : this) {
+            if (!download.istZurueckgestellt()) {
                 ++ret[0];
             }
-            if (download.istAbo())
-            {
+            if (download.istAbo()) {
                 ++ret[1];
-            } else
-            {
+            } else {
                 ++ret[2];
             }
-            if (download.start != null)
-            {
+            if (download.start != null) {
                 //final int quelle = download.getQuelle();
-                if (download.quelle == DatenDownload.QUELLE_ABO || download.quelle == DatenDownload.QUELLE_DOWNLOAD)
-                {
-                    switch (download.start.status)
-                    {
+                if (download.quelle == DatenDownload.QUELLE_ABO || download.quelle == DatenDownload.QUELLE_DOWNLOAD) {
+                    switch (download.start.status) {
                         case Start.STATUS_INIT:
                             ++ret[3];
                             break;
@@ -621,16 +510,12 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
      *
      * @return The time in SECONDS.
      */
-    public synchronized long getMaximumFinishTimeOfRunningStarts()
-    {
+    public synchronized long getMaximumFinishTimeOfRunningStarts() {
         long rem = 0;
-        for (DatenDownload d : this)
-        {
+        for (DatenDownload d : this) {
             Start s = d.start;
-            if (s != null)
-            {
-                if (s.status < Start.STATUS_FERTIG)
-                {
+            if (s != null) {
+                if (s.status < Start.STATUS_FERTIG) {
                     rem = Math.max(rem, s.restSekunden);
                 }
             }
@@ -645,8 +530,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
      * @param quelle Use QUELLE_XXX constants from {@link mediathek.controller.starter.Start}.
      * @return A list with all download objects.
      */
-    public synchronized LinkedList<DatenDownload> getListOfStartsNotFinished(int quelle)
-    {
+    public synchronized LinkedList<DatenDownload> getListOfStartsNotFinished(int quelle) {
         aktivDownloads.clear();
         aktivDownloads.addAll(this.stream()
                 .filter(download -> download.start != null)
@@ -662,8 +546,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
      * @param quelle Use QUELLE_XXX constants from {@link mediathek.controller.starter.Start}.
      * @param liste
      */
-    public synchronized void getListOfStartsNotFinished(int quelle, LinkedList<DatenDownload> liste)
-    {
+    public synchronized void getListOfStartsNotFinished(int quelle, LinkedList<DatenDownload> liste) {
         liste.clear();
         liste.addAll(this.stream().filter(download -> download.start != null)
                 .filter(download -> download.start.status < Start.STATUS_FERTIG)
@@ -671,29 +554,21 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 .collect(Collectors.toList()));
     }
 
-    public synchronized TModel getModelStarts(TModel model)
-    {
+    public synchronized TModel getModelStarts(TModel model) {
         model.setRowCount(0);
         Object[] object;
 
-        if (!this.isEmpty())
-        {
+        if (!this.isEmpty()) {
             final int objLen = DatenDownload.MAX_ELEM + 1;
             object = new Object[objLen];
-            for (DatenDownload datenDownload : this)
-            {
-                if (datenDownload.start != null)
-                {
-                    for (int k = 0; k < objLen; ++k)
-                    {
-                        if (k < DatenDownload.MAX_ELEM)
-                        {
+            for (DatenDownload datenDownload : this) {
+                if (datenDownload.start != null) {
+                    for (int k = 0; k < objLen; ++k) {
+                        if (k < DatenDownload.MAX_ELEM) {
                             object[k] = datenDownload.arr[k];
-                        } else if (datenDownload.istAbo())
-                        {
+                        } else if (datenDownload.istAbo()) {
                             object[k] = "Abo";
-                        } else
-                        {
+                        } else {
                             object[k] = "";
                         }
                     }
@@ -704,20 +579,15 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return model;
     }
 
-    public synchronized void buttonStartsPutzen()
-    {
+    public synchronized void buttonStartsPutzen() {
         // Starts durch Button die fertig sind, löschen
         boolean gefunden = false;
         Iterator<DatenDownload> it = iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             DatenDownload d = it.next();
-            if (d.start != null)
-            {
-                if (d.quelle == DatenDownload.QUELLE_BUTTON)
-                {
-                    if (d.start.status >= Start.STATUS_FERTIG)
-                    {
+            if (d.start != null) {
+                if (d.quelle == DatenDownload.QUELLE_BUTTON) {
+                    if (d.start.status >= Start.STATUS_FERTIG) {
                         // dann ist er fertig oder abgebrochen
                         it.remove();
                         gefunden = true;
@@ -725,26 +595,20 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 }
             }
         }
-        if (gefunden)
-        {
+        if (gefunden) {
             Listener.notify(Listener.EREIGNIS_START_EVENT_BUTTON, this.getClass().getSimpleName());
         }
     }
 
-    public synchronized DatenDownload getNextStart()
-    {
+    public synchronized DatenDownload getNextStart() {
         // get: erstes passendes Element der Liste zurückgeben oder null
         // und versuchen dass bei mehreren laufenden Downloads ein anderer Sender gesucht wird
         DatenDownload ret = null;
-        if (this.size() > 0 && getDown(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD))))
-        {
+        if (this.size() > 0 && getDown(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)))) {
             DatenDownload datenDownload = naechsterStart();
-            if (datenDownload != null)
-            {
-                if (datenDownload.start != null)
-                {
-                    if (datenDownload.start.status == Start.STATUS_INIT)
-                    {
+            if (datenDownload != null) {
+                if (datenDownload.start != null) {
+                    if (datenDownload.start.status == Start.STATUS_INIT) {
                         ret = datenDownload;
                     }
                 }
@@ -753,28 +617,22 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return ret;
     }
 
-    public DatenDownload getRestartDownload()
-    {
+    public DatenDownload getRestartDownload() {
         // Versuch einen Fehlgeschlagenen Download zu finden um ihn wieder zu starten
         // die Fehler laufen aber einzeln, vorsichtshalber
-        if (!getDown(1))
-        {
+        if (!getDown(1)) {
             return null;
         }
-        for (DatenDownload datenDownload : this)
-        {
-            if (datenDownload.start == null)
-            {
+        for (DatenDownload datenDownload : this) {
+            if (datenDownload.start == null) {
                 continue;
             }
 
             if (datenDownload.start.status == Start.STATUS_ERR
                     && datenDownload.start.countRestarted < MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART)
-                    && !maxSenderLaufen(datenDownload, 1))
-            {
+                    && !maxSenderLaufen(datenDownload, 1)) {
                 int restarted = datenDownload.start.countRestarted;
-                if ( /*datenDownload.art == DatenDownload.ART_PROGRAMM && datenDownload.isRestart()   || */datenDownload.art == DatenDownload.ART_DOWNLOAD)
-                {
+                if ( /*datenDownload.art == DatenDownload.ART_PROGRAMM && datenDownload.isRestart()   || */datenDownload.art == DatenDownload.ART_DOWNLOAD) {
                     datenDownload.resetDownload();
                     datenDownload.startDownload(daten);
                     datenDownload.start.countRestarted = ++restarted; //datenDownload.start ist neu!!!
@@ -788,16 +646,14 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     // ################################################################
     // private
     // ################################################################
-    private boolean getDown(int max)
-    {
+    private boolean getDown(int max) {
         int count = 0;
         for (DatenDownload datenDownload : this) {
             Start s = datenDownload.start;
             if (s != null) {
                 if (s.status == Start.STATUS_RUN) {
                     ++count;
-                    if (count >= max)
-                    {
+                    if (count >= max) {
                         return false;
                     }
                 }
@@ -806,19 +662,14 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return true;
     }
 
-    private DatenDownload naechsterStart()
-    {
+    private DatenDownload naechsterStart() {
         Iterator<DatenDownload> it = iterator();
         //erster Versuch, Start mit einem anderen Sender
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             DatenDownload datenDownload = it.next();
-            if (datenDownload.start != null)
-            {
-                if (datenDownload.start.status == Start.STATUS_INIT)
-                {
-                    if (!maxSenderLaufen(datenDownload, 1))
-                    {
+            if (datenDownload.start != null) {
+                if (datenDownload.start.status == Start.STATUS_INIT) {
+                    if (!maxSenderLaufen(datenDownload, 1)) {
                         return datenDownload;
                     }
                 }
@@ -826,23 +677,18 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
 
         int maxProSender = Konstanten.MAX_SENDER_FILME_LADEN;
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER)))
-        {
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER))) {
             // dann darf nur ein Download pro Server gestartet werden
             maxProSender = 1;
         }
 
         //zweiter Versuch, Start mit einem passenden Sender
         it = iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             DatenDownload datenDownload = it.next();
-            if (datenDownload.start != null)
-            {
-                if (datenDownload.start.status == Start.STATUS_INIT)
-                {
-                    if (!maxSenderLaufen(datenDownload, maxProSender))
-                    {
+            if (datenDownload.start != null) {
+                if (datenDownload.start.status == Start.STATUS_INIT) {
+                    if (!maxSenderLaufen(datenDownload, maxProSender)) {
                         return datenDownload;
                     }
                 }
@@ -851,88 +697,67 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return null;
     }
 
-    private boolean maxSenderLaufen(DatenDownload d, int max)
-    {
+    private boolean maxSenderLaufen(DatenDownload d, int max) {
         //true wenn bereits die maxAnzahl pro Sender läuft
-        try
-        {
+        try {
             int counter = 0;
             String host = getHost(d);
-            for (DatenDownload download : this)
-            {
-                if (download.start != null)
-                {
+            for (DatenDownload download : this) {
+                if (download.start != null) {
                     if (download.start.status == Start.STATUS_RUN
-                            && getHost(download).equalsIgnoreCase(host))
-                    {
+                            && getHost(download).equalsIgnoreCase(host)) {
                         counter++;
-                        if (counter >= max)
-                        {
+                        if (counter >= max) {
                             return true;
                         }
                     }
                 }
             }
             return false;
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
             return false;
         }
     }
 
-    private String getHost(DatenDownload datenDownload)
-    {
+    private String getHost(DatenDownload datenDownload) {
         String host = "";
-        try
-        {
-            try
-            {
+        try {
+            try {
                 String uurl = datenDownload.arr[DatenDownload.DOWNLOAD_URL];
                 // die funktion "getHost()" kann nur das Protokoll "http" ??!??
-                if (uurl.startsWith("rtmpt:"))
-                {
+                if (uurl.startsWith("rtmpt:")) {
                     uurl = uurl.toLowerCase().replace("rtmpt:", "http:");
                 }
-                if (uurl.startsWith("rtmp:"))
-                {
+                if (uurl.startsWith("rtmp:")) {
                     uurl = uurl.toLowerCase().replace("rtmp:", "http:");
                 }
-                if (uurl.startsWith("mms:"))
-                {
+                if (uurl.startsWith("mms:")) {
                     uurl = uurl.toLowerCase().replace("mms:", "http:");
                 }
                 URL url = new URL(uurl);
                 String tmp = url.getHost();
-                if (tmp.contains("."))
-                {
+                if (tmp.contains(".")) {
                     host = tmp.substring(tmp.lastIndexOf('.'));
                     tmp = tmp.substring(0, tmp.lastIndexOf('.'));
-                    if (tmp.contains("."))
-                    {
+                    if (tmp.contains(".")) {
                         host = tmp.substring(tmp.lastIndexOf('.') + 1) + host;
-                    } else if (tmp.contains("/"))
-                    {
+                    } else if (tmp.contains("/")) {
                         host = tmp.substring(tmp.lastIndexOf('/') + 1) + host;
-                    } else
-                    {
+                    } else {
                         host = "host";
                     }
                 }
-            } catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 // für die Hosts bei denen das nicht klappt
                 // Log.systemMeldung("getHost 1: " + s.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
                 host = "host";
-            } finally
-            {
-                if (host.equals(""))
-                {
+            } finally {
+                if (host.equals("")) {
                     // Log.systemMeldung("getHost 3: " + s.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
                     host = "host";
                 }
             }
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
             // Log.systemMeldung("getHost 4: " + s.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
             host = "exception";
         }

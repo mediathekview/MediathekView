@@ -28,7 +28,10 @@ import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelMediaDB;
 
 import javax.swing.*;
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.io.LineNumberReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,20 +39,17 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("serial")
 public class ListeMediaDB extends LinkedList<DatenMediaDB> {
-
-    private static final long serialVersionUID = 1L;
-
     public final static String TRENNER = "  |###|  ";
     public final String FILE_SEPERATOR_MEDIA_PATH = "<>";
     private boolean makeIndex = false;
     private String[] suffix = {""};
     private boolean ohneSuffix = true;
 
-    private  Daten daten;
+    private final Daten daten;
 
-    public ListeMediaDB(Daten aDaten)
-    {
+    public ListeMediaDB(Daten aDaten) {
         daten = aDaten;
     }
 
@@ -149,21 +149,17 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
     public synchronized void loadSavedList() {
         Path urlPath = getFilePath();
         //use Automatic Resource Management
-            try (LineNumberReader in = new LineNumberReader(Files.newBufferedReader(urlPath)))
-            {
-                String zeile;
-                while ((zeile = in.readLine()) != null)
-                {
-                    DatenMediaDB mdb = getUrlAusZeile(zeile);
-                    if (mdb != null)
-                    {
-                        add(mdb);
-                    }
+        try (LineNumberReader in = new LineNumberReader(Files.newBufferedReader(urlPath))) {
+            String zeile;
+            while ((zeile = in.readLine()) != null) {
+                DatenMediaDB mdb = getUrlAusZeile(zeile);
+                if (mdb != null) {
+                    add(mdb);
                 }
-            } catch (Exception ex)
-            {
-                Log.errorLog(461203787, ex);
             }
+        } catch (Exception ex) {
+            Log.errorLog(461203787, ex);
+        }
     }
 
     public synchronized void exportListe(String datei) {
@@ -214,7 +210,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         SysMsg.sysMsg("   --> geschrieben!");
     }
 
-//    private boolean exists(DatenMediaDB mdb) {
+    //    private boolean exists(DatenMediaDB mdb) {
 //        boolean ret = false;
 //        try {
 //            DatenMediaDB get = this.stream().filter(media -> media.equal(mdb)).findFirst().get();
@@ -273,9 +269,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                         // Verzeichnisse können nicht durchsucht werden
                         errorMsg();
                     }
-                    daten.getListeMediaPath().stream().filter((mp) -> (!mp.savePath())).forEach((mp) -> {
-                        searchFile(new File(mp.arr[DatenMediaPath.MEDIA_PATH_PATH]), false);
-                    });
+                    daten.getListeMediaPath().stream().filter((mp) -> (!mp.savePath())).forEach((mp) -> searchFile(new File(mp.arr[DatenMediaPath.MEDIA_PATH_PATH]), false));
                 }
             } catch (Exception ex) {
                 Log.errorLog(120321254, ex);
