@@ -1,19 +1,12 @@
 package com.explodingpixels.swingx;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-
-import javax.swing.AbstractButton;
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.JButton;
-
 import com.explodingpixels.painter.MacWidgetsPainter;
 
-public class EPButton extends JButton {
+import javax.swing.*;
+import java.awt.*;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class EPButton extends JButton {
     private MacWidgetsPainter<AbstractButton> fBackgroundPainter;
 
     public EPButton() {

@@ -1,15 +1,14 @@
 package mediathek.gui;
 
-import java.awt.*;
-import javax.swing.JButton;
-import javax.swing.Timer;
 import mSearch.tool.Functions.OperatingSystemType;
+
+import javax.swing.*;
+import java.awt.*;
+
 import static mSearch.tool.Functions.getOs;
 
+@SuppressWarnings("serial")
 public class MVMemoryUsageButton extends JButton {
-
-    private static final long serialVersionUID = 1L;
-
     private final Runtime rt = Runtime.getRuntime();
     private final String MEMORY_STRING;
 

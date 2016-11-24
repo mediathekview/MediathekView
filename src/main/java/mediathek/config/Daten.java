@@ -35,7 +35,6 @@ import mediathek.daten.*;
 import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.*;
 import mediathek.gui.dialog.DialogMediaDB;
-import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.filmInformation.IFilmInformation;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFont;
@@ -250,7 +249,7 @@ public class Daten
      * If it does not exist, create one.
      *
      * @return Path to the settings directory
-     * @throws IOException Will be thrown if settings directory don't exist and if there is an error on creating it.
+     * @throws IllegalStateException Will be thrown if settings directory don't exist and if there is an error on creating it.
      */
     public static Path getSettingsDirectory() throws IllegalStateException
     {
@@ -291,8 +290,7 @@ public class Daten
      */
     public static Path getMediathekXmlFilePath()
     {
-        Path xmlFilePath = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE);
-        return xmlFilePath;
+        return Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE);
     }
 
     /**

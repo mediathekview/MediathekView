@@ -20,17 +20,6 @@
 package mediathek.gui.dialog;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Color;
-import java.awt.FileDialog;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.JTextComponent;
 import mSearch.tool.FilenameUtils;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
@@ -39,10 +28,17 @@ import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
 import mediathek.tool.EscBeenden;
 
-public class DialogAddMoreDownload extends javax.swing.JDialog {
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class DialogAddMoreDownload extends JDialog {
     public boolean addAll = false;
     public boolean cancel = false;
     public boolean info;
@@ -150,9 +146,8 @@ public class DialogAddMoreDownload extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
-        jPanelExtra = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanelExtra = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         chkInfo = new javax.swing.JCheckBox();
         chkSubtitle = new javax.swing.JCheckBox();
         jComboBoxPath = new javax.swing.JComboBox<>();
@@ -163,8 +158,6 @@ public class DialogAddMoreDownload extends javax.swing.JDialog {
         btnChange = new javax.swing.JButton();
         chkStart = new javax.swing.JCheckBox();
         btnCancel = new javax.swing.JButton();
-
-        jButton1.setText("jButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -281,13 +274,10 @@ public class DialogAddMoreDownload extends javax.swing.JDialog {
     private javax.swing.JCheckBox chkInfo;
     private javax.swing.JCheckBox chkStart;
     private javax.swing.JCheckBox chkSubtitle;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonDelPath;
     private javax.swing.JButton jButtonPath;
     private javax.swing.JCheckBox jCheckBoxPfadSpeichern;
     private javax.swing.JComboBox<String> jComboBoxPath;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanelExtra;
     // End of variables declaration//GEN-END:variables
 
     private class ZielBeobachter implements ActionListener {
@@ -303,8 +293,9 @@ public class DialogAddMoreDownload extends javax.swing.JDialog {
                 if (chooser.getFile() != null) {
                     //A directory was selected, that means Cancel was not pressed
                     try {
-                        jComboBoxPath.addItem(chooser.getDirectory() + chooser.getFile());
-                        jComboBoxPath.setSelectedItem(chooser.getDirectory() + chooser.getFile());
+                        final String path = chooser.getDirectory() + chooser.getFile();
+                        jComboBoxPath.addItem(path);
+                        jComboBoxPath.setSelectedItem(path);
                     } catch (Exception ex) {
                         Log.errorLog(356871087, ex);
                     }
@@ -321,8 +312,9 @@ public class DialogAddMoreDownload extends javax.swing.JDialog {
                 returnVal = chooser.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {
-                        jComboBoxPath.addItem(chooser.getSelectedFile().getAbsolutePath());
-                        jComboBoxPath.setSelectedItem(chooser.getSelectedFile().getAbsolutePath());
+                        final String absolutePath = chooser.getSelectedFile().getAbsolutePath();
+                        jComboBoxPath.addItem(absolutePath);
+                        jComboBoxPath.setSelectedItem(absolutePath);
                     } catch (Exception ex) {
                         Log.errorLog(356871087, ex);
                     }

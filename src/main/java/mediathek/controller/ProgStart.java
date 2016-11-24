@@ -19,8 +19,6 @@
  */
 package mediathek.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.FilmlisteLesen;
 import mSearch.tool.Duration;
@@ -30,6 +28,9 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.tool.GuiFunktionen;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class ProgStart {
 
     // #########################################################
@@ -38,7 +39,6 @@ public class ProgStart {
     public static void loadDataProgStart() {
         // Gui startet ein wenig flüssiger
         new Thread(new loadFilmlistProgStart_()).start();
-
     }
 
     private static class loadFilmlistProgStart_ implements Runnable {

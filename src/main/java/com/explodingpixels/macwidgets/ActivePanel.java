@@ -1,21 +1,16 @@
 package com.explodingpixels.macwidgets;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.LayoutManager;
-
-import javax.swing.JPanel;
-
 import com.explodingpixels.widgets.WindowUtils;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * A JPanel that listens for focus and changes color based on the active and inactive colors defined in the provided {@link com.explodingpixels.WidgetColorScheme}
  */
+@SuppressWarnings("serial")
 public class ActivePanel extends JPanel
 {
-	private static final long	serialVersionUID	= -7894860504157071021L;
-
 	WidgetColorScheme colorScheme = new WidgetStandardColorScheme();
 
 	public ActivePanel()

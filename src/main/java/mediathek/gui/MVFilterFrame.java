@@ -20,12 +20,6 @@
 package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Point;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
 import mSearch.tool.Listener;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
@@ -39,13 +33,16 @@ import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.TextCopyPaste;
 
-public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
+import javax.swing.*;
+import javax.swing.event.*;
+import java.awt.*;
+import java.awt.event.*;
 
-    private static final long serialVersionUID = 1L;
-
-    private Daten daten;
+@SuppressWarnings("serial")
+public class MVFilterFrame extends JFrame implements MVFilter {
+    private final Daten daten;
     static Point mouseDownCompCoords;
-    private JFrame parent;
+    private final JFrame parent;
     private int aktFilter = -1;
 
     public MVFilterFrame(Daten aDaten, MediathekGui aMediathekGui) {
@@ -521,7 +518,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
         javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
         javax.swing.ButtonGroup buttonGroup2 = new javax.swing.ButtonGroup();
-        buttonGroup3 = new javax.swing.ButtonGroup();
+        javax.swing.ButtonGroup buttonGroup3 = new javax.swing.ButtonGroup();
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
@@ -538,7 +535,7 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
         chkUt = new javax.swing.JCheckBox();
         rbMin = new javax.swing.JRadioButton();
         rbMax = new javax.swing.JRadioButton();
-        jLabel3 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jComboBoxFilterSender = new javax.swing.JComboBox<>();
@@ -852,7 +849,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup3;
     private javax.swing.JCheckBox chkUt;
     private javax.swing.JButton jButtonClearAll;
     public javax.swing.JButton jButtonFilterLoeschen;
@@ -864,7 +860,6 @@ public class MVFilterFrame extends javax.swing.JFrame implements MVFilter {
     private javax.swing.JCheckBox jCheckBoxNurNeue;
     public javax.swing.JComboBox<String> jComboBoxFilterSender;
     public javax.swing.JComboBox<String> jComboBoxFilterThema;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JRadioButton jRadioButtonF1;
     private javax.swing.JRadioButton jRadioButtonF2;
     private javax.swing.JRadioButton jRadioButtonF3;

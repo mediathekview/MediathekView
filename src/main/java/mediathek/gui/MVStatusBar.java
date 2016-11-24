@@ -2,26 +2,22 @@ package mediathek.gui;
 
 import com.explodingpixels.macwidgets.BottomBar;
 import com.explodingpixels.macwidgets.BottomBarSize;
-import java.awt.FlowLayout;
-import java.util.EnumMap;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.SoftBevelBorder;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Functions;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
-import mediathek.config.Icons;
 import mediathek.config.Daten;
+import mediathek.config.Icons;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
 
-/**
- * User: crystalpalace1977
- * Date: 02.03.13
- * Time: 19:54
- */
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.SoftBevelBorder;
+import java.awt.*;
+import java.util.EnumMap;
+
 @SuppressWarnings("serial")
 public final class MVStatusBar extends JPanel {
     private final Daten daten;

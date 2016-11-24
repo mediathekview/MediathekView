@@ -19,11 +19,6 @@
  */
 package mediathek.daten;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.*;
 import mediathek.config.Daten;
@@ -33,6 +28,12 @@ import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFilmSize;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
 
 public final class DatenDownload extends MVData<DatenDownload> {
 
@@ -52,9 +53,9 @@ public final class DatenDownload extends MVData<DatenDownload> {
     public static final String ART_DOWNLOAD_TXT = "direkter Download";
     public static final String ART_PROGRAMM_TXT = "Programm";
 
-    private static GermanStringSorter sorter = GermanStringSorter.getInstance();
-    private static SimpleDateFormat sdf_datum_zeit = new SimpleDateFormat("dd.MM.yyyyHH:mm:ss");
-    private static SimpleDateFormat sdf_datum = new SimpleDateFormat("dd.MM.yyyy");
+    private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
+    private static final SimpleDateFormat sdf_datum_zeit = new SimpleDateFormat("dd.MM.yyyyHH:mm:ss");
+    private static final SimpleDateFormat sdf_datum = new SimpleDateFormat("dd.MM.yyyy");
 
     public static final int DOWNLOAD_NR = 0;
     public static final int DOWNLOAD_FILM_NR = 1;// nur ein Platzhalter für: "film.nr"

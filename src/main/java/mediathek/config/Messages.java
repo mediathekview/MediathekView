@@ -2,8 +2,6 @@ package mediathek.config;
 
 import mSearch.tool.Log;
 
-import java.io.IOException;
-
 /**
  * A enum which contains log messages.
  */

@@ -19,11 +19,6 @@
  */
 package mediathek.gui;
 
-import java.net.URISyntaxException;
-import javax.swing.JPanel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableModel;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.DbgMsg;
 import mSearch.tool.Listener;
@@ -31,20 +26,20 @@ import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
+import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVTable;
-import mediathek.tool.UrlHyperlinkAction;
 
-/**
- *
- * @author emil
- */
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableModel;
+import java.net.URISyntaxException;
+
+@SuppressWarnings("serial")
 public class PanelFilmBeschreibung extends JPanel implements ListSelectionListener {
-
-    private static final long serialVersionUID = 1L;
-    
     private DatenFilm currentFilm = null;
     private MVTable table = null;
 

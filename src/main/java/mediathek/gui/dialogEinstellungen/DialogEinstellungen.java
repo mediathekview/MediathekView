@@ -19,11 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -32,11 +27,14 @@ import mediathek.res.GetIcon;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 
-public class DialogEinstellungen extends javax.swing.JFrame {
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
-    private static final long serialVersionUID = 1L;
-
-    private Daten ddaten;
+@SuppressWarnings("serial")
+public class DialogEinstellungen extends JFrame {
+    private final Daten ddaten;
     public boolean ok = false;
     private PanelEinstellungen panelEinstellungen;
     private PanelDownload panelDownload;
@@ -56,7 +54,6 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     // Infos
     private PanelProgrammInfos panelAbout;
     private final JPanel panelLeer = new JPanel();
-    private final JFrame parentComponent;
 
     private final String NAME_einstellungen = "Einstellungen";
     private final String NAME_allgemeineEinstellungen = "Allgemein";
@@ -104,14 +101,9 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     private final DefaultMutableTreeNode treeNodeHistory = new DefaultMutableTreeNode(NAME_history);
     private final DefaultMutableTreeNode treeNodeLogfile = new DefaultMutableTreeNode(NAME_logfile);
 
-    /**
-     * @param parent
-     * @param d
-     */
-    public DialogEinstellungen(JFrame parent, Daten d) {
+    public DialogEinstellungen(Daten d) {
         initComponents();
         setTitle("Einstellungen");
-        parentComponent = this;
         ddaten = d;
         init();
         initTree();
@@ -127,24 +119,24 @@ public class DialogEinstellungen extends javax.swing.JFrame {
     }
 
     private void init() {
-        panelEinstellungen = new PanelEinstellungen(ddaten, parentComponent);
-        panelDownload = new PanelDownload(ddaten, parentComponent);
-        panelMediaDB = new PanelMediaDB(ddaten, parentComponent);
-        panelEinstellungenErweitert = new PanelEinstellungenErweitert(ddaten, parentComponent);
-        panelEinstellungenGeo = new PanelEinstellungenGeo(ddaten, parentComponent);
-        panelImport = new PanelImport(ddaten, parentComponent);
-        panelEinstellungenColor = new PanelEinstellungenColor(ddaten, parentComponent);
-        panelImportFilme = new PanelFilmlisteLaden(ddaten, parentComponent);
-        panelExportFilmliste = new PanelExportFilmliste(ddaten, parentComponent);
-        panelBlacklist = new PanelBlacklist(ddaten, parentComponent, PanelBlacklist.class.getName());
-        panelHistory = new PanelErledigteUrls(ddaten, parentComponent);
+        panelEinstellungen = new PanelEinstellungen(ddaten, this);
+        panelDownload = new PanelDownload(ddaten, this);
+        panelMediaDB = new PanelMediaDB(ddaten, this);
+        panelEinstellungenErweitert = new PanelEinstellungenErweitert(ddaten, this);
+        panelEinstellungenGeo = new PanelEinstellungenGeo(ddaten, this);
+        panelImport = new PanelImport(ddaten, this);
+        panelEinstellungenColor = new PanelEinstellungenColor(ddaten, this);
+        panelImportFilme = new PanelFilmlisteLaden(ddaten, this);
+        panelExportFilmliste = new PanelExportFilmliste(ddaten, this);
+        panelBlacklist = new PanelBlacklist(ddaten, this, PanelBlacklist.class.getName());
+        panelHistory = new PanelErledigteUrls(ddaten, this);
         panelHistory.initHistory();
-        panelErledigteAbos = new PanelErledigteUrls(ddaten, parentComponent);
+        panelErledigteAbos = new PanelErledigteUrls(ddaten, this);
         panelErledigteAbos.initAbo();
-        panelDateinamen = new PanelDateinamen(ddaten, parentComponent);
-        panelPset = new PanelPset(ddaten, parentComponent);
-        panelPsetVorlagen = new PanelPsetImport(ddaten, parentComponent);
-        panelAbout = new PanelProgrammInfos(ddaten, parentComponent);
+        panelDateinamen = new PanelDateinamen(ddaten, this);
+        panelPset = new PanelPset(ddaten, this);
+        panelPsetVorlagen = new PanelPsetImport(ddaten, this);
+        panelAbout = new PanelProgrammInfos(ddaten, this);
     }
 
     private void initTree() {

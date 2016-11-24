@@ -1,32 +1,23 @@
 package com.explodingpixels.macwidgets;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
+import com.explodingpixels.widgets.WindowUtils;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.image.BufferedImage;
-
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-
-import com.explodingpixels.widgets.WindowUtils;
 
 /**
  * Renders a rounded rectangle (i.e. a badge) with a given number in the center of the rectangle.
  */
 public class SourceListCountBadgeRenderer {
 
-    private CustomJLabel fLabel = new CustomJLabel();
+    private final CustomJLabel fLabel = new CustomJLabel();
 
     private boolean fSelected = false;
 
-    private static Font BADGE_FONT = new Font("Helvetica", Font.BOLD, 11);
+    private static final Font BADGE_FONT = new Font("Helvetica", Font.BOLD, 11);
 
     private final Color fSelectedColor;
     private final Color fActiveUnselectedColor;
@@ -70,10 +61,8 @@ public class SourceListCountBadgeRenderer {
 
     // Custom JLabel implementation. //////////////////////////////////////////////////////////////
 
+    @SuppressWarnings("serial")
     private class CustomJLabel extends JLabel {
-
-        private static final long serialVersionUID = 1L;
-        
         private Color getSelectedBadgeColor() {
             return fSelectedColor;
         }

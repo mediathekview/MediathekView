@@ -25,9 +25,9 @@ import mSearch.tool.Functions;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.gui.actions.DisposeDialogAction;
+import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.EscBeenden;
-import mediathek.tool.UrlHyperlinkAction;
 import org.jdesktop.swingx.JXHyperlink;
 
 import javax.swing.*;
