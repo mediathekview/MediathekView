@@ -28,13 +28,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 
-/**
- * @author emil
- */
+@SuppressWarnings("serial")
 public class GuiMeldungen extends PanelVorlage {
-
-    private static final long serialVersionUID = 1L;
-
     private JSplitPane splitPane = null;
 
     public GuiMeldungen(Daten d, JFrame parentComponent) {

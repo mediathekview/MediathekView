@@ -31,17 +31,16 @@ import org.jdesktop.swingx.JXSearchField;
 
 import javax.swing.Box.Filler;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 
+@SuppressWarnings("serial")
 public final class ToolBar extends JToolBar {
-
-    private static final long serialVersionUID = 1L;
-
-    Filler filler__5 = new Filler(new java.awt.Dimension(5, 20), new java.awt.Dimension(5, 20), new java.awt.Dimension(5, 32767));
-    Filler filler__10 = new Filler(new java.awt.Dimension(10, 20), new java.awt.Dimension(10, 20), new java.awt.Dimension(10, 32767));
-    Filler filler__trenner = new javax.swing.Box.Filler(new java.awt.Dimension(1, 5), new java.awt.Dimension(1, 5), new java.awt.Dimension(32767, 5));
+    Filler filler__5 = new Filler(new Dimension(5, 20), new Dimension(5, 20), new Dimension(5, 32767));
+    Filler filler__10 = new Filler(new Dimension(10, 20), new Dimension(10, 20), new Dimension(10, 32767));
+    Filler filler__trenner = new Filler(new Dimension(1, 5), new Dimension(1, 5), new Dimension(32767, 5));
 
     MVButton jButtonAboAendern = null;
     MVButton jButtonAbosAusschalten = null;
@@ -380,16 +379,13 @@ public final class ToolBar extends JToolBar {
     }
 
     private class MVButton extends JButton {
-
-        private static final long serialVersionUID = 1L;
-        
         boolean anzeigen = true;
         private String name = "";
-        private ImageIcon imageIconKlein;
-        private ImageIcon imageIconNormal;
+        private final ImageIcon imageIconKlein;
+        private final ImageIcon imageIconNormal;
 
         public MVButton(String nname, String ttoolTip,
-                ImageIcon iimageIconNormal, ImageIcon iimageIconKlein) {
+                        ImageIcon iimageIconNormal, ImageIcon iimageIconKlein) {
             setToolTipText(ttoolTip);
             name = nname;
             imageIconKlein = iimageIconKlein;

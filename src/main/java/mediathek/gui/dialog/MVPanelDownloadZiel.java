@@ -20,21 +20,6 @@
 package mediathek.gui.dialog;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Color;
-import java.awt.FileDialog;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.JTextComponent;
 import mSearch.tool.FilenameUtils;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
@@ -44,12 +29,22 @@ import mediathek.daten.DatenDownload;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 
-public class MVPanelDownloadZiel extends javax.swing.JPanel {
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class MVPanelDownloadZiel extends JPanel {
     public boolean nameGeaendert = false;
-    private DatenDownload datenDownload;
+    private final DatenDownload datenDownload;
     private JFrame parent = null;
     boolean letztenPfadAnzeigen = false;
 

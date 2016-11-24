@@ -19,27 +19,23 @@
  */
 package mediathek.controller.starter;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import javax.swing.SwingUtilities;
-
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.controller.starter.DirectHttpDownload.HttpDownloadState;
-
-import static mediathek.controller.starter.StarterClass.*;
-
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
-
-import static mediathek.gui.dialog.DialogContinueDownload.DownloadResult.*;
-
 import mediathek.gui.dialog.MeldungDownloadfehler;
 import mediathek.tool.MVInfoFile;
 import mediathek.tool.MVSubtitle;
+
+import javax.swing.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import static mediathek.controller.starter.StarterClass.*;
 
 /**
  * Download files via an external program.
@@ -50,7 +46,6 @@ public class ExternalProgramDownload extends Thread
     private Daten daten;
     private DatenDownload datenDownload;
     private Start start;
-    private RuntimeExec runtimeExec;
     private File file;
     private String exMessage = "";
     private boolean retAbbrechen;
@@ -244,7 +239,7 @@ public class ExternalProgramDownload extends Thread
         // die Reihenfolge: startcounter - startmeldung ist wichtig!
         start.startcounter++;
         startmeldung(datenDownload, start);
-        runtimeExec = new RuntimeExec(datenDownload.mVFilmSize, datenDownload.start,
+        RuntimeExec runtimeExec = new RuntimeExec(datenDownload.mVFilmSize, datenDownload.start,
                 datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF], datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]);
         start.process = runtimeExec.exec(true /*log*/);
         if (start.process != null)

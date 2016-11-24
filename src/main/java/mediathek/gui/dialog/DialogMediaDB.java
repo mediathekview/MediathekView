@@ -19,20 +19,6 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import javax.swing.JFrame;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import mSearch.tool.FilenameUtils;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
@@ -44,10 +30,20 @@ import mediathek.daten.DatenMediaDB;
 import mediathek.file.GetFile;
 import mediathek.tool.*;
 
-public class DialogMediaDB extends javax.swing.JDialog {
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
 
-    private static final long serialVersionUID = 1L;
-
+@SuppressWarnings("serial")
+public class DialogMediaDB extends JDialog {
     private final JFrame parent;
     private final Daten daten;
 

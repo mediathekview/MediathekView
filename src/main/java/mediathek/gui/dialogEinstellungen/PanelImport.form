@@ -152,6 +152,8 @@
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">
           <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
 
@@ -165,6 +167,10 @@
                 <Property name="rows" type="int" value="5"/>
                 <Property name="text" type="java.lang.String" value="Damit k&#xf6;nnen Abos/Blacklist/Ersetzungstabelle aus einer alten gesicherten&#xa;Konfigurationsdatei importiert werden.&#xa;(mediathek.xml oder mediathek.xml_copy_1, mediathek.xml_copy_2, ..)&#xa;&#xa;&#xa;Sollen die aktuellen Einstellungen durch die importierten ersetzt werden,&#xa;sollten die aktuellen zuerst gel&#xf6;scht werden.&#xa;&#xa;Die importierten Abos/Blacklist/Ersetzungstabelle werden&#xa;an die vorhandenen angeh&#xe4;ngt.&#xa;"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>
@@ -182,6 +188,10 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="aktuelle Konfigurationsdatei:"/>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
+          </AuxValues>
         </Component>
         <Component class="javax.swing.JTextField" name="jTextFieldPfadKonfig">
           <Properties>

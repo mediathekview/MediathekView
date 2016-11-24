@@ -103,13 +103,6 @@ public class MediathekGui extends JFrame {
 
 
     private final Daten daten;
-//    private final SpacerIcon spacerIcon = new SpacerIcon(30);
-/*    private final JSpinner jSpinnerAnzahl = new JSpinner(new SpinnerNumberModel(1, 1, 9, 1));
-    private final JLabel jLabelAnzahl = new JLabel("Anzahl gleichzeitige Downloads");
-    private final JPanel jPanelAnzahl = new JPanel();
-    private final JLabel jLabelBandbreite = new JLabel("Bandbreite pro Download");
-    private final JPanel jPanelBandbreite = new JPanel();
-    private final JSlider jSliderBandbreite = new JSlider();*/
     private final SplashScreenManager splashScreenManager;
     private MVStatusBar statusBar;
     private MVFrame frameDownload;
@@ -215,7 +208,7 @@ public class MediathekGui extends JFrame {
     private void initializeSettingsDialog()
     {
         // Dialog mit den Programmeinstellungen einrichten
-        dialogEinstellungen = new DialogEinstellungen(this, daten);
+        dialogEinstellungen = new DialogEinstellungen(daten);
         daten.setDialogMediaDB(new DialogMediaDB(this));
         daten.getDialogMediaDB().setVis();
     }
@@ -292,7 +285,7 @@ public class MediathekGui extends JFrame {
      */
     protected void createFilmInformationHUD(JFrame parent, JTabbedPane tabPane, Daten daten) {
             //klappte nicht auf allen Desktops
-            Daten.filmInfo = new MVFilmInformationLWin(parent, tabPane, daten);
+        Daten.filmInfo = new MVFilmInformationLWin(parent);
     }
 
     private void addListener() {
