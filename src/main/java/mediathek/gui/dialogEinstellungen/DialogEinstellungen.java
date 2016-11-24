@@ -51,30 +51,27 @@ public class DialogEinstellungen extends JFrame {
     private PanelDateinamen panelDateinamen;
     private PanelVorlage panelPset;
     private PanelPsetImport panelPsetVorlagen;
-    // Infos
-    private PanelProgrammInfos panelAbout;
     private final JPanel panelLeer = new JPanel();
 
-    private final String NAME_einstellungen = "Einstellungen";
-    private final String NAME_allgemeineEinstellungen = "Allgemein";
-    private final String NAME_bandwidth = "Download";
-    private final String NAME_mediaDB = "Mediensammlung";
-    private final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
-    private final String NAME_allgemeineEinstellungenGeo = "Geo";
-    private final String NAME_allgemeineEinstellungenImport = "Import";
-    private final String NAME_allgemeineEinstellungenColor = "Farben";
-    private final String NAME_filmListe = "Filmliste";
-    private final String NAME_filmListeLaden = "Filmliste laden";
-    private final String NAME_filmListeExportieren = "Filmliste exportieren";
-    private final String NAME_blacklist = "Blacklist";
-    private final String NAME_aufzeichnen = "Aufzeichnen und Abspielen";
-    private final String NAME_dateiname = "Datei- und Pfadnamen";
-    private final String NAME_programmset = "Set bearbeiten";
-    private final String NAME_programmsetImportieren = "Set importieren";
-    private final String NAME_infos = "Infos";
-    private final String NAME_programmInfos = "Programminfos";
-    private final String NAME_history = "History";
-    private final String NAME_logfile = "Erledigte Abos";
+    private static final String NAME_einstellungen = "Einstellungen";
+    private static final String NAME_allgemeineEinstellungen = "Allgemein";
+    private static final String NAME_bandwidth = "Download";
+    private static final String NAME_mediaDB = "Mediensammlung";
+    private static final String NAME_allgemeineEinstellungenErweitert = "Erweitert";
+    private static final String NAME_allgemeineEinstellungenGeo = "Geo";
+    private static final String NAME_allgemeineEinstellungenImport = "Import";
+    private static final String NAME_allgemeineEinstellungenColor = "Farben";
+    private static final String NAME_filmListe = "Filmliste";
+    private static final String NAME_filmListeLaden = "Filmliste laden";
+    private static final String NAME_filmListeExportieren = "Filmliste exportieren";
+    private static final String NAME_blacklist = "Blacklist";
+    private static final String NAME_aufzeichnen = "Aufzeichnen und Abspielen";
+    private static final String NAME_dateiname = "Datei- und Pfadnamen";
+    private static final String NAME_programmset = "Set bearbeiten";
+    private static final String NAME_programmsetImportieren = "Set importieren";
+    private static final String NAME_infos = "Infos";
+    private static final String NAME_history = "History";
+    private static final String NAME_logfile = "Erledigte Abos";
     // ######## Einstellulngen ############
     private final DefaultMutableTreeNode treeNodeEinstellungen = new DefaultMutableTreeNode("Einstellungen");
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungen = new DefaultMutableTreeNode(NAME_allgemeineEinstellungen);
@@ -97,7 +94,6 @@ public class DialogEinstellungen extends JFrame {
     private final DefaultMutableTreeNode treeNodeImportProgramme = new DefaultMutableTreeNode(NAME_programmsetImportieren);
     // ####### Infos #########
     private final DefaultMutableTreeNode treeNodeInfos = new DefaultMutableTreeNode("Infos");
-    private final DefaultMutableTreeNode treeNodeProgrammInfos = new DefaultMutableTreeNode(NAME_programmInfos);
     private final DefaultMutableTreeNode treeNodeHistory = new DefaultMutableTreeNode(NAME_history);
     private final DefaultMutableTreeNode treeNodeLogfile = new DefaultMutableTreeNode(NAME_logfile);
 
@@ -136,7 +132,6 @@ public class DialogEinstellungen extends JFrame {
         panelDateinamen = new PanelDateinamen(ddaten, this);
         panelPset = new PanelPset(ddaten, this);
         panelPsetVorlagen = new PanelPsetImport(ddaten, this);
-        panelAbout = new PanelProgrammInfos(ddaten, this);
     }
 
     private void initTree() {
@@ -166,7 +161,6 @@ public class DialogEinstellungen extends JFrame {
         treeNodeStart.add(treeNodeDownload);
         // ===============================================================================
         // ####### Infos #########
-        treeNodeInfos.add(treeNodeProgrammInfos);
         treeNodeInfos.add(treeNodeHistory);
         treeNodeInfos.add(treeNodeLogfile);
         treeNodeStart.add(treeNodeInfos);
@@ -251,11 +245,7 @@ public class DialogEinstellungen extends JFrame {
                         break;
                     //Infos
                     case NAME_infos:
-                        jTree1.setSelectionPath(new TreePath(treeNodeProgrammInfos.getPath()));
-                        break;
-                    case NAME_programmInfos:
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelAbout);
+                        jTree1.setSelectionPath(new TreePath(treeNodeHistory.getPath()));
                         break;
                     case NAME_history:
                         jPanelExtra.removeAll();
