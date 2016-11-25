@@ -1,9 +1,9 @@
-/*    
+/*
  *    MediathekView
  *    Copyright (C) 2008   W. Xaver
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
- *    
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -198,7 +198,7 @@ public class DialogAddDownload extends JDialog {
         jRadioButtonAufloesungHd.addActionListener(new BeobRadio());
         jRadioButtonAufloesungKlein.addActionListener(new BeobRadio());
         jRadioButtonAufloesungHoch.addActionListener(new BeobRadio());
-        jRadioButtonAufloesungHd.setEnabled(!datenFilm.arr[DatenFilm.FILM_URL_HD].isEmpty());
+        jRadioButtonAufloesungHd.hide(!datenFilm.arr[DatenFilm.FILM_URL_HD].isEmpty());
         jRadioButtonAufloesungKlein.setEnabled(!datenFilm.arr[DatenFilm.FILM_URL_KLEIN].isEmpty());
         jRadioButtonAufloesungHoch.setSelected(true);
         if (jRadioButtonAufloesungHd.isEnabled()) {
