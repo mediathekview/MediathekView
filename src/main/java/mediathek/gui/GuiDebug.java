@@ -24,7 +24,6 @@ import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.sender.MediathekKika;
 import mSearch.filmlisten.FilmlisteLesen;
-import mSearch.tool.DbgMsg;
 import mSearch.tool.Duration;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
@@ -241,39 +240,42 @@ public class GuiDebug extends JPanel
             saveNewListeFilme(listeFilme);
         });
         jButtonOldList.addActionListener(new BeobPfadOldUrl());
-        jButtonAddOld.addActionListener((ActionEvent e) ->
-        {
-            String url = jTextFieldOld.getText();
-            ListeFilme listeEinsortieren = new ListeFilme();
-            new FilmlisteLesen().readFilmListe(url, listeEinsortieren, 0 /*all days*/);
-
-            HashSet<String> hash = new HashSet<>(listeEinsortieren.size() + 1, 1);
-            HashSet<String> hash2 = new HashSet<>(listeEinsortieren.size() + 1, 1);
-
-            // ==============================================
-            // nach "Thema-Titel" suchen
-            daten.getListeFilme().forEach((f) -> hash.add(f.getIndexAddOld_()));
-            listeEinsortieren.removeIf((f) -> hash.contains(f.getIndexAddOld_()));
-            DbgMsg.print("Anzahl Filme: " + daten.getListeFilme().size());
-
-            hash.clear();
-            ListeFilme lf = new ListeFilme();
-            listeEinsortieren.forEach((f) ->
-            {
-                if (hash2.contains(f.getIndexAddOld())) {
-                    lf.add(f);
-                } else {
-                    hash2.add(f.getIndexAddOld());
-                }
-            });
-            daten.setListeFilme(lf);
-            hash.clear();
-            DbgMsg.print("Anzahl Filme: " + daten.getListeFilme().size());
-
-            daten.getListeFilme().sort();
-            daten.getListeBlacklist().filterListe();
-            Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
-        });
+        //FIXME unten auskommentierten Block an mSearch anpassen wenn stable...
+        //bis dahin bleibt der Button erst mal disabled.
+        jButtonAddOld.setEnabled(false);
+//        jButtonAddOld.addActionListener((ActionEvent e) ->
+//        {
+//            String url = jTextFieldOld.getText();
+//            ListeFilme listeEinsortieren = new ListeFilme();
+//            new FilmlisteLesen().readFilmListe(url, listeEinsortieren, 0 /*all days*/);
+//
+//            HashSet<String> hash = new HashSet<>(listeEinsortieren.size() + 1, 1);
+//            HashSet<String> hash2 = new HashSet<>(listeEinsortieren.size() + 1, 1);
+//
+//            // ==============================================
+//            // nach "Thema-Titel" suchen
+//            daten.getListeFilme().forEach((f) -> hash.add(f.getIndexAddOld_()));
+//            listeEinsortieren.removeIf((f) -> hash.contains(f.getIndexAddOld_()));
+//            DbgMsg.print("Anzahl Filme: " + daten.getListeFilme().size());
+//
+//            hash.clear();
+//            ListeFilme lf = new ListeFilme();
+//            listeEinsortieren.forEach((f) ->
+//            {
+//                if (hash2.contains(f.getIndexAddOld())) {
+//                    lf.add(f);
+//                } else {
+//                    hash2.add(f.getIndexAddOld());
+//                }
+//            });
+//            daten.setListeFilme(lf);
+//            hash.clear();
+//            DbgMsg.print("Anzahl Filme: " + daten.getListeFilme().size());
+//
+//            daten.getListeFilme().sort();
+//            daten.getListeBlacklist().filterListe();
+//            Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
+//        });
         jButtonLiveStreams.addActionListener(e ->
         {
             String url = jTextFieldLiveStreams.getText();
