@@ -198,7 +198,7 @@ public class DialogAddDownload extends JDialog {
         jRadioButtonAufloesungHd.addActionListener(new BeobRadio());
         jRadioButtonAufloesungKlein.addActionListener(new BeobRadio());
         jRadioButtonAufloesungHoch.addActionListener(new BeobRadio());
-        jRadioButtonAufloesungHd.hide(!datenFilm.arr[DatenFilm.FILM_URL_HD].isEmpty());
+        jRadioButtonAufloesungHd.setVisible(!datenFilm.arr[DatenFilm.FILM_URL_HD].isEmpty());
         jRadioButtonAufloesungKlein.setEnabled(!datenFilm.arr[DatenFilm.FILM_URL_KLEIN].isEmpty());
         jRadioButtonAufloesungHoch.setSelected(true);
         if (jRadioButtonAufloesungHd.isEnabled()) {
