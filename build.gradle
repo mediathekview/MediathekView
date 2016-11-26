@@ -1,5 +1,6 @@
 import java.nio.file.Files
 import java.nio.file.Paths
+import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id "com.github.jk1.dependency-license-report" version "0.3.5"
@@ -7,7 +8,7 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'distribution'
 apply from: "${project.rootDir}/gradle/eclipse.gradle"
-import org.apache.tools.ant.filters.ReplaceTokens
+
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -166,15 +167,15 @@ distributions {
                     {
                         filesMatching('**/*.sh')
                                 {
-                                    filter(ReplaceTokens, tokens:[JARNAME:jarName])
+                                    filter(ReplaceTokens, tokens: [JARNAME: jarName])
                                 }
                         filesMatching('**/*.txt')
                                 {
-                                    filter(ReplaceTokens, tokens:[JARNAME:jarName])
+                                    filter(ReplaceTokens, tokens: [JARNAME: jarName])
                                 }
                         filesMatching('**/*.command')
                                 {
-                                    filter(ReplaceTokens, tokens:[JARNAME:jarName])
+                                    filter(ReplaceTokens, tokens: [JARNAME: jarName])
                                 }
                     }
 
@@ -186,7 +187,7 @@ distributions {
         }
     }
 
-    task run (type: JavaExec, dependsOn: classes){
+    task run(type: JavaExec, dependsOn: classes) {
         main = mainClass
         classpath = sourceSets.main.runtimeClasspath
     }
@@ -196,7 +197,7 @@ distributions {
      *  1. run "gradle debug"
      *  2. Call your IDE to connect to a remote java application on port 5005.
      */
-    task debug (type: JavaExec, dependsOn: classes){
+    task debug(type: JavaExec, dependsOn: classes) {
         main = mainClass
         classpath = sourceSets.main.runtimeClasspath
         debug true
