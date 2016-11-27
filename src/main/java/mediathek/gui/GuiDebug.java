@@ -37,7 +37,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Iterator;
-import mSearch.Const.Sender;
+import mSearch.Const;
 
 
 @SuppressWarnings("serial")
@@ -109,7 +109,7 @@ public class GuiDebug extends JPanel
 
             // ==========================================
             for (DatenFilm f : listeFilme) {
-                if (f.arr[DatenFilm.FILM_SENDER].equals(Sender.KIKA.name)) {
+                if (f.arr[DatenFilm.FILM_SENDER].equals(Const.KIKA)) {
                     // beim KIKA ändern sich die URLs laufend
                     hash.add(f.arr[DatenFilm.FILM_THEMA] + f.arr[DatenFilm.FILM_TITEL]);
                 } else if (!cbkUrl.isSelected()) {
@@ -125,7 +125,7 @@ public class GuiDebug extends JPanel
             Iterator<DatenFilm> it = daten.getListeFilme().iterator();
             while (it.hasNext()) {
                 DatenFilm f = it.next();
-                if (f.arr[DatenFilm.FILM_SENDER].equals(Sender.KIKA.name)) {
+                if (f.arr[DatenFilm.FILM_SENDER].equals(Const.KIKA)) {
                     // beim KIKA ändern sich die URLs laufend
                     if (hash.contains(f.arr[DatenFilm.FILM_THEMA] + f.arr[DatenFilm.FILM_TITEL])) {
                         it.remove();
