@@ -28,7 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 import mSearch.Config;
-import mSearch.Const.Sender;
+import mSearch.Const;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
@@ -204,7 +204,7 @@ public class FilmeLaden {
     }
 
     public String[] getSenderNamen() {
-        return Sender.getNames();
+        return Const.SENDER;
         //return FilmeSuchen.getNamenSender();
     }
 
