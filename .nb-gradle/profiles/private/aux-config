@@ -5,10 +5,21 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
       <group name="Mediathek">
-        <file>file:/home/emil/daten/software/mediathek/MediathekView/src/main/java/mediathek/gui/GuiDebug.java</file>
-        <file>file:/home/emil/daten/software/mediathek/MediathekView/src/main/java/mediathek/filmlisten/FilmeLaden.java</file>
+        <file>file:/home/emil/daten/software/mediathek/MSearch/src/main/java/mSearch/daten/DatenFilm.java</file>
+        <file>file:/home/emil/daten/software/mediathek/MSearch/src/main/java/mSearch/tool/Functions.java</file>
+        <file>file:/home/emil/daten/software/mediathek/MSearch/src/main/java/mSearch/daten/ListeFilme.java</file>
+        <file>file:/home/emil/daten/software/mediathek/MSearch/src/main/java/mSearch/tool/Log.java</file>
+        <file>file:/home/emil/daten/software/mediathek/MSearch/src/main/java/mSearch/Const.java</file>
       </group>
     </open-files>
-    <editor-bookmarks lastBookmarkId="0" xmlns="http://www.netbeans.org/ns/editor-bookmarks/2"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+      <group name="Mediathek">
+        <file>file:/home/emil/daten/software/mediathek/MSearch/src/main/java/mSearch/daten/DatenFilm.java</file>
+        <file>file:/home/emil/daten/software/mediathek/MSearch/src/main/java/mSearch/tool/Functions.java</file>
+        <file>file:/home/emil/daten/software/mediathek/MSearch/src/main/java/mSearch/daten/ListeFilme.java</file>
+        <file>file:/home/emil/daten/software/mediathek/MSearch/src/main/java/mSearch/tool/Log.java</file>
+        <file>file:/home/emil/daten/software/mediathek/MSearch/src/main/java/mSearch/Const.java</file>
+      </group>
+    </open-files>
   </auxiliary>
 </gradle-project-properties>
