@@ -20,6 +20,17 @@
 package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
+import java.awt.FileDialog;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.HashSet;
+import java.util.Iterator;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import mSearch.Const;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmlisten.FilmlisteLesen;
@@ -30,19 +41,9 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisten;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.HashSet;
-import java.util.Iterator;
-import mSearch.Const;
-
-
 @SuppressWarnings("serial")
-public class GuiDebug extends JPanel
-{
+public class GuiDebug extends JPanel {
+
     private final JButton[] buttonSender;
     private final String[] sender;
     private final Daten daten;
@@ -66,8 +67,8 @@ public class GuiDebug extends JPanel
             buttonSender[i].addActionListener(new BeobSenderLoeschen(sender[i]));
         }
         addSender();
-        jButtonNeuLaden.addActionListener(ae ->
-        {
+        jButtonNeuLaden.addActionListener(ae
+                -> {
             daten.getListeFilme().clear();
             Duration.staticPing("Start");
             new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
@@ -77,13 +78,13 @@ public class GuiDebug extends JPanel
             daten.getListeBlacklist().filterListe();
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
         });
-        jButtonAllesSpeichern.addActionListener(e ->
-        {
+        jButtonAllesSpeichern.addActionListener(e
+                -> {
             daten.allesSpeichern();
             daten.filmlisteSpeichern();
         });
-        jButtonFilmlisteLoeschen.addActionListener(e ->
-        {
+        jButtonFilmlisteLoeschen.addActionListener(e
+                -> {
             daten.getListeFilme().clear();
             daten.getListeBlacklist().filterListe();
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
@@ -92,8 +93,8 @@ public class GuiDebug extends JPanel
         jButtonCheck.addActionListener(e -> daten.getListeFilme().check());
 
         jButtonClean.addActionListener(ae -> daten.getListeFilme().cleanList());
-        jToggleButtonFastAuto.addActionListener(ae ->
-        {
+        jToggleButtonFastAuto.addActionListener(ae
+                -> {
             if (jToggleButtonFastAuto.isSelected()) {
                 FilmlisteLesen.setWorkMode(FilmlisteLesen.WorkMode.FASTAUTO);
             } else {
@@ -101,8 +102,8 @@ public class GuiDebug extends JPanel
             }
         });
         btnPathDiff.addActionListener(new BeobPfad());
-        btnDiff.addActionListener((ActionEvent e) ->
-        {
+        btnDiff.addActionListener((ActionEvent e)
+                -> {
             ListeFilme listeFilme = new ListeFilme();
             final HashSet<String> hash = new HashSet<>(listeFilme.size() + 1, 1);
             new FilmlisteLesen().readFilmListe(txtDiff.getText(), listeFilme, 0);
@@ -153,16 +154,16 @@ public class GuiDebug extends JPanel
             }
         });
 
-        btnDelDoppelteUrls.addActionListener(e ->
-        {
+        btnDelDoppelteUrls.addActionListener(e
+                -> {
             System.out.println("---------------------");
             System.out.println("vorher: " + daten.getListeFilme().size());
 
             ListeFilme listeFilme = new ListeFilme();
             HashSet<String> hash = new HashSet<>();
             daten.getListeFilme().stream().filter(film -> !hash.contains(film.arr[DatenFilm.FILM_URL]))
-                    .forEach(film ->
-                    {
+                    .forEach(film
+                            -> {
                         hash.add(film.arr[DatenFilm.FILM_URL]);
                         listeFilme.add(film);
                     });
@@ -172,8 +173,8 @@ public class GuiDebug extends JPanel
             System.out.println("danach: " + daten.getListeFilme().size());
             daten.filmlisteSpeichern();
         });
-        btnNurDoppelte.addActionListener(e ->
-        {
+        btnNurDoppelte.addActionListener(e
+                -> {
             ListeFilme listeFilme = new ListeFilme();
             HashSet<String> hash = new HashSet<>();
             HashSet<String> hashDoppelt = new HashSet<>();
@@ -193,8 +194,8 @@ public class GuiDebug extends JPanel
             hashDoppelt.clear();
             saveNewListeFilme(listeFilme);
         });
-        jButtonHashOlddoppelt.addActionListener(e ->
-        {
+        jButtonHashOlddoppelt.addActionListener(e
+                -> {
             ListeFilme listeFilme = new ListeFilme();
             HashSet<String> hash = new HashSet<>();
             HashSet<String> hashDoppelt = new HashSet<>();
@@ -216,8 +217,8 @@ public class GuiDebug extends JPanel
             hashDoppelt.clear();
             saveNewListeFilme(listeFilme);
         });
-        jButtonTTUrl.addActionListener(e ->
-        {
+        jButtonTTUrl.addActionListener(e
+                -> {
             ListeFilme listeFilme = new ListeFilme();
             HashSet<String> hash = new HashSet<>();
             HashSet<String> hashDoppelt = new HashSet<>();
@@ -276,24 +277,42 @@ public class GuiDebug extends JPanel
 //            daten.getListeBlacklist().filterListe();
 //            Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
 //        });
-        jButtonLiveStreams.addActionListener(e ->
-        {
+        jButtonLiveStreams.addActionListener(e
+                -> {
             String url = jTextFieldLiveStreams.getText();
             ListeFilme tmpListe = new ListeFilme();
             new FilmlisteLesen().readFilmListe(url, tmpListe, 0 /*all days*/);
-            daten.getListeFilme().addLive(tmpListe);
+            addLive(tmpListe);
             tmpListe.clear();
             System.gc();
             daten.getListeFilme().sort();
             daten.getListeBlacklist().filterListe();
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
         });
-        jButtonDelLive.addActionListener(e ->
-        {
+        jButtonDelLive.addActionListener(e
+                -> {
             daten.getListeFilme().removeIf(f -> f.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE));
             daten.getListeBlacklist().filterListe();
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
         });
+    }
+
+    public synchronized void addLive(ListeFilme listeEinsortieren) {
+        // live-streams einfügen, es werde die vorhandenen ersetzt!
+
+        if (listeEinsortieren.size() <= 0) {
+            //dann wars wohl nix
+            return;
+        }
+
+        Iterator<DatenFilm> it = daten.getListeFilme().iterator();
+        while (it.hasNext()) {
+            DatenFilm f = it.next();
+            if (f.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE)) {
+                it.remove();
+            }
+        }
+        listeEinsortieren.forEach(daten.getListeFilme()::add);
     }
 
     private void saveNewListeFilme(final ListeFilme listeFilme) {
