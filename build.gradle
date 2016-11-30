@@ -88,6 +88,7 @@ task renameAndFillBuildFile(dependsOn: updateVersion) << {
 
 processResources.dependsOn renameAndFillBuildFile
 
+/*
 licenseReport {
     outputDir = "res/Copyright/"
     excludes = [':MSearch', 'MediathekView:MSearch']
@@ -95,7 +96,7 @@ licenseReport {
 }
 
 processResources.dependsOn generateLicenseReport
-
+*/
 tasks.withType(Zip) { task ->
     task.doLast {
         ant.checksum(algorithm: 'SHA-1', file: it.archivePath)
@@ -107,6 +108,8 @@ task copyProgrammIconsInRes(type: Copy) {
     logger.lifecycle 'Copying Programm icons.'
     from 'src/main/resources/mediathek/res/programm'
     into 'res/Icons/Programm/Version-' + version
+    include '*.png'
+    exclude 'about'
 }
 
 processResources.dependsOn copyProgrammIconsInRes
@@ -157,7 +160,7 @@ jar {
 
 distributions {
     main {
-        baseName = 'MediathekView' + '__' + new Date().format('dd.MM.yyyy')
+        baseName = 'MediathekView'
         contents {
             into('lib')
                     {
