@@ -231,7 +231,7 @@ task createOhneSpeichernExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask
 
 task createPortableExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
 	outfile="MediathekView__Portable.exe"
-	cmdLine="Einstellungen\.mediathek3"
+	cmdLine="Einstellungen/.mediathek3"
 }  
 
 processResources.dependsOn createExe 
