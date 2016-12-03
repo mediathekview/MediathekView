@@ -190,6 +190,7 @@ public class MediathekGui extends JFrame {
 
         ProgStart.loadDataProgStart();
 
+        splashScreenManager.closeSplashScreen();
     }
 
     private void setSearchKeyForMac()
