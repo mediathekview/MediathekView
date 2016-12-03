@@ -39,12 +39,13 @@ import mediathek.tool.GuiFunktionen;
 
 @SuppressWarnings("serial")
 public class MVBandwidthMonitorLWin extends JPanel implements IBandwidthMonitor {
+    private final Daten daten;
     private double counter = 0; // double sonst "läuft" die Chart nicht
     private Trace2DLtd m_trace = new Trace2DLtd(300);
     private IAxis<?> x_achse = null;
     private boolean stopBeob = false;
     private JDialog jDialog = null;
-    private JFrame parent = null;
+    private JFrame frameParent = null;
     private static Point mouseDownCompCoords;
     private JPanel panel;
 
@@ -61,7 +62,8 @@ public class MVBandwidthMonitorLWin extends JPanel implements IBandwidthMonitor 
      **/
     public MVBandwidthMonitorLWin(JFrame parent) {
         initComponents();
-        this.parent = parent;
+        daten = Daten.getInstance();
+        this.frameParent = parent;
         this.panel = this;
         jDialog = new JDialog(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP) ? parent : null, "Bandbreite");
         jDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -240,9 +242,9 @@ public class MVBandwidthMonitorLWin extends JPanel implements IBandwidthMonitor 
                     @Override
                     public void run() {
                         counter++;
-                        m_trace.addPoint(counter / 60, Daten.downloadInfos.bandwidth); // minutes
-                        x_achse.getAxisTitle().setTitle(Daten.downloadInfos.roundBandwidth((long) counter));
-//                        SwingUtilities.invokeLater(() -> setInfoText(Daten.downloadInfos));
+                        m_trace.addPoint(counter / 60, daten.getDownloadInfos().bandwidth); // minutes
+                        x_achse.getAxisTitle().setTitle(daten.getDownloadInfos().roundBandwidth((long) counter));
+//                        SwingUtilities.invokeLater(() -> setInfoText(daten.getDownloadInfos()));
                     }
                 };
                 timer.schedule(timerTask, 0, 1_000);
@@ -300,7 +302,7 @@ public class MVBandwidthMonitorLWin extends JPanel implements IBandwidthMonitor 
 //        String textLinks;
 //        // Text links: Zeilen Tabelle
 //        // nicht gestarted, laufen, fertig OK, fertig fehler
-//        int[] starts = Daten.downloadInfos.downloadStarts;
+//        int[] starts = daten.getDownloadInfos().downloadStarts;
 //        if (starts[0] == 1) {
 //            textLinks = "<span class=\"sans\"><b>Download:</b> 1";
 //        } else {
@@ -357,7 +359,7 @@ public class MVBandwidthMonitorLWin extends JPanel implements IBandwidthMonitor 
             cbkTop.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP));
             cbkTop.addActionListener(l -> {
                 MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP, Boolean.toString(cbkTop.isSelected()));
-                GuiFunktionen.setParent(jDialog, MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP) ? parent : null);
+                GuiFunktionen.setParent(jDialog, MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP) ? frameParent : null);
             });
             cbkBorder.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_DECORATED));
             cbkBorder.addActionListener(l -> {

@@ -19,14 +19,13 @@
  */
 package mediathek.daten;
 
-import java.util.Iterator;
-import java.util.LinkedList;
 import mediathek.tool.TModel;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+
+@SuppressWarnings("serial")
 public class ListeProg extends LinkedList<DatenProg> {
-
-    private static final long serialVersionUID = 1L;
-
     public DatenProg remove(String name) {
         DatenProg ret = null;
         Iterator<DatenProg> it = this.iterator();

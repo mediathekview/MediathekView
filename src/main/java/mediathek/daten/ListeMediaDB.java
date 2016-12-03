@@ -19,16 +19,6 @@
  */
 package mediathek.daten;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.regex.Pattern;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import mSearch.tool.*;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
@@ -37,21 +27,35 @@ import mediathek.tool.Filter;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelMediaDB;
 
+import javax.swing.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.regex.Pattern;
+
+@SuppressWarnings("serial")
 public class ListeMediaDB extends LinkedList<DatenMediaDB> {
-
-    private static final long serialVersionUID = 1L;
-
     public final static String TRENNER = "  |###|  ";
     public final String FILE_SEPERATOR_MEDIA_PATH = "<>";
     private boolean makeIndex = false;
     private String[] suffix = {""};
     private boolean ohneSuffix = true;
 
+    private final Daten daten;
+
+    public ListeMediaDB(Daten aDaten) {
+        daten = aDaten;
+    }
+
     public synchronized void getModelMediaDB(TModelMediaDB modelMediaDB) {
         modelMediaDB.setRowCount(0);
-        this.stream().forEach((mdb) -> {
-            modelMediaDB.addRow(mdb.getRow());
-        });
+        this.forEach((mdb) -> modelMediaDB.addRow(mdb.getRow()));
     }
 
     public synchronized void searchFilmInDB(TModelMediaDB foundModel, String title) {
@@ -60,10 +64,10 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
             Pattern p = Filter.makePattern(title);
             if (p != null) {
                 // dann mit RegEx prüfen
-                Daten.listeMediaDB.stream().filter(s -> p.matcher(s.arr[DatenMediaDB.MEDIA_DB_NAME]).matches()).forEach(s -> foundModel.addRow(s.getRow()));
+                daten.getListeMediaDB().stream().filter(s -> p.matcher(s.arr[DatenMediaDB.MEDIA_DB_NAME]).matches()).forEach(s -> foundModel.addRow(s.getRow()));
             } else {
                 title = title.toLowerCase();
-                for (DatenMediaDB s : Daten.listeMediaDB) {
+                for (DatenMediaDB s : daten.getListeMediaDB()) {
                     if (s.arr[DatenMediaDB.MEDIA_DB_NAME].toLowerCase().contains(title)) {
                         foundModel.addRow(s.getRow());
                     }
@@ -88,8 +92,8 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
 
     private void clean() {
         final HashSet<String> hash = new HashSet<>();
-        ListeMediaDB tmp = new ListeMediaDB();
-        this.stream().forEach(m -> {
+        ListeMediaDB tmp = new ListeMediaDB(daten);
+        this.forEach(m -> {
             final String s = m.getEqual();
             if (!hash.contains(s)) {
                 hash.add(s);
@@ -98,9 +102,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         });
 
         this.clear();
-        tmp.stream().forEach((m) -> {
-            this.add(m);
-        });
+        tmp.forEach(this::add);
         tmp.clear();
         hash.clear();
 
@@ -119,12 +121,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
 
     private void del(boolean ohneSave) {
         if (ohneSave) {
-            Iterator<DatenMediaDB> it = this.iterator();
-            while (it.hasNext()) {
-                if (!it.next().isExtern()) {
-                    it.remove();
-                }
-            }
+            this.removeIf(datenMediaDB -> !datenMediaDB.isExtern());
         } else {
             clear();
             exportListe("");
@@ -152,7 +149,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
     public synchronized void loadSavedList() {
         Path urlPath = getFilePath();
         //use Automatic Resource Management
-        try (LineNumberReader in = new LineNumberReader(new InputStreamReader(Files.newInputStream(urlPath)))) {
+        try (LineNumberReader in = new LineNumberReader(Files.newBufferedReader(urlPath))) {
             String zeile;
             while ((zeile = in.readLine()) != null) {
                 DatenMediaDB mdb = getUrlAusZeile(zeile);
@@ -168,7 +165,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
     public synchronized void exportListe(String datei) {
         Path logFilePath = null;
         boolean export = false;
-        SysMsg.sysMsg("MediaDB schreiben (" + Daten.listeMediaDB.size() + " Dateien) :");
+        SysMsg.sysMsg("MediaDB schreiben (" + daten.getListeMediaDB().size() + " Dateien) :");
         if (!datei.isEmpty()) {
             export = true;
             try {
@@ -189,7 +186,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
             logFilePath = getFilePath();
         }
 
-        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(logFilePath)))) {
+        try (BufferedWriter bw = Files.newBufferedWriter(logFilePath)) {
             bw.newLine();
             bw.newLine();
             for (DatenMediaDB entry : this) {
@@ -207,15 +204,13 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
             //
             bw.flush();
         } catch (Exception ex) {
-            SwingUtilities.invokeLater(() -> {
-                MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
-                        "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
-            });
+            SwingUtilities.invokeLater(() -> MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
+                    "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE));
         }
         SysMsg.sysMsg("   --> geschrieben!");
     }
 
-//    private boolean exists(DatenMediaDB mdb) {
+    //    private boolean exists(DatenMediaDB mdb) {
 //        boolean ret = false;
 //        try {
 //            DatenMediaDB get = this.stream().filter(media -> media.equal(mdb)).findFirst().get();
@@ -256,8 +251,8 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                     }
                     searchFile(new File(pfad), true);
 
-                } else if (!Daten.listeMediaPath.isEmpty()) {
-                    for (DatenMediaPath mp : Daten.listeMediaPath) {
+                } else if (!daten.getListeMediaPath().isEmpty()) {
+                    for (DatenMediaPath mp : daten.getListeMediaPath()) {
                         if (mp.savePath()) {
                             continue;
                         }
@@ -274,15 +269,13 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                         // Verzeichnisse können nicht durchsucht werden
                         errorMsg();
                     }
-                    Daten.listeMediaPath.stream().filter((mp) -> (!mp.savePath())).forEach((mp) -> {
-                        searchFile(new File(mp.arr[DatenMediaPath.MEDIA_PATH_PATH]), false);
-                    });
+                    daten.getListeMediaPath().stream().filter((mp) -> (!mp.savePath())).forEach((mp) -> searchFile(new File(mp.arr[DatenMediaPath.MEDIA_PATH_PATH]), false));
                 }
             } catch (Exception ex) {
                 Log.errorLog(120321254, ex);
             }
 
-            Daten.listeMediaDB.exportListe("");
+            daten.getListeMediaDB().exportListe("");
             makeIndex = false;
             Duration.counterStop("Mediensammlung erstellen");
             Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
@@ -304,7 +297,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                     if (file.isDirectory()) {
                         searchFile(file, save);
                     } else if (checkSuffix(suffix, file.getName())) {
-                        Daten.listeMediaDB.add(new DatenMediaDB(file.getName(), file.getParent().intern(), file.length(), save));
+                        daten.getListeMediaDB().add(new DatenMediaDB(file.getName(), file.getParent().intern(), file.length(), save));
                     }
                 }
             }

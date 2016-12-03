@@ -19,19 +19,18 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import javax.swing.JFrame;
 import mediathek.config.Daten;
 import mediathek.daten.ListePset;
 import mediathek.tool.EscBeenden;
 
-public class DialogImportPset extends javax.swing.JDialog {
+import javax.swing.*;
 
-    private static final long serialVersionUID = 1L;
-
+@SuppressWarnings("serial")
+public class DialogImportPset extends JDialog {
     public boolean ok = false;
-    private ListePset liste;
-    private Daten ddaten;
-    private JFrame parentComponent;
+    private final ListePset liste;
+    private final Daten ddaten;
+    private final JFrame parentComponent;
 
     public DialogImportPset(JFrame parent, boolean modal, Daten dd, ListePset lliste) {
         super(parent, modal);

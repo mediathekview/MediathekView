@@ -36,7 +36,7 @@ import net.sf.jcarrierpigeon.WindowPosition;
 public class MVNotification {
 
     public static void addNotification(DatenDownload datenDownload, boolean erfolgreich) {
-        if (Daten.mediathekGui == null) {
+        if (Daten.getInstance().getMediathekGui() == null) {
             return; // dann gibts keine GUI
         }
         final String[] m = {

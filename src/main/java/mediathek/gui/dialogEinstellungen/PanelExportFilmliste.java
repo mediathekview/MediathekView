@@ -20,16 +20,6 @@
 package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Cursor;
-import java.awt.FileDialog;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import mSearch.filmlisten.WriteFilmlistJson;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
@@ -39,10 +29,16 @@ import mediathek.gui.PanelVorlage;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TextCopyPaste;
 
-public class PanelExportFilmliste extends PanelVorlage {
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class PanelExportFilmliste extends PanelVorlage {
     public String ziel;
 
     public PanelExportFilmliste(Daten d, JFrame parent) {
@@ -77,7 +73,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                 if (ret == JOptionPane.OK_OPTION) {
                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     updateUI();
-                    new WriteFilmlistJson().filmlisteSchreibenJson(exporDatei, Daten.listeFilme);
+                    new WriteFilmlistJson().filmlisteSchreibenJson(exporDatei, daten.getListeFilme());
                     if (!new File(exporDatei).exists()) {
                         MVMessageDialog.showMessageDialog(parentComponent, "Datei:  " + "\"" + exporDatei + "\"" + "  Konnte nicht erstellt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
@@ -207,7 +203,7 @@ public class PanelExportFilmliste extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Filme exportieren");
+                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Filme exportieren");
                 chooser.setMode(FileDialog.SAVE);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {

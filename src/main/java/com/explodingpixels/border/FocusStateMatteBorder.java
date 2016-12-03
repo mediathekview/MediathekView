@@ -1,18 +1,15 @@
 package com.explodingpixels.border;
 
-import java.awt.Color;
+import com.explodingpixels.widgets.WindowUtils;
+
+import javax.swing.*;
+import javax.swing.border.MatteBorder;
+import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 
-import javax.swing.JComponent;
-import javax.swing.border.MatteBorder;
-
-import com.explodingpixels.widgets.WindowUtils;
-
+@SuppressWarnings("serial")
 public class FocusStateMatteBorder extends MatteBorder {
-
-    private static final long serialVersionUID = 1L;
-    
     private final Color fFocusedColor;
 
     private final Color fUnfocusedColor;

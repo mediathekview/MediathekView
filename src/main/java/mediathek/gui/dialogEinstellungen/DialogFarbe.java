@@ -19,18 +19,17 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JFrame;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import mediathek.tool.EscBeenden;
 
-public class DialogFarbe extends javax.swing.JDialog {
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-    private static final long serialVersionUID = 1L;
-
+@SuppressWarnings("serial")
+public class DialogFarbe extends JDialog {
     public Color farbe = null;
 
     public DialogFarbe(JFrame parent, boolean modal, Color color) {

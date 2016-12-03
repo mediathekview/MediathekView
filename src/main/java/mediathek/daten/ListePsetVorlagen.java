@@ -19,7 +19,18 @@
  */
 package mediathek.daten;
 
+import mSearch.Const;
+import mSearch.tool.Log;
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import mediathek.file.GetFile;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.TModel;
+
+import javax.swing.*;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
@@ -27,23 +38,12 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
-import javax.swing.JFrame;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamReader;
-import mSearch.Const;
+
 import static mSearch.tool.Functions.getOs;
 import static mSearch.tool.Functions.getOsString;
-import mSearch.tool.Log;
-import mediathek.file.GetFile;
-import mediathek.tool.GuiFunktionen;
-import mediathek.config.Konstanten;
-import mediathek.tool.TModel;
 
+@SuppressWarnings("serial")
 public class ListePsetVorlagen extends LinkedList<String[]> {
-
-    private static final long serialVersionUID = 1L;
-
     public static final String BS_WIN_32 = "Windows-32Bit";
     public static final String BS_WIN_64 = "Windows-64Bit";
     public static final String BS_LINUX = "Linux";

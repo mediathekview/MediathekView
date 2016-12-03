@@ -28,20 +28,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 
-/**
- * @author emil
- */
+@SuppressWarnings("serial")
 public class GuiMeldungen extends PanelVorlage {
-
-    private static final long serialVersionUID = 1L;
-
     private JSplitPane splitPane = null;
 
     public GuiMeldungen(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
 
-        PanelMeldungen panelMeldungenSystem = new PanelMeldungen(daten, Daten.mediathekGui, SysMsg.LOG_SYSTEM, "Systemmeldungen");
-        PanelMeldungen panelMeldungenPlayer = new PanelMeldungen(daten, Daten.mediathekGui, SysMsg.LOG_PLAYER, "Meldungen Hilfsprogramme");
+        PanelMeldungen panelMeldungenSystem = new PanelMeldungen(daten, daten.getMediathekGui(), SysMsg.LOG_SYSTEM, "Systemmeldungen");
+        PanelMeldungen panelMeldungenPlayer = new PanelMeldungen(daten, daten.getMediathekGui(), SysMsg.LOG_PLAYER, "Meldungen Hilfsprogramme");
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 panelMeldungenSystem,
                 panelMeldungenPlayer);
@@ -63,8 +58,8 @@ public class GuiMeldungen extends PanelVorlage {
     public void isShown() {
         super.isShown();
         if (!solo) {
-//            Daten.mediathekGui.setTabShown(MediathekGui.TABS.TAB_NIX);
-            Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.NONE);
+//            daten.getMediathekGui().setTabShown(MediathekGui.TABS.TAB_NIX);
+            daten.getMediathekGui().getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.NONE);
 
         }
     }

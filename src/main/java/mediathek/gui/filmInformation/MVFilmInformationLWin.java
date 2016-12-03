@@ -19,26 +19,26 @@
  */
 package mediathek.gui.filmInformation;
 
+import mSearch.daten.DatenFilm;
+import mediathek.config.Icons;
+import mediathek.config.MVConfig;
+import mediathek.gui.actions.UrlHyperlinkAction;
+import mediathek.tool.BeobMausUrl;
+import mediathek.tool.EscBeenden;
+import mediathek.tool.GuiFunktionen;
+import org.jdesktop.swingx.JXHyperlink;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.net.URISyntaxException;
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import mSearch.daten.DatenFilm;
-import mediathek.config.Daten;
-import mediathek.config.Icons;
-import mediathek.config.MVConfig;
-import mediathek.tool.BeobMausUrl;
-import mediathek.tool.EscBeenden;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.UrlHyperlinkAction;
-import org.jdesktop.swingx.JXHyperlink;
 
 @SuppressWarnings("serial")
-public class MVFilmInformationLWin extends javax.swing.JDialog implements IFilmInformation {
+public class MVFilmInformationLWin extends JDialog implements IFilmInformation {
     private JXHyperlink lblUrlThemaField;
     private JXHyperlink lblUrlSubtitle;
     private JTextArea textAreaBeschreibung;
@@ -49,19 +49,18 @@ public class MVFilmInformationLWin extends javax.swing.JDialog implements IFilmI
     private final JTextField[] txtArrCont = new JTextField[DatenFilm.MAX_ELEM];
     private DatenFilm aktFilm = new DatenFilm();
     private final JFrame parent;
-    private static ImageIcon ja_sw_16 = null;
+    private static final ImageIcon ja_sw_16 = Icons.ICON_DIALOG_EIN_SW;
     static Point mouseDownCompCoords;
-    private JDialog dialog;
+    private final JDialog dialog;
 
-    public MVFilmInformationLWin(JFrame owner, JTabbedPane tabbedPane, Daten ddaten) {
+    public MVFilmInformationLWin(JFrame owner) {
         super(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILM_INFO_TOP) ? owner : null, false);
         initComponents();
 
         dialog = this;
         parent = owner;
-        this.setTitle("Filminformation");
+        setTitle("Filminformation");
 
-        ja_sw_16 = Icons.ICON_DIALOG_EIN_SW;
         for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {
             labelArrNames[i] = new JLabel(DatenFilm.COLUMN_NAMES[i] + ":");
             labelArrNames[i].setHorizontalAlignment(SwingConstants.RIGHT);

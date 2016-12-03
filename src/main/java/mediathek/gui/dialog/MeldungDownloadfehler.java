@@ -19,26 +19,19 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.Timer;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.EscBeenden;
 
-public class MeldungDownloadfehler extends javax.swing.JDialog {
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class MeldungDownloadfehler extends JDialog {
     private Timer countdownTimer = null;
 
-    /**
-     *
-     * @param parent
-     * @param text
-     * @param datenDownload
-     */
     public MeldungDownloadfehler(java.awt.Frame parent, String text, DatenDownload datenDownload) {
         super(parent, false);
         initComponents();
@@ -56,13 +49,7 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
         };
         jTextArea1.setText(text);
         jTextFieldTitel.setText(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
-        jButtonOk.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                beenden();
-            }
-        });
+        jButtonOk.addActionListener(e -> beenden());
         jLabelIcon.setText("");
         jLabelIcon.setIcon(Icons.ICON_ACHTUNG_32);
 
@@ -97,12 +84,12 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
     private void initComponents() {
 
         jButtonOk = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jLabelIcon = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jTextFieldTitel = new javax.swing.JTextField();
-        jSeparator1 = new javax.swing.JSeparator();
+        javax.swing.JSeparator jSeparator1 = new javax.swing.JSeparator();
         jLabelTime = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -171,11 +158,8 @@ public class MeldungDownloadfehler extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonOk;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabelIcon;
     private javax.swing.JLabel jLabelTime;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextFieldTitel;
     // End of variables declaration//GEN-END:variables

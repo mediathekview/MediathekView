@@ -21,30 +21,50 @@ package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
-import java.awt.EventQueue;
-import java.awt.GraphicsEnvironment;
-import java.awt.Toolkit;
-import java.io.File;
+import javafx.application.Platform;
+import mSearch.Config;
+import mSearch.tool.Log;
+import mSearch.tool.SingleInstance;
+import mSearch.tool.SysMsg;
+import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import mediathek.config.Messages;
+import mediathek.mac.MediathekGuiMac;
+
+import javax.swing.*;
+import java.awt.*;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import javafx.application.Platform;
-import javax.swing.JOptionPane;
-import javax.swing.RepaintManager;
-import mSearch.Config;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
-import mediathek.config.Daten;
-import mediathek.mac.MediathekGuiMac;
-import mediathek.config.Konstanten;
+
 import static mediathek.tool.MVFunctionSys.startMeldungen;
-import mSearch.tool.SingleInstance;
 
 public class Main {
+    private final class ProgramArguments {
+        private static final String STARTUPMODE_AUTO = "-auto";
+        private static final String STARTUPMODE_FASTAUTO = "-fastauto";
+        private static final String STARTUPMODE_DEBUG = "-d";
+        private static final String STARTUPMODE_MAXIMIZED = "-m";
+        private static final String STARTUPMODE_VERBOSE = "-v";
+    }
 
-    public enum StartupMode {
+    private static final String JAVAFX_CLASSNAME_APPLICATION_PLATFORM = "javafx.application.Platform";
+    private static final String LOG_TEXT_SYSTEMMELDUNG = "Systemmeldung";
+    private static final String LOG_TEXT_FEHLERMELDUNG = "Fehlermeldung";
+    private static final String HTTP_PROXY_USER = "http.proxyUser";
+    private static final String HTTP_PROXY_PW = "http.proxyPassword";
+    private static final String LOG_TEXT_PROXY_AUTHENTICATION_SUCESSFUL = "Proxy Authentication: (%s)";
+    private static final String LOG_TEXT_PROXY_AUTHENTICATION_NOT_CONFIGURED = "Proxy Authentication: not configured";
+    private static final String LOG_TEXT_PROXY_PASSWORD_NOT_SET = "Proxy Authentication: Password is not set";
+    private static final String LOG_TEXT_PROXY_AUTHENTICATION_CANNOT_ACCESS_PROXY_USER_PROXY_PW = "Proxy Authentication: cannot access proxyUser / proxyPassword";
+    private static final String MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR = "apple.laf.useScreenMenuBar";
+    private static final String LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING = "MediathekView is already running!";
+    private static final String X11_AWT_APP_CLASS_NAME = "awtAppClassName";
+    public static final String TEXT_LINE = "===========================================";
+
+    private enum StartupMode {
 
         GUI, AUTO, FASTAUTO
     }
@@ -55,7 +75,7 @@ public class Main {
      */
     private static void cleanupOsxFiles() {
         try {
-            Path oldFilmList = Paths.get(Daten.getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME);
+            Path oldFilmList = Paths.get(Daten.getSettingsDirectory_String(), Konstanten.JSON_DATEI_FILME);
             Files.deleteIfExists(oldFilmList);
         } catch (Exception ignored) {
         }
@@ -64,18 +84,17 @@ public class Main {
     /**
      * Tests if javafx is in the classpath by loading a well known class.
      */
-    private static void testForJavaFx() {
+    private static boolean hasJavaFx() {
         try {
-            Class.forName("javafx.application.Platform");
-        } catch (ClassNotFoundException e) {
-            System.out.println("===========================================");
-            System.out.println("JavaFX wurde nicht im klassenpfad gefunden.");
-            System.out.println("Stellen Sie sicher, dass Sie ein Java JRE ab Version 8 benutzen.");
-            System.out.println("Falls Sie Linux nutzen, installieren Sie das openjfx-Paket ihres Package-Managers,");
-            System.out.println("oder nutzen Sie eine eigene JRE-Installation.");
-            System.out.println("===========================================");
+            Class.forName(JAVAFX_CLASSNAME_APPLICATION_PLATFORM);
+            return true;
 
-            System.exit(1);
+        } catch (ClassNotFoundException e) {
+            System.out.println(TEXT_LINE);
+            System.out.printf(Messages.ERROR_NO_JAVAFX_INSTALLED.getText());
+            System.out.println(TEXT_LINE);
+
+            return false;
         }
     }
 
@@ -90,139 +109,179 @@ public class Main {
      * -noGui ohne GUI starten und die Filmliste laden
      *
      * */
+
     /**
      * @param args the command line arguments
      */
     public static void main(final String args[]) {
-    	testForJavaFx();
-        StartupMode state = StartupMode.GUI;
+        new Main().start(args);
+    }
 
-        try {
-            String tmp = System.getProperty("http.proxyUser", System.getProperty("https.proxyUser"));
-            if (tmp != null) {
-                Authenticator.setDefault(new Authenticator() {
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        String proxyUser = System.getProperty("http.proxyUser");
-                        String proxyPassword = System.getProperty("http.proxyPassword");
-                        return new PasswordAuthentication(proxyUser, proxyPassword.toCharArray());
-                    }
-                });
-                SysMsg.sysMsg("Proxy Authentication: (" + System.getProperty("http.proxyUser") + ")");
-            } else {
-                SysMsg.sysMsg("Proxy Authentication: not configured");
+    private void start(String... args) {
+        if (hasJavaFx()) {
+            StartupMode startupMode = StartupMode.GUI;
+
+            proxyAuthentication();
+
+            if (args != null) {
+                startupMode = processArgs(startupMode, args);
             }
 
-        } catch (SecurityException se) {
-            SysMsg.sysMsg("Proxy Authentication: cannot access proxyUser / proxyPassword" + se.toString());
+            startUI(startupMode, args);
         }
+    }
 
-        if (args != null) {
-            for (String s : args) {
-                s = s.toLowerCase();
-                switch (s) {
-                    case "-auto":
-                        state = StartupMode.AUTO;
-                        break;
-
-                    case "-fastauto":
-                        state = StartupMode.FASTAUTO;
-                        break;
-
-                    case "-v":
-                        EventQueue.invokeLater(() -> {
-                            startMeldungen();
-                            SysMsg.sysMsg("Systemmeldung");
-                            Log.errorLog(100000000, "Fehlermeldung");
-                            Log.endMsg();
-                            System.exit(0);
-                        });
-                        break;
-
-                    case "-d":
-                        Daten.debug = true;
-                        Config.debug = true;
-
-//                        EventQueue.invokeLater(() -> {
-//                            // zum Test
-//                            Log.startMeldungen();
-//                            Log.systemMeldung("Test 0");
-//                            MSLog.fehlerMeldung(100000000, "Test 1");
-//                            MSLog.fehlerMeldung(200000000, "Test 2");
-//                            MSLog.fehlerMeldung(0, "Test 3");
-//                        });
-
-                        break;
-
-                    case "-m":
-                        Daten.startMaximized = true;
-                        break;
-                }
-            }
-        }
-
-        /*
-         If user tries to start MV from command-line without proper options,
-         instead of crashing while trying to open Swing windows, just change to CLI mode and warn the user.
-         */
-        if (GraphicsEnvironment.isHeadless() && (state == StartupMode.GUI)) {
-            System.err.println("MediathekView wurde nicht als Kommandozeilenprogramm gestartet.");
-            System.err.println("Startmodus wurde auf -auto geändert.");
-            System.err.println();
-            state = StartupMode.AUTO;
-        }
-
-        switch (state) {
+    private void startUI(StartupMode aStartupMode, final String... aArguments) {
+        aStartupMode = switchToCLIModeIfNecessary(aStartupMode);
+        switch (aStartupMode) {
             case AUTO:
-                new MediathekAuto(args).starten();
+                startAutoMode(aArguments);
                 break;
 
             case FASTAUTO:
-                final MediathekAuto mvAuto = new MediathekAuto(args);
-                mvAuto.setFastAuto(true);
-                mvAuto.starten();
+                startFastAutoMode(aArguments);
                 break;
 
             case GUI:
-                EventQueue.invokeLater(() -> {
-                    //JavaFX stuff
-                    Platform.setImplicitExit(false);
+                startGuiMode(aArguments);
+                break;
+            default:
+                startUI(StartupMode.GUI);
+        }
+    }
 
-                    if (SystemInfo.isMacOSX()) {
-                        System.setProperty("apple.laf.useScreenMenuBar", "true");
-                        cleanupOsxFiles();
+    private void startGuiMode(final String[] args) {
+        EventQueue.invokeLater(() ->
+        {
+            //JavaFX stuff
+            Platform.setImplicitExit(false);
+
+            if (SystemInfo.isMacOSX()) {
+                System.setProperty(MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR, Boolean.TRUE.toString());
+                cleanupOsxFiles();
+            }
+
+            if (Daten.isDebug()) {
+                // use for debugging EDT violations
+                RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
+
+                if (SystemInfo.isMacOSX()) {
+                    //prevent startup of multiple instances...useful during debugging :(
+                    SingleInstance singleInstanceWatcher = new SingleInstance();
+                    if (singleInstanceWatcher.isAppAlreadyActive()) {
+                        JOptionPane.showMessageDialog(null, LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING);
                     }
+                }
+            }
+            if (SystemInfo.isMacOSX()) {
+                new MediathekGuiMac(args).setVisible(true);
+            } else {
+                if (SystemInfo.isUnix()) {
+                    setupX11WindowManagerClassName();
+                }
+                new MediathekGui(args).setVisible(true);
+            }
+        });
+    }
 
-                    if (Daten.debug) {
-                        // use for debugging EDT violations
-                        RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
+    /**
+     * Setup the X11 window manager WM_CLASS hint.
+     * Enables e.g. GNOME to determine application name and to enable app specific functionality.
+     */
+    private void setupX11WindowManagerClassName() {
+        try {
+            Toolkit xToolkit = Toolkit.getDefaultToolkit();
+            java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField(X11_AWT_APP_CLASS_NAME);
+            awtAppClassNameField.setAccessible(true);
+            awtAppClassNameField.set(xToolkit, Konstanten.PROGRAMMNAME);
+        } catch (Exception ignored) {
+            System.err.println("Couldn't set awtAppClassName");
+        }
+    }
 
-                        if (SystemInfo.isMacOSX()) {
-                            //prevent startup of multiple instances...useful during debugging :(
-                            SingleInstance singleInstanceWatcher = new SingleInstance();
-                            if (singleInstanceWatcher.isAppAlreadyActive()) {
-                                JOptionPane.showMessageDialog(null, "MediathekView is already running!");
-                                //System.exit(1);
-                            }
-                        }
-                    }
-                    if (SystemInfo.isMacOSX()) {
-                        new MediathekGuiMac(args).setVisible(true);
-                    } else {
-                        if (SystemInfo.isLinux()) {
-                            try {
-                                Toolkit xToolkit = Toolkit.getDefaultToolkit();
-                                java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
-                                awtAppClassNameField.setAccessible(true);
-                                awtAppClassNameField.set(xToolkit, "MediathekView");
-                            } catch (Exception ignored) {
-                                System.err.println("Couldn't set awtAppClassName");
-                            }
-                        }
-                        new MediathekGui(args).setVisible(true);
+    private void startFastAutoMode(final String[] args) {
+        final MediathekAuto mvAuto = new MediathekAuto(args);
+        mvAuto.setFastAuto(true);
+        mvAuto.starten();
+    }
+
+    private void startAutoMode(final String[] args) {
+        new MediathekAuto(args).starten();
+    }
+
+    private StartupMode switchToCLIModeIfNecessary(final StartupMode aState) {
+    /*
+     If user tries to start MV from command-line without proper options,
+     instead of crashing while trying to open Swing windows, just change to CLI mode and warn the user.
+     */
+        if (GraphicsEnvironment.isHeadless() && (aState == StartupMode.GUI)) {
+            System.err.println("MediathekView wurde nicht als Kommandozeilenprogramm gestartet.");
+            System.err.println("Startmodus wurde auf -auto geändert.");
+            System.err.println();
+            return StartupMode.AUTO;
+        }
+        return aState;
+    }
+
+    private StartupMode processArgs(final StartupMode aStartupMode, final String... aArguments) {
+        StartupMode newStartupMode = null;
+        for (String argument : aArguments) {
+            argument = argument.toLowerCase();
+            switch (argument) {
+                case ProgramArguments.STARTUPMODE_AUTO:
+                    newStartupMode = StartupMode.AUTO;
+                    break;
+
+                case ProgramArguments.STARTUPMODE_FASTAUTO:
+                    newStartupMode = StartupMode.FASTAUTO;
+                    break;
+
+                case ProgramArguments.STARTUPMODE_VERBOSE:
+                    EventQueue.invokeLater(() ->
+                    {
+                        startMeldungen();
+                        SysMsg.sysMsg(LOG_TEXT_SYSTEMMELDUNG);
+                        Log.errorLog(100000000, LOG_TEXT_FEHLERMELDUNG);
+                        Log.endMsg();
+                        System.exit(0);
+                    });
+                    break;
+
+                case ProgramArguments.STARTUPMODE_DEBUG:
+                    Daten.setDebug(true);
+                    Config.debug = true;
+                    break;
+
+                case ProgramArguments.STARTUPMODE_MAXIMIZED:
+                    Daten.setStartMaximized(true);
+                    break;
+            }
+        }
+
+        return newStartupMode == null ? aStartupMode : newStartupMode;
+    }
+
+    private void proxyAuthentication() {
+        try {
+            final String prxUser = System.getProperty(HTTP_PROXY_USER, null);
+            final String prxPassword = System.getProperty(HTTP_PROXY_PW, null);
+            if (prxUser != null && prxPassword != null) {
+                final PasswordAuthentication authenticator = new PasswordAuthentication(prxUser, prxPassword.toCharArray());
+                Authenticator.setDefault(new Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return authenticator;
                     }
                 });
-                break;
+                SysMsg.sysMsg(String.format(LOG_TEXT_PROXY_AUTHENTICATION_SUCESSFUL, prxUser));
+            } else if (prxUser != null && prxPassword == null) {
+                SysMsg.sysMsg(LOG_TEXT_PROXY_PASSWORD_NOT_SET);
+            } else {
+                SysMsg.sysMsg(LOG_TEXT_PROXY_AUTHENTICATION_NOT_CONFIGURED);
+            }
+
+        } catch (SecurityException se) {
+            SysMsg.sysMsg(LOG_TEXT_PROXY_AUTHENTICATION_CANNOT_ACCESS_PROXY_USER_PROXY_PW + se.toString());
         }
     }
 }

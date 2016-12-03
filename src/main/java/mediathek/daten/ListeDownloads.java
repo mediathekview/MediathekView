@@ -19,11 +19,6 @@
  */
 package mediathek.daten;
 
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.swing.JFrame;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Listener;
 import mSearch.tool.SysMsg;
@@ -35,10 +30,14 @@ import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelDownload;
 
+import javax.swing.*;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
+
+@SuppressWarnings("serial")
 public class ListeDownloads extends LinkedList<DatenDownload> {
-
-    private static final long serialVersionUID = 1L;
-
     private final Daten daten;
     private final LinkedList<DatenDownload> aktivDownloads = new LinkedList<>();
 
@@ -59,16 +58,17 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return ret;
     }
 
-//    public synchronized void zurueckgestellteWiederAktivieren() {
-//        this.parallelStream().forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString());
-//    }
+    //    public synchronized void zurueckgestellteWiederAktivieren() {
+    //        this.parallelStream().forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString());
+    //    }
     public synchronized void filmEintragen() {
         // bei einmal Downloads nach einem Programmstart/Neuladen der Filmliste
         // den Film wieder eintragen
         SysMsg.sysMsg("Filme in Downloads eintragen");
         this.stream().filter(d -> d.film == null)
-                .forEach(d -> {
-                    d.film = Daten.listeFilme.getFilmByUrl_klein_hoch_hd(d.arr[DatenDownload.DOWNLOAD_URL]);
+                .forEach(d ->
+                {
+                    d.film = daten.getListeFilme().getFilmByUrl_klein_hoch_hd(d.arr[DatenDownload.DOWNLOAD_URL]);
                     d.setGroesseFromFilm();
                 });
     }
@@ -119,7 +119,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     public synchronized void abosAuffrischen() {
         // fehlerhafte und nicht gestartete löschen, wird nicht gemeldet ob was gefunden wurde
-        boolean gefunden = false;
+        //boolean gefunden = false;
         Iterator<DatenDownload> it = this.iterator();
         while (it.hasNext()) {
             DatenDownload d = it.next();
@@ -135,17 +135,17 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             if (d.start == null) {
                 // noch nicht gestartet
                 it.remove();
-                gefunden = true;
+                //gefunden = true;
             } else if (d.start.status == Start.STATUS_ERR) {
                 // fehlerhafte
                 d.resetDownload();
-                gefunden = true;
+                //gefunden = true;
             }
         }
-        if (gefunden) {
+//        if (gefunden) {
 //            Listener.notify(Listener.EREIGNIS_LISTE_DOWNLOADS, this.getClass().getSimpleName());
-        }
-        this.stream().forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString());
+//        }
+        this.forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString());
     }
 
     public synchronized int nochNichtFertigeDownloads() {
@@ -250,7 +250,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     }
 
     public synchronized void getModel(TModelDownload tModel, boolean onlyAbos, boolean onlyDownloads,
-            boolean onlyNotStarted, boolean onlyStarted, boolean onlyWaiting, boolean onlyRun, boolean onlyFinished) {
+                                      boolean onlyNotStarted, boolean onlyStarted, boolean onlyWaiting, boolean onlyRun, boolean onlyFinished) {
         Object[] object;
         tModel.setRowCount(0);
         for (DatenDownload download : this) {
@@ -377,23 +377,16 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         // in der Filmliste nach passenden Filmen suchen und 
         // in die Liste der Downloads eintragen
         final HashSet<String> listeUrls = new HashSet<>();
-        this.stream().forEach((download) -> {
-            // mit den bereits enthaltenen URL füllen
-            listeUrls.add(download.arr[DatenDownload.DOWNLOAD_URL]);
-        });
+        // mit den bereits enthaltenen URL füllen
+        this.forEach((download) -> listeUrls.add(download.arr[DatenDownload.DOWNLOAD_URL]));
 
         boolean gefunden = false;
-        DatenFilm film;
         DatenAbo abo;
-        Iterator<DatenFilm> itFilm;
         // prüfen ob in "alle Filme" oder nur "nach Blacklist" gesucht werden soll
         boolean checkWithBlackList = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_AUCH_ABO));
         DatenPset pSet_ = Daten.listePset.getPsetAbo("");
-        itFilm = Daten.listeFilme.iterator();
-        while (itFilm.hasNext()) {
-            film = itFilm.next();
-
-            abo = Daten.listeAbo.getAboFuerFilm_schnell(film, true /*auch die Länge überprüfen*/);
+        for (DatenFilm film : daten.getListeFilme()) {
+            abo = daten.getListeAbo().getAboFuerFilm_schnell(film, true /*auch die Länge überprüfen*/);
             if (abo == null) {
                 // dann gibts dafür kein Abo
                 continue;
@@ -403,7 +396,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
             if (checkWithBlackList) {
                 //Blacklist auch bei Abos anwenden
-                if (!Daten.listeBlacklist.checkBlackOkFilme_Downloads(film)) {
+                if (!daten.getListeBlacklist().checkBlackOkFilme_Downloads(film)) {
                     continue;
                 }
             }
@@ -421,10 +414,10 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     continue;
                 }
                 listeUrls.add(urlDownload);
-//                if (checkUrlExists(urlDownload)) {
-//                    // haben wir schon in der Downloadliste
-//                    continue;
-//                }
+                //                if (checkUrlExists(urlDownload)) {
+                //                    // haben wir schon in der Downloadliste
+                //                    continue;
+                //                }
 
                 //diesen Film in die Downloadliste eintragen
                 abo.arr[DatenAbo.ABO_DOWN_DATUM] = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
@@ -501,9 +494,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
      * @return number of queued Starts.
      */
     public synchronized int getNumberOfStartsNotFinished() {
-        Iterator<DatenDownload> it = this.iterator();
-        while (it.hasNext()) {
-            Start s = it.next().start;
+        for (DatenDownload datenDownload : this) {
+            Start s = datenDownload.start;
             if (s != null) {
                 if (s.status < Start.STATUS_FERTIG) {
                     return this.size();
@@ -656,9 +648,8 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     // ################################################################
     private boolean getDown(int max) {
         int count = 0;
-        Iterator<DatenDownload> it = this.iterator();
-        while (it.hasNext()) {
-            Start s = it.next().start;
+        for (DatenDownload datenDownload : this) {
+            Start s = datenDownload.start;
             if (s != null) {
                 if (s.status == Start.STATUS_RUN) {
                     ++count;
@@ -773,13 +764,13 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return host;
     }
 
-//    private synchronized boolean checkUrlExists(String url) {
-//        //prüfen, ob der Film schon in der Liste ist, (manche Filme sind in verschiedenen Themen)
-//        for (DatenDownload download : this) {
-//            if (download.arr[DatenDownload.DOWNLOAD_URL].equals(url)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
+    //    private synchronized boolean checkUrlExists(String url) {
+    //        //prüfen, ob der Film schon in der Liste ist, (manche Filme sind in verschiedenen Themen)
+    //        for (DatenDownload download : this) {
+    //            if (download.arr[DatenDownload.DOWNLOAD_URL].equals(url)) {
+    //                return true;
+    //            }
+    //        }
+    //        return false;
+    //    }
 }

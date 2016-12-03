@@ -19,13 +19,11 @@
  */
 package mediathek.tool;
 
-import java.util.List;
 import javax.swing.table.DefaultTableModel;
+import java.util.List;
 
+@SuppressWarnings("serial")
 public class TModel extends DefaultTableModel {
-
-    private static final long serialVersionUID = 1L;
-    
     public TModel() {
     }
 

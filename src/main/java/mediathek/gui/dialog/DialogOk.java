@@ -19,23 +19,14 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JPanel;
 import mediathek.tool.EscBeenden;
 
-public class DialogOk extends javax.swing.JDialog {
+import javax.swing.*;
+import java.awt.*;
 
-    private static final long serialVersionUID = 1L;
-    
-    /**
-     *
-     * @param parent
-     * @param modal
-     * @param panel
-     * @param titel */
-    public DialogOk(java.awt.Frame parent, boolean modal, JPanel panel, String titel) {
+@SuppressWarnings("serial")
+public class DialogOk extends JDialog {
+    public DialogOk(Frame parent, boolean modal, JPanel panel, String titel) {
         super(parent, modal);
         initComponents();
         this.setTitle(titel);
@@ -45,12 +36,7 @@ public class DialogOk extends javax.swing.JDialog {
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
-        jButtonBeenden.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                beenden();
-            }
-        });
+        jButtonBeenden.addActionListener(e -> beenden());
         new EscBeenden(this) {
             @Override
             public void beenden_() {

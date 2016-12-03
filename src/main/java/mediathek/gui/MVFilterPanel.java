@@ -20,12 +20,8 @@
 package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.*;
 import mSearch.tool.Listener;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -36,18 +32,21 @@ import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.res.GetIcon;
 import mediathek.tool.TextCopyPaste;
 
-public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
+import javax.swing.*;
+import javax.swing.event.*;
+import java.awt.*;
+import java.awt.event.*;
 
-    private static final long serialVersionUID = 1L;
-
+@SuppressWarnings("serial")
+public class MVFilterPanel extends JPanel implements MVFilter {
     private int aktFilter = -1;
-    private final JFrame parent;
+    private final JFrame parentComponent;
     private final Daten daten;
 
-    public MVFilterPanel(final JFrame parent, final Daten daten) {
+    public MVFilterPanel(final JFrame aParentComponent, final Daten aDaten,MediathekGui aMediathekGui) {
+        parentComponent=aParentComponent;
         initComponents();
-        this.parent = parent;
-        this.daten = daten;
+        daten = aDaten;
 
         jToggleButtonBlacklist.setText("");
         if (SystemInfo.isWindows()) {
@@ -56,22 +55,18 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), "einstellungen");
             ActionMap am = jComboBoxFilterSender.getActionMap();
             am.put("einstellungen", new AbstractAction() {
-                private static final long serialVersionUID = 1L;
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.dialogEinstellungen.setVisible(true);
+                    aMediathekGui.showSettingsDialog();
                 }
             });
             im = jComboBoxFilterThema.getInputMap();
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), "einstellungen");
             am = jComboBoxFilterThema.getActionMap();
             am.put("einstellungen", new AbstractAction() {
-                private static final long serialVersionUID = 1L;
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.dialogEinstellungen.setVisible(true);
+                    aMediathekGui.showSettingsDialog();
                 }
             });
         }
@@ -81,7 +76,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         setIconBlacklist();
         jToggleButtonBlacklist.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.toString(jToggleButtonBlacklist.isSelected()));
-            Daten.listeBlacklist.filterListe();
+            daten.getListeBlacklist().filterListe();
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterPanel.class.getSimpleName());
             setIconBlacklist();
         });
@@ -95,7 +90,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfe.setText("");
-        jButtonHilfe.addActionListener(e -> new DialogHilfe(parent, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true));
+        jButtonHilfe.addActionListener(e -> new DialogHilfe(aMediathekGui, false, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_FILTER)).setVisible(true));
         setIcon(false); // erst mal alle aus
         jRadioButtonF1.addActionListener(new BeobRadio(0));
         jRadioButtonF2.addActionListener(new BeobRadio(1));
@@ -446,8 +441,8 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
             JMenuItem item = new JMenuItem("Blacklist bearbeiten");
             item.addActionListener(e -> {
-                DialogLeer dialog = new DialogLeer(parent, true);
-                dialog.init("Blacklist", new PanelBlacklist(daten, parent, PanelBlacklist.class.getName() + "_3"));
+                DialogLeer dialog = new DialogLeer(parentComponent, true);
+                dialog.init("Blacklist", new PanelBlacklist(daten, parentComponent, PanelBlacklist.class.getName() + "_3"));
                 dialog.setVisible(true);
             });
             jPopupMenu.add(item);
@@ -463,7 +458,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
         javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
         javax.swing.ButtonGroup buttonGroup2 = new javax.swing.ButtonGroup();
-        buttonGroup3 = new javax.swing.ButtonGroup();
+        javax.swing.ButtonGroup buttonGroup3 = new javax.swing.ButtonGroup();
         javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jComboBoxFilterSender = new javax.swing.JComboBox<>();
@@ -493,7 +488,7 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
         chkUt = new javax.swing.JCheckBox();
         rbMin = new javax.swing.JRadioButton();
         rbMax = new javax.swing.JRadioButton();
-        jLabel3 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jRadioButtonF1 = new javax.swing.JRadioButton();
         jRadioButtonF2 = new javax.swing.JRadioButton();
         jRadioButtonF3 = new javax.swing.JRadioButton();
@@ -767,7 +762,6 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup3;
     private javax.swing.JCheckBox chkUt;
     private javax.swing.JButton jButtonClearAll;
     public javax.swing.JButton jButtonFilterLoeschen;
@@ -778,7 +772,6 @@ public class MVFilterPanel extends javax.swing.JPanel implements MVFilter {
     private javax.swing.JCheckBox jCheckBoxNurNeue;
     public javax.swing.JComboBox<String> jComboBoxFilterSender;
     public javax.swing.JComboBox<String> jComboBoxFilterThema;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JRadioButton jRadioButtonF1;
     private javax.swing.JRadioButton jRadioButtonF2;
     private javax.swing.JRadioButton jRadioButtonF3;

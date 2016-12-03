@@ -10,3 +10,4 @@ dist/javadoc
 *.exe
 res/Icons/Sender
 /.idea/
+/.nb-gradle/

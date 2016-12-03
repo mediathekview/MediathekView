@@ -19,30 +19,22 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.net.URISyntaxException;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import mediathek.config.Icons;
 import mediathek.config.Daten;
-import mediathek.file.GetFile;
-import mediathek.tool.EscBeenden;
+import mediathek.config.Icons;
 import mediathek.config.Konstanten;
-import mediathek.tool.UrlHyperlinkAction;
+import mediathek.file.GetFile;
+import mediathek.gui.actions.UrlHyperlinkAction;
+import mediathek.tool.EscBeenden;
 
-public class DialogNewSet extends javax.swing.JDialog {
+import javax.swing.*;
+import java.net.URISyntaxException;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class DialogNewSet extends JDialog {
     public boolean ok = false;
     public boolean morgen = true;
     private JFrame parent;
 
-    /**
-     *
-     * @param pparent
-     */
     public DialogNewSet(JFrame pparent) {
         super(pparent, true);
         initComponents();
@@ -50,29 +42,13 @@ public class DialogNewSet extends javax.swing.JDialog {
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
-//        if (Daten.delSets) {
-//            // Sets sollen wegen Änderungen der Pfade neu angelegt werden
-//            jCheckBoxMorgen.setVisible(false);
-//            jCheckBoxMorgen.setSelected(false);
-//            setTitle("Pfade der Standardset haben sich geändert");
-//            jTextArea3.setText("\n"
-//                    + "   Pfade zu Hilfsprogrammen haben sich geändert.\n"
-//                    + "   Das Standardset der Videoplayer\n"
-//                    + "   für den Download und das Abspielen der Filme\n"
-//                    + "   wird neu angelegt.");
-//        } else {
         setTitle("Das Standardset wurde aktualisiert");
         jTextArea3.setText("\n"
                 + "   Es gibt ein neues Standardset der Videoplayer\n"
                 + "   für den Download und das Abspielen der Filme.\n");
         jCheckBoxMorgen.setSelected(true);
-        jCheckBoxMorgen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                morgen = jCheckBoxMorgen.isSelected();
-            }
-        });
-//        }
+        jCheckBoxMorgen.addActionListener(e -> morgen = jCheckBoxMorgen.isSelected());
+
         jTextArea1.setText("\n"
                 + "   Die bestehenden Einstellungen werden nicht verändert.\n"
                 + "   Das neue Set wird nur angefügt und muss dann erst noch in den\n"
@@ -89,40 +65,24 @@ public class DialogNewSet extends javax.swing.JDialog {
             jXHyperlinkAnleitung.setAction(new UrlHyperlinkAction(pparent, Konstanten.ADRESSE_ANLEITUNG));
         } catch (URISyntaxException ignored) {
         }
-        jButtonAdd.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        jButtonAdd.addActionListener(e -> {
+            ok = true;
+            beenden();
+        });
+        jButtonAbbrechen.addActionListener(e -> {
+            ok = false;
+            beenden();
+        });
+        jButtonReplace.addActionListener(e -> {
+            int ret = JOptionPane.showConfirmDialog(parent, "Alle Sets zurücksetzen?", "Alle Sets zurücksetzen!", JOptionPane.YES_NO_OPTION);
+            if (ret == JOptionPane.OK_OPTION) {
+                Daten.listePset.clear();
                 ok = true;
                 beenden();
             }
         });
-        jButtonAbbrechen.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ok = false;
-                beenden();
-            }
-        });
-        jButtonReplace.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int ret = JOptionPane.showConfirmDialog(parent, "Alle Sets zurücksetzen?", "Alle Sets zurücksetzen!", JOptionPane.YES_NO_OPTION);
-                if (ret == JOptionPane.OK_OPTION) {
-                    Daten.listePset.clear();
-                    ok = true;
-                    beenden();
-                }
-            }
-        });
         jButtonSetHelp.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonSetHelp.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET_SET)).setVisible(true);
-            }
-        });
+        jButtonSetHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET_SET)).setVisible(true));
         new EscBeenden(this) {
             @Override
             public void beenden_() {
@@ -145,19 +105,19 @@ public class DialogNewSet extends javax.swing.JDialog {
     private void initComponents() {
 
         jButtonAbbrechen = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel7 = new javax.swing.JLabel();
         jXHyperlinkAnleitung = new org.jdesktop.swingx.JXHyperlink();
         jCheckBoxMorgen = new javax.swing.JCheckBox();
-        jPanel3 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
+        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jButtonAdd = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
         jButtonReplace = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
-        jScrollPane3 = new javax.swing.JScrollPane();
+        javax.swing.JScrollPane jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea3 = new javax.swing.JTextArea();
         jButtonSetHelp = new javax.swing.JButton();
 
@@ -195,7 +155,7 @@ public class DialogNewSet extends javax.swing.JDialog {
         jCheckBoxMorgen.setSelected(true);
         jCheckBoxMorgen.setText("Morgen wieder fragen");
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Entweder", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 12), new java.awt.Color(0, 102, 204))); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Entweder", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 102, 204))); // NOI18N
 
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
@@ -227,7 +187,7 @@ public class DialogNewSet extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Oder", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 12), new java.awt.Color(0, 102, 204))); // NOI18N
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Oder", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Lucida Grande", 0, 13), new java.awt.Color(0, 102, 204))); // NOI18N
 
         jButtonReplace.setText("Bestehende Sets durch die neuen ersetzen");
 
@@ -315,12 +275,6 @@ public class DialogNewSet extends javax.swing.JDialog {
     private javax.swing.JButton jButtonReplace;
     private javax.swing.JButton jButtonSetHelp;
     private javax.swing.JCheckBox jCheckBoxMorgen;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextArea jTextArea3;

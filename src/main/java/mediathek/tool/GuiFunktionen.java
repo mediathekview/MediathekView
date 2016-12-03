@@ -20,21 +20,20 @@
 package mediathek.tool;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.*;
-import java.awt.datatransfer.StringSelection;
-import java.io.File;
-import java.lang.reflect.Field;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 import mSearch.tool.Functions.OperatingSystemType;
-import static mSearch.tool.Functions.getOs;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.config.MVConfig.Configs;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
+import java.io.File;
+import java.lang.reflect.Field;
+
+import static mSearch.tool.Functions.getOs;
 
 public class GuiFunktionen extends MVFunctionSys {
 
@@ -55,6 +54,26 @@ public class GuiFunktionen extends MVFunctionSys {
     public static void copyToClipboard(String s) {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(s), null);
     }
+
+    /**
+     * Center a component (e.g. Dialog) on screen
+     *
+     * @param c        The reference component
+     * @param absolute if true, use absolute position, otherwise relative
+     */
+    public static void centerOnScreen(final Component c, final boolean absolute) {
+        final int width = c.getWidth();
+        final int height = c.getHeight();
+        final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (screenSize.width / 2) - (width / 2);
+        int y = (screenSize.height / 2) - (height / 2);
+        if (!absolute) {
+            x /= 2;
+            y /= 2;
+        }
+        c.setLocation(x, y);
+    }
+
 
     public static void getSize(Configs nr, JFrame jFrame) {
         if (jFrame != null) {

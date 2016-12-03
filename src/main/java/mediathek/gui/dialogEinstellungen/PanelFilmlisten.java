@@ -20,17 +20,6 @@
 package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Cursor;
-import java.awt.FileDialog;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.File;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import mSearch.filmlisten.DatenFilmlisteUrl;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
@@ -40,10 +29,18 @@ import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.TModel;
 
-public class PanelFilmlisten extends PanelVorlage {
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.File;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class PanelFilmlisten extends PanelVorlage {
     public PanelFilmlisten(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();
@@ -51,7 +48,7 @@ public class PanelFilmlisten extends PanelVorlage {
     }
 
     private void init() {
-        if (!Daten.debug) {
+        if (!Daten.getInstance().isDebug()) {
             jScrollPane1.setVisible(false);
             jTable1.setVisible(false);
             jLabelAktListe.setVisible(false);
@@ -67,7 +64,7 @@ public class PanelFilmlisten extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                jTextFieldUrl.setText(Daten.filmeLaden.getDownloadUrl_akt());
+                jTextFieldUrl.setText(daten.getFilmeLaden().getDownloadUrl_akt());
             }
         });
         jButtonAkualisieren.addActionListener(new ActionListener() {
@@ -82,9 +79,9 @@ public class PanelFilmlisten extends PanelVorlage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (jCheckBoxUpdate.isSelected()) {
-                    Daten.filmeLaden.updateFilmlist(jTextFieldUrl.getText());
+                    daten.getFilmeLaden().updateFilmlist(jTextFieldUrl.getText());
                 } else {
-                    Daten.filmeLaden.loadFilmlist(jTextFieldUrl.getText());
+                    daten.getFilmeLaden().loadFilmlist(jTextFieldUrl.getText());
                 }
             }
         });
@@ -117,9 +114,9 @@ public class PanelFilmlisten extends PanelVorlage {
     private void listeFilmlistenSuchen() {
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         if (jRadioButtonAkt.isSelected()) {
-            Daten.filmeLaden.updateDownloadUrlsFilmlisten(true);
+            daten.getFilmeLaden().updateDownloadUrlsFilmlisten(true);
         } else /*diff*/ {
-            Daten.filmeLaden.updateDownloadUrlsFilmlisten(false);
+            daten.getFilmeLaden().updateDownloadUrlsFilmlisten(false);
         }
         stopBeob = true;
         tabelleLaden();
@@ -129,9 +126,9 @@ public class PanelFilmlisten extends PanelVorlage {
 
     private void tabelleLaden() {
         if (jRadioButtonAkt.isSelected()) {
-            jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().getTableObjectData(), DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
+            jTable1.setModel(new TModel(daten.getFilmeLaden().getDownloadUrlsFilmlisten_akt().getTableObjectData(), DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
         } else /*diff*/ {
-            jTable1.setModel(new TModel(Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().getTableObjectData(), DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
+            jTable1.setModel(new TModel(daten.getFilmeLaden().getDownloadUrlsFilmlisten_diff().getTableObjectData(), DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES_ANZEIGE));
         }
         for (int i = 0; i < jTable1.getColumnCount(); ++i) {
             if (i == DatenFilmlisteUrl.FILM_UPDATE_SERVER_URL_NR) {
@@ -168,9 +165,9 @@ public class PanelFilmlisten extends PanelVorlage {
         if (selectedTableRow >= 0) {
             String url = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), DatenFilmlisteUrl.FILM_UPDATE_SERVER_URL_NR).toString();
             if (jRadioButtonAkt.isSelected()) {
-                datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().getDatenUrlFilmliste(url);
+                datenUrlFilmliste = daten.getFilmeLaden().getDownloadUrlsFilmlisten_akt().getDatenUrlFilmliste(url);
             } else /*diff*/ {
-                datenUrlFilmliste = Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().getDatenUrlFilmliste(url);
+                datenUrlFilmliste = daten.getFilmeLaden().getDownloadUrlsFilmlisten_diff().getDatenUrlFilmliste(url);
             }
         }
         if (datenUrlFilmliste != null) {
@@ -178,9 +175,9 @@ public class PanelFilmlisten extends PanelVorlage {
             if (doppel) {
                 // dann wars ein Doppelklick, gleich laden
                 if (jCheckBoxUpdate.isSelected()) {
-                    Daten.filmeLaden.updateFilmlist(jTextFieldUrl.getText());
+                    daten.getFilmeLaden().updateFilmlist(jTextFieldUrl.getText());
                 } else {
-                    Daten.filmeLaden.loadFilmlist(jTextFieldUrl.getText());
+                    daten.getFilmeLaden().loadFilmlist(jTextFieldUrl.getText());
                 }
             }
         }
@@ -358,7 +355,7 @@ public class PanelFilmlisten extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(Daten.mediathekGui, "Filmliste laden");
+                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Filmliste laden");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {

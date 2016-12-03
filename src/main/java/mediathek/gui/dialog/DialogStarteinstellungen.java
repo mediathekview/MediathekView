@@ -19,12 +19,6 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.GroupLayout;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import static mSearch.tool.Functions.getOs;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.ListePset;
@@ -35,11 +29,15 @@ import mediathek.gui.dialogEinstellungen.PanelPsetKurz;
 import mediathek.gui.dialogEinstellungen.PanelPsetLang;
 import mediathek.tool.GuiFunktionenProgramme;
 
-public class DialogStarteinstellungen extends javax.swing.JDialog {
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-    private static final long serialVersionUID = 1L;
-    
-    private Daten daten;
+import static mSearch.tool.Functions.getOs;
+
+@SuppressWarnings("serial")
+public class DialogStarteinstellungen extends JDialog {
+    private final Daten daten;
     private final static int STAT_START = 1;
     private final static int STAT_PFAD = 2;
     private final static int STAT_PSET = 3;
@@ -55,20 +53,15 @@ public class DialogStarteinstellungen extends javax.swing.JDialog {
         initComponents();
         daten = dd;
         this.setTitle("Erster Start");
-        jButtonStandard.addActionListener((ActionEvent e) -> {
-            weiter();
-        });
+        jButtonStandard.addActionListener((ActionEvent e) -> weiter());
         jButtonAnpassen.addActionListener((ActionEvent e) -> {
             anpassen = true;
             weiter();
         });
         jCheckBoxAlleEinstellungen.setVisible(false);
-        jCheckBoxAlleEinstellungen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                status = STAT_PSET;
-                weiter();
-            }
+        jCheckBoxAlleEinstellungen.addActionListener(e -> {
+            status = STAT_PSET;
+            weiter();
         });
         MVConfig.add(MVConfig.Configs.SYSTEM_UPDATE_SUCHEN, Boolean.TRUE.toString());
 
