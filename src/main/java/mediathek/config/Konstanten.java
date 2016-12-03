@@ -33,7 +33,7 @@ public class Konstanten {
 
     // MediathekView URLs
 //    public static final String ADRESSE_FILMLISTEN_SERVER = "http://zdfmediathk.sourceforge.net/update.xml";
-    public static final String ADRESSE_PROGRAMM_VERSION = "http://zdfmediathk.sourceforge.net/prog-info-12.xml";
+    public static final String ADRESSE_PROGRAMM_VERSION = "https://res.mediathekview.de/prog-info-12.xml";
     public static final String ADRESSE_DOWNLAD = "http://sourceforge.net/projects/zdfmediathk/";
     public static final String ADRESSE_ANLEITUNG = "http://sourceforge.net/p/zdfmediathk/wiki/Home/";
     public static final String ADRESSE_ONLINE_HELP = "https://sourceforge.net/p/zdfmediathk/wiki/Anleitung/";
