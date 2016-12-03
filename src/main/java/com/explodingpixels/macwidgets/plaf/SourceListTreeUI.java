@@ -1,44 +1,6 @@
 package com.explodingpixels.macwidgets.plaf;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JTree;
-import javax.swing.JViewport;
-import javax.swing.KeyStroke;
-import javax.swing.UIManager;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
-import javax.swing.plaf.basic.BasicTreeUI;
-import javax.swing.tree.AbstractLayoutCache;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeSelectionModel;
-import javax.swing.tree.TreeCellRenderer;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
-
-import com.explodingpixels.macwidgets.MacWidgetFactory;
-import com.explodingpixels.macwidgets.SourceList;
-import com.explodingpixels.macwidgets.SourceListBadgeContentProvider;
-import com.explodingpixels.macwidgets.SourceListCategory;
-import com.explodingpixels.macwidgets.SourceListColorScheme;
-import com.explodingpixels.macwidgets.SourceListCountBadgeRenderer;
-import com.explodingpixels.macwidgets.SourceListModel;
-import com.explodingpixels.macwidgets.SourceListStandardColorScheme;
+import com.explodingpixels.macwidgets.*;
 import com.explodingpixels.painter.FocusStatePainter;
 import com.explodingpixels.painter.RectanglePainter;
 import com.explodingpixels.widgets.IconProvider;
@@ -48,6 +10,15 @@ import com.explodingpixels.widgets.WindowUtils;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+
+import javax.swing.*;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
+import javax.swing.plaf.basic.BasicTreeUI;
+import javax.swing.tree.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 
 /**
  * <p>
@@ -107,7 +78,7 @@ public class SourceListTreeUI extends BasicTreeUI {
     private FocusStatePainter fBackgroundPainter;
     private FocusStatePainter fSelectionBackgroundPainter;
 
-    private CustomTreeModelListener fTreeModelListener = new CustomTreeModelListener();
+    private final CustomTreeModelListener fTreeModelListener = new CustomTreeModelListener();
 
     @Override
     protected void completeUIInstall() {
@@ -324,10 +295,9 @@ public class SourceListTreeUI extends BasicTreeUI {
         }
     }
 
+    @SuppressWarnings("serial")
     private Action createNextAction() {
         return new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = tree.getLeadSelectionRow();
                 int rowToSelect = selectedRow + 1;
@@ -343,10 +313,9 @@ public class SourceListTreeUI extends BasicTreeUI {
         };
     }
 
+    @SuppressWarnings("serial")
     private Action createPreviousAction() {
         return new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = tree.getLeadSelectionRow();
                 int rowToSelect = selectedRow - 1;
@@ -439,9 +408,9 @@ public class SourceListTreeUI extends BasicTreeUI {
 
     private class SourceListTreeCellRenderer implements TreeCellRenderer {
 
-        private CategoryTreeCellRenderer iCategoryRenderer = new CategoryTreeCellRenderer();
+        private final CategoryTreeCellRenderer iCategoryRenderer = new CategoryTreeCellRenderer();
 
-        private ItemTreeCellRenderer iItemRenderer = new ItemTreeCellRenderer();
+        private final ItemTreeCellRenderer iItemRenderer = new ItemTreeCellRenderer();
 
         public Component getTreeCellRendererComponent(
                 JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row,
@@ -456,7 +425,7 @@ public class SourceListTreeUI extends BasicTreeUI {
 
     private class CategoryTreeCellRenderer implements TreeCellRenderer {
 
-        private JLabel fLabel = MacWidgetFactory.makeEmphasizedLabel(new JLabel(),
+        private final JLabel fLabel = MacWidgetFactory.makeEmphasizedLabel(new JLabel(),
                 fColorScheme.getCategoryTextColor(),
                 fColorScheme.getCategoryTextColor(),
                 fColorScheme.getCategoryTextShadowColor());
@@ -476,18 +445,18 @@ public class SourceListTreeUI extends BasicTreeUI {
 
     private class ItemTreeCellRenderer implements TreeCellRenderer {
 
-        private PanelBuilder fBuilder;
+        private final PanelBuilder fBuilder;
 
-        private SourceListCountBadgeRenderer fCountRenderer = new SourceListCountBadgeRenderer(
+        private final SourceListCountBadgeRenderer fCountRenderer = new SourceListCountBadgeRenderer(
                 fColorScheme.getSelectedBadgeColor(), fColorScheme.getActiveUnselectedBadgeColor(),
                 fColorScheme.getInativeUnselectedBadgeColor(), fColorScheme.getBadgeTextColor());
 
-        private JLabel fSelectedLabel = MacWidgetFactory.makeEmphasizedLabel(new JLabel(),
+        private final JLabel fSelectedLabel = MacWidgetFactory.makeEmphasizedLabel(new JLabel(),
                 fColorScheme.getSelectedItemTextColor(),
                 fColorScheme.getSelectedItemTextColor(),
                 fColorScheme.getSelectedItemFontShadowColor());
 
-        private JLabel fUnselectedLabel = MacWidgetFactory.makeEmphasizedLabel(new JLabel(),
+        private final JLabel fUnselectedLabel = MacWidgetFactory.makeEmphasizedLabel(new JLabel(),
                 fColorScheme.getUnselectedItemTextColor(),
                 fColorScheme.getUnselectedItemTextColor(),
                 TRANSPARENT_COLOR);
@@ -532,9 +501,8 @@ public class SourceListTreeUI extends BasicTreeUI {
 
     // SourceListTreeSelectionModel implementation. ///////////////////////////////////////////////
 
+    @SuppressWarnings("serial")
     private class SourceListTreeSelectionModel extends DefaultTreeSelectionModel {
-        private static final long serialVersionUID = 1L;
-
         public SourceListTreeSelectionModel() {
             setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         }

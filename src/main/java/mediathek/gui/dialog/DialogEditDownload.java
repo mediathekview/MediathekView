@@ -19,16 +19,6 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
@@ -40,10 +30,16 @@ import mediathek.file.GetFile;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.MVMessageDialog;
 
-public class DialogEditDownload extends javax.swing.JDialog {
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class DialogEditDownload extends JDialog {
     private final DatenDownload datenDownload;
     public boolean ok = false;
     private final JTextField[] textfeldListe = new JTextField[DatenDownload.MAX_ELEM];
@@ -525,13 +521,13 @@ public class DialogEditDownload extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
+        javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanelExtra = new javax.swing.JPanel();
         jButtonOk = new javax.swing.JButton();
         jButtonAbbrechen = new javax.swing.JButton();
         jPanelRes = new javax.swing.JPanel();
-        jLabelRes = new javax.swing.JLabel();
+        javax.swing.JLabel jLabelRes = new javax.swing.JLabel();
         jRadioButtonResHd = new javax.swing.JRadioButton();
         jRadioButtonResHi = new javax.swing.JRadioButton();
         jRadioButtonResLo = new javax.swing.JRadioButton();
@@ -633,10 +629,8 @@ public class DialogEditDownload extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButtonAbbrechen;
     private javax.swing.JButton jButtonOk;
-    private javax.swing.JLabel jLabelRes;
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JPanel jPanelRes;
     private javax.swing.JRadioButton jRadioButtonResHd;

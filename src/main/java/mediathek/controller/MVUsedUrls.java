@@ -32,10 +32,11 @@ import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@SuppressWarnings("serial")
 public class MVUsedUrls {
 
     private final HashSet<String> listeUrls;
-    private LinkedList<MVUsedUrl> listeUrlsSortDate;
+    private final LinkedList<MVUsedUrl> listeUrlsSortDate;
     private final String fileName;
     private final String settingsDir;
     private final int notifyEvent;
@@ -46,8 +47,6 @@ public class MVUsedUrls {
         this.notifyEvent = notifyEvent;
         listeUrlsSortDate = new LinkedList<>();
         listeUrls = new HashSet<String>() {
-            private static final long serialVersionUID = 1L;
-            
             @Override
             public void clear() {
                 listeUrlsSortDate.clear();

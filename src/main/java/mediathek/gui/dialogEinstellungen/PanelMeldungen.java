@@ -19,35 +19,33 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javafx.beans.Observable;
 import javafx.collections.ObservableList;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import javax.swing.text.DefaultCaret;
 import mSearch.tool.Log;
-import mediathek.config.MVConfig;
 import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
+import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 
-public class PanelMeldungen extends PanelVorlage {
+import javax.swing.*;
+import javax.swing.text.DefaultCaret;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-    private static final long serialVersionUID = 1L;
-    
-    private final ObservableList<String> text;
+@SuppressWarnings("serial")
+public class PanelMeldungen extends PanelVorlage {
     private final int logArt;
     private int firstScroll = 25;
-    private Color cGruen = new Color(0, 153, 51);
-    private Color cRot = new Color(255, 0, 0);
+    private static final Color cGruen = new Color(0, 153, 51);
+    private static final Color cRot = new Color(255, 0, 0);
 
     public PanelMeldungen(Daten d, JFrame parentComponent, int logArt, String header) {
         super(d, parentComponent);
         initComponents();
         jLabelHeader.setText(header);
         this.logArt = logArt;
+        ObservableList<String> text;
         if (logArt == SysMsg.LOG_SYSTEM) {
             text = SysMsg.textSystem;
             jCheckBoxAuto.setSelected(true);
@@ -154,37 +152,38 @@ public class PanelMeldungen extends PanelVorlage {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabelHeader)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jCheckBoxAuto)
-                        .addGap(18, 18, 18)
-                        .addComponent(jCheckBoxUmbrechen)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
-                        .addComponent(jButtonLoeschen)))
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabelHeader)
+                                                .addGap(0, 0, Short.MAX_VALUE))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jCheckBoxAuto)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(jCheckBoxUmbrechen)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
+                                                .addComponent(jButtonLoeschen)))
+                                .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabelHeader)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jCheckBoxAuto)
-                    .addComponent(jCheckBoxUmbrechen)
-                    .addComponent(jButtonLoeschen))
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabelHeader)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                        .addComponent(jCheckBoxAuto)
+                                        .addComponent(jCheckBoxUmbrechen)
+                                        .addComponent(jButtonLoeschen))
+                                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonLoeschen;
     private javax.swing.JCheckBox jCheckBoxAuto;

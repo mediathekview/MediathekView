@@ -129,7 +129,7 @@ public class MVBandwidthMonitorOSX implements IBandwidthMonitor {
                     public void run() {
                         double bandwidth = 0.0; // bytes per second
                         //only count running/active downloads and calc accumulated progress..
-                        LinkedList<DatenDownload> activeDownloadList = Daten.listeDownloads.getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
+                        LinkedList<DatenDownload> activeDownloadList = Daten.getInstance().getListeDownloads().getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
                         for (DatenDownload download : activeDownloadList) {
                             if (download.start != null && download.start.status == Start.STATUS_RUN) {
                                 bandwidth += download.start.bandbreite;

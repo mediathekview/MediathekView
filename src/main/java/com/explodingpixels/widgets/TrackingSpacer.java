@@ -1,19 +1,16 @@
 package com.explodingpixels.widgets;
 
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
-import javax.swing.JComponent;
-
 /**
  * A {@link JComponent} that tracks the width or height of another component.
  */
+@SuppressWarnings("serial")
 public class TrackingSpacer extends JComponent {
-
-    private static final long serialVersionUID = 1L;
-    
     private final JComponent fComponent;
     private final TrackingDimension fTrackingDimension;
     private final int fDelta;

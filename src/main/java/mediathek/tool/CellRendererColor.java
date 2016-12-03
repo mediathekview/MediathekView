@@ -19,18 +19,16 @@
  */
 package mediathek.tool;
 
-import java.awt.Component;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import mSearch.tool.Log;
-import mediathek.config.MVColor;
 import mediathek.config.Daten;
+import mediathek.config.MVColor;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
+
+@SuppressWarnings("serial")
 public class CellRendererColor extends DefaultTableCellRenderer {
-
-    private static final long serialVersionUID = 1L;
-    
     @Override
     public Component getTableCellRendererComponent(
             JTable table,

@@ -1,17 +1,12 @@
 package com.explodingpixels.swingx;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-
-import javax.swing.JPanel;
-
 import com.explodingpixels.painter.MacWidgetsPainter;
 
-public class EPPanel extends JPanel {
+import javax.swing.*;
+import java.awt.*;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class EPPanel extends JPanel {
     private MacWidgetsPainter<Component> fBackgroundPainter;
 
     public EPPanel() {

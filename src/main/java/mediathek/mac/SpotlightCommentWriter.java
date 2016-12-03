@@ -17,7 +17,10 @@ import java.util.logging.Level;
  * Writes spotlight comments to the downloaded file on OS X.
  */
 public class SpotlightCommentWriter {
+    private final Daten daten;
+
     public SpotlightCommentWriter() {
+        daten = Daten.getInstance();
     }
 
     /**
@@ -61,18 +64,18 @@ public class SpotlightCommentWriter {
                     builder.command().add(script);
                     builder.start();
                 } catch (Exception ex) {
-                    if (Daten.mediathekGui != null) {
+                    if (daten.getMediathekGui() != null) {
                         SwingUtilities.invokeLater(() -> {
                             final ErrorInfo info = new ErrorInfo(null,
                                     "<html>Es trat ein Fehler beim Schreiben des Spotlight-Kommentars auf.<br>" +
                                             "Sollte dieser häufiger auftreten kontaktieren Sie bitte " +
                                             "das Entwicklerteam.</html>",
                                     null,
-                                    "category",
+                                    null,
                                     ex,
                                     Level.SEVERE,
                                     null);
-                            JXErrorPane.showDialog(Daten.mediathekGui, info);
+                            JXErrorPane.showDialog(daten.getMediathekGui(), info);
                         });
                     }
                     Log.errorLog(915263987, "Fehler beim Spotlight schreiben" + filmPath.toString());

@@ -19,27 +19,21 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JFrame;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 
-public class PanelPset extends PanelVorlage {
+import javax.swing.*;
+import java.awt.*;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class PanelPset extends PanelVorlage {
     public PanelPset(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();
-        jCheckBoxAlleEinstellungen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_ANSICHT_SET_LANG, Boolean.toString(jCheckBoxAlleEinstellungen.isSelected()));
-                pset();
-            }
+        jCheckBoxAlleEinstellungen.addActionListener(e -> {
+            MVConfig.add(MVConfig.Configs.SYSTEM_ANSICHT_SET_LANG, Boolean.toString(jCheckBoxAlleEinstellungen.isSelected()));
+            pset();
         });
         jCheckBoxAlleEinstellungen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ANSICHT_SET_LANG)));
         pset();
@@ -68,12 +62,12 @@ public class PanelPset extends PanelVorlage {
         javax.swing.GroupLayout jPanelPsetLayout = new javax.swing.GroupLayout(jPanelPset);
         jPanelPset.setLayout(jPanelPsetLayout);
         jPanelPsetLayout.setHorizontalGroup(
-            jPanelPsetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 466, Short.MAX_VALUE)
+                jPanelPsetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 466, Short.MAX_VALUE)
         );
         jPanelPsetLayout.setVerticalGroup(
-            jPanelPsetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 308, Short.MAX_VALUE)
+                jPanelPsetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 308, Short.MAX_VALUE)
         );
 
         jCheckBoxAlleEinstellungen.setText("alle Einstellungen anzeigen");
@@ -81,26 +75,27 @@ public class PanelPset extends PanelVorlage {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelPset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jCheckBoxAlleEinstellungen)
-                        .addGap(0, 248, Short.MAX_VALUE)))
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jPanelPset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jCheckBoxAlleEinstellungen)
+                                                .addGap(0, 248, Short.MAX_VALUE)))
+                                .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jCheckBoxAlleEinstellungen)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanelPset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jCheckBoxAlleEinstellungen)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jPanelPset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox jCheckBoxAlleEinstellungen;
     private javax.swing.JPanel jPanelPset;

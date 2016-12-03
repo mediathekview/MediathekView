@@ -19,20 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Color;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.JFrame;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Listener;
@@ -48,15 +34,24 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.TModel;
 import mediathek.tool.TextCopyPaste;
 
-public class PanelBlacklist extends PanelVorlage {
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class PanelBlacklist extends PanelVorlage {
     public boolean ok = false;
     public String ziel;
     private final String name;
-    private final Color cGruen = new Color(0, 153, 51);
-    private final Color cRot = new Color(255, 0, 0);
+    private static final Color cGruen = new Color(0, 153, 51);
+    private static final Color cRot = new Color(255, 0, 0);
 
     public PanelBlacklist(Daten d, JFrame parentComponent, String nname) {
         super(d, parentComponent);
@@ -85,7 +80,7 @@ public class PanelBlacklist extends PanelVorlage {
                 init_();
             }
         });
-        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 comboThemaLaden();
@@ -153,7 +148,7 @@ public class PanelBlacklist extends PanelVorlage {
             String ti = jTextFieldTitel.getText().trim();
             String thti = jTextFieldThemaTitel.getText().trim();
             if (!se.equals("") || !th.equals("") || !ti.equals("") || !thti.equals("")) {
-                Daten.listeBlacklist.add(new DatenBlacklist(se, th, ti, thti));
+                daten.getListeBlacklist().add(new DatenBlacklist(se, th, ti, thti));
                 tabelleLaden();
             }
         });
@@ -167,7 +162,7 @@ public class PanelBlacklist extends PanelVorlage {
                 if (selectedTableRow >= 0) {
                     int row = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
                     String delNr = jTableBlacklist.getModel().getValueAt(row, DatenBlacklist.BLACKLIST_NR).toString();
-                    DatenBlacklist bl = Daten.listeBlacklist.get(delNr);
+                    DatenBlacklist bl = daten.getListeBlacklist().get(delNr);
                     bl.arr[DatenBlacklist.BLACKLIST_SENDER] = se;
                     bl.arr[DatenBlacklist.BLACKLIST_THEMA] = th;
                     bl.arr[DatenBlacklist.BLACKLIST_TITEL] = ti;
@@ -183,7 +178,7 @@ public class PanelBlacklist extends PanelVorlage {
         jButtonTabelleLoeschen.addActionListener(e -> {
             int ret = JOptionPane.showConfirmDialog(parentComponent, "Alle Einträge werden gelöscht.", "Löschen?", JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.OK_OPTION) {
-                Daten.listeBlacklist.clear();
+                daten.getListeBlacklist().clear();
                 tabelleLaden();
             }
         });
@@ -223,7 +218,7 @@ public class PanelBlacklist extends PanelVorlage {
     }
 
     private void notifyBlack() {
-        Daten.listeBlacklist.filterListe();
+        daten.getListeBlacklist().filterListe();
         Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, name);
     }
 
@@ -238,23 +233,23 @@ public class PanelBlacklist extends PanelVorlage {
     }
 
     private String[] getThemen(String ssender) {
-        for (int i = 1; i < Daten.listeFilme.themenPerSender.length; ++i) {
-            if (Daten.listeFilme.sender[i].equals(ssender)) {
-                return Daten.listeFilme.themenPerSender[i];
+        for (int i = 1; i < daten.getListeFilme().themenPerSender.length; ++i) {
+            if (daten.getListeFilme().sender[i].equals(ssender)) {
+                return daten.getListeFilme().themenPerSender[i];
             }
         }
         //return alleThemen;
-        return Daten.listeFilme.themenPerSender[0];
+        return daten.getListeFilme().themenPerSender[0];
     }
 
     private void initCombo() {
         // der erste Sender ist ""
-        final String[] sender = GuiFunktionen.addLeerListe(Daten.filmeLaden.getSenderNamen());
+        final String[] sender = GuiFunktionen.addLeerListe(daten.getFilmeLaden().getSenderNamen());
         jComboBoxSender.setModel(new javax.swing.DefaultComboBoxModel<>(sender));
     }
 
     private void tabelleLaden() {
-        jTableBlacklist.setModel(new TModel(Daten.listeBlacklist.getObjectData(), DatenBlacklist.COLUMN_NAMES));
+        jTableBlacklist.setModel(new TModel(daten.getListeBlacklist().getObjectData(), DatenBlacklist.COLUMN_NAMES));
     }
 
     private void tableSelect() {
@@ -263,7 +258,7 @@ public class PanelBlacklist extends PanelVorlage {
         if (selectedTableRow >= 0) {
             int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
             String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR).toString();
-            bl = Daten.listeBlacklist.get(delNr);
+            bl = daten.getListeBlacklist().get(delNr);
         }
         if (bl != null) {
             jComboBoxSender.setSelectedItem(bl.arr[DatenBlacklist.BLACKLIST_SENDER]);
@@ -279,7 +274,7 @@ public class PanelBlacklist extends PanelVorlage {
         if (selectedTableRow >= 0) {
             int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
             String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR).toString();
-            ret = Daten.listeBlacklist.remove(delNr);
+            ret = daten.getListeBlacklist().remove(delNr);
             tabelleLaden();
         }
         return ret;
@@ -293,42 +288,41 @@ public class PanelBlacklist extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
-        label1 = new java.awt.Label();
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        jTabbedPaneBlacklist = new javax.swing.JTabbedPane();
-        jPanel3 = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
+        javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
+        javax.swing.JTabbedPane jTabbedPaneBlacklist = new javax.swing.JTabbedPane();
+        javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jCheckBoxZukunftNichtAnzeigen = new javax.swing.JCheckBox();
-        jPanel6 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
         jSliderMinuten = new javax.swing.JSlider();
-        jLabel1 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jTextFieldMinuten = new javax.swing.JTextField();
-        jLabel13 = new javax.swing.JLabel();
-        jPanel7 = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel13 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanel7 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
         jCheckBoxGeo = new javax.swing.JCheckBox();
-        jLabel9 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel9 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         jTableBlacklist = new javax.swing.JTable();
-        jPanel4 = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
         jComboBoxSender = new javax.swing.JComboBox<>();
-        jLabel6 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
         jComboBoxThema = new javax.swing.JComboBox<>();
         jButtonHinzufuegen = new javax.swing.JButton();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel7 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel8 = new javax.swing.JLabel();
         jTextFieldTitel = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jTextFieldThemaTitel = new javax.swing.JTextField();
         jButtonAendern = new javax.swing.JButton();
         jRadioButtonBlacklist = new javax.swing.JRadioButton();
         jRadioButtonWhitelist = new javax.swing.JRadioButton();
         jButtonHilfe = new javax.swing.JButton();
-        jLabel10 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel10 = new javax.swing.JLabel();
         jButtonTabelleLoeschen = new javax.swing.JButton();
         jCheckBoxBlacklistEingeschaltet = new javax.swing.JCheckBox();
         jCheckBoxAbo = new javax.swing.JCheckBox();
@@ -344,8 +338,6 @@ public class PanelBlacklist extends PanelVorlage {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 100, Short.MAX_VALUE)
         );
-
-        label1.setText("label1");
 
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -665,8 +657,8 @@ public class PanelBlacklist extends PanelVorlage {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButtonAendern;
     private javax.swing.JButton jButtonHilfe;
     private javax.swing.JButton jButtonHinzufuegen;
@@ -678,33 +670,13 @@ public class PanelBlacklist extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxZukunftNichtAnzeigen;
     private javax.swing.JComboBox<String> jComboBoxSender;
     private javax.swing.JComboBox<String> jComboBoxThema;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
     private javax.swing.JRadioButton jRadioButtonBlacklist;
     private javax.swing.JRadioButton jRadioButtonWhitelist;
     private javax.swing.JSlider jSliderMinuten;
-    private javax.swing.JTabbedPane jTabbedPaneBlacklist;
     private javax.swing.JTable jTableBlacklist;
     private javax.swing.JTextField jTextFieldMinuten;
     private javax.swing.JTextField jTextFieldThemaTitel;
     private javax.swing.JTextField jTextFieldTitel;
-    private java.awt.Label label1;
     // End of variables declaration//GEN-END:variables
 
     private class BeobachterTableSelect implements ListSelectionListener {

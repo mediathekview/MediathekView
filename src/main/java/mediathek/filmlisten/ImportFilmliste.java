@@ -19,8 +19,6 @@
  */
 package mediathek.filmlisten;
 
-import java.util.ArrayList;
-import javax.swing.event.EventListenerList;
 import mSearch.Config;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
@@ -29,9 +27,12 @@ import mSearch.filmlisten.FilmlisteLesen;
 import mSearch.filmlisten.FilmlistenSuchen;
 import mSearch.tool.Log;
 
+import javax.swing.event.EventListenerList;
+import java.util.ArrayList;
+
 public class ImportFilmliste {
 
-    private EventListenerList listeners;
+    private final EventListenerList listeners;
     private final FilmlisteLesen msFilmlisteLesen;
     public FilmlistenSuchen msFilmlistenSuchen;
 
@@ -69,14 +70,13 @@ public class ImportFilmliste {
         new Thread(new FilmeImportierenAutoThread(listeFilme, listeFilmeDiff, days)).start();
     }
 
-    private class FilmeImportierenAutoThread implements Runnable {
+    public enum STATE {AKT, DIFF}
 
+    private class FilmeImportierenAutoThread implements Runnable {
         private final ListeFilme listeFilme;
         private final ListeFilme listeFilmeDiff;
-        private final int STATE_AKT = 2;
-        private final int STATE_DIFF = 3;
-        private int state;
-        private int days;
+        private STATE state;
+        private final int days;
 
         public FilmeImportierenAutoThread(ListeFilme listeFilme, ListeFilme listeFilmeDiff, int days) {
             this.listeFilme = listeFilme;
@@ -89,16 +89,16 @@ public class ImportFilmliste {
             boolean ret;
             if (listeFilme.isTooOldForDiff()) {
                 // dann eine komplette Liste laden
-                state = STATE_AKT;
+                state = STATE.AKT;
                 listeFilme.clear();
                 ret = suchenAktListe(listeFilme);
             } else {
                 // nur ein Update laden
-                state = STATE_DIFF;
+                state = STATE.DIFF;
                 ret = suchenAktListe(listeFilmeDiff);
                 if (!ret || listeFilmeDiff.isEmpty()) {
                     // wenn diff, dann nochmal mit einer kompletten Liste versuchen
-                    state = STATE_AKT;
+                    state = STATE.AKT;
                     listeFilme.clear();
                     listeFilmeDiff.clear();
                     ret = suchenAktListe(listeFilme);
@@ -116,10 +116,10 @@ public class ImportFilmliste {
             String updateUrl = "";
 
             switch (state) {
-                case STATE_AKT:
+                case AKT:
                     updateUrl = msFilmlistenSuchen.suchenAkt(versuchteUrls);
                     break;
-                case STATE_DIFF:
+                case DIFF:
                     updateUrl = msFilmlistenSuchen.suchenDiff(versuchteUrls);
                     break;
             }
@@ -129,17 +129,9 @@ public class ImportFilmliste {
             }
 
             // 5 mal mit einem anderen Server probieren, wenns nicht klappt
-            int max = state == STATE_DIFF ? 2 : 5; //bei diff nur 2x probieren, dann eine akt-liste laden
-            for (int i = 0; i < max; ++i) {
-                switch (state) {
-                    case STATE_AKT:
-                        ret = urlLaden(updateUrl, liste, days);
-                        break;
-                    case STATE_DIFF:
-                        ret = urlLaden(updateUrl, liste, days); // dann muss die komplette Liste erst später geschrieben werden
-                        break;
-                }
-
+            final int maxRetries = state == STATE.DIFF ? 2 : 5; //bei diff nur 2x probieren, dann eine akt-liste laden
+            for (int i = 0; i < maxRetries; ++i) {
+                ret = urlLaden(updateUrl, liste, days);
                 if (ret && i < 1 && liste.isOlderThan(5 * 60 * 60 /*sekunden*/)) {
                     // Laden hat geklappt ABER: Liste zu alt, dann gibts einen 2. Versuch
                     Log.sysLog("Filmliste zu alt, neuer Versuch");
@@ -152,10 +144,10 @@ public class ImportFilmliste {
                 }
 
                 switch (state) {
-                    case STATE_AKT:
+                    case AKT:
                         updateUrl = msFilmlistenSuchen.listeFilmlistenUrls_akt.getRand(versuchteUrls); //nächste Adresse in der Liste wählen
                         break;
-                    case STATE_DIFF:
+                    case DIFF:
                         updateUrl = msFilmlistenSuchen.listeFilmlistenUrls_diff.getRand(versuchteUrls); //nächste Adresse in der Liste wählen
                         break;
                 }

@@ -2,27 +2,26 @@ package mediathek.mac;
 
 import com.apple.eawt.Application;
 import com.jidesoft.utils.SystemInfo;
+import mSearch.tool.Listener;
+import mSearch.tool.Log;
+import mediathek.MediathekGui;
+import mediathek.config.Daten;
+import mediathek.gui.bandwidth.MVBandwidthMonitorOSX;
+import mediathek.gui.filmInformation.MVFilmInformationOSX;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-import javax.imageio.ImageIO;
-import javax.swing.*;
-
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
-import mediathek.MediathekGui;
-import mediathek.config.Daten;
-import mediathek.gui.AboutDialog;
-import mediathek.gui.bandwidth.MVBandwidthMonitorOSX;
-import mediathek.gui.filmInformation.MVFilmInformationOSX;
 
 @SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
 
+    private final Daten daten;
     /**
      * Repaint-Thread for progress indicator on OS X.
      */
@@ -30,6 +29,7 @@ public class MediathekGuiMac extends MediathekGui {
 
     public MediathekGuiMac(String[] ar) {
         super(ar);
+        daten = Daten.getInstance();
         //Window must be fully initialized to become fullscreen cadidate...
         setWindowFullscreenCapability();
     }
@@ -51,12 +51,17 @@ public class MediathekGuiMac extends MediathekGui {
     @Override
     protected void initMenue() {
         super.initMenue();
-        if (SystemInfo.isMacOSX()) {
-            setupUserInterfaceForOsx();
-            setupAcceleratorsForOsx();
 
-            jMenuItemAnleitung.setText("Hilfe zum Programm...");
-        }
+        setupUserInterfaceForOsx();
+        setupAcceleratorsForOsx();
+    }
+
+    @Override
+    protected void setupHelpMenu() {
+        super.setupHelpMenu();
+        //not needed on OSX, located in apple menu
+        jMenuHilfe.remove(jSeparatorAboutApplication);
+        jMenuHilfe.remove(jMenuItemAboutApplication);
     }
 
 
@@ -93,7 +98,7 @@ public class MediathekGuiMac extends MediathekGui {
             Listener.EREIGNIS_START_EVENT, Listener.EREIGNIS_LISTE_DOWNLOADS}, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
-                final int activeDownloads = Daten.downloadInfos.downloadStarts[4];
+                final int activeDownloads = daten.getDownloadInfos().downloadStarts[4];
                 final Application application = Application.getApplication();
                 if (activeDownloads > 0) {
                     application.setDockIconBadge(String.valueOf(activeDownloads));
@@ -114,22 +119,13 @@ public class MediathekGuiMac extends MediathekGui {
     }
 
     /**
-     * Display the About Box
-     */
-    protected void showAboutDialog() {
-        AboutDialog aboutDialog = new AboutDialog(this, SystemInfo.isMacOSX());
-        aboutDialog.setVisible(true);
-        aboutDialog.dispose();
-    }
-
-    /**
      * Setup the UI for OS X
      */
     private void setupUserInterfaceForOsx() {
         final Application application = Application.getApplication();
         application.disableSuddenTermination();
         application.setAboutHandler(aboutEvent -> showAboutDialog());
-        application.setPreferencesHandler(preferencesEvent -> Daten.dialogEinstellungen.setVisible(true));
+        application.setPreferencesHandler(preferencesEvent -> showSettingsDialog());
         application.setQuitHandler((quitEvent, quitResponse) -> {
             if (!beenden(false, false)) {
                 quitResponse.cancelQuit();

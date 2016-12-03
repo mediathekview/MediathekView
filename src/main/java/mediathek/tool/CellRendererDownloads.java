@@ -20,14 +20,6 @@
 package mediathek.tool;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.plaf.basic.BasicProgressBarUI;
-import javax.swing.table.DefaultTableCellRenderer;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
@@ -36,10 +28,14 @@ import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 
-public class CellRendererDownloads extends DefaultTableCellRenderer {
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.plaf.basic.BasicProgressBarUI;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class CellRendererDownloads extends DefaultTableCellRenderer {
     private final static String DOWNLOAD_STARTEN = "Download starten";
     private final static String DOWNLOAD_LOESCHEN = "Download aus Liste entfernen";
     private final static String DOWNLOAD_STOPPEN = "Download stoppen";
@@ -58,7 +54,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
     private static ImageIcon download_del_tab = null;
     private static ImageIcon download_del_sw_tab = null;
     private boolean geoMelden = false;
-    private JProgressBar progressBar;
+    private final JProgressBar progressBar;
     private final Border emptyBorder = BorderFactory.createEmptyBorder();
     private final Border largeBorder = BorderFactory.createEmptyBorder(9, 2, 9, 2);
     private final JPanel panel;
@@ -110,7 +106,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-            int row, int column) {
+                                                   int row, int column) {
         try {
             setBackground(null);
             setForeground(null);

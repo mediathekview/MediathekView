@@ -19,19 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.LinkedList;
-import javax.swing.*;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Listener;
 import mediathek.config.Daten;
@@ -45,10 +32,22 @@ import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVRun;
 import mediathek.tool.TModel;
 
-public class PanelErledigteUrls extends PanelVorlage {
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.LinkedList;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class PanelErledigteUrls extends PanelVorlage {
     private boolean abo;
 
     public PanelErledigteUrls(Daten d, JFrame parentComponent) {
@@ -56,9 +55,7 @@ public class PanelErledigteUrls extends PanelVorlage {
         initComponents();
         jTable1.addMouseListener(new BeobMausTabelle());
         jButtonLoeschen.setEnabled(false);
-        jButtonExport.addActionListener((ActionEvent e) -> {
-            export();
-        });
+        jButtonExport.addActionListener((ActionEvent e) -> export());
     }
 
     public void initAbo() {
@@ -139,7 +136,7 @@ public class PanelErledigteUrls extends PanelVorlage {
         if (!dialog.ok) {
             return;
         }
-        mVRun = new MVRun(Daten.mediathekGui, "Datei: \"" + dialog.ziel + "\" erstellen");
+        mVRun = new MVRun(daten.getMediathekGui(), "Datei: \"" + dialog.ziel + "\" erstellen");
         mVRun.setVisible(true);
         new Thread(new Export_(dialog.ziel, mVRun)).start();
     }
@@ -180,13 +177,8 @@ public class PanelErledigteUrls extends PanelVorlage {
                 //
                 bw.flush();
             } catch (Exception ex) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
-                                "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
-                    }
-                });
+                SwingUtilities.invokeLater(() -> MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
+                        "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE));
             } finally {
                 mVRun.dispose();
             }
@@ -261,7 +253,7 @@ public class PanelErledigteUrls extends PanelVorlage {
         BeobLoeschen beobLoeschen = new BeobLoeschen();
         BeobUrl beobUrl = new BeobUrl();
         private Point p;
-        DatenFilm film = null;
+        DatenFilm film;
 
         @Override
         public void mousePressed(MouseEvent arg0) {
@@ -283,7 +275,7 @@ public class PanelErledigteUrls extends PanelVorlage {
             if (nr >= 0) {
                 jTable1.setRowSelectionInterval(nr, nr);
                 String url = jTable1.getValueAt(jTable1.convertRowIndexToModel(nr), MVUsedUrl.USED_URL_URL).toString();
-                film = Daten.listeFilme.getFilmByUrl(url);
+                film = daten.getListeFilme().getFilmByUrl(url);
             }
             JPopupMenu jPopupMenu = new JPopupMenu();
             //löschen
@@ -315,7 +307,7 @@ public class PanelErledigteUrls extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                DatenDownload datenDownload = Daten.listeDownloads.getDownloadUrlFilm(film.arr[DatenFilm.FILM_URL]);
+                DatenDownload datenDownload = daten.getListeDownloads().getDownloadUrlFilm(film.arr[DatenFilm.FILM_URL]);
                 if (datenDownload != null) {
                     int ret = JOptionPane.showConfirmDialog(parentComponent, "Download für den Film existiert bereits.\n"
                             + "Noch einmal anlegen?", "Anlegen?", JOptionPane.YES_NO_OPTION);
@@ -324,7 +316,7 @@ public class PanelErledigteUrls extends PanelVorlage {
                     }
                 }
                 // weiter
-                DialogAddDownload dialog = new DialogAddDownload(Daten.mediathekGui, daten, film, null, "");
+                DialogAddDownload dialog = new DialogAddDownload(daten.getMediathekGui(), daten, film, null, "");
                 dialog.setVisible(true);
             }
 

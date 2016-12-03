@@ -16,13 +16,26 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.gui;
+package mediathek.gui.dialog;
 
 import com.jidesoft.swing.MarqueePane;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Font;
+import com.jidesoft.utils.SystemInfo;
+import mSearch.Const;
+import mSearch.tool.Functions;
+import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import mediathek.gui.actions.DisposeDialogAction;
+import mediathek.gui.actions.UrlHyperlinkAction;
+import mediathek.tool.BeobMausUrl;
+import mediathek.tool.EscBeenden;
+import org.jdesktop.swingx.JXHyperlink;
+
+import javax.swing.*;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,19 +43,6 @@ import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
-import mSearch.Const;
-import mSearch.tool.Functions;
-import mediathek.config.Daten;
-import mediathek.config.Konstanten;
-import mediathek.tool.BeobMausUrl;
-import mediathek.tool.EscBeenden;
-import mediathek.tool.UrlHyperlinkAction;
-import org.jdesktop.swingx.JXHyperlink;
 
 @SuppressWarnings("serial")
 public class AboutDialog extends JDialog {
@@ -51,11 +51,9 @@ public class AboutDialog extends JDialog {
     private final JPanel buttonPane = new JPanel();
     private final JLabel lblFilmlistPath = new JLabel();
     private final JLabel lblSettingsFilePath = new JLabel();
-    private final Boolean isRunningOnMac;
     private final JLabel lblJavaVersion = new JLabel();
     private final JLabel lblVmType = new JLabel();
     private MarqueePane marqueePane;
-    private final JFrame parentFrame;
 
     private void setupVersionString() {
         String strVersion = "Version ";
@@ -69,7 +67,7 @@ public class AboutDialog extends JDialog {
 
     /**
      * Read the credits HTML file from resources
-     * @return
+     * @return the HTML content as String
      */
     private String loadCredits()
     {
@@ -126,7 +124,7 @@ public class AboutDialog extends JDialog {
             lblFilmlistPath.setText(Daten.getDateiFilmliste());
 
             // auf dem Mac brauchen wir den Schließen Button nicht..
-            if (isRunningOnMac) {
+            if (SystemInfo.isMacOSX()) {
                 this.remove(buttonPane);
             }
 
@@ -135,12 +133,12 @@ public class AboutDialog extends JDialog {
         }
     }
 
-    public AboutDialog(JFrame parent, final Boolean isRunningOnMac) {
+    public AboutDialog(JFrame parent) {
         super(parent);
-        parentFrame = parent;
+
         setModal(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        this.isRunningOnMac = isRunningOnMac;
+
         new EscBeenden(this) {
             @Override
             public void beenden_(JDialog d) {
@@ -171,41 +169,25 @@ public class AboutDialog extends JDialog {
 
         JXHyperlink hprlnkWebsite = new JXHyperlink();
         hprlnkWebsite.setHorizontalAlignment(SwingConstants.LEFT);
-        try {
-            hprlnkWebsite.setAction(new WebsiteHyperlinkAction());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        hprlnkWebsite.setAction(new HyperlinkAction(parent, Konstanten.ADRESSE_WEBSITE));
         hprlnkWebsite.setText("Website");
         hprlnkWebsite.addMouseListener(new BeobMausUrl(Konstanten.ADRESSE_WEBSITE));
 
         JXHyperlink hprlnkDonation = new JXHyperlink();
         hprlnkDonation.setHorizontalAlignment(SwingConstants.LEFT);
-        try {
-            hprlnkDonation.setAction(new DonationHyperlinkAction());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        hprlnkDonation.setAction(new HyperlinkAction(parent, Konstanten.ADRESSE_DONATION));
         hprlnkDonation.setText("Spende");
         hprlnkDonation.addMouseListener(new BeobMausUrl(Konstanten.ADRESSE_DONATION));
 
         JXHyperlink hprlnkAnleitung = new JXHyperlink();
         hprlnkAnleitung.setHorizontalAlignment(SwingConstants.LEFT);
-        try {
-            hprlnkAnleitung.setAction(new AnleitungHyperlinkAction());
-        } catch (URISyntaxException e1) {
-            e1.printStackTrace();
-        }
+        hprlnkAnleitung.setAction(new HyperlinkAction(parent, Konstanten.ADRESSE_ANLEITUNG));
         hprlnkAnleitung.setText("Anleitung");
         hprlnkAnleitung.addMouseListener(new BeobMausUrl(Konstanten.ADRESSE_ANLEITUNG));
 
         JXHyperlink hprlnkForum = new JXHyperlink();
         hprlnkForum.setHorizontalAlignment(SwingConstants.LEFT);
-        try {
-            hprlnkForum.setAction(new ForumHyperlinkAction());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        hprlnkForum.setAction(new HyperlinkAction(parent, Konstanten.ADRESSE_FORUM));
         hprlnkForum.setText("Forum");
         hprlnkForum.addMouseListener(new BeobMausUrl(Konstanten.ADRESSE_FORUM));
 
@@ -383,7 +365,7 @@ public class AboutDialog extends JDialog {
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
             {
                 JButton okButton = new JButton("Schlie\u00DFen");
-                okButton.setAction(new CloseDialogAction(this));
+                okButton.setAction(new DisposeDialogAction(this, "Schlie\u00DFen", "Dialog schlie\u00DFen"));
                 buttonPane.add(okButton);
                 getRootPane().setDefaultButton(okButton);
             }
@@ -393,83 +375,27 @@ public class AboutDialog extends JDialog {
         pack();
     }
 
-    private class WebsiteHyperlinkAction extends AbstractAction {
+    /**
+     * Opens a browser window
+     */
+    private class HyperlinkAction extends AbstractAction {
+        private String url = null;
+        private JFrame parent = null;
 
-        public WebsiteHyperlinkAction() throws URISyntaxException {
-            putValue(SHORT_DESCRIPTION, Konstanten.ADRESSE_WEBSITE);
-            putValue(LONG_DESCRIPTION, Konstanten.ADRESSE_WEBSITE);
+        public HyperlinkAction(JFrame parent, final String url) {
+            this.url = url;
+            this.parent = parent;
+            putValue(SHORT_DESCRIPTION, url);
+            putValue(LONG_DESCRIPTION, url);
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                UrlHyperlinkAction.openURL(parentFrame, Konstanten.ADRESSE_WEBSITE);
+                UrlHyperlinkAction.openURL(parent, url);
             } catch (URISyntaxException ignored) {
             }
         }
     }
 
-    private class DonationHyperlinkAction extends AbstractAction {
-
-        public DonationHyperlinkAction() throws URISyntaxException {
-            putValue(SHORT_DESCRIPTION, Konstanten.ADRESSE_DONATION);
-            putValue(LONG_DESCRIPTION, Konstanten.ADRESSE_DONATION);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                UrlHyperlinkAction.openURL(parentFrame, Konstanten.ADRESSE_DONATION);
-            } catch (URISyntaxException ignored) {
-            }
-        }
-    }
-
-    private class ForumHyperlinkAction extends AbstractAction {
-
-        public ForumHyperlinkAction() throws URISyntaxException {
-            putValue(SHORT_DESCRIPTION, Konstanten.ADRESSE_FORUM);
-            putValue(LONG_DESCRIPTION, Konstanten.ADRESSE_FORUM);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                UrlHyperlinkAction.openURL(parentFrame, Konstanten.ADRESSE_FORUM);
-            } catch (URISyntaxException ignored) {
-            }
-        }
-    }
-
-    private class AnleitungHyperlinkAction extends AbstractAction {
-
-        public AnleitungHyperlinkAction() throws URISyntaxException {
-            putValue(SHORT_DESCRIPTION, Konstanten.ADRESSE_ANLEITUNG);
-            putValue(LONG_DESCRIPTION, Konstanten.ADRESSE_ANLEITUNG);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                UrlHyperlinkAction.openURL(parentFrame, Konstanten.ADRESSE_ANLEITUNG);
-            } catch (URISyntaxException ignored) {
-            }
-        }
-    }
-
-    private class CloseDialogAction extends AbstractAction {
-
-        private final AboutDialog dlg;
-
-        public CloseDialogAction(AboutDialog dlg) {
-            super();
-            putValue(NAME, "Schließen");
-            putValue(SHORT_DESCRIPTION, "Dialog schließen");
-            this.dlg = dlg;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            dlg.dispose();
-        }
-    }
 }

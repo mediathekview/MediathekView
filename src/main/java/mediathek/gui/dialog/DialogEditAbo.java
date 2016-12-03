@@ -19,14 +19,6 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.*;
-import java.util.ArrayList;
-import javax.swing.*;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.JTextComponent;
 import mSearch.tool.FilenameUtils;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
@@ -37,10 +29,17 @@ import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 
-public class DialogEditAbo extends javax.swing.JDialog {
+import javax.swing.*;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
+import java.awt.*;
+import java.util.ArrayList;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class DialogEditAbo extends JDialog {
     private final DatenAbo aktAbo;
     private JTextField[] textfeldListe;
     private final JComboBox<String> comboboxPSet = new JComboBox<>();
@@ -49,11 +48,9 @@ public class DialogEditAbo extends javax.swing.JDialog {
     private final JCheckBox checkBoxEingeschaltet = new JCheckBox();
     private final JRadioButton rbMin = new JRadioButton("Mindestdauer");
     private final JRadioButton rbMax = new JRadioButton("Maximaldauer");
-    private final ButtonGroup gr = new ButtonGroup();
     private final JSlider sliderDauer = new JSlider(0, 100, 0);
     private final JLabel labelDauer = new JLabel("0");
     private final boolean change;
-    private final JFrame parent;
 
     public boolean ok = false;
     public boolean[] ch = new boolean[DatenAbo.MAX_ELEM];
@@ -61,19 +58,22 @@ public class DialogEditAbo extends javax.swing.JDialog {
     public DialogEditAbo(final JFrame parent, boolean modal, Daten d, DatenAbo aktA, boolean change) {
         super(parent, modal);
         initComponents();
-        this.parent = parent;
+        Daten daten = Daten.getInstance();
         this.change = change;
         aktAbo = aktA;
+
+        ButtonGroup gr = new ButtonGroup();
         gr.add(rbMin);
         gr.add(rbMax);
+
         for (boolean b : ch) {
             b = false;
         }
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
         comboboxPSet.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listePset.getListeAbo().getObjectDataCombo()));
-        comboboxSender.setModel(new javax.swing.DefaultComboBoxModel<>(GuiFunktionen.addLeerListe(Daten.filmeLaden.getSenderNamen())));
+        comboboxSender.setModel(new javax.swing.DefaultComboBoxModel<>(GuiFunktionen.addLeerListe(daten.getFilmeLaden().getSenderNamen())));
         // Zeilpfad ========================
-        ArrayList<String> pfade = Daten.listeAbo.getPfade();
+        ArrayList<String> pfade = daten.getListeAbo().getPfade();
         if (!pfade.contains(aktAbo.arr[DatenAbo.ABO_ZIELPFAD])) {
             pfade.add(0, aktAbo.arr[DatenAbo.ABO_ZIELPFAD]);
         }

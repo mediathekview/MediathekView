@@ -20,39 +20,26 @@
 package mediathek.gui.dialog;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.FileDialog;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 
-public class DialogZiel extends javax.swing.JDialog {
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class DialogZiel extends JDialog {
     public boolean ok = false;
     public String ziel;
-//    private Component parentComponent = null;
     private final JFrame parent;
 
-    /**
-     *
-     * @param pparent
-     * @param modal
-     * @param ziel
-     * @param titel
-     */
     public DialogZiel(JFrame pparent, boolean modal, String ziel, String titel) {
         super(pparent, modal);
-//        parentComponent = pparent;
         parent = pparent;
-//        ddaten = dd;
         initComponents();
         jButtonZiel.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         setTitle(titel);

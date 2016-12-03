@@ -19,15 +19,16 @@
  */
 package mediathek.update;
 
+import mediathek.config.Konstanten;
+import mediathek.gui.actions.UrlHyperlinkAction;
+import mediathek.tool.EscBeenden;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JFrame;
-import mediathek.config.Konstanten;
-import mediathek.tool.EscBeenden;
-import mediathek.tool.UrlHyperlinkAction;
 
 @SuppressWarnings("serial")
-public class DialogHinweisUpdate extends javax.swing.JDialog {
+public class DialogHinweisUpdate extends JDialog {
     private String text = "";
     private final JFrame parent;
 
@@ -72,7 +73,7 @@ public class DialogHinweisUpdate extends javax.swing.JDialog {
         jTextArea1 = new javax.swing.JTextArea();
         jButtonOk = new javax.swing.JButton();
         jXHyperlinkWebsite = new org.jdesktop.swingx.JXHyperlink();
-        jLabel2 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -125,7 +126,6 @@ public class DialogHinweisUpdate extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonOk;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JTextArea jTextArea1;
     private org.jdesktop.swingx.JXHyperlink jXHyperlinkWebsite;
     // End of variables declaration//GEN-END:variables

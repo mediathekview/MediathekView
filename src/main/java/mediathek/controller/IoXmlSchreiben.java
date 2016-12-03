@@ -157,7 +157,7 @@ public class IoXmlSchreiben {
     
     private static void xmlSchreibenDownloads() {
         //Abo schreiben
-        for (DatenDownload download : Daten.listeDownloads) {
+        for (DatenDownload download : Daten.getInstance().getListeDownloads()) {
             if (download.isInterrupted()) {
                 // unterbrochene werden gespeichert, dass die Info "Interrupt" erhalten bleibt
                 xmlSchreibenDaten(DatenDownload.TAG, DatenDownload.XML_NAMES, download.arr, false);
@@ -170,21 +170,21 @@ public class IoXmlSchreiben {
     
     private static void xmlSchreibenAbo() {
         //Abo schreiben
-        for (DatenAbo datenAbo : Daten.listeAbo) {
+        for (DatenAbo datenAbo : Daten.getInstance().getListeAbo()) {
             xmlSchreibenDaten(DatenAbo.TAG, DatenAbo.XML_NAMES, datenAbo.arr, false);
         }
     }
     
     private static void xmlSchreibenMediaPath() {
         //Pfade der MedienDB schreiben
-        for (DatenMediaPath mp : Daten.listeMediaPath) {
+        for (DatenMediaPath mp : Daten.getInstance().getListeMediaPath()) {
             xmlSchreibenDaten(DatenMediaPath.TAG, DatenMediaPath.XML_NAMES, mp.arr, false);
         }
     }
     
     private static void xmlSchreibenBlackList() {
         //Blacklist schreiben
-        for (DatenBlacklist blacklist : Daten.listeBlacklist) {
+        for (DatenBlacklist blacklist : Daten.getInstance().getListeBlacklist()) {
             xmlSchreibenDaten(DatenBlacklist.TAG, DatenBlacklist.XML_NAMES, blacklist.arr, false);
         }
     }
@@ -194,7 +194,7 @@ public class IoXmlSchreiben {
         writer.writeCharacters("\n");
         writer.writeComment("Akt-Filmliste");
         writer.writeCharacters("\n");
-        for (DatenFilmlisteUrl datenUrlFilmliste : Daten.filmeLaden.getDownloadUrlsFilmlisten_akt()) {
+        for (DatenFilmlisteUrl datenUrlFilmliste : Daten.getInstance().getFilmeLaden().getDownloadUrlsFilmlisten_akt()) {
             datenUrlFilmliste.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR] = DatenFilmlisteUrl.SERVER_ART_AKT;
             xmlSchreibenDaten(DatenFilmlisteUrl.FILM_UPDATE_SERVER, DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
         }
@@ -202,7 +202,7 @@ public class IoXmlSchreiben {
         writer.writeCharacters("\n");
         writer.writeComment("Diff-Filmliste");
         writer.writeCharacters("\n");
-        for (DatenFilmlisteUrl datenUrlFilmliste : Daten.filmeLaden.getDownloadUrlsFilmlisten_diff()) {
+        for (DatenFilmlisteUrl datenUrlFilmliste : Daten.getInstance().getFilmeLaden().getDownloadUrlsFilmlisten_diff()) {
             datenUrlFilmliste.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR] = DatenFilmlisteUrl.SERVER_ART_DIFF;
             xmlSchreibenDaten(DatenFilmlisteUrl.FILM_UPDATE_SERVER, DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
         }
