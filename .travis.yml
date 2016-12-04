@@ -1,6 +1,13 @@
 language: java
 jdk:
 - oraclejdk8
+
+#Needed for launch4j
+sudo: required
+before_script:
+  - sudo apt-get update
+  - sudo apt-get install lib32ncurses5 lib32z1
+
 install:
 - cd ..
 - git clone https://github.com/mediathekview/MSearch.git MSearch
