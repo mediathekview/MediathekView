@@ -4,10 +4,11 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id "com.github.jk1.dependency-license-report" version "0.3.5"
-    id 'edu.sc.seis.launch4j' version '2.0.0'
+    id 'edu.sc.seis.launch4j' version '2.0.1'
 }
 apply plugin: 'java'
 apply plugin: 'distribution'
+apply plugin: 'edu.sc.seis.launch4j'
 apply from: "${project.rootDir}/gradle/eclipse.gradle"
 
 
@@ -208,39 +209,51 @@ distributions {
     }
     
     //Windows executable generation
-    createExe {
-	dontWrapJar=true
-	outfile="MediathekView__Start.exe"
-	icon="res/Info/MediathekView.ico"
-	initialHeapSize=256
-	maxHeapSize=2048
-	maxHeapPercent=80
+    task createNormalExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
+	   outfile="MediathekView__Start.exe"
+	   icon="res/Info/MediathekView.ico"
+	   dontWrapJar = true
+	
+	   initialHeapSize=256
+	   maxHeapSize=2048
+	   maxHeapPercent=80
     }
 
     task createIpv4Exe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
         outfile="MediathekView__ipv4__Start.exe"
         opt="-Djava.net.preferIPv4Stack=true"
+        icon="res/Info/MediathekView.ico"
+	    dontWrapJar = true
+	
+	    initialHeapSize=256
+	    maxHeapSize=2048
+	    maxHeapPercent=80
     }
 
     task createOhneSpeichernExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
-	outfile="MediathekView__ohne_Speicher__Start.exe"
-	initialHeapSize=null
-	maxHeapSize=null
-	maxHeapPercent=null
+    	outfile="MediathekView__ohne_Speicher__Start.exe"
+    	icon="res/Info/MediathekView.ico"
+	    dontWrapJar = true
     }  
 
     task createPortableExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
-	outfile="MediathekView__Portable.exe"
-	cmdLine="Einstellungen/.mediathek3"
+    	outfile="MediathekView__Portable.exe"
+    	cmdLine="Einstellungen/.mediathek3"
+    	icon="res/Info/MediathekView.ico"
+	    dontWrapJar = true
+	
+        initialHeapSize=256
+	    maxHeapSize=2048
+	    maxHeapPercent=80
     }  
 
-    processResources.dependsOn createExe 
+
 
     task copyExesInRes(type: Copy) {
-	logger.lifecycle 'Copying windows programm executables.'
-	from 'build/launch4j/'
-	into 'res/'
-	include '*.exe'
+    	logger.lifecycle 'Copying windows programm executables.'
+    	from 'build/launch4j'
+    	into 'res/'
+    	include '*.exe'
     }
 
     processResources.dependsOn copyExesInRes
