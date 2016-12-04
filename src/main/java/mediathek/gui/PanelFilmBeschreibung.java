@@ -19,11 +19,6 @@
  */
 package mediathek.gui;
 
-import java.net.URISyntaxException;
-import javax.swing.JPanel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableModel;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.DbgMsg;
 import mSearch.tool.Listener;
@@ -31,20 +26,20 @@ import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
+import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVTable;
-import mediathek.tool.UrlHyperlinkAction;
 
-/**
- *
- * @author emil
- */
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableModel;
+import java.net.URISyntaxException;
+
+@SuppressWarnings("serial")
 public class PanelFilmBeschreibung extends JPanel implements ListSelectionListener {
-
-    private static final long serialVersionUID = 1L;
-    
     private DatenFilm currentFilm = null;
     private MVTable table = null;
 
@@ -64,7 +59,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
         });
 
         try {
-            jXHyperlinkWebsite.setAction(new UrlHyperlinkAction(Daten.mediathekGui, ""));
+            jXHyperlinkWebsite.setAction(new UrlHyperlinkAction(daten.getMediathekGui(), ""));
         } catch (URISyntaxException ignored) {
             jXHyperlinkWebsite.setText("");
         }
@@ -74,11 +69,11 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
         jCheckBoxChange.addActionListener(e -> {
             if (currentFilm != null) {
                 final String akt = currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG];
-                new DialogFilmBeschreibung(Daten.mediathekGui, daten, currentFilm).setVisible(true);
+                new DialogFilmBeschreibung(daten.getMediathekGui(), daten, currentFilm).setVisible(true);
                 if (!currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG].equals(akt)) {
                     // dann hat sich die Beschreibung geändert
                     setText();
-                    Daten.filmlisteSpeichern();
+                    daten.filmlisteSpeichern();
                     Listener.notify(Listener.EREIGNIS_BESCHREIBUNG, PanelFilmBeschreibung.class.getSimpleName());
                 }
             }

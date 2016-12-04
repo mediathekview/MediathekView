@@ -39,6 +39,7 @@ import mediathek.daten.*;
 public class IoXmlLesen {
 
     public static boolean datenLesen(Path xmlFilePath) {
+        Daten daten = Daten.getInstance();
         Duration.counterStart("Konfig lesen");
         boolean ret = false;
         if (Files.exists(xmlFilePath)) {
@@ -85,7 +86,7 @@ public class IoXmlLesen {
                                 //Abo
                                 DatenAbo datenAbo = new DatenAbo();
                                 if (get(parser, DatenAbo.TAG, DatenAbo.XML_NAMES, datenAbo.arr)) {
-                                    Daten.listeAbo.addAbo(datenAbo);
+                                    daten.getListeAbo().addAbo(datenAbo);
                                 }
                                 break;
                             case DatenDownload.TAG:
@@ -93,21 +94,21 @@ public class IoXmlLesen {
                                 DatenDownload d = new DatenDownload();
                                 if (get(parser, DatenDownload.TAG, DatenDownload.XML_NAMES, d.arr)) {
                                     d.init();
-                                    Daten.listeDownloads.add(d);
+                                    daten.getListeDownloads().add(d);
                                 }
                                 break;
                             case DatenBlacklist.TAG:
                                 //Blacklist
                                 DatenBlacklist datenBlacklist = new DatenBlacklist();
                                 if (get(parser, DatenBlacklist.TAG, DatenBlacklist.XML_NAMES, datenBlacklist.arr)) {
-                                    Daten.listeBlacklist.addWithoutNotification(datenBlacklist);
+                                    daten.getListeBlacklist().addWithoutNotification(datenBlacklist);
                                 }
                                 break;
                             case DatenMediaPath.TAG:
                                 //Blacklist
                                 DatenMediaPath mp = new DatenMediaPath();
                                 if (get(parser, DatenMediaPath.TAG, DatenMediaPath.XML_NAMES, mp.arr)) {
-                                    Daten.listeMediaPath.add(mp);
+                                    daten.getListeMediaPath().add(mp);
                                 }
                                 break;
                             case DatenFilmlisteUrl.FILM_UPDATE_SERVER:
@@ -116,10 +117,10 @@ public class IoXmlLesen {
                                 if (get(parser, DatenFilmlisteUrl.FILM_UPDATE_SERVER, DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES, datenFilmlisteUrl.arr)) {
                                     switch (datenFilmlisteUrl.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR]) {
                                         case DatenFilmlisteUrl.SERVER_ART_AKT:
-                                            Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().addWithCheck(datenFilmlisteUrl);
+                                            daten.getFilmeLaden().getDownloadUrlsFilmlisten_akt().addWithCheck(datenFilmlisteUrl);
                                             break;
                                         case DatenFilmlisteUrl.SERVER_ART_DIFF:
-                                            Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().addWithCheck(datenFilmlisteUrl);
+                                            daten.getFilmeLaden().getDownloadUrlsFilmlisten_diff().addWithCheck(datenFilmlisteUrl);
                                             break;
                                     }
                                 }
@@ -133,11 +134,11 @@ public class IoXmlLesen {
                 ret = false;
                 Log.errorLog(392840096, ex);
             }
-            Daten.listeDownloads.listeNummerieren();
-            Daten.listeAbo.sort();
+            daten.getListeDownloads().listeNummerieren();
+            daten.getListeAbo().sort();
             //ListeFilmUpdateServer aufbauen
-            Daten.filmeLaden.getDownloadUrlsFilmlisten_akt().sort();
-            Daten.filmeLaden.getDownloadUrlsFilmlisten_diff().sort();
+            daten.getFilmeLaden().getDownloadUrlsFilmlisten_akt().sort();
+            daten.getFilmeLaden().getDownloadUrlsFilmlisten_diff().sort();
             MVConfig.loadSystemParameter();
         }
 
@@ -152,6 +153,7 @@ public class IoXmlLesen {
 
     public static int[] importAboBlacklist(String datei, boolean abo, boolean black, boolean replace) {
         int[] found = new int[]{0, 0, 0};
+        Daten daten = Daten.getInstance();
         try {
             int event;
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
@@ -169,11 +171,11 @@ public class IoXmlLesen {
                         DatenAbo datenAbo = new DatenAbo();
                         if (get(parser, DatenAbo.TAG, DatenAbo.XML_NAMES, datenAbo.arr)) {
                             ++found[0];
-                            Daten.listeAbo.addAbo(datenAbo);
+                            daten.getListeAbo().addAbo(datenAbo);
                         }
                     } else if (black && parser.getLocalName().equals(DatenBlacklist.TAG)) {
                         //Blacklist
-                        ListeBlacklist blacklist = Daten.listeBlacklist;
+                        ListeBlacklist blacklist = daten.getListeBlacklist();
                         DatenBlacklist datenBlacklist = new DatenBlacklist();
                         if (get(parser, DatenBlacklist.TAG, DatenBlacklist.XML_NAMES, datenBlacklist.arr)) {
                             ++found[1];
@@ -194,10 +196,10 @@ public class IoXmlLesen {
             Log.errorLog(302045698, ex);
         }
         if (found[0] > 0) {
-            Daten.listeAbo.aenderungMelden();
+            daten.getListeAbo().aenderungMelden();
         }
         if (found[1] > 0) {
-            Daten.listeBlacklist.filterListAndNotifyListeners();
+            daten.getListeBlacklist().filterListAndNotifyListeners();
         }
         if (found[2] > 0) {
             Listener.notify(Listener.EREIGNIS_REPLACELIST_CHANGED, IoXmlLesen.class.getSimpleName());

@@ -19,20 +19,6 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import javax.swing.JFrame;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import mSearch.tool.FilenameUtils;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
@@ -44,16 +30,29 @@ import mediathek.daten.DatenMediaDB;
 import mediathek.file.GetFile;
 import mediathek.tool.*;
 
-public class DialogMediaDB extends javax.swing.JDialog {
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class DialogMediaDB extends JDialog {
     private final JFrame parent;
-//    private boolean init = false;
-    private MVTable tabelleFilme;
+    private final Daten daten;
 
+
+    //    private boolean init = false;
+    private MVTable tabelleFilme;
     public DialogMediaDB(JFrame pparent) {
         super(pparent, false);
+        daten = Daten.getInstance();
         initComponents();
         this.parent = pparent;
         this.addWindowListener(new WindowAdapter() {
@@ -76,7 +75,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
             public void ping() {
                 // neue DB liegt vor
                 makeIndex(false);
-                jLabelSum.setText(Daten.listeMediaDB.size() + "");
+                jLabelSum.setText(daten.getListeMediaDB().size() + "");
                 searchFilmInDb();
             }
         });
@@ -102,7 +101,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
         jTextFieldSearch.addActionListener(e -> searchFilmInDb());
         jTextFieldSearch.getDocument().addDocumentListener(new BeobDoc());
 
-        jButtonIndex.addActionListener(e -> Daten.listeMediaDB.createMediaDB(""));
+        jButtonIndex.addActionListener(e -> daten.getListeMediaDB().createMediaDB(""));
 
         jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_MEDIA_DB)).setVisible(true));
@@ -117,10 +116,12 @@ public class DialogMediaDB extends javax.swing.JDialog {
         GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, this, parent);
     }
 
+
+
     @Override
     public void setVisible(boolean vis) {
         super.setVisible(vis);
-        if (vis && Daten.listeMediaPath.isEmpty()) {
+        if (vis && daten.getListeMediaPath().isEmpty()) {
             JOptionPane.showMessageDialog(parent, "Erst in den Einstellungen eine Mediensammlung einrichten.", "Mediensammlung leer!", JOptionPane.ERROR_MESSAGE);
         }
 //        if (!init) {
@@ -150,7 +151,7 @@ public class DialogMediaDB extends javax.swing.JDialog {
 
     private synchronized void searchFilmInDb() {
         TModelMediaDB model = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
-        Daten.listeMediaDB.searchFilmInDB(model, jTextFieldSearch.getText());
+        daten.getListeMediaDB().searchFilmInDB(model, jTextFieldSearch.getText());
         tabelleFilme.getSpalten();
         tabelleFilme.setModel(model);
         tabelleFilme.setSpalten();

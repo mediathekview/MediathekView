@@ -19,11 +19,6 @@
  */
 package mediathek.gui;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.LinkedList;
-import javax.swing.Box.Filler;
-import javax.swing.*;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Listener;
@@ -34,13 +29,18 @@ import mediathek.config.MVConfig;
 import mediathek.tool.Filter;
 import org.jdesktop.swingx.JXSearchField;
 
+import javax.swing.Box.Filler;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.LinkedList;
+
+@SuppressWarnings("serial")
 public final class ToolBar extends JToolBar {
-
-    private static final long serialVersionUID = 1L;
-
-    Filler filler__5 = new Filler(new java.awt.Dimension(5, 20), new java.awt.Dimension(5, 20), new java.awt.Dimension(5, 32767));
-    Filler filler__10 = new Filler(new java.awt.Dimension(10, 20), new java.awt.Dimension(10, 20), new java.awt.Dimension(10, 32767));
-    Filler filler__trenner = new javax.swing.Box.Filler(new java.awt.Dimension(1, 5), new java.awt.Dimension(1, 5), new java.awt.Dimension(32767, 5));
+    Filler filler__5 = new Filler(new Dimension(5, 20), new Dimension(5, 20), new Dimension(5, 32767));
+    Filler filler__10 = new Filler(new Dimension(10, 20), new Dimension(10, 20), new Dimension(10, 32767));
+    Filler filler__trenner = new Filler(new Dimension(1, 5), new Dimension(1, 5), new Dimension(32767, 5));
 
     MVButton jButtonAboAendern = null;
     MVButton jButtonAbosAusschalten = null;
@@ -282,7 +282,7 @@ public final class ToolBar extends JToolBar {
         jButtonFilmlisteLaden = new MVButton("Filmliste laden", "neue Filmliste laden", Icons.ICON_TOOLBAR_FILME_FILMLISTE_LADEN_GR, Icons.ICON_TOOLBAR_FILME_FILMLISTE_LADEN_KL);
         this.add(filler__5);
         this.add(jButtonFilmlisteLaden);
-        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
                 //ddaten.infoPanel.setProgress();
@@ -304,13 +304,13 @@ public final class ToolBar extends JToolBar {
                 }
             }
         });
-        jButtonFilmlisteLaden.addActionListener(e -> Daten.filmeLaden.loadFilmlistDialog(daten, false));
+        jButtonFilmlisteLaden.addActionListener(e -> daten.getFilmeLaden().loadFilmlistDialog(daten, false));
         jButtonFilmlisteLaden.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent arg0) {
                 if (arg0.isPopupTrigger()) {
                     if (jButtonFilmlisteLaden.isEnabled()) {
-                        Daten.filmeLaden.loadFilmlistDialog(daten, true);
+                        daten.getFilmeLaden().loadFilmlistDialog(daten, true);
                     }
                 }
             }
@@ -319,7 +319,7 @@ public final class ToolBar extends JToolBar {
             public void mouseReleased(MouseEvent arg0) {
                 if (arg0.isPopupTrigger()) {
                     if (jButtonFilmlisteLaden.isEnabled()) {
-                        Daten.filmeLaden.loadFilmlistDialog(daten, true);
+                        daten.getFilmeLaden().loadFilmlistDialog(daten, true);
                     }
                 }
             }
@@ -327,7 +327,7 @@ public final class ToolBar extends JToolBar {
 
     }
 
-    private final void setIcon(boolean klein) {
+    private void setIcon(boolean klein) {
         MVConfig.add(nrIconKlein, Boolean.toString(klein));
         beobMausToolBar.itemKlein.setSelected(klein);
         for (MVButton b : buttonList) {
@@ -379,16 +379,13 @@ public final class ToolBar extends JToolBar {
     }
 
     private class MVButton extends JButton {
-
-        private static final long serialVersionUID = 1L;
-        
         boolean anzeigen = true;
         private String name = "";
-        private ImageIcon imageIconKlein;
-        private ImageIcon imageIconNormal;
+        private final ImageIcon imageIconKlein;
+        private final ImageIcon imageIconNormal;
 
         public MVButton(String nname, String ttoolTip,
-                ImageIcon iimageIconNormal, ImageIcon iimageIconKlein) {
+                        ImageIcon iimageIconNormal, ImageIcon iimageIconKlein) {
             setToolTipText(ttoolTip);
             name = nname;
             imageIconKlein = iimageIconKlein;

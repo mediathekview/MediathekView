@@ -20,17 +20,6 @@
 package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.BorderLayout;
-import java.awt.Point;
-import java.awt.Toolkit;
-import java.awt.event.*;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.TimerTask;
-import javax.swing.*;
 import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
@@ -50,10 +39,18 @@ import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.tool.*;
 
-public class GuiDownloads extends PanelVorlage {
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.TimerTask;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class GuiDownloads extends PanelVorlage {
     private long lastUpdate = 0;
     private boolean onlyAbos = false;
     private boolean onlyDownloads = false;
@@ -74,9 +71,6 @@ public class GuiDownloads extends PanelVorlage {
     private static final String COMBO_VIEW_FINISHED_ONLY = "nur abgeschlossene";
     private final ToolBar toolBar;
     private boolean loadFilmlist = false;
-//    private double counter = 0; // double sonst "läuft" die Chart nicht
-//    private final Trace2DLtd m_trace = new Trace2DLtd(300);
-//    private IAxis x_achse = null;
     private final java.util.Timer timer = new java.util.Timer(false);
     private TimerTask timerTask = null;
 
@@ -85,8 +79,8 @@ public class GuiDownloads extends PanelVorlage {
      */
     private TModelDownload model;
 
-    public GuiDownloads(Daten d, JFrame parentComponent) {
-        super(d, parentComponent);
+    public GuiDownloads(Daten aDaten, MediathekGui aMediathekGui) {
+        super(aDaten, aMediathekGui);
         initComponents();
 
         if (SystemInfo.isWindows()) {
@@ -95,11 +89,9 @@ public class GuiDownloads extends PanelVorlage {
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), "einstellungen");
             ActionMap am = cbDisplayCategories.getActionMap();
             am.put("einstellungen", new AbstractAction() {
-                private static final long serialVersionUID = 1L;
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Daten.dialogEinstellungen.setVisible(true);
+                    aMediathekGui.showSettingsDialog();
                 }
             });
         }
@@ -137,7 +129,7 @@ public class GuiDownloads extends PanelVorlage {
     public void isShown() {
         super.isShown();
         if (!solo) {
-            Daten.mediathekGui.getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.DOWNLOAD);
+            daten.getMediathekGui().getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.DOWNLOAD);
         }
         updateFilmData();
         Listener.notify(Listener.EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
@@ -193,11 +185,11 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     public void filmGesehen() {
-        daten.history.setGesehen(true, getSelFilme(), Daten.listeFilmeHistory);
+        daten.history.setGesehen(true, getSelFilme(), daten.getListeFilmeHistory());
     }
 
     public void filmUngesehen() {
-        daten.history.setGesehen(false, getSelFilme(), Daten.listeFilmeHistory);
+        daten.history.setGesehen(false, getSelFilme(), daten.getListeFilmeHistory());
     }
 
     public void invertSelection() {
@@ -217,8 +209,6 @@ public class GuiDownloads extends PanelVorlage {
         InputMap im = tabelle.getInputMap();
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "aendern");
         am.put("aendern", new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 downloadAendern();
@@ -226,8 +216,6 @@ public class GuiDownloads extends PanelVorlage {
         });
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "loeschen");
         am.put("loeschen", new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 downloadLoeschen(true);
@@ -236,8 +224,6 @@ public class GuiDownloads extends PanelVorlage {
 
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "tabelle");
         this.getActionMap().put("tabelle", new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 tabelle.requestFocusSelelct(jScrollPane1);
@@ -245,8 +231,6 @@ public class GuiDownloads extends PanelVorlage {
         });
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "download");
         this.getActionMap().put("download", new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 filmStartenWiederholenStoppen(false, true /* starten */);
@@ -254,8 +238,6 @@ public class GuiDownloads extends PanelVorlage {
         });
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_I, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "info");
         this.getActionMap().put("info", new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!Daten.filmInfo.isVisible()) {
@@ -266,8 +248,6 @@ public class GuiDownloads extends PanelVorlage {
 
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-copy");
         this.getActionMap().put("url-copy", new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int row = tabelle.getSelectedRow();
@@ -280,18 +260,16 @@ public class GuiDownloads extends PanelVorlage {
 
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_M, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mediensammlung");
         this.getActionMap().put("mediensammlung", new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int row = tabelle.getSelectedRow();
                 if (row >= 0) {
                     MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-                    Daten.dialogMediaDB.setVis();
+                    daten.getDialogMediaDB().setVis();
 
                     DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(row), DatenDownload.DOWNLOAD_REF);
                     if (datenDownload != null) {
-                        Daten.dialogMediaDB.setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
+                        daten.getDialogMediaDB().setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
                     }
 
                 }
@@ -299,8 +277,6 @@ public class GuiDownloads extends PanelVorlage {
         });
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_G, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "gesehen");
         this.getActionMap().put("gesehen", new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 filmGesehen();
@@ -308,8 +284,6 @@ public class GuiDownloads extends PanelVorlage {
         });
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_N, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "ungesehen");
         this.getActionMap().put("ungesehen", new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 filmUngesehen();
@@ -427,7 +401,7 @@ public class GuiDownloads extends PanelVorlage {
 //        jPanelChart.setLayout(new BorderLayout(0, 0));
 //        jPanelChart.add(chart, BorderLayout.CENTER);
         setTimer();
-        Daten.filmeLaden.addAdListener(new ListenerFilmeLaden() {
+        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
                 loadFilmlist = true;
@@ -436,7 +410,7 @@ public class GuiDownloads extends PanelVorlage {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 loadFilmlist = false;
-                Daten.listeDownloads.filmEintragen();
+                daten.getListeDownloads().filmEintragen();
                 if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN))) {
                     downloadsAktualisieren();
                 } else {
@@ -469,8 +443,8 @@ public class GuiDownloads extends PanelVorlage {
                     @Override
                     public void run() {
 //                        counter++;
-//                        m_trace.addPoint(counter / 60, Daten.downloadInfos.bandwidth); // minutes
-//                        x_achse.getAxisTitle().setTitle(Daten.downloadInfos.roundBandwidth((long) counter));
+//                        m_trace.addPoint(counter / 60, daten.getDownloadInfos().bandwidth); // minutes
+//                        x_achse.getAxisTitle().setTitle(daten.getDownloadInfos().roundBandwidth((long) counter));
                         SwingUtilities.invokeLater(() -> setInfoText());
 
                     }
@@ -488,7 +462,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void setInfoText() {
-        int[] starts = Daten.downloadInfos.downloadStarts;
+        int[] starts = daten.getDownloadInfos().downloadStarts;
         if (starts[0] == 0) {
             txtDownload.setText("");
             return;
@@ -503,33 +477,33 @@ public class GuiDownloads extends PanelVorlage {
         // Downloads
         info += getInfoText();
         // Größe
-        if (Daten.downloadInfos.byteAlleDownloads > 0 || Daten.downloadInfos.byteAktDownloads > 0) {
+        if (daten.getDownloadInfos().byteAlleDownloads > 0 || daten.getDownloadInfos().byteAktDownloads > 0) {
             info += "<br />";
             info += "<span class=\"sans\"><b>Größe:</b><br />";
-            if (Daten.downloadInfos.byteAktDownloads > 0) {
-                info += MVFilmSize.getGroesse(Daten.downloadInfos.byteAktDownloads) + " von "
-                        + MVFilmSize.getGroesse(Daten.downloadInfos.byteAlleDownloads) + " MByte" + "</span>";
+            if (daten.getDownloadInfos().byteAktDownloads > 0) {
+                info += MVFilmSize.getGroesse(daten.getDownloadInfos().byteAktDownloads) + " von "
+                        + MVFilmSize.getGroesse(daten.getDownloadInfos().byteAlleDownloads) + " MByte" + "</span>";
             } else {
-                info += MVFilmSize.getGroesse(Daten.downloadInfos.byteAlleDownloads) + " MByte" + "</span>";
+                info += MVFilmSize.getGroesse(daten.getDownloadInfos().byteAlleDownloads) + " MByte" + "</span>";
             }
         }
         // Restzeit
-        if (Daten.downloadInfos.timeRestAktDownloads > 0 && Daten.downloadInfos.timeRestAllDownloads > 0) {
+        if (daten.getDownloadInfos().timeRestAktDownloads > 0 && daten.getDownloadInfos().timeRestAllDownloads > 0) {
             info += "<br />";
             info += "<span class=\"sans\"><b>Restzeit:</b><br />" + "laufende: "
-                    + Daten.downloadInfos.getRestzeit() + ",<br />alle: " + Daten.downloadInfos.getGesamtRestzeit() + "</span>";
-        } else if (Daten.downloadInfos.timeRestAktDownloads > 0) {
+                    + daten.getDownloadInfos().getRestzeit() + ",<br />alle: " + daten.getDownloadInfos().getGesamtRestzeit() + "</span>";
+        } else if (daten.getDownloadInfos().timeRestAktDownloads > 0) {
             info += "<br />";
-            info += "<span class=\"sans\"><b>Restzeit:</b><br />laufende: " + Daten.downloadInfos.getRestzeit() + "</span>";
-        } else if (Daten.downloadInfos.timeRestAllDownloads > 0) {
+            info += "<span class=\"sans\"><b>Restzeit:</b><br />laufende: " + daten.getDownloadInfos().getRestzeit() + "</span>";
+        } else if (daten.getDownloadInfos().timeRestAllDownloads > 0) {
             info += "<br />";
-            info += "<span class=\"sans\"><b>Restzeit:</b><br />alle: " + Daten.downloadInfos.getGesamtRestzeit() + "</span>";
+            info += "<span class=\"sans\"><b>Restzeit:</b><br />alle: " + daten.getDownloadInfos().getGesamtRestzeit() + "</span>";
         }
         // Bandbreite
-        if (Daten.downloadInfos.bandwidth > 0) {
+        if (daten.getDownloadInfos().bandwidth > 0) {
             info += "<br />";
             info += "<span class=\"sans\"><b>Bandbreite:</b><br />";
-            info += Daten.downloadInfos.bandwidthStr + "</span>";
+            info += daten.getDownloadInfos().bandwidthStr + "</span>";
         }
         info += END;
 
@@ -540,7 +514,7 @@ public class GuiDownloads extends PanelVorlage {
         String textLinks;
         // Text links: Zeilen Tabelle
         // nicht gestarted, laufen, fertig OK, fertig fehler
-        int[] starts = Daten.downloadInfos.downloadStarts;
+        int[] starts = daten.getDownloadInfos().downloadStarts;
 //        if (starts[0] == 1) {
 //            textLinks = "<span class=\"sans\"><b>Download:</b>1<br />";
 //        } else {
@@ -603,7 +577,7 @@ public class GuiDownloads extends PanelVorlage {
             }
         });
         Listener.addListener(new Listener(new int[]{Listener.EREIGNIS_BLACKLIST_AUCH_FUER_ABOS,
-            Listener.EREIGNIS_LISTE_ABOS}, GuiDownloads.class.getSimpleName()) {
+                Listener.EREIGNIS_LISTE_ABOS}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN))) {
@@ -612,7 +586,7 @@ public class GuiDownloads extends PanelVorlage {
             }
         });
         Listener.addListener(new Listener(new int[]{Listener.EREIGNIS_LISTE_DOWNLOADS,
-            Listener.EREIGNIS_REIHENFOLGE_DOWNLOAD, Listener.EREIGNIS_RESET_INTERRUPT}, GuiDownloads.class.getSimpleName()) {
+                Listener.EREIGNIS_REIHENFOLGE_DOWNLOAD, Listener.EREIGNIS_RESET_INTERRUPT}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
                 reloadTable();
@@ -623,7 +597,7 @@ public class GuiDownloads extends PanelVorlage {
             @Override
             public void ping() {
                 reloadTable();
-//                Daten.listeDownloads.setModelProgressAlleStart(model);
+//                daten.getListeDownloads().setModelProgressAlleStart(model);
 //                tabelle.fireTableDataChanged(true /*setSpalten*/);
 //                setInfo();
             }
@@ -641,7 +615,7 @@ public class GuiDownloads extends PanelVorlage {
                 if (lastUpdate < (new Date().getTime() - 500)) {
                     // nur alle 500ms aufrufen
                     lastUpdate = new Date().getTime();
-                    Daten.listeDownloads.setModelProgress(model);
+                    daten.getListeDownloads().setModelProgress(model);
                     // ist ein Kompromiss: beim Sortieren nach Progress wird die Tabelle nicht neu sortiert!
                     //tabelle.fireTableDataChanged(true /*setSpalten*/);
                 }
@@ -664,7 +638,7 @@ public class GuiDownloads extends PanelVorlage {
         stopBeob = true;
         tabelle.getSpalten();
 
-        Daten.listeDownloads.getModel(model, onlyAbos, onlyDownloads, onlyNotStarted, onlyStarted, onlyWaiting, onlyRun, onlyFinished);
+        daten.getListeDownloads().getModel(model, onlyAbos, onlyDownloads, onlyNotStarted, onlyStarted, onlyWaiting, onlyRun, onlyFinished);
         tabelle.setSpalten();
         stopBeob = false;
         updateFilmData();
@@ -674,10 +648,10 @@ public class GuiDownloads extends PanelVorlage {
     private void mediensammlung() {
         DatenDownload datenDownload = getSelDownload();
         MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
-        Daten.dialogMediaDB.setVis();
+        daten.getDialogMediaDB().setVis();
 
         if (datenDownload != null) {
-            Daten.dialogMediaDB.setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
+            daten.getDialogMediaDB().setFilter(datenDownload.arr[DatenDownload.DOWNLOAD_TITEL]);
         }
     }
 
@@ -687,8 +661,8 @@ public class GuiDownloads extends PanelVorlage {
             return;
         }
         // erledigte entfernen, nicht gestartete Abos entfernen und neu nach Abos suchen
-        Daten.listeDownloads.abosAuffrischen();
-        Daten.listeDownloads.abosSuchen(parentComponent);
+        daten.getListeDownloads().abosAuffrischen();
+        daten.getListeDownloads().abosSuchen(parentComponent);
         reloadTable();
 
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_SOFORT_STARTEN))) {
@@ -700,13 +674,13 @@ public class GuiDownloads extends PanelVorlage {
     private synchronized void downloadsAufraeumen() {
         // abgeschlossene Downloads werden aus der Tabelle/Liste entfernt
         // die Starts dafür werden auch gelöscht
-        Daten.listeDownloads.listePutzen();
+        daten.getListeDownloads().listePutzen();
     }
 
     private synchronized void downloadsAufraeumen(DatenDownload datenDownload) {
         // abgeschlossene Downloads werden aus der Tabelle/Liste entfernt
         // die Starts dafür werden auch gelöscht
-        Daten.listeDownloads.listePutzen(datenDownload);
+        daten.getListeDownloads().listePutzen(datenDownload);
     }
 
     private ArrayList<DatenDownload> getSelDownloads() {
@@ -759,7 +733,7 @@ public class GuiDownloads extends PanelVorlage {
         if (arrayDownloads.isEmpty()) {
             return;
         }
-        Daten.listeDownloads.downloadsVorziehen(arrayDownloads);
+        daten.getListeDownloads().downloadsVorziehen(arrayDownloads);
     }
 
     private void zielordnerOeffnen() {
@@ -844,7 +818,7 @@ public class GuiDownloads extends PanelVorlage {
             if (!urlAboList.isEmpty()) {
                 daten.erledigteAbos.zeilenSchreiben(urlAboList);
             }
-            Daten.listeDownloads.downloadLoeschen(arrayDownloadsLoeschen);
+            daten.getListeDownloads().downloadLoeschen(arrayDownloadsLoeschen);
             reloadTable();
 //            // ausrichten
 //            tabelle.setSelRow(rows[0]);
@@ -870,8 +844,8 @@ public class GuiDownloads extends PanelVorlage {
             // um in der Reihenfolge zu starten
             DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
             listeAllDownloads.add(datenDownload);
-            Daten.listeDownloads.remove(datenDownload);
-            Daten.listeDownloads.add(datenDownload);
+            daten.getListeDownloads().remove(datenDownload);
+            daten.getListeDownloads().add(datenDownload);
         }
         // ========================
         // und jetzt abarbeiten
@@ -904,15 +878,15 @@ public class GuiDownloads extends PanelVorlage {
         }
         // ========================
         // jetzt noch die Starts stoppen
-        Daten.listeDownloads.downloadAbbrechen(listeUrlsDownloadsAbbrechen);
+        daten.getListeDownloads().downloadAbbrechen(listeUrlsDownloadsAbbrechen);
 
         // und die Downloads starten oder stoppen
         //alle Downloads starten/wiederstarten
-        DialogBeendenZeit dialogBeenden = new DialogBeendenZeit(Daten.mediathekGui, daten, listeDownloadsStarten);
+        DialogBeendenZeit dialogBeenden = new DialogBeendenZeit(daten.getMediathekGui(), daten, listeDownloadsStarten);
         dialogBeenden.setVisible(true);
         if (dialogBeenden.applicationCanTerminate()) {
             // fertig und beenden
-            Daten.mediathekGui.beenden(false /*Dialog auf "sofort beenden" einstellen*/, dialogBeenden.isShutdownRequested());
+            daten.getMediathekGui().beenden(false /*Dialog auf "sofort beenden" einstellen*/, dialogBeenden.isShutdownRequested());
         }
 
         reloadTable();
@@ -942,8 +916,8 @@ public class GuiDownloads extends PanelVorlage {
             //Liste in der Reihenfolge wie in der Tabelle sortieren
             for (int i = 0; i < tabelle.getRowCount(); ++i) {
                 DatenDownload datenDownload = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(i), DatenDownload.DOWNLOAD_REF);
-                Daten.listeDownloads.remove(datenDownload);
-                Daten.listeDownloads.add(datenDownload);
+                daten.getListeDownloads().remove(datenDownload);
+                daten.getListeDownloads().add(datenDownload);
             }
         }
 
@@ -1019,7 +993,7 @@ public class GuiDownloads extends PanelVorlage {
         }
         // ========================
         // jetzt noch die Starts stoppen
-        Daten.listeDownloads.downloadAbbrechen(listeDownloadsLoeschen);
+        daten.getListeDownloads().downloadAbbrechen(listeDownloadsLoeschen);
         // und die Downloads starten oder stoppen
         if (starten) {
             //alle Downloads starten/wiederstarten
@@ -1039,12 +1013,12 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         }
-        Daten.listeDownloads.downloadAbbrechen(listeStopDownload);
+        daten.getListeDownloads().downloadAbbrechen(listeStopDownload);
     }
 
     private void setInfo() {
         // Infopanel setzen
-        Daten.mediathekGui.getStatusBar().setTextForLeftDisplay();
+        daten.getMediathekGui().getStatusBar().setTextForLeftDisplay();
     }
 
     /**
@@ -1127,12 +1101,12 @@ public class GuiDownloads extends PanelVorlage {
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 100, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 100, Short.MAX_VALUE)
         );
 
         jScrollPane2.setViewportView(jEditorPane1);
@@ -1142,12 +1116,12 @@ public class GuiDownloads extends PanelVorlage {
         javax.swing.GroupLayout jPanelToolBarLayout = new javax.swing.GroupLayout(jPanelToolBar);
         jPanelToolBar.setLayout(jPanelToolBarLayout);
         jPanelToolBarLayout.setHorizontalGroup(
-            jPanelToolBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 485, Short.MAX_VALUE)
+                jPanelToolBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 485, Short.MAX_VALUE)
         );
         jPanelToolBarLayout.setVerticalGroup(
-            jPanelToolBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 25, Short.MAX_VALUE)
+                jPanelToolBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 25, Short.MAX_VALUE)
         );
 
         jSplitPane1.setDividerLocation(200);
@@ -1173,59 +1147,59 @@ public class GuiDownloads extends PanelVorlage {
         javax.swing.GroupLayout jPanelFilterExternLayout = new javax.swing.GroupLayout(jPanelFilterExtern);
         jPanelFilterExtern.setLayout(jPanelFilterExternLayout);
         jPanelFilterExternLayout.setHorizontalGroup(
-            jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelFilterExternLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(cbDisplayCategories, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtBandwidth, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(cbView, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanelFilterExternLayout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
-                        .addComponent(jSpinnerAnzahlDownloads, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFilterExternLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnClear))
-                    .addComponent(jSeparator1)
-                    .addGroup(jPanelFilterExternLayout.createSequentialGroup()
-                        .addGroup(jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblAnzeigen)
-                            .addComponent(lblBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jSliderBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(spDownload))
-                .addContainerGap())
+                jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanelFilterExternLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(cbDisplayCategories, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(txtBandwidth, javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(cbView, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(jPanelFilterExternLayout.createSequentialGroup()
+                                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                                                .addComponent(jSpinnerAnzahlDownloads, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFilterExternLayout.createSequentialGroup()
+                                                .addGap(0, 0, Short.MAX_VALUE)
+                                                .addComponent(btnClear))
+                                        .addComponent(jSeparator1)
+                                        .addGroup(jPanelFilterExternLayout.createSequentialGroup()
+                                                .addGroup(jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(lblAnzeigen)
+                                                        .addComponent(lblBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGap(0, 0, Short.MAX_VALUE))
+                                        .addComponent(jSliderBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                        .addComponent(spDownload))
+                                .addContainerGap())
         );
         jPanelFilterExternLayout.setVerticalGroup(
-            jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFilterExternLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblAnzeigen)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbDisplayCategories, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(cbView, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnClear)
-                .addGap(18, 18, 18)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jSpinnerAnzahlDownloads, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(30, 30, 30)
-                .addComponent(lblBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSliderBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtBandwidth, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(spDownload, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
-                .addContainerGap())
+                jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFilterExternLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(lblAnzeigen)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cbDisplayCategories, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(cbView, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnClear)
+                                .addGap(18, 18, 18)
+                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jSpinnerAnzahlDownloads, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(30, 30, 30)
+                                .addComponent(lblBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jSliderBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtBandwidth, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(spDownload, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                                .addContainerGap())
         );
 
         jScrollPaneFilter.setViewportView(jPanelFilterExtern);
@@ -1241,17 +1215,17 @@ public class GuiDownloads extends PanelVorlage {
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(0, 0, 0)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jSplitPane1.setRightComponent(jPanel1);
@@ -1259,16 +1233,16 @@ public class GuiDownloads extends PanelVorlage {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelToolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jSplitPane1)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanelToolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jSplitPane1)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanelToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSplitPane1))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(jPanelToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jSplitPane1))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -1487,20 +1461,20 @@ public class GuiDownloads extends PanelVorlage {
                 itemChangeAbo.setEnabled(false);
                 itemDelAbo.setEnabled(false);
             } else {
-                final DatenAbo datenAbo = Daten.listeAbo.getAboFuerFilm_schnell(datenDownload.film, false /*die Länge nicht prüfen*/);
+                final DatenAbo datenAbo = daten.getListeAbo().getAboFuerFilm_schnell(datenDownload.film, false /*die Länge nicht prüfen*/);
                 if (datenAbo == null) {
                     submenueAbo.setEnabled(false);
                     itemChangeAbo.setEnabled(false);
                     itemDelAbo.setEnabled(false);
                 } else {
                     // dann können wir auch ändern
-                    itemDelAbo.addActionListener(e -> Daten.listeAbo.aboLoeschen(datenAbo));
+                    itemDelAbo.addActionListener(e -> daten.getListeAbo().aboLoeschen(datenAbo));
                     itemChangeAbo.addActionListener(e -> {
                         stopBeob = true;
-                        DialogEditAbo dialog = new DialogEditAbo(Daten.mediathekGui, true, daten, datenAbo, false/*onlyOne*/);
+                        DialogEditAbo dialog = new DialogEditAbo(daten.getMediathekGui(), true, daten, datenAbo, false/*onlyOne*/);
                         dialog.setVisible(true);
                         if (dialog.ok) {
-                            Daten.listeAbo.aenderungMelden();
+                            daten.getListeAbo().aenderungMelden();
                         }
                         stopBeob = false;
                     });

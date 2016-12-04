@@ -19,22 +19,21 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import java.awt.Toolkit;
-import javax.swing.JFrame;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
-import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
 import mediathek.gui.PanelVorlage;
+import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
 import mediathek.gui.dialog.DialogHilfe;
 
-public class PanelDownload extends PanelVorlage {
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class PanelDownload extends PanelVorlage {
     public PanelDownload(Daten d, JFrame parent) {
         super(d, parent);
         initComponents();
@@ -97,7 +96,7 @@ public class PanelDownload extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         jCheckBoxNotification = new javax.swing.JCheckBox();
         javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jSpinnerAnzahlDownload = new javax.swing.JSpinner();
@@ -106,12 +105,12 @@ public class PanelDownload extends PanelVorlage {
         jButtonBeep = new javax.swing.JButton();
         jCheckBoxServer = new javax.swing.JCheckBox();
         cbkDownloadError = new javax.swing.JCheckBox();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
         jLabelBandwidth = new javax.swing.JLabel();
         jSliderBandbreite = new javax.swing.JSlider();
-        jLabel5 = new javax.swing.JLabel();
-        jTextFieldWarnung = new javax.swing.JTextField();
+        javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
+        javax.swing.JTextField jTextFieldWarnung = new javax.swing.JTextField();
 
         setMinimumSize(getPreferredSize());
 
@@ -269,14 +268,9 @@ public class PanelDownload extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxBeep;
     private javax.swing.JCheckBox jCheckBoxNotification;
     private javax.swing.JCheckBox jCheckBoxServer;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabelBandwidth;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JSlider jSliderBandbreite;
     private javax.swing.JSpinner jSpinnerAnzahlDownload;
-    private javax.swing.JTextField jTextFieldWarnung;
     // End of variables declaration//GEN-END:variables
 
     private class BeobSpinnerDownload implements ChangeListener {

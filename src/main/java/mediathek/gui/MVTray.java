@@ -40,6 +40,7 @@ public final class MVTray {
     private int trayState = 0; // 0, 1=Download, 2=Download mit Fehler
     private SystemTray tray = null;
     private TrayIcon trayIcon = null;
+    private Daten daten;
 
     public MVTray() {
     }
@@ -51,6 +52,7 @@ public final class MVTray {
     }
 
     public MVTray systemTray() {
+        daten = Daten.getInstance();
         if (!SystemTray.isSupported()) {
             SysMsg.sysMsg("Tray wird nicht unterstützt!");
             return null;
@@ -70,16 +72,16 @@ public final class MVTray {
 
             MenuItem itemRemoveTray = new MenuItem("Trayicon ausblenden");
             itemRemoveTray.addActionListener(e -> {
-                Daten.mediathekGui.setVisible(true); // WICHTIG!!
+                daten.getMediathekGui().setVisible(true); // WICHTIG!!
                 MVConfig.add(MVConfig.Configs.SYSTEM_USE_TRAY, Boolean.toString(false));
-                Daten.mediathekGui.setTray();
+                daten.getMediathekGui().setTray();
                 Listener.notify(Listener.EREIGNIS_TRAYICON, MVTray.class.getSimpleName());
             });
             popup.add(itemRemoveTray);
 
             popup.addSeparator();
             MenuItem itemBeenden = new MenuItem("Programm beenden");
-            itemBeenden.addActionListener(e -> Daten.mediathekGui.beenden(false, false));
+            itemBeenden.addActionListener(e -> daten.getMediathekGui().beenden(false, false));
             popup.add(itemBeenden);
 
             trayIcon.setPopupMenu(popup);
@@ -104,10 +106,10 @@ public final class MVTray {
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     if (e.getClickCount() == 1) {
-                        Daten.mediathekGui.setVisible(!Daten.mediathekGui.isVisible());
-                        if (Daten.mediathekGui.isVisible()) {
-                            Daten.mediathekGui.toFront();
-                            Daten.mediathekGui.requestFocus();
+                        daten.getMediathekGui().setVisible(!daten.getMediathekGui().isVisible());
+                        if (daten.getMediathekGui().isVisible()) {
+                            daten.getMediathekGui().toFront();
+                            daten.getMediathekGui().requestFocus();
                         }
                     }
                 }
@@ -126,7 +128,7 @@ public final class MVTray {
                 }
 
                 // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
-                int[] starts = Daten.downloadInfos.downloadStarts;
+                int[] starts = daten.getDownloadInfos().downloadStarts;
                 if (starts[6] > 0) {
                     // es gibt welche mit Fehler
                     if (trayState != 2) {
@@ -150,10 +152,10 @@ public final class MVTray {
     private String getTextInfos() {
         String strText = "<html><head></head><body><p>";
 
-        strText += "Filmliste erstellt: " + Daten.listeFilme.genDate() + " Uhr  ";
+        strText += "Filmliste erstellt: " + daten.getListeFilme().genDate() + " Uhr  ";
 
         strText += "<br />";
-        strText += "Anz. Filme: " + Daten.listeFilme.size();
+        strText += "Anz. Filme: " + daten.getListeFilme().size();
 
         strText += "<br />";
         strText += getInfoTextDownloads();
@@ -165,7 +167,7 @@ public final class MVTray {
     private String getInfoTextDownloads() {
         String text;
         // nicht gestarted, laufen, fertig OK, fertig fehler
-        int[] starts = Daten.downloadInfos.downloadStarts;
+        int[] starts = daten.getDownloadInfos().downloadStarts;
         text = "Downloads: " + starts[0];
 
         boolean print = false;
@@ -184,7 +186,7 @@ public final class MVTray {
             }
 
             if (starts[4] > 0) {
-                text += " (" + Daten.downloadInfos.bandwidthStr + ")";
+                text += " (" + daten.getDownloadInfos().bandwidthStr + ")";
             }
 
             if (starts[3] == 1) {

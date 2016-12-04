@@ -1,27 +1,19 @@
 package com.explodingpixels.macwidgets;
 
-import java.awt.Window;
-import java.awt.event.ActionListener;
-import java.util.Enumeration;
-
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.Icon;
-import javax.swing.JComponent;
-import javax.swing.JToggleButton;
-import javax.swing.border.Border;
-
 import com.explodingpixels.macwidgets.plaf.PreferencesTabBarButtonUI;
 import com.explodingpixels.widgets.WindowUtils;
 
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.util.Enumeration;
+
+@SuppressWarnings("serial")
 public class PreferencesTabBar {
+    private final TriAreaComponent fPreferencesTabBar = new TriAreaComponent();
 
-//    private List<AbstractButton> fTabs = new ArrayList<AbstractButton>();
-
-    private TriAreaComponent fPreferencesTabBar = new TriAreaComponent();
-
-    private ButtonGroup fButtonGroup = new ButtonGroup();
+    private final ButtonGroup fButtonGroup = new ButtonGroup();
 
     public PreferencesTabBar() {
         Border b = BorderFactory.createEmptyBorder(0, 4, 0, 4);
@@ -33,8 +25,6 @@ public class PreferencesTabBar {
 
     public void addTab(String title, Icon icon, ActionListener listener) {
         AbstractButton button = new JToggleButton(title, icon) {
-            private static final long serialVersionUID = 1L;
-            
             @Override
             public void updateUI() {
                 setUI(new PreferencesTabBarButtonUI());

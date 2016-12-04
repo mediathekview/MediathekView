@@ -19,7 +19,12 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.Log;
+import mSearch.tool.SysMsg;
 import mSearch.tool.TimedTextMarkupLanguageParser;
+import mediathek.config.Daten;
+import mediathek.daten.DatenDownload;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,10 +35,6 @@ import java.nio.file.Path;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
-import mediathek.config.Daten;
-import mediathek.daten.DatenDownload;
 
 public class MVSubtitle {
 
@@ -49,7 +50,6 @@ public class MVSubtitle {
         File subtitelFile;
         HttpURLConnection conn = null;
         InputStream in = null;
-        FileOutputStream fos = null;
         String encoding;
 
         if (datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE].isEmpty()) {
@@ -98,21 +98,18 @@ public class MVSubtitle {
                 }
             }
 
-            fos = new FileOutputStream(subtitelFile);
-            final byte[] buffer = new byte[1024];
-            int n;
-            while ((n = in.read(buffer)) != -1) {
-                fos.write(buffer, 0, n);
+            try (FileOutputStream fos = new FileOutputStream(subtitelFile)) {
+                final byte[] buffer = new byte[1024];
+                int n;
+                while ((n = in.read(buffer)) != -1) {
+                    fos.write(buffer, 0, n);
+                }
+                SysMsg.sysMsg(new String[]{"Untertitel", "  geschrieben"});
             }
-            SysMsg.sysMsg(new String[]{"Untertitel", "  geschrieben"});
         } catch (IOException ex) {
             strSubtitelFile = null;
             if (conn != null) {
                 try {
-                    InputStream i = conn.getErrorStream();
-                    if (i != null) {
-                        i.close();
-                    }
                     if (in != null) {
                         in.close();
                     }
@@ -123,9 +120,6 @@ public class MVSubtitle {
             strSubtitelFile = null;
         } finally {
             try {
-                if (fos != null) {
-                    fos.close();
-                }
                 if (in != null) {
                     in.close();
                 }

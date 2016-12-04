@@ -22,11 +22,9 @@ package mediathek.tool;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Datum;
 
+@SuppressWarnings("serial")
 public class TModelFilm extends TModel {
-
-    private static final long serialVersionUID = 1L;
-    
-    private Class<?>[] types;
+    private final Class<?>[] types;
 
     public TModelFilm(Object[][] data, Object[] columnNames) {
         super(data, columnNames);

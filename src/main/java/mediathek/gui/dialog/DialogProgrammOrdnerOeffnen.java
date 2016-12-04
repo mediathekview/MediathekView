@@ -20,35 +20,24 @@
 package mediathek.gui.dialog;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.FileDialog;
-import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 
-public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class DialogProgrammOrdnerOeffnen extends JDialog {
     public boolean ok = false;
     public String ziel;
     private Frame parentComponent = null;
 
-    /**
-     *
-     * @param parent
-     * @param modal
-     * @param zziel
-     * @param titel
-     * @param text
-     */
     public DialogProgrammOrdnerOeffnen(java.awt.Frame parent, boolean modal, String zziel, String titel, String text) {
         super(parent, modal);
         parentComponent = parent;
@@ -110,7 +99,7 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jButtonAbbrechen = new javax.swing.JButton();
         jButtonOk = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -197,7 +186,6 @@ public class DialogProgrammOrdnerOeffnen extends javax.swing.JDialog {
     private javax.swing.JButton jButtonAbbrechen;
     private javax.swing.JButton jButtonOk;
     private javax.swing.JButton jButtonZiel;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextFieldProgramm;
     // End of variables declaration//GEN-END:variables

@@ -21,11 +21,9 @@ package mediathek.tool;
 
 import mediathek.daten.DatenMediaDB;
 
+@SuppressWarnings("serial")
 public class TModelMediaDB extends TModel {
-
-    private static final long serialVersionUID = 1L;
-    
-    private Class<?>[] types;
+    private final Class<?>[] types;
 
     public TModelMediaDB(Object[][] data, Object[] columnNames) {
         super(data, columnNames);

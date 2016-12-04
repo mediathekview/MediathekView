@@ -19,14 +19,13 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.BorderLayout;
-import javax.swing.JPanel;
 import mediathek.tool.EscBeenden;
 
-public class DialogLeer extends javax.swing.JDialog {
+import javax.swing.*;
+import java.awt.*;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class DialogLeer extends JDialog {
     public DialogLeer(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();

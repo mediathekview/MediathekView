@@ -23,12 +23,13 @@
  */
 package mediathek.controller;
 
+import mediathek.daten.DatenDownload;
+import mediathek.tool.MVFilmSize;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.TimerTask;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import mediathek.daten.DatenDownload;
-import mediathek.tool.MVFilmSize;
 
 public class MVInputStream extends InputStream {
 
@@ -106,8 +107,7 @@ public class MVInputStream extends InputStream {
     public long getSumBandwidth() {
         final long bytesRead = calculationTask.getTotalBytesRead();
         final long time = calculationTask.getSumTime();
-        final long b = bytesRead <= 0 ? 0 : bytesRead / time;
-        return b;
+        return bytesRead <= 0 ? 0 : bytesRead / time;
     }
 
     @Override
@@ -122,8 +122,7 @@ public class MVInputStream extends InputStream {
         final long bytesRead = calculationTask.getTotalBytesRead();
         final long b = getSumBandwidth();
         String s = MVFilmSize.humanReadableByteCount(bytesRead, true);
-        String[] sa = {"Download", "Bytes gelesen: " + s, "Bandbreite: " + DatenDownload.getTextBandbreite(b)};
-        return sa;
+        return new String[]{"Download", "Bytes gelesen: " + s, "Bandbreite: " + DatenDownload.getTextBandbreite(b)};
     }
 
     /**

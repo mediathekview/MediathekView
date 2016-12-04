@@ -19,23 +19,17 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.event.ActionEvent;
-import javax.swing.JFrame;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionenProgramme;
 
-public class DialogAboNoSet extends javax.swing.JDialog {
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 
-    private static final long serialVersionUID = 1L;
-    
-    /**
-     *
-     * @param parent
-     * @param daten
-     */
+@SuppressWarnings("serial")
+public class DialogAboNoSet extends JDialog {
     public DialogAboNoSet(JFrame parent, Daten daten) {
         super(parent, false);
         initComponents();
@@ -60,9 +54,7 @@ public class DialogAboNoSet extends javax.swing.JDialog {
         jButtonImport.addActionListener(l
                 -> GuiFunktionenProgramme.addSetVorlagen(parent, daten,
                         ListePsetVorlagen.getStandarset(parent, daten, true /*replaceMuster*/), false /*auto*/, true /*setVersion*/));
-        jButtonOk.addActionListener((ActionEvent e) -> {
-            beenden();
-        });
+        jButtonOk.addActionListener((ActionEvent e) -> beenden());
         jLabelIcon.setText("");
         jLabelIcon.setIcon(Icons.ICON_ACHTUNG_32);
         pack();
@@ -81,10 +73,10 @@ public class DialogAboNoSet extends javax.swing.JDialog {
     private void initComponents() {
 
         jButtonOk = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jLabelIcon = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
+        javax.swing.JSeparator jSeparator1 = new javax.swing.JSeparator();
         jButtonImport = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -147,8 +139,6 @@ public class DialogAboNoSet extends javax.swing.JDialog {
     private javax.swing.JButton jButtonImport;
     private javax.swing.JButton jButtonOk;
     private javax.swing.JLabel jLabelIcon;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 

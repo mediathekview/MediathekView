@@ -2,8 +2,8 @@ package mediathek.gui.filmInformation;
 
 import mSearch.daten.DatenFilm;
 import mediathek.config.Icons;
+import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.tool.BeobMausUrl;
-import mediathek.tool.UrlHyperlinkAction;
 import org.jdesktop.swingx.JXHyperlink;
 
 import javax.swing.*;
@@ -28,7 +28,7 @@ public class MVFilmInformationOSX implements IFilmInformation {
     private final JLabel[] labelArrNames = new JLabel[DatenFilm.MAX_ELEM];
     private final JTextField[] txtArrCont = new JTextField[DatenFilm.MAX_ELEM];
     private DatenFilm aktFilm = new DatenFilm();
-    private static ImageIcon ja_sw_16 = Icons.ICON_DIALOG_EIN_SW;
+    private static final ImageIcon ja_sw_16 = Icons.ICON_DIALOG_EIN_SW;
 
     private void createDialog(JFrame parent) {
         hudDialog = new JDialog(parent);

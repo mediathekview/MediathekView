@@ -17,24 +17,23 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.tool;
+package mediathek.gui.actions;
 
+import mSearch.tool.Listener;
+import mSearch.tool.Log;
 import mediathek.config.MVConfig;
-import java.awt.Desktop;
+import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.net.URI;
 import java.net.URISyntaxException;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JFrame;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
-import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 
 @SuppressWarnings("serial")
 public class UrlHyperlinkAction extends AbstractAction {
 
-    private JFrame jFrameParent;
+    private final JFrame jFrameParent;
 
     public UrlHyperlinkAction(JFrame jjFrameParent, String url) throws URISyntaxException {
         jFrameParent = jjFrameParent;

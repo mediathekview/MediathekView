@@ -22,10 +22,9 @@ package mediathek.tool;
 import mSearch.tool.Datum;
 import mediathek.daten.DatenDownload;
 
+@SuppressWarnings("serial")
 public class TModelDownload extends TModel {
-    private static final long serialVersionUID = 1L;
-
-    private Class<?>[] types;
+    private final Class<?>[] types;
 
     public TModelDownload(Object[][] data, Object[] columnNames) {
         super(data, columnNames);

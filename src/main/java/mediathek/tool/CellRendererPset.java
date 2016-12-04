@@ -19,29 +19,21 @@
  */
 package mediathek.tool;
 
-import java.awt.Component;
-import javax.swing.ImageIcon;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
-import mediathek.config.Daten;
 import mediathek.daten.DatenPset;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
+
+@SuppressWarnings("serial")
 public class CellRendererPset extends DefaultTableCellRenderer {
+    private static final ImageIcon ja_16 = Icons.ICON_TABELLE_EIN;
+    private static final ImageIcon nein_12 = Icons.ICON_TABELLE_AUS;
 
-    private static final long serialVersionUID = 1L;
-    
-    private Daten daten;
-    private static ImageIcon ja_16 = null;
-    private static ImageIcon nein_12 = null;
-
-    public CellRendererPset(Daten d) {
-        daten = d;
-        ja_16 = Icons.ICON_TABELLE_EIN;
-         nein_12 = Icons.ICON_TABELLE_AUS;
-   }
+    public CellRendererPset() {
+    }
 
     @Override
     public Component getTableCellRendererComponent(

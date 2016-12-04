@@ -35,9 +35,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@SuppressWarnings("serial")
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
-
-    private static final long serialVersionUID = 1L;
     /**
      * List for dynamic application of filters
      */
@@ -134,8 +133,9 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      */
     @SuppressWarnings("unchecked")
     public synchronized void filterListe() {
-        final ListeFilme listeFilme = Daten.listeFilme;
-        final ListeFilme listeRet = Daten.listeFilmeNachBlackList;
+        Daten daten = Daten.getInstance();
+        final ListeFilme listeFilme = daten.getListeFilme();
+        final ListeFilme listeRet = daten.getListeFilmeNachBlackList();
 
         loadCurrentFilterSettings();
 
@@ -158,15 +158,15 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             filterList.clear();
             if (blacklistIsActive) {
                 //add the filter predicates to the list
-                if (!doNotShowGeoBlockedFilms)
+                if (doNotShowGeoBlockedFilms)
                     filterList.add(this::checkGeoBlockedFilm);
-                if (!doNotShowFutureFilms)
+                if (doNotShowFutureFilms)
                     filterList.add(this::checkIfFilmIsInFuture);
                 filterList.add(this::checkFilmLength);
                 if (!isEmpty())
                     filterList.add(this::applyBlacklistFilters);
 
-                for (Predicate pred : filterList) {
+                for (Predicate<DatenFilm> pred : filterList) {
                     initialStream = initialStream.filter(pred);
                 }
             }

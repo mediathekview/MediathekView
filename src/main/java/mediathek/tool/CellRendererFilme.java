@@ -20,13 +20,6 @@
 package mediathek.tool;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Component;
-import java.awt.Font;
-import javax.swing.ImageIcon;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.tool.Listener;
@@ -39,10 +32,12 @@ import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 
-public class CellRendererFilme extends DefaultTableCellRenderer {
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
 
-    private static final long serialVersionUID = 1L;
-    
+@SuppressWarnings("serial")
+public class CellRendererFilme extends DefaultTableCellRenderer {
     private static ImageIcon film_start_tab = null;
     private static ImageIcon film_start_sw_tab = null;
     private static ImageIcon film_rec_tab = null;
@@ -94,7 +89,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             final int rowModelIndex = table.convertRowIndexToModel(row);
             final int columnModelIndex = table.convertColumnIndexToModel(column);
             DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF);
-            DatenDownload datenDownload = Daten.listeDownloadsButton.getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL]);
+            DatenDownload datenDownload = Daten.getInstance().getListeDownloadsButton().getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL]);
 
             if (((MVTable) table).lineBreak) {
                 JTextArea textArea;
