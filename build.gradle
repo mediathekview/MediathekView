@@ -64,28 +64,6 @@ task updateVersion << {
 
 processResources.dependsOn updateVersion
 
-task renameAndFillBuildFile(dependsOn: updateVersion) << {
-    Properties props = loadVersionProperties()
-
-    String nr = props.getProperty('NR')
-    String buildInfo = "${project.version}-$nr"
-    File buildFile = file("res/Info/${buildInfo}.build").absoluteFile
-    String date = new Date().format('dd.MM.yyyy HH:mm:ss')
-    logger.lifecycle "Writing build info to $buildFile"
-
-    project.delete(fileTree('res/Info') {
-        include '*.build'
-    })
-
-    def buildFileWriter = buildFile.newWriter()
-    buildFileWriter << "Datum: ${date}\n"
-    buildFileWriter << "Version: ${version}\n"
-    buildFileWriter << "Buildnummer: ${buildInfo}\n"
-    buildFileWriter.close()
-}
-
-processResources.dependsOn renameAndFillBuildFile
-
 /*
 licenseReport {
     outputDir = "res/Copyright/"
@@ -149,9 +127,9 @@ dependencies {
 jar {
     manifest {
         attributes(
-                'SplashScreen-Image': 'mediathek/res/splash.png',
-                'Main-Class': mainClass,
-                'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
+            'SplashScreen-Image': 'mediathek/res/splash.png',
+            'Main-Class': mainClass,
+            'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
         )
     }
     archiveName = jarName
@@ -161,30 +139,23 @@ distributions {
     main {
         baseName = 'MediathekView'
         contents {
-            into('lib')
-                    {
-                        from configurations.compile
-                    }
-            from('res')
-                    {
-                        filesMatching('**/*.sh')
-                                {
-                                    filter(ReplaceTokens, tokens: [JARNAME: jarName])
-                                }
-                        filesMatching('**/*.txt')
-                                {
-                                    filter(ReplaceTokens, tokens: [JARNAME: jarName])
-                                }
-                        filesMatching('**/*.command')
-                                {
-                                    filter(ReplaceTokens, tokens: [JARNAME: jarName])
-                                }
-                    }
-
-            from('build/libs')
-                    {
-                        include '*.jar'
-                    }
+            into('lib') {
+                from configurations.compile
+            }
+            from('res') {
+                filesMatching('**/*.sh') {
+                    filter(ReplaceTokens, tokens: [JARNAME: jarName])
+                }
+                filesMatching('**/*.txt') {
+                    filter(ReplaceTokens, tokens: [JARNAME: jarName])
+                }
+                filesMatching('**/*.command') {
+                    filter(ReplaceTokens, tokens: [JARNAME: jarName])
+                }
+            }
+            from('build/libs') {
+                include '*.jar'
+            }
 
         }
     }
@@ -254,7 +225,7 @@ task copyExesInRes(type: Copy) {
    	from 'build/launch4j'
    	into 'res'
    	include '*.exe'
-       exclude 'MediathekView.exe'
+    exclude 'MediathekView.exe'
 }
 
 assemble.dependsOn copyExesInRes
