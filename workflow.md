@@ -1,7 +1,8 @@
 # Code klonen
 *(prev. **Code auschecken**)*
-Da nur einige Teammitglieder Schreibzugriff auf das Repo haben, solltest du einen [Fork anlegen](https://github.com/mediathekview/MediathekView/fork) und diesen dann klonen, damit du deine Änderungen hochladen kannst.
-Außerdem solltest du für dieses Projekt `pull --rebase` aktivieren, um unnötige Merge-Commits durch ein Aktualisieren zu vermeiden.
+
+Da nur einige Teammitglieder Schreibzugriff auf das Repo haben, solltest du einen [Fork anlegen](https://github.com/mediathekview/MediathekView/fork) und diesen dann klonen, damit du deine Änderungen hochladen kannst.  
+Außerdem solltest du für dieses Projekt `pull --rebase` aktivieren, um unnötige Merge-Commits durch ein Aktualisieren zu vermeiden.  
 Unser Workflow forciert Merge-Commits, "fast-forward"-Merges sind _nicht_ erlaubt.
 ```bash
 # Zum Komplieren müssen alle Projekte in einem gemeinsamen Ordner liegen und 
@@ -9,10 +10,11 @@ Unser Workflow forciert Merge-Commits, "fast-forward"-Merges sind _nicht_ erlaub
 mkdir mediathekview && cd $_
 git clone https://github.com/mediathekview/MSearch.git
 
+# Den Fork klonen
 git clone https://github.com/<Dein GitHub Nutzer>/MediathekView.git
 cd MediathekView
 
-# Um das einfach Repo vom offiziellen aktualisieren zu können:
+# Um das Repo einfach vom offiziellen aktualisieren zu können:
 git remote add upstream https://github.com/mediathekview/MediathekView.git
 
 # "git config" ohne --global oder --system schreiben nur für das aktuell Repo, 
@@ -33,12 +35,17 @@ git config merge.ff false
 - `bugfix`-Branches basieren immer auf `master` und mergen sowohl dorthin als auch auf develop zurück.
 - jeder Merge auf `master` entspricht einer neuen (stabilen) Version
 
-Es ist empfohlen ein Feature immer möglichst atomar zu halten, also nur eine Sache hinzuzufügen, zu entfernen oder verbessern.
+Ein Feature sollte immer möglichst atomar gehalten sein, also nur eine (abstrakte) Sache hinzufügen, entfernen oder verbessern. Es sollte also bspw. nicht einer Klasse eine Methode hinzugefügt werden und einer anderen, nicht in Verbindung stehenden Klasse eine entfernt werden.
 
 # Workflow
 
-Öffne einen [Issue](https://github.com/mediathekview/MediathekView/issues/new), der dein (neues) Feature beschreibt. Warte möglw. auf Antworten um doppelte oder unnötige Arbeit zu vermeiden.
-Wenn dann soweit alles gut ist, kannst du mit der Entwicklung anfangen.
+Öffne einen [Issue](https://github.com/mediathekview/MediathekView/issues/new), der dein (neues) Feature beschreibt. Warte möglw. auf Antworten um doppelte oder unnötige Arbeit zu vermeiden. Wenn dann soweit alles gut ist, kannst du mit der Entwicklung anfangen.
+
+Wenn du das Feature in Bearbeitung hast, füge das entsprechende Tag und dich als Assignee zum Issue hinzu.
+
+Nach dem Abschluss der Entwicklung dann eine Pull Request öffnen, den Feature-Issue in der Beschreibung verlinken\* und das Tag des Issues "inBearbeitung" mit "Fertig" ersetzen.
+
+\* GitHub ersetzt bspw. #112 automatisch mit einem Link zum dazugehörigen Issue (oder auch PR)
 
 ## Fork / ohne Schreibzugriff
 ### mit `git-flow`
@@ -58,7 +65,7 @@ git pull upstream develop
 # Feature hochladen
 git flow feature publish '#112-add-sth'
 ```
-
+Jetzt wie oben beschrieben eine PR für `feature/#112-add-sth` gegen `develop` auf GitHub erstellen.
 ### ohne `git-flow`
 ```bash
 # Vor dem Starten immer aktualisieren
@@ -76,3 +83,4 @@ git pull upstream develop
 # Feature hochladen
 git push origin `feature/#112-add-sth`
 ```
+Jetzt wie oben beschrieben eine PR für `feature/#112-add-sth` gegen `develop` auf GitHub erstellen.
