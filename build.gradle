@@ -156,7 +156,11 @@ distributions {
             from('build/libs') {
                 include '*.jar'
             }
-
+            from('build/launch4j') {
+                include '*.exe'
+                exclude 'lib'
+                //exclude 'MediathekView.exe'
+            }
         }
     }
 }
@@ -182,7 +186,7 @@ launch4j {
    mainClassName = mainClass
    icon = "../../res/Info/MediathekView.ico"
    dontWrapJar = true
-   outfile="MediathekView__Start.exe"
+   outfile="MediathekView.exe"
 
    initialHeapSize=256
    maxHeapSize=2048
@@ -193,7 +197,7 @@ task createIpv4Exe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
     mainClassName = mainClass
     icon = "../../res/Info/MediathekView.ico"
     dontWrapJar = true
-    outfile="MediathekView__ipv4__Start.exe"
+    outfile="MediathekView_ipv4.exe"
     opt="-Djava.net.preferIPv4Stack=true"
 
     initialHeapSize=256
@@ -201,18 +205,18 @@ task createIpv4Exe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
     maxHeapPercent=80
 }
 
-task createOhneSpeichernExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
+task createOhneSpeicherExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
     mainClassName = mainClass
     icon = "../../res/Info/MediathekView.ico"
     dontWrapJar = true
-   	outfile="MediathekView__ohne_Speicher__Start.exe"
+   	outfile="MediathekView_ohne_feste_Speicherzuweisung.exe"
 }  
 
 task createPortableExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
     mainClassName = mainClass
     icon = "../../res/Info/MediathekView.ico"
     dontWrapJar = true
-   	outfile="MediathekView__Portable.exe"
+   	outfile="MediathekView_Portable.exe"
    	cmdLine="Einstellungen/.mediathek3"
 	
     initialHeapSize=256
@@ -220,13 +224,4 @@ task createPortableExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
     maxHeapPercent=80
 }
 
-task copyExesInRes(type: Copy) {
-   	logger.lifecycle 'Copying windows programm executables.'
-   	from 'build/launch4j'
-   	into 'res'
-   	include '*.exe'
-    exclude 'MediathekView.exe'
-}
-
-assemble.dependsOn copyExesInRes
-copyExesInRes.dependsOn createAllExecutables
+assemble.dependsOn createAllExecutables
