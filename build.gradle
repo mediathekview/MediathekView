@@ -1,4 +1,5 @@
 import org.apache.tools.ant.filters.ReplaceTokens
+import java.nio.file.Files
 
 plugins {
     id "com.github.jk1.dependency-license-report" version "0.3.5"
@@ -36,6 +37,9 @@ ext {
     swingxVersion = '1.6.6-SNAPSHOT'
     swingxGroup = ''
     propsFile = file('src/main/resources/version.properties').absoluteFile
+    if(!propsFile.exists()) {
+        Files.createFile(propsFile.toPath())
+    }
 }
 
 def loadVersionProperties() {
@@ -46,21 +50,16 @@ def loadVersionProperties() {
 
 task updateVersion << {
     Properties props = loadVersionProperties()
-    int nr = Integer.parseInt(props.getProperty('NR')) + 1
-    String buildDate = new Date().format('dd.MM.yyyy HH:mm:ss')
-
-    logger.lifecycle "==========================="
-    logger.lifecycle "Version: $version"
-    logger.lifecycle "Datum:    $buildDate"
-    logger.lifecycle "Realese: $nr"
-    logger.lifecycle "==========================="
-
-    props.setProperty('VERSION', project.version)
-    props.setProperty('NR', "$nr")
-    props.setProperty('BUILD', "${project.version}-${nr}")
-    props.setProperty('DATE', buildDate)
-
-    props.store(propsFile.newWriter(), null)
+    
+    def oldVersion = props.getProperty('VERSION')
+    if(!oldVersion.equals(project.version)) 
+    {
+	    logger.lifecycle "==msearch======================"
+	    logger.lifecycle "Version: $project.version"
+	    logger.lifecycle "==msearch======================"
+	    props.setProperty('VERSION', project.version)	
+	    props.store(propsFile.newWriter(), null)
+    }
 }
 
 processResources.dependsOn updateVersion
@@ -189,72 +188,74 @@ distributions {
 
         }
     }
-
-    task run(type: JavaExec, dependsOn: classes) {
-        main = mainClass
-        classpath = sourceSets.main.runtimeClasspath
-    }
-
-    /**
-     * HOWTO debug:
-     *  1. run "gradle debug"
-     *  2. Call your IDE to connect to a remote java application on port 5005.
-     */
-    task debug(type: JavaExec, dependsOn: classes) {
-        main = mainClass
-        classpath = sourceSets.main.runtimeClasspath
-        debug true
-    }
-    
-    //Windows executable generation
-
-    launch4j {
-        createExe {
-            mainClassName = mainClass
-            icon = "../../res/Info/MediathekView.ico"
-            dontWrapJar = true
-        }
-    }
-
-    task createNormalExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
-	   outfile="MediathekView__Start.exe"
-
-	   initialHeapSize=256
-	   maxHeapSize=2048
-	   maxHeapPercent=80
-    }
-
-    task createIpv4Exe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
-        outfile="MediathekView__ipv4__Start.exe"
-        opt="-Djava.net.preferIPv4Stack=true"
-	
-	    initialHeapSize=256
-	    maxHeapSize=2048
-	    maxHeapPercent=80
-    }
-
-    task createOhneSpeichernExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
-    	outfile="MediathekView__ohne_Speicher__Start.exe"
-    }  
-
-    task createPortableExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
-    	outfile="MediathekView__Portable.exe"
-    	cmdLine="Einstellungen/.mediathek3"
-	
-        initialHeapSize=256
-	    maxHeapSize=2048
-	    maxHeapPercent=80
-    }
-
-    task copyExesInRes(type: Copy) {
-    	logger.lifecycle 'Copying windows programm executables.'
-    	from 'build/launch4j'
-    	into 'res'
-    	include '*.exe'
-        exclude 'MediathekView.exe'
-    }
-
-    assemble.dependsOn copyExesInRes
-    copyExesInRes.dependsOn createAllExecutables
-
 }
+
+task run(type: JavaExec, dependsOn: classes) {
+    main = mainClass
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+/**
+* HOWTO debug:
+*  1. run "gradle debug"
+*  2. Call your IDE to connect to a remote java application on port 5005.
+*/
+task debug(type: JavaExec, dependsOn: classes) {
+    main = mainClass
+    classpath = sourceSets.main.runtimeClasspath
+    debug true
+}
+    
+//Windows executable generation
+launch4j {
+   mainClassName = mainClass
+   icon = "../../res/Info/MediathekView.ico"
+   dontWrapJar = true
+   outfile="MediathekView__Start.exe"
+
+   initialHeapSize=256
+   maxHeapSize=2048
+   maxHeapPercent=80
+}
+
+task createIpv4Exe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
+    mainClassName = mainClass
+    icon = "../../res/Info/MediathekView.ico"
+    dontWrapJar = true
+    outfile="MediathekView__ipv4__Start.exe"
+    opt="-Djava.net.preferIPv4Stack=true"
+
+    initialHeapSize=256
+    maxHeapSize=2048
+    maxHeapPercent=80
+}
+
+task createOhneSpeichernExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
+    mainClassName = mainClass
+    icon = "../../res/Info/MediathekView.ico"
+    dontWrapJar = true
+   	outfile="MediathekView__ohne_Speicher__Start.exe"
+}  
+
+task createPortableExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
+    mainClassName = mainClass
+    icon = "../../res/Info/MediathekView.ico"
+    dontWrapJar = true
+   	outfile="MediathekView__Portable.exe"
+   	cmdLine="Einstellungen/.mediathek3"
+	
+    initialHeapSize=256
+    maxHeapSize=2048
+    maxHeapPercent=80
+}
+
+task copyExesInRes(type: Copy) {
+   	logger.lifecycle 'Copying windows programm executables.'
+   	from 'build/launch4j'
+   	into 'res'
+   	include '*.exe'
+       exclude 'MediathekView.exe'
+}
+
+assemble.dependsOn copyExesInRes
+copyExesInRes.dependsOn createAllExecutables
