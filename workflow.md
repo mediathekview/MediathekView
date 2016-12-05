@@ -30,25 +30,26 @@ git config merge.ff false
 - `master` ist immer die letzte, stabilen Version,
 - `develop` sind alle Änderungen für die nächste Version,
 - `feature/#xyz-abc` für die Entwicklung von neuen Funktionen etc,
-- `bugfix/#xyz-abc` für die Behebung kritischer Fehler,
+- `hotfix/#xyz-abc` für die Behebung kritischer Fehler,
 - `feature`-Branches basieren immer auf `develop` und mergen auch wieder dorthin zurück,
-- `bugfix`-Branches basieren immer auf `master` und mergen sowohl dorthin als auch auf develop zurück,
+- `hotfix`-Branches basieren immer auf `master` und mergen sowohl dorthin als auch auf develop zurück,
 - jeder Merge auf `master` entspricht einer neuen (stabilen) Version.
 
 Ein Feature sollte immer möglichst atomar gehalten sein, also nur eine (abstrakte) Sache hinzufügen, entfernen oder verbessern. Es sollte also bspw. nicht einer Klasse eine Methode hinzugefügt werden und einer anderen, nicht in Verbindung stehenden Klasse eine entfernt werden.
 
 # Workflow
 
-Öffne einen [Issue](https://github.com/mediathekview/MediathekView/issues/new), der dein (neues) Feature beschreibt. Warte möglw. auf Antworten um doppelte oder unnötige Arbeit zu vermeiden. Wenn dann soweit alles gut ist, kannst du mit der Entwicklung anfangen.
+Öffne einen [Issue](https://github.com/mediathekview/MediathekView/issues/new), der dein (neues) Feature oder deinen Hotfix beschreibt. Warte möglw. auf Antworten um doppelte oder unnötige Arbeit zu vermeiden. Wenn dann soweit alles gut ist, kannst du mit der Entwicklung anfangen.
 
 Wenn du das Feature in Bearbeitung hast, füge das entsprechende Tag "inBearbeitung" und dich als Assignee zum Issue hinzu.
 
-Nach dem Abschluss der Entwicklung dann eine Pull Request öffnen, den Feature-Issue in der Beschreibung verlinken\* und das Tag des Issues "inBearbeitung" mit "Fertig" ersetzen.
+Nach dem Abschluss der Entwicklung dann eine Pull Request öffnen, den Feature-Issue in der Beschreibung verlinken\*. Beim Issue das Tag "inBearbeitung" mit "Fertig" und Assignee mit **alex1702** ersetzen. Für einen Hotfix musst du zwei PRs erstellen, das wird weiter unten behandelt.
 
 \* GitHub ersetzt bspw. #112 automatisch mit einem Link zum dazugehörigen Issue (oder auch PR)
 
 ## Fork / ohne Schreibzugriff
 ### mit `git-flow`
+#### Feature
 ```bash
 # Vor dem Starten immer aktualisieren
 git pull upstream develop
@@ -62,11 +63,14 @@ git flow feature start '#112-add-sth'
 # Nochmals aktualisieren
 git pull upstream develop
 
-# Feature hochladen
-git flow feature publish '#112-add-sth'
+# Feature abschließen
+git flow feature finish '#112-add-sth'
 ```
-Jetzt wie oben beschrieben eine PR für `feature/#112-add-sth` gegen `develop` auf GitHub erstellen.
+Jetzt wie oben beschrieben die PR erstellen, hier für `develop` von deinem Fork gegen `develop` von MediathekView.
+#### Hotfix
+???
 ### ohne `git-flow`
+#### Feature
 ```bash
 # Vor dem Starten immer aktualisieren
 git pull upstream develop
@@ -84,3 +88,5 @@ git pull upstream develop
 git push origin 'feature/#112-add-sth'
 ```
 Jetzt wie oben beschrieben eine PR für `feature/#112-add-sth` gegen `develop` auf GitHub erstellen.
+#### Hotfix
+???
