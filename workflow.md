@@ -2,10 +2,10 @@
 *(prev. **Code auschecken**)*
 
 Da nur einige Teammitglieder Schreibzugriff auf das Repo haben, solltest du einen [Fork anlegen](https://github.com/mediathekview/MediathekView/fork) und diesen dann klonen, damit du deine Änderungen hochladen kannst.  
-Außerdem solltest du für dieses Projekt `pull --rebase` aktivieren, um unnötige Merge-Commits durch ein Aktualisieren zu vermeiden.  
-Unser Workflow forciert Merge-Commits, "fast-forward"-Merges sind _nicht_ erlaubt.
+Es sollte für dieses Projekt `pull --rebase` aktiviert sein um unnötige Merge-Commits durch ein Aktualisieren zu vermeiden.  
+Außerdem forciert unser Workflow Merge-Commits, "fast-forward"-Merges sind _nicht_ erlaubt.
 ```bash
-# Zum Komplieren müssen alle Projekte in einem gemeinsamen Ordner liegen und 
+# Zum Komplieren müssen alle Projekte in einem gemeinsamen Ordner liegen und
 # MSearch wird derzeit noch als lokale Abhängigkeit benötigt.
 mkdir mediathekview && cd $_
 git clone https://github.com/mediathekview/MSearch.git
@@ -27,13 +27,13 @@ git config merge.ff false
 ```
 ---
 #  Mit Git Flow entwickeln
-- `master` ist immer die letzten, stabilen Version
-- `develop` sind alle Änderungen für die nächste Version.
-- `feature/#xyz-abc` für die Entwicklung von neuen Funktionen etc
-- `bugfix/#xyz-abc` für die Behebung kritischer Fehler
-- `feature`-Branches basieren immer auf `develop` und mergen auch wieder dorthin zurück.
-- `bugfix`-Branches basieren immer auf `master` und mergen sowohl dorthin als auch auf develop zurück.
-- jeder Merge auf `master` entspricht einer neuen (stabilen) Version
+- `master` ist immer die letzte, stabilen Version,
+- `develop` sind alle Änderungen für die nächste Version,
+- `feature/#xyz-abc` für die Entwicklung von neuen Funktionen etc,
+- `bugfix/#xyz-abc` für die Behebung kritischer Fehler,
+- `feature`-Branches basieren immer auf `develop` und mergen auch wieder dorthin zurück,
+- `bugfix`-Branches basieren immer auf `master` und mergen sowohl dorthin als auch auf develop zurück,
+- jeder Merge auf `master` entspricht einer neuen (stabilen) Version.
 
 Ein Feature sollte immer möglichst atomar gehalten sein, also nur eine (abstrakte) Sache hinzufügen, entfernen oder verbessern. Es sollte also bspw. nicht einer Klasse eine Methode hinzugefügt werden und einer anderen, nicht in Verbindung stehenden Klasse eine entfernt werden.
 
@@ -41,7 +41,7 @@ Ein Feature sollte immer möglichst atomar gehalten sein, also nur eine (abstrak
 
 Öffne einen [Issue](https://github.com/mediathekview/MediathekView/issues/new), der dein (neues) Feature beschreibt. Warte möglw. auf Antworten um doppelte oder unnötige Arbeit zu vermeiden. Wenn dann soweit alles gut ist, kannst du mit der Entwicklung anfangen.
 
-Wenn du das Feature in Bearbeitung hast, füge das entsprechende Tag und dich als Assignee zum Issue hinzu.
+Wenn du das Feature in Bearbeitung hast, füge das entsprechende Tag "inBearbeitung" und dich als Assignee zum Issue hinzu.
 
 Nach dem Abschluss der Entwicklung dann eine Pull Request öffnen, den Feature-Issue in der Beschreibung verlinken\* und das Tag des Issues "inBearbeitung" mit "Fertig" ersetzen.
 
@@ -81,6 +81,6 @@ git checkout -b 'feature/#112-add-sth' develop
 git pull upstream develop
 
 # Feature hochladen
-git push origin `feature/#112-add-sth`
+git push origin 'feature/#112-add-sth'
 ```
 Jetzt wie oben beschrieben eine PR für `feature/#112-add-sth` gegen `develop` auf GitHub erstellen.
