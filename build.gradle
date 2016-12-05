@@ -185,6 +185,7 @@ task debug(type: JavaExec, dependsOn: classes) {
 launch4j {
    mainClassName = mainClass
    icon = "../../res/Info/MediathekView.ico"
+   jar = jarName
    dontWrapJar = true
    outfile="MediathekView.exe"
 
@@ -196,6 +197,7 @@ launch4j {
 task createIpv4Exe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
     mainClassName = mainClass
     icon = "../../res/Info/MediathekView.ico"
+    jar = jarName
     dontWrapJar = true
     outfile="MediathekView_ipv4.exe"
     opt="-Djava.net.preferIPv4Stack=true"
@@ -208,6 +210,7 @@ task createIpv4Exe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
 task createOhneSpeicherExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
     mainClassName = mainClass
     icon = "../../res/Info/MediathekView.ico"
+    jar = jarName
     dontWrapJar = true
    	outfile="MediathekView_ohne_feste_Speicherzuweisung.exe"
 }  
@@ -215,6 +218,7 @@ task createOhneSpeicherExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask)
 task createPortableExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
     mainClassName = mainClass
     icon = "../../res/Info/MediathekView.ico"
+    jar = jarName
     dontWrapJar = true
    	outfile="MediathekView_Portable.exe"
    	cmdLine="Einstellungen/.mediathek3"
