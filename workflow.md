@@ -51,7 +51,7 @@ Nach dem Abschluss der Entwicklung dann eine Pull Request öffnen, den Feature-I
 ### mit `git-flow`
 #### Feature
 ```bash
-# Vor dem Starten immer aktualisieren
+# Vor dem Starten immer aktualisieren (vom offiziellen Repo)
 git pull upstream develop
 
 # Ein Featurebranch erstellen.
@@ -63,7 +63,7 @@ git flow feature start '#112-add-sth'
 # Nochmals aktualisieren
 git pull upstream develop
 
-# Feature abschließen
+# Feature abschließen, wird automatisch hochgeladen.
 git flow feature finish '#112-add-sth'
 ```
 Jetzt wie oben beschrieben die PR erstellen, hier für `develop` von deinem Fork gegen `develop` von MediathekView.
@@ -72,7 +72,7 @@ Jetzt wie oben beschrieben die PR erstellen, hier für `develop` von deinem Fork
 ### ohne `git-flow`
 #### Feature
 ```bash
-# Vor dem Starten immer aktualisieren
+# Vor dem Starten immer aktualisieren (vom offiziellen Repo)
 git pull upstream develop
 
 # Eine Featurebranch erstellen.
@@ -81,10 +81,10 @@ git checkout -b 'feature/#112-add-sth' develop
 
 # Wörk Wörk
 
-# Nochmals aktualisieren
+# Nochmals aktualisieren (vom offiziellen Repo)
 git pull upstream develop
 
-# Feature hochladen
+# Feature hochladen (zum Fork)
 git push origin 'feature/#112-add-sth'
 ```
 Jetzt wie oben beschrieben eine PR für `feature/#112-add-sth` gegen `develop` auf GitHub erstellen.
