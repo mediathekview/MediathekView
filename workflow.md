@@ -68,7 +68,23 @@ git flow feature finish '#112-add-sth'
 ```
 Jetzt wie oben beschrieben die PR erstellen, hier für `develop` von deinem Fork gegen `develop` von MediathekView.
 #### Hotfix
-???
+```bash
+# Vor dem Starten immer aktualisieren (vom offiziellen Repo)
+git pull upstream master
+
+# Eine Hotfixbranch erstellen.
+# Name ist immer die Issue-Nummer, der auch ein Name angehängt werden kann
+git hotfix start '#113-fix-sth'
+
+# Wörk Wörk
+
+# Nochmals aktualisieren (vom offiziellen Repo)
+git pull upstream master
+
+# Feature hochladen (zum Fork)
+git push origin 'hotfix/#113-fix-sth'
+```
+Jetzt wie oben beschrieben _zwei_ PR für `hotfix/#113-fix-sth` erstellen, einmal gegen `master` und einmal gegen `develop`.
 ### ohne `git-flow`
 #### Feature
 ```bash
@@ -89,4 +105,20 @@ git push origin 'feature/#112-add-sth'
 ```
 Jetzt wie oben beschrieben eine PR für `feature/#112-add-sth` gegen `develop` auf GitHub erstellen.
 #### Hotfix
-???
+```bash
+# Vor dem Starten immer aktualisieren (vom offiziellen Repo)
+git pull upstream master
+
+# Eine Hotfixbranch erstellen.
+# Name ist immer die Issue-Nummer, der auch ein Name angehängt werden kann
+git checkout -b 'hotfix/#113-fix-sth' master
+
+# Wörk Wörk
+
+# Nochmals aktualisieren (vom offiziellen Repo)
+git pull upstream master
+
+# Feature hochladen (zum Fork)
+git push origin 'hotfix/#113-fix-sth'
+```
+Jetzt wie oben beschrieben _zwei_ PR für `hotfix/#113-fix-sth` erstellen, einmal gegen `master` und einmal gegen `develop`.
