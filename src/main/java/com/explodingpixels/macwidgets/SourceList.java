@@ -57,28 +57,28 @@ public class SourceList {
     private final SourceListModelListener fModelListener = createSourceListModelListener();
 
     private final List<SourceListSelectionListener> fSourceListSelectionListeners =
-            new ArrayList<SourceListSelectionListener>();
+            new ArrayList<>();
 
     private final List<SourceListExpansionListener> fSourceListExpansionListeners =
-            new ArrayList<SourceListExpansionListener>();
+            new ArrayList<>();
 
-    private DefaultMutableTreeNode fRoot = new DefaultMutableTreeNode("root");
-    private DefaultTreeModel fTreeModel = new DefaultTreeModel(fRoot);
-    private JTree fTree = new CustomJTree(fTreeModel);
+    private final DefaultMutableTreeNode fRoot = new DefaultMutableTreeNode("root");
+    private final DefaultTreeModel fTreeModel = new DefaultTreeModel(fRoot);
+    private final JTree fTree = new CustomJTree(fTreeModel);
 
-    private JScrollPane fScrollPane = MacWidgetFactory.createSourceListScrollPane(fTree);
+    private final JScrollPane fScrollPane = MacWidgetFactory.createSourceListScrollPane(fTree);
     private final JPanel fComponent = new JPanel(new BorderLayout());
-    private TreeSelectionListener fTreeSelectionListener = createTreeSelectionListener();
-    private TreeExpansionListener fTreeExpansionListener = createTreeExpansionListener();
-    private TreeWillExpandListener fTreeWillExpandListener = createTreeWillExpandListener();
-    private MouseListener fMouseListener = createMouseListener();
+    private final TreeSelectionListener fTreeSelectionListener = createTreeSelectionListener();
+    private final TreeExpansionListener fTreeExpansionListener = createTreeExpansionListener();
+    private final TreeWillExpandListener fTreeWillExpandListener = createTreeWillExpandListener();
+    private final MouseListener fMouseListener = createMouseListener();
 
     private SourceListControlBar fSourceListControlBar;
 
     private SourceListContextMenuProvider fContextMenuProvider =
             new EmptySourceListContextMenuProvider();
-    private List<SourceListClickListener> fSourceListClickListeners =
-            new ArrayList<SourceListClickListener>();
+    private final List<SourceListClickListener> fSourceListClickListeners =
+            new ArrayList<>();
     private SourceListToolTipProvider fToolTipProvider = new EmptyToolTipProvider();
 
     /**

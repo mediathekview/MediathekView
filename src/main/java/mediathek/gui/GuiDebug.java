@@ -20,17 +20,6 @@
 package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.FileDialog;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.HashSet;
-import java.util.Iterator;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JPanel;
 import mSearch.Const;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
@@ -42,6 +31,15 @@ import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisten;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.HashSet;
+import java.util.Iterator;
 
 @SuppressWarnings("serial")
 public class GuiDebug extends JPanel {
@@ -299,13 +297,7 @@ public class GuiDebug extends JPanel {
             return;
         }
 
-        Iterator<DatenFilm> it = daten.getListeFilme().iterator();
-        while (it.hasNext()) {
-            DatenFilm f = it.next();
-            if (f.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE)) {
-                it.remove();
-            }
-        }
+        daten.getListeFilme().removeIf(f -> f.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE));
         listeEinsortieren.forEach(daten.getListeFilme()::add);
     }
 
@@ -337,9 +329,7 @@ public class GuiDebug extends JPanel {
         final SimpleDateFormat sdfClean = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
         Log.sysLog("cleanList start: " + sdfClean.format(System.currentTimeMillis()));
 
-        daten.getListeFilme().stream().forEach((datenFilm) -> {
-            Functions.unescape(datenFilm);
-        });
+        daten.getListeFilme().forEach(Functions::unescape);
         daten.filmlisteSpeichern();
         Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
 
