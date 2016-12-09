@@ -197,7 +197,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButtonClean">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Clean Filmliste"/>
+                <Property name="text" type="java.lang.String" value="Clean Filmliste (unescape)"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -232,19 +232,19 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="jTextFieldLiveStreams" alignment="0" pref="351" max="32767" attributes="0"/>
+                                  <Component id="jTextFieldLiveStreams" alignment="0" pref="355" max="32767" attributes="0"/>
                                   <Component id="jTextFieldOld" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="txtDiff" pref="351" max="32767" attributes="0"/>
+                                  <Component id="txtDiff" pref="355" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jButtonDelLive" alignment="1" min="-2" max="-2" attributes="0"/>
                                   <Component id="jButtonOldList" min="-2" max="-2" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="btnPathDiff" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                       <Component id="cbkUrl" min="-2" max="-2" attributes="0"/>
                                   </Group>
+                                  <Component id="jButtonDelLive" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" attributes="0">
@@ -257,11 +257,7 @@
                                       <Component id="jButtonTTUrl" linkSize="6" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Component id="btnDelDoppelteUrls" linkSize="6" alignment="0" max="32767" attributes="0"/>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jButtonFehler" linkSize="6" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jToggleButtonFastAuto" linkSize="6" min="-2" pref="154" max="-2" attributes="0"/>
-                                  </Group>
+                                  <Component id="jButtonFehler" linkSize="6" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
@@ -276,10 +272,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButtonAllesSpeichern" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jButtonFehler" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jToggleButtonFastAuto" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <Component id="jButtonFehler" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" min="-2" max="-2" attributes="0"/>
                       <Component id="btnDelDoppelteUrls" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -325,11 +318,6 @@
             <Component class="javax.swing.JButton" name="jButtonAllesSpeichern">
               <Properties>
                 <Property name="text" type="java.lang.String" value="alles speichern"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JToggleButton" name="jToggleButtonFastAuto">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="-FASTAUTO"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="btnDiff">
@@ -389,7 +377,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButtonDelLive">
               <Properties>
-                <Property name="text" type="java.lang.String" value="l&#xf6;schen"/>
+                <Property name="text" type="java.lang.String" value="live l&#xf6;schen"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="jButtonOldList">

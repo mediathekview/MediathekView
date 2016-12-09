@@ -71,7 +71,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         LinkedList<String[]> tmp = new LinkedList<>();
         String[][] object;
         if (this.size() > 0) {
-            if (!bs.equals("")) {
+            if (!bs.isEmpty()) {
                 tmp.addAll(this.stream().filter(aThi -> aThi[PGR_BS_NR].contains(bs)).collect(Collectors.toList()));
                 object = new String[tmp.size()][PGR_MAX_ELEM];
                 for (int i = 0; i < tmp.size(); i++) {
@@ -101,7 +101,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                 }
             }
             if (vorlage != null) {
-                if (!vorlage[PGR_URL_NR].equals("")) {
+                if (!vorlage[PGR_URL_NR].isEmpty()) {
                     listePset = ListePsetVorlagen.importPsetFile(parent, vorlage[ListePsetVorlagen.PGR_URL_NR], true);
                     if (listePset != null) {
                         listePset.version = vorlage[PGR_VERSION_NR];
@@ -157,7 +157,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                         //wieder ein neuer Server, toll
                         String[] p = new String[PGR_MAX_ELEM];
                         get(parser, PGR, PGR_COLUMN_NAMES, p);
-                        if (!p[PGR_URL_NR].equals("")) {
+                        if (!p[PGR_URL_NR].isEmpty()) {
                             this.add(p);
                         }
                     }
