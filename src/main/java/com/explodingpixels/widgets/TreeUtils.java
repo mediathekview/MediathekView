@@ -1,14 +1,11 @@
 package com.explodingpixels.widgets;
 
-import java.awt.Rectangle;
-
-import javax.swing.Icon;
-import javax.swing.JTree;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.plaf.basic.BasicTreeUI;
 import javax.swing.tree.TreePath;
+import java.awt.*;
 
 public class TreeUtils {
 
@@ -119,19 +116,11 @@ public class TreeUtils {
     }
 
     public static void expandPathOnEdt(final JTree tree, final TreePath path) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                tree.expandPath(path);
-            }
-        });
+        SwingUtilities.invokeLater(() -> tree.expandPath(path));
     }
 
     public static void collapsePathOnEdt(final JTree tree, final TreePath path) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                tree.collapsePath(path);
-            }
-        });
+        SwingUtilities.invokeLater(() -> tree.collapsePath(path));
     }
 
     public static void installRootExpandingTreeModelListener(final JTree tree) {

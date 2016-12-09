@@ -11,3 +11,4 @@ dist/javadoc
 res/Icons/Sender
 /.idea/
 /.nb-gradle/
+/src/main/resources/version.properties

@@ -104,7 +104,7 @@ public class ProgrammUpdateSuchen {
             try {
                 StringBuilder text = new StringBuilder();
                 int angezeigt = 0;
-                if (MVConfig.get(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT).equals("")) {
+                if (MVConfig.get(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT).isEmpty()) {
                     MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(-1));
                 } else {
                     angezeigt = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT));
@@ -115,8 +115,8 @@ public class ProgrammUpdateSuchen {
                     if (showAll || angezeigt < index) {
                         text.append("=======================================\n");
                         text.append(h[1]);
-                        text.append("\n");
-                        text.append("\n");
+                        text.append('\n');
+                        text.append('\n');
                     }
                 }
                 if (text.length() > 0) {
@@ -198,7 +198,7 @@ public class ProgrammUpdateSuchen {
                                 }
                             }
                             String info = parser.getElementText();
-                            if (!nummer.equals("") && !info.equals("")) {
+                            if (!nummer.isEmpty() && !info.isEmpty()) {
                                 listInfos.add(new String[]{nummer, info});
                             }
                             break;

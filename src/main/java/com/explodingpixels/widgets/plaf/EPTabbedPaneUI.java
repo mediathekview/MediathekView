@@ -1,40 +1,15 @@
 package com.explodingpixels.widgets.plaf;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.LayoutManager;
-import java.awt.Paint;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ContainerAdapter;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ContainerListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseMotionListener;
-import java.beans.PropertyChangeEvent;
+import com.explodingpixels.painter.MacWidgetsPainter;
+import com.explodingpixels.widgets.TabCloseListener;
+
+import javax.swing.*;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
+import java.awt.*;
+import java.awt.event.*;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.JComponent;
-import javax.swing.Timer;
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
-
-import com.explodingpixels.painter.MacWidgetsPainter;
-import com.explodingpixels.widgets.TabCloseListener;
 
 public class EPTabbedPaneUI extends BasicTabbedPaneUI {
 
@@ -162,11 +137,7 @@ public class EPTabbedPaneUI extends BasicTabbedPaneUI {
     }
 
     private PropertyChangeListener createTabCloseListenerPropertyChangeListener() {
-        return new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                doExtractTabCloseProperty();
-            }
-        };
+        return evt -> doExtractTabCloseProperty();
     }
 
     private void doExtractTabCloseProperty() {
@@ -177,11 +148,7 @@ public class EPTabbedPaneUI extends BasicTabbedPaneUI {
     }
 
     private PropertyChangeListener createCloseButtonLocationPropertyChangeListener() {
-        return new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                doExtractCloseButtonLocationProperty();
-            }
-        };
+        return evt -> doExtractCloseButtonLocationProperty();
     }
 
     private void doExtractCloseButtonLocationProperty() {
@@ -246,17 +213,15 @@ public class EPTabbedPaneUI extends BasicTabbedPaneUI {
     }
 
     private MacWidgetsPainter<Component> createContentBorderTopEdgeBackgroundPainter() {
-        return new MacWidgetsPainter<Component>() {
-            public void paint(Graphics2D graphics, Component objectToPaint, int width, int height) {
-                Paint paint = new GradientPaint(0, 0, Color.WHITE, 0, height - 1, new Color(0xf8f8f8));
-                graphics.setPaint(paint);
-                graphics.fillRect(0, 0, width, height - 1);
-                graphics.setColor(EPTabPainter.SELECTED_BORDER_COLOR);
-                graphics.drawLine(0, 0, width, 0);
-                graphics.setColor(new Color(0x999999));
-                // TODO figure out why we need to subtract off another extra pixel here -- doesn't make sense.
-                graphics.drawLine(0, height - 2, width, height - 2);
-            }
+        return (graphics, objectToPaint, width, height) -> {
+            Paint paint = new GradientPaint(0, 0, Color.WHITE, 0, height - 1, new Color(0xf8f8f8));
+            graphics.setPaint(paint);
+            graphics.fillRect(0, 0, width, height - 1);
+            graphics.setColor(EPTabPainter.SELECTED_BORDER_COLOR);
+            graphics.drawLine(0, 0, width, 0);
+            graphics.setColor(new Color(0x999999));
+            // TODO figure out why we need to subtract off another extra pixel here -- doesn't make sense.
+            graphics.drawLine(0, height - 2, width, height - 2);
         };
     }
 
@@ -380,7 +345,7 @@ public class EPTabbedPaneUI extends BasicTabbedPaneUI {
 
     private class CustomLayoutManager extends TabbedPaneLayout {
 
-        private Map<Component, Integer> fTabsBeingAnimatedToWidths = new HashMap<Component, Integer>();
+        private Map<Component, Integer> fTabsBeingAnimatedToWidths = new HashMap<>();
 
         private void forceTabWidth(Component tabComponent, int width) {
             fTabsBeingAnimatedToWidths.put(tabComponent, width);

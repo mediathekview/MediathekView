@@ -1,6 +1,5 @@
 package com.explodingpixels.macwidgets;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,9 +10,9 @@ import java.util.List;
  */
 public final class SourceListModel {
 
-    private List<SourceListCategory> fCategories = new ArrayList<SourceListCategory>();
-    private List<SourceListModelListener> fListeners = new ArrayList<SourceListModelListener>();
-    private PropertyChangeListener fPropertyChangeListener = createSourceListItemListener();
+    private final List<SourceListCategory> fCategories = new ArrayList<>();
+    private final List<SourceListModelListener> fListeners = new ArrayList<>();
+    private final PropertyChangeListener fPropertyChangeListener = createSourceListItemListener();
 
     // SourceListCategory methods /////////////////////////////////////////////////////////////////
 
@@ -192,11 +191,9 @@ public final class SourceListModel {
     // Utility methods. ///////////////////////////////////////////////////////////////////////////
 
     private PropertyChangeListener createSourceListItemListener() {
-        return new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent event) {
-                SourceListItem item = (SourceListItem) event.getSource();
-                fireItemChanged(item);
-            }
+        return event -> {
+            SourceListItem item = (SourceListItem) event.getSource();
+            fireItemChanged(item);
         };
     }
 

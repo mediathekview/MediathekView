@@ -1,22 +1,13 @@
 package com.explodingpixels.macwidgets.plaf;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Image;
-
-import javax.swing.AbstractButton;
-import javax.swing.JComponent;
-import javax.swing.plaf.ComponentUI;
-
 import com.explodingpixels.painter.ImagePainter;
 import com.explodingpixels.painter.MacWidgetsPainter;
 import com.explodingpixels.widgets.ImageBasedJComponent;
-import com.explodingpixels.widgets.plaf.ButtonsSeparateScrollBarSkin;
-import com.explodingpixels.widgets.plaf.ButtonsTogetherScrollBarSkin;
-import com.explodingpixels.widgets.plaf.ScrollBarOrientation;
-import com.explodingpixels.widgets.plaf.ScrollBarSkin;
-import com.explodingpixels.widgets.plaf.ScrollThumbImagePainter;
-import com.explodingpixels.widgets.plaf.SkinnableScrollBarUI;
+import com.explodingpixels.widgets.plaf.*;
+
+import javax.swing.*;
+import javax.swing.plaf.ComponentUI;
+import java.awt.*;
 
 /**
  * Creates an iApp style scroll bar, either horizontal or vertical based on
@@ -46,24 +37,22 @@ public class IAppScrollBarUI extends SkinnableScrollBarUI {
     }
 
     private static ScrollBarSkinProvider createScrollBarSkinProvider() {
-        return new ScrollBarSkinProvider() {
-            public ScrollBarSkin provideSkin(ScrollBarOrientation orientation) {
-                ScrollBarSkin skin;
-                if (fButtonsSeparate) {
-                    if (orientation == ScrollBarOrientation.HORIZONTAL) {
-                        skin = createHorizontalSeparateSkin();
-                    } else {
-                        skin = createVerticalSeparateSkin();
-                    }
+        return orientation -> {
+            ScrollBarSkin skin;
+            if (fButtonsSeparate) {
+                if (orientation == ScrollBarOrientation.HORIZONTAL) {
+                    skin = createHorizontalSeparateSkin();
                 } else {
-                    if (orientation == ScrollBarOrientation.HORIZONTAL) {
-                        skin = createHorizontalTogetherSkin();
-                    } else {
-                        skin = createVerticalTogetherSkin();
-                    }
+                    skin = createVerticalSeparateSkin();
                 }
-                return skin;
+            } else {
+                if (orientation == ScrollBarOrientation.HORIZONTAL) {
+                    skin = createHorizontalTogetherSkin();
+                } else {
+                    skin = createVerticalTogetherSkin();
+                }
             }
+            return skin;
         };
     }
 

@@ -29,8 +29,6 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 @SuppressWarnings("serial")
 public class PanelEinstellungenGeo extends PanelVorlage {
@@ -58,62 +56,33 @@ public class PanelEinstellungenGeo extends PanelVorlage {
             default:
                 jRadioButtonDe.setSelected(true);
         }
-        jRadioButtonDe.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);
-                melden();
-            }
+        jRadioButtonDe.addActionListener(e -> {
+            MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);
+            melden();
         });
-        jRadioButtonCH.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_CH);
-                melden();
-            }
+        jRadioButtonCH.addActionListener(e -> {
+            MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_CH);
+            melden();
         });
-        jRadioButtonAt.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_AT);
-                melden();
-            }
+        jRadioButtonAt.addActionListener(e -> {
+            MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_AT);
+            melden();
         });
-        jRadioButtonEu.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_EU);
-                melden();
-            }
+        jRadioButtonEu.addActionListener(e -> {
+            MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_EU);
+            melden();
         });
-        jRadioButtonSonst.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_WELT);
-                melden();
-            }
+        jRadioButtonSonst.addActionListener(e -> {
+            MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_WELT);
+            melden();
         });
         jCheckBoxMarkieren.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_GEO_MELDEN)));
-        jCheckBoxMarkieren.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_GEO_MELDEN, String.valueOf(jCheckBoxMarkieren.isSelected()));
-                melden();
-            }
+        jCheckBoxMarkieren.addActionListener(e -> {
+            MVConfig.add(MVConfig.Configs.SYSTEM_GEO_MELDEN, String.valueOf(jCheckBoxMarkieren.isSelected()));
+            melden();
         });
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfe.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_GEO)).setVisible(true);
-            }
-        });
+        jButtonHilfe.addActionListener(e -> new DialogHilfe(parentComponent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_GEO)).setVisible(true));
     }
 
     private void melden() {
