@@ -165,21 +165,35 @@ distributions {
     }
 }
 
-task run(type: JavaExec, dependsOn: classes) {
-    main = mainClass
-    classpath = sourceSets.main.runtimeClasspath
-}
-
 /**
-* HOWTO debug:
-*  1. run "gradle debug"
-*  2. Call your IDE to connect to a remote java application on port 5005.
-*/
-task debug(type: JavaExec, dependsOn: classes) {
-    main = mainClass
-    classpath = sourceSets.main.runtimeClasspath
-    debug true
-}
+ * This is how you pass arguments: "./gradlew run -Pargs=arg1,arg2,arg3
+ */
+    task run(type: JavaExec, dependsOn: classes) {
+        main = mainClass
+        classpath = sourceSets.main.runtimeClasspath
+        
+        if (project.hasProperty('args')) {
+            args(project.args.split(','))
+        }
+
+    }
+
+    /**
+     * HOWTO debug:
+     *  1. run "gradle debug"
+     *  2. Call your IDE to connect to a remote java application on port 5005.
+     *
+     * This is how you pass arguments: "./gradlew debug -Pargs=arg1,arg2,arg3
+     */
+    task debug(type: JavaExec, dependsOn: classes) {
+        main = mainClass
+        classpath = sourceSets.main.runtimeClasspath
+        debug true
+        
+        if (project.hasProperty('args')) {
+            args(project.args.split(','))
+        }
+    }
     
 //Windows executable generation
 launch4j {
