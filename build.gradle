@@ -166,17 +166,14 @@ distributions {
 }
 
 /**
- * This is how you pass arguments: "./gradlew run -Dexec.args="arg1 arg2 arg3""
+ * This is how you pass arguments: "./gradlew run -Pargs=arg1,arg2,arg3
  */
     task run(type: JavaExec, dependsOn: classes) {
         main = mainClass
         classpath = sourceSets.main.runtimeClasspath
         
-        /* Can pass all the properties: */
-        systemProperties System.getProperties()
-        if (systemProperties.hasProperty('exec.args')) {
-            /* Need to split the space-delimited value in the exec.args */
-            args System.getProperty("exec.args").split()
+        if (project.hasProperty('args')) {
+            args(project.args.split(','))
         }
 
     }
@@ -186,18 +183,15 @@ distributions {
      *  1. run "gradle debug"
      *  2. Call your IDE to connect to a remote java application on port 5005.
      *
-     * This is how you pass arguments: "./gradlew debug -Dexec.args="arg1 arg2 arg3""
+     * This is how you pass arguments: "./gradlew debug -Pargs=arg1,arg2,arg3
      */
     task debug(type: JavaExec, dependsOn: classes) {
         main = mainClass
         classpath = sourceSets.main.runtimeClasspath
         debug true
         
-        /* Can pass all the properties: */
-        systemProperties System.getProperties()
-        if (systemProperties.hasProperty('exec.args')) {
-            /* Need to split the space-delimited value in the exec.args */
-            args System.getProperty("exec.args").split()
+        if (project.hasProperty('args')) {
+            args(project.args.split(','))
         }
     }
     
