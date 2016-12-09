@@ -37,7 +37,7 @@ ext {
     swingxVersion = '1.6.6-SNAPSHOT'
     swingxGroup = ''
     propsFile = file('src/main/resources/version.properties').absoluteFile
-    if(!propsFile.exists()) {
+    if (!propsFile.exists()) {
         Files.createFile(propsFile.toPath())
     }
 }
@@ -50,15 +50,14 @@ def loadVersionProperties() {
 
 task updateVersion << {
     Properties props = loadVersionProperties()
-    
+
     def oldVersion = props.getProperty('VERSION')
-    if(!oldVersion.equals(project.version)) 
-    {
-	    logger.lifecycle "==msearch======================"
-	    logger.lifecycle "Version: $project.version"
-	    logger.lifecycle "==msearch======================"
-	    props.setProperty('VERSION', project.version)	
-	    props.store(propsFile.newWriter(), null)
+    if (!oldVersion.equals(project.version)) {
+        logger.lifecycle "==msearch======================"
+        logger.lifecycle "Version: $project.version"
+        logger.lifecycle "==msearch======================"
+        props.setProperty('VERSION', project.version)
+        props.store(propsFile.newWriter(), null)
     }
 }
 
@@ -127,9 +126,9 @@ dependencies {
 jar {
     manifest {
         attributes(
-            'SplashScreen-Image': 'mediathek/res/splash.png',
-            'Main-Class': mainClass,
-            'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
+                'SplashScreen-Image': 'mediathek/res/splash.png',
+                'Main-Class': mainClass,
+                'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
         )
     }
     archiveName = jarName
@@ -159,7 +158,6 @@ distributions {
             from('build/launch4j') {
                 include '*.exe'
                 exclude 'lib'
-                //exclude 'MediathekView.exe'
             }
         }
     }
@@ -168,66 +166,66 @@ distributions {
 /**
  * This is how you pass arguments: "./gradlew run -Pargs=arg1,arg2,arg3
  */
-    task run(type: JavaExec, dependsOn: classes) {
-        main = mainClass
-        classpath = sourceSets.main.runtimeClasspath
-        
-        if (project.hasProperty('args')) {
-            args(project.args.split(','))
-        }
+task run(type: JavaExec, dependsOn: classes) {
+    main = mainClass
+    classpath = sourceSets.main.runtimeClasspath
 
+    if (project.hasProperty('args')) {
+        args(project.args.split(','))
     }
 
-    /**
-     * HOWTO debug:
-     *  1. run "gradle debug"
-     *  2. Call your IDE to connect to a remote java application on port 5005.
-     *
-     * This is how you pass arguments: "./gradlew debug -Pargs=arg1,arg2,arg3
-     */
-    task debug(type: JavaExec, dependsOn: classes) {
-        main = mainClass
-        classpath = sourceSets.main.runtimeClasspath
-        debug true
-        
-        if (project.hasProperty('args')) {
-            args(project.args.split(','))
-        }
+}
+
+/**
+ * HOWTO debug:
+ *  1. run "gradle debug"
+ *  2. Call your IDE to connect to a remote java application on port 5005.
+ *
+ * This is how you pass arguments: "./gradlew debug -Pargs=arg1,arg2,arg3
+ */
+task debug(type: JavaExec, dependsOn: classes) {
+    main = mainClass
+    classpath = sourceSets.main.runtimeClasspath
+    debug true
+
+    if (project.hasProperty('args')) {
+        args(project.args.split(','))
     }
-    
+}
+
 //Windows executable generation
 launch4j {
     mainClassName = mainClass
     icon = "../../res/Info/MediathekView.ico"
     jar = jarName
     dontWrapJar = true
-   	outfile="MediathekView_ohne_feste_Speicherzuweisung.exe"
+    outfile = "MediathekView_ohne_feste_Speicherzuweisung.exe"
 }
 
 task creatMitSpeicherExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
-   outfile="MediathekView.exe"
+    outfile = "MediathekView.exe"
 
-   initialHeapSize=256
-   maxHeapSize=2048
-   maxHeapPercent=80
-}  
+    initialHeapSize = 256
+    maxHeapSize = 2048
+    maxHeapPercent = 80
+}
 
 task createIpv4Exe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
-    outfile="MediathekView_ipv4.exe"
-    opt="-Djava.net.preferIPv4Stack=true"
+    outfile = "MediathekView_ipv4.exe"
+    opt = "-Djava.net.preferIPv4Stack=true"
 
-    initialHeapSize=256
-    maxHeapSize=2048
-    maxHeapPercent=80
+    initialHeapSize = 256
+    maxHeapSize = 2048
+    maxHeapPercent = 80
 }
 
 task createPortableExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
-   	outfile="MediathekView_Portable.exe"
-   	cmdLine="Einstellungen/.mediathek3"
-	
-    initialHeapSize=256
-    maxHeapSize=2048
-    maxHeapPercent=80
+    outfile = "MediathekView_Portable.exe"
+    cmdLine = "Einstellungen/.mediathek3"
+
+    initialHeapSize = 256
+    maxHeapSize = 2048
+    maxHeapPercent = 80
 }
 
 assemble.dependsOn createAllExecutables
