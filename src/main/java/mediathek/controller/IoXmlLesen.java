@@ -19,13 +19,6 @@
  */
 package mediathek.controller;
 
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamReader;
 import mSearch.Const;
 import mSearch.filmlisten.DatenFilmlisteUrl;
 import mSearch.tool.Duration;
@@ -35,6 +28,14 @@ import mSearch.tool.ReplaceList;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.*;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class IoXmlLesen {
 
@@ -211,10 +212,6 @@ public class IoXmlLesen {
     // private
     // ##############################
     private static boolean get(XMLStreamReader parser, String xmlElem, String[] xmlNames, String[] strRet) {
-        return get(parser, xmlElem, xmlNames, strRet, true);
-    }
-
-    private static boolean get(XMLStreamReader parser, String xmlElem, String[] xmlNames, String[] strRet, boolean log) {
         boolean ret = true;
         int maxElem = strRet.length;
         for (int i = 0; i < maxElem; ++i) {
@@ -242,9 +239,7 @@ public class IoXmlLesen {
             }
         } catch (Exception ex) {
             ret = false;
-            if (log) {
-                Log.errorLog(739530149, ex);
-            }
+            Log.errorLog(739530149, ex);
         }
         return ret;
     }

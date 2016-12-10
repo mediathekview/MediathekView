@@ -253,7 +253,7 @@ public class PanelImport extends PanelVorlage {
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 chooser.setFileHidingEnabled(false);
-                if (jTextFieldDatei.getText().equals("")) {
+                if (jTextFieldDatei.getText().isEmpty()) {
                     chooser.setCurrentDirectory(Daten.getMediathekXmlFilePath().toFile());
                 } else {
                     chooser.setCurrentDirectory(new File(jTextFieldDatei.getText()));
