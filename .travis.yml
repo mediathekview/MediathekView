@@ -28,8 +28,8 @@ deploy:
   file_glob: true
   file:
       - "build/libs/MediathekView.*.jar*"
-      - "build/MediathekView.*.zip*"
-      - "build/MediathekView.*.tar*"
+      - "build/distributions/MediathekView.*.zip*"
+      - "build/distributions/MediathekView.*.tar*"
   skip_cleanup: true
   on:
     tags: true
