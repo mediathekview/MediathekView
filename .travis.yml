@@ -14,8 +14,8 @@ addons:
   branches:
     - master
     - develop
-    - feature/*
-    - hotfix/*
+    - feature/.*
+    - hotfix/.*
 script:
 - "./gradlew assemble"
 - "./gradlew check"
