@@ -126,9 +126,9 @@ dependencies {
 jar {
     manifest {
         attributes(
-                'SplashScreen-Image': 'mediathek/res/splash.png',
-                'Main-Class': mainClass,
-                'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
+            'SplashScreen-Image': 'mediathek/res/splash.png',
+            'Main-Class': mainClass,
+            'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
         )
     }
     archiveName = jarName
