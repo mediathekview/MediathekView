@@ -29,7 +29,7 @@ addons:
 # Build
 script:
 - "./gradlew build"
-- sonar-scanner
+- sonar-scanner -Dsonar.login=$SONAR_TOKEN
 
 #Cache
 before_cache:
