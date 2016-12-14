@@ -5,15 +5,26 @@ install:
 - cd ..
 - git clone https://github.com/mediathekview/MSearch.git MSearch
 - cd -
+
+#Sonar
 addons:
-  sonarqube: true
-env:
-  global:
-  - secure: jghiJcW8NWhRSYUL2cnK+sMSgVkH7cAxG0VzKhSmyNKD6nRiDwR3gouiZX2ouRA9n71Pqqk/555zjUpdx/jF5CMhJNxhrlFVd5yh2M8hOqoqYhrF3OnJlfQv74bynGsn9VuCwbTlq3ZUXugs8S+Pjy3+6auyVl9eqNmFpcyarliccx0VkAeocqnMRse7mYNuQhJ73x7Swcgn9C5M8WQ1UoZYMEJkcBsancfxqFBzKdj8esIsd1/gK1jRrH2dZ2XE7WaC8EGz1x4Y3zy4lHaSgfWVGxKkPzOIJ1w2ojrf4FWB+DgeSf+JO3gSKPVYQRpl5TCqUUVahK6MdNB92nylZ6jN1tRAJ+vaifZjq296ADqJv00angBdsMPejNYjrUvMrWXMhgcmMXCrc/MIfZaOsdjHPO3SEknYsF4s6v+uWWgd+FM/U02eKfA+JgNdk6chWzqAUnNeBqg86vEmNiebwoUp6PHl2k114ZdHbhQS5+co/4oFLDdYLNYRtCYSi060jeu/ght9OtMW8Y1RL+nu0I7QuQQIxU16o4U/r+tF9CeYH4yAyBT1QbK8Bpc5ghyyvIO3rC13CbpKjBrb8Pt2Fg3JlodM3zUiLfdsdxIW4R1O6a+ECPjEe/Y525dzopY3wOA4+SLU8+6vXucShOBeRZH5pSLObuvO/8We19k0zpc=
+  sonarqube:
+    token:
+      secure: woV09cAHTwbI9/oyQs1WtA3oU9dhftuFrJ4pNGOec0sszwkQLzU+G5JGmnoOSt26ZB9tE8Cd5RuWFXlq6QA89ml1uuvxmSk0rX7srNbLaDUQu1Oe0467emeAeZLu87Z2DP6ylu32Gz6daOpG4St4z8MbJbT7cXBQ8PnNUv7T120NM9NPzBqGORqPYKrVsIwtAtrVFm5l5uUCCdS7E53jhv2GgmKGwSE4EWggCZF6c8AMfJV5bRNRG5sfClekrWkNSjqxoihNTlh8VBtkPOCiCB4+OtubeYuLXLi5WcoU6XYRzHu9BiunC5lJhKtAjjSYnkEswpOiYRZFBNEnUPR72gWujZELVl2jv8q8flQp9xBAH7eTIXvaR56WI/Bj9UvjUJiPDgJRl1TfBDlinEIOWbThI6GE2fuQoZqBihMCf0VNHg261UMf6bb7KFJwjtodM9yu12rekTmvI02vpSFE8877m+xXeDcGJCuBnrgXp95BPUsg72vCoe6x9obOLNe+VxEpan2KDqCcozM4X5LtRKBdnzTmHJuVB7LWb8+UpuhI+sf58DZOBPGYF79o5SK9dG0mo3qgl9dMFPaduxh25/DEZP/QgA+1s8b6n/1P5enY7zt/r14qSEIifTXuw4Jk1AkcyfUMso9Y87X7Bv5U7xoeVn9H6ZiP4QRLlDQS6jo=
+    github_token:
+      secure: moMQ5jINxm27QvSKiH8R5C8w1qj4GHF/tsO33GFAqYiOyoQbEVtGqGq5z9a7/O4ShfYItAIgMO1qLqmu4l+nnvkat/v3VGiuj3E4RXWxbfx9C7uY20eZbxWyUW7XX4PsUAl+WNfHipHulk5j+YbCGQpktJ+ieVm/iD3J4acIuio3Ty6QrCltwpHVMjdTWlj4vLitK08O0ZtmUzwNU3O89qLsCNR9TCsX7vgeDP5DUtY3BivFDgHo+1+6Ci7fcEayeArLNSrWFlvJcxMf3qq8JxABRrTzDuSG4y7hC7Kf8VBeQnpRBvIF6YpHTN6nv1uZ3y6Oj+w/gTBEHGMOjWMFK8EJjA+eT02Wsmhfxk3blAyPrDtqG2uLXi6DWJob5cj/25SdFvRXtkwWg7RFP+FZ7O5I+TxtWV51Ss7PoUJs+cKBS04c1trpzX68ltLgz3X9cj3Sg4gvovaKX10kVLQhQdIsstXed1A6fy8MtrgAecHhN6saALSbawYR9PqAngrPSIexa8tITVz/cM/7IimZnm7zAFVRkTozgKzmnc3FMvgfiwkqjfgztty2x5keslNEyrwlNKOrQKnJveQmjGKgYpV+OwHAWxIbdBLNDcnzu/IqoVlPQ2u6aosFw5cG5+Q63ng26P4vcU67+ObBbw+hgRG621AG0a6RqBzzWwDt9ew=
+    branches:
+      - master
+      - develop
+      - feature/.*
+      - hotfix/.*
+
+# Build
 script:
-- "./gradlew assemble"
-- "./gradlew check"
-- sonar-scanner -Dsonar.login=$SONAR_TOKEN
+- "./gradlew build"
+- sonar-scanner
+
+#Cache
 before_cache:
 - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 cache:
@@ -21,6 +32,8 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.sonar/cache/"
+  
+#Deploy
 deploy:
   provider: releases
   api_key:
