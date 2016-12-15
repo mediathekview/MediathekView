@@ -138,7 +138,7 @@ public class MVUsedUrls {
         if (gefunden) {
             try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getUrlFilePath())))) {
                 for (String entry : liste) {
-                    bufferedWriter.write(entry + "\n");
+                    bufferedWriter.write(entry + '\n');
                 }
             } catch (Exception ex) {
                 Log.errorLog(566277080, ex);
@@ -189,7 +189,7 @@ public class MVUsedUrls {
         if (gefunden) {
             try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getUrlFilePath())))) {
                 for (String entry : newListe) {
-                    bufferedWriter.write(entry + "\n");
+                    bufferedWriter.write(entry + '\n');
                 }
             } catch (Exception ex) {
                 Log.errorLog(784512067, ex);

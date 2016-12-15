@@ -19,13 +19,6 @@
  */
 package mediathek.gui;
 
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JWindow;
-import javax.swing.SwingConstants;
 import mSearch.tool.Listener;
 import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
@@ -34,6 +27,11 @@ import mediathek.config.MVConfig;
 import net.sf.jcarrierpigeon.Notification;
 import net.sf.jcarrierpigeon.NotificationQueue;
 import net.sf.jcarrierpigeon.WindowPosition;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public final class MVTray {
 
@@ -186,7 +184,7 @@ public final class MVTray {
             }
 
             if (starts[4] > 0) {
-                text += " (" + daten.getDownloadInfos().bandwidthStr + ")";
+                text += " (" + daten.getDownloadInfos().bandwidthStr + ')';
             }
 
             if (starts[3] == 1) {

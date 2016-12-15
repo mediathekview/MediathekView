@@ -19,14 +19,6 @@
  */
 package mediathek.filmlisten;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.stream.Collectors;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import javax.swing.event.EventListenerList;
 import mSearch.Config;
 import mSearch.Const;
 import mSearch.daten.DatenFilm;
@@ -45,6 +37,14 @@ import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
+
+import javax.swing.*;
+import javax.swing.event.EventListenerList;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 public class FilmeLaden {
 
@@ -158,7 +158,7 @@ public class FilmeLaden {
                 daten.getListeFilme().clear(); // sonst wird eine "zu kurze" Liste wieder nur mit einer Diff-Liste aufgefüllt, wenn das Alter noch passt
             }
             daten.getListeFilmeNachBlackList().clear();
-            if (dateiUrl.equals("")) {
+            if (dateiUrl.isEmpty()) {
                 // Filme als Liste importieren, Url automatisch ermitteln
                 SysMsg.sysMsg("Filmliste laden (auto)");
                 importFilmliste.filmeImportierenAuto(daten.getListeFilme(), diffListe, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));

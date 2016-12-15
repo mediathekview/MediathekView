@@ -43,22 +43,22 @@ public class DialogNewSet extends JDialog {
             setLocationRelativeTo(parent);
         }
         setTitle("Das Standardset wurde aktualisiert");
-        jTextArea3.setText("\n"
+        jTextArea3.setText('\n'
                 + "   Es gibt ein neues Standardset der Videoplayer\n"
                 + "   für den Download und das Abspielen der Filme.\n");
         jCheckBoxMorgen.setSelected(true);
         jCheckBoxMorgen.addActionListener(e -> morgen = jCheckBoxMorgen.isSelected());
 
-        jTextArea1.setText("\n"
+        jTextArea1.setText('\n'
                 + "   Die bestehenden Einstellungen werden nicht verändert.\n"
                 + "   Das neue Set wird nur angefügt und muss dann erst noch in den\n"
                 + "   \"Datei->Einstellungen->Set bearbeiten\"\n"
                 + "   aktiviert werden.\n");
 
-        jTextArea2.setText("\n"
+        jTextArea2.setText('\n'
                 + "   Es werden alle Programmsets (auch eigene) \n"
                 + "   gelöscht und die neuen Standardsets wieder angelegt.\n"
-                + "\n"
+                + '\n'
                 + "   (Wenn Sie die Einstellungen nicht verändert haben\n"
                 + "    ist das die Empfehlung)");
         try {

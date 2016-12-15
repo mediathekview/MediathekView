@@ -62,7 +62,7 @@ public class MVFilmInformationLWin extends JDialog implements IFilmInformation {
         setTitle("Filminformation");
 
         for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {
-            labelArrNames[i] = new JLabel(DatenFilm.COLUMN_NAMES[i] + ":");
+            labelArrNames[i] = new JLabel(DatenFilm.COLUMN_NAMES[i] + ':');
             labelArrNames[i].setHorizontalAlignment(SwingConstants.RIGHT);
             labelArrNames[i].setDoubleBuffered(true);
             txtArrCont[i] = new JTextField("");
@@ -270,7 +270,7 @@ public class MVFilmInformationLWin extends JDialog implements IFilmInformation {
             for (int i = 0; i < txtArrCont.length; ++i) {
                 txtArrCont[i].setText(aktFilm.arr[i]);
             }
-            if (aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG].equals("")) {
+            if (aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG].isEmpty()) {
                 // sonst müsste die Größe gesetzt werden
                 textAreaBeschreibung.setText(" ");
             } else {

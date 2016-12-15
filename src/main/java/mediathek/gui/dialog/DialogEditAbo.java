@@ -233,7 +233,7 @@ public class DialogEditAbo extends JDialog {
             case DatenAbo.ABO_MINDESTDAUER:
                 sliderDauer.setValue(aktAbo.mindestdauerMinuten);
                 labelDauer.setText(String.valueOf(aktAbo.mindestdauerMinuten == 0 ? " alles " : aktAbo.mindestdauerMinuten));
-                sliderDauer.addChangeListener(e -> labelDauer.setText("  " + (sliderDauer.getValue() == 0 ? "alles" : sliderDauer.getValue()) + " "));
+                sliderDauer.addChangeListener(e -> labelDauer.setText("  " + (sliderDauer.getValue() == 0 ? "alles" : sliderDauer.getValue()) + ' '));
                 JPanel p = new JPanel(new BorderLayout());
                 p.add(sliderDauer, BorderLayout.CENTER);
                 p.add(labelDauer, BorderLayout.EAST);

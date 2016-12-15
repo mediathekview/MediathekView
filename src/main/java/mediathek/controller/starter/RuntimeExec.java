@@ -19,17 +19,17 @@
  */
 package mediathek.controller.starter;
 
-import mediathek.controller.starter.Start;
+import mSearch.tool.Listener;
+import mSearch.tool.Log;
+import mSearch.tool.SysMsg;
+import mediathek.tool.MVFilmSize;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
-import mediathek.tool.MVFilmSize;
-import mSearch.tool.SysMsg;
 
 public class RuntimeExec {
 
@@ -135,7 +135,7 @@ public class RuntimeExec {
                         in = process.getErrorStream();
                         //TH
                         synchronized (this) {
-                            titel = "ERRORSTREAM [" + (++procnr) + "]";
+                            titel = "ERRORSTREAM [" + (++procnr) + ']';
                         }
                         break;
                 }

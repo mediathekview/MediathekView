@@ -134,7 +134,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         for (int i = 0; i < suffix.length; ++i) {
             suffix[i] = suffix[i].toLowerCase();
             if (!suffix[i].isEmpty() && !suffix[i].startsWith(".")) {
-                suffix[i] = "." + suffix[i];
+                suffix[i] = '.' + suffix[i];
             }
         }
         ohneSuffix = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_SUFFIX_OHNE));
@@ -241,7 +241,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                     File f = new File(pfad);
                     if (!f.canRead()) {
                         if (!error.isEmpty()) {
-                            error = error + "\n";
+                            error = error + '\n';
                         }
                         error = error + f.getPath();
                     }
@@ -259,7 +259,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                         File f = new File(mp.arr[DatenMediaPath.MEDIA_PATH_PATH]);
                         if (!f.canRead()) {
                             if (!error.isEmpty()) {
-                                error = error + "\n";
+                                error = error + '\n';
                                 more = true;
                             }
                             error = error + f.getPath();

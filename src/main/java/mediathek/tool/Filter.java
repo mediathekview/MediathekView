@@ -19,12 +19,13 @@
  */
 package mediathek.tool;
 
-import java.awt.Color;
-import java.util.regex.Pattern;
-import javax.swing.JTextField;
 import mSearch.daten.DatenFilm;
 import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.regex.Pattern;
 
 public class Filter {
 
@@ -43,8 +44,8 @@ public class Filter {
         String titelPruefen = aboPruefen.arr[DatenAbo.ABO_TITEL];
         String irgendwoPruefen = aboPruefen.arr[DatenAbo.ABO_IRGENDWO];
 
-        if (senderExistiert.equals("") || senderPruefen.equalsIgnoreCase(senderExistiert)) {
-            if (themaExistiert.equals("") || themaPruefen.equalsIgnoreCase(themaExistiert)) {
+        if (senderExistiert.isEmpty() || senderPruefen.equalsIgnoreCase(senderExistiert)) {
+            if (themaExistiert.isEmpty() || themaPruefen.equalsIgnoreCase(themaExistiert)) {
 
                 if (titelExistiert.length == 0 || pruefen(titelExistiert, titelPruefen)) {
 
@@ -73,8 +74,8 @@ public class Filter {
         // themaSuchen exakt mit thema
         // titelSuchen muss im Titel nur enthalten sein
 
-        if (senderSuchen.equals("") || film.arr[DatenFilm.FILM_SENDER].equalsIgnoreCase(senderSuchen)) {
-            if (themaSuchen.equals("") || film.arr[DatenFilm.FILM_THEMA].equalsIgnoreCase(themaSuchen)) {
+        if (senderSuchen.isEmpty() || film.arr[DatenFilm.FILM_SENDER].equalsIgnoreCase(senderSuchen)) {
+            if (themaSuchen.isEmpty() || film.arr[DatenFilm.FILM_THEMA].equalsIgnoreCase(themaSuchen)) {
 
                 if (titelSuchen.length == 0 || pruefen(titelSuchen, film.arr[DatenFilm.FILM_TITEL])) {
 

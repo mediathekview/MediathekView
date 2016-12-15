@@ -19,16 +19,18 @@
  */
 package mediathek.tool;
 
-import java.io.File;
-import java.security.CodeSource;
 import mSearch.Const;
 import mSearch.tool.Functions;
 import mSearch.tool.Log;
-import static mSearch.tool.Log.LILNE;
 import mSearch.tool.SysMsg;
 import mediathek.Main;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+
+import java.io.File;
+import java.security.CodeSource;
+
+import static mSearch.tool.Log.LILNE;
 
 public class MVFunctionSys {
 
@@ -76,11 +78,11 @@ public class MVFunctionSys {
     }
 
     public static String getProgVersionString() {
-        return Konstanten.PROGRAMMNAME + " " + Const.VERSION + "  [Buildnummer: " + Functions.getBuildNr() + "]";
+        return Konstanten.PROGRAMMNAME + ' ' + Const.VERSION + "  [Buildnummer: " + Functions.getBuildNr() + ']';
     }
 
     public static String getProgName() {
-        return Konstanten.PROGRAMMNAME + " " + Const.VERSION;
+        return Konstanten.PROGRAMMNAME + ' ' + Const.VERSION;
     }
 
 //    public static String[] getJavaVersion() {

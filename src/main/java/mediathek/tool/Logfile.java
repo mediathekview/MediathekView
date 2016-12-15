@@ -19,6 +19,9 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.Log;
+import mSearch.tool.SysMsg;
+
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
@@ -27,9 +30,8 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
 import static mSearch.tool.Functions.*;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
 
 public class Logfile {
 
@@ -127,7 +129,7 @@ public class Logfile {
             bw.newLine();
             for (String[] s : configs) {
                 if (!s[1].isEmpty()) {
-                    bw.write(s[0] + "\t" + s[1]);
+                    bw.write(s[0] + '\t' + s[1]);
                     bw.newLine();
                 }
             }
