@@ -46,7 +46,7 @@ import java.util.List;
 public final class MVTable extends JTable {
     public enum TableType {
         STANDARD, FILME, DOWNLOADS, ABOS, PSET, PROG, MEDIA_DB
-    };
+    }
     //public static final String TABELLEN = "Tabellen";
     public static final String FELDTRENNER = "|";
     public static final String SORT_ASCENDING = "ASCENDING";
@@ -266,7 +266,7 @@ public final class MVTable extends JTable {
             }
             String b = "", r = "", s = "", upDown = "";
             boolean ok = false;
-            if (!MVConfig.get(nrDatenSystem).equals("")) {
+            if (!MVConfig.get(nrDatenSystem).isEmpty()) {
                 ok = true;
                 int f1, f2, f3;
                 //String d = Daten.system[nrDatenSystem];
@@ -783,8 +783,8 @@ public final class MVTable extends JTable {
         b = Integer.toString(breite_[0]);
         r = Integer.toString(reihe_[0]);
         for (int i = 1; i < breite.length; i++) {
-            b = b + "," + Integer.toString(breite_[i]);
-            r = r + "," + Integer.toString(reihe_[i]);
+            b = b + ',' + Integer.toString(breite_[i]);
+            r = r + ',' + Integer.toString(reihe_[i]);
         }
         listeSortKeys = this.getRowSorter().getSortKeys();
         if (listeSortKeys != null) {
@@ -818,10 +818,10 @@ public final class MVTable extends JTable {
             return false;
         } else {
             for (int i = 0; i < maxSpalten; i++) {
-                if (!s.equals("")) {
+                if (!s.isEmpty()) {
                     if (s.contains(",")) {
                         sub = s.substring(0, s.indexOf(','));
-                        s = s.replaceFirst(sub + ",", "");
+                        s = s.replaceFirst(sub + ',', "");
                     } else {
                         sub = s;
                         s = "";

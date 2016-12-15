@@ -96,9 +96,9 @@ public class DialogStarteinstellungen extends JDialog {
                         .addComponent(jCheckBox)
                         .addContainerGap())
         );
-        if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC).equals("")
-                || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER).equals("")
-                || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG).equals("")) {
+        if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC).isEmpty()
+                || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER).isEmpty()
+                || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG).isEmpty()) {
             //dann fehlt eine Programm
             jButtonStandard.setEnabled(false);
             anpassen = true;
@@ -125,9 +125,9 @@ public class DialogStarteinstellungen extends JDialog {
 
     private void statusStart() {
         jButtonStandard.setText("Weiter");
-        if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC).equals("")
-                || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER).equals("")
-                || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG).equals("")) {
+        if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC).isEmpty()
+                || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER).isEmpty()
+                || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG).isEmpty()) {
             // ein Programm (VLC, flvstreamer) wurde nicht gefunden, muss der Benutzer eintragen
             status = STAT_PFAD;
         } else if (anpassen) {

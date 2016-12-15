@@ -78,8 +78,8 @@ public class GuiFunktionen extends MVFunctionSys {
     public static void getSize(Configs nr, JFrame jFrame) {
         if (jFrame != null) {
             MVConfig.add(nr, jFrame.getSize().width + ":"
-                    + jFrame.getSize().height + ":"
-                    + jFrame.getLocation().x + ":"
+                    + jFrame.getSize().height + ':'
+                    + jFrame.getLocation().x + ':'
                     + jFrame.getLocation().y);
         }
     }
@@ -87,8 +87,8 @@ public class GuiFunktionen extends MVFunctionSys {
     public static void getSize(Configs nr, JDialog jDialog) {
         if (jDialog != null) {
             MVConfig.add(nr, jDialog.getSize().width + ":"
-                    + jDialog.getSize().height + ":"
-                    + jDialog.getLocation().x + ":"
+                    + jDialog.getSize().height + ':'
+                    + jDialog.getLocation().x + ':'
                     + jDialog.getLocation().y);
         }
     }
@@ -158,7 +158,7 @@ public class GuiFunktionen extends MVFunctionSys {
 
     public static String addsPfad(String pfad1, String pfad2) {
         String ret = concatPaths(pfad1, pfad2);
-        if (ret.equals("")) {
+        if (ret.isEmpty()) {
             Log.errorLog(283946015, pfad1 + " - " + pfad2);
         }
         return ret;
@@ -227,7 +227,7 @@ public class GuiFunktionen extends MVFunctionSys {
         //Dateinamen einer URL extrahieren
         String ret = "";
         if (pfad != null) {
-            if (!pfad.equals("")) {
+            if (!pfad.isEmpty()) {
                 ret = pfad.substring(pfad.lastIndexOf('/') + 1);
             }
         }
@@ -237,7 +237,7 @@ public class GuiFunktionen extends MVFunctionSys {
         if (ret.contains("&")) {
             ret = ret.substring(0, ret.indexOf('&'));
         }
-        if (ret.equals("")) {
+        if (ret.isEmpty()) {
             Log.errorLog(395019631, pfad);
         }
         return ret;
@@ -249,7 +249,7 @@ public class GuiFunktionen extends MVFunctionSys {
         h = Math.abs(h);
         String hh = h + "";
         while (hh.length() < 10) {
-            hh = "0" + hh;
+            hh = '0' + hh;
         }
         return hh;
     }
@@ -259,11 +259,11 @@ public class GuiFunktionen extends MVFunctionSys {
         // "http://ios-ondemand.swr.de/i/swr-fernsehen/bw-extra/20130202/601676.,m,s,l,.mp4.csmil/index_2_av.m3u8?e=b471643725c47acd"
         String ret = "";
         if (pfad != null) {
-            if (!pfad.equals("") && pfad.contains(".")) {
+            if (!pfad.isEmpty() && pfad.contains(".")) {
                 ret = pfad.substring(pfad.lastIndexOf('.') + 1);
             }
         }
-        if (ret.equals("")) {
+        if (ret.isEmpty()) {
             Log.errorLog(969871236, pfad);
         }
         if (ret.contains("?")) {
@@ -283,11 +283,11 @@ public class GuiFunktionen extends MVFunctionSys {
         // FILENAME.SUFF
         String ret = "";
         if (pfad != null) {
-            if (!pfad.equals("") && pfad.contains(".")) {
+            if (!pfad.isEmpty() && pfad.contains(".")) {
                 ret = pfad.substring(0, pfad.lastIndexOf('.'));
             }
         }
-        if (ret.equals("")) {
+        if (ret.isEmpty()) {
             ret = pfad;
             Log.errorLog(945123647, pfad);
         }
@@ -299,11 +299,11 @@ public class GuiFunktionen extends MVFunctionSys {
         // FILENAME.SUFF
         String ret = "";
         if (pfad != null) {
-            if (!pfad.equals("") && pfad.contains(".")) {
+            if (!pfad.isEmpty() && pfad.contains(".")) {
                 ret = pfad.substring(pfad.lastIndexOf('.') + 1);
             }
         }
-        if (ret.equals("")) {
+        if (ret.isEmpty()) {
             ret = pfad;
             Log.errorLog(802103647, pfad);
         }

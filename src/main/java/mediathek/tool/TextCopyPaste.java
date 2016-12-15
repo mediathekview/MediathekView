@@ -45,7 +45,7 @@ public class TextCopyPaste extends MouseAdapter {
 
     private enum Actions {
         UNDO, CUT, COPY, PASTE, SELECT_ALL
-    };
+    }
 
     public TextCopyPaste() {
         undoAction = new AbstractAction("Zurück") {
@@ -116,7 +116,7 @@ public class TextCopyPaste extends MouseAdapter {
 
             boolean enabled = textComponent.isEnabled();
             boolean editable = textComponent.isEditable();
-            boolean nonempty = !(textComponent.getText() == null || textComponent.getText().equals(""));
+            boolean nonempty = !(textComponent.getText() == null || textComponent.getText().isEmpty());
             boolean marked = textComponent.getSelectedText() != null;
 
             boolean pasteAvailable = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).isDataFlavorSupported(DataFlavor.stringFlavor);

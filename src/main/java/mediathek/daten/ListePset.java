@@ -224,7 +224,7 @@ public class ListePset extends LinkedList<DatenPset> {
 
     private static String getPfadVlc(JFrame parent) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
-        if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC).equals("")) {
+        if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC).isEmpty()) {
             new DialogOk(null, true, new PanelProgrammPfade(parent, true /* vlc */, false /* flvstreamer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
         return MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC);
@@ -232,7 +232,7 @@ public class ListePset extends LinkedList<DatenPset> {
 
     private static String getPfadFlv(JFrame parent) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
-        if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER).equals("")) {
+        if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER).isEmpty()) {
             new DialogOk(null, true, new PanelProgrammPfade(parent, false /* vlc */, true /* flvstreamer */, false/*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
         return MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER);
@@ -240,7 +240,7 @@ public class ListePset extends LinkedList<DatenPset> {
 
     private static String getPfadFFmpeg(JFrame parent) {
         // liefert den Pfad wenn vorhanden, wenn nicht wird er in einem Dialog abgefragt
-        if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG).equals("")) {
+        if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG).isEmpty()) {
             new DialogOk(null, true, new PanelProgrammPfade(parent, false /* vlc */, false /* flvstreamer */, true /*ffmpeg*/), "Pfade Standardprogramme").setVisible(true);
         }
         return MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG);

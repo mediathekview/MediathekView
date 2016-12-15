@@ -63,11 +63,11 @@ public class DialogZiel extends JDialog {
     void check() {
         boolean ret = false;
         String pfad = jTextFieldPfad.getText();
-        if (!pfad.equals("")) {
+        if (!pfad.isEmpty()) {
             try {
                 int ook;
                 if (new File(pfad).exists()) {
-                    ook = JOptionPane.showConfirmDialog(parent, "Datei:  " + "\"" + pfad + "\"" + "  existiert bereits", "Überschreiben?",
+                    ook = JOptionPane.showConfirmDialog(parent, "Datei:  " + '"' + pfad + '"' + "  existiert bereits", "Überschreiben?",
                             JOptionPane.YES_NO_OPTION);
                 } else {
                     ook = JOptionPane.OK_OPTION;
@@ -217,7 +217,7 @@ public class DialogZiel extends JDialog {
             } else {
                 int returnVal;
                 JFileChooser chooser = new JFileChooser();
-                if (!jTextFieldPfad.getText().equals("")) {
+                if (!jTextFieldPfad.getText().isEmpty()) {
                     chooser.setCurrentDirectory(new File(jTextFieldPfad.getText()));
                 } else {
                     chooser.setCurrentDirectory(new File(GuiFunktionen.getHomePath()));

@@ -49,10 +49,10 @@ public class DialogZielExportPset extends javax.swing.JDialog {
         jButtonZiel.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
          jButtonOk.addActionListener(new OkBeobachter());
         jButtonZiel.addActionListener(new ZielBeobachter());
-        if (name.equals("")) {
+        if (name.isEmpty()) {
             name = "name.xml";
         }
-        jTextFieldPfad.setText(GuiFunktionen.addsPfad(pfad.equals("") ? GuiFunktionen.getHomePath() : pfad, name));
+        jTextFieldPfad.setText(GuiFunktionen.addsPfad(pfad.isEmpty() ? GuiFunktionen.getHomePath() : pfad, name));
         new EscBeenden(this) {
             @Override
             public void beenden_() {
@@ -64,7 +64,7 @@ public class DialogZielExportPset extends javax.swing.JDialog {
 
     private boolean check() {
         String pfad = jTextFieldPfad.getText();
-        if (pfad.equals("")) {
+        if (pfad.isEmpty()) {
             MVMessageDialog.showMessageDialog(parentComponent, "Pfad ist leer", "Fehlerhafter Pfad!", JOptionPane.ERROR_MESSAGE);
             return false;
         }
@@ -194,7 +194,7 @@ public class DialogZielExportPset extends javax.swing.JDialog {
             } else {
                 int returnVal;
                 JFileChooser chooser = new JFileChooser();
-                if (!jTextFieldPfad.getText().equals("")) {
+                if (!jTextFieldPfad.getText().isEmpty()) {
                     String pfad = jTextFieldPfad.getText();
                     if (pfad.contains(File.separator)) {
                         pfad = pfad.substring(0, pfad.lastIndexOf(File.separator));

@@ -182,7 +182,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                             progressBar.setValue(datenDownload.start.percent);
 
                             final double progressValue = datenDownload.start.percent / 10.0;
-                            progressBar.setString(Double.toString(progressValue) + "%");
+                            progressBar.setString(Double.toString(progressValue) + '%');
 
                             return panel;
                         } else {
@@ -423,7 +423,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
     }
 
     private void handleAboColumn(JTextArea a, final DatenDownload datenDownload) {
-        if (!datenDownload.arr[DatenDownload.DOWNLOAD_ABO].equals("")) {
+        if (!datenDownload.arr[DatenDownload.DOWNLOAD_ABO].isEmpty()) {
             a.setForeground(MVColor.DOWNLOAD_IST_ABO.color);
         } else {
             a.setForeground(MVColor.DOWNLOAD_IST_DIREKTER_DOWNLOAD.color);
@@ -433,7 +433,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
 
     private void handleAboColumn(final DatenDownload datenDownload) {
         setHorizontalAlignment(SwingConstants.CENTER);
-        if (!datenDownload.arr[DatenDownload.DOWNLOAD_ABO].equals("")) {
+        if (!datenDownload.arr[DatenDownload.DOWNLOAD_ABO].isEmpty()) {
             setForeground(MVColor.DOWNLOAD_IST_ABO.color);
         } else {
             setForeground(MVColor.DOWNLOAD_IST_DIREKTER_DOWNLOAD.color);
