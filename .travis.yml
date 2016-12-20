@@ -41,14 +41,27 @@ cache:
   - "$HOME/.sonar/cache/"
   
 #Deploy
+before_deploy:
+  - gzip build/distributions/MediathekView-*.tar
+  - rm build/distributions/MediathekView-*.tar.SHA-1
+  - sha1sum build/distributions/MediathekView-*.tar.gz
+  - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv 
+    -in scripte/travisdeploy/deploy.key.enc -out scripte/travisdeploy/deploy.key -d
+
 deploy:
-  provider: releases
-  api_key:
-    secure: moMQ5jINxm27QvSKiH8R5C8w1qj4GHF/tsO33GFAqYiOyoQbEVtGqGq5z9a7/O4ShfYItAIgMO1qLqmu4l+nnvkat/v3VGiuj3E4RXWxbfx9C7uY20eZbxWyUW7XX4PsUAl+WNfHipHulk5j+YbCGQpktJ+ieVm/iD3J4acIuio3Ty6QrCltwpHVMjdTWlj4vLitK08O0ZtmUzwNU3O89qLsCNR9TCsX7vgeDP5DUtY3BivFDgHo+1+6Ci7fcEayeArLNSrWFlvJcxMf3qq8JxABRrTzDuSG4y7hC7Kf8VBeQnpRBvIF6YpHTN6nv1uZ3y6Oj+w/gTBEHGMOjWMFK8EJjA+eT02Wsmhfxk3blAyPrDtqG2uLXi6DWJob5cj/25SdFvRXtkwWg7RFP+FZ7O5I+TxtWV51Ss7PoUJs+cKBS04c1trpzX68ltLgz3X9cj3Sg4gvovaKX10kVLQhQdIsstXed1A6fy8MtrgAecHhN6saALSbawYR9PqAngrPSIexa8tITVz/cM/7IimZnm7zAFVRkTozgKzmnc3FMvgfiwkqjfgztty2x5keslNEyrwlNKOrQKnJveQmjGKgYpV+OwHAWxIbdBLNDcnzu/IqoVlPQ2u6aosFw5cG5+Q63ng26P4vcU67+ObBbw+hgRG621AG0a6RqBzzWwDt9ew=
-  file_glob: true
-  file:
+  - provider: releases
+    api_key:
+      secure: moMQ5jINxm27QvSKiH8R5C8w1qj4GHF/tsO33GFAqYiOyoQbEVtGqGq5z9a7/O4ShfYItAIgMO1qLqmu4l+nnvkat/v3VGiuj3E4RXWxbfx9C7uY20eZbxWyUW7XX4PsUAl+WNfHipHulk5j+YbCGQpktJ+ieVm/iD3J4acIuio3Ty6QrCltwpHVMjdTWlj4vLitK08O0ZtmUzwNU3O89qLsCNR9TCsX7vgeDP5DUtY3BivFDgHo+1+6Ci7fcEayeArLNSrWFlvJcxMf3qq8JxABRrTzDuSG4y7hC7Kf8VBeQnpRBvIF6YpHTN6nv1uZ3y6Oj+w/gTBEHGMOjWMFK8EJjA+eT02Wsmhfxk3blAyPrDtqG2uLXi6DWJob5cj/25SdFvRXtkwWg7RFP+FZ7O5I+TxtWV51Ss7PoUJs+cKBS04c1trpzX68ltLgz3X9cj3Sg4gvovaKX10kVLQhQdIsstXed1A6fy8MtrgAecHhN6saALSbawYR9PqAngrPSIexa8tITVz/cM/7IimZnm7zAFVRkTozgKzmnc3FMvgfiwkqjfgztty2x5keslNEyrwlNKOrQKnJveQmjGKgYpV+OwHAWxIbdBLNDcnzu/IqoVlPQ2u6aosFw5cG5+Q63ng26P4vcU67+ObBbw+hgRG621AG0a6RqBzzWwDt9ew=
+    file_glob: true
+    file:
       - build/libs/*
       - build/distributions/*
-  skip_cleanup: true
-  on:
-    tags: true
+    skip_cleanup: true
+    on:
+      tags: true
+  - provider: script
+    script: scripte/travisdeploy/deploy.sh
+    skip_cleanup: true
+    on:
+      branch: master
+      tags: true
