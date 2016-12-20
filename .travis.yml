@@ -2,9 +2,10 @@ language: java
 jdk:
   - oraclejdk8
 
-#Needed for launch4j
 sudo: required
-
+install:
+  - sudo apt-get update
+  - sudo apt-get install lib32ncurses5 lib32z1 -y
 #Sonar
 addons:
   sonarqube:
@@ -19,9 +20,6 @@ addons:
       - hotfix/.*
 
 # Build
-before_script:
-  - sudo apt-get update
-  - sudo apt-get install lib32ncurses5 lib32z1 -y
 script:
   - ./gradlew check build
 after_success:
