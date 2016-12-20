@@ -45,7 +45,7 @@ cache:
 before_deploy:
   - gzip build/distributions/MediathekView-*.tar
   - rm build/distributions/MediathekView-*.tar.SHA-1
-  - for i in `ls -x -1 |grep *.tar.gz`; do sha1sum $i|cut -d' ' -f1 > $i.SHA-1; done
+  - cd build/distributions/; for i in `ls -x -1 |grep *.tar.gz`; do sha1sum $i|cut -d' ' -f1 > $i.SHA-1; done; cd ../../
   - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv 
     -in scripte/travisdeploy/deploy.key.enc -out scripte/travisdeploy/deploy.key -d
 
