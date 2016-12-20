@@ -1,4 +1,0 @@
-def mSearchDir = new File(settingsDir, '../MSearch')
-assert mSearchDir.exists() : "Directory $mSearchDir does not exist"
-include ':MSearch'
-project(':MSearch').projectDir = mSearchDir
