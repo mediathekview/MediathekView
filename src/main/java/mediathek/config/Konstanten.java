@@ -33,14 +33,14 @@ public class Konstanten {
 
     // MediathekView URLs
 //    public static final String ADRESSE_FILMLISTEN_SERVER = "http://zdfmediathk.sourceforge.net/update.xml";
-    public static final String ADRESSE_PROGRAMM_VERSION = "http://zdfmediathk.sourceforge.net/prog-info-12.xml";
-    public static final String ADRESSE_DOWNLAD = "http://sourceforge.net/projects/zdfmediathk/";
-    public static final String ADRESSE_ANLEITUNG = "http://sourceforge.net/p/zdfmediathk/wiki/Home/";
-    public static final String ADRESSE_ONLINE_HELP = "https://sourceforge.net/p/zdfmediathk/wiki/Anleitung/";
-    public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "http://zdfmediathk.sourceforge.net/programmgruppen11/programmgruppen.xml";
-    public static final String ADRESSE_WEBSITE = "http://zdfmediathk.sourceforge.net/";
-    public static final String ADRESSE_FORUM = "http://zdfmediathk.sourceforge.net/forum/";
-    public static final String ADRESSE_DONATION = "http://zdfmediathk.sourceforge.net/index.html#donate";
+    public static final String ADRESSE_PROGRAMM_VERSION = "https://res.mediathekview.de/prog-info-12.xml";
+    public static final String ADRESSE_DOWNLAD = "https://mediathekview.de/download/";
+    public static final String ADRESSE_ANLEITUNG = "https://github.com/mediathekview/MediathekView/wiki";
+    public static final String ADRESSE_ONLINE_HELP = "https://github.com/mediathekview/MediathekView/wiki";
+    public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "https://res.mediathekview.de/programmgruppen11/programmgruppen.xml";
+    public static final String ADRESSE_WEBSITE = "https://mediathekview.de/";
+    public static final String ADRESSE_FORUM = "https://forum.mediathekview.de/";
+    public static final String ADRESSE_DONATION = "https://mediathekview.de/spenden/";
     // ProgrammUrls
     public static final String ADRESSE_WEBSITE_VLC = "http://www.videolan.org";
     public static final String ADRESSE_WEBSITE_FLVSTREAMER = "https://savannah.nongnu.org/projects/flvstreamer";
