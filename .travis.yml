@@ -2,14 +2,10 @@ language: java
 jdk:
   - oraclejdk8
 
-#Needed for launch4j
 sudo: required
-before_script:
+install:
   - sudo apt-get update
   - sudo apt-get install lib32ncurses5 lib32z1 -y
-
-install:
-  - cd ../; git clone https://github.com/mediathekview/MSearch.git MSearch; cd -;
 
 #Sonar
 addons:
@@ -28,7 +24,12 @@ addons:
 
 # Build
 script:
-  - "./gradlew check build"
+  - ./gradlew check build
+  - if [ "$TRAVIS_BRANCH" == "develop" ]; then
+      openssl aes-256-cbc -K $encrypted_b91ffbcdac83_key -iv $encrypted_b91ffbcdac83_iv 
+        -in scripte/deploy/RepoZugang.properties.enc -out scripte/deploy/RepoZugang.properties -d;
+      ./gradlew releaseSnapshot;
+    fi
 after_success:
   - sonar-scanner
 
@@ -43,12 +44,9 @@ cache:
   
 #Deploy
 before_deploy:
-  - gzip build/distributions/MediathekView-*.tar
-  - rm build/distributions/MediathekView-*.tar.SHA-1
-  - cd build/distributions/; for i in `ls -x -1 |grep *.tar.gz`; do sha1sum $i|cut -d' ' -f1 > $i.SHA-1; done; cd ../../
-  - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv 
-    -in scripte/travisdeploy/deploy.key.enc -out scripte/travisdeploy/deploy.key -d
-
+  - openssl aes-256-cbc -K $encrypted_b91ffbcdac83_key -iv $encrypted_b91ffbcdac83_iv 
+    -in scripte/deploy/RepoZugang.properties.enc -out scripte/deploy/RepoZugang.properties -d
+  - ./gradlew release
 deploy:
   - provider: releases
     api_key:
