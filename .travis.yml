@@ -22,6 +22,11 @@ addons:
 # Build
 script:
   - ./gradlew check build
+  - if [ "$TRAVIS_BRANCH" == "develop" ]; then
+      openssl aes-256-cbc -K $encrypted_b91ffbcdac83_key -iv $encrypted_b91ffbcdac83_iv 
+        -in scripte/deploy/RepoZugang.properties.enc -out scripte/deploy/RepoZugang.properties -d;
+      ./gradlew releaseSnapshot;
+    fi
 after_success:
   - sonar-scanner
 
@@ -35,6 +40,10 @@ cache:
   - "$HOME/.sonar/cache/"
   
 #Deploy
+before_deploy:
+  - openssl aes-256-cbc -K $encrypted_b91ffbcdac83_key -iv $encrypted_b91ffbcdac83_iv 
+    -in scripte/deploy/RepoZugang.properties.enc -out scripte/deploy/RepoZugang.properties -d
+  - ./gradlew release
 deploy:
   provider: releases
   api_key:
