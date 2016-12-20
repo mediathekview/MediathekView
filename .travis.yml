@@ -8,11 +8,6 @@ before_script:
   - sudo apt-get update
   - sudo apt-get install lib32ncurses5 lib32z1 -y
 
-install:
-- cd ..
-- git clone https://github.com/mediathekview/MSearch.git MSearch
-- cd -
-
 #Sonar
 addons:
   sonarqube:
@@ -28,12 +23,13 @@ addons:
 
 # Build
 script:
-- "./gradlew check build"
-- sonar-scanner
+  - ./gradlew check build
+after_success:
+  - sonar-scanner
 
 #Cache
 before_cache:
-- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 cache:
   directories:
   - "$HOME/.gradle/caches/"
