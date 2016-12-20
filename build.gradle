@@ -75,7 +75,11 @@ processResources.dependsOn generateLicenseReport
 tasks.withType(Zip) { task ->
     task.doLast {
         ant.checksum(algorithm: 'SHA-1', file: it.archivePath)
-        ant.checksum(algorithm: 'MD5', file: it.archivePath)
+    }
+}
+tasks.withType(Tar) { task ->
+    task.doLast {
+        ant.checksum(algorithm: 'SHA-1', file: it.archivePath)
     }
 }
 
