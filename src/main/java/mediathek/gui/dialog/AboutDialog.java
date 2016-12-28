@@ -20,7 +20,6 @@ package mediathek.gui.dialog;
 
 import com.jidesoft.swing.MarqueePane;
 import com.jidesoft.utils.SystemInfo;
-import mSearch.Const;
 import mSearch.tool.Functions;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
