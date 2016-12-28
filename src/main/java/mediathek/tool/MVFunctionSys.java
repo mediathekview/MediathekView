@@ -78,11 +78,11 @@ public class MVFunctionSys {
     }
 
     public static String getProgVersionString() {
-        return Konstanten.PROGRAMMNAME + ' ' + Const.VERSION + "  [Buildnummer: " + Functions.getBuildNr() + ']';
+        return Konstanten.PROGRAMMNAME + ' ' + Functions.getBuildNr();
     }
 
     public static String getProgName() {
-        return Konstanten.PROGRAMMNAME + ' ' + Const.VERSION;
+        return Konstanten.PROGRAMMNAME + ' ' + Functions.getBuildNr();
     }
 
 //    public static String[] getJavaVersion() {
