@@ -57,10 +57,7 @@ public class AboutDialog extends JDialog {
 
     private void setupVersionString() {
         String strVersion = "Version ";
-        strVersion += Const.VERSION;
-        strVersion += " (";
         strVersion += Functions.getBuildNr();
-        strVersion += ")";
 
         lblVersion.setText(strVersion);
     }
