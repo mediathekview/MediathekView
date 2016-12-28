@@ -19,7 +19,6 @@
  */
 package mediathek.tool;
 
-import mSearch.Const;
 import mSearch.tool.Functions;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
