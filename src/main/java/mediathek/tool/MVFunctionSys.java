@@ -19,7 +19,6 @@
  */
 package mediathek.tool;
 
-import mSearch.Const;
 import mSearch.tool.Functions;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
@@ -78,11 +77,11 @@ public class MVFunctionSys {
     }
 
     public static String getProgVersionString() {
-        return Konstanten.PROGRAMMNAME + ' ' + Const.VERSION + "  [Buildnummer: " + Functions.getBuildNr() + ']';
+        return Konstanten.PROGRAMMNAME + ' ' + Functions.getBuildNr();
     }
 
     public static String getProgName() {
-        return Konstanten.PROGRAMMNAME + ' ' + Const.VERSION;
+        return Konstanten.PROGRAMMNAME + ' ' + Functions.getBuildNr();
     }
 
 //    public static String[] getJavaVersion() {

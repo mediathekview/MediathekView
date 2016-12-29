@@ -20,7 +20,6 @@
 package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.Const;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.*;
@@ -382,7 +381,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void setOrgTitel() {
-        this.setTitle(Konstanten.PROGRAMMNAME + " " + Const.VERSION);
+        this.setTitle(Konstanten.PROGRAMMNAME + " " + Functions.getBuildNr());
     }
 
     private void setSize() {
