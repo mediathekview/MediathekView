@@ -32,6 +32,9 @@ script:
     fi
 after_success:
   - sonar-scanner
+  - gzip build/distributions/MediathekView-*.tar
+  - rm build/distributions/MediathekView-*.tar.SHA-1;
+  - cd build/distributions;for i in `ls -x -1 |grep *.tar.gz`; dosha1sum $i|cut -d' ' -f1 > $i.SHA-1; done; cd ../../;
 
 #Cache
 before_cache:
@@ -44,7 +47,6 @@ cache:
   
 #Deploy
 before_deploy:
-  - scripte/travisdeploy/vorbereitung.sh
   - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv 
     -in scripte/travisdeploy/deploy.key.enc -out scripte/travisdeploy/deploy.key -d
   - openssl aes-256-cbc -K $encrypted_b91ffbcdac83_key -iv $encrypted_b91ffbcdac83_iv 
