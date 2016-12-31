@@ -13,7 +13,7 @@ import java.awt.*;
 
 @SuppressWarnings("serial")
 public class ResetSettingsDialog extends StandardDialog {
-    private Daten daten;
+    private final Daten daten;
 
     public ResetSettingsDialog(Frame owner, Daten daten) {
         super(owner, "Programm zurücksetzen", true);

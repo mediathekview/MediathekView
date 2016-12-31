@@ -19,15 +19,15 @@
  */
 package mediathek.tool;
 
-import mediathek.config.MVConfig;
 import mSearch.tool.Listener;
-import java.awt.Desktop;
-import java.awt.Frame;
-import java.io.File;
-import javax.swing.JOptionPane;
 import mSearch.tool.Log;
+import mediathek.config.MVConfig;
 import mediathek.gui.GuiDownloads;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
 
 public class DirOpenAction {
 
@@ -67,7 +67,7 @@ public class DirOpenAction {
             try {
                 gut = false;
                 String programm = "";
-                if (MVConfig.get(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN).equals("")) {
+                if (MVConfig.get(MVConfig.Configs.SYSTEM_ORDNER_OEFFNEN).isEmpty()) {
                     String text = "\n Der Dateimanager zum Anzeigen des Speicherordners wird nicht gefunden.\n Dateimanager selbst auswählen.";
                     DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(parent, true, "", "Dateimanager suchen", text);
                     dialog.setVisible(true);

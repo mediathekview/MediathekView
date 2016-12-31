@@ -81,15 +81,15 @@ public class MVInfoFile {
             br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_GROESSE] + ":  " + film.arr[DatenFilm.FILM_GROESSE]);
             br.write("\n\n");
 
-            br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_WEBSEITE] + "\n");
+            br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_WEBSEITE] + '\n');
             br.write(film.arr[DatenFilm.FILM_WEBSEITE]);
             br.write("\n\n");
 
-            br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_URL] + "\n");
+            br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_URL] + '\n');
             br.write(film.arr[DatenFilm.FILM_URL]);
             br.write("\n\n");
             if (!film.arr[DatenFilm.FILM_URL_RTMP].isEmpty()) {
-                br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_URL_RTMP] + "\n");
+                br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_URL_RTMP] + '\n');
                 br.write(film.arr[DatenFilm.FILM_URL_RTMP]);
                 br.write("\n\n");
             }
@@ -97,7 +97,7 @@ public class MVInfoFile {
             int anz = 0;
             for (String s : film.arr[DatenFilm.FILM_BESCHREIBUNG].split(" ")) {
                 anz += s.length();
-                br.write(s + " ");
+                br.write(s + ' ');
                 if (anz > 50) {
                     br.write("\n");
                     anz = 0;
@@ -134,17 +134,17 @@ public class MVInfoFile {
                 br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_GROESSE] + ":  " + datenDownload.mVFilmSize);
                 br.write("\n\n");
 
-                br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_WEBSEITE] + "\n");
+                br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_WEBSEITE] + '\n');
                 br.write(datenDownload.film.arr[DatenFilm.FILM_WEBSEITE]);
                 br.write("\n\n");
             }
 
-            br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_URL] + "\n");
+            br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_URL] + '\n');
             br.write(datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
             br.write("\n\n");
             if (!datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP].isEmpty()
                     && !datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP].equals(datenDownload.arr[DatenDownload.DOWNLOAD_URL])) {
-                br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_URL_RTMP] + "\n");
+                br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_URL_RTMP] + '\n');
                 br.write(datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP]);
                 br.write("\n\n");
             }
@@ -153,7 +153,7 @@ public class MVInfoFile {
                 int anz = 0;
                 for (String s : datenDownload.film.arr[DatenFilm.FILM_BESCHREIBUNG].split(" ")) {
                     anz += s.length();
-                    br.write(s + " ");
+                    br.write(s + ' ');
                     if (anz > 50) {
                         br.write("\n");
                         anz = 0;

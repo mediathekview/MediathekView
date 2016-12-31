@@ -187,7 +187,7 @@ public class GuiAbo extends PanelVorlage {
             String text;
             if (rows.length == 1) {
                 int delRow = tabelle.convertRowIndexToModel(rows[0]);
-                text = "\"" + tabelle.getModel().getValueAt(delRow, DatenAbo.ABO_NAME).toString() + "\" löschen?";
+                text = '"' + tabelle.getModel().getValueAt(delRow, DatenAbo.ABO_NAME).toString() + "\" löschen?";
             } else {
                 text = rows.length + " Abos löschen?";
             }

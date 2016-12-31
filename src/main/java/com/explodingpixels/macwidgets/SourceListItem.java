@@ -1,15 +1,14 @@
 package com.explodingpixels.macwidgets;
 
+import com.explodingpixels.widgets.IconProvider;
+import com.explodingpixels.widgets.TextProvider;
+
+import javax.swing.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import javax.swing.Icon;
-
-import com.explodingpixels.widgets.IconProvider;
-import com.explodingpixels.widgets.TextProvider;
 
 /**
  * An item in a {@link SourceList} which is contained within a {@link SourceListCategory}.
@@ -20,7 +19,7 @@ public class SourceListItem implements TextProvider, IconProvider, SourceListBad
     public static final String ICON = "icon";
     public static final String COUNTER_VALUE = "counter";
 
-    private List<SourceListItem> fChildItems = new ArrayList<SourceListItem>();
+    private final List<SourceListItem> fChildItems = new ArrayList<>();
 
     private String fText;
 
@@ -28,7 +27,7 @@ public class SourceListItem implements TextProvider, IconProvider, SourceListBad
 
     private int fCounterValue;
 
-    private PropertyChangeSupport fSupport = new PropertyChangeSupport(this);
+    private final PropertyChangeSupport fSupport = new PropertyChangeSupport(this);
 
     /**
      * Creates a {@code SourceListItem} with the given text.

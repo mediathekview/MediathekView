@@ -1,20 +1,15 @@
 package com.explodingpixels.macwidgets;
 
-import java.awt.FlowLayout;
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
-
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * Creates a group of components and provides a label underneath those components. The added
@@ -70,7 +65,7 @@ public class LabeledComponentGroup {
      * @param components  the components in the group.
      */
     public LabeledComponentGroup(String labelString, ButtonGroup group) {
-    	ArrayList<JComponent> list = new ArrayList<JComponent> ();
+    	ArrayList<JComponent> list = new ArrayList<>();
     	for (Enumeration<AbstractButton> e = group.getElements() ; e.hasMoreElements() ;) {
     		AbstractButton element = e.nextElement();
     		list.add(element);

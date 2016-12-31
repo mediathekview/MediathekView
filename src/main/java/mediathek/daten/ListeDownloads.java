@@ -327,9 +327,9 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     private String setProgress(DatenDownload download) {
         if (download.start != null) {
             if (1 < download.start.percent && download.start.percent < Start.PROGRESS_FERTIG) {
-                String s = Double.toString(download.start.percent / 10.0) + "%";
+                String s = Double.toString(download.start.percent / 10.0) + '%';
                 while (s.length() < 5) {
-                    s = "0" + s;
+                    s = '0' + s;
                 }
                 return s;
             } else {
@@ -752,7 +752,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 // Log.systemMeldung("getHost 1: " + s.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
                 host = "host";
             } finally {
-                if (host.equals("")) {
+                if (host.isEmpty()) {
                     // Log.systemMeldung("getHost 3: " + s.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
                     host = "host";
                 }

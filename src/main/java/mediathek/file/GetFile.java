@@ -55,7 +55,7 @@ public class GetFile {
              BufferedReader br = new BufferedReader(in)) {
             String strLine;
             while ((strLine = br.readLine()) != null) {
-                ret = ret + "\n" + strLine;
+                ret = ret + '\n' + strLine;
             }
         } catch (IOException ex) {
             Log.errorLog(885692213, ex);

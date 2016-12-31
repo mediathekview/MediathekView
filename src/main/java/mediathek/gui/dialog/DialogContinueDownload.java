@@ -252,9 +252,9 @@ public class DialogContinueDownload extends JDialog {
         public void actionPerformed(ActionEvent e) {
             if (w > 0) {
                 if (!direkterDownload) {
-                    jButtonWeiter.setText("Überschreiben in " + w + "s");
+                    jButtonWeiter.setText("Überschreiben in " + w + 's');
                 } else {
-                    jButtonWeiter.setText("Weiterführen in " + w + "s");
+                    jButtonWeiter.setText("Weiterführen in " + w + 's');
                 }
                 if (countdownTimer != null) {
                     countdownTimer.setDelay(1000);

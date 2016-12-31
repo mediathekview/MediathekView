@@ -56,7 +56,7 @@ public class DialogFilmBeschreibung extends JDialog {
             beenden();
         });
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHilfe.addActionListener(e -> new DialogHilfe(paFrame, true, "\n"
+        jButtonHilfe.addActionListener(e -> new DialogHilfe(paFrame, true, '\n'
                 + "Diese Funktion richtet sich z.B. an Benutzer,\n"
                 + "welche eine angepasste Beschreibung der Sendung in Form\n"
                 + "der Infodatei (\"Filmname.txt\") anlegen\n"

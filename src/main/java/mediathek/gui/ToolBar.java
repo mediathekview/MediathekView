@@ -371,7 +371,7 @@ public final class ToolBar extends JToolBar {
             MVConfig.add(nrToolbar, "");
             for (MVButton b : buttonList) {
                 if (!MVConfig.get(nrToolbar).isEmpty()) {
-                    MVConfig.add(nrToolbar, MVConfig.get(nrToolbar) + ":");
+                    MVConfig.add(nrToolbar, MVConfig.get(nrToolbar) + ':');
                 }
                 MVConfig.add(nrToolbar, MVConfig.get(nrToolbar) + Boolean.toString(b.anzeigen));
             }

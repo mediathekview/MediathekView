@@ -147,7 +147,7 @@ public class PanelBlacklist extends PanelVorlage {
             String th = jComboBoxThema.getSelectedItem().toString();
             String ti = jTextFieldTitel.getText().trim();
             String thti = jTextFieldThemaTitel.getText().trim();
-            if (!se.equals("") || !th.equals("") || !ti.equals("") || !thti.equals("")) {
+            if (!se.isEmpty() || !th.isEmpty() || !ti.isEmpty() || !thti.isEmpty()) {
                 daten.getListeBlacklist().add(new DatenBlacklist(se, th, ti, thti));
                 tabelleLaden();
             }
@@ -157,7 +157,7 @@ public class PanelBlacklist extends PanelVorlage {
             String th = jComboBoxThema.getSelectedItem().toString();
             String ti = jTextFieldTitel.getText().trim();
             String thti = jTextFieldThemaTitel.getText().trim();
-            if (!se.equals("") || !th.equals("") || !ti.equals("") || !thti.equals("")) {
+            if (!se.isEmpty() || !th.isEmpty() || !ti.isEmpty() || !thti.isEmpty()) {
                 int selectedTableRow = jTableBlacklist.getSelectedRow();
                 if (selectedTableRow >= 0) {
                     int row = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
@@ -224,7 +224,7 @@ public class PanelBlacklist extends PanelVorlage {
 
     private void comboThemaLaden() {
         String filterSender = jComboBoxSender.getSelectedItem().toString();
-        if (filterSender.equals("")) {
+        if (filterSender.isEmpty()) {
             jComboBoxThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
         } else {
             jComboBoxThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen(filterSender)));

@@ -68,7 +68,7 @@ public class UrlHyperlinkAction extends AbstractAction {
             }
             try {
                 String programm = "";
-                if (MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN).equals("")) {
+                if (MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN).isEmpty()) {
                     String text = "\n Der Browser zum Anzeigen der URL wird nicht gefunden.\n Browser selbst auswählen.";
                     DialogProgrammOrdnerOeffnen dialog = new DialogProgrammOrdnerOeffnen(paFrame, true, "", "Browser suchen", text);
                     dialog.setVisible(true);

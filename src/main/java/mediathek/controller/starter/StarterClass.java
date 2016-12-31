@@ -61,7 +61,7 @@ public class StarterClass {
         // url mit dem Programm mit der Nr. starten (Button oder TabDownload "rechte Maustaste")
         // Quelle "Button" ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
         String url = ersterFilm.arr[DatenFilm.FILM_URL];
-        if (!url.equals("")) {
+        if (!url.isEmpty()) {
             DatenDownload d = new DatenDownload(pSet, ersterFilm, DatenDownload.QUELLE_BUTTON, null, "", "", aufloesung);
             d.start = new Start();
             starten.startStarten(d);
@@ -138,7 +138,7 @@ public class StarterClass {
             text.add("Film abspielen");
         } else {
             if (start.startcounter > 1) {
-                text.add("Download starten - Restart (Summe Starts: " + start.startcounter + ")");
+                text.add("Download starten - Restart (Summe Starts: " + start.startcounter + ')');
             } else {
                 text.add("Download starten");
             }
@@ -158,7 +158,7 @@ public class StarterClass {
 
     private void reStartmeldung(DatenDownload datenDownload) {
         ArrayList<String> text = new ArrayList<>();
-        text.add("Fehlerhaften Download neu starten - Restart (Summe Starts: " + datenDownload.start.countRestarted + ")");
+        text.add("Fehlerhaften Download neu starten - Restart (Summe Starts: " + datenDownload.start.countRestarted + ')');
         text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
         SysMsg.sysMsg(text.toArray(new String[text.size()]));

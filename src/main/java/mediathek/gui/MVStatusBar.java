@@ -31,7 +31,7 @@ public final class MVStatusBar extends JPanel {
     private final JProgressBar progress;
     private final JButton stopButton;
     private final BottomBar bottomBar;
-    private final String TRENNER = "  ||  ";
+    private static final String TRENNER = "  ||  ";
 
     public MVStatusBar() {
         daten = Daten.getInstance();
@@ -309,7 +309,7 @@ public final class MVStatusBar extends JPanel {
             }
 
             if (starts[4] > 0) {
-                textLinks += " (" + daten.getDownloadInfos().bandwidthStr + ")";
+                textLinks += " (" + daten.getDownloadInfos().bandwidthStr + ')';
             }
 
             if (starts[3] == 1) {
@@ -350,15 +350,15 @@ public final class MVStatusBar extends JPanel {
             String strMinute = String.valueOf(minuten % 60);
             String strStunde = String.valueOf(minuten / 60);
             if (strSekunde.length() < 2) {
-                strSekunde = "0" + strSekunde;
+                strSekunde = '0' + strSekunde;
             }
             if (strMinute.length() < 2) {
-                strMinute = "0" + strMinute;
+                strMinute = '0' + strMinute;
             }
             if (strStunde.length() < 2) {
-                strStunde = "0" + strStunde;
+                strStunde = '0' + strStunde;
             }
-            strText += strStunde + ":" + strMinute + ":" + strSekunde + " ";
+            strText += strStunde + ':' + strMinute + ':' + strSekunde + ' ';
         }
         // Infopanel setzen
         lblRight.setText(strText);

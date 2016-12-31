@@ -44,7 +44,7 @@ public class MVFilmInformationOSX implements IFilmInformation {
         createDialog(owner);
         final Border emptyBorder = BorderFactory.createEmptyBorder(0, 0, 0, 0);
         for (int i = 0; i < DatenFilm.MAX_ELEM; ++i) {
-            final JLabel lbl = new JLabel(DatenFilm.COLUMN_NAMES[i] + ":");
+            final JLabel lbl = new JLabel(DatenFilm.COLUMN_NAMES[i] + ':');
             lbl.setHorizontalAlignment(SwingConstants.RIGHT);
             labelArrNames[i] = lbl;
 

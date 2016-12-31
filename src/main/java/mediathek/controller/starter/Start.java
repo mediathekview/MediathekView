@@ -84,7 +84,7 @@ public class Start {
                     ret = "extern";
                 } else if (1 < s.percent && s.percent < PROGRESS_FERTIG) {
                     double d = s.percent / 10.0;
-                    ret = Double.toString(d) + "%";
+                    ret = Double.toString(d) + '%';
                 }
                 break;
         }

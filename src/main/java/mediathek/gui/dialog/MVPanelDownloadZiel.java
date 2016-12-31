@@ -185,11 +185,11 @@ public class MVPanelDownloadZiel extends JPanel {
         }
         //##############################################
         // zur Sicherheit bei Unsinn im Set
-        if (pfad.equals("")) {
+        if (pfad.isEmpty()) {
             pfad = GuiFunktionen.getStandardDownloadPath();
         }
-        if (name.equals("")) {
-            name = new SimpleDateFormat("yyyyMMdd").format(new Date()) + "_" + datenDownload.arr[DatenDownload.DOWNLOAD_THEMA] + "-" + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
+        if (name.isEmpty()) {
+            name = new SimpleDateFormat("yyyyMMdd").format(new Date()) + '_' + datenDownload.arr[DatenDownload.DOWNLOAD_THEMA] + '-' + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
         }
         String[] pathName = {pfad, name};
         GuiFunktionen.checkLengthPath(pathName);
