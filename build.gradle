@@ -282,7 +282,7 @@ task releaseSnapshot(dependsOn: 'uploadArchives') {
 }
 
 gradle.taskGraph.whenReady {taskGraph ->
-    if (!taskGraph.hasTask(release)) {
+    if (taskGraph.hasTask(releaseSnapshot)) {
         version = version+'-SNAPSHOT'
     }
 }
