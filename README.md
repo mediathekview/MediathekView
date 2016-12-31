@@ -27,17 +27,13 @@ Derzeit werden die Mediatheken der folgenden Sender unterstützt:
 - ORF (Österreichischer Rundfunk)
 - SRF (Schweizer Rundfunk) inkl. Podcasts
 
-# Projektmanagment
-- [MediathekView Hub](https://hub.mediathekview.de)
+# Links
+- [Webseite](https://mediathekview.de)
+- [Download](https://mediathekview.de/download/)
+- [Wiki](https://github.com/mediathekview/MediathekView/wiki)
 - XMPP/Jabber @ elaon.de ([Registrieren](https://elaon.de/info/services/xmpp.html)).
   + Nutzer: mediathekview@conference.elaon.de
   + Entwickler: mediathekviewdev@conference.elaon.de
-
-# Sourceforge
-
-- [Website](http://zdfmediathk.sourceforge.net)
-- [Screenshots](http://zdfmediathk.sourceforge.net/screenshots.html)
-- [Download](https://sourceforge.net/projects/zdfmediathk/files/) Installationspakete
 
 # [Entwicklung](https://github.com/mediathekview/MediathekView/wiki/Entwicklung)
 Siehe / See: [Wiki | Entwicklung](https://github.com/mediathekview/MediathekView/wiki/Entwicklung)

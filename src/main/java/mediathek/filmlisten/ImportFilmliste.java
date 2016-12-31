@@ -202,7 +202,7 @@ public class ImportFilmliste {
     private boolean urlLaden(String dateiUrl, ListeFilme listeFilme, int days) {
         boolean ret = false;
         try {
-            if (!dateiUrl.equals("")) {
+            if (!dateiUrl.isEmpty()) {
                 Log.sysLog("Filmliste laden von: " + dateiUrl);
                 msFilmlisteLesen.readFilmListe(dateiUrl, listeFilme, days);
                 if (!listeFilme.isEmpty()) {

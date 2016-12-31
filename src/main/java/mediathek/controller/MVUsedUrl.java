@@ -45,14 +45,14 @@ public class MVUsedUrl implements Comparable<MVUsedUrl> {
         return date + PAUSE
                 + Functions.textLaenge(25, putzen(thema), false /* mitte */, false /*addVorne*/) + PAUSE
                 + Functions.textLaenge(40, putzen(title), false /* mitte */, false /*addVorne*/) + TRENNER
-                + url + "\n";
+                + url + '\n';
     }
 
     public String getUsedUrl() {
         return uUrl[USED_URL_DATUM] + PAUSE
                 + Functions.textLaenge(25, putzen(uUrl[USED_URL_THEMA]), false /* mitte */, false /*addVorne*/) + PAUSE
                 + Functions.textLaenge(40, putzen(uUrl[USED_URL_TITEL]), false /* mitte */, false /*addVorne*/) + TRENNER
-                + uUrl[USED_URL_URL] + "\n";
+                + uUrl[USED_URL_URL] + '\n';
     }
 
     public static MVUsedUrl getUrlAusZeile(String zeile) {

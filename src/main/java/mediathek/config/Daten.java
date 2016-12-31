@@ -458,7 +458,7 @@ public class Daten
                 {
                     MVMessageDialog.showMessageDialog(mediathekGui, "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
                             + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
-                            + getSettingsDirectory_String() + "\n"
+                            + getSettingsDirectory_String() + '\n'
                             + "von Hand löschen und dann das Programm wieder starten.\n\n"
                             + "Im Forum finden Sie weitere Hilfe.", "Fehler", JOptionPane.ERROR_MESSAGE);
                 }

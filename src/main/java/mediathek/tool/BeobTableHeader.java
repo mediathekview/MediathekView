@@ -19,12 +19,11 @@
  */
 package mediathek.tool;
 
+import mediathek.config.MVConfig;
+
+import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import mediathek.config.MVConfig;
 
 public class BeobTableHeader extends MouseAdapter {
     //rechhte Maustaste in der Tabelle
@@ -81,9 +80,7 @@ public class BeobTableHeader extends MouseAdapter {
             }
             box[i] = new JCheckBoxMenuItem(columns[i]);
             box[i].setSelected(anzeigen(i));
-            box[i].addActionListener(e -> {
-                setSpalten();
-            });
+            box[i].addActionListener(e -> setSpalten());
             jPopupMenu.add(box[i]);
         }
         // jetzt evtl. noch die Button

@@ -20,15 +20,17 @@
 package mediathek.config;
 
 import com.jidesoft.utils.SystemInfo;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import mSearch.Const;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Log;
 import mediathek.controller.MVBandwidthTokenBucket;
 import mediathek.gui.MVFilter;
 import mediathek.tool.GuiFunktionenProgramme;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Set;
 
 public class MVConfig {
 
@@ -394,8 +396,9 @@ public class MVConfig {
     }
 
     public static synchronized String[][] getAll() {
-        LinkedList<String[]> liste = new LinkedList<>();
-        String[] setArray = HASHMAP.keySet().toArray(new String[]{});
+        final LinkedList<String[]> liste = new LinkedList<>();
+        final Set<String> strings = HASHMAP.keySet();
+        final String[] setArray = strings.toArray(new String[strings.size()]);
         for (String entry : setArray) {
             String[] s = new String[2];
             s[0] = entry;
@@ -414,7 +417,7 @@ public class MVConfig {
             s = s.substring(s.indexOf(TRENNER) + TRENNER.length());
         }
         l.add(s);
-        return l.toArray(new String[]{});
+        return l.toArray(new String[l.size()]);
 
     }
 
@@ -422,14 +425,15 @@ public class MVConfig {
         if (arr == null) {
             return "";
         }
-        String s = "";
+
+        StringBuilder sb = new StringBuilder();
         for (int k = 0; k < arr.length; ++k) {
-            s += arr[k];
+            sb.append(arr[k]);
             if (k < arr.length - 1) {
-                s += TRENNER;
+                sb.append(TRENNER);
             }
         }
-        return s;
+        return sb.toString();
     }
 
     private static String[] initArray(Configs key) {

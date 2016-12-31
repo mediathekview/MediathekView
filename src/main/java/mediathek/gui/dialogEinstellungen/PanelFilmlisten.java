@@ -60,46 +60,23 @@ public class PanelFilmlisten extends PanelVorlage {
         jButtonDateiAuswaehlen.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonUrl.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
         tabelleLaden();
-        jButtonUrl.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jTextFieldUrl.setText(daten.getFilmeLaden().getDownloadUrl_akt());
-            }
-        });
-        jButtonAkualisieren.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                listeFilmlistenSuchen();
-            }
-        });
+        jButtonUrl.addActionListener(e -> jTextFieldUrl.setText(daten.getFilmeLaden().getDownloadUrl_akt()));
+        jButtonAkualisieren.addActionListener(e -> listeFilmlistenSuchen());
         jButtonDateiAuswaehlen.addActionListener(new BeobPfad());
-        jButtonFilmeLaden.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (jCheckBoxUpdate.isSelected()) {
-                    daten.getFilmeLaden().updateFilmlist(jTextFieldUrl.getText());
-                } else {
-                    daten.getFilmeLaden().loadFilmlist(jTextFieldUrl.getText());
-                }
+        jButtonFilmeLaden.addActionListener(e -> {
+            if (jCheckBoxUpdate.isSelected()) {
+                daten.getFilmeLaden().updateFilmlist(jTextFieldUrl.getText());
+            } else {
+                daten.getFilmeLaden().loadFilmlist(jTextFieldUrl.getText());
             }
         });
-        jRadioButtonAkt.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jCheckBoxUpdate.setSelected(jRadioButtonDiff.isSelected());
-                tabelleLaden();
-            }
+        jRadioButtonAkt.addActionListener(e -> {
+            jCheckBoxUpdate.setSelected(jRadioButtonDiff.isSelected());
+            tabelleLaden();
         });
-        jRadioButtonDiff.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jCheckBoxUpdate.setSelected(jRadioButtonDiff.isSelected());
-                tabelleLaden();
-            }
+        jRadioButtonDiff.addActionListener(e -> {
+            jCheckBoxUpdate.setSelected(jRadioButtonDiff.isSelected());
+            tabelleLaden();
         });
         jTable1.addMouseListener(new BeobachterTableSelect());
         jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());

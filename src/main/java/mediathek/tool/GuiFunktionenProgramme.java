@@ -210,7 +210,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         }
         for (DatenPset ps : pSet) {
-            if (!ps.arr[DatenPset.PROGRAMMSET_ADD_ON].equals("")) {
+            if (!ps.arr[DatenPset.PROGRAMMSET_ADD_ON].isEmpty()) {
                 if (!addOnZip(ps.arr[DatenPset.PROGRAMMSET_ADD_ON])) {
                     // und Tschüss
                     if (!auto) {
@@ -363,7 +363,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         boolean ret = false;
         String url = uurl.toLowerCase();
         String s1 = "";
-        if (str.equals("")) {
+        if (str.isEmpty()) {
             ret = true;
         } else {
             for (int i = 0; i < str.length(); ++i) {
@@ -396,7 +396,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             if (!testPfad.exists()) {
                 testPfad.mkdirs();
             }
-            if (pfad.equals("")) {
+            if (pfad.isEmpty()) {
             } else if (!testPfad.isDirectory()) {
             } else if (testPfad.canWrite()) {
                 File tmpFile = File.createTempFile("mediathek", "tmp", testPfad);
@@ -420,12 +420,12 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
             ret = true;
             if (!datenPset.isFreeLine() && !datenPset.isLable()) {
                 // nur wenn kein Lable oder freeline
-                text += "++++++++++++++++++++++++++++++++++++++++++++" + "\n";
-                text += PIPE + "Programmgruppe: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME] + "\n";
+                text += "++++++++++++++++++++++++++++++++++++++++++++" + '\n';
+                text += PIPE + "Programmgruppe: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME] + '\n';
                 String zielPfad = datenPset.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD];
                 if (datenPset.progsContainPath()) {
                     // beim nur Abspielen wird er nicht gebraucht
-                    if (zielPfad.equals("")) {
+                    if (zielPfad.isEmpty()) {
                         ret = false;
                         text += PIPE + LEER + "Zielpfad fehlt!\n";
                     } else // Pfad beschreibbar?
@@ -433,7 +433,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                             //da Pfad-leer und "kein" Pfad schon abgeprüft
                             ret = false;
                             text += PIPE + LEER + "Falscher Zielpfad!\n";
-                            text += PIPE + LEER + PFEIL + "Zielpfad \"" + zielPfad + "\" nicht beschreibbar!" + "\n";
+                            text += PIPE + LEER + PFEIL + "Zielpfad \"" + zielPfad + "\" nicht beschreibbar!" + '\n';
                         }
                 }
                 for (DatenProg datenProg : datenPset.getListeProg()) {
@@ -441,8 +441,8 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                     if (datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD].isEmpty()) {
                         ret = false;
                         text += PIPE + LEER + "Kein Programm angegeben!\n";
-                        text += PIPE + LEER + PFEIL + "Programmname: " + datenProg.arr[DatenProg.PROGRAMM_NAME] + "\n";
-                        text += PIPE + LEER + LEER + "Pfad: " + datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD] + "\n";
+                        text += PIPE + LEER + PFEIL + "Programmname: " + datenProg.arr[DatenProg.PROGRAMM_NAME] + '\n';
+                        text += PIPE + LEER + LEER + "Pfad: " + datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD] + '\n';
                     } else if (!new File(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]).canExecute()) {
                         // dann noch mit RuntimeExec versuchen
                         RuntimeExec r = new RuntimeExec(datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD]);
@@ -454,18 +454,18 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                             // läßt sich nicht starten
                             ret = false;
                             text += PIPE + LEER + "Falscher Programmpfad!\n";
-                            text += PIPE + LEER + PFEIL + "Programmname: " + datenProg.arr[DatenProg.PROGRAMM_NAME] + "\n";
-                            text += PIPE + LEER + LEER + "Pfad: " + datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD] + "\n";
+                            text += PIPE + LEER + PFEIL + "Programmname: " + datenProg.arr[DatenProg.PROGRAMM_NAME] + '\n';
+                            text += PIPE + LEER + LEER + "Pfad: " + datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD] + '\n';
                             if (!datenProg.arr[DatenProg.PROGRAMM_PROGRAMMPFAD].contains(File.separator)) {
-                                text += PIPE + LEER + PFEIL + "Wenn das Programm nicht im Systempfad liegt, " + "\n";
-                                text += PIPE + LEER + LEER + "wird der Start nicht klappen!" + "\n";
+                                text += PIPE + LEER + PFEIL + "Wenn das Programm nicht im Systempfad liegt, " + '\n';
+                                text += PIPE + LEER + LEER + "wird der Start nicht klappen!" + '\n';
                             }
                         }
                     }
                 }
                 if (ret) {
                     //sollte alles passen
-                    text += PIPE + PFEIL + "Ok!" + "\n";
+                    text += PIPE + PFEIL + "Ok!" + '\n';
                 }
                 text += "++++++++++++++++++++++++++++++++++++++++++++" + "\n\n\n";
             }

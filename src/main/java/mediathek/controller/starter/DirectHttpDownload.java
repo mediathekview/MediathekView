@@ -117,7 +117,7 @@ public class DirectHttpDownload extends Thread {
      * @param conn The active connection.
      */
     private void setupHttpConnection(HttpURLConnection conn) {
-        conn.setRequestProperty("Range", "bytes=" + downloaded + "-");
+        conn.setRequestProperty("Range", "bytes=" + downloaded + '-');
         conn.setRequestProperty("User-Agent", Daten.getUserAgent());
         conn.setDoInput(true);
         conn.setDoOutput(true);
@@ -251,13 +251,13 @@ public class DirectHttpDownload extends Thread {
                         } else {
                             // ==================================
                             // dann wars das
-                            responseCode = "Responsecode: " + conn.getResponseCode() + "\n" + conn.getResponseMessage();
-                            Log.errorLog(915236798, "HTTP-Fehler: " + conn.getResponseCode() + " " + conn.getResponseMessage());
+                            responseCode = "Responsecode: " + conn.getResponseCode() + '\n' + conn.getResponseMessage();
+                            Log.errorLog(915236798, "HTTP-Fehler: " + conn.getResponseCode() + ' ' + conn.getResponseMessage());
                             SwingUtilities.invokeLater(() -> {
                                 if (!Daten.isAuto()) {
                                     new MeldungDownloadfehler(Daten.getInstance().getMediathekGui(), "URL des Films:\n"
                                             + datenDownload.arr[DatenDownload.DOWNLOAD_URL] + "\n\n"
-                                            + responseCode + "\n", datenDownload).setVisible(true);
+                                            + responseCode + '\n', datenDownload).setVisible(true);
                                 }
                             });
                             state = HttpDownloadState.ERROR;

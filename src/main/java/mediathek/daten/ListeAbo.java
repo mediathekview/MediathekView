@@ -155,7 +155,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
 
     public Datum getDatumForObject(String datum) {
         Datum tmp = new Datum(0);
-        if (!datum.equals("")) {
+        if (!datum.isEmpty()) {
             try {
                 tmp.setTime(new SimpleDateFormat("dd.MM.yyyy").parse(datum).getTime());
             } catch (ParseException ignore) {
