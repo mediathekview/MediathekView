@@ -2,6 +2,8 @@
 
 ORT="build/distributions/"
 
+./gradlew build
+
 echo "Wechsel nach ${ORT}.";
 cd ${ORT};
 echo "Vorhandene Dateien in ${ORT}:";
