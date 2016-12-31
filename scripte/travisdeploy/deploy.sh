@@ -36,3 +36,7 @@ sftp -b $BATCHDATEI -o PubkeyAuthentication=yes -o IdentityFile=$KEYFILE -o Port
 # Aufräumen
 rm $BATCHDATEI $STATUSDATEI
 
+# Deploy zum Nexus Repo
+echo "Deploy zum Nexus Repo repo.mediathekview.de"
+./gradlew release
+
