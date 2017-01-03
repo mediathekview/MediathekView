@@ -30,6 +30,7 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.Messages;
 import mediathek.mac.MediathekGuiMac;
+import mediathek.tool.MVFunctionSys;
 
 import javax.swing.*;
 import java.awt.*;
@@ -242,7 +243,7 @@ public class Main {
                         startMeldungen();
                         SysMsg.sysMsg(LOG_TEXT_SYSTEMMELDUNG);
                         Log.errorLog(100000000, LOG_TEXT_FEHLERMELDUNG);
-                        Log.endMsg();
+                        MVFunctionSys.endMsg();
                         System.exit(0);
                     });
                     break;

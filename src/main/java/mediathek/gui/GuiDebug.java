@@ -31,6 +31,7 @@ import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisten;
+import mediathek.tool.MVFunctionSys;
 
 import javax.swing.*;
 import java.awt.*;
@@ -89,7 +90,7 @@ public class GuiDebug extends JPanel {
             daten.getListeBlacklist().filterListe();
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
         });
-        jButtonFehler.addActionListener(e -> Log.endMsg());
+        jButtonFehler.addActionListener(e -> MVFunctionSys.endMsg());
         jButtonCheck.addActionListener(e -> daten.getListeFilme().check());
 
         jButtonClean.addActionListener(ae -> cleanList());

@@ -23,6 +23,7 @@ import mSearch.Const;
 import mSearch.tool.Functions;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
+import mediathek.config.ErrorCodes;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 
@@ -73,16 +74,7 @@ public class ProgrammUpdateSuchen {
 
                     if (checkForNewerVersion(progInfo.getVersion())) {
                         neueVersion = true;
-                        //TODO beautify this dialog. Looks really ugly.
-                        new DialogHinweisUpdate(null, true, "Eine neue Version liegt vor",
-                                "   ==================================================\n"
-                                        + "   Neue Version:\n" + "   " + progInfo.getVersion() + "\n\n"
-                                        + "   ==================================================\n"
-                                        + "   Änderungen:\n" + "   " + progInfo.getReleaseNotes() + "\n\n"
-                                        + "   ==================================================\n"
-                                        + "   URL:\n"
-                                        + "   " + progInfo.getUpdateUrl() + "\n\n").setVisible(true);
-
+                        displayNotification(progInfo);
                     } else if (anzeigen) {
                         JOptionPane.showMessageDialog(null, "Sie benutzen die neueste Version von MediathekView.", UPDATE_SEARCH_TITLE, JOptionPane.INFORMATION_MESSAGE);
                     }
@@ -91,6 +83,19 @@ public class ProgrammUpdateSuchen {
         }
 
         return neueVersion;
+    }
+
+    private void displayNotification(ServerProgramInformation progInfo) {
+        //TODO beautify this dialog. Looks really ugly.
+        new DialogHinweisUpdate(null, true, "Neue Version verfügbar",
+                "   ==================================================\n"
+                        + "   Neue Version:\n" + "   " + progInfo.getVersion() + "\n\n"
+                        + "   ==================================================\n"
+                        + "   Änderungen:\n" + "   " + progInfo.getReleaseNotes() + "\n\n"
+                        + "   ==================================================\n"
+                        + "   URL:\n"
+                        + "   " + progInfo.getUpdateUrl() + "\n\n").setVisible(true);
+
     }
 
     private void showProgramInformation(boolean showAll) {
@@ -124,7 +129,7 @@ public class ProgrammUpdateSuchen {
                     MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(index));
                 }
             } catch (Exception ex) {
-                Log.errorLog(693298731, ex);
+                Log.errorLog(ErrorCodes.UPDATE_SHOW_PROGRAM_INFORMATION, ex);
             }
         }
     }
@@ -144,7 +149,7 @@ public class ProgrammUpdateSuchen {
                 result = true;
             }
         } catch (NumberFormatException ex) {
-            Log.errorLog(683021193, ex);
+            Log.errorLog(ErrorCodes.UPDATE_CHECK_FOR_NEWER_VERSION, ex);
         }
 
         return result;
@@ -209,6 +214,7 @@ public class ProgrammUpdateSuchen {
             }
             return Optional.of(progInfo);
         } catch (Exception ex) {
+            Log.errorLog(ErrorCodes.UPDATE_RETRIEVE_PROGRAM_INFORMATION, ex);
             return Optional.empty();
         } finally {
             try {

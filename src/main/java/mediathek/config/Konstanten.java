@@ -24,7 +24,7 @@ import mSearch.tool.Functions;
 public class Konstanten {
 
     public static final String PROGRAMMNAME = "MediathekView";
-    public static final String USER_AGENT_DEFAULT = Konstanten.PROGRAMMNAME + " " + Functions.getBuildNr();
+    public static final String USER_AGENT_DEFAULT = Konstanten.PROGRAMMNAME + ' ' + Functions.getBuildNr();
     public static final String CONFIG_FILE = "mediathek.xml";
     public static final String CONFIG_FILE_COPY = "mediathek.xml_copy_";
     public static final String FILE_ERLEDIGTE_ABOS = "downloadAbos.txt";
@@ -67,5 +67,4 @@ public class Konstanten {
 
     public static final int UPDATE_FILME_AUS = 0; // nur manuell + URL manuell wählen
     public static final int UPDATE_FILME_AUTO = 2; // beim Start automatisch + manuell, Url automatisch wählen
-
 }
