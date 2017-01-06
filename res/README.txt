@@ -10,8 +10,7 @@ im Ordner "Info" in der Datei: README.txt
 MediathekView startet nicht:
 -------------------------------
 
-http://sourceforge.net/p/zdfmediathk/wiki/FAQ/
-http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/
+https://github.com/mediathekview/MediathekView/wiki
 
 * Java ist nicht oder nicht in der richtigen Version installiert (Java8). Zum 
   Java-Download: http://java.com/de/
@@ -22,14 +21,12 @@ http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/
 * ZIP-Datei nicht entpackt (Windows): Die Programmdatei wurde direkt im 
   ZIP-Archiv doppelgeklickt. Die ZIP-Datei muss erst entpackt werden, dazu sind 
   alle Dateien aus dem ZIP-Archiv in ein beliebiges Verzeichnis zu kopieren. Dort 
-  kann dann die Programmdatei "MediathekView__Start.exe" doppelgeklickt werden.
+  kann dann die Programmdatei "MediathekView.exe" doppelgeklickt werden.
 
 * Benötigte Dateien wurden aus dem Programm-Ordner gelöscht (Windows) Die 
   benötigten Java-Bibliotheken (libs) oder die Hilfsprogramm (im Ordner "bin") 
   fehlen, da Dateien aus dem MediathekView-Programmordner gelöscht oder verschoben 
   wurden, ->dann eine Neuinstallation.
-
-* Für Windows gibt noch weitere Infos im Ordner "Windows"
 
 ============================================================
 
