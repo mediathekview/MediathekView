@@ -1,7 +1,7 @@
 
 ==============================================================    
 Weitere Infos im Wiki:
-http://sourceforge.net/p/zdfmediathk/wiki/Anleitung
+https://github.com/mediathekview/MediathekView/wiki
 ==============================================================    
 
 Das Programm MediathekView durchsucht die Online-Mediatheken verschiedener 
@@ -23,7 +23,7 @@ ZIP-Datei ist quasi die Installation:
 - die heruntergeladene ZIP-Datei in einen Ordner entpacken
 - den entpackten Ordner ins Benutzerverzeichnis verschieben
 - den eben verschobenen MediathekView-Ordner öffnen, 
-	die Datei "MediathekView__Start.exe" ansteuern und per Rechtsklick in "Senden an"
+	die Datei "MediathekView.exe" ansteuern und per Rechtsklick in "Senden an"
 	eine Verknüpfung auf den Desktop legen. Von dort aus kann MediathekView 
 	dann jeweils gestartet werden.
 - die ZIP-Datei kann nach dem Entpacken gelöscht werden
@@ -35,7 +35,7 @@ http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/#mac
 *Linux
 MediathekView wird nicht installiert; das Entpacken der heruntergeladenen 
 ZIP-Datei ist quasi die Installation.
-http://sourceforge.net/p/zdfmediathk/wiki/Linux/#manuelle-installation
+https://github.com/mediathekview/MediathekView/wiki/Installation:-Linux
 
 
 
@@ -44,18 +44,18 @@ http://sourceforge.net/p/zdfmediathk/wiki/Linux/#manuelle-installation
 ---------------------------------------------------------------------------
 Starten
 ---------------------------------------------------------
-Für Windows (MediathekView__Start.exe), Linux (MediathekView__Linux.sh) sind eigene 
+Für Windows (MediathekView.exe), Linux (MediathekView.sh) sind eigene 
 
 Startdateien enthalten, mit welchen MediathekView direkt gestartet werden kann. 
 
 Für OS X 10.7.3 und neuer besteht eine eigenständige Applikation (MediathekView.app);
-für OS X 10.6 liegt die Startdatei "MediathekView__Mac_Start.command" vor.
+für OS X 10.6 liegt die Startdatei "MediathekView.command" vor.
 
 
 Ansonsten kann man die Programmdatei auch so starten:
 Windows: Doppelklick auf "MediathekView.jar"
 Linux (in der Konsole): java -jar MediathekView.jar
-OS X: Doppelklick auf die separate Startdatei "MediathekView__Mac_Start.command"
+OS X: Doppelklick auf die separate Startdatei "MediathekView.command"
     oder via Terminalbefehl: java -jar MediathekView.jar
     (beide Varianten stehen nur zur Verfügung, wenn man die ZIP-Datei ohne die 
     Angabe "OSX" im Dateinamen heruntergeladen hat)
@@ -85,7 +85,7 @@ Das Programm gibt nur die Versionsnummer aus.
 Starten im portablen Modus (MediathekView Portable)
 ---------------------------------------------------------
 Weitere Infos im Wiki:
-http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/#starten
+https://github.com/mediathekview/MediathekView/wiki/Bedienung:-Starten-von-MediathekView
 
 
 
@@ -188,25 +188,18 @@ ctrl + t	springt in die Tabelle
 ---------------------------------------------------------------------------
 Build
 ---------------------------------------------------------
-Wer das Programm selbst übersetzten will, sollte sich Netbeans installieren:
-http://www.netbeans.org/
+Seihe: 
+https://github.com/mediathekview/MediathekView/wiki/Entwicklung
 
-Die Quelltexte gibt es hier (Repository: MediathekView):
-https://github.com/xaverW
+bauen: (Zip ist in build/destinations/)
+./gradlew build
 
-In Netbeans ein neues Projekt "with existing Sources" anlegen und den Ordner mit 
-den Quelltexten ("src") importieren.
-
-Es müssen noch die benötigten Libs importiert werden:
-(im Ordner "libs")
-
-Dann kann das Projekt übersetzt und gestartet werden.
-
+bauen und starten:
+./gradlew run
 
 --------------------------------------------------------------------------------
-Die Windows-Startdatei "MediathekView__Start.exe" wurde mit:
+Die Windows-Startdatei "MediathekView.exe" wurde mit:
 ++ Launch4j ++ (Cross-platform Java application wrapper, 
-http://launch4j.sourceforge.net )
-erstellt. Das Config-File dafür ist "launch4j.xml"
+http://launch4j.sourceforge.net ) erstellt.
 --------------------------------------------------------------------------------
 
