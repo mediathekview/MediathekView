@@ -7,7 +7,7 @@ dist/javadoc
 .project
 .settings/
 *.build
-*.exe
+MediathekView.exe
 res/Icons/Sender
 /.idea/
 /.nb-gradle/
