@@ -1,8 +1,10 @@
 /*    
  *    MediathekView
- *    Copyright (C) 2008   W. Xaver
- *    W.Xaver[at]googlemail.com
- *    http://zdfmediathk.sourceforge.net/
+ *    Copyright (C) 2008-2016   W. Xaver
+ *    Copyright (C) 2016        MediathekView-Team
+ *    info@mediathekview.de
+ *    https://zdfmediathek.de/
+ *    https://github.com/mediathekview/MediathekView
  *    
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -18,6 +20,45 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+    # Version 13.0.1
+    - Hotfix: ffmpeg.exe und flvstreamer.exe wieder zu den Binarys hinzugefügt.
+    
+    # Version 13.0.0
+    Erweitertes Team für MedaithekView
+    Änderung der Serverstruktur
+    Neuer Webauftritt
+    
+    -Binarys von ffmpeg und flvstreamer entfernt! Bitte dran denken Sie selber zu installieren. Downloadlinks: ffmpeg und flvstreamer
+    -Button “Blacklist” beim Start an/aus
+    -Icon in Tabs: Beim Tabwechsel wurde es nicht aktualisiert
+    -Programmpaket “zip”: es ist jetzt alles in einem Ordner mit der Versionsnummer, kann also direkt entpackt werden, muss vorher kein Ordner mehr angelegt werden
+    -md5 und sha1 Prüfsummen im Verzeichnis “Info”
+    -“del” Taste zum Löschen von Abos im Tab Abo geht wieder
+    -die interne Verarbeitung der Einstellungen ist überarbeitet, (Farben müssen neu eingerichtet werden),
+    -Restart der Downloads (nur direkte Downloads die das Programm selbst abwickelt) einmal wird direkt beim Download mehrmals neu gestartet (10x), wenns nicht klappt, werden nach Abschluss aller Downloads die fehlerhaften einzeln! nochmal versucht (5x). Wie sich die Anzahl der Versuche bewährt, muss mal mal sehen.
+    -Systemparameter lassen sich (nur) im Konfig-File ändern, auch eine Erklärung ist mit dabei
+    -Anzahl Button (Tab Filme) lässt sich einstellen, rechte Mausstaste in dem Panel und dann auswählen (4-10 möglich)
+    -OS X: HD-URL kopieren: strg-shift + h OS-X: cmd-shift + h :)
+    -Dialog Bandbreite/Filminfo können mit Klick rechte Maus Randlos und nicht mehr onTop angezeigt werden
+    -Downloadfortschritt wird im Terminal ausgegeben (kann mit Systemparameter abgeschaltet werden)
+    -Filter “nur UT”
+    -Tab Filme: mehrere Downloads lassen sich gemeinsam starten
+    -Filter max Dauer: der Filter Dauer kann jetzt Mindest- oder Maxdauer sein, ist auch im Abo möglich, alte Einstellungen “Dauer” sollten als “min” erhalten bleiben
+    -am Ende eines Downloads wird im Feld “Bandbreite” die Durchschnittsbandbreite des gesamten Downloads angezeigt
+    -schnelleres Suchen von Downloads bei sehr langen Downloadlisten (Faktor 5 schneller)
+    -Einstellungen zu Downloads (Bandbreite, max Anzahl) und Filter können im Tab Download eingeblendet werden (Button in der Toolbar wie im Tab Filme)
+    -die Sortierung der Tabelle (Tab Filme) wird im Filter mit gespeichert
+    -Sicherheitsabfrage vor dem Löschen der Blacklist, History, erledigte Abos
+    -Filter im Tab Download und Tab Abos
+    -Tab Abo: Ändern geht jetzt auch gleichzeitig von mehren Abos
+    -OSX Fullscreen support
+    -Help Menü/Dialog überarbeitet
+    -viele Performaceverbesserungen bei manchen Funktionen
+    -Umstellung des Buildsystems auf gradle
+    -Viele Links im Programm auf die neuen URLs getauscht
+
+    
 
 	# Version 12
 	AB JETZT --> Wechsel auf Java 8
