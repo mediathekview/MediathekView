@@ -13,6 +13,8 @@ KEYFILE="scripte/deploy/deploy.key"
 # Deploy zum Nexus Repo
 echo "Deploy zum Nexus Repo repo.mediathekview.de"
 ./gradlew release
+rm ${LOCAL}/MediathekView-*.tar;
+rm ${LOCAL}/MediathekView-*.tar.SHA-1;
 
 echo "Deploy zu Hauptserver";
 # Rechte am Key nur dem Benutzer geben, ansonsten meckert ssh
