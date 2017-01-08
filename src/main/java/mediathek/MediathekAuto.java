@@ -29,7 +29,6 @@ import mediathek.config.MVConfig;
 import mediathek.controller.IoXmlLesen;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.MVFilmSize;
-import mediathek.tool.MVFunctionSys;
 
 import java.awt.*;
 import java.io.File;
@@ -174,7 +173,7 @@ public class MediathekAuto {
             Log.errorLog(769325469, ex);
         }
         daten.allesSpeichern();
-        MVFunctionSys.endMsg();
+        Log.endMsg();
         System.exit(0);
     }
 }

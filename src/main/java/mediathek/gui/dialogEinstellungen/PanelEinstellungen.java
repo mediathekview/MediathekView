@@ -20,30 +20,30 @@
 package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Frame;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.ArrayList;
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
-import mediathek.update.ProgrammUpdateSuchen;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVMessageDialog;
+import mediathek.update.ProgrammUpdateSuchen;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class PanelEinstellungen extends PanelVorlage {
     private final static String ICONSET_STANDARD = "Standard";
-    private final String ALLE = " Alle ";
+    private final static String ALLE = " Alle ";
 
     public PanelEinstellungen(Daten d, JFrame parent) {
         super(d, parent);
@@ -63,12 +63,12 @@ public class PanelEinstellungen extends PanelVorlage {
         });
         setupLookAndFeelComboBox();
         jButtonHelpDays.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHelpDays.addActionListener(e -> new DialogHilfe(parentComponent, true, "\n"
+        jButtonHelpDays.addActionListener(e -> new DialogHilfe(parentComponent, true, '\n'
                 + "Es werden nur Filme der letzten\n"
                 + "xx Tage geladen."
-                + "\n"
+                + '\n'
                 + "Bei \"Alle\" werden alle Filme geladen.\n"
-                + "\n"
+                + '\n'
                 + "(Eine kleinere Filmliste\n"
                 + "kann bei Rechnern mit wenig\n"
                 + "Speicher hilfreich sein.)"
@@ -154,7 +154,7 @@ public class PanelEinstellungen extends PanelVorlage {
     }
 
     private void initSpinner() {
-        if (MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE).equals("")) {
+        if (MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE).isEmpty()) {
             MVConfig.add(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE, "0");
         }
         String s = MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE);
@@ -182,7 +182,7 @@ public class PanelEinstellungen extends PanelVorlage {
                     idx = i;
                 }
             }
-            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(themeList.toArray(new String[0]));
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(themeList.toArray(new String[themeList.size()]));
             jComboBoxLookAndFeel.setModel(model);
             jComboBoxLookAndFeel.setSelectedIndex(idx);
 
@@ -237,7 +237,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jComboBoxIcons.setModel(model);
 
         if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ICON_STANDARD))) {
-            if (!MVConfig.get(MVConfig.Configs.SYSTEM_ICON_PFAD).equals("")) {
+            if (!MVConfig.get(MVConfig.Configs.SYSTEM_ICON_PFAD).isEmpty()) {
                 File f = new File(MVConfig.get(MVConfig.Configs.SYSTEM_ICON_PFAD));
                 jComboBoxIcons.setSelectedItem(f.getName());
             }

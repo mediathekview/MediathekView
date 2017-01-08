@@ -1083,7 +1083,7 @@ public class MediathekGui extends JFrame {
         // FilterFrame
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_FILTER, Daten.guiFilme.mVFilterFrame);
         daten.allesSpeichern();
-        MVFunctionSys.endMsg();
+        Log.endMsg();
         Duration.printCounter();
 
         if (shutDown) {

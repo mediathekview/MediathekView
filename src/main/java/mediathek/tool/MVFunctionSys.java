@@ -19,7 +19,6 @@
  */
 package mediathek.tool;
 
-import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Functions;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
@@ -29,18 +28,12 @@ import mediathek.config.Konstanten;
 
 import java.io.File;
 import java.security.CodeSource;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import static mSearch.tool.Log.*;
+import static mSearch.tool.Log.LILNE;
 
 public class MVFunctionSys {
-
-    private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-    private static final long TO_MEGABYTE = 1000L * 1000L;
-
     public static void startMeldungen() {
-        versionMsg(MVFunctionSys.getProgName());
+        Log.versionMsg(MVFunctionSys.getProgName());
         SysMsg.sysMsg("Programmpfad: " + MVFunctionSys.getPathJar());
         SysMsg.sysMsg("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
         SysMsg.sysMsg("");
@@ -49,81 +42,6 @@ public class MVFunctionSys {
         SysMsg.sysMsg("");
     }
 
-    private static void versionMsg(String progName) {
-        if (!SystemInfo.isMacOSX()) {
-            sysLog("");
-            sysLog("");
-            sysLog("");
-            sysLog("");
-            sysLog("");
-            sysLog("___  ___         _ _       _   _          _    _   _ _               ");
-            sysLog("|  \\/  |        | (_)     | | | |        | |  | | | (_)              ");
-            sysLog("| .  . | ___  __| |_  __ _| |_| |__   ___| | _| | | |_  _____      __");
-            sysLog("| |\\/| |/ _ \\/ _` | |/ _` | __| '_ \\ / _ \\ |/ / | | | |/ _ \\ \\ /\\ / /");
-            sysLog("| |  | |  __/ (_| | | (_| | |_| | | |  __/   <\\ \\_/ / |  __/\\ V  V / ");
-            sysLog("\\_|  |_/\\___|\\__,_|_|\\__,_|\\__|_| |_|\\___|_|\\_\\\\___/|_|\\___| \\_/\\_/  ");
-            sysLog("");
-            sysLog("");
-        }
-        sysLog(LILNE);
-        sysLog("Programmstart: " + dateFormatter.format(Log.startZeit));
-        sysLog(LILNE);
-        sysLog("");
-        final long totalMem = Runtime.getRuntime().totalMemory();
-        sysLog("totalMemory: " + totalMem / TO_MEGABYTE + " MB");
-        final long maxMem = Runtime.getRuntime().maxMemory();
-        sysLog("maxMemory: " + maxMem / TO_MEGABYTE + " MB");
-        final long freeMem = Runtime.getRuntime().freeMemory();
-        sysLog("freeMemory: " + freeMem / TO_MEGABYTE + " MB");
-        sysLog("");
-        sysLog(LILNE);
-        sysLog("");
-        //Version
-        sysLog(progName + Functions.getProgVersionString());
-        String compile = Functions.getCompileDate();
-        if (!compile.isEmpty()) {
-            sysLog("Compiled: " + compile);
-        }
-        sysLog("");
-        sysLog(LILNE);
-        sysLog("");
-        sysLog("Java");
-        final String[] java = Functions.getJavaVersion();
-        for (String ja : java) {
-            sysLog(ja);
-        }
-        sysLog("");
-    }
-
-    public static void endMsg() {
-        sysLog("");
-        sysLog("");
-        sysLog("");
-        sysLog("");
-
-        printErrorMsg().forEach(Log::sysLog);
-
-        // Laufzeit ausgeben
-        Date stopZeit = new Date(System.currentTimeMillis());
-        int minuten;
-        try {
-            minuten = Math.round((stopZeit.getTime() - Log.startZeit.getTime()) / (1000 * 60));
-        } catch (Exception ex) {
-            minuten = -1;
-        }
-        sysLog("");
-        sysLog("");
-        sysLog(LILNE);
-        sysLog("   --> Beginn: " + dateFormatter.format(Log.startZeit));
-        sysLog("   --> Fertig: " + dateFormatter.format(stopZeit));
-        sysLog("   --> Dauer[Min]: " + (minuten == 0 ? "<1" : minuten));
-        sysLog(LILNE);
-        sysLog("");
-        sysLog("   und Tschuess");
-        sysLog("");
-        sysLog("");
-        sysLog(LILNE);
-    }
 
     /**
      * Retrieve the path to the program jar file.
