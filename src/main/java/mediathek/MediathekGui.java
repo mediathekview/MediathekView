@@ -32,17 +32,25 @@ import mediathek.controller.ProgStart;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.*;
+import mediathek.gui.actions.ResetSettingsAction;
+import mediathek.gui.actions.ShowAboutDialogAction;
+import mediathek.gui.actions.ShowOnlineHelpAction;
+import mediathek.gui.actions.WriteProtocolFileAction;
 import mediathek.gui.bandwidth.IBandwidthMonitor;
 import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
-import mediathek.gui.dialog.*;
+import mediathek.gui.dialog.DialogBeenden;
+import mediathek.gui.dialog.DialogLeer;
+import mediathek.gui.dialog.DialogMediaDB;
+import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.filmInformation.MVFilmInformationLWin;
 import mediathek.res.GetIcon;
-import mediathek.tool.*;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.MVFont;
+import mediathek.tool.MVFrame;
+import mediathek.tool.MVMessageDialog;
 import mediathek.update.CheckUpdate;
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -55,8 +63,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.util.logging.Level;
 
 import static mSearch.tool.Functions.getOs;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
@@ -141,6 +147,9 @@ public class MediathekGui extends JFrame {
 
     public MediathekGui(String... aArguments) {
         super();
+
+        aboutAction = new ShowAboutDialogAction(this);
+
         splashScreenManager = new SplashScreenManager();
         splashScreenManager.initializeSplashScreen();
 
@@ -176,10 +185,8 @@ public class MediathekGui extends JFrame {
         Duration.staticPing(LOG_TEXT_INIT_GUI);
         initializeSettingsDialog();
 
-
         addListener();
         setSearchKeyForMac();
-
 
         setFocusSuchfeld();
 
@@ -381,7 +388,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void setOrgTitel() {
-        this.setTitle(Konstanten.PROGRAMMNAME + " " + Functions.getBuildNr());
+        this.setTitle(Konstanten.PROGRAMMNAME + ' ' + Functions.getBuildNr());
     }
 
     private void setSize() {
@@ -623,7 +630,7 @@ public class MediathekGui extends JFrame {
                 }
             }
             String s = jTabbedPane.getTitleAt(i);
-            JLabel lbl = makeLable(s, ic);
+            JLabel lbl = makeLabel(s, ic);
             if (icon) {
                 jTabbedPane.setTabComponentAt(i, lbl);
             } else {
@@ -634,7 +641,7 @@ public class MediathekGui extends JFrame {
 //            jTabbedPane.updateUI();
     }
 
-    private JLabel makeLable(String text, ImageIcon ic) {
+    private JLabel makeLabel(String text, ImageIcon ic) {
         JLabel lbl = new JLabel(text);
 
         lbl.setBorder(null);
@@ -658,69 +665,6 @@ public class MediathekGui extends JFrame {
         return lbl;
     }
 
-//    private void setSlider() {
-//        MVBandwidthMonitorLWin.setSliderBandwith(jSliderBandbreite, null, null);
-//        setSliderText();
-//    }
-//
-//    private void setSliderText() {
-//        String s = MVBandwidthMonitorLWin.getTextBandwith();
-//        s = " [" + s + "]: ";
-//        while (s.length() < 20) {
-//            s = s + " ";
-//        }
-//        jLabelBandbreite.setText("Bandbreite pro Download" + s);
-//    }
-
-//    protected void setupBandwidthMenuItem() {
-//        // Bandbreite pro Downloads
-//        jPanelBandbreite.setLayout(new BorderLayout());
-//        jPanelBandbreite.setBorder(new EmptyBorder(3, 5, 3, 5));
-//        jPanelBandbreite.add(jLabelBandbreite, BorderLayout.WEST);
-//        jPanelBandbreite.add(jSliderBandbreite, BorderLayout.EAST);
-//        jLabelBandbreite.setIcon(Icons.ICON_MENUE_DOWNLOAD_BANDWITH);
-//        jSliderBandbreite.setMinimum(5); //50 kByte/s
-//        jSliderBandbreite.setMaximum(100); //1.000 kByte/s
-//        setSlider();
-//        jSliderBandbreite.addChangeListener(e -> {
-//            int bandbreiteKByte = jSliderBandbreite.getValue() * 10;
-//            MVConfig.add(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE, String.valueOf(bandbreiteKByte));
-//            setSliderText();
-//            Listener.notify(Listener.EREIGNIS_BANDBREITE, MediathekGui.class.getSimpleName());
-//        });
-//        Listener.addListener(new Listener(Listener.EREIGNIS_BANDBREITE, MediathekGui.class.getSimpleName()) {
-//            @Override
-//            public void ping() {
-//                setSlider();
-//            }
-//        });
-//        jMenuDownload.add(jPanelBandbreite);
-//    }
-
-//    protected void setupMaximumNumberOfDownloadsMenuItem() {
-//        // Anzahl gleichzeitiger Downloads
-//        jSpinnerAnzahl.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)));
-//
-//        jMenuDownload.add(new javax.swing.JPopupMenu.Separator());
-//        jPanelAnzahl.setLayout(new BorderLayout());
-//        jPanelAnzahl.setBorder(new EmptyBorder(3, 5, 3, 5));
-//        jPanelAnzahl.add(jLabelAnzahl, BorderLayout.WEST);
-//        jPanelAnzahl.add(jSpinnerAnzahl, BorderLayout.EAST);
-//        jLabelAnzahl.setIcon(Icons.ICON_MENUE_UP_DOWN);
-//        jSpinnerAnzahl.addChangeListener(e -> {
-//            MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD,
-//                    String.valueOf(((Number) jSpinnerAnzahl.getModel().getValue()).intValue()));
-//            Listener.notify(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
-//        });
-//        Listener.addListener(new Listener(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
-//            @Override
-//            public void ping() {
-//                jSpinnerAnzahl.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)));
-//            }
-//        });
-//        jMenuDownload.add(jPanelAnzahl);
-//    }
-
     protected void initMenue() {
         setCbBeschreibung();
         if (Functions.getOs() != Functions.OperatingSystemType.MAC) {
@@ -731,17 +675,11 @@ public class MediathekGui extends JFrame {
         }
         setMenuIcons();
 
-
-        //        setupMaximumNumberOfDownloadsMenuItem();
-//        setupBandwidthMenuItem();
         initializeDateiMenu();
         initializeFilmeMenu();
         initializeDownloadsMenu();
         initializeAboMenu();
         initializeAnsichtMenu();
-
-
-
 
         // Hilfe
         setupHelpMenu();
@@ -805,6 +743,7 @@ public class MediathekGui extends JFrame {
         jMenuItemSchriftGr.addActionListener(e -> MVFont.setFontSize(true));
         jMenuItemSchriftKl.addActionListener(e -> MVFont.setFontSize(false));
         jMenuItemSchriftNormal.addActionListener(e -> MVFont.resetFontSize());
+
         initializeAnsichtFilter();
         initializeAnsichtDownloads();
         initializeAnsichtAbos();
@@ -847,13 +786,11 @@ public class MediathekGui extends JFrame {
 
     protected void setupHelpMenu()
     {
-        jMenuItemResetSettings.addActionListener(e ->
-        {
-            ResetSettingsDialog dialog = new ResetSettingsDialog(this, daten);
-            GuiFunktionen.centerOnScreen(dialog, false);
-            dialog.setVisible(true);
-        });
+        jMenuItemShowOnlineHelp.setAction(new ShowOnlineHelpAction(this));
+        jMenuItemCreateProtocolFile.setAction(new WriteProtocolFileAction(this));
+        jMenuItemResetSettings.setAction(new ResetSettingsAction(this, daten));
     }
+
     private void initializeAnsichtAbos()
     {
         //Ansicht Abos
@@ -865,52 +802,10 @@ public class MediathekGui extends JFrame {
             initFrames();
         });
 
-        jMenuItemShowOnlineHelp.setIcon(Icons.ICON_MENUE_HELP);
-        jMenuItemShowOnlineHelp.addActionListener(e -> {
-            if (Desktop.isDesktopSupported()) {
-                Desktop d = Desktop.getDesktop();
-                try {
-                    if (d.isSupported(Desktop.Action.BROWSE)) {
-                        d.browse(new URI(Konstanten.ADRESSE_ONLINE_HELP));
-                    }
-                } catch (Exception ex) {
-                    final ErrorInfo info = new ErrorInfo("Online-Hilfe",
-                            "<html>Es trat ein Fehler beim Öffnen der Online-Hilfe auf.<br>" +
-                                    "Sollte dieser häufiger auftreten kontaktieren Sie bitte " +
-                                    "das Entwicklerteam.</html>",
-                            null,
-                            null,
-                            ex,
-                            Level.SEVERE,
-                            null);
-                    JXErrorPane.showDialog(daten.getMediathekGui(), info);
-                }
-            }
-        });
-
-        jMenuItemCreateProtocolFile.addActionListener(e -> {
-            DialogZiel dialog = new DialogZiel(this, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek.log", "Logdatei speichern");
-            dialog.setVisible(true);
-            if (!dialog.ok) {
-                return;
-            }
-            if (!Logfile.LogDateiSchreiben(dialog.ziel, MVFunctionSys.getProgVersionString(), Daten.getSettingsDirectory_String(), Daten.listePset.getListProg(), MVConfig.getAll())) {
-                MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!", "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        jMenuItemAboutApplication.addActionListener(e -> showAboutDialog());
+        jMenuItemAboutApplication.setAction(aboutAction);
     }
 
-    /**
-     * Display the About Box
-     */
-    protected void showAboutDialog() {
-        AboutDialog aboutDialog = new AboutDialog(this);
-        GuiFunktionen.centerOnScreen(aboutDialog, false);
-        aboutDialog.setVisible(true);
-        aboutDialog.dispose();
-    }
+    protected Action aboutAction = null;
 
     private void initializeAnsichtDownloads()
     {
@@ -1031,26 +926,7 @@ public class MediathekGui extends JFrame {
         jMenuItemAboNeu.setIcon(Icons.ICON_MENUE_ABO_NEU);
     }
 
-    public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
-        if (daten.getListeDownloads().nochNichtFertigeDownloads() > 0) {
-            // erst mal prüfen ob noch Downloads laufen
-            DialogBeenden dialogBeenden = new DialogBeenden(this);
-            if (showOptionTerminate) {
-                dialogBeenden.setComboWaitAndTerminate();
-            }
-            dialogBeenden.setModal(true);
-            dialogBeenden.setVisible(true);
-            if (!dialogBeenden.applicationCanTerminate()) {
-                return false;
-            }
-            shutDown = dialogBeenden.isShutdownRequested();
-        }
-        // Tabelleneinstellungen merken
-        daten.guiFilme.tabelleSpeichern();
-        daten.guiDownloads.tabelleSpeichern();
-        daten.guiAbo.tabelleSpeichern();
-        daten.getDialogMediaDB().tabelleSpeichern();
-
+    private void stopAllDownloads() {
         if (daten.getListeDownloads() != null) {
             // alle laufenden Downloads/Programme stoppen
             for (DatenDownload download : daten.getListeDownloads()) {
@@ -1060,12 +936,17 @@ public class MediathekGui extends JFrame {
                 }
             }
         }
-        if (this.getExtendedState() == JFrame.MAXIMIZED_BOTH) {
+    }
+
+    private void saveWindowState() {
+        if (getExtendedState() == JFrame.MAXIMIZED_BOTH) {
             MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_MAX, Boolean.TRUE.toString());
         } else {
             MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_MAX, Boolean.FALSE.toString());
         }
+    }
 
+    private void writeWindowSizes() {
         // Hauptfenster
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_GUI, this);
         // Dialog Einstellungen
@@ -1082,17 +963,57 @@ public class MediathekGui extends JFrame {
 
         // FilterFrame
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_FILTER, Daten.guiFilme.mVFilterFrame);
+    }
+
+    private void writeTabSettings() {
+        // Tabelleneinstellungen merken
+        daten.guiFilme.tabelleSpeichern();
+        daten.guiDownloads.tabelleSpeichern();
+        daten.guiAbo.tabelleSpeichern();
+        daten.getDialogMediaDB().tabelleSpeichern();
+    }
+
+    /**
+     * Quit the MediathekView application
+     *
+     * @param showOptionTerminate show options dialog when downloads are running
+     * @param shutDown            try to shutdown the computer if requested
+     * @return
+     */
+    public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
+        if (daten.getListeDownloads().nochNichtFertigeDownloads() > 0) {
+            // erst mal prüfen ob noch Downloads laufen
+            DialogBeenden dialogBeenden = new DialogBeenden(this);
+            if (showOptionTerminate) {
+                dialogBeenden.setComboWaitAndTerminate();
+            }
+            dialogBeenden.setModal(true);
+            dialogBeenden.setVisible(true);
+            if (!dialogBeenden.applicationCanTerminate()) {
+                return false;
+            }
+            shutDown = dialogBeenden.isShutdownRequested();
+        }
+
+        writeTabSettings();
+
+        stopAllDownloads();
+
+        saveWindowState();
+
+        writeWindowSizes();
+
         daten.allesSpeichern();
+
         Log.endMsg();
         Duration.printCounter();
 
-        if (shutDown) {
+        if (shutDown)
             shutdownComputer();
-        }
 
         dispose();
         System.exit(0);
-    return false;
+        return false;
     }
 
     /**

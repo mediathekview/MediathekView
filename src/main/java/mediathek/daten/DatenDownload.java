@@ -26,11 +26,12 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
+import mediathek.tool.FormatterUtil;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFilmSize;
+import org.apache.commons.lang3.time.FastDateFormat;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -54,8 +55,6 @@ public final class DatenDownload extends MVData<DatenDownload> {
     public static final String ART_PROGRAMM_TXT = "Programm";
 
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
-    private static final SimpleDateFormat sdf_datum_zeit = new SimpleDateFormat("dd.MM.yyyyHH:mm:ss");
-    private static final SimpleDateFormat sdf_datum = new SimpleDateFormat("dd.MM.yyyy");
 
     public static final int DOWNLOAD_NR = 0;
     public static final int DOWNLOAD_FILM_NR = 1;// nur ein Platzhalter für: "film.nr"
@@ -289,7 +288,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
 
     public static void startenDownloads(Daten ddaten, ArrayList<DatenDownload> downloads) {
         // Start erstellen und zur Liste hinzufügen
-        String zeit = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+        String zeit = FormatterUtil.FORMATTER_ddMMyyyy.format(new Date());
         LinkedList<MVUsedUrl> urlList = new LinkedList<>();
         for (DatenDownload d : downloads) {
             d.start = new Start();
@@ -692,19 +691,19 @@ public final class DatenDownload extends MVData<DatenDownload> {
     }
 
     private String getJetzt_HHMMSS() {
-        return new SimpleDateFormat("HHmmss").format(new Date());
+        return FastDateFormat.getInstance("HHmmss").format(new Date());
     }
 
     private String getJetzt_HH_MM_SS() {
-        return new SimpleDateFormat("HH:mm:ss").format(new Date());
+        return FormatterUtil.FORMATTER_HHmmss.format(new Date());
     }
 
     private String getHeute_yyyyMMdd() {
-        return new SimpleDateFormat("yyyyMMdd").format(new Date());
+        return FormatterUtil.FORMATTER_yyyyMMdd.format(new Date());
     }
 
     private String getHeute_yyyy_MM_dd() {
-        return new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+        return FormatterUtil.FORMATTER_ddMMyyyy.format(new Date());
     }
 
     private static String getDMY(String s, String datum) {
@@ -804,9 +803,9 @@ public final class DatenDownload extends MVData<DatenDownload> {
         if (!arr[DatenDownload.DOWNLOAD_DATUM].equals("")) {
             try {
                 if (!arr[DatenDownload.DOWNLOAD_ZEIT].equals("")) {
-                    tmp.setTime(sdf_datum_zeit.parse(arr[DatenDownload.DOWNLOAD_DATUM] + arr[DatenDownload.DOWNLOAD_ZEIT]).getTime());
+                    tmp.setTime(FormatterUtil.FORMATTER_ddMMyyyyHHmmss.parse(arr[DatenDownload.DOWNLOAD_DATUM] + arr[DatenDownload.DOWNLOAD_ZEIT]).getTime());
                 } else {
-                    tmp.setTime(sdf_datum.parse(arr[DatenDownload.DOWNLOAD_DATUM]).getTime());
+                    tmp.setTime(FormatterUtil.FORMATTER_ddMMyyyy.parse(arr[DatenDownload.DOWNLOAD_DATUM]).getTime());
                 }
             } catch (Exception ex) {
                 Log.errorLog(649897321, ex,

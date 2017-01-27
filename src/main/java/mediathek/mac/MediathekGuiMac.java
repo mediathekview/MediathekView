@@ -6,6 +6,7 @@ import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
+import mediathek.gui.actions.ShowAboutDialogAction;
 import mediathek.gui.bandwidth.MVBandwidthMonitorOSX;
 import mediathek.gui.filmInformation.MVFilmInformationOSX;
 
@@ -20,7 +21,6 @@ import java.net.URL;
 
 @SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
-
     private final Daten daten;
     /**
      * Repaint-Thread for progress indicator on OS X.
@@ -29,6 +29,7 @@ public class MediathekGuiMac extends MediathekGui {
 
     public MediathekGuiMac(String[] ar) {
         super(ar);
+        aboutAction = new ShowAboutDialogAction(this);
         daten = Daten.getInstance();
         //Window must be fully initialized to become fullscreen cadidate...
         setWindowFullscreenCapability();
@@ -118,13 +119,25 @@ public class MediathekGuiMac extends MediathekGui {
         });
     }
 
+    private void setupDockIcon() {
+        //setup the MediathekView Dock Icon
+        try {
+            final Application application = Application.getApplication();
+            final URL url = this.getClass().getResource("/mediathek/res/MediathekView.png");
+            final BufferedImage appImage = ImageIO.read(url);
+            application.setDockIconImage(appImage);
+        } catch (IOException ex) {
+            Log.errorLog(165623698, "OS X Application image could not be loaded");
+        }
+    }
+
     /**
      * Setup the UI for OS X
      */
     private void setupUserInterfaceForOsx() {
         final Application application = Application.getApplication();
         application.disableSuddenTermination();
-        application.setAboutHandler(aboutEvent -> showAboutDialog());
+        application.setAboutHandler(aboutEvent -> aboutAction.actionPerformed(null));
         application.setPreferencesHandler(preferencesEvent -> showSettingsDialog());
         application.setQuitHandler((quitEvent, quitResponse) -> {
             if (!beenden(false, false)) {
@@ -134,14 +147,7 @@ public class MediathekGuiMac extends MediathekGui {
             }
         });
 
-        //setup the MediathekView Dock Icon
-        try {
-            final URL url = this.getClass().getResource("/mediathek/res/MediathekView.png");
-            final BufferedImage appImage = ImageIO.read(url);
-            application.setDockIconImage(appImage);
-        } catch (IOException ex) {
-            Log.errorLog(165623698, "OS X Application image could not be loaded");
-        }
+        setupDockIcon();
 
         //Remove all menu items which don´t need to be displayed due to OS X´s native menu support
         if (SystemInfo.isMacOSX()) {

@@ -35,12 +35,12 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
+import mediathek.tool.FormatterUtil;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -234,7 +234,7 @@ public class FilmeLaden {
 
         // wenn nur ein Update
         if (!diffListe.isEmpty()) {
-            SysMsg.sysMsg("Liste Diff gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+            SysMsg.sysMsg("Liste Diff gelesen am: " + FormatterUtil.FORMATTER_ddMMyyyyHHmm.format(new Date()));
             SysMsg.sysMsg("  Liste Diff erstellt am: " + diffListe.genDate());
             SysMsg.sysMsg("  Anzahl Filme: " + diffListe.size());
 
@@ -243,7 +243,7 @@ public class FilmeLaden {
             daten.getListeFilme().sort(); // jetzt sollte alles passen
             diffListe.clear();
         } else {
-            SysMsg.sysMsg("Liste Kompl. gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+            SysMsg.sysMsg("Liste Kompl. gelesen am: " + FormatterUtil.FORMATTER_ddMMyyyyHHmm.format(new Date()));
             SysMsg.sysMsg("  Liste Kompl erstellt am: " + daten.getListeFilme().genDate());
             SysMsg.sysMsg("  Anzahl Filme: " + daten.getListeFilme().size());
         }

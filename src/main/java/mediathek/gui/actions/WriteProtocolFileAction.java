@@ -1,55 +1,61 @@
-/*
- * MediathekView
- * Copyright (C) 2014 W. Xaver
- * W.Xaver[at]googlemail.com
- * http://zdfmediathk.sourceforge.net/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
-package mediathek.tool;
+package mediathek.gui.actions;
 
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
+import mediathek.config.Daten;
+import mediathek.config.MVConfig;
+import mediathek.gui.dialog.DialogZiel;
+import mediathek.tool.FormatterUtil;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.MVFunctionSys;
 
-import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import static mSearch.tool.Functions.*;
 
-public class Logfile {
+@SuppressWarnings("serial")
+public class WriteProtocolFileAction extends AbstractAction {
+    private Component owner = null;
+    private static final String TITEL = "Protokoll erstellen";
 
-    public static boolean LogDateiSchreiben(String ziel, String progVersion, String settingsDir, ArrayList<String> progs, String[][] configs) {
-        boolean ret;
+    public WriteProtocolFileAction(Component owner) {
+        super("Protokolldatei erstellen...");
+        this.owner = owner;
+    }
 
-        ArrayList<String> retList;
-        Path logFilePath = Paths.get(ziel);
-        try (final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(logFilePath)))) {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        //FIXME replace DialogZiel mit was sinnvollem!
+        DialogZiel dialog = new DialogZiel((JFrame) owner, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek.log", "Logdatei speichern");
+        dialog.setVisible(true);
+        if (!dialog.ok) {
+            return;
+        }
+
+        try {
+            final Path logFilePath = Paths.get(dialog.ziel);
+            writeLogFile(logFilePath, Daten.getSettingsDirectory_String(), Daten.listePset.getListProg(), MVConfig.getAll());
+            JOptionPane.showMessageDialog(owner, "Die Datei wurde erfolgreich geschrieben.", TITEL, JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(owner, "Die Datei konnte nicht geschrieben werden.", TITEL, JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void writeLogFile(Path logFilePath, String settingsDir, ArrayList<String> progs, String[][] configs) throws IOException {
+        try (OutputStream os = Files.newOutputStream(logFilePath);
+             OutputStreamWriter osw = new OutputStreamWriter(os);
+             BufferedWriter bw = new BufferedWriter(osw)) {
             bw.write("");
             bw.newLine();
 
-            //  ___  ___         _ _       _   _          _    _   _ _               
-            //  |  \/  |        | (_)     | | | |        | |  | | | (_)              
-            //  | .  . | ___  __| |_  __ _| |_| |__   ___| | _| | | |_  _____      __
-            //  | |\/| |/ _ \/ _` | |/ _` | __| '_ \ / _ \ |/ / | | | |/ _ \ \ /\ / /
-            //  | |  | |  __/ (_| | | (_| | |_| | | |  __/   <\ \_/ / |  __/\ V  V / 
-            //  \_|  |_/\___|\__,_|_|\__,_|\__|_| |_|\___|_|\_\\___/|_|\___| \_/\_/  
             bw.write("___  ___         _ _       _   _          _    _   _ _               ");
             bw.newLine();
             bw.write("|  \\/  |        | (_)     | | | |        | |  | | | (_)              ");
@@ -69,12 +75,12 @@ public class Logfile {
 
             bw.write("#####################################################");
             bw.newLine();
-            bw.write("Erstellt: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+            bw.write("Erstellt: " + FormatterUtil.FORMATTER_ddMMyyyyHHmm.format(new Date()));
             bw.newLine();
             bw.write("#####################################################");
             bw.newLine();
             bw.newLine();
-            bw.write(progVersion);
+            bw.write(MVFunctionSys.getProgVersionString());
             bw.newLine();
             bw.write("Compiled: " + getCompileDate());
             bw.newLine();
@@ -107,13 +113,13 @@ public class Logfile {
             bw.newLine();
             bw.write("=====================================================");
             bw.newLine();
-            long totalMem = Runtime.getRuntime().totalMemory();
+            final long totalMem = Runtime.getRuntime().totalMemory();
             bw.write("totalMemory: " + totalMem / (1000L * 1000L) + " MB");
             bw.newLine();
-            long maxMem = Runtime.getRuntime().maxMemory();
+            final long maxMem = Runtime.getRuntime().maxMemory();
             bw.write("maxMemory: " + maxMem / (1000L * 1000L) + " MB");
             bw.newLine();
-            long freeMem = Runtime.getRuntime().freeMemory();
+            final long freeMem = Runtime.getRuntime().freeMemory();
             bw.write("freeMemory: " + freeMem / (1000L * 1000L) + " MB");
             bw.newLine();
             bw.newLine();
@@ -184,20 +190,17 @@ public class Logfile {
             bw.newLine();
             bw.write("## Fehlermeldungen                                       ");
             bw.newLine();
-            retList = Log.printErrorMsg();
+            ArrayList<String> retList = Log.printErrorMsg();
             for (String s : retList) {
                 bw.write(s);
                 bw.newLine();
             }
+            retList.clear();
             bw.newLine();
             bw.newLine();
-            //
-            ret = true;
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             Log.errorLog(319865493, ex);
-            ret = false;
+            throw ex;
         }
-        return ret;
     }
-
 }

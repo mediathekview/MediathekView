@@ -29,10 +29,10 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.dialog.DialogNewSet;
+import mediathek.tool.FormatterUtil;
 import mediathek.tool.GuiFunktionenProgramme;
 
 import javax.swing.*;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static java.lang.Thread.sleep;
@@ -60,7 +60,7 @@ public class CheckUpdate {
             }
 
             if (MVConfig.get(MVConfig.Configs.SYSTEM_BUILD_NR).equals(Functions.getBuildNr())
-                    && MVConfig.get(MVConfig.Configs.SYSTEM_UPDATE_DATUM).equals(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
+                    && MVConfig.get(MVConfig.Configs.SYSTEM_UPDATE_DATUM).equals(FormatterUtil.FORMATTER_yyyyMMdd.format(new Date()))) {
                 // keine neue Version und heute schon gemacht
                 return;
             }
@@ -152,7 +152,7 @@ public class CheckUpdate {
                             psNew.arr[DatenPset.PROGRAMMSET_IST_SPEICHERN] = Boolean.FALSE.toString();
                         }
                         // damit man sie auch findet :)
-                        String date = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+                        String date = FormatterUtil.FORMATTER_ddMMyyyy.format(new Date());
                         listePsetStandard.forEach((psNew) -> psNew.arr[DatenPset.PROGRAMMSET_NAME] = psNew.arr[DatenPset.PROGRAMMSET_NAME] + ", neu: " + date);
                     }
                     GuiFunktionenProgramme.addSetVorlagen(daten.getMediathekGui(), daten, listePsetStandard, true /*auto*/, true /*setVersion*/); // damit auch AddOns geladen werden

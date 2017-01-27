@@ -27,12 +27,12 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.gui.dialog.DialogAboNoSet;
+import mediathek.tool.FormatterUtil;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelDownload;
 
 import javax.swing.*;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -420,7 +420,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 //                }
 
                 //diesen Film in die Downloadliste eintragen
-                abo.arr[DatenAbo.ABO_DOWN_DATUM] = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+                abo.arr[DatenAbo.ABO_DOWN_DATUM] = FormatterUtil.FORMATTER_ddMMyyyy.format(new Date());
                 if (!abo.arr[DatenAbo.ABO_PSET].equals(pSet.arr[DatenPset.PROGRAMMSET_NAME])) {
                     // nur den Namen anpassen, falls geändert
                     abo.arr[DatenAbo.ABO_PSET] = pSet.arr[DatenPset.PROGRAMMSET_NAME];

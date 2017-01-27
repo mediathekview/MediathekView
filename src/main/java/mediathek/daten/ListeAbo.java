@@ -26,12 +26,12 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.tool.Filter;
+import mediathek.tool.FormatterUtil;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelAbo;
 
 import javax.swing.*;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -157,7 +157,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         Datum tmp = new Datum(0);
         if (!datum.isEmpty()) {
             try {
-                tmp.setTime(new SimpleDateFormat("dd.MM.yyyy").parse(datum).getTime());
+                tmp.setTime(FormatterUtil.FORMATTER_ddMMyyyy.parse(datum).getTime());
             } catch (ParseException ignore) {
             }
         }

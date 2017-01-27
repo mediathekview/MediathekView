@@ -20,17 +20,6 @@
 package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.BorderLayout;
-import java.awt.Point;
-import java.awt.Toolkit;
-import java.awt.event.*;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.TimerTask;
-import javax.swing.*;
 import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
@@ -49,6 +38,15 @@ import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.tool.*;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.TimerTask;
 
 @SuppressWarnings("serial")
 public class GuiDownloads extends PanelVorlage {
@@ -796,7 +794,7 @@ public class GuiDownloads extends PanelVorlage {
                 return;
             }
 
-            String zeit = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+            String zeit = FormatterUtil.FORMATTER_ddMMyyyy.format(new Date());
 
             ArrayList<DatenDownload> arrayDownloadsLoeschen = new ArrayList<>();
             LinkedList<MVUsedUrl> urlAboList = new LinkedList<>();

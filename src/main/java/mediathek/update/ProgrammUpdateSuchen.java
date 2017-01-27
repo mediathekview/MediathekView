@@ -26,6 +26,7 @@ import mediathek.config.Daten;
 import mediathek.config.ErrorCodes;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
+import mediathek.tool.FormatterUtil;
 
 import javax.swing.*;
 import javax.xml.stream.XMLInputFactory;
@@ -36,7 +37,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
@@ -70,7 +70,7 @@ public class ProgrammUpdateSuchen {
                     JOptionPane.showMessageDialog(null, UPDATE_ERROR_MESSAGE, UPDATE_SEARCH_TITLE, JOptionPane.ERROR_MESSAGE);
                 else {
                     MVConfig.add(MVConfig.Configs.SYSTEM_BUILD_NR, Functions.getBuildNr());
-                    MVConfig.add(MVConfig.Configs.SYSTEM_UPDATE_DATUM, new SimpleDateFormat("yyyyMMdd").format(new Date()));
+                    MVConfig.add(MVConfig.Configs.SYSTEM_UPDATE_DATUM, FormatterUtil.FORMATTER_yyyyMMdd.format(new Date()));
 
                     if (checkForNewerVersion(progInfo.getVersion())) {
                         neueVersion = true;

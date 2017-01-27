@@ -23,13 +23,13 @@ import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mediathek.tool.FormatterUtil;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @SuppressWarnings("serial")
@@ -205,7 +205,7 @@ public class MVUsedUrls {
     public synchronized boolean zeileSchreiben(String thema, String titel, String url) {
         boolean ret = false;
         String text;
-        String datum = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+        String datum = FormatterUtil.FORMATTER_ddMMyyyy.format(new Date());
         listeUrls.add(url);
         listeUrlsSortDate.add(new MVUsedUrl(datum, thema, titel, url));
 
@@ -225,7 +225,7 @@ public class MVUsedUrls {
     public synchronized boolean zeileSchreiben(ArrayList<DatenFilm> arrayFilms) {
         boolean ret = false;
         String text;
-        String datum = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+        String datum = FormatterUtil.FORMATTER_ddMMyyyy.format(new Date());
 
         try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(getUrlFilePath(), StandardOpenOption.APPEND)))) {
 
