@@ -6,13 +6,13 @@ import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
-import mediathek.gui.actions.ShowAboutDialogAction;
 import mediathek.gui.bandwidth.MVBandwidthMonitorOSX;
 import mediathek.gui.filmInformation.MVFilmInformationOSX;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -29,10 +29,25 @@ public class MediathekGuiMac extends MediathekGui {
 
     public MediathekGuiMac(String[] ar) {
         super(ar);
-        aboutAction = new ShowAboutDialogAction(this);
+        setSearchKeyForMac();
+
         daten = Daten.getInstance();
         //Window must be fully initialized to become fullscreen cadidate...
         setWindowFullscreenCapability();
+    }
+
+    private static final String ACTION_KEY_MAC_F = "mac-f";
+
+    private void setSearchKeyForMac() {
+        // für den Mac
+        final JRootPane rootPane = getRootPane();
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), ACTION_KEY_MAC_F);
+        rootPane.getActionMap().put(ACTION_KEY_MAC_F, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setFocusSuchfeld();
+            }
+        });
     }
 
     /**

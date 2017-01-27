@@ -30,7 +30,7 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.ProgStart;
 import mediathek.controller.starter.Start;
-import mediathek.daten.DatenDownload;
+import mediathek.daten.ListeDownloads;
 import mediathek.gui.*;
 import mediathek.gui.actions.ResetSettingsAction;
 import mediathek.gui.actions.ShowAboutDialogAction;
@@ -57,8 +57,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -85,7 +83,6 @@ public class MediathekGui extends JFrame {
     private static final String LOG_TEXT_ERSTER_START = "Erster Start";
     private static final String LOG_TEXT_START_GUI = "Start Gui";
     private static final String LOG_TEXT_INIT_GUI = "Init GUI";
-    private static final String ACTION_KEY_MAC_F = "mac-f";
     private static final String LOG_TEXT_GUI_STEHT = "Gui steht!";
     private static final String ARGUMENT_PREFIX = "-";
     private static final String TITLE_TEXT_PROGRAMMVERSION_IST_AKTUELL = "Programmversion ist aktuell";
@@ -145,6 +142,12 @@ public class MediathekGui extends JFrame {
         return statusBar;
     }
 
+    private void disableF10Key() {
+        //Hier wird F10 default Funktion unterbunden:
+        InputMap im = jMenuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        im.put(KeyStroke.getKeyStroke(KEY_F10), NONE);
+    }
+
     public MediathekGui(String... aArguments) {
         super();
 
@@ -158,11 +161,8 @@ public class MediathekGui extends JFrame {
 
         Duration.counterStart(LOG_TEXT_PROGRAMMSTART);
 
-        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE); // soll abgefangen werden
         setIconImage(GetIcon.getIcon(ICON_NAME, ICON_PATH, ICON_WIDTH, ICON_HEIGHT).getImage());
-        //Hier wird F10 default Funktion unterbunden:
-        InputMap im = jMenuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        im.put(KeyStroke.getKeyStroke(KEY_F10), NONE);
+        disableF10Key();
 
         splashScreenManager.updateSplashScreenText(SPLASHSCREEN_TEXT_ANWENDUNGSDATEN_LADEN);
 
@@ -181,12 +181,12 @@ public class MediathekGui extends JFrame {
         setOrgTitel();
         setLookAndFeel();
         init();
-        setSize();
+        restoreWindowState();
         Duration.staticPing(LOG_TEXT_INIT_GUI);
         initializeSettingsDialog();
+        setupMediaDB();
 
         addListener();
-        setSearchKeyForMac();
 
         setFocusSuchfeld();
 
@@ -199,25 +199,16 @@ public class MediathekGui extends JFrame {
         splashScreenManager.closeSplashScreen();
     }
 
-    private void setSearchKeyForMac()
+    private void setupMediaDB()
     {
-        // für den Mac
-        final JRootPane rootPane = getRootPane();
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), ACTION_KEY_MAC_F);
-        rootPane.getActionMap().put(ACTION_KEY_MAC_F, new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setFocusSuchfeld();
-            }
-        });
+        daten.setDialogMediaDB(new DialogMediaDB(this));
+        daten.getDialogMediaDB().setVis();
     }
 
     private void initializeSettingsDialog()
     {
         // Dialog mit den Programmeinstellungen einrichten
         dialogEinstellungen = new DialogEinstellungen(daten);
-        daten.setDialogMediaDB(new DialogMediaDB(this));
-        daten.getDialogMediaDB().setVis();
     }
 
     private void loadDaten()
@@ -353,7 +344,7 @@ public class MediathekGui extends JFrame {
         });
     }
 
-    private void setFocusSuchfeld() {
+    protected void setFocusSuchfeld() {
         Listener.notify(Listener.EREIGNIS_SUCHFELD_FOCUS_SETZEN, MediathekGui.class.getName());
     }
 
@@ -388,15 +379,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void setOrgTitel() {
-        this.setTitle(Konstanten.PROGRAMMNAME + ' ' + Functions.getBuildNr());
-    }
-
-    private void setSize() {
-        if (Daten.isStartMaximized() || Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_MAX))) {
-            this.setExtendedState(Frame.MAXIMIZED_BOTH);
-        } else {
-            GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_GUI, this, null);
-        }
+        setTitle(Konstanten.PROGRAMMNAME + ' ' + Functions.getBuildNr());
     }
 
     private void setCbBeschreibung() {
@@ -927,15 +910,12 @@ public class MediathekGui extends JFrame {
     }
 
     private void stopAllDownloads() {
-        if (daten.getListeDownloads() != null) {
-            // alle laufenden Downloads/Programme stoppen
-            for (DatenDownload download : daten.getListeDownloads()) {
-                Start s = download.start;
-                if (s != null) {
-                    s.stoppen = true;
-                }
-            }
-        }
+        final ListeDownloads downloadList = daten.getListeDownloads();
+        downloadList.forEach(dl -> {
+            Start s = dl.start;
+            if (s != null)
+                s.stoppen = true;
+        });
     }
 
     private void saveWindowState() {
@@ -943,6 +923,14 @@ public class MediathekGui extends JFrame {
             MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_MAX, Boolean.TRUE.toString());
         } else {
             MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_MAX, Boolean.FALSE.toString());
+        }
+    }
+
+    private void restoreWindowState() {
+        if (Daten.isStartMaximized() || Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_MAX))) {
+            setExtendedState(Frame.MAXIMIZED_BOTH);
+        } else {
+            GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_GUI, this, null);
         }
     }
 
