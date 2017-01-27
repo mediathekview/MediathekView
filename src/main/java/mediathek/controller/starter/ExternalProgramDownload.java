@@ -71,7 +71,7 @@ public class ExternalProgramDownload extends Thread
             }
             if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE]))
             {
-                MVSubtitle.writeSubtitle(datenDownload);
+                new MVSubtitle().writeSubtitle(datenDownload);
             }
 
             Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]));
