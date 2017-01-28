@@ -69,7 +69,6 @@ public class GuiDownloads extends PanelVorlage {
     private static final String COMBO_VIEW_RUN_ONLY = "nur laufende";
     private static final String COMBO_VIEW_FINISHED_ONLY = "nur abgeschlossene";
     private final ToolBar toolBar;
-    private boolean loadFilmlist = false;
     private final java.util.Timer timer = new java.util.Timer(false);
     private TimerTask timerTask = null;
 
@@ -363,52 +362,10 @@ public class GuiDownloads extends PanelVorlage {
             }
         });
 
-//        Chart2D chart = new Chart2D();
-//        chart.setPaintLabels(true);
-//        chart.setUseAntialiasing(true);
-//        chart.setToolTipType(Chart2D.ToolTipType.VALUE_SNAP_TO_TRACEPOINTS);
-//        if (getOs() == OperatingSystemType.LINUX) {
-//            chart.setOpaque(false);
-//        } else {
-//            //a transparent chart is a HUGE GPU performance killer and will BURN GPU resources :(
-//        }
-//
-//        x_achse = chart.getAxisX();
-//        x_achse.getAxisTitle().setTitle("Minuten");
-//        x_achse.setPaintScale(true);
-//        x_achse.setVisible(true);
-//        x_achse.setPaintGrid(false);
-//        x_achse.setMajorTickSpacing(10);
-//        x_achse.setMinorTickSpacing(1);
-//
-//        IAxis y_achse = chart.getAxisY();
-//        y_achse.getAxisTitle().setTitle("");
-//        y_achse.setPaintScale(true);
-//        y_achse.setVisible(true);
-//        y_achse.setPaintGrid(true);
-//        y_achse.setMajorTickSpacing(5);
-//        y_achse.setMinorTickSpacing(1);
-//        y_achse.setFormatter(new LabelFormatterAutoUnits());
-//        y_achse.setRangePolicy(new RangePolicyForcedPoint());
-//
-//        m_trace.setName("");
-//        m_trace.setColor(Color.RED);
-//        chart.addTrace(m_trace);
-//        jPanelChart.setMinimumSize(new java.awt.Dimension(100, 100));
-//        jPanelChart.setPreferredSize(new java.awt.Dimension(100, 250));
-////        jPanelChart.setBackground(Color.WHITE);
-//        jPanelChart.setLayout(new BorderLayout(0, 0));
-//        jPanelChart.add(chart, BorderLayout.CENTER);
         setTimer();
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
-            public void start(ListenerFilmeLadenEvent event) {
-                loadFilmlist = true;
-            }
-
-            @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                loadFilmlist = false;
                 daten.getListeDownloads().filmEintragen();
                 if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ABOS_SOFORT_SUCHEN))) {
                     downloadsAktualisieren();
@@ -441,11 +398,7 @@ public class GuiDownloads extends PanelVorlage {
 
                     @Override
                     public void run() {
-//                        counter++;
-//                        m_trace.addPoint(counter / 60, daten.getDownloadInfos().bandwidth); // minutes
-//                        x_achse.getAxisTitle().setTitle(daten.getDownloadInfos().roundBandwidth((long) counter));
                         SwingUtilities.invokeLater(() -> setInfoText());
-
                     }
                 };
                 timer.schedule(timerTask, 0, 1_000);
@@ -596,9 +549,6 @@ public class GuiDownloads extends PanelVorlage {
             @Override
             public void ping() {
                 reloadTable();
-//                daten.getListeDownloads().setModelProgressAlleStart(model);
-//                tabelle.fireTableDataChanged(true /*setSpalten*/);
-//                setInfo();
             }
         });
         Listener.addListener(new Listener(Listener.EREIGNIS_GEO, GuiDownloads.class.getSimpleName()) {
@@ -655,10 +605,6 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private synchronized void downloadsAktualisieren() {
-        if (loadFilmlist) {
-            // wird danach automatisch gemacht
-            return;
-        }
         // erledigte entfernen, nicht gestartete Abos entfernen und neu nach Abos suchen
         daten.getListeDownloads().abosAuffrischen();
         daten.getListeDownloads().abosSuchen(parentComponent);

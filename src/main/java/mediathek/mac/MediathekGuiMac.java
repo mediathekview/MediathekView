@@ -20,7 +20,6 @@ import java.net.URL;
 
 @SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
-    private final Daten daten;
     /**
      * Repaint-Thread for progress indicator on OS X.
      */
@@ -30,7 +29,6 @@ public class MediathekGuiMac extends MediathekGui {
         super(ar);
         setSearchKeyForMac();
 
-        daten = Daten.getInstance();
         //Window must be fully initialized to become fullscreen cadidate...
         setWindowFullscreenCapability();
     }
@@ -168,7 +166,7 @@ public class MediathekGuiMac extends MediathekGui {
     }
 
     @Override
-    protected void initializeDateiMenu() {
+    protected void installSettingsAndTerminateMenuItems() {
         //do not install these on OSX
     }
 

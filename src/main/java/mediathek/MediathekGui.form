@@ -15,9 +15,6 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemFilmlisteLaden">
               <Properties>
-                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="F5"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Neue Filmliste laden"/>
               </Properties>
             </MenuItem>

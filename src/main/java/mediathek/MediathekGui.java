@@ -102,7 +102,7 @@ public class MediathekGui extends JFrame {
     private static final String CHECKBOX_TEXT_IN_EXTRAFENSTER = "in Extrafenster";
 
 
-    private final Daten daten;
+    protected final Daten daten;
     private final SplashScreenManager splashScreenManager;
     private MVStatusBar statusBar;
     private MVFrame frameDownload;
@@ -149,14 +149,17 @@ public class MediathekGui extends JFrame {
     public MediathekGui(String... aArguments) {
         super();
 
-        aboutAction = new ShowAboutDialogAction(this);
-        settingsAction = new ShowSettingsAction();
-
         splashScreenManager = new SplashScreenManager();
         splashScreenManager.initializeSplashScreen();
 
         initComponents();
         String pfad = readPfadFromArguments(aArguments);
+        daten = Daten.getInstance(pfad, this);
+
+        aboutAction = new ShowAboutDialogAction(this);
+        settingsAction = new ShowSettingsAction();
+        loadFilmlistAction = new LoadFilmListAction();
+
 
         Duration.counterStart(LOG_TEXT_PROGRAMMSTART);
 
@@ -164,8 +167,6 @@ public class MediathekGui extends JFrame {
         disableF10Key();
 
         splashScreenManager.updateSplashScreenText(SPLASHSCREEN_TEXT_ANWENDUNGSDATEN_LADEN);
-
-        daten = Daten.getInstance(pfad,this);
 
         startMeldungen();
         Duration.staticPing(LOG_TEXT_START);
@@ -406,17 +407,11 @@ public class MediathekGui extends JFrame {
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
-                jMenuItemFilmlisteLaden.setEnabled(false);
                 jMenuItemDownloadsAktualisieren.setEnabled(false);
             }
 
             @Override
-            public void progress(ListenerFilmeLadenEvent event) {
-            }
-
-            @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                jMenuItemFilmlisteLaden.setEnabled(true);
                 jMenuItemDownloadsAktualisieren.setEnabled(true);
                 daten.allesSpeichern(); // damit nichts verlorengeht
             }
@@ -798,6 +793,7 @@ public class MediathekGui extends JFrame {
 
     protected Action aboutAction = null;
     protected Action settingsAction = null;
+    public Action loadFilmlistAction = null;
 
     private void initializeAnsichtDownloads()
     {
@@ -856,8 +852,6 @@ public class MediathekGui extends JFrame {
 
     private void initializeFilmeMenu()
     {
-        // Filme
-        jMenuItemFilmlisteLaden.addActionListener(e -> daten.getFilmeLaden().loadFilmlistDialog(daten, false));
         jMenuItemFilmAbspielen.addActionListener(e -> Daten.guiFilme.guiFilmeFilmAbspielen());
         jMenuItemFilmAufzeichnen.addActionListener(e -> Daten.guiFilme.guiFilmeFilmSpeichern());
         jMenuItemFilterLoeschen.addActionListener(e -> Daten.guiFilme.guiFilmeFilterLoeschen());
@@ -871,11 +865,17 @@ public class MediathekGui extends JFrame {
         jMenuItemFilmeMediensammlung.addActionListener(e -> Daten.guiFilme.guiFilmMediensammlung());
     }
 
-    protected void initializeDateiMenu()
+    protected void installSettingsAndTerminateMenuItems()
     {
         jMenuDatei.add(settingsAction);
         jMenuDatei.add(new JSeparator());
         jMenuDatei.add(new TerminateApplicationAction());
+    }
+
+    private void initializeDateiMenu() {
+        jMenuItemFilmlisteLaden.setAction(loadFilmlistAction);
+
+        installSettingsAndTerminateMenuItems();
     }
 
     class ShowSettingsAction extends AbstractAction {
@@ -909,10 +909,36 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    private void setMenuIcons()
-    {
-        //Icons setzen
-        jMenuItemFilmlisteLaden.setIcon(Icons.ICON_MENUE_FILMLISTE_LADEN);
+    class LoadFilmListAction extends AbstractAction {
+        public LoadFilmListAction() {
+            super("Neue Filmliste laden...", Icons.ICON_MENUE_FILMLISTE_LADEN);
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
+            putValue(SHORT_DESCRIPTION, "Lade eine neue Filmliste");
+
+            daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
+                @Override
+                public void start(ListenerFilmeLadenEvent event) {
+                    setEnabled(false);
+                }
+
+                @Override
+                public void fertig(ListenerFilmeLadenEvent event) {
+                    setEnabled(true);
+                }
+            });
+
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            daten.getFilmeLaden().loadFilmlistDialog(daten, false);
+        }
+    }
+
+    /**
+     * Set the icons for menu items.
+     */
+    private void setMenuIcons() {
         jMenuItemFilmAbspielen.setIcon(Icons.ICON_MENUE_FILM_START);
         jMenuItemFilmAufzeichnen.setIcon(Icons.ICON_MENUE_FILM_REC);
         jMenuItemFilmeGesehen.setIcon(Icons.ICON_MENUE_HISTORY_ADD);
@@ -1152,7 +1178,6 @@ public class MediathekGui extends JFrame {
         jMenuDatei.setMnemonic('d');
         jMenuDatei.setText("Datei");
 
-        jMenuItemFilmlisteLaden.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
         jMenuItemFilmlisteLaden.setText("Neue Filmliste laden");
         jMenuDatei.add(jMenuItemFilmlisteLaden);
 
