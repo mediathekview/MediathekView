@@ -302,9 +302,6 @@ public final class ToolBar extends JToolBar {
         jButtonFilmlisteLaden = new MVButton("", "", Icons.ICON_TOOLBAR_FILME_FILMLISTE_LADEN_GR, Icons.ICON_TOOLBAR_FILME_FILMLISTE_LADEN_KL);
         add(jButtonFilmlisteLaden);
         jButtonFilmlisteLaden.setAction(daten.getMediathekGui().loadFilmlistAction);
-        //nasty hack für popup menu
-        jButtonFilmlisteLaden.name = jButtonFilmlisteLaden.getText();
-        jButtonFilmlisteLaden.setHideActionText(true);
     }
 
     private void setIcon(boolean klein) {
@@ -375,6 +372,13 @@ public final class ToolBar extends JToolBar {
             setHorizontalTextPosition(SwingConstants.CENTER);
             setVerticalTextPosition(SwingConstants.BOTTOM);
             buttonList.add(this);
+        }
+
+        @Override
+        public void setAction(Action a) {
+            super.setAction(a);
+            this.name = (String) a.getValue(Action.NAME);
+            setHideActionText(true);
         }
 
         void setIcon() {
