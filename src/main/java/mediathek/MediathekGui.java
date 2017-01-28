@@ -462,12 +462,10 @@ public class MediathekGui extends JFrame {
         Daten.guiMeldungen = new GuiMeldungen(daten, this);
         Daten.guiFilme = new GuiFilme(daten, this);
 
-        //jTabbedPane.addTab("Filme", Icons.ICON_TAB_FILM, Daten.guiFilme);
         jTabbedPane.addTab(TABNAME_FILME, Daten.guiFilme);
 
         if (Daten.isDebug()) {
             Daten.guiDebug = new GuiDebug(daten);
-            //jTabbedPane.addTab("Debug", spacerIcon, Daten.guiDebug);
             jTabbedPane.addTab(TABNAME_DEBUG, Daten.guiDebug);
         }
         initFrames();
@@ -1032,7 +1030,7 @@ public class MediathekGui extends JFrame {
      *
      * @param showOptionTerminate show options dialog when downloads are running
      * @param shutDown            try to shutdown the computer if requested
-     * @return
+     * @return true if the user wants to terminate
      */
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
         if (daten.getListeDownloads().nochNichtFertigeDownloads() > 0) {

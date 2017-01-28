@@ -161,24 +161,12 @@ public class GuiFilme extends PanelVorlage {
         loadTable();
     }
 
-    public void searchUrl(String url) {
-        searchFilmWithUrl_(url);
-    }
-
     public void filmGesehen() {
         daten.history.setGesehen(true, getSelFilme(), daten.getListeFilmeHistory());
     }
 
     public void filmUngesehen() {
         daten.history.setGesehen(false, getSelFilme(), daten.getListeFilmeHistory());
-    }
-
-    public void invertSelection() {
-        tabelle.invertSelection();
-    }
-
-    public ArrayList<DatenFilm> selFilme() {
-        return getSelFilme();
     }
 
     public int getTableRowCount() {
@@ -196,7 +184,6 @@ public class GuiFilme extends PanelVorlage {
             public void start(ListenerFilmeLadenEvent event) {
                 GuiFunktionen.enableComponents(mVFilterFrame, false);
                 GuiFunktionen.enableComponents(mVFilterPanel, false);
-                //mVFilter.enableFilter(false);
                 loadTable();
             }
 
@@ -738,18 +725,6 @@ public class GuiFilme extends PanelVorlage {
     // ############################################
     // Filter
     // ############################################
-    private void searchFilmWithUrl_(String url) {
-        // nur für Tests
-        url = url.trim();
-        TModelFilm m = (TModelFilm) tabelle.getModel();
-        for (int i = 0; i < m.getRowCount(); ++i) {
-            if (!url.equals(m.getValueAt(i, DatenFilm.FILM_URL).toString())) {
-                m.removeRow(i);
-                --i;
-            }
-        }
-    }
-
     private void setVisFilterPanelAndLoad() {
         boolean history = false;
         if (mVFilter != null) {
@@ -1039,7 +1014,7 @@ public class GuiFilme extends PanelVorlage {
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER, String.valueOf(mVFilter.get_jSliderMinuten().getValue()), filter);
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER_MIN, String.valueOf(mVFilter.get_rbMin().isSelected()), filter);
 
-        java.util.List<? extends RowSorter.SortKey> listeSortKeys = null;
+        java.util.List<? extends RowSorter.SortKey> listeSortKeys;
         listeSortKeys = tabelle.getRowSorter().getSortKeys();
         String key = "";
         String upDown = "";
@@ -1081,7 +1056,7 @@ public class GuiFilme extends PanelVorlage {
                 //Filter Sender
                 mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
                 mVFilter.get_jComboBoxFilterSender().setSelectedIndex(0);
-                if (!filterSender.equals("")) {
+                if (!filterSender.isEmpty()) {
                     mVFilter.get_jComboBoxFilterSender().setSelectedItem(filterSender);
                     if (mVFilter.get_jComboBoxFilterSender().getSelectedIndex() == 0) {
                         // war wohl nix, der gewählte Sender wurde in die Blacklist eingetragen
@@ -1091,14 +1066,14 @@ public class GuiFilme extends PanelVorlage {
                 }
                 mVFilter.get_jComboBoxFilterSender().setPopupVisible(senderOpen);
                 // Filter Thema
-                if (filterSender.equals("")) {
-                    mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
+                if (filterSender.isEmpty()) {
+                    mVFilter.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
                 } else {
-                    mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen(filterSender)));
+                    mVFilter.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen(filterSender)));
                 }
                 // wenn Thema bei dem Sender vorhanden, dann wieder setzen
                 mVFilter.get_jComboBoxFilterThema().setSelectedItem(filterThema);
-                if (!filterThema.equals("") && mVFilter.get_jComboBoxFilterThema().getSelectedIndex() == 0) {
+                if (!filterThema.isEmpty() && mVFilter.get_jComboBoxFilterThema().getSelectedIndex() == 0) {
                     // war wohl nix
                     themaNichtDa = true;
                 }
@@ -1519,7 +1494,7 @@ public class GuiFilme extends PanelVorlage {
             jPopupMenu.add(submenue);
             ListePset liste = Daten.listePset.getListeButton();
             for (DatenPset pset : liste) {
-                if (pset.getListeProg().isEmpty() && pset.arr[DatenPset.PROGRAMMSET_NAME].equals("")) {
+                if (pset.getListeProg().isEmpty() && pset.arr[DatenPset.PROGRAMMSET_NAME].isEmpty()) {
                     // ein "leeres" Pset, Platzhalter
                     continue;
                 }
