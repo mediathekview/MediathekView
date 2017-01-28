@@ -154,6 +154,7 @@ public class MediathekGui extends JFrame {
         splashScreenManager.initializeSplashScreen();
 
         initComponents();
+
         String pfad = readPfadFromArguments(aArguments);
         daten = Daten.getInstance(pfad, this);
 
@@ -239,9 +240,9 @@ public class MediathekGui extends JFrame {
     private void createStatusBar() {
         statusBar = new MVStatusBar();
         JScrollPane js = new JScrollPane();
-        js.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        js.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        js.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        js.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        js.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        js.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         js.setViewportView(statusBar.getComponent());
         jPanelInfo.add(js, BorderLayout.CENTER);
     }
@@ -1176,9 +1177,9 @@ public class MediathekGui extends JFrame {
 
         jPanelInfo.setLayout(new java.awt.BorderLayout());
         jPanelCont.add(jPanelInfo, java.awt.BorderLayout.PAGE_END);
-
-        jTabbedPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 1, 1, 1));
         jPanelCont.add(jTabbedPane, java.awt.BorderLayout.CENTER);
+
+        getContentPane().add(jPanelCont, java.awt.BorderLayout.CENTER);
 
         jMenuDatei.setMnemonic('d');
         jMenuDatei.setText("Datei");
@@ -1374,19 +1375,6 @@ public class MediathekGui extends JFrame {
         jMenuBar.add(jMenuHilfe);
 
         setJMenuBar(jMenuBar);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelCont, javax.swing.GroupLayout.DEFAULT_SIZE, 1083, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addComponent(jPanelCont, javax.swing.GroupLayout.DEFAULT_SIZE, 827, Short.MAX_VALUE))
-        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
