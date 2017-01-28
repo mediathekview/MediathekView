@@ -39,7 +39,6 @@ public class DialogFilmBeschreibung extends JDialog {
         daten = ddaten;
         initComponents();
         datenFilm = ddatenFilm;
-        setTitle("Beschreibung ändern");
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
@@ -53,7 +52,7 @@ public class DialogFilmBeschreibung extends JDialog {
         jTextFieldTitel.setText(datenFilm.arr[DatenFilm.FILM_TITEL]);
         jButtonOk.addActionListener(e -> {
             datenFilm.arr[DatenFilm.FILM_BESCHREIBUNG] = jTextArea1.getText();
-            beenden();
+            dispose();
         });
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfe.addActionListener(e -> new DialogHilfe(paFrame, true, '\n'
@@ -83,14 +82,15 @@ public class DialogFilmBeschreibung extends JDialog {
     private void initComponents() {
 
         jButtonOk = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jLabel2 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jTextFieldTitel = new javax.swing.JTextField();
         jButtonHilfe = new javax.swing.JButton();
         jButtonSpeichern = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Beschreibung ändern");
 
         jButtonOk.setText("Ok");
 
@@ -153,8 +153,6 @@ public class DialogFilmBeschreibung extends JDialog {
     private javax.swing.JButton jButtonHilfe;
     private javax.swing.JButton jButtonOk;
     private javax.swing.JButton jButtonSpeichern;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextFieldTitel;
     // End of variables declaration//GEN-END:variables
