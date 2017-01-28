@@ -44,13 +44,13 @@ public class MVFrame extends JFrame {
 
         this.setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
         switch (tabsState) {
-            case TAB_DOWNLOADS:
+            case DOWNLOADS:
                 this.setTitle("Downloads");
                 break;
-            case TAB_ABOS:
+            case ABOS:
                 this.setTitle("Abos");
                 break;
-            case TAB_MELDUNGEN:
+            case MELDUNGEN:
                 this.setTitle("Meldungen");
                 break;
             default:

@@ -73,13 +73,13 @@ public final class ToolBar extends JToolBar {
         daten = ddaten;
         this.state = state;
         switch (state) {
-            case TAB_FILME:
+            case FILME:
                 nrToolbar = MVConfig.Configs.SYSTEM_TOOLBAR_FILME;
                 break;
-            case TAB_DOWNLOADS:
+            case DOWNLOADS:
                 nrToolbar = MVConfig.Configs.SYSTEM_TOOLBAR_DOWNLOAD;
                 break;
-            case TAB_ABOS:
+            case ABOS:
                 nrToolbar = MVConfig.Configs.SYSTEM_TOOLBAR_ABO;
                 break;
             default:
@@ -103,13 +103,13 @@ public final class ToolBar extends JToolBar {
         this.setFloatable(false);
 
         switch (state) {
-            case TAB_FILME:
+            case FILME:
                 startupFilme();
                 break;
-            case TAB_DOWNLOADS:
+            case DOWNLOADS:
                 startupDownload();
                 break;
-            case TAB_ABOS:
+            case ABOS:
                 startupAbo();
                 break;
             default:
@@ -344,7 +344,7 @@ public final class ToolBar extends JToolBar {
     }
 
     private void filterAnzeigen() {
-        if (state.equals(MediathekGui.TABS.TAB_FILME)) {
+        if (state.equals(MediathekGui.TABS.FILME)) {
             jTextFieldFilter.setVisible(!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER)));
         }
     }

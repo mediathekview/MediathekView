@@ -45,6 +45,7 @@ import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.filmInformation.MVFilmInformationLWin;
+import mediathek.gui.tools.AutomaticTabSwitcherMenuListener;
 import mediathek.res.GetIcon;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFont;
@@ -54,8 +55,6 @@ import mediathek.update.CheckUpdate;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -130,7 +129,7 @@ public class MediathekGui extends JFrame {
     }
 
     public enum TABS {
-        TAB_NIX, TAB_FILME, TAB_DOWNLOADS, TAB_ABOS, TAB_MELDUNGEN
+        NIX, FILME, DOWNLOADS, ABOS, MELDUNGEN
     }
 
     /**
@@ -480,15 +479,15 @@ public class MediathekGui extends JFrame {
 
     public void hideFrame(TABS state) {
         switch (state) {
-            case TAB_DOWNLOADS:
+            case DOWNLOADS:
                 jCheckBoxDownloadExtrafenster.setSelected(false);
                 MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_DOWNLOAD, Boolean.toString(false));
                 break;
-            case TAB_ABOS:
+            case ABOS:
                 jCheckBoxAboExtrafenster.setSelected(false);
                 MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_ABO, Boolean.toString(false));
                 break;
-            case TAB_MELDUNGEN:
+            case MELDUNGEN:
                 jCheckBoxMeldungenAnzeigen.setSelected(true);
                 jCheckBoxMeldungenExtrafenster.setSelected(false);
                 MVConfig.add(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN, Boolean.toString(true));
@@ -502,14 +501,14 @@ public class MediathekGui extends JFrame {
         // Downloads
         int nr = 1;
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_DOWNLOAD))) {
-            frameDownload = setFrame(frameDownload, MVConfig.Configs.SYSTEM_GROESSE_DOWNLOAD, Daten.guiDownloads, TABS.TAB_DOWNLOADS);
+            frameDownload = setFrame(frameDownload, MVConfig.Configs.SYSTEM_GROESSE_DOWNLOAD, Daten.guiDownloads, TABS.DOWNLOADS);
         } else {
             setTab(frameDownload, Daten.guiDownloads, TABNAME_DOWNLOADS, nr++);
         }
 
         // Abos
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_ABO))) {
-            frameAbo = setFrame(frameAbo, MVConfig.Configs.SYSTEM_GROESSE_ABO, Daten.guiAbo, TABS.TAB_ABOS);
+            frameAbo = setFrame(frameAbo, MVConfig.Configs.SYSTEM_GROESSE_ABO, Daten.guiAbo, TABS.ABOS);
         } else {
             setTab(frameAbo, Daten.guiAbo, TABNAME_ABOS, nr++);
         }
@@ -518,7 +517,7 @@ public class MediathekGui extends JFrame {
         if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN))) {
             hide(frameMeldungen, Daten.guiMeldungen);
         } else if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_MELDUNGEN))) {
-            frameMeldungen = setFrame(frameMeldungen, MVConfig.Configs.SYSTEM_GROESSE_MELDUNGEN, Daten.guiMeldungen, TABS.TAB_MELDUNGEN);
+            frameMeldungen = setFrame(frameMeldungen, MVConfig.Configs.SYSTEM_GROESSE_MELDUNGEN, Daten.guiMeldungen, TABS.MELDUNGEN);
         } else {
             setTab(frameMeldungen, Daten.guiMeldungen, TABNAME_MELDUNGEN, nr);
         }
@@ -648,14 +647,18 @@ public class MediathekGui extends JFrame {
         return lbl;
     }
 
+    /**
+     * Add menu listeners which switch to the appropriate Tab when a menu is selected.
+     */
+    protected void installAutomaticTabSwitcher() {
+        jMenuFilme.addMenuListener(new AutomaticTabSwitcherMenuListener(jTabbedPane, TABS.FILME));
+        jMenuDownload.addMenuListener(new AutomaticTabSwitcherMenuListener(jTabbedPane, TABS.DOWNLOADS));
+        jMenuAbos.addMenuListener(new AutomaticTabSwitcherMenuListener(jTabbedPane, TABS.ABOS));
+    }
+
     protected void initMenue() {
         setCbBeschreibung();
-        if (Functions.getOs() != Functions.OperatingSystemType.MAC) {
-            // soll bei OS X nicht sein
-            jMenuFilme.addMenuListener(new MenuLST(TABS.TAB_FILME));
-            jMenuDownload.addMenuListener(new MenuLST(TABS.TAB_DOWNLOADS));
-            jMenuAbos.addMenuListener(new MenuLST(TABS.TAB_ABOS));
-        }
+        installAutomaticTabSwitcher();
         setMenuIcons();
 
         initializeDateiMenu();
@@ -1407,52 +1410,5 @@ public class MediathekGui extends JFrame {
     private javax.swing.JTabbedPane jTabbedPane;
     // End of variables declaration//GEN-END:variables
 
-    private class MenuLST implements MenuListener {
-
-        private final TABS tabs;
-
-        public MenuLST(TABS tabs) {
-            this.tabs = tabs;
-        }
-
-        @Override
-        public void menuSelected(MenuEvent e) {
-            findTab(tabs);
-        }
-
-        @Override
-        public void menuDeselected(MenuEvent e) {
-        }
-
-        @Override
-        public void menuCanceled(MenuEvent e) {
-        }
-
-        private void findTab(TABS state) {
-            switch (state) {
-                case TAB_NIX:
-                    break;
-                case TAB_FILME:
-                    setTabIfContain(Daten.guiFilme);
-                    break;
-                case TAB_DOWNLOADS:
-                    setTabIfContain(Daten.guiDownloads);
-                    break;
-                case TAB_ABOS:
-                    setTabIfContain(Daten.guiAbo);
-                    break;
-            }
-        }
-
-        private void setTabIfContain(Component check) {
-            for (int i = 0; i < jTabbedPane.getTabCount(); ++i) {
-                Component c = jTabbedPane.getComponentAt(i);
-                if (c.equals(check)) {
-                    jTabbedPane.setSelectedIndex(i);
-                    return;
-                }
-            }
-        }
-    }
 
 }

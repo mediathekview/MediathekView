@@ -141,7 +141,7 @@ public class GuiDebug extends JPanel {
         addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentShown(java.awt.event.ComponentEvent evt) {
-                //                daten.getMediathekGui().setTabShown(MediathekGui.TABS.TAB_NIX);
+                //                daten.getMediathekGui().setTabShown(MediathekGui.TABS.NIX);
                 daten.getMediathekGui().getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.NONE);
             }
         });

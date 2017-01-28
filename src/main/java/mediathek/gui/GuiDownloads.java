@@ -113,7 +113,7 @@ public class GuiDownloads extends PanelVorlage {
         cbView.setModel(getViewModel());
         cbView.addActionListener(new DisplayCategoryListener());
 
-        toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_DOWNLOADS);
+        toolBar = new ToolBar(daten, MediathekGui.TABS.DOWNLOADS);
         jPanelToolBar.setLayout(new BorderLayout());
         jPanelToolBar.add(toolBar, BorderLayout.CENTER);
         setToolbarVisible();

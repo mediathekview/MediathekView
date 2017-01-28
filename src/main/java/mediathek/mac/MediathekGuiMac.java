@@ -38,6 +38,11 @@ public class MediathekGuiMac extends MediathekGui {
 
     private static final String ACTION_KEY_MAC_F = "mac-f";
 
+    @Override
+    protected void installAutomaticTabSwitcher() {
+        //do not use tab switching in OS X
+    }
+
     private void setSearchKeyForMac() {
         // für den Mac
         final JRootPane rootPane = getRootPane();

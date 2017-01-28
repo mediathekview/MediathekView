@@ -106,7 +106,7 @@ public class GuiFilme extends PanelVorlage {
 
         panelVideoplayerSetzen();
         setupDescriptionPanel();
-        toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_FILME);
+        toolBar = new ToolBar(daten, MediathekGui.TABS.FILME);
         jPanelToolBar.setLayout(new BorderLayout());
         jPanelToolBar.add(toolBar, BorderLayout.CENTER);
         setToolbarVisible();

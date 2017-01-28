@@ -52,7 +52,7 @@ public class GuiAbo extends PanelVorlage {
             tabelle.setRowSelectionInterval(0, 0);
         }
 
-        toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_ABOS);
+        toolBar = new ToolBar(daten, MediathekGui.TABS.ABOS);
         jPanelToolBar.setLayout(new BorderLayout());
         jPanelToolBar.add(toolBar, BorderLayout.CENTER);
         setToolbarVisible();
