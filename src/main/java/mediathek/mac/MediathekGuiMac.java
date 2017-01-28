@@ -1,7 +1,6 @@
 package mediathek.mac;
 
 import com.apple.eawt.Application;
-import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
@@ -78,13 +77,9 @@ public class MediathekGuiMac extends MediathekGui {
     }
 
     @Override
-    protected void setupHelpMenu() {
-        super.setupHelpMenu();
-        //not needed on OSX, located in apple menu
-        jMenuHilfe.remove(jSeparatorAboutApplication);
-        jMenuHilfe.remove(jMenuItemAboutApplication);
+    protected void installAboutMenuItem() {
+        //do not install on OS X
     }
-
 
     @Override
     protected void createFilmInformationHUD(JFrame parent, JTabbedPane tabPane, Daten daten)
@@ -169,16 +164,12 @@ public class MediathekGuiMac extends MediathekGui {
 
         setupDockIcon();
 
-        //Remove all menu items which don´t need to be displayed due to OS X´s native menu support
-        if (SystemInfo.isMacOSX()) {
-            //Datei->Beenden
-            jMenuDatei.remove(jSeparator2);
-            jMenuDatei.remove(jMenuItemBeenden);
-            //Datei->Einstellungen
-            jMenuDatei.remove(jMenuItemEinstellungen);
-        }
-
         setupOsxDockIconBadge();
+    }
+
+    @Override
+    protected void initializeDateiMenu() {
+        //do not install these on OSX
     }
 
     @Override

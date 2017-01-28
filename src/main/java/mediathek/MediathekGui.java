@@ -56,8 +56,7 @@ import mediathek.update.CheckUpdate;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -151,6 +150,7 @@ public class MediathekGui extends JFrame {
         super();
 
         aboutAction = new ShowAboutDialogAction(this);
+        settingsAction = new ShowSettingsAction();
 
         splashScreenManager = new SplashScreenManager();
         splashScreenManager.initializeSplashScreen();
@@ -352,10 +352,11 @@ public class MediathekGui extends JFrame {
      * error it will always reset to system LAF.
      */
     private void setLookAndFeel() {
+        //FIXME not sure if this stuff will work with JDK9!
         try {
             String laf = MVConfig.get(MVConfig.Configs.SYSTEM_LOOK);
             //if we have the old values, reset to System LAF
-            if (laf.equals("") || laf.length() == 1) {
+            if (laf.isEmpty() || laf.length() == 1) {
                 if (getOs() != OperatingSystemType.LINUX) {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 }
@@ -668,7 +669,7 @@ public class MediathekGui extends JFrame {
         initializeAnsichtMenu();
 
         // Hilfe
-        setupHelpMenu();
+        initializeHelpMenu();
     }
 
     private void initializeAnsichtFilter()
@@ -770,11 +771,17 @@ public class MediathekGui extends JFrame {
         });
     }
 
-    protected void setupHelpMenu()
+    protected void installAboutMenuItem() {
+        jMenuHilfe.add(new JSeparator());
+        jMenuHilfe.add(aboutAction);
+    }
+
+    protected void initializeHelpMenu()
     {
         jMenuItemShowOnlineHelp.setAction(new ShowOnlineHelpAction(this));
         jMenuItemCreateProtocolFile.setAction(new WriteProtocolFileAction(this));
         jMenuItemResetSettings.setAction(new ResetSettingsAction(this, daten));
+        installAboutMenuItem();
     }
 
     private void initializeAnsichtAbos()
@@ -787,11 +794,10 @@ public class MediathekGui extends JFrame {
             MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_ABO, Boolean.toString(jCheckBoxAboExtrafenster.isSelected()));
             initFrames();
         });
-
-        jMenuItemAboutApplication.setAction(aboutAction);
     }
 
     protected Action aboutAction = null;
+    protected Action settingsAction = null;
 
     private void initializeAnsichtDownloads()
     {
@@ -865,11 +871,25 @@ public class MediathekGui extends JFrame {
         jMenuItemFilmeMediensammlung.addActionListener(e -> Daten.guiFilme.guiFilmMediensammlung());
     }
 
-    private void initializeDateiMenu()
+    protected void initializeDateiMenu()
     {
-        // Datei
-        jMenuItemEinstellungen.addActionListener(e -> showSettingsDialog());
-        jMenuItemBeenden.addActionListener(e -> beenden(false, false));
+        jMenuDatei.add(settingsAction);
+        jMenuDatei.add(new JSeparator());
+        jMenuDatei.add(new TerminateApplicationAction());
+    }
+
+    class ShowSettingsAction extends AbstractAction {
+
+        public ShowSettingsAction() {
+            super("Einstellungen...", Icons.ICON_MENUE_EINSTELLUNGEN);
+            putValue(SHORT_DESCRIPTION, "Allgemeine Programmeinstellungen");
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            showSettingsDialog();
+        }
     }
 
     public void showSettingsDialog()
@@ -877,12 +897,22 @@ public class MediathekGui extends JFrame {
         dialogEinstellungen.setVisible(true);
     }
 
+    class TerminateApplicationAction extends AbstractAction {
+        public TerminateApplicationAction() {
+            super("Beenden", Icons.ICON_MENUE_BEENDEN);
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_MASK));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            beenden(false, false);
+        }
+    }
+
     private void setMenuIcons()
     {
         //Icons setzen
         jMenuItemFilmlisteLaden.setIcon(Icons.ICON_MENUE_FILMLISTE_LADEN);
-        jMenuItemEinstellungen.setIcon(Icons.ICON_MENUE_EINSTELLUNGEN);
-        jMenuItemBeenden.setIcon(Icons.ICON_MENUE_BEENDEN);
         jMenuItemFilmAbspielen.setIcon(Icons.ICON_MENUE_FILM_START);
         jMenuItemFilmAufzeichnen.setIcon(Icons.ICON_MENUE_FILM_REC);
         jMenuItemFilmeGesehen.setIcon(Icons.ICON_MENUE_HISTORY_ADD);
@@ -1054,9 +1084,6 @@ public class MediathekGui extends JFrame {
         jMenuBar = new javax.swing.JMenuBar();
         jMenuDatei = new javax.swing.JMenu();
         jMenuItemFilmlisteLaden = new javax.swing.JMenuItem();
-        jMenuItemEinstellungen = new javax.swing.JMenuItem();
-        jSeparator2 = new javax.swing.JPopupMenu.Separator();
-        jMenuItemBeenden = new javax.swing.JMenuItem();
         jMenuFilme = new javax.swing.JMenu();
         jMenuItemFilmAbspielen = new javax.swing.JMenuItem();
         jMenuItemFilmAufzeichnen = new javax.swing.JMenuItem();
@@ -1111,8 +1138,6 @@ public class MediathekGui extends JFrame {
         javax.swing.JPopupMenu.Separator jSeparator4 = new javax.swing.JPopupMenu.Separator();
         jMenuItemCreateProtocolFile = new javax.swing.JMenuItem();
         jMenuItemResetSettings = new javax.swing.JMenuItem();
-        jSeparatorAboutApplication = new javax.swing.JPopupMenu.Separator();
-        jMenuItemAboutApplication = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -1128,18 +1153,8 @@ public class MediathekGui extends JFrame {
         jMenuDatei.setText("Datei");
 
         jMenuItemFilmlisteLaden.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
-        jMenuItemFilmlisteLaden.setText("neue Filmliste laden");
+        jMenuItemFilmlisteLaden.setText("Neue Filmliste laden");
         jMenuDatei.add(jMenuItemFilmlisteLaden);
-
-        jMenuItemEinstellungen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
-        jMenuItemEinstellungen.setText("Einstellungen");
-        jMenuItemEinstellungen.setToolTipText("allgemeine Programmeinstellungen");
-        jMenuDatei.add(jMenuItemEinstellungen);
-        jMenuDatei.add(jSeparator2);
-
-        jMenuItemBeenden.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemBeenden.setText("Beenden");
-        jMenuDatei.add(jMenuItemBeenden);
 
         jMenuBar.add(jMenuDatei);
 
@@ -1325,10 +1340,6 @@ public class MediathekGui extends JFrame {
 
         jMenuItemResetSettings.setText("Einstellungen zurücksetzen...");
         jMenuHilfe.add(jMenuItemResetSettings);
-        jMenuHilfe.add(jSeparatorAboutApplication);
-
-        jMenuItemAboutApplication.setText("Über dieses Programm...");
-        jMenuHilfe.add(jMenuItemAboutApplication);
 
         jMenuBar.add(jMenuHilfe);
 
@@ -1369,8 +1380,6 @@ public class MediathekGui extends JFrame {
     private javax.swing.JMenuItem jMenuItemAbosAusschalten;
     private javax.swing.JMenuItem jMenuItemAbosEinschalten;
     private javax.swing.JMenuItem jMenuItemAbosLoeschen;
-    protected javax.swing.JMenuItem jMenuItemAboutApplication;
-    protected javax.swing.JMenuItem jMenuItemBeenden;
     protected javax.swing.JMenuItem jMenuItemBlacklist;
     private javax.swing.JMenuItem jMenuItemCreateProtocolFile;
     private javax.swing.JMenuItem jMenuItemDownloadAbspielen;
@@ -1391,7 +1400,6 @@ public class MediathekGui extends JFrame {
     private javax.swing.JMenuItem jMenuItemDownloadsAufraeumen;
     private javax.swing.JMenuItem jMenuItemDownloadsLoeschen;
     private javax.swing.JMenuItem jMenuItemDownloadsZurueckstellen;
-    protected javax.swing.JMenuItem jMenuItemEinstellungen;
     protected javax.swing.JMenuItem jMenuItemFilmAbspielen;
     protected javax.swing.JMenuItem jMenuItemFilmAufzeichnen;
     private javax.swing.JMenuItem jMenuItemFilmeGesehen;
@@ -1405,8 +1413,6 @@ public class MediathekGui extends JFrame {
     private javax.swing.JMenuItem jMenuItemSchriftNormal;
     private javax.swing.JMenuItem jMenuItemShowOnlineHelp;
     private javax.swing.JPanel jPanelInfo;
-    protected javax.swing.JPopupMenu.Separator jSeparator2;
-    protected javax.swing.JPopupMenu.Separator jSeparatorAboutApplication;
     private javax.swing.JTabbedPane jTabbedPane;
     // End of variables declaration//GEN-END:variables
 
