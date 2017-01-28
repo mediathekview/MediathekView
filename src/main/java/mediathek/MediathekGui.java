@@ -457,6 +457,11 @@ public class MediathekGui extends JFrame {
 
     private static boolean geklickt;
 
+    /**
+     * Points to the GuiDebug panel instance.
+     */
+    public GuiDebug guiDebug = null;
+
     private void initTabs() {
         Daten.guiDownloads = new GuiDownloads(daten, this);
         Daten.guiAbo = new GuiAbo(daten, this);
@@ -465,9 +470,9 @@ public class MediathekGui extends JFrame {
 
         jTabbedPane.addTab(TABNAME_FILME, Daten.guiFilme);
 
-        if (Daten.isDebug()) {
-            Daten.guiDebug = new GuiDebug(daten);
-            jTabbedPane.addTab(TABNAME_DEBUG, Daten.guiDebug);
+        if (daten.isDebug()) {
+            guiDebug = new GuiDebug(daten);
+            jTabbedPane.addTab(TABNAME_DEBUG, guiDebug);
         }
         initFrames();
         jTabbedPane.addChangeListener(l -> {
@@ -574,7 +579,7 @@ public class MediathekGui extends JFrame {
         } else {
             jTabbedPane.setTabPlacement(JTabbedPane.LEFT);
         }
-//            jTabbedPane.updateUI();
+
         for (int i = 0; i < jTabbedPane.getTabCount(); ++i) {
             Component c = jTabbedPane.getComponentAt(i);
             ImageIcon ic = null;
@@ -606,7 +611,7 @@ public class MediathekGui extends JFrame {
                     ic = top ? Icons.ICON_TAB_TOP_MELDUNG_SW : Icons.ICON_TAB_MELDUNG_SW;
                 }
             }
-            if (c.equals(Daten.guiDebug)) {
+            if (c.equals(daten.getMediathekGui().guiDebug)) {
                 if (jTabbedPane.getSelectedIndex() == i) {
                     ic = top ? Icons.ICON_TAB_TOP_MELDUNG : Icons.ICON_TAB_MELDUNG;
                 } else {
@@ -614,18 +619,23 @@ public class MediathekGui extends JFrame {
                 }
             }
             String s = jTabbedPane.getTitleAt(i);
-            JLabel lbl = makeLabel(s, ic);
+            JLabel lbl = makeTabbedPaneLabel(s, ic);
             if (icon) {
                 jTabbedPane.setTabComponentAt(i, lbl);
             } else {
                 jTabbedPane.setTabComponentAt(i, null);
             }
         }
-
-//            jTabbedPane.updateUI();
     }
 
-    private JLabel makeLabel(String text, ImageIcon ic) {
+    /**
+     * Create {@link JLabel} with an icon and text for the {@link JTabbedPane} header.
+     *
+     * @param text label text.
+     * @param ic   provided icon.
+     * @return the ready {@link JLabel}
+     */
+    private JLabel makeTabbedPaneLabel(String text, ImageIcon ic) {
         JLabel lbl = new JLabel(text);
 
         lbl.setBorder(null);
