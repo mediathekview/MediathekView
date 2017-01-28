@@ -44,6 +44,7 @@ import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
+import mediathek.gui.filmInformation.IFilmInformation;
 import mediathek.gui.filmInformation.MVFilmInformationLWin;
 import mediathek.gui.tools.AutomaticTabSwitcherMenuListener;
 import mediathek.res.GetIcon;
@@ -176,7 +177,7 @@ public class MediathekGui extends JFrame {
         Duration.staticPing(LOG_TEXT_START_GUI);
         createStatusBar();
 
-        createFilmInformationHUD(this, jTabbedPane, daten);
+        createFilmInformationHUD(jTabbedPane, daten);
 
         setOrgTitel();
         setLookAndFeel();
@@ -197,6 +198,12 @@ public class MediathekGui extends JFrame {
         ProgStart.loadDataProgStart();
 
         splashScreenManager.closeSplashScreen();
+    }
+
+    protected IFilmInformation filmInfo = null; // Infos zum Film
+
+    public IFilmInformation getFilmInformationHud() {
+        return filmInfo;
     }
 
     private void setupMediaDB()
@@ -281,9 +288,9 @@ public class MediathekGui extends JFrame {
     /**
      * Create the film information tool window.
      */
-    protected void createFilmInformationHUD(JFrame parent, JTabbedPane tabPane, Daten daten) {
+    protected void createFilmInformationHUD(JTabbedPane tabPane, Daten daten) {
             //klappte nicht auf allen Desktops
-        Daten.filmInfo = new MVFilmInformationLWin(parent);
+        filmInfo = new MVFilmInformationLWin(this);
     }
 
     private void addListener() {

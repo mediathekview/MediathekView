@@ -37,6 +37,7 @@ import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
+import mediathek.gui.filmInformation.IFilmInformation;
 import mediathek.tool.*;
 
 import javax.swing.*;
@@ -238,8 +239,9 @@ public class GuiDownloads extends PanelVorlage {
         this.getActionMap().put("info", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!Daten.filmInfo.isVisible()) {
-                    Daten.filmInfo.showInfo();
+                IFilmInformation hud = daten.getMediathekGui().getFilmInformationHud();
+                if (!hud.isVisible()) {
+                    hud.showInfo();
                 }
             }
         });
@@ -989,7 +991,7 @@ public class GuiDownloads extends PanelVorlage {
                     aktFilm = datenDownload.film;
                 }
             }
-            Daten.filmInfo.updateCurrentFilm(aktFilm);
+            daten.getMediathekGui().getFilmInformationHud().updateCurrentFilm(aktFilm);
         }
     }
 
@@ -1489,8 +1491,9 @@ public class GuiDownloads extends PanelVorlage {
             // Infos
             JMenuItem itemInfo = new JMenuItem("Filminformation anzeigen");
             itemInfo.addActionListener(e -> {
-                if (!Daten.filmInfo.isVisible()) {
-                    Daten.filmInfo.showInfo();
+                IFilmInformation hud = daten.getMediathekGui().getFilmInformationHud();
+                if (!hud.isVisible()) {
+                    hud.showInfo();
                 }
             });
             jPopupMenu.add(itemInfo);

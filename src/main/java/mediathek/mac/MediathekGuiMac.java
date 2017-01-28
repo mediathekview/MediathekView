@@ -80,9 +80,9 @@ public class MediathekGuiMac extends MediathekGui {
     }
 
     @Override
-    protected void createFilmInformationHUD(JFrame parent, JTabbedPane tabPane, Daten daten)
+    protected void createFilmInformationHUD(JTabbedPane tabPane, Daten daten)
     {
-        Daten.filmInfo = new MVFilmInformationOSX(parent);
+        filmInfo = new MVFilmInformationOSX(this);
     }
 
     @Override

@@ -27,6 +27,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogZiel;
+import mediathek.gui.filmInformation.IFilmInformation;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.MVRun;
@@ -326,8 +327,9 @@ public class PanelErledigteUrls extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.filmInfo.updateCurrentFilm(film);
-                Daten.filmInfo.showInfo();
+                IFilmInformation hud = daten.getMediathekGui().getFilmInformationHud();
+                hud.updateCurrentFilm(film);
+                hud.showInfo();
             }
         }
 
@@ -338,11 +340,7 @@ public class PanelErledigteUrls extends PanelVorlage {
                 int selectedTableRow = jTable1.getSelectedRow();
                 if (selectedTableRow >= 0) {
                     String del = jTable1.getValueAt(jTable1.convertRowIndexToModel(selectedTableRow), MVUsedUrl.USED_URL_URL).toString();
-                    if (abo) {
-                        GuiFunktionen.copyToClipboard(del);
-                    } else {
-                        GuiFunktionen.copyToClipboard(del);
-                    }
+                    GuiFunktionen.copyToClipboard(del);
                 }
 
             }

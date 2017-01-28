@@ -38,6 +38,7 @@ import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
+import mediathek.gui.filmInformation.IFilmInformation;
 import mediathek.tool.*;
 import mediathek.tool.MVTable;
 
@@ -244,8 +245,9 @@ public class GuiFilme extends PanelVorlage {
         this.getActionMap().put("info", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!Daten.filmInfo.isVisible()) {
-                    Daten.filmInfo.showInfo();
+                IFilmInformation hud = daten.getMediathekGui().getFilmInformationHud();
+                if (!hud.isVisible()) {
+                    hud.showInfo();
                 }
             }
         });
@@ -608,7 +610,7 @@ public class GuiFilme extends PanelVorlage {
      */
     private void updateFilmData() {
         final Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
-        filmSelection.ifPresent(Daten.filmInfo::updateCurrentFilm);
+        filmSelection.ifPresent(daten.getMediathekGui().getFilmInformationHud()::updateCurrentFilm);
     }
 
     private void setInfoStatusbar() {
@@ -1381,9 +1383,9 @@ public class GuiFilme extends PanelVorlage {
                         buttonTable(row, column);
                     }
                 } else if (arg0.getClickCount() > 1) {
-                    //filmAbspielen_();
-                    if (!Daten.filmInfo.isVisible()) {
-                        Daten.filmInfo.showInfo();
+                    IFilmInformation hud = daten.getMediathekGui().getFilmInformationHud();
+                    if (!hud.isVisible()) {
+                        hud.showInfo();
                     }
                 }
             }
@@ -1657,8 +1659,9 @@ public class GuiFilme extends PanelVorlage {
             //Infos
             item = new JMenuItem("Filminformation anzeigen");
             item.addActionListener(e -> {
-                if (!Daten.filmInfo.isVisible()) {
-                    Daten.filmInfo.showInfo();
+                IFilmInformation hud = daten.getMediathekGui().getFilmInformationHud();
+                if (!hud.isVisible()) {
+                    hud.showInfo();
                 }
             });
             jPopupMenu.add(item);

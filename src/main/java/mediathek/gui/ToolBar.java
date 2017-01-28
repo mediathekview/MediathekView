@@ -165,7 +165,7 @@ public final class ToolBar extends JToolBar {
 
     private void createButtonInfo() {
         jButtonInfo = new MVButton("Filminformation anzeigen", "Filminformation anzeigen", Icons.ICON_TOOLBAR_FILME_INFO_GR, Icons.ICON_TOOLBAR_FILME_INFO_KL);
-        jButtonInfo.addActionListener(e -> daten.filmInfo.showInfo());
+        jButtonInfo.addActionListener(e -> daten.getMediathekGui().getFilmInformationHud().showInfo());
     }
 
     private void startupFilme() {
