@@ -25,6 +25,11 @@ addons:
 # Build
 script:
   - ./gradlew check build
+  - if [ "$TRAVIS_EVENT_TYPE" == "cron" ]; then
+      openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv 
+        -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d;
+      scripte/deploy/deploy.sh nightly;
+    fi
   - if [ "$TRAVIS_BRANCH" == "develop" ]; then
       openssl aes-256-cbc -K $encrypted_b91ffbcdac83_key -iv $encrypted_b91ffbcdac83_iv 
         -in scripte/deploy/RepoZugang.properties.enc -out scripte/deploy/RepoZugang.properties -d;
