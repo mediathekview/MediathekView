@@ -88,7 +88,7 @@ public class MediathekAuto {
         }
 
         // Einstellungen laden
-        Path xmlFilePath = Daten.getMediathekXmlFilePath();
+        Path xmlFilePath = daten.getMediathekXmlFilePath();
         SysMsg.sysMsg("Einstellungen laden: " + xmlFilePath.toString());
         if (!IoXmlLesen.datenLesen(xmlFilePath)) {
             // dann hat das Laden nicht geklappt

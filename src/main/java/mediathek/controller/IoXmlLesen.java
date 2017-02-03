@@ -33,6 +33,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -48,13 +49,12 @@ public class IoXmlLesen {
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
             inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
             DatenPset datenPset = null;
-            try (InputStreamReader in = new InputStreamReader(Files.newInputStream(xmlFilePath), Const.KODIERUNG_UTF)) {
-                //XMLStreamReader parser = inFactory.createXMLStreamReader(new BufferedReader(in, 25_000));
+            try (InputStream is = Files.newInputStream(xmlFilePath);
+                 InputStreamReader in = new InputStreamReader(is, Const.KODIERUNG_UTF)) {
                 XMLStreamReader parser = inFactory.createXMLStreamReader(in);
                 while (parser.hasNext()) {
                     event = parser.next();
                     if (event == XMLStreamConstants.START_ELEMENT) {
-                        //String t = parser.getLocalName();
                         switch (parser.getLocalName()) {
                             case MVConfig.SYSTEM:
                                 //System
@@ -148,7 +148,7 @@ public class IoXmlLesen {
     }
 
     public static boolean einstellungenExistieren() {
-        Path xmlFilePath = Daten.getMediathekXmlFilePath();
+        Path xmlFilePath = Daten.getInstance().getMediathekXmlFilePath();
         return Files.exists(xmlFilePath);
     }
 

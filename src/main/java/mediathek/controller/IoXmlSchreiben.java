@@ -19,14 +19,6 @@
  */
 package mediathek.controller;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 import mSearch.Const;
 import mSearch.filmlisten.DatenFilmlisteUrl;
 import mSearch.tool.Log;
@@ -37,6 +29,15 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.*;
 
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class IoXmlSchreiben {
     
     private static XMLStreamWriter writer;
@@ -44,7 +45,7 @@ public class IoXmlSchreiben {
     private static Path xmlFilePath;
     
     public static synchronized void datenSchreiben() {
-        xmlFilePath = Daten.getMediathekXmlFilePath();
+        xmlFilePath = Daten.getInstance().getMediathekXmlFilePath();
         SysMsg.sysMsg("Daten Schreiben nach: " + xmlFilePath.toString());
         xmlDatenSchreiben();
     }

@@ -115,7 +115,7 @@ public class AboutDialog extends JDialog {
             setupVersionString();
             setupJavaInformation();
             // Programmpfade
-            final Path xmlFilePath = Daten.getMediathekXmlFilePath();
+            final Path xmlFilePath = Daten.getInstance().getMediathekXmlFilePath();
             lblSettingsFilePath.setText(xmlFilePath.toAbsolutePath().toString());
             lblFilmlistPath.setText(Daten.getDateiFilmliste());
 

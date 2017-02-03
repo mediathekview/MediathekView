@@ -54,7 +54,7 @@ public class PanelImport extends PanelVorlage {
         jCheckBoxAbo.addActionListener(e -> setButtonImport());
         jCheckBoxBlack.addActionListener(e -> setButtonImport());
         jCheckBoxErsetzungstabelle.addActionListener(e -> setButtonImport());
-        final Path xmlFilePath = Daten.getMediathekXmlFilePath();
+        final Path xmlFilePath = daten.getMediathekXmlFilePath();
         jTextFieldPfadKonfig.setText(xmlFilePath.toAbsolutePath().toString());
         jTextFieldDatei.addMouseListener(new TextCopyPaste());
     }
@@ -254,7 +254,7 @@ public class PanelImport extends PanelVorlage {
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 chooser.setFileHidingEnabled(false);
                 if (jTextFieldDatei.getText().isEmpty()) {
-                    chooser.setCurrentDirectory(Daten.getMediathekXmlFilePath().toFile());
+                    chooser.setCurrentDirectory(daten.getMediathekXmlFilePath().toFile());
                 } else {
                     chooser.setCurrentDirectory(new File(jTextFieldDatei.getText()));
                 }

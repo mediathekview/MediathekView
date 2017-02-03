@@ -288,7 +288,7 @@ public class Daten
      *
      * @return Path object to mediathek.xml file
      */
-    public static Path getMediathekXmlFilePath()
+    public Path getMediathekXmlFilePath()
     {
         return Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE);
     }
@@ -299,7 +299,7 @@ public class Daten
      *
      * @param xmlFilePath Path to file.
      */
-    public static void getMediathekXmlCopyFilePath(ArrayList<Path> xmlFilePath)
+    public void getMediathekXmlCopyFilePath(ArrayList<Path> xmlFilePath)
     {
         for (int i = 1; i <= MAX_COPY; ++i)
         {
@@ -361,7 +361,7 @@ public class Daten
     private boolean load()
     {
         boolean ret = false;
-        Path xmlFilePath = Daten.getMediathekXmlFilePath();
+        Path xmlFilePath = getMediathekXmlFilePath();
 
         if (Files.exists(xmlFilePath))
         {
@@ -391,7 +391,7 @@ public class Daten
     {
         boolean ret = false;
         ArrayList<Path> path = new ArrayList<>();
-        Daten.getMediathekXmlCopyFilePath(path);
+        getMediathekXmlCopyFilePath(path);
         if (path.isEmpty())
         {
             SysMsg.sysMsg("Es gibt kein Backup");
@@ -485,7 +485,7 @@ public class Daten
 
             try
             {
-                final Path xmlFilePath = Daten.getMediathekXmlFilePath();
+                final Path xmlFilePath = getMediathekXmlFilePath();
                 long creatTime = -1;
 
                 Path xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1);
@@ -533,7 +533,7 @@ public class Daten
      *
      * @return Number of milliseconds from today´s midnight.
      */
-    public static long getHeute_0Uhr()
+    private long getHeute_0Uhr()
     {
         final Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
