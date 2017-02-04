@@ -196,7 +196,7 @@ public final class MVStatusBar extends JPanel {
         int gesamt = daten.getListeFilme().size();
         int anzListe = Daten.guiFilme.getTableRowCount();
         int runs = daten.getListeDownloadsButton().getListOfStartsNotFinished(DatenDownload.QUELLE_BUTTON).size();
-        lblSel.setText(Daten.guiFilme.tabelle.getSelectedRowCount() + "");
+        lblSel.setText(Integer.toString(Daten.guiFilme.tabelle.getSelectedRowCount()));
         // Anzahl der Filme
         if (gesamt == anzListe) {
             if (anzListe == 1) {
@@ -228,14 +228,14 @@ public final class MVStatusBar extends JPanel {
     }
 
     private void setInfoDownload() {
-        lblSel.setText(Daten.guiDownloads.tabelle.getSelectedRowCount() + "");
+        lblSel.setText(Integer.toString(Daten.guiDownloads.tabelle.getSelectedRowCount()));
         String textLinks = getInfoTextDownloads(true /*mitAbo*/);
 
         displayListForLeftLabel.put(MVStatusBar.StatusbarIndex.DOWNLOAD, textLinks);
     }
 
     private void setInfoAbo() {
-        lblSel.setText(Daten.guiAbo.tabelle.getSelectedRowCount() + "");
+        lblSel.setText(Integer.toString(Daten.guiAbo.tabelle.getSelectedRowCount()));
 
         String textLinks;
         int ein = 0;
