@@ -363,20 +363,20 @@ public class Daten
         boolean ret = false;
         Path xmlFilePath = getMediathekXmlFilePath();
 
-        if (Files.exists(xmlFilePath))
-        {
-            if (IoXmlLesen.datenLesen(xmlFilePath))
-            {
-                return true;
-            } else
-            {
+        try (IoXmlLesen reader = new IoXmlLesen(this)) {
+            if (Files.exists(xmlFilePath)) {
+                if (reader.readConfiguration(xmlFilePath)) {
+                    return true;
+                } else {
+                    // dann hat das Laden nicht geklappt
+                    SysMsg.sysMsg("Konfig konnte nicht gelesen werden!");
+                }
+            } else {
                 // dann hat das Laden nicht geklappt
-                SysMsg.sysMsg("Konfig konnte nicht gelesen werden!");
+                SysMsg.sysMsg("Konfig existiert nicht!");
             }
-        } else
-        {
-            // dann hat das Laden nicht geklappt
-            SysMsg.sysMsg("Konfig existiert nicht!");
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
         // versuchen das Backup zu laden
@@ -419,11 +419,14 @@ public class Daten
             // teils geladene Reste entfernen
             clearKonfig();
             SysMsg.sysMsg(new String[]{"Versuch Backup zu laden:", p.toString()});
-            if (IoXmlLesen.datenLesen(p))
-            {
-                SysMsg.sysMsg(new String[]{"Backup hat geklappt:", p.toString()});
-                ret = true;
-                break;
+            try (IoXmlLesen reader = new IoXmlLesen(this)) {
+                if (reader.readConfiguration(p)) {
+                    SysMsg.sysMsg(new String[]{"Backup hat geklappt:", p.toString()});
+                    ret = true;
+                    break;
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
 
         }
@@ -433,7 +436,12 @@ public class Daten
     public void allesSpeichern()
     {
         konfigCopy();
-        IoXmlSchreiben.datenSchreiben();
+        try (IoXmlSchreiben writer = new IoXmlSchreiben(this)) {
+            writer.datenSchreiben();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
         if (Daten.isReset())
         {
             // das Programm soll beim nächsten Start mit den Standardeinstellungen gestartet werden

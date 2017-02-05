@@ -33,24 +33,31 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class IoXmlSchreiben {
-    
-    private static XMLStreamWriter writer;
-    private static OutputStreamWriter out = null;
-    private static Path xmlFilePath;
-    
-    public static synchronized void datenSchreiben() {
-        xmlFilePath = Daten.getInstance().getMediathekXmlFilePath();
+public class IoXmlSchreiben implements AutoCloseable {
+
+    private XMLStreamWriter writer = null;
+    private OutputStreamWriter out = null;
+    private Path xmlFilePath = null;
+    private OutputStream os = null;
+    private Daten daten = null;
+
+    public IoXmlSchreiben(Daten daten) {
+        this.daten = daten;
+    }
+
+    public synchronized void datenSchreiben() {
+        xmlFilePath = daten.getMediathekXmlFilePath();
         SysMsg.sysMsg("Daten Schreiben nach: " + xmlFilePath.toString());
         xmlDatenSchreiben();
     }
-    
-    public static synchronized void exportPset(DatenPset[] pSet, String datei) {
+
+    public synchronized void exportPset(DatenPset[] pSet, String datei) {
         try {
             xmlFilePath = Paths.get(datei);
             SysMsg.sysMsg("Pset exportieren nach: " + xmlFilePath.toString());
@@ -61,65 +68,66 @@ public class IoXmlSchreiben {
             Log.errorLog(392846204, ex, "nach: " + datei);
         }
     }
-    
-    private static void xmlDatenSchreiben() {
+
+    private void xmlDatenSchreiben() {
         try {
             xmlSchreibenStart();
-            
+
             writer.writeCharacters("\n\n");
             writer.writeComment("Abos");
             writer.writeCharacters("\n");
             xmlSchreibenAbo();
-            
+
             writer.writeCharacters("\n\n");
             writer.writeComment("Blacklist");
             writer.writeCharacters("\n");
             xmlSchreibenBlackList();
-            
+
             writer.writeCharacters("\n\n");
             writer.writeComment(MVConfig.PARAMETER_INFO);
             writer.writeCharacters("\n\n");
             writer.writeComment("Programmeinstellungen");
             writer.writeCharacters("\n");
-            xmlSchreibenConfig(MVConfig.SYSTEM, MVConfig.getAll(), true);
+            xmlSchreibenConfig(MVConfig.SYSTEM, MVConfig.getAll());
             writer.writeCharacters("\n");
-            
+
             writer.writeCharacters("\n\n");
             writer.writeComment("Programmsets");
             writer.writeCharacters("\n");
             xmlSchreibenProg();
-            
+
             writer.writeCharacters("\n\n");
             writer.writeComment("Ersetzungstabelle");
             writer.writeCharacters("\n");
             xmlSchreibenErsetzungstabelle();
-            
+
             writer.writeCharacters("\n\n");
             writer.writeComment("Downloads");
             writer.writeCharacters("\n");
             xmlSchreibenDownloads();
-            
+
             writer.writeCharacters("\n\n");
             writer.writeComment("Pfade MedienDB");
             writer.writeCharacters("\n");
             xmlSchreibenMediaPath();
-            
+
             writer.writeCharacters("\n\n");
             writer.writeComment("Update Filmliste");
             writer.writeCharacters("\n");
             xmlSchreibenFilmUpdateServer();
-            
+
             writer.writeCharacters("\n\n");
             xmlSchreibenEnde();
         } catch (Exception ex) {
             Log.errorLog(656328109, ex);
         }
     }
-    
-    private static void xmlSchreibenStart() throws IOException, XMLStreamException {
+
+    private void xmlSchreibenStart() throws IOException, XMLStreamException {
         SysMsg.sysMsg("Start Schreiben nach: " + xmlFilePath.toAbsolutePath());
-        out = new OutputStreamWriter(Files.newOutputStream(xmlFilePath), Const.KODIERUNG_UTF);
-        
+        os = Files.newOutputStream(xmlFilePath);
+        out = new OutputStreamWriter(os, Const.KODIERUNG_UTF);
+
         XMLOutputFactory outFactory = XMLOutputFactory.newInstance();
         writer = outFactory.createXMLStreamWriter(out);
         writer.writeStartDocument(Const.KODIERUNG_UTF, "1.0");
@@ -127,24 +135,24 @@ public class IoXmlSchreiben {
         writer.writeStartElement(Konstanten.XML_START);
         writer.writeCharacters("\n");//neue Zeile
     }
-    
-    private static void xmlSchreibenErsetzungstabelle() {
+
+    private void xmlSchreibenErsetzungstabelle() {
         for (String[] sa : ReplaceList.list) {
             xmlSchreibenDaten(ReplaceList.REPLACELIST, ReplaceList.COLUMN_NAMES, sa, false);
         }
     }
-    
-    private static void xmlSchreibenProg() {
+
+    private void xmlSchreibenProg() {
         //Proggruppen schreiben, bei Konfig-Datei
-        for (DatenPset datenPset : Daten.listePset) {
+        for (DatenPset datenPset : daten.listePset) {
             xmlSchreibenDaten(DatenPset.TAG, DatenPset.XML_NAMES, datenPset.arr, false);
             for (DatenProg datenProg : datenPset.getListeProg()) {
                 xmlSchreibenDaten(DatenProg.TAG, DatenProg.XML_NAMES, datenProg.arr, false);
             }
         }
     }
-    
-    private static void xmlSchreibenPset(DatenPset[] psetArray) throws XMLStreamException {
+
+    private void xmlSchreibenPset(DatenPset[] psetArray) throws XMLStreamException {
         // wird beim Export Sets verwendete
         writer.writeCharacters("\n\n");
         for (DatenPset pset : psetArray) {
@@ -155,10 +163,10 @@ public class IoXmlSchreiben {
             writer.writeCharacters("\n\n");
         }
     }
-    
-    private static void xmlSchreibenDownloads() {
+
+    private void xmlSchreibenDownloads() {
         //Abo schreiben
-        for (DatenDownload download : Daten.getInstance().getListeDownloads()) {
+        for (DatenDownload download : daten.getListeDownloads()) {
             if (download.isInterrupted()) {
                 // unterbrochene werden gespeichert, dass die Info "Interrupt" erhalten bleibt
                 xmlSchreibenDaten(DatenDownload.TAG, DatenDownload.XML_NAMES, download.arr, false);
@@ -168,48 +176,49 @@ public class IoXmlSchreiben {
             }
         }
     }
-    
-    private static void xmlSchreibenAbo() {
+
+    private void xmlSchreibenAbo() {
         //Abo schreiben
-        for (DatenAbo datenAbo : Daten.getInstance().getListeAbo()) {
+        for (DatenAbo datenAbo : daten.getListeAbo()) {
             xmlSchreibenDaten(DatenAbo.TAG, DatenAbo.XML_NAMES, datenAbo.arr, false);
         }
     }
-    
-    private static void xmlSchreibenMediaPath() {
+
+    private void xmlSchreibenMediaPath() {
         //Pfade der MedienDB schreiben
-        for (DatenMediaPath mp : Daten.getInstance().getListeMediaPath()) {
+        for (DatenMediaPath mp : daten.getListeMediaPath()) {
             xmlSchreibenDaten(DatenMediaPath.TAG, DatenMediaPath.XML_NAMES, mp.arr, false);
         }
     }
-    
-    private static void xmlSchreibenBlackList() {
+
+    private void xmlSchreibenBlackList() {
         //Blacklist schreiben
-        for (DatenBlacklist blacklist : Daten.getInstance().getListeBlacklist()) {
+        for (DatenBlacklist blacklist : daten.getListeBlacklist()) {
             xmlSchreibenDaten(DatenBlacklist.TAG, DatenBlacklist.XML_NAMES, blacklist.arr, false);
         }
     }
-    
-    private static void xmlSchreibenFilmUpdateServer() throws XMLStreamException {
+
+    private void xmlSchreibenFilmUpdateServer() throws XMLStreamException {
         //FilmUpdate schreiben
         writer.writeCharacters("\n");
         writer.writeComment("Akt-Filmliste");
         writer.writeCharacters("\n");
-        for (DatenFilmlisteUrl datenUrlFilmliste : Daten.getInstance().getFilmeLaden().getDownloadUrlsFilmlisten_akt()) {
+
+        for (DatenFilmlisteUrl datenUrlFilmliste : daten.getFilmeLaden().getDownloadUrlsFilmlisten_akt()) {
             datenUrlFilmliste.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR] = DatenFilmlisteUrl.SERVER_ART_AKT;
             xmlSchreibenDaten(DatenFilmlisteUrl.FILM_UPDATE_SERVER, DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
         }
-        
+
         writer.writeCharacters("\n");
         writer.writeComment("Diff-Filmliste");
         writer.writeCharacters("\n");
-        for (DatenFilmlisteUrl datenUrlFilmliste : Daten.getInstance().getFilmeLaden().getDownloadUrlsFilmlisten_diff()) {
+        for (DatenFilmlisteUrl datenUrlFilmliste : daten.getFilmeLaden().getDownloadUrlsFilmlisten_diff()) {
             datenUrlFilmliste.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR] = DatenFilmlisteUrl.SERVER_ART_DIFF;
             xmlSchreibenDaten(DatenFilmlisteUrl.FILM_UPDATE_SERVER, DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
         }
     }
-    
-    private static void xmlSchreibenDaten(String xmlName, String[] xmlSpalten, String[] datenArray, boolean newLine) {
+
+    private void xmlSchreibenDaten(String xmlName, String[] xmlSpalten, String[] datenArray, boolean newLine) {
         final int xmlMax = datenArray.length;
         try {
             writer.writeStartElement(xmlName);
@@ -217,7 +226,7 @@ public class IoXmlSchreiben {
                 writer.writeCharacters("\n"); //neue Zeile
             }
             for (int i = 0; i < xmlMax; ++i) {
-                if (!datenArray[i].equals("")) {
+                if (!datenArray[i].isEmpty()) {
                     if (newLine) {
                         writer.writeCharacters("\t"); //Tab
                     }
@@ -235,26 +244,21 @@ public class IoXmlSchreiben {
             Log.errorLog(198325017, ex);
         }
     }
-    
-    private static void xmlSchreibenConfig(String xmlName, String[][] xmlSpalten, boolean newLine) {
+
+    private void xmlSchreibenConfig(String xmlName, String[][] xmlSpalten) {
         try {
             writer.writeStartElement(xmlName);
-            if (newLine) {
-                writer.writeCharacters("\n"); //neue Zeile
-            }
+            writer.writeCharacters("\n"); //neue Zeile
+
             for (String[] xmlSpalte : xmlSpalten) {
                 if (!MVConfig.Configs.find(xmlSpalte[0])) {
                     continue; //nur Configs schreiben die es noch gibt
                 }
-                if (newLine) {
-                    writer.writeCharacters("\t"); //Tab
-                }
+                writer.writeCharacters("\t"); //Tab
                 writer.writeStartElement(xmlSpalte[0]);
                 writer.writeCharacters(xmlSpalte[1]);
                 writer.writeEndElement();
-                if (newLine) {
-                    writer.writeCharacters("\n"); //neue Zeile
-                }
+                writer.writeCharacters("\n"); //neue Zeile
             }
             writer.writeEndElement();
             writer.writeCharacters("\n"); //neue Zeile
@@ -262,15 +266,19 @@ public class IoXmlSchreiben {
             Log.errorLog(951230478, ex);
         }
     }
-    
-    private static void xmlSchreibenEnde() throws Exception {
+
+    private void xmlSchreibenEnde() throws Exception {
         writer.writeEndElement();
         writer.writeEndDocument();
         writer.flush();
-        
+
+        SysMsg.sysMsg("geschrieben!");
+    }
+
+    @Override
+    public void close() throws Exception {
         writer.close();
         out.close();
-        
-        SysMsg.sysMsg("geschrieben!");
+        os.close();
     }
 }

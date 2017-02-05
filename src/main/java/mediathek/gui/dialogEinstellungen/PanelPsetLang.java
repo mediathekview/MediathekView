@@ -34,6 +34,8 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.*;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -46,6 +48,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
+import java.util.logging.Level;
 
 @SuppressWarnings("serial")
 public class PanelPsetLang extends PanelVorlage {
@@ -55,18 +58,6 @@ public class PanelPsetLang extends PanelVorlage {
     private final MVTable tabellePset;
     private final MVTable tabelleProgramme;
     private boolean modalHilfe = false;
-
-    public PanelPsetLang(Daten d, JFrame parentComponent) {
-        super(d, parentComponent);
-        initComponents();
-        modalHilfe = false;
-        tabellePset = new MVTable(MVTable.TableType.PSET);
-        jScrollPane3.setViewportView(tabellePset);
-        tabelleProgramme = new MVTable(MVTable.TableType.PROG);
-        jScrollPane1.setViewportView(tabelleProgramme);
-        listePset = Daten.listePset;
-        init();
-    }
 
     public PanelPsetLang(Daten d, JFrame parentComponent, ListePset llistePset) {
         super(d, parentComponent);
@@ -278,11 +269,11 @@ public class PanelPsetLang extends PanelVorlage {
 
     }
 
-    private void setHyperLink(String uurl) {
-        if (!uurl.equals("")) {
+    private void setHyperLink(String url) {
+        if (!url.isEmpty()) {
             jLabelInfo.setVisible(true);
             jXHyperlinkInfo.setVisible(true);
-            jXHyperlinkInfo.setText(uurl);
+            jXHyperlinkInfo.setText(url);
         } else {
             jLabelInfo.setVisible(false);
             jXHyperlinkInfo.setVisible(false);
@@ -577,7 +568,7 @@ public class PanelPsetLang extends PanelVorlage {
                     liste.add(pSet);
                 }
             }
-            String name = liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME].equals("") ? "Name.xml" : liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME] + ".xml";
+            String name = liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME].isEmpty() ? "Name.xml" : liste.getFirst().arr[DatenPset.PROGRAMMSET_NAME] + ".xml";
             DialogZielExportPset dialogZiel = new DialogZielExportPset(null, true, exportPfad, FilenameUtils.replaceLeerDateiname(name, false /*pfad*/,
                     Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
                     Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII))));
@@ -586,7 +577,20 @@ public class PanelPsetLang extends PanelVorlage {
                 if (dialogZiel.ziel.contains(File.separator)) {
                     exportPfad = dialogZiel.ziel.substring(0, dialogZiel.ziel.lastIndexOf(File.separator));
                 }
-                IoXmlSchreiben.exportPset(liste.toArray(new DatenPset[liste.size()]), dialogZiel.ziel);
+                try (IoXmlSchreiben writer = new IoXmlSchreiben(daten)) {
+                    writer.exportPset(liste.toArray(new DatenPset[liste.size()]), dialogZiel.ziel);
+                } catch (Exception ex) {
+                    final ErrorInfo info = new ErrorInfo("Programmfehler",
+                            "<html>Es trat ein Fehler beim Speichern der Einstellungen auf.<br>" +
+                                    "Sollte dieser häufiger auftreten kontaktieren Sie bitte " +
+                                    "das Entwicklerteam.</html>",
+                            null,
+                            null,
+                            ex,
+                            Level.SEVERE,
+                            null);
+                    JXErrorPane.showDialog(this, info);
+                }
             }
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
@@ -1633,7 +1637,7 @@ public class PanelPsetLang extends PanelVorlage {
                 int returnVal;
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                if (!jTextFieldProgPfad.getText().equals("")) {
+                if (!jTextFieldProgPfad.getText().isEmpty()) {
                     chooser.setCurrentDirectory(new File(jTextFieldProgPfad.getText()));
                 }
                 returnVal = chooser.showOpenDialog(null);
@@ -1670,13 +1674,12 @@ public class PanelPsetLang extends PanelVorlage {
                 System.setProperty("apple.awt.fileDialogForDirectories", "false");
             } else {
                 //use the cross-platform swing chooser
-                int returnVal;
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                if (!jTextFieldGruppeZielPfad.getText().equals("")) {
+                if (!jTextFieldGruppeZielPfad.getText().isEmpty()) {
                     chooser.setCurrentDirectory(new File(jTextFieldGruppeZielPfad.getText()));
                 }
-                returnVal = chooser.showOpenDialog(null);
+                final int returnVal = chooser.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     try {
                         jTextFieldGruppeZielPfad.setText(chooser.getSelectedFile().getPath());

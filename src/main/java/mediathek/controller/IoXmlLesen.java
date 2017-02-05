@@ -38,22 +38,29 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class IoXmlLesen {
+public class IoXmlLesen implements AutoCloseable {
 
-    public static boolean datenLesen(Path xmlFilePath) {
-        Daten daten = Daten.getInstance();
+    private XMLInputFactory inFactory = null;
+    private Daten daten = null;
+
+    public IoXmlLesen(Daten daten) {
+        this.daten = daten;
+
+        inFactory = XMLInputFactory.newInstance();
+        inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
+    }
+
+    public boolean readConfiguration(Path xmlFilePath) {
         Duration.counterStart("Konfig lesen");
         boolean ret = false;
         if (Files.exists(xmlFilePath)) {
-            int event;
-            XMLInputFactory inFactory = XMLInputFactory.newInstance();
-            inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
             DatenPset datenPset = null;
+            XMLStreamReader parser = null;
             try (InputStream is = Files.newInputStream(xmlFilePath);
                  InputStreamReader in = new InputStreamReader(is, Const.KODIERUNG_UTF)) {
-                XMLStreamReader parser = inFactory.createXMLStreamReader(in);
+                parser = inFactory.createXMLStreamReader(in);
                 while (parser.hasNext()) {
-                    event = parser.next();
+                    final int event = parser.next();
                     if (event == XMLStreamConstants.START_ELEMENT) {
                         switch (parser.getLocalName()) {
                             case MVConfig.SYSTEM:
@@ -129,11 +136,16 @@ public class IoXmlLesen {
                         }
                     }
                 }
-                parser.close();
                 ret = true;
             } catch (Exception ex) {
                 ret = false;
                 Log.errorLog(392840096, ex);
+            } finally {
+                try {
+                    if (parser != null)
+                        parser.close();
+                } catch (Exception ignored) {
+                }
             }
             daten.getListeDownloads().listeNummerieren();
             daten.getListeAbo().sort();
@@ -147,71 +159,64 @@ public class IoXmlLesen {
         return ret;
     }
 
-    public static boolean einstellungenExistieren() {
-        Path xmlFilePath = Daten.getInstance().getMediathekXmlFilePath();
-        return Files.exists(xmlFilePath);
-    }
-
-    public static int[] importAboBlacklist(String datei, boolean abo, boolean black, boolean replace) {
-        int[] found = new int[]{0, 0, 0};
-        Daten daten = Daten.getInstance();
-        try {
-            int event;
-            XMLInputFactory inFactory = XMLInputFactory.newInstance();
-            inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
-            XMLStreamReader parser;
-            InputStreamReader in;
-            in = new InputStreamReader(new FileInputStream(datei), Const.KODIERUNG_UTF);
+    public ImportStatistics importConfiguration(String datei, boolean importAbos, boolean importBlacklist, boolean importReplaceList) {
+        ImportStatistics stats = new ImportStatistics();
+        XMLStreamReader parser = null;
+        try (FileInputStream fis = new FileInputStream(datei);
+             InputStreamReader in = new InputStreamReader(fis, Const.KODIERUNG_UTF)) {
             parser = inFactory.createXMLStreamReader(in);
             while (parser.hasNext()) {
-                event = parser.next();
+                final int event = parser.next();
                 if (event == XMLStreamConstants.START_ELEMENT) {
-                    //String t = parser.getLocalName();
-                    if (abo && parser.getLocalName().equals(DatenAbo.TAG)) {
+
+                    if (importAbos && parser.getLocalName().equals(DatenAbo.TAG)) {
                         //Abo
                         DatenAbo datenAbo = new DatenAbo();
                         if (get(parser, DatenAbo.TAG, DatenAbo.XML_NAMES, datenAbo.arr)) {
-                            ++found[0];
+                            stats.foundAbos++;
                             daten.getListeAbo().addAbo(datenAbo);
                         }
-                    } else if (black && parser.getLocalName().equals(DatenBlacklist.TAG)) {
+                    } else if (importBlacklist && parser.getLocalName().equals(DatenBlacklist.TAG)) {
                         //Blacklist
                         ListeBlacklist blacklist = daten.getListeBlacklist();
                         DatenBlacklist datenBlacklist = new DatenBlacklist();
                         if (get(parser, DatenBlacklist.TAG, DatenBlacklist.XML_NAMES, datenBlacklist.arr)) {
-                            ++found[1];
+                            stats.foundBlacklist++;
                             blacklist.addWithoutNotification(datenBlacklist);
                         }
-                    } else if (replace && parser.getLocalName().equals(ReplaceList.REPLACELIST)) {
+                    } else if (importReplaceList && parser.getLocalName().equals(ReplaceList.REPLACELIST)) {
                         //Ersetzungstabelle
                         String[] sa = new String[ReplaceList.MAX_ELEM];
                         if (get(parser, ReplaceList.REPLACELIST, ReplaceList.COLUMN_NAMES, sa)) {
-                            ++found[2];
+                            stats.foundReplacements++;
                             ReplaceList.list.add(sa);
                         }
                     }
                 }
             }
-            in.close();
         } catch (Exception ex) {
             Log.errorLog(302045698, ex);
+        } finally {
+            try {
+                if (parser != null)
+                    parser.close();
+            } catch (Exception ignored) {
+            }
         }
-        if (found[0] > 0) {
+
+        if (stats.foundAbos > 0) {
             daten.getListeAbo().aenderungMelden();
         }
-        if (found[1] > 0) {
+        if (stats.foundBlacklist > 0) {
             daten.getListeBlacklist().filterListAndNotifyListeners();
         }
-        if (found[2] > 0) {
+        if (stats.foundReplacements > 0) {
             Listener.notify(Listener.EREIGNIS_REPLACELIST_CHANGED, IoXmlLesen.class.getSimpleName());
         }
-        return found;
+        return stats;
     }
 
-    // ##############################
-    // private
-    // ##############################
-    private static boolean get(XMLStreamReader parser, String xmlElem, String[] xmlNames, String[] strRet) {
+    private boolean get(XMLStreamReader parser, String xmlElem, String[] xmlNames, String[] strRet) {
         boolean ret = true;
         int maxElem = strRet.length;
         for (int i = 0; i < maxElem; ++i) {
@@ -244,7 +249,7 @@ public class IoXmlLesen {
         return ret;
     }
 
-    private static boolean getConfig(XMLStreamReader parser, String xmlElem) {
+    private boolean getConfig(XMLStreamReader parser, String xmlElem) {
         boolean ret = true;
         try {
             while (parser.hasNext()) {
@@ -267,4 +272,14 @@ public class IoXmlLesen {
         return ret;
     }
 
+    @Override
+    public void close() throws Exception {
+
+    }
+
+    public class ImportStatistics {
+        public int foundAbos = 0;
+        public int foundBlacklist = 0;
+        public int foundReplacements = 0;
+    }
 }
