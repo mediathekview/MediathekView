@@ -1,12 +1,14 @@
 package mediathek.mac;
 
 import com.apple.eawt.Application;
-import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.gui.bandwidth.MVBandwidthMonitorOSX;
 import mediathek.gui.filmInformation.MVFilmInformationOSX;
+import mediathek.gui.messages.DownloadFinishedEvent;
+import mediathek.gui.messages.DownloadStartEvent;
+import net.engio.mbassy.listener.Handler;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -17,23 +19,29 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
+    private static final String ACTION_KEY_MAC_F = "mac-f";
     /**
      * Repaint-Thread for progress indicator on OS X.
      */
     private Thread osxProgressIndicatorThread = null;
+    private AtomicInteger numDownloads = new AtomicInteger(0);
 
     public MediathekGuiMac(String[] ar) {
         super(ar);
+
+        setupDockIcon();
+
         setSearchKeyForMac();
 
         //Window must be fully initialized to become fullscreen cadidate...
         setWindowFullscreenCapability();
-    }
 
-    private static final String ACTION_KEY_MAC_F = "mac-f";
+        daten.getMessageBus().subscribe(this);
+    }
 
     @Override
     protected void installAutomaticTabSwitcher() {
@@ -59,10 +67,9 @@ public class MediathekGuiMac extends MediathekGui {
     private void setWindowFullscreenCapability() {
         try {
             Class.forName("com.apple.eawt.FullScreenUtilities")
-                    .getMethod("setWindowCanFullScreen",Window.class,boolean.class)
-                    .invoke(null, this,true);
-        }
-        catch (Exception ignored) {
+                    .getMethod("setWindowCanFullScreen", Window.class, boolean.class)
+                    .invoke(null, this, true);
+        } catch (Exception ignored) {
         }
     }
 
@@ -80,14 +87,12 @@ public class MediathekGuiMac extends MediathekGui {
     }
 
     @Override
-    protected void createFilmInformationHUD(JTabbedPane tabPane, Daten daten)
-    {
+    protected void createFilmInformationHUD(JTabbedPane tabPane, Daten daten) {
         filmInfo = new MVFilmInformationOSX(this);
     }
 
     @Override
-    protected void createBandwidthMonitor(JFrame parent)
-    {
+    protected void createBandwidthMonitor(JFrame parent) {
         bandwidthMonitor = new MVBandwidthMonitorOSX(this);
     }
 
@@ -103,33 +108,41 @@ public class MediathekGuiMac extends MediathekGui {
         jCheckBoxMenuItemVideoplayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, InputEvent.META_MASK));
     }
 
-    /**
-     * Setup the OS X dock icon badge handler.
-     */
-    private void setupOsxDockIconBadge() {
-        //setup the badge support for displaying active downloads
-        Listener.addListener(new Listener(new int[]{
-            Listener.EREIGNIS_START_EVENT, Listener.EREIGNIS_LISTE_DOWNLOADS}, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                final int activeDownloads = daten.getDownloadInfos().downloadStarts[4];
-                final Application application = Application.getApplication();
-                if (activeDownloads > 0) {
-                    application.setDockIconBadge(String.valueOf(activeDownloads));
+    @Handler
+    public void handleDownloadStart(DownloadStartEvent msg) {
+        final int numDL = numDownloads.incrementAndGet();
 
-                    if (osxProgressIndicatorThread == null) {
-                        osxProgressIndicatorThread = new OsxIndicatorThread();
-                        osxProgressIndicatorThread.start();
-                    }
-                } else {
-                    application.setDockIconBadge("");
-                    if (osxProgressIndicatorThread != null) {
-                        osxProgressIndicatorThread.interrupt();
-                        osxProgressIndicatorThread = null;
-                    }
-                }
-            }
-        });
+        setDownloadsBadge(numDL);
+
+        if (osxProgressIndicatorThread == null) {
+            osxProgressIndicatorThread = new OsxIndicatorThread();
+            osxProgressIndicatorThread.start();
+        }
+    }
+
+    @Handler
+    public void handleDownloadFinishedEvent(DownloadFinishedEvent msg) {
+        final int numDL = numDownloads.decrementAndGet();
+
+        setDownloadsBadge(numDL);
+
+        if (numDL == 0 && osxProgressIndicatorThread != null) {
+            osxProgressIndicatorThread.interrupt();
+            osxProgressIndicatorThread = null;
+        }
+    }
+
+    /**
+     * Set the OS X dock icon badge to the number of running downloads.
+     *
+     * @param numDownloads The number of active downloads.
+     */
+    private void setDownloadsBadge(int numDownloads) {
+        final Application app = Application.getApplication();
+        if (numDownloads > 0)
+            app.setDockIconBadge(Integer.toString(numDownloads));
+        else
+            app.setDockIconBadge("");
     }
 
     private void setupDockIcon() {
@@ -159,10 +172,6 @@ public class MediathekGuiMac extends MediathekGui {
                 quitResponse.performQuit();
             }
         });
-
-        setupDockIcon();
-
-        setupOsxDockIconBadge();
     }
 
     @Override

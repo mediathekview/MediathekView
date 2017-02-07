@@ -540,20 +540,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         return aktivDownloads;
     }
 
-    /**
-     * Return a List of all not yet finished downloads.
-     *
-     * @param quelle Use QUELLE_XXX constants from {@link mediathek.controller.starter.Start}.
-     * @param liste
-     */
-    public synchronized void getListOfStartsNotFinished(int quelle, LinkedList<DatenDownload> liste) {
-        liste.clear();
-        liste.addAll(this.stream().filter(download -> download.start != null)
-                .filter(download -> download.start.status < Start.STATUS_FERTIG)
-                .filter(download -> quelle == DatenDownload.QUELLE_ALLE || download.quelle == quelle)
-                .collect(Collectors.toList()));
-    }
-
     public synchronized TModel getModelStarts(TModel model) {
         model.setRowCount(0);
         Object[] object;

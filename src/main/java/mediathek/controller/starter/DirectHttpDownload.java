@@ -29,6 +29,8 @@ import mediathek.controller.MVInputStream;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
 import mediathek.gui.dialog.MeldungDownloadfehler;
+import mediathek.gui.messages.DownloadFinishedEvent;
+import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.tool.MVInfoFile;
 import mediathek.tool.MVSubtitle;
 
@@ -213,6 +215,8 @@ public class DirectHttpDownload extends Thread {
     @Override
     public synchronized void run() {
         startmeldung(datenDownload, start);
+        daten.getMessageBus().publish(new DownloadStartEvent());
+
         try {
             Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]));
         } catch (IOException ignored) {
@@ -318,6 +322,7 @@ public class DirectHttpDownload extends Thread {
         }
 
         StarterClass.finalizeDownload(datenDownload, start, state);
+        daten.getMessageBus().publish(new DownloadFinishedEvent());
     }
 
     private boolean cancelDownload() {
