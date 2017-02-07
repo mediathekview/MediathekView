@@ -28,7 +28,7 @@ public class MediathekGuiMac extends MediathekGui {
      * Repaint-Thread for progress indicator on OS X.
      */
     private Thread osxProgressIndicatorThread = null;
-    private AtomicInteger numDownloads = new AtomicInteger(0);
+    private final AtomicInteger numDownloads = new AtomicInteger(0);
 
     public MediathekGuiMac(String[] ar) {
         super(ar);
