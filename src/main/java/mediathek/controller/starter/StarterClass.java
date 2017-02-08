@@ -222,11 +222,11 @@ public class StarterClass {
         }
     }
 
-    static void finalizeDownload(DatenDownload datenDownload, Start start /* wegen "datenDownload.start=null" beim stoppen */, DirectHttpDownload.HttpDownloadState state) {
+    static void finalizeDownload(DatenDownload datenDownload, Start start /* wegen "datenDownload.start=null" beim stoppen */, HttpDownloadState state) {
         deleteIfEmpty(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]));
         setFileSize(datenDownload);
 
-        if (SystemInfo.isMacOSX() && state != DirectHttpDownload.HttpDownloadState.CANCEL) {
+        if (SystemInfo.isMacOSX() && state != HttpDownloadState.CANCEL) {
             //we don´t write comments if download was cancelled...
             if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT])) {
                 final SpotlightCommentWriter writer = new SpotlightCommentWriter();
@@ -234,7 +234,7 @@ public class StarterClass {
             }
         }
 
-        fertigmeldung(datenDownload, start, state == DirectHttpDownload.HttpDownloadState.CANCEL);
+        fertigmeldung(datenDownload, start, state == HttpDownloadState.CANCEL);
         switch (state) {
             case CANCEL:
                 datenDownload.resetDownload();

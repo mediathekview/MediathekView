@@ -64,11 +64,6 @@ public class DirectHttpDownload extends Thread {
     private boolean retAbbrechen;
     private boolean dialogAbbrechenIsVis;
 
-    private enum HttpDownloadState {
-
-        CANCEL, ERROR, DOWNLOAD
-    }
-
     public DirectHttpDownload(Daten daten, DatenDownload d, java.util.Timer bandwidthCalculationTimer) {
         super();
         this.daten = daten;

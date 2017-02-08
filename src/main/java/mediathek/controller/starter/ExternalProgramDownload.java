@@ -22,7 +22,6 @@ package mediathek.controller.starter;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
-import mediathek.controller.starter.DirectHttpDownload.HttpDownloadState;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
 import mediathek.gui.dialog.MeldungDownloadfehler;
@@ -318,7 +317,7 @@ public class ExternalProgramDownload extends Thread
             {
                 case CANCELLED:
                     // dann wars das
-                    state = DirectHttpDownload.HttpDownloadState.CANCEL;
+                    state = HttpDownloadState.CANCEL;
                     result = true;
                     break;
 

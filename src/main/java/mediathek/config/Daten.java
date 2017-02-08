@@ -38,6 +38,7 @@ import mediathek.gui.GuiDownloads;
 import mediathek.gui.GuiFilme;
 import mediathek.gui.GuiMeldungen;
 import mediathek.gui.dialog.DialogMediaDB;
+import mediathek.gui.messages.BaseEvent;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVMessageDialog;
@@ -79,7 +80,7 @@ public class Daten {
     private static boolean reset = false; // Programm auf Starteinstellungen zurücksetzen
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis;
-    private final MBassador messageBus = new MBassador();
+    private final MBassador<BaseEvent> messageBus = new MBassador<>();
 
     private final MediathekGui mediathekGui; // JFrame der Gui
     public MVUsedUrls history = null; // alle angesehenen Filme
@@ -214,7 +215,7 @@ public class Daten {
         return getSettingsDirectory().toString();
     }
 
-    public MBassador getMessageBus() {
+    public MBassador<BaseEvent> getMessageBus() {
         return messageBus;
     }
 
