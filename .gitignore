@@ -14,3 +14,4 @@ res/Icons/Sender
 /src/main/resources/version.properties
 deploy.key
 RepoZugang.properties
+scripte/deploy/tmp
