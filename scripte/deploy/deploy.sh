@@ -5,7 +5,8 @@ LOCAL="build/distributions"
 REMOTE="upload"
 
 STATUSDATEI="build/upload.status"
-LASTCOMMITPFAD="scripte/deploy/tmp"
+UPLOAD_LASTCOMMITDATEI="build/gitcommithash.txt"
+LASTCOMMITPFAD="$HOME/.tmp"
 LASTCOMMITDATEI="${LASTCOMMITPFAD}/lastcommit.txt"
 
 PORT="22"
@@ -33,16 +34,16 @@ else
       exit
     else
       echo "Commit-Hash hat sich geändert. Nightly-Deploy wird ausgeführt."
-      git log -n 1 --format="%H" > ${LASTCOMMITDATEI}
+      echo $gitlastcommit > ${LASTCOMMITDATEI}
     fi
   else
     echo -n "Lastcommit-Status-Datei '${LASTCOMMITDATEI}' nicht vorhanden. Wird angelegt..."
-    mkdir ${LASTCOMMITPFAD}
+    if [ ! -d "${LASTCOMMITPFAD}" ]; then mkdir ${LASTCOMMITPFAD}; fi
     git log -n 1 --format="%H" > ${LASTCOMMITDATEI}
     echo "ok."
     echo "Nightly-Deploy wird ausgeführt."
   fi
-
+  git log -n 1 --format="%H" > ${UPLOAD_LASTCOMMITDATEI}
   # Status auf fertig setzen für nightly
   echo 2 > $STATUSDATEI
 fi
@@ -60,6 +61,7 @@ for i in `ls -x -1 $LOCAL`; do
 done
 
 echo "cd ../" >> $BATCHDATEI
+echo "put $UPLOAD_LASTCOMMITDATEI" >> $BATCHDATEI
 # Upload fertig bestätigen
 echo "put $STATUSDATEI" >> $BATCHDATEI
 
@@ -69,4 +71,4 @@ echo "exit" >> $BATCHDATEI
 sftp -b $BATCHDATEI -o PubkeyAuthentication=yes -o IdentityFile=$KEYFILE -o Port=$PORT $ADRESSE
 
 # Aufräumen
-rm $BATCHDATEI $STATUSDATEI
+rm $BATCHDATEI $STATUSDATEI $LASTCOMMITDATEI

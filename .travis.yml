@@ -49,7 +49,7 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.sonar/cache/"
-  - "$HOME/MediathekView/scripte/deploy/tmp/"
+  - "$HOME/.tmp/"
 
 #Deploy
 before_deploy:
