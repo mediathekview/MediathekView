@@ -1,7 +1,8 @@
 
 ==============================================================    
-Weitere Infos im Wiki:
-https://github.com/mediathekview/MediathekView/wiki
+Weitere Infos auf der Webseite:
+https://mediathekview.de/anleitung/
+https://mediathekview.de/faq/
 ==============================================================    
 
 Das Programm MediathekView durchsucht die Online-Mediatheken verschiedener 
@@ -30,12 +31,12 @@ ZIP-Datei ist quasi die Installation:
 
 *OS X
 Für OS X 10.7.3 (und neuer) gibt es eine separate Applikation "MediathekView.app"
-http://sourceforge.net/p/zdfmediathk/wiki/Anleitung/#mac
+https://mediathekview.de/anleitung/#mac
 
 *Linux
 MediathekView wird nicht installiert; das Entpacken der heruntergeladenen 
 ZIP-Datei ist quasi die Installation.
-https://github.com/mediathekview/MediathekView/wiki/Installation:-Linux
+https://mediathekview.de/anleitung/#linux
 
 
 
@@ -84,8 +85,8 @@ Das Programm gibt nur die Versionsnummer aus.
 ===========================================================    
 Starten im portablen Modus (MediathekView Portable)
 ---------------------------------------------------------
-Weitere Infos im Wiki:
-https://github.com/mediathekview/MediathekView/wiki/Bedienung:-Starten-von-MediathekView
+Weitere Infos in der Anleitung:
+https://mediathekview.de/anleitung/#starten-im-portablen-modus-mediathekview-portable
 
 
 
