@@ -113,15 +113,15 @@ task updateVersion << {
 
 processResources.dependsOn updateVersion
 
-/*
+
 licenseReport {
-    outputDir = "res/Copyright/"
+    outputDir = "build/Copyright/"
     excludes = [':MSearch', 'MediathekView:MSearch']
     configurations = ['compile']
 }
 
 processResources.dependsOn generateLicenseReport
-*/
+
 tasks.withType(Zip) { task ->
     task.doLast {
         ant.checksum(algorithm: 'SHA-1', file: it.archivePath)
@@ -132,7 +132,7 @@ tasks.withType(Tar) { task ->
         ant.checksum(algorithm: 'SHA-1', file: it.archivePath)
     }
 }
-
+/*
 task copyProgrammIconsInRes(type: Copy) {
     logger.lifecycle 'Copying Programm icons.'
     from 'src/main/resources/mediathek/res/programm'
@@ -152,6 +152,7 @@ task copySenderIconsInRes(type: Copy) {
 }
 
 processResources.dependsOn copySenderIconsInRes
+*/
 
 [distZip, distTar]*.shouldRunAfter compileJava, updateVersion, jar
 
@@ -184,6 +185,9 @@ distributions {
                     filter(ReplaceTokens, tokens: [JARNAME: jarName])
                 }
             }
+            from('build') {
+                include 'Copyright/*'
+            }
             from('build/libs') {
                 include '*.jar'
             }
@@ -198,7 +202,7 @@ distributions {
 //Windows executable generation
 launch4j {
     mainClassName = mainClass
-    icon = "../../res/Info/MediathekView.ico"
+    icon = "../../res/Icons/MediathekView.ico"
     jar = jarName
     dontWrapJar = true
     outfile = "MediathekView_ohne_feste_Speicherzuweisung.exe"

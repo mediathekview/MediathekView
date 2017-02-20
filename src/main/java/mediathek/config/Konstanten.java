@@ -33,11 +33,11 @@ public class Konstanten {
 
     // MediathekView URLs
 //    public static final String ADRESSE_FILMLISTEN_SERVER = "http://zdfmediathk.sourceforge.net/update.xml";
-    public static final String ADRESSE_PROGRAMM_VERSION = "https://res.mediathekview.de/prog-info-12.xml";
+    public static final String ADRESSE_PROGRAMM_VERSION = "https://res.mediathekview.de/prog-info-13.xml";
     public static final String ADRESSE_DOWNLAD = "https://mediathekview.de/download/";
-    public static final String ADRESSE_ANLEITUNG = "https://github.com/mediathekview/MediathekView/wiki";
-    public static final String ADRESSE_ONLINE_HELP = "https://github.com/mediathekview/MediathekView/wiki";
-    public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "https://res.mediathekview.de/programmgruppen11/programmgruppen.xml";
+    public static final String ADRESSE_ANLEITUNG = "https://mediathekview.de/anleitung/";
+    public static final String ADRESSE_ONLINE_HELP = "https://mediathekview.de/anleitung/";
+    public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "https://res.mediathekview.de/programmgruppen13/programmgruppen.xml";
     public static final String ADRESSE_WEBSITE = "https://mediathekview.de/";
     public static final String ADRESSE_FORUM = "https://forum.mediathekview.de/";
     public static final String ADRESSE_DONATION = "https://mediathekview.de/spenden/";
