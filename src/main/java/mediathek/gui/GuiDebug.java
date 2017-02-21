@@ -108,7 +108,7 @@ public class GuiDebug extends JPanel {
                 } else if (!cbkUrl.isSelected()) {
                     hash.add(f.getIndex());
                 } else {
-                    hash.add(DatenFilm.getUrl(f));
+                    hash.add(f.getUrl());
                 }
             }
 
@@ -127,7 +127,7 @@ public class GuiDebug extends JPanel {
                     if (hash.contains(f.getIndex())) {
                         it.remove();
                     }
-                } else if (hash.contains(DatenFilm.getUrl(f))) {
+                } else if (hash.contains(f.getUrl())) {
                     it.remove();
                 }
             }
