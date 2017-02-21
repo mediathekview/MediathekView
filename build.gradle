@@ -155,6 +155,7 @@ processResources.dependsOn copySenderIconsInRes
 
 [distZip, distTar]*.shouldRunAfter compileJava, updateVersion, jar
 distTar.compression = Compression.GZIP
+distTar.extension = 'tar.gz'
 
 jar {
     manifest {
