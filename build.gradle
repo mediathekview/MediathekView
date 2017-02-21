@@ -154,6 +154,7 @@ task copySenderIconsInRes(type: Copy) {
 processResources.dependsOn copySenderIconsInRes
 
 [distZip, distTar]*.shouldRunAfter compileJava, updateVersion, jar
+distTar.compression = Compression.GZIP
 
 jar {
     manifest {
