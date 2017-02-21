@@ -5,16 +5,22 @@ package mediathek.update;
  */
 class ServerProgramInformation {
     private int version = -1;
+    private String versionString;
     private String releaseNotes;
     private String updateUrl;
 
     public int getVersion() {
         return version;
     }
+    
+    public String getVersionString() {
+    	return versionString;
+    }
 
     public void setVersion(String version) {
+    	this.versionString = version;
         try {
-            this.version = Integer.parseInt(version);
+            this.version = Integer.parseInt(version.replace(".", "")); // Punkte entfernen
         } catch (NumberFormatException ex) {
             this.version = -1;
         }

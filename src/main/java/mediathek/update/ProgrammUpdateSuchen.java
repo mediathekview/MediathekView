@@ -89,7 +89,7 @@ public class ProgrammUpdateSuchen {
         //TODO beautify this dialog. Looks really ugly.
         new DialogHinweisUpdate(null, true, "Neue Version verfügbar",
                 "   ==================================================\n"
-                        + "   Neue Version:\n" + "   " + progInfo.getVersion() + "\n\n"
+                        + "   Neue Version:\n" + "   " + progInfo.getVersionString() + "\n\n"
                         + "   ==================================================\n"
                         + "   Änderungen:\n" + "   " + progInfo.getReleaseNotes() + "\n\n"
                         + "   ==================================================\n"
@@ -141,18 +141,16 @@ public class ProgrammUpdateSuchen {
      * @return true if there is a newer version
      */
     private boolean checkForNewerVersion(int info) {
-        boolean result = false;
 
         try {
-            final int currentVersion = Integer.parseInt(Const.VERSION);
+            final int currentVersion = Integer.parseInt(Functions.getBuildNr().replace(".", ""));
             if (info > currentVersion) {
-                result = true;
+                return true;
             }
         } catch (NumberFormatException ex) {
             Log.errorLog(ErrorCodes.UPDATE_CHECK_FOR_NEWER_VERSION, ex);
         }
-
-        return result;
+        return false;
     }
 
     private InputStream connectToServer() throws IOException {
