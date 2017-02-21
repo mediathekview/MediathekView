@@ -3,6 +3,7 @@ package mediathek.gui.actions;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogZiel;
 import mediathek.tool.FormatterUtil;
@@ -80,7 +81,7 @@ public class WriteProtocolFileAction extends AbstractAction {
             bw.write("#####################################################");
             bw.newLine();
             bw.newLine();
-            bw.write(MVFunctionSys.getProgVersionString());
+            bw.write(Konstanten.PROGRAMMNAME + ' ' + getProgVersion().toString());
             bw.newLine();
             bw.write("Compiled: " + getCompileDate());
             bw.newLine();

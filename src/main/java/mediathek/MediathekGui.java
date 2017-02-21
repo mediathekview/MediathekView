@@ -388,7 +388,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void setOrgTitel() {
-        setTitle(Konstanten.PROGRAMMNAME + ' ' + Functions.getBuildNr());
+        setTitle(Konstanten.PROGRAMMNAME + ' ' + Functions.getProgVersion().toString());
     }
 
     private void setCbBeschreibung() {

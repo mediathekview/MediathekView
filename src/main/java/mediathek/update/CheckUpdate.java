@@ -59,7 +59,7 @@ public class CheckUpdate {
                 return;
             }
 
-            if (MVConfig.get(MVConfig.Configs.SYSTEM_BUILD_NR).equals(Functions.getBuildNr())
+            if (MVConfig.get(MVConfig.Configs.SYSTEM_BUILD_NR).equals(Functions.getProgVersion().toString())
                     && MVConfig.get(MVConfig.Configs.SYSTEM_UPDATE_DATUM).equals(FormatterUtil.FORMATTER_yyyyMMdd.format(new Date()))) {
                 // keine neue Version und heute schon gemacht
                 return;
