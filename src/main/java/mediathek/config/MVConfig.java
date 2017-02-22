@@ -20,7 +20,6 @@
 package mediathek.config;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.Const;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Functions;
 import mSearch.tool.Log;
