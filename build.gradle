@@ -61,7 +61,7 @@ repositories {
 }
 
 dependencies {
-    compile 'de.mediathekview:MSearch:2.2.0'
+    compile 'de.mediathekview:MSearch:2.3.0'
 
     compile "$swingxGroup:swingx-action:$swingxVersion"
     compile "$swingxGroup:swingx-autocomplete:$swingxVersion"
