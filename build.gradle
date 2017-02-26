@@ -98,16 +98,18 @@ uploadArchives {
 }
 build.dependsOn(install)
 
-task updateVersion << {
-    Properties props = loadVersionProperties()
-
-    def oldVersion = props.getProperty('VERSION')
-    if (!oldVersion.equals(project.version)) {
-        logger.lifecycle "==msearch======================"
-        logger.lifecycle "Version: $project.version"
-        logger.lifecycle "==msearch======================"
-        props.setProperty('VERSION', project.version)
-        props.store(propsFile.newWriter(), null)
+task updateVersion {
+    doLast {
+        Properties props = loadVersionProperties()
+        
+        def oldVersion = props.getProperty('VERSION')
+        if (!oldVersion.equals(project.version)) {
+            logger.lifecycle "==msearch======================"
+            logger.lifecycle "Version: $project.version"
+            logger.lifecycle "==msearch======================"
+            props.setProperty('VERSION', project.version)
+            props.store(propsFile.newWriter(), null)
+        }
     }
 }
 
