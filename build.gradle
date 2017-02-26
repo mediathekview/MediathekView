@@ -104,9 +104,9 @@ task updateVersion {
         
         def oldVersion = props.getProperty('VERSION')
         if (!oldVersion.equals(project.version)) {
-            logger.lifecycle "==msearch======================"
+            logger.lifecycle "==mediathekview======================"
             logger.lifecycle "Version: $project.version"
-            logger.lifecycle "==msearch======================"
+            logger.lifecycle "==mediathekview======================"
             props.setProperty('VERSION', project.version)
             props.store(propsFile.newWriter(), null)
         }
