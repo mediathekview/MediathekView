@@ -19,7 +19,6 @@
  */
 package mediathek.controller;
 
-import mSearch.Const;
 import mSearch.filmlisten.DatenFilmlisteUrl;
 import mSearch.tool.Log;
 import mSearch.tool.ReplaceList;
@@ -35,6 +34,7 @@ import javax.xml.stream.XMLStreamWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -126,11 +126,11 @@ public class IoXmlSchreiben implements AutoCloseable {
     private void xmlSchreibenStart() throws IOException, XMLStreamException {
         SysMsg.sysMsg("Start Schreiben nach: " + xmlFilePath.toAbsolutePath());
         os = Files.newOutputStream(xmlFilePath);
-        out = new OutputStreamWriter(os, Const.KODIERUNG_UTF);
+        out = new OutputStreamWriter(os, StandardCharsets.UTF_8);
 
         XMLOutputFactory outFactory = XMLOutputFactory.newInstance();
         writer = outFactory.createXMLStreamWriter(out);
-        writer.writeStartDocument(Const.KODIERUNG_UTF, "1.0");
+        writer.writeStartDocument(StandardCharsets.UTF_8.name(), "1.0");
         writer.writeCharacters("\n");//neue Zeile
         writer.writeStartElement(Konstanten.XML_START);
         writer.writeCharacters("\n");//neue Zeile
