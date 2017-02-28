@@ -83,6 +83,19 @@ dependencies {
     compileOnly 'com.yuvimasory:orange-extensions:1.3.0'
 }
 
+configurations.compile {
+    resolutionStrategy.dependencySubstitution {
+        def substituteIfExists = { String moduleName, String projectName ->
+            if(findProject(projectName)) {
+               assert !(project.hasProperty('org.gradle.configureondemand') && Boolean.valueOf(project.getProperty('org.gradle.configureondemand'))) : "org.gradle.configureondemand = true will cause problems when substituting a project"
+               logger.lifecycle "$project: Substituting module '$moduleName' with project $projectName"
+               substitute module(moduleName) with project(projectName)
+            }
+        }
+        substituteIfExists('de.mediathekview:MSearch', ':MSearch')
+    }
+}
+
 uploadArchives {
     repositories.mavenDeployer {
         Properties props = loadRepoZugangProperties()
@@ -98,16 +111,18 @@ uploadArchives {
 }
 build.dependsOn(install)
 
-task updateVersion << {
-    Properties props = loadVersionProperties()
-
-    def oldVersion = props.getProperty('VERSION')
-    if (!oldVersion.equals(project.version)) {
-        logger.lifecycle "==msearch======================"
-        logger.lifecycle "Version: $project.version"
-        logger.lifecycle "==msearch======================"
-        props.setProperty('VERSION', project.version)
-        props.store(propsFile.newWriter(), null)
+task updateVersion {
+    doLast {
+        Properties props = loadVersionProperties()
+        
+        def oldVersion = props.getProperty('VERSION')
+        if (!oldVersion.equals(project.version)) {
+            logger.lifecycle "==mediathekview======================"
+            logger.lifecycle "Version: $project.version"
+            logger.lifecycle "==mediathekview======================"
+            props.setProperty('VERSION', project.version)
+            props.store(propsFile.newWriter(), null)
+        }
     }
 }
 
