@@ -19,7 +19,6 @@
  */
 package mediathek.controller;
 
-import mSearch.Const;
 import mSearch.filmlisten.DatenFilmlisteUrl;
 import mSearch.tool.Duration;
 import mSearch.tool.Listener;
@@ -35,6 +34,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -57,7 +57,7 @@ public class IoXmlLesen implements AutoCloseable {
             DatenPset datenPset = null;
             XMLStreamReader parser = null;
             try (InputStream is = Files.newInputStream(xmlFilePath);
-                 InputStreamReader in = new InputStreamReader(is, Const.KODIERUNG_UTF)) {
+                 InputStreamReader in = new InputStreamReader(is, StandardCharsets.UTF_8)) {
                 parser = inFactory.createXMLStreamReader(in);
                 while (parser.hasNext()) {
                     final int event = parser.next();
@@ -163,7 +163,7 @@ public class IoXmlLesen implements AutoCloseable {
         ImportStatistics stats = new ImportStatistics();
         XMLStreamReader parser = null;
         try (FileInputStream fis = new FileInputStream(datei);
-             InputStreamReader in = new InputStreamReader(fis, Const.KODIERUNG_UTF)) {
+             InputStreamReader in = new InputStreamReader(fis, StandardCharsets.UTF_8)) {
             parser = inFactory.createXMLStreamReader(in);
             while (parser.hasNext()) {
                 final int event = parser.next();

@@ -19,7 +19,6 @@
  */
 package mediathek.daten;
 
-import mSearch.Const;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
@@ -36,6 +35,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
@@ -148,7 +148,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             conn.setRequestProperty("User-Agent", Daten.getUserAgent());
             conn.setReadTimeout(TIMEOUT);
             conn.setConnectTimeout(TIMEOUT);
-            inReader = new InputStreamReader(conn.getInputStream(), Const.KODIERUNG_UTF);
+            inReader = new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8);
             parser = inFactory.createXMLStreamReader(inReader);
             while (parser.hasNext()) {
                 event = parser.next();
@@ -179,9 +179,9 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                 conn.setConnectTimeout(timeout);
                 conn.setReadTimeout(timeout);
                 conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-                return ListePsetVorlagen.importPset(new InputStreamReader(conn.getInputStream(), Const.KODIERUNG_UTF), log);
+                return ListePsetVorlagen.importPset(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8), log);
             } else {
-                return ListePsetVorlagen.importPset(new InputStreamReader(new FileInputStream(dateiUrl), Const.KODIERUNG_UTF), log);
+                return ListePsetVorlagen.importPset(new InputStreamReader(new FileInputStream(dateiUrl), StandardCharsets.UTF_8), log);
             }
         } catch (Exception ex) {
             if (log) {
