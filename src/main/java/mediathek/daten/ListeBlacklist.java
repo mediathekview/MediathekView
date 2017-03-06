@@ -19,6 +19,12 @@
  */
 package mediathek.daten;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.tool.Duration;
@@ -28,15 +34,9 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.tool.Filter;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 @SuppressWarnings("serial")
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
+
     /**
      * List for dynamic application of filters
      */
@@ -158,13 +158,16 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             filterList.clear();
             if (blacklistIsActive) {
                 //add the filter predicates to the list
-                if (doNotShowGeoBlockedFilms)
+                if (doNotShowGeoBlockedFilms) {
                     filterList.add(this::checkGeoBlockedFilm);
-                if (doNotShowFutureFilms)
+                }
+                if (doNotShowFutureFilms) {
                     filterList.add(this::checkIfFilmIsInFuture);
+                }
                 filterList.add(this::checkFilmLength);
-                if (!isEmpty())
+                if (!isEmpty()) {
                     filterList.add(this::applyBlacklistFilters);
+                }
 
                 for (Predicate<DatenFilm> pred : filterList) {
                     initialStream = initialStream.filter(pred);
@@ -189,6 +192,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     /**
      * Filterfunction for Abos dialog.
+     *
      * @param film item to te tested
      * @return true if item should be displayed.
      */
@@ -252,11 +256,10 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         if (!blacklistIsActive) {
             return true;
         }
-
-        if (!checkGeoBlockedFilm(film))
+        if (doNotShowGeoBlockedFilms && !checkGeoBlockedFilm(film)) {
             return false;
-
-        if (!checkIfFilmIsInFuture(film)) {
+        }
+        if (doNotShowFutureFilms && !checkIfFilmIsInFuture(film)) {
             return false;
         }
         if (!checkFilmLength(film)) {
@@ -269,9 +272,9 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         for (DatenBlacklist blacklistEntry : this) {
             if (Filter.filterAufFilmPruefen(blacklistEntry.arr[DatenBlacklist.BLACKLIST_SENDER], blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA],
                     Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL])
-                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL].toLowerCase().split(","),
+                    ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL].toLowerCase().split(","),
                     Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL])
-                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL].toLowerCase().split(","),
+                    ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL].toLowerCase().split(","),
                     new String[]{""}, 0, true /*min*/, film, true /*auch die Länge prüfen*/
             )) {
                 return Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
@@ -327,8 +330,9 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
         if (days != 0) {
             final long filmTime = film.datumFilm.getTime();
-            if (filmTime != 0 && filmTime < days)
+            if (filmTime != 0 && filmTime < days) {
                 result = false;
+            }
         }
 
         return result;
