@@ -105,12 +105,23 @@ public class Filter {
         return false;
     }
 
+    private static boolean checkLengthMin(int filterLaengeInMinuten, long filmLaenge) {
+        return filterLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge > (filterLaengeInMinuten * 60);
+    }
+
+    private static boolean checkLengthMax(int filterLaengeInMinuten, long filmLaenge) {
+        return filterLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge < (filterLaengeInMinuten * 60);
+    }
+
     public static boolean laengePruefen(int filterLaengeInMinuten, long filmLaenge, boolean min) {
+        boolean res;
         if (min) {
-            return filterLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge > (filterLaengeInMinuten * 60);
+            res = checkLengthMin(filterLaengeInMinuten, filmLaenge);
         } else {
-            return filterLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge < (filterLaengeInMinuten * 60);
+            res = checkLengthMax(filterLaengeInMinuten, filmLaenge);
         }
+
+        return res;
     }
 
     private static boolean pruefen(String[] filter, String im) {

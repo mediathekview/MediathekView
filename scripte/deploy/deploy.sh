@@ -18,9 +18,6 @@ if [ "$1" != "nightly" ]; then
   echo "Deploy zum Nexus Repo repo.mediathekview.de"
   ./gradlew release
 
-  rm ${LOCAL}/MediathekView-*.tar
-  rm ${LOCAL}/MediathekView-*.tar.SHA-1
-
   # Status auf fertig setzen für release
   echo 1 > $STATUSDATEI
 else

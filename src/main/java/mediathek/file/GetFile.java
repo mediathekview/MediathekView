@@ -19,12 +19,12 @@
  */
 package mediathek.file;
 
-import mSearch.Const;
 import mSearch.tool.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 /**
  *
@@ -51,7 +51,7 @@ public class GetFile {
 
     public String getHilfeSuchen(String pfad) {
         String ret = "";
-        try (InputStreamReader in = new InputStreamReader(getClass().getResource(pfad).openStream(), Const.KODIERUNG_UTF);
+        try (InputStreamReader in = new InputStreamReader(getClass().getResource(pfad).openStream(), StandardCharsets.UTF_8);
              BufferedReader br = new BufferedReader(in)) {
             String strLine;
             while ((strLine = br.readLine()) != null) {
@@ -65,7 +65,7 @@ public class GetFile {
 
     public InputStreamReader getPsetVorlageLinux() {
         try {
-            return new InputStreamReader(getClass().getResource(PFAD_PSET_LINUX).openStream(), Const.KODIERUNG_UTF);
+            return new InputStreamReader(getClass().getResource(PFAD_PSET_LINUX).openStream(), StandardCharsets.UTF_8);
         } catch (IOException ex) {
             Log.errorLog(469691002, ex);
         }
@@ -74,7 +74,7 @@ public class GetFile {
 
     public InputStreamReader getPsetVorlageWindows() {
         try {
-            return new InputStreamReader(getClass().getResource(PFAD_PSET_WINDOWS).openStream(), Const.KODIERUNG_UTF);
+            return new InputStreamReader(getClass().getResource(PFAD_PSET_WINDOWS).openStream(), StandardCharsets.UTF_8);
         } catch (IOException ex) {
             Log.errorLog(842306087, ex);
         }
@@ -83,7 +83,7 @@ public class GetFile {
 
     public InputStreamReader getPsetVorlageMac() {
         try {
-            return new InputStreamReader(getClass().getResource(PFAD_PSET_MAC).openStream(), Const.KODIERUNG_UTF);
+            return new InputStreamReader(getClass().getResource(PFAD_PSET_MAC).openStream(), StandardCharsets.UTF_8);
         } catch (IOException ex) {
             Log.errorLog(496532180, ex);
         }
