@@ -67,13 +67,13 @@ public class ProgrammUpdateSuchen {
                 if (showProgramInformation)
                     showProgramInformation(showAllInformation);
 
-                if (progInfo.getVersion() == -1)
+                if (progInfo.getVersion().toNumber() == 0)
                     JOptionPane.showMessageDialog(null, UPDATE_ERROR_MESSAGE, UPDATE_SEARCH_TITLE, JOptionPane.ERROR_MESSAGE);
                 else {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_BUILD_NR, Functions.getBuildNr());
+                    MVConfig.add(MVConfig.Configs.SYSTEM_BUILD_NR, Functions.getProgVersion().toString());
                     MVConfig.add(MVConfig.Configs.SYSTEM_UPDATE_DATUM, FormatterUtil.FORMATTER_yyyyMMdd.format(new Date()));
 
-                    if (checkForNewerVersion(progInfo.getVersion())) {
+                    if (progInfo.getVersion().compare(Functions.getProgVersion()) == 1) {
                         neueVersion = true;
                         displayNotification(progInfo);
                     } else if (anzeigen) {
@@ -90,7 +90,7 @@ public class ProgrammUpdateSuchen {
         //TODO beautify this dialog. Looks really ugly.
         new DialogHinweisUpdate(null, true, "Neue Version verfügbar",
                 "   ==================================================\n"
-                        + "   Neue Version:\n" + "   " + progInfo.getVersion() + "\n\n"
+                        + "   Neue Version:\n" + "   " + progInfo.getVersion().toString() + "\n\n"
                         + "   ==================================================\n"
                         + "   Änderungen:\n" + "   " + progInfo.getReleaseNotes() + "\n\n"
                         + "   ==================================================\n"
@@ -141,19 +141,17 @@ public class ProgrammUpdateSuchen {
      * @param info the remote version number.
      * @return true if there is a newer version
      */
+    @Deprecated
     private boolean checkForNewerVersion(int info) {
-        boolean result = false;
-
         try {
-            final int currentVersion = Integer.parseInt(Const.VERSION);
+            final int currentVersion = Integer.parseInt(Functions.getBuildNr());
             if (info > currentVersion) {
-                result = true;
+                return true;
             }
         } catch (NumberFormatException ex) {
             Log.errorLog(ErrorCodes.UPDATE_CHECK_FOR_NEWER_VERSION, ex);
         }
-
-        return result;
+        return false;
     }
 
     private InputStream connectToServer() throws IOException {

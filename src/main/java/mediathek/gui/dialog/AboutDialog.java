@@ -56,7 +56,7 @@ public class AboutDialog extends JDialog {
 
     private void setupVersionString() {
         String strVersion = "Version ";
-        strVersion += Functions.getBuildNr();
+        strVersion += Functions.getProgVersion().toString();
 
         lblVersion.setText(strVersion);
     }
@@ -70,7 +70,7 @@ public class AboutDialog extends JDialog {
         String content;
 
         final StringBuilder contentBuilder = new StringBuilder();
-        URL url = this.getClass().getResource("/mediathek/res/programm/about/credits.html");
+        URL url = this.getClass().getResource("/mediathek/file/about/credits.html");
         try (InputStreamReader isr = new InputStreamReader(url.openStream());
              BufferedReader in = new BufferedReader(isr))
         {

@@ -75,13 +75,13 @@ public class MVFunctionSys {
     public static String pathSenderIcons() {
         return getPathJar() + Konstanten.VERZEICHNIS_SENDER_ICONS;
     }
-
+    @Deprecated
     public static String getProgVersionString() {
-        return Konstanten.PROGRAMMNAME + ' ' + Functions.getBuildNr();
+        return Konstanten.PROGRAMMNAME + ' ' + Functions.getProgVersion().toString();
     }
 
     public static String getProgName() {
-        return Konstanten.PROGRAMMNAME + ' ' + Functions.getBuildNr();
+        return Konstanten.PROGRAMMNAME + ' ' + Functions.getProgVersion().toString();
     }
 
 //    public static String[] getJavaVersion() {

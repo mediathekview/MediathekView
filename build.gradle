@@ -114,13 +114,16 @@ build.dependsOn(install)
 task updateVersion {
     doLast {
         Properties props = loadVersionProperties()
-        
+
         def oldVersion = props.getProperty('VERSION')
+        String buildDate = new Date().format('dd.MM.yyyy HH:mm:ss')
         if (!oldVersion.equals(project.version)) {
-            logger.lifecycle "==mediathekview======================"
-            logger.lifecycle "Version: $project.version"
-            logger.lifecycle "==mediathekview======================"
+            logger.lifecycle "==MediathekView======================"
+            logger.lifecycle "Version:  $project.version"
+            logger.lifecycle "Baudatum: $buildDate"
+            logger.lifecycle "==MediathekView======================"
             props.setProperty('VERSION', project.version)
+            props.setProperty('DATE', buildDate)
             props.store(propsFile.newWriter(), null)
         }
     }
@@ -128,15 +131,15 @@ task updateVersion {
 
 processResources.dependsOn updateVersion
 
-/*
+
 licenseReport {
-    outputDir = "res/Copyright/"
+    outputDir = "build/Copyright/"
     excludes = [':MSearch', 'MediathekView:MSearch']
     configurations = ['compile']
 }
 
 processResources.dependsOn generateLicenseReport
-*/
+
 tasks.withType(Zip) { task ->
     task.doLast {
         ant.checksum(algorithm: 'SHA-1', file: it.archivePath)
@@ -147,7 +150,7 @@ tasks.withType(Tar) { task ->
         ant.checksum(algorithm: 'SHA-1', file: it.archivePath)
     }
 }
-
+/*
 task copyProgrammIconsInRes(type: Copy) {
     logger.lifecycle 'Copying Programm icons.'
     from 'src/main/resources/mediathek/res/programm'
@@ -167,6 +170,7 @@ task copySenderIconsInRes(type: Copy) {
 }
 
 processResources.dependsOn copySenderIconsInRes
+*/
 
 [distZip, distTar]*.shouldRunAfter compileJava, updateVersion, jar
 distTar.compression = Compression.GZIP
@@ -201,6 +205,9 @@ distributions {
                     filter(ReplaceTokens, tokens: [JARNAME: jarName])
                 }
             }
+            from('build') {
+                include 'Copyright/*'
+            }
             from('build/libs') {
                 include '*.jar'
             }
@@ -215,7 +222,7 @@ distributions {
 //Windows executable generation
 launch4j {
     mainClassName = mainClass
-    icon = "../../res/Info/MediathekView.ico"
+    icon = "../../res/Icons/MediathekView.ico"
     jar = jarName
     dontWrapJar = true
     outfile = "MediathekView_ohne_feste_Speicherzuweisung.exe"
