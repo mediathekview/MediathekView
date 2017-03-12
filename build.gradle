@@ -61,7 +61,7 @@ repositories {
 }
 
 dependencies {
-    compile 'de.mediathekview:MSearch:2.4.0'
+    compile 'de.mediathekview:MLib:3.0.0'
 
     compile "$swingxGroup:swingx-action:$swingxVersion"
     compile "$swingxGroup:swingx-autocomplete:$swingxVersion"
@@ -92,7 +92,7 @@ configurations.compile {
                substitute module(moduleName) with project(projectName)
             }
         }
-        substituteIfExists('de.mediathekview:MSearch', ':MSearch')
+        substituteIfExists('de.mediathekview:MLib', ':MLib')
     }
 }
 
