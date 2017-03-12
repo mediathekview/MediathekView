@@ -134,7 +134,7 @@ processResources.dependsOn updateVersion
 
 licenseReport {
     outputDir = "build/Copyright/"
-    excludes = [':MSearch', 'MediathekView:MSearch']
+    excludes = [':MLib', 'MediathekView:MLib']
     configurations = ['compile']
 }
 
