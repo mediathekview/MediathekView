@@ -19,9 +19,9 @@
  */
 package mediathek.controller;
 
-import mSearch.tool.Functions;
-import mSearch.tool.GermanStringSorter;
-import mSearch.tool.Log;
+import de.mediathekview.mlib.tool.Functions;
+import de.mediathekview.mlib.tool.GermanStringSorter;
+import de.mediathekview.mlib.tool.Log;
 
 public class MVUsedUrl implements Comparable<MVUsedUrl> {
 

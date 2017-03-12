@@ -21,7 +21,7 @@ package mediathek.daten;
 
 import java.text.DecimalFormat;
 import java.util.LinkedList;
-import mSearch.tool.Log;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;

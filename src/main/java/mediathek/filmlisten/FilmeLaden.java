@@ -19,17 +19,17 @@
  */
 package mediathek.filmlisten;
 
-import mSearch.Config;
-import mSearch.Const;
-import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
-import mSearch.filmeSuchen.ListenerFilmeLaden;
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.filmlisten.FilmlisteLesen;
-import mSearch.filmlisten.ListeFilmlistenUrls;
-import mSearch.tool.Duration;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
+import de.mediathekview.mlib.Config;
+import de.mediathekview.mlib.Const;
+import de.mediathekview.mlib.daten.DatenFilm;
+import de.mediathekview.mlib.daten.ListeFilme;
+import de.mediathekview.mlib.filmesuchen.ListenerFilmeLaden;
+import de.mediathekview.mlib.filmesuchen.ListenerFilmeLadenEvent;
+import de.mediathekview.mlib.filmlisten.FilmlisteLesen;
+import de.mediathekview.mlib.filmlisten.ListeFilmlistenUrls;
+import de.mediathekview.mlib.tool.Duration;
+import de.mediathekview.mlib.tool.Log;
+import de.mediathekview.mlib.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;

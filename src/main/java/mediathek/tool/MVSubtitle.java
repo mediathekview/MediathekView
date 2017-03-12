@@ -19,9 +19,9 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
-import mSearch.tool.TimedTextMarkupLanguageParser;
+import de.mediathekview.mlib.tool.Log;
+import de.mediathekview.mlib.tool.SysMsg;
+import de.mediathekview.mlib.tool.TimedTextMarkupLanguageParser;
 import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
 

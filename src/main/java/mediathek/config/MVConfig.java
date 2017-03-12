@@ -19,18 +19,19 @@
  */
 package mediathek.config;
 
-import com.jidesoft.utils.SystemInfo;
-import mSearch.daten.DatenFilm;
-import mSearch.tool.Functions;
-import mSearch.tool.Log;
-import mediathek.controller.MVBandwidthTokenBucket;
-import mediathek.gui.MVFilter;
-import mediathek.tool.GuiFunktionenProgramme;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
+
+import com.jidesoft.utils.SystemInfo;
+
+import de.mediathekview.mlib.daten.DatenFilm;
+import de.mediathekview.mlib.tool.Functions;
+import de.mediathekview.mlib.tool.Log;
+import mediathek.controller.MVBandwidthTokenBucket;
+import mediathek.gui.MVFilter;
+import mediathek.tool.GuiFunktionenProgramme;
 
 public class MVConfig {
 
@@ -446,7 +447,7 @@ public class MVConfig {
 
     private static void listeSort(LinkedList<String[]> liste, int stelle) {
         //Stringliste alphabetisch sortieren
-        mSearch.tool.GermanStringSorter sorter = mSearch.tool.GermanStringSorter.getInstance();
+        de.mediathekview.mlib.tool.GermanStringSorter sorter = de.mediathekview.mlib.tool.GermanStringSorter.getInstance();
         if (liste != null) {
             String str1;
             String str2;

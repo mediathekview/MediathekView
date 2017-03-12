@@ -1,7 +1,7 @@
 package mediathek.mac;
 
 import com.apple.eawt.Application;
-import mSearch.tool.Log;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.gui.bandwidth.MVBandwidthMonitorOSX;

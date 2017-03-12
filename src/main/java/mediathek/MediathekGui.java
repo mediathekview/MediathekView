@@ -20,10 +20,10 @@
 package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.filmeSuchen.ListenerFilmeLaden;
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.tool.*;
-import mSearch.tool.Functions.OperatingSystemType;
+import de.mediathekview.mlib.filmesuchen.ListenerFilmeLaden;
+import de.mediathekview.mlib.filmesuchen.ListenerFilmeLadenEvent;
+import de.mediathekview.mlib.tool.*;
+import de.mediathekview.mlib.tool.Functions.OperatingSystemType;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.Konstanten;
@@ -61,7 +61,7 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 
-import static mSearch.tool.Functions.getOs;
+import static de.mediathekview.mlib.tool.Functions.getOs;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 @SuppressWarnings("serial")

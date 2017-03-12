@@ -19,10 +19,10 @@
  */
 package mediathek.tool;
 
-import mSearch.daten.DatenFilm;
-import mSearch.tool.FilenameUtils;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
+import de.mediathekview.mlib.daten.DatenFilm;
+import de.mediathekview.mlib.tool.FilenameUtils;
+import de.mediathekview.mlib.tool.Log;
+import de.mediathekview.mlib.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;

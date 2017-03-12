@@ -1,11 +1,11 @@
 package mediathek.gui;
 
-import mSearch.tool.Functions.OperatingSystemType;
+import de.mediathekview.mlib.tool.Functions.OperatingSystemType;
 
 import javax.swing.*;
 import java.awt.*;
 
-import static mSearch.tool.Functions.getOs;
+import static de.mediathekview.mlib.tool.Functions.getOs;
 
 @SuppressWarnings("serial")
 public class MVMemoryUsageButton extends JButton {

@@ -19,8 +19,8 @@
  */
 package mediathek.tool;
 
-import mSearch.daten.DatenFilm;
-import mSearch.tool.Datum;
+import de.mediathekview.mlib.daten.DatenFilm;
+import de.mediathekview.mlib.tool.Datum;
 
 @SuppressWarnings("serial")
 public class TModelFilm extends TModel {

@@ -19,7 +19,7 @@
  */
 package mediathek.daten;
 
-import mSearch.tool.Log;
+import de.mediathekview.mlib.tool.Log;
 
 public class DatenAbo extends MVData<DatenAbo> {
     //Tags Abo

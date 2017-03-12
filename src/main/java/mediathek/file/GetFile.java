@@ -19,7 +19,7 @@
  */
 package mediathek.file;
 
-import mSearch.tool.Log;
+import de.mediathekview.mlib.tool.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;

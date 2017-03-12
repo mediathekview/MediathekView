@@ -19,7 +19,7 @@
  */
 package mediathek.tool;
 
-import mSearch.daten.DatenFilm;
+import de.mediathekview.mlib.daten.DatenFilm;
 import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
 

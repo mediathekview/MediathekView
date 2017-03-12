@@ -19,7 +19,7 @@
  */
 package mediathek.tool;
 
-import mSearch.Const;
+import de.mediathekview.mlib.Const;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.RuntimeExec;
@@ -39,7 +39,7 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static mSearch.tool.Functions.getOs;
+import static de.mediathekview.mlib.tool.Functions.getOs;
 
 public class GuiFunktionenProgramme extends GuiFunktionen {
 

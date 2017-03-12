@@ -20,12 +20,12 @@
 package mediathek.config;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.daten.ListeFilme;
-import mSearch.filmlisten.WriteFilmlistJson;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
-import mSearch.tool.ReplaceList;
-import mSearch.tool.SysMsg;
+import de.mediathekview.mlib.daten.ListeFilme;
+import de.mediathekview.mlib.filmlisten.WriteFilmlistJson;
+import de.mediathekview.mlib.tool.Listener;
+import de.mediathekview.mlib.tool.Log;
+import de.mediathekview.mlib.tool.ReplaceList;
+import de.mediathekview.mlib.tool.SysMsg;
 import mediathek.MediathekGui;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;

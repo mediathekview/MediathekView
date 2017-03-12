@@ -19,7 +19,7 @@
  */
 package mediathek.gui.dialog;
 
-import mSearch.daten.DatenFilm;
+import de.mediathekview.mlib.daten.DatenFilm;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.tool.EscBeenden;

@@ -19,7 +19,7 @@
  */
 package mediathek.controller.starter;
 
-import mSearch.tool.Datum;
+import de.mediathekview.mlib.tool.Datum;
 import mediathek.controller.MVInputStream;
 
 public class Start {

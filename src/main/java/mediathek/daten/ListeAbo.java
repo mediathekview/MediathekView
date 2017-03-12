@@ -19,9 +19,9 @@
  */
 package mediathek.daten;
 
-import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
-import mSearch.tool.*;
+import de.mediathekview.mlib.daten.DatenFilm;
+import de.mediathekview.mlib.daten.ListeFilme;
+import de.mediathekview.mlib.tool.*;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogEditAbo;

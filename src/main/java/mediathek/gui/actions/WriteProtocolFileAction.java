@@ -1,7 +1,7 @@
 package mediathek.gui.actions;
 
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
+import de.mediathekview.mlib.tool.Log;
+import de.mediathekview.mlib.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static mSearch.tool.Functions.*;
+import static de.mediathekview.mlib.tool.Functions.*;
 
 @SuppressWarnings("serial")
 public class WriteProtocolFileAction extends AbstractAction {
