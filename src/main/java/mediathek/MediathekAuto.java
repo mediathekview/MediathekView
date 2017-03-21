@@ -19,11 +19,11 @@
  */
 package mediathek;
 
-import mSearch.filmeSuchen.ListenerFilmeLaden;
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.filmlisten.FilmlisteLesen;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
+import de.mediathekview.mlib.filmesuchen.ListenerFilmeLaden;
+import de.mediathekview.mlib.filmesuchen.ListenerFilmeLadenEvent;
+import de.mediathekview.mlib.filmlisten.FilmlisteLesen;
+import de.mediathekview.mlib.tool.Log;
+import de.mediathekview.mlib.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.IoXmlLesen;
@@ -36,7 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
-import static mSearch.tool.Log.LILNE;
+import static de.mediathekview.mlib.tool.Log.LILNE;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 public class MediathekAuto {

@@ -19,7 +19,7 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.Log;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.config.Icons;
 import mediathek.daten.DatenMediaDB;
 

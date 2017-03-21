@@ -1,6 +1,6 @@
 package mediathek.gui.filmInformation;
 
-import mSearch.daten.DatenFilm;
+import de.mediathekview.mlib.daten.DatenFilm;
 import mediathek.config.Icons;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.tool.BeobMausUrl;

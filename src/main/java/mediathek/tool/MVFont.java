@@ -20,7 +20,7 @@
 package mediathek.tool;
 
 import javax.swing.JTable;
-import mSearch.tool.Listener;
+import de.mediathekview.mlib.tool.Listener;
 import mediathek.config.MVConfig;
 
 public class MVFont {

@@ -19,8 +19,8 @@
  */
 package mediathek.gui;
 
-import mSearch.tool.Datum;
-import mSearch.tool.Listener;
+import de.mediathekview.mlib.tool.Datum;
+import de.mediathekview.mlib.tool.Listener;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;

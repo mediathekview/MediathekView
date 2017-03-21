@@ -19,10 +19,10 @@
  */
 package mediathek.controller;
 
-import mSearch.filmlisten.DatenFilmlisteUrl;
-import mSearch.tool.Log;
-import mSearch.tool.ReplaceList;
-import mSearch.tool.SysMsg;
+import de.mediathekview.mlib.filmlisten.DatenFilmlisteUrl;
+import de.mediathekview.mlib.tool.Log;
+import de.mediathekview.mlib.tool.ReplaceList;
+import de.mediathekview.mlib.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;

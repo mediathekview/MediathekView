@@ -20,14 +20,14 @@
 package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.Const;
-import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
-import mSearch.filmlisten.FilmlisteLesen;
-import mSearch.tool.Duration;
-import mSearch.tool.Functions;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
+import de.mediathekview.mlib.Const;
+import de.mediathekview.mlib.daten.DatenFilm;
+import de.mediathekview.mlib.daten.ListeFilme;
+import de.mediathekview.mlib.filmlisten.FilmlisteLesen;
+import de.mediathekview.mlib.tool.Duration;
+import de.mediathekview.mlib.tool.Functions;
+import de.mediathekview.mlib.tool.Listener;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisten;

@@ -19,8 +19,8 @@
  */
 package mediathek.gui.actions;
 
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
+import de.mediathekview.mlib.tool.Listener;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 

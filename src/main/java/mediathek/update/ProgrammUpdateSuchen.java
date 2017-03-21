@@ -19,9 +19,9 @@
  */
 package mediathek.update;
 
-import mSearch.Const;
-import mSearch.tool.Functions;
-import mSearch.tool.Log;
+import de.mediathekview.mlib.Const;
+import de.mediathekview.mlib.tool.Functions;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.ErrorCodes;
 import mediathek.config.Konstanten;

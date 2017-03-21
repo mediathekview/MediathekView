@@ -19,7 +19,7 @@
  */
 package mediathek.daten;
 
-import mSearch.tool.Log;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.file.GetFile;
@@ -39,8 +39,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
-import static mSearch.tool.Functions.getOs;
-import static mSearch.tool.Functions.getOsString;
+import static de.mediathekview.mlib.tool.Functions.getOs;
+import static de.mediathekview.mlib.tool.Functions.getOsString;
 
 @SuppressWarnings("serial")
 public class ListePsetVorlagen extends LinkedList<String[]> {

@@ -19,9 +19,9 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.Functions;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
+import de.mediathekview.mlib.tool.Functions;
+import de.mediathekview.mlib.tool.Log;
+import de.mediathekview.mlib.tool.SysMsg;
 import mediathek.Main;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
@@ -29,7 +29,7 @@ import mediathek.config.Konstanten;
 import java.io.File;
 import java.security.CodeSource;
 
-import static mSearch.tool.Log.LILNE;
+import static de.mediathekview.mlib.tool.Log.LILNE;
 
 public class MVFunctionSys {
     public static void startMeldungen() {

@@ -19,7 +19,7 @@
  */
 package mediathek.config;
 
-import mSearch.tool.Functions;
+import de.mediathekview.mlib.tool.Functions;
 
 public class Konstanten {
 

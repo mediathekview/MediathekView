@@ -19,7 +19,7 @@
  */
 package mediathek.gui;
 
-import mSearch.tool.SysMsg;
+import de.mediathekview.mlib.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
