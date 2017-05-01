@@ -46,13 +46,14 @@ import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.filmInformation.IFilmInformation;
 import mediathek.gui.filmInformation.MVFilmInformationLWin;
+import mediathek.gui.messages.DownloadFinishedEvent;
+import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.gui.tools.AutomaticTabSwitcherMenuListener;
 import mediathek.res.GetIcon;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.MVFont;
-import mediathek.tool.MVFrame;
-import mediathek.tool.MVMessageDialog;
+import mediathek.tool.*;
+import mediathek.tool.threads.IndicatorThread;
 import mediathek.update.CheckUpdate;
+import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -60,6 +61,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static de.mediathekview.mlib.tool.Functions.getOs;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
@@ -104,7 +106,7 @@ public class MediathekGui extends JFrame {
 
 
     protected final Daten daten;
-    private final SplashScreenManager splashScreenManager;
+    private SplashScreenManager splashScreenManager;
     private MVStatusBar statusBar;
     private MVFrame frameDownload;
     private MVFrame frameAbo;
@@ -118,6 +120,58 @@ public class MediathekGui extends JFrame {
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
 
+    /**
+     * Number of active downloads
+     */
+    protected final AtomicInteger numDownloadsStarted = new AtomicInteger(0);
+
+    /**
+     * Progress indicator thread for OS X and windows.
+     */
+    protected IndicatorThread progressIndicatorThread = null;
+
+    /**
+     * Create the platform-specific instance of the progress indicator thread.
+     * @return {@link IndicatorThread} instance for the running platform.
+     */
+    protected IndicatorThread createProgressIndicatorThread() throws Exception {
+        throw new Exception("Unsupported Platform");
+    }
+
+
+    /**
+     * Message bus handler which gets called when a download is started.
+     * @param msg Information about the download
+     */
+    @Handler
+    protected void handleDownloadStart(DownloadStartEvent msg) {
+        numDownloadsStarted.incrementAndGet();
+
+        if (progressIndicatorThread == null) {
+            try {
+                progressIndicatorThread = createProgressIndicatorThread();
+                progressIndicatorThread.start();
+            }
+            catch (Exception ignored) {
+                //ignore if we have an unsupported platform, ie. linux.
+            }
+        }
+    }
+
+    /**
+     * Message bus handler which gets called when a download is stopped.
+     * @param msg Information about the download
+     */
+    @Handler
+    protected void handleDownloadFinishedEvent(DownloadFinishedEvent msg) {
+        final int numDL = numDownloadsStarted.decrementAndGet();
+
+        if (numDL == 0 && progressIndicatorThread != null) {
+            progressIndicatorThread.interrupt();
+            progressIndicatorThread = null;
+        }
+    }
+
     public void updateSplashScreenText(final String aSplashScreenText)
     {
         splashScreenManager.updateSplashScreenText(aSplashScreenText);
@@ -126,6 +180,7 @@ public class MediathekGui extends JFrame {
     public void closeSplashScreen()
     {
         splashScreenManager.closeSplashScreen();
+        splashScreenManager = null;
     }
 
     public enum TABS {
@@ -157,6 +212,9 @@ public class MediathekGui extends JFrame {
 
         String pfad = readPfadFromArguments(aArguments);
         daten = Daten.getInstance(pfad, this);
+
+        //register message bus handler
+        daten.getMessageBus().subscribe(this);
 
         aboutAction = new ShowAboutDialogAction(this);
         settingsAction = new ShowSettingsAction();
@@ -470,7 +528,7 @@ public class MediathekGui extends JFrame {
 
         jTabbedPane.addTab(TABNAME_FILME, Daten.guiFilme);
 
-        if (daten.isDebug()) {
+        if (Daten.isDebug()) {
             guiDebug = new GuiDebug(daten);
             jTabbedPane.addTab(TABNAME_DEBUG, guiDebug);
         }
