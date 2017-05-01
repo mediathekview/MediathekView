@@ -44,9 +44,9 @@ import static mediathek.controller.starter.StarterClass.*;
 public class ExternalProgramDownload extends Thread
 {
 
-    private Daten daten;
-    private DatenDownload datenDownload;
-    private Start start;
+    private final Daten daten;
+    private final DatenDownload datenDownload;
+    private final Start start;
     private File file;
     private String exMessage = "";
     private boolean retAbbrechen;
@@ -98,7 +98,7 @@ public class ExternalProgramDownload extends Thread
         final int stat_ende = 99;
         int stat = stat_start;
 
-        daten.getMessageBus().publish(new DownloadStartEvent());
+        daten.getMessageBus().publishAsync(new DownloadStartEvent());
         try
         {
             if (!cancelDownload())
