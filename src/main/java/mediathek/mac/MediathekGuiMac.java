@@ -8,7 +8,7 @@ import mediathek.gui.bandwidth.MVBandwidthMonitorOSX;
 import mediathek.gui.filmInformation.MVFilmInformationOSX;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
-import net.engio.mbassy.listener.Handler;
+import mediathek.tool.threads.IndicatorThread;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -19,18 +19,12 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
     private static final String ACTION_KEY_MAC_F = "mac-f";
-    /**
-     * Repaint-Thread for progress indicator on OS X.
-     */
-    private Thread osxProgressIndicatorThread = null;
-    private final AtomicInteger numDownloads = new AtomicInteger(0);
 
-    public MediathekGuiMac(String[] ar) {
+    public MediathekGuiMac(String... ar) {
         super(ar);
 
         setupDockIcon();
@@ -39,13 +33,14 @@ public class MediathekGuiMac extends MediathekGui {
 
         //Window must be fully initialized to become fullscreen cadidate...
         setWindowFullscreenCapability();
-
-        daten.getMessageBus().subscribe(this);
     }
 
+    /**
+     * Install the tab switch listener.
+     * Unused on OS X.
+     */
     @Override
     protected void installAutomaticTabSwitcher() {
-        //do not use tab switching in OS X
     }
 
     private void setSearchKeyForMac() {
@@ -108,28 +103,21 @@ public class MediathekGuiMac extends MediathekGui {
         jCheckBoxMenuItemVideoplayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, InputEvent.META_MASK));
     }
 
-    @Handler
-    public void handleDownloadStart(DownloadStartEvent msg) {
-        final int numDL = numDownloads.incrementAndGet();
-
-        setDownloadsBadge(numDL);
-
-        if (osxProgressIndicatorThread == null) {
-            osxProgressIndicatorThread = new OsxIndicatorThread();
-            osxProgressIndicatorThread.start();
-        }
+    @Override
+    protected IndicatorThread createProgressIndicatorThread() {
+        return new OsxIndicatorThread();
     }
 
-    @Handler
-    public void handleDownloadFinishedEvent(DownloadFinishedEvent msg) {
-        final int numDL = numDownloads.decrementAndGet();
+    @Override
+    protected void handleDownloadStart(DownloadStartEvent msg) {
+        super.handleDownloadStart(msg);
+        setDownloadsBadge(numDownloadsStarted.get());
+    }
 
-        setDownloadsBadge(numDL);
-
-        if (numDL == 0 && osxProgressIndicatorThread != null) {
-            osxProgressIndicatorThread.interrupt();
-            osxProgressIndicatorThread = null;
-        }
+    @Override
+    protected void handleDownloadFinishedEvent(DownloadFinishedEvent msg) {
+        super.handleDownloadFinishedEvent(msg);
+        setDownloadsBadge(numDownloadsStarted.get());
     }
 
     /**
