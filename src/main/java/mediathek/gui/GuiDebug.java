@@ -24,6 +24,7 @@ import de.mediathekview.mlib.Const;
 import de.mediathekview.mlib.daten.DatenFilm;
 import de.mediathekview.mlib.daten.ListeFilme;
 import de.mediathekview.mlib.filmlisten.FilmlisteLesen;
+import de.mediathekview.mlib.filmlisten.WriteFilmlistJson;
 import de.mediathekview.mlib.tool.Duration;
 import de.mediathekview.mlib.tool.Functions;
 import de.mediathekview.mlib.tool.Listener;
@@ -81,7 +82,7 @@ public class GuiDebug extends JPanel {
         jButtonAllesSpeichern.addActionListener(e
                 -> {
             daten.allesSpeichern();
-            daten.filmlisteSpeichern();
+            new WriteFilmlistJson().filmlisteSchreibenJson(Daten.getDateiFilmliste(), daten.getListeFilme());
         });
         jButtonFilmlisteLoeschen.addActionListener(e
                 -> {
@@ -133,7 +134,8 @@ public class GuiDebug extends JPanel {
             }
 
             System.out.println("danach: " + daten.getListeFilme().size());
-            daten.filmlisteSpeichern();
+            new WriteFilmlistJson().filmlisteSchreibenJson(Daten.getDateiFilmliste(), daten.getListeFilme());
+
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
             hash.clear();
         });
@@ -163,7 +165,7 @@ public class GuiDebug extends JPanel {
             // ==========================================
             daten.setListeFilme(listeFilme);
             System.out.println("danach: " + daten.getListeFilme().size());
-            daten.filmlisteSpeichern();
+            new WriteFilmlistJson().filmlisteSchreibenJson(Daten.getDateiFilmliste(), daten.getListeFilme());
         });
         btnNurDoppelte.addActionListener(e
                 -> {
@@ -306,7 +308,7 @@ public class GuiDebug extends JPanel {
         System.out.println("vorher: " + daten.getListeFilme().size());
         daten.setListeFilme(listeFilme);
         System.out.println("danach: " + daten.getListeFilme().size());
-        daten.filmlisteSpeichern();
+        new WriteFilmlistJson().filmlisteSchreibenJson(Daten.getDateiFilmliste(), daten.getListeFilme());
     }
 
     private void addSender() {
@@ -328,7 +330,8 @@ public class GuiDebug extends JPanel {
         Log.sysLog("cleanList start: " + FormatterUtil.FORMATTER_ddMMyyyyHHmm.format(System.currentTimeMillis()));
 
         daten.getListeFilme().forEach(Functions::unescape);
-        daten.filmlisteSpeichern();
+        new WriteFilmlistJson().filmlisteSchreibenJson(Daten.getDateiFilmliste(), daten.getListeFilme());
+
         Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
 
         Log.sysLog("cleanList stop: " + FormatterUtil.FORMATTER_ddMMyyyyHHmm.format(System.currentTimeMillis()));

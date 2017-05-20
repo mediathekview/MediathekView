@@ -20,6 +20,7 @@
 package mediathek.gui;
 
 import de.mediathekview.mlib.daten.DatenFilm;
+import de.mediathekview.mlib.filmlisten.WriteFilmlistJson;
 import de.mediathekview.mlib.tool.DbgMsg;
 import de.mediathekview.mlib.tool.Listener;
 import mediathek.config.Daten;
@@ -73,7 +74,8 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
                 if (!currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG].equals(akt)) {
                     // dann hat sich die Beschreibung geändert
                     setText();
-                    daten.filmlisteSpeichern();
+                    new WriteFilmlistJson().filmlisteSchreibenJson(Daten.getDateiFilmliste(), daten.getListeFilme());
+
                     Listener.notify(Listener.EREIGNIS_BESCHREIBUNG, PanelFilmBeschreibung.class.getSimpleName());
                 }
             }

@@ -21,7 +21,6 @@ package mediathek.config;
 
 import com.jidesoft.utils.SystemInfo;
 import de.mediathekview.mlib.daten.ListeFilme;
-import de.mediathekview.mlib.filmlisten.WriteFilmlistJson;
 import de.mediathekview.mlib.tool.Listener;
 import de.mediathekview.mlib.tool.Log;
 import de.mediathekview.mlib.tool.ReplaceList;
@@ -281,10 +280,6 @@ public class Daten {
                 xmlFilePath.add(path);
             }
         }
-    }
-
-    public void filmlisteSpeichern() {
-        new WriteFilmlistJson().filmlisteSchreibenJson(getDateiFilmliste(), listeFilme);
     }
 
     /**

@@ -19,6 +19,7 @@
  */
 package mediathek.filmlisten;
 
+import com.jidesoft.utils.SystemInfo;
 import de.mediathekview.mlib.Config;
 import de.mediathekview.mlib.Const;
 import de.mediathekview.mlib.daten.DatenFilm;
@@ -27,6 +28,7 @@ import de.mediathekview.mlib.filmesuchen.ListenerFilmeLaden;
 import de.mediathekview.mlib.filmesuchen.ListenerFilmeLadenEvent;
 import de.mediathekview.mlib.filmlisten.FilmlisteLesen;
 import de.mediathekview.mlib.filmlisten.ListeFilmlistenUrls;
+import de.mediathekview.mlib.filmlisten.WriteFilmlistJson;
 import de.mediathekview.mlib.tool.Duration;
 import de.mediathekview.mlib.tool.Log;
 import de.mediathekview.mlib.tool.SysMsg;
@@ -41,6 +43,10 @@ import mediathek.tool.MVMessageDialog;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -50,11 +56,6 @@ public class FilmeLaden {
 
     private final HashSet<String> hashSet = new HashSet<>();
     private final ListeFilme diffListe = new ListeFilme();
-
-    private enum ListenerMelden {
-
-        START, PROGRESS, FINISHED
-    }
 
     // private
     private final Daten daten;
@@ -86,44 +87,6 @@ public class FilmeLaden {
         });
     }
 
-    //    // #########################################################
-    //    // Filmliste beim Programmstart!! laden
-    //    // #########################################################
-    //    public void loadFilmlistProgStart() {
-    //        // Gui startet ein wenig flüssiger
-    //        new Thread(new loadFilmlistProgStart_()).start();
-    //    }
-    //    private class loadFilmlistProgStart_ implements Runnable {
-    //
-    //        @Override
-    //        public synchronized void run() {
-    //            Duration.staticPing("Thread: Filmliste laden");
-    //            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
-    //
-    //            SysMsg.sysMsg("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-    //            SysMsg.sysMsg("  erstellt am: " + daten.getListeFilme().genDate());
-    //            SysMsg.sysMsg("  Anzahl Filme: " + daten.getListeFilme().size());
-    //            SysMsg.sysMsg("  Anzahl Neue: " + daten.getListeFilme().countNewFilms());
-    //
-    //            daten.getListeFilme().themenLaden();
-    //            Daten.listeAbo.setAboFuerFilm(daten.getListeFilme(), false /*aboLoeschen*/);
-    //            daten.getListeDownloads().filmEintragen(); // Filme bei einmalDownloads eintragen
-    //            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
-    //
-    //            if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO && daten.getListeFilme().isTooOld()) {
-    //                SysMsg.sysMsg("Neue Filmliste laden");
-    //                loadFilmlist("", true);
-    //            } else {
-    //                // entweder neue Liste laden oder es ist schon fertig, dann melden
-    //                daten.getListeBlacklist().filterListe(); // beim Neuladen wird es dann erst gemacht
-    //                notifyFertig(new ListenerFilmeLadenEvent("", "", 0, 0, 0, false/*Fehler*/));
-    //            }
-    //        }
-    //
-    //    }
-    // #########################################################
-    // Filmliste importieren
-    // #########################################################
     public void loadFilmlistDialog(Daten daten, boolean manuell) {
         if (manuell || GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUS) {
             // Dialog zum Laden der Filme anzeigen
@@ -205,7 +168,6 @@ public class FilmeLaden {
 
     public String[] getSenderNamen() {
         return Const.SENDER;
-        //return FilmeSuchen.getNamenSender();
     }
 
     public void updateDownloadUrlsFilmlisten(boolean akt) {
@@ -224,8 +186,6 @@ public class FilmeLaden {
         return importFilmliste.msFilmlistenSuchen.suchenAkt(new ArrayList<>());
     }
 
-    // #######################################
-    // #######################################
     private void undEnde(ListenerFilmeLadenEvent event) {
         // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
         // beim Ändern von Abos gemacht wird
@@ -261,7 +221,16 @@ public class FilmeLaden {
             new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
             SysMsg.sysMsg("");
         } else {
-            daten.filmlisteSpeichern();
+            try {
+                if (SystemInfo.isMacOSX()) {
+                    final Path dirPath = Paths.get(GuiFunktionen.getHomePath() + "/Library/Caches/MediathekView");
+                    if (!Files.exists(dirPath))
+                        Files.createDirectory(dirPath);
+                }
+                new WriteFilmlistJson().filmlisteSchreibenJson(Daten.getDateiFilmliste(), daten.getListeFilme());
+            } catch (IOException ex) {
+                Log.errorLog(123456789, ex);
+            }
         }
         SysMsg.sysMsg("");
         SysMsg.sysMsg("Jetzige Liste erstellt am: " + daten.getListeFilme().genDate());
@@ -281,6 +250,7 @@ public class FilmeLaden {
         notifyFertig(event);
     }
 
+
     private void fillHash(ListeFilme listeFilme) {
         hashSet.addAll(listeFilme.stream().map(DatenFilm::getUrlHistory).collect(Collectors.toList()));
     }
@@ -288,7 +258,7 @@ public class FilmeLaden {
     /**
      * Search through history and mark new films.
      *
-     * @param listeFilme
+     * @param listeFilme the searchable list
      */
     private void findAndMarkNewFilms(ListeFilme listeFilme) {
         listeFilme.neueFilme = false;
