@@ -137,7 +137,7 @@ public class MediathekGuiMac extends MediathekGui {
         //setup the MediathekView Dock Icon
         try {
             final Application application = Application.getApplication();
-            final URL url = this.getClass().getResource("/mediathek/res/MediathekView.png");
+            final URL url = this.getClass().getResource("/mediathek/res/mac/app_icon.png");
             final BufferedImage appImage = ImageIO.read(url);
             application.setDockIconImage(appImage);
         } catch (IOException ex) {

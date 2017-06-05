@@ -28,16 +28,17 @@ public class SplashScreenManager
         splashScreenContext = null;
     }
 
+    private static final Font SCREEN_FONT = new Font("SansSerif", Font.BOLD, 12);
+    private static final int X_POS = 85;
+    private static final int Y_POS = 450;
+    private static final int PROGRESS_WIDTH = 300;
+    private static final int MAX_PROGRESS_STEPS = 11;// KEEP THIS CURRENT!
+
     public void updateSplashScreenText(final String text) {
         //bail out when we don´ have a splash screen...
         if (splashScreenContext == null) {
             return;
         }
-
-        final int splashScreenYPosition = 430;
-        final int splashScreenXPosition = 120;
-        final int splashScreenWidth = 300;
-        final int maxSteps = 11; // KEEP THIS CURRENT!
 
         splashScreenProgress++;
 
@@ -46,18 +47,21 @@ public class SplashScreenManager
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         //clear the drawing area...
         splashScreenContext.setComposite(AlphaComposite.Clear);
-        splashScreenContext.fillRect(splashScreenXPosition, (splashScreenYPosition - 10), splashScreenWidth, 40);
+        splashScreenContext.fillRect(X_POS, (Y_POS - 10), PROGRESS_WIDTH, 40);
+
+
         splashScreenContext.setPaintMode();
+        splashScreenContext.setFont(SCREEN_FONT);
+
         //paint the text string...
-        splashScreenContext.setFont(new Font("SansSerif", Font.BOLD, 12));
         splashScreenContext.setColor(Color.WHITE);
-        splashScreenContext.drawString(text, splashScreenXPosition, splashScreenYPosition + 2);
+        splashScreenContext.drawString(text, X_POS, Y_POS + 2);
         // paint the full progress indicator...
         splashScreenContext.setColor(Color.BLUE);
-        splashScreenContext.fillRect(splashScreenXPosition, splashScreenYPosition - 15, splashScreenWidth, 5);
+        splashScreenContext.fillRect(X_POS, Y_POS - 15, PROGRESS_WIDTH, 5);
         //paint how much is done...
         splashScreenContext.setColor(Color.GREEN);
-        splashScreenContext.fillRect(splashScreenXPosition, splashScreenYPosition - 15, splashScreenProgress * (splashScreenWidth / maxSteps), 5);
+        splashScreenContext.fillRect(X_POS, Y_POS - 15, splashScreenProgress * (PROGRESS_WIDTH / MAX_PROGRESS_STEPS), 5);
         splash.update();
     }
 
