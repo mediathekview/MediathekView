@@ -37,6 +37,8 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
+import javax.swing.text.DefaultCaret;
+import java.awt.Rectangle;
 import java.net.URISyntaxException;
 
 @SuppressWarnings("serial")
@@ -174,6 +176,12 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
         jEditorPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 4, 4, 4));
         jEditorPane.setContentType("text/html"); // NOI18N
         jEditorPane.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        jEditorPane.setCaret(new DefaultCaret() {
+            @Override
+            protected void adjustVisibility(Rectangle nloc) {
+                // do nothing, suppress scroll to bottom on setText()
+            }
+        });
         jScrollPane2.setViewportView(jEditorPane);
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
