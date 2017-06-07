@@ -23,6 +23,7 @@ import de.mediathekview.mlib.daten.DatenFilm;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.gui.actions.UrlHyperlinkAction;
+import mediathek.gui.tools.NotScrollingCaret;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.EscBeenden;
 import mediathek.tool.GuiFunktionen;
@@ -164,6 +165,7 @@ public class MVFilmInformationLWin extends JDialog implements IFilmInformation {
         textAreaBeschreibung.setWrapStyleWord(true);
         textAreaBeschreibung.setRows(4);
         textAreaBeschreibung.setOpaque(false);
+        textAreaBeschreibung.setCaret(new NotScrollingCaret());
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(4, 10, 4, 10);
