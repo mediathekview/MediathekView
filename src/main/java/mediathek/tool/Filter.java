@@ -106,11 +106,11 @@ public class Filter {
     }
 
     private static boolean checkLengthMin(int filterLaengeInMinuten, long filmLaenge) {
-        return filterLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge > (filterLaengeInMinuten * 60);
+        return filterLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge >= (filterLaengeInMinuten * 60);
     }
 
     private static boolean checkLengthMax(int filterLaengeInMinuten, long filmLaenge) {
-        return filterLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge < (filterLaengeInMinuten * 60);
+        return filterLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge <= (filterLaengeInMinuten * 60);
     }
 
     public static boolean laengePruefen(int filterLaengeInMinuten, long filmLaenge, boolean min) {
