@@ -11,7 +11,8 @@ install:
 addons:
   ssh_known_hosts:
     - mediathekview.de
-  sonarqube:
+  sonarcloud:
+    organization: "mediathekview"
     token:
       secure: woV09cAHTwbI9/oyQs1WtA3oU9dhftuFrJ4pNGOec0sszwkQLzU+G5JGmnoOSt26ZB9tE8Cd5RuWFXlq6QA89ml1uuvxmSk0rX7srNbLaDUQu1Oe0467emeAeZLu87Z2DP6ylu32Gz6daOpG4St4z8MbJbT7cXBQ8PnNUv7T120NM9NPzBqGORqPYKrVsIwtAtrVFm5l5uUCCdS7E53jhv2GgmKGwSE4EWggCZF6c8AMfJV5bRNRG5sfClekrWkNSjqxoihNTlh8VBtkPOCiCB4+OtubeYuLXLi5WcoU6XYRzHu9BiunC5lJhKtAjjSYnkEswpOiYRZFBNEnUPR72gWujZELVl2jv8q8flQp9xBAH7eTIXvaR56WI/Bj9UvjUJiPDgJRl1TfBDlinEIOWbThI6GE2fuQoZqBihMCf0VNHg261UMf6bb7KFJwjtodM9yu12rekTmvI02vpSFE8877m+xXeDcGJCuBnrgXp95BPUsg72vCoe6x9obOLNe+VxEpan2KDqCcozM4X5LtRKBdnzTmHJuVB7LWb8+UpuhI+sf58DZOBPGYF79o5SK9dG0mo3qgl9dMFPaduxh25/DEZP/QgA+1s8b6n/1P5enY7zt/r14qSEIifTXuw4Jk1AkcyfUMso9Y87X7Bv5U7xoeVn9H6ZiP4QRLlDQS6jo=
     github_token:
