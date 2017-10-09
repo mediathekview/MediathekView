@@ -1,23 +1,21 @@
 package mediathek.update;
 
+import mSearch.tool.Version;
+
 /**
  * Encapsulates the retrieved update information.
  */
 class ServerProgramInformation {
-    private int version = -1;
+    private Version version;
     private String releaseNotes;
     private String updateUrl;
 
-    public int getVersion() {
+    public Version getVersion() {
         return version;
     }
 
     public void setVersion(String version) {
-        try {
-            this.version = Integer.parseInt(version);
-        } catch (NumberFormatException ex) {
-            this.version = -1;
-        }
+        this.version = new Version(version);
     }
 
     public String getReleaseNotes() {
