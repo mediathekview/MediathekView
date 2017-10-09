@@ -19,7 +19,21 @@
  */
 package mediathek.gui;
 
+import java.awt.FileDialog;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.HashSet;
+import java.util.Iterator;
+
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+
 import com.jidesoft.utils.SystemInfo;
+
 import mSearch.Const;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
@@ -31,15 +45,6 @@ import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisten;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.HashSet;
-import java.util.Iterator;
 
 @SuppressWarnings("serial")
 public class GuiDebug extends JPanel {
@@ -108,7 +113,7 @@ public class GuiDebug extends JPanel {
                 } else if (!cbkUrl.isSelected()) {
                     hash.add(f.getIndex());
                 } else {
-                    hash.add(DatenFilm.getUrl(f));
+                    hash.add(f.getUrl());
                 }
             }
 
@@ -127,7 +132,7 @@ public class GuiDebug extends JPanel {
                     if (hash.contains(f.getIndex())) {
                         it.remove();
                     }
-                } else if (hash.contains(DatenFilm.getUrl(f))) {
+                } else if (hash.contains(f.getUrl())) {
                     it.remove();
                 }
             }

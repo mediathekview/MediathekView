@@ -19,12 +19,14 @@
  */
 package mediathek.config;
 
-import mSearch.tool.Functions;
+import mSearch.tool.Version;
 
 public class Konstanten {
+  
+    public static final Version MVVERSION = new Version(13,0,3);
 
     public static final String PROGRAMMNAME = "MediathekView";
-    public static final String USER_AGENT_DEFAULT = Konstanten.PROGRAMMNAME + " " + Functions.getBuildNr();
+    public static final String USER_AGENT_DEFAULT = Konstanten.PROGRAMMNAME;
     public static final String CONFIG_FILE = "mediathek.xml";
     public static final String CONFIG_FILE_COPY = "mediathek.xml_copy_";
     public static final String FILE_ERLEDIGTE_ABOS = "downloadAbos.txt";
@@ -33,7 +35,7 @@ public class Konstanten {
 
     // MediathekView URLs
 //    public static final String ADRESSE_FILMLISTEN_SERVER = "http://zdfmediathk.sourceforge.net/update.xml";
-    public static final String ADRESSE_PROGRAMM_VERSION = "https://res.mediathekview.de/prog-info-12.xml";
+    public static final String ADRESSE_PROGRAMM_VERSION = "https://res.mediathekview.de/prog-info-13.xml";
     public static final String ADRESSE_DOWNLAD = "https://mediathekview.de/download/";
     public static final String ADRESSE_ANLEITUNG = "https://github.com/mediathekview/MediathekView/wiki";
     public static final String ADRESSE_ONLINE_HELP = "https://github.com/mediathekview/MediathekView/wiki";
