@@ -138,11 +138,7 @@ public class ProgrammUpdateSuchen {
      * @return true if there is a newer version
      */
     private boolean checkForNewerVersion(Version info) {
-
-            if (Konstanten.MVVERSION.compare(info) == 1) {
-                return true;
-            }
-
+        if (Konstanten.MVVERSION.compare(info) == 1) return true;
         return false;
     }
 
