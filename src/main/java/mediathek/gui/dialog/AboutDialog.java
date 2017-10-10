@@ -18,23 +18,10 @@
  */
 package mediathek.gui.dialog;
 
-import com.jidesoft.swing.MarqueePane;
-import com.jidesoft.utils.SystemInfo;
-import mSearch.tool.Functions;
-import mediathek.config.Daten;
-import mediathek.config.Konstanten;
-import mediathek.gui.actions.DisposeDialogAction;
-import mediathek.gui.actions.UrlHyperlinkAction;
-import mediathek.tool.BeobMausUrl;
-import mediathek.tool.EscBeenden;
-import org.jdesktop.swingx.JXHyperlink;
-
-import javax.swing.*;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -42,6 +29,33 @@ import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
+
+import javax.swing.AbstractAction;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JEditorPane;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+
+import org.jdesktop.swingx.JXHyperlink;
+
+import com.jidesoft.swing.MarqueePane;
+import com.jidesoft.utils.SystemInfo;
+
+import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import mediathek.gui.actions.DisposeDialogAction;
+import mediathek.gui.actions.UrlHyperlinkAction;
+import mediathek.tool.BeobMausUrl;
+import mediathek.tool.EscBeenden;
 
 @SuppressWarnings("serial")
 public class AboutDialog extends JDialog {
@@ -56,7 +70,7 @@ public class AboutDialog extends JDialog {
 
     private void setupVersionString() {
         String strVersion = "Version ";
-        strVersion += Functions.getBuildNr();
+        strVersion += Konstanten.MVVERSION;
 
         lblVersion.setText(strVersion);
     }

@@ -19,36 +19,15 @@
  */
 package mediathek;
 
-import com.jidesoft.utils.SystemInfo;
-import mSearch.filmeSuchen.ListenerFilmeLaden;
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.tool.*;
-import mSearch.tool.Functions.OperatingSystemType;
-import mediathek.config.Daten;
-import mediathek.config.Icons;
-import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
-import mediathek.controller.ProgStart;
-import mediathek.controller.starter.Start;
-import mediathek.daten.DatenDownload;
-import mediathek.gui.*;
-import mediathek.gui.bandwidth.IBandwidthMonitor;
-import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
-import mediathek.gui.dialog.*;
-import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
-import mediathek.gui.dialogEinstellungen.PanelBlacklist;
-import mediathek.gui.filmInformation.MVFilmInformationLWin;
-import mediathek.res.GetIcon;
-import mediathek.tool.*;
-import mediathek.update.CheckUpdate;
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
+import static mSearch.tool.Functions.getOs;
+import static mediathek.tool.MVFunctionSys.startMeldungen;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Desktop;
+import java.awt.Frame;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -58,8 +37,77 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.logging.Level;
 
-import static mSearch.tool.Functions.getOs;
-import static mediathek.tool.MVFunctionSys.startMeldungen;
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.InputMap;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
+
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
+
+import com.jidesoft.utils.SystemInfo;
+
+import mSearch.filmeSuchen.ListenerFilmeLaden;
+import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
+import mSearch.tool.Duration;
+import mSearch.tool.Functions;
+import mSearch.tool.Functions.OperatingSystemType;
+import mSearch.tool.Listener;
+import mSearch.tool.Log;
+import mSearch.tool.ReplaceList;
+import mSearch.tool.SysMsg;
+import mediathek.config.Daten;
+import mediathek.config.Icons;
+import mediathek.config.Konstanten;
+import mediathek.config.MVConfig;
+import mediathek.controller.ProgStart;
+import mediathek.controller.starter.Start;
+import mediathek.daten.DatenDownload;
+import mediathek.gui.GuiAbo;
+import mediathek.gui.GuiDebug;
+import mediathek.gui.GuiDownloads;
+import mediathek.gui.GuiFilme;
+import mediathek.gui.GuiMeldungen;
+import mediathek.gui.MVStatusBar;
+import mediathek.gui.MVTray;
+import mediathek.gui.PanelVorlage;
+import mediathek.gui.SplashScreenManager;
+import mediathek.gui.bandwidth.IBandwidthMonitor;
+import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
+import mediathek.gui.dialog.AboutDialog;
+import mediathek.gui.dialog.DialogBeenden;
+import mediathek.gui.dialog.DialogLeer;
+import mediathek.gui.dialog.DialogMediaDB;
+import mediathek.gui.dialog.DialogStarteinstellungen;
+import mediathek.gui.dialog.DialogZiel;
+import mediathek.gui.dialog.ResetSettingsDialog;
+import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
+import mediathek.gui.dialogEinstellungen.PanelBlacklist;
+import mediathek.gui.filmInformation.MVFilmInformationLWin;
+import mediathek.res.GetIcon;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.Logfile;
+import mediathek.tool.MVFont;
+import mediathek.tool.MVFrame;
+import mediathek.tool.MVFunctionSys;
+import mediathek.tool.MVMessageDialog;
+import mediathek.update.CheckUpdate;
 
 @SuppressWarnings("serial")
 public class MediathekGui extends JFrame {
@@ -381,7 +429,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void setOrgTitel() {
-        this.setTitle(Konstanten.PROGRAMMNAME + " " + Functions.getBuildNr());
+        this.setTitle(Konstanten.PROGRAMMNAME + " " + Konstanten.MVVERSION);
     }
 
     private void setSize() {

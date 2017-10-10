@@ -21,13 +21,15 @@ package mediathek.controller;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import mSearch.Const;
+
 import mSearch.filmlisten.DatenFilmlisteUrl;
 import mSearch.tool.Log;
 import mSearch.tool.ReplaceList;
@@ -35,7 +37,12 @@ import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
-import mediathek.daten.*;
+import mediathek.daten.DatenAbo;
+import mediathek.daten.DatenBlacklist;
+import mediathek.daten.DatenDownload;
+import mediathek.daten.DatenMediaPath;
+import mediathek.daten.DatenProg;
+import mediathek.daten.DatenPset;
 
 public class IoXmlSchreiben {
     
@@ -117,11 +124,11 @@ public class IoXmlSchreiben {
     
     private static void xmlSchreibenStart() throws IOException, XMLStreamException {
         SysMsg.sysMsg("Start Schreiben nach: " + xmlFilePath.toAbsolutePath());
-        out = new OutputStreamWriter(Files.newOutputStream(xmlFilePath), Const.KODIERUNG_UTF);
+        out = new OutputStreamWriter(Files.newOutputStream(xmlFilePath), StandardCharsets.UTF_8);
         
         XMLOutputFactory outFactory = XMLOutputFactory.newInstance();
         writer = outFactory.createXMLStreamWriter(out);
-        writer.writeStartDocument(Const.KODIERUNG_UTF, "1.0");
+        writer.writeStartDocument(StandardCharsets.UTF_8.name(), "1.0");
         writer.writeCharacters("\n");//neue Zeile
         writer.writeStartElement(Konstanten.XML_START);
         writer.writeCharacters("\n");//neue Zeile
