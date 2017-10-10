@@ -19,28 +19,29 @@
  */
 package mediathek.daten;
 
-import mSearch.Const;
+import static mSearch.tool.Functions.getOs;
+import static mSearch.tool.Functions.getOsString;
+
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
+
+import javax.swing.JFrame;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamReader;
+
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.file.GetFile;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.TModel;
-
-import javax.swing.*;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamReader;
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.LinkedList;
-import java.util.stream.Collectors;
-
-import static mSearch.tool.Functions.getOs;
-import static mSearch.tool.Functions.getOsString;
 
 @SuppressWarnings("serial")
 public class ListePsetVorlagen extends LinkedList<String[]> {
@@ -148,7 +149,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             conn.setRequestProperty("User-Agent", Daten.getUserAgent());
             conn.setReadTimeout(TIMEOUT);
             conn.setConnectTimeout(TIMEOUT);
-            inReader = new InputStreamReader(conn.getInputStream(), Const.KODIERUNG_UTF);
+            inReader = new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8);
             parser = inFactory.createXMLStreamReader(inReader);
             while (parser.hasNext()) {
                 event = parser.next();
@@ -179,9 +180,9 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                 conn.setConnectTimeout(timeout);
                 conn.setReadTimeout(timeout);
                 conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-                return ListePsetVorlagen.importPset(new InputStreamReader(conn.getInputStream(), Const.KODIERUNG_UTF), log);
+                return ListePsetVorlagen.importPset(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8), log);
             } else {
-                return ListePsetVorlagen.importPset(new InputStreamReader(new FileInputStream(dateiUrl), Const.KODIERUNG_UTF), log);
+                return ListePsetVorlagen.importPset(new InputStreamReader(new FileInputStream(dateiUrl), StandardCharsets.UTF_8), log);
             }
         } catch (Exception ex) {
             if (log) {

@@ -19,23 +19,25 @@
  */
 package mediathek.update;
 
-import mSearch.tool.Functions;
+import static java.lang.Thread.sleep;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
+import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.dialog.DialogNewSet;
 import mediathek.tool.GuiFunktionenProgramme;
-
-import javax.swing.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import static java.lang.Thread.sleep;
 
 public class CheckUpdate {
 
@@ -59,7 +61,7 @@ public class CheckUpdate {
                 return;
             }
 
-            if (MVConfig.get(MVConfig.Configs.SYSTEM_BUILD_NR).equals(Functions.getBuildNr())
+            if (MVConfig.get(MVConfig.Configs.SYSTEM_BUILD_NR).equals(Konstanten.MVVERSION.toString())
                     && MVConfig.get(MVConfig.Configs.SYSTEM_UPDATE_DATUM).equals(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
                 // keine neue Version und heute schon gemacht
                 return;

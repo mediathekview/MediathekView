@@ -19,26 +19,28 @@
  */
 package mediathek.update;
 
-import mSearch.Const;
-import mSearch.tool.Functions;
-import mSearch.tool.Log;
-import mediathek.config.Daten;
-import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
-
-import javax.swing.*;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
+
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamReader;
+
+import mSearch.tool.Log;
+import mSearch.tool.Version;
+import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import mediathek.config.MVConfig;
 
 public class ProgrammUpdateSuchen {
     private static final String UPDATE_SEARCH_TITLE = "Software-Aktualisierung";
@@ -65,10 +67,10 @@ public class ProgrammUpdateSuchen {
                 if (showProgramInformation)
                     showProgramInformation(showAllInformation);
 
-                if (progInfo.getVersion() == -1)
+                if (progInfo.getVersion().toNumber() == 0)
                     JOptionPane.showMessageDialog(null, UPDATE_ERROR_MESSAGE, UPDATE_SEARCH_TITLE, JOptionPane.ERROR_MESSAGE);
                 else {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_BUILD_NR, Functions.getBuildNr());
+                    MVConfig.add(MVConfig.Configs.SYSTEM_BUILD_NR, Konstanten.MVVERSION.toString());
                     MVConfig.add(MVConfig.Configs.SYSTEM_UPDATE_DATUM, new SimpleDateFormat("yyyyMMdd").format(new Date()));
 
                     if (checkForNewerVersion(progInfo.getVersion())) {
@@ -135,19 +137,8 @@ public class ProgrammUpdateSuchen {
      * @param info the remote version number.
      * @return true if there is a newer version
      */
-    private boolean checkForNewerVersion(int info) {
-        boolean result = false;
-
-        try {
-            final int currentVersion = Integer.parseInt(Const.VERSION);
-            if (info > currentVersion) {
-                result = true;
-            }
-        } catch (NumberFormatException ex) {
-            Log.errorLog(683021193, ex);
-        }
-
-        return result;
+    private boolean checkForNewerVersion(Version info) {
+        return (Konstanten.MVVERSION.compare(info) == 1);
     }
 
     private InputStream connectToServer() throws IOException {
@@ -172,7 +163,7 @@ public class ProgrammUpdateSuchen {
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
         inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
 
-        try (InputStreamReader inReader = new InputStreamReader(connectToServer(), Const.KODIERUNG_UTF)) {
+        try (InputStreamReader inReader = new InputStreamReader(connectToServer(), StandardCharsets.UTF_8)) {
             parser = inFactory.createXMLStreamReader(inReader);
             progInfo = new ServerProgramInformation();
 
