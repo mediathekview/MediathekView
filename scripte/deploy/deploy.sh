@@ -10,10 +10,6 @@ PORT="22"
 ADRESSE="deploy@mediathekview.de"
 KEYFILE="scripte/deploy/deploy.key"
 
-# Deploy zum Nexus Repo
-echo "Deploy zum Nexus Repo repo.mediathekview.de"
-./gradlew release
-
 echo "Deploy zu Hauptserver";
 # Rechte am Key nur dem Benutzer geben, ansonsten meckert ssh
 chmod 600 $KEYFILE
