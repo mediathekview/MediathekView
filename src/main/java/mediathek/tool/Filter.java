@@ -20,6 +20,7 @@
 package mediathek.tool;
 
 import de.mediathekview.mlib.daten.DatenFilm;
+import de.mediathekview.mlib.tool.GermanStringSorter;
 import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
 
@@ -74,8 +75,9 @@ public class Filter {
         // themaSuchen exakt mit thema
         // titelSuchen muss im Titel nur enthalten sein
 
-        if (senderSuchen.isEmpty() || film.arr[DatenFilm.FILM_SENDER].equalsIgnoreCase(senderSuchen)) {
-            if (themaSuchen.isEmpty() || film.arr[DatenFilm.FILM_THEMA].equalsIgnoreCase(themaSuchen)) {
+        GermanStringSorter sorter = GermanStringSorter.getInstance();
+        if (senderSuchen.isEmpty() || sorter.compare(film.arr[DatenFilm.FILM_SENDER], senderSuchen) == 0) {
+            if (themaSuchen.isEmpty() || sorter.compare(film.arr[DatenFilm.FILM_THEMA], themaSuchen) == 0) {
 
                 if (titelSuchen.length == 0 || pruefen(titelSuchen, film.arr[DatenFilm.FILM_TITEL])) {
 
