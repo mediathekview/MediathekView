@@ -38,9 +38,6 @@ script:
         -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d;
       scripte/deploy/deploy.sh nightly;
     fi
-  - if [ "$TRAVIS_BRANCH" == "develop" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-      ./gradlew releaseSnapshot;
-    fi
 after_success:
   - sonar-scanner
 
@@ -58,7 +55,6 @@ cache:
 before_deploy:
   - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv
     -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
-  - ./gradlew release
 deploy:
   - provider: script
     script: scripte/deploy/deploy.sh
