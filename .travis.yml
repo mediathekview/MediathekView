@@ -7,6 +7,14 @@ install:
   - sudo apt-get update
   - sudo apt-get install lib32ncurses5 lib32z1 -y
 
+notifications:
+  webhooks:
+    urls:
+      - "https://scalar.vector.im/api/neb/services/hooks/dHJhdmlzLWNpLyU0MGFsZXglM0FtYXRyaXguZWxhb24uZGUvJTIxdWpSeXlUSGxQcXlRb2prcG1vJTNBbWF0cml4LmVsYW9uLmRl"
+    on_success: change  # always|never|change
+    on_failure: always
+    on_start: never
+
 #Sonar
 addons:
   ssh_known_hosts:
