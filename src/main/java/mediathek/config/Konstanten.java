@@ -20,6 +20,7 @@
 package mediathek.config;
 
 import de.mediathekview.mlib.tool.Functions;
+import de.mediathekview.mlib.tool.Version;
 
 public class Konstanten {
     
