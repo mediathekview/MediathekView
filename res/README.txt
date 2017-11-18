@@ -224,10 +224,10 @@ https://github.com/mediathekview/MediathekView/wiki
   alle Dateien aus dem ZIP-Archiv in ein beliebiges Verzeichnis zu kopieren. Dort 
   kann dann die Programmdatei "MediathekView.exe" doppelgeklickt werden.
 
-* Benötigte Dateien wurden aus dem Programm-Ordner gelöscht (Windows) Die 
-  benötigten Java-Bibliotheken (libs) oder die Hilfsprogramm (im Ordner "bin") 
+* Benötigte Dateien wurden aus dem Programm-Ordner gelöscht (Windows): Die 
+  benötigten Java-Bibliotheken (libs) oder die Hilfsprogramme (im Ordner "bin") 
   fehlen, da Dateien aus dem MediathekView-Programmordner gelöscht oder verschoben 
-  wurden, ->dann eine Neuinstallation.
+  wurden -> Neuinstallation.
 
 ============================================================
 

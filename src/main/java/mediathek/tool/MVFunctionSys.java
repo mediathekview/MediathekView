@@ -83,42 +83,4 @@ public class MVFunctionSys {
     public static String getProgName() {
         return Konstanten.PROGRAMMNAME + ' ' + Functions.getProgVersion().toString();
     }
-
-//    public static String[] getJavaVersion() {
-//        String[] ret = new String[4];
-//
-//        ret[0] = "Vendor: " + System.getProperty("java.vendor");
-//        ret[1] = "VMname: " + System.getProperty("java.vm.name");
-//        ret[2] = "Version: " + System.getProperty("java.version");
-//        ret[3] = "Runtimeversion: " + System.getProperty("java.runtime.version");
-//        return ret;
-//    }
-
-//    public static String getCompileDate() {
-//        final ResourceBundle rb;
-//        String propToken = "DATE";
-//        String msg = "";
-//        try {
-//            ResourceBundle.clearCache();
-//            rb = ResourceBundle.getBundle("version");
-//            msg = rb.getString(propToken);
-//        } catch (Exception e) {
-//            Log.errorLog(807293847, e);
-//        }
-//        return msg;
-//    }
-
-//    public static String getBuildNr() {
-//        final ResourceBundle rb;
-//        String propToken = "BUILD";
-//        String msg = "";
-//        try {
-//            ResourceBundle.clearCache();
-//            rb = ResourceBundle.getBundle("version");
-//            msg = rb.getString(propToken);
-//        } catch (Exception e) {
-//            Log.errorLog(134679898, e);
-//        }
-//        return msg;
-//    }
 }

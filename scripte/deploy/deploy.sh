@@ -16,7 +16,7 @@ KEYFILE="scripte/deploy/deploy.key"
 if [ "$1" != "nightly" ]; then
   # Deploy zum Nexus Repo
   echo "Deploy zum Nexus Repo repo.mediathekview.de"
-  ./gradlew release
+  # auf Wunsch von Alex auskommentiert: ./gradlew release
 
   # Status auf fertig setzen für release
   echo 1 > $STATUSDATEI
@@ -46,6 +46,7 @@ else
 fi
 
 echo "Deploy zum Hauptserver"
+
 # Rechte am Key nur dem Benutzer geben, ansonsten meckert ssh
 chmod 600 $KEYFILE
 
