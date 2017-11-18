@@ -21,15 +21,16 @@ package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
+import de.mediathekview.mlib.Config;
+import de.mediathekview.mlib.tool.Log;
+import de.mediathekview.mlib.tool.SingleInstance;
+import de.mediathekview.mlib.tool.SysMsg;
 import javafx.application.Platform;
-import mSearch.Config;
-import mSearch.tool.Log;
-import mSearch.tool.SingleInstance;
-import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.Messages;
 import mediathek.mac.MediathekGuiMac;
+import mediathek.windows.MediathekGuiWindows;
 
 import javax.swing.*;
 import java.awt.*;
@@ -173,8 +174,11 @@ public class Main {
                     }
                 }
             }
+
             if (SystemInfo.isMacOSX()) {
                 new MediathekGuiMac(args).setVisible(true);
+            } else if (SystemInfo.isWindows()) {
+                new MediathekGuiWindows(args).setVisible(true);
             } else {
                 if (SystemInfo.isUnix()) {
                     setupX11WindowManagerClassName();

@@ -19,21 +19,24 @@
  */
 package mediathek;
 
-import java.awt.SplashScreen;
-import java.io.File;
-import java.nio.file.Path;
-import java.util.concurrent.TimeUnit;
-import mSearch.filmeSuchen.ListenerFilmeLaden;
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.filmlisten.FilmlisteLesen;
-import mSearch.tool.Log;
-import static mSearch.tool.Log.LILNE;
-import mSearch.tool.SysMsg;
+import de.mediathekview.mlib.filmesuchen.ListenerFilmeLaden;
+import de.mediathekview.mlib.filmesuchen.ListenerFilmeLadenEvent;
+import de.mediathekview.mlib.filmlisten.FilmlisteLesen;
+import de.mediathekview.mlib.tool.Log;
+import de.mediathekview.mlib.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.IoXmlLesen;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.MVFilmSize;
+
+import java.awt.*;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
+
+import static de.mediathekview.mlib.tool.Log.LILNE;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 public class MediathekAuto {
@@ -79,19 +82,23 @@ public class MediathekAuto {
         daten.setAuto(true);
         startMeldungen();
 
-        if (!IoXmlLesen.einstellungenExistieren()) {
+        Path xmlFilePath = daten.getMediathekXmlFilePath();
+        if (!Files.exists(xmlFilePath)) {
             // Programm erst mit der GuiVersion einrichten
-            Log.errorLog(834986137, "Das Programm muss erst mit der Gui-Version eingerichtet werden!");
+            Log.errorLog(834986137, "Das Programm muss erst mit der GUI-Version eingerichtet werden!");
             System.exit(1);
         }
 
-        // Einstellungen laden
-        Path xmlFilePath = Daten.getMediathekXmlFilePath();
-        SysMsg.sysMsg("Einstellungen laden: " + xmlFilePath.toString());
-        if (!IoXmlLesen.datenLesen(xmlFilePath)) {
-            // dann hat das Laden nicht geklappt
-            Log.errorLog(834986137, "Einstellungen konnten nicht geladen werden: " + xmlFilePath.toString());
-            System.exit(1);
+        try (IoXmlLesen reader = new IoXmlLesen(daten)) {
+            // Einstellungen laden
+            SysMsg.sysMsg("Einstellungen laden: " + xmlFilePath.toString());
+            if (!reader.readConfiguration(xmlFilePath)) {
+                // dann hat das Laden nicht geklappt
+                Log.errorLog(834986137, "Einstellungen konnten nicht geladen werden: " + xmlFilePath.toString());
+                System.exit(1);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
         // Filmliste laden

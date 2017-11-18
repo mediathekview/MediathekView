@@ -20,7 +20,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.tool.Log;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.config.Icons;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;

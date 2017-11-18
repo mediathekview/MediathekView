@@ -20,7 +20,7 @@
 package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.tool.Listener;
+import de.mediathekview.mlib.tool.Listener;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;

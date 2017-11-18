@@ -19,14 +19,14 @@
  */
 package mediathek.config;
 
-import mSearch.tool.Version;
+import de.mediathekview.mlib.tool.Functions;
 
 public class Konstanten {
   
     public static final Version MVVERSION = new Version(13,0,4);
 
     public static final String PROGRAMMNAME = "MediathekView";
-    public static final String USER_AGENT_DEFAULT = Konstanten.PROGRAMMNAME;
+    public static final String USER_AGENT_DEFAULT = Konstanten.PROGRAMMNAME + ' ' + Functions.getProgVersion().toString();
     public static final String CONFIG_FILE = "mediathek.xml";
     public static final String CONFIG_FILE_COPY = "mediathek.xml_copy_";
     public static final String FILE_ERLEDIGTE_ABOS = "downloadAbos.txt";
@@ -37,9 +37,9 @@ public class Konstanten {
 //    public static final String ADRESSE_FILMLISTEN_SERVER = "http://zdfmediathk.sourceforge.net/update.xml";
     public static final String ADRESSE_PROGRAMM_VERSION = "https://res.mediathekview.de/prog-info-13.xml";
     public static final String ADRESSE_DOWNLAD = "https://mediathekview.de/download/";
-    public static final String ADRESSE_ANLEITUNG = "https://github.com/mediathekview/MediathekView/wiki";
-    public static final String ADRESSE_ONLINE_HELP = "https://github.com/mediathekview/MediathekView/wiki";
-    public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "https://res.mediathekview.de/programmgruppen11/programmgruppen.xml";
+    public static final String ADRESSE_ANLEITUNG = "https://mediathekview.de/anleitung/";
+    public static final String ADRESSE_ONLINE_HELP = "https://mediathekview.de/anleitung/";
+    public static final String ADRESSE_VORLAGE_PROGRAMMGRUPPEN = "https://res.mediathekview.de/programmgruppen13/programmgruppen.xml";
     public static final String ADRESSE_WEBSITE = "https://mediathekview.de/";
     public static final String ADRESSE_FORUM = "https://forum.mediathekview.de/";
     public static final String ADRESSE_DONATION = "https://mediathekview.de/spenden/";
@@ -69,5 +69,4 @@ public class Konstanten {
 
     public static final int UPDATE_FILME_AUS = 0; // nur manuell + URL manuell wählen
     public static final int UPDATE_FILME_AUTO = 2; // beim Start automatisch + manuell, Url automatisch wählen
-
 }

@@ -19,13 +19,14 @@
  */
 package mediathek.controller.starter;
 
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
+import de.mediathekview.mlib.tool.Listener;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.config.Daten;
-import mediathek.controller.starter.DirectHttpDownload.HttpDownloadState;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
 import mediathek.gui.dialog.MeldungDownloadfehler;
+import mediathek.gui.messages.DownloadFinishedEvent;
+import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.tool.MVInfoFile;
 import mediathek.tool.MVSubtitle;
 
@@ -43,9 +44,9 @@ import static mediathek.controller.starter.StarterClass.*;
 public class ExternalProgramDownload extends Thread
 {
 
-    private Daten daten;
-    private DatenDownload datenDownload;
-    private Start start;
+    private final Daten daten;
+    private final DatenDownload datenDownload;
+    private final Start start;
     private File file;
     private String exMessage = "";
     private boolean retAbbrechen;
@@ -55,7 +56,7 @@ public class ExternalProgramDownload extends Thread
     public ExternalProgramDownload(Daten daten, DatenDownload d)
     {
         super();
-        setName("PROGRAMM DL THREAD: " + d.arr[DatenDownload.DOWNLOAD_TITEL]);
+        setName("EXTERNAL PROGRAM DL THREAD: " + d.arr[DatenDownload.DOWNLOAD_TITEL]);
 
         this.daten = daten;
         datenDownload = d;
@@ -71,7 +72,7 @@ public class ExternalProgramDownload extends Thread
             }
             if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE]))
             {
-                MVSubtitle.writeSubtitle(datenDownload);
+                new MVSubtitle().writeSubtitle(datenDownload);
             }
 
             Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]));
@@ -96,6 +97,8 @@ public class ExternalProgramDownload extends Thread
         final int stat_fertig_fehler = 11;
         final int stat_ende = 99;
         int stat = stat_start;
+
+        daten.getMessageBus().publishAsync(new DownloadStartEvent());
         try
         {
             if (!cancelDownload())
@@ -231,6 +234,7 @@ public class ExternalProgramDownload extends Thread
             });
         }
         finalizeDownload(datenDownload, start, state);
+        daten.getMessageBus().publish(new DownloadFinishedEvent());
     }
 
     private boolean starten()
@@ -313,7 +317,7 @@ public class ExternalProgramDownload extends Thread
             {
                 case CANCELLED:
                     // dann wars das
-                    state = DirectHttpDownload.HttpDownloadState.CANCEL;
+                    state = HttpDownloadState.CANCEL;
                     result = true;
                     break;
 

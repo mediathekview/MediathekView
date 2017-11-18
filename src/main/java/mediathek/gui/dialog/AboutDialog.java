@@ -49,7 +49,7 @@ import org.jdesktop.swingx.JXHyperlink;
 
 import com.jidesoft.swing.MarqueePane;
 import com.jidesoft.utils.SystemInfo;
-
+import de.mediathekview.mlib.tool.Functions;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.gui.actions.DisposeDialogAction;
@@ -70,7 +70,7 @@ public class AboutDialog extends JDialog {
 
     private void setupVersionString() {
         String strVersion = "Version ";
-        strVersion += Konstanten.MVVERSION;
+        strVersion += Functions.getProgVersion().toString();
 
         lblVersion.setText(strVersion);
     }
@@ -84,7 +84,7 @@ public class AboutDialog extends JDialog {
         String content;
 
         final StringBuilder contentBuilder = new StringBuilder();
-        URL url = this.getClass().getResource("/mediathek/res/programm/about/credits.html");
+        URL url = this.getClass().getResource("/mediathek/file/about/credits.html");
         try (InputStreamReader isr = new InputStreamReader(url.openStream());
              BufferedReader in = new BufferedReader(isr))
         {
@@ -129,7 +129,7 @@ public class AboutDialog extends JDialog {
             setupVersionString();
             setupJavaInformation();
             // Programmpfade
-            final Path xmlFilePath = Daten.getMediathekXmlFilePath();
+            final Path xmlFilePath = Daten.getInstance().getMediathekXmlFilePath();
             lblSettingsFilePath.setText(xmlFilePath.toAbsolutePath().toString());
             lblFilmlistPath.setText(Daten.getDateiFilmliste());
 

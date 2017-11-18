@@ -19,8 +19,8 @@
  */
 package mediathek.gui;
 
-import mSearch.tool.Listener;
-import mSearch.tool.SysMsg;
+import de.mediathekview.mlib.tool.Listener;
+import de.mediathekview.mlib.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;

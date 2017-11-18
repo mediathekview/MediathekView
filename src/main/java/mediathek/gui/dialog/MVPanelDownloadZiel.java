@@ -20,12 +20,13 @@
 package mediathek.gui.dialog;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.tool.FilenameUtils;
-import mSearch.tool.Log;
+import de.mediathekview.mlib.tool.FilenameUtils;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.FormatterUtil;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 
@@ -37,7 +38,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -189,7 +189,7 @@ public class MVPanelDownloadZiel extends JPanel {
             pfad = GuiFunktionen.getStandardDownloadPath();
         }
         if (name.isEmpty()) {
-            name = new SimpleDateFormat("yyyyMMdd").format(new Date()) + '_' + datenDownload.arr[DatenDownload.DOWNLOAD_THEMA] + '-' + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
+            name = FormatterUtil.FORMATTER_yyyyMMdd.format(new Date()) + '_' + datenDownload.arr[DatenDownload.DOWNLOAD_THEMA] + '-' + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
         }
         String[] pathName = {pfad, name};
         GuiFunktionen.checkLengthPath(pathName);

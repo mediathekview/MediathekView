@@ -26,6 +26,8 @@ import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.file.GetFile;
 import mediathek.tool.EscBeenden;
+import mediathek.tool.FormatterUtil;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.jdesktop.swingx.JXBusyLabel;
 
 import javax.swing.*;
@@ -117,9 +119,9 @@ public class DialogBeendenZeit extends JDialog {
 
         if (!MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT).isEmpty()) {
             try {
-                String heute = new SimpleDateFormat("yyyyMMdd").format(new Date());
+                String heute = FormatterUtil.FORMATTER_yyyyMMdd.format(new Date());
                 heute = heute + MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT);
-                Date start = new SimpleDateFormat("yyyyMMddHH:mm").parse(heute);
+                Date start = FastDateFormat.getInstance("yyyyMMddHH:mm").parse(heute);
 
                 if (start.after(startDate)) {
                     // nur wenn start nach "jetzt" kommt

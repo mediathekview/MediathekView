@@ -19,9 +19,9 @@
  */
 package mediathek.controller.starter;
 
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
+import de.mediathekview.mlib.tool.Listener;
+import de.mediathekview.mlib.tool.Log;
+import de.mediathekview.mlib.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.MVBandwidthTokenBucket;
@@ -29,6 +29,8 @@ import mediathek.controller.MVInputStream;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
 import mediathek.gui.dialog.MeldungDownloadfehler;
+import mediathek.gui.messages.DownloadFinishedEvent;
+import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.tool.MVInfoFile;
 import mediathek.tool.MVSubtitle;
 
@@ -62,11 +64,6 @@ public class DirectHttpDownload extends Thread {
     private boolean retAbbrechen;
     private boolean dialogAbbrechenIsVis;
 
-    enum HttpDownloadState {
-
-        CANCEL, ERROR, DOWNLOAD
-    }
-
     public DirectHttpDownload(Daten daten, DatenDownload d, java.util.Timer bandwidthCalculationTimer) {
         super();
         this.daten = daten;
@@ -79,13 +76,17 @@ public class DirectHttpDownload extends Thread {
     }
 
     /**
+     * HTTP Timeout in milliseconds.
+     */
+    private static final int TIMEOUT_LENGTH = 5000;
+
+    /**
      * Return the content length of the requested Url.
      *
      * @param url {@link java.net.URL} to the specified content.
      * @return Length in bytes or -1 on error.
      */
     private long getContentLength(final URL url) {
-        final int TIMEOUT_LENGTH = 5000; //ms, beim Start eines Downloads
         long ret = -1;
         HttpURLConnection connection = null;
         try {
@@ -133,7 +134,7 @@ public class DirectHttpDownload extends Thread {
             MVInfoFile.writeInfoFile(datenDownload);
         }
         if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE])) {
-            MVSubtitle.writeSubtitle(datenDownload);
+            new MVSubtitle().writeSubtitle(datenDownload);
         }
         datenDownload.interruptRestart();
 
@@ -175,8 +176,8 @@ public class DirectHttpDownload extends Thread {
                     // Restzeit ermitteln
                     if (p > 2 && p > startProzent) {
                         // sonst macht es noch keinen Sinn
-                        int diffZeit = start.startZeit.diffInSekunden();
-                        int restProzent = 1000 - (int) p;
+                        final int diffZeit = start.startZeit.diffInSekunden();
+                        final int restProzent = 1000 - (int) p;
                         start.restSekunden = (diffZeit * restProzent / (p - startProzent));
                         // anfangen zum Schauen kann man, wenn die Restzeit kürzer ist
                         // als die bereits geladene Speilzeit des Films
@@ -213,6 +214,8 @@ public class DirectHttpDownload extends Thread {
     @Override
     public synchronized void run() {
         startmeldung(datenDownload, start);
+        daten.getMessageBus().publishAsync(new DownloadStartEvent());
+
         try {
             Files.createDirectories(Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]));
         } catch (IOException ignored) {
@@ -318,6 +321,7 @@ public class DirectHttpDownload extends Thread {
         }
 
         StarterClass.finalizeDownload(datenDownload, start, state);
+        daten.getMessageBus().publishAsync(new DownloadFinishedEvent());
     }
 
     private boolean cancelDownload() {

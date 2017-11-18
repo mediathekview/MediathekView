@@ -19,7 +19,7 @@
  */
 package mediathek.daten;
 
-import mSearch.tool.GermanStringSorter;
+import de.mediathekview.mlib.tool.GermanStringSorter;
 
 public class MVData<E> implements Comparable<E> {
 

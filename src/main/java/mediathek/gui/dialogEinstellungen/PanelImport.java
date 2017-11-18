@@ -20,13 +20,14 @@
 package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.tool.Log;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.controller.IoXmlLesen;
 import mediathek.gui.PanelVorlage;
-import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TextCopyPaste;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -36,6 +37,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.nio.file.Path;
+import java.util.logging.Level;
 
 @SuppressWarnings("serial")
 public class PanelImport extends PanelVorlage {
@@ -50,25 +52,37 @@ public class PanelImport extends PanelVorlage {
         jButtonImportDatei.setEnabled(false);
         jButtonPfad.addActionListener(new BeobPfad());
         jTextFieldDatei.getDocument().addDocumentListener(new BeobPfadDoc());
-        jButtonImportDatei.addActionListener(e -> importDatei(jTextFieldDatei.getText()));
+        jButtonImportDatei.addActionListener(e -> importConfigFile(jTextFieldDatei.getText()));
         jCheckBoxAbo.addActionListener(e -> setButtonImport());
         jCheckBoxBlack.addActionListener(e -> setButtonImport());
         jCheckBoxErsetzungstabelle.addActionListener(e -> setButtonImport());
-        final Path xmlFilePath = Daten.getMediathekXmlFilePath();
+        final Path xmlFilePath = daten.getMediathekXmlFilePath();
         jTextFieldPfadKonfig.setText(xmlFilePath.toAbsolutePath().toString());
         jTextFieldDatei.addMouseListener(new TextCopyPaste());
     }
 
-    private void importDatei(String datei) {
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        int[] found = IoXmlLesen.importAboBlacklist(datei, jCheckBoxAbo.isSelected(), jCheckBoxBlack.isSelected(), jCheckBoxErsetzungstabelle.isSelected());
-        String text = "Es wurden\n"
-                + found[0] + " Abos und\n"
-                + found[1] + " Blacklisteinträge\n"
-                + found[2] + " Ersetzungen\n"
-                + "hinzugefügt";
-        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        MVMessageDialog.showMessageDialog(parentComponent, text, "Import", JOptionPane.INFORMATION_MESSAGE);
+    private void importConfigFile(String datei) {
+        try (IoXmlLesen reader = new IoXmlLesen(daten)) {
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            IoXmlLesen.ImportStatistics stats = reader.importConfiguration(datei, jCheckBoxAbo.isSelected(), jCheckBoxBlack.isSelected(), jCheckBoxErsetzungstabelle.isSelected());
+            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            String text = "<html>Es wurden folgende Daten importiert:<br>" +
+                    stats.foundAbos + " Abos<br>" +
+                    stats.foundBlacklist + " Blacklisteinträge<br>" +
+                    stats.foundReplacements + " Ersetzungen<br>";
+            JOptionPane.showMessageDialog(this, text, "Import", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception ex) {
+            final ErrorInfo info = new ErrorInfo("Import",
+                    "<html>Es trat ein Fehler beim Importieren auf.<br>" +
+                            "Sollte dieser häufiger auftreten kontaktieren Sie bitte " +
+                            "das Entwicklerteam.</html>",
+                    null,
+                    null,
+                    ex,
+                    Level.SEVERE,
+                    null);
+            JXErrorPane.showDialog(this, info);
+        }
     }
 
     private void setButtonImport() {
@@ -254,7 +268,7 @@ public class PanelImport extends PanelVorlage {
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 chooser.setFileHidingEnabled(false);
                 if (jTextFieldDatei.getText().isEmpty()) {
-                    chooser.setCurrentDirectory(Daten.getMediathekXmlFilePath().toFile());
+                    chooser.setCurrentDirectory(daten.getMediathekXmlFilePath().toFile());
                 } else {
                     chooser.setCurrentDirectory(new File(jTextFieldDatei.getText()));
                 }

@@ -19,7 +19,7 @@
  */
 package mediathek.gui.dialog;
 
-import mSearch.tool.FilenameUtils;
+import de.mediathekview.mlib.tool.FilenameUtils;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;

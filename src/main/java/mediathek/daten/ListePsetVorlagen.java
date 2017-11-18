@@ -19,8 +19,12 @@
  */
 package mediathek.daten;
 
-import static mSearch.tool.Functions.getOs;
-import static mSearch.tool.Functions.getOsString;
+import de.mediathekview.mlib.tool.Log;
+import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import mediathek.file.GetFile;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.TModel;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -31,17 +35,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
-import javax.swing.JFrame;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamReader;
-
-import mSearch.tool.Log;
-import mediathek.config.Daten;
-import mediathek.config.Konstanten;
-import mediathek.file.GetFile;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.TModel;
+import static de.mediathekview.mlib.tool.Functions.getOs;
+import static de.mediathekview.mlib.tool.Functions.getOsString;
 
 @SuppressWarnings("serial")
 public class ListePsetVorlagen extends LinkedList<String[]> {

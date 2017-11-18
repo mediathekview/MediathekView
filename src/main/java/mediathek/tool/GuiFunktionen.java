@@ -20,8 +20,8 @@
 package mediathek.tool;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.tool.Functions.OperatingSystemType;
-import mSearch.tool.Log;
+import de.mediathekview.mlib.tool.Functions.OperatingSystemType;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -33,7 +33,7 @@ import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.lang.reflect.Field;
 
-import static mSearch.tool.Functions.getOs;
+import static de.mediathekview.mlib.tool.Functions.getOs;
 
 public class GuiFunktionen extends MVFunctionSys {
 

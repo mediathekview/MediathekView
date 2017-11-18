@@ -19,7 +19,7 @@
  */
 package mediathek.gui;
 
-import mSearch.tool.SysMsg;
+import de.mediathekview.mlib.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialogEinstellungen.PanelMeldungen;
@@ -58,7 +58,7 @@ public class GuiMeldungen extends PanelVorlage {
     public void isShown() {
         super.isShown();
         if (!solo) {
-//            daten.getMediathekGui().setTabShown(MediathekGui.TABS.TAB_NIX);
+//            daten.getMediathekGui().setTabShown(MediathekGui.TABS.NIX);
             daten.getMediathekGui().getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.NONE);
 
         }

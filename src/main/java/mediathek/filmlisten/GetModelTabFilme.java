@@ -19,8 +19,8 @@
  */
 package mediathek.filmlisten;
 
-import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
+import de.mediathekview.mlib.daten.DatenFilm;
+import de.mediathekview.mlib.daten.ListeFilme;
 import mediathek.config.Daten;
 import mediathek.tool.Filter;
 import mediathek.tool.MVTable;

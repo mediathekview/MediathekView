@@ -21,24 +21,24 @@ package mediathek.controller.starter;
 
 import com.apple.eawt.Application;
 import com.jidesoft.utils.SystemInfo;
-import mSearch.daten.DatenFilm;
-import mSearch.tool.Datum;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
+import de.mediathekview.mlib.daten.DatenFilm;
+import de.mediathekview.mlib.tool.Datum;
+import de.mediathekview.mlib.tool.Listener;
+import de.mediathekview.mlib.tool.Log;
+import de.mediathekview.mlib.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.mac.SpotlightCommentWriter;
+import mediathek.tool.FormatterUtil;
 import mediathek.tool.MVFilmSize;
 import mediathek.tool.MVNotification;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class StarterClass {
@@ -146,7 +146,7 @@ public class StarterClass {
             text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
         text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
-        text.add("Startzeit: " + new SimpleDateFormat("HH:mm:ss").format(start.startZeit));
+        text.add("Startzeit: " + FormatterUtil.FORMATTER_HHmmss.format(start.startZeit));
         if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
             text.add(DatenDownload.ART_DOWNLOAD_TXT);
         } else {
@@ -191,8 +191,8 @@ public class StarterClass {
             text.add("Programmset: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMMSET]);
             text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
-        text.add("Startzeit: " + new SimpleDateFormat("HH:mm:ss").format(start.startZeit));
-        text.add("Endzeit: " + new SimpleDateFormat("HH:mm:ss").format(new Datum().getTime()));
+        text.add("Startzeit: " + FormatterUtil.FORMATTER_HHmmss.format(start.startZeit));
+        text.add("Endzeit: " + FormatterUtil.FORMATTER_HHmmss.format(new Datum().getTime()));
         text.add("Restarts: " + start.countRestarted);
         text.add("Dauer: " + start.startZeit.diffInSekunden() + " s");
         long dauer = start.startZeit.diffInMinuten();
@@ -222,11 +222,11 @@ public class StarterClass {
         }
     }
 
-    static void finalizeDownload(DatenDownload datenDownload, Start start /* wegen "datenDownload.start=null" beim stoppen */, DirectHttpDownload.HttpDownloadState state) {
+    static void finalizeDownload(DatenDownload datenDownload, Start start /* wegen "datenDownload.start=null" beim stoppen */, HttpDownloadState state) {
         deleteIfEmpty(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]));
         setFileSize(datenDownload);
 
-        if (SystemInfo.isMacOSX() && state != DirectHttpDownload.HttpDownloadState.CANCEL) {
+        if (SystemInfo.isMacOSX() && state != HttpDownloadState.CANCEL) {
             //we don´t write comments if download was cancelled...
             if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT])) {
                 final SpotlightCommentWriter writer = new SpotlightCommentWriter();
@@ -234,7 +234,7 @@ public class StarterClass {
             }
         }
 
-        fertigmeldung(datenDownload, start, state == DirectHttpDownload.HttpDownloadState.CANCEL);
+        fertigmeldung(datenDownload, start, state == HttpDownloadState.CANCEL);
         switch (state) {
             case CANCEL:
                 datenDownload.resetDownload();

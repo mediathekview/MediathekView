@@ -19,16 +19,16 @@
  */
 package mediathek.controller;
 
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.filmlisten.FilmlisteLesen;
-import mSearch.tool.Duration;
-import mSearch.tool.SysMsg;
+import de.mediathekview.mlib.filmesuchen.ListenerFilmeLadenEvent;
+import de.mediathekview.mlib.filmlisten.FilmlisteLesen;
+import de.mediathekview.mlib.tool.Duration;
+import de.mediathekview.mlib.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
+import mediathek.tool.FormatterUtil;
 import mediathek.tool.GuiFunktionen;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ProgStart {
@@ -50,7 +50,7 @@ public class ProgStart {
             Daten daten = Daten.getInstance();
 
             new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
-            SysMsg.sysMsg("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+            SysMsg.sysMsg("Liste Filme gelesen am: " + FormatterUtil.FORMATTER_ddMMyyyyHHmm.format(new Date()));
             SysMsg.sysMsg("  erstellt am: " + daten.getListeFilme().genDate());
             SysMsg.sysMsg("  Anzahl Filme: " + daten.getListeFilme().size());
             SysMsg.sysMsg("  Anzahl Neue: " + daten.getListeFilme().countNewFilms());

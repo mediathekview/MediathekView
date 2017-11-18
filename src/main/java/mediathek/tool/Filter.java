@@ -19,7 +19,8 @@
  */
 package mediathek.tool;
 
-import mSearch.daten.DatenFilm;
+import de.mediathekview.mlib.daten.DatenFilm;
+import de.mediathekview.mlib.tool.GermanStringSorter;
 import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
 
@@ -74,8 +75,9 @@ public class Filter {
         // themaSuchen exakt mit thema
         // titelSuchen muss im Titel nur enthalten sein
 
-        if (senderSuchen.isEmpty() || film.arr[DatenFilm.FILM_SENDER].equalsIgnoreCase(senderSuchen)) {
-            if (themaSuchen.isEmpty() || film.arr[DatenFilm.FILM_THEMA].equalsIgnoreCase(themaSuchen)) {
+        GermanStringSorter sorter = GermanStringSorter.getInstance();
+        if (senderSuchen.isEmpty() || sorter.compare(film.arr[DatenFilm.FILM_SENDER], senderSuchen) == 0) {
+            if (themaSuchen.isEmpty() || sorter.compare(film.arr[DatenFilm.FILM_THEMA], themaSuchen) == 0) {
 
                 if (titelSuchen.length == 0 || pruefen(titelSuchen, film.arr[DatenFilm.FILM_TITEL])) {
 
@@ -105,12 +107,23 @@ public class Filter {
         return false;
     }
 
+    private static boolean checkLengthMin(int filterLaengeInMinuten, long filmLaenge) {
+        return filterLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge > (filterLaengeInMinuten * 60);
+    }
+
+    private static boolean checkLengthMax(int filterLaengeInMinuten, long filmLaenge) {
+        return filterLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge < (filterLaengeInMinuten * 60);
+    }
+
     public static boolean laengePruefen(int filterLaengeInMinuten, long filmLaenge, boolean min) {
+        boolean res;
         if (min) {
-            return filterLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge > (filterLaengeInMinuten * 60);
+            res = checkLengthMin(filterLaengeInMinuten, filmLaenge);
         } else {
-            return filterLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge < (filterLaengeInMinuten * 60);
+            res = checkLengthMax(filterLaengeInMinuten, filmLaenge);
         }
+
+        return res;
     }
 
     private static boolean pruefen(String[] filter, String im) {

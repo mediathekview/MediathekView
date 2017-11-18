@@ -1,6 +1,6 @@
 package mediathek.update;
 
-import mSearch.tool.Version;
+import de.mediathekview.mlib.tool.Version;
 
 /**
  * Encapsulates the retrieved update information.
@@ -15,7 +15,7 @@ class ServerProgramInformation {
     }
 
     public void setVersion(String version) {
-        this.version = new Version(version);
+    	this.version = new Version(version);
     }
 
     public String getReleaseNotes() {

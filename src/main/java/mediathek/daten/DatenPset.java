@@ -20,8 +20,8 @@
 package mediathek.daten;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.daten.DatenFilm;
-import mSearch.tool.Log;
+import de.mediathekview.mlib.daten.DatenFilm;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.config.Daten;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.MVMessageDialog;

@@ -19,20 +19,20 @@
  */
 package mediathek.daten;
 
-import mSearch.daten.DatenFilm;
-import mSearch.tool.Listener;
-import mSearch.tool.SysMsg;
+import de.mediathekview.mlib.daten.DatenFilm;
+import de.mediathekview.mlib.tool.Listener;
+import de.mediathekview.mlib.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.gui.dialog.DialogAboNoSet;
+import mediathek.tool.FormatterUtil;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelDownload;
 
 import javax.swing.*;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -420,7 +420,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 //                }
 
                 //diesen Film in die Downloadliste eintragen
-                abo.arr[DatenAbo.ABO_DOWN_DATUM] = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+                abo.arr[DatenAbo.ABO_DOWN_DATUM] = FormatterUtil.FORMATTER_ddMMyyyy.format(new Date());
                 if (!abo.arr[DatenAbo.ABO_PSET].equals(pSet.arr[DatenPset.PROGRAMMSET_NAME])) {
                     // nur den Namen anpassen, falls geändert
                     abo.arr[DatenAbo.ABO_PSET] = pSet.arr[DatenPset.PROGRAMMSET_NAME];
@@ -538,20 +538,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 .filter(download -> quelle == DatenDownload.QUELLE_ALLE || download.quelle == quelle)
                 .collect(Collectors.toList()));
         return aktivDownloads;
-    }
-
-    /**
-     * Return a List of all not yet finished downloads.
-     *
-     * @param quelle Use QUELLE_XXX constants from {@link mediathek.controller.starter.Start}.
-     * @param liste
-     */
-    public synchronized void getListOfStartsNotFinished(int quelle, LinkedList<DatenDownload> liste) {
-        liste.clear();
-        liste.addAll(this.stream().filter(download -> download.start != null)
-                .filter(download -> download.start.status < Start.STATUS_FERTIG)
-                .filter(download -> quelle == DatenDownload.QUELLE_ALLE || download.quelle == quelle)
-                .collect(Collectors.toList()));
     }
 
     public synchronized TModel getModelStarts(TModel model) {

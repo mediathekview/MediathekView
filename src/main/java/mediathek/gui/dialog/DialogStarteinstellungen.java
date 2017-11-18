@@ -33,7 +33,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static mSearch.tool.Functions.getOs;
+import static de.mediathekview.mlib.tool.Functions.getOs;
 
 @SuppressWarnings("serial")
 public class DialogStarteinstellungen extends JDialog {

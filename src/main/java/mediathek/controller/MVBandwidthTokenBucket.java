@@ -1,7 +1,7 @@
 package mediathek.controller;
 
 import java.util.concurrent.Semaphore;
-import mSearch.tool.Listener;
+import de.mediathekview.mlib.tool.Listener;
 import mediathek.config.MVConfig;
 
 /**

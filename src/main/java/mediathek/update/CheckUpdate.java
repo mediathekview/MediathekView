@@ -19,17 +19,10 @@
  */
 package mediathek.update;
 
-import static java.lang.Thread.sleep;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
+import de.mediathekview.mlib.tool.Functions;
+import de.mediathekview.mlib.tool.Listener;
+import de.mediathekview.mlib.tool.Log;
+import de.mediathekview.mlib.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -37,7 +30,13 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.dialog.DialogNewSet;
+import mediathek.tool.FormatterUtil;
 import mediathek.tool.GuiFunktionenProgramme;
+
+import javax.swing.*;
+import java.util.Date;
+
+import static java.lang.Thread.sleep;
 
 public class CheckUpdate {
 
@@ -61,8 +60,8 @@ public class CheckUpdate {
                 return;
             }
 
-            if (MVConfig.get(MVConfig.Configs.SYSTEM_BUILD_NR).equals(Konstanten.MVVERSION.toString())
-                    && MVConfig.get(MVConfig.Configs.SYSTEM_UPDATE_DATUM).equals(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
+            if (MVConfig.get(MVConfig.Configs.SYSTEM_BUILD_NR).equals(Functions.getProgVersion().toString())
+                    && MVConfig.get(MVConfig.Configs.SYSTEM_UPDATE_DATUM).equals(FormatterUtil.FORMATTER_yyyyMMdd.format(new Date()))) {
                 // keine neue Version und heute schon gemacht
                 return;
             }
@@ -154,7 +153,7 @@ public class CheckUpdate {
                             psNew.arr[DatenPset.PROGRAMMSET_IST_SPEICHERN] = Boolean.FALSE.toString();
                         }
                         // damit man sie auch findet :)
-                        String date = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+                        String date = FormatterUtil.FORMATTER_ddMMyyyy.format(new Date());
                         listePsetStandard.forEach((psNew) -> psNew.arr[DatenPset.PROGRAMMSET_NAME] = psNew.arr[DatenPset.PROGRAMMSET_NAME] + ", neu: " + date);
                     }
                     GuiFunktionenProgramme.addSetVorlagen(daten.getMediathekGui(), daten, listePsetStandard, true /*auto*/, true /*setVersion*/); // damit auch AddOns geladen werden

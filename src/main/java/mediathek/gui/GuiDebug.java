@@ -34,17 +34,27 @@ import javax.swing.JPanel;
 
 import com.jidesoft.utils.SystemInfo;
 
-import mSearch.Const;
-import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
-import mSearch.filmlisten.FilmlisteLesen;
-import mSearch.tool.Duration;
-import mSearch.tool.Functions;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
+import de.mediathekview.mlib.Const;
+import de.mediathekview.mlib.daten.DatenFilm;
+import de.mediathekview.mlib.daten.ListeFilme;
+import de.mediathekview.mlib.filmlisten.FilmlisteLesen;
+import de.mediathekview.mlib.filmlisten.WriteFilmlistJson;
+import de.mediathekview.mlib.tool.Duration;
+import de.mediathekview.mlib.tool.Functions;
+import de.mediathekview.mlib.tool.Listener;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisten;
+import mediathek.tool.FormatterUtil;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.HashSet;
+import java.util.Iterator;
 
 @SuppressWarnings("serial")
 public class GuiDebug extends JPanel {
@@ -86,7 +96,7 @@ public class GuiDebug extends JPanel {
         jButtonAllesSpeichern.addActionListener(e
                 -> {
             daten.allesSpeichern();
-            daten.filmlisteSpeichern();
+            new WriteFilmlistJson().filmlisteSchreibenJson(Daten.getDateiFilmliste(), daten.getListeFilme());
         });
         jButtonFilmlisteLoeschen.addActionListener(e
                 -> {
@@ -138,7 +148,8 @@ public class GuiDebug extends JPanel {
             }
 
             System.out.println("danach: " + daten.getListeFilme().size());
-            daten.filmlisteSpeichern();
+            new WriteFilmlistJson().filmlisteSchreibenJson(Daten.getDateiFilmliste(), daten.getListeFilme());
+
             Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
             hash.clear();
         });
@@ -146,7 +157,7 @@ public class GuiDebug extends JPanel {
         addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentShown(java.awt.event.ComponentEvent evt) {
-                //                daten.getMediathekGui().setTabShown(MediathekGui.TABS.TAB_NIX);
+                //                daten.getMediathekGui().setTabShown(MediathekGui.TABS.NIX);
                 daten.getMediathekGui().getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.NONE);
             }
         });
@@ -168,7 +179,7 @@ public class GuiDebug extends JPanel {
             // ==========================================
             daten.setListeFilme(listeFilme);
             System.out.println("danach: " + daten.getListeFilme().size());
-            daten.filmlisteSpeichern();
+            new WriteFilmlistJson().filmlisteSchreibenJson(Daten.getDateiFilmliste(), daten.getListeFilme());
         });
         btnNurDoppelte.addActionListener(e
                 -> {
@@ -311,7 +322,7 @@ public class GuiDebug extends JPanel {
         System.out.println("vorher: " + daten.getListeFilme().size());
         daten.setListeFilme(listeFilme);
         System.out.println("danach: " + daten.getListeFilme().size());
-        daten.filmlisteSpeichern();
+        new WriteFilmlistJson().filmlisteSchreibenJson(Daten.getDateiFilmliste(), daten.getListeFilme());
     }
 
     private void addSender() {
@@ -330,15 +341,14 @@ public class GuiDebug extends JPanel {
     // clean list
     public void cleanList() {
         int count = 0;
-        final String DATUM_ZEIT_FORMAT = "dd.MM.yyyy, HH:mm";
-        final SimpleDateFormat sdfClean = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
-        Log.sysLog("cleanList start: " + sdfClean.format(System.currentTimeMillis()));
+        Log.sysLog("cleanList start: " + FormatterUtil.FORMATTER_ddMMyyyyHHmm.format(System.currentTimeMillis()));
 
         daten.getListeFilme().forEach(Functions::unescape);
-        daten.filmlisteSpeichern();
+        new WriteFilmlistJson().filmlisteSchreibenJson(Daten.getDateiFilmliste(), daten.getListeFilme());
+
         Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDebug.class.getSimpleName());
 
-        Log.sysLog("cleanList stop: " + sdfClean.format(System.currentTimeMillis()));
+        Log.sysLog("cleanList stop: " + FormatterUtil.FORMATTER_ddMMyyyyHHmm.format(System.currentTimeMillis()));
         Log.sysLog("cleanList count: " + count);
     }
 

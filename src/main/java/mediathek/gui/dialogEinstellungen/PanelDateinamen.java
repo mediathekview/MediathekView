@@ -19,8 +19,8 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import mSearch.tool.Listener;
-import mSearch.tool.ReplaceList;
+import de.mediathekview.mlib.tool.Listener;
+import de.mediathekview.mlib.tool.ReplaceList;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;

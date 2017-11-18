@@ -19,20 +19,20 @@
  */
 package mediathek.tool;
 
-import static mSearch.tool.Log.LILNE;
-
-import java.io.File;
-import java.security.CodeSource;
-
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
+import de.mediathekview.mlib.tool.Functions;
+import de.mediathekview.mlib.tool.Log;
+import de.mediathekview.mlib.tool.SysMsg;
 import mediathek.Main;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 
-public class MVFunctionSys {
+import java.io.File;
+import java.security.CodeSource;
 
-    public static synchronized void startMeldungen() {
+import static de.mediathekview.mlib.tool.Log.LILNE;
+
+public class MVFunctionSys {
+    public static void startMeldungen() {
         Log.versionMsg(MVFunctionSys.getProgName());
         SysMsg.sysMsg("Programmpfad: " + MVFunctionSys.getPathJar());
         SysMsg.sysMsg("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
@@ -41,6 +41,7 @@ public class MVFunctionSys {
         SysMsg.sysMsg("");
         SysMsg.sysMsg("");
     }
+
 
     /**
      * Retrieve the path to the program jar file.
@@ -74,12 +75,12 @@ public class MVFunctionSys {
     public static String pathSenderIcons() {
         return getPathJar() + Konstanten.VERZEICHNIS_SENDER_ICONS;
     }
-
+    @Deprecated
     public static String getProgVersionString() {
-        return Konstanten.PROGRAMMNAME + ' ' + Konstanten.MVVERSION;
+        return Konstanten.PROGRAMMNAME + ' ' + Functions.getProgVersion().toString();
     }
 
     public static String getProgName() {
-        return Konstanten.PROGRAMMNAME + ' ' + Konstanten.MVVERSION;
+        return Konstanten.PROGRAMMNAME + ' ' + Functions.getProgVersion().toString();
     }
 }

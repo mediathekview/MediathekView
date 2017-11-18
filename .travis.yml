@@ -34,11 +34,13 @@ addons:
 # Build
 script:
   - ./gradlew check build
+  - if [ "$TRAVIS_EVENT_TYPE" == "cron" ]; then
+      openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv
+        -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d;
+      scripte/deploy/deploy.sh nightly;
+    fi
 after_success:
   - sonar-scanner
-  - gzip build/distributions/MediathekView-*.tar;
-  - rm build/distributions/MediathekView-*.tar.SHA-1;
-  - cd build/distributions;for i in `ls -x -1 |grep *.tar.gz`; do sha1sum $i|cut -d' ' -f1 > $i.SHA-1; done; cd ../../;
 
 #Cache
 before_cache:
@@ -48,10 +50,11 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.sonar/cache/"
-  
+  - "$HOME/.tmp/"
+
 #Deploy
 before_deploy:
-  - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv 
+  - openssl aes-256-cbc -K $encrypted_e4ced02e3beb_key -iv $encrypted_e4ced02e3beb_iv
     -in scripte/deploy/deploy.key.enc -out scripte/deploy/deploy.key -d
 deploy:
   - provider: script

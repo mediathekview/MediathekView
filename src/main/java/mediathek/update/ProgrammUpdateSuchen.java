@@ -19,13 +19,25 @@
  */
 package mediathek.update;
 
+import de.mediathekview.mlib.Const;
+import de.mediathekview.mlib.tool.Functions;
+import de.mediathekview.mlib.tool.Log;
+import mediathek.config.Daten;
+import mediathek.config.ErrorCodes;
+import mediathek.config.Konstanten;
+import mediathek.config.MVConfig;
+import mediathek.tool.FormatterUtil;
+
+import javax.swing.*;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
@@ -70,21 +82,12 @@ public class ProgrammUpdateSuchen {
                 if (progInfo.getVersion().toNumber() == 0)
                     JOptionPane.showMessageDialog(null, UPDATE_ERROR_MESSAGE, UPDATE_SEARCH_TITLE, JOptionPane.ERROR_MESSAGE);
                 else {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_BUILD_NR, Konstanten.MVVERSION.toString());
-                    MVConfig.add(MVConfig.Configs.SYSTEM_UPDATE_DATUM, new SimpleDateFormat("yyyyMMdd").format(new Date()));
+                    MVConfig.add(MVConfig.Configs.SYSTEM_BUILD_NR, Functions.getProgVersion().toString());
+                    MVConfig.add(MVConfig.Configs.SYSTEM_UPDATE_DATUM, FormatterUtil.FORMATTER_yyyyMMdd.format(new Date()));
 
-                    if (checkForNewerVersion(progInfo.getVersion())) {
+                    if (progInfo.getVersion().compare(Functions.getProgVersion()) == 1) {
                         neueVersion = true;
-                        //TODO beautify this dialog. Looks really ugly.
-                        new DialogHinweisUpdate(null, true, "Eine neue Version liegt vor",
-                                "   ==================================================\n"
-                                        + "   Neue Version:\n" + "   " + progInfo.getVersion() + "\n\n"
-                                        + "   ==================================================\n"
-                                        + "   Änderungen:\n" + "   " + progInfo.getReleaseNotes() + "\n\n"
-                                        + "   ==================================================\n"
-                                        + "   URL:\n"
-                                        + "   " + progInfo.getUpdateUrl() + "\n\n").setVisible(true);
-
+                        displayNotification(progInfo);
                     } else if (anzeigen) {
                         JOptionPane.showMessageDialog(null, "Sie benutzen die neueste Version von MediathekView.", UPDATE_SEARCH_TITLE, JOptionPane.INFORMATION_MESSAGE);
                     }
@@ -93,6 +96,19 @@ public class ProgrammUpdateSuchen {
         }
 
         return neueVersion;
+    }
+
+    private void displayNotification(ServerProgramInformation progInfo) {
+        //TODO beautify this dialog. Looks really ugly.
+        new DialogHinweisUpdate(null, true, "Neue Version verfügbar",
+                "   ==================================================\n"
+                        + "   Neue Version:\n" + "   " + progInfo.getVersion().toString() + "\n\n"
+                        + "   ==================================================\n"
+                        + "   Änderungen:\n" + "   " + progInfo.getReleaseNotes() + "\n\n"
+                        + "   ==================================================\n"
+                        + "   URL:\n"
+                        + "   " + progInfo.getUpdateUrl() + "\n\n").setVisible(true);
+
     }
 
     private void showProgramInformation(boolean showAll) {
@@ -126,7 +142,7 @@ public class ProgrammUpdateSuchen {
                     MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(index));
                 }
             } catch (Exception ex) {
-                Log.errorLog(693298731, ex);
+                Log.errorLog(ErrorCodes.UPDATE_SHOW_PROGRAM_INFORMATION, ex);
             }
         }
     }
@@ -137,8 +153,17 @@ public class ProgrammUpdateSuchen {
      * @param info the remote version number.
      * @return true if there is a newer version
      */
-    private boolean checkForNewerVersion(Version info) {
-        return (Konstanten.MVVERSION.compare(info) == 1);
+    @Deprecated
+    private boolean checkForNewerVersion(int info) {
+        try {
+            final int currentVersion = Integer.parseInt(Functions.getBuildNr());
+            if (info > currentVersion) {
+                return true;
+            }
+        } catch (NumberFormatException ex) {
+            Log.errorLog(ErrorCodes.UPDATE_CHECK_FOR_NEWER_VERSION, ex);
+        }
+        return false;
     }
 
     private InputStream connectToServer() throws IOException {
@@ -200,6 +225,7 @@ public class ProgrammUpdateSuchen {
             }
             return Optional.of(progInfo);
         } catch (Exception ex) {
+            Log.errorLog(ErrorCodes.UPDATE_RETRIEVE_PROGRAM_INFORMATION, ex);
             return Optional.empty();
         } finally {
             try {

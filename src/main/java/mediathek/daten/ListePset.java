@@ -19,7 +19,7 @@
  */
 package mediathek.daten;
 
-import mSearch.tool.Listener;
+import de.mediathekview.mlib.tool.Listener;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogOk;
 import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;

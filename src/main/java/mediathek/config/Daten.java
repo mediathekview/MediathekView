@@ -20,12 +20,11 @@
 package mediathek.config;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.daten.ListeFilme;
-import mSearch.filmlisten.WriteFilmlistJson;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
-import mSearch.tool.ReplaceList;
-import mSearch.tool.SysMsg;
+import de.mediathekview.mlib.daten.ListeFilme;
+import de.mediathekview.mlib.tool.Listener;
+import de.mediathekview.mlib.tool.Log;
+import de.mediathekview.mlib.tool.ReplaceList;
+import de.mediathekview.mlib.tool.SysMsg;
 import mediathek.MediathekGui;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
@@ -33,12 +32,17 @@ import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.filmlisten.FilmeLaden;
-import mediathek.gui.*;
+import mediathek.gui.GuiAbo;
+import mediathek.gui.GuiDownloads;
+import mediathek.gui.GuiFilme;
+import mediathek.gui.GuiMeldungen;
 import mediathek.gui.dialog.DialogMediaDB;
-import mediathek.gui.filmInformation.IFilmInformation;
+import mediathek.gui.messages.BaseEvent;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVMessageDialog;
+import net.engio.mbassy.bus.MBassador;
+import org.apache.commons.lang3.time.FastDateFormat;
 
 import javax.swing.*;
 import java.io.File;
@@ -49,26 +53,38 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class Daten
-{
-
-    private static Daten instance;
+public class Daten {
 
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    // zentrale Klassen
+    public static final MVColor mVColor = new MVColor(); // verwendete Farben
+    /**
+     * Maximum number of backup files to be stored.
+     */
+    private final static int MAX_COPY = 5;
+    public static ListePset listePset = null;
+    public static GuiFilme guiFilme = null; // Tab mit den Filmen
+    public static GuiDownloads guiDownloads = null; // Tab mit den Downloads
+    public static GuiAbo guiAbo = null; // Tab mit den Abos
+    public static GuiMeldungen guiMeldungen = null;
+    private static Daten instance;
     // flags
     private static boolean debug = false; // Debugmodus
     private static boolean startMaximized = false; // Fenster maximieren
     private static boolean auto = false; // Version: MediathekAuto
     private static boolean reset = false; // Programm auf Starteinstellungen zurücksetzen
-    //alle Programmeinstellungen
+    // Verzeichnis zum Speichern der Programmeinstellungen
+    private static String basisverzeichnis;
+    private final MBassador<BaseEvent> messageBus = new MBassador<>();
 
-    // zentrale Klassen
-    public static final MVColor mVColor = new MVColor(); // verwendete Farben
+    private final MediathekGui mediathekGui; // JFrame der Gui
+    public MVUsedUrls history = null; // alle angesehenen Filme
+    public MVUsedUrls erledigteAbos = null; // erfolgreich geladenen Abos
+    public StarterClass starterClass = null; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
     private FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
     private ListeFilme listeFilme = null;
     private ListeFilme listeFilmeNachBlackList = null; // ist DIE Filmliste
@@ -80,105 +96,129 @@ public class Daten
     private ListeMediaPath listeMediaPath = null;
     private ListeAbo listeAbo = null;
     private DownloadInfos downloadInfos = null;
-
-    // Verzeichnis zum Speichern der Programmeinstellungen
-    private static String basisverzeichnis;
-    public static ListePset listePset = null;
-    public MVUsedUrls history = null; // alle angesehenen Filme
-    public MVUsedUrls erledigteAbos = null; // erfolgreich geladenen Abos
-
-    public StarterClass starterClass = null; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
-
-    // Gui
-    private MediathekGui mediathekGui; // JFrame der Gui
-    public static GuiFilme guiFilme = null; // Tab mit den Filmen
-    public static GuiDownloads guiDownloads = null; // Tab mit den Downloads
-    public static GuiAbo guiAbo = null; // Tab mit den Abos
-    public static GuiDebug guiDebug = null;
-    public static GuiMeldungen guiMeldungen = null;
-
-    public static IFilmInformation filmInfo = null; // Infos zum Film
     private DialogMediaDB dialogMediaDB;
 
     private boolean alreadyMadeBackup = false;
 
-    public static void setDebug(final boolean aIsDebug)
-    {
-        debug = aIsDebug;
-    }
-
-    public static void setStartMaximized(final boolean aIsStartMaximized)
-    {
-        startMaximized = aIsStartMaximized;
-    }
-
-    public static void setAuto(final boolean aIsAuto)
-    {
-        auto = aIsAuto;
-    }
-
-    public static void setReset(final boolean aIsReset)
-    {
-        reset = aIsReset;
-    }
-
-    public static boolean isDebug()
-    {
-        return debug;
-    }
-
-    public static boolean isStartMaximized()
-    {
-        return startMaximized;
-    }
-
-    public static boolean isAuto()
-    {
-        return auto;
-    }
-
-    public static boolean isReset()
-    {
-        return reset;
-    }
-
-    public static final Daten getInstance(String aBasisverzeichnis)
-    {
-        basisverzeichnis = aBasisverzeichnis;
-        return getInstance();
-    }
-
-    public static final Daten getInstance(String aBasisverzeichnis, MediathekGui aMediathekGui1)
-    {
-        basisverzeichnis = aBasisverzeichnis;
-        return getInstance(aMediathekGui1);
-    }
-
-    private static final Daten getInstance(MediathekGui aMediathekGui)
-    {
-        return instance == null ? instance = new Daten(aMediathekGui) : instance;
-    }
-
-    public static final Daten getInstance()
-    {
-        return instance == null ? instance =  new Daten() : instance;
-    }
-
-
-    private Daten()
-    {
+    private Daten() {
         mediathekGui = null;
         start();
     }
 
-    private Daten(MediathekGui aMediathekGui)
-    {
+    private Daten(MediathekGui aMediathekGui) {
         mediathekGui = aMediathekGui;
         start();
     }
 
-    private void start()
-    {
+    public static boolean isDebug() {
+        return debug;
+    }
+
+    public static void setDebug(final boolean aIsDebug) {
+        debug = aIsDebug;
+    }
+
+    public static boolean isStartMaximized() {
+        return startMaximized;
+    }
+
+    public static void setStartMaximized(final boolean aIsStartMaximized) {
+        startMaximized = aIsStartMaximized;
+    }
+
+    public static boolean isAuto() {
+        return auto;
+    }
+
+    public static void setAuto(final boolean aIsAuto) {
+        auto = aIsAuto;
+    }
+
+    public static boolean isReset() {
+        return reset;
+    }
+
+    public static void setReset(final boolean aIsReset) {
+        reset = aIsReset;
+    }
+
+    public static final Daten getInstance(String aBasisverzeichnis) {
+        basisverzeichnis = aBasisverzeichnis;
+        return getInstance();
+    }
+
+    public static final Daten getInstance(String aBasisverzeichnis, MediathekGui aMediathekGui1) {
+        basisverzeichnis = aBasisverzeichnis;
+        return getInstance(aMediathekGui1);
+    }
+
+    private static final Daten getInstance(MediathekGui aMediathekGui) {
+        return instance == null ? instance = new Daten(aMediathekGui) : instance;
+    }
+
+    public static final Daten getInstance() {
+        return instance == null ? instance = new Daten() : instance;
+    }
+
+    public static String getUserAgent() {
+        return MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_USERAGENT);
+    }
+
+    /**
+     * Liefert den Pfad zur Filmliste
+     *
+     * @return Den Pfad als String
+     */
+    public static String getDateiFilmliste() {
+        String strFile;
+
+        if (SystemInfo.isMacOSX()) {
+            //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
+            strFile = GuiFunktionen.getHomePath() + File.separator + "Library/Caches/MediathekView" + File.separator + Konstanten.JSON_DATEI_FILME;
+        } else {
+            strFile = getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME;
+        }
+
+        return strFile;
+    }
+
+    /**
+     * Return the location of the settings directory.
+     * If it does not exist, create one.
+     *
+     * @return Path to the settings directory
+     * @throws IllegalStateException Will be thrown if settings directory don't exist and if there is an error on creating it.
+     */
+    public static Path getSettingsDirectory() throws IllegalStateException {
+        final Path baseDirectoryPath;
+        if (basisverzeichnis == null || basisverzeichnis.isEmpty()) {
+            baseDirectoryPath = Paths.get(System.getProperty("user.home"), Konstanten.VERZEICHNIS_EINSTELLUNGEN);
+        } else {
+            baseDirectoryPath = Paths.get(basisverzeichnis);
+        }
+
+
+        if (Files.notExists(baseDirectoryPath)) {
+            try {
+                Files.createDirectories(baseDirectoryPath);
+            } catch (IOException ioException) {
+                Messages.logMessage(Messages.ERROR_CANT_CREATE_FOLDER, ioException, baseDirectoryPath.toString());
+                throw new IllegalStateException(Messages.ERROR_CANT_CREATE_FOLDER.getTextFormatted(baseDirectoryPath.toString()), ioException);
+            }
+        }
+
+        return baseDirectoryPath;
+    }
+
+    public static String getSettingsDirectory_String() {
+        return getSettingsDirectory().toString();
+    }
+
+    public MBassador<BaseEvent> getMessageBus() {
+        return messageBus;
+    }
+
+    private void start() {
         listeFilme = new ListeFilme();
         filmeLaden = new FilmeLaden(this);
         listeFilmeHistory = new ListeFilme();
@@ -218,78 +258,12 @@ public class Daten
         timer.start();
     }
 
-    public static String getUserAgent()
-    {
-        return MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_USERAGENT);
-    }
-
-    /**
-     * Liefert den Pfad zur Filmliste
-     *
-     * @return Den Pfad als String
-     */
-    public static String getDateiFilmliste()
-    {
-        String strFile;
-
-        if (SystemInfo.isMacOSX())
-        {
-            //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
-            strFile = GuiFunktionen.getHomePath() + File.separator + "Library/Caches/MediathekView" + File.separator + Konstanten.JSON_DATEI_FILME;
-        } else
-        {
-            strFile = getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME;
-        }
-
-        return strFile;
-    }
-
-    /**
-     * Return the location of the settings directory.
-     * If it does not exist, create one.
-     *
-     * @return Path to the settings directory
-     * @throws IllegalStateException Will be thrown if settings directory don't exist and if there is an error on creating it.
-     */
-    public static Path getSettingsDirectory() throws IllegalStateException
-    {
-        final Path baseDirectoryPath;
-        if (basisverzeichnis == null || basisverzeichnis.isEmpty())
-        {
-            baseDirectoryPath = Paths.get(System.getProperty("user.home"), Konstanten.VERZEICHNIS_EINSTELLUNGEN);
-        } else
-        {
-            baseDirectoryPath = Paths.get(basisverzeichnis);
-        }
-
-
-        if (Files.notExists(baseDirectoryPath))
-        {
-            try
-            {
-                Files.createDirectories(baseDirectoryPath);
-            } catch (IOException ioException)
-            {
-                Messages.logMessage(Messages.ERROR_CANT_CREATE_FOLDER, ioException, baseDirectoryPath.toString());
-                throw new IllegalStateException(Messages.ERROR_CANT_CREATE_FOLDER.getTextFormatted(baseDirectoryPath.toString()), ioException);
-            }
-        }
-
-        return baseDirectoryPath;
-    }
-
-    public static String getSettingsDirectory_String()
-    {
-        return getSettingsDirectory().toString();
-    }
-
     /**
      * Return the path to "mediathek.xml"
      *
      * @return Path object to mediathek.xml file
      */
-    public static Path getMediathekXmlFilePath()
-    {
+    public Path getMediathekXmlFilePath() {
         return Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE);
     }
 
@@ -299,21 +273,13 @@ public class Daten
      *
      * @param xmlFilePath Path to file.
      */
-    public static void getMediathekXmlCopyFilePath(ArrayList<Path> xmlFilePath)
-    {
-        for (int i = 1; i <= MAX_COPY; ++i)
-        {
+    public void getMediathekXmlCopyFilePath(ArrayList<Path> xmlFilePath) {
+        for (int i = 1; i <= MAX_COPY; ++i) {
             Path path = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
-            if (Files.exists(path))
-            {
+            if (Files.exists(path)) {
                 xmlFilePath.add(path);
             }
         }
-    }
-
-    public void filmlisteSpeichern()
-    {
-        new WriteFilmlistJson().filmlisteSchreibenJson(getDateiFilmliste(), listeFilme);
     }
 
     /**
@@ -321,20 +287,16 @@ public class Daten
      *
      * @param text The displayed text on the splash graphics.
      */
-    private void updateSplashScreen(String text)
-    {
-        if (mediathekGui != null)
-        {
+    private void updateSplashScreen(String text) {
+        if (mediathekGui != null) {
             mediathekGui.updateSplashScreenText(text);
         }
     }
 
-    public boolean allesLaden()
-    {
+    public boolean allesLaden() {
         updateSplashScreen("Lade Konfigurationsdaten...");
 
-        if (!load())
-        {
+        if (!load()) {
             SysMsg.sysMsg("Weder Konfig noch Backup konnte geladen werden!");
             // teils geladene Reste entfernen
             clearKonfig();
@@ -349,8 +311,7 @@ public class Daten
         return true;
     }
 
-    private void clearKonfig()
-    {
+    private void clearKonfig() {
         listePset.clear();
         ReplaceList.list.clear();
         listeAbo.clear();
@@ -358,42 +319,38 @@ public class Daten
         listeBlacklist.clear();
     }
 
-    private boolean load()
-    {
+    private boolean load() {
         boolean ret = false;
-        Path xmlFilePath = Daten.getMediathekXmlFilePath();
+        Path xmlFilePath = getMediathekXmlFilePath();
 
-        if (Files.exists(xmlFilePath))
-        {
-            if (IoXmlLesen.datenLesen(xmlFilePath))
-            {
-                return true;
-            } else
-            {
+        try (IoXmlLesen reader = new IoXmlLesen(this)) {
+            if (Files.exists(xmlFilePath)) {
+                if (reader.readConfiguration(xmlFilePath)) {
+                    return true;
+                } else {
+                    // dann hat das Laden nicht geklappt
+                    SysMsg.sysMsg("Konfig konnte nicht gelesen werden!");
+                }
+            } else {
                 // dann hat das Laden nicht geklappt
-                SysMsg.sysMsg("Konfig konnte nicht gelesen werden!");
+                SysMsg.sysMsg("Konfig existiert nicht!");
             }
-        } else
-        {
-            // dann hat das Laden nicht geklappt
-            SysMsg.sysMsg("Konfig existiert nicht!");
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
         // versuchen das Backup zu laden
-        if (loadBackup())
-        {
+        if (loadBackup()) {
             ret = true;
         }
         return ret;
     }
 
-    private boolean loadBackup()
-    {
+    private boolean loadBackup() {
         boolean ret = false;
         ArrayList<Path> path = new ArrayList<>();
-        Daten.getMediathekXmlCopyFilePath(path);
-        if (path.isEmpty())
-        {
+        getMediathekXmlCopyFilePath(path);
+        if (path.isEmpty()) {
             SysMsg.sysMsg("Es gibt kein Backup");
             return false;
         }
@@ -408,54 +365,54 @@ public class Daten
                 + "(ansonsten startet das Programm mit\n"
                 + "Standardeinstellungen)", "Gesicherte Einstellungen laden?", JOptionPane.YES_NO_OPTION);
 
-        if (r != JOptionPane.OK_OPTION)
-        {
+        if (r != JOptionPane.OK_OPTION) {
             SysMsg.sysMsg("User will kein Backup laden.");
             return false;
         }
 
-        for (Path p : path)
-        {
+        for (Path p : path) {
             // teils geladene Reste entfernen
             clearKonfig();
             SysMsg.sysMsg(new String[]{"Versuch Backup zu laden:", p.toString()});
-            if (IoXmlLesen.datenLesen(p))
-            {
-                SysMsg.sysMsg(new String[]{"Backup hat geklappt:", p.toString()});
-                ret = true;
-                break;
+            try (IoXmlLesen reader = new IoXmlLesen(this)) {
+                if (reader.readConfiguration(p)) {
+                    SysMsg.sysMsg(new String[]{"Backup hat geklappt:", p.toString()});
+                    ret = true;
+                    break;
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
 
         }
         return ret;
     }
 
-    public void allesSpeichern()
-    {
+    public void allesSpeichern() {
         konfigCopy();
-        IoXmlSchreiben.datenSchreiben();
-        if (Daten.isReset())
-        {
+        try (IoXmlSchreiben writer = new IoXmlSchreiben(this)) {
+            writer.datenSchreiben();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        if (Daten.isReset()) {
             // das Programm soll beim nächsten Start mit den Standardeinstellungen gestartet werden
             // dazu wird den Ordner mit den Einstellungen umbenannt
             String dir1 = getSettingsDirectory_String();
-            if (dir1.endsWith(File.separator))
-            {
+            if (dir1.endsWith(File.separator)) {
                 dir1 = dir1.substring(0, dir1.length() - 1);
             }
 
-            try
-            {
+            try {
                 final Path path1 = Paths.get(dir1);
-                final String dir2 = dir1 + "--" + new SimpleDateFormat("yyyy.MM.dd__HH.mm.ss").format(new Date());
+                final String dir2 = dir1 + "--" + FastDateFormat.getInstance("yyyy.MM.dd__HH.mm.ss").format(new Date());
 
                 Files.move(path1, Paths.get(dir2), StandardCopyOption.REPLACE_EXISTING);
                 Files.deleteIfExists(path1);
-            } catch (IOException e)
-            {
+            } catch (IOException e) {
                 SysMsg.sysMsg("Die Einstellungen konnten nicht zurückgesetzt werden.");
-                if (mediathekGui != null)
-                {
+                if (mediathekGui != null) {
                     MVMessageDialog.showMessageDialog(mediathekGui, "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
                             + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
                             + getSettingsDirectory_String() + '\n'
@@ -468,57 +425,42 @@ public class Daten
     }
 
     /**
-     * Maximum number of backup files to be stored.
-     */
-    private final static int MAX_COPY = 5;
-
-    /**
      * Create backup copies of settings file.
      */
-    private void konfigCopy()
-    {
-        if (!alreadyMadeBackup)
-        {
+    private void konfigCopy() {
+        if (!alreadyMadeBackup) {
             // nur einmal pro Programmstart machen
             SysMsg.sysMsg("-------------------------------------------------------");
             SysMsg.sysMsg("Einstellungen sichern");
 
-            try
-            {
-                final Path xmlFilePath = Daten.getMediathekXmlFilePath();
+            try {
+                final Path xmlFilePath = getMediathekXmlFilePath();
                 long creatTime = -1;
 
                 Path xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1);
-                if (Files.exists(xmlFilePathCopy_1))
-                {
+                if (Files.exists(xmlFilePathCopy_1)) {
                     BasicFileAttributes attrs = Files.readAttributes(xmlFilePathCopy_1, BasicFileAttributes.class);
                     FileTime d = attrs.lastModifiedTime();
                     creatTime = d.toMillis();
                 }
 
-                if (creatTime == -1 || creatTime < getHeute_0Uhr())
-                {
+                if (creatTime == -1 || creatTime < getHeute_0Uhr()) {
                     // nur dann ist die letzte Kopie älter als einen Tag
-                    for (int i = MAX_COPY; i > 1; --i)
-                    {
+                    for (int i = MAX_COPY; i > 1; --i) {
                         xmlFilePathCopy_1 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + (i - 1));
                         final Path xmlFilePathCopy_2 = Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + i);
-                        if (Files.exists(xmlFilePathCopy_1))
-                        {
+                        if (Files.exists(xmlFilePathCopy_1)) {
                             Files.move(xmlFilePathCopy_1, xmlFilePathCopy_2, StandardCopyOption.REPLACE_EXISTING);
                         }
                     }
-                    if (Files.exists(xmlFilePath))
-                    {
+                    if (Files.exists(xmlFilePath)) {
                         Files.move(xmlFilePath, Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1), StandardCopyOption.REPLACE_EXISTING);
                     }
                     SysMsg.sysMsg("Einstellungen wurden gesichert");
-                } else
-                {
+                } else {
                     SysMsg.sysMsg("Einstellungen wurden heute schon gesichert");
                 }
-            } catch (IOException e)
-            {
+            } catch (IOException e) {
                 SysMsg.sysMsg("Die Einstellungen konnten nicht komplett gesichert werden!");
                 Log.errorLog(795623147, e);
             }
@@ -533,8 +475,7 @@ public class Daten
      *
      * @return Number of milliseconds from today´s midnight.
      */
-    public static long getHeute_0Uhr()
-    {
+    private long getHeute_0Uhr() {
         final Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
@@ -544,78 +485,63 @@ public class Daten
         return cal.getTimeInMillis();
     }
 
-    public FilmeLaden getFilmeLaden()
-    {
+    public FilmeLaden getFilmeLaden() {
         return filmeLaden;
     }
 
-    public ListeFilme getListeFilme()
-    {
+    public ListeFilme getListeFilme() {
         return listeFilme;
     }
 
-    public ListeFilme getListeFilmeNachBlackList()
-    {
-        return listeFilmeNachBlackList;
-    }
-
-    public ListeFilme getListeFilmeHistory()
-    {
-        return listeFilmeHistory;
-    }
-
-    public ListeDownloads getListeDownloads()
-    {
-        return listeDownloads;
-    }
-
-    public ListeDownloads getListeDownloadsButton()
-    {
-        return listeDownloadsButton;
-    }
-
-    public ListeBlacklist getListeBlacklist()
-    {
-        return listeBlacklist;
-    }
-
-    public ListeMediaDB getListeMediaDB()
-    {
-        return listeMediaDB;
-    }
-
-    public ListeMediaPath getListeMediaPath()
-    {
-        return listeMediaPath;
-    }
-
-    public ListeAbo getListeAbo()
-    {
-        return listeAbo;
-    }
-
-    public DownloadInfos getDownloadInfos()
-    {
-        return downloadInfos;
-    }
-
-    public MediathekGui getMediathekGui()
-    {
-        return mediathekGui;
-    }
-
-    public void setListeFilme(final ListeFilme listeFilme)
-    {
+    public void setListeFilme(final ListeFilme listeFilme) {
         this.listeFilme = listeFilme;
     }
 
-    public void setDialogMediaDB(final DialogMediaDB aDialogMediaDB)
-    {
-        dialogMediaDB = aDialogMediaDB;
+    public ListeFilme getListeFilmeNachBlackList() {
+        return listeFilmeNachBlackList;
     }
 
-    public DialogMediaDB getDialogMediaDB()
-    {
+    public ListeFilme getListeFilmeHistory() {
+        return listeFilmeHistory;
+    }
+
+    public ListeDownloads getListeDownloads() {
+        return listeDownloads;
+    }
+
+    public ListeDownloads getListeDownloadsButton() {
+        return listeDownloadsButton;
+    }
+
+    public ListeBlacklist getListeBlacklist() {
+        return listeBlacklist;
+    }
+
+    public ListeMediaDB getListeMediaDB() {
+        return listeMediaDB;
+    }
+
+    public ListeMediaPath getListeMediaPath() {
+        return listeMediaPath;
+    }
+
+    public ListeAbo getListeAbo() {
+        return listeAbo;
+    }
+
+    public DownloadInfos getDownloadInfos() {
+        return downloadInfos;
+    }
+
+    public MediathekGui getMediathekGui() {
+        return mediathekGui;
+    }
+
+    public DialogMediaDB getDialogMediaDB() {
         return dialogMediaDB;
+    }
+
+    public void setDialogMediaDB(final DialogMediaDB aDialogMediaDB) {
+        dialogMediaDB = aDialogMediaDB;
     }
 }

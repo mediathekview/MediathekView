@@ -19,8 +19,8 @@
  */
 package mediathek.gui.actions;
 
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
+import de.mediathekview.mlib.tool.Listener;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 
@@ -37,8 +37,8 @@ public class UrlHyperlinkAction extends AbstractAction {
 
     public UrlHyperlinkAction(JFrame jjFrameParent, String url) throws URISyntaxException {
         jFrameParent = jjFrameParent;
-        super.putValue(Action.NAME, url);
-        super.putValue(SHORT_DESCRIPTION, url);
+        putValue(Action.NAME, url);
+        putValue(SHORT_DESCRIPTION, url);
 //        super.putValue(LONG_DESCRIPTION, url);
     }
 

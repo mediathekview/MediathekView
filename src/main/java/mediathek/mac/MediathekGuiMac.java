@@ -1,17 +1,19 @@
 package mediathek.mac;
 
 import com.apple.eawt.Application;
-import com.jidesoft.utils.SystemInfo;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.gui.bandwidth.MVBandwidthMonitorOSX;
 import mediathek.gui.filmInformation.MVFilmInformationOSX;
+import mediathek.gui.messages.DownloadFinishedEvent;
+import mediathek.gui.messages.DownloadStartEvent;
+import mediathek.tool.threads.IndicatorThread;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -20,18 +22,37 @@ import java.net.URL;
 
 @SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
+    private static final String ACTION_KEY_MAC_F = "mac-f";
 
-    private final Daten daten;
-    /**
-     * Repaint-Thread for progress indicator on OS X.
-     */
-    private Thread osxProgressIndicatorThread = null;
-
-    public MediathekGuiMac(String[] ar) {
+    public MediathekGuiMac(String... ar) {
         super(ar);
-        daten = Daten.getInstance();
+
+        setupDockIcon();
+
+        setSearchKeyForMac();
+
         //Window must be fully initialized to become fullscreen cadidate...
         setWindowFullscreenCapability();
+    }
+
+    /**
+     * Install the tab switch listener.
+     * Unused on OS X.
+     */
+    @Override
+    protected void installAutomaticTabSwitcher() {
+    }
+
+    private void setSearchKeyForMac() {
+        // für den Mac
+        final JRootPane rootPane = getRootPane();
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), ACTION_KEY_MAC_F);
+        rootPane.getActionMap().put(ACTION_KEY_MAC_F, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setFocusSuchfeld();
+            }
+        });
     }
 
     /**
@@ -41,10 +62,9 @@ public class MediathekGuiMac extends MediathekGui {
     private void setWindowFullscreenCapability() {
         try {
             Class.forName("com.apple.eawt.FullScreenUtilities")
-                    .getMethod("setWindowCanFullScreen",Window.class,boolean.class)
-                    .invoke(null, this,true);
-        }
-        catch (Exception ignored) {
+                    .getMethod("setWindowCanFullScreen", Window.class, boolean.class)
+                    .invoke(null, this, true);
+        } catch (Exception ignored) {
         }
     }
 
@@ -57,23 +77,17 @@ public class MediathekGuiMac extends MediathekGui {
     }
 
     @Override
-    protected void setupHelpMenu() {
-        super.setupHelpMenu();
-        //not needed on OSX, located in apple menu
-        jMenuHilfe.remove(jSeparatorAboutApplication);
-        jMenuHilfe.remove(jMenuItemAboutApplication);
-    }
-
-
-    @Override
-    protected void createFilmInformationHUD(JFrame parent, JTabbedPane tabPane, Daten daten)
-    {
-        Daten.filmInfo = new MVFilmInformationOSX(parent);
+    protected void installAboutMenuItem() {
+        //do not install on OS X
     }
 
     @Override
-    protected void createBandwidthMonitor(JFrame parent)
-    {
+    protected void createFilmInformationHUD(JTabbedPane tabPane, Daten daten) {
+        filmInfo = new MVFilmInformationOSX(this);
+    }
+
+    @Override
+    protected void createBandwidthMonitor(JFrame parent) {
         bandwidthMonitor = new MVBandwidthMonitorOSX(this);
     }
 
@@ -89,33 +103,46 @@ public class MediathekGuiMac extends MediathekGui {
         jCheckBoxMenuItemVideoplayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, InputEvent.META_MASK));
     }
 
-    /**
-     * Setup the OS X dock icon badge handler.
-     */
-    private void setupOsxDockIconBadge() {
-        //setup the badge support for displaying active downloads
-        Listener.addListener(new Listener(new int[]{
-            Listener.EREIGNIS_START_EVENT, Listener.EREIGNIS_LISTE_DOWNLOADS}, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                final int activeDownloads = daten.getDownloadInfos().downloadStarts[4];
-                final Application application = Application.getApplication();
-                if (activeDownloads > 0) {
-                    application.setDockIconBadge(String.valueOf(activeDownloads));
+    @Override
+    protected IndicatorThread createProgressIndicatorThread() {
+        return new OsxIndicatorThread();
+    }
 
-                    if (osxProgressIndicatorThread == null) {
-                        osxProgressIndicatorThread = new OsxIndicatorThread();
-                        osxProgressIndicatorThread.start();
-                    }
-                } else {
-                    application.setDockIconBadge("");
-                    if (osxProgressIndicatorThread != null) {
-                        osxProgressIndicatorThread.interrupt();
-                        osxProgressIndicatorThread = null;
-                    }
-                }
-            }
-        });
+    @Override
+    protected void handleDownloadStart(DownloadStartEvent msg) {
+        super.handleDownloadStart(msg);
+        setDownloadsBadge(numDownloadsStarted.get());
+    }
+
+    @Override
+    protected void handleDownloadFinishedEvent(DownloadFinishedEvent msg) {
+        super.handleDownloadFinishedEvent(msg);
+        setDownloadsBadge(numDownloadsStarted.get());
+    }
+
+    /**
+     * Set the OS X dock icon badge to the number of running downloads.
+     *
+     * @param numDownloads The number of active downloads.
+     */
+    private void setDownloadsBadge(int numDownloads) {
+        final Application app = Application.getApplication();
+        if (numDownloads > 0)
+            app.setDockIconBadge(Integer.toString(numDownloads));
+        else
+            app.setDockIconBadge("");
+    }
+
+    private void setupDockIcon() {
+        //setup the MediathekView Dock Icon
+        try {
+            final Application application = Application.getApplication();
+            final URL url = this.getClass().getResource("/mediathek/res/mac/app_icon.png");
+            final BufferedImage appImage = ImageIO.read(url);
+            application.setDockIconImage(appImage);
+        } catch (IOException ex) {
+            Log.errorLog(165623698, "OS X Application image could not be loaded");
+        }
     }
 
     /**
@@ -124,7 +151,7 @@ public class MediathekGuiMac extends MediathekGui {
     private void setupUserInterfaceForOsx() {
         final Application application = Application.getApplication();
         application.disableSuddenTermination();
-        application.setAboutHandler(aboutEvent -> showAboutDialog());
+        application.setAboutHandler(aboutEvent -> aboutAction.actionPerformed(null));
         application.setPreferencesHandler(preferencesEvent -> showSettingsDialog());
         application.setQuitHandler((quitEvent, quitResponse) -> {
             if (!beenden(false, false)) {
@@ -133,26 +160,11 @@ public class MediathekGuiMac extends MediathekGui {
                 quitResponse.performQuit();
             }
         });
+    }
 
-        //setup the MediathekView Dock Icon
-        try {
-            final URL url = this.getClass().getResource("/mediathek/res/MediathekView.png");
-            final BufferedImage appImage = ImageIO.read(url);
-            application.setDockIconImage(appImage);
-        } catch (IOException ex) {
-            Log.errorLog(165623698, "OS X Application image could not be loaded");
-        }
-
-        //Remove all menu items which don´t need to be displayed due to OS X´s native menu support
-        if (SystemInfo.isMacOSX()) {
-            //Datei->Beenden
-            jMenuDatei.remove(jSeparator2);
-            jMenuDatei.remove(jMenuItemBeenden);
-            //Datei->Einstellungen
-            jMenuDatei.remove(jMenuItemEinstellungen);
-        }
-
-        setupOsxDockIconBadge();
+    @Override
+    protected void installSettingsAndTerminateMenuItems() {
+        //do not install these on OSX
     }
 
     @Override

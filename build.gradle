@@ -14,7 +14,7 @@ apply from: "${project.rootDir}/gradle/eclipse.gradle"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 group = 'de.mediathekview'
-version = '13.0.4'
+version = '13.1.0'
 
 def jarName = 'MediathekView.jar'
 def mainClass = 'mediathek.Main'
@@ -26,10 +26,6 @@ ext {
     if (!propsFile.exists()) {
         Files.createFile(propsFile.toPath())
     }
-    repoZugangFile = file('scripte/deploy/RepoZugang.properties').absoluteFile
-    if (!repoZugangFile.exists()) {
-        Files.createFile(repoZugangFile.toPath())
-    }
 }
 
 def loadVersionProperties() {
@@ -38,11 +34,6 @@ def loadVersionProperties() {
     return props
 }
 
-def loadRepoZugangProperties() {
-    Properties props = new Properties()
-    props.load(repoZugangFile.newDataInputStream())
-    return props
-}
 
 compileJava {
     options.compilerArgs = ['-Xlint:all']
@@ -51,9 +42,15 @@ compileTestJava {
     options.compilerArgs = ['-Xlint:all']
 }
 
+configurations {
+    deployerJars
+}
+
 repositories {
+    mavenLocal()
+    mavenCentral()
     maven {
-        url "https://repo.mediathekview.de/repository/maven-public/"
+        url "https://packagecloud.io/mediathekview/MediathekView/maven2"
     }
     flatDir {
         dirs 'libs'
@@ -61,7 +58,7 @@ repositories {
 }
 
 dependencies {
-    compile 'de.mediathekview:MSearch:2.4.2'
+    compile 'de.mediathekview:MLib:3.0.1'
 
     compile "$swingxGroup:swingx-action:$swingxVersion"
     compile "$swingxGroup:swingx-autocomplete:$swingxVersion"
@@ -78,49 +75,76 @@ dependencies {
     compile 'org.tukaani:xz:1.5'
     compile 'com.jgoodies:jgoodies-forms:1.9.0'
     compile 'net.sf.jchart2d:jchart2d:3.3.2'
+    compile 'net.engio:mbassador:1.3.0'
+    compile 'com.nativelibs4java:bridj:0.7.0'
 
     compileOnly 'com.yuvimasory:orange-extensions:1.3.0'
+    deployerJars "io.packagecloud.maven.wagon:maven-packagecloud-wagon:0.0.6"
+}
+
+configurations.compile {
+    resolutionStrategy.dependencySubstitution {
+        def substituteIfExists = { String moduleName, String projectName ->
+            if(findProject(projectName)) {
+               assert !(project.hasProperty('org.gradle.configureondemand') && Boolean.valueOf(project.getProperty('org.gradle.configureondemand'))) : "org.gradle.configureondemand = true will cause problems when substituting a project"
+               logger.lifecycle "$project: Substituting module '$moduleName' with project $projectName"
+               substitute module(moduleName) with project(projectName)
+            }
+        }
+        substituteIfExists('de.mediathekview:MLib', ':MLib')
+    }
 }
 
 uploadArchives {
     repositories.mavenDeployer {
-        Properties props = loadRepoZugangProperties()
-        def nexusUser = props.getProperty('repoUser')
-        def nexusPw = props.getProperty('repoPw')
-        repository(url: "https://repo.mediathekview.de/repository/maven-releases/") {
-            authentication(userName:  nexusUser, password:  nexusPw)
+        configuration = configurations.deployerJars
+        uniqueVersion=true
+        def repoPw;
+        
+        if(project.hasProperty('repoPw'))
+        {
+           repoPw = project.property('repoPw');
+        }else
+        {
+            repoPw = System.getenv('PACKAGECLOUD_TOKEN');
         }
-        snapshotRepository(url: "https://repo.mediathekview.de/repository/maven-snapshots/") {
-            authentication(userName:  nexusUser, password:  nexusPw)
+        
+        repository(url: "packagecloud+https://packagecloud.io/mediathekview/MediathekView/") {
+            authentication(password:  repoPw)
         }
     }
 }
 build.dependsOn(install)
 
-task updateVersion << {
-    Properties props = loadVersionProperties()
+task updateVersion {
+    doLast {
+        Properties props = loadVersionProperties()
 
-    def oldVersion = props.getProperty('VERSION')
-    if (!oldVersion.equals(project.version)) {
-        logger.lifecycle "==msearch======================"
-        logger.lifecycle "Version: $project.version"
-        logger.lifecycle "==msearch======================"
-        props.setProperty('VERSION', project.version)
-        props.store(propsFile.newWriter(), null)
+        def oldVersion = props.getProperty('VERSION')
+        String buildDate = new Date().format('dd.MM.yyyy HH:mm:ss')
+        if (!oldVersion.equals(project.version)) {
+            logger.lifecycle "==MediathekView======================"
+            logger.lifecycle "Version:  $project.version"
+            logger.lifecycle "Baudatum: $buildDate"
+            logger.lifecycle "==MediathekView======================"
+            props.setProperty('VERSION', project.version)
+            props.setProperty('DATE', buildDate)
+            props.store(propsFile.newWriter(), null)
+        }
     }
 }
 
 processResources.dependsOn updateVersion
 
-/*
+
 licenseReport {
-    outputDir = "res/Copyright/"
-    excludes = [':MSearch', 'MediathekView:MSearch']
+    outputDir = "build/Copyright/"
+    excludes = [':MLib', 'MediathekView:MLib']
     configurations = ['compile']
 }
 
 processResources.dependsOn generateLicenseReport
-*/
+
 tasks.withType(Zip) { task ->
     task.doLast {
         ant.checksum(algorithm: 'SHA-1', file: it.archivePath)
@@ -152,7 +176,10 @@ task copySenderIconsInRes(type: Copy) {
 
 processResources.dependsOn copySenderIconsInRes
 */
+
 [distZip, distTar]*.shouldRunAfter compileJava, updateVersion, jar
+distTar.compression = Compression.GZIP
+distTar.extension = 'tar.gz'
 
 jar {
     manifest {
@@ -183,6 +210,9 @@ distributions {
                     filter(ReplaceTokens, tokens: [JARNAME: jarName])
                 }
             }
+            from('build') {
+                include 'Copyright/*'
+            }
             from('build/libs') {
                 include '*.jar'
             }
@@ -197,7 +227,7 @@ distributions {
 //Windows executable generation
 launch4j {
     mainClassName = mainClass
-    icon = "../../res/Info/MediathekView.ico"
+    icon = "../../res/Icons/MediathekView.ico"
     jar = jarName
     dontWrapJar = true
     outfile = "MediathekView_ohne_feste_Speicherzuweisung.exe"
@@ -263,7 +293,7 @@ task debug(type: JavaExec, dependsOn: classes) {
 
 /**
  * <b>You don't have to call this. Travis will do it for you if a new releass (tag) will be build!<b/>
- * Call this so: './gradlew build release -PnexusUser=[NEXUS_USER] -PnexusPw=[NEXUS_PASSWORD]'
+ * Call this so: './gradlew build release -PrepoPw=[PASSWORD]'
  */
 task release(dependsOn: 'uploadArchives') {
     doLast {
@@ -273,7 +303,7 @@ task release(dependsOn: 'uploadArchives') {
 
 /**
  * <b>You don't have to call this. Travis will do it for you if you push to develop!<b/>
- * Call this so: './gradlew build releaseSnapshot -PnexusUser=[NEXUS_USER] -PnexusPw=[NEXUS_PASSWORD]'
+ * Call this so: './gradlew build releaseSnapshot -PrepoPw=[PASSWORD]'
  */
 task releaseSnapshot(dependsOn: 'uploadArchives') {
     doLast {

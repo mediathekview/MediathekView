@@ -1,8 +1,9 @@
 package mediathek.gui.filmInformation;
 
-import mSearch.daten.DatenFilm;
+import de.mediathekview.mlib.daten.DatenFilm;
 import mediathek.config.Icons;
 import mediathek.gui.actions.UrlHyperlinkAction;
+import mediathek.gui.tools.NotScrollingCaret;
 import mediathek.tool.BeobMausUrl;
 import org.jdesktop.swingx.JXHyperlink;
 
@@ -84,6 +85,7 @@ public class MVFilmInformationOSX implements IFilmInformation {
         textAreaBeschreibung.setLineWrap(true);
         textAreaBeschreibung.setWrapStyleWord(true);
         textAreaBeschreibung.setRows(4);
+        textAreaBeschreibung.setCaret(new NotScrollingCaret());
 
         jLabelFilmNeu = new JLabel();
         jLabelFilmNeu.setVisible(false);

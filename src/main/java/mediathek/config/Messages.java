@@ -1,6 +1,6 @@
 package mediathek.config;
 
-import mSearch.tool.Log;
+import de.mediathekview.mlib.tool.Log;
 
 /**
  * A enum which contains log messages.

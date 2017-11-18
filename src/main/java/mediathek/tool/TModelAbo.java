@@ -19,7 +19,7 @@
  */
 package mediathek.tool;
 
-import mSearch.tool.Datum;
+import de.mediathekview.mlib.tool.Datum;
 import mediathek.daten.DatenAbo;
 
 @SuppressWarnings("serial")

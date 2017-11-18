@@ -20,8 +20,8 @@
 package mediathek.gui.dialog;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.tool.FilenameUtils;
-import mSearch.tool.Log;
+import de.mediathekview.mlib.tool.FilenameUtils;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;

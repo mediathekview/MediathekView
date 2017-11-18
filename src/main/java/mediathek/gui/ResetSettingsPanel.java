@@ -19,7 +19,7 @@
  */
 package mediathek.gui;
 
-import mSearch.tool.Listener;
+import de.mediathekview.mlib.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.daten.ListePsetVorlagen;

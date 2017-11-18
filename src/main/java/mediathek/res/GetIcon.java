@@ -22,7 +22,7 @@ package mediathek.res;
 import java.awt.Image;
 import java.io.File;
 import javax.swing.ImageIcon;
-import mSearch.tool.Log;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.config.MVConfig;
 import mediathek.tool.GuiFunktionen;
 

@@ -20,13 +20,13 @@
 package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
-import mSearch.filmeSuchen.ListenerFilmeLaden;
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.tool.Datum;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
+import de.mediathekview.mlib.daten.DatenFilm;
+import de.mediathekview.mlib.daten.ListeFilme;
+import de.mediathekview.mlib.filmesuchen.ListenerFilmeLaden;
+import de.mediathekview.mlib.filmesuchen.ListenerFilmeLadenEvent;
+import de.mediathekview.mlib.tool.Datum;
+import de.mediathekview.mlib.tool.Listener;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
@@ -38,6 +38,7 @@ import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
+import mediathek.gui.filmInformation.IFilmInformation;
 import mediathek.tool.*;
 import mediathek.tool.MVTable;
 
@@ -61,7 +62,7 @@ public class GuiFilme extends PanelVorlage {
     private MVFilter mVFilter;
     public MVFilterFrame mVFilterFrame;
     private final MVFilterPanel mVFilterPanel;
-    ToolBar toolBar;
+    private ToolBar toolBar;
 
     public GuiFilme(Daten aDaten, MediathekGui aMediathekGui) {
         super(aDaten, aMediathekGui);
@@ -106,7 +107,7 @@ public class GuiFilme extends PanelVorlage {
 
         panelVideoplayerSetzen();
         setupDescriptionPanel();
-        toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_FILME);
+        toolBar = new ToolBar(daten, MediathekGui.TABS.FILME);
         jPanelToolBar.setLayout(new BorderLayout());
         jPanelToolBar.add(toolBar, BorderLayout.CENTER);
         setToolbarVisible();
@@ -160,24 +161,12 @@ public class GuiFilme extends PanelVorlage {
         loadTable();
     }
 
-    public void searchUrl(String url) {
-        searchFilmWithUrl_(url);
-    }
-
     public void filmGesehen() {
         daten.history.setGesehen(true, getSelFilme(), daten.getListeFilmeHistory());
     }
 
     public void filmUngesehen() {
         daten.history.setGesehen(false, getSelFilme(), daten.getListeFilmeHistory());
-    }
-
-    public void invertSelection() {
-        tabelle.invertSelection();
-    }
-
-    public ArrayList<DatenFilm> selFilme() {
-        return getSelFilme();
     }
 
     public int getTableRowCount() {
@@ -195,7 +184,6 @@ public class GuiFilme extends PanelVorlage {
             public void start(ListenerFilmeLadenEvent event) {
                 GuiFunktionen.enableComponents(mVFilterFrame, false);
                 GuiFunktionen.enableComponents(mVFilterPanel, false);
-                //mVFilter.enableFilter(false);
                 loadTable();
             }
 
@@ -244,8 +232,9 @@ public class GuiFilme extends PanelVorlage {
         this.getActionMap().put("info", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!Daten.filmInfo.isVisible()) {
-                    Daten.filmInfo.showInfo();
+                IFilmInformation hud = daten.getMediathekGui().getFilmInformationHud();
+                if (!hud.isVisible()) {
+                    hud.showInfo();
                 }
             }
         });
@@ -608,7 +597,7 @@ public class GuiFilme extends PanelVorlage {
      */
     private void updateFilmData() {
         final Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
-        filmSelection.ifPresent(Daten.filmInfo::updateCurrentFilm);
+        filmSelection.ifPresent(daten.getMediathekGui().getFilmInformationHud()::updateCurrentFilm);
     }
 
     private void setInfoStatusbar() {
@@ -736,18 +725,6 @@ public class GuiFilme extends PanelVorlage {
     // ############################################
     // Filter
     // ############################################
-    private void searchFilmWithUrl_(String url) {
-        // nur für Tests
-        url = url.trim();
-        TModelFilm m = (TModelFilm) tabelle.getModel();
-        for (int i = 0; i < m.getRowCount(); ++i) {
-            if (!url.equals(m.getValueAt(i, DatenFilm.FILM_URL).toString())) {
-                m.removeRow(i);
-                --i;
-            }
-        }
-    }
-
     private void setVisFilterPanelAndLoad() {
         boolean history = false;
         if (mVFilter != null) {
@@ -1037,7 +1014,7 @@ public class GuiFilme extends PanelVorlage {
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER, String.valueOf(mVFilter.get_jSliderMinuten().getValue()), filter);
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER_MIN, String.valueOf(mVFilter.get_rbMin().isSelected()), filter);
 
-        java.util.List<? extends RowSorter.SortKey> listeSortKeys = null;
+        java.util.List<? extends RowSorter.SortKey> listeSortKeys;
         listeSortKeys = tabelle.getRowSorter().getSortKeys();
         String key = "";
         String upDown = "";
@@ -1079,7 +1056,7 @@ public class GuiFilme extends PanelVorlage {
                 //Filter Sender
                 mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
                 mVFilter.get_jComboBoxFilterSender().setSelectedIndex(0);
-                if (!filterSender.equals("")) {
+                if (!filterSender.isEmpty()) {
                     mVFilter.get_jComboBoxFilterSender().setSelectedItem(filterSender);
                     if (mVFilter.get_jComboBoxFilterSender().getSelectedIndex() == 0) {
                         // war wohl nix, der gewählte Sender wurde in die Blacklist eingetragen
@@ -1089,14 +1066,14 @@ public class GuiFilme extends PanelVorlage {
                 }
                 mVFilter.get_jComboBoxFilterSender().setPopupVisible(senderOpen);
                 // Filter Thema
-                if (filterSender.equals("")) {
-                    mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
+                if (filterSender.isEmpty()) {
+                    mVFilter.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
                 } else {
-                    mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen(filterSender)));
+                    mVFilter.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen(filterSender)));
                 }
                 // wenn Thema bei dem Sender vorhanden, dann wieder setzen
                 mVFilter.get_jComboBoxFilterThema().setSelectedItem(filterThema);
-                if (!filterThema.equals("") && mVFilter.get_jComboBoxFilterThema().getSelectedIndex() == 0) {
+                if (!filterThema.isEmpty() && mVFilter.get_jComboBoxFilterThema().getSelectedIndex() == 0) {
                     // war wohl nix
                     themaNichtDa = true;
                 }
@@ -1165,6 +1142,8 @@ public class GuiFilme extends PanelVorlage {
         jScrollPaneFilter = new javax.swing.JScrollPane();
         jPanelFilter = new javax.swing.JPanel();
         jPanelToolBar = new javax.swing.JPanel();
+
+        setLayout(new java.awt.BorderLayout(0, 5));
 
         jSplitPane1.setDividerLocation(240);
 
@@ -1236,7 +1215,7 @@ public class GuiFilme extends PanelVorlage {
         jPanel1Layout.setVerticalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1260,6 +1239,8 @@ public class GuiFilme extends PanelVorlage {
 
         jSplitPane1.setLeftComponent(jScrollPaneFilter);
 
+        add(jSplitPane1, java.awt.BorderLayout.CENTER);
+
         javax.swing.GroupLayout jPanelToolBarLayout = new javax.swing.GroupLayout(jPanelToolBar);
         jPanelToolBar.setLayout(jPanelToolBarLayout);
         jPanelToolBarLayout.setHorizontalGroup(
@@ -1271,20 +1252,7 @@ public class GuiFilme extends PanelVorlage {
                         .addGap(0, 17, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jSplitPane1)
-                        .addComponent(jPanelToolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jPanelToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE))
-        );
+        add(jPanelToolBar, java.awt.BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1381,9 +1349,9 @@ public class GuiFilme extends PanelVorlage {
                         buttonTable(row, column);
                     }
                 } else if (arg0.getClickCount() > 1) {
-                    //filmAbspielen_();
-                    if (!Daten.filmInfo.isVisible()) {
-                        Daten.filmInfo.showInfo();
+                    IFilmInformation hud = daten.getMediathekGui().getFilmInformationHud();
+                    if (!hud.isVisible()) {
+                        hud.showInfo();
                     }
                 }
             }
@@ -1517,7 +1485,7 @@ public class GuiFilme extends PanelVorlage {
             jPopupMenu.add(submenue);
             ListePset liste = Daten.listePset.getListeButton();
             for (DatenPset pset : liste) {
-                if (pset.getListeProg().isEmpty() && pset.arr[DatenPset.PROGRAMMSET_NAME].equals("")) {
+                if (pset.getListeProg().isEmpty() && pset.arr[DatenPset.PROGRAMMSET_NAME].isEmpty()) {
                     // ein "leeres" Pset, Platzhalter
                     continue;
                 }
@@ -1657,8 +1625,9 @@ public class GuiFilme extends PanelVorlage {
             //Infos
             item = new JMenuItem("Filminformation anzeigen");
             item.addActionListener(e -> {
-                if (!Daten.filmInfo.isVisible()) {
-                    Daten.filmInfo.showInfo();
+                IFilmInformation hud = daten.getMediathekGui().getFilmInformationHud();
+                if (!hud.isVisible()) {
+                    hud.showInfo();
                 }
             });
             jPopupMenu.add(item);

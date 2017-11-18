@@ -19,15 +19,17 @@
  */
 package mediathek.gui;
 
-import mSearch.daten.DatenFilm;
-import mSearch.tool.DbgMsg;
-import mSearch.tool.Listener;
+import de.mediathekview.mlib.daten.DatenFilm;
+import de.mediathekview.mlib.filmlisten.WriteFilmlistJson;
+import de.mediathekview.mlib.tool.DbgMsg;
+import de.mediathekview.mlib.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
+import mediathek.gui.tools.NotScrollingCaret;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVTable;
@@ -36,6 +38,8 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
+import javax.swing.text.DefaultCaret;
+import java.awt.Rectangle;
 import java.net.URISyntaxException;
 
 @SuppressWarnings("serial")
@@ -73,7 +77,8 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
                 if (!currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG].equals(akt)) {
                     // dann hat sich die Beschreibung geändert
                     setText();
-                    daten.filmlisteSpeichern();
+                    new WriteFilmlistJson().filmlisteSchreibenJson(Daten.getDateiFilmliste(), daten.getListeFilme());
+
                     Listener.notify(Listener.EREIGNIS_BESCHREIBUNG, PanelFilmBeschreibung.class.getSimpleName());
                 }
             }
@@ -172,6 +177,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
         jEditorPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 4, 4, 4));
         jEditorPane.setContentType("text/html"); // NOI18N
         jEditorPane.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        jEditorPane.setCaret(new NotScrollingCaret());
         jScrollPane2.setViewportView(jEditorPane);
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));

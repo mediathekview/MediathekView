@@ -19,9 +19,9 @@
  */
 package mediathek.tool;
 
-import mSearch.daten.DatenFilm;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
+import de.mediathekview.mlib.daten.DatenFilm;
+import de.mediathekview.mlib.tool.Listener;
+import de.mediathekview.mlib.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.*;
