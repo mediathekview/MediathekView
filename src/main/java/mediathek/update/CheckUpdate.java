@@ -24,7 +24,6 @@ import de.mediathekview.mlib.tool.Listener;
 import de.mediathekview.mlib.tool.Log;
 import de.mediathekview.mlib.tool.SysMsg;
 import mediathek.config.Daten;
-import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
