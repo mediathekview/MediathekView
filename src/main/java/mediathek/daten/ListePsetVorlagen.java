@@ -26,6 +26,10 @@ import mediathek.file.GetFile;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.TModel;
 
+import javax.swing.*;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
