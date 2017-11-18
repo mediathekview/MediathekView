@@ -1,17 +1,21 @@
 /*
- * MediathekView Copyright (C) 2008 W. Xaver W.Xaver[at]googlemail.com
+ * MediathekView
+ * Copyright (C) 2008 W. Xaver
+ * W.Xaver[at]googlemail.com
  * http://zdfmediathk.sourceforge.net/
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the
- * GNU General Public License as published by the Free Software Foundation, either version 3 of the
- * License, or any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program. If
- * not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package mediathek.controller;
 
@@ -143,20 +147,16 @@ public class IoXmlLesen implements AutoCloseable {
                 } catch (Exception ignored) {
                 }
             }
-          }
+            daten.getListeDownloads().listeNummerieren();
+            daten.getListeAbo().sort();
+            //ListeFilmUpdateServer aufbauen
+            daten.getFilmeLaden().getDownloadUrlsFilmlisten_akt().sort();
+            daten.getFilmeLaden().getDownloadUrlsFilmlisten_diff().sort();
+            MVConfig.loadSystemParameter();
         }
-        parser.close();
-        ret = true;
-      } catch (Exception ex) {
-        ret = false;
-        Log.errorLog(392840096, ex);
-      }
-      daten.getListeDownloads().listeNummerieren();
-      daten.getListeAbo().sort();
-      // ListeFilmUpdateServer aufbauen
-      daten.getFilmeLaden().getDownloadUrlsFilmlisten_akt().sort();
-      daten.getFilmeLaden().getDownloadUrlsFilmlisten_diff().sort();
-      MVConfig.loadSystemParameter();
+
+        Duration.counterStop("Konfig lesen");
+        return ret;
     }
 
     public ImportStatistics importConfiguration(String datei, boolean importAbos, boolean importBlacklist, boolean importReplaceList) {
@@ -215,17 +215,6 @@ public class IoXmlLesen implements AutoCloseable {
         }
         return stats;
     }
-    if (found[0] > 0) {
-      daten.getListeAbo().aenderungMelden();
-    }
-    if (found[1] > 0) {
-      daten.getListeBlacklist().filterListAndNotifyListeners();
-    }
-    if (found[2] > 0) {
-      Listener.notify(Listener.EREIGNIS_REPLACELIST_CHANGED, IoXmlLesen.class.getSimpleName());
-    }
-    return found;
-  }
 
     private boolean get(XMLStreamReader parser, String xmlElem, String[] xmlNames, String[] strRet) {
         boolean ret = true;
@@ -236,21 +225,29 @@ public class IoXmlLesen implements AutoCloseable {
                 strRet[i] = "";
             }
         }
-        if (event == XMLStreamConstants.START_ELEMENT) {
-          for (int i = 0; i < maxElem; ++i) {
-            if (parser.getLocalName().equals(xmlNames[i])) {
-              strRet[i] = parser.getElementText();
-              break;
+        try {
+            while (parser.hasNext()) {
+                int event = parser.next();
+                if (event == XMLStreamConstants.END_ELEMENT) {
+                    if (parser.getLocalName().equals(xmlElem)) {
+                        break;
+                    }
+                }
+                if (event == XMLStreamConstants.START_ELEMENT) {
+                    for (int i = 0; i < maxElem; ++i) {
+                        if (parser.getLocalName().equals(xmlNames[i])) {
+                            strRet[i] = parser.getElementText();
+                            break;
+                        }
+                    }
+                }
             }
-          }
+        } catch (Exception ex) {
+            ret = false;
+            Log.errorLog(739530149, ex);
         }
-      }
-    } catch (Exception ex) {
-      ret = false;
-      Log.errorLog(739530149, ex);
+        return ret;
     }
-    return ret;
-  }
 
     private boolean getConfig(XMLStreamReader parser, String xmlElem) {
         boolean ret = true;
@@ -272,13 +269,8 @@ public class IoXmlLesen implements AutoCloseable {
             ret = false;
             Log.errorLog(945120369, ex);
         }
-      }
-    } catch (Exception ex) {
-      ret = false;
-      Log.errorLog(945120369, ex);
+        return ret;
     }
-    return ret;
-  }
 
     @Override
     public void close() throws Exception {
