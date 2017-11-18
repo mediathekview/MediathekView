@@ -19,19 +19,6 @@
  */
 package mediathek.gui;
 
-import java.awt.FileDialog;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.HashSet;
-import java.util.Iterator;
-
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-
 import com.jidesoft.utils.SystemInfo;
 
 import de.mediathekview.mlib.Const;
