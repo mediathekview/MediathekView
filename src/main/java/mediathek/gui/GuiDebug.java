@@ -20,7 +20,6 @@
 package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
-
 import de.mediathekview.mlib.Const;
 import de.mediathekview.mlib.daten.DatenFilm;
 import de.mediathekview.mlib.daten.ListeFilme;
