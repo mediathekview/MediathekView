@@ -42,18 +42,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamReader;
-
-import mSearch.tool.Log;
-import mSearch.tool.Version;
-import mediathek.config.Daten;
-import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
-
 public class ProgrammUpdateSuchen {
     private static final String UPDATE_SEARCH_TITLE = "Software-Aktualisierung";
     private static final String UPDATE_ERROR_MESSAGE = "<html>Es ist ein Fehler bei der Softwareaktualisierung aufgetreten.<br>" +
