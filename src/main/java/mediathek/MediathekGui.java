@@ -20,7 +20,6 @@
 package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
-
 import de.mediathekview.mlib.filmesuchen.ListenerFilmeLaden;
 import de.mediathekview.mlib.filmesuchen.ListenerFilmeLadenEvent;
 import de.mediathekview.mlib.tool.*;
@@ -31,7 +30,6 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.ProgStart;
 import mediathek.controller.starter.Start;
-
 import mediathek.daten.ListeDownloads;
 import mediathek.gui.*;
 import mediathek.gui.actions.ResetSettingsAction;
