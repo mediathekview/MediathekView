@@ -14,7 +14,11 @@ apply from: "${project.rootDir}/gradle/eclipse.gradle"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 group = 'de.mediathekview'
+<<<<<<< HEAD
 version = '13.1.0'
+=======
+version = '13.0.5'
+>>>>>>> 13.0.5
 
 def jarName = 'MediathekView.jar'
 def mainClass = 'mediathek.Main'
@@ -50,7 +54,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven {
-        url "https://packagecloud.io/mediathekview/MediathekView/maven2"
+    	url "https://oss.sonatype.org/content/repositories/snapshots/"
     }
     flatDir {
         dirs 'libs'
@@ -70,9 +74,9 @@ dependencies {
     compile "$swingxGroup:swingx-plaf:$swingxVersion"
 
     compile 'org.apache.commons:commons-lang3:3.5'
-    compile 'com.fasterxml.jackson.core:jackson-core:2.7.0'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.9.3'
     compile 'com.jidesoft:jide-oss:3.6.16'
-    compile 'org.tukaani:xz:1.5'
+    compile 'org.tukaani:xz:1.6'
     compile 'com.jgoodies:jgoodies-forms:1.9.0'
     compile 'net.sf.jchart2d:jchart2d:3.3.2'
     compile 'net.engio:mbassador:1.3.0'

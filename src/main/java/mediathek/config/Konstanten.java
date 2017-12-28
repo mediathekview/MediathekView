@@ -23,7 +23,6 @@ import de.mediathekview.mlib.tool.Functions;
 import de.mediathekview.mlib.tool.Version;
 
 public class Konstanten {
-    
     // Wird aktuell nicht verwendet, aber auf Wunsch von Alex bei Merge von Master nach Develop beibehalten
     public static final Version MVVERSION = new Version(13,1,0);
 
