@@ -14,7 +14,7 @@ apply from: "${project.rootDir}/gradle/eclipse.gradle"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 group = 'de.mediathekview'
-version = '13.0.4'
+version = '13.0.5'
 
 def jarName = 'MediathekView.jar'
 def mainClass = 'mediathek.Main'
@@ -52,8 +52,10 @@ compileTestJava {
 }
 
 repositories {
+    mavenLocal()
+    mavenCentral()
     maven {
-        url "https://repo.mediathekview.de/repository/maven-public/"
+    	url "https://oss.sonatype.org/content/repositories/snapshots/"
     }
     flatDir {
         dirs 'libs'
@@ -61,7 +63,7 @@ repositories {
 }
 
 dependencies {
-    compile 'de.mediathekview:MSearch:2.4.2'
+    compile 'de.mediathekview:MLib:2.4.3'
 
     compile "$swingxGroup:swingx-action:$swingxVersion"
     compile "$swingxGroup:swingx-autocomplete:$swingxVersion"
@@ -73,9 +75,9 @@ dependencies {
     compile "$swingxGroup:swingx-plaf:$swingxVersion"
 
     compile 'org.apache.commons:commons-lang3:3.5'
-    compile 'com.fasterxml.jackson.core:jackson-core:2.7.0'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.9.3'
     compile 'com.jidesoft:jide-oss:3.6.16'
-    compile 'org.tukaani:xz:1.5'
+    compile 'org.tukaani:xz:1.6'
     compile 'com.jgoodies:jgoodies-forms:1.9.0'
     compile 'net.sf.jchart2d:jchart2d:3.3.2'
 
