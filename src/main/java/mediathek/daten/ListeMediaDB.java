@@ -19,7 +19,10 @@
  */
 package mediathek.daten;
 
-import mSearch.tool.*;
+import mSearch.tool.Duration;
+import mSearch.tool.Listener;
+import mSearch.tool.Log;
+import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -102,7 +105,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         });
 
         this.clear();
-        tmp.forEach(this::add);
+        this.addAll(tmp);
         tmp.clear();
         hash.clear();
 
@@ -224,7 +227,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
 //    }
     private class Index implements Runnable {
 
-        String pfad = "";
+        String pfad;
         String error = "";
         boolean more = false;
 
@@ -333,14 +336,23 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         return ret;
     }
 
+    private String minTextLaenge(String text) {
+        StringBuilder textBuilder = new StringBuilder(text);
+        while (textBuilder.length() < 60) {
+            textBuilder.append(' ');
+        }
+        return textBuilder.toString();
+    }
+
+
     private String getLine(DatenMediaDB med, boolean export) {
         if (export) {
             return med.arr[DatenMediaDB.MEDIA_DB_NAME];
         }
         String ret = "";
-        ret += Functions.minTextLaenge(60, med.arr[DatenMediaDB.MEDIA_DB_NAME]) + TRENNER;
-        ret += Functions.minTextLaenge(60, med.arr[DatenMediaDB.MEDIA_DB_PATH]) + TRENNER;
-        ret += med.mVMediaDBFileSize.sizeL + "";
+        ret += minTextLaenge(med.arr[DatenMediaDB.MEDIA_DB_NAME]) + TRENNER;
+        ret += minTextLaenge(med.arr[DatenMediaDB.MEDIA_DB_PATH]) + TRENNER;
+        ret += String.valueOf(med.mVMediaDBFileSize.sizeL);
         return ret;
     }
 

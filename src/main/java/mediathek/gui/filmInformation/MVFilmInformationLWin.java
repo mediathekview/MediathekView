@@ -270,11 +270,12 @@ public class MVFilmInformationLWin extends JDialog implements IFilmInformation {
             for (int i = 0; i < txtArrCont.length; ++i) {
                 txtArrCont[i].setText(aktFilm.arr[i]);
             }
-            if (aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG].isEmpty()) {
+            final String description = aktFilm.getDescription();
+            if (description.isEmpty()) {
                 // sonst müsste die Größe gesetzt werden
                 textAreaBeschreibung.setText(" ");
             } else {
-                textAreaBeschreibung.setText(aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG]);
+                textAreaBeschreibung.setText(description);
             }
             lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE]);
             lblUrlSubtitle.setText(aktFilm.getUrlSubtitle());

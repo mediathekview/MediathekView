@@ -25,6 +25,7 @@ import mediathek.daten.DatenAbo;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
 public class Filter {
@@ -66,15 +67,16 @@ public class Filter {
         return false;
     }
 
-    public static boolean filterAufFilmPruefen(String senderSuchen, String themaSuchen,
-            String[] titelSuchen, String[] themaTitelSuchen, String[] irgendwoSuchen, int laengeMinutenSuchen, boolean min,
-            DatenFilm film, boolean mitLaenge) {
+    public static boolean filterAufFilmPruefen(final String senderSuchen, final String themaSuchen,
+                                               final String[] titelSuchen, final String[] themaTitelSuchen, final String[] irgendwoSuchen,
+                                               final int laengeMinutenSuchen, final boolean min,
+                                               final DatenFilm film, final boolean mitLaenge) {
         // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen
         // senderSuchen exakt mit sender
         // themaSuchen exakt mit thema
         // titelSuchen muss im Titel nur enthalten sein
 
-        if (senderSuchen.isEmpty() || film.arr[DatenFilm.FILM_SENDER].equalsIgnoreCase(senderSuchen)) {
+        if (senderSuchen.isEmpty() || film.arr[DatenFilm.FILM_SENDER].compareTo(senderSuchen) == 0) {
             if (themaSuchen.isEmpty() || film.arr[DatenFilm.FILM_THEMA].equalsIgnoreCase(themaSuchen)) {
 
                 if (titelSuchen.length == 0 || pruefen(titelSuchen, film.arr[DatenFilm.FILM_TITEL])) {
@@ -113,7 +115,7 @@ public class Filter {
         }
     }
 
-    private static boolean pruefen(String[] filter, String im) {
+    private static boolean pruefen(String[] filter, final String im) {
         // wenn einer passt, dann ists gut
         Pattern p;
         if (filter.length == 1) {
@@ -126,9 +128,10 @@ public class Filter {
             }
         }
 
+        final String lowerCase = im.toLowerCase();
         for (String s : filter) {
             // dann jeden Suchbegriff checken
-            if (im.toLowerCase().contains(s)) {
+            if (lowerCase.contains(s)) {
                 return true;
             }
         }
@@ -137,19 +140,37 @@ public class Filter {
         return false;
     }
 
-    public static boolean isPattern(String textSuchen) {
+    public static boolean isPattern(final String textSuchen) {
         return textSuchen.startsWith("#:");
     }
 
-    public static Pattern makePattern(String textSuchen) {
-        Pattern p = null;
-        try {
-            if (isPattern(textSuchen)) {
-                p = Pattern.compile(textSuchen.substring(2), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+    /**
+     * The cache for already compiled RegExp.
+     */
+    private static final HashMap<String, Pattern> PATTERN_CACHE = new HashMap<>();
+
+    /**
+     * Compile a regexp pattern if it doesn´t exist in the pattern cache.
+     *
+     * @param textSuchen regexp to be compiled
+     * @return the compiled regexp
+     */
+    public static Pattern makePattern(final String textSuchen) {
+        Pattern p;
+        if (isPattern(textSuchen)) {
+            p = PATTERN_CACHE.get(textSuchen);
+            if (p == null) {
+                //nothing in cache, so we have to compile...
+                try {
+                    p = Pattern.compile(textSuchen.substring(2), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+                    PATTERN_CACHE.put(textSuchen, p);
+                } catch (Exception ignored) {
+                    p = null;
+                }
             }
-        } catch (Exception ex) {
+        } else
             p = null;
-        }
+
         return p;
     }
 

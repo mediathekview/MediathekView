@@ -24,7 +24,7 @@ public class MVFilmInformationOSX implements IFilmInformation {
     private JLabel jLabelFilmNeu;
     private JLabel jLabelFilmHD;
     private JLabel jLabelFilmUT;
-    private JFrame parent = null;
+    private final JFrame parent;
     private final JLabel[] labelArrNames = new JLabel[DatenFilm.MAX_ELEM];
     private final JTextField[] txtArrCont = new JTextField[DatenFilm.MAX_ELEM];
     private DatenFilm aktFilm = new DatenFilm();
@@ -215,11 +215,12 @@ public class MVFilmInformationOSX implements IFilmInformation {
             for (int i = 0; i < txtArrCont.length; ++i) {
                 txtArrCont[i].setText(aktFilm.arr[i]);
             }
-            if (aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG].isEmpty()) {
+            final String description = aktFilm.getDescription();
+            if (description.isEmpty()) {
                 // sonst müsste die Größe gesetzt werden
                 textAreaBeschreibung.setText(" ");
             } else {
-                textAreaBeschreibung.setText(aktFilm.arr[DatenFilm.FILM_BESCHREIBUNG]);
+                textAreaBeschreibung.setText(description);
             }
             lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE]);
             lblUrlSubtitle.setText(aktFilm.getUrlSubtitle());

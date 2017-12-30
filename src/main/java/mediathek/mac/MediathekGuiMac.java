@@ -12,6 +12,7 @@ import mediathek.gui.filmInformation.MVFilmInformationOSX;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -20,6 +21,7 @@ import java.net.URL;
 
 @SuppressWarnings("serial")
 public class MediathekGuiMac extends MediathekGui {
+    private static final String ACTION_KEY_MAC_F = "mac-f";
 
     private final Daten daten;
     /**
@@ -57,6 +59,19 @@ public class MediathekGuiMac extends MediathekGui {
     }
 
     @Override
+    protected void setupSearchKeyForMac() {
+        // für den Mac
+        final JRootPane rootPane = getRootPane();
+        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), ACTION_KEY_MAC_F);
+        rootPane.getActionMap().put(ACTION_KEY_MAC_F, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setFocusOnSearchField();
+            }
+        });
+    }
+
+    @Override
     protected void setupHelpMenu() {
         super.setupHelpMenu();
         //not needed on OSX, located in apple menu
@@ -66,7 +81,7 @@ public class MediathekGuiMac extends MediathekGui {
 
 
     @Override
-    protected void createFilmInformationHUD(JFrame parent, JTabbedPane tabPane, Daten daten)
+    protected void createFilmInformationHUD(JFrame parent)
     {
         Daten.filmInfo = new MVFilmInformationOSX(parent);
     }

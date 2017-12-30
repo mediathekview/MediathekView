@@ -19,12 +19,6 @@
  */
 package mediathek.daten;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.tool.Duration;
@@ -33,6 +27,13 @@ import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.tool.Filter;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressWarnings("serial")
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
@@ -145,7 +146,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         if (listeFilme != null) {
             listeRet.setMeta(listeFilme);
 
-            forEach(entry -> {
+            this.parallelStream().forEach(entry -> {
                 entry.toLower();
                 entry.hasPattern();
             });

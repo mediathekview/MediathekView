@@ -135,7 +135,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
                     + "<body>"
                     + "<span class=\"sans\"><b>" + (currentFilm.arr[DatenFilm.FILM_SENDER].isEmpty() ? "" : currentFilm.arr[DatenFilm.FILM_SENDER] + "  -  ")
                     + currentFilm.arr[DatenFilm.FILM_TITEL] + "</b><br /></span>"
-                    + "<span class=\"sans\">" + currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG].replace("\n", "<br />") + "</span>"
+                            + "<span class=\"sans\">" + currentFilm.getDescription() + "</span>"
                     + "</body>"
                     + "</html>");
 

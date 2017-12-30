@@ -19,59 +19,11 @@
  */
 package mediathek;
 
-import static mSearch.tool.Functions.getOs;
-import static mediathek.tool.MVFunctionSys.startMeldungen;
-
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Desktop;
-import java.awt.Frame;
-import java.awt.Toolkit;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.util.logging.Level;
-
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.InputMap;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JRootPane;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTabbedPane;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
-
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
-
 import com.jidesoft.utils.SystemInfo;
-
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.tool.Duration;
-import mSearch.tool.Functions;
+import mSearch.tool.*;
 import mSearch.tool.Functions.OperatingSystemType;
-import mSearch.tool.Listener;
-import mSearch.tool.Log;
-import mSearch.tool.ReplaceList;
-import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.Konstanten;
@@ -79,35 +31,33 @@ import mediathek.config.MVConfig;
 import mediathek.controller.ProgStart;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
-import mediathek.gui.GuiAbo;
-import mediathek.gui.GuiDebug;
-import mediathek.gui.GuiDownloads;
-import mediathek.gui.GuiFilme;
-import mediathek.gui.GuiMeldungen;
-import mediathek.gui.MVStatusBar;
-import mediathek.gui.MVTray;
-import mediathek.gui.PanelVorlage;
-import mediathek.gui.SplashScreenManager;
+import mediathek.gui.*;
 import mediathek.gui.bandwidth.IBandwidthMonitor;
 import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
-import mediathek.gui.dialog.AboutDialog;
-import mediathek.gui.dialog.DialogBeenden;
-import mediathek.gui.dialog.DialogLeer;
-import mediathek.gui.dialog.DialogMediaDB;
-import mediathek.gui.dialog.DialogStarteinstellungen;
-import mediathek.gui.dialog.DialogZiel;
-import mediathek.gui.dialog.ResetSettingsDialog;
+import mediathek.gui.dialog.*;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.filmInformation.MVFilmInformationLWin;
 import mediathek.res.GetIcon;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.Logfile;
-import mediathek.tool.MVFont;
-import mediathek.tool.MVFrame;
-import mediathek.tool.MVFunctionSys;
-import mediathek.tool.MVMessageDialog;
+import mediathek.tool.*;
 import mediathek.update.CheckUpdate;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.util.logging.Level;
+
+import static mSearch.tool.Functions.getOs;
+import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 @SuppressWarnings("serial")
 public class MediathekGui extends JFrame {
@@ -127,7 +77,6 @@ public class MediathekGui extends JFrame {
     private static final String LOG_TEXT_ERSTER_START = "Erster Start";
     private static final String LOG_TEXT_START_GUI = "Start Gui";
     private static final String LOG_TEXT_INIT_GUI = "Init GUI";
-    private static final String ACTION_KEY_MAC_F = "mac-f";
     private static final String LOG_TEXT_GUI_STEHT = "Gui steht!";
     private static final String ARGUMENT_PREFIX = "-";
     private static final String TITLE_TEXT_PROGRAMMVERSION_IST_AKTUELL = "Programmversion ist aktuell";
@@ -215,7 +164,7 @@ public class MediathekGui extends JFrame {
         Duration.staticPing(LOG_TEXT_START_GUI);
         createStatusBar();
 
-        createFilmInformationHUD(this, jTabbedPane, daten);
+        createFilmInformationHUD(this);
 
         setOrgTitel();
         setLookAndFeel();
@@ -226,10 +175,10 @@ public class MediathekGui extends JFrame {
 
 
         addListener();
-        setSearchKeyForMac();
+        setupSearchKeyForMac();
 
 
-        setFocusSuchfeld();
+        setFocusOnSearchField();
 
         createBandwidthMonitor(this);
 
@@ -240,17 +189,12 @@ public class MediathekGui extends JFrame {
         splashScreenManager.closeSplashScreen();
     }
 
-    private void setSearchKeyForMac()
+    /**
+     * Setup the keyboard for search field on macOS.
+     * Ununsed on other platforms.
+     */
+    protected void setupSearchKeyForMac()
     {
-        // für den Mac
-        final JRootPane rootPane = getRootPane();
-        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), ACTION_KEY_MAC_F);
-        rootPane.getActionMap().put(ACTION_KEY_MAC_F, new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setFocusSuchfeld();
-            }
-        });
     }
 
     private void initializeSettingsDialog()
@@ -331,7 +275,7 @@ public class MediathekGui extends JFrame {
     /**
      * Create the film information tool window.
      */
-    protected void createFilmInformationHUD(JFrame parent, JTabbedPane tabPane, Daten daten) {
+    protected void createFilmInformationHUD(JFrame parent) {
             //klappte nicht auf allen Desktops
         Daten.filmInfo = new MVFilmInformationLWin(parent);
     }
@@ -394,7 +338,7 @@ public class MediathekGui extends JFrame {
         });
     }
 
-    private void setFocusSuchfeld() {
+    protected void setFocusOnSearchField() {
         Listener.notify(Listener.EREIGNIS_SUCHFELD_FOCUS_SETZEN, MediathekGui.class.getName());
     }
 
@@ -406,7 +350,7 @@ public class MediathekGui extends JFrame {
         try {
             String laf = MVConfig.get(MVConfig.Configs.SYSTEM_LOOK);
             //if we have the old values, reset to System LAF
-            if (laf.equals("") || laf.length() == 1) {
+            if (laf.isEmpty() || laf.length() == 1) {
                 if (getOs() != OperatingSystemType.LINUX) {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 }
@@ -429,7 +373,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void setOrgTitel() {
-        this.setTitle(Konstanten.PROGRAMMNAME + " " + Konstanten.MVVERSION);
+        this.setTitle(Konstanten.PROGRAMMNAME + ' ' + Konstanten.MVVERSION);
     }
 
     private void setSize() {
@@ -1094,9 +1038,9 @@ public class MediathekGui extends JFrame {
             shutDown = dialogBeenden.isShutdownRequested();
         }
         // Tabelleneinstellungen merken
-        daten.guiFilme.tabelleSpeichern();
-        daten.guiDownloads.tabelleSpeichern();
-        daten.guiAbo.tabelleSpeichern();
+        Daten.guiFilme.tabelleSpeichern();
+        Daten.guiDownloads.tabelleSpeichern();
+        Daten.guiAbo.tabelleSpeichern();
         daten.getDialogMediaDB().tabelleSpeichern();
 
         if (daten.getListeDownloads() != null) {

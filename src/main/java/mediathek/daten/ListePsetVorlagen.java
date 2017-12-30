@@ -19,29 +19,30 @@
  */
 package mediathek.daten;
 
-import static mSearch.tool.Functions.getOs;
-import static mSearch.tool.Functions.getOsString;
-
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
-import java.util.LinkedList;
-import java.util.stream.Collectors;
-
-import javax.swing.JFrame;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamReader;
-
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.file.GetFile;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.TModel;
+
+import javax.swing.*;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
+
+import static mSearch.tool.Functions.getOs;
+import static mSearch.tool.Functions.getOsString;
 
 @SuppressWarnings("serial")
 public class ListePsetVorlagen extends LinkedList<String[]> {
@@ -142,28 +143,36 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             int event;
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
             inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
-            XMLStreamReader parser;
-            InputStreamReader inReader;
-            URLConnection conn;
-            conn = new URL(Konstanten.ADRESSE_VORLAGE_PROGRAMMGRUPPEN).openConnection();
+
+            //FIXME use okhttp
+            URLConnection conn = new URL(Konstanten.ADRESSE_VORLAGE_PROGRAMMGRUPPEN).openConnection();
             conn.setRequestProperty("User-Agent", Daten.getUserAgent());
             conn.setReadTimeout(TIMEOUT);
             conn.setConnectTimeout(TIMEOUT);
-            inReader = new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8);
-            parser = inFactory.createXMLStreamReader(inReader);
-            while (parser.hasNext()) {
-                event = parser.next();
-                if (event == XMLStreamConstants.START_ELEMENT) {
-                    if (parser.getLocalName().equals(PGR)) {
-                        //wieder ein neuer Server, toll
-                        String[] p = new String[PGR_MAX_ELEM];
-                        get(parser, PGR, PGR_COLUMN_NAMES, p);
-                        if (!p[PGR_URL_NR].isEmpty()) {
-                            this.add(p);
+
+            XMLStreamReader parser = null;
+            try (InputStream is = conn.getInputStream();
+                 InputStreamReader inReader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
+                parser = inFactory.createXMLStreamReader(inReader);
+                while (parser.hasNext()) {
+                    event = parser.next();
+                    if (event == XMLStreamConstants.START_ELEMENT) {
+                        if (parser.getLocalName().equals(PGR)) {
+                            //wieder ein neuer Server, toll
+                            String[] p = new String[PGR_MAX_ELEM];
+                            get(parser, PGR, PGR_COLUMN_NAMES, p);
+                            if (!p[PGR_URL_NR].isEmpty()) {
+                                this.add(p);
+                            }
                         }
                     }
                 }
+            } finally {
+                if (parser != null)
+                    parser.close();
             }
+        } catch (UnknownHostException ignored) {
+            return false;
         } catch (Exception ex) {
             Log.errorLog(398001963, ex);
             return false;
