@@ -19,21 +19,23 @@
  */
 package mediathek;
 
-import java.awt.SplashScreen;
-import java.io.File;
-import java.nio.file.Path;
-import java.util.concurrent.TimeUnit;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.FilmlisteLesen;
 import mSearch.tool.Log;
-import static mSearch.tool.Log.LILNE;
 import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.IoXmlLesen;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.MVFilmSize;
+
+import java.awt.*;
+import java.io.File;
+import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
+
+import static mSearch.tool.Log.LILNE;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 public class MediathekAuto {
@@ -76,7 +78,7 @@ public class MediathekAuto {
 
     public void starten() {
         daten = Daten.getInstance(pfad);
-        daten.setAuto(true);
+        Daten.setAuto(true);
         startMeldungen();
 
         if (!IoXmlLesen.einstellungenExistieren()) {

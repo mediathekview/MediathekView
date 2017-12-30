@@ -82,7 +82,6 @@ public class Daten
     private DownloadInfos downloadInfos = null;
 
     // Verzeichnis zum Speichern der Programmeinstellungen
-    //FIXME ist das wirklich notwendig??
     private static String basisverzeichnis;
     public static ListePset listePset = null;
     public MVUsedUrls history = null; // alle angesehenen Filme
@@ -143,24 +142,24 @@ public class Daten
         return reset;
     }
 
-    public static final Daten getInstance(String aBasisverzeichnis)
+    public static Daten getInstance(String aBasisverzeichnis)
     {
         basisverzeichnis = aBasisverzeichnis;
         return getInstance();
     }
 
-    public static final Daten getInstance(String aBasisverzeichnis, MediathekGui aMediathekGui1)
+    public static Daten getInstance(String aBasisverzeichnis, MediathekGui aMediathekGui1)
     {
         basisverzeichnis = aBasisverzeichnis;
         return getInstance(aMediathekGui1);
     }
 
-    private static final Daten getInstance(MediathekGui aMediathekGui)
+    private static Daten getInstance(MediathekGui aMediathekGui)
     {
         return instance == null ? instance = new Daten(aMediathekGui) : instance;
     }
 
-    public static final Daten getInstance()
+    public static Daten getInstance()
     {
         return instance == null ? instance =  new Daten() : instance;
     }

@@ -156,31 +156,32 @@ public class Main {
             //JavaFX stuff
             Platform.setImplicitExit(false);
 
-            if (SystemInfo.isMacOSX()) {
-                System.setProperty(MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR, Boolean.TRUE.toString());
-                cleanupOsxFiles();
-            }
-
             if (Daten.isDebug()) {
                 // use for debugging EDT violations
                 RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
-
-                if (SystemInfo.isMacOSX()) {
-                    //prevent startup of multiple instances...useful during debugging :(
-                    SingleInstance singleInstanceWatcher = new SingleInstance();
-                    if (singleInstanceWatcher.isAppAlreadyActive()) {
-                        JOptionPane.showMessageDialog(null, LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING);
-                    }
-                }
             }
+
+            final MediathekGui app;
+
             if (SystemInfo.isMacOSX()) {
-                new MediathekGuiMac(args).setVisible(true);
+                System.setProperty(MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR, Boolean.TRUE.toString());
+                cleanupOsxFiles();
+
+                //prevent startup of multiple instances...
+                SingleInstance singleInstanceWatcher = new SingleInstance();
+                if (singleInstanceWatcher.isAppAlreadyActive()) {
+                    JOptionPane.showMessageDialog(null, LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING);
+                }
+
+                app = new MediathekGuiMac(args);
             } else {
                 if (SystemInfo.isUnix()) {
                     setupX11WindowManagerClassName();
                 }
-                new MediathekGui(args).setVisible(true);
+                app = new MediathekGui(args);
             }
+
+            app.setVisible(true);
         });
     }
 
