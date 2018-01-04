@@ -55,7 +55,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven {
-    	url "https://oss.sonatype.org/content/repositories/snapshots/"
+        url "https://oss.sonatype.org/content/repositories/snapshots/"
     }
     flatDir {
         dirs 'libs'
@@ -63,7 +63,7 @@ repositories {
 }
 
 dependencies {
-    compile 'de.mediathekview:MLib:2.4.3'
+    compile 'de.mediathekview:MLib:2.4.4'
 
     compile "$swingxGroup:swingx-action:$swingxVersion"
     compile "$swingxGroup:swingx-autocomplete:$swingxVersion"
