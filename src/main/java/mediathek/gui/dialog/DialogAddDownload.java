@@ -133,7 +133,7 @@ public class DialogAddDownload extends JDialog {
         } else {
             jComboBoxPset.addActionListener(e -> setupResolutionButtons());
         }
-        jTextFieldSender.setText(" " + datenFilm.arr[DatenFilm.FILM_SENDER] + ":   " + datenFilm.arr[DatenFilm.FILM_TITEL]);
+        jTextFieldSender.setText(' ' + datenFilm.arr[DatenFilm.FILM_SENDER] + ":   " + datenFilm.arr[DatenFilm.FILM_TITEL]);
         jTextFieldName.getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
@@ -234,7 +234,7 @@ public class DialogAddDownload extends JDialog {
             // nur wenn vom Benutzer noch nicht geänert!
             stopBeob = true;
             datenDownload = new DatenDownload(pSet, datenFilm, DatenDownload.QUELLE_DOWNLOAD, null, "", "", getFilmResolution());
-            if (datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME].equals("")) {
+            if (datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME].isEmpty()) {
                 // dann wird nicht gespeichert ==> eigenntlich falsche Seteinstellungen??
                 jTextFieldName.setEnabled(false);
                 jComboBoxPfad.setEnabled(false);
