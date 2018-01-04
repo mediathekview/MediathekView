@@ -23,7 +23,7 @@ import mSearch.tool.Version;
 
 public class Konstanten {
   
-    public static final Version MVVERSION = new Version(13,0,5);
+    public static final Version MVVERSION = new Version(13,0,6);
 
     public static final String PROGRAMMNAME = "MediathekView";
     public static final String USER_AGENT_DEFAULT = Konstanten.PROGRAMMNAME;
