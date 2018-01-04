@@ -83,7 +83,6 @@ public class MediathekGui extends JFrame {
     private static final String TITLE_TEXT_EIN_PROGRAMMUPDATE_IST_VERFUEGBAR = "Ein Programmupdate ist verfügbar";
     private static final String LOG_TEXT_CHECK_UPDATE = "CheckUpdate";
     private static final String TABNAME_FILME = "Filme";
-    private static final String TABNAME_DEBUG = "Debug";
     private static final String TABNAME_DOWNLOADS = "Downloads";
     private static final String TABNAME_ABOS = "Abos";
     private static final String TABNAME_MELDUNGEN = "Meldungen";
@@ -465,11 +464,6 @@ public class MediathekGui extends JFrame {
         //jTabbedPane.addTab("Filme", Icons.ICON_TAB_FILM, Daten.guiFilme);
         jTabbedPane.addTab(TABNAME_FILME, Daten.guiFilme);
 
-        if (Daten.isDebug()) {
-            Daten.guiDebug = new GuiDebug(daten);
-            //jTabbedPane.addTab("Debug", spacerIcon, Daten.guiDebug);
-            jTabbedPane.addTab(TABNAME_DEBUG, Daten.guiDebug);
-        }
         initFrames();
         jTabbedPane.addChangeListener(l -> {
             designTabs(); //damit das sel. Tab das richtige Icon bekommt
@@ -607,13 +601,7 @@ public class MediathekGui extends JFrame {
                     ic = top ? Icons.ICON_TAB_TOP_MELDUNG_SW : Icons.ICON_TAB_MELDUNG_SW;
                 }
             }
-            if (c.equals(Daten.guiDebug)) {
-                if (jTabbedPane.getSelectedIndex() == i) {
-                    ic = top ? Icons.ICON_TAB_TOP_MELDUNG : Icons.ICON_TAB_MELDUNG;
-                } else {
-                    ic = top ? Icons.ICON_TAB_TOP_MELDUNG_SW : Icons.ICON_TAB_MELDUNG_SW;
-                }
-            }
+
             String s = jTabbedPane.getTitleAt(i);
             JLabel lbl = makeLable(s, ic);
             if (icon) {
