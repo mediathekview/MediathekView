@@ -62,9 +62,9 @@ public class ImportFilmliste {
         });
     }
 
-    // #########################################################
-    // Filmeliste importieren, URL automatisch wählen
-    // #########################################################
+    /**
+     * Filmeliste importieren, URL automatisch wählen
+     */
     public void filmeImportierenAuto(ListeFilme listeFilme, ListeFilme listeFilmeDiff, int days) {
         Config.setStop(false);
         new Thread(new FilmeImportierenAutoThread(listeFilme, listeFilmeDiff, days)).start();
@@ -193,10 +193,6 @@ public class ImportFilmliste {
     // #######################################
     public void addAdListener(ListenerFilmeLaden listener) {
         listeners.add(ListenerFilmeLaden.class, listener);
-    }
-
-    public void updateDownloadUrlsFilmlisten(boolean akt) {
-        msFilmlistenSuchen.updateURLsFilmlisten(akt);
     }
 
     private boolean urlLaden(String dateiUrl, ListeFilme listeFilme, int days) {

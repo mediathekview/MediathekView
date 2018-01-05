@@ -51,12 +51,6 @@ public class FilmeLaden {
     private final HashSet<String> hashSet = new HashSet<>();
     private final ListeFilme diffListe = new ListeFilme();
 
-    private enum ListenerMelden {
-
-        START, PROGRESS, FINISHED
-    }
-
-    // private
     private final Daten daten;
     private final ImportFilmliste importFilmliste;
     private final EventListenerList listeners = new EventListenerList();
@@ -208,10 +202,6 @@ public class FilmeLaden {
         //return FilmeSuchen.getNamenSender();
     }
 
-    public void updateDownloadUrlsFilmlisten(boolean akt) {
-        importFilmliste.updateDownloadUrlsFilmlisten(akt);
-    }
-
     public ListeFilmlistenUrls getDownloadUrlsFilmlisten_akt() {
         return importFilmliste.msFilmlistenSuchen.listeFilmlistenUrls_akt;
     }
@@ -287,8 +277,6 @@ public class FilmeLaden {
 
     /**
      * Search through history and mark new films.
-     *
-     * @param listeFilme
      */
     private void findAndMarkNewFilms(ListeFilme listeFilme) {
         listeFilme.neueFilme = false;
