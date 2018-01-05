@@ -38,7 +38,7 @@ import java.nio.file.Paths;
 
 public class MVInfoFile {
 
-    public static void writeInfoFile(JFrame paFrame, Daten daten, DatenFilm film) {
+    public static void writeInfoFile(JFrame paFrame, DatenFilm film) {
         String titel = film.arr[DatenFilm.FILM_TITEL];
         titel = FilenameUtils.replaceLeerDateiname(titel, false /*pfad*/,
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
@@ -82,7 +82,7 @@ public class MVInfoFile {
             br.write("\n\n");
 
             br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_WEBSEITE] + '\n');
-            br.write(film.arr[DatenFilm.FILM_WEBSEITE]);
+            br.write(film.getWebsiteLink());
             br.write("\n\n");
 
             br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_URL] + '\n');
@@ -135,7 +135,7 @@ public class MVInfoFile {
                 br.write("\n\n");
 
                 br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_WEBSEITE] + '\n');
-                br.write(datenDownload.film.arr[DatenFilm.FILM_WEBSEITE]);
+                br.write(datenDownload.film.getWebsiteLink());
                 br.write("\n\n");
             }
 

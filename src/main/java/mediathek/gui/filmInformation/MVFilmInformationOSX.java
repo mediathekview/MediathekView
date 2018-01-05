@@ -222,7 +222,7 @@ public class MVFilmInformationOSX implements IFilmInformation {
             } else {
                 textAreaBeschreibung.setText(description);
             }
-            lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE]);
+            lblUrlThemaField.setText(aktFilm.getWebsiteLink());
             lblUrlSubtitle.setText(aktFilm.getUrlSubtitle());
             jLabelFilmNeu.setVisible(aktFilm.isNew());
             jLabelFilmHD.setVisible(aktFilm.isHD());

@@ -139,7 +139,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
                     + "</body>"
                     + "</html>");
 
-            jXHyperlinkWebsite.setText(currentFilm.arr[DatenFilm.FILM_WEBSEITE]);
+            jXHyperlinkWebsite.setText(currentFilm.getWebsiteLink());
         }
     }
 

@@ -244,7 +244,7 @@ public class MVFilmInformationLWin extends JDialog implements IFilmInformation {
     @Override
     public void showInfo() {
         setAktFilm();
-        super.setVisible(true);
+        setVisible(true);
     }
 
     @Override
@@ -277,7 +277,7 @@ public class MVFilmInformationLWin extends JDialog implements IFilmInformation {
             } else {
                 textAreaBeschreibung.setText(description);
             }
-            lblUrlThemaField.setText(aktFilm.arr[DatenFilm.FILM_WEBSEITE]);
+            lblUrlThemaField.setText(aktFilm.getWebsiteLink());
             lblUrlSubtitle.setText(aktFilm.getUrlSubtitle());
             jLabelFilmNeu.setVisible(aktFilm.isNew());
             jLabelFilmHD.setVisible(aktFilm.isHD());

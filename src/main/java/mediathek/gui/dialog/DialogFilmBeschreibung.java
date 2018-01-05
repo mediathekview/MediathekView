@@ -65,7 +65,7 @@ public class DialogFilmBeschreibung extends JDialog {
                 + "einer Filmliste verloren.").setVisible(true));
         jButtonSpeichern.addActionListener(e -> {
             datenFilm.arr[DatenFilm.FILM_BESCHREIBUNG] = jTextArea1.getText();
-            MVInfoFile.writeInfoFile(paFrame, daten, datenFilm);
+            MVInfoFile.writeInfoFile(paFrame, datenFilm);
         });
         pack();
     }
