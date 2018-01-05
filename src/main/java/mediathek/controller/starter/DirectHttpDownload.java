@@ -130,7 +130,8 @@ public class DirectHttpDownload extends Thread {
      */
     private void downloadContent() throws Exception {
         if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI])) {
-            MVInfoFile.writeInfoFile(datenDownload);
+            MVInfoFile infoFile = new MVInfoFile();
+            infoFile.writeInfoFile(datenDownload);
         }
         if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE])) {
             MVSubtitle.writeSubtitle(datenDownload);

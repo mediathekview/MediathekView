@@ -1,9 +1,9 @@
-/*    
+/*
  *    MediathekView
  *    Copyright (C) 2013   W. Xaver
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
- *    
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -29,6 +29,11 @@ import java.util.HashMap;
 import java.util.regex.Pattern;
 
 public class Filter {
+
+    /**
+     * The cache for already compiled RegExp.
+     */
+    private static final HashMap<String, Pattern> PATTERN_CACHE = new HashMap<>();
 
     public static boolean aboExistiertBereits(DatenAbo aboExistiert, DatenAbo aboPruefen) {
         // prüfen ob "aboExistiert" das "aboPrüfen" mit abdeckt, also die gleichen (oder mehr)
@@ -143,11 +148,6 @@ public class Filter {
     public static boolean isPattern(final String textSuchen) {
         return textSuchen.startsWith("#:");
     }
-
-    /**
-     * The cache for already compiled RegExp.
-     */
-    private static final HashMap<String, Pattern> PATTERN_CACHE = new HashMap<>();
 
     /**
      * Compile a regexp pattern if it doesn´t exist in the pattern cache.

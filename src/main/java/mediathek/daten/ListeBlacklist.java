@@ -55,11 +55,10 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      * Add item without notifying registered listeners.
      *
      * @param b {@link DatenBlacklist} item.
-     * @return true if collection is changed
      */
-    public synchronized boolean addWithoutNotification(DatenBlacklist b) {
+    public synchronized void addWithoutNotification(DatenBlacklist b) {
         b.arr[DatenBlacklist.BLACKLIST_NR] = getNr(nr++);
-        return super.add(b);
+        super.add(b);
     }
 
     @Override

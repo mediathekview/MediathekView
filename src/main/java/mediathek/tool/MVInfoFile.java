@@ -38,7 +38,7 @@ import java.nio.file.Paths;
 
 public class MVInfoFile {
 
-    public static void writeInfoFile(JFrame paFrame, DatenFilm film) {
+    public void writeInfoFile(JFrame paFrame, DatenFilm film) {
         String titel = film.arr[DatenFilm.FILM_TITEL];
         titel = FilenameUtils.replaceLeerDateiname(titel, false /*pfad*/,
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
@@ -65,7 +65,10 @@ public class MVInfoFile {
         }
 
         Path path = Paths.get(dialog.ziel);
-        try (BufferedWriter br = new BufferedWriter(new OutputStreamWriter(new DataOutputStream(Files.newOutputStream(path))))) {
+        try (OutputStream os = Files.newOutputStream(path);
+             DataOutputStream dos = new DataOutputStream(os);
+             OutputStreamWriter osw = new OutputStreamWriter(dos);
+             BufferedWriter br = new BufferedWriter(osw)) {
             br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_SENDER] + ":      " + film.arr[DatenFilm.FILM_SENDER]);
             br.write("\n");
             br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_THEMA] + ":       " + film.arr[DatenFilm.FILM_THEMA]);
@@ -95,7 +98,7 @@ public class MVInfoFile {
             }
 
             int anz = 0;
-            for (String s : film.arr[DatenFilm.FILM_BESCHREIBUNG].split(" ")) {
+            for (String s : film.getDescription().split(" ")) {
                 anz += s.length();
                 br.write(s + ' ');
                 if (anz > 50) {
@@ -110,12 +113,14 @@ public class MVInfoFile {
         }
     }
 
-    public static void writeInfoFile(DatenDownload datenDownload) {
+    public void writeInfoFile(DatenDownload datenDownload) {
         SysMsg.sysMsg(new String[]{"Infofile schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]});
 
         new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]).mkdirs();
         Path path = Paths.get(datenDownload.getFileNameWithoutSuffix() + ".txt");
-        try (DataOutputStream dos = new DataOutputStream(Files.newOutputStream(path));
+
+        try (OutputStream os = Files.newOutputStream(path);
+             DataOutputStream dos = new DataOutputStream(os);
              OutputStreamWriter osw = new OutputStreamWriter(dos);
              BufferedWriter br = new BufferedWriter(osw)) {
             if (datenDownload.film != null) {
@@ -151,7 +156,7 @@ public class MVInfoFile {
 
             if (datenDownload.film != null) {
                 int anz = 0;
-                for (String s : datenDownload.film.arr[DatenFilm.FILM_BESCHREIBUNG].split(" ")) {
+                for (String s : datenDownload.film.getDescription().split(" ")) {
                     anz += s.length();
                     br.write(s + ' ');
                     if (anz > 50) {

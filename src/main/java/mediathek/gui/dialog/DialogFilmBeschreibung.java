@@ -46,14 +46,15 @@ public class DialogFilmBeschreibung extends JDialog {
         new EscBeenden(this) {
             @Override
             public void beenden_() {
-                beenden();
+                dispose();
             }
         };
-        jTextArea1.setText(datenFilm.arr[DatenFilm.FILM_BESCHREIBUNG]);
+        jTextArea1.setText(datenFilm.getDescription());
         jTextFieldTitel.setText(datenFilm.arr[DatenFilm.FILM_TITEL]);
+
         jButtonOk.addActionListener(e -> {
-            datenFilm.arr[DatenFilm.FILM_BESCHREIBUNG] = jTextArea1.getText();
-            beenden();
+            datenFilm.setDescription(jTextArea1.getText());
+            dispose();
         });
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHilfe.addActionListener(e -> new DialogHilfe(paFrame, true, '\n'
@@ -64,14 +65,11 @@ public class DialogFilmBeschreibung extends JDialog {
                 + "Achtung: Diese Änderungen gehen nach dem Neuladen\n"
                 + "einer Filmliste verloren.").setVisible(true));
         jButtonSpeichern.addActionListener(e -> {
-            datenFilm.arr[DatenFilm.FILM_BESCHREIBUNG] = jTextArea1.getText();
-            MVInfoFile.writeInfoFile(paFrame, datenFilm);
+            datenFilm.setDescription(jTextArea1.getText());
+            MVInfoFile file = new MVInfoFile();
+            file.writeInfoFile(paFrame, datenFilm);
         });
         pack();
-    }
-
-    private void beenden() {
-        this.dispose();
     }
 
     /** This method is called from within the constructor to
@@ -83,9 +81,9 @@ public class DialogFilmBeschreibung extends JDialog {
     private void initComponents() {
 
         jButtonOk = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jLabel2 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jTextFieldTitel = new javax.swing.JTextField();
         jButtonHilfe = new javax.swing.JButton();
         jButtonSpeichern = new javax.swing.JButton();
@@ -153,8 +151,6 @@ public class DialogFilmBeschreibung extends JDialog {
     private javax.swing.JButton jButtonHilfe;
     private javax.swing.JButton jButtonOk;
     private javax.swing.JButton jButtonSpeichern;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextFieldTitel;
     // End of variables declaration//GEN-END:variables
