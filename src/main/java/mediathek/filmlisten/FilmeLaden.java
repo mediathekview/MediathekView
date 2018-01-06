@@ -80,44 +80,6 @@ public class FilmeLaden {
         });
     }
 
-    //    // #########################################################
-    //    // Filmliste beim Programmstart!! laden
-    //    // #########################################################
-    //    public void loadFilmlistProgStart() {
-    //        // Gui startet ein wenig flüssiger
-    //        new Thread(new loadFilmlistProgStart_()).start();
-    //    }
-    //    private class loadFilmlistProgStart_ implements Runnable {
-    //
-    //        @Override
-    //        public synchronized void run() {
-    //            Duration.staticPing("Thread: Filmliste laden");
-    //            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
-    //
-    //            SysMsg.sysMsg("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-    //            SysMsg.sysMsg("  erstellt am: " + daten.getListeFilme().genDate());
-    //            SysMsg.sysMsg("  Anzahl Filme: " + daten.getListeFilme().size());
-    //            SysMsg.sysMsg("  Anzahl Neue: " + daten.getListeFilme().countNewFilms());
-    //
-    //            daten.getListeFilme().themenLaden();
-    //            Daten.listeAbo.setAboFuerFilm(daten.getListeFilme(), false /*aboLoeschen*/);
-    //            daten.getListeDownloads().filmEintragen(); // Filme bei einmalDownloads eintragen
-    //            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
-    //
-    //            if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO && daten.getListeFilme().isTooOld()) {
-    //                SysMsg.sysMsg("Neue Filmliste laden");
-    //                loadFilmlist("", true);
-    //            } else {
-    //                // entweder neue Liste laden oder es ist schon fertig, dann melden
-    //                daten.getListeBlacklist().filterListe(); // beim Neuladen wird es dann erst gemacht
-    //                notifyFertig(new ListenerFilmeLadenEvent("", "", 0, 0, 0, false/*Fehler*/));
-    //            }
-    //        }
-    //
-    //    }
-    // #########################################################
-    // Filmliste importieren
-    // #########################################################
     public void loadFilmlistDialog(Daten daten, boolean manuell) {
         if (manuell || GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUS) {
             // Dialog zum Laden der Filme anzeigen
