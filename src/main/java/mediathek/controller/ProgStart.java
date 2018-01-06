@@ -20,7 +20,7 @@
 package mediathek.controller;
 
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.filmlisten.FilmlisteLesen;
+import mSearch.filmlisten.FilmListReader;
 import mSearch.tool.Duration;
 import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
@@ -49,11 +49,14 @@ public class ProgStart {
 
             Daten daten = Daten.getInstance();
 
-            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
-            SysMsg.sysMsg("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-            SysMsg.sysMsg("  erstellt am: " + daten.getListeFilme().genDate());
-            SysMsg.sysMsg("  Anzahl Filme: " + daten.getListeFilme().size());
-            SysMsg.sysMsg("  Anzahl Neue: " + daten.getListeFilme().countNewFilms());
+            try (FilmListReader reader = new FilmListReader()) {
+                reader.readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+                SysMsg.sysMsg("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+                SysMsg.sysMsg("  erstellt am: " + daten.getListeFilme().genDate());
+                SysMsg.sysMsg("  Anzahl Filme: " + daten.getListeFilme().size());
+                SysMsg.sysMsg("  Anzahl Neue: " + daten.getListeFilme().countNewFilms());
+
+            }
 
             if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO && daten.getListeFilme().isTooOld()) {
                 SysMsg.sysMsg("Filmliste zu alt, neue Filmliste laden");

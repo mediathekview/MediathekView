@@ -21,7 +21,8 @@ package mediathek;
 
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.filmlisten.FilmlisteLesen;
+import mSearch.filmlisten.FastAutoFilmListReader;
+import mSearch.filmlisten.FilmListReader;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
@@ -76,6 +77,7 @@ public class MediathekAuto {
         this.bFastAuto = bFastAuto;
     }
 
+    @SuppressWarnings("resource")
     public void starten() {
         daten = Daten.getInstance(pfad);
         Daten.setAuto(true);
@@ -97,13 +99,18 @@ public class MediathekAuto {
         }
 
         // Filmliste laden
-        FilmlisteLesen filmList = new FilmlisteLesen();
-        if (bFastAuto) {
-            //do not read film descriptions in FASTAUTO mode as they won´t be used...
-            FilmlisteLesen.setWorkMode(FilmlisteLesen.WorkMode.FASTAUTO);
+        FilmListReader filmList = null;
+        try {
+            if (bFastAuto)
+                filmList = new FastAutoFilmListReader();
+            else
+                filmList = new FilmListReader();
+            filmList.readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+        } finally {
+            if (filmList != null) {
+                filmList.close();
+            }
         }
-        filmList.readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
-
         if (daten.getListeFilme().isTooOld()) {
             // erst neue Filmliste laden
             SysMsg.sysMsg("Neue Filmliste laden");

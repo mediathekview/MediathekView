@@ -23,7 +23,7 @@ import mSearch.Config;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.filmlisten.FilmlisteLesen;
+import mSearch.filmlisten.FilmListReader;
 import mSearch.filmlisten.FilmlistenSuchen;
 import mSearch.tool.Log;
 
@@ -33,14 +33,14 @@ import java.util.ArrayList;
 public class ImportFilmliste {
 
     private final EventListenerList listeners;
-    private final FilmlisteLesen msFilmlisteLesen;
+    private final FilmListReader msFilmListReader;
     public FilmlistenSuchen msFilmlistenSuchen;
 
     public ImportFilmliste() {
         listeners = new EventListenerList();
-        msFilmlisteLesen = new FilmlisteLesen();
+        msFilmListReader = new FilmListReader();
         msFilmlistenSuchen = new FilmlistenSuchen();
-        msFilmlisteLesen.addAdListener(new ListenerFilmeLaden() {
+        msFilmListReader.addAdListener(new ListenerFilmeLaden() {
             @Override
             public synchronized void start(ListenerFilmeLadenEvent event) {
                 for (ListenerFilmeLaden l : listeners.getListeners(ListenerFilmeLaden.class)) {
@@ -200,7 +200,7 @@ public class ImportFilmliste {
         try {
             if (!dateiUrl.isEmpty()) {
                 Log.sysLog("Filmliste laden von: " + dateiUrl);
-                msFilmlisteLesen.readFilmListe(dateiUrl, listeFilme, days);
+                msFilmListReader.readFilmListe(dateiUrl, listeFilme, days);
                 if (!listeFilme.isEmpty()) {
                     ret = true;
                 }

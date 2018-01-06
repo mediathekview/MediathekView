@@ -25,7 +25,7 @@ import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.filmlisten.FilmlisteLesen;
+import mSearch.filmlisten.FilmListReader;
 import mSearch.filmlisten.ListeFilmlistenUrls;
 import mSearch.tool.Duration;
 import mSearch.tool.Log;
@@ -210,7 +210,9 @@ public class FilmeLaden {
             // dann die alte Liste wieder laden
             daten.getListeFilme().clear();
             Config.setStop(false);
-            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+            try (FilmListReader reader = new FilmListReader()) {
+                reader.readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+            }
             SysMsg.sysMsg("");
         } else {
             daten.filmlisteSpeichern();
