@@ -20,6 +20,7 @@
 package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
+import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.*;
@@ -1071,6 +1072,9 @@ public class MediathekGui extends JFrame {
         }
 
         dispose();
+
+        DatenFilm.Database.closeDatabase();
+
         System.exit(0);
     return false;
     }
