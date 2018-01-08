@@ -2,6 +2,7 @@ package mediathek.gui;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
@@ -12,15 +13,11 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Separator;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
@@ -49,6 +46,8 @@ public class FilmActionPanel {
 
     public FilmActionPanel(Daten daten) {
         this.daten = daten;
+
+        filterPopover = createFilterPopover();
     }
 
     private Parent createLeft() {
@@ -187,25 +186,8 @@ public class FilmActionPanel {
         hb.setSpacing(4);
         hb.setAlignment(Pos.CENTER_RIGHT);
 
-        Button popOverTest = new Button("P");
-        popOverTest.setOnAction(e -> {
-            PopOver popover = new PopOver();
-            popover.setTitle("Erweiterte Filtereinstellung");
-            popover.setAnimated(true);
-            popover.setCloseButtonEnabled(true);
-            popover.setDetachable(true);
-            popover.setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
-
-            VBox vb = new VBox();
-            vb.setSpacing(4.0);
-            vb.setPadding(new Insets(5, 5, 5, 5));
-            Button btn = new Button("Hello");
-            btn.setOnAction(evt -> System.out.println("POPOVER BUTTON CLICKED"));
-            vb.getChildren().add(btn);
-            vb.getChildren().add(new Text("Textstring"));
-            popover.setContentNode(vb);
-            popover.show(popOverTest);
-        });
+        Button popOverTest = new Button("", fontAwesome.create(FontAwesome.Glyph.FILTER));
+        popOverTest.setOnAction(e -> filterPopover.show(popOverTest));
         ObservableList<Node> list = hb.getChildren();
         list.add(popOverTest);
         Separator separator = new Separator();
@@ -217,6 +199,43 @@ public class FilmActionPanel {
         setupSearchFieldVisibility();
 
         return hb;
+    }
+
+    private final PopOver filterPopover;
+
+    public BooleanProperty showOnlyHd;
+
+    public PopOver createFilterPopover() {
+        VBox vBox = new VBox();
+        vBox.setSpacing(4.0);
+        CheckBox cbShowOnlyHd = new CheckBox("Nur HD-Filme anzeigen");
+        showOnlyHd = cbShowOnlyHd.selectedProperty();
+        vBox.getChildren().add(cbShowOnlyHd);
+        vBox.getChildren().add(new CheckBox("Nur Filme mit Untertitel anzeigen"));
+        vBox.getChildren().add(new CheckBox("Nur neue Filme anzeigen"));
+        vBox.getChildren().add(new CheckBox("Gesehene Filme ausblenden"));
+        vBox.getChildren().add(new CheckBox("Abos ausblenden"));
+
+        TitledPane t1 = new TitledPane("Allgemeine Anzeigeeinstellungen", vBox);
+        TitledPane t2 = new TitledPane("T2", new Button("B2"));
+        TitledPane t3 = new TitledPane("Filterprofile", new Button("B3"));
+        Accordion accordion = new Accordion();
+        accordion.getPanes().addAll(t1, t2, t3);
+
+        PopOver popover = new PopOver();
+        popover.setTitle("Erweiterte Filtereinstellungen");
+        popover.setAnimated(true);
+        popover.setCloseButtonEnabled(true);
+        popover.setDetachable(true);
+        popover.setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
+
+        VBox vb = new VBox();
+        vb.setSpacing(4.0);
+        vb.setPadding(new Insets(5, 5, 5, 5));
+        vb.getChildren().addAll(accordion);
+        popover.setContentNode(vb);
+
+        return popover;
     }
 
     public Scene getFilmActionPanelScene() {

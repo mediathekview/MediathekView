@@ -108,10 +108,9 @@ public class GuiFilme extends PanelVorlage {
         panelVideoplayerSetzen();
         setupDescriptionPanel();
         toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_FILME);
-        jPanelToolBar.setLayout(new BorderLayout());
 
         fxPanel = new JFXPanel();
-        jPanelToolBar.add(fxPanel, BorderLayout.NORTH);
+        add(fxPanel, BorderLayout.NORTH);
         fap = new FilmActionPanel(daten);
         Platform.runLater(() -> fxPanel.setScene(fap.getFilmActionPanelScene()));
 
@@ -145,10 +144,6 @@ public class GuiFilme extends PanelVorlage {
         Listener.notify(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
     }
 
-/*    public String getFilterTextFromSearchField() {
-        return toolBar.jTextFieldFilter.getText();
-    }*/
-
     public void guiFilmeFilmAbspielen() {
         playFilm();
     }
@@ -169,24 +164,12 @@ public class GuiFilme extends PanelVorlage {
         loadTable();
     }
 
-    public void searchUrl(String url) {
-        searchFilmWithUrl_(url);
-    }
-
     public void filmGesehen() {
         daten.history.setGesehen(true, getSelFilme(), daten.getListeFilmeHistory());
     }
 
     public void filmUngesehen() {
         daten.history.setGesehen(false, getSelFilme(), daten.getListeFilmeHistory());
-    }
-
-    public void invertSelection() {
-        tabelle.invertSelection();
-    }
-
-    public ArrayList<DatenFilm> selFilme() {
-        return getSelFilme();
     }
 
     public int getTableRowCount() {
@@ -713,8 +696,7 @@ public class GuiFilme extends PanelVorlage {
 
     }
 
-    private Component addExtraFeld(int i, int spalte, int zeile, GridBagLayout gridbag, GridBagConstraints c, JPanel panel, ListePset liste) {
-        Component ret;
+    private void addExtraFeld(int i, int spalte, int zeile, GridBagLayout gridbag, GridBagConstraints c, JPanel panel, ListePset liste) {
         JButton button;
         c.gridx = spalte;
         c.gridy = zeile;
@@ -726,7 +708,6 @@ public class GuiFilme extends PanelVorlage {
             }
             gridbag.setConstraints(label, c);
             panel.add(label);
-            ret = label;
         } else {
             button = new JButton(liste.get(i).arr[DatenPset.PROGRAMMSET_NAME]);
             button.addActionListener(new BeobOpen(liste.get(i)));
@@ -737,9 +718,7 @@ public class GuiFilme extends PanelVorlage {
             buttonArray[i] = button;
             gridbag.setConstraints(button, c);
             panel.add(button);
-            ret = button;
         }
-        return ret;
     }
 
     // ############################################
@@ -828,7 +807,7 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jToggleButtonLivestram().addActionListener(e -> {
             if (!stopBeob && mVFilter.get_jToggleButtonLivestram().isSelected()) {
                 stopBeob = true;
-                delAlles();
+                resetFilterSettings();
                 mVFilter.get_jToggleButtonLivestram().setSelected(true);
                 stopBeob = false;
             }
@@ -838,7 +817,7 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jToggleButtonHistory().addActionListener(e -> {
             if (!stopBeob && mVFilter.get_jToggleButtonHistory().isSelected()) {
                 stopBeob = true;
-                delAlles();
+                resetFilterSettings();
                 mVFilter.get_jToggleButtonHistory().setSelected(true);
                 stopBeob = false;
             }
@@ -855,6 +834,7 @@ public class GuiFilme extends PanelVorlage {
         mVFilter.get_jTextFieldFilterThemaTitel().getDocument().addDocumentListener(new BeobFilterTitelDoc());
         mVFilter.get_jCheckBoxKeineAbos().addActionListener(new BeobFilter());
         mVFilter.get_jCheckBoxKeineGesehenen().addActionListener(new BeobFilter());
+        //FIXME hier werdde die action listener gesetzt
         mVFilter.get_jCheckBoxNurHd().addActionListener(new BeobFilter());
         mVFilter.get_jCheckBoxNurUt().addActionListener(new BeobFilter());
         mVFilter.get_jCheckBoxNeue().addActionListener(new BeobFilter());
@@ -888,7 +868,7 @@ public class GuiFilme extends PanelVorlage {
 
     private void delFilterAlles() {
         stopBeob = true;
-        delAlles();
+        resetFilterSettings();
         stopBeob = false;
         // und jetzt wieder laden
         daten.getListeBlacklist().filterListe();
@@ -896,16 +876,16 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void delOben() {
-        mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
-        mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
+        mVFilter.get_jComboBoxFilterSender().setModel(new DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
+        mVFilter.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
         mVFilter.get_jTextFieldFilterTitel().setText("");
         mVFilter.get_jTextFieldFilterThemaTitel().setText("");
         mVFilter.setThemaTitel(true);
     }
 
-    private void delAlles() {
-        mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
-        mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
+    private void resetFilterSettings() {
+        mVFilter.get_jComboBoxFilterSender().setModel(new DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
+        mVFilter.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
         mVFilter.get_jTextFieldFilterTitel().setText("");
         mVFilter.get_jTextFieldFilterThemaTitel().setText("");
         mVFilter.setThemaTitel(true);
@@ -1046,7 +1026,7 @@ public class GuiFilme extends PanelVorlage {
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER, String.valueOf(mVFilter.get_jSliderMinuten().getValue()), filter);
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER_MIN, String.valueOf(mVFilter.get_rbMin().isSelected()), filter);
 
-        java.util.List<? extends RowSorter.SortKey> listeSortKeys = null;
+        java.util.List<? extends RowSorter.SortKey> listeSortKeys;
         listeSortKeys = tabelle.getRowSorter().getSortKeys();
         String key = "";
         String upDown = "";
@@ -1086,7 +1066,7 @@ public class GuiFilme extends PanelVorlage {
                 //Filme neu laden
                 listeInModellLaden();
                 //Filter Sender
-                mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
+                mVFilter.get_jComboBoxFilterSender().setModel(new DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
                 mVFilter.get_jComboBoxFilterSender().setSelectedIndex(0);
                 if (!filterSender.equals("")) {
                     mVFilter.get_jComboBoxFilterSender().setSelectedItem(filterSender);
@@ -1099,9 +1079,9 @@ public class GuiFilme extends PanelVorlage {
                 mVFilter.get_jComboBoxFilterSender().setPopupVisible(senderOpen);
                 // Filter Thema
                 if (filterSender.equals("")) {
-                    mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
+                    mVFilter.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
                 } else {
-                    mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen(filterSender)));
+                    mVFilter.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen(filterSender)));
                 }
                 // wenn Thema bei dem Sender vorhanden, dann wieder setzen
                 mVFilter.get_jComboBoxFilterThema().setSelectedItem(filterThema);
@@ -1173,7 +1153,8 @@ public class GuiFilme extends PanelVorlage {
         jPanelExtraInnen = new javax.swing.JPanel();
         jScrollPaneFilter = new javax.swing.JScrollPane();
         jPanelFilter = new javax.swing.JPanel();
-        jPanelToolBar = new javax.swing.JPanel();
+
+        setLayout(new java.awt.BorderLayout());
 
         jSplitPane1.setDividerLocation(240);
 
@@ -1204,7 +1185,7 @@ public class GuiFilme extends PanelVorlage {
         jPanelExtraInnen.setLayout(jPanelExtraInnenLayout);
         jPanelExtraInnenLayout.setHorizontalGroup(
                 jPanelExtraInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 587, Short.MAX_VALUE)
+                        .addGap(0, 346, Short.MAX_VALUE)
         );
         jPanelExtraInnenLayout.setVerticalGroup(
                 jPanelExtraInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1240,12 +1221,12 @@ public class GuiFilme extends PanelVorlage {
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jPanelExtra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1262,38 +1243,14 @@ public class GuiFilme extends PanelVorlage {
         );
         jPanelFilterLayout.setVerticalGroup(
                 jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 515, Short.MAX_VALUE)
+                        .addGap(0, 530, Short.MAX_VALUE)
         );
 
         jScrollPaneFilter.setViewportView(jPanelFilter);
 
         jSplitPane1.setLeftComponent(jScrollPaneFilter);
 
-        javax.swing.GroupLayout jPanelToolBarLayout = new javax.swing.GroupLayout(jPanelToolBar);
-        jPanelToolBar.setLayout(jPanelToolBarLayout);
-        jPanelToolBarLayout.setHorizontalGroup(
-                jPanelToolBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanelToolBarLayout.setVerticalGroup(
-                jPanelToolBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 17, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jSplitPane1)
-                        .addComponent(jPanelToolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jPanelToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE))
-        );
+        add(jSplitPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1302,7 +1259,6 @@ public class GuiFilme extends PanelVorlage {
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JPanel jPanelExtraInnen;
     private javax.swing.JPanel jPanelFilter;
-    private javax.swing.JPanel jPanelToolBar;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPaneFilter;
     private javax.swing.JSplitPane jSplitPane1;
@@ -1872,7 +1828,7 @@ public class GuiFilme extends PanelVorlage {
 
         private class BeobAbo implements ActionListener {
 
-            private boolean mitTitel = false;
+            private final boolean mitTitel;
 
             public BeobAbo(boolean mmitTitel) {
                 mitTitel = mmitTitel;
