@@ -19,19 +19,11 @@
  */
 package mediathek.tool;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JWindow;
-import javax.swing.SwingConstants;
+import javafx.application.Platform;
 import mediathek.config.Daten;
-import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
-import net.sf.jcarrierpigeon.Notification;
-import net.sf.jcarrierpigeon.NotificationQueue;
-import net.sf.jcarrierpigeon.WindowPosition;
+import org.controlsfx.control.Notifications;
 
 public class MVNotification {
 
@@ -42,41 +34,31 @@ public class MVNotification {
         final String[] m = {
             "Film:   " + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
             "Sender: " + datenDownload.arr[DatenDownload.DOWNLOAD_SENDER],
-            "Größe:  " + MVFilmSize.humanReadableByteCount(datenDownload.mVFilmSize.getSize(), true),
-            (erfolgreich ? "Download war erfolgreich" : "Download war fehlerhaft")
+                "Größe:  " + MVFilmSize.humanReadableByteCount(datenDownload.mVFilmSize.getSize(), true)
         };
-        add(m, erfolgreich);
+        addNew(m, erfolgreich);
     }
 
-    private static void add(String[] mmeldung, boolean fehler) {
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_NOTIFICATION))) {
-            String meldung = "<html><head></head><body><p>";
-            for (String s : mmeldung) {
-                meldung += s + "<br />";
-            }
-            meldung += "</p></body></html>";
+    private static void addNew(String[] mmeldung, boolean erfolgreich) {
+        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_NOTIFICATION)))
+            return;
 
-            final JWindow messageFrame = new JWindow();
-            messageFrame.setLayout(new BorderLayout());
-            final JPanel panel = new JPanel();
-            panel.setBackground(Color.BLACK);
-
-            messageFrame.setContentPane(panel);
-
-            final JLabel iconLabel = new JLabel(fehler ? Icons.ICON_NOTIFICATION : Icons.ICON_NOTIFICATION_ERROR);
-            iconLabel.setVerticalAlignment(SwingConstants.TOP);
-            messageFrame.getContentPane().add(iconLabel, BorderLayout.WEST);
-            final JLabel meldungsLabel = new JLabel(meldung);
-            meldungsLabel.setForeground(Color.WHITE);
-
-            messageFrame.getContentPane().add(meldungsLabel, BorderLayout.CENTER);
-            messageFrame.pack();
-            messageFrame.setFocusableWindowState(false);
-
-            Notification notification = new Notification(messageFrame, WindowPosition.BOTTOMRIGHT, 20, 20, 6000);
-            NotificationQueue q = new NotificationQueue();
-            q.add(notification);
-
+        StringBuilder meldung = new StringBuilder();
+        for (String s : mmeldung) {
+            meldung.append(s).append('\n');
         }
+
+        Platform.runLater(() -> {
+            Notifications msg = Notifications.create();
+            if (erfolgreich)
+                msg.title("Download war erfolgreich");
+            else
+                msg.title("Download war fehlerhaft");
+            msg.text(meldung.toString());
+            if (erfolgreich)
+                msg.showInformation();
+            else
+                msg.showError();
+        });
     }
 }

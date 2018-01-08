@@ -84,11 +84,7 @@ public final class MVTray {
 
             trayIcon.setPopupMenu(popup);
             try {
-//                if (SystemInfo.isLinux()) {
-//                    new HackyLinuxTrayIconInitialiser(trayIcon).execute();
-//                } else {
                 tray.add(trayIcon);
-//                }
                 return this;
             } catch (AWTException e) {
                 SysMsg.sysMsg("Tray konnte nicht geladen werden!");
@@ -237,63 +233,4 @@ public final class MVTray {
         }
     }
 
-//    public class HackyLinuxTrayIconInitialiser extends SwingWorker<Void, TrayIcon> {
-//
-//        private static final int MAX_ADD_ATTEMPTS = 4;
-//        private static final long ADD_ICON_DELAY = 200;
-//        private static final long ADD_FAILED_DELAY = 1000;
-//
-//        private TrayIcon[] icons;
-//
-//        public HackyLinuxTrayIconInitialiser(TrayIcon... ic) {
-//            icons = ic;
-//        }
-//
-//        @Override
-//        protected Void doInBackground() {
-//            try {
-//                Method addNotify = TrayIcon.class.getDeclaredMethod("addNotify", (Class<?>[]) null);
-//                addNotify.setAccessible(true);
-//                for (TrayIcon icon : icons) {
-//                    for (int attempt = 1; attempt < MAX_ADD_ATTEMPTS; attempt++) {
-//                        try {
-//                            addNotify.invoke(icon, (Object[]) null);
-//                            publish(icon);
-//                            pause(ADD_ICON_DELAY);
-//                            break;
-//                        } catch (NullPointerException | IllegalAccessException | IllegalArgumentException e) {
-//                            System.err.println("Failed to add icon. Giving up.");
-//                            e.printStackTrace();
-//                            break;
-//                        } catch (InvocationTargetException e) {
-//                            System.err.println("Failed to add icon, attempt " + attempt);
-//                            pause(ADD_FAILED_DELAY);
-//                        }
-//                    }
-//                }
-//            } catch (NoSuchMethodException | SecurityException e1) {
-//                e1.printStackTrace();
-//            }
-//            return null;
-//        }
-//
-//        private void pause(long delay) {
-//            try {
-//                Thread.sleep(delay);
-//            } catch (InterruptedException e1) {
-//                e1.printStackTrace();
-//            }
-//        }
-//
-//        @Override
-//        protected void process(List<TrayIcon> icons) {
-//            for (TrayIcon icon : icons) {
-//                try {
-//                    tray.add(icon);
-//                } catch (AWTException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
 }

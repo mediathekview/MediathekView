@@ -167,11 +167,6 @@ public class FilmActionPanel {
 
         ToggleButton btnAdvancedFilter = new ToggleButton("", fontAwesome.create(FontAwesome.Glyph.FILTER));
         btnAdvancedFilter.setOnAction(event -> {
-           /* Notifications.create()
-                    .title("Download abgeschlossen")
-                    .text("Und wir sind fertig :-)\nIst aber nur ein Testdialog")
-                    .showInformation();*/
-
             SwingUtilities.invokeLater(() -> {
                 boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER));
                 MVConfig.add(MVConfig.Configs.SYSTEM_VIS_FILTER, Boolean.toString(b));
