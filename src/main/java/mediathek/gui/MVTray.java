@@ -19,16 +19,14 @@
  */
 package mediathek.gui;
 
+import javafx.application.Platform;
 import mSearch.tool.Listener;
 import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
-import net.sf.jcarrierpigeon.Notification;
-import net.sf.jcarrierpigeon.NotificationQueue;
-import net.sf.jcarrierpigeon.WindowPosition;
+import org.controlsfx.control.Notifications;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -144,17 +142,14 @@ public final class MVTray {
     }
 
     private String getTextInfos() {
-        String strText = "<html><head></head><body><p>";
+        String strText = "";
 
         strText += "Filmliste erstellt: " + daten.getListeFilme().genDate() + " Uhr  ";
-
-        strText += "<br />";
+        strText += "\n";
         strText += "Anz. Filme: " + daten.getListeFilme().size();
-
-        strText += "<br />";
+        strText += "\n";
         strText += getInfoTextDownloads();
 
-        strText += "</p></body></html>";
         return strText;
     }
 
@@ -210,26 +205,12 @@ public final class MVTray {
     private void addNotification(String meldung) {
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_NOTIFICATION))) {
 
-            final JWindow messageFrame = new JWindow();
-            messageFrame.setLayout(new BorderLayout());
-            final JPanel panel = new JPanel();
-            panel.setBackground(Color.BLACK);
-
-            messageFrame.setContentPane(panel);
-
-            final JLabel iconLabel = new JLabel(Icons.ICON_NOTIFICATION);
-            iconLabel.setVerticalAlignment(SwingConstants.TOP);
-            messageFrame.getContentPane().add(iconLabel, BorderLayout.WEST);
-            final JLabel meldungsLabel = new JLabel(meldung);
-            meldungsLabel.setForeground(Color.WHITE);
-
-            messageFrame.getContentPane().add(meldungsLabel, BorderLayout.CENTER);
-            messageFrame.pack();
-            messageFrame.setFocusableWindowState(false);
-
-            Notification notification = new Notification(messageFrame, WindowPosition.BOTTOMRIGHT, 20, 20, 6000);
-            NotificationQueue q = new NotificationQueue();
-            q.add(notification);
+            Platform.runLater(() -> {
+                Notifications msg = Notifications.create();
+                msg.title("Programminfos");
+                msg.text(meldung);
+                msg.showInformation();
+            });
         }
     }
 
