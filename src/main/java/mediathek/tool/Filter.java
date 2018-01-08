@@ -188,19 +188,4 @@ public class Filter {
             tf.setBackground(Color.WHITE);
         }
     }
-
-    public static void checkPattern2(JTextField tf) {
-        // Schriftfarbe ändern wenn eine RegEx
-        String text = tf.getText();
-        if (Filter.isPattern(text)) {
-            if (Filter.makePattern(text) == null) {
-                //soll Pattern sein, ist aber falsch
-                tf.setForeground(Color.RED);
-            } else {
-                tf.setForeground(Color.BLUE);
-            }
-        } else {
-            tf.setForeground(Color.BLACK);
-        }
-    }
 }

@@ -20,6 +20,8 @@
 package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
@@ -39,7 +41,6 @@ import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.tool.*;
-import mediathek.tool.MVTable;
 
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
@@ -108,11 +109,19 @@ public class GuiFilme extends PanelVorlage {
         setupDescriptionPanel();
         toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_FILME);
         jPanelToolBar.setLayout(new BorderLayout());
-        jPanelToolBar.add(toolBar, BorderLayout.CENTER);
+
+        fxPanel = new JFXPanel();
+        jPanelToolBar.add(fxPanel, BorderLayout.NORTH);
+        fap = new FilmActionPanel(daten);
+        Platform.runLater(() -> fxPanel.setScene(fap.getFilmActionPanelScene()));
+
         setToolbarVisible();
         start_init();
         start_addListener();
     }
+
+    private final FilmActionPanel fap;
+    private final JFXPanel fxPanel;
 
     private void setupDescriptionPanel() {
         PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten, tabelle, true /*film*/);
@@ -136,9 +145,9 @@ public class GuiFilme extends PanelVorlage {
         Listener.notify(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
     }
 
-    public String getFilterTextFromSearchField() {
+/*    public String getFilterTextFromSearchField() {
         return toolBar.jTextFieldFilter.getText();
-    }
+    }*/
 
     public void guiFilmeFilmAbspielen() {
         playFilm();
@@ -1141,7 +1150,7 @@ public class GuiFilme extends PanelVorlage {
             // jetzt nur den Filter aus der Toolbar
             GetModelTabFilme.getModelTabFilme(lf, daten, tabelle,
                     "", "", "",
-                    getFilterTextFromSearchField(),
+                    fap.roSearchStringProperty.getValueSafe(),
                     "",
                     mVFilter.get_jSliderMinuten().getValue(),
                     mVFilter.get_rbMin().isSelected(),
