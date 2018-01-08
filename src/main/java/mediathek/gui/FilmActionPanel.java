@@ -25,7 +25,6 @@ import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.tool.Filter;
-import org.controlsfx.control.Notifications;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.glyphfont.FontAwesome;
@@ -168,10 +167,10 @@ public class FilmActionPanel {
 
         ToggleButton btnAdvancedFilter = new ToggleButton("", fontAwesome.create(FontAwesome.Glyph.FILTER));
         btnAdvancedFilter.setOnAction(event -> {
-            Notifications.create()
+           /* Notifications.create()
                     .title("Download abgeschlossen")
                     .text("Und wir sind fertig :-)\nIst aber nur ein Testdialog")
-                    .showInformation();
+                    .showInformation();*/
 
             SwingUtilities.invokeLater(() -> {
                 boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER));
