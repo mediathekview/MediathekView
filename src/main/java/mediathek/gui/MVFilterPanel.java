@@ -472,10 +472,7 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jTextFieldFilterMinuten = new javax.swing.JTextField();
         jSliderMinuten = new javax.swing.JSlider();
-        jCheckBoxKeineGesehenen = new javax.swing.JCheckBox();
         jCheckBoxKeineAbos = new javax.swing.JCheckBox();
-        jCheckBoxNurHd = new javax.swing.JCheckBox();
-        jCheckBoxNurNeue = new javax.swing.JCheckBox();
         jToggleButtonLivestram = new javax.swing.JToggleButton();
         jToggleButtonHistory = new javax.swing.JToggleButton();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
@@ -485,16 +482,14 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         jSliderTage = new javax.swing.JSlider();
         jTextFieldFilterTage = new javax.swing.JTextField();
         jButtonClearAll = new javax.swing.JButton();
-        chkUt = new javax.swing.JCheckBox();
         rbMin = new javax.swing.JRadioButton();
         rbMax = new javax.swing.JRadioButton();
-        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
         jRadioButtonF1 = new javax.swing.JRadioButton();
         jRadioButtonF2 = new javax.swing.JRadioButton();
         jRadioButtonF3 = new javax.swing.JRadioButton();
         jRadioButtonF4 = new javax.swing.JRadioButton();
         jRadioButtonF5 = new javax.swing.JRadioButton();
-        javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
 
         jLabel2.setText("Sender:");
 
@@ -523,15 +518,7 @@ public class MVFilterPanel extends JPanel implements MVFilter {
 
         jTextFieldFilterMinuten.setEditable(false);
 
-        jCheckBoxKeineGesehenen.setText("gesehene ausblenden");
-
         jCheckBoxKeineAbos.setText("Abos nicht anzeigen");
-
-        jCheckBoxNurHd.setText("HD");
-        jCheckBoxNurHd.setToolTipText("nur Filme in HD anzeigen");
-
-        jCheckBoxNurNeue.setText("Neue");
-        jCheckBoxNurNeue.setToolTipText("nur neue Filme anzeigen");
 
         jToggleButtonLivestram.setText("Livestreams");
 
@@ -580,9 +567,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         jButtonClearAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); // NOI18N
         jButtonClearAll.setToolTipText("Alles löschen");
 
-        chkUt.setText("UT");
-        chkUt.setToolTipText("nur Filme mit Untertitel anzeigen");
-
         buttonGroup3.add(rbMin);
         rbMin.setSelected(true);
         rbMin.setText("Mindestlänge [min]");
@@ -590,7 +574,7 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         buttonGroup3.add(rbMax);
         rbMax.setText("Maximallänge");
 
-        jLabel3.setText("nur:");
+        jLabel6.setText("Filterprofile:");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -624,20 +608,12 @@ public class MVFilterPanel extends JPanel implements MVFilter {
                             .addComponent(jLabel2)
                             .addComponent(jLabel4)
                             .addComponent(jLabel5)
-                            .addComponent(jCheckBoxKeineGesehenen)
                             .addComponent(jToggleButtonLivestram)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(jButtonClearAll, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jToggleButtonHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(jCheckBoxKeineAbos)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jCheckBoxNurHd)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(chkUt)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jCheckBoxNurNeue)))
+                                .addComponent(jLabel6))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -683,22 +659,17 @@ public class MVFilterPanel extends JPanel implements MVFilter {
                     .addComponent(jTextFieldFilterMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSliderMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jCheckBoxKeineGesehenen)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBoxKeineAbos)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBoxNurHd)
-                    .addComponent(chkUt)
-                    .addComponent(jCheckBoxNurNeue)
-                    .addComponent(jLabel3))
-                .addGap(18, 18, 18)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jToggleButtonLivestram)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jToggleButtonHistory)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButtonClearAll))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jButtonClearAll)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jLabel6)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jComboBoxFilterSender, jComboBoxFilterThema, jTextFieldFilterThemaTitel, jTextFieldFilterTitel});
@@ -720,8 +691,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         buttonGroup1.add(jRadioButtonF5);
         jRadioButtonF5.setToolTipText("Filter-Einstellungen vornehmen und mit Rechtsklick als Profil 5 speichern");
 
-        jLabel6.setText("Filterprofile:");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -729,27 +698,22 @@ public class MVFilterPanel extends JPanel implements MVFilter {
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jRadioButtonF1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButtonF2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButtonF3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButtonF4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButtonF5)))
+                    .addComponent(jRadioButtonF1)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jRadioButtonF2)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jRadioButtonF3)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jRadioButtonF4)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jRadioButtonF5)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jRadioButtonF1)
                     .addComponent(jRadioButtonF2)
@@ -762,14 +726,10 @@ public class MVFilterPanel extends JPanel implements MVFilter {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox chkUt;
     private javax.swing.JButton jButtonClearAll;
     public javax.swing.JButton jButtonFilterLoeschen;
     public javax.swing.JButton jButtonHilfe;
     public javax.swing.JCheckBox jCheckBoxKeineAbos;
-    public javax.swing.JCheckBox jCheckBoxKeineGesehenen;
-    public javax.swing.JCheckBox jCheckBoxNurHd;
-    private javax.swing.JCheckBox jCheckBoxNurNeue;
     public javax.swing.JComboBox<String> jComboBoxFilterSender;
     public javax.swing.JComboBox<String> jComboBoxFilterThema;
     private javax.swing.JRadioButton jRadioButtonF1;
@@ -805,11 +765,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
     }
 
     @Override
-    public void enableFilter(boolean enable) {
-//        setPanelEnabled(this, enable);
-    }
-
-    @Override
     public JButton get_jButtonFilterLoeschen() {
         return jButtonFilterLoeschen;
     }
@@ -822,21 +777,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
     @Override
     public JCheckBox get_jCheckBoxKeineAbos() {
         return jCheckBoxKeineAbos;
-    }
-
-    @Override
-    public JCheckBox get_jCheckBoxKeineGesehenen() {
-        return jCheckBoxKeineGesehenen;
-    }
-
-    @Override
-    public JCheckBox get_jCheckBoxNurHd() {
-        return jCheckBoxNurHd;
-    }
-
-    @Override
-    public JCheckBox get_jCheckBoxNurUt() {
-        return chkUt;
     }
 
     @Override
@@ -916,11 +856,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
     }
 
     @Override
-    public JCheckBox get_jCheckBoxNeue() {
-        return jCheckBoxNurNeue;
-    }
-
-    @Override
     public JToggleButton get_jToggleButtonHistory() {
         return jToggleButtonHistory;
     }
@@ -937,12 +872,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         }
         for (ActionListener a : jCheckBoxKeineAbos.getActionListeners()) {
             jCheckBoxKeineAbos.removeActionListener(a);
-        }
-        for (ActionListener a : jCheckBoxKeineGesehenen.getActionListeners()) {
-            jCheckBoxKeineGesehenen.removeActionListener(a);
-        }
-        for (ActionListener a : jCheckBoxNurHd.getActionListeners()) {
-            jCheckBoxNurHd.removeActionListener(a);
         }
         for (ActionListener a : jComboBoxFilterSender.getActionListeners()) {
             jComboBoxFilterSender.removeActionListener(a);
@@ -976,9 +905,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         }
         for (ActionListener a : jToggleButtonLivestram.getActionListeners()) {
             jToggleButtonLivestram.removeActionListener(a);
-        }
-        for (ActionListener a : jCheckBoxNurNeue.getActionListeners()) {
-            jCheckBoxNurNeue.removeActionListener(a);
         }
         for (ActionListener a : jToggleButtonHistory.getActionListeners()) {
             jToggleButtonHistory.removeActionListener(a);

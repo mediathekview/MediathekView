@@ -27,39 +27,33 @@ import javax.swing.*;
  */
 public interface MVFilter {
 
-    public static final int MAX_FILTER = 5;
+    int MAX_FILTER = 5;
 
-    public void removeAllListener();
+    void removeAllListener();
 
-    public JButton get_jButtonFilterLoeschen();
+    JButton get_jButtonFilterLoeschen();
 
-    public JButton get_jButtonClearAll();
+    JButton get_jButtonClearAll();
 
-    public JCheckBox get_jCheckBoxKeineAbos();
+    JCheckBox get_jCheckBoxKeineAbos();
 
-    public JCheckBox get_jCheckBoxKeineGesehenen();
+    JComboBox<String> get_jComboBoxFilterSender();
 
-    public JCheckBox get_jCheckBoxNurHd();
+    JComboBox<String> get_jComboBoxFilterThema();
 
-    public JCheckBox get_jCheckBoxNurUt();
+    JSlider get_jSliderTage();
 
-    public JComboBox<String> get_jComboBoxFilterSender();
+    JTextField get_jTextFieldFilterTage();
 
-    public JComboBox<String> get_jComboBoxFilterThema();
+    JSlider get_jSliderMinuten();
 
-    public JSlider get_jSliderTage();
+    JRadioButton get_rbMin();
 
-    public JTextField get_jTextFieldFilterTage();
+    JRadioButton get_rbMax();
 
-    public JSlider get_jSliderMinuten();
+    JTextField get_jTextFieldFilterMinuten();
 
-    public JRadioButton get_rbMin();
-
-    public JRadioButton get_rbMax();
-
-    public JTextField get_jTextFieldFilterMinuten();
-
-    public boolean getThemaTitel();
+    boolean getThemaTitel();
 
     public void setThemaTitel(boolean set);
 
@@ -73,8 +67,6 @@ public interface MVFilter {
 
     public JToggleButton get_jToggleButtonLivestram();
 
-    public JCheckBox get_jCheckBoxNeue();
-
     public JToggleButton get_jToggleButtonHistory();
 
     public void setVisible(boolean v);
@@ -84,7 +76,4 @@ public interface MVFilter {
     public void mvFsaveFilter(int i);
 
     public void mvFfilter(int i);
-
-    public void enableFilter(boolean enable);
-
 }

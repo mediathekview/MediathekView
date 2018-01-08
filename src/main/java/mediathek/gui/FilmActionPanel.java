@@ -201,27 +201,72 @@ public class FilmActionPanel {
         return hb;
     }
 
-    private final PopOver filterPopover;
+    public final PopOver filterPopover;
 
     public BooleanProperty showOnlyHd;
 
-    public PopOver createFilterPopover() {
+    public BooleanProperty showSubtitlesOnly;
+
+    public BooleanProperty showNewOnly;
+
+    public BooleanProperty showUnseenOnly;
+
+    public BooleanProperty dontShowAbos;
+
+    private TitledPane createCommonViewSettingsPane() {
         VBox vBox = new VBox();
         vBox.setSpacing(4.0);
+
         CheckBox cbShowOnlyHd = new CheckBox("Nur HD-Filme anzeigen");
         showOnlyHd = cbShowOnlyHd.selectedProperty();
         vBox.getChildren().add(cbShowOnlyHd);
-        vBox.getChildren().add(new CheckBox("Nur Filme mit Untertitel anzeigen"));
-        vBox.getChildren().add(new CheckBox("Nur neue Filme anzeigen"));
-        vBox.getChildren().add(new CheckBox("Gesehene Filme ausblenden"));
-        vBox.getChildren().add(new CheckBox("Abos ausblenden"));
 
-        TitledPane t1 = new TitledPane("Allgemeine Anzeigeeinstellungen", vBox);
-        TitledPane t2 = new TitledPane("T2", new Button("B2"));
-        TitledPane t3 = new TitledPane("Filterprofile", new Button("B3"));
+        CheckBox cbShowSubtitlesOnly = new CheckBox("Nur Filme mit Untertitel anzeigen");
+        showSubtitlesOnly = cbShowSubtitlesOnly.selectedProperty();
+        vBox.getChildren().add(cbShowSubtitlesOnly);
+
+        CheckBox cbShowNewOnly = new CheckBox("Nur neue Filme anzeigen");
+        showNewOnly = cbShowNewOnly.selectedProperty();
+        vBox.getChildren().add(cbShowNewOnly);
+
+        CheckBox cbShowUnseenOnly = new CheckBox("Gesehene Filme ausblenden");
+        showUnseenOnly = cbShowUnseenOnly.selectedProperty();
+        vBox.getChildren().add(cbShowUnseenOnly);
+
+        CheckBox cbDontShowAbos = new CheckBox("Abos ausblenden");
+        dontShowAbos = cbDontShowAbos.selectedProperty();
+        vBox.getChildren().add(cbDontShowAbos);
+
+        return new TitledPane("Allgemeine Anzeigeeinstellungen", vBox);
+    }
+
+    private TitledPane createBlacklistPane() {
+        HBox hBox = new HBox();
+        hBox.setSpacing(4.0);
+
+        CheckBox cb;
+        cb = new CheckBox("Blacklist-Filterung verwenden");
+        cb.setDisable(true);
+        hBox.getChildren().add(cb);
+        GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
+        Button btn = new Button("", fontAwesome.create(FontAwesome.Glyph.EDIT));
+        btn.setDisable(true);
+        hBox.getChildren().add(btn);
+        return new TitledPane("Blacklist", hBox);
+    }
+
+    private Accordion createAccordion() {
+        TitledPane t1 = createCommonViewSettingsPane();
+        TitledPane t2 = createBlacklistPane();
+        TitledPane t3 = new TitledPane("Filterprofile", new Button("Dummy"));
+
         Accordion accordion = new Accordion();
         accordion.getPanes().addAll(t1, t2, t3);
+        accordion.setExpandedPane(t1);
+        return accordion;
+    }
 
+    public PopOver createFilterPopover() {
         PopOver popover = new PopOver();
         popover.setTitle("Erweiterte Filtereinstellungen");
         popover.setAnimated(true);
@@ -232,7 +277,7 @@ public class FilmActionPanel {
         VBox vb = new VBox();
         vb.setSpacing(4.0);
         vb.setPadding(new Insets(5, 5, 5, 5));
-        vb.getChildren().addAll(accordion);
+        vb.getChildren().addAll(createAccordion());
         popover.setContentNode(vb);
 
         return popover;
