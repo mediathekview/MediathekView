@@ -35,8 +35,6 @@ public interface MVFilter {
 
     JButton get_jButtonClearAll();
 
-    JCheckBox get_jCheckBoxKeineAbos();
-
     JComboBox<String> get_jComboBoxFilterSender();
 
     JComboBox<String> get_jComboBoxFilterThema();

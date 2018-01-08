@@ -800,13 +800,12 @@ public class GuiFilme extends PanelVorlage {
         mVFilterPanel.get_jTextFieldFilterTitel().getDocument().addDocumentListener(new BeobFilterTitelDoc());
         mVFilterPanel.get_jTextFieldFilterThemaTitel().addActionListener(evt -> reloadTable());
         mVFilterPanel.get_jTextFieldFilterThemaTitel().getDocument().addDocumentListener(new BeobFilterTitelDoc());
-        mVFilterPanel.get_jCheckBoxKeineAbos().addActionListener(evt -> reloadTable());
-        //FIXME hier werdde die action listener gesetzt
         Platform.runLater(() -> {
             fap.showOnlyHd.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
             fap.showSubtitlesOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
             fap.showNewOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
             fap.showUnseenOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
+            fap.dontShowAbos.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
         });
         mVFilterPanel.get_jRadioButtonTT().addActionListener(evt -> reloadTable());
         mVFilterPanel.get_JRadioButtonIrgendwo().addActionListener(evt -> reloadTable());
@@ -855,11 +854,11 @@ public class GuiFilme extends PanelVorlage {
         mVFilterPanel.get_jTextFieldFilterThemaTitel().setText("");
         mVFilterPanel.setThemaTitel(true);
         //untere Hälfte
-        mVFilterPanel.get_jCheckBoxKeineAbos().setSelected(false);
         fap.showUnseenOnly.setValue(false);
         fap.showOnlyHd.setValue(false);
         fap.showSubtitlesOnly.setValue(false);
         fap.showNewOnly.setValue(false);
+        fap.dontShowAbos.setValue(false);
 
         mVFilterPanel.get_jToggleButtonHistory().setSelected(false);
         mVFilterPanel.get_jToggleButtonLivestram().setSelected(false);
@@ -900,8 +899,7 @@ public class GuiFilme extends PanelVorlage {
         mVFilterPanel.get_jTextFieldFilterThemaTitel().setText(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA_TITEL, filter));
         mVFilterPanel.setThemaTitel(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TT, filter)));
 
-        mVFilterPanel.get_jCheckBoxKeineAbos().setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_ABO, filter)));
-
+        fap.dontShowAbos.setValue(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_ABO, filter)));
         fap.showUnseenOnly.setValue(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_GESEHENE, filter)));
         fap.showOnlyHd.setValue(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_HD, filter)));
         fap.showSubtitlesOnly.setValue(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_UT, filter)));
@@ -982,7 +980,7 @@ public class GuiFilme extends PanelVorlage {
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA_TITEL, String.valueOf(mVFilterPanel.get_jTextFieldFilterThemaTitel().getText()), filter);
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TT, Boolean.toString(mVFilterPanel.getThemaTitel()), filter);
 
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_ABO, String.valueOf(mVFilterPanel.get_jCheckBoxKeineAbos().isSelected()), filter);
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_ABO, String.valueOf(fap.dontShowAbos.getValue()), filter);
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_GESEHENE, String.valueOf(fap.showUnseenOnly.getValue()), filter);
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_HD, String.valueOf(fap.showOnlyHd.getValue()), filter);
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_UT, String.valueOf(fap.showSubtitlesOnly.getValue()), filter);
@@ -1089,7 +1087,7 @@ public class GuiFilme extends PanelVorlage {
                     mVFilterPanel.getThemaTitel() ? "" : mVFilterPanel.get_jTextFieldFilterThemaTitel().getText(),
                     mVFilterPanel.get_jSliderMinuten().getValue(),
                     mVFilterPanel.get_rbMin().isSelected(),
-                    mVFilterPanel.get_jCheckBoxKeineAbos().isSelected(), fap.showUnseenOnly.getValue(),
+                    fap.dontShowAbos.getValue(), fap.showUnseenOnly.getValue(),
                     fap.showOnlyHd.getValue(), fap.showSubtitlesOnly.getValue(),
                     mVFilterPanel.get_jToggleButtonLivestram().isSelected(), fap.showNewOnly.getValue());
         } else {
@@ -1100,7 +1098,7 @@ public class GuiFilme extends PanelVorlage {
                     "",
                     mVFilterPanel.get_jSliderMinuten().getValue(),
                     mVFilterPanel.get_rbMin().isSelected(),
-                    mVFilterPanel.get_jCheckBoxKeineAbos().isSelected(), fap.showUnseenOnly.getValue(),
+                    fap.dontShowAbos.getValue(), fap.showUnseenOnly.getValue(),
                     fap.showOnlyHd.getValue(), fap.showSubtitlesOnly.getValue(),
                     mVFilterPanel.get_jToggleButtonLivestram().isSelected(), fap.showNewOnly.getValue());
         }
