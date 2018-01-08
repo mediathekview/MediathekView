@@ -60,7 +60,6 @@ import static mediathek.tool.MVTable.*;
 public class GuiFilme extends PanelVorlage {
     private JButton buttonArray[];
     private MVFilter mVFilter;
-    public MVFilterFrame mVFilterFrame;
     private final MVFilterPanel mVFilterPanel;
     ToolBar toolBar;
 
@@ -73,22 +72,6 @@ public class GuiFilme extends PanelVorlage {
         jScrollPaneFilter.getVerticalScrollBar().setUnitIncrement(16);
         jPanelFilter.setLayout(new BorderLayout());
         mVFilterPanel = new MVFilterPanel(parentComponent, daten,aMediathekGui) {
-            @Override
-            public void mvFfilter(int i) {
-                setFilterProfile(i);
-            }
-
-            @Override
-            public void mvFdeleteFilter(int i) {
-                delFilterProfile(i);
-            }
-
-            @Override
-            public void mvFsaveFilter(int i) {
-                saveFilterProfile(i);
-            }
-        };
-        mVFilterFrame = new MVFilterFrame(aDaten,aMediathekGui) {
             @Override
             public void mvFfilter(int i) {
                 setFilterProfile(i);
@@ -185,18 +168,14 @@ public class GuiFilme extends PanelVorlage {
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
-                GuiFunktionen.enableComponents(mVFilterFrame, false);
                 GuiFunktionen.enableComponents(mVFilterPanel, false);
-                //mVFilter.enableFilter(false);
                 loadTable();
             }
 
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 loadTable();
-                GuiFunktionen.enableComponents(mVFilterFrame, true);
                 GuiFunktionen.enableComponents(mVFilterPanel, true);
-                //mVFilter.enableFilter(true);
             }
         });
         daten.getMediathekGui().getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "sender");
@@ -727,20 +706,13 @@ public class GuiFilme extends PanelVorlage {
             mVFilter.removeAllListener();
             history = mVFilter.get_jToggleButtonHistory().isSelected();
         }
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_FILTER))) {
-            jPanelFilter.removeAll();
-            jScrollPaneFilter.setVisible(false);
-            mVFilter = mVFilterFrame;
-            mVFilterFrame.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER)));
-        } else {
-            mVFilterFrame.setVisible(false);
-            mVFilter = mVFilterPanel;
-            jPanelFilter.add(mVFilterPanel, BorderLayout.CENTER);
-            jScrollPaneFilter.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER)));
-            if (jScrollPaneFilter.isVisible()) {
-                jSplitPane1.setDividerLocation(MVConfig.getInt(MVConfig.Configs.SYSTEM_PANEL_FILME_DIVIDER));
-            }
+        mVFilter = mVFilterPanel;
+        jPanelFilter.add(mVFilterPanel, BorderLayout.CENTER);
+        jScrollPaneFilter.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER)));
+        if (jScrollPaneFilter.isVisible()) {
+            jSplitPane1.setDividerLocation(MVConfig.getInt(MVConfig.Configs.SYSTEM_PANEL_FILME_DIVIDER));
         }
+
         // einrichten
         mVFilter.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER)));
         mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
@@ -809,27 +781,32 @@ public class GuiFilme extends PanelVorlage {
             daten.getListeBlacklist().filterListe();
             loadTable();
         });
-        mVFilter.get_jButtonFilterLoeschen().addActionListener(l -> delFilter());
-        mVFilter.get_jButtonClearAll().addActionListener(l -> delFilterAlles());
-        mVFilter.get_jComboBoxFilterSender().addActionListener(new BeobFilter());
-        mVFilter.get_jComboBoxFilterThema().addActionListener(new BeobFilter());
-        mVFilter.get_jTextFieldFilterTitel().addActionListener(new BeobFilter());
-        mVFilter.get_jTextFieldFilterTitel().getDocument().addDocumentListener(new BeobFilterTitelDoc());
-        mVFilter.get_jTextFieldFilterThemaTitel().addActionListener(new BeobFilter());
-        mVFilter.get_jTextFieldFilterThemaTitel().getDocument().addDocumentListener(new BeobFilterTitelDoc());
-        mVFilter.get_jCheckBoxKeineAbos().addActionListener(new BeobFilter());
-        mVFilter.get_jCheckBoxKeineGesehenen().addActionListener(new BeobFilter());
-        //FIXME hier werdde die action listener gesetzt
-        mVFilter.get_jCheckBoxNurHd().addActionListener(new BeobFilter());
-        mVFilter.get_jCheckBoxNurUt().addActionListener(new BeobFilter());
-        mVFilter.get_jCheckBoxNeue().addActionListener(new BeobFilter());
-        mVFilter.get_jRadioButtonTT().addActionListener(new BeobFilter());
-        mVFilter.get_JRadioButtonIrgendwo().addActionListener(new BeobFilter());
+
+        addActionListeners();
 
         //=======================================
         // und jezt die Anzeige
         this.updateUI();
         loadTable();
+    }
+
+    private void addActionListeners() {
+        mVFilter.get_jButtonFilterLoeschen().addActionListener(l -> delFilter());
+        mVFilter.get_jButtonClearAll().addActionListener(l -> delFilterAlles());
+        mVFilter.get_jComboBoxFilterSender().addActionListener(evt -> reloadTable());
+        mVFilter.get_jComboBoxFilterThema().addActionListener(evt -> reloadTable());
+        mVFilter.get_jTextFieldFilterTitel().addActionListener(evt -> reloadTable());
+        mVFilter.get_jTextFieldFilterTitel().getDocument().addDocumentListener(new BeobFilterTitelDoc());
+        mVFilter.get_jTextFieldFilterThemaTitel().addActionListener(evt -> reloadTable());
+        mVFilter.get_jTextFieldFilterThemaTitel().getDocument().addDocumentListener(new BeobFilterTitelDoc());
+        mVFilter.get_jCheckBoxKeineAbos().addActionListener(evt -> reloadTable());
+        mVFilter.get_jCheckBoxKeineGesehenen().addActionListener(evt -> reloadTable());
+        //FIXME hier werdde die action listener gesetzt
+        mVFilter.get_jCheckBoxNurHd().addActionListener(evt -> reloadTable());
+        mVFilter.get_jCheckBoxNurUt().addActionListener(evt -> reloadTable());
+        mVFilter.get_jCheckBoxNeue().addActionListener(evt -> reloadTable());
+        mVFilter.get_jRadioButtonTT().addActionListener(evt -> reloadTable());
+        mVFilter.get_JRadioButtonIrgendwo().addActionListener(evt -> reloadTable());
     }
 
     private void setTextSlider() {
@@ -1264,13 +1241,9 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
-    private class BeobFilter implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (!stopBeob) {
-                loadTable();
-            }
+    private void reloadTable() {
+        if (!stopBeob) {
+            loadTable();
         }
     }
 

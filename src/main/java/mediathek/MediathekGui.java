@@ -91,7 +91,6 @@ public class MediathekGui extends JFrame {
     private static final String LOG_TEXT_KEINE_LAUFENDEN_DOWNLOADS = "Keine laufenden Downloads!";
     private static final String DIALOG_TITLE_BLACKLIST = "Blacklist";
     private static final String PANEL_BLACKLIST_NAME_POSTFIX = "_2";
-    private static final String CHECKBOX_TEXT_FILTER_ANZEIGEN = "Filter anzeigen";
     private static final String CHECKBOX_TEXT_DOWNLOADS_IN_EXTRAFENSTER = "Downloads in Extrafenster";
     private static final String CHECKBOX_TEXT_ABOS_IN_EXTRAFENSTER = "Abos in Extrafenster";
     private static final String CHECKBOX_TEXT_MELDUNGEN_ANZEIGEN = "Meldungen anzeigen";
@@ -104,8 +103,6 @@ public class MediathekGui extends JFrame {
     private MVFrame frameDownload;
     private MVFrame frameAbo;
     private MVFrame frameMeldungen;
-    private final JCheckBoxMenuItem jCheckBoxFilterAnzeigen = new JCheckBoxMenuItem();
-    private final JCheckBoxMenuItem jCheckBoxFilterExtrafenster = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxDownloadExtrafenster = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxAboExtrafenster = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxMeldungenAnzeigen = new JCheckBoxMenuItem();
@@ -317,13 +314,7 @@ public class MediathekGui extends JFrame {
                 jCheckBoxMenuItemMediaDb.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
             }
         });
-        Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                jCheckBoxFilterAnzeigen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER)));
-                jCheckBoxFilterExtrafenster.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_FILTER)));
-            }
-        });
+
         Listener.addListener(new Listener(Listener.EREIGNIS_TABS_TOP, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -728,27 +719,6 @@ public class MediathekGui extends JFrame {
         setupHelpMenu();
     }
 
-    private void initializeAnsichtFilter()
-    {
-        //Ansicht Filter
-        jMenuAnsicht.add(new JSeparator());
-        jCheckBoxFilterAnzeigen.setText(CHECKBOX_TEXT_FILTER_ANZEIGEN);
-        jCheckBoxFilterExtrafenster.setText(CHECKBOX_TEXT_IN_EXTRAFENSTER);
-        jCheckBoxFilterExtrafenster.setBorder(BorderFactory.createEmptyBorder(1, 10, 5, 1));
-        jMenuAnsicht.add(jCheckBoxFilterAnzeigen);
-        jMenuAnsicht.add(jCheckBoxFilterExtrafenster);
-        jCheckBoxFilterAnzeigen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER)));
-        jCheckBoxFilterAnzeigen.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_VIS_FILTER, Boolean.toString(jCheckBoxFilterAnzeigen.isSelected()));
-            Listener.notify(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName());
-        });
-        jCheckBoxFilterExtrafenster.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_FILTER)));
-        jCheckBoxFilterExtrafenster.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_FILTER, Boolean.toString(jCheckBoxFilterExtrafenster.isSelected()));
-            Listener.notify(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, MediathekGui.class.getSimpleName());
-        });
-    }
-
     private void initializeAnsichtMenu()
     {
         // Ansicht
@@ -786,7 +756,7 @@ public class MediathekGui extends JFrame {
         jMenuItemSchriftGr.addActionListener(e -> MVFont.setFontSize(true));
         jMenuItemSchriftKl.addActionListener(e -> MVFont.setFontSize(false));
         jMenuItemSchriftNormal.addActionListener(e -> MVFont.resetFontSize());
-        initializeAnsichtFilter();
+
         initializeAnsichtDownloads();
         initializeAnsichtAbos();
         initializeAnsichtMeldungen();
@@ -1061,8 +1031,6 @@ public class MediathekGui extends JFrame {
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_ABO, frameAbo);
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_MELDUNGEN, frameMeldungen);
 
-        // FilterFrame
-        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_FILTER, Daten.guiFilme.mVFilterFrame);
         daten.allesSpeichern();
         Log.endMsg();
         Duration.printCounter();
