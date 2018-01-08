@@ -59,7 +59,6 @@ import static mediathek.tool.MVTable.*;
 @SuppressWarnings("serial")
 public class GuiFilme extends PanelVorlage {
     private JButton buttonArray[];
-    private MVFilter mVFilter;
     private final MVFilterPanel mVFilterPanel;
     ToolBar toolBar;
 
@@ -364,7 +363,7 @@ public class GuiFilme extends PanelVorlage {
         Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                if (mVFilter.get_jCheckBoxKeineGesehenen().isSelected() || mVFilter.get_jToggleButtonHistory().isSelected()) {
+                if (mVFilterPanel.get_jCheckBoxKeineGesehenen().isSelected() || mVFilterPanel.get_jToggleButtonHistory().isSelected()) {
                     loadTable();
                 } else {
                     tabelle.fireTableDataChanged(true);
@@ -420,8 +419,8 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void ping() {
                 if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER))) {
-                    mVFilter.get_jTextFieldFilterThemaTitel().requestFocus();
-                    mVFilter.get_jTextFieldFilterThemaTitel().setCaretPosition(0);
+                    mVFilterPanel.get_jTextFieldFilterThemaTitel().requestFocus();
+                    mVFilterPanel.get_jTextFieldFilterThemaTitel().setCaretPosition(0);
                 }
             }
         });
@@ -497,7 +496,7 @@ public class GuiFilme extends PanelVorlage {
             } else {
                 //dann alle Downloads im Dialog abfragen
                 String aufloesung = "";
-                if (mVFilter.get_jCheckBoxNurHd().isSelected()) {
+                if (mVFilterPanel.get_jCheckBoxNurHd().isSelected()) {
                     aufloesung = DatenFilm.AUFLOESUNG_HD;
                 }
                 DialogAddDownload dialog = new DialogAddDownload(daten.getMediathekGui(), daten, datenFilm, pSet, aufloesung);
@@ -517,7 +516,7 @@ public class GuiFilme extends PanelVorlage {
         } else {
             // mit dem flvstreamer immer nur einen Filme starten
             String aufloesung = "";
-            if (mVFilter.get_jCheckBoxNurHd().isSelected()) {
+            if (mVFilterPanel.get_jCheckBoxNurHd().isSelected()) {
                 aufloesung = DatenFilm.AUFLOESUNG_HD;
             }
             Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
@@ -702,11 +701,11 @@ public class GuiFilme extends PanelVorlage {
 
     private void setVisFilterPanelAndLoad() {
         boolean history = false;
-        if (mVFilter != null) {
-            mVFilter.removeAllListener();
-            history = mVFilter.get_jToggleButtonHistory().isSelected();
+        if (mVFilterPanel != null) {
+            mVFilterPanel.removeAllListener();
+            history = mVFilterPanel.get_jToggleButtonHistory().isSelected();
         }
-        mVFilter = mVFilterPanel;
+
         jPanelFilter.add(mVFilterPanel, BorderLayout.CENTER);
         jScrollPaneFilter.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER)));
         if (jScrollPaneFilter.isVisible()) {
@@ -714,68 +713,68 @@ public class GuiFilme extends PanelVorlage {
         }
 
         // einrichten
-        mVFilter.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER)));
-        mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
-        mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
-        mVFilter.get_jToggleButtonHistory().setSelected(history);
+        mVFilterPanel.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER)));
+        mVFilterPanel.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
+        mVFilterPanel.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
+        mVFilterPanel.get_jToggleButtonHistory().setSelected(history);
 
         //===========
         // Slider
-        mVFilter.get_jSliderTage().setValue(MVConfig.getInt(MVConfig.Configs.SYSTEM_FILTER_TAGE));
-        mVFilter.get_jSliderMinuten().setValue(MVConfig.getInt(MVConfig.Configs.SYSTEM_FILTER_DAUER));
-        mVFilter.get_rbMin().setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILTER_DAUER_MIN));
-        mVFilter.get_rbMax().setSelected(!MVConfig.getBool(MVConfig.Configs.SYSTEM_FILTER_DAUER_MIN));
+        mVFilterPanel.get_jSliderTage().setValue(MVConfig.getInt(MVConfig.Configs.SYSTEM_FILTER_TAGE));
+        mVFilterPanel.get_jSliderMinuten().setValue(MVConfig.getInt(MVConfig.Configs.SYSTEM_FILTER_DAUER));
+        mVFilterPanel.get_rbMin().setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILTER_DAUER_MIN));
+        mVFilterPanel.get_rbMax().setSelected(!MVConfig.getBool(MVConfig.Configs.SYSTEM_FILTER_DAUER_MIN));
         setTextSlider();
 
         //==========================
         // listener anhängen
-        mVFilter.get_jSliderTage().addChangeListener(e -> {
+        mVFilterPanel.get_jSliderTage().addChangeListener(e -> {
             if (!stopBeob) {
                 setTextSlider();
-                if (!mVFilter.get_jSliderTage().getValueIsAdjusting()) {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_TAGE, String.valueOf(mVFilter.get_jSliderTage().getValue()));
+                if (!mVFilterPanel.get_jSliderTage().getValueIsAdjusting()) {
+                    MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_TAGE, String.valueOf(mVFilterPanel.get_jSliderTage().getValue()));
                     daten.getListeBlacklist().filterListe();
                     loadTable();
 
                 }
             }
         });
-        mVFilter.get_jSliderMinuten().addChangeListener(e -> {
+        mVFilterPanel.get_jSliderMinuten().addChangeListener(e -> {
             if (!stopBeob) {
                 setTextSlider();
-                if (!mVFilter.get_jSliderMinuten().getValueIsAdjusting()) {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_DAUER, String.valueOf(mVFilter.get_jSliderMinuten().getValue()));
+                if (!mVFilterPanel.get_jSliderMinuten().getValueIsAdjusting()) {
+                    MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_DAUER, String.valueOf(mVFilterPanel.get_jSliderMinuten().getValue()));
                     loadTable();
                 }
             }
         });
-        mVFilter.get_rbMin().addActionListener(l -> {
+        mVFilterPanel.get_rbMin().addActionListener(l -> {
             if (!stopBeob) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_DAUER_MIN, String.valueOf(mVFilter.get_rbMin().isSelected()));
+                MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_DAUER_MIN, String.valueOf(mVFilterPanel.get_rbMin().isSelected()));
                 loadTable();
             }
         });
-        mVFilter.get_rbMax().addActionListener(l -> {
+        mVFilterPanel.get_rbMax().addActionListener(l -> {
             if (!stopBeob) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_DAUER_MIN, String.valueOf(mVFilter.get_rbMin().isSelected()));
+                MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_DAUER_MIN, String.valueOf(mVFilterPanel.get_rbMin().isSelected()));
                 loadTable();
             }
         });
-        mVFilter.get_jToggleButtonLivestram().addActionListener(e -> {
-            if (!stopBeob && mVFilter.get_jToggleButtonLivestram().isSelected()) {
+        mVFilterPanel.get_jToggleButtonLivestram().addActionListener(e -> {
+            if (!stopBeob && mVFilterPanel.get_jToggleButtonLivestram().isSelected()) {
                 stopBeob = true;
                 resetFilterSettings();
-                mVFilter.get_jToggleButtonLivestram().setSelected(true);
+                mVFilterPanel.get_jToggleButtonLivestram().setSelected(true);
                 stopBeob = false;
             }
             daten.getListeBlacklist().filterListe();
             loadTable();
         });
-        mVFilter.get_jToggleButtonHistory().addActionListener(e -> {
-            if (!stopBeob && mVFilter.get_jToggleButtonHistory().isSelected()) {
+        mVFilterPanel.get_jToggleButtonHistory().addActionListener(e -> {
+            if (!stopBeob && mVFilterPanel.get_jToggleButtonHistory().isSelected()) {
                 stopBeob = true;
                 resetFilterSettings();
-                mVFilter.get_jToggleButtonHistory().setSelected(true);
+                mVFilterPanel.get_jToggleButtonHistory().setSelected(true);
                 stopBeob = false;
             }
             daten.getListeBlacklist().filterListe();
@@ -791,32 +790,32 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void addActionListeners() {
-        mVFilter.get_jButtonFilterLoeschen().addActionListener(l -> delFilter());
-        mVFilter.get_jButtonClearAll().addActionListener(l -> delFilterAlles());
-        mVFilter.get_jComboBoxFilterSender().addActionListener(evt -> reloadTable());
-        mVFilter.get_jComboBoxFilterThema().addActionListener(evt -> reloadTable());
-        mVFilter.get_jTextFieldFilterTitel().addActionListener(evt -> reloadTable());
-        mVFilter.get_jTextFieldFilterTitel().getDocument().addDocumentListener(new BeobFilterTitelDoc());
-        mVFilter.get_jTextFieldFilterThemaTitel().addActionListener(evt -> reloadTable());
-        mVFilter.get_jTextFieldFilterThemaTitel().getDocument().addDocumentListener(new BeobFilterTitelDoc());
-        mVFilter.get_jCheckBoxKeineAbos().addActionListener(evt -> reloadTable());
-        mVFilter.get_jCheckBoxKeineGesehenen().addActionListener(evt -> reloadTable());
+        mVFilterPanel.get_jButtonFilterLoeschen().addActionListener(l -> delFilter());
+        mVFilterPanel.get_jButtonClearAll().addActionListener(l -> delFilterAlles());
+        mVFilterPanel.get_jComboBoxFilterSender().addActionListener(evt -> reloadTable());
+        mVFilterPanel.get_jComboBoxFilterThema().addActionListener(evt -> reloadTable());
+        mVFilterPanel.get_jTextFieldFilterTitel().addActionListener(evt -> reloadTable());
+        mVFilterPanel.get_jTextFieldFilterTitel().getDocument().addDocumentListener(new BeobFilterTitelDoc());
+        mVFilterPanel.get_jTextFieldFilterThemaTitel().addActionListener(evt -> reloadTable());
+        mVFilterPanel.get_jTextFieldFilterThemaTitel().getDocument().addDocumentListener(new BeobFilterTitelDoc());
+        mVFilterPanel.get_jCheckBoxKeineAbos().addActionListener(evt -> reloadTable());
+        mVFilterPanel.get_jCheckBoxKeineGesehenen().addActionListener(evt -> reloadTable());
         //FIXME hier werdde die action listener gesetzt
-        mVFilter.get_jCheckBoxNurHd().addActionListener(evt -> reloadTable());
-        mVFilter.get_jCheckBoxNurUt().addActionListener(evt -> reloadTable());
-        mVFilter.get_jCheckBoxNeue().addActionListener(evt -> reloadTable());
-        mVFilter.get_jRadioButtonTT().addActionListener(evt -> reloadTable());
-        mVFilter.get_JRadioButtonIrgendwo().addActionListener(evt -> reloadTable());
+        mVFilterPanel.get_jCheckBoxNurHd().addActionListener(evt -> reloadTable());
+        mVFilterPanel.get_jCheckBoxNurUt().addActionListener(evt -> reloadTable());
+        mVFilterPanel.get_jCheckBoxNeue().addActionListener(evt -> reloadTable());
+        mVFilterPanel.get_jRadioButtonTT().addActionListener(evt -> reloadTable());
+        mVFilterPanel.get_JRadioButtonIrgendwo().addActionListener(evt -> reloadTable());
     }
 
     private void setTextSlider() {
-        mVFilter.get_jTextFieldFilterTage().setText(String.valueOf(mVFilter.get_jSliderTage().getValue()));
-        if (mVFilter.get_jSliderTage().getValue() == 0) {
-            mVFilter.get_jTextFieldFilterTage().setText("alles");
+        mVFilterPanel.get_jTextFieldFilterTage().setText(String.valueOf(mVFilterPanel.get_jSliderTage().getValue()));
+        if (mVFilterPanel.get_jSliderTage().getValue() == 0) {
+            mVFilterPanel.get_jTextFieldFilterTage().setText("alles");
         }
-        mVFilter.get_jTextFieldFilterMinuten().setText(String.valueOf(mVFilter.get_jSliderMinuten().getValue()));
-        if (mVFilter.get_jSliderMinuten().getValue() == 0) {
-            mVFilter.get_jTextFieldFilterMinuten().setText("alles");
+        mVFilterPanel.get_jTextFieldFilterMinuten().setText(String.valueOf(mVFilterPanel.get_jSliderMinuten().getValue()));
+        if (mVFilterPanel.get_jSliderMinuten().getValue() == 0) {
+            mVFilterPanel.get_jTextFieldFilterMinuten().setText("alles");
         }
     }
 
@@ -838,41 +837,41 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void delOben() {
-        mVFilter.get_jComboBoxFilterSender().setModel(new DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
-        mVFilter.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
-        mVFilter.get_jTextFieldFilterTitel().setText("");
-        mVFilter.get_jTextFieldFilterThemaTitel().setText("");
-        mVFilter.setThemaTitel(true);
+        mVFilterPanel.get_jComboBoxFilterSender().setModel(new DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
+        mVFilterPanel.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
+        mVFilterPanel.get_jTextFieldFilterTitel().setText("");
+        mVFilterPanel.get_jTextFieldFilterThemaTitel().setText("");
+        mVFilterPanel.setThemaTitel(true);
     }
 
     private void resetFilterSettings() {
-        mVFilter.get_jComboBoxFilterSender().setModel(new DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
-        mVFilter.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
-        mVFilter.get_jTextFieldFilterTitel().setText("");
-        mVFilter.get_jTextFieldFilterThemaTitel().setText("");
-        mVFilter.setThemaTitel(true);
+        mVFilterPanel.get_jComboBoxFilterSender().setModel(new DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
+        mVFilterPanel.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
+        mVFilterPanel.get_jTextFieldFilterTitel().setText("");
+        mVFilterPanel.get_jTextFieldFilterThemaTitel().setText("");
+        mVFilterPanel.setThemaTitel(true);
         //untere Hälfte
-        mVFilter.get_jCheckBoxKeineAbos().setSelected(false);
-        mVFilter.get_jCheckBoxKeineGesehenen().setSelected(false);
-        mVFilter.get_jCheckBoxNurHd().setSelected(false);
-        mVFilter.get_jCheckBoxNurUt().setSelected(false);
-        mVFilter.get_jCheckBoxNeue().setSelected(false);
+        mVFilterPanel.get_jCheckBoxKeineAbos().setSelected(false);
+        mVFilterPanel.get_jCheckBoxKeineGesehenen().setSelected(false);
+        mVFilterPanel.get_jCheckBoxNurHd().setSelected(false);
+        mVFilterPanel.get_jCheckBoxNurUt().setSelected(false);
+        mVFilterPanel.get_jCheckBoxNeue().setSelected(false);
 
-        mVFilter.get_jToggleButtonHistory().setSelected(false);
-        mVFilter.get_jToggleButtonLivestram().setSelected(false);
+        mVFilterPanel.get_jToggleButtonHistory().setSelected(false);
+        mVFilterPanel.get_jToggleButtonLivestram().setSelected(false);
 
-        mVFilter.get_jSliderMinuten().setValue(0);
-        mVFilter.get_jSliderTage().setValue(0);
-        mVFilter.get_rbMin().setSelected(true);
+        mVFilterPanel.get_jSliderMinuten().setValue(0);
+        mVFilterPanel.get_jSliderTage().setValue(0);
+        mVFilterPanel.get_rbMin().setSelected(true);
 
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_TAGE, String.valueOf(mVFilter.get_jSliderTage().getValue()));
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_DAUER, String.valueOf(mVFilter.get_jSliderMinuten().getValue()));
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_DAUER_MIN, String.valueOf(mVFilter.get_rbMin().isSelected()));
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_TAGE, String.valueOf(mVFilterPanel.get_jSliderTage().getValue()));
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_DAUER, String.valueOf(mVFilterPanel.get_jSliderMinuten().getValue()));
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_DAUER_MIN, String.valueOf(mVFilterPanel.get_rbMin().isSelected()));
         setTextSlider();
     }
 
     public int getFilterTage() {
-        return mVFilter.get_jSliderTage().getValue();
+        return mVFilterPanel.get_jSliderTage().getValue();
     }
 
     private String[] getThemen(String ssender) {
@@ -891,19 +890,19 @@ public class GuiFilme extends PanelVorlage {
     private void setFilterProfile(int filter) {
         stopBeob = true;
         boolean geändert = false;
-        mVFilter.get_jToggleButtonHistory().setSelected(false);
-        mVFilter.get_jToggleButtonLivestram().setSelected(false);
-        mVFilter.get_jTextFieldFilterTitel().setText(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TITEL, filter));
-        mVFilter.get_jTextFieldFilterThemaTitel().setText(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA_TITEL, filter));
-        mVFilter.setThemaTitel(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TT, filter)));
+        mVFilterPanel.get_jToggleButtonHistory().setSelected(false);
+        mVFilterPanel.get_jToggleButtonLivestram().setSelected(false);
+        mVFilterPanel.get_jTextFieldFilterTitel().setText(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TITEL, filter));
+        mVFilterPanel.get_jTextFieldFilterThemaTitel().setText(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA_TITEL, filter));
+        mVFilterPanel.setThemaTitel(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TT, filter)));
 
-        mVFilter.get_jCheckBoxKeineAbos().setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_ABO, filter)));
-        mVFilter.get_jCheckBoxKeineGesehenen().setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_GESEHENE, filter)));
-        mVFilter.get_jCheckBoxNurHd().setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_HD, filter)));
-        mVFilter.get_jCheckBoxNurUt().setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_UT, filter)));
-        mVFilter.get_jCheckBoxNeue().setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_NEUE, filter)));
+        mVFilterPanel.get_jCheckBoxKeineAbos().setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_ABO, filter)));
+        mVFilterPanel.get_jCheckBoxKeineGesehenen().setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_GESEHENE, filter)));
+        mVFilterPanel.get_jCheckBoxNurHd().setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_HD, filter)));
+        mVFilterPanel.get_jCheckBoxNurUt().setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_UT, filter)));
+        mVFilterPanel.get_jCheckBoxNeue().setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_NEUE, filter)));
 
-        mVFilter.get_jSliderTage().setValue(MVConfig.getInt(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TAGE, filter));
+        mVFilterPanel.get_jSliderTage().setValue(MVConfig.getInt(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TAGE, filter));
 
         // Blackliste
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__BLACKLIST_ON, filter))
@@ -912,9 +911,9 @@ public class GuiFilme extends PanelVorlage {
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__BLACKLIST_ON, filter));
         }
 
-        mVFilter.get_jSliderMinuten().setValue(MVConfig.getInt(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER, filter));
-        mVFilter.get_rbMin().setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER_MIN, filter));
-        mVFilter.get_rbMax().setSelected(!MVConfig.getBool(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER_MIN, filter));
+        mVFilterPanel.get_jSliderMinuten().setValue(MVConfig.getInt(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER, filter));
+        mVFilterPanel.get_rbMin().setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER_MIN, filter));
+        mVFilterPanel.get_rbMax().setSelected(!MVConfig.getBool(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER_MIN, filter));
 
         setTextSlider();
 
@@ -922,10 +921,10 @@ public class GuiFilme extends PanelVorlage {
         daten.getListeBlacklist().filterListe();
 
         // erst jetzt da Sender/Thema evtl. in der Blacklist
-        mVFilter.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
-        mVFilter.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
-        mVFilter.get_jComboBoxFilterSender().setSelectedItem(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SENDER, filter));
-        mVFilter.get_jComboBoxFilterThema().setSelectedItem(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA, filter));
+        mVFilterPanel.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
+        mVFilterPanel.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
+        mVFilterPanel.get_jComboBoxFilterSender().setSelectedItem(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SENDER, filter));
+        mVFilterPanel.get_jComboBoxFilterThema().setSelectedItem(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA, filter));
 
         SortKey sk = sortKeyLesen(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SORT_KEY, filter),
                 MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SORT_KEY_UPDOWN, filter));
@@ -971,22 +970,22 @@ public class GuiFilme extends PanelVorlage {
 
     private void saveFilterProfile(int filter) {
         // jetzt noch speichern
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SENDER, String.valueOf(mVFilter.get_jComboBoxFilterSender().getSelectedItem()), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA, String.valueOf(mVFilter.get_jComboBoxFilterThema().getSelectedItem()), filter);
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SENDER, String.valueOf(mVFilterPanel.get_jComboBoxFilterSender().getSelectedItem()), filter);
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA, String.valueOf(mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem()), filter);
 
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TITEL, String.valueOf(mVFilter.get_jTextFieldFilterTitel().getText()), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA_TITEL, String.valueOf(mVFilter.get_jTextFieldFilterThemaTitel().getText()), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TT, Boolean.toString(mVFilter.getThemaTitel()), filter);
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TITEL, String.valueOf(mVFilterPanel.get_jTextFieldFilterTitel().getText()), filter);
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA_TITEL, String.valueOf(mVFilterPanel.get_jTextFieldFilterThemaTitel().getText()), filter);
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TT, Boolean.toString(mVFilterPanel.getThemaTitel()), filter);
 
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_ABO, String.valueOf(mVFilter.get_jCheckBoxKeineAbos().isSelected()), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_GESEHENE, String.valueOf(mVFilter.get_jCheckBoxKeineGesehenen().isSelected()), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_HD, String.valueOf(mVFilter.get_jCheckBoxNurHd().isSelected()), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_UT, String.valueOf(mVFilter.get_jCheckBoxNurUt().isSelected()), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_NEUE, String.valueOf(mVFilter.get_jCheckBoxNeue().isSelected()), filter);
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_ABO, String.valueOf(mVFilterPanel.get_jCheckBoxKeineAbos().isSelected()), filter);
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_GESEHENE, String.valueOf(mVFilterPanel.get_jCheckBoxKeineGesehenen().isSelected()), filter);
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_HD, String.valueOf(mVFilterPanel.get_jCheckBoxNurHd().isSelected()), filter);
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_UT, String.valueOf(mVFilterPanel.get_jCheckBoxNurUt().isSelected()), filter);
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_NEUE, String.valueOf(mVFilterPanel.get_jCheckBoxNeue().isSelected()), filter);
 
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TAGE, String.valueOf(mVFilter.get_jSliderTage().getValue()), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER, String.valueOf(mVFilter.get_jSliderMinuten().getValue()), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER_MIN, String.valueOf(mVFilter.get_rbMin().isSelected()), filter);
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TAGE, String.valueOf(mVFilterPanel.get_jSliderTage().getValue()), filter);
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER, String.valueOf(mVFilterPanel.get_jSliderMinuten().getValue()), filter);
+        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER_MIN, String.valueOf(mVFilterPanel.get_rbMin().isSelected()), filter);
 
         java.util.List<? extends RowSorter.SortKey> listeSortKeys;
         listeSortKeys = tabelle.getRowSorter().getSortKeys();
@@ -1021,37 +1020,37 @@ public class GuiFilme extends PanelVorlage {
                 // Filtern mit dem Filter in der Toolbar
                 listeInModellLaden();
             } else {
-                String filterThema = mVFilter.get_jComboBoxFilterThema().getSelectedItem().toString();
-                String filterSender = mVFilter.get_jComboBoxFilterSender().getSelectedItem().toString();
-                boolean themaOpen = mVFilter.get_jComboBoxFilterThema().isPopupVisible();
-                boolean senderOpen = mVFilter.get_jComboBoxFilterSender().isPopupVisible();
+                String filterThema = mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem().toString();
+                String filterSender = mVFilterPanel.get_jComboBoxFilterSender().getSelectedItem().toString();
+                boolean themaOpen = mVFilterPanel.get_jComboBoxFilterThema().isPopupVisible();
+                boolean senderOpen = mVFilterPanel.get_jComboBoxFilterSender().isPopupVisible();
                 //Filme neu laden
                 listeInModellLaden();
                 //Filter Sender
-                mVFilter.get_jComboBoxFilterSender().setModel(new DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
-                mVFilter.get_jComboBoxFilterSender().setSelectedIndex(0);
+                mVFilterPanel.get_jComboBoxFilterSender().setModel(new DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
+                mVFilterPanel.get_jComboBoxFilterSender().setSelectedIndex(0);
                 if (!filterSender.equals("")) {
-                    mVFilter.get_jComboBoxFilterSender().setSelectedItem(filterSender);
-                    if (mVFilter.get_jComboBoxFilterSender().getSelectedIndex() == 0) {
+                    mVFilterPanel.get_jComboBoxFilterSender().setSelectedItem(filterSender);
+                    if (mVFilterPanel.get_jComboBoxFilterSender().getSelectedIndex() == 0) {
                         // war wohl nix, der gewählte Sender wurde in die Blacklist eingetragen
                         filterSender = "";
                         listeInModellLaden();
                     }
                 }
-                mVFilter.get_jComboBoxFilterSender().setPopupVisible(senderOpen);
+                mVFilterPanel.get_jComboBoxFilterSender().setPopupVisible(senderOpen);
                 // Filter Thema
                 if (filterSender.equals("")) {
-                    mVFilter.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
+                    mVFilterPanel.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
                 } else {
-                    mVFilter.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen(filterSender)));
+                    mVFilterPanel.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen(filterSender)));
                 }
                 // wenn Thema bei dem Sender vorhanden, dann wieder setzen
-                mVFilter.get_jComboBoxFilterThema().setSelectedItem(filterThema);
-                if (!filterThema.equals("") && mVFilter.get_jComboBoxFilterThema().getSelectedIndex() == 0) {
+                mVFilterPanel.get_jComboBoxFilterThema().setSelectedItem(filterThema);
+                if (!filterThema.equals("") && mVFilterPanel.get_jComboBoxFilterThema().getSelectedIndex() == 0) {
                     // war wohl nix
                     themaNichtDa = true;
                 }
-                mVFilter.get_jComboBoxFilterThema().setPopupVisible(themaOpen);
+                mVFilterPanel.get_jComboBoxFilterThema().setPopupVisible(themaOpen);
             }
             setInfoStatusbar();
             tabelle.setSpalten();
@@ -1071,7 +1070,7 @@ public class GuiFilme extends PanelVorlage {
 
     private synchronized void listeInModellLaden() {
         ListeFilme lf;
-        if (mVFilter.get_jToggleButtonHistory().isSelected()) {
+        if (mVFilterPanel.get_jToggleButtonHistory().isSelected()) {
             lf = daten.getListeFilmeHistory();
         } else {
             lf = daten.getListeFilmeNachBlackList();
@@ -1079,26 +1078,26 @@ public class GuiFilme extends PanelVorlage {
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER))) {
             // normal mit den Filtern aus dem Filterpanel suchen
             GetModelTabFilme.getModelTabFilme(lf, daten, tabelle,
-                    mVFilter.get_jComboBoxFilterSender().getSelectedItem().toString(),
-                    mVFilter.get_jComboBoxFilterThema().getSelectedItem().toString(), mVFilter.get_jTextFieldFilterTitel().getText(),
-                    mVFilter.getThemaTitel() ? mVFilter.get_jTextFieldFilterThemaTitel().getText() : "",
-                    mVFilter.getThemaTitel() ? "" : mVFilter.get_jTextFieldFilterThemaTitel().getText(),
-                    mVFilter.get_jSliderMinuten().getValue(),
-                    mVFilter.get_rbMin().isSelected(),
-                    mVFilter.get_jCheckBoxKeineAbos().isSelected(), mVFilter.get_jCheckBoxKeineGesehenen().isSelected(),
-                    mVFilter.get_jCheckBoxNurHd().isSelected(), mVFilter.get_jCheckBoxNurUt().isSelected(),
-                    mVFilter.get_jToggleButtonLivestram().isSelected(), mVFilter.get_jCheckBoxNeue().isSelected());
+                    mVFilterPanel.get_jComboBoxFilterSender().getSelectedItem().toString(),
+                    mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem().toString(), mVFilterPanel.get_jTextFieldFilterTitel().getText(),
+                    mVFilterPanel.getThemaTitel() ? mVFilterPanel.get_jTextFieldFilterThemaTitel().getText() : "",
+                    mVFilterPanel.getThemaTitel() ? "" : mVFilterPanel.get_jTextFieldFilterThemaTitel().getText(),
+                    mVFilterPanel.get_jSliderMinuten().getValue(),
+                    mVFilterPanel.get_rbMin().isSelected(),
+                    mVFilterPanel.get_jCheckBoxKeineAbos().isSelected(), mVFilterPanel.get_jCheckBoxKeineGesehenen().isSelected(),
+                    mVFilterPanel.get_jCheckBoxNurHd().isSelected(), mVFilterPanel.get_jCheckBoxNurUt().isSelected(),
+                    mVFilterPanel.get_jToggleButtonLivestram().isSelected(), mVFilterPanel.get_jCheckBoxNeue().isSelected());
         } else {
             // jetzt nur den Filter aus der Toolbar
             GetModelTabFilme.getModelTabFilme(lf, daten, tabelle,
                     "", "", "",
                     fap.roSearchStringProperty.getValueSafe(),
                     "",
-                    mVFilter.get_jSliderMinuten().getValue(),
-                    mVFilter.get_rbMin().isSelected(),
-                    mVFilter.get_jCheckBoxKeineAbos().isSelected(), mVFilter.get_jCheckBoxKeineGesehenen().isSelected(),
-                    mVFilter.get_jCheckBoxNurHd().isSelected(), mVFilter.get_jCheckBoxNurUt().isSelected(),
-                    mVFilter.get_jToggleButtonLivestram().isSelected(), mVFilter.get_jCheckBoxNeue().isSelected());
+                    mVFilterPanel.get_jSliderMinuten().getValue(),
+                    mVFilterPanel.get_rbMin().isSelected(),
+                    mVFilterPanel.get_jCheckBoxKeineAbos().isSelected(), mVFilterPanel.get_jCheckBoxKeineGesehenen().isSelected(),
+                    mVFilterPanel.get_jCheckBoxNurHd().isSelected(), mVFilterPanel.get_jCheckBoxNurUt().isSelected(),
+                    mVFilterPanel.get_jToggleButtonLivestram().isSelected(), mVFilterPanel.get_jCheckBoxNeue().isSelected());
         }
     }
 
@@ -1265,8 +1264,8 @@ public class GuiFilme extends PanelVorlage {
         }
 
         private void tus() {
-            Filter.checkPattern1(mVFilter.get_jTextFieldFilterThemaTitel());
-            Filter.checkPattern1(mVFilter.get_jTextFieldFilterTitel());
+            Filter.checkPattern1(mVFilterPanel.get_jTextFieldFilterThemaTitel());
+            Filter.checkPattern1(mVFilterPanel.get_jTextFieldFilterTitel());
             if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ECHTZEITSUCHE))) {
                 loadTable();
             }
@@ -1651,8 +1650,8 @@ public class GuiFilme extends PanelVorlage {
                     Optional<DatenFilm> res = getFilm(nr);
                     res.ifPresent(film -> {
                         final String thema = film.arr[DatenFilm.FILM_THEMA];
-                        mVFilter.get_jComboBoxFilterThema().setSelectedIndex(0);
-                        mVFilter.get_jComboBoxFilterThema().setSelectedItem(thema);
+                        mVFilterPanel.get_jComboBoxFilterThema().setSelectedIndex(0);
+                        mVFilterPanel.get_jComboBoxFilterThema().setSelectedItem(thema);
                     });
                     stopBeob = false;
                     loadTable();
@@ -1670,8 +1669,8 @@ public class GuiFilme extends PanelVorlage {
                     Optional<DatenFilm> res = getFilm(nr);
                     res.ifPresent(film -> {
                         final String sen = film.arr[DatenFilm.FILM_SENDER];
-                        mVFilter.get_jComboBoxFilterSender().setSelectedIndex(0);
-                        mVFilter.get_jComboBoxFilterSender().setSelectedItem(sen);
+                        mVFilterPanel.get_jComboBoxFilterSender().setSelectedIndex(0);
+                        mVFilterPanel.get_jComboBoxFilterSender().setSelectedItem(sen);
                     });
                     stopBeob = false;
                     loadTable();
@@ -1689,14 +1688,14 @@ public class GuiFilme extends PanelVorlage {
                     Optional<DatenFilm> res = getFilm(nr);
                     res.ifPresent(film -> {
                         final String sen = film.arr[DatenFilm.FILM_SENDER];
-                        mVFilter.get_jComboBoxFilterSender().setSelectedIndex(0);
-                        mVFilter.get_jComboBoxFilterSender().setSelectedItem(sen);
+                        mVFilterPanel.get_jComboBoxFilterSender().setSelectedIndex(0);
+                        mVFilterPanel.get_jComboBoxFilterSender().setSelectedItem(sen);
                         final String thema = film.arr[DatenFilm.FILM_THEMA];
-                        mVFilter.get_jComboBoxFilterThema().setSelectedIndex(0);
-                        mVFilter.get_jComboBoxFilterThema().setSelectedItem(thema);
-                        if (mVFilter.get_jComboBoxFilterThema().getSelectedIndex() == 0) {
+                        mVFilterPanel.get_jComboBoxFilterThema().setSelectedIndex(0);
+                        mVFilterPanel.get_jComboBoxFilterThema().setSelectedItem(thema);
+                        if (mVFilterPanel.get_jComboBoxFilterThema().getSelectedIndex() == 0) {
                             final String themaFilter = getThemaFilter(sen, thema);
-                            mVFilter.get_jComboBoxFilterThema().setSelectedItem(themaFilter);
+                            mVFilterPanel.get_jComboBoxFilterThema().setSelectedItem(themaFilter);
                         }
                     });
                     stopBeob = false;
@@ -1715,17 +1714,17 @@ public class GuiFilme extends PanelVorlage {
                     Optional<DatenFilm> res = getFilm(nr);
                     res.ifPresent(film -> {
                         final String sen = film.arr[DatenFilm.FILM_SENDER];
-                        mVFilter.get_jComboBoxFilterSender().setSelectedIndex(0);
-                        mVFilter.get_jComboBoxFilterSender().setSelectedItem(sen);
+                        mVFilterPanel.get_jComboBoxFilterSender().setSelectedIndex(0);
+                        mVFilterPanel.get_jComboBoxFilterSender().setSelectedItem(sen);
                         final String thema = film.arr[DatenFilm.FILM_THEMA];
-                        mVFilter.get_jComboBoxFilterThema().setSelectedIndex(0);
-                        mVFilter.get_jComboBoxFilterThema().setSelectedItem(thema);
-                        if (mVFilter.get_jComboBoxFilterThema().getSelectedIndex() == 0) {
+                        mVFilterPanel.get_jComboBoxFilterThema().setSelectedIndex(0);
+                        mVFilterPanel.get_jComboBoxFilterThema().setSelectedItem(thema);
+                        if (mVFilterPanel.get_jComboBoxFilterThema().getSelectedIndex() == 0) {
                             final String themaFilter = getThemaFilter(sen, thema);
-                            mVFilter.get_jComboBoxFilterThema().setSelectedItem(themaFilter);
+                            mVFilterPanel.get_jComboBoxFilterThema().setSelectedItem(themaFilter);
                         }
                         final String tit = film.arr[DatenFilm.FILM_TITEL];
-                        mVFilter.get_jTextFieldFilterTitel().setText(tit);
+                        mVFilterPanel.get_jTextFieldFilterTitel().setText(tit);
                     });
                     stopBeob = false;
                     loadTable();
@@ -1837,13 +1836,13 @@ public class GuiFilme extends PanelVorlage {
                         res.ifPresent(film -> {
                             final String thema = film.arr[DatenFilm.FILM_THEMA];
                             //neues Abo anlegen
-                            daten.getListeAbo().addAbo(mVFilter.get_jComboBoxFilterSender().getSelectedItem().toString(),
-                                    mVFilter.get_jComboBoxFilterThema().getSelectedItem().toString(),
-                                    mVFilter.get_jTextFieldFilterTitel().getText(),
-                                    mVFilter.getThemaTitel() ? mVFilter.get_jTextFieldFilterThemaTitel().getText() : "",
-                                    mVFilter.getThemaTitel() ? "" : mVFilter.get_jTextFieldFilterThemaTitel().getText(),
-                                    mVFilter.get_jSliderMinuten().getValue(),
-                                    mVFilter.get_rbMin().isSelected(),
+                            daten.getListeAbo().addAbo(mVFilterPanel.get_jComboBoxFilterSender().getSelectedItem().toString(),
+                                    mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem().toString(),
+                                    mVFilterPanel.get_jTextFieldFilterTitel().getText(),
+                                    mVFilterPanel.getThemaTitel() ? mVFilterPanel.get_jTextFieldFilterThemaTitel().getText() : "",
+                                    mVFilterPanel.getThemaTitel() ? "" : mVFilterPanel.get_jTextFieldFilterThemaTitel().getText(),
+                                    mVFilterPanel.get_jSliderMinuten().getValue(),
+                                    mVFilterPanel.get_rbMin().isSelected(),
                                     thema);
                         });
                         stopBeob = false;
