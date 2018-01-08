@@ -721,21 +721,6 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
-    // ############################################
-    // Filter
-    // ############################################
-    private void searchFilmWithUrl_(String url) {
-        // nur für Tests
-        url = url.trim();
-        TModelFilm m = (TModelFilm) tabelle.getModel();
-        for (int i = 0; i < m.getRowCount(); ++i) {
-            if (!url.equals(m.getValueAt(i, DatenFilm.FILM_URL).toString())) {
-                m.removeRow(i);
-                --i;
-            }
-        }
-    }
-
     private void setVisFilterPanelAndLoad() {
         boolean history = false;
         if (mVFilter != null) {
@@ -968,7 +953,7 @@ public class GuiFilme extends PanelVorlage {
         SortKey sk = sortKeyLesen(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SORT_KEY, filter),
                 MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SORT_KEY_UPDOWN, filter));
         if (sk != null) {
-            LinkedList<SortKey> lst = new LinkedList<>();
+            ArrayList<SortKey> lst = new ArrayList<>();
             lst.add(sk);
             tabelle.getRowSorter().setSortKeys(lst);
         }
