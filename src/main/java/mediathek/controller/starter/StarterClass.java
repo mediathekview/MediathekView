@@ -21,6 +21,7 @@ package mediathek.controller.starter;
 
 import com.apple.eawt.Application;
 import com.jidesoft.utils.SystemInfo;
+import javafx.application.Platform;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Datum;
 import mSearch.tool.Listener;
@@ -33,24 +34,18 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.mac.SpotlightCommentWriter;
 import mediathek.tool.MVFilmSize;
-import mediathek.tool.MVNotification;
+import org.controlsfx.control.Notifications;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class StarterClass {
-    //Tags Filme
-
     private final Daten daten;
-    private Starten starten = null;
+    private final Starten starten;
     private boolean pause = false;
 
-    //===================================
-    // Public
-    //===================================
     public StarterClass(Daten daten) {
         this.daten = daten;
         starten = new Starten();
@@ -217,9 +212,44 @@ public class StarterClass {
         SysMsg.sysMsg(text.toArray(new String[text.size()]));
         if (!start.stoppen && !abgebrochen) {
             if (datenDownload.quelle != DatenDownload.QUELLE_BUTTON) {
-                SwingUtilities.invokeLater(() -> MVNotification.addNotification(datenDownload, start.status != Start.STATUS_ERR));
+                addNotification(datenDownload, start.status != Start.STATUS_ERR);
             }
         }
+    }
+
+    /**
+     * Post a notification dialog whether download was successful or not.
+     */
+    private static void addNotification(DatenDownload datenDownload, boolean erfolgreich) {
+        if (GraphicsEnvironment.isHeadless()) {
+            return; // dann gibts keine GUI
+        }
+        final String[] m = {
+                "Film:   " + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
+                "Sender: " + datenDownload.arr[DatenDownload.DOWNLOAD_SENDER],
+                "Größe:  " + MVFilmSize.humanReadableByteCount(datenDownload.mVFilmSize.getSize(), true)
+        };
+
+        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_NOTIFICATION)))
+            return;
+
+        StringBuilder meldung = new StringBuilder();
+        for (String s : m) {
+            meldung.append(s).append('\n');
+        }
+
+        Platform.runLater(() -> {
+            Notifications msg = Notifications.create();
+            if (erfolgreich)
+                msg.title("Download war erfolgreich");
+            else
+                msg.title("Download war fehlerhaft");
+            msg.text(meldung.toString());
+            if (erfolgreich)
+                msg.showInformation();
+            else
+                msg.showError();
+        });
     }
 
     static void finalizeDownload(DatenDownload datenDownload, Start start /* wegen "datenDownload.start=null" beim stoppen */, DirectHttpDownload.HttpDownloadState state) {
@@ -291,7 +321,7 @@ public class StarterClass {
          * The only {@link java.util.Timer} used for all {@link mediathek.controller.MVInputStream.BandwidthCalculationTask}
          * calculation tasks.
          */
-        private java.util.Timer bandwidthCalculationTimer;
+        private final java.util.Timer bandwidthCalculationTimer;
 
         public Starten() {
             super();
