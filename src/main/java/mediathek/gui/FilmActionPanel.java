@@ -127,9 +127,7 @@ public class FilmActionPanel {
         GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
         jfxSearchField = new CustomTextField();
         jfxSearchField.setTooltip(new Tooltip("Thema/Titel suchen"));
-
         jfxSearchField.setLeft(fontAwesome.create(FontAwesome.Glyph.SEARCH));
-
         jfxSearchField.setRight(fontAwesome.create(FontAwesome.Glyph.REMOVE));
 
         Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, ToolBar.class.getSimpleName()) {
@@ -165,7 +163,7 @@ public class FilmActionPanel {
         roSearchStringProperty.bind(textProperty);
 
 
-        ToggleButton btnAdvancedFilter = new ToggleButton("", fontAwesome.create(FontAwesome.Glyph.FILTER));
+        ToggleButton btnAdvancedFilter = new ToggleButton("", fontAwesome.create(FontAwesome.Glyph.QUESTION_CIRCLE));
         btnAdvancedFilter.setOnAction(event -> {
             SwingUtilities.invokeLater(() -> {
                 boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER));
