@@ -33,13 +33,14 @@ public class GetModelTabFilme {
             String filterSender, String filterThema, String filterTitel, String filterThemaTitel, String filterIrgendwo,
             int laenge, boolean min, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean nurUt, boolean live, boolean nurNeue) {
         // Model für die Tabelle Filme zusammenbauen
+        System.out.println("getModelTabFilme()");
+        TModel tModel = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
         if (listeFilme.isEmpty()) {
             // wenn die Liste leer ist, dann Tschüss
-            table.setModel(new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES));
+            table.setModel(tModel);
             return;
         }
         // dann ein neues Model anlegen
-        TModel tModel = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
         if (filterSender.isEmpty() && filterThema.isEmpty() && filterTitel.isEmpty() && filterThemaTitel.isEmpty() && filterIrgendwo.isEmpty() && laenge == 0
                 && !keineAbos && !kGesehen && !nurHd && !nurUt && !live && !nurNeue) {
             // dann ganze Liste laden

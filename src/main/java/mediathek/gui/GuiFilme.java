@@ -1071,6 +1071,9 @@ public class GuiFilme extends PanelVorlage {
 
     }
 
+    /**
+     * Hier werden die Filter angewandt und das Model neu gesetzt.
+     */
     private synchronized void listeInModellLaden() {
         ListeFilme lf;
         if (mVFilterPanel.get_jToggleButtonHistory().isSelected()) {
