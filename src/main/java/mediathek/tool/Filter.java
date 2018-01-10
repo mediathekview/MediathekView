@@ -94,9 +94,7 @@ public class Filter {
                         if (irgendwoSuchen.length == 0
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_DATUM])
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_THEMA])
-                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_TITEL])
-                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_BESCHREIBUNG])) {
-                            // || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_WEBSEITE_NR])) { kostet 25% Zeit zusätzlich!
+                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_TITEL])) {
                             if (mitLaenge) {
                                 // die Länge soll mit gefrüft werden
                                 if (laengePruefen(laengeMinutenSuchen, film.dauerL, min)) {
