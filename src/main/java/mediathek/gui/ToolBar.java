@@ -207,10 +207,6 @@ public final class ToolBar extends JToolBar {
             }
 
             @Override
-            public void progress(ListenerFilmeLadenEvent event) {
-            }
-
-            @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 jButtonFilmlisteLaden.setEnabled(true);
                 if (jButtonDownloadAktualisieren != null) {
@@ -251,17 +247,10 @@ public final class ToolBar extends JToolBar {
     }
 
     private void setToolbar() {
-//        setupSearchFieldVisibility();
         for (MVButton b : buttonList) {
             b.setVisible(b.anzeigen);
         }
     }
-
-    /*private void setupSearchFieldVisibility() {
-        if (state == MediathekGui.TABS.TAB_FILME) {
-            Platform.runLater(() -> jfxSearchField.setVisible(!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER))));
-        }
-    }*/
 
     private void loadVisible() {
         if (nrToolbar != null) {

@@ -1110,7 +1110,6 @@ public class GuiDownloads extends PanelVorlage {
 
         jScrollPane2.setViewportView(jEditorPane1);
 
-        setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 255)));
         setLayout(new java.awt.BorderLayout());
 
         jSplitPane1.setDividerLocation(200);
@@ -1187,7 +1186,7 @@ public class GuiDownloads extends PanelVorlage {
                                 .addGap(18, 18, 18)
                                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(spDownload, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
+                                .addComponent(spDownload, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
                                 .addContainerGap())
         );
 
@@ -1212,7 +1211,7 @@ public class GuiDownloads extends PanelVorlage {
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(0, 0, 0)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 628, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 630, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );

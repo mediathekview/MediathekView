@@ -53,13 +53,9 @@ public class GuiAbo extends PanelVorlage {
         }
 
         toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_ABOS);
-        jPanelToolBar.setLayout(new BorderLayout());
-        jPanelToolBar.add(toolBar, BorderLayout.CENTER);
+        add(toolBar, BorderLayout.NORTH);
         setToolbarVisible();
     }
-    //===================================
-    //public
-    //===================================
 
     @Override
     public void isShown() {
@@ -313,7 +309,6 @@ public class GuiAbo extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanelToolBar = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
@@ -322,16 +317,7 @@ public class GuiAbo extends PanelVorlage {
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jcbSender = new javax.swing.JComboBox<>();
 
-        javax.swing.GroupLayout jPanelToolBarLayout = new javax.swing.GroupLayout(jPanelToolBar);
-        jPanelToolBar.setLayout(jPanelToolBarLayout);
-        jPanelToolBarLayout.setHorizontalGroup(
-                jPanelToolBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 758, Short.MAX_VALUE)
-        );
-        jPanelToolBarLayout.setVerticalGroup(
-                jPanelToolBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 13, Short.MAX_VALUE)
-        );
+        setLayout(new java.awt.BorderLayout());
 
         jSplitPane1.setDividerLocation(200);
 
@@ -366,34 +352,17 @@ public class GuiAbo extends PanelVorlage {
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jcbSender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(363, Short.MAX_VALUE))
+                                .addContainerGap(400, Short.MAX_VALUE))
         );
 
         jScrollPaneFilter.setViewportView(jPanelFilter);
 
         jSplitPane1.setLeftComponent(jScrollPaneFilter);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanelToolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(jSplitPane1)
-                                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(jPanelToolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jSplitPane1)
-                                .addContainerGap())
-        );
+        add(jSplitPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanelToolBar;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPaneFilter;
     private javax.swing.JSplitPane jSplitPane1;
