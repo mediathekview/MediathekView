@@ -1251,11 +1251,9 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadVorziehen.setText("Downloads vorziehen");
         jMenuDownload.add(jMenuItemDownloadVorziehen);
 
-        jMenuItemDownloadsZurueckstellen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_BACK_SPACE, 0));
         jMenuItemDownloadsZurueckstellen.setText("Downloads zurückstellen");
         jMenuDownload.add(jMenuItemDownloadsZurueckstellen);
 
-        jMenuItemDownloadsLoeschen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
         jMenuItemDownloadsLoeschen.setText("Downloads aus Liste entfernen");
         jMenuDownload.add(jMenuItemDownloadsLoeschen);
 
@@ -1296,11 +1294,9 @@ public class MediathekGui extends JFrame {
         jMenuItemAbosAusschalten.setText("ausschalten");
         jMenuAbos.add(jMenuItemAbosAusschalten);
 
-        jMenuItemAbosLoeschen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
         jMenuItemAbosLoeschen.setText("löschen");
         jMenuAbos.add(jMenuItemAbosLoeschen);
 
-        jMenuItemAbosAendern.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ENTER, 0));
         jMenuItemAbosAendern.setText("ändern");
         jMenuAbos.add(jMenuItemAbosAendern);
 

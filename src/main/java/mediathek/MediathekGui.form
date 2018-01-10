@@ -200,17 +200,11 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadsZurueckstellen">
               <Properties>
-                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="BACK_SPACE"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Downloads zur&#xfc;ckstellen"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemDownloadsLoeschen">
               <Properties>
-                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="DELETE"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Downloads aus Liste entfernen"/>
               </Properties>
             </MenuItem>
@@ -290,17 +284,11 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAbosLoeschen">
               <Properties>
-                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="DELETE"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="l&#xf6;schen"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAbosAendern">
               <Properties>
-                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="ENTER"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="&#xe4;ndern"/>
               </Properties>
             </MenuItem>

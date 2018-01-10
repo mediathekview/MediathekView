@@ -130,6 +130,15 @@ public class FilmActionPanel {
         jfxSearchField.setLeft(fontAwesome.create(FontAwesome.Glyph.SEARCH));
         jfxSearchField.setRight(fontAwesome.create(FontAwesome.Glyph.REMOVE));
 
+        jfxSearchField.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case ESCAPE:
+                    if (!jfxSearchField.getText().isEmpty())
+                        jfxSearchField.setText("");
+                    event.consume();
+                    break;
+            }
+        });
         Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, ToolBar.class.getSimpleName()) {
             @Override
             public void ping() {
