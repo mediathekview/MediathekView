@@ -81,6 +81,7 @@ public class Filter {
         // senderSuchen exakt mit sender
         // themaSuchen exakt mit thema
         // titelSuchen muss im Titel nur enthalten sein
+        boolean result = false;
 
         if (senderSuchen.isEmpty() || film.arr[DatenFilm.FILM_SENDER].compareTo(senderSuchen) == 0) {
             if (themaSuchen.isEmpty() || film.arr[DatenFilm.FILM_THEMA].equalsIgnoreCase(themaSuchen)) {
@@ -98,17 +99,18 @@ public class Filter {
                             if (mitLaenge) {
                                 // die Länge soll mit gefrüft werden
                                 if (laengePruefen(laengeMinutenSuchen, film.dauerL, min)) {
-                                    return true;
+                                    result = true;
                                 }
                             } else {
-                                return true;
+                                result = true;
                             }
                         }
                     }
                 }
             }
         }
-        return false;
+        
+        return result;
     }
 
     public static boolean laengePruefen(int filterLaengeInMinuten, long filmLaenge, boolean min) {
