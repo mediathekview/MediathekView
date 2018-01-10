@@ -60,7 +60,6 @@ import static mediathek.tool.MVTable.*;
 public class GuiFilme extends PanelVorlage {
     private JButton buttonArray[];
     private final MVFilterPanel mVFilterPanel;
-    ToolBar toolBar;
 
     public GuiFilme(Daten aDaten, MediathekGui aMediathekGui) {
         super(aDaten, aMediathekGui);
@@ -89,7 +88,6 @@ public class GuiFilme extends PanelVorlage {
 
         panelVideoplayerSetzen();
         setupDescriptionPanel();
-        toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_FILME);
 
         fxPanel = new JFXPanel();
         add(fxPanel, BorderLayout.NORTH);
@@ -341,7 +339,7 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void setToolbarVisible() {
-        toolBar.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
+        //toolBar.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
         if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TOOLBAR_ALLES_ANZEIGEN))) {
             MVConfig.add(MVConfig.Configs.SYSTEM_VIS_FILTER, Boolean.toString(true));
             Listener.notify(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, GuiFilme.class.getSimpleName());
