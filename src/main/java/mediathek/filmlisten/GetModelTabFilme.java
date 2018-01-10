@@ -1,9 +1,9 @@
-/*    
+/*
  *    MediathekView
  *    Copyright (C) 2008   W. Xaver
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
- *    
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -29,11 +29,12 @@ import mediathek.tool.TModelFilm;
 
 public class GetModelTabFilme {
 
+    /**
+     * Model für die Tabelle Filme zusammenbauen.
+     */
     public static synchronized void getModelTabFilme(ListeFilme listeFilme, Daten ddaten, MVTable table,
-            String filterSender, String filterThema, String filterTitel, String filterThemaTitel, String filterIrgendwo,
-            int laenge, boolean min, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean nurUt, boolean live, boolean nurNeue) {
-        // Model für die Tabelle Filme zusammenbauen
-        System.out.println("getModelTabFilme()");
+                                                     String filterSender, String filterThema, String filterTitel, String filterThemaTitel,
+                                                     int laenge, boolean min, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean nurUt, boolean live, boolean nurNeue) {
         TModel tModel = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
         if (listeFilme.isEmpty()) {
             // wenn die Liste leer ist, dann Tschüss
@@ -41,8 +42,8 @@ public class GetModelTabFilme {
             return;
         }
         // dann ein neues Model anlegen
-        if (filterSender.isEmpty() && filterThema.isEmpty() && filterTitel.isEmpty() && filterThemaTitel.isEmpty() && filterIrgendwo.isEmpty() && laenge == 0
-                && !keineAbos && !kGesehen && !nurHd && !nurUt && !live && !nurNeue) {
+        if (filterSender.isEmpty() && filterThema.isEmpty() && filterTitel.isEmpty() && filterThemaTitel.isEmpty()
+                && laenge == 0 && !keineAbos && !kGesehen && !nurHd && !nurUt && !live && !nurNeue) {
             // dann ganze Liste laden
             addObjectDataTabFilme(listeFilme, tModel);
         } else {
@@ -66,16 +67,7 @@ public class GetModelTabFilme {
                     arrThemaTitel[i] = arrThemaTitel[i].trim().toLowerCase();
                 }
             }
-            // Irgendwo
-            String[] arrIrgendwo;
-            if (Filter.isPattern(filterIrgendwo)) {
-                arrIrgendwo = new String[]{filterIrgendwo};
-            } else {
-                arrIrgendwo = filterIrgendwo.split(",");
-                for (int i = 0; i < arrIrgendwo.length; ++i) {
-                    arrIrgendwo[i] = arrIrgendwo[i].trim().toLowerCase();
-                }
-            }
+
             for (DatenFilm film : listeFilme) {
                 if (nurNeue) {
                     if (!film.isNew()) {
@@ -107,6 +99,8 @@ public class GetModelTabFilme {
                         continue;
                     }
                 }
+
+                String[] arrIrgendwo = {};
                 if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, min, film, true /*länge nicht prüfen*/)) {
                     addObjectDataTabFilme(tModel, film);
                 }

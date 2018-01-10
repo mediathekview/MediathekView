@@ -417,15 +417,6 @@ public class GuiFilme extends PanelVorlage {
                 showDescriptionPanel();
             }
         });
-        Listener.addListener(new Listener(Listener.EREIGNIS_SUCHFELD_FOCUS_SETZEN, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER))) {
-                    mVFilterPanel.get_jTextFieldFilterThemaTitel().requestFocus();
-                    mVFilterPanel.get_jTextFieldFilterThemaTitel().setCaretPosition(0);
-                }
-            }
-        });
     }
 
     private synchronized void playFilm() {
@@ -798,8 +789,6 @@ public class GuiFilme extends PanelVorlage {
         mVFilterPanel.get_jComboBoxFilterThema().addActionListener(evt -> reloadTable());
         mVFilterPanel.get_jTextFieldFilterTitel().addActionListener(evt -> reloadTable());
         mVFilterPanel.get_jTextFieldFilterTitel().getDocument().addDocumentListener(new BeobFilterTitelDoc());
-        mVFilterPanel.get_jTextFieldFilterThemaTitel().addActionListener(evt -> reloadTable());
-        mVFilterPanel.get_jTextFieldFilterThemaTitel().getDocument().addDocumentListener(new BeobFilterTitelDoc());
         Platform.runLater(() -> {
             fap.showOnlyHd.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
             fap.showSubtitlesOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
@@ -807,8 +796,6 @@ public class GuiFilme extends PanelVorlage {
             fap.showUnseenOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
             fap.dontShowAbos.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
         });
-        mVFilterPanel.get_jRadioButtonTT().addActionListener(evt -> reloadTable());
-        mVFilterPanel.get_JRadioButtonIrgendwo().addActionListener(evt -> reloadTable());
     }
 
     private void setTextSlider() {
@@ -843,16 +830,13 @@ public class GuiFilme extends PanelVorlage {
         mVFilterPanel.get_jComboBoxFilterSender().setModel(new DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
         mVFilterPanel.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
         mVFilterPanel.get_jTextFieldFilterTitel().setText("");
-        mVFilterPanel.get_jTextFieldFilterThemaTitel().setText("");
-        mVFilterPanel.setThemaTitel(true);
     }
 
     private void resetFilterSettings() {
         mVFilterPanel.get_jComboBoxFilterSender().setModel(new DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
         mVFilterPanel.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
         mVFilterPanel.get_jTextFieldFilterTitel().setText("");
-        mVFilterPanel.get_jTextFieldFilterThemaTitel().setText("");
-        mVFilterPanel.setThemaTitel(true);
+
         //untere Hälfte
         fap.showUnseenOnly.setValue(false);
         fap.showOnlyHd.setValue(false);
@@ -896,8 +880,6 @@ public class GuiFilme extends PanelVorlage {
         mVFilterPanel.get_jToggleButtonHistory().setSelected(false);
         mVFilterPanel.get_jToggleButtonLivestram().setSelected(false);
         mVFilterPanel.get_jTextFieldFilterTitel().setText(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TITEL, filter));
-        mVFilterPanel.get_jTextFieldFilterThemaTitel().setText(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA_TITEL, filter));
-        mVFilterPanel.setThemaTitel(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TT, filter)));
 
         fap.dontShowAbos.setValue(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_ABO, filter)));
         fap.showUnseenOnly.setValue(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_GESEHENE, filter)));
@@ -977,8 +959,6 @@ public class GuiFilme extends PanelVorlage {
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA, String.valueOf(mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem()), filter);
 
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TITEL, String.valueOf(mVFilterPanel.get_jTextFieldFilterTitel().getText()), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA_TITEL, String.valueOf(mVFilterPanel.get_jTextFieldFilterThemaTitel().getText()), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TT, Boolean.toString(mVFilterPanel.getThemaTitel()), filter);
 
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_ABO, String.valueOf(fap.dontShowAbos.getValue()), filter);
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_GESEHENE, String.valueOf(fap.showUnseenOnly.getValue()), filter);
@@ -1032,7 +1012,7 @@ public class GuiFilme extends PanelVorlage {
                 //Filter Sender
                 mVFilterPanel.get_jComboBoxFilterSender().setModel(new DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
                 mVFilterPanel.get_jComboBoxFilterSender().setSelectedIndex(0);
-                if (!filterSender.equals("")) {
+                if (!filterSender.isEmpty()) {
                     mVFilterPanel.get_jComboBoxFilterSender().setSelectedItem(filterSender);
                     if (mVFilterPanel.get_jComboBoxFilterSender().getSelectedIndex() == 0) {
                         // war wohl nix, der gewählte Sender wurde in die Blacklist eingetragen
@@ -1042,14 +1022,14 @@ public class GuiFilme extends PanelVorlage {
                 }
                 mVFilterPanel.get_jComboBoxFilterSender().setPopupVisible(senderOpen);
                 // Filter Thema
-                if (filterSender.equals("")) {
+                if (filterSender.isEmpty()) {
                     mVFilterPanel.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
                 } else {
                     mVFilterPanel.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen(filterSender)));
                 }
                 // wenn Thema bei dem Sender vorhanden, dann wieder setzen
                 mVFilterPanel.get_jComboBoxFilterThema().setSelectedItem(filterThema);
-                if (!filterThema.equals("") && mVFilterPanel.get_jComboBoxFilterThema().getSelectedIndex() == 0) {
+                if (!filterThema.isEmpty() && mVFilterPanel.get_jComboBoxFilterThema().getSelectedIndex() == 0) {
                     // war wohl nix
                     themaNichtDa = true;
                 }
@@ -1085,9 +1065,9 @@ public class GuiFilme extends PanelVorlage {
             // normal mit den Filtern aus dem Filterpanel suchen
             GetModelTabFilme.getModelTabFilme(lf, daten, tabelle,
                     mVFilterPanel.get_jComboBoxFilterSender().getSelectedItem().toString(),
-                    mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem().toString(), mVFilterPanel.get_jTextFieldFilterTitel().getText(),
-                    mVFilterPanel.getThemaTitel() ? mVFilterPanel.get_jTextFieldFilterThemaTitel().getText() : "",
-                    mVFilterPanel.getThemaTitel() ? "" : mVFilterPanel.get_jTextFieldFilterThemaTitel().getText(),
+                    mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem().toString(),
+                    mVFilterPanel.get_jTextFieldFilterTitel().getText(),
+                    "",
                     mVFilterPanel.get_jSliderMinuten().getValue(),
                     mVFilterPanel.get_rbMin().isSelected(),
                     fap.dontShowAbos.getValue(), fap.showUnseenOnly.getValue(),
@@ -1098,7 +1078,6 @@ public class GuiFilme extends PanelVorlage {
             GetModelTabFilme.getModelTabFilme(lf, daten, tabelle,
                     "", "", "",
                     fap.roSearchStringProperty.getValueSafe(),
-                    "",
                     mVFilterPanel.get_jSliderMinuten().getValue(),
                     mVFilterPanel.get_rbMin().isSelected(),
                     fap.dontShowAbos.getValue(), fap.showUnseenOnly.getValue(),
@@ -1270,7 +1249,6 @@ public class GuiFilme extends PanelVorlage {
         }
 
         private void tus() {
-            Filter.checkPattern1(mVFilterPanel.get_jTextFieldFilterThemaTitel());
             Filter.checkPattern1(mVFilterPanel.get_jTextFieldFilterTitel());
             if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ECHTZEITSUCHE))) {
                 loadTable();
@@ -1380,31 +1358,6 @@ public class GuiFilme extends PanelVorlage {
             //##Trenner##
             jPopupMenu.addSeparator();
             //##Trenner##
-            if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER))) {
-                // nur dann ist das Filterpanel sichtbar
-                JMenu submenueFilter = new JMenu("Filter");
-                jPopupMenu.add(submenueFilter);
-                //Filter löschen
-                item = new JMenuItem("Filter löschen");
-                item.addActionListener(beobLoeschen);
-                submenueFilter.add(item);
-                //Sender
-                item = new JMenuItem("nach Sender filtern");
-                item.addActionListener(beobSender);
-                submenueFilter.add(item);
-                //Thema
-                item = new JMenuItem("nach Thema filtern");
-                item.addActionListener(beobThema);
-                submenueFilter.add(item);
-                //Thema+Sender
-                item = new JMenuItem("nach Sender und Thema filtern");
-                item.addActionListener(beobSenderThema);
-                submenueFilter.add(item);
-                //Thema+Sender+Titel
-                item = new JMenuItem("nach Sender, Thema und Titel filtern");
-                item.addActionListener(beobSenderThemaTitel);
-                submenueFilter.add(item);
-            }
             JMenu submenueAbo = new JMenu("Abo");
             jPopupMenu.add(submenueAbo);
             //Abo anlegen
@@ -1845,8 +1798,8 @@ public class GuiFilme extends PanelVorlage {
                             daten.getListeAbo().addAbo(mVFilterPanel.get_jComboBoxFilterSender().getSelectedItem().toString(),
                                     mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem().toString(),
                                     mVFilterPanel.get_jTextFieldFilterTitel().getText(),
-                                    mVFilterPanel.getThemaTitel() ? mVFilterPanel.get_jTextFieldFilterThemaTitel().getText() : "",
-                                    mVFilterPanel.getThemaTitel() ? "" : mVFilterPanel.get_jTextFieldFilterThemaTitel().getText(),
+                                    "",
+                                    "",
                                     mVFilterPanel.get_jSliderMinuten().getValue(),
                                     mVFilterPanel.get_rbMin().isSelected(),
                                     thema);

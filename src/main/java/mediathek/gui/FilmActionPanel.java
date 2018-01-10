@@ -119,21 +119,10 @@ public class FilmActionPanel {
         }
     }
 
-    private void setupSearchFieldVisibility() {
-        Platform.runLater(() -> jfxSearchField.setVisible(!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER))));
-    }
-
     private Parent createRight() {
         GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
         jfxSearchField = new JFXSearchPanel();
         jfxSearchField.setTooltip(new Tooltip("Thema/Titel durchsuchen"));
-
-        Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, ToolBar.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setupSearchFieldVisibility();
-            }
-        });
 
         final StringProperty textProperty = jfxSearchField.textProperty();
 
@@ -152,14 +141,13 @@ public class FilmActionPanel {
 
 
         ToggleButton btnAdvancedFilter = new ToggleButton("", fontAwesome.create(FontAwesome.Glyph.QUESTION_CIRCLE));
-        btnAdvancedFilter.setOnAction(event -> {
-            SwingUtilities.invokeLater(() -> {
-                boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER));
-                MVConfig.add(MVConfig.Configs.SYSTEM_VIS_FILTER, Boolean.toString(b));
-                setupSearchFieldVisibility();
-                Listener.notify(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, ToolBar.class.getName());
-            });
-        });
+        btnAdvancedFilter.setOnAction(event -> SwingUtilities.invokeLater(() -> {
+            boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER));
+            //FIXME VIS_FILTER kann entfernt werden oder?
+            MVConfig.add(MVConfig.Configs.SYSTEM_VIS_FILTER, Boolean.toString(b));
+            Listener.notify(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, ToolBar.class.getName());
+        }));
+        btnAdvancedFilter.setTooltip(new Tooltip("Altes Filterpanel anzeigen"));
 
         HBox hb = new HBox();
         hb.setPadding(new Insets(5, 5, 5, 5));
@@ -175,8 +163,6 @@ public class FilmActionPanel {
         list.add(separator);
         list.add(jfxSearchField);
         list.add(btnAdvancedFilter);
-
-        setupSearchFieldVisibility();
 
         return hb;
     }

@@ -19,18 +19,17 @@
  */
 package mediathek.config;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Set;
-
 import com.jidesoft.utils.SystemInfo;
-
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Log;
 import mediathek.controller.MVBandwidthTokenBucket;
 import mediathek.gui.MVFilter;
 import mediathek.tool.GuiFunktionenProgramme;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Set;
 
 public class MVConfig {
 
@@ -38,27 +37,27 @@ public class MVConfig {
     public static final String SYSTEM = "system";
     private static final HashMap<String, String> HASHMAP = new HashMap<>();
 
-    public static String PARAMETER_INFO = "\n"
+    public static String PARAMETER_INFO = '\n'
             + "\t" + "\"__system-parameter__xxx\" können nur im Konfigfile geändert werden\n"
-            + "\t" + "und sind auch nicht für ständige Änderungen gedacht.\n"
-            + "\t" + "Wird eine Zeile gelöscht, wird der Parameter wieder mit dem Standardwert angelegt.\n"
-            + "\n"
-            + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.cValue + "\n"
-            + "\t" + "Timeout für direkte Downloads, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.initValue + "\n\n"
-            + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART.cValue + "\n"
-            + "\t" + "max. Startversuche für fehlgeschlagene Downloads, am Ende aller Downloads\n"
-            + "\t" + "(Versuche insgesamt: DOWNLOAD_MAX_RESTART * DOWNLOAD_MAX_RESTART_HTTP), Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART.initValue + "\n\n"
-            + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP.cValue + "\n"
-            + "\t" + "max. Startversuche für fehlgeschlagene Downloads, direkt beim Download,\n"
-            + "\t" + "(Versuche insgesamt: DOWNLOAD_MAX_RESTART * DOWNLOAD_MAX_RESTART_HTTP), Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP.initValue + "\n\n"
-            + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN.cValue + "\n"
-            + "\t" + "Beim Dialog \"Download weiterführen\" wird nach dieser Zeit der Download weitergeführt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN.initValue + "\n\n"
-            + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.cValue + "\n"
-            + "\t" + "Downloadfehlermeldung wird xx Sedunden lang angezeigt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.initValue + "\n\n"
-            + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS.cValue + "\n"
-            + "\t" + "Downloadprogress im Terminal (-auto) anzeigen: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS.initValue + "\n\n"
-            + "\t" + Configs.SYSTEM_PARAMETER_USERAGENT.cValue + "\n"
-            + "\t" + "Useragent für direkte Downloads, Standardwert: " + Configs.SYSTEM_PARAMETER_USERAGENT.initValue + "\n";
+            + '\t' + "und sind auch nicht für ständige Änderungen gedacht.\n"
+            + '\t' + "Wird eine Zeile gelöscht, wird der Parameter wieder mit dem Standardwert angelegt.\n"
+            + '\n'
+            + '\t' + Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.cValue + '\n'
+            + '\t' + "Timeout für direkte Downloads, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.initValue + "\n\n"
+            + '\t' + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART.cValue + '\n'
+            + '\t' + "max. Startversuche für fehlgeschlagene Downloads, am Ende aller Downloads\n"
+            + '\t' + "(Versuche insgesamt: DOWNLOAD_MAX_RESTART * DOWNLOAD_MAX_RESTART_HTTP), Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART.initValue + "\n\n"
+            + '\t' + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP.cValue + '\n'
+            + '\t' + "max. Startversuche für fehlgeschlagene Downloads, direkt beim Download,\n"
+            + '\t' + "(Versuche insgesamt: DOWNLOAD_MAX_RESTART * DOWNLOAD_MAX_RESTART_HTTP), Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP.initValue + "\n\n"
+            + '\t' + Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN.cValue + '\n'
+            + '\t' + "Beim Dialog \"Download weiterführen\" wird nach dieser Zeit der Download weitergeführt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN.initValue + "\n\n"
+            + '\t' + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.cValue + '\n'
+            + '\t' + "Downloadfehlermeldung wird xx Sedunden lang angezeigt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.initValue + "\n\n"
+            + '\t' + Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS.cValue + '\n'
+            + '\t' + "Downloadprogress im Terminal (-auto) anzeigen: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS.initValue + "\n\n"
+            + '\t' + Configs.SYSTEM_PARAMETER_USERAGENT.cValue + '\n'
+            + '\t' + "Useragent für direkte Downloads, Standardwert: " + Configs.SYSTEM_PARAMETER_USERAGENT.initValue + '\n';
 
     public enum Configs {
         //============================================
@@ -158,6 +157,7 @@ public class MVConfig {
         SYSTEM_VIS_MELDUNGEN("Vis-Meldungen"),
         SYSTEM_GROESSE_MELDUNGEN("Groesse-Meldungen"),
         SYSTEM_FENSTER_FILTER("Fenster-Filter"),
+        //FIXME VIS_FILTER kann entfernt werden
         SYSTEM_VIS_FILTER("Vis-Filter", Boolean.TRUE.toString()),
         SYSTEM_GROESSE_FILTER("Groesse-Filter"),
         //Einstellungen Filmliste

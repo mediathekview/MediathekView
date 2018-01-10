@@ -110,7 +110,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
             }
         });
         jTextFieldFilterTitel.addMouseListener(new TextCopyPaste());
-        jTextFieldFilterThemaTitel.addMouseListener(new TextCopyPaste());
 
         setToolTip();
         super.setVisible(true);
@@ -457,7 +456,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
     private void initComponents() {
 
         javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
-        javax.swing.ButtonGroup buttonGroup2 = new javax.swing.ButtonGroup();
         javax.swing.ButtonGroup buttonGroup3 = new javax.swing.ButtonGroup();
         javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
@@ -478,9 +476,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         jButtonClearAll = new javax.swing.JButton();
         javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
         javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
-        jRadioButtonTT = new javax.swing.JRadioButton();
-        jRadioButtonIrgendwo = new javax.swing.JRadioButton();
-        jTextFieldFilterThemaTitel = new javax.swing.JTextField();
         javax.swing.JPanel jPanel7 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jComboBoxFilterSender = new javax.swing.JComboBox<>();
@@ -563,20 +558,7 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         jPanel6.setLayout(new org.jdesktop.swingx.VerticalLayout());
 
         jPanel5.setLayout(new org.jdesktop.swingx.HorizontalLayout());
-
-        buttonGroup2.add(jRadioButtonTT);
-        jRadioButtonTT.setSelected(true);
-        jRadioButtonTT.setText("Thema / Titel:");
-        jPanel5.add(jRadioButtonTT);
-
-        buttonGroup2.add(jRadioButtonIrgendwo);
-        jRadioButtonIrgendwo.setText("irgendwo:");
-        jPanel5.add(jRadioButtonIrgendwo);
-
         jPanel6.add(jPanel5);
-
-        jTextFieldFilterThemaTitel.setPreferredSize(new java.awt.Dimension(184, 24));
-        jPanel6.add(jTextFieldFilterThemaTitel);
 
         jPanel7.setLayout(new org.jdesktop.swingx.VerticalLayout());
 
@@ -706,7 +688,7 @@ public class MVFilterPanel extends JPanel implements MVFilter {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(30, Short.MAX_VALUE))
+                    .addContainerGap(77, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -722,13 +704,10 @@ public class MVFilterPanel extends JPanel implements MVFilter {
     private javax.swing.JRadioButton jRadioButtonF3;
     private javax.swing.JRadioButton jRadioButtonF4;
     private javax.swing.JRadioButton jRadioButtonF5;
-    private javax.swing.JRadioButton jRadioButtonIrgendwo;
-    private javax.swing.JRadioButton jRadioButtonTT;
     public javax.swing.JSlider jSliderMinuten;
     private javax.swing.JSlider jSliderTage;
     public javax.swing.JTextField jTextFieldFilterMinuten;
     private javax.swing.JTextField jTextFieldFilterTage;
-    public javax.swing.JTextField jTextFieldFilterThemaTitel;
     public javax.swing.JTextField jTextFieldFilterTitel;
     private javax.swing.JToggleButton jToggleButtonBlacklist;
     private javax.swing.JToggleButton jToggleButtonHistory;
@@ -765,27 +744,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
     }
 
     @Override
-    public boolean getThemaTitel() {
-        return jRadioButtonTT.isSelected();
-    }
-
-    @Override
-    public void setThemaTitel(boolean set) {
-        jRadioButtonTT.setSelected(set);
-        jRadioButtonIrgendwo.setSelected(!set);
-    }
-
-    @Override
-    public JRadioButton get_jRadioButtonTT() {
-        return jRadioButtonTT;
-    }
-
-    @Override
-    public JRadioButton get_JRadioButtonIrgendwo() {
-        return jRadioButtonIrgendwo;
-    }
-
-    @Override
     public JComboBox<String> get_jComboBoxFilterThema() {
         return jComboBoxFilterThema;
     }
@@ -818,11 +776,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
     @Override
     public JTextField get_jTextFieldFilterMinuten() {
         return jTextFieldFilterMinuten;
-    }
-
-    @Override
-    public JTextField get_jTextFieldFilterThemaTitel() {
-        return jTextFieldFilterThemaTitel;
     }
 
     @Override
@@ -873,9 +826,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         }
         for (ActionListener a : jTextFieldFilterMinuten.getActionListeners()) {
             jTextFieldFilterMinuten.removeActionListener(a);
-        }
-        for (ActionListener a : jTextFieldFilterThemaTitel.getActionListeners()) {
-            jTextFieldFilterThemaTitel.removeActionListener(a);
         }
         for (ActionListener a : jTextFieldFilterTitel.getActionListeners()) {
             jTextFieldFilterTitel.removeActionListener(a);

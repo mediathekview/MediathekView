@@ -51,27 +51,17 @@ public interface MVFilter {
 
     JTextField get_jTextFieldFilterMinuten();
 
-    boolean getThemaTitel();
+    JTextField get_jTextFieldFilterTitel();
 
-    public void setThemaTitel(boolean set);
+    JToggleButton get_jToggleButtonLivestram();
 
-    public JRadioButton get_jRadioButtonTT();
+    JToggleButton get_jToggleButtonHistory();
 
-    public JRadioButton get_JRadioButtonIrgendwo();
+    void setVisible(boolean v);
 
-    public JTextField get_jTextFieldFilterThemaTitel();
+    void mvFdeleteFilter(int i);
 
-    public JTextField get_jTextFieldFilterTitel();
+    void mvFsaveFilter(int i);
 
-    public JToggleButton get_jToggleButtonLivestram();
-
-    public JToggleButton get_jToggleButtonHistory();
-
-    public void setVisible(boolean v);
-
-    public void mvFdeleteFilter(int i);
-
-    public void mvFsaveFilter(int i);
-
-    public void mvFfilter(int i);
+    void mvFfilter(int i);
 }

@@ -73,7 +73,8 @@ public class Filter {
     }
 
     public static boolean filterAufFilmPruefen(final String senderSuchen, final String themaSuchen,
-                                               final String[] titelSuchen, final String[] themaTitelSuchen, final String[] irgendwoSuchen,
+                                               final String[] titelSuchen, final String[] themaTitelSuchen,
+                                               final String[] irgendwoSuchen,
                                                final int laengeMinutenSuchen, final boolean min,
                                                final DatenFilm film, final boolean mitLaenge) {
         // prüfen ob xxxSuchen im String imXxx enthalten ist, themaTitelSuchen wird mit Thema u. Titel verglichen
