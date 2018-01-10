@@ -126,7 +126,7 @@ public class FilmActionPanel {
     private Parent createRight() {
         GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
         jfxSearchField = new JFXSearchPanel();
-        jfxSearchField.setTooltip(new Tooltip("Thema/Titel suchen"));
+        jfxSearchField.setTooltip(new Tooltip("Thema/Titel durchsuchen"));
 
         Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, ToolBar.class.getSimpleName()) {
             @Override

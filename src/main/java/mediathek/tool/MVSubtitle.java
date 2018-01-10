@@ -37,10 +37,6 @@ import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
 public class MVSubtitle {
-
-    private static final int timeout = 10000;
-    public static final String KODIERUNG_UTF = "UTF-8";
-
     public static void writeSubtitle( DatenDownload datenDownload) {
         final String SUFFIX_TTML = "ttml";
         final String SUFFIX_SRT = "srt";
@@ -64,7 +60,7 @@ public class MVSubtitle {
             if (!suffix.endsWith(SUFFIX_SRT)) {
                 suffix = SUFFIX_TTML;
             }
-            strSubtitelFile = datenDownload.getFileNameWithoutSuffix() + "." + suffix;
+            strSubtitelFile = datenDownload.getFileNameWithoutSuffix() + '.' + suffix;
             subtitelFile = new File(strSubtitelFile);
 
             new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]).mkdirs();
@@ -72,8 +68,8 @@ public class MVSubtitle {
             conn = (HttpURLConnection) new URL(urlSubtitle).openConnection();
             conn.setRequestProperty("User-Agent", Daten.getUserAgent());
             conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
-            conn.setReadTimeout(timeout);
-            conn.setConnectTimeout(timeout);
+            conn.setReadTimeout(10_000);
+            conn.setConnectTimeout(10_000);
             // the encoding returned by the server
             encoding = conn.getContentEncoding();
             if ((conn.getResponseCode()) < 400) {
@@ -126,10 +122,10 @@ public class MVSubtitle {
             } catch (Exception ignored) {
             }
         }
-        try {
+
+        try (TimedTextMarkupLanguageParser ttmlp = new TimedTextMarkupLanguageParser()) {
             if (strSubtitelFile != null) {
-                if (!strSubtitelFile.endsWith("." + SUFFIX_SRT)) {
-                    TimedTextMarkupLanguageParser ttmlp = new TimedTextMarkupLanguageParser();
+                if (!strSubtitelFile.endsWith('.' + SUFFIX_SRT)) {
                     Path p = new File(strSubtitelFile).toPath();
                     Path srt = new File(datenDownload.getFileNameWithoutSuffix() + "." + SUFFIX_SRT).toPath();
                     if (ttmlp.parse(p)) {
@@ -137,7 +133,6 @@ public class MVSubtitle {
                     } else if (ttmlp.parseXmlFlash(p)) {
                         ttmlp.toSrt(srt);
                     }
-                    ttmlp.cleanup();
                 }
             }
         } catch (Exception ignored) {
