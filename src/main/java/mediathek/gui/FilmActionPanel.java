@@ -9,7 +9,6 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -24,6 +23,7 @@ import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
+import mediathek.javafx.JFXSearchPanel;
 import mediathek.tool.Filter;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.textfield.CustomTextField;
@@ -125,39 +125,18 @@ public class FilmActionPanel {
 
     private Parent createRight() {
         GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
-        jfxSearchField = new CustomTextField();
+        jfxSearchField = new JFXSearchPanel();
         jfxSearchField.setTooltip(new Tooltip("Thema/Titel suchen"));
-        jfxSearchField.setLeft(fontAwesome.create(FontAwesome.Glyph.SEARCH));
-        jfxSearchField.setRight(fontAwesome.create(FontAwesome.Glyph.REMOVE));
 
-        jfxSearchField.setOnKeyPressed(event -> {
-            switch (event.getCode()) {
-                case ESCAPE:
-                    if (!jfxSearchField.getText().isEmpty())
-                        jfxSearchField.setText("");
-                    event.consume();
-                    break;
-            }
-        });
         Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, ToolBar.class.getSimpleName()) {
             @Override
             public void ping() {
                 setupSearchFieldVisibility();
             }
         });
-        final Node rightNode = jfxSearchField.getRight();
-        rightNode.setOnMouseClicked(evt -> jfxSearchField.setText(""));
-        rightNode.setCursor(Cursor.DEFAULT);
-        rightNode.setVisible(false);
 
         final StringProperty textProperty = jfxSearchField.textProperty();
-        textProperty.addListener((observable, oldValue, newValue) -> {
-            final Node icon = jfxSearchField.getRight();
-            if (newValue.isEmpty())
-                icon.setVisible(false);
-            else
-                icon.setVisible(true);
-        });
+
         PauseTransition pause2 = new PauseTransition(Duration.millis(150));
         textProperty.addListener((observable, oldValue, newValue) -> {
             pause2.setOnFinished(evt -> checkPatternValidity());
