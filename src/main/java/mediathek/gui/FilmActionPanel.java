@@ -44,11 +44,22 @@ import javax.swing.*;
  * search is exposed via a readonly property for filtering in GuiFilme.
  */
 public class FilmActionPanel {
+    public final PopOver filterPopover;
     private final Daten daten;
     public ReadOnlyStringWrapper roSearchStringProperty = new ReadOnlyStringWrapper();
+    public BooleanProperty showOnlyHd;
+    public BooleanProperty showSubtitlesOnly;
+    public BooleanProperty showNewOnly;
+    public BooleanProperty showUnseenOnly;
+    public BooleanProperty dontShowAbos;
     private CustomTextField jfxSearchField;
-
-
+    private Button btnDownload;
+    private Button btnFilmInformation;
+    private Button btnPlay;
+    private Button btnRecord;
+    private Button btnAdvancedFilter;
+    private Button btnNewFilter;
+    private BlacklistButton btnBlacklist;
     public FilmActionPanel(Daten daten) {
         this.daten = daten;
 
@@ -58,22 +69,11 @@ public class FilmActionPanel {
     private Parent createLeft() {
         GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
 
-        Button btnDownload = new Button("", fontAwesome.create(FontAwesome.Glyph.CLOUD_DOWNLOAD));
+        btnDownload = new Button("", fontAwesome.create(FontAwesome.Glyph.CLOUD_DOWNLOAD));
         btnDownload.setTooltip(new Tooltip("Neue Filmliste laden"));
         btnDownload.setOnAction(e -> SwingUtilities.invokeLater(() -> daten.getFilmeLaden().loadFilmlistDialog(daten, false)));
-        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
-            @Override
-            public void start(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> btnDownload.setDisable(true));
-            }
 
-            @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> btnDownload.setDisable(false));
-            }
-        });
-
-        Button btnFilmInformation = new Button("", fontAwesome.create(FontAwesome.Glyph.INFO_CIRCLE));
+        btnFilmInformation = new Button("", fontAwesome.create(FontAwesome.Glyph.INFO_CIRCLE));
         btnFilmInformation.setTooltip(new Tooltip("Filminformation anzeigen"));
         btnFilmInformation.setOnAction(e -> SwingUtilities.invokeLater(Daten.filmInfo::showInfo));
 
@@ -85,27 +85,42 @@ public class FilmActionPanel {
         ObservableList<Node> list = hb.getChildren();
         list.add(btnDownload);
 
-        Separator separator = new Separator();
-        separator.setOrientation(Orientation.VERTICAL);
-        list.add(separator);
-
+        list.add(new VerticalSeparator());
         list.add(btnFilmInformation);
+        list.add(new VerticalSeparator());
 
-        Separator separator2 = new Separator();
-        separator2.setOrientation(Orientation.VERTICAL);
-        list.add(separator2);
-
-        Button btnPlay = new Button("", fontAwesome.create(FontAwesome.Glyph.PLAY));
+        btnPlay = new Button("", fontAwesome.create(FontAwesome.Glyph.PLAY));
         btnPlay.setTooltip(new Tooltip("Film abspielen"));
         btnPlay.setOnAction(e -> SwingUtilities.invokeLater(Daten.guiFilme::guiFilmeFilmAbspielen));
         list.add(btnPlay);
 
-        Button btnRecord = new Button("", fontAwesome.create(FontAwesome.Glyph.DOWNLOAD));
+        btnRecord = new Button("", fontAwesome.create(FontAwesome.Glyph.DOWNLOAD));
         btnRecord.setOnAction(e -> SwingUtilities.invokeLater(Daten.guiFilme::guiFilmeFilmSpeichern));
         btnRecord.setTooltip(new Tooltip("Film aufzeichnen"));
         list.add(btnRecord);
 
+        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
+            @Override
+            public void start(ListenerFilmeLadenEvent event) {
+                setupLeftButtons(true);
+            }
+
+            @Override
+            public void fertig(ListenerFilmeLadenEvent event) {
+                setupLeftButtons(false);
+            }
+        });
+
         return hb;
+    }
+
+    private void setupLeftButtons(boolean disabled) {
+        Platform.runLater(() -> {
+            btnDownload.setDisable(disabled);
+            btnFilmInformation.setDisable(disabled);
+            btnPlay.setDisable(disabled);
+            btnRecord.setDisable(disabled);
+        });
     }
 
     private void checkPatternValidity() {
@@ -150,7 +165,7 @@ public class FilmActionPanel {
 
         setupSearchField();
 
-        Button btnAdvancedFilter = new Button("", fontAwesome.create(FontAwesome.Glyph.QUESTION_CIRCLE));
+        btnAdvancedFilter = new Button("", fontAwesome.create(FontAwesome.Glyph.QUESTION_CIRCLE));
         btnAdvancedFilter.setOnAction(event -> SwingUtilities.invokeLater(() -> {
             boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER));
             //FIXME VIS_FILTER kann entfernt werden oder?
@@ -164,71 +179,42 @@ public class FilmActionPanel {
         hb.setSpacing(4);
         hb.setAlignment(Pos.CENTER_RIGHT);
 
-        Button popOverTest = new Button("", fontAwesome.create(FontAwesome.Glyph.FILTER));
-        popOverTest.setOnAction(e -> filterPopover.show(popOverTest));
+        btnNewFilter = new Button("", fontAwesome.create(FontAwesome.Glyph.FILTER));
+        btnNewFilter.setOnAction(e -> filterPopover.show(btnNewFilter));
         ObservableList<Node> list = hb.getChildren();
 
-        BlacklistButton btnBlacklist = new BlacklistButton();
+        btnBlacklist = new BlacklistButton();
         list.add(btnBlacklist);
-        Separator sep2 = new Separator();
-        sep2.setOrientation(Orientation.VERTICAL);
-        list.add(sep2);
-        list.add(popOverTest);
-        Separator separator = new Separator();
-        separator.setOrientation(Orientation.VERTICAL);
-        list.add(separator);
+        list.add(new VerticalSeparator());
+        list.add(btnNewFilter);
+        list.add(new VerticalSeparator());
         list.add(jfxSearchField);
         list.add(btnAdvancedFilter);
+
+        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
+            @Override
+            public void start(ListenerFilmeLadenEvent event) {
+                setupRightButtons(true);
+            }
+
+            @Override
+            public void fertig(ListenerFilmeLadenEvent event) {
+                setupRightButtons(false);
+            }
+        });
 
         return hb;
     }
 
-    public class BlacklistButton extends Button {
-        private final Image offImage = new Image(getClass().getResourceAsStream("/mediathek/res/programm/button-blacklist-aus.png"));
-        private final ImageView offImageView = new ImageView(offImage);
-        private final Image onImage = new Image(getClass().getResourceAsStream("/mediathek/res/programm/button-blacklist-ein.png"));
-        private final ImageView onImageView = new ImageView(onImage);
-        private final BooleanProperty activeProperty = new SimpleBooleanProperty(false);
-        private final Tooltip tooltipOn = new Tooltip("Blacklist ausschalten");
-        private final Tooltip tooltipOff = new Tooltip("Blacklist einschalten");
+    private void setupRightButtons(boolean disabled) {
+        Platform.runLater(() -> {
+            btnAdvancedFilter.setDisable(disabled);
+            btnNewFilter.setDisable(disabled);
+            btnBlacklist.setDisable(disabled);
+            jfxSearchField.setDisable(disabled);
+        });
 
-
-        public BlacklistButton() {
-            super("");
-
-            //set initial state
-            activeProperty.addListener((observable, oldValue, newValue) -> {
-                if (newValue) {
-                    setGraphic(onImageView);
-                    setTooltip(tooltipOn);
-                } else {
-                    setGraphic(offImageView);
-                    setTooltip(tooltipOff);
-                }
-            });
-            final boolean storedVal = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON));
-            activeProperty.setValue(storedVal);
-            activeProperty.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(() -> {
-                MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.toString(newValue));
-                daten.getListeBlacklist().filterListe();
-                Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterPanel.class.getSimpleName());
-            }));
-
-            setOnAction(value -> activeProperty.setValue(!activeProperty.getValue()));
-        }
     }
-
-    public final PopOver filterPopover;
-
-    public BooleanProperty showOnlyHd;
-
-    public BooleanProperty showSubtitlesOnly;
-
-    public BooleanProperty showNewOnly;
-
-    public BooleanProperty showUnseenOnly;
-
-    public BooleanProperty dontShowAbos;
 
     private TitledPane createCommonViewSettingsPane() {
         VBox vBox = new VBox();
@@ -335,7 +321,7 @@ public class FilmActionPanel {
         VBox vb = new VBox();
         vb.setSpacing(4.0);
         vb.setPadding(new Insets(5, 5, 5, 5));
-        vb.getChildren().addAll(createAccordion());
+        vb.getChildren().add(createAccordion());
         popover.setContentNode(vb);
 
         return popover;
@@ -348,5 +334,47 @@ public class FilmActionPanel {
         hb.getChildren().addAll(createLeft(), spacer, createRight());
 
         return new Scene(hb);
+    }
+
+    private class VerticalSeparator extends Separator {
+        public VerticalSeparator() {
+            super();
+            setOrientation(Orientation.VERTICAL);
+        }
+    }
+
+    public class BlacklistButton extends Button {
+        private final Image offImage = new Image(getClass().getResourceAsStream("/mediathek/res/programm/button-blacklist-aus.png"));
+        private final ImageView offImageView = new ImageView(offImage);
+        private final Image onImage = new Image(getClass().getResourceAsStream("/mediathek/res/programm/button-blacklist-ein.png"));
+        private final ImageView onImageView = new ImageView(onImage);
+        private final BooleanProperty activeProperty = new SimpleBooleanProperty(false);
+        private final Tooltip tooltipOn = new Tooltip("Blacklist ausschalten");
+        private final Tooltip tooltipOff = new Tooltip("Blacklist einschalten");
+
+
+        public BlacklistButton() {
+            super("");
+
+            //set initial state
+            activeProperty.addListener((observable, oldValue, newValue) -> {
+                if (newValue) {
+                    setGraphic(onImageView);
+                    setTooltip(tooltipOn);
+                } else {
+                    setGraphic(offImageView);
+                    setTooltip(tooltipOff);
+                }
+            });
+            final boolean storedVal = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON));
+            activeProperty.setValue(storedVal);
+            activeProperty.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(() -> {
+                MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.toString(newValue));
+                daten.getListeBlacklist().filterListe();
+                Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterPanel.class.getSimpleName());
+            }));
+
+            setOnAction(value -> activeProperty.setValue(!activeProperty.getValue()));
+        }
     }
 }
