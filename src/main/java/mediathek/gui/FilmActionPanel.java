@@ -4,6 +4,7 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -13,11 +14,14 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import javafx.util.StringConverter;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Listener;
@@ -26,10 +30,12 @@ import mediathek.config.MVConfig;
 import mediathek.javafx.JFXSearchPanel;
 import mediathek.tool.Filter;
 import org.controlsfx.control.PopOver;
+import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
+import org.controlsfx.tools.Borders;
 
 import javax.swing.*;
 
@@ -119,8 +125,7 @@ public class FilmActionPanel {
         }
     }
 
-    private Parent createRight() {
-        GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
+    private void setupSearchField() {
         jfxSearchField = new JFXSearchPanel();
         jfxSearchField.setTooltip(new Tooltip("Thema/Titel durchsuchen"));
 
@@ -138,9 +143,14 @@ public class FilmActionPanel {
         });
 
         roSearchStringProperty.bind(textProperty);
+    }
 
+    private Parent createRight() {
+        GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
 
-        ToggleButton btnAdvancedFilter = new ToggleButton("", fontAwesome.create(FontAwesome.Glyph.QUESTION_CIRCLE));
+        setupSearchField();
+
+        Button btnAdvancedFilter = new Button("", fontAwesome.create(FontAwesome.Glyph.QUESTION_CIRCLE));
         btnAdvancedFilter.setOnAction(event -> SwingUtilities.invokeLater(() -> {
             boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER));
             //FIXME VIS_FILTER kann entfernt werden oder?
@@ -157,6 +167,12 @@ public class FilmActionPanel {
         Button popOverTest = new Button("", fontAwesome.create(FontAwesome.Glyph.FILTER));
         popOverTest.setOnAction(e -> filterPopover.show(popOverTest));
         ObservableList<Node> list = hb.getChildren();
+
+        BlacklistButton btnBlacklist = new BlacklistButton();
+        list.add(btnBlacklist);
+        Separator sep2 = new Separator();
+        sep2.setOrientation(Orientation.VERTICAL);
+        list.add(sep2);
         list.add(popOverTest);
         Separator separator = new Separator();
         separator.setOrientation(Orientation.VERTICAL);
@@ -165,6 +181,40 @@ public class FilmActionPanel {
         list.add(btnAdvancedFilter);
 
         return hb;
+    }
+
+    public class BlacklistButton extends Button {
+        private final Image offImage = new Image(getClass().getResourceAsStream("/mediathek/res/programm/button-blacklist-aus.png"));
+        private final ImageView offImageView = new ImageView(offImage);
+        private final Image onImage = new Image(getClass().getResourceAsStream("/mediathek/res/programm/button-blacklist-ein.png"));
+        private final ImageView onImageView = new ImageView(onImage);
+        private final BooleanProperty activeProperty = new SimpleBooleanProperty(false);
+
+        public BlacklistButton() {
+            super("");
+            setGraphic(offImageView);
+            setTooltip(new Tooltip("Blacklist einschalten"));
+
+            //set initial state
+            activeProperty.addListener((observable, oldValue, newValue) -> {
+                if (newValue) {
+                    setGraphic(onImageView);
+                    setTooltip(new Tooltip("Blacklist ausschalten"));
+                } else {
+                    setGraphic(offImageView);
+                    setTooltip(new Tooltip("Blacklist einschalten"));
+                }
+            });
+            final boolean storedVal = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON));
+            activeProperty.setValue(storedVal);
+            activeProperty.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(() -> {
+                MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.toString(newValue));
+                daten.getListeBlacklist().filterListe();
+                Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterPanel.class.getSimpleName());
+            }));
+
+            setOnAction(value -> activeProperty.setValue(!activeProperty.getValue()));
+        }
     }
 
     public final PopOver filterPopover;
@@ -203,31 +253,72 @@ public class FilmActionPanel {
         dontShowAbos = cbDontShowAbos.selectedProperty();
         vBox.getChildren().add(cbDontShowAbos);
 
+        CheckBox cbDontShowImpairedFilms = new CheckBox("Hörfassungen etc ausblenden");
+        cbDontShowImpairedFilms.setDisable(true);
+        vBox.getChildren().add(cbDontShowImpairedFilms);
+
+
+        vBox.getChildren().add(createFilmLengthSlider());
+
         return new TitledPane("Allgemeine Anzeigeeinstellungen", vBox);
     }
 
-    private TitledPane createBlacklistPane() {
-        HBox hBox = new HBox();
-        hBox.setSpacing(4.0);
+    private Node createFilmLengthSlider() {
+        HBox hb = new HBox();
+        hb.getChildren().add(new Label("Mindestlänge:"));
+        Label lblMin = new Label("min");
+        hb.getChildren().add(lblMin);
 
-        CheckBox cb;
-        cb = new CheckBox("Blacklist-Filterung verwenden");
-        cb.setDisable(true);
-        hBox.getChildren().add(cb);
-        GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
-        Button btn = new Button("", fontAwesome.create(FontAwesome.Glyph.EDIT));
-        btn.setDisable(true);
-        hBox.getChildren().add(btn);
-        return new TitledPane("Blacklist", hBox);
+        HBox hb2 = new HBox();
+        hb2.getChildren().add(new Label("Maximallänge:"));
+        Label lblMax = new Label("max");
+        hb2.getChildren().add(lblMax);
+        VBox vb2 = new VBox();
+        vb2.getChildren().add(hb);
+        vb2.getChildren().add(hb2);
+
+        final RangeSlider hSlider = new RangeSlider(0, 110, 10, 90);
+        hSlider.setShowTickMarks(true);
+        hSlider.setShowTickLabels(true);
+        hSlider.setBlockIncrement(1);
+        hSlider.setMajorTickUnit(10);
+        hSlider.setLabelFormatter(new StringConverter<Number>() {
+            @Override
+            public String toString(Number object) {
+                if (object.intValue() == 110)
+                    return "∞";
+                else
+                    return String.valueOf(object.intValue());
+            }
+
+            @Override
+            public Number fromString(String string) {
+                return Double.parseDouble(string);
+            }
+        });
+        lblMin.setText(String.valueOf((int) hSlider.getLowValue()));
+        lblMax.setText(String.valueOf((int) hSlider.getHighValue()));
+        hSlider.lowValueProperty().addListener((observable, oldValue, newValue) -> lblMin.setText(String.valueOf(newValue.intValue())));
+        hSlider.highValueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.intValue() == 110)
+                lblMax.setText("∞");
+            else
+                lblMax.setText(String.valueOf(newValue.intValue()));
+        });
+        vb2.getChildren().add(hSlider);
+
+        return Borders.wrap(vb2)
+                .lineBorder()
+                .innerPadding(4)
+                .outerPadding(4)
+                .buildAll();
     }
 
     private Accordion createAccordion() {
         TitledPane t1 = createCommonViewSettingsPane();
-        TitledPane t2 = createBlacklistPane();
-        TitledPane t3 = new TitledPane("Filterprofile", new Button("Dummy"));
 
         Accordion accordion = new Accordion();
-        accordion.getPanes().addAll(t1, t2, t3);
+        accordion.getPanes().add(t1);
         accordion.setExpandedPane(t1);
         return accordion;
     }
@@ -236,8 +327,8 @@ public class FilmActionPanel {
         PopOver popover = new PopOver();
         popover.setTitle("Erweiterte Filtereinstellungen");
         popover.setAnimated(true);
-        popover.setCloseButtonEnabled(true);
-        popover.setDetachable(true);
+        popover.setCloseButtonEnabled(false);
+        popover.setDetachable(false);
         popover.setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
 
         VBox vb = new VBox();
