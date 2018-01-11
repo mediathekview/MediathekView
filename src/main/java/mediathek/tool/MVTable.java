@@ -332,7 +332,7 @@ public final class MVTable extends JTable {
         }
     }
 
-    public void requestFocusSelelct(JScrollPane jScrollPane) {
+    public void requestFocusSelect(JScrollPane jScrollPane) {
         requestFocus();
         if (getRowCount() > 0) {
             // sonst ist schon eine Zeile markiert
@@ -345,7 +345,7 @@ public final class MVTable extends JTable {
         }
     }
 
-    public void requestFocusSelelct(JScrollPane jScrollPane, int zeile) {
+    public void requestFocusSelect(JScrollPane jScrollPane, int zeile) {
         requestFocus();
         if (getRowCount() > 0) {
             // sonst ist schon eine Zeile markiert

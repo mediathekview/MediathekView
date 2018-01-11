@@ -922,17 +922,17 @@ public class MediathekGui extends JFrame {
     {
         // Filme
         jMenuItemFilmlisteLaden.addActionListener(e -> daten.getFilmeLaden().loadFilmlistDialog(daten, false));
-        jMenuItemFilmAbspielen.addActionListener(e -> Daten.guiFilme.guiFilmeFilmAbspielen());
-        jMenuItemFilmAufzeichnen.addActionListener(e -> Daten.guiFilme.guiFilmeFilmSpeichern());
-        jMenuItemFilterLoeschen.addActionListener(e -> Daten.guiFilme.guiFilmeFilterLoeschen());
+        jMenuItemFilmAbspielen.addActionListener(Daten.guiFilme.playAction);
+        jMenuItemFilmAufzeichnen.addActionListener(Daten.guiFilme.saveFilmAction);
+        jMenuItemFilterLoeschen.addActionListener(Daten.guiFilme.deleteFilterAction);
         jMenuItemBlacklist.addActionListener(e -> {
             DialogLeer dialog = new DialogLeer(daten.getMediathekGui(), true);
             dialog.init(DIALOG_TITLE_BLACKLIST, new PanelBlacklist(daten, daten.getMediathekGui(), PanelBlacklist.class.getName() + PANEL_BLACKLIST_NAME_POSTFIX));
             dialog.setVisible(true);
         });
-        jMenuItemFilmeGesehen.addActionListener(e -> Daten.guiFilme.filmGesehen());
-        jMenuItemFilmeUngesehen.addActionListener(e -> Daten.guiFilme.filmUngesehen());
-        jMenuItemFilmeMediensammlung.addActionListener(e -> Daten.guiFilme.guiFilmMediensammlung());
+        jMenuItemFilmeGesehen.addActionListener(Daten.guiFilme.markFilmAsSeenAction);
+        jMenuItemFilmeUngesehen.addActionListener(Daten.guiFilme.markFilmAsUnseenAction);
+        jMenuItemFilmeMediensammlung.addActionListener(Daten.guiFilme.mediensammlungAction);
     }
 
     private void initializeDateiMenu()

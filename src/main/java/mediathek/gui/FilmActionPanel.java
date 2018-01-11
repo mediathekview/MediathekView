@@ -91,11 +91,11 @@ public class FilmActionPanel {
 
         btnPlay = new Button("", fontAwesome.create(FontAwesome.Glyph.PLAY));
         btnPlay.setTooltip(new Tooltip("Film abspielen"));
-        btnPlay.setOnAction(e -> SwingUtilities.invokeLater(Daten.guiFilme::guiFilmeFilmAbspielen));
+        btnPlay.setOnAction(evt -> SwingUtilities.invokeLater(() -> Daten.guiFilme.playAction.actionPerformed(null)));
         list.add(btnPlay);
 
         btnRecord = new Button("", fontAwesome.create(FontAwesome.Glyph.DOWNLOAD));
-        btnRecord.setOnAction(e -> SwingUtilities.invokeLater(Daten.guiFilme::guiFilmeFilmSpeichern));
+        btnRecord.setOnAction(e -> SwingUtilities.invokeLater(() -> Daten.guiFilme.saveFilmAction.actionPerformed(null)));
         btnRecord.setTooltip(new Tooltip("Film aufzeichnen"));
         list.add(btnRecord);
         list.add(new VerticalSeparator());
@@ -156,7 +156,7 @@ public class FilmActionPanel {
         });
         PauseTransition pause3 = new PauseTransition(Duration.millis(500));
         textProperty.addListener((observable, oldValue, newValue) -> {
-            pause3.setOnFinished(evt -> SwingUtilities.invokeLater(Daten.guiFilme::guiFilmeFiltern));
+            pause3.setOnFinished(evt -> SwingUtilities.invokeLater(() -> Daten.guiFilme.filterFilmAction.actionPerformed(null)));
             pause3.playFromStart();
         });
 

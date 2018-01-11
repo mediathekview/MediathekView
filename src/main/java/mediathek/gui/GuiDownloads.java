@@ -226,7 +226,7 @@ public class GuiDownloads extends PanelVorlage {
         this.getActionMap().put("tabelle", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                tabelle.requestFocusSelelct(jScrollPane1);
+                tabelle.requestFocusSelect(jScrollPane1);
             }
         });
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "download");

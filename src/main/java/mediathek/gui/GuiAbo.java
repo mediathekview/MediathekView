@@ -119,7 +119,7 @@ public class GuiAbo extends PanelVorlage {
         this.getActionMap().put("tabelle", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                tabelle.requestFocusSelelct(jScrollPane1);
+                tabelle.requestFocusSelect(jScrollPane1);
             }
         });
         //aendern
