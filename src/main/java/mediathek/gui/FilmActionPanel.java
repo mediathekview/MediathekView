@@ -98,6 +98,9 @@ public class FilmActionPanel {
         btnRecord.setOnAction(e -> SwingUtilities.invokeLater(Daten.guiFilme::guiFilmeFilmSpeichern));
         btnRecord.setTooltip(new Tooltip("Film aufzeichnen"));
         list.add(btnRecord);
+        list.add(new VerticalSeparator());
+        btnBlacklist = new BlacklistButton();
+        list.add(btnBlacklist);
 
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
@@ -183,9 +186,6 @@ public class FilmActionPanel {
         btnNewFilter.setOnAction(e -> filterPopover.show(btnNewFilter));
         ObservableList<Node> list = hb.getChildren();
 
-        btnBlacklist = new BlacklistButton();
-        list.add(btnBlacklist);
-        list.add(new VerticalSeparator());
         list.add(btnNewFilter);
         list.add(new VerticalSeparator());
         list.add(jfxSearchField);
