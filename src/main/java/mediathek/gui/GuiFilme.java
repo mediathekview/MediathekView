@@ -1700,7 +1700,7 @@ public class GuiFilme extends PanelVorlage {
                     mVFilterPanel.get_jComboBoxFilterSender().getSelectedItem().toString(),
                     mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem().toString(),
                     mVFilterPanel.get_jTextFieldFilterTitel().getText(),
-                    "",
+                    fap.roSearchStringProperty.getValueSafe(),
                     mVFilterPanel.get_jSliderMinuten().getValue(),
                     mVFilterPanel.get_rbMin().isSelected(),
                     mVFilterPanel.get_jToggleButtonLivestram().isSelected());
