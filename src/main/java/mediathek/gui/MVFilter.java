@@ -55,8 +55,6 @@ public interface MVFilter {
 
     JToggleButton get_jToggleButtonLivestram();
 
-    JToggleButton get_jToggleButtonHistory();
-
     void setVisible(boolean v);
 
     void mvFdeleteFilter(int i);

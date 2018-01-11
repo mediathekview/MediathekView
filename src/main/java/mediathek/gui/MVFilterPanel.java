@@ -396,7 +396,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         jToggleButtonLivestram = new javax.swing.JToggleButton();
-        jToggleButtonHistory = new javax.swing.JToggleButton();
         jButtonClearAll = new javax.swing.JButton();
         javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
         javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
@@ -437,9 +436,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
 
         jToggleButtonLivestram.setText("Livestreams");
         jPanel3.add(jToggleButtonLivestram);
-
-        jToggleButtonHistory.setText("aktuelle History");
-        jPanel3.add(jToggleButtonHistory);
 
         jButtonClearAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); // NOI18N
         jButtonClearAll.setToolTipText("Alles löschen");
@@ -606,7 +602,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
     public javax.swing.JTextField jTextFieldFilterMinuten;
     private javax.swing.JTextField jTextFieldFilterTage;
     public javax.swing.JTextField jTextFieldFilterTitel;
-    private javax.swing.JToggleButton jToggleButtonHistory;
     public javax.swing.JToggleButton jToggleButtonLivestram;
     private javax.swing.JRadioButton rbMax;
     private javax.swing.JRadioButton rbMin;
@@ -685,11 +680,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
     }
 
     @Override
-    public JToggleButton get_jToggleButtonHistory() {
-        return jToggleButtonHistory;
-    }
-
-    @Override
     public void removeAllListener() {
         aktFilter = -1;
         setIcon(false); // erst mal alle aus
@@ -728,9 +718,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         }
         for (ActionListener a : jToggleButtonLivestram.getActionListeners()) {
             jToggleButtonLivestram.removeActionListener(a);
-        }
-        for (ActionListener a : jToggleButtonHistory.getActionListeners()) {
-            jToggleButtonHistory.removeActionListener(a);
         }
     }
 
