@@ -189,20 +189,21 @@ public class FilmActionPanel {
         private final Image onImage = new Image(getClass().getResourceAsStream("/mediathek/res/programm/button-blacklist-ein.png"));
         private final ImageView onImageView = new ImageView(onImage);
         private final BooleanProperty activeProperty = new SimpleBooleanProperty(false);
+        private final Tooltip tooltipOn = new Tooltip("Blacklist ausschalten");
+        private final Tooltip tooltipOff = new Tooltip("Blacklist einschalten");
+
 
         public BlacklistButton() {
             super("");
-            setGraphic(offImageView);
-            setTooltip(new Tooltip("Blacklist einschalten"));
 
             //set initial state
             activeProperty.addListener((observable, oldValue, newValue) -> {
                 if (newValue) {
                     setGraphic(onImageView);
-                    setTooltip(new Tooltip("Blacklist ausschalten"));
+                    setTooltip(tooltipOn);
                 } else {
                     setGraphic(offImageView);
-                    setTooltip(new Tooltip("Blacklist einschalten"));
+                    setTooltip(tooltipOff);
                 }
             });
             final boolean storedVal = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON));
