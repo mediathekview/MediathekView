@@ -35,7 +35,6 @@ import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.daten.*;
-import mediathek.filmlisten.GetModelTabFilme;
 import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
@@ -106,6 +105,130 @@ public class GuiFilme extends PanelVorlage {
         PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten, tabelle, true /*film*/);
         jPanelBeschreibung.setLayout(new BorderLayout());
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
+    }
+
+    /**
+     * Model für die Tabelle Filme zusammenbauen.
+     */
+    private synchronized void getModelTabFilme(ListeFilme listeFilme, Daten ddaten, MVTable table,
+                                               String filterSender, String filterThema, String filterTitel, String filterThemaTitel,
+                                               int laenge, boolean min, boolean keineAbos, boolean kGesehen, boolean nurHd, boolean nurUt, boolean live, boolean nurNeue) {
+        TModel tModel = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
+        if (listeFilme.isEmpty()) {
+            // wenn die Liste leer ist, dann Tschüss
+            table.setModel(tModel);
+            return;
+        }
+        // dann ein neues Model anlegen
+        if (filterSender.isEmpty() && filterThema.isEmpty() && filterTitel.isEmpty() && filterThemaTitel.isEmpty()
+                && laenge == 0 && !keineAbos && !kGesehen && !nurHd && !nurUt && !live && !nurNeue) {
+            // dann ganze Liste laden
+            addObjectDataTabFilme(listeFilme, tModel);
+        } else {
+            // Titel
+            String[] arrTitel;
+            if (Filter.isPattern(filterTitel)) {
+                arrTitel = new String[]{filterTitel};
+            } else {
+                arrTitel = filterTitel.split(",");
+                for (int i = 0; i < arrTitel.length; ++i) {
+                    arrTitel[i] = arrTitel[i].trim().toLowerCase();
+                }
+            }
+            // ThemaTitel
+            String[] arrThemaTitel;
+            if (Filter.isPattern(filterThemaTitel)) {
+                arrThemaTitel = new String[]{filterThemaTitel};
+            } else {
+                arrThemaTitel = filterThemaTitel.split(",");
+                for (int i = 0; i < arrThemaTitel.length; ++i) {
+                    arrThemaTitel[i] = arrThemaTitel[i].trim().toLowerCase();
+                }
+            }
+
+            for (DatenFilm film : listeFilme) {
+                if (nurNeue) {
+                    if (!film.isNew()) {
+                        continue;
+                    }
+                }
+                if (live) {
+                    if (!film.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE)) {
+                        continue;
+                    }
+                }
+                if (nurHd) {
+                    if (!film.isHD()) {
+                        continue;
+                    }
+                }
+                if (nurUt) {
+                    if (!film.hasUT()) {
+                        continue;
+                    }
+                }
+                if (keineAbos) {
+                    if (!film.arr[DatenFilm.FILM_ABO_NAME].isEmpty()) {
+                        continue;
+                    }
+                }
+                if (kGesehen) {
+                    if (ddaten.history.urlPruefen(film.getUrlHistory())) {
+                        continue;
+                    }
+                }
+
+                String[] arrIrgendwo = {};
+                if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, min, film, true /*länge nicht prüfen*/)) {
+                    addObjectDataTabFilme(tModel, film);
+                }
+            }
+            // listeFilme.stream().filter((DatenFilm film) -> Filter.filterAufFilmPruefen(filterSender,
+            //      filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, film, true /*länge nicht prüfen*/)).forEach(f -> addObjectDataTabFilme(tModel, f));
+
+        }
+        table.setModel(tModel);
+    }
+
+    private void addObjectDataTabFilme(ListeFilme listefilme, TModel tModel) {
+        if (!listefilme.isEmpty()) {
+            for (DatenFilm film : listefilme) {
+                addObjectDataTabFilme(tModel, film);
+            }
+        }
+    }
+
+    private void addObjectDataTabFilme(TModel tModel, DatenFilm film) {
+        Object[] object = new Object[DatenFilm.MAX_ELEM];
+        for (int m = 0; m < DatenFilm.MAX_ELEM; ++m) {
+            switch (m) {
+                case DatenFilm.FILM_NR:
+                    object[m] = film.nr;
+                    break;
+                case DatenFilm.FILM_DATUM:
+                    object[m] = film.datumFilm;
+                    break;
+                case DatenFilm.FILM_GROESSE:
+                    object[m] = film.dateigroesseL;
+                    break;
+                case DatenFilm.FILM_REF:
+                    object[m] = film;
+                    break;
+                case DatenFilm.FILM_NEU:
+                    object[m] = film.isNew() ? "1" : "0";
+                    break;
+                case DatenFilm.FILM_HD:
+                    object[m] = film.isHD() ? "1" : "0";
+                    break;
+                case DatenFilm.FILM_UT:
+                    object[m] = film.hasUT() ? "1" : "0";
+                    break;
+                default:
+                    object[m] = film.arr[m];
+                    break;
+            }
+        }
+        tModel.addRow(object);
     }
 
     /**
@@ -1061,7 +1184,7 @@ public class GuiFilme extends PanelVorlage {
         }
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER))) {
             // normal mit den Filtern aus dem Filterpanel suchen
-            GetModelTabFilme.getModelTabFilme(lf, daten, tabelle,
+            getModelTabFilme(lf, daten, tabelle,
                     mVFilterPanel.get_jComboBoxFilterSender().getSelectedItem().toString(),
                     mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem().toString(),
                     mVFilterPanel.get_jTextFieldFilterTitel().getText(),
@@ -1073,7 +1196,7 @@ public class GuiFilme extends PanelVorlage {
                     mVFilterPanel.get_jToggleButtonLivestram().isSelected(), fap.showNewOnly.getValue());
         } else {
             // jetzt nur den Filter aus der Toolbar
-            GetModelTabFilme.getModelTabFilme(lf, daten, tabelle,
+            getModelTabFilme(lf, daten, tabelle,
                     "", "", "",
                     fap.roSearchStringProperty.getValueSafe(),
                     mVFilterPanel.get_jSliderMinuten().getValue(),
