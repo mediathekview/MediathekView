@@ -19,8 +19,6 @@
  */
 package mediathek.gui;
 
-import javax.swing.*;
-
 /**
  *
  * @author emil
@@ -29,9 +27,6 @@ public interface MVFilter {
 
     int MAX_FILTER = 5;
 
-    void removeAllListener();
-
-    JComboBox<String> get_jComboBoxFilterThema();
 
     void setVisible(boolean v);
 }

@@ -244,30 +244,33 @@ public class FilmActionPanel {
         showOnlyLivestreams = cbShowOnlyLivestreams.selectedProperty();
         vBox.getChildren().add(cbShowOnlyLivestreams);
 
-        HBox hb = new HBox();
-        hb.getChildren().add(new Label("Sender:"));
+        FlowPane root = new FlowPane();
+        root.setHgap(4);
+        root.getChildren().add(new Label("Sender:"));
         senderBox = new ComboBox<>();
         senderBox.getItems().addAll("");
         senderBox.getSelectionModel().select(0);
-        hb.getChildren().add(senderBox);
+        root.getChildren().add(senderBox);
 
-        hb.setAlignment(Pos.CENTER_LEFT);
-        vBox.getChildren().add(hb);
+        root.setAlignment(Pos.CENTER_LEFT);
+        vBox.getChildren().add(root);
 
-        hb = new HBox();
+        FlowPane hb = new FlowPane();
+        hb.setHgap(4);
         hb.getChildren().add(new Label("Thema:"));
-        ComboBox<String> themaBox = new ComboBox<>();
-        themaBox.getItems().addAll("", "Thema 1", "Thema 2");
+        themaBox = new ComboBox<>();
+        themaBox.getItems().addAll("");
         themaBox.getSelectionModel().select(0);
+        themaBox.setPrefWidth(200);
         hb.getChildren().add(themaBox);
         hb.setAlignment(Pos.CENTER_LEFT);
-        hb.setDisable(true);
         vBox.getChildren().add(hb);
 
         return new TitledPane("Allgemeine Anzeigeeinstellungen", vBox);
     }
 
     public ComboBox<String> senderBox;
+    public ComboBox<String> themaBox;
 
     public BooleanProperty showOnlyLivestreams;
 
@@ -367,6 +370,7 @@ public class FilmActionPanel {
         popover.setCloseButtonEnabled(false);
         popover.setDetachable(false);
         popover.setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
+        popover.setPrefWidth(200);
 
         VBox vb = new VBox();
         vb.setSpacing(4.0);

@@ -52,6 +52,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -79,9 +80,10 @@ public class GuiFilme extends PanelVorlage {
         fap = new FilmActionPanel(daten);
         Platform.runLater(() -> fxPanel.setScene(fap.getFilmActionPanelScene()));
 
-        setToolbarVisible();
         start_init();
         start_addListener();
+
+        setupActionListeners();
 
         daten.getListeFilmeNachBlackList().senderList.addListener((ListChangeListener<String>) c -> {
             String selectedItem = fap.senderBox.getSelectionModel().getSelectedItem();
@@ -93,6 +95,31 @@ public class GuiFilme extends PanelVorlage {
                 SwingUtilities.invokeLater(this::reloadTable);
             }
         });
+
+        fap.senderBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            //senderList changes, reload Thema as well...
+            String selectedItem = fap.themaBox.getSelectionModel().getSelectedItem();
+            String sender;
+            if (selectedItem == null)
+                selectedItem = "";
+
+            if (newValue == null)
+                sender = "";
+            else
+                sender = newValue;
+
+            setupThemaEntries(sender);
+            if (fap.themaBox.getItems().contains(selectedItem))
+                fap.themaBox.getSelectionModel().select(selectedItem);
+            else
+                fap.themaBox.getSelectionModel().select("");
+        });
+    }
+
+    private void setupThemaEntries(String sender) {
+        ObservableList<String> list = fap.themaBox.getItems();
+        list.clear();
+        list.addAll(Arrays.asList(getThemen(sender)));
     }
 
     public final FilmActionPanel fap;
@@ -107,9 +134,7 @@ public class GuiFilme extends PanelVorlage {
     /**
      * Model für die Tabelle Filme zusammenbauen.
      */
-    private synchronized void getModelTabFilme(MVTable table,
-                                               String filterThema,
-                                               String filterThemaTitel) {
+    private synchronized void prepareTableModel() {
         final boolean nurNeue = fap.showNewOnly.getValue();
         final boolean nurUt = fap.showSubtitlesOnly.getValue();
         final boolean nurHd = fap.showOnlyHd.getValue();
@@ -119,13 +144,18 @@ public class GuiFilme extends PanelVorlage {
         final int minLength = (int) fap.filmLengthSlider.getLowValue();
         final int maxLength = (int) fap.filmLengthSlider.getHighValue();
         final String filterSender = fap.senderBox.getSelectionModel().getSelectedItem();
+        String filterThema = fap.themaBox.getSelectionModel().getSelectedItem();
+        if (filterThema == null) {
+            filterThema = "";
+        }
+        String filterThemaTitel = fap.roSearchStringProperty.getValueSafe();
 
         ListeFilme listeFilme = daten.getListeFilmeNachBlackList();
 
         TModel tModel = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
         if (listeFilme.isEmpty()) {
             // wenn die Liste leer ist, dann Tschüss
-            table.setModel(tModel);
+            tabelle.setModel(tModel);
         } else {
             // dann ein neues Model anlegen
             if (filterSender.isEmpty() && filterThema.isEmpty() && filterThemaTitel.isEmpty()
@@ -199,7 +229,7 @@ public class GuiFilme extends PanelVorlage {
                 //      filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, film, true /*länge nicht prüfen*/)).forEach(f -> addObjectDataTabFilme(tModel, f));
 
             }
-            table.setModel(tModel);
+            tabelle.setModel(tModel);
         }
     }
 
@@ -260,13 +290,13 @@ public class GuiFilme extends PanelVorlage {
         Listener.notify(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
     }
 
+    //TODO das löschen aus menü?
     public final DeleteFilterAction deleteFilterAction = new DeleteFilterAction();
 
     public class DeleteFilterAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
             stopBeob = true;
-            delOben();
             stopBeob = false;
             // und jetzt wieder laden
             loadTable();
@@ -447,14 +477,13 @@ public class GuiFilme extends PanelVorlage {
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
-                GuiFunktionen.enableComponents(mVFilterPanel, false);
                 loadTable();
             }
 
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 loadTable();
-                GuiFunktionen.enableComponents(mVFilterPanel, true);
+                setupThemaEntries("");
             }
         });
 
@@ -501,22 +530,16 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
-    private void setToolbarVisible() {
+    /*private void setToolbarVisible() {
         //toolBar.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
         if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TOOLBAR_ALLES_ANZEIGEN))) {
             MVConfig.add(MVConfig.Configs.SYSTEM_VIS_FILTER, Boolean.toString(true));
             Listener.notify(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, GuiFilme.class.getSimpleName());
             setVisFilterPanelAndLoad();
         }
-    }
+    }*/
 
     private void start_addListener() {
-        Listener.addListener(new Listener(Listener.EREIGNIS_TOOLBAR_VIS, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setToolbarVisible();
-            }
-        });
         Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -1298,10 +1321,6 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void setVisFilterPanelAndLoad() {
-        if (mVFilterPanel != null) {
-            mVFilterPanel.removeAllListener();
-        }
-
         jPanelFilter.add(mVFilterPanel, BorderLayout.CENTER);
         jScrollPaneFilter.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER)));
         if (jScrollPaneFilter.isVisible()) {
@@ -1310,7 +1329,6 @@ public class GuiFilme extends PanelVorlage {
 
         // einrichten
         mVFilterPanel.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER)));
-        mVFilterPanel.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
 
         setupActionListeners();
 
@@ -1320,20 +1338,7 @@ public class GuiFilme extends PanelVorlage {
         loadTable();
     }
 
-    private class DeleteFilterAllAction extends AbstractAction {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            stopBeob = true;
-            resetFilterSettings();
-            stopBeob = false;
-            // und jetzt wieder laden
-            daten.getListeBlacklist().filterListe();
-            loadTable();
-        }
-    }
-
     private void setupActionListeners() {
-        mVFilterPanel.get_jComboBoxFilterThema().addActionListener(evt -> reloadTable());
         Platform.runLater(() -> {
             fap.showOnlyHd.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
             fap.showSubtitlesOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
@@ -1349,37 +1354,21 @@ public class GuiFilme extends PanelVorlage {
                 if (!newValue)
                     SwingUtilities.invokeLater(this::reloadTable);
             });
-            fap.senderBox.setOnAction(evt -> {
-                SwingUtilities.invokeLater(this::reloadTable);
-            });
+            fap.senderBox.setOnAction(evt -> SwingUtilities.invokeLater(this::reloadTable));
 
             PauseTransition trans = new PauseTransition(Duration.millis(250));
             fap.zeitraumProperty.addListener((observable, oldValue, newValue) -> {
                 trans.setOnFinished(evt -> {
                     SwingUtilities.invokeLater(() -> {
-//                    MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_TAGE, String.valueOf(zeitraum));
                         daten.getListeBlacklist().filterListe();
                         loadTable();
                     });
                 });
                 trans.playFromStart();
             });
+
+            fap.themaBox.setOnAction(evt -> SwingUtilities.invokeLater(this::reloadTable));
         });
-    }
-
-    private void delOben() {
-        mVFilterPanel.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
-    }
-
-    private void resetFilterSettings() {
-        mVFilterPanel.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
-
-        //untere Hälfte
-        fap.showUnseenOnly.setValue(false);
-        fap.showOnlyHd.setValue(false);
-        fap.showSubtitlesOnly.setValue(false);
-        fap.showNewOnly.setValue(false);
-        fap.dontShowAbos.setValue(false);
     }
 
     private String[] getThemen(String ssender) {
@@ -1389,7 +1378,6 @@ public class GuiFilme extends PanelVorlage {
             }
         }
         return daten.getListeFilmeNachBlackList().themenPerSender[0];
-        //return alleThemen;
     }
 
     // ############################################
@@ -1504,56 +1492,21 @@ public class GuiFilme extends PanelVorlage {
             tabelle.getSpalten();
             if (daten.getListeFilmeNachBlackList().isEmpty()) {
                 // die Liste in leer
-                delOben();
-                listeInModellLaden(); // zum löschen der Tabelle
+                prepareTableModel();
             } else if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER))) {
                 // Filtern mit dem Filter in der Toolbar
-                listeInModellLaden();
-            } else {
-                String filterThema = mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem().toString();
-                boolean themaOpen = mVFilterPanel.get_jComboBoxFilterThema().isPopupVisible();
-                //Filme neu laden
-                listeInModellLaden();
-                // Filter Thema
-                // wenn Thema bei dem Sender vorhanden, dann wieder setzen
-                mVFilterPanel.get_jComboBoxFilterThema().setSelectedItem(filterThema);
-                if (!filterThema.isEmpty() && mVFilterPanel.get_jComboBoxFilterThema().getSelectedIndex() == 0) {
-                    // war wohl nix
-                    themaNichtDa = true;
-                }
-                mVFilterPanel.get_jComboBoxFilterThema().setPopupVisible(themaOpen);
+                prepareTableModel();
             }
             setInfoStatusbar();
             tabelle.setSpalten();
             updateFilmData();
             stopBeob = false;
-            if (themaNichtDa) {
-                // Thema gibts beim Sender nicht, nochmal filtern anschieben
-                loadTable();
-            }
         } catch (Exception ex) {
             Log.errorLog(558965421, ex);
         }
 
         tabelle.scrollToSelection();
 
-    }
-
-    /**
-     * Hier werden die Filter angewandt und das Model neu gesetzt.
-     */
-    private synchronized void listeInModellLaden() {
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER))) {
-            // normal mit den Filtern aus dem Filterpanel suchen
-            getModelTabFilme(tabelle,
-                    mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem().toString(),
-                    fap.roSearchStringProperty.getValueSafe());
-        } else {
-            // jetzt nur den Filter aus der Toolbar
-            getModelTabFilme(tabelle,
-                    "",
-                    fap.roSearchStringProperty.getValueSafe());
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

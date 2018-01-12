@@ -271,7 +271,7 @@ public class DialogBeenden extends JDialog {
 
         cbShutdownComputer.setText("Rechner herunterfahren");
 
-        btnCancel.setText("Zurück");
+        btnCancel.setText("Abbrechen");
 
         jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
         jButtonHilfe.setToolTipText("Hilfe anzeigen");
