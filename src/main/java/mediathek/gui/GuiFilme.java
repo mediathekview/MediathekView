@@ -53,8 +53,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static mediathek.tool.MVTable.*;
-
 @SuppressWarnings("serial")
 public class GuiFilme extends PanelVorlage {
     private JButton buttonArray[];
@@ -1352,7 +1350,6 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void setupActionListeners() {
-        mVFilterPanel.get_jButtonClearAll().addActionListener(new DeleteFilterAllAction());
         mVFilterPanel.get_jComboBoxFilterThema().addActionListener(evt -> reloadTable());
         Platform.runLater(() -> {
             fap.showOnlyHd.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
@@ -1421,7 +1418,7 @@ public class GuiFilme extends PanelVorlage {
     // ############################################
     // Filterprofile
     // ############################################
-    private void setFilterProfile(int filter) {
+    /*private void setFilterProfile(int filter) {
         stopBeob = true;
         boolean bChanged = false;
 
@@ -1518,7 +1515,7 @@ public class GuiFilme extends PanelVorlage {
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SORT_KEY, key, filter);
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SORT_KEY_UPDOWN, upDown, filter);
 
-    }
+    }*/
 
     // ####################################
     // Tabelle laden

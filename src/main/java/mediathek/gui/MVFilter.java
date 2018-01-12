@@ -31,8 +31,6 @@ public interface MVFilter {
 
     void removeAllListener();
 
-    JButton get_jButtonClearAll();
-
     JComboBox<String> get_jComboBoxFilterThema();
 
     JSlider get_jSliderTage();

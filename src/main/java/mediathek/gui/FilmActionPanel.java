@@ -6,6 +6,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -16,10 +17,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
@@ -60,6 +58,7 @@ public class FilmActionPanel {
     private Button btnAdvancedFilter;
     private Button btnNewFilter;
     private BlacklistButton btnBlacklist;
+
     public FilmActionPanel(Daten daten) {
         this.daten = daten;
 
@@ -265,6 +264,7 @@ public class FilmActionPanel {
         themaBox.getSelectionModel().select(0);
         hb.getChildren().add(themaBox);
         hb.setAlignment(Pos.CENTER_LEFT);
+        hb.setDisable(true);
         vBox.getChildren().add(hb);
 
         return new TitledPane("Allgemeine Anzeigeeinstellungen", vBox);
@@ -326,14 +326,34 @@ public class FilmActionPanel {
     }
 
 
+    private Node createZeitraumPane() {
+        Label zeitraum = new Label("Zeitraum:");
+        ObservableList<String> months = FXCollections.observableArrayList("∞");
+        for (int i = 1; i <= 30; i++)
+            months.add(String.valueOf(i));
+
+        SpinnerValueFactory<String> valueFactory = new SpinnerValueFactory.ListSpinnerValueFactory<String>(months);
+
+        valueFactory.setValue("∞");
+
+        final Spinner<String> spinner = new Spinner<>();
+        spinner.setValueFactory(valueFactory);
+
+        Label days = new Label("Tage");
+
+        FlowPane root = new FlowPane();
+        root.getChildren().addAll(zeitraum, spinner, days);
+        return root;
+    }
+
     private Accordion createAccordion() {
         TitledPane t1 = createCommonViewSettingsPane();
         TitledPane t2 = new TitledPane("Filmlänge", createFilmLengthSlider());
-
+        TitledPane t3 = new TitledPane("Zeitraum", createZeitraumPane());
 
 
         Accordion accordion = new Accordion();
-        accordion.getPanes().addAll(t1, t2);
+        accordion.getPanes().addAll(t1, t2, t3);
         accordion.setExpandedPane(t1);
         return accordion;
     }
