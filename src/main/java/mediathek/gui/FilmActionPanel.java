@@ -162,9 +162,6 @@ public class FilmActionPanel {
         GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
 
         setupSearchField();
-        //zu löschen:
-//MVConfig.Configs.SYSTEM_VIS_FILTER
-        //Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN
 
         HBox hb = new HBox();
         hb.setPadding(new Insets(5, 5, 5, 5));

@@ -1444,13 +1444,9 @@ public class GuiFilme extends PanelVorlage {
         try {
             stopBeob = true;
             tabelle.getSpalten();
-            if (daten.getListeFilmeNachBlackList().isEmpty()) {
-                // die Liste in leer
-                prepareTableModel();
-            } else if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER))) {
-                // Filtern mit dem Filter in der Toolbar
-                prepareTableModel();
-            }
+
+            prepareTableModel();
+
             setInfoStatusbar();
             tabelle.setSpalten();
             updateFilmData();

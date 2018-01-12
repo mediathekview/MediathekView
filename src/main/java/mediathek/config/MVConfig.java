@@ -155,8 +155,6 @@ public class MVConfig {
         SYSTEM_VIS_MELDUNGEN("Vis-Meldungen"),
         SYSTEM_GROESSE_MELDUNGEN("Groesse-Meldungen"),
         SYSTEM_FENSTER_FILTER("Fenster-Filter"),
-        //FIXME VIS_FILTER kann entfernt werden
-        SYSTEM_VIS_FILTER("Vis-Filter", Boolean.TRUE.toString()),
         SYSTEM_GROESSE_FILTER("Groesse-Filter"),
         //Einstellungen Filmliste
         SYSTEM_IMPORT_ART_FILME("update-filme"), // url automatisch suchen - oder nur manuell
