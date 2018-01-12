@@ -288,19 +288,6 @@ public class GuiFilme extends PanelVorlage {
         Listener.notify(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
     }
 
-    //TODO das löschen aus menü?
-    public final DeleteFilterAction deleteFilterAction = new DeleteFilterAction();
-
-    public class DeleteFilterAction extends AbstractAction {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            stopBeob = true;
-            stopBeob = false;
-            // und jetzt wieder laden
-            loadTable();
-        }
-    }
-
     public class FilterFilmAction extends AbstractAction {
 
         @Override

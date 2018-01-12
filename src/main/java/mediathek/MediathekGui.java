@@ -924,7 +924,6 @@ public class MediathekGui extends JFrame {
         jMenuItemFilmlisteLaden.addActionListener(e -> daten.getFilmeLaden().loadFilmlistDialog(daten, false));
         jMenuItemFilmAbspielen.addActionListener(Daten.guiFilme.playAction);
         jMenuItemFilmAufzeichnen.addActionListener(Daten.guiFilme.saveFilmAction);
-        jMenuItemFilterLoeschen.addActionListener(Daten.guiFilme.deleteFilterAction);
         jMenuItemBlacklist.addActionListener(e -> {
             DialogLeer dialog = new DialogLeer(daten.getMediathekGui(), true);
             dialog.init(DIALOG_TITLE_BLACKLIST, new PanelBlacklist(daten, daten.getMediathekGui(), PanelBlacklist.class.getName() + PANEL_BLACKLIST_NAME_POSTFIX));
@@ -958,7 +957,6 @@ public class MediathekGui extends JFrame {
         jMenuItemFilmeGesehen.setIcon(Icons.ICON_MENUE_HISTORY_ADD);
         jMenuItemFilmeUngesehen.setIcon(Icons.ICON_MENUE_HISTORY_REMOVE);
         jMenuItemBlacklist.setIcon(Icons.ICON_MENUE_BLACKLIST);
-        jMenuItemFilterLoeschen.setIcon(Icons.ICON_MENUE_CLEAR);
         jMenuItemDownloadsAlleStarten.setIcon(Icons.ICON_MENUE_DOWNLOAD_ALLE_STARTEN);
         jMenuItemDownloadStartTime.setIcon(Icons.ICON_MENUE_DOWNLOAD_ALLE_STARTEN);
         jMenuItemDownloadAlleStoppen.setIcon(Icons.ICON_MENUE_DOWNOAD_STOP);
@@ -1100,7 +1098,6 @@ public class MediathekGui extends JFrame {
         jMenuFilme = new javax.swing.JMenu();
         jMenuItemFilmAbspielen = new javax.swing.JMenuItem();
         jMenuItemFilmAufzeichnen = new javax.swing.JMenuItem();
-        jMenuItemFilterLoeschen = new javax.swing.JMenuItem();
         jMenuItemBlacklist = new javax.swing.JMenuItem();
         javax.swing.JPopupMenu.Separator jSeparator6 = new javax.swing.JPopupMenu.Separator();
         jMenuItemFilmeGesehen = new javax.swing.JMenuItem();
@@ -1193,10 +1190,6 @@ public class MediathekGui extends JFrame {
         jMenuItemFilmAufzeichnen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemFilmAufzeichnen.setText("Film aufzeichnen");
         jMenuFilme.add(jMenuItemFilmAufzeichnen);
-
-        jMenuItemFilterLoeschen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemFilterLoeschen.setText("Filter löschen");
-        jMenuFilme.add(jMenuItemFilterLoeschen);
 
         jMenuItemBlacklist.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemBlacklist.setText("Blacklist öffnen");
@@ -1434,7 +1427,6 @@ public class MediathekGui extends JFrame {
     private javax.swing.JMenuItem jMenuItemFilmeMediensammlung;
     private javax.swing.JMenuItem jMenuItemFilmeUngesehen;
     private javax.swing.JMenuItem jMenuItemFilmlisteLaden;
-    protected javax.swing.JMenuItem jMenuItemFilterLoeschen;
     protected javax.swing.JMenuItem jMenuItemResetSettings;
     private javax.swing.JMenuItem jMenuItemSchriftGr;
     private javax.swing.JMenuItem jMenuItemSchriftKl;
