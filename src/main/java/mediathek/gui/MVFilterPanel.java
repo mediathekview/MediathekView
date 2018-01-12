@@ -196,11 +196,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
     }
 
     @Override
-    public JComboBox<String> get_jComboBoxFilterSender() {
-        return jComboBoxFilterSender;
-    }
-
-    @Override
     public JComboBox<String> get_jComboBoxFilterThema() {
         return jComboBoxFilterThema;
     }

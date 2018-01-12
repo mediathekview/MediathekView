@@ -33,8 +33,6 @@ public interface MVFilter {
 
     JButton get_jButtonClearAll();
 
-    JComboBox<String> get_jComboBoxFilterSender();
-
     JComboBox<String> get_jComboBoxFilterThema();
 
     JSlider get_jSliderTage();

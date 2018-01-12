@@ -248,8 +248,29 @@ public class FilmActionPanel {
         showOnlyLivestreams = cbShowOnlyLivestreams.selectedProperty();
         vBox.getChildren().add(cbShowOnlyLivestreams);
 
+        HBox hb = new HBox();
+        hb.getChildren().add(new Label("Sender:"));
+        senderBox = new ComboBox<>();
+        senderBox.getItems().addAll("");
+        senderBox.getSelectionModel().select(0);
+        hb.getChildren().add(senderBox);
+
+        hb.setAlignment(Pos.CENTER_LEFT);
+        vBox.getChildren().add(hb);
+
+        hb = new HBox();
+        hb.getChildren().add(new Label("Thema:"));
+        ComboBox<String> themaBox = new ComboBox<>();
+        themaBox.getItems().addAll("", "Thema 1", "Thema 2");
+        themaBox.getSelectionModel().select(0);
+        hb.getChildren().add(themaBox);
+        hb.setAlignment(Pos.CENTER_LEFT);
+        vBox.getChildren().add(hb);
+
         return new TitledPane("Allgemeine Anzeigeeinstellungen", vBox);
     }
+
+    public ComboBox<String> senderBox;
 
     public BooleanProperty showOnlyLivestreams;
 

@@ -21,6 +21,8 @@ package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
 import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
@@ -95,6 +97,17 @@ public class GuiFilme extends PanelVorlage {
         setToolbarVisible();
         start_init();
         start_addListener();
+
+        daten.getListeFilmeNachBlackList().senderList.addListener((ListChangeListener<String>) c -> {
+            String selectedItem = fap.senderBox.getSelectionModel().getSelectedItem();
+            if (selectedItem != null) {
+                ObservableList<String> list = fap.senderBox.getItems();
+                list.clear();
+                list.addAll(daten.getListeFilmeNachBlackList().senderList);
+                fap.senderBox.getSelectionModel().select(selectedItem);
+                SwingUtilities.invokeLater(this::reloadTable);
+            }
+        });
     }
 
     private final FilmActionPanel fap;
@@ -1311,7 +1324,6 @@ public class GuiFilme extends PanelVorlage {
 
         // einrichten
         mVFilterPanel.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER)));
-        mVFilterPanel.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
         mVFilterPanel.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
 
         //===========
@@ -1355,7 +1367,6 @@ public class GuiFilme extends PanelVorlage {
 
     private void setupActionListeners() {
         mVFilterPanel.get_jButtonClearAll().addActionListener(new DeleteFilterAllAction());
-        mVFilterPanel.get_jComboBoxFilterSender().addActionListener(evt -> reloadTable());
         mVFilterPanel.get_jComboBoxFilterThema().addActionListener(evt -> reloadTable());
         Platform.runLater(() -> {
             fap.showOnlyHd.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
@@ -1372,6 +1383,10 @@ public class GuiFilme extends PanelVorlage {
                 if (!newValue)
                     SwingUtilities.invokeLater(this::reloadTable);
             });
+            fap.senderBox.setOnAction(evt -> {
+                System.out.println("SENDER BOX called");
+                SwingUtilities.invokeLater(this::reloadTable);
+            });
         });
     }
 
@@ -1383,12 +1398,10 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void delOben() {
-        mVFilterPanel.get_jComboBoxFilterSender().setModel(new DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
         mVFilterPanel.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
     }
 
     private void resetFilterSettings() {
-        mVFilterPanel.get_jComboBoxFilterSender().setModel(new DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
         mVFilterPanel.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
 
         //untere Hälfte
@@ -1447,9 +1460,7 @@ public class GuiFilme extends PanelVorlage {
         daten.getListeBlacklist().filterListe();
 
         // erst jetzt da Sender/Thema evtl. in der Blacklist
-        mVFilterPanel.get_jComboBoxFilterSender().setModel(new javax.swing.DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
         mVFilterPanel.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
-        mVFilterPanel.get_jComboBoxFilterSender().setSelectedItem(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SENDER, filter));
         mVFilterPanel.get_jComboBoxFilterThema().setSelectedItem(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA, filter));
 
         SortKey sk = sortKeyLesen(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SORT_KEY, filter),
@@ -1496,7 +1507,6 @@ public class GuiFilme extends PanelVorlage {
 
     private void saveFilterProfile(int filter) {
         // jetzt noch speichern
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SENDER, String.valueOf(mVFilterPanel.get_jComboBoxFilterSender().getSelectedItem()), filter);
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA, String.valueOf(mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem()), filter);
 
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_ABO, String.valueOf(fap.dontShowAbos.getValue()), filter);
@@ -1541,29 +1551,10 @@ public class GuiFilme extends PanelVorlage {
                 listeInModellLaden();
             } else {
                 String filterThema = mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem().toString();
-                String filterSender = mVFilterPanel.get_jComboBoxFilterSender().getSelectedItem().toString();
                 boolean themaOpen = mVFilterPanel.get_jComboBoxFilterThema().isPopupVisible();
-                boolean senderOpen = mVFilterPanel.get_jComboBoxFilterSender().isPopupVisible();
                 //Filme neu laden
                 listeInModellLaden();
-                //Filter Sender
-                mVFilterPanel.get_jComboBoxFilterSender().setModel(new DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
-                mVFilterPanel.get_jComboBoxFilterSender().setSelectedIndex(0);
-                if (!filterSender.isEmpty()) {
-                    mVFilterPanel.get_jComboBoxFilterSender().setSelectedItem(filterSender);
-                    if (mVFilterPanel.get_jComboBoxFilterSender().getSelectedIndex() == 0) {
-                        // war wohl nix, der gewählte Sender wurde in die Blacklist eingetragen
-                        filterSender = "";
-                        listeInModellLaden();
-                    }
-                }
-                mVFilterPanel.get_jComboBoxFilterSender().setPopupVisible(senderOpen);
                 // Filter Thema
-                if (filterSender.isEmpty()) {
-                    mVFilterPanel.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
-                } else {
-                    mVFilterPanel.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen(filterSender)));
-                }
                 // wenn Thema bei dem Sender vorhanden, dann wieder setzen
                 mVFilterPanel.get_jComboBoxFilterThema().setSelectedItem(filterThema);
                 if (!filterThema.isEmpty() && mVFilterPanel.get_jComboBoxFilterThema().getSelectedIndex() == 0) {
@@ -1595,13 +1586,14 @@ public class GuiFilme extends PanelVorlage {
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER))) {
             // normal mit den Filtern aus dem Filterpanel suchen
             getModelTabFilme(tabelle,
-                    mVFilterPanel.get_jComboBoxFilterSender().getSelectedItem().toString(),
+                    fap.senderBox.getSelectionModel().getSelectedItem(),
                     mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem().toString(),
                     fap.roSearchStringProperty.getValueSafe());
         } else {
             // jetzt nur den Filter aus der Toolbar
             getModelTabFilme(tabelle,
-                    "", "",
+                    fap.senderBox.getSelectionModel().getSelectedItem(),
+                    "",
                     fap.roSearchStringProperty.getValueSafe());
         }
     }
