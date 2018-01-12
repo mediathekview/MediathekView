@@ -31,8 +31,6 @@ public interface MVFilter {
 
     void removeAllListener();
 
-    JButton get_jButtonFilterLoeschen();
-
     JButton get_jButtonClearAll();
 
     JComboBox<String> get_jComboBoxFilterSender();

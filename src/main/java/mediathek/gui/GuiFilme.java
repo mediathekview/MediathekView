@@ -1354,7 +1354,6 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void setupActionListeners() {
-        mVFilterPanel.get_jButtonFilterLoeschen().addActionListener(deleteFilterAction);
         mVFilterPanel.get_jButtonClearAll().addActionListener(new DeleteFilterAllAction());
         mVFilterPanel.get_jComboBoxFilterSender().addActionListener(evt -> reloadTable());
         mVFilterPanel.get_jComboBoxFilterThema().addActionListener(evt -> reloadTable());
