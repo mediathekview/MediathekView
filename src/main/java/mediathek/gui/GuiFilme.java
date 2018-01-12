@@ -59,7 +59,6 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("serial")
 public class GuiFilme extends PanelVorlage {
     private JButton buttonArray[];
-    private final MVFilterPanel mVFilterPanel;
 
     public GuiFilme(Daten aDaten, MediathekGui aMediathekGui) {
         super(aDaten, aMediathekGui);
@@ -70,7 +69,6 @@ public class GuiFilme extends PanelVorlage {
 
         jScrollPaneFilter.getVerticalScrollBar().setUnitIncrement(16);
         jPanelFilter.setLayout(new BorderLayout());
-        mVFilterPanel = new MVFilterPanel();
 
         panelVideoplayerSetzen();
         setupDescriptionPanel();
@@ -586,13 +584,6 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void ping() {
                 setInfoStatusbar();
-            }
-        });
-        Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                // Panel anzeigen und die Filmliste anpassen
-                setVisFilterPanelAndLoad();
             }
         });
         Listener.addListener(new Listener(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, GuiFilme.class.getSimpleName()) {
@@ -1321,16 +1312,13 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void setVisFilterPanelAndLoad() {
-        jPanelFilter.add(mVFilterPanel, BorderLayout.CENTER);
         jScrollPaneFilter.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER)));
         if (jScrollPaneFilter.isVisible()) {
             jSplitPane1.setDividerLocation(MVConfig.getInt(MVConfig.Configs.SYSTEM_PANEL_FILME_DIVIDER));
         }
 
         // einrichten
-        mVFilterPanel.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER)));
-
-        setupActionListeners();
+//        setupActionListeners();
 
         //=======================================
         // und jezt die Anzeige

@@ -23,7 +23,6 @@ import com.jidesoft.utils.SystemInfo;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Log;
 import mediathek.controller.MVBandwidthTokenBucket;
-import mediathek.gui.MVFilter;
 import mediathek.tool.GuiFunktionenProgramme;
 
 import java.util.ArrayList;
@@ -322,13 +321,14 @@ public class MVConfig {
         HASHMAP.put(key.cValue, value);
     }
 
+    private static final int MAX_FILTER = 5; //old filter profile code setting
     public static synchronized void add(Configs key, String value, int i) {
         boolean ok = false;
         String[] sa = {""};
         String s = HASHMAP.get(key.cValue);
         if (s != null) {
             sa = split(s);
-            if (sa.length == MVFilter.MAX_FILTER) {
+            if (sa.length == MAX_FILTER) {
                 sa[i] = value;
                 ok = true;
             }
@@ -437,8 +437,8 @@ public class MVConfig {
     }
 
     private static String[] initArray(Configs key) {
-        String[] sa = new String[MVFilter.MAX_FILTER];
-        for (int k = 0; k < MVFilter.MAX_FILTER; ++k) {
+        String[] sa = new String[MAX_FILTER];
+        for (int k = 0; k < MAX_FILTER; ++k) {
             sa[k] = key.initValue;
         }
         return sa;

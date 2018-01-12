@@ -429,7 +429,7 @@ public class FilmActionPanel {
             activeProperty.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(() -> {
                 MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.toString(newValue));
                 daten.getListeBlacklist().filterListe();
-                Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, MVFilterPanel.class.getSimpleName());
+                Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, FilmActionPanel.class.getSimpleName());
             }));
 
             setOnAction(value -> activeProperty.setValue(!activeProperty.getValue()));
