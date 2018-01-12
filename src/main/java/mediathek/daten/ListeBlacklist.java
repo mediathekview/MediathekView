@@ -219,11 +219,11 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      */
     private void loadCurrentFilterSettings() {
         try {
-            //if (MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_TAGE).equals("") || MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_TAGE).equals("0")) {
-            if (Daten.guiFilme.getFilterTage() == 0) {
+            final String val = Daten.guiFilme.fap.zeitraumProperty.getValue();
+            if (val.equals("∞"))
                 days = 0;
-            } else {
-                final long max = 1000L * 60L * 60L * 24L * Daten.guiFilme.getFilterTage();
+            else {
+                final long max = 1000L * 60L * 60L * 24L * Integer.parseInt(val);
                 days = System.currentTimeMillis() - max;
             }
         } catch (Exception ex) {

@@ -20,7 +20,6 @@
 package mediathek.gui;
 
 import javax.swing.*;
-import javax.swing.event.ChangeListener;
 import java.awt.event.ActionListener;
 
 @SuppressWarnings("serial")
@@ -38,25 +37,9 @@ public class MVFilterPanel extends JPanel implements MVFilter {
     }
 
     @Override
-    public JSlider get_jSliderTage() {
-        return jSliderTage;
-    }
-
-    @Override
-    public JTextField get_jTextFieldFilterTage() {
-        return jTextFieldFilterTage;
-    }
-
-    @Override
     public void removeAllListener() {
         for (ActionListener a : jComboBoxFilterThema.getActionListeners()) {
             jComboBoxFilterThema.removeActionListener(a);
-        }
-        for (ActionListener a : jTextFieldFilterTage.getActionListeners()) {
-            jTextFieldFilterTage.removeActionListener(a);
-        }
-        for (ChangeListener a : jSliderTage.getChangeListeners()) {
-            jSliderTage.removeChangeListener(a);
         }
     }
 
@@ -64,19 +47,9 @@ public class MVFilterPanel extends JPanel implements MVFilter {
     private void initComponents() {
 
         javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
-        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        jSliderTage = new javax.swing.JSlider();
-        jTextFieldFilterTage = new javax.swing.JTextField();
         javax.swing.JPanel jPanel7 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
         jComboBoxFilterThema = new javax.swing.JComboBox<>();
-
-        jLabel1.setText("Zeitraum [Tage]:");
-
-        jSliderTage.setMaximum(30);
-        jSliderTage.setValue(15);
-
-        jTextFieldFilterTage.setEditable(false);
 
         jPanel7.setLayout(new org.jdesktop.swingx.VerticalLayout());
 
@@ -93,14 +66,7 @@ public class MVFilterPanel extends JPanel implements MVFilter {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextFieldFilterTage, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                        .addComponent(jSliderTage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -108,16 +74,8 @@ public class MVFilterPanel extends JPanel implements MVFilter {
             .addGroup(jPanel2Layout.createSequentialGroup()
                     .addContainerGap()
                     .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(jTextFieldFilterTage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jSliderTage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(40, 40, 40))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[]{jLabel1, jTextFieldFilterTage});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -127,15 +85,13 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JComboBox<String> jComboBoxFilterThema;
-    private javax.swing.JSlider jSliderTage;
-    private javax.swing.JTextField jTextFieldFilterTage;
     // End of variables declaration//GEN-END:variables
 
 }

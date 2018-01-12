@@ -2,10 +2,7 @@ package mediathek.gui;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -325,6 +322,8 @@ public class FilmActionPanel {
                 .buildAll();
     }
 
+    public ReadOnlyObjectProperty<String> zeitraumProperty;
+    public Spinner<String> zeitraumSpinner;
 
     private Node createZeitraumPane() {
         Label zeitraum = new Label("Zeitraum:");
@@ -332,17 +331,20 @@ public class FilmActionPanel {
         for (int i = 1; i <= 30; i++)
             months.add(String.valueOf(i));
 
-        SpinnerValueFactory<String> valueFactory = new SpinnerValueFactory.ListSpinnerValueFactory<String>(months);
+        SpinnerValueFactory<String> valueFactory = new SpinnerValueFactory.ListSpinnerValueFactory<>(months);
 
         valueFactory.setValue("∞");
 
-        final Spinner<String> spinner = new Spinner<>();
-        spinner.setValueFactory(valueFactory);
+        zeitraumSpinner = new Spinner<>();
+        zeitraumSpinner.setValueFactory(valueFactory);
+        zeitraumSpinner.setEditable(false);
+        zeitraumProperty = zeitraumSpinner.valueProperty();
 
         Label days = new Label("Tage");
 
         FlowPane root = new FlowPane();
-        root.getChildren().addAll(zeitraum, spinner, days);
+        root.setHgap(4);
+        root.getChildren().addAll(zeitraum, zeitraumSpinner, days);
         return root;
     }
 

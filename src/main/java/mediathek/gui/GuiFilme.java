@@ -20,10 +20,12 @@
 package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
+import javafx.util.Duration;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
@@ -93,7 +95,7 @@ public class GuiFilme extends PanelVorlage {
         });
     }
 
-    private final FilmActionPanel fap;
+    public final FilmActionPanel fap;
     private final JFXPanel fxPanel;
 
     private void setupDescriptionPanel() {
@@ -1310,25 +1312,6 @@ public class GuiFilme extends PanelVorlage {
         mVFilterPanel.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER)));
         mVFilterPanel.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
 
-        //===========
-        // Slider
-        mVFilterPanel.get_jSliderTage().setValue(MVConfig.getInt(MVConfig.Configs.SYSTEM_FILTER_TAGE));
-        setTextSlider();
-
-        //==========================
-        // listener anhängen
-        mVFilterPanel.get_jSliderTage().addChangeListener(e -> {
-            if (!stopBeob) {
-                setTextSlider();
-                if (!mVFilterPanel.get_jSliderTage().getValueIsAdjusting()) {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_TAGE, String.valueOf(mVFilterPanel.get_jSliderTage().getValue()));
-                    daten.getListeBlacklist().filterListe();
-                    loadTable();
-
-                }
-            }
-        });
-
         setupActionListeners();
 
         //=======================================
@@ -1367,17 +1350,21 @@ public class GuiFilme extends PanelVorlage {
                     SwingUtilities.invokeLater(this::reloadTable);
             });
             fap.senderBox.setOnAction(evt -> {
-                System.out.println("SENDER BOX called");
                 SwingUtilities.invokeLater(this::reloadTable);
             });
-        });
-    }
 
-    private void setTextSlider() {
-        mVFilterPanel.get_jTextFieldFilterTage().setText(String.valueOf(mVFilterPanel.get_jSliderTage().getValue()));
-        if (mVFilterPanel.get_jSliderTage().getValue() == 0) {
-            mVFilterPanel.get_jTextFieldFilterTage().setText("alles");
-        }
+            PauseTransition trans = new PauseTransition(Duration.millis(250));
+            fap.zeitraumProperty.addListener((observable, oldValue, newValue) -> {
+                trans.setOnFinished(evt -> {
+                    SwingUtilities.invokeLater(() -> {
+//                    MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_TAGE, String.valueOf(zeitraum));
+                        daten.getListeBlacklist().filterListe();
+                        loadTable();
+                    });
+                });
+                trans.playFromStart();
+            });
+        });
     }
 
     private void delOben() {
@@ -1393,16 +1380,6 @@ public class GuiFilme extends PanelVorlage {
         fap.showSubtitlesOnly.setValue(false);
         fap.showNewOnly.setValue(false);
         fap.dontShowAbos.setValue(false);
-
-
-        mVFilterPanel.get_jSliderTage().setValue(0);
-
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_TAGE, String.valueOf(mVFilterPanel.get_jSliderTage().getValue()));
-        setTextSlider();
-    }
-
-    public int getFilterTage() {
-        return mVFilterPanel.get_jSliderTage().getValue();
     }
 
     private String[] getThemen(String ssender) {

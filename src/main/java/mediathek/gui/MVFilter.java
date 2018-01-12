@@ -33,9 +33,5 @@ public interface MVFilter {
 
     JComboBox<String> get_jComboBoxFilterThema();
 
-    JSlider get_jSliderTage();
-
-    JTextField get_jTextFieldFilterTage();
-
     void setVisible(boolean v);
 }
