@@ -127,18 +127,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void mvFdeleteFilter(int i) {
-    }
-
-    @Override
-    public void mvFsaveFilter(int i) {
-    }
-
-    @Override
-    public void mvFfilter(int i) {
-    }
-
-    @Override
     public JButton get_jButtonClearAll() {
         return jButtonClearAll;
     }

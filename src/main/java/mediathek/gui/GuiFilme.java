@@ -69,22 +69,7 @@ public class GuiFilme extends PanelVorlage {
 
         jScrollPaneFilter.getVerticalScrollBar().setUnitIncrement(16);
         jPanelFilter.setLayout(new BorderLayout());
-        mVFilterPanel = new MVFilterPanel() {
-            @Override
-            public void mvFfilter(int i) {
-                setFilterProfile(i);
-            }
-
-            @Override
-            public void mvFdeleteFilter(int i) {
-                delFilterProfile(i);
-            }
-
-            @Override
-            public void mvFsaveFilter(int i) {
-                saveFilterProfile(i);
-            }
-        };
+        mVFilterPanel = new MVFilterPanel();
 
         panelVideoplayerSetzen();
         setupDescriptionPanel();
@@ -123,7 +108,7 @@ public class GuiFilme extends PanelVorlage {
      * Model für die Tabelle Filme zusammenbauen.
      */
     private synchronized void getModelTabFilme(MVTable table,
-                                               String filterSender, String filterThema,
+                                               String filterThema,
                                                String filterThemaTitel) {
         final boolean nurNeue = fap.showNewOnly.getValue();
         final boolean nurUt = fap.showSubtitlesOnly.getValue();
@@ -133,6 +118,7 @@ public class GuiFilme extends PanelVorlage {
         final boolean showOnlyLivestreams = fap.showOnlyLivestreams.getValue();
         final int minLength = (int) fap.filmLengthSlider.getLowValue();
         final int maxLength = (int) fap.filmLengthSlider.getHighValue();
+        final String filterSender = fap.senderBox.getSelectionModel().getSelectedItem();
 
         ListeFilme listeFilme = daten.getListeFilmeNachBlackList();
 
@@ -1586,13 +1572,11 @@ public class GuiFilme extends PanelVorlage {
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER))) {
             // normal mit den Filtern aus dem Filterpanel suchen
             getModelTabFilme(tabelle,
-                    fap.senderBox.getSelectionModel().getSelectedItem(),
                     mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem().toString(),
                     fap.roSearchStringProperty.getValueSafe());
         } else {
             // jetzt nur den Filter aus der Toolbar
             getModelTabFilme(tabelle,
-                    fap.senderBox.getSelectionModel().getSelectedItem(),
                     "",
                     fap.roSearchStringProperty.getValueSafe());
         }

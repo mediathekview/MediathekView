@@ -40,10 +40,4 @@ public interface MVFilter {
     JTextField get_jTextFieldFilterTage();
 
     void setVisible(boolean v);
-
-    void mvFdeleteFilter(int i);
-
-    void mvFsaveFilter(int i);
-
-    void mvFfilter(int i);
 }
