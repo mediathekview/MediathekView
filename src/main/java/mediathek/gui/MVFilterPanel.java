@@ -393,7 +393,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         rbMax = new javax.swing.JRadioButton();
         javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
-        jToggleButtonLivestram = new javax.swing.JToggleButton();
         jButtonClearAll = new javax.swing.JButton();
         javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
         javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
@@ -429,9 +428,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         jLabel6.setText("Filterprofile:");
 
         jPanel3.setLayout(new org.jdesktop.swingx.VerticalLayout());
-
-        jToggleButtonLivestram.setText("Livestreams");
-        jPanel3.add(jToggleButtonLivestram);
 
         jButtonClearAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); // NOI18N
         jButtonClearAll.setToolTipText("Alles löschen");
@@ -487,7 +483,7 @@ public class MVFilterPanel extends JPanel implements MVFilter {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(rbMin)
                                 .addComponent(jLabel6)
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -591,7 +587,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
     private javax.swing.JSlider jSliderTage;
     public javax.swing.JTextField jTextFieldFilterMinuten;
     private javax.swing.JTextField jTextFieldFilterTage;
-    public javax.swing.JToggleButton jToggleButtonLivestram;
     private javax.swing.JRadioButton rbMax;
     private javax.swing.JRadioButton rbMin;
     // End of variables declaration//GEN-END:variables
@@ -659,11 +654,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
     }
 
     @Override
-    public JToggleButton get_jToggleButtonLivestram() {
-        return jToggleButtonLivestram;
-    }
-
-    @Override
     public void removeAllListener() {
         aktFilter = -1;
         setIcon(false); // erst mal alle aus
@@ -696,9 +686,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         }
         for (ActionListener a : jTextFieldFilterMinuten.getActionListeners()) {
             jTextFieldFilterMinuten.removeActionListener(a);
-        }
-        for (ActionListener a : jToggleButtonLivestram.getActionListeners()) {
-            jToggleButtonLivestram.removeActionListener(a);
         }
     }
 

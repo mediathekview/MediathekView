@@ -109,14 +109,15 @@ public class GuiFilme extends PanelVorlage {
      * Model für die Tabelle Filme zusammenbauen.
      */
     private synchronized void getModelTabFilme(MVTable table,
-                                               String filterSender, String filterThema, String filterTitel,
-                                               String filterThemaTitel, int laenge, boolean min,
-                                               boolean livestream) {
+                                               String filterSender, String filterThema,
+                                               String filterThemaTitel, int laenge, boolean min) {
         final boolean nurNeue = fap.showNewOnly.getValue();
         final boolean nurUt = fap.showSubtitlesOnly.getValue();
         final boolean nurHd = fap.showOnlyHd.getValue();
         final boolean kGesehen = fap.showUnseenOnly.getValue();
         final boolean keineAbos = fap.dontShowAbos.getValue();
+        final boolean showOnlyLivestreams = fap.showOnlyLivestreams.getValue();
+
         ListeFilme listeFilme = daten.getListeFilmeNachBlackList();
 
         TModel tModel = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
@@ -125,21 +126,11 @@ public class GuiFilme extends PanelVorlage {
             table.setModel(tModel);
         } else {
             // dann ein neues Model anlegen
-            if (filterSender.isEmpty() && filterThema.isEmpty() && filterTitel.isEmpty() && filterThemaTitel.isEmpty()
-                    && laenge == 0 && !keineAbos && !kGesehen && !nurHd && !nurUt && !livestream && !nurNeue) {
+            if (filterSender.isEmpty() && filterThema.isEmpty() && filterThemaTitel.isEmpty()
+                    && laenge == 0 && !keineAbos && !kGesehen && !nurHd && !nurUt && !showOnlyLivestreams && !nurNeue) {
                 // dann ganze Liste laden
                 addObjectDataTabFilme(listeFilme, tModel);
             } else {
-                // Titel
-                String[] arrTitel;
-                if (Filter.isPattern(filterTitel)) {
-                    arrTitel = new String[]{filterTitel};
-                } else {
-                    arrTitel = filterTitel.split(",");
-                    for (int i = 0; i < arrTitel.length; ++i) {
-                        arrTitel[i] = arrTitel[i].trim().toLowerCase();
-                    }
-                }
                 // ThemaTitel
                 String[] arrThemaTitel;
                 if (Filter.isPattern(filterThemaTitel)) {
@@ -157,7 +148,7 @@ public class GuiFilme extends PanelVorlage {
                             continue;
                         }
                     }
-                    if (livestream) {
+                    if (showOnlyLivestreams) {
                         if (!film.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE)) {
                             continue;
                         }
@@ -183,7 +174,11 @@ public class GuiFilme extends PanelVorlage {
                         }
                     }
 
+                    //TODO implement film längenprüfung hier selbst,
+                    //filter mitLaenge false dann aufrufen
+                    //je nachdem dann das ganze herausoperieren
                     String[] arrIrgendwo = {};
+                    String[] arrTitel = {};
                     if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, min, film, true /*länge nicht prüfen*/)) {
                         addObjectDataTabFilme(tModel, film);
                     }
@@ -1348,18 +1343,8 @@ public class GuiFilme extends PanelVorlage {
                 loadTable();
             }
         });
-        mVFilterPanel.get_jToggleButtonLivestram().addActionListener(e -> {
-            if (!stopBeob && mVFilterPanel.get_jToggleButtonLivestram().isSelected()) {
-                stopBeob = true;
-                resetFilterSettings();
-                mVFilterPanel.get_jToggleButtonLivestram().setSelected(true);
-                stopBeob = false;
-            }
-            daten.getListeBlacklist().filterListe();
-            loadTable();
-        });
 
-        addActionListeners();
+        setupActionListeners();
 
         //=======================================
         // und jezt die Anzeige
@@ -1379,7 +1364,7 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
-    private void addActionListeners() {
+    private void setupActionListeners() {
         mVFilterPanel.get_jButtonFilterLoeschen().addActionListener(deleteFilterAction);
         mVFilterPanel.get_jButtonClearAll().addActionListener(new DeleteFilterAllAction());
         mVFilterPanel.get_jComboBoxFilterSender().addActionListener(evt -> reloadTable());
@@ -1390,6 +1375,7 @@ public class GuiFilme extends PanelVorlage {
             fap.showNewOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
             fap.showUnseenOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
             fap.dontShowAbos.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
+            fap.showOnlyLivestreams.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
         });
     }
 
@@ -1420,7 +1406,6 @@ public class GuiFilme extends PanelVorlage {
         fap.showNewOnly.setValue(false);
         fap.dontShowAbos.setValue(false);
 
-        mVFilterPanel.get_jToggleButtonLivestram().setSelected(false);
 
         mVFilterPanel.get_jSliderMinuten().setValue(0);
         mVFilterPanel.get_jSliderTage().setValue(0);
@@ -1452,7 +1437,6 @@ public class GuiFilme extends PanelVorlage {
     private void setFilterProfile(int filter) {
         stopBeob = true;
         boolean bChanged = false;
-        mVFilterPanel.get_jToggleButtonLivestram().setSelected(false);
 
         fap.dontShowAbos.setValue(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_ABO, filter)));
         fap.showUnseenOnly.setValue(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_GESEHENE, filter)));
@@ -1631,19 +1615,16 @@ public class GuiFilme extends PanelVorlage {
             getModelTabFilme(tabelle,
                     mVFilterPanel.get_jComboBoxFilterSender().getSelectedItem().toString(),
                     mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem().toString(),
-                    "",
                     fap.roSearchStringProperty.getValueSafe(),
                     mVFilterPanel.get_jSliderMinuten().getValue(),
-                    mVFilterPanel.get_rbMin().isSelected(),
-                    mVFilterPanel.get_jToggleButtonLivestram().isSelected());
+                    mVFilterPanel.get_rbMin().isSelected());
         } else {
             // jetzt nur den Filter aus der Toolbar
             getModelTabFilme(tabelle,
-                    "", "", "",
+                    "", "",
                     fap.roSearchStringProperty.getValueSafe(),
                     mVFilterPanel.get_jSliderMinuten().getValue(),
-                    mVFilterPanel.get_rbMin().isSelected(),
-                    mVFilterPanel.get_jToggleButtonLivestram().isSelected());
+                    mVFilterPanel.get_rbMin().isSelected());
         }
     }
 

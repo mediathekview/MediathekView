@@ -244,11 +244,17 @@ public class FilmActionPanel {
         cbDontShowImpairedFilms.setDisable(true);
         vBox.getChildren().add(cbDontShowImpairedFilms);
 
+        CheckBox cbShowOnlyLivestreams = new CheckBox("Nur Live Streams anzeigen");
+        showOnlyLivestreams = cbShowOnlyLivestreams.selectedProperty();
+        vBox.getChildren().add(cbShowOnlyLivestreams);
+
 
         vBox.getChildren().add(createFilmLengthSlider());
 
         return new TitledPane("Allgemeine Anzeigeeinstellungen", vBox);
     }
+
+    public BooleanProperty showOnlyLivestreams;
 
     private Node createFilmLengthSlider() {
         HBox hb = new HBox();

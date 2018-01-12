@@ -84,7 +84,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="rbMin" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="jPanel3" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="jPanel3" alignment="0" min="-2" pref="141" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
@@ -199,14 +199,6 @@
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
           </AuxValues>
           <SubComponents>
-            <Component class="javax.swing.JToggleButton" name="jToggleButtonLivestram">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Livestreams"/>
-              </Properties>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
-              </AuxValues>
-            </Component>
             <Component class="javax.swing.JButton" name="jButtonClearAll">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
@@ -245,23 +237,7 @@
                 <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
               </StatementProvider>
               <Parameters>
-                <CodeExpression id="3_jToggleButtonLivestram">
-                  <CodeVariable name="jToggleButtonLivestram" type="8193" declaredType="javax.swing.JToggleButton"/>
-                  <ExpressionOrigin>
-                    <ExpressionProvider type="ComponentRef">
-                      <ComponentRef name="jToggleButtonLivestram"/>
-                    </ExpressionProvider>
-                  </ExpressionOrigin>
-                </CodeExpression>
-              </Parameters>
-            </CodeStatement>
-            <CodeStatement>
-              <CodeExpression id="1_jPanel3"/>
-              <StatementProvider type="CodeMethod">
-                <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
-              </StatementProvider>
-              <Parameters>
-                <CodeExpression id="4_jButtonClearAll">
+                <CodeExpression id="3_jButtonClearAll">
                   <CodeVariable name="jButtonClearAll" type="8194" declaredType="javax.swing.JButton"/>
                   <ExpressionOrigin>
                     <ExpressionProvider type="ComponentRef">
@@ -286,7 +262,7 @@
               </AuxValues>
               <LayoutCode>
                 <CodeStatement>
-                  <CodeExpression id="5_jPanel5">
+                  <CodeExpression id="4_jPanel5">
                     <CodeVariable name="jPanel5" type="20480" declaredType="javax.swing.JPanel"/>
                     <ExpressionOrigin>
                       <ExpressionProvider type="ComponentRef">
@@ -298,7 +274,7 @@
                     <CodeMethod name="setLayout" class="java.awt.Container" parameterTypes="java.awt.LayoutManager"/>
                   </StatementProvider>
                   <Parameters>
-                    <CodeExpression id="6">
+                    <CodeExpression id="5">
                       <ExpressionOrigin>
                         <ExpressionProvider type="CodeConstructor">
                           <CodeConstructor class="org.jdesktop.swingx.HorizontalLayout" parameterTypes=""/>
@@ -312,7 +288,7 @@
           </SubComponents>
           <LayoutCode>
             <CodeStatement>
-              <CodeExpression id="7_jPanel6">
+              <CodeExpression id="6_jPanel6">
                 <CodeVariable name="jPanel6" type="20480" declaredType="javax.swing.JPanel"/>
                 <ExpressionOrigin>
                   <ExpressionProvider type="ComponentRef">
@@ -324,7 +300,7 @@
                 <CodeMethod name="setLayout" class="java.awt.Container" parameterTypes="java.awt.LayoutManager"/>
               </StatementProvider>
               <Parameters>
-                <CodeExpression id="8">
+                <CodeExpression id="7">
                   <ExpressionOrigin>
                     <ExpressionProvider type="CodeConstructor">
                       <CodeConstructor class="org.jdesktop.swingx.VerticalLayout" parameterTypes=""/>
@@ -334,12 +310,12 @@
               </Parameters>
             </CodeStatement>
             <CodeStatement>
-              <CodeExpression id="7_jPanel6"/>
+              <CodeExpression id="6_jPanel6"/>
               <StatementProvider type="CodeMethod">
                 <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
               </StatementProvider>
               <Parameters>
-                <CodeExpression id="5_jPanel5"/>
+                <CodeExpression id="4_jPanel5"/>
               </Parameters>
             </CodeStatement>
           </LayoutCode>
@@ -395,7 +371,7 @@
           </SubComponents>
           <LayoutCode>
             <CodeStatement>
-              <CodeExpression id="9_jPanel7">
+              <CodeExpression id="8_jPanel7">
                 <CodeVariable name="jPanel7" type="20480" declaredType="javax.swing.JPanel"/>
                 <ExpressionOrigin>
                   <ExpressionProvider type="ComponentRef">
@@ -407,7 +383,7 @@
                 <CodeMethod name="setLayout" class="java.awt.Container" parameterTypes="java.awt.LayoutManager"/>
               </StatementProvider>
               <Parameters>
-                <CodeExpression id="10">
+                <CodeExpression id="9">
                   <ExpressionOrigin>
                     <ExpressionProvider type="CodeConstructor">
                       <CodeConstructor class="org.jdesktop.swingx.VerticalLayout" parameterTypes=""/>
@@ -417,12 +393,12 @@
               </Parameters>
             </CodeStatement>
             <CodeStatement>
-              <CodeExpression id="9_jPanel7"/>
+              <CodeExpression id="8_jPanel7"/>
               <StatementProvider type="CodeMethod">
                 <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
               </StatementProvider>
               <Parameters>
-                <CodeExpression id="11_jLabel2">
+                <CodeExpression id="10_jLabel2">
                   <CodeVariable name="jLabel2" type="20480" declaredType="javax.swing.JLabel"/>
                   <ExpressionOrigin>
                     <ExpressionProvider type="ComponentRef">
@@ -433,12 +409,12 @@
               </Parameters>
             </CodeStatement>
             <CodeStatement>
-              <CodeExpression id="9_jPanel7"/>
+              <CodeExpression id="8_jPanel7"/>
               <StatementProvider type="CodeMethod">
                 <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
               </StatementProvider>
               <Parameters>
-                <CodeExpression id="12_jComboBoxFilterSender">
+                <CodeExpression id="11_jComboBoxFilterSender">
                   <CodeVariable name="jComboBoxFilterSender" type="8193" declaredType="javax.swing.JComboBox"/>
                   <ExpressionOrigin>
                     <ExpressionProvider type="ComponentRef">
@@ -449,12 +425,12 @@
               </Parameters>
             </CodeStatement>
             <CodeStatement>
-              <CodeExpression id="9_jPanel7"/>
+              <CodeExpression id="8_jPanel7"/>
               <StatementProvider type="CodeMethod">
                 <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
               </StatementProvider>
               <Parameters>
-                <CodeExpression id="13_jLabel4">
+                <CodeExpression id="12_jLabel4">
                   <CodeVariable name="jLabel4" type="20480" declaredType="javax.swing.JLabel"/>
                   <ExpressionOrigin>
                     <ExpressionProvider type="ComponentRef">
@@ -465,12 +441,12 @@
               </Parameters>
             </CodeStatement>
             <CodeStatement>
-              <CodeExpression id="9_jPanel7"/>
+              <CodeExpression id="8_jPanel7"/>
               <StatementProvider type="CodeMethod">
                 <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
               </StatementProvider>
               <Parameters>
-                <CodeExpression id="14_jComboBoxFilterThema">
+                <CodeExpression id="13_jComboBoxFilterThema">
                   <CodeVariable name="jComboBoxFilterThema" type="8193" declaredType="javax.swing.JComboBox"/>
                   <ExpressionOrigin>
                     <ExpressionProvider type="ComponentRef">
@@ -559,7 +535,7 @@
       </SubComponents>
       <LayoutCode>
         <CodeStatement>
-          <CodeExpression id="15_jPanel4">
+          <CodeExpression id="14_jPanel4">
             <CodeVariable name="jPanel4" type="20480" declaredType="javax.swing.JPanel"/>
             <ExpressionOrigin>
               <ExpressionProvider type="ComponentRef">
@@ -571,7 +547,7 @@
             <CodeMethod name="setLayout" class="java.awt.Container" parameterTypes="java.awt.LayoutManager"/>
           </StatementProvider>
           <Parameters>
-            <CodeExpression id="16">
+            <CodeExpression id="15">
               <ExpressionOrigin>
                 <ExpressionProvider type="CodeConstructor">
                   <CodeConstructor class="org.jdesktop.swingx.HorizontalLayout" parameterTypes=""/>
@@ -581,12 +557,12 @@
           </Parameters>
         </CodeStatement>
         <CodeStatement>
-          <CodeExpression id="15_jPanel4"/>
+          <CodeExpression id="14_jPanel4"/>
           <StatementProvider type="CodeMethod">
             <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
           </StatementProvider>
           <Parameters>
-            <CodeExpression id="17_jRadioButtonF1">
+            <CodeExpression id="16_jRadioButtonF1">
               <CodeVariable name="jRadioButtonF1" type="8194" declaredType="javax.swing.JRadioButton"/>
               <ExpressionOrigin>
                 <ExpressionProvider type="ComponentRef">
@@ -597,12 +573,12 @@
           </Parameters>
         </CodeStatement>
         <CodeStatement>
-          <CodeExpression id="15_jPanel4"/>
+          <CodeExpression id="14_jPanel4"/>
           <StatementProvider type="CodeMethod">
             <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
           </StatementProvider>
           <Parameters>
-            <CodeExpression id="18_jRadioButtonF2">
+            <CodeExpression id="17_jRadioButtonF2">
               <CodeVariable name="jRadioButtonF2" type="8194" declaredType="javax.swing.JRadioButton"/>
               <ExpressionOrigin>
                 <ExpressionProvider type="ComponentRef">
@@ -613,12 +589,12 @@
           </Parameters>
         </CodeStatement>
         <CodeStatement>
-          <CodeExpression id="15_jPanel4"/>
+          <CodeExpression id="14_jPanel4"/>
           <StatementProvider type="CodeMethod">
             <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
           </StatementProvider>
           <Parameters>
-            <CodeExpression id="19_jRadioButtonF3">
+            <CodeExpression id="18_jRadioButtonF3">
               <CodeVariable name="jRadioButtonF3" type="8194" declaredType="javax.swing.JRadioButton"/>
               <ExpressionOrigin>
                 <ExpressionProvider type="ComponentRef">
@@ -629,12 +605,12 @@
           </Parameters>
         </CodeStatement>
         <CodeStatement>
-          <CodeExpression id="15_jPanel4"/>
+          <CodeExpression id="14_jPanel4"/>
           <StatementProvider type="CodeMethod">
             <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
           </StatementProvider>
           <Parameters>
-            <CodeExpression id="20_jRadioButtonF4">
+            <CodeExpression id="19_jRadioButtonF4">
               <CodeVariable name="jRadioButtonF4" type="8194" declaredType="javax.swing.JRadioButton"/>
               <ExpressionOrigin>
                 <ExpressionProvider type="ComponentRef">
@@ -645,12 +621,12 @@
           </Parameters>
         </CodeStatement>
         <CodeStatement>
-          <CodeExpression id="15_jPanel4"/>
+          <CodeExpression id="14_jPanel4"/>
           <StatementProvider type="CodeMethod">
             <CodeMethod name="add" class="java.awt.Container" parameterTypes="java.awt.Component"/>
           </StatementProvider>
           <Parameters>
-            <CodeExpression id="21_jRadioButtonF5">
+            <CodeExpression id="20_jRadioButtonF5">
               <CodeVariable name="jRadioButtonF5" type="8194" declaredType="javax.swing.JRadioButton"/>
               <ExpressionOrigin>
                 <ExpressionProvider type="ComponentRef">

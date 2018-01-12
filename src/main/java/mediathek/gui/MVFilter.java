@@ -51,8 +51,6 @@ public interface MVFilter {
 
     JTextField get_jTextFieldFilterMinuten();
 
-    JToggleButton get_jToggleButtonLivestram();
-
     void setVisible(boolean v);
 
     void mvFdeleteFilter(int i);
