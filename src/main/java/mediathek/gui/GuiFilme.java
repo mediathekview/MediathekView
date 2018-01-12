@@ -504,8 +504,6 @@ public class GuiFilme extends PanelVorlage {
             tabelle.setRowSelectionInterval(0, 0);
         }
     }
-    //TODO entferne:
-    //MVConfig.Configs.SYSTEM_PANEL_FILME_DIVIDER
 
     /*private void setToolbarVisible() {
         //toolBar.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
