@@ -8,12 +8,6 @@
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
       </AuxValues>
     </Component>
-    <Component class="javax.swing.ButtonGroup" name="buttonGroup3">
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
-        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
-      </AuxValues>
-    </Component>
   </NonVisualComponents>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -157,7 +151,7 @@
           <LayoutCode>
             <CodeStatement>
               <CodeExpression id="1_jPanel3">
-                <CodeVariable name="jPanel3" type="8194" declaredType="javax.swing.JPanel"/>
+                <CodeVariable name="jPanel3" type="20480" declaredType="javax.swing.JPanel"/>
                 <ExpressionOrigin>
                   <ExpressionProvider type="ComponentRef">
                     <ComponentRef name="jPanel3"/>
@@ -193,7 +187,7 @@
               <LayoutCode>
                 <CodeStatement>
                   <CodeExpression id="3_jPanel5">
-                    <CodeVariable name="jPanel5" type="8194" declaredType="javax.swing.JPanel"/>
+                    <CodeVariable name="jPanel5" type="20480" declaredType="javax.swing.JPanel"/>
                     <ExpressionOrigin>
                       <ExpressionProvider type="ComponentRef">
                         <ComponentRef name="jPanel5"/>
@@ -219,7 +213,7 @@
           <LayoutCode>
             <CodeStatement>
               <CodeExpression id="5_jPanel6">
-                <CodeVariable name="jPanel6" type="8194" declaredType="javax.swing.JPanel"/>
+                <CodeVariable name="jPanel6" type="20480" declaredType="javax.swing.JPanel"/>
                 <ExpressionOrigin>
                   <ExpressionProvider type="ComponentRef">
                     <ComponentRef name="jPanel6"/>
@@ -302,7 +296,7 @@
           <LayoutCode>
             <CodeStatement>
               <CodeExpression id="7_jPanel7">
-                <CodeVariable name="jPanel7" type="8194" declaredType="javax.swing.JPanel"/>
+                <CodeVariable name="jPanel7" type="20480" declaredType="javax.swing.JPanel"/>
                 <ExpressionOrigin>
                   <ExpressionProvider type="ComponentRef">
                     <ComponentRef name="jPanel7"/>
@@ -329,7 +323,7 @@
               </StatementProvider>
               <Parameters>
                 <CodeExpression id="9_jLabel2">
-                  <CodeVariable name="jLabel2" type="8194" declaredType="javax.swing.JLabel"/>
+                  <CodeVariable name="jLabel2" type="20480" declaredType="javax.swing.JLabel"/>
                   <ExpressionOrigin>
                     <ExpressionProvider type="ComponentRef">
                       <ComponentRef name="jLabel2"/>
@@ -345,7 +339,7 @@
               </StatementProvider>
               <Parameters>
                 <CodeExpression id="10_jComboBoxFilterSender">
-                  <CodeVariable name="jComboBoxFilterSender" type="8194" declaredType="javax.swing.JComboBox"/>
+                  <CodeVariable name="jComboBoxFilterSender" type="8193" declaredType="javax.swing.JComboBox"/>
                   <ExpressionOrigin>
                     <ExpressionProvider type="ComponentRef">
                       <ComponentRef name="jComboBoxFilterSender"/>
@@ -361,7 +355,7 @@
               </StatementProvider>
               <Parameters>
                 <CodeExpression id="11_jLabel4">
-                  <CodeVariable name="jLabel4" type="8194" declaredType="javax.swing.JLabel"/>
+                  <CodeVariable name="jLabel4" type="20480" declaredType="javax.swing.JLabel"/>
                   <ExpressionOrigin>
                     <ExpressionProvider type="ComponentRef">
                       <ComponentRef name="jLabel4"/>
@@ -377,7 +371,7 @@
               </StatementProvider>
               <Parameters>
                 <CodeExpression id="12_jComboBoxFilterThema">
-                  <CodeVariable name="jComboBoxFilterThema" type="8194" declaredType="javax.swing.JComboBox"/>
+                  <CodeVariable name="jComboBoxFilterThema" type="8193" declaredType="javax.swing.JComboBox"/>
                   <ExpressionOrigin>
                     <ExpressionProvider type="ComponentRef">
                       <ComponentRef name="jComboBoxFilterThema"/>

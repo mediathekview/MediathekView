@@ -248,7 +248,6 @@ public class FilmActionPanel {
         showOnlyLivestreams = cbShowOnlyLivestreams.selectedProperty();
         vBox.getChildren().add(cbShowOnlyLivestreams);
 
-
         return new TitledPane("Allgemeine Anzeigeeinstellungen", vBox);
     }
 
@@ -295,9 +294,7 @@ public class FilmActionPanel {
         lblMin.setText(String.valueOf((int) filmLengthSlider.getLowValue()));
         lblMax.setText(filmLengthSlider.getLabelFormatter().toString(filmLengthSlider.getHighValue()));
         filmLengthSlider.lowValueProperty().addListener((observable, oldValue, newValue) -> lblMin.setText(String.valueOf(newValue.intValue())));
-        filmLengthSlider.highValueProperty().addListener((observable, oldValue, newValue) -> {
-            lblMax.setText(filmLengthSlider.getLabelFormatter().toString(newValue));
-        });
+        filmLengthSlider.highValueProperty().addListener((observable, oldValue, newValue) -> lblMax.setText(filmLengthSlider.getLabelFormatter().toString(newValue)));
         vb2.getChildren().add(filmLengthSlider);
 
         return Borders.wrap(vb2)
@@ -333,6 +330,19 @@ public class FilmActionPanel {
         vb.setPadding(new Insets(5, 5, 5, 5));
         vb.getChildren().add(createAccordion());
         popover.setContentNode(vb);
+
+        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
+            @Override
+            public void start(ListenerFilmeLadenEvent event) {
+                Platform.runLater(() -> popover.getContentNode().setDisable(true));
+            }
+
+            @Override
+            public void fertig(ListenerFilmeLadenEvent event) {
+                Platform.runLater(() -> popover.getContentNode().setDisable(false));
+
+            }
+        });
 
         return popover;
     }

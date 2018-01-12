@@ -382,19 +382,18 @@ public class MVFilterPanel extends JPanel implements MVFilter {
     private void initComponents() {
 
         javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
-        javax.swing.ButtonGroup buttonGroup3 = new javax.swing.ButtonGroup();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jSliderTage = new javax.swing.JSlider();
         jTextFieldFilterTage = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        jPanel6 = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
-        jPanel7 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel7 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jComboBoxFilterSender = new javax.swing.JComboBox<>();
-        jLabel4 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
         jComboBoxFilterThema = new javax.swing.JComboBox<>();
         jButtonFilterLoeschen = new javax.swing.JButton();
         jButtonClearAll = new javax.swing.JButton();
@@ -546,18 +545,9 @@ public class MVFilterPanel extends JPanel implements MVFilter {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonClearAll;
-    private javax.swing.JButton jButtonFilterLoeschen;
-    private javax.swing.JComboBox<String> jComboBoxFilterSender;
-    private javax.swing.JComboBox<String> jComboBoxFilterThema;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
+    public javax.swing.JButton jButtonFilterLoeschen;
+    public javax.swing.JComboBox<String> jComboBoxFilterSender;
+    public javax.swing.JComboBox<String> jComboBoxFilterThema;
     private javax.swing.JRadioButton jRadioButtonF1;
     private javax.swing.JRadioButton jRadioButtonF2;
     private javax.swing.JRadioButton jRadioButtonF3;
