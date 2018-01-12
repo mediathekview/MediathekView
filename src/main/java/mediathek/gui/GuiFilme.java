@@ -58,7 +58,6 @@ import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("serial")
 public class GuiFilme extends PanelVorlage {
-    private JButton buttonArray[];
 
     public GuiFilme(Daten aDaten, MediathekGui aMediathekGui) {
         super(aDaten, aMediathekGui);
@@ -66,9 +65,6 @@ public class GuiFilme extends PanelVorlage {
 
         tabelle = new MVTable(MVTable.TableType.FILME);
         jScrollPane1.setViewportView(tabelle);
-
-        jScrollPaneFilter.getVerticalScrollBar().setUnitIncrement(16);
-        jPanelFilter.setLayout(new BorderLayout());
 
         panelVideoplayerSetzen();
         setupDescriptionPanel();
@@ -501,12 +497,6 @@ public class GuiFilme extends PanelVorlage {
             Listener.notify(Listener.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName());
             panelVideoplayerSetzen();
         });
-        jSplitPane1.setDividerLocation(MVConfig.getInt(MVConfig.Configs.SYSTEM_PANEL_FILME_DIVIDER));
-        jSplitPane1.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, pce -> {
-            if (jScrollPaneFilter.isVisible()) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_FILME_DIVIDER, String.valueOf(jSplitPane1.getDividerLocation()));
-            }
-        });
 
         setVisFilterPanelAndLoad();
         tabelle.initTabelle();
@@ -514,6 +504,8 @@ public class GuiFilme extends PanelVorlage {
             tabelle.setRowSelectionInterval(0, 0);
         }
     }
+    //TODO entferne:
+    //MVConfig.Configs.SYSTEM_PANEL_FILME_DIVIDER
 
     /*private void setToolbarVisible() {
         //toolBar.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
@@ -732,7 +724,7 @@ public class GuiFilme extends PanelVorlage {
         jPanelExtraInnen.addMouseListener(new BeobMausButton());
         ListePset listeButton = Daten.listePset.getListeButton();
         int maxSpalten = MVConfig.getInt(MVConfig.Configs.SYSTEM_TAB_FILME_ANZAHL_BUTTON); //Anzahl der Spalten der Schalter
-        buttonArray = new JButton[listeButton.size()];
+
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
         c.weightx = 0;
@@ -1292,21 +1284,13 @@ public class GuiFilme extends PanelVorlage {
             if (col != null) {
                 button.setBackground(col);
             }
-            buttonArray[i] = button;
+
             gridbag.setConstraints(button, c);
             panel.add(button);
         }
     }
 
     private void setVisFilterPanelAndLoad() {
-        jScrollPaneFilter.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER)));
-        if (jScrollPaneFilter.isVisible()) {
-            jSplitPane1.setDividerLocation(MVConfig.getInt(MVConfig.Configs.SYSTEM_PANEL_FILME_DIVIDER));
-        }
-
-        // einrichten
-//        setupActionListeners();
-
         //=======================================
         // und jezt die Anzeige
         this.updateUI();
@@ -1333,12 +1317,10 @@ public class GuiFilme extends PanelVorlage {
 
             PauseTransition trans = new PauseTransition(Duration.millis(250));
             fap.zeitraumProperty.addListener((observable, oldValue, newValue) -> {
-                trans.setOnFinished(evt -> {
-                    SwingUtilities.invokeLater(() -> {
-                        daten.getListeBlacklist().filterListe();
-                        loadTable();
-                    });
-                });
+                trans.setOnFinished(evt -> SwingUtilities.invokeLater(() -> {
+                    daten.getListeBlacklist().filterListe();
+                    loadTable();
+                }));
                 trans.playFromStart();
             });
 
@@ -1461,7 +1443,6 @@ public class GuiFilme extends PanelVorlage {
     // Tabelle laden
     // ####################################
     private synchronized void loadTable() {
-        boolean themaNichtDa = false;
         try {
             stopBeob = true;
             tabelle.getSpalten();
@@ -1487,7 +1468,6 @@ public class GuiFilme extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jSplitPane1 = new javax.swing.JSplitPane();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
@@ -1495,12 +1475,8 @@ public class GuiFilme extends PanelVorlage {
         jPanelExtra = new javax.swing.JPanel();
         jCheckBoxProgamme = new javax.swing.JCheckBox();
         jPanelExtraInnen = new javax.swing.JPanel();
-        jScrollPaneFilter = new javax.swing.JScrollPane();
-        jPanelFilter = new javax.swing.JPanel();
 
         setLayout(new java.awt.BorderLayout());
-
-        jSplitPane1.setDividerLocation(240);
 
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setModel(new TModel());
@@ -1527,7 +1503,7 @@ public class GuiFilme extends PanelVorlage {
         jPanelExtraInnen.setLayout(jPanelExtraInnenLayout);
         jPanelExtraInnenLayout.setHorizontalGroup(
                 jPanelExtraInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 346, Short.MAX_VALUE)
+                        .addGap(0, 597, Short.MAX_VALUE)
         );
         jPanelExtraInnenLayout.setVerticalGroup(
                 jPanelExtraInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1563,36 +1539,19 @@ public class GuiFilme extends PanelVorlage {
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jPanelExtra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 637, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jPanelExtra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jSplitPane1.setRightComponent(jPanel1);
-
-        javax.swing.GroupLayout jPanelFilterLayout = new javax.swing.GroupLayout(jPanelFilter);
-        jPanelFilter.setLayout(jPanelFilterLayout);
-        jPanelFilterLayout.setHorizontalGroup(
-                jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 236, Short.MAX_VALUE)
-        );
-        jPanelFilterLayout.setVerticalGroup(
-                jPanelFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 530, Short.MAX_VALUE)
-        );
-
-        jScrollPaneFilter.setViewportView(jPanelFilter);
-
-        jSplitPane1.setLeftComponent(jScrollPaneFilter);
-
-        add(jSplitPane1, java.awt.BorderLayout.CENTER);
+        add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1600,9 +1559,6 @@ public class GuiFilme extends PanelVorlage {
     private javax.swing.JPanel jPanelBeschreibung;
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JPanel jPanelExtraInnen;
-    private javax.swing.JPanel jPanelFilter;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPaneFilter;
-    private javax.swing.JSplitPane jSplitPane1;
     // End of variables declaration//GEN-END:variables
 }
