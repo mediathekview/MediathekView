@@ -25,7 +25,6 @@ import mediathek.MediathekGui;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.res.GetIcon;
-import mediathek.tool.TextCopyPaste;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -82,7 +81,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
                 setFilterAnzahl();
             }
         });
-        jTextFieldFilterTitel.addMouseListener(new TextCopyPaste());
 
         setToolTip();
         super.setVisible(true);
@@ -404,8 +402,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         jComboBoxFilterSender = new javax.swing.JComboBox<>();
         javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
         jComboBoxFilterThema = new javax.swing.JComboBox<>();
-        javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
-        jTextFieldFilterTitel = new javax.swing.JTextField();
         jButtonFilterLoeschen = new javax.swing.JButton();
         javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
         jRadioButtonF1 = new javax.swing.JRadioButton();
@@ -461,12 +457,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         jComboBoxFilterThema.setMaximumRowCount(20);
         jComboBoxFilterThema.setPreferredSize(new java.awt.Dimension(184, 24));
         jPanel7.add(jComboBoxFilterThema);
-
-        jLabel5.setText("Titel:");
-        jPanel7.add(jLabel5);
-
-        jTextFieldFilterTitel.setPreferredSize(new java.awt.Dimension(184, 24));
-        jPanel7.add(jTextFieldFilterTitel);
 
         jButtonFilterLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); // NOI18N
         jButtonFilterLoeschen.setToolTipText("Filter löschen");
@@ -601,7 +591,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
     private javax.swing.JSlider jSliderTage;
     public javax.swing.JTextField jTextFieldFilterMinuten;
     private javax.swing.JTextField jTextFieldFilterTage;
-    public javax.swing.JTextField jTextFieldFilterTitel;
     public javax.swing.JToggleButton jToggleButtonLivestram;
     private javax.swing.JRadioButton rbMax;
     private javax.swing.JRadioButton rbMin;
@@ -670,11 +659,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
     }
 
     @Override
-    public JTextField get_jTextFieldFilterTitel() {
-        return jTextFieldFilterTitel;
-    }
-
-    @Override
     public JToggleButton get_jToggleButtonLivestram() {
         return jToggleButtonLivestram;
     }
@@ -712,9 +696,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         }
         for (ActionListener a : jTextFieldFilterMinuten.getActionListeners()) {
             jTextFieldFilterMinuten.removeActionListener(a);
-        }
-        for (ActionListener a : jTextFieldFilterTitel.getActionListeners()) {
-            jTextFieldFilterTitel.removeActionListener(a);
         }
         for (ActionListener a : jToggleButtonLivestram.getActionListeners()) {
             jToggleButtonLivestram.removeActionListener(a);

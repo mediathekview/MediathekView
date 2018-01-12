@@ -44,8 +44,6 @@ import mediathek.tool.*;
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.PrinterException;
@@ -777,38 +775,12 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
-    private class BeobFilterTitelDoc implements DocumentListener {
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        private void tus() {
-            Filter.checkPattern1(mVFilterPanel.get_jTextFieldFilterTitel());
-            if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ECHTZEITSUCHE))) {
-                loadTable();
-            }
-        }
-    }
-
     public class BeobMausTabelle extends MouseAdapter {
         //rechhte Maustaste in der Tabelle
 
         private final BeobPrint beobPrint = new BeobPrint();
         private final BeobAbo beobAbo = new BeobAbo(false /* mit Titel */);
         private final BeobAbo beobAboMitTitel = new BeobAbo(true /* mit Titel */);
-        private final BeobAboFilter beobAboFilter = new BeobAboFilter();
         private final BeobBlacklist beobBlacklistSender = new BeobBlacklist(true, false);
         private final BeobBlacklist beobBlacklistSenderThema = new BeobBlacklist(true, true);
         private final BeobBlacklist beobBlacklistThema = new BeobBlacklist(false, true);
@@ -917,7 +889,6 @@ public class GuiFilme extends PanelVorlage {
             JMenuItem itemAboLoeschen = new JMenuItem("Abo Löschen");
             JMenuItem itemAbo = new JMenuItem("Abo mit Sender und Thema anlegen");
             JMenuItem itemAboMitTitel = new JMenuItem("Abo mit Sender und Thema und Titel anlegen");
-            JMenuItem itemAboFilter = new JMenuItem("Abo aus Filter anlegen");
             JMenuItem itemChangeAboFilter = new JMenuItem("Abo ändern");
 
             res.ifPresent(film -> {
@@ -925,7 +896,6 @@ public class GuiFilme extends PanelVorlage {
                     //gibts schon, dann löschen
                     itemAbo.setEnabled(false);
                     itemAboMitTitel.setEnabled(false);
-                    itemAboFilter.setEnabled(false);
                     itemAboLoeschen.addActionListener(beobAbo);
 
                     // dann können wir auch ändern
@@ -936,7 +906,6 @@ public class GuiFilme extends PanelVorlage {
                     //neues Abo anlegen
                     itemAbo.addActionListener(beobAbo);
                     itemAboMitTitel.addActionListener(beobAboMitTitel);
-                    itemAboFilter.addActionListener(beobAboFilter);
                 }
             });
 
@@ -944,7 +913,6 @@ public class GuiFilme extends PanelVorlage {
             submenueAbo.add(itemChangeAboFilter);
             submenueAbo.add(itemAbo);
             submenueAbo.add(itemAboMitTitel);
-            submenueAbo.add(itemAboFilter);
 
             //Programme einblenden
             JMenu submenue = new JMenu("Film mit Set starten");
@@ -1220,35 +1188,6 @@ public class GuiFilme extends PanelVorlage {
             }
         }
 
-        private class BeobAboFilter implements ActionListener {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (Daten.listePset.getListeAbo().isEmpty()) {
-                    new DialogAboNoSet(parentComponent, daten).setVisible(true);
-                } else {
-                    final int nr = tabelle.rowAtPoint(p);
-                    if (nr >= 0) {
-                        stopBeob = true;
-                        Optional<DatenFilm> res = getFilm(nr);
-                        res.ifPresent(film -> {
-                            final String thema = film.arr[DatenFilm.FILM_THEMA];
-                            //neues Abo anlegen
-                            daten.getListeAbo().addAbo(mVFilterPanel.get_jComboBoxFilterSender().getSelectedItem().toString(),
-                                    mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem().toString(),
-                                    mVFilterPanel.get_jTextFieldFilterTitel().getText(),
-                                    "",
-                                    "",
-                                    mVFilterPanel.get_jSliderMinuten().getValue(),
-                                    mVFilterPanel.get_rbMin().isSelected(),
-                                    thema);
-                        });
-                        stopBeob = false;
-                    }
-                }
-            }
-        }
-
         private class BeobBlacklist implements ActionListener {
 
             private final boolean sender;
@@ -1445,8 +1384,6 @@ public class GuiFilme extends PanelVorlage {
         mVFilterPanel.get_jButtonClearAll().addActionListener(new DeleteFilterAllAction());
         mVFilterPanel.get_jComboBoxFilterSender().addActionListener(evt -> reloadTable());
         mVFilterPanel.get_jComboBoxFilterThema().addActionListener(evt -> reloadTable());
-        mVFilterPanel.get_jTextFieldFilterTitel().addActionListener(evt -> reloadTable());
-        mVFilterPanel.get_jTextFieldFilterTitel().getDocument().addDocumentListener(new BeobFilterTitelDoc());
         Platform.runLater(() -> {
             fap.showOnlyHd.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
             fap.showSubtitlesOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
@@ -1470,13 +1407,11 @@ public class GuiFilme extends PanelVorlage {
     private void delOben() {
         mVFilterPanel.get_jComboBoxFilterSender().setModel(new DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
         mVFilterPanel.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
-        mVFilterPanel.get_jTextFieldFilterTitel().setText("");
     }
 
     private void resetFilterSettings() {
         mVFilterPanel.get_jComboBoxFilterSender().setModel(new DefaultComboBoxModel<>(daten.getListeFilmeNachBlackList().sender));
         mVFilterPanel.get_jComboBoxFilterThema().setModel(new DefaultComboBoxModel<>(getThemen("")));
-        mVFilterPanel.get_jTextFieldFilterTitel().setText("");
 
         //untere Hälfte
         fap.showUnseenOnly.setValue(false);
@@ -1518,7 +1453,6 @@ public class GuiFilme extends PanelVorlage {
         stopBeob = true;
         boolean bChanged = false;
         mVFilterPanel.get_jToggleButtonLivestram().setSelected(false);
-        mVFilterPanel.get_jTextFieldFilterTitel().setText(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TITEL, filter));
 
         fap.dontShowAbos.setValue(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_ABO, filter)));
         fap.showUnseenOnly.setValue(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_GESEHENE, filter)));
@@ -1596,8 +1530,6 @@ public class GuiFilme extends PanelVorlage {
         // jetzt noch speichern
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SENDER, String.valueOf(mVFilterPanel.get_jComboBoxFilterSender().getSelectedItem()), filter);
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA, String.valueOf(mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem()), filter);
-
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TITEL, String.valueOf(mVFilterPanel.get_jTextFieldFilterTitel().getText()), filter);
 
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_ABO, String.valueOf(fap.dontShowAbos.getValue()), filter);
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_GESEHENE, String.valueOf(fap.showUnseenOnly.getValue()), filter);
@@ -1699,7 +1631,7 @@ public class GuiFilme extends PanelVorlage {
             getModelTabFilme(tabelle,
                     mVFilterPanel.get_jComboBoxFilterSender().getSelectedItem().toString(),
                     mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem().toString(),
-                    mVFilterPanel.get_jTextFieldFilterTitel().getText(),
+                    "",
                     fap.roSearchStringProperty.getValueSafe(),
                     mVFilterPanel.get_jSliderMinuten().getValue(),
                     mVFilterPanel.get_rbMin().isSelected(),
