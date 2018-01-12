@@ -49,6 +49,7 @@ import java.awt.event.*;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static mediathek.tool.MVTable.*;
 
@@ -110,13 +111,15 @@ public class GuiFilme extends PanelVorlage {
      */
     private synchronized void getModelTabFilme(MVTable table,
                                                String filterSender, String filterThema,
-                                               String filterThemaTitel, int laenge, boolean min) {
+                                               String filterThemaTitel) {
         final boolean nurNeue = fap.showNewOnly.getValue();
         final boolean nurUt = fap.showSubtitlesOnly.getValue();
         final boolean nurHd = fap.showOnlyHd.getValue();
         final boolean kGesehen = fap.showUnseenOnly.getValue();
         final boolean keineAbos = fap.dontShowAbos.getValue();
         final boolean showOnlyLivestreams = fap.showOnlyLivestreams.getValue();
+        final int minLength = (int) fap.filmLengthSlider.getLowValue();
+        final int maxLength = (int) fap.filmLengthSlider.getHighValue();
 
         ListeFilme listeFilme = daten.getListeFilmeNachBlackList();
 
@@ -127,7 +130,8 @@ public class GuiFilme extends PanelVorlage {
         } else {
             // dann ein neues Model anlegen
             if (filterSender.isEmpty() && filterThema.isEmpty() && filterThemaTitel.isEmpty()
-                    && laenge == 0 && !keineAbos && !kGesehen && !nurHd && !nurUt && !showOnlyLivestreams && !nurNeue) {
+                    && minLength == 0 && maxLength == FilmActionPanel.UNLIMITED_VALUE
+                    && !keineAbos && !kGesehen && !nurHd && !nurUt && !showOnlyLivestreams && !nurNeue) {
                 // dann ganze Liste laden
                 addObjectDataTabFilme(listeFilme, tModel);
             } else {
@@ -143,6 +147,15 @@ public class GuiFilme extends PanelVorlage {
                 }
 
                 for (DatenFilm film : listeFilme) {
+
+                    if (film.dauerL < TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES))
+                        continue;
+
+                    if (maxLength < FilmActionPanel.UNLIMITED_VALUE) {
+                        if (film.dauerL > TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES))
+                            continue;
+
+                    }
                     if (nurNeue) {
                         if (!film.isNew()) {
                             continue;
@@ -179,7 +192,7 @@ public class GuiFilme extends PanelVorlage {
                     //je nachdem dann das ganze herausoperieren
                     String[] arrIrgendwo = {};
                     String[] arrTitel = {};
-                    if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, min, film, true /*länge nicht prüfen*/)) {
+                    if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, 0, true, film, false)) {
                         addObjectDataTabFilme(tModel, film);
                     }
                 }
@@ -1376,6 +1389,14 @@ public class GuiFilme extends PanelVorlage {
             fap.showUnseenOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
             fap.dontShowAbos.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
             fap.showOnlyLivestreams.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
+            fap.filmLengthSlider.lowValueChangingProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue)
+                    SwingUtilities.invokeLater(this::reloadTable);
+            });
+            fap.filmLengthSlider.highValueChangingProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue)
+                    SwingUtilities.invokeLater(this::reloadTable);
+            });
         });
     }
 
@@ -1615,16 +1636,12 @@ public class GuiFilme extends PanelVorlage {
             getModelTabFilme(tabelle,
                     mVFilterPanel.get_jComboBoxFilterSender().getSelectedItem().toString(),
                     mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem().toString(),
-                    fap.roSearchStringProperty.getValueSafe(),
-                    mVFilterPanel.get_jSliderMinuten().getValue(),
-                    mVFilterPanel.get_rbMin().isSelected());
+                    fap.roSearchStringProperty.getValueSafe());
         } else {
             // jetzt nur den Filter aus der Toolbar
             getModelTabFilme(tabelle,
                     "", "",
-                    fap.roSearchStringProperty.getValueSafe(),
-                    mVFilterPanel.get_jSliderMinuten().getValue(),
-                    mVFilterPanel.get_rbMin().isSelected());
+                    fap.roSearchStringProperty.getValueSafe());
         }
     }
 

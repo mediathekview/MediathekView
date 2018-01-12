@@ -256,6 +256,10 @@ public class FilmActionPanel {
 
     public BooleanProperty showOnlyLivestreams;
 
+    public RangeSlider filmLengthSlider;
+
+    public final static int UNLIMITED_VALUE = 110;
+
     private Node createFilmLengthSlider() {
         HBox hb = new HBox();
         hb.getChildren().add(new Label("Mindestlänge:"));
@@ -270,15 +274,15 @@ public class FilmActionPanel {
         vb2.getChildren().add(hb);
         vb2.getChildren().add(hb2);
 
-        final RangeSlider hSlider = new RangeSlider(0, 110, 10, 90);
-        hSlider.setShowTickMarks(true);
-        hSlider.setShowTickLabels(true);
-        hSlider.setBlockIncrement(1);
-        hSlider.setMajorTickUnit(10);
-        hSlider.setLabelFormatter(new StringConverter<Number>() {
+        filmLengthSlider = new RangeSlider(0, UNLIMITED_VALUE, 0, UNLIMITED_VALUE);
+        filmLengthSlider.setShowTickMarks(true);
+        filmLengthSlider.setShowTickLabels(true);
+        filmLengthSlider.setBlockIncrement(1);
+        filmLengthSlider.setMajorTickUnit(10);
+        filmLengthSlider.setLabelFormatter(new StringConverter<Number>() {
             @Override
             public String toString(Number object) {
-                if (object.intValue() == 110)
+                if (object.intValue() == UNLIMITED_VALUE)
                     return "∞";
                 else
                     return String.valueOf(object.intValue());
@@ -289,16 +293,14 @@ public class FilmActionPanel {
                 return Double.parseDouble(string);
             }
         });
-        lblMin.setText(String.valueOf((int) hSlider.getLowValue()));
-        lblMax.setText(String.valueOf((int) hSlider.getHighValue()));
-        hSlider.lowValueProperty().addListener((observable, oldValue, newValue) -> lblMin.setText(String.valueOf(newValue.intValue())));
-        hSlider.highValueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.intValue() == 110)
-                lblMax.setText("∞");
-            else
-                lblMax.setText(String.valueOf(newValue.intValue()));
+
+        lblMin.setText(String.valueOf((int) filmLengthSlider.getLowValue()));
+        lblMax.setText(filmLengthSlider.getLabelFormatter().toString(filmLengthSlider.getHighValue()));
+        filmLengthSlider.lowValueProperty().addListener((observable, oldValue, newValue) -> lblMin.setText(String.valueOf(newValue.intValue())));
+        filmLengthSlider.highValueProperty().addListener((observable, oldValue, newValue) -> {
+            lblMax.setText(filmLengthSlider.getLabelFormatter().toString(newValue));
         });
-        vb2.getChildren().add(hSlider);
+        vb2.getChildren().add(filmLengthSlider);
 
         return Borders.wrap(vb2)
                 .lineBorder()
