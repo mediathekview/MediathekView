@@ -1317,9 +1317,6 @@ public class GuiFilme extends PanelVorlage {
         //===========
         // Slider
         mVFilterPanel.get_jSliderTage().setValue(MVConfig.getInt(MVConfig.Configs.SYSTEM_FILTER_TAGE));
-        mVFilterPanel.get_jSliderMinuten().setValue(MVConfig.getInt(MVConfig.Configs.SYSTEM_FILTER_DAUER));
-        mVFilterPanel.get_rbMin().setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILTER_DAUER_MIN));
-        mVFilterPanel.get_rbMax().setSelected(!MVConfig.getBool(MVConfig.Configs.SYSTEM_FILTER_DAUER_MIN));
         setTextSlider();
 
         //==========================
@@ -1333,27 +1330,6 @@ public class GuiFilme extends PanelVorlage {
                     loadTable();
 
                 }
-            }
-        });
-        mVFilterPanel.get_jSliderMinuten().addChangeListener(e -> {
-            if (!stopBeob) {
-                setTextSlider();
-                if (!mVFilterPanel.get_jSliderMinuten().getValueIsAdjusting()) {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_DAUER, String.valueOf(mVFilterPanel.get_jSliderMinuten().getValue()));
-                    loadTable();
-                }
-            }
-        });
-        mVFilterPanel.get_rbMin().addActionListener(l -> {
-            if (!stopBeob) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_DAUER_MIN, String.valueOf(mVFilterPanel.get_rbMin().isSelected()));
-                loadTable();
-            }
-        });
-        mVFilterPanel.get_rbMax().addActionListener(l -> {
-            if (!stopBeob) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_DAUER_MIN, String.valueOf(mVFilterPanel.get_rbMin().isSelected()));
-                loadTable();
             }
         });
 
@@ -1405,10 +1381,6 @@ public class GuiFilme extends PanelVorlage {
         if (mVFilterPanel.get_jSliderTage().getValue() == 0) {
             mVFilterPanel.get_jTextFieldFilterTage().setText("alles");
         }
-        mVFilterPanel.get_jTextFieldFilterMinuten().setText(String.valueOf(mVFilterPanel.get_jSliderMinuten().getValue()));
-        if (mVFilterPanel.get_jSliderMinuten().getValue() == 0) {
-            mVFilterPanel.get_jTextFieldFilterMinuten().setText("alles");
-        }
     }
 
     private void delOben() {
@@ -1428,13 +1400,9 @@ public class GuiFilme extends PanelVorlage {
         fap.dontShowAbos.setValue(false);
 
 
-        mVFilterPanel.get_jSliderMinuten().setValue(0);
         mVFilterPanel.get_jSliderTage().setValue(0);
-        mVFilterPanel.get_rbMin().setSelected(true);
 
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_TAGE, String.valueOf(mVFilterPanel.get_jSliderTage().getValue()));
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_DAUER, String.valueOf(mVFilterPanel.get_jSliderMinuten().getValue()));
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_DAUER_MIN, String.valueOf(mVFilterPanel.get_rbMin().isSelected()));
         setTextSlider();
     }
 
@@ -1473,10 +1441,6 @@ public class GuiFilme extends PanelVorlage {
             bChanged = true;
             MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__BLACKLIST_ON, filter));
         }
-
-        mVFilterPanel.get_jSliderMinuten().setValue(MVConfig.getInt(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER, filter));
-        mVFilterPanel.get_rbMin().setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER_MIN, filter));
-        mVFilterPanel.get_rbMax().setSelected(!MVConfig.getBool(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER_MIN, filter));
 
         setTextSlider();
 
@@ -1543,8 +1507,6 @@ public class GuiFilme extends PanelVorlage {
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_NEUE, String.valueOf(fap.showNewOnly.getValue()), filter);
 
         MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TAGE, String.valueOf(mVFilterPanel.get_jSliderTage().getValue()), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER, String.valueOf(mVFilterPanel.get_jSliderMinuten().getValue()), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER_MIN, String.valueOf(mVFilterPanel.get_rbMin().isSelected()), filter);
 
         java.util.List<? extends RowSorter.SortKey> listeSortKeys;
         listeSortKeys = tabelle.getRowSorter().getSortKeys();

@@ -43,14 +43,6 @@ public interface MVFilter {
 
     JTextField get_jTextFieldFilterTage();
 
-    JSlider get_jSliderMinuten();
-
-    JRadioButton get_rbMin();
-
-    JRadioButton get_rbMax();
-
-    JTextField get_jTextFieldFilterMinuten();
-
     void setVisible(boolean v);
 
     void mvFdeleteFilter(int i);

@@ -383,25 +383,21 @@ public class MVFilterPanel extends JPanel implements MVFilter {
 
         javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
         javax.swing.ButtonGroup buttonGroup3 = new javax.swing.ButtonGroup();
-        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
-        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        jTextFieldFilterMinuten = new javax.swing.JTextField();
-        jSliderMinuten = new javax.swing.JSlider();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         jSliderTage = new javax.swing.JSlider();
         jTextFieldFilterTage = new javax.swing.JTextField();
-        rbMin = new javax.swing.JRadioButton();
-        rbMax = new javax.swing.JRadioButton();
-        javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
-        javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
-        jButtonClearAll = new javax.swing.JButton();
-        javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
-        javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
-        javax.swing.JPanel jPanel7 = new javax.swing.JPanel();
-        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jPanel6 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
         jComboBoxFilterSender = new javax.swing.JComboBox<>();
-        javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         jComboBoxFilterThema = new javax.swing.JComboBox<>();
         jButtonFilterLoeschen = new javax.swing.JButton();
+        jButtonClearAll = new javax.swing.JButton();
         javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
         jRadioButtonF1 = new javax.swing.JRadioButton();
         jRadioButtonF2 = new javax.swing.JRadioButton();
@@ -411,27 +407,14 @@ public class MVFilterPanel extends JPanel implements MVFilter {
 
         jLabel1.setText("Zeitraum [Tage]:");
 
-        jTextFieldFilterMinuten.setEditable(false);
-
         jSliderTage.setMaximum(30);
         jSliderTage.setValue(15);
 
         jTextFieldFilterTage.setEditable(false);
 
-        buttonGroup3.add(rbMin);
-        rbMin.setSelected(true);
-        rbMin.setText("Mindestlänge [min]");
-
-        buttonGroup3.add(rbMax);
-        rbMax.setText("Maximallänge");
-
         jLabel6.setText("Filterprofile:");
 
         jPanel3.setLayout(new org.jdesktop.swingx.VerticalLayout());
-
-        jButtonClearAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); // NOI18N
-        jButtonClearAll.setToolTipText("Alles löschen");
-        jPanel3.add(jButtonClearAll);
 
         jPanel6.setLayout(new org.jdesktop.swingx.VerticalLayout());
 
@@ -457,6 +440,9 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         jButtonFilterLoeschen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); // NOI18N
         jButtonFilterLoeschen.setToolTipText("Filter löschen");
 
+        jButtonClearAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); // NOI18N
+        jButtonClearAll.setToolTipText("Alles löschen");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -465,35 +451,27 @@ public class MVFilterPanel extends JPanel implements MVFilter {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSliderTage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jSliderMinuten, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jTextFieldFilterTage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(rbMax)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTextFieldFilterMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jButtonFilterLoeschen)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jButtonFilterLoeschen)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(rbMin)
                                 .addComponent(jLabel6)
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jButtonClearAll, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-
-        jPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jTextFieldFilterMinuten, jTextFieldFilterTage});
-
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addContainerGap()
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -509,21 +487,14 @@ public class MVFilterPanel extends JPanel implements MVFilter {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSliderTage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(rbMin)
+                    .addComponent(jButtonClearAll)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rbMax)
-                    .addComponent(jTextFieldFilterMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSliderMinuten, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jLabel6)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jLabel1, jTextFieldFilterMinuten, jTextFieldFilterTage});
+        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[]{jLabel1, jTextFieldFilterTage});
 
         jPanel4.setLayout(new org.jdesktop.swingx.HorizontalLayout());
 
@@ -565,7 +536,7 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -575,20 +546,25 @@ public class MVFilterPanel extends JPanel implements MVFilter {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonClearAll;
-    public javax.swing.JButton jButtonFilterLoeschen;
-    public javax.swing.JComboBox<String> jComboBoxFilterSender;
-    public javax.swing.JComboBox<String> jComboBoxFilterThema;
+    private javax.swing.JButton jButtonFilterLoeschen;
+    private javax.swing.JComboBox<String> jComboBoxFilterSender;
+    private javax.swing.JComboBox<String> jComboBoxFilterThema;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JRadioButton jRadioButtonF1;
     private javax.swing.JRadioButton jRadioButtonF2;
     private javax.swing.JRadioButton jRadioButtonF3;
     private javax.swing.JRadioButton jRadioButtonF4;
     private javax.swing.JRadioButton jRadioButtonF5;
-    public javax.swing.JSlider jSliderMinuten;
     private javax.swing.JSlider jSliderTage;
-    public javax.swing.JTextField jTextFieldFilterMinuten;
     private javax.swing.JTextField jTextFieldFilterTage;
-    private javax.swing.JRadioButton rbMax;
-    private javax.swing.JRadioButton rbMin;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -634,26 +610,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
     }
 
     @Override
-    public JSlider get_jSliderMinuten() {
-        return jSliderMinuten;
-    }
-
-    @Override
-    public JRadioButton get_rbMin() {
-        return rbMin;
-    }
-
-    @Override
-    public JRadioButton get_rbMax() {
-        return rbMax;
-    }
-
-    @Override
-    public JTextField get_jTextFieldFilterMinuten() {
-        return jTextFieldFilterMinuten;
-    }
-
-    @Override
     public void removeAllListener() {
         aktFilter = -1;
         setIcon(false); // erst mal alle aus
@@ -674,18 +630,6 @@ public class MVFilterPanel extends JPanel implements MVFilter {
         }
         for (ChangeListener a : jSliderTage.getChangeListeners()) {
             jSliderTage.removeChangeListener(a);
-        }
-        for (ActionListener a : rbMax.getActionListeners()) {
-            rbMax.removeActionListener(a);
-        }
-        for (ActionListener a : rbMin.getActionListeners()) {
-            rbMin.removeActionListener(a);
-        }
-        for (ChangeListener a : jSliderMinuten.getChangeListeners()) {
-            jSliderMinuten.removeChangeListener(a);
-        }
-        for (ActionListener a : jTextFieldFilterMinuten.getActionListeners()) {
-            jTextFieldFilterMinuten.removeActionListener(a);
         }
     }
 

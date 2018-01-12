@@ -249,8 +249,6 @@ public class FilmActionPanel {
         vBox.getChildren().add(cbShowOnlyLivestreams);
 
 
-        vBox.getChildren().add(createFilmLengthSlider());
-
         return new TitledPane("Allgemeine Anzeigeeinstellungen", vBox);
     }
 
@@ -309,11 +307,15 @@ public class FilmActionPanel {
                 .buildAll();
     }
 
+
     private Accordion createAccordion() {
         TitledPane t1 = createCommonViewSettingsPane();
+        TitledPane t2 = new TitledPane("Filmlänge", createFilmLengthSlider());
+
+
 
         Accordion accordion = new Accordion();
-        accordion.getPanes().add(t1);
+        accordion.getPanes().addAll(t1, t2);
         accordion.setExpandedPane(t1);
         return accordion;
     }
