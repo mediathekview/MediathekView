@@ -69,7 +69,7 @@ public class GuiFilme extends PanelVorlage {
 
         jScrollPaneFilter.getVerticalScrollBar().setUnitIncrement(16);
         jPanelFilter.setLayout(new BorderLayout());
-        mVFilterPanel = new MVFilterPanel(aMediathekGui) {
+        mVFilterPanel = new MVFilterPanel() {
             @Override
             public void mvFfilter(int i) {
                 setFilterProfile(i);
