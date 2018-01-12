@@ -52,7 +52,6 @@ public class FilmActionPanel {
     private Button btnFilmInformation;
     private Button btnPlay;
     private Button btnRecord;
-    private Button btnAdvancedFilter;
     private Button btnNewFilter;
     private BlacklistButton btnBlacklist;
 
@@ -163,15 +162,9 @@ public class FilmActionPanel {
         GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
 
         setupSearchField();
-
-        btnAdvancedFilter = new Button("", fontAwesome.create(FontAwesome.Glyph.QUESTION_CIRCLE));
-        btnAdvancedFilter.setOnAction(event -> SwingUtilities.invokeLater(() -> {
-            boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_FILTER));
-            //FIXME VIS_FILTER kann entfernt werden oder?
-            MVConfig.add(MVConfig.Configs.SYSTEM_VIS_FILTER, Boolean.toString(b));
-            Listener.notify(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, ToolBar.class.getName());
-        }));
-        btnAdvancedFilter.setTooltip(new Tooltip("Altes Filterpanel anzeigen"));
+        //zu löschen:
+//MVConfig.Configs.SYSTEM_VIS_FILTER
+        //Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN
 
         HBox hb = new HBox();
         hb.setPadding(new Insets(5, 5, 5, 5));
@@ -185,7 +178,6 @@ public class FilmActionPanel {
         list.add(btnNewFilter);
         list.add(new VerticalSeparator());
         list.add(jfxSearchField);
-        list.add(btnAdvancedFilter);
 
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
@@ -204,7 +196,6 @@ public class FilmActionPanel {
 
     private void setupRightButtons(boolean disabled) {
         Platform.runLater(() -> {
-            btnAdvancedFilter.setDisable(disabled);
             btnNewFilter.setDisable(disabled);
             btnBlacklist.setDisable(disabled);
             jfxSearchField.setDisable(disabled);
