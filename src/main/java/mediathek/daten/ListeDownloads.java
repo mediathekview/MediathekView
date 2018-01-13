@@ -27,6 +27,7 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.gui.dialog.DialogAboNoSet;
+import mediathek.gui.messages.StartEvent;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelDownload;
 
@@ -217,7 +218,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             }
         }
         if (gefunden) {
-            Listener.notify(Listener.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
+            daten.getMessageBus().publishAsync(new StartEvent());
         }
     }
 

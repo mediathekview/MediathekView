@@ -43,7 +43,9 @@ import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
+import mediathek.gui.messages.StartEvent;
 import mediathek.tool.*;
+import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
@@ -505,16 +507,10 @@ public class GuiFilme extends PanelVorlage {
         }
     }
 
-    /*private void setToolbarVisible() {
-        //toolBar.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
-        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TOOLBAR_ALLES_ANZEIGEN))) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_VIS_FILTER, Boolean.toString(true));
-            Listener.notify(Listener.EREIGNIS_PANEL_FILTER_ANZEIGEN, GuiFilme.class.getSimpleName());
-            setVisFilterPanelAndLoad();
-        }
-    }*/
-
     private void start_addListener() {
+        //register message bus handler
+        daten.getMessageBus().subscribe(this);
+
         Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -556,19 +552,17 @@ public class GuiFilme extends PanelVorlage {
                 setInfoStatusbar();
             }
         });
-        Listener.addListener(new Listener(new int[]{/*ListenerMediathekView.EREIGNIS_ART_DOWNLOAD_PROZENT,*/
-                Listener.EREIGNIS_START_EVENT, Listener.EREIGNIS_LISTE_DOWNLOADS}, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setInfoStatusbar();
-            }
-        });
         Listener.addListener(new Listener(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
                 showDescriptionPanel();
             }
         });
+    }
+
+    @Handler
+    private void handleStartEvent(StartEvent msg) {
+        SwingUtilities.invokeLater(this::setInfoStatusbar);
     }
 
     private synchronized void saveFilm(DatenPset pSet) {

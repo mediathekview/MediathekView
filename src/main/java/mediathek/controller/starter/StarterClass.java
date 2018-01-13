@@ -32,6 +32,7 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
+import mediathek.gui.messages.StartEvent;
 import mediathek.mac.SpotlightCommentWriter;
 import mediathek.tool.MVFilmSize;
 import org.controlsfx.control.Notifications;
@@ -302,7 +303,7 @@ public class StarterClass {
     }
 
     static void notifyStartEvent(DatenDownload datenDownload) {
-        Listener.notify(Listener.EREIGNIS_START_EVENT, StarterClass.class.getSimpleName());
+        Daten.getInstance().getMessageBus().publishAsync(new StartEvent());
         if (datenDownload != null) {
             if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON) {
                 Listener.notify(Listener.EREIGNIS_START_EVENT_BUTTON, StarterClass.class.getSimpleName());

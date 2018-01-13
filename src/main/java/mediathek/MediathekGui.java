@@ -39,9 +39,13 @@ import mediathek.gui.dialog.*;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.filmInformation.MVFilmInformationLWin;
+import mediathek.gui.messages.DownloadFinishedEvent;
+import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
+import mediathek.tool.threads.IndicatorThread;
 import mediathek.update.CheckUpdate;
+import net.engio.mbassy.listener.Handler;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -55,6 +59,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 import static mSearch.tool.Functions.getOs;
@@ -174,6 +179,8 @@ public class MediathekGui extends JFrame {
         addListener();
         setupSearchKeyForMac();
 
+        //register message bus handler
+        daten.getMessageBus().subscribe(this);
 
         setFocusOnSearchField();
 
@@ -630,68 +637,59 @@ public class MediathekGui extends JFrame {
         return lbl;
     }
 
-//    private void setSlider() {
-//        MVBandwidthMonitorLWin.setSliderBandwith(jSliderBandbreite, null, null);
-//        setSliderText();
-//    }
-//
-//    private void setSliderText() {
-//        String s = MVBandwidthMonitorLWin.getTextBandwith();
-//        s = " [" + s + "]: ";
-//        while (s.length() < 20) {
-//            s = s + " ";
-//        }
-//        jLabelBandbreite.setText("Bandbreite pro Download" + s);
-//    }
+    /**
+     * Number of active downloads
+     */
+    protected final AtomicInteger numDownloadsStarted = new AtomicInteger(0);
 
-//    protected void setupBandwidthMenuItem() {
-//        // Bandbreite pro Downloads
-//        jPanelBandbreite.setLayout(new BorderLayout());
-//        jPanelBandbreite.setBorder(new EmptyBorder(3, 5, 3, 5));
-//        jPanelBandbreite.add(jLabelBandbreite, BorderLayout.WEST);
-//        jPanelBandbreite.add(jSliderBandbreite, BorderLayout.EAST);
-//        jLabelBandbreite.setIcon(Icons.ICON_MENUE_DOWNLOAD_BANDWITH);
-//        jSliderBandbreite.setMinimum(5); //50 kByte/s
-//        jSliderBandbreite.setMaximum(100); //1.000 kByte/s
-//        setSlider();
-//        jSliderBandbreite.addChangeListener(e -> {
-//            int bandbreiteKByte = jSliderBandbreite.getValue() * 10;
-//            MVConfig.add(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE, String.valueOf(bandbreiteKByte));
-//            setSliderText();
-//            Listener.notify(Listener.EREIGNIS_BANDBREITE, MediathekGui.class.getSimpleName());
-//        });
-//        Listener.addListener(new Listener(Listener.EREIGNIS_BANDBREITE, MediathekGui.class.getSimpleName()) {
-//            @Override
-//            public void ping() {
-//                setSlider();
-//            }
-//        });
-//        jMenuDownload.add(jPanelBandbreite);
-//    }
+    /**
+     * Progress indicator thread for OS X and windows.
+     */
+    protected IndicatorThread progressIndicatorThread = null;
 
-//    protected void setupMaximumNumberOfDownloadsMenuItem() {
-//        // Anzahl gleichzeitiger Downloads
-//        jSpinnerAnzahl.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)));
-//
-//        jMenuDownload.add(new javax.swing.JPopupMenu.Separator());
-//        jPanelAnzahl.setLayout(new BorderLayout());
-//        jPanelAnzahl.setBorder(new EmptyBorder(3, 5, 3, 5));
-//        jPanelAnzahl.add(jLabelAnzahl, BorderLayout.WEST);
-//        jPanelAnzahl.add(jSpinnerAnzahl, BorderLayout.EAST);
-//        jLabelAnzahl.setIcon(Icons.ICON_MENUE_UP_DOWN);
-//        jSpinnerAnzahl.addChangeListener(e -> {
-//            MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD,
-//                    String.valueOf(((Number) jSpinnerAnzahl.getModel().getValue()).intValue()));
-//            Listener.notify(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName());
-//        });
-//        Listener.addListener(new Listener(Listener.EREIGNIS_ANZAHL_DOWNLOADS, MediathekGui.class.getSimpleName()) {
-//            @Override
-//            public void ping() {
-//                jSpinnerAnzahl.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)));
-//            }
-//        });
-//        jMenuDownload.add(jPanelAnzahl);
-//    }
+    /**
+     * Create the platform-specific instance of the progress indicator thread.
+     *
+     * @return {@link IndicatorThread} instance for the running platform.
+     */
+    protected IndicatorThread createProgressIndicatorThread() throws Exception {
+        throw new Exception("Unsupported Platform");
+    }
+
+    /**
+     * Message bus handler which gets called when a download is started.
+     *
+     * @param msg Information about the download
+     */
+    @Handler
+    protected void handleDownloadStart(DownloadStartEvent msg) {
+        numDownloadsStarted.incrementAndGet();
+
+        if (progressIndicatorThread == null) {
+            try {
+                progressIndicatorThread = createProgressIndicatorThread();
+                progressIndicatorThread.start();
+            } catch (Exception ignored) {
+                //ignore if we have an unsupported platform, ie. linux.
+            }
+        }
+    }
+
+    /**
+     * Message bus handler which gets called when a download is stopped.
+     *
+     * @param msg Information about the download
+     */
+    @Handler
+    protected void handleDownloadFinishedEvent(DownloadFinishedEvent msg) {
+        final int numDL = numDownloadsStarted.decrementAndGet();
+
+        if (numDL == 0 && progressIndicatorThread != null) {
+            progressIndicatorThread.interrupt();
+            progressIndicatorThread = null;
+        }
+    }
+
 
     protected void initMenue() {
         setCbBeschreibung();

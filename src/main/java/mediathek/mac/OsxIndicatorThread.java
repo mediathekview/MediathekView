@@ -1,20 +1,17 @@
 package mediathek.mac;
 
 import com.apple.eawt.Application;
-import mediathek.controller.starter.Start;
-import mediathek.config.Daten;
-import mediathek.daten.DatenDownload;
+import mediathek.tool.threads.IndicatorThread;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This thread will update the percentage drawn on the dock icon on OS X.
  */
-class OsxIndicatorThread extends Thread {
+class OsxIndicatorThread extends IndicatorThread {
 
-    private final Daten daten;
     /**
      * The Image of the OS X application icon.
      */
@@ -25,13 +22,14 @@ class OsxIndicatorThread extends Thread {
     private BufferedImage newApplicationIcon = null;
     private final int appIconWidth;
     private final int appIconHeight;
-    private double oldPercentage;
     private boolean bFirstUpdate = true;
     private final Application application = Application.getApplication();
+    private double oldPercentage = 0.0;
+
 
     public OsxIndicatorThread() {
-        setName("OSX dock icon update thread");
-        daten = Daten.getInstance();
+        super();
+        setName("OsxIndicatorThread");
 
         OsxApplicationIconImage = application.getDockIconImage();
         appIconWidth = OsxApplicationIconImage.getWidth(null);
@@ -59,19 +57,7 @@ class OsxIndicatorThread extends Thread {
     public void run() {
         try {
             while (!isInterrupted()) {
-                int numOfDownloadsActive = 0;
-                double accumPercentage = 0.0;
-
-                //only count running/active downloads and calc accumulated progress..
-                LinkedList<DatenDownload> activeDownloadList = daten.getListeDownloads().getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
-                for (DatenDownload download : activeDownloadList) {
-                    if (download.start != null && download.start.status == Start.STATUS_RUN) {
-                        numOfDownloadsActive++;
-                        accumPercentage += download.start.percent / 10.0;
-                    }
-                }
-
-                final double percentage = accumPercentage / numOfDownloadsActive;
+                final double percentage = calculateOverallPercentage();
                 final int progressBarWidth = (int) ((appIconWidth / 100.0) * percentage);
 
                 if (bFirstUpdate) {
@@ -88,12 +74,13 @@ class OsxIndicatorThread extends Thread {
 
                     oldPercentage = percentage;
                 }
-                sleep(500);
+                TimeUnit.MILLISECONDS.sleep(500);
             }
         } catch (Exception ignored) {
         } finally {
             //reset the application dock icon
             application.setDockIconImage(OsxApplicationIconImage);
+            oldPercentage = 0.0;
         }
     }
 }

@@ -30,6 +30,7 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.Messages;
 import mediathek.mac.MediathekGuiMac;
+import mediathek.windows.MediathekGuiWindows;
 
 import javax.swing.*;
 import java.awt.*;
@@ -156,32 +157,34 @@ public class Main {
             //JavaFX stuff
             Platform.setImplicitExit(false);
 
-            if (Daten.isDebug()) {
-                // use for debugging EDT violations
-                RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
-            }
-
-            final MediathekGui app;
-
             if (SystemInfo.isMacOSX()) {
                 System.setProperty(MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR, Boolean.TRUE.toString());
                 cleanupOsxFiles();
+            }
 
-                //prevent startup of multiple instances...
-                SingleInstance singleInstanceWatcher = new SingleInstance();
-                if (singleInstanceWatcher.isAppAlreadyActive()) {
-                    JOptionPane.showMessageDialog(null, LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING);
+            if (Daten.isDebug()) {
+                // use for debugging EDT violations
+                RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
+
+                if (SystemInfo.isMacOSX()) {
+                    //prevent startup of multiple instances...useful during debugging :(
+                    SingleInstance singleInstanceWatcher = new SingleInstance();
+                    if (singleInstanceWatcher.isAppAlreadyActive()) {
+                        JOptionPane.showMessageDialog(null, LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING);
+                    }
                 }
+            }
 
-                app = new MediathekGuiMac(args);
+            if (SystemInfo.isMacOSX()) {
+                new MediathekGuiMac(args).setVisible(true);
+            } else if (SystemInfo.isWindows()) {
+                new MediathekGuiWindows(args).setVisible(true);
             } else {
                 if (SystemInfo.isUnix()) {
                     setupX11WindowManagerClassName();
                 }
-                app = new MediathekGui(args);
+                new MediathekGui(args).setVisible(true);
             }
-
-            app.setVisible(true);
         });
     }
 

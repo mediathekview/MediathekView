@@ -37,7 +37,9 @@ import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
+import mediathek.gui.messages.StartEvent;
 import mediathek.tool.*;
+import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -560,6 +562,9 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void addListenerMediathekView() {
+        //register message bus handler
+        daten.getMessageBus().subscribe(this);
+
         Listener.addListener(new Listener(Listener.EREIGNIS_TOOLBAR_VIS, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -591,15 +596,6 @@ public class GuiDownloads extends PanelVorlage {
             public void ping() {
                 reloadTable();
                 daten.allesSpeichern(); // damit nichts verloren geht
-            }
-        });
-        Listener.addListener(new Listener(new int[]{Listener.EREIGNIS_START_EVENT}, GuiDownloads.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                reloadTable();
-//                daten.getListeDownloads().setModelProgressAlleStart(model);
-//                tabelle.fireTableDataChanged(true /*setSpalten*/);
-//                setInfo();
             }
         });
         Listener.addListener(new Listener(Listener.EREIGNIS_GEO, GuiDownloads.class.getSimpleName()) {
@@ -643,6 +639,11 @@ public class GuiDownloads extends PanelVorlage {
         stopBeob = false;
         updateFilmData();
         setInfo();
+    }
+
+    @Handler
+    private void handleStartEvent(StartEvent msg) {
+        SwingUtilities.invokeLater(this::reloadTable);
     }
 
     private void mediensammlung() {

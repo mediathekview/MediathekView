@@ -26,6 +26,7 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.controller.MVUsedUrl;
 import mediathek.controller.starter.Start;
+import mediathek.gui.messages.StartEvent;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFilmSize;
 
@@ -284,7 +285,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
             aDaten.getListeFilmeHistory().add(film);
         }
         aDaten.history.zeileSchreiben(arr[DatenDownload.DOWNLOAD_THEMA], arr[DatenDownload.DOWNLOAD_TITEL], arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
-        Listener.notify(Listener.EREIGNIS_START_EVENT, this.getClass().getSimpleName());
+        aDaten.getMessageBus().publishAsync(new StartEvent());
     }
 
     public static void startenDownloads(Daten ddaten, ArrayList<DatenDownload> downloads) {
@@ -301,7 +302,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
         if (!urlList.isEmpty()) {
             ddaten.history.zeilenSchreiben(urlList);
         }
-        Listener.notify(Listener.EREIGNIS_START_EVENT, DatenDownload.class.getSimpleName());
+        ddaten.getMessageBus().publishAsync(new StartEvent());
     }
 
     public DatenDownload getCopy() {
