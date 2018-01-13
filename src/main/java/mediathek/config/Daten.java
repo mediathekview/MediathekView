@@ -39,9 +39,11 @@ import mediathek.gui.GuiFilme;
 import mediathek.gui.GuiMeldungen;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.filmInformation.IFilmInformation;
+import mediathek.gui.messages.BaseEvent;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVMessageDialog;
+import net.engio.mbassy.bus.MBassador;
 
 import javax.swing.*;
 import java.io.File;
@@ -142,6 +144,12 @@ public class Daten
     public static boolean isReset()
     {
         return reset;
+    }
+
+    private final MBassador<BaseEvent> messageBus = new MBassador<>();
+
+    public MBassador<BaseEvent> getMessageBus() {
+        return messageBus;
     }
 
     public static Daten getInstance(String aBasisverzeichnis)
