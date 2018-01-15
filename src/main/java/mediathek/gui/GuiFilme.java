@@ -133,12 +133,17 @@ public class GuiFilme extends PanelVorlage {
     private synchronized void prepareTableModel() {
         final boolean nurNeue = fap.showNewOnly.getValue();
         final boolean nurUt = fap.showSubtitlesOnly.getValue();
-        final boolean nurHd = fap.showOnlyHd.getValue();
+        final boolean showOnlyHd = fap.showOnlyHd.getValue();
         final boolean kGesehen = fap.showUnseenOnly.getValue();
         final boolean keineAbos = fap.dontShowAbos.getValue();
         final boolean showOnlyLivestreams = fap.showOnlyLivestreams.getValue();
+        final boolean dontShowTrailers = fap.dontShowTrailers.getValue();
+        final boolean dontShowGebaerdensprache = fap.dontShowGebaerdensprache.getValue();
+        final boolean dontShowAudioVersions = fap.dontShowAudioVersions.getValue();
+
         final int minLength = (int) fap.filmLengthSlider.getLowValue();
         final int maxLength = (int) fap.filmLengthSlider.getHighValue();
+
         final String filterSender = fap.senderBox.getSelectionModel().getSelectedItem();
         String filterThema = fap.themaBox.getSelectionModel().getSelectedItem();
         if (filterThema == null) {
@@ -150,13 +155,14 @@ public class GuiFilme extends PanelVorlage {
 
         TModel tModel = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
         if (listeFilme.isEmpty()) {
-            // wenn die Liste leer ist, dann Tschüss
+            // wenn die Liste leer ist, leeres Modell erzeugen
             tabelle.setModel(tModel);
         } else {
             // dann ein neues Model anlegen
             if (filterSender.isEmpty() && filterThema.isEmpty() && filterThemaTitel.isEmpty()
                     && minLength == 0 && maxLength == FilmActionPanel.UNLIMITED_VALUE
-                    && !keineAbos && !kGesehen && !nurHd && !nurUt && !showOnlyLivestreams && !nurNeue) {
+                    && !keineAbos && !kGesehen && !showOnlyHd && !nurUt && !showOnlyLivestreams && !nurNeue
+                    && !dontShowTrailers && !dontShowGebaerdensprache && !dontShowAudioVersions) {
                 // dann ganze Liste laden
                 addObjectDataTabFilme(listeFilme, tModel);
             } else {
@@ -191,7 +197,7 @@ public class GuiFilme extends PanelVorlage {
                             continue;
                         }
                     }
-                    if (nurHd) {
+                    if (showOnlyHd) {
                         if (!film.isHD()) {
                             continue;
                         }
@@ -212,7 +218,25 @@ public class GuiFilme extends PanelVorlage {
                         }
                     }
 
-                    //TODO implement film längenprüfung hier selbst,
+                    if (dontShowTrailers) {
+                        String titel = film.arr[DatenFilm.FILM_TITEL];
+                        if (titel.contains("Trailer") || titel.contains("Teaser") || titel.contains("Vorschau") ||
+                                titel.contains("trailer") || titel.contains("teaser") || titel.contains("vorschau"))
+                            continue;
+                    }
+
+                    if (dontShowGebaerdensprache) {
+                        String titel = film.arr[DatenFilm.FILM_TITEL];
+                        if (titel.contains("Gebärden"))
+                            continue;
+                    }
+
+                    if (dontShowAudioVersions) {
+                        String titel = film.arr[DatenFilm.FILM_TITEL];
+                        if (titel.contains("Hörfassung") || titel.contains("Audiodeskription"))
+                            continue;
+                    }
+
                     //filter mitLaenge false dann aufrufen
                     //je nachdem dann das ganze herausoperieren
                     String[] arrIrgendwo = {};
@@ -1296,6 +1320,9 @@ public class GuiFilme extends PanelVorlage {
             fap.showNewOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
             fap.showUnseenOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
             fap.dontShowAbos.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
+            fap.dontShowTrailers.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
+            fap.dontShowGebaerdensprache.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
+            fap.dontShowAudioVersions.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
             fap.showOnlyLivestreams.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
             fap.filmLengthSlider.lowValueChangingProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue)

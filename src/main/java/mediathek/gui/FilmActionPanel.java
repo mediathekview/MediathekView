@@ -47,6 +47,9 @@ public class FilmActionPanel {
     public BooleanProperty showNewOnly;
     public BooleanProperty showUnseenOnly;
     public BooleanProperty dontShowAbos;
+    public BooleanProperty dontShowTrailers;
+    public BooleanProperty dontShowGebaerdensprache;
+    public BooleanProperty dontShowAudioVersions;
     private CustomTextField jfxSearchField;
     private Button btnDownload;
     private Button btnFilmInformation;
@@ -216,21 +219,35 @@ public class FilmActionPanel {
         showNewOnly = cbShowNewOnly.selectedProperty();
         vBox.getChildren().add(cbShowNewOnly);
 
-        CheckBox cbShowUnseenOnly = new CheckBox("Gesehene Filme ausblenden");
-        showUnseenOnly = cbShowUnseenOnly.selectedProperty();
-        vBox.getChildren().add(cbShowUnseenOnly);
-
-        CheckBox cbDontShowAbos = new CheckBox("Abos ausblenden");
-        dontShowAbos = cbDontShowAbos.selectedProperty();
-        vBox.getChildren().add(cbDontShowAbos);
-
-        CheckBox cbDontShowImpairedFilms = new CheckBox("Hörfassungen etc ausblenden");
-        cbDontShowImpairedFilms.setDisable(true);
-        vBox.getChildren().add(cbDontShowImpairedFilms);
-
         CheckBox cbShowOnlyLivestreams = new CheckBox("Nur Live Streams anzeigen");
         showOnlyLivestreams = cbShowOnlyLivestreams.selectedProperty();
         vBox.getChildren().add(cbShowOnlyLivestreams);
+
+        Separator sep = new Separator();
+        vBox.getChildren().add(sep);
+
+        CheckBox cbShowUnseenOnly = new CheckBox("Gesehene Filme nicht anzeigen");
+        showUnseenOnly = cbShowUnseenOnly.selectedProperty();
+        vBox.getChildren().add(cbShowUnseenOnly);
+
+        CheckBox cbDontShowAbos = new CheckBox("Abos nicht anzeigen");
+        dontShowAbos = cbDontShowAbos.selectedProperty();
+        vBox.getChildren().add(cbDontShowAbos);
+
+        CheckBox cbDontShowGebaerdensprache = new CheckBox("Gebärdensprache nicht anzeigen");
+        dontShowGebaerdensprache = cbDontShowGebaerdensprache.selectedProperty();
+        vBox.getChildren().add(cbDontShowGebaerdensprache);
+
+        CheckBox cbDontShowTrailers = new CheckBox("Trailer/Teaser/Vorschau nicht anzeigen");
+        dontShowTrailers = cbDontShowTrailers.selectedProperty();
+        vBox.getChildren().add(cbDontShowTrailers);
+
+        CheckBox cbDontShowAudioVersions = new CheckBox("Hörfassungen ausblenden");
+        dontShowAudioVersions = cbDontShowAudioVersions.selectedProperty();
+        vBox.getChildren().add(cbDontShowAudioVersions);
+
+        sep = new Separator();
+        vBox.getChildren().add(sep);
 
         FlowPane root = new FlowPane();
         root.setHgap(4);
