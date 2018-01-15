@@ -205,8 +205,7 @@ public class GuiDownloads extends PanelVorlage {
         toolBar.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
     }
 
-    private void init() {
-        //Tabelle einrichten
+    private void setupKeyMappings() {
         ActionMap am = tabelle.getActionMap();
         InputMap im = tabelle.getInputMap();
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "aendern");
@@ -216,7 +215,7 @@ public class GuiDownloads extends PanelVorlage {
                 downloadAendern();
             }
         });
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "loeschen");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "loeschen");
         am.put("loeschen", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -291,6 +290,12 @@ public class GuiDownloads extends PanelVorlage {
                 filmUngesehen();
             }
         });
+    }
+
+    private void init() {
+        setupKeyMappings();
+        //Tabelle einrichten
+
         panelBeschreibungSetzen();
 
         final CellRendererDownloads cellRenderer = new CellRendererDownloads();
