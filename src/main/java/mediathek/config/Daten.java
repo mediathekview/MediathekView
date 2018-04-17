@@ -375,7 +375,8 @@ public class Daten
 
         if (Files.exists(xmlFilePath))
         {
-            if (IoXmlLesen.datenLesen(xmlFilePath))
+            final IoXmlLesen configReader = new IoXmlLesen();
+            if (configReader.datenLesen(xmlFilePath))
             {
                 return true;
             } else
@@ -429,7 +430,8 @@ public class Daten
             // teils geladene Reste entfernen
             clearKonfig();
             SysMsg.sysMsg(new String[]{"Versuch Backup zu laden:", p.toString()});
-            if (IoXmlLesen.datenLesen(p))
+            final IoXmlLesen configReader = new IoXmlLesen();
+            if (configReader.datenLesen(p))
             {
                 SysMsg.sysMsg(new String[]{"Backup hat geklappt:", p.toString()});
                 ret = true;
@@ -612,11 +614,6 @@ public class Daten
     public MediathekGui getMediathekGui()
     {
         return mediathekGui;
-    }
-
-    public void setListeFilme(final ListeFilme listeFilme)
-    {
-        this.listeFilme = listeFilme;
     }
 
     public void setDialogMediaDB(final DialogMediaDB aDialogMediaDB)

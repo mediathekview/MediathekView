@@ -83,7 +83,8 @@ public class MediathekAuto {
         Daten.setAuto(true);
         startMeldungen();
 
-        if (!IoXmlLesen.einstellungenExistieren()) {
+        final IoXmlLesen configReader = new IoXmlLesen();
+        if (!configReader.einstellungenExistieren()) {
             // Programm erst mit der GuiVersion einrichten
             Log.errorLog(834986137, "Das Programm muss erst mit der Gui-Version eingerichtet werden!");
             System.exit(1);
@@ -92,7 +93,7 @@ public class MediathekAuto {
         // Einstellungen laden
         Path xmlFilePath = Daten.getMediathekXmlFilePath();
         SysMsg.sysMsg("Einstellungen laden: " + xmlFilePath.toString());
-        if (!IoXmlLesen.datenLesen(xmlFilePath)) {
+        if (!configReader.datenLesen(xmlFilePath)) {
             // dann hat das Laden nicht geklappt
             Log.errorLog(834986137, "Einstellungen konnten nicht geladen werden: " + xmlFilePath.toString());
             System.exit(1);

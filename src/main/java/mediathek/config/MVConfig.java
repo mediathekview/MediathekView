@@ -378,20 +378,6 @@ public class MVConfig {
         }
     }
 
-    public static synchronized int getInt(Configs key, int i) {
-        int ret;
-        try {
-            ret = Integer.parseInt(get(key, i));
-        } catch (Exception ignore) {
-            ret = 0;
-        }
-        return ret;
-    }
-
-    public static synchronized boolean getBool(Configs key, int i) {
-        return Boolean.parseBoolean(get(key, i));
-    }
-
     public static synchronized String[][] getAll() {
         final LinkedList<String[]> liste = new LinkedList<>();
         final Set<String> strings = HASHMAP.keySet();
@@ -402,7 +388,8 @@ public class MVConfig {
             s[1] = HASHMAP.get(entry);
             liste.add(s);
         }
-        listeSort(liste, 0);
+        listeSort(liste);
+
         return liste.toArray(new String[][]{});
     }
 
@@ -414,6 +401,7 @@ public class MVConfig {
             s = s.substring(s.indexOf(TRENNER) + TRENNER.length());
         }
         l.add(s);
+
         return l.toArray(new String[l.size()]);
 
     }
@@ -441,7 +429,7 @@ public class MVConfig {
         return sa;
     }
 
-    private static void listeSort(LinkedList<String[]> liste, int stelle) {
+    private static void listeSort(LinkedList<String[]> liste) {
         //Stringliste alphabetisch sortieren
         mSearch.tool.GermanStringSorter sorter = mSearch.tool.GermanStringSorter.getInstance();
         if (liste != null) {
@@ -449,8 +437,8 @@ public class MVConfig {
             String str2;
             for (int i = 1; i < liste.size(); ++i) {
                 for (int k = i; k > 0; --k) {
-                    str1 = liste.get(k - 1)[stelle];
-                    str2 = liste.get(k)[stelle];
+                    str1 = liste.get(k - 1)[0];
+                    str2 = liste.get(k)[0];
                     // if (str1.compareToIgnoreCase(str2) > 0) {
                     if (sorter.compare(str1, str2) > 0) {
                         liste.add(k - 1, liste.remove(k));
