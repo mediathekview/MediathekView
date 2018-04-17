@@ -445,7 +445,10 @@ public class Daten
     public void allesSpeichern()
     {
         konfigCopy();
-        IoXmlSchreiben.datenSchreiben();
+
+        final IoXmlSchreiben configWriter = new IoXmlSchreiben();
+        configWriter.writeConfigurationFile(getMediathekXmlFilePath());
+
         if (Daten.isReset())
         {
             // das Programm soll beim nächsten Start mit den Standardeinstellungen gestartet werden
