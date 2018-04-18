@@ -19,28 +19,24 @@
  */
 package mediathek.update;
 
+import mSearch.tool.Log;
+import mSearch.tool.Version;
+import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import mediathek.config.MVConfig;
+
+import javax.swing.*;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Optional;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamReader;
-
-import mSearch.tool.Log;
-import mSearch.tool.Version;
-import mediathek.config.Daten;
-import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
 
 public class ProgrammUpdateSuchen {
     private static final String UPDATE_SEARCH_TITLE = "Software-Aktualisierung";
@@ -70,9 +66,6 @@ public class ProgrammUpdateSuchen {
                 if (progInfo.getVersion().toNumber() == 0)
                     JOptionPane.showMessageDialog(null, UPDATE_ERROR_MESSAGE, UPDATE_SEARCH_TITLE, JOptionPane.ERROR_MESSAGE);
                 else {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_BUILD_NR, Konstanten.MVVERSION.toString());
-                    MVConfig.add(MVConfig.Configs.SYSTEM_UPDATE_DATUM, new SimpleDateFormat("yyyyMMdd").format(new Date()));
-
                     if (checkForNewerVersion(progInfo.getVersion())) {
                         neueVersion = true;
                         //TODO beautify this dialog. Looks really ugly.
@@ -142,6 +135,7 @@ public class ProgrammUpdateSuchen {
     }
 
     private InputStream connectToServer() throws IOException {
+        //TODO replace with okhttp
         URLConnection conn = new URL(Konstanten.ADRESSE_PROGRAMM_VERSION).openConnection();
         conn.setRequestProperty("User-Agent", Daten.getUserAgent());
         conn.setReadTimeout(TIMEOUT);

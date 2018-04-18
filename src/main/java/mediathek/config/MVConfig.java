@@ -36,7 +36,8 @@ public class MVConfig {
     public static final String SYSTEM = "system";
     private static final HashMap<String, String> HASHMAP = new HashMap<>();
 
-    public static String PARAMETER_INFO = '\n'
+    //das kann zukünftig entfernt werden da keine Erklärungen in der config drin sein müssen
+    /*public static String PARAMETER_INFO = '\n'
             + "\t" + "\"__system-parameter__xxx\" können nur im Konfigfile geändert werden\n"
             + '\t' + "und sind auch nicht für ständige Änderungen gedacht.\n"
             + '\t' + "Wird eine Zeile gelöscht, wird der Parameter wieder mit dem Standardwert angelegt.\n"
@@ -57,6 +58,7 @@ public class MVConfig {
             + '\t' + "Downloadprogress im Terminal (-auto) anzeigen: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS.initValue + "\n\n"
             + '\t' + Configs.SYSTEM_PARAMETER_USERAGENT.cValue + '\n'
             + '\t' + "Useragent für direkte Downloads, Standardwert: " + Configs.SYSTEM_PARAMETER_USERAGENT.initValue + '\n';
+            */
 
     public enum Configs {
         //============================================
@@ -66,21 +68,17 @@ public class MVConfig {
         SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP("__system-parameter__download-max-restart-http_10__", "10"),// max. Startversuche für fehlgeschlagene Downloads, direkt beim Download
         SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN("__system-parameter__download-weiterfuehren-sekunden_60__", "60"), //Beim Dialog "Download weiterführen" wird in dieser Zeit der Download weitergeführt
         SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN("__system-parameter__download-fehlermeldung-sekunden_120__", "120"),//Downloadfehlermeldung wird xx Sedunden lang angezeigt
-        SYSTEM_PARAMETER_USERAGENT("__system-parameter__useragent_" + Konstanten.MVVERSION.toString() + "__", Konstanten.USER_AGENT_DEFAULT),//Useragent für direkte Downloads
+        SYSTEM_PARAMETER_USERAGENT("__system-parameter__useragent_" + "__", Konstanten.USER_AGENT_DEFAULT),//Useragent für direkte Downloads
         SYSTEM_PARAMETER_DOWNLOAD_PROGRESS("__system-parameter__dl_progress_", Boolean.TRUE.toString()), //Downloadprogress im Terminal (-auto) anzeigen
 
         //============================================
         //Programm-Configs, änderbar über Gui
-        SYSTEM_BUILD_NR("BuildNr"),
         SYSTEM_ECHTZEITSUCHE("Echtzeitsuche", Boolean.TRUE.toString()),
         SYSTEM_TABS_TOP("Tabs-oben", SystemInfo.isMacOSX() ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),
         SYSTEM_TABS_ICON("Tabs-Icon", SystemInfo.isMacOSX() ? Boolean.FALSE.toString() : Boolean.TRUE.toString()),
         SYSTEM_USE_TRAY("Tray-anzeigen", Boolean.FALSE.toString()),
         SYSTEM_LOOK("System-look", "0"),
-        SYSTEM_UPDATE_SUCHEN("update-suchen", Boolean.TRUE.toString()),
-        SYSTEM_UPDATE_DATUM("update-datum"),
         SYSTEM_ABOS_SOFORT_SUCHEN("Abos-sofort-suchen", Boolean.TRUE.toString()),
-        SYSTEM_ZIELNAMEN_ANPASSEN("Zielnamen-anpassen"),
         SYSTEM_USE_REPLACETABLE("Ersetzungstabelle-verwenden", SystemInfo.isLinux() || SystemInfo.isMacOSX() ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),// wegen des Problems mit ext. Programmaufrufen und Leerzeichen
         SYSTEM_ONLY_ASCII("nur-ascii", Boolean.FALSE.toString()),
         SYSTEM_HINWEIS_NR_ANGEZEIGT("Hinweis-Nr-angezeigt"),
@@ -95,10 +93,8 @@ public class MVConfig {
         SYSTEM_GROESSE_GUI("Groesse"),
         SYSTEM_GROESSE_EINSTELLUNGEN("Groesse-Einstellungen"),
         SYSTEM_GROESSE_INFODIALOG("Groesse-Infodialog"),
-        //        SYSTEM_DIVIDER_INFODIALOG("Divider-Infodialog"),
         SYSTEM_FENSTER_MAX("programmfenster-maximieren"),
         SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN("system-panel-videoplayer-anzeigen"),
-        SYSTEM_PANEL_MELDUNGEN_ANZEIGEN("system-panel-meldungen-anzeigen"),
         SYSTEM_PANEL_DOWNLOAD_DIVIDER("system-panel-download-divider", Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION),
         SYSTEM_PANEL_ABO_DIVIDER("system-panel-abo-divider", Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION),
         SYSTEM_FONT_SIZE("system-font-size", "0"), // -5 ... 0 .... 5
@@ -163,7 +159,8 @@ public class MVConfig {
         SYSTEM_EXPORT_DATEI("system-export-datei"),
         SYSTEM_ANZ_TAGE_FILMLISTE("system-anz-tage-filmilste", "0"), // es werden nur die x letzten Tage geladen
         // Filter
-        SYSTEM_FILTER_TAGE("filter-tage-start", "15"), // in Tagen
+        //TODO die auskommentierten Dinge später entfernen
+        /*SYSTEM_FILTER_TAGE("filter-tage-start", "15"), // in Tagen
         SYSTEM_FILTER_DAUER("filter-dauer-start", "0"), // in Minuten
         SYSTEM_FILTER_DAUER_MIN("filter-dauer-min-start", Boolean.TRUE.toString()), // Dauer ist Min 
         SYSTEM_FILTER_PROFILE__DAUER("filter-dauer", "0"),
@@ -183,7 +180,7 @@ public class MVConfig {
         SYSTEM_FILTER_PROFILE__TT("filter-TT-oder-irgendwo", Boolean.TRUE.toString()),
         SYSTEM_FILTER_PROFILE__SORT_KEY("filter-sortkey"),
         SYSTEM_FILTER_PROFILE__SORT_KEY_UPDOWN("filter-sortkey-updown"),
-        SYSTEM_FILTER_PROFILE__ANZAHL_FILTER("filter-anzahl"),
+        SYSTEM_FILTER_PROFILE__ANZAHL_FILTER("filter-anzahl"),*/
         // Programmpfade
         SYSTEM_PFAD_VLC("pfad-vlc", GuiFunktionenProgramme.getMusterPfadVlc()),
         SYSTEM_PFAD_FLVSTREAMER("pfad-flvstreamer", GuiFunktionenProgramme.getMusterPfadFlv()),

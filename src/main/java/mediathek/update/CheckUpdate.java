@@ -19,19 +19,11 @@
  */
 package mediathek.update;
 
-import static java.lang.Thread.sleep;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
+import mSearch.tool.Duration;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
-import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
@@ -39,62 +31,40 @@ import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.dialog.DialogNewSet;
 import mediathek.tool.GuiFunktionenProgramme;
 
-public class CheckUpdate {
+import javax.swing.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-    private static boolean updateCheckAlreadyPerformed = false;
+public class CheckUpdate extends Thread {
     private final Daten daten;
     private final JFrame parent;
 
     public CheckUpdate(JFrame parent, Daten daten) {
         this.daten = daten;
         this.parent = parent;
+
+        Duration.staticPing("CheckUpdate");
+        setName("CheckUpdate Thread");
     }
 
-    public void checkProgUpdate() {
-        new Thread(this::prog).start();
-    }
-
-    private synchronized void prog() {
+    public void run() {
         try {
-            if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_UPDATE_SUCHEN))) {
-                // will der User nicht
-                return;
-            }
+            searchForProgramUpdate();
 
-            if (MVConfig.get(MVConfig.Configs.SYSTEM_BUILD_NR).equals(Konstanten.MVVERSION.toString())
-                    && MVConfig.get(MVConfig.Configs.SYSTEM_UPDATE_DATUM).equals(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
-                // keine neue Version und heute schon gemacht
-                return;
-            }
-            // damit geänderte Sets gleich gemeldet werden und nicht erst morgen
-            final ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
-            if (pgrUpdate.checkVersion(false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
-                Listener.notify(Listener.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, CheckUpdate.class.getSimpleName());
-            } else {
-                Listener.notify(Listener.EREIGNIS_MEDIATHEKGUI_PROGRAMM_AKTUELL, CheckUpdate.class.getSimpleName());
-            }
-
-            //==============================================
-            // Sets auf Update prüfen
             checkForPsetUpdates();
-
-            try {
-                sleep(10_000);
-            } catch (InterruptedException ignored) {
-            }
-            Listener.notify(Listener.EREIGNIS_MEDIATHEKGUI_ORG_TITEL, CheckUpdate.class.getSimpleName());
-
         } catch (Exception ex) {
             Log.errorLog(794612801, ex);
         }
     }
 
-    private void checkForPsetUpdates() {
-        if (updateCheckAlreadyPerformed) {
-            return;// nur einmal laufen
-        } else
-            updateCheckAlreadyPerformed = true;
+    private void searchForProgramUpdate() {
+        final ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
+        if (pgrUpdate.checkVersion(false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
+            Listener.notify(Listener.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, CheckUpdate.class.getSimpleName());
+        }
+    }
 
+    private void checkForPsetUpdates() {
         try {
             SwingUtilities.invokeLater(() -> {
                 ListePset listePsetStandard = ListePsetVorlagen.getStandarset(parent, daten, false /*replaceMuster*/);
@@ -106,7 +76,7 @@ public class CheckUpdate {
                             // dann hat das Laden der aktuellen Standardversion nicht geklappt
                             return;
                         }
-                        if (/*!Daten.delSets &&*/version.equals(listePsetStandard.version)) {
+                        if (version.equals(listePsetStandard.version)) {
                             // dann passt alles
                             return;
                         } else {

@@ -32,6 +32,7 @@ import mediathek.config.MVConfig;
 import mediathek.controller.ProgStart;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
+import mediathek.daten.ListeMediaDB;
 import mediathek.gui.*;
 import mediathek.gui.bandwidth.IBandwidthMonitor;
 import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
@@ -59,6 +60,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
@@ -85,9 +87,8 @@ public class MediathekGui extends JFrame {
     private static final String LOG_TEXT_INIT_GUI = "Init GUI";
     private static final String LOG_TEXT_GUI_STEHT = "Gui steht!";
     private static final String ARGUMENT_PREFIX = "-";
-    private static final String TITLE_TEXT_PROGRAMMVERSION_IST_AKTUELL = "Programmversion ist aktuell";
+    //private static final String TITLE_TEXT_PROGRAMMVERSION_IST_AKTUELL = "Programmversion ist aktuell";
     private static final String TITLE_TEXT_EIN_PROGRAMMUPDATE_IST_VERFUEGBAR = "Ein Programmupdate ist verfügbar";
-    private static final String LOG_TEXT_CHECK_UPDATE = "CheckUpdate";
     private static final String TABNAME_FILME = "Filme";
     private static final String TABNAME_DOWNLOADS = "Downloads";
     private static final String TABNAME_ABOS = "Abos";
@@ -285,22 +286,18 @@ public class MediathekGui extends JFrame {
     }
 
     private void addListener() {
-        Listener.addListener(new Listener(Listener.EREIGNIS_MEDIATHEKGUI_ORG_TITEL, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setOrgTitel();
-            }
-        });
-        Listener.addListener(new Listener(Listener.EREIGNIS_MEDIATHEKGUI_PROGRAMM_AKTUELL, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setTitle(TITLE_TEXT_PROGRAMMVERSION_IST_AKTUELL);
-            }
-        });
         Listener.addListener(new Listener(Listener.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
                 setTitle(TITLE_TEXT_EIN_PROGRAMMUPDATE_IST_VERFUEGBAR);
+                // after ten seconds, restore the original window title
+                Timer restoreTitleTimer = new Timer((int) TimeUnit.MILLISECONDS.convert(10, TimeUnit.SECONDS),
+                        e -> {
+                            System.out.println("RESTORING ORIGINAL WINDOW TITLE");
+                            setOrgTitel();
+                        });
+                restoreTitleTimer.setRepeats(false); //run once only...
+                restoreTitleTimer.start();
             }
         });
         Listener.addListener(new Listener(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName()) {
@@ -371,7 +368,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void setOrgTitel() {
-        this.setTitle(Konstanten.PROGRAMMNAME + ' ' + Konstanten.MVVERSION);
+        setTitle(Konstanten.PROGRAMMNAME + ' ' + Konstanten.MVVERSION);
     }
 
     private void setSize() {
@@ -423,11 +420,8 @@ public class MediathekGui extends JFrame {
 
             @Override
             public void fertigOnlyOne(ListenerFilmeLadenEvent event) {
-                // Prüfen obs ein Programmupdate gibt
-                Duration.staticPing(LOG_TEXT_CHECK_UPDATE);
-                new CheckUpdate(daten.getMediathekGui(), daten).checkProgUpdate();
-                daten.getListeMediaDB().loadSavedList();
-                daten.getListeMediaDB().createMediaDB("");
+                setupUpdateCheck();
+                prepareMediaDb();
             }
         });
         addWindowListener(new WindowAdapter() {
@@ -441,6 +435,30 @@ public class MediathekGui extends JFrame {
             }
         });
         setTray();
+    }
+
+    private void prepareMediaDb() {
+        final ListeMediaDB mediaDb = daten.getListeMediaDB();
+        mediaDb.loadSavedList();
+        mediaDb.createMediaDB("");
+    }
+
+    /**
+     * 24 hour timer for repeating update checks
+     */
+    private Timer updateCheckTimer;
+
+    /**
+     * This will setup a repeating update check every 24 hours.
+     */
+    private void setupUpdateCheck() {
+        updateCheckTimer = new Timer(500, e -> {
+            // Prüfen obs ein Programmupdate gibt
+            new CheckUpdate(daten.getMediathekGui(), daten).start();
+        });
+        updateCheckTimer.setRepeats(true);
+        updateCheckTimer.setDelay((int) TimeUnit.MILLISECONDS.convert(24, TimeUnit.HOURS));
+        updateCheckTimer.start();
     }
 
     public void setTray() {
@@ -992,6 +1010,10 @@ public class MediathekGui extends JFrame {
             }
             shutDown = dialogBeenden.isShutdownRequested();
         }
+
+        //do not search for updates anymore
+        updateCheckTimer.stop();
+
         // Tabelleneinstellungen merken
         Daten.guiFilme.tabelleSpeichern();
         Daten.guiDownloads.tabelleSpeichern();

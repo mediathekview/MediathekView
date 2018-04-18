@@ -20,30 +20,30 @@
 package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
-import java.awt.Frame;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.ArrayList;
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
-import mediathek.update.ProgrammUpdateSuchen;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVMessageDialog;
+import mediathek.update.ProgrammUpdateSuchen;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class PanelEinstellungen extends PanelVorlage {
     private final static String ICONSET_STANDARD = "Standard";
-    private final String ALLE = " Alle ";
+    private final static String ALLE = " Alle ";
 
     public PanelEinstellungen(Daten d, JFrame parent) {
         super(d, parent);
@@ -113,8 +113,6 @@ public class PanelEinstellungen extends PanelVorlage {
             });
         }
 
-        jCheckBoxSuchen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_UPDATE_SUCHEN)));
-        jCheckBoxSuchen.addActionListener(ae -> MVConfig.add(MVConfig.Configs.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBoxSuchen.isSelected())));
         jButtonSuchen.addActionListener(new BeobSuchen(false));
         jButtonInfos.addActionListener(new BeobSuchen(true));
         jButtonRefresh.addActionListener(e -> fillIconList());
@@ -248,7 +246,6 @@ public class PanelEinstellungen extends PanelVorlage {
     private void initComponents() {
 
         javax.swing.JPanel pnlProgramUpdate = new javax.swing.JPanel();
-        jCheckBoxSuchen = new javax.swing.JCheckBox();
         jButtonSuchen = new javax.swing.JButton();
         jButtonInfos = new javax.swing.JButton();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
@@ -271,8 +268,6 @@ public class PanelEinstellungen extends PanelVorlage {
 
         pnlProgramUpdate.setBorder(javax.swing.BorderFactory.createTitledBorder("Programmupdate"));
 
-        jCheckBoxSuchen.setText("einmal am Tag nach einer neuen Programmversion suchen");
-
         jButtonSuchen.setText("Jetzt suchen");
 
         jButtonInfos.setText("Programminfos anzeigen");
@@ -283,23 +278,18 @@ public class PanelEinstellungen extends PanelVorlage {
             pnlProgramUpdateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlProgramUpdateLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlProgramUpdateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBoxSuchen)
-                    .addGroup(pnlProgramUpdateLayout.createSequentialGroup()
-                        .addComponent(jButtonSuchen, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonInfos)))
+                    .addComponent(jButtonSuchen, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jButtonInfos)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlProgramUpdateLayout.setVerticalGroup(
             pnlProgramUpdateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlProgramUpdateLayout.createSequentialGroup()
-                .addComponent(jCheckBoxSuchen)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(pnlProgramUpdateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonSuchen)
-                    .addComponent(jButtonInfos))
-                .addContainerGap(20, Short.MAX_VALUE))
+                        .addComponent(jButtonInfos)))
         );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -432,7 +422,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pnlProgramUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(126, Short.MAX_VALUE))
+                    .addContainerGap(175, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -444,7 +434,6 @@ public class PanelEinstellungen extends PanelVorlage {
     private javax.swing.JButton jButtonRefresh;
     private javax.swing.JButton jButtonSuchen;
     private javax.swing.JCheckBox jCheckBoxEchtzeit;
-    private javax.swing.JCheckBox jCheckBoxSuchen;
     private javax.swing.JCheckBox jCheckBoxTabIcon;
     private javax.swing.JCheckBox jCheckBoxTabsTop;
     private javax.swing.JCheckBox jCheckBoxTray;

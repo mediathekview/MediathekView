@@ -34,7 +34,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class MVInputStream extends InputStream {
 
     private final InputStream iStream;
-    private MVBandwidthTokenBucket bucket = null;
+    private MVBandwidthTokenBucket bucket;
     private final BandwidthCalculationTask calculationTask;
 
     public MVInputStream(InputStream in, java.util.Timer calculationTimer) {
@@ -86,15 +86,6 @@ public class MVInputStream extends InputStream {
         return calculationTask.getBandwidth();
     }
 
-    /**
-     * Return the sum time used by this InputStream.
-     *
-     * @return time in second.
-     */
-    public long getSumTime() {
-        return calculationTask.getSumTime();
-    }
-
     public long getSumByte() {
         return calculationTask.getTotalBytesRead();
     }
@@ -118,13 +109,6 @@ public class MVInputStream extends InputStream {
         return "Download: Bytes gelesen: " + s + "  Bandbreite: " + DatenDownload.getTextBandbreite(b);
     }
 
-    public String[] getMsg() {
-        final long bytesRead = calculationTask.getTotalBytesRead();
-        final long b = getSumBandwidth();
-        String s = MVFilmSize.humanReadableByteCount(bytesRead, true);
-        return new String[]{"Download", "Bytes gelesen: " + s, "Bandbreite: " + DatenDownload.getTextBandbreite(b)};
-    }
-
     /**
      * This TimerTask calculates the bandwidth (bytes per seconds) and records the overall bytes read
      * until termination.
@@ -140,16 +124,22 @@ public class MVInputStream extends InputStream {
         @Override
         public void run() {
             lock.writeLock().lock();
-            bandwidth = totalBytesRead - oldTotalBytes;
-            oldTotalBytes = totalBytesRead;
-            ++sumTime;
-            lock.writeLock().unlock();
+            try {
+                bandwidth = totalBytesRead - oldTotalBytes;
+                oldTotalBytes = totalBytesRead;
+                ++sumTime;
+            } finally {
+                lock.writeLock().unlock();
+            }
         }
 
         public void incrementBytesRead(int value) {
             lock.writeLock().lock();
-            totalBytesRead += value;
-            lock.writeLock().unlock();
+            try {
+                totalBytesRead += value;
+            } finally {
+                lock.writeLock().unlock();
+            }
         }
 
         /**
@@ -159,8 +149,12 @@ public class MVInputStream extends InputStream {
          */
         public long getTotalBytesRead() {
             lock.readLock().lock();
-            final long res = totalBytesRead;
-            lock.readLock().unlock();
+            final long res;
+            try {
+                res = totalBytesRead;
+            } finally {
+                lock.readLock().unlock();
+            }
             return res;
         }
 
@@ -171,8 +165,12 @@ public class MVInputStream extends InputStream {
          */
         public long getBandwidth() {
             lock.readLock().lock();
-            final long bw = bandwidth;
-            lock.readLock().unlock();
+            final long bw;
+            try {
+                bw = bandwidth;
+            } finally {
+                lock.readLock().unlock();
+            }
             return bw;
         }
 
@@ -183,8 +181,12 @@ public class MVInputStream extends InputStream {
          */
         public long getSumTime() {
             lock.readLock().lock();
-            final long t = sumTime;
-            lock.readLock().unlock();
+            final long t;
+            try {
+                t = sumTime;
+            } finally {
+                lock.readLock().unlock();
+            }
             return t;
         }
     }
