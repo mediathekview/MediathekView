@@ -339,35 +339,35 @@ public final class DatenDownload extends MVData<DatenDownload> {
     }
 
     public boolean isRestart() {
-        if (arr[DOWNLOAD_PROGRAMM_RESTART].equals("")) {
+        if (arr[DOWNLOAD_PROGRAMM_RESTART].isEmpty()) {
             return false;
         }
         return Boolean.parseBoolean(arr[DOWNLOAD_PROGRAMM_RESTART]);
     }
 
     public boolean isDownloadManager() {
-        if (arr[DOWNLOAD_PROGRAMM_DOWNLOADMANAGER].equals("")) {
+        if (arr[DOWNLOAD_PROGRAMM_DOWNLOADMANAGER].isEmpty()) {
             return false;
         }
         return Boolean.parseBoolean(arr[DOWNLOAD_PROGRAMM_DOWNLOADMANAGER]);
     }
 
     public boolean isInfoFile() {
-        if (arr[DOWNLOAD_INFODATEI].equals("")) {
+        if (arr[DOWNLOAD_INFODATEI].isEmpty()) {
             return false;
         }
         return Boolean.parseBoolean(arr[DOWNLOAD_INFODATEI]);
     }
 
     public boolean isSubtitle() {
-        if (arr[DOWNLOAD_SUBTITLE].equals("")) {
+        if (arr[DOWNLOAD_SUBTITLE].isEmpty()) {
             return false;
         }
         return Boolean.parseBoolean(arr[DOWNLOAD_SUBTITLE]);
     }
 
     public boolean isSpotlight() {
-        if (arr[DOWNLOAD_SPOTLIGHT].equals("")) {
+        if (arr[DOWNLOAD_SPOTLIGHT].isEmpty()) {
             return false;
         }
         return Boolean.parseBoolean(arr[DOWNLOAD_SPOTLIGHT]);
@@ -513,7 +513,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
         // ##############################################
         // Name
         // ##############################################
-        if (!nname.equals("")) {
+        if (!nname.isEmpty()) {
             // wenn vorgegeben, dann den nehmen
             name = nname;
         } else {
@@ -521,7 +521,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
             arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME] = name;
             // ##############################
             // Name sinnvoll belegen
-            if (name.equals("")) {
+            if (name.isEmpty()) {
                 name = getHeute_yyyyMMdd() + '_' + arr[DatenDownload.DOWNLOAD_THEMA] + '-' + arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
             }
 
@@ -559,7 +559,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
             // Kürzen
             if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_LAENGE_BESCHRAENKEN])) {
                 int laenge = Konstanten.LAENGE_DATEINAME;
-                if (!pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE].equals("")) {
+                if (!pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE].isEmpty()) {
                     laenge = Integer.parseInt(pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE]);
                 }
                 name = GuiFunktionen.cutName(name, laenge);
@@ -629,7 +629,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
         if (Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN])) {
             // nur dann ist was zu tun
             laenge = Konstanten.LAENGE_FELD;
-            if (!pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_FIELD].equals("")) {
+            if (!pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_FIELD].isEmpty()) {
                 laenge = Integer.parseInt(pSet.arr[DatenPset.PROGRAMMSET_MAX_LAENGE_FIELD]);
             }
         }
@@ -640,18 +640,18 @@ public final class DatenDownload extends MVData<DatenDownload> {
         replStr = StringUtils.replace(replStr, "%N", getField(GuiFunktionen.getDateiName(this.arr[DatenDownload.DOWNLOAD_URL]), laenge));
 
         //Felder mit fester Länge werden immer ganz geschrieben
-        replStr = StringUtils.replace(replStr, "%D", film.arr[DatenFilm.FILM_DATUM].equals("") ? getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM])));
-        replStr = StringUtils.replace(replStr, "%d", film.arr[DatenFilm.FILM_ZEIT].equals("") ? getJetzt_HHMMSS() : datumDatumZeitReinigen(film.arr[DatenFilm.FILM_ZEIT]));
+        replStr = StringUtils.replace(replStr, "%D", film.arr[DatenFilm.FILM_DATUM].isEmpty() ? getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM])));
+        replStr = StringUtils.replace(replStr, "%d", film.arr[DatenFilm.FILM_ZEIT].isEmpty() ? getJetzt_HHMMSS() : datumDatumZeitReinigen(film.arr[DatenFilm.FILM_ZEIT]));
         replStr = StringUtils.replace(replStr, "%H", getHeute_yyyyMMdd());
         replStr = StringUtils.replace(replStr, "%h", getJetzt_HHMMSS());
 
         //TODO Use StringUtils.replace here
-        replStr = StringUtils.replace(replStr, "%1", getDMY("%1", film.arr[DatenFilm.FILM_DATUM].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM]));
-        replStr = StringUtils.replace(replStr, "%2", getDMY("%2", film.arr[DatenFilm.FILM_DATUM].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM]));
-        replStr = StringUtils.replace(replStr, "%3", getDMY("%3", film.arr[DatenFilm.FILM_DATUM].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM]));
-        replStr = StringUtils.replace(replStr, "%4", getHMS("%4", film.arr[DatenFilm.FILM_ZEIT].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT]));
-        replStr = StringUtils.replace(replStr, "%5", getHMS("%5", film.arr[DatenFilm.FILM_ZEIT].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT]));
-        replStr = StringUtils.replace(replStr, "%6", getHMS("%6", film.arr[DatenFilm.FILM_ZEIT].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT]));
+        replStr = StringUtils.replace(replStr, "%1", getDMY("%1", film.arr[DatenFilm.FILM_DATUM].isEmpty() ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM]));
+        replStr = StringUtils.replace(replStr, "%2", getDMY("%2", film.arr[DatenFilm.FILM_DATUM].isEmpty() ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM]));
+        replStr = StringUtils.replace(replStr, "%3", getDMY("%3", film.arr[DatenFilm.FILM_DATUM].isEmpty() ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM]));
+        replStr = StringUtils.replace(replStr, "%4", getHMS("%4", film.arr[DatenFilm.FILM_ZEIT].isEmpty() ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT]));
+        replStr = StringUtils.replace(replStr, "%5", getHMS("%5", film.arr[DatenFilm.FILM_ZEIT].isEmpty() ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT]));
+        replStr = StringUtils.replace(replStr, "%6", getHMS("%6", film.arr[DatenFilm.FILM_ZEIT].isEmpty() ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT]));
 
         replStr = StringUtils.replace(replStr, "%i", String.valueOf(film.nr));
 
@@ -717,7 +717,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
         // %2 - Monat
         // %3 - Jahr
         String ret = "";
-        if (!datum.equals("")) {
+        if (!datum.isEmpty()) {
             try {
                 if (datum.length() == 10) {
                     switch (s) {
@@ -746,7 +746,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
         // %5 - Minute
         // %6 - Sekunde
         String ret = "";
-        if (!zeit.equals("")) {
+        if (!zeit.isEmpty()) {
             try {
                 if (zeit.length() == 8) {
                     switch (s) {
@@ -803,9 +803,9 @@ public final class DatenDownload extends MVData<DatenDownload> {
 
     public Datum getDatumForObject() {
         Datum tmp = new Datum(0);
-        if (!arr[DatenDownload.DOWNLOAD_DATUM].equals("")) {
+        if (!arr[DatenDownload.DOWNLOAD_DATUM].isEmpty()) {
             try {
-                if (!arr[DatenDownload.DOWNLOAD_ZEIT].equals("")) {
+                if (!arr[DatenDownload.DOWNLOAD_ZEIT].isEmpty()) {
                     tmp.setTime(sdf_datum_zeit.parse(arr[DatenDownload.DOWNLOAD_DATUM] + arr[DatenDownload.DOWNLOAD_ZEIT]).getTime());
                 } else {
                     tmp.setTime(sdf_datum.parse(arr[DatenDownload.DOWNLOAD_DATUM]).getTime());
