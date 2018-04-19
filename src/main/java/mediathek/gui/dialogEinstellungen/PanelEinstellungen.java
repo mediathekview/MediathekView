@@ -29,13 +29,11 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVMessageDialog;
-import mediathek.update.ProgrammUpdateSuchen;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
@@ -48,7 +46,7 @@ public class PanelEinstellungen extends PanelVorlage {
     public PanelEinstellungen(Daten d, JFrame parent) {
         super(d, parent);
         initComponents();
-        jButtonInfos.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
+
         daten = d;
         SpinnerListModel lm = new SpinnerListModel(new Object[]{ALLE, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
             "12", "14", "16", "18", "20", "25", "30"});
@@ -111,8 +109,6 @@ public class PanelEinstellungen extends PanelVorlage {
             });
         }
 
-        jButtonSuchen.addActionListener(new BeobSuchen(false));
-        jButtonInfos.addActionListener(new BeobSuchen(true));
         jButtonRefresh.addActionListener(e -> fillIconList());
 
         fillIconList();
@@ -233,19 +229,29 @@ public class PanelEinstellungen extends PanelVorlage {
         jComboBoxIcons.setModel(model);
 
         if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ICON_STANDARD))) {
-            if (!MVConfig.get(MVConfig.Configs.SYSTEM_ICON_PFAD).equals("")) {
+            if (!MVConfig.get(MVConfig.Configs.SYSTEM_ICON_PFAD).isEmpty()) {
                 File f = new File(MVConfig.get(MVConfig.Configs.SYSTEM_ICON_PFAD));
                 jComboBoxIcons.setSelectedItem(f.getName());
             }
         }
     }
 
+
+    private class BeobSpinnerDays implements ChangeListener {
+
+        @Override
+        public void stateChanged(ChangeEvent arg0) {
+            String s = jSpinnerDays.getModel().getValue().toString();
+            if (s.equals(ALLE)) {
+                s = "0";
+            }
+            MVConfig.add(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE, s);
+        }
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.JPanel pnlProgramUpdate = new javax.swing.JPanel();
-        jButtonSuchen = new javax.swing.JButton();
-        jButtonInfos = new javax.swing.JButton();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
         jComboBoxLookAndFeel = new javax.swing.JComboBox<>();
@@ -262,32 +268,6 @@ public class PanelEinstellungen extends PanelVorlage {
         jCheckBoxTabIcon = new javax.swing.JCheckBox();
 
         setMinimumSize(getPreferredSize());
-
-        pnlProgramUpdate.setBorder(javax.swing.BorderFactory.createTitledBorder("Programmupdate"));
-
-        jButtonSuchen.setText("Jetzt suchen");
-
-        jButtonInfos.setText("Programminfos anzeigen");
-
-        javax.swing.GroupLayout pnlProgramUpdateLayout = new javax.swing.GroupLayout(pnlProgramUpdate);
-        pnlProgramUpdate.setLayout(pnlProgramUpdateLayout);
-        pnlProgramUpdateLayout.setHorizontalGroup(
-            pnlProgramUpdateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlProgramUpdateLayout.createSequentialGroup()
-                .addContainerGap()
-                    .addComponent(jButtonSuchen, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jButtonInfos)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        pnlProgramUpdateLayout.setVerticalGroup(
-            pnlProgramUpdateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlProgramUpdateLayout.createSequentialGroup()
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(pnlProgramUpdateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonSuchen)
-                        .addComponent(jButtonInfos)))
-        );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
@@ -396,7 +376,6 @@ public class PanelEinstellungen extends PanelVorlage {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(pnlProgramUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -408,19 +387,15 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlProgramUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(234, Short.MAX_VALUE))
+                    .addContainerGap(299, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonHelpDays;
-    private javax.swing.JButton jButtonInfos;
     private javax.swing.JButton jButtonLoad;
     private javax.swing.JButton jButtonRefresh;
-    private javax.swing.JButton jButtonSuchen;
     private javax.swing.JCheckBox jCheckBoxTabIcon;
     private javax.swing.JCheckBox jCheckBoxTabsTop;
     private javax.swing.JCheckBox jCheckBoxTray;
@@ -428,31 +403,4 @@ public class PanelEinstellungen extends PanelVorlage {
     private javax.swing.JComboBox<String> jComboBoxLookAndFeel;
     private javax.swing.JSpinner jSpinnerDays;
     // End of variables declaration//GEN-END:variables
-
-    private class BeobSpinnerDays implements ChangeListener {
-
-        @Override
-        public void stateChanged(ChangeEvent arg0) {
-            String s = jSpinnerDays.getModel().getValue().toString();
-            if (s.equals(ALLE)) {
-                s = "0";
-            }
-            MVConfig.add(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE, s);
-        }
-    }
-
-    private class BeobSuchen implements ActionListener {
-
-        private boolean infos = false;
-
-        public BeobSuchen(boolean iinfos) {
-            infos = iinfos;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            new ProgrammUpdateSuchen().checkVersion(!infos /* bei aktuell anzeigen */, infos /* Hinweis */, true /* hinweiseAlleAnzeigen */);
-        }
-    }
-
 }

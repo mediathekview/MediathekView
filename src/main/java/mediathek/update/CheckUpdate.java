@@ -23,6 +23,7 @@ import mSearch.tool.Duration;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
@@ -49,9 +50,15 @@ public class CheckUpdate extends Thread {
 
     public void run() {
         try {
+            final MediathekGui gui = daten.getMediathekGui();
+            if (gui != null)
+                gui.enableUpdateMenuItem(false);
             searchForProgramUpdate();
 
             checkForPsetUpdates();
+
+            if (gui != null)
+                gui.enableUpdateMenuItem(true);
         } catch (Exception ex) {
             Log.errorLog(794612801, ex);
         }

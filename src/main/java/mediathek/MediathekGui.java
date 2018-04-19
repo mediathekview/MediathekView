@@ -46,6 +46,7 @@ import mediathek.res.GetIcon;
 import mediathek.tool.*;
 import mediathek.tool.threads.IndicatorThread;
 import mediathek.update.CheckUpdate;
+import mediathek.update.ProgrammUpdateSuchen;
 import net.engio.mbassy.listener.Handler;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
@@ -511,6 +512,15 @@ public class MediathekGui extends JFrame {
         initFrames();
     }
 
+    /**
+     * Enable/Disable the update related menu item.
+     *
+     * @param enable Shall the menu item be enabled?
+     */
+    public void enableUpdateMenuItem(boolean enable) {
+        miSearchForProgramUpdate.setEnabled(enable);
+    }
+
     private void initFrames() {
         // Downloads
         int nr = 1;
@@ -812,15 +822,19 @@ public class MediathekGui extends JFrame {
         });
     }
 
-    protected void setupHelpMenu()
-    {
-        jMenuItemResetSettings.addActionListener(e ->
-        {
-            ResetSettingsDialog dialog = new ResetSettingsDialog(this, daten);
-            GuiFunktionen.centerOnScreen(dialog, false);
-            dialog.setVisible(true);
-        });
+    protected void setupHelpMenu() {
+        jMenuItemResetSettings.addActionListener(e -> resetSettings());
+
+        miSearchForProgramUpdate.addActionListener(e -> searchForUpdateOrShowProgramInfos(false));
+        miShowProgramInfos.addActionListener(e -> searchForUpdateOrShowProgramInfos(true));
     }
+
+    private void resetSettings() {
+        ResetSettingsDialog dialog = new ResetSettingsDialog(this, daten);
+        GuiFunktionen.centerOnScreen(dialog, false);
+        dialog.setVisible(true);
+    }
+
     private void initializeAnsichtAbos()
     {
         //Ansicht Abos
@@ -1103,6 +1117,58 @@ public class MediathekGui extends JFrame {
         }
     }
 
+    private void searchForUpdateOrShowProgramInfos(boolean infos) {
+        new ProgrammUpdateSuchen().checkVersion(!infos, infos, true);
+    }
+
+    private class MenuLST implements MenuListener {
+
+        private final TABS tabs;
+
+        public MenuLST(TABS tabs) {
+            this.tabs = tabs;
+        }
+
+        @Override
+        public void menuSelected(MenuEvent e) {
+            findTab(tabs);
+        }
+
+        @Override
+        public void menuDeselected(MenuEvent e) {
+        }
+
+        @Override
+        public void menuCanceled(MenuEvent e) {
+        }
+
+        private void findTab(TABS state) {
+            switch (state) {
+                case TAB_NIX:
+                    break;
+                case TAB_FILME:
+                    setTabIfContain(Daten.guiFilme);
+                    break;
+                case TAB_DOWNLOADS:
+                    setTabIfContain(Daten.guiDownloads);
+                    break;
+                case TAB_ABOS:
+                    setTabIfContain(Daten.guiAbo);
+                    break;
+            }
+        }
+
+        private void setTabIfContain(Component check) {
+            for (int i = 0; i < jTabbedPane.getTabCount(); ++i) {
+                Component c = jTabbedPane.getComponentAt(i);
+                if (c.equals(check)) {
+                    jTabbedPane.setSelectedIndex(i);
+                    return;
+                }
+            }
+        }
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -1168,6 +1234,9 @@ public class MediathekGui extends JFrame {
         javax.swing.JPopupMenu.Separator jSeparator4 = new javax.swing.JPopupMenu.Separator();
         jMenuItemCreateProtocolFile = new javax.swing.JMenuItem();
         jMenuItemResetSettings = new javax.swing.JMenuItem();
+        javax.swing.JPopupMenu.Separator jSeparator8 = new javax.swing.JPopupMenu.Separator();
+        miSearchForProgramUpdate = new javax.swing.JMenuItem();
+        miShowProgramInfos = new javax.swing.JMenuItem();
         jSeparatorAboutApplication = new javax.swing.JPopupMenu.Separator();
         jMenuItemAboutApplication = new javax.swing.JMenuItem();
 
@@ -1374,6 +1443,13 @@ public class MediathekGui extends JFrame {
 
         jMenuItemResetSettings.setText("Einstellungen zurücksetzen...");
         jMenuHilfe.add(jMenuItemResetSettings);
+        jMenuHilfe.add(jSeparator8);
+
+        miSearchForProgramUpdate.setText("Nach Update suchen...");
+        jMenuHilfe.add(miSearchForProgramUpdate);
+
+        miShowProgramInfos.setText("Programminfos anzeigen...");
+        jMenuHilfe.add(miShowProgramInfos);
         jMenuHilfe.add(jSeparatorAboutApplication);
 
         jMenuItemAboutApplication.setText("Über dieses Programm...");
@@ -1456,54 +1532,7 @@ public class MediathekGui extends JFrame {
     protected javax.swing.JPopupMenu.Separator jSeparator2;
     protected javax.swing.JPopupMenu.Separator jSeparatorAboutApplication;
     private javax.swing.JTabbedPane jTabbedPane;
+    private javax.swing.JMenuItem miSearchForProgramUpdate;
+    private javax.swing.JMenuItem miShowProgramInfos;
     // End of variables declaration//GEN-END:variables
-
-    private class MenuLST implements MenuListener {
-
-        private final TABS tabs;
-
-        public MenuLST(TABS tabs) {
-            this.tabs = tabs;
-        }
-
-        @Override
-        public void menuSelected(MenuEvent e) {
-            findTab(tabs);
-        }
-
-        @Override
-        public void menuDeselected(MenuEvent e) {
-        }
-
-        @Override
-        public void menuCanceled(MenuEvent e) {
-        }
-
-        private void findTab(TABS state) {
-            switch (state) {
-                case TAB_NIX:
-                    break;
-                case TAB_FILME:
-                    setTabIfContain(Daten.guiFilme);
-                    break;
-                case TAB_DOWNLOADS:
-                    setTabIfContain(Daten.guiDownloads);
-                    break;
-                case TAB_ABOS:
-                    setTabIfContain(Daten.guiAbo);
-                    break;
-            }
-        }
-
-        private void setTabIfContain(Component check) {
-            for (int i = 0; i < jTabbedPane.getTabCount(); ++i) {
-                Component c = jTabbedPane.getComponentAt(i);
-                if (c.equals(check)) {
-                    jTabbedPane.setSelectedIndex(i);
-                    return;
-                }
-            }
-        }
-    }
-
 }
