@@ -52,13 +52,14 @@ public class CheckUpdate extends Thread {
         try {
             final MediathekGui gui = daten.getMediathekGui();
             if (gui != null)
-                gui.enableUpdateMenuItem(false);
+                SwingUtilities.invokeLater(() -> gui.enableUpdateMenuItem(false));
+
             searchForProgramUpdate();
 
             checkForPsetUpdates();
 
             if (gui != null)
-                gui.enableUpdateMenuItem(true);
+                SwingUtilities.invokeLater(() -> gui.enableUpdateMenuItem(true));
         } catch (Exception ex) {
             Log.errorLog(794612801, ex);
         }
