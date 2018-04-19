@@ -73,7 +73,6 @@ public class MVConfig {
 
         //============================================
         //Programm-Configs, änderbar über Gui
-        SYSTEM_ECHTZEITSUCHE("Echtzeitsuche", Boolean.TRUE.toString()),
         SYSTEM_TABS_TOP("Tabs-oben", SystemInfo.isMacOSX() ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),
         SYSTEM_TABS_ICON("Tabs-Icon", SystemInfo.isMacOSX() ? Boolean.FALSE.toString() : Boolean.TRUE.toString()),
         SYSTEM_USE_TRAY("Tray-anzeigen", Boolean.FALSE.toString()),
