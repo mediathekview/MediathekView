@@ -46,22 +46,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         this.daten = daten_;
     }
 
-    //===================================
-    // public
-    //===================================
-    public void sort() {
-        Collections.sort(this);
-    }
-
-    public synchronized boolean addMitNummer(DatenDownload e) {
-        boolean ret = super.add(e);
+    public synchronized void addMitNummer(DatenDownload e) {
+        super.add(e);
         listeNummerieren();
-        return ret;
     }
 
-    //    public synchronized void zurueckgestellteWiederAktivieren() {
-    //        this.parallelStream().forEach(d -> d.arr[DatenDownload.DOWNLOAD_ZURUECKGESTELLT] = Boolean.FALSE.toString());
-    //    }
     public synchronized void filmEintragen() {
         // bei einmal Downloads nach einem Programmstart/Neuladen der Filmliste
         // den Film wieder eintragen
@@ -166,17 +155,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
             this.addFirst(datenDownload);
         }
         Listener.notify(Listener.EREIGNIS_REIHENFOLGE_DOWNLOAD, this.getClass().getSimpleName());
-    }
-
-    public synchronized DatenDownload getDownloadByUrl(String url) {
-        DatenDownload ret = null;
-        for (DatenDownload download : this) {
-            if (download.arr[DatenDownload.DOWNLOAD_URL].equals(url)) {
-                ret = download;
-                break;
-            }
-        }
-        return ret;
     }
 
     public synchronized void delDownloadButton(String url) {
@@ -360,20 +338,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public synchronized void setModelProgressAlleStart(TModelDownload tModel) {
-        for (List<Object> l : (Iterable<List<Object>>) tModel.getDataVector()) {
-            DatenDownload datenDownload = (DatenDownload) l.get(DatenDownload.DOWNLOAD_REF);
-            if (datenDownload.start != null) {
-                l.set(DatenDownload.DOWNLOAD_RESTZEIT, datenDownload.getTextRestzeit());
-                l.set(DatenDownload.DOWNLOAD_BANDBREITE, datenDownload.getTextBandbreite());
-                l.set(DatenDownload.DOWNLOAD_PROGRESS, setProgress(datenDownload));
-                l.set(DatenDownload.DOWNLOAD_GROESSE, datenDownload.mVFilmSize);
-                l.set(DatenDownload.DOWNLOAD_UNTERBROCHEN, null);
-            }
-        }
-    }
-
     public synchronized void abosSuchen(JFrame parent) {
         // in der Filmliste nach passenden Filmen suchen und 
         // in die Liste der Downloads eintragen
@@ -539,20 +503,6 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                 .filter(download -> quelle == DatenDownload.QUELLE_ALLE || download.quelle == quelle)
                 .collect(Collectors.toList()));
         return aktivDownloads;
-    }
-
-    /**
-     * Return a List of all not yet finished downloads.
-     *
-     * @param quelle Use QUELLE_XXX constants from {@link mediathek.controller.starter.Start}.
-     * @param liste
-     */
-    public synchronized void getListOfStartsNotFinished(int quelle, LinkedList<DatenDownload> liste) {
-        liste.clear();
-        liste.addAll(this.stream().filter(download -> download.start != null)
-                .filter(download -> download.start.status < Start.STATUS_FERTIG)
-                .filter(download -> quelle == DatenDownload.QUELLE_ALLE || download.quelle == quelle)
-                .collect(Collectors.toList()));
     }
 
     public synchronized TModel getModelStarts(TModel model) {
@@ -724,18 +674,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
         String host = "";
         try {
             try {
-                String uurl = datenDownload.arr[DatenDownload.DOWNLOAD_URL];
-                // die funktion "getHost()" kann nur das Protokoll "http" ??!??
-                if (uurl.startsWith("rtmpt:")) {
-                    uurl = uurl.toLowerCase().replace("rtmpt:", "http:");
-                }
-                if (uurl.startsWith("rtmp:")) {
-                    uurl = uurl.toLowerCase().replace("rtmp:", "http:");
-                }
-                if (uurl.startsWith("mms:")) {
-                    uurl = uurl.toLowerCase().replace("mms:", "http:");
-                }
-                URL url = new URL(uurl);
+                URL url = new URL(datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
                 String tmp = url.getHost();
                 if (tmp.contains(".")) {
                     host = tmp.substring(tmp.lastIndexOf('.'));
@@ -749,29 +688,15 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     }
                 }
             } catch (Exception ex) {
-                // für die Hosts bei denen das nicht klappt
-                // Log.systemMeldung("getHost 1: " + s.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
                 host = "host";
             } finally {
                 if (host.isEmpty()) {
-                    // Log.systemMeldung("getHost 3: " + s.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
                     host = "host";
                 }
             }
         } catch (Exception ex) {
-            // Log.systemMeldung("getHost 4: " + s.download.arr[DatenDownload.DOWNLOAD_URL_NR]);
             host = "exception";
         }
         return host;
     }
-
-    //    private synchronized boolean checkUrlExists(String url) {
-    //        //prüfen, ob der Film schon in der Liste ist, (manche Filme sind in verschiedenen Themen)
-    //        for (DatenDownload download : this) {
-    //            if (download.arr[DatenDownload.DOWNLOAD_URL].equals(url)) {
-    //                return true;
-    //            }
-    //        }
-    //        return false;
-    //    }
 }

@@ -23,6 +23,7 @@ import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
 import mediathek.tool.MVFilmSize;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -197,7 +198,7 @@ public class RuntimeExec {
                     String s = matcher.group().trim();
                     if (!s.isEmpty()) {
                         try {
-                            final long aktSize = Integer.parseInt(s.replace("kB", ""));
+                            final long aktSize = Integer.parseInt(StringUtils.replace(s, "kB", ""));
                             mVFilmSize.setAktSize(aktSize * 1_000);
                             long akt = start.startZeit.diffInSekunden();
                             if (oldSecs < akt - 5) {

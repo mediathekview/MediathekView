@@ -19,16 +19,17 @@
  */
 package mediathek.tool;
 
-import static mSearch.tool.Log.LILNE;
-
-import java.io.File;
-import java.security.CodeSource;
-
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
 import mediathek.Main;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
+import java.security.CodeSource;
+
+import static mSearch.tool.Log.LILNE;
 
 public class MVFunctionSys {
 
@@ -60,7 +61,7 @@ public class MVFunctionSys {
             } catch (Exception ignored) {
             }
         }
-        String s = propFile.getAbsolutePath().replace(pFilePath, "");
+        String s = StringUtils.replace(propFile.getAbsolutePath(), pFilePath, "");
         if (!s.endsWith(File.separator)) {
             s = s + File.separator;
         }

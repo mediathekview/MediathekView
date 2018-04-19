@@ -4,6 +4,7 @@ import mSearch.daten.DatenFilm;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
+import org.apache.commons.lang3.StringUtils;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -53,7 +54,7 @@ public class SpotlightCommentWriter {
                 }
 
                 //replace quotation marks...
-                strComment = strComment.replace("\"", "\\\"");
+                strComment = StringUtils.replace(strComment, "\"", "\\\"");
 
                 final String script = "tell application \"Finder\"\n"
                         + "set my_file to POSIX file \"" + strFilePath + "\" as alias\n"

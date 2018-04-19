@@ -29,6 +29,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialog.DialogZiel;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.io.*;
@@ -53,7 +54,7 @@ public class MVInfoFile {
             pfad = GuiFunktionen.getStandardDownloadPath();
         }
         if (titel.isEmpty()) {
-            titel = film.arr[DatenFilm.FILM_SENDER].replace(" ", "-") + ".txt";
+            titel = StringUtils.replace(film.arr[DatenFilm.FILM_SENDER], " ", "-") + ".txt";
         } else {
             titel = titel + ".txt";
         }
