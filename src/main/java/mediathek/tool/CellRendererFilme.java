@@ -44,8 +44,8 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
     private static ImageIcon film_rec_sw_tab = null;
     private static ImageIcon film_stop_tab = null;
     private static ImageIcon film_stop_sw_tab = null;
-    private boolean geoMelden = false;
-    private MVUsedUrls history = null;
+    private boolean geoMelden;
+    private final MVUsedUrls history;
     private final MVSenderIconCache senderIconCache;
     private static ImageIcon ja_16 = null;
     private static ImageIcon nein_12 = null;
@@ -183,7 +183,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
     }
 
     private void setColor(Component c, DatenFilm datenFilm, DatenDownload datenDownload, boolean isSelected) {
-        boolean live = datenFilm.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE);
+        final boolean live = datenFilm.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE);
         boolean start = false;
 
         if (datenDownload != null) {
@@ -224,6 +224,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
 
             }
         }
+
         if (!start) {
             if (live) {
                 // bei livestreams keine History anzeigen
