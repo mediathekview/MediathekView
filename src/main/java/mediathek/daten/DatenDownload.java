@@ -29,6 +29,7 @@ import mediathek.controller.starter.Start;
 import mediathek.gui.messages.StartEvent;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFilmSize;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -414,7 +415,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
         if (b > 1000 * 1000) {
             String s = String.valueOf(b / 1000);
             if (s.length() >= 4) {
-                s = s.substring(0, s.length() - 3) + "," + s.substring(s.length() - 3);
+                s = s.substring(0, s.length() - 3) + ',' + s.substring(s.length() - 3);
             }
             return s + " MB/s";
         } else if (b > 1000) {
@@ -440,14 +441,16 @@ public final class DatenDownload extends MVData<DatenDownload> {
             DatenProg programm = pSet.getProgUrl(arr[DOWNLOAD_URL]);
             // ##############################################
             // für die alten Versionen:
-            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME].replace("%n", "");
-            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME].replace("%p", "");
-            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD].replace("%n", "");
-            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD].replace("%p", "");
+            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME] = StringUtils.replace(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME], "%n", "");
+            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME] = StringUtils.replace(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME], "%p", "");
+            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = StringUtils.replace(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD], "%n", "");
+            pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = StringUtils.replace(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD], "%p", "");
+
             for (DatenProg prog : pSet.getListeProg()) {
-                prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME] = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME].replace("%n", "");
-                prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME] = prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME].replace("%p", "");
+                prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME] = StringUtils.replace(prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME], "%n", "");
+                prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME] = StringUtils.replace(prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME], "%p", "");
             }
+
             // ##############################################
             // pSet und ... eintragen
             arr[DOWNLOAD_PROGRAMMSET] = pSet.arr[DatenPset.PROGRAMMSET_NAME];
@@ -487,12 +490,11 @@ public final class DatenDownload extends MVData<DatenDownload> {
     }
 
     private String replaceExec(String befehlsString) {
-        befehlsString = befehlsString.replace("**", arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
-        befehlsString = befehlsString.replace("%f", arr[DOWNLOAD_URL]);
-        befehlsString = befehlsString.replace("%F", arr[DOWNLOAD_URL_RTMP]);
-
-        befehlsString = befehlsString.replace("%a", arr[DOWNLOAD_ZIEL_PFAD]);
-        befehlsString = befehlsString.replace("%b", arr[DOWNLOAD_ZIEL_DATEINAME]);
+        befehlsString = StringUtils.replace(befehlsString, "**", arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+        befehlsString = StringUtils.replace(befehlsString, "%f", arr[DOWNLOAD_URL]);
+        befehlsString = StringUtils.replace(befehlsString, "%F", arr[DOWNLOAD_URL_RTMP]);
+        befehlsString = StringUtils.replace(befehlsString, "%a", arr[DOWNLOAD_ZIEL_PFAD]);
+        befehlsString = StringUtils.replace(befehlsString, "%b", arr[DOWNLOAD_ZIEL_DATEINAME]);
 
         return befehlsString;
     }
@@ -520,7 +522,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
             // ##############################
             // Name sinnvoll belegen
             if (name.equals("")) {
-                name = getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA] + "-" + arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
+                name = getHeute_yyyyMMdd() + '_' + arr[DatenDownload.DOWNLOAD_THEMA] + '-' + arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
             }
 
             //Tags ersetzen
@@ -529,10 +531,10 @@ public final class DatenDownload extends MVData<DatenDownload> {
             String suff = "";
             if (name.contains(".")) {
                 //Suffix (und den . ) nicht ändern
-                suff = name.substring(name.lastIndexOf("."));
+                suff = name.substring(name.lastIndexOf('.'));
                 if (suff.length() <= 4 && suff.length() > 1) {
                     //dann ist es sonst was??
-                    name = name.substring(0, name.lastIndexOf("."));
+                    name = name.substring(0, name.lastIndexOf('.'));
                 } else {
                     suff = "";
                 }
@@ -606,7 +608,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
             path = GuiFunktionen.getStandardDownloadPath();
         }
         if (name.isEmpty()) {
-            name = getHeute_yyyyMMdd() + "_" + arr[DatenDownload.DOWNLOAD_THEMA] + "-" + arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
+            name = getHeute_yyyyMMdd() + '_' + arr[DatenDownload.DOWNLOAD_THEMA] + '-' + arr[DatenDownload.DOWNLOAD_TITEL] + ".mp4";
         }
 
         // in Win dürfen die Pfade nicht länger als 255 Zeichen haben (für die Infodatei kommen noch ".txt" dazu)
@@ -632,26 +634,26 @@ public final class DatenDownload extends MVData<DatenDownload> {
             }
         }
 
-        replStr = replStr.replace("%t", getField(film.arr[DatenFilm.FILM_THEMA], laenge));
-        replStr = replStr.replace("%T", getField(film.arr[DatenFilm.FILM_TITEL], laenge));
-        replStr = replStr.replace("%s", getField(film.arr[DatenFilm.FILM_SENDER], laenge));
-        replStr = replStr.replace("%N", getField(GuiFunktionen.getDateiName(this.arr[DatenDownload.DOWNLOAD_URL]), laenge));
+        replStr = StringUtils.replace(replStr, "%t", getField(film.arr[DatenFilm.FILM_THEMA], laenge));
+        replStr = StringUtils.replace(replStr, "%T", getField(film.arr[DatenFilm.FILM_TITEL], laenge));
+        replStr = StringUtils.replace(replStr, "%s", getField(film.arr[DatenFilm.FILM_SENDER], laenge));
+        replStr = StringUtils.replace(replStr, "%N", getField(GuiFunktionen.getDateiName(this.arr[DatenDownload.DOWNLOAD_URL]), laenge));
 
         //Felder mit fester Länge werden immer ganz geschrieben
-        replStr = replStr.replace("%D", film.arr[DatenFilm.FILM_DATUM].equals("") ? getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM])));
-        replStr = replStr.replace("%d", film.arr[DatenFilm.FILM_ZEIT].equals("") ? getJetzt_HHMMSS() : datumDatumZeitReinigen(film.arr[DatenFilm.FILM_ZEIT]));
-        replStr = replStr.replace("%H", getHeute_yyyyMMdd());
-        replStr = replStr.replace("%h", getJetzt_HHMMSS());
+        replStr = StringUtils.replace(replStr, "%D", film.arr[DatenFilm.FILM_DATUM].equals("") ? getHeute_yyyyMMdd() : datumDatumZeitReinigen(datumDrehen(film.arr[DatenFilm.FILM_DATUM])));
+        replStr = StringUtils.replace(replStr, "%d", film.arr[DatenFilm.FILM_ZEIT].equals("") ? getJetzt_HHMMSS() : datumDatumZeitReinigen(film.arr[DatenFilm.FILM_ZEIT]));
+        replStr = StringUtils.replace(replStr, "%H", getHeute_yyyyMMdd());
+        replStr = StringUtils.replace(replStr, "%h", getJetzt_HHMMSS());
 
-        replStr = replStr.replace("%1", getDMY("%1", film.arr[DatenFilm.FILM_DATUM].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM]));
-        replStr = replStr.replace("%2", getDMY("%2", film.arr[DatenFilm.FILM_DATUM].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM]));
-        replStr = replStr.replace("%3", getDMY("%3", film.arr[DatenFilm.FILM_DATUM].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM]));
+        //TODO Use StringUtils.replace here
+        replStr = StringUtils.replace(replStr, "%1", getDMY("%1", film.arr[DatenFilm.FILM_DATUM].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM]));
+        replStr = StringUtils.replace(replStr, "%2", getDMY("%2", film.arr[DatenFilm.FILM_DATUM].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM]));
+        replStr = StringUtils.replace(replStr, "%3", getDMY("%3", film.arr[DatenFilm.FILM_DATUM].equals("") ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM]));
+        replStr = StringUtils.replace(replStr, "%4", getHMS("%4", film.arr[DatenFilm.FILM_ZEIT].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT]));
+        replStr = StringUtils.replace(replStr, "%5", getHMS("%5", film.arr[DatenFilm.FILM_ZEIT].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT]));
+        replStr = StringUtils.replace(replStr, "%6", getHMS("%6", film.arr[DatenFilm.FILM_ZEIT].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT]));
 
-        replStr = replStr.replace("%4", getHMS("%4", film.arr[DatenFilm.FILM_ZEIT].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT]));
-        replStr = replStr.replace("%5", getHMS("%5", film.arr[DatenFilm.FILM_ZEIT].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT]));
-        replStr = replStr.replace("%6", getHMS("%6", film.arr[DatenFilm.FILM_ZEIT].equals("") ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT]));
-
-        replStr = replStr.replace("%i", String.valueOf(film.nr));
+        replStr = StringUtils.replace(replStr, "%i", String.valueOf(film.nr));
 
         String res = "";
         if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL))) {
@@ -667,12 +669,13 @@ public final class DatenDownload extends MVData<DatenDownload> {
         } else if (arr[DOWNLOAD_URL].equals(film.getUrlRtmpFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN))) {
             res = "L";
         }
-        replStr = replStr.replace("%q", res); //%q Qualität des Films ("HD", "H", "L")
+        replStr = StringUtils.replace(replStr, "%q", res);
 
-        replStr = replStr.replace("%S", GuiFunktionen.getSuffixFromUrl(this.arr[DatenDownload.DOWNLOAD_URL]));
-        replStr = replStr.replace("%Z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL]));
-        replStr = replStr.replace("%z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL])
-                + "." + GuiFunktionen.getSuffixFromUrl(this.arr[DatenDownload.DOWNLOAD_URL]));
+        replStr = StringUtils.replace(replStr, "%S", GuiFunktionen.getSuffixFromUrl(this.arr[DatenDownload.DOWNLOAD_URL]));
+        replStr = StringUtils.replace(replStr, "%Z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL]));
+
+        replStr = StringUtils.replace(replStr, "%z", GuiFunktionen.getHash(this.arr[DatenDownload.DOWNLOAD_URL])
+                + '.' + GuiFunktionen.getSuffixFromUrl(this.arr[DatenDownload.DOWNLOAD_URL]));
 
         return replStr;
     }
@@ -768,12 +771,12 @@ public final class DatenDownload extends MVData<DatenDownload> {
 
     private static String datumDrehen(String datum) {
         String ret = "";
-        if (!datum.equals("")) {
+        if (!datum.isEmpty()) {
             try {
                 if (datum.length() == 10) {
                     String tmp = datum.substring(6); // Jahr
-                    tmp += "." + datum.substring(3, 5); // Monat
-                    tmp += "." + datum.substring(0, 2); // Tag
+                    tmp += '.' + datum.substring(3, 5); // Monat
+                    tmp += '.' + datum.substring(0, 2); // Tag
                     ret = tmp;
                 }
             } catch (Exception ex) {
@@ -784,10 +787,8 @@ public final class DatenDownload extends MVData<DatenDownload> {
     }
 
     private static String datumDatumZeitReinigen(String datum) {
-        String ret;
-        ret = datum;
-        ret = ret.replace(":", "");
-        ret = ret.replace(".", "");
+        String ret = StringUtils.replace(datum, ":", "");
+        ret = StringUtils.replace(ret, ".", "");
         return ret;
     }
 
@@ -819,10 +820,6 @@ public final class DatenDownload extends MVData<DatenDownload> {
 
     public String getFileNameWithoutSuffix() {
         return GuiFunktionen.getFileNameWithoutSuffix(arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
-    }
-
-    public String getFileNameSuffix() {
-        return GuiFunktionen.getFileNameSuffix(arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
     }
 
     @Override
