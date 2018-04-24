@@ -1,9 +1,9 @@
-/*    
+/*
  *    MediathekView
  *    Copyright (C) 2008   W. Xaver
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
- *    
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -20,20 +20,21 @@
 package mediathek.update;
 
 import mSearch.tool.Log;
+import mSearch.tool.MVHttpClient;
 import mSearch.tool.Version;
-import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 import javax.swing.*;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -134,73 +135,72 @@ public class ProgrammUpdateSuchen {
         return (Konstanten.MVVERSION.compare(info) == 1);
     }
 
-    private InputStream connectToServer() throws IOException {
-        //TODO replace with okhttp
-        URLConnection conn = new URL(Konstanten.ADRESSE_PROGRAMM_VERSION).openConnection();
-        conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-        conn.setReadTimeout(TIMEOUT);
-        conn.setConnectTimeout(TIMEOUT);
-
-        return conn.getInputStream();
-    }
-
     /**
      * Load and parse the update information.
      *
      * @return parsed update info for further use when successful
      */
     private Optional<ServerProgramInformation> retrieveProgramInformation() {
-        int event;
         XMLStreamReader parser = null;
         ServerProgramInformation progInfo;
 
         XMLInputFactory inFactory = XMLInputFactory.newInstance();
         inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
 
-        try (InputStreamReader inReader = new InputStreamReader(connectToServer(), StandardCharsets.UTF_8)) {
-            parser = inFactory.createXMLStreamReader(inReader);
-            progInfo = new ServerProgramInformation();
+        final Request request = new Request.Builder().url(Konstanten.ADRESSE_PROGRAMM_VERSION).get().build();
+        try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
+             ResponseBody body = response.body()) {
+            if (response.isSuccessful() && body != null) {
+                try (InputStream is = body.byteStream();
+                     InputStreamReader inReader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
+                    parser = inFactory.createXMLStreamReader(inReader);
+                    progInfo = new ServerProgramInformation();
 
-            while (parser.hasNext()) {
-                event = parser.next();
-                if (event == XMLStreamConstants.START_ELEMENT) {
-                    switch (parser.getLocalName()) {
-                        case ServerProgramInformation.ParserTags.VERSION:
-                            progInfo.setVersion(parser.getElementText());
-                            break;
-                        case ServerProgramInformation.ParserTags.RELEASE_NOTES:
-                            progInfo.setReleaseNotes(parser.getElementText());
-                            break;
-                        case ServerProgramInformation.ParserTags.UPDATE_URL:
-                            progInfo.setUpdateUrl(parser.getElementText());
-                            break;
-                        case ServerProgramInformation.ParserTags.INFO:
-                            int count = parser.getAttributeCount();
-                            String nummer = "";
-                            for (int i = 0; i < count; ++i) {
-                                if (parser.getAttributeName(i).toString().equals(ServerProgramInformation.ParserTags.INFO_NO)) {
-                                    nummer = parser.getAttributeValue(i);
-                                }
+                    while (parser.hasNext()) {
+                        final int event = parser.next();
+                        if (event == XMLStreamConstants.START_ELEMENT) {
+                            switch (parser.getLocalName()) {
+                                case ServerProgramInformation.ParserTags.VERSION:
+                                    progInfo.setVersion(parser.getElementText());
+                                    break;
+                                case ServerProgramInformation.ParserTags.RELEASE_NOTES:
+                                    progInfo.setReleaseNotes(parser.getElementText());
+                                    break;
+                                case ServerProgramInformation.ParserTags.UPDATE_URL:
+                                    progInfo.setUpdateUrl(parser.getElementText());
+                                    break;
+                                case ServerProgramInformation.ParserTags.INFO:
+                                    int count = parser.getAttributeCount();
+                                    String nummer = "";
+                                    for (int i = 0; i < count; ++i) {
+                                        if (parser.getAttributeName(i).toString().equals(ServerProgramInformation.ParserTags.INFO_NO)) {
+                                            nummer = parser.getAttributeValue(i);
+                                        }
+                                    }
+                                    String info = parser.getElementText();
+                                    if (!nummer.isEmpty() && !info.isEmpty()) {
+                                        listInfos.add(new String[]{nummer, info});
+                                    }
+                                    break;
+                                default:
+                                    break;
                             }
-                            String info = parser.getElementText();
-                            if (!nummer.isEmpty() && !info.isEmpty()) {
-                                listInfos.add(new String[]{nummer, info});
-                            }
-                            break;
-                        default:
-                            break;
+                        }
+                    }
+
+                    return Optional.of(progInfo);
+                } finally {
+                    if (parser != null) {
+                        try {
+                            parser.close();
+                        } catch (XMLStreamException ignored) {
+                        }
                     }
                 }
-            }
-            return Optional.of(progInfo);
+            } else //unsuccessful...
+                return Optional.empty();
         } catch (Exception ex) {
             return Optional.empty();
-        } finally {
-            try {
-                if (parser != null)
-                    parser.close();
-            } catch (Exception ignored) {
-            }
         }
     }
 }
