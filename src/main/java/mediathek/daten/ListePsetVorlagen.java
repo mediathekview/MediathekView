@@ -20,11 +20,15 @@
 package mediathek.daten;
 
 import mSearch.tool.Log;
+import mSearch.tool.MVHttpClient;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.file.GetFile;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.TModel;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 import javax.swing.*;
 import javax.xml.stream.XMLInputFactory;
@@ -140,36 +144,37 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
     public boolean loadListOfSets() {
         try {
             this.clear();
-            int event;
+
+            XMLStreamReader parser = null;
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
             inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
 
-            //FIXME use okhttp
-            URLConnection conn = new URL(Konstanten.ADRESSE_VORLAGE_PROGRAMMGRUPPEN).openConnection();
-            conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-            conn.setReadTimeout(TIMEOUT);
-            conn.setConnectTimeout(TIMEOUT);
-
-            XMLStreamReader parser = null;
-            try (InputStream is = conn.getInputStream();
-                 InputStreamReader inReader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
-                parser = inFactory.createXMLStreamReader(inReader);
-                while (parser.hasNext()) {
-                    event = parser.next();
-                    if (event == XMLStreamConstants.START_ELEMENT) {
-                        if (parser.getLocalName().equals(PGR)) {
-                            //wieder ein neuer Server, toll
-                            String[] p = new String[PGR_MAX_ELEM];
-                            get(parser, PGR, PGR_COLUMN_NAMES, p);
-                            if (!p[PGR_URL_NR].isEmpty()) {
-                                this.add(p);
+            final Request request = new Request.Builder().url(Konstanten.ADRESSE_VORLAGE_PROGRAMMGRUPPEN).get().build();
+            try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
+                 ResponseBody body = response.body()) {
+                if (response.isSuccessful() && body != null) {
+                    try (InputStream is = body.byteStream();
+                         InputStreamReader inReader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
+                        parser = inFactory.createXMLStreamReader(inReader);
+                        while (parser.hasNext()) {
+                            final int event = parser.next();
+                            if (event == XMLStreamConstants.START_ELEMENT) {
+                                if (parser.getLocalName().equals(PGR)) {
+                                    //wieder ein neuer Server, toll
+                                    String[] p = new String[PGR_MAX_ELEM];
+                                    get(parser, PGR, PGR_COLUMN_NAMES, p);
+                                    if (!p[PGR_URL_NR].isEmpty()) {
+                                        this.add(p);
+                                    }
+                                }
                             }
                         }
+                    } finally {
+                        if (parser != null)
+                            parser.close();
                     }
-                }
-            } finally {
-                if (parser != null)
-                    parser.close();
+                } else //unsuccessful...
+                    return false;
             }
         } catch (UnknownHostException ignored) {
             return false;
@@ -177,6 +182,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
             Log.errorLog(398001963, ex);
             return false;
         }
+
         return true;
     }
 
@@ -184,6 +190,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         int timeout = 10_000; //10 Sekunden
         try {
             if (GuiFunktionen.istUrl(dateiUrl)) {
+                //TODO convert to okhttp
                 URLConnection conn;
                 conn = new URL(dateiUrl).openConnection();
                 conn.setConnectTimeout(timeout);
@@ -263,7 +270,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
         }
         try {
             while (parser.hasNext()) {
-                int event = parser.next();
+                final int event = parser.next();
                 if (event == XMLStreamConstants.END_ELEMENT) {
                     if (parser.getLocalName().equals(xmlElem)) {
                         break;
