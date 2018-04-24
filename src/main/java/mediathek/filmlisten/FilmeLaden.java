@@ -236,7 +236,7 @@ public class FilmeLaden {
     }
 
     private void fillHash(ListeFilme listeFilme) {
-        hashSet.addAll(listeFilme.stream().map(DatenFilm::getUrlHistory).collect(Collectors.toList()));
+        hashSet.addAll(listeFilme.parallelStream().map(DatenFilm::getUrlHistory).collect(Collectors.toList()));
     }
 
     /**

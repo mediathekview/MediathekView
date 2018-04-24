@@ -28,14 +28,14 @@ import java.awt.event.MouseEvent;
 public class BeobTableHeader extends MouseAdapter {
     //rechhte Maustaste in der Tabelle
 
-    MVTable tabelle;
-    String[] columns;
-    boolean[] spaltenAnzeigen;
-    JCheckBoxMenuItem[] box;
-    int[] ausblenden;
-    int[] button;
-    boolean icon = false;
-    MVConfig.Configs configs;
+    private final MVTable tabelle;
+    private final String[] columns;
+    private final boolean[] spaltenAnzeigen;
+    private JCheckBoxMenuItem[] box;
+    private final int[] ausblenden;
+    private final int[] button;
+    private final boolean icon;
+    private final MVConfig.Configs configs;
 
     public BeobTableHeader(MVTable tabelle, String[] columns, boolean[] spalten, int[] aausblenden, int[] bbutton, boolean icon, MVConfig.Configs configs) {
         this.tabelle = tabelle;
