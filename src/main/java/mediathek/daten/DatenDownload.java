@@ -645,7 +645,6 @@ public final class DatenDownload extends MVData<DatenDownload> {
         replStr = StringUtils.replace(replStr, "%H", getHeute_yyyyMMdd());
         replStr = StringUtils.replace(replStr, "%h", getJetzt_HHMMSS());
 
-        //TODO Use StringUtils.replace here
         replStr = StringUtils.replace(replStr, "%1", getDMY("%1", film.arr[DatenFilm.FILM_DATUM].isEmpty() ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM]));
         replStr = StringUtils.replace(replStr, "%2", getDMY("%2", film.arr[DatenFilm.FILM_DATUM].isEmpty() ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM]));
         replStr = StringUtils.replace(replStr, "%3", getDMY("%3", film.arr[DatenFilm.FILM_DATUM].isEmpty() ? getHeute_yyyy_MM_dd() : film.arr[DatenFilm.FILM_DATUM]));
