@@ -1,9 +1,9 @@
-/*    
+/*
  *    MediathekView
  *    Copyright (C) 2008   W. Xaver
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
- *    
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -34,12 +34,7 @@ import javax.swing.*;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.*;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
@@ -187,19 +182,28 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
     }
 
     public static ListePset importPsetFile(JFrame parent, String dateiUrl, boolean log) {
-        int timeout = 10_000; //10 Sekunden
         try {
+            ListePset result = null;
+
             if (GuiFunktionen.istUrl(dateiUrl)) {
-                //TODO convert to okhttp
-                URLConnection conn;
-                conn = new URL(dateiUrl).openConnection();
-                conn.setConnectTimeout(timeout);
-                conn.setReadTimeout(timeout);
-                conn.setRequestProperty("User-Agent", Daten.getUserAgent());
-                return ListePsetVorlagen.importPset(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8), log);
+                final Request request = new Request.Builder().url(dateiUrl).get().build();
+                try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
+                     ResponseBody body = response.body()) {
+                    if (response.isSuccessful() && body != null) {
+                        try (InputStream is = body.byteStream();
+                             InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
+                            result = ListePsetVorlagen.importPset(isr, log);
+                        }
+                    }
+                }
             } else {
-                return ListePsetVorlagen.importPset(new InputStreamReader(new FileInputStream(dateiUrl), StandardCharsets.UTF_8), log);
+                try (FileInputStream fis = new FileInputStream(dateiUrl);
+                     InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8)) {
+                    result = ListePsetVorlagen.importPset(isr, log);
+                }
             }
+
+            return result;
         } catch (Exception ex) {
             if (log) {
                 Log.errorLog(630048926, ex);
@@ -209,22 +213,28 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
     }
 
     public static ListePset importPsetText(Daten dd, String text, boolean log) {
-        return ListePsetVorlagen.importPset(new InputStreamReader(new ByteArrayInputStream(text.getBytes())), log);
+        ListePset result = null;
+
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(text.getBytes());
+             InputStreamReader ir = new InputStreamReader(bais)) {
+            result = ListePsetVorlagen.importPset(ir, log);
+        } catch (IOException ignored) {
+        }
+
+        return result;
     }
 
     private static ListePset importPset(InputStreamReader in, boolean log) {
         DatenPset datenPset = null;
         ListePset liste = new ListePset();
         try {
-            int event;
             XMLInputFactory inFactory = XMLInputFactory.newInstance();
             inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
             XMLStreamReader parser;
             parser = inFactory.createXMLStreamReader(in);
             while (parser.hasNext()) {
-                event = parser.next();
+                final int event = parser.next();
                 if (event == XMLStreamConstants.START_ELEMENT) {
-                    //String t = parser.getLocalName();
                     switch (parser.getLocalName()) {
                         case DatenPset.TAG:
                             datenPset = new DatenPset();
@@ -248,12 +258,18 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                     }
                 }
             }
-            in.close();
         } catch (Exception ex) {
             if (log) {
                 Log.errorLog(467810360, ex);
             }
             return null;
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException ignored) {
+                }
+            }
         }
         if (liste.isEmpty()) {
             return null;
