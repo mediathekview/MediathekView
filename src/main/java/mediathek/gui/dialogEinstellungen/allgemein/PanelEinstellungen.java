@@ -17,9 +17,10 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.gui.dialogEinstellungen;
+package mediathek.gui.dialogEinstellungen.allgemein;
 
 import com.jidesoft.utils.SystemInfo;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
@@ -29,12 +30,14 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVMessageDialog;
+import org.apache.commons.configuration2.Configuration;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -43,23 +46,28 @@ public class PanelEinstellungen extends PanelVorlage {
     private final static String ICONSET_STANDARD = "Standard";
     private final static String ALLE = " Alle ";
 
-    public PanelEinstellungen(Daten d, JFrame parent) {
-        super(d, parent);
-        initComponents();
+    private void setupProxySettings() {
+        final Configuration config = ApplicationConfiguration.getConfiguration();
 
-        daten = d;
-        SpinnerListModel lm = new SpinnerListModel(new Object[]{ALLE, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-            "12", "14", "16", "18", "20", "25", "30"});
-        jSpinnerDays.setModel(lm);
-        ((JSpinner.DefaultEditor) jSpinnerDays.getEditor()).getTextField().setEditable(false);
-        initSpinner();
-        jSpinnerDays.addChangeListener(new BeobSpinnerDays());
+        jtfProxyHost.setText(config.getString(ApplicationConfiguration.HTTP_PROXY_HOSTNAME, ""));
+        jtfProxyHost.getDocument().addDocumentListener(new ProxyHostListener(jtfProxyHost));
 
-        jButtonLoad.addActionListener(ae -> {
-            daten.getListeFilme().clear(); // sonst wird evtl. nur eine Diff geladen
-            daten.getFilmeLaden().loadFilmlist("");
-        });
-        setupLookAndFeelComboBox();
+        jtfProxyPort.setText(config.getString(ApplicationConfiguration.HTTP_PROXY_PORT, ""));
+        jtfProxyPort.getDocument().addDocumentListener(new ProxyPortListener(jtfProxyPort));
+
+        jtfProxyUser.setText(config.getString(ApplicationConfiguration.HTTP_PROXY_USERNAME, ""));
+        jtfProxyUser.getDocument().addDocumentListener(new ProxyUsernameListener(jtfProxyUser));
+
+        jpfProxyPassword.setText(config.getString(ApplicationConfiguration.HTTP_PROXY_PASSWORD, ""));
+        jpfProxyPassword.getDocument().addDocumentListener(new ProxyPasswordListener(jpfProxyPassword));
+    }
+
+    private void setupUserAgentSettings() {
+        jtfUserAgent.setText(ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
+        jtfUserAgent.getDocument().addDocumentListener(new UserAgentListener(jtfUserAgent));
+    }
+
+    private void setupDays() {
         jButtonHelpDays.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHelpDays.addActionListener(e -> new DialogHilfe(parentComponent, true, '\n'
                 + "Es werden nur Filme der letzten\n"
@@ -74,19 +82,15 @@ public class PanelEinstellungen extends PanelVorlage {
                 + "Auswirkung hat das erst nach dem\n"
                 + "Neuladen der kompletten Filmliste.").setVisible(true));
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                initSpinner();
-            }
-        });
-        Listener.addListener(new Listener(Listener.EREIGNIS_TRAYICON, PanelEinstellungen.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY)));
-            }
-        });
+        SpinnerListModel lm = new SpinnerListModel(new Object[]{ALLE, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                "12", "14", "16", "18", "20", "25", "30"});
+        jSpinnerDays.setModel(lm);
+        ((JSpinner.DefaultEditor) jSpinnerDays.getEditor()).getTextField().setEditable(false);
+        initSpinner();
+        jSpinnerDays.addChangeListener(new BeobSpinnerDays());
+    }
 
+    private void setupTabUI() {
         jCheckBoxTabsTop.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TABS_TOP)));
         jCheckBoxTabsTop.addActionListener(ae -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_TABS_TOP, Boolean.toString(jCheckBoxTabsTop.isSelected()));
@@ -97,23 +101,62 @@ public class PanelEinstellungen extends PanelVorlage {
             MVConfig.add(MVConfig.Configs.SYSTEM_TABS_ICON, Boolean.toString(jCheckBoxTabIcon.isSelected()));
             Listener.notify(Listener.EREIGNIS_TABS_TOP, PanelEinstellungen.class.getSimpleName());
         });
+    }
 
+    private void setupTray() {
         if (SystemInfo.isMacOSX()) {
             jCheckBoxTray.setSelected(false);
             jCheckBoxTray.setEnabled(false);
         } else {
+            Listener.addListener(new Listener(Listener.EREIGNIS_TRAYICON, PanelEinstellungen.class.getSimpleName()) {
+                @Override
+                public void ping() {
+                    jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY)));
+                }
+            });
             jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY)));
             jCheckBoxTray.addActionListener(ae -> {
                 MVConfig.add(MVConfig.Configs.SYSTEM_USE_TRAY, Boolean.toString(jCheckBoxTray.isSelected()));
                 daten.getMediathekGui().setTray();
             });
         }
+    }
+
+    public PanelEinstellungen(Daten d, JFrame parent) {
+        super(d, parent);
+        daten = d;
+
+        initComponents();
+
+        setupUserAgentSettings();
+
+        setupProxySettings();
+
+        jButtonLoad.addActionListener(ae -> {
+            daten.getListeFilme().clear(); // sonst wird evtl. nur eine Diff geladen
+            daten.getFilmeLaden().loadFilmlist("");
+        });
+
+        setupLookAndFeelComboBox();
+
+        setupDays();
+
+        Listener.addListener(new Listener(Listener.EREIGNIS_ANZAHL_DOWNLOADS, PanelEinstellungen.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                initSpinner();
+            }
+        });
+
+        setupTabUI();
+
+        setupTray();
 
         jButtonRefresh.addActionListener(e -> fillIconList());
 
         fillIconList();
         jComboBoxIcons.addItemListener(evt -> {
-            if (evt.getStateChange() == 1) {
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
                 cbxIconPackagesItemStateChanged(evt);
             }
         });
@@ -146,7 +189,7 @@ public class PanelEinstellungen extends PanelVorlage {
     }
 
     private void initSpinner() {
-        if (MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE).equals("")) {
+        if (MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE).isEmpty()) {
             MVConfig.add(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE, "0");
         }
         String s = MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE);
@@ -266,6 +309,18 @@ public class PanelEinstellungen extends PanelVorlage {
         jCheckBoxTray = new javax.swing.JCheckBox();
         jCheckBoxTabsTop = new javax.swing.JCheckBox();
         jCheckBoxTabIcon = new javax.swing.JCheckBox();
+        javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
+        jtfUserAgent = new javax.swing.JTextField();
+        javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
+        jtfProxyHost = new javax.swing.JTextField();
+        javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
+        jtfProxyPort = new javax.swing.JTextField();
+        javax.swing.JLabel jLabel7 = new javax.swing.JLabel();
+        jtfProxyUser = new javax.swing.JTextField();
+        javax.swing.JLabel jLabel8 = new javax.swing.JLabel();
+        jpfProxyPassword = new javax.swing.JPasswordField();
 
         setMinimumSize(getPreferredSize());
 
@@ -369,15 +424,98 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Download"));
+
+        jLabel3.setText("User-Agent:");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jtfUserAgent)
+                                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel3)
+                                        .addComponent(jtfUserAgent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("HTTP-Proxy (Neustart erforderlich!)"));
+        jPanel4.setToolTipText("");
+
+        jLabel4.setText("Host:");
+
+        jLabel5.setText("Port:");
+
+        jLabel7.setText("User:");
+
+        jLabel8.setText("Passwort:");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+                jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addGroup(jPanel4Layout.createSequentialGroup()
+                                                .addComponent(jLabel4)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jtfProxyHost, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(jPanel4Layout.createSequentialGroup()
+                                                .addComponent(jLabel7)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jtfProxyUser)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jLabel8)
+                                        .addComponent(jLabel5))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel4Layout.createSequentialGroup()
+                                                .addComponent(jtfProxyPort, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(0, 0, Short.MAX_VALUE))
+                                        .addComponent(jpfProxyPassword))
+                                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+                jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel4)
+                                        .addComponent(jtfProxyHost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel5)
+                                        .addComponent(jtfProxyPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel7)
+                                        .addComponent(jtfProxyUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel8)
+                                        .addComponent(jpfProxyPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -387,7 +525,11 @@ public class PanelEinstellungen extends PanelVorlage {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(299, Short.MAX_VALUE))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(131, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -402,5 +544,10 @@ public class PanelEinstellungen extends PanelVorlage {
     private javax.swing.JComboBox<String> jComboBoxIcons;
     private javax.swing.JComboBox<String> jComboBoxLookAndFeel;
     private javax.swing.JSpinner jSpinnerDays;
+    private javax.swing.JPasswordField jpfProxyPassword;
+    private javax.swing.JTextField jtfProxyHost;
+    private javax.swing.JTextField jtfProxyPort;
+    private javax.swing.JTextField jtfProxyUser;
+    private javax.swing.JTextField jtfUserAgent;
     // End of variables declaration//GEN-END:variables
 }

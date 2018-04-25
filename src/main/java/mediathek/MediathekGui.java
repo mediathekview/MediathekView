@@ -1011,6 +1011,9 @@ public class MediathekGui extends JFrame {
     }
 
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
+        //write all settings if not done already...
+        ApplicationConfiguration.getInstance().writeConfiguration();
+
         if (daten.getListeDownloads().nochNichtFertigeDownloads() > 0) {
             // erst mal prüfen ob noch Downloads laufen
             DialogBeenden dialogBeenden = new DialogBeenden(this);

@@ -21,6 +21,7 @@ package mediathek.config;
 
 import com.jidesoft.utils.SystemInfo;
 import mSearch.daten.DatenFilm;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Log;
 import mediathek.controller.MVBandwidthTokenBucket;
 import mediathek.tool.GuiFunktionenProgramme;
@@ -68,7 +69,6 @@ public class MVConfig {
         SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP("__system-parameter__download-max-restart-http_10__", "10"),// max. Startversuche für fehlgeschlagene Downloads, direkt beim Download
         SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN("__system-parameter__download-weiterfuehren-sekunden_60__", "60"), //Beim Dialog "Download weiterführen" wird in dieser Zeit der Download weitergeführt
         SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN("__system-parameter__download-fehlermeldung-sekunden_120__", "120"),//Downloadfehlermeldung wird xx Sedunden lang angezeigt
-        SYSTEM_PARAMETER_USERAGENT("__system-parameter__useragent_" + "__", Konstanten.USER_AGENT_DEFAULT),//Useragent für direkte Downloads
         SYSTEM_PARAMETER_DOWNLOAD_PROGRESS("__system-parameter__dl_progress_", Boolean.TRUE.toString()), //Downloadprogress im Terminal (-auto) anzeigen
 
         //============================================
@@ -294,7 +294,7 @@ public class MVConfig {
         Log.sysLog("Download weiterführen in [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN));
         Log.sysLog("Download Fehlermeldung anzeigen [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN));
         Log.sysLog("Downoadprogress anzeigen: " + MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS));
-        Log.sysLog("Useragent: " + MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_USERAGENT));
+        Log.sysLog("User-Agent: " + ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
         Log.sysLog("=======================================");
         Log.sysLog("");
     }

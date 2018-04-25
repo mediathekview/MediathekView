@@ -228,11 +228,6 @@ public class Daten
         timer.start();
     }
 
-    public static String getUserAgent()
-    {
-        return MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_USERAGENT);
-    }
-
     /**
      * Liefert den Pfad zur Filmliste
      *

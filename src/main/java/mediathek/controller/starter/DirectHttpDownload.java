@@ -19,6 +19,7 @@
  */
 package mediathek.controller.starter;
 
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
@@ -33,6 +34,7 @@ import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.tool.MVInfoFile;
 import mediathek.tool.MVSubtitle;
+import org.apache.commons.configuration2.Configuration;
 
 import javax.swing.*;
 import java.io.File;
@@ -57,12 +59,11 @@ public class DirectHttpDownload extends Thread {
     private File file = null;
     private String responseCode;
     private String exMessage;
-
     private FileOutputStream fos = null;
-
     private final java.util.Timer bandwidthCalculationTimer;
     private boolean retAbbrechen;
     private boolean dialogAbbrechenIsVis;
+    private final Configuration config = ApplicationConfiguration.getConfiguration();
 
     enum HttpDownloadState {
 
@@ -92,7 +93,7 @@ public class DirectHttpDownload extends Thread {
         HttpURLConnection connection = null;
         try {
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("User-Agent", Daten.getUserAgent());
+            connection.setRequestProperty("User-Agent", config.getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
             connection.setReadTimeout(TIMEOUT_LENGTH);
             connection.setConnectTimeout(TIMEOUT_LENGTH);
             if (connection.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST) {
@@ -120,7 +121,7 @@ public class DirectHttpDownload extends Thread {
      */
     private void setupHttpConnection(HttpURLConnection conn) {
         conn.setRequestProperty("Range", "bytes=" + downloaded + '-');
-        conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+        conn.setRequestProperty("User-Agent", config.getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
         conn.setDoInput(true);
         conn.setDoOutput(true);
     }

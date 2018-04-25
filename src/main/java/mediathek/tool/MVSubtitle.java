@@ -19,10 +19,10 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
 import mSearch.tool.TimedTextMarkupLanguageParser;
-import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
 
 import java.io.File;
@@ -66,7 +66,10 @@ public class MVSubtitle {
             new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]).mkdirs();
 
             conn = (HttpURLConnection) new URL(urlSubtitle).openConnection();
-            conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+            conn.setRequestProperty("User-Agent",
+                    ApplicationConfiguration.getConfiguration()
+                            .getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
+
             conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
             conn.setReadTimeout(10_000);
             conn.setConnectTimeout(10_000);
