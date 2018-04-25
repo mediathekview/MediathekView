@@ -266,6 +266,7 @@ public class Main {
     }
 
     private void proxyAuthentication() {
+        //TODO remove if not used anymore by URLConnection
         try {
             final String prxUser = System.getProperty(HTTP_PROXY_USER, null);
             final String prxPassword = System.getProperty(HTTP_PROXY_PW, null);
