@@ -128,7 +128,7 @@ public class FilmActionPanel {
         jfxSearchField.setStyle("-fx-text-fill: red");
 
         // Schriftfarbe ändern wenn eine RegEx
-        String text = jfxSearchField.getText();
+        final String text = jfxSearchField.getText();
         if (Filter.isPattern(text)) {
             if (Filter.makePattern(text) == null) {
                 //soll Pattern sein, ist aber falsch
@@ -141,20 +141,22 @@ public class FilmActionPanel {
         }
     }
 
+    private final PauseTransition pause2 = new PauseTransition(Duration.millis(150));
+    private final PauseTransition pause3 = new PauseTransition(Duration.millis(500));
+
     private void setupSearchField() {
         jfxSearchField = new JFXSearchPanel();
         jfxSearchField.setTooltip(new Tooltip("Thema/Titel durchsuchen"));
 
         final StringProperty textProperty = jfxSearchField.textProperty();
 
-        PauseTransition pause2 = new PauseTransition(Duration.millis(150));
+        pause2.setOnFinished(evt -> checkPatternValidity());
         textProperty.addListener((observable, oldValue, newValue) -> {
-            pause2.setOnFinished(evt -> checkPatternValidity());
             pause2.playFromStart();
         });
-        PauseTransition pause3 = new PauseTransition(Duration.millis(500));
+
+        pause3.setOnFinished(evt -> SwingUtilities.invokeLater(() -> Daten.guiFilme.filterFilmAction.actionPerformed(null)));
         textProperty.addListener((observable, oldValue, newValue) -> {
-            pause3.setOnFinished(evt -> SwingUtilities.invokeLater(() -> Daten.guiFilme.filterFilmAction.actionPerformed(null)));
             pause3.playFromStart();
         });
 
