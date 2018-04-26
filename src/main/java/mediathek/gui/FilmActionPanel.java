@@ -469,19 +469,22 @@ public class FilmActionPanel {
 
         public BlacklistButton() {
             super("");
+            final boolean isOn = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON));
+            if (isOn)
+                setupOn();
+            else
+                setupOff();
 
             //set initial state
             activeProperty.addListener((observable, oldValue, newValue) -> {
                 if (newValue) {
-                    setGraphic(onImageView);
-                    setTooltip(tooltipOn);
+                    setupOn();
                 } else {
-                    setGraphic(offImageView);
-                    setTooltip(tooltipOff);
+                    setupOff();
                 }
             });
-            final boolean storedVal = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON));
-            activeProperty.setValue(storedVal);
+
+            activeProperty.setValue(isOn);
             activeProperty.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(() -> {
                 MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.toString(newValue));
                 daten.getListeBlacklist().filterListe();
@@ -489,6 +492,28 @@ public class FilmActionPanel {
             }));
 
             setOnAction(value -> activeProperty.setValue(!activeProperty.getValue()));
+
+            Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_GEAENDERT, FilmActionPanel.class.getSimpleName()) {
+                @Override
+                public void ping() {
+                    //config was changed outside
+                    final boolean on = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON));
+                    Platform.runLater(() -> {
+                        activeProperty.setValue(on);
+                    });
+                }
+            });
+
+        }
+
+        private void setupOn() {
+            setGraphic(onImageView);
+            setTooltip(tooltipOn);
+        }
+
+        private void setupOff() {
+            setGraphic(offImageView);
+            setTooltip(tooltipOff);
         }
     }
 }
