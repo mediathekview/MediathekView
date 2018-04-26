@@ -92,7 +92,7 @@ public class MVFrame extends JFrame {
     private void initComponents() {
 
         jPanelExtra = new javax.swing.JPanel();
-        jPanelInfo = new javax.swing.JPanel();
+        javax.swing.JPanel jPanelInfo = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -138,6 +138,5 @@ public class MVFrame extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanelExtra;
-    private javax.swing.JPanel jPanelInfo;
     // End of variables declaration//GEN-END:variables
 }

@@ -21,12 +21,10 @@ public class BlacklistButton extends Button {
     private final BooleanProperty activeProperty = new SimpleBooleanProperty(false);
     private final Tooltip tooltipOn = new Tooltip("Blacklist ausschalten");
     private final Tooltip tooltipOff = new Tooltip("Blacklist einschalten");
-    private final Daten daten;
 
 
     public BlacklistButton(Daten daten) {
         super("");
-        this.daten = daten;
 
         final boolean isOn = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON));
         if (isOn)

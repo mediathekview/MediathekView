@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
 @SuppressWarnings("serial")
 public class ListeMediaDB extends LinkedList<DatenMediaDB> {
     public final static String TRENNER = "  |###|  ";
-    public final String FILE_SEPERATOR_MEDIA_PATH = "<>";
+    public final static String FILE_SEPERATOR_MEDIA_PATH = "<>";
     private boolean makeIndex = false;
     private String[] suffix = {""};
     private boolean ohneSuffix = true;
