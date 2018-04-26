@@ -44,6 +44,7 @@ public class DialogEinstellungen extends JFrame {
     private PanelEinstellungenGeo panelEinstellungenGeo;
     private PanelImport panelImport;
     private PanelEinstellungenColor panelEinstellungenColor;
+    private PanelFilmlisteLaden panelImportFilme;
     private PanelExportFilmliste panelExportFilmliste;
     private PanelBlacklist panelBlacklist;
     private PanelErledigteUrls panelErledigteAbos;
@@ -62,6 +63,7 @@ public class DialogEinstellungen extends JFrame {
     private static final String NAME_allgemeineEinstellungenImport = "Import";
     private static final String NAME_allgemeineEinstellungenColor = "Farben";
     private static final String NAME_filmListe = "Filmliste";
+    private static final String NAME_filmListeLaden = "Filmliste laden";
     private static final String NAME_filmListeExportieren = "Filmliste exportieren";
     private static final String NAME_blacklist = "Blacklist";
     private static final String NAME_aufzeichnen = "Aufzeichnen und Abspielen";
@@ -80,6 +82,7 @@ public class DialogEinstellungen extends JFrame {
     private final DefaultMutableTreeNode treeNodeAllgemeineEinstellungenColor = new DefaultMutableTreeNode(NAME_allgemeineEinstellungenColor);
     // ######## Filme ###############
     private final DefaultMutableTreeNode treeNodeFilme = new DefaultMutableTreeNode("Filmliste");
+    private final DefaultMutableTreeNode treeNodeFilmliste = new DefaultMutableTreeNode(NAME_filmListeLaden);
     private final DefaultMutableTreeNode treeNodeFilmlisteExport = new DefaultMutableTreeNode(NAME_filmListeExportieren);
     private final DefaultMutableTreeNode treeNodeBlacklist = new DefaultMutableTreeNode(NAME_blacklist);
     // ########### Programme ##############
@@ -120,6 +123,7 @@ public class DialogEinstellungen extends JFrame {
         panelEinstellungenGeo = new PanelEinstellungenGeo(ddaten, this);
         panelImport = new PanelImport(ddaten, this);
         panelEinstellungenColor = new PanelEinstellungenColor(ddaten, this);
+        panelImportFilme = new PanelFilmlisteLaden(ddaten, this);
         panelExportFilmliste = new PanelExportFilmliste(ddaten, this);
         panelBlacklist = new PanelBlacklist(ddaten, this, PanelBlacklist.class.getName());
         panelHistory = new PanelErledigteUrls(ddaten, this);
@@ -145,6 +149,7 @@ public class DialogEinstellungen extends JFrame {
         treeNodeStart.add(treeNodeEinstellungen);
         // ===============================================================================
         // ######## Filme ###############
+        treeNodeFilme.add(treeNodeFilmliste);
         treeNodeFilme.add(treeNodeFilmlisteExport);
         treeNodeFilme.add(treeNodeBlacklist);
         treeNodeStart.add(treeNodeFilme);
@@ -209,7 +214,11 @@ public class DialogEinstellungen extends JFrame {
                         break;
                     //Filmliste
                     case NAME_filmListe:
-                        jTree1.setSelectionPath(new TreePath(treeNodeFilmlisteExport.getPath()));
+                        jTree1.setSelectionPath(new TreePath(treeNodeFilmliste.getPath()));
+                        break;
+                    case NAME_filmListeLaden:
+                        jPanelExtra.removeAll();
+                        jPanelExtra.add(panelImportFilme);
                         break;
                     case NAME_filmListeExportieren:
                         jPanelExtra.removeAll();
