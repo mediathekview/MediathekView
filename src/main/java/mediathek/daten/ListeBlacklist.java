@@ -21,6 +21,7 @@ package mediathek.daten;
 
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Duration;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
@@ -291,7 +292,8 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      */
     private boolean checkGeoBlockedFilm(DatenFilm film) {
         boolean result = true;
-        if (!film.arr[DatenFilm.FILM_GEO].isEmpty() && !film.arr[DatenFilm.FILM_GEO].contains(MVConfig.get(MVConfig.Configs.SYSTEM_GEO_STANDORT))) {
+        final String geoLocation = ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.GEO_LOCATION);
+        if (!film.arr[DatenFilm.FILM_GEO].isEmpty() && !film.arr[DatenFilm.FILM_GEO].contains(geoLocation)) {
             result = false;
         }
 

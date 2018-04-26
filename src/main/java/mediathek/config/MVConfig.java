@@ -20,7 +20,6 @@
 package mediathek.config;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.daten.DatenFilm;
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Log;
 import mediathek.controller.MVBandwidthTokenBucket;
@@ -86,8 +85,6 @@ public class MVConfig {
         SYSTEM_LINUX_SHUTDOWN("Programm-Linux-Shutdown"),
         SYSTEM_NOTIFICATION("Notification-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_PLAYER_ABSPIELEN("Player-zum-Abspielen"),
-        SYSTEM_GEO_MELDEN("Geo-melden", Boolean.TRUE.toString()),
-        SYSTEM_GEO_STANDORT("Geo-Standort", DatenFilm.GEO_DE),
         // Fenstereinstellungen
         SYSTEM_GROESSE_GUI("Groesse"),
         SYSTEM_GROESSE_EINSTELLUNGEN("Groesse-Einstellungen"),

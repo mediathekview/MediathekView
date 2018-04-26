@@ -20,13 +20,14 @@
 package mediathek.tool;
 
 import com.jidesoft.utils.SystemInfo;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
-import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
+import org.apache.commons.configuration2.Configuration;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -53,7 +54,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
     private static ImageIcon download_clear_sw_tab = null;
     private static ImageIcon download_del_tab = null;
     private static ImageIcon download_del_sw_tab = null;
-    private boolean geoMelden = false;
+    private boolean geoMelden;
     private final JProgressBar progressBar;
     private final Border emptyBorder = BorderFactory.createEmptyBorder();
     private final Border largeBorder = BorderFactory.createEmptyBorder(9, 2, 9, 2);
@@ -73,11 +74,14 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
         download_clear_sw_tab = Icons.ICON_TABELLE_DOWNOAD_CLEAR_SW;
         download_del_tab = Icons.ICON_TABELLE_DOWNOAD_DEL;
         download_del_sw_tab = Icons.ICON_TABELLE_DOWNOAD_DEL_SW;
-        geoMelden = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_GEO_MELDEN));
+
+        final Configuration config = ApplicationConfiguration.getConfiguration();
+        geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT);
+
         Listener.addListener(new Listener(Listener.EREIGNIS_GEO, CellRendererDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
-                geoMelden = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_GEO_MELDEN));
+                geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT);
             }
         });
 
@@ -442,10 +446,11 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
     }
 
     private void handleGeoBlocking(Component c, final DatenDownload datenDownload, final boolean isSelected) {
+        final String geoLocation = ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.GEO_LOCATION);
         if (datenDownload.start == null
                 && geoMelden
                 && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO].isEmpty()
-                && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO].contains(MVConfig.get(MVConfig.Configs.SYSTEM_GEO_STANDORT))) {
+                && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO].contains(geoLocation)) {
             if (isSelected) {
                 c.setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND_SEL.color);
             } else {
