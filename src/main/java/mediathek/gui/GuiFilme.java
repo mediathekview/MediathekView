@@ -44,6 +44,7 @@ import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.StartEvent;
+import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.tool.*;
 import net.engio.mbassy.listener.Handler;
 
