@@ -1086,6 +1086,8 @@ public class MediathekGui extends JFrame {
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_ABO, frameAbo);
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_MELDUNGEN, frameMeldungen);
 
+        DatenFilm.Database.closeDatabase();
+
         daten.allesSpeichern();
         Log.endMsg();
         Duration.printCounter();
@@ -1095,8 +1097,6 @@ public class MediathekGui extends JFrame {
         }
 
         dispose();
-
-        DatenFilm.Database.closeDatabase();
 
         System.exit(0);
     return false;
