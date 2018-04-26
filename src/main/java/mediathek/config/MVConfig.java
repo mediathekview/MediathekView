@@ -157,29 +157,6 @@ public class MVConfig {
         SYSTEM_IMPORT_URL_MANUELL("system-import-url-manuell"),
         SYSTEM_EXPORT_DATEI("system-export-datei"),
         SYSTEM_ANZ_TAGE_FILMLISTE("system-anz-tage-filmilste", "0"), // es werden nur die x letzten Tage geladen
-        // Filter
-        //TODO die auskommentierten Dinge später entfernen
-        /*SYSTEM_FILTER_TAGE("filter-tage-start", "15"), // in Tagen
-        SYSTEM_FILTER_DAUER("filter-dauer-start", "0"), // in Minuten
-        SYSTEM_FILTER_DAUER_MIN("filter-dauer-min-start", Boolean.TRUE.toString()), // Dauer ist Min 
-        SYSTEM_FILTER_PROFILE__DAUER("filter-dauer", "0"),
-        SYSTEM_FILTER_PROFILE__DAUER_MIN("filter-dauer-min", Boolean.TRUE.toString()),
-        SYSTEM_FILTER_PROFILE__TAGE("filter-tage", "15"), // index im Array GuiFilme.COMBO_ZEIT_INT
-        SYSTEM_FILTER_PROFILE__KEINE_ABO("filter-keineAbo"),
-        SYSTEM_FILTER_PROFILE__KEINE_GESEHENE("filter-keineGesehen"),
-        SYSTEM_FILTER_PROFILE__NUR_HD("filter-nurHd"),
-        SYSTEM_FILTER_PROFILE__NUR_UT("filter-nurUt"),
-        SYSTEM_FILTER_PROFILE__NUR_NEUE("filter-nurNeue"),
-        SYSTEM_FILTER_PROFILE__BLACKLIST_ON("filter-blacklist-aus"),
-        SYSTEM_FILTER_PROFILE__NAME("filter-name"),
-        SYSTEM_FILTER_PROFILE__SENDER("filter-sender"),
-        SYSTEM_FILTER_PROFILE__THEMA("filter-thema"),
-        SYSTEM_FILTER_PROFILE__TITEL("filter-titel"),
-        SYSTEM_FILTER_PROFILE__THEMA_TITEL("filter-themaTitel"),
-        SYSTEM_FILTER_PROFILE__TT("filter-TT-oder-irgendwo", Boolean.TRUE.toString()),
-        SYSTEM_FILTER_PROFILE__SORT_KEY("filter-sortkey"),
-        SYSTEM_FILTER_PROFILE__SORT_KEY_UPDOWN("filter-sortkey-updown"),
-        SYSTEM_FILTER_PROFILE__ANZAHL_FILTER("filter-anzahl"),*/
         // Programmpfade
         SYSTEM_PFAD_VLC("pfad-vlc", GuiFunktionenProgramme.getMusterPfadVlc()),
         SYSTEM_PFAD_FLVSTREAMER("pfad-flvstreamer", GuiFunktionenProgramme.getMusterPfadFlv()),

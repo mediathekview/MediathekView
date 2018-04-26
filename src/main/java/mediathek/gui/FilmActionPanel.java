@@ -19,11 +19,13 @@ import javafx.util.Duration;
 import javafx.util.StringConverter;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.javafx.JFXSearchPanel;
 import mediathek.tool.Filter;
+import org.apache.commons.configuration2.Configuration;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.CustomTextField;
@@ -33,23 +35,34 @@ import org.controlsfx.glyphfont.GlyphFontRegistry;
 import org.controlsfx.tools.Borders;
 
 import javax.swing.*;
+import java.util.NoSuchElementException;
 
 /**
  * This class sets up the GuiFilme tool panel and search bar.
  * search is exposed via a readonly property for filtering in GuiFilme.
  */
 public class FilmActionPanel {
+    public final static int UNLIMITED_VALUE = 110;
     public final PopOver filterPopover;
     private final Daten daten;
+    private final Configuration config = ApplicationConfiguration.getConfiguration();
+    private final PauseTransition pause2 = new PauseTransition(Duration.millis(150));
+    private final PauseTransition pause3 = new PauseTransition(Duration.millis(500));
     public ReadOnlyStringWrapper roSearchStringProperty = new ReadOnlyStringWrapper();
     public BooleanProperty showOnlyHd;
     public BooleanProperty showSubtitlesOnly;
     public BooleanProperty showNewOnly;
     public BooleanProperty showUnseenOnly;
+    public BooleanProperty showLivestreamsOnly;
     public BooleanProperty dontShowAbos;
     public BooleanProperty dontShowTrailers;
-    public BooleanProperty dontShowGebaerdensprache;
+    public BooleanProperty dontShowSignLanguage;
     public BooleanProperty dontShowAudioVersions;
+    public ReadOnlyObjectProperty<String> zeitraumProperty;
+    public ComboBox<String> senderBox;
+    public ComboBox<String> themaBox;
+    public RangeSlider filmLengthSlider;
+    public Spinner<String> zeitraumSpinner;
     private CustomTextField jfxSearchField;
     private Button btnDownload;
     private Button btnFilmInformation;
@@ -62,6 +75,52 @@ public class FilmActionPanel {
         this.daten = daten;
 
         filterPopover = createFilterPopover();
+
+        restoreConfigSettings();
+
+        setupConfigListeners();
+    }
+
+    private void restoreConfigSettings() {
+        showOnlyHd.set(config.getBoolean(ApplicationConfiguration.FILTER_PANEL_SHOW_HD_ONLY, false));
+        showSubtitlesOnly.set(config.getBoolean(ApplicationConfiguration.FILTER_PANEL_SHOW_SUBTITLES_ONLY, false));
+        showNewOnly.set(config.getBoolean(ApplicationConfiguration.FILTER_PANEL_SHOW_NEW_ONLY, false));
+        showUnseenOnly.set(config.getBoolean(ApplicationConfiguration.FILTER_PANEL_SHOW_UNSEEN_ONLY, false));
+        showLivestreamsOnly.set(config.getBoolean(ApplicationConfiguration.FILTER_PANEL_SHOW_LIVESTREAMS_ONLY, false));
+
+        dontShowAbos.set(config.getBoolean(ApplicationConfiguration.FILTER_PANEL_DONT_SHOW_ABOS, false));
+        dontShowTrailers.set(config.getBoolean(ApplicationConfiguration.FILTER_PANEL_DONT_SHOW_TRAILERS, false));
+        dontShowSignLanguage.set(config.getBoolean(ApplicationConfiguration.FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE, false));
+        dontShowAudioVersions.set(config.getBoolean(ApplicationConfiguration.FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS, false));
+
+        try {
+            filmLengthSlider.lowValueProperty().set(config.getDouble(ApplicationConfiguration.FILTER_PANEL_FILM_LENGTH_MIN));
+            filmLengthSlider.highValueProperty().set(config.getDouble(ApplicationConfiguration.FILTER_PANEL_FILM_LENGTH_MAX));
+        } catch (Exception ignored) {
+        }
+
+        try {
+            zeitraumSpinner.getValueFactory().setValue(config.getString(ApplicationConfiguration.FILTER_PANEL_ZEITRAUM));
+        } catch (NoSuchElementException ignored) {
+        }
+    }
+
+    private void setupConfigListeners() {
+        showOnlyHd.addListener((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_SHOW_HD_ONLY, newValue));
+        showSubtitlesOnly.addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_SHOW_SUBTITLES_ONLY, newValue)));
+        showNewOnly.addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_SHOW_NEW_ONLY, newValue)));
+        showUnseenOnly.addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_SHOW_UNSEEN_ONLY, newValue)));
+        showLivestreamsOnly.addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_SHOW_LIVESTREAMS_ONLY, newValue)));
+
+        dontShowAbos.addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_DONT_SHOW_ABOS, newValue)));
+        dontShowTrailers.addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_DONT_SHOW_TRAILERS, newValue)));
+        dontShowSignLanguage.addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_DONT_SHOW_SIGN_LANGUAGE, newValue)));
+        dontShowAudioVersions.addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_DONT_SHOW_AUDIO_VERSIONS, newValue)));
+
+        filmLengthSlider.lowValueProperty().addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_FILM_LENGTH_MIN, newValue)));
+        filmLengthSlider.highValueProperty().addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_FILM_LENGTH_MAX, newValue)));
+
+        zeitraumSpinner.valueProperty().addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_ZEITRAUM, newValue)));
     }
 
     private Parent createLeft() {
@@ -141,9 +200,6 @@ public class FilmActionPanel {
         }
     }
 
-    private final PauseTransition pause2 = new PauseTransition(Duration.millis(150));
-    private final PauseTransition pause3 = new PauseTransition(Duration.millis(500));
-
     private void setupSearchField() {
         jfxSearchField = new JFXSearchPanel();
         jfxSearchField.setTooltip(new Tooltip("Thema/Titel durchsuchen"));
@@ -151,14 +207,10 @@ public class FilmActionPanel {
         final StringProperty textProperty = jfxSearchField.textProperty();
 
         pause2.setOnFinished(evt -> checkPatternValidity());
-        textProperty.addListener((observable, oldValue, newValue) -> {
-            pause2.playFromStart();
-        });
+        textProperty.addListener((observable, oldValue, newValue) -> pause2.playFromStart());
 
         pause3.setOnFinished(evt -> SwingUtilities.invokeLater(() -> Daten.guiFilme.filterFilmAction.actionPerformed(null)));
-        textProperty.addListener((observable, oldValue, newValue) -> {
-            pause3.playFromStart();
-        });
+        textProperty.addListener((observable, oldValue, newValue) -> pause3.playFromStart());
 
         roSearchStringProperty.bind(textProperty);
     }
@@ -222,7 +274,7 @@ public class FilmActionPanel {
         vBox.getChildren().add(cbShowNewOnly);
 
         CheckBox cbShowOnlyLivestreams = new CheckBox("Nur Live Streams anzeigen");
-        showOnlyLivestreams = cbShowOnlyLivestreams.selectedProperty();
+        showLivestreamsOnly = cbShowOnlyLivestreams.selectedProperty();
         vBox.getChildren().add(cbShowOnlyLivestreams);
 
         Separator sep = new Separator();
@@ -237,7 +289,7 @@ public class FilmActionPanel {
         vBox.getChildren().add(cbDontShowAbos);
 
         CheckBox cbDontShowGebaerdensprache = new CheckBox("Gebärdensprache nicht anzeigen");
-        dontShowGebaerdensprache = cbDontShowGebaerdensprache.selectedProperty();
+        dontShowSignLanguage = cbDontShowGebaerdensprache.selectedProperty();
         vBox.getChildren().add(cbDontShowGebaerdensprache);
 
         CheckBox cbDontShowTrailers = new CheckBox("Trailer/Teaser/Vorschau nicht anzeigen");
@@ -275,15 +327,6 @@ public class FilmActionPanel {
 
         return new TitledPane("Allgemeine Anzeigeeinstellungen", vBox);
     }
-
-    public ComboBox<String> senderBox;
-    public ComboBox<String> themaBox;
-
-    public BooleanProperty showOnlyLivestreams;
-
-    public RangeSlider filmLengthSlider;
-
-    public final static int UNLIMITED_VALUE = 110;
 
     private Node createFilmLengthSlider() {
         HBox hb = new HBox();
@@ -331,9 +374,6 @@ public class FilmActionPanel {
                 .outerPadding(4)
                 .buildAll();
     }
-
-    public ReadOnlyObjectProperty<String> zeitraumProperty;
-    public Spinner<String> zeitraumSpinner;
 
     private Node createZeitraumPane() {
         Label zeitraum = new Label("Zeitraum:");

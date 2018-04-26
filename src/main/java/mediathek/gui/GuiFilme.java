@@ -136,9 +136,9 @@ public class GuiFilme extends PanelVorlage {
         final boolean showOnlyHd = fap.showOnlyHd.getValue();
         final boolean kGesehen = fap.showUnseenOnly.getValue();
         final boolean keineAbos = fap.dontShowAbos.getValue();
-        final boolean showOnlyLivestreams = fap.showOnlyLivestreams.getValue();
+        final boolean showOnlyLivestreams = fap.showLivestreamsOnly.getValue();
         final boolean dontShowTrailers = fap.dontShowTrailers.getValue();
-        final boolean dontShowGebaerdensprache = fap.dontShowGebaerdensprache.getValue();
+        final boolean dontShowGebaerdensprache = fap.dontShowSignLanguage.getValue();
         final boolean dontShowAudioVersions = fap.dontShowAudioVersions.getValue();
 
         final int minLength = (int) fap.filmLengthSlider.getLowValue();
@@ -1321,9 +1321,9 @@ public class GuiFilme extends PanelVorlage {
             fap.showUnseenOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
             fap.dontShowAbos.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
             fap.dontShowTrailers.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
-            fap.dontShowGebaerdensprache.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
+            fap.dontShowSignLanguage.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
             fap.dontShowAudioVersions.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
-            fap.showOnlyLivestreams.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
+            fap.showLivestreamsOnly.addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(this::reloadTable));
             fap.filmLengthSlider.lowValueChangingProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue)
                     SwingUtilities.invokeLater(this::reloadTable);
