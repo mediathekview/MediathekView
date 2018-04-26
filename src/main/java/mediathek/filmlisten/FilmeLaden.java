@@ -26,6 +26,7 @@ import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.FilmListReader;
+import mSearch.filmlisten.FilmlistenSuchen;
 import mSearch.filmlisten.ListeFilmlistenUrls;
 import mSearch.tool.Duration;
 import mSearch.tool.Log;
@@ -170,6 +171,10 @@ public class FilmeLaden {
 
     public ListeFilmlistenUrls getDownloadUrlsFilmlisten_diff() {
         return importFilmliste.msFilmlistenSuchen.listeFilmlistenUrls_diff;
+    }
+
+    public FilmlistenSuchen getFilmlistenSuchen() {
+        return importFilmliste.msFilmlistenSuchen;
     }
 
     public String getDownloadUrl_akt() {

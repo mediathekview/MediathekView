@@ -23,6 +23,7 @@ import com.jidesoft.utils.SystemInfo;
 import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
+import mSearch.filmlisten.FilmlistenSuchen;
 import mSearch.tool.*;
 import mSearch.tool.Functions.OperatingSystemType;
 import mediathek.config.Daten;
@@ -33,6 +34,7 @@ import mediathek.controller.ProgStart;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.ListeMediaDB;
+import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.*;
 import mediathek.gui.bandwidth.IBandwidthMonitor;
 import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
@@ -827,6 +829,24 @@ public class MediathekGui extends JFrame {
 
         miSearchForProgramUpdate.addActionListener(e -> searchForUpdateOrShowProgramInfos(false));
         miShowProgramInfos.addActionListener(e -> searchForUpdateOrShowProgramInfos(true));
+
+        miUpdateServers.addActionListener(e -> updateFilmListServers());
+    }
+
+    /**
+     * "Force" update the list of filmlist servers.
+     */
+    private void updateFilmListServers() {
+        final FilmeLaden filmeLaden = daten.getFilmeLaden();
+        final FilmlistenSuchen list = filmeLaden.getFilmlistenSuchen();
+
+        filmeLaden.getDownloadUrlsFilmlisten_akt().clear();
+        filmeLaden.getDownloadUrlsFilmlisten_diff().clear();
+
+        list.updateURLsFilmlisten(true);
+        list.updateURLsFilmlisten(false);
+
+        JOptionPane.showMessageDialog(this, "Aktualisierung wurde durchgeführt.", "Update-Server aktualisieren", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void resetSettings() {
@@ -1240,6 +1260,8 @@ public class MediathekGui extends JFrame {
         javax.swing.JPopupMenu.Separator jSeparator8 = new javax.swing.JPopupMenu.Separator();
         miSearchForProgramUpdate = new javax.swing.JMenuItem();
         miShowProgramInfos = new javax.swing.JMenuItem();
+        javax.swing.JPopupMenu.Separator jSeparator9 = new javax.swing.JPopupMenu.Separator();
+        miUpdateServers = new javax.swing.JMenuItem();
         jSeparatorAboutApplication = new javax.swing.JPopupMenu.Separator();
         jMenuItemAboutApplication = new javax.swing.JMenuItem();
 
@@ -1453,6 +1475,10 @@ public class MediathekGui extends JFrame {
 
         miShowProgramInfos.setText("Programminfos anzeigen...");
         jMenuHilfe.add(miShowProgramInfos);
+        jMenuHilfe.add(jSeparator9);
+
+        miUpdateServers.setText("Update-Server aktualisieren...");
+        jMenuHilfe.add(miUpdateServers);
         jMenuHilfe.add(jSeparatorAboutApplication);
 
         jMenuItemAboutApplication.setText("Über dieses Programm...");
@@ -1537,5 +1563,6 @@ public class MediathekGui extends JFrame {
     private javax.swing.JTabbedPane jTabbedPane;
     private javax.swing.JMenuItem miSearchForProgramUpdate;
     private javax.swing.JMenuItem miShowProgramInfos;
+    private javax.swing.JMenuItem miUpdateServers;
     // End of variables declaration//GEN-END:variables
 }
