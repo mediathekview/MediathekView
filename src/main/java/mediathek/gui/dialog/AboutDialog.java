@@ -18,10 +18,22 @@
  */
 package mediathek.gui.dialog;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Font;
+import com.jidesoft.swing.MarqueePane;
+import com.jidesoft.utils.SystemInfo;
+import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import mediathek.gui.actions.DisposeDialogAction;
+import mediathek.gui.actions.UrlHyperlinkAction;
+import mediathek.tool.BeobMausUrl;
+import mediathek.tool.EscBeenden;
+import org.jdesktop.swingx.JXHyperlink;
+
+import javax.swing.*;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,33 +41,6 @@ import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
-
-import javax.swing.AbstractAction;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JEditorPane;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
-
-import org.jdesktop.swingx.JXHyperlink;
-
-import com.jidesoft.swing.MarqueePane;
-import com.jidesoft.utils.SystemInfo;
-
-import mediathek.config.Daten;
-import mediathek.config.Konstanten;
-import mediathek.gui.actions.DisposeDialogAction;
-import mediathek.gui.actions.UrlHyperlinkAction;
-import mediathek.tool.BeobMausUrl;
-import mediathek.tool.EscBeenden;
 
 @SuppressWarnings("serial")
 public class AboutDialog extends JDialog {
@@ -211,65 +196,70 @@ public class AboutDialog extends JDialog {
         pnlJavaInformation.setBorder(border);
         pnlJavaInformation.setBackground(Color.WHITE);
 
-        GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
+        JLabel lblDevelopmentSupportedBy = new JLabel("Development supported by JetBrains IntelliJ");
+        lblDevelopmentSupportedBy.setFont(UIManager.getFont("ToolTip.font"));
 
-        gl_contentPanel.setHorizontalGroup(gl_contentPanel.createParallelGroup(
-                Alignment.LEADING).addGroup(
-                        gl_contentPanel
-                        .createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(gl_contentPanel
-                                .createParallelGroup(Alignment.LEADING).addComponent(lblProgramIcon)
-                                .addComponent(hprlnkWebsite,
-                                        GroupLayout.PREFERRED_SIZE,
-                                        GroupLayout.DEFAULT_SIZE,
-                                        GroupLayout.PREFERRED_SIZE)
-                                .addComponent(hprlnkDonation,
-                                        GroupLayout.PREFERRED_SIZE,
-                                        GroupLayout.DEFAULT_SIZE,
-                                        GroupLayout.PREFERRED_SIZE)
-                                .addComponent(hprlnkForum,
-                                        GroupLayout.PREFERRED_SIZE,
-                                        GroupLayout.DEFAULT_SIZE,
-                                        GroupLayout.PREFERRED_SIZE)
-                                .addComponent(hprlnkAnleitung,
-                                        GroupLayout.PREFERRED_SIZE,
-                                        GroupLayout.DEFAULT_SIZE,
-                                        GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(ComponentPlacement.RELATED)
-                        .addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
-                                .addComponent(marqueePane, GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
-                                .addComponent(pnlJavaInformation, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
-                                .addComponent(pnlProgramPaths, GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
-                                .addComponent(lblProgramName)
-                                .addComponent(lblVersion, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE))
-                        .addContainerGap()));
+        GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
+        gl_contentPanel.setHorizontalGroup(
+                gl_contentPanel.createParallelGroup(Alignment.LEADING)
+                        .addGroup(gl_contentPanel.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+                                        .addGroup(gl_contentPanel.createSequentialGroup()
+                                                .addComponent(lblDevelopmentSupportedBy, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addGap(573))
+                                        .addGroup(gl_contentPanel.createSequentialGroup()
+                                                .addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+                                                        .addComponent(lblProgramIcon)
+                                                        .addGroup(gl_contentPanel.createSequentialGroup()
+                                                                .addComponent(hprlnkWebsite, GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE)
+                                                                .addGap(206))
+                                                        .addGroup(gl_contentPanel.createSequentialGroup()
+                                                                .addComponent(hprlnkDonation, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                .addGap(213))
+                                                        .addGroup(gl_contentPanel.createSequentialGroup()
+                                                                .addComponent(hprlnkForum, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                .addGap(218))
+                                                        .addGroup(gl_contentPanel.createSequentialGroup()
+                                                                .addComponent(hprlnkAnleitung, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                .addGap(197)))
+                                                .addGap(0)
+                                                .addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+                                                        .addComponent(marqueePane, GroupLayout.DEFAULT_SIZE, 543, Short.MAX_VALUE)
+                                                        .addComponent(pnlJavaInformation, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 543, Short.MAX_VALUE)
+                                                        .addComponent(pnlProgramPaths, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(lblProgramName)
+                                                        .addComponent(lblVersion, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 543, Short.MAX_VALUE))))
+                                .addContainerGap())
+        );
         gl_contentPanel.setVerticalGroup(
                 gl_contentPanel.createParallelGroup(Alignment.LEADING)
-                .addGroup(gl_contentPanel.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
-                                .addGroup(gl_contentPanel.createSequentialGroup()
-                                        .addComponent(lblProgramName)
-                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(lblVersion)
-                                        .addPreferredGap(ComponentPlacement.UNRELATED)
-                                        .addComponent(marqueePane, GroupLayout.PREFERRED_SIZE, 131, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(ComponentPlacement.UNRELATED)
-                                        .addComponent(pnlProgramPaths, GroupLayout.PREFERRED_SIZE, 78, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(pnlJavaInformation, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE))
-                                .addGroup(gl_contentPanel.createSequentialGroup()
-                                        .addComponent(lblProgramIcon)
-                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(hprlnkWebsite, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(hprlnkDonation, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(hprlnkForum, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(hprlnkAnleitung, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(28, Short.MAX_VALUE)));
+                        .addGroup(gl_contentPanel.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+                                        .addGroup(gl_contentPanel.createSequentialGroup()
+                                                .addComponent(lblProgramName)
+                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                .addComponent(lblVersion)
+                                                .addPreferredGap(ComponentPlacement.UNRELATED)
+                                                .addComponent(marqueePane, GroupLayout.PREFERRED_SIZE, 131, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(ComponentPlacement.UNRELATED)
+                                                .addComponent(pnlProgramPaths, GroupLayout.PREFERRED_SIZE, 78, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                .addComponent(pnlJavaInformation, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(gl_contentPanel.createSequentialGroup()
+                                                .addComponent(lblProgramIcon)
+                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                .addComponent(hprlnkWebsite, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                .addComponent(hprlnkDonation, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                .addComponent(hprlnkForum, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                .addComponent(hprlnkAnleitung, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                                .addComponent(lblDevelopmentSupportedBy))
+        );
 
         JLabel lblVersion_1 = new JLabel("Version:");
         lblVersion_1.setForeground(greyColor);
@@ -407,5 +397,4 @@ public class AboutDialog extends JDialog {
             }
         }
     }
-
 }
