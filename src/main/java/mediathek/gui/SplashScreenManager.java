@@ -22,7 +22,12 @@ public class SplashScreenManager
     private int splashScreenProgress = 0;
 
     /**
-     * wegeb der möglichen Abfrage: "Backup laden.."
+     * the maximum number of steps used for progress bar calculation.
+     */
+    private final static int MAXIMUM_STEPS = 11;
+    
+    /**
+     * wegen der möglichen Abfrage: "Backup laden.."
      */
     public void closeSplashScreen() {
         splashScreenContext = null;
@@ -34,10 +39,9 @@ public class SplashScreenManager
             return;
         }
 
-        final int splashScreenYPosition = 430;
-        final int splashScreenXPosition = 120;
-        final int splashScreenWidth = 300;
-        final int maxSteps = 11; // KEEP THIS CURRENT!
+        final int splashScreenYPosition = 450;
+        final int splashScreenXPosition = 84;
+        final int splashScreenWidth = 320;
 
         splashScreenProgress++;
 
@@ -57,7 +61,7 @@ public class SplashScreenManager
         splashScreenContext.fillRect(splashScreenXPosition, splashScreenYPosition - 15, splashScreenWidth, 5);
         //paint how much is done...
         splashScreenContext.setColor(Color.GREEN);
-        splashScreenContext.fillRect(splashScreenXPosition, splashScreenYPosition - 15, splashScreenProgress * (splashScreenWidth / maxSteps), 5);
+        splashScreenContext.fillRect(splashScreenXPosition, splashScreenYPosition - 15, splashScreenProgress * (splashScreenWidth / MAXIMUM_STEPS), 5);
         splash.update();
     }
 
