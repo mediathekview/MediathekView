@@ -22,11 +22,10 @@ import com.jidesoft.swing.MarqueePane;
 import com.jidesoft.utils.SystemInfo;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
+import mediathek.gui.HyperlinkButton;
 import mediathek.gui.actions.DisposeDialogAction;
 import mediathek.gui.actions.UrlHyperlinkAction;
-import mediathek.tool.BeobMausUrl;
 import mediathek.tool.EscBeenden;
-import org.jdesktop.swingx.JXHyperlink;
 
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
@@ -162,29 +161,21 @@ public class AboutDialog extends JDialog {
         lblVersion.setForeground(greyColor);
         lblVersion.setFont(new Font("Lucida Grande", Font.BOLD, 13));
 
-        JXHyperlink hprlnkWebsite = new JXHyperlink();
-        hprlnkWebsite.setHorizontalAlignment(SwingConstants.LEFT);
+        HyperlinkButton hprlnkWebsite = new HyperlinkButton();
         hprlnkWebsite.setAction(new HyperlinkAction(parent, Konstanten.ADRESSE_WEBSITE));
         hprlnkWebsite.setText("Website");
-        hprlnkWebsite.addMouseListener(new BeobMausUrl(Konstanten.ADRESSE_WEBSITE));
 
-        JXHyperlink hprlnkDonation = new JXHyperlink();
-        hprlnkDonation.setHorizontalAlignment(SwingConstants.LEFT);
+        HyperlinkButton hprlnkDonation = new HyperlinkButton();
         hprlnkDonation.setAction(new HyperlinkAction(parent, Konstanten.ADRESSE_DONATION));
         hprlnkDonation.setText("Spende");
-        hprlnkDonation.addMouseListener(new BeobMausUrl(Konstanten.ADRESSE_DONATION));
 
-        JXHyperlink hprlnkAnleitung = new JXHyperlink();
-        hprlnkAnleitung.setHorizontalAlignment(SwingConstants.LEFT);
+        HyperlinkButton hprlnkAnleitung = new HyperlinkButton();
         hprlnkAnleitung.setAction(new HyperlinkAction(parent, Konstanten.ADRESSE_ANLEITUNG));
         hprlnkAnleitung.setText("Anleitung");
-        hprlnkAnleitung.addMouseListener(new BeobMausUrl(Konstanten.ADRESSE_ANLEITUNG));
 
-        JXHyperlink hprlnkForum = new JXHyperlink();
-        hprlnkForum.setHorizontalAlignment(SwingConstants.LEFT);
+        HyperlinkButton hprlnkForum = new HyperlinkButton();
         hprlnkForum.setAction(new HyperlinkAction(parent, Konstanten.ADRESSE_FORUM));
         hprlnkForum.setText("Forum");
-        hprlnkForum.addMouseListener(new BeobMausUrl(Konstanten.ADRESSE_FORUM));
 
         JPanel pnlProgramPaths = new JPanel();
         TitledBorder border = new TitledBorder("Programmpfade");
@@ -379,8 +370,8 @@ public class AboutDialog extends JDialog {
      * Opens a browser window
      */
     private class HyperlinkAction extends AbstractAction {
-        private String url = null;
-        private JFrame parent = null;
+        private final String url;
+        private final JFrame parent;
 
         public HyperlinkAction(JFrame parent, final String url) {
             this.url = url;
