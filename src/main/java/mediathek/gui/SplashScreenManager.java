@@ -25,7 +25,7 @@ public class SplashScreenManager
      * the maximum number of steps used for progress bar calculation.
      */
     private final static int MAXIMUM_STEPS = 11;
-    
+
     /**
      * wegen der möglichen Abfrage: "Backup laden.."
      */
