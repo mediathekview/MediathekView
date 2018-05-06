@@ -48,6 +48,7 @@ public class InfoDialog extends JDialog {
         setType(Window.Type.UTILITY);
         setTitle("Filminformation");
         setResizable(false);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         buildLayout();
 
