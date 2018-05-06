@@ -50,6 +50,7 @@ import mediathek.tool.threads.IndicatorThread;
 import mediathek.update.CheckUpdate;
 import mediathek.update.ProgrammUpdateSuchen;
 import net.engio.mbassy.listener.Handler;
+import org.apache.commons.configuration2.Configuration;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -306,10 +307,7 @@ public class MediathekGui extends JFrame {
                 setTitle(TITLE_TEXT_EIN_PROGRAMMUPDATE_IST_VERFUEGBAR);
                 // after ten seconds, restore the original window title
                 Timer restoreTitleTimer = new Timer((int) TimeUnit.MILLISECONDS.convert(10, TimeUnit.SECONDS),
-                        e -> {
-                            System.out.println("RESTORING ORIGINAL WINDOW TITLE");
-                            setOrgTitel();
-                        });
+                        e -> setOrgTitel());
                 restoreTitleTimer.setRepeats(false); //run once only...
                 restoreTitleTimer.start();
             }
@@ -732,27 +730,28 @@ public class MediathekGui extends JFrame {
     }
 
 
-    protected void initMenue() {
-        setCbBeschreibung();
-        if (Functions.getOs() != Functions.OperatingSystemType.MAC) {
-            // soll bei OS X nicht sein
+    /**
+     * Install the listeners which will cause automatic tab switching based on associated Menu item.
+     */
+    protected void installMenuTabSwitchListener() {
+        if (config.getBoolean(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, true)) {
             jMenuFilme.addMenuListener(new MenuLST(TABS.TAB_FILME));
             jMenuDownload.addMenuListener(new MenuLST(TABS.TAB_DOWNLOADS));
             jMenuAbos.addMenuListener(new MenuLST(TABS.TAB_ABOS));
         }
+    }
+
+    protected void initMenue() {
+        setCbBeschreibung();
+        installMenuTabSwitchListener();
+
         setMenuIcons();
 
-
-        //        setupMaximumNumberOfDownloadsMenuItem();
-//        setupBandwidthMenuItem();
         initializeDateiMenu();
         initializeFilmeMenu();
         initializeDownloadsMenu();
         initializeAboMenu();
         initializeAnsichtMenu();
-
-
-
 
         // Hilfe
         setupHelpMenu();
@@ -1040,6 +1039,11 @@ public class MediathekGui extends JFrame {
         jMenuItemAbosAendern.setIcon(Icons.ICON_MENUE_ABO_AENDERN);
         jMenuItemAboNeu.setIcon(Icons.ICON_MENUE_ABO_NEU);
     }
+
+    /**
+     * the global configuration for this app.
+     */
+    protected Configuration config = ApplicationConfiguration.getConfiguration();
 
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
         //write all settings if not done already...

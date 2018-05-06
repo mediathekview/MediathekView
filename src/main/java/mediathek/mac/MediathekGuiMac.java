@@ -32,6 +32,11 @@ public class MediathekGuiMac extends MediathekGui {
         setWindowFullscreenCapability();
     }
 
+    @Override
+    protected void installMenuTabSwitchListener() {
+        //do not use on OS X as it violates HIG...
+    }
+
     /**
      * Enable Fullscreen window mode on OS X.
      * Depends on OS X only java classes.

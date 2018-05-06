@@ -91,11 +91,11 @@ public class GuiAbo extends PanelVorlage {
     }
 
     private void setCellRenderer() {
-        //TODO One renderer to fix them all?
         final MVSenderIconCache cache = daten.getMediathekGui().getSenderIconCache();
-        tabelle.setDefaultRenderer(Object.class, new CellRendererAbo(cache));
-        tabelle.setDefaultRenderer(Datum.class, new CellRendererAbo(cache));
-        tabelle.setDefaultRenderer(Integer.class, new CellRendererAbo(cache));
+        final CellRendererAbo cellRenderer = new CellRendererAbo(cache);
+        tabelle.setDefaultRenderer(Object.class, cellRenderer);
+        tabelle.setDefaultRenderer(Datum.class, cellRenderer);
+        tabelle.setDefaultRenderer(Integer.class, cellRenderer);
     }
 
     private void initListeners() {
