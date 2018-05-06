@@ -151,7 +151,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
         arr[DOWNLOAD_URL_RTMP] = film.arr[DatenFilm.FILM_URL_RTMP];
         arr[DOWNLOAD_DAUER] = film.arr[DatenFilm.FILM_DAUER];
         arr[DOWNLOAD_HD] = film.isHD() ? "1" : "0";
-        arr[DOWNLOAD_UT] = film.hasUT() ? "1" : "0";
+        arr[DOWNLOAD_UT] = film.hasSubtitle() ? "1" : "0";
         arr[DOWNLOAD_QUELLE] = String.valueOf(quelle);
         arr[DOWNLOAD_HISTORY_URL] = film.getUrlHistory();
         if (aufloesung.isEmpty()) {

@@ -4,9 +4,7 @@ import com.apple.eawt.Application;
 import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
-import mediathek.config.Daten;
 import mediathek.gui.bandwidth.MVBandwidthMonitorOSX;
-import mediathek.gui.filmInformation.MVFilmInformationOSX;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.tool.threads.IndicatorThread;
@@ -106,13 +104,6 @@ public class MediathekGuiMac extends MediathekGui {
         //not needed on OSX, located in apple menu
         jMenuHilfe.remove(jSeparatorAboutApplication);
         jMenuHilfe.remove(jMenuItemAboutApplication);
-    }
-
-
-    @Override
-    protected void createFilmInformationHUD(JFrame parent)
-    {
-        Daten.filmInfo = new MVFilmInformationOSX(parent);
     }
 
     @Override

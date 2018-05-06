@@ -62,22 +62,19 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("serial")
 public class GuiFilme extends PanelVorlage {
 
-    public GuiFilme(Daten aDaten, MediathekGui aMediathekGui) {
-        super(aDaten, aMediathekGui);
+    public GuiFilme(Daten aDaten, MediathekGui mediathekGui) {
+        super(aDaten, mediathekGui);
         initComponents();
 
         tabelle = new MVTable(MVTable.TableType.FILME);
         jScrollPane1.setViewportView(tabelle);
 
-        panelVideoplayerSetzen();
+        setupPanelVideoplayer();
         setupDescriptionPanel();
 
-        fxPanel = new JFXPanel();
-        add(fxPanel, BorderLayout.NORTH);
-        fap = new FilmActionPanel(daten);
-        Platform.runLater(() -> fxPanel.setScene(fap.getFilmActionPanelScene()));
+        setupFilmActionPanel();
 
-        start_init();
+        start_init(mediathekGui);
         start_addListener();
 
         setupActionListeners();
@@ -93,6 +90,16 @@ public class GuiFilme extends PanelVorlage {
             }
         });
 
+        setupSenderBox();
+    }
+
+    private void setupFilmActionPanel() {
+        add(fxPanel, BorderLayout.NORTH);
+        fap = new FilmActionPanel(daten);
+        Platform.runLater(() -> fxPanel.setScene(fap.getFilmActionPanelScene()));
+    }
+
+    private void setupSenderBox() {
         fap.senderBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             //senderList changes, reload Thema as well...
             String selectedItem = fap.themaBox.getSelectionModel().getSelectedItem();
@@ -119,8 +126,15 @@ public class GuiFilme extends PanelVorlage {
         list.addAll(Arrays.asList(getThemen(sender)));
     }
 
-    public final FilmActionPanel fap;
-    private final JFXPanel fxPanel;
+    /**
+     * The JavaFx Film action popup panel.
+     */
+    public FilmActionPanel fap;
+
+    /**
+     * The swing helper panel for using JavaFX inside Swing.
+     */
+    private final JFXPanel fxPanel = new JFXPanel();
 
     private void setupDescriptionPanel() {
         PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten, tabelle, true /*film*/);
@@ -204,7 +218,7 @@ public class GuiFilme extends PanelVorlage {
                         }
                     }
                     if (nurUt) {
-                        if (!film.hasUT()) {
+                        if (!film.hasSubtitle()) {
                             continue;
                         }
                     }
@@ -285,7 +299,7 @@ public class GuiFilme extends PanelVorlage {
                     object[m] = film.isHD() ? "1" : "0";
                     break;
                 case DatenFilm.FILM_UT:
-                    object[m] = film.hasUT() ? "1" : "0";
+                    object[m] = film.hasSubtitle() ? "1" : "0";
                     break;
                 default:
                     object[m] = film.arr[m];
@@ -480,7 +494,7 @@ public class GuiFilme extends PanelVorlage {
         tabelle.getActionMap().put("film_starten", playAction);
     }
 
-    private void start_init() {
+    private void start_init(MediathekGui mediathekGui) {
         showDescriptionPanel();
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
@@ -508,7 +522,7 @@ public class GuiFilme extends PanelVorlage {
             }
         });
 
-        final CellRendererFilme cellRenderer = new CellRendererFilme(daten);
+        final CellRendererFilme cellRenderer = new CellRendererFilme(daten, mediathekGui.getSenderIconCache());
         tabelle.setDefaultRenderer(Object.class, cellRenderer);
         tabelle.setDefaultRenderer(Datum.class, cellRenderer);
         tabelle.setDefaultRenderer(Integer.class, cellRenderer);
@@ -522,7 +536,7 @@ public class GuiFilme extends PanelVorlage {
         jCheckBoxProgamme.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, Boolean.FALSE.toString());
             Listener.notify(Listener.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName());
-            panelVideoplayerSetzen();
+            setupPanelVideoplayer();
         });
 
         setVisFilterPanelAndLoad();
@@ -539,7 +553,7 @@ public class GuiFilme extends PanelVorlage {
         Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, GuiFilme.class.getSimpleName()) {
             @Override
             public void ping() {
-                panelVideoplayerSetzen();
+                setupPanelVideoplayer();
             }
         });
         Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_HISTORY_GEAENDERT, GuiFilme.class.getSimpleName()) {
@@ -730,7 +744,7 @@ public class GuiFilme extends PanelVorlage {
     // ############################################
     // Panel mit den Extra-Videoprogrammen
     // ############################################
-    private void panelVideoplayerSetzen() {
+    private void setupPanelVideoplayer() {
         // erst sauber machen
         // zum Anlegen der Button:
         // Programmgruppe ohne Namen: Leerfeld
@@ -1266,7 +1280,7 @@ public class GuiFilme extends PanelVorlage {
             JPopupMenu jPopupMenu = new JPopupMenu();
             jSpinner.addChangeListener(e -> {
                 MVConfig.add(MVConfig.Configs.SYSTEM_TAB_FILME_ANZAHL_BUTTON, String.valueOf(((Number) jSpinner.getModel().getValue()).intValue()));
-                panelVideoplayerSetzen();
+                setupPanelVideoplayer();
             });
             JPanel jPanelAnzahl = new JPanel();
             jPanelAnzahl.setLayout(new BorderLayout());

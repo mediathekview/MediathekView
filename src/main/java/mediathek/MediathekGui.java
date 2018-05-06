@@ -41,7 +41,7 @@ import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
 import mediathek.gui.dialog.*;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
-import mediathek.gui.filmInformation.MVFilmInformationLWin;
+import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.res.GetIcon;
@@ -90,7 +90,6 @@ public class MediathekGui extends JFrame {
     private static final String LOG_TEXT_INIT_GUI = "Init GUI";
     private static final String LOG_TEXT_GUI_STEHT = "Gui steht!";
     private static final String ARGUMENT_PREFIX = "-";
-    //private static final String TITLE_TEXT_PROGRAMMVERSION_IST_AKTUELL = "Programmversion ist aktuell";
     private static final String TITLE_TEXT_EIN_PROGRAMMUPDATE_IST_VERFUEGBAR = "Ein Programmupdate ist verfügbar";
     private static final String TABNAME_FILME = "Filme";
     private static final String TABNAME_DOWNLOADS = "Downloads";
@@ -118,6 +117,7 @@ public class MediathekGui extends JFrame {
     private final JCheckBoxMenuItem jCheckBoxMeldungenExtrafenster = new JCheckBoxMenuItem();
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
+    private final MVSenderIconCache senderIconCache;
 
     public void updateSplashScreenText(final String aSplashScreenText)
     {
@@ -142,8 +142,19 @@ public class MediathekGui extends JFrame {
         return statusBar;
     }
 
+    private void remapF10Key() {
+        //Hier wird F10 default Funktion unterbunden:
+        InputMap im = jMenuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        im.put(KeyStroke.getKeyStroke(KEY_F10), NONE);
+    }
+
+    public MVSenderIconCache getSenderIconCache() {
+        return senderIconCache;
+    }
+
     public MediathekGui(String... aArguments) {
         super();
+
         splashScreenManager = new SplashScreenManager();
         splashScreenManager.initializeSplashScreen();
 
@@ -154,9 +165,10 @@ public class MediathekGui extends JFrame {
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE); // soll abgefangen werden
         setIconImage(GetIcon.getIcon(ICON_NAME, ICON_PATH, ICON_WIDTH, ICON_HEIGHT).getImage());
-        //Hier wird F10 default Funktion unterbunden:
-        InputMap im = jMenuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        im.put(KeyStroke.getKeyStroke(KEY_F10), NONE);
+
+        senderIconCache = new MVSenderIconCache();
+
+        remapF10Key();
 
         splashScreenManager.updateSplashScreenText(SPLASHSCREEN_TEXT_ANWENDUNGSDATEN_LADEN);
 
@@ -170,7 +182,7 @@ public class MediathekGui extends JFrame {
         Duration.staticPing(LOG_TEXT_START_GUI);
         createStatusBar();
 
-        createFilmInformationHUD(this);
+        createFilmInformationHUD();
 
         setOrgTitel();
         setLookAndFeel();
@@ -283,9 +295,8 @@ public class MediathekGui extends JFrame {
     /**
      * Create the film information tool window.
      */
-    protected void createFilmInformationHUD(JFrame parent) {
-            //klappte nicht auf allen Desktops
-        Daten.filmInfo = new MVFilmInformationLWin(parent);
+    protected void createFilmInformationHUD() {
+        Daten.filmInfo = new InfoDialog(this, senderIconCache);
     }
 
     private void addListener() {

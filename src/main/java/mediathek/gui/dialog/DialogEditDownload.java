@@ -330,7 +330,7 @@ public class DialogEditDownload extends JDialog {
                     gridbag.setConstraints(jLabelFilmUT, c);
                     jPanelExtra.add(jLabelFilmUT);
                     if (datenDownload.film != null) {
-                        jLabelFilmUT.setVisible(datenDownload.film.hasUT());
+                        jLabelFilmUT.setVisible(datenDownload.film.hasSubtitle());
                     } else {
                         jLabelFilmUT.setVisible(false);
                     }

@@ -341,7 +341,7 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
 
                 case DatenDownload.DOWNLOAD_UT:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (datenDownload.film != null && datenDownload.film.hasUT()) {
+                    if (datenDownload.film != null && datenDownload.film.hasSubtitle()) {
                         setIcon(ja_16);
                     } else {
                         setIcon(nein_12);

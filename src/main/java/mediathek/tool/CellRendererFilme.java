@@ -51,7 +51,9 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
     private static ImageIcon ja_16 = null;
     private static ImageIcon nein_12 = null;
 
-    public CellRendererFilme(Daten d) {
+    public CellRendererFilme(Daten d, MVSenderIconCache cache) {
+        senderIconCache = cache;
+
         ja_16 = Icons.ICON_TABELLE_EIN;
         nein_12 = Icons.ICON_TABELLE_AUS;
         history = d.history;
@@ -70,7 +72,6 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                 geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT);
             }
         });
-        senderIconCache = new MVSenderIconCache();
     }
 
     @Override
@@ -110,9 +111,9 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                         if (!SystemInfo.isMacOSX()) {
                             // On OS X do not change fonts as it violates HIG...
                             if (isSelected) {
-                                textArea.setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
+                                textArea.setFont(new Font("Dialog", Font.BOLD, MVFont.fontSize));
                             } else {
-                                textArea.setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
+                                textArea.setFont(new Font("Dialog", Font.PLAIN, MVFont.fontSize));
                             }
                         }
                         setColor(textArea, datenFilm, datenDownload, isSelected);
@@ -123,9 +124,9 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             if (!SystemInfo.isMacOSX()) {
                 // On OS X do not change fonts as it violates HIG...
                 if (isSelected) {
-                    setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
+                    setFont(new Font("Dialog", Font.BOLD, MVFont.fontSize));
                 } else {
-                    setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
+                    setFont(new Font("Dialog", Font.PLAIN, MVFont.fontSize));
                 }
             }
             switch (columnModelIndex) {
@@ -170,7 +171,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                     break;
                 case DatenFilm.FILM_UT:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (datenFilm.hasUT()) {
+                    if (datenFilm.hasSubtitle()) {
                         setIcon(ja_16);
                     } else {
                         setIcon(nein_12);
