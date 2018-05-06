@@ -25,7 +25,7 @@ public class CellRendererBaseWithStart extends CellRendererBase {
         super(cache);
 
         geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT, false);
-        Listener.addListener(new Listener(Listener.EREIGNIS_GEO, CellRendererFilme.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_GEO, CellRendererBaseWithStart.class.getSimpleName()) {
             @Override
             public void ping() {
                 geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT, false);
@@ -77,5 +77,12 @@ public class CellRendererBaseWithStart extends CellRendererBase {
             color = MVColor.FILM_GEOBLOCK_BACKGROUND.color;
 
         c.setBackground(color);
+    }
+
+    protected void setupGeoblockingBackground(final Component c, final String geo, final boolean isSelected) {
+        if (!geo.isEmpty()) {
+            if (!geo.contains(config.getString(ApplicationConfiguration.GEO_LOCATION)))
+                setGeoblockingBackgroundColor(c, isSelected);
+        }
     }
 }

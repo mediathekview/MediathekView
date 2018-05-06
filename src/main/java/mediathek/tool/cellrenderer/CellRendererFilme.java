@@ -21,7 +21,6 @@ package mediathek.tool.cellrenderer;
 
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
-import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
@@ -164,12 +163,10 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                 c.setForeground(MVColor.FILM_NEU.color);
             }
         }
-        if (!start && geoMelden) {
-            if (!datenFilm.arr[DatenFilm.FILM_GEO].isEmpty()) {
-                final String geoLocation = config.getString(ApplicationConfiguration.GEO_LOCATION);
-                if (!datenFilm.arr[DatenFilm.FILM_GEO].contains(geoLocation))
-                    setGeoblockingBackgroundColor(c, isSelected);
-            }
+
+        if (geoMelden) {
+            if (!start)
+                setupGeoblockingBackground(c, datenFilm.arr[DatenFilm.FILM_GEO], isSelected);
         }
     }
 

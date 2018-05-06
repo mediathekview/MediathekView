@@ -20,7 +20,6 @@
 package mediathek.tool.cellrenderer;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
@@ -359,11 +358,11 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
     }
 
     private void handleGeoBlocking(Component c, final DatenDownload datenDownload, final boolean isSelected) {
-        final String geoLocation = config.getString(ApplicationConfiguration.GEO_LOCATION);
-        if (datenDownload.start == null && geoMelden
-                && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO].isEmpty()
-                && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO].contains(geoLocation))
-            setGeoblockingBackgroundColor(c, isSelected);
+        if (geoMelden) {
+            if (datenDownload.start == null) {
+                setupGeoblockingBackground(c, datenDownload.arr[DatenDownload.DOWNLOAD_GEO], isSelected);
+            }
+        }
     }
 
     private void handleButtonDeleteColumn(final DatenDownload datenDownload, final boolean isSelected) {
