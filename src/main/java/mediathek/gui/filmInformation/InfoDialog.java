@@ -63,11 +63,9 @@ public class InfoDialog extends JDialog {
         });
         updateTextFields();
 
-        setLocationRelativeTo(getOwner());
-
+        restoreLocation();
         final boolean wasVisible = config.getBoolean(FILM_INFO_VISIBLE, false);
         if (wasVisible) {
-            restoreLocation();
             setVisible(true);
         }
 
@@ -86,7 +84,8 @@ public class InfoDialog extends JDialog {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentMoved(ComponentEvent e) {
-                saveLocation();
+                if (isVisible())
+                    saveLocation();
             }
         });
     }
