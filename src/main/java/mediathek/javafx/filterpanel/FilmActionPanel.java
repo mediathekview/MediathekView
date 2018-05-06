@@ -225,6 +225,7 @@ public class FilmActionPanel {
         hb.setAlignment(Pos.CENTER_RIGHT);
 
         btnNewFilter = new Button("", fontAwesome.create(FontAwesome.Glyph.FILTER));
+        btnNewFilter.setTooltip(new Tooltip("Filtereinstellungen anzeigen"));
         btnNewFilter.setOnAction(e -> filterPopover.show(btnNewFilter));
         ObservableList<Node> list = hb.getChildren();
 
