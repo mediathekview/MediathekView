@@ -45,7 +45,7 @@
         </Component>
         <Component class="javax.swing.JCheckBox" name="cbAutomaticMenuTabSwitching">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Tabs schalten automatisch bei Men&#xfc;nutzung um (Neustart erforderlich!)"/>
+            <Property name="text" type="java.lang.String" value="Tabs schalten automatisch bei Men&#xfc;nutzung um"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -418,7 +418,7 @@
             </CodeStatement>
             <CodeStatement>
               <CodeExpression id="12_jPanel6">
-                <CodeVariable name="jPanel6" type="4096" declaredType="javax.swing.JPanel"/>
+                <CodeVariable name="jPanel6" type="20480" declaredType="javax.swing.JPanel"/>
                 <ExpressionOrigin>
                   <ExpressionProvider type="ComponentRef">
                     <ComponentRef name="jPanel6"/>

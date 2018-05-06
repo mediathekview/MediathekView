@@ -371,7 +371,7 @@ public class PanelEinstellungen extends PanelVorlage {
         jCheckBoxTabIcon.setToolTipText("Im Tab keine Icons anzeigen");
         jPanel5.add(jCheckBoxTabIcon);
 
-        cbAutomaticMenuTabSwitching.setText("Tabs schalten automatisch bei Menünutzung um (Neustart erforderlich!)");
+        cbAutomaticMenuTabSwitching.setText("Tabs schalten automatisch bei Menünutzung um");
         jPanel5.add(cbAutomaticMenuTabSwitching);
 
         add(jPanel5);
