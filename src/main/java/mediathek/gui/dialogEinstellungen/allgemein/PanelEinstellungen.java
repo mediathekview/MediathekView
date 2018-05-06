@@ -28,6 +28,7 @@ import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.gui.messages.InstallTabSwitchListenerEvent;
 import mediathek.tool.MVFunctionSys;
 import mediathek.tool.MVMessageDialog;
 import org.apache.commons.configuration2.Configuration;
@@ -40,14 +41,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 @SuppressWarnings("serial")
 public class PanelEinstellungen extends PanelVorlage {
     private final static String ICONSET_STANDARD = "Standard";
     private final static String ALLE = " Alle ";
+    private final Configuration config = ApplicationConfiguration.getConfiguration();
 
     private void setupProxySettings() {
-        final Configuration config = ApplicationConfiguration.getConfiguration();
 
         jtfProxyHost.setText(config.getString(ApplicationConfiguration.HTTP_PROXY_HOSTNAME, ""));
         jtfProxyHost.getDocument().addDocumentListener(new ProxyHostListener(jtfProxyHost));
@@ -160,9 +162,40 @@ public class PanelEinstellungen extends PanelVorlage {
                 cbxIconPackagesItemStateChanged(evt);
             }
         });
+
+        setupTabSwitchListener();
     }
 
-    private void cbxIconPackagesItemStateChanged(java.awt.event.ItemEvent evt) {
+    private void setupTabSwitchListener() {
+        if (SystemInfo.isMacOSX()) {
+            //deactivated on OS X
+            cbAutomaticMenuTabSwitching.setEnabled(false);
+            config.setProperty(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, false);
+        } else {
+            boolean installed;
+            try {
+                installed = config.getBoolean(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER);
+            } catch (NoSuchElementException ex) {
+                installed = true;
+                config.setProperty(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, true);
+            }
+            cbAutomaticMenuTabSwitching.setSelected(installed);
+
+            cbAutomaticMenuTabSwitching.addActionListener(e -> {
+                final boolean isOn = cbAutomaticMenuTabSwitching.isSelected();
+                config.setProperty(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, isOn);
+                final InstallTabSwitchListenerEvent evt = new InstallTabSwitchListenerEvent();
+                if (isOn) {
+                    evt.event = InstallTabSwitchListenerEvent.INSTALL_TYPE.INSTALL;
+                } else {
+                    evt.event = InstallTabSwitchListenerEvent.INSTALL_TYPE.REMOVE;
+                }
+                daten.getMessageBus().publishAsync(evt);
+            });
+        }
+    }
+
+    private void cbxIconPackagesItemStateChanged(ItemEvent evt) {
         MVMessageDialog.showMessageDialog(this, "Sie müssen die Applikation neu starten damit die Icons genutzt werden können.", "MediathekView", JOptionPane.WARNING_MESSAGE);
         String iconName = jComboBoxIcons.getModel().getElementAt(jComboBoxIcons.getSelectedIndex());
         if (iconName.equals(ICONSET_STANDARD)) {
@@ -295,20 +328,10 @@ public class PanelEinstellungen extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
-        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
-        jComboBoxLookAndFeel = new javax.swing.JComboBox<>();
-        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        jComboBoxIcons = new javax.swing.JComboBox<>();
-        jButtonRefresh = new javax.swing.JButton();
-        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
-        javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
-        jSpinnerDays = new javax.swing.JSpinner();
-        jButtonHelpDays = new javax.swing.JButton();
-        jButtonLoad = new javax.swing.JButton();
-        jCheckBoxTray = new javax.swing.JCheckBox();
+        javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
         jCheckBoxTabsTop = new javax.swing.JCheckBox();
         jCheckBoxTabIcon = new javax.swing.JCheckBox();
+        cbAutomaticMenuTabSwitching = new javax.swing.JCheckBox();
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
         jtfUserAgent = new javax.swing.JTextField();
@@ -321,133 +344,49 @@ public class PanelEinstellungen extends PanelVorlage {
         jtfProxyUser = new javax.swing.JTextField();
         javax.swing.JLabel jLabel8 = new javax.swing.JLabel();
         jpfProxyPassword = new javax.swing.JPasswordField();
+        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
+        jCheckBoxTray = new javax.swing.JCheckBox();
+        javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
+        jSpinnerDays = new javax.swing.JSpinner();
+        jButtonHelpDays = new javax.swing.JButton();
+        jButtonLoad = new javax.swing.JButton();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
+        jComboBoxLookAndFeel = new javax.swing.JComboBox<>();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
+        jComboBoxIcons = new javax.swing.JComboBox<>();
+        jButtonRefresh = new javax.swing.JButton();
 
         setMinimumSize(getPreferredSize());
+        setLayout(new org.jdesktop.swingx.VerticalLayout());
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-
-        jLabel2.setText("Look&Feel:");
-
-        jLabel1.setText("Icon-Pack:");
-
-        jButtonRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-aktualisieren.png"))); // NOI18N
-        jButtonRefresh.setToolTipText("neue Icons suchen");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jComboBoxIcons, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jComboBoxLookAndFeel, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonRefresh)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBoxLookAndFeel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jComboBoxIcons, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel1))
-                    .addComponent(jButtonRefresh))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-
-        jLabel6.setText("nur die Filme der letzten Tage laden:");
-
-        jSpinnerDays.setModel(new javax.swing.SpinnerListModel(new String[] {"Alles", "1", "2", "10", "15"}));
-
-        jButtonHelpDays.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
-        jButtonHelpDays.setToolTipText("Hilfe anzeigen");
-
-        jButtonLoad.setText("Filmliste jetzt neu laden");
-
-        jCheckBoxTray.setText("Programm ins Tray minimieren");
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Tab-Verhalten"));
+        jPanel5.setLayout(new org.jdesktop.swingx.VerticalLayout());
 
         jCheckBoxTabsTop.setText("Tabs oben anzeigen");
+        jPanel5.add(jCheckBoxTabsTop);
 
-        jCheckBoxTabIcon.setText("Icons im Tab anzeigen");
+        jCheckBoxTabIcon.setText("Icons anzeigen");
         jCheckBoxTabIcon.setToolTipText("Im Tab keine Icons anzeigen");
+        jPanel5.add(jCheckBoxTabIcon);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addComponent(jCheckBoxTabsTop)
-                            .addGap(18, 18, 18)
-                            .addComponent(jCheckBoxTabIcon))
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jSpinnerDays, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonHelpDays)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonLoad))
-                        .addComponent(jCheckBoxTray))
-                    .addGap(0, 42, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBoxTabsTop)
-                    .addComponent(jCheckBoxTabIcon))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBoxTray)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel6)
-                    .addComponent(jSpinnerDays, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButtonHelpDays)
-                    .addComponent(jButtonLoad))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        cbAutomaticMenuTabSwitching.setText("Tabs schalten automatisch bei Menünutzung um (Neustart erforderlich!)");
+        jPanel5.add(cbAutomaticMenuTabSwitching);
+
+        add(jPanel5);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Download"));
+        jPanel3.setLayout(new org.jdesktop.swingx.HorizontalLayout());
 
         jLabel3.setText("User-Agent:");
+        jPanel3.add(jLabel3);
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jtfUserAgent)
-                                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel3)
-                                        .addComponent(jtfUserAgent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        jtfUserAgent.setMinimumSize(new java.awt.Dimension(200, 26));
+        jtfUserAgent.setPreferredSize(new java.awt.Dimension(520, 26));
+        jPanel3.add(jtfUserAgent);
+
+        add(jPanel3);
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("HTTP-Proxy (Neustart erforderlich!)"));
         jPanel4.setToolTipText("");
@@ -483,7 +422,7 @@ public class PanelEinstellungen extends PanelVorlage {
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(jPanel4Layout.createSequentialGroup()
                                                 .addComponent(jtfProxyPort, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(0, 0, Short.MAX_VALUE))
+                                                .addGap(0, 152, Short.MAX_VALUE))
                                         .addComponent(jpfProxyPassword))
                                 .addContainerGap())
         );
@@ -505,36 +444,83 @@ public class PanelEinstellungen extends PanelVorlage {
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+        add(jPanel4);
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jPanel2.setLayout(new org.jdesktop.swingx.VerticalLayout());
+
+        jCheckBoxTray.setText("Programm ins Tray minimieren");
+        jPanel2.add(jCheckBoxTray);
+
+        org.jdesktop.swingx.HorizontalLayout horizontalLayout1 = new org.jdesktop.swingx.HorizontalLayout();
+        horizontalLayout1.setGap(5);
+        jPanel6.setLayout(horizontalLayout1);
+
+        jLabel6.setText("nur die Filme der letzten Tage laden:");
+        jPanel6.add(jLabel6);
+
+        jSpinnerDays.setModel(new javax.swing.SpinnerListModel(new String[]{"Alles", "1", "2", "10", "15"}));
+        jPanel6.add(jSpinnerDays);
+
+        jButtonHelpDays.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
+        jButtonHelpDays.setToolTipText("Hilfe anzeigen");
+        jPanel6.add(jButtonHelpDays);
+
+        jButtonLoad.setText("Filmliste jetzt neu laden");
+        jPanel6.add(jButtonLoad);
+
+        jPanel2.add(jPanel6);
+
+        add(jPanel2);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        jLabel2.setText("Look&Feel:");
+
+        jLabel1.setText("Icon-Pack:");
+
+        jButtonRefresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-aktualisieren.png"))); // NOI18N
+        jButtonRefresh.setToolTipText("neue Icons suchen");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel2)
+                                        .addComponent(jLabel1))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jComboBoxIcons, 0, 487, Short.MAX_VALUE)
+                                        .addComponent(jComboBoxLookAndFeel, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonRefresh)
+                                .addContainerGap())
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(131, Short.MAX_VALUE))
+        jPanel1Layout.setVerticalGroup(
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jComboBoxLookAndFeel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel2))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                .addComponent(jComboBoxIcons, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(jLabel1))
+                                        .addComponent(jButtonRefresh))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        add(jPanel1);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox cbAutomaticMenuTabSwitching;
     private javax.swing.JButton jButtonHelpDays;
     private javax.swing.JButton jButtonLoad;
     private javax.swing.JButton jButtonRefresh;

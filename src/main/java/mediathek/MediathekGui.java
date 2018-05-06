@@ -44,6 +44,7 @@ import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
+import mediathek.gui.messages.InstallTabSwitchListenerEvent;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
 import mediathek.tool.threads.IndicatorThread;
@@ -64,6 +65,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -729,15 +731,48 @@ public class MediathekGui extends JFrame {
         }
     }
 
+    protected HashMap<JMenu, MenuLST> menuListeners = new HashMap<>();
 
     /**
      * Install the listeners which will cause automatic tab switching based on associated Menu item.
      */
     protected void installMenuTabSwitchListener() {
+        //initial setup
+        menuListeners.put(jMenuFilme, new MenuLST(TABS.TAB_FILME));
+        menuListeners.put(jMenuDownload, new MenuLST(TABS.TAB_DOWNLOADS));
+        menuListeners.put(jMenuAbos, new MenuLST(TABS.TAB_ABOS));
+
+        //now assign if really necessary
         if (config.getBoolean(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, true)) {
-            jMenuFilme.addMenuListener(new MenuLST(TABS.TAB_FILME));
-            jMenuDownload.addMenuListener(new MenuLST(TABS.TAB_DOWNLOADS));
-            jMenuAbos.addMenuListener(new MenuLST(TABS.TAB_ABOS));
+            jMenuFilme.addMenuListener(menuListeners.get(jMenuFilme));
+            jMenuDownload.addMenuListener(menuListeners.get(jMenuDownload));
+            jMenuAbos.addMenuListener(menuListeners.get(jMenuAbos));
+        }
+    }
+
+    /**
+     * Handle the install/or remove event sent from settings dialog
+     *
+     * @param msg
+     */
+    @Handler
+    protected void handleInstallTabSwitchListenerEvent(InstallTabSwitchListenerEvent msg) {
+        switch (msg.event) {
+            case INSTALL:
+                SwingUtilities.invokeLater(() -> {
+                    jMenuFilme.addMenuListener(menuListeners.get(jMenuFilme));
+                    jMenuDownload.addMenuListener(menuListeners.get(jMenuDownload));
+                    jMenuAbos.addMenuListener(menuListeners.get(jMenuAbos));
+                });
+                break;
+
+            case REMOVE:
+                SwingUtilities.invokeLater(() -> {
+                    jMenuFilme.removeMenuListener(menuListeners.get(jMenuFilme));
+                    jMenuDownload.removeMenuListener(menuListeners.get(jMenuDownload));
+                    jMenuAbos.removeMenuListener(menuListeners.get(jMenuAbos));
+                });
+                break;
         }
     }
 

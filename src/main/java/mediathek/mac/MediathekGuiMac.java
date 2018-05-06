@@ -7,7 +7,9 @@ import mediathek.MediathekGui;
 import mediathek.gui.bandwidth.MVBandwidthMonitorOSX;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
+import mediathek.gui.messages.InstallTabSwitchListenerEvent;
 import mediathek.tool.threads.IndicatorThread;
+import net.engio.mbassy.listener.Handler;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -37,6 +39,12 @@ public class MediathekGuiMac extends MediathekGui {
         //do not use on OS X as it violates HIG...
     }
 
+    @Override
+    @Handler
+    protected void handleInstallTabSwitchListenerEvent(InstallTabSwitchListenerEvent msg) {
+        //do not use on OS X as it violates HIG...
+    }
+
     /**
      * Enable Fullscreen window mode on OS X.
      * Depends on OS X only java classes.
@@ -44,10 +52,9 @@ public class MediathekGuiMac extends MediathekGui {
     private void setWindowFullscreenCapability() {
         try {
             Class.forName("com.apple.eawt.FullScreenUtilities")
-                    .getMethod("setWindowCanFullScreen",Window.class,boolean.class)
-                    .invoke(null, this,true);
-        }
-        catch (Exception ignored) {
+                    .getMethod("setWindowCanFullScreen", Window.class, boolean.class)
+                    .invoke(null, this, true);
+        } catch (Exception ignored) {
         }
     }
 
@@ -112,8 +119,7 @@ public class MediathekGuiMac extends MediathekGui {
     }
 
     @Override
-    protected void createBandwidthMonitor(JFrame parent)
-    {
+    protected void createBandwidthMonitor(JFrame parent) {
         bandwidthMonitor = new MVBandwidthMonitorOSX(this);
     }
 
