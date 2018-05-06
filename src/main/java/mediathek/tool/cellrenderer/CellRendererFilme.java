@@ -17,13 +17,11 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.tool;
+package mediathek.tool.cellrenderer;
 
-import com.jidesoft.utils.SystemInfo;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
@@ -31,47 +29,28 @@ import mediathek.config.MVColor;
 import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
-import org.apache.commons.configuration2.Configuration;
+import mediathek.tool.MVSenderIconCache;
+import mediathek.tool.MVTable;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
 @SuppressWarnings("serial")
-public class CellRendererFilme extends DefaultTableCellRenderer {
-    private static ImageIcon film_start_tab = null;
-    private static ImageIcon film_start_sw_tab = null;
+public class CellRendererFilme extends CellRendererBaseWithStart {
     private static ImageIcon film_rec_tab = null;
     private static ImageIcon film_rec_sw_tab = null;
     private static ImageIcon film_stop_tab = null;
     private static ImageIcon film_stop_sw_tab = null;
-    private boolean geoMelden;
     private final MVUsedUrls history;
-    private final MVSenderIconCache senderIconCache;
-    private static ImageIcon ja_16 = null;
-    private static ImageIcon nein_12 = null;
 
     public CellRendererFilme(Daten d, MVSenderIconCache cache) {
-        senderIconCache = cache;
+        super(cache);
 
-        ja_16 = Icons.ICON_TABELLE_EIN;
-        nein_12 = Icons.ICON_TABELLE_AUS;
         history = d.history;
-        film_start_tab = Icons.ICON_TABELLE_FILM_START;
-        film_start_sw_tab = Icons.ICON_TABELLE_FILM_START_SW;
         film_rec_tab = Icons.ICON_TABELLE_FILM_REC;
         film_rec_sw_tab = Icons.ICON_TABELLE_FILM_REC_SW;
         film_stop_tab = Icons.ICON_TABELLE_FILM_STOP;
         film_stop_sw_tab = Icons.ICON_TABELLE_FILM_STOP_SW;
-
-        final Configuration config = ApplicationConfiguration.getConfiguration();
-        geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT);
-        Listener.addListener(new Listener(Listener.EREIGNIS_GEO, CellRendererFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT);
-            }
-        });
     }
 
     @Override
@@ -92,8 +71,8 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
 
             final int rowModelIndex = table.convertRowIndexToModel(row);
             final int columnModelIndex = table.convertColumnIndexToModel(column);
-            DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF);
-            DatenDownload datenDownload = Daten.getInstance().getListeDownloadsButton().getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL]);
+            final DatenFilm datenFilm = (DatenFilm) table.getModel().getValueAt(rowModelIndex, DatenFilm.FILM_REF);
+            final DatenDownload datenDownload = Daten.getInstance().getListeDownloadsButton().getDownloadUrlFilm(datenFilm.arr[DatenFilm.FILM_URL]);
 
             if (((MVTable) table).lineBreak) {
                 JTextArea textArea;
@@ -108,27 +87,14 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                         textArea.setText(value.toString());
                         textArea.setForeground(getForeground());
                         textArea.setBackground(getBackground());
-                        if (!SystemInfo.isMacOSX()) {
-                            // On OS X do not change fonts as it violates HIG...
-                            if (isSelected) {
-                                textArea.setFont(new Font("Dialog", Font.BOLD, MVFont.fontSize));
-                            } else {
-                                textArea.setFont(new Font("Dialog", Font.PLAIN, MVFont.fontSize));
-                            }
-                        }
+                        setSelectionFont(textArea, isSelected);
                         setColor(textArea, datenFilm, datenDownload, isSelected);
                         return textArea;
                 }
             }
 
-            if (!SystemInfo.isMacOSX()) {
-                // On OS X do not change fonts as it violates HIG...
-                if (isSelected) {
-                    setFont(new Font("Dialog", Font.BOLD, MVFont.fontSize));
-                } else {
-                    setFont(new Font("Dialog", Font.PLAIN, MVFont.fontSize));
-                }
-            }
+            setSelectionFont(this, isSelected);
+
             switch (columnModelIndex) {
                 case DatenFilm.FILM_NR:
                 case DatenFilm.FILM_DATUM:
@@ -153,29 +119,17 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
                     break;
                 case DatenFilm.FILM_NEU:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (datenFilm.isNew()) {
-                        setIcon(ja_16);
-                    } else {
-                        setIcon(nein_12);
-                    }
+                    setYesNoIcon(datenFilm.isNew());
                     setText("");
                     break;
                 case DatenFilm.FILM_HD:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (datenFilm.isHD()) {
-                        setIcon(ja_16);
-                    } else {
-                        setIcon(nein_12);
-                    }
+                    setYesNoIcon(datenFilm.isHD());
                     setText("");//im Modle brauchen wir den Text zum Sortieren
                     break;
                 case DatenFilm.FILM_UT:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (datenFilm.hasSubtitle()) {
-                        setIcon(ja_16);
-                    } else {
-                        setIcon(nein_12);
-                    }
+                    setYesNoIcon(datenFilm.hasSubtitle());
                     setText("");
                     break;
             }
@@ -194,38 +148,7 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             // gestarteter Film
             if (datenDownload.start != null) {
                 start = true;
-
-                switch (datenDownload.start.status) {
-                    case Start.STATUS_INIT:
-                        if (isSelected) {
-                            c.setBackground(MVColor.DOWNLOAD_WAIT_SEL.color);
-                        } else {
-                            c.setBackground(MVColor.DOWNLOAD_WAIT.color);
-                        }
-                        break;
-                    case Start.STATUS_RUN:
-                        if (isSelected) {
-                            c.setBackground(MVColor.DOWNLOAD_RUN_SEL.color);
-                        } else {
-                            c.setBackground(MVColor.DOWNLOAD_RUN.color);
-                        }
-                        break;
-                    case Start.STATUS_FERTIG:
-                        if (isSelected) {
-                            c.setBackground(MVColor.DOWNLOAD_FERTIG_SEL.color);
-                        } else {
-                            c.setBackground(MVColor.DOWNLOAD_FERTIG.color);
-                        }
-                        break;
-                    case Start.STATUS_ERR:
-                        if (isSelected) {
-                            c.setBackground(MVColor.DOWNLOAD_FEHLER_SEL.color);
-                        } else {
-                            c.setBackground(MVColor.DOWNLOAD_FEHLER.color);
-                        }
-                        break;
-                }
-
+                setBackgroundColor(c, datenDownload.start, isSelected);
             }
         }
 
@@ -243,17 +166,11 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
         }
         if (!start && geoMelden) {
             if (!datenFilm.arr[DatenFilm.FILM_GEO].isEmpty()) {
-                final String geoLocation = ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.GEO_LOCATION);
-                if (!datenFilm.arr[DatenFilm.FILM_GEO].contains(geoLocation)) {
-                    if (isSelected) {
-                        c.setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND_SEL.color);
-                    } else {
-                        c.setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND.color);
-                    }
-                }
+                final String geoLocation = config.getString(ApplicationConfiguration.GEO_LOCATION);
+                if (!datenFilm.arr[DatenFilm.FILM_GEO].contains(geoLocation))
+                    setGeoblockingBackgroundColor(c, isSelected);
             }
         }
-
     }
 
     private void handleButtonStartColumn(final DatenDownload datenDownload, final boolean isSelected) {
@@ -263,21 +180,26 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
             if (datenDownload.start != null) {
                 if (datenDownload.start.status == Start.STATUS_RUN) {
                     setToolTipText("Film stoppen");
-                    if (isSelected) {
-                        setIcon(film_stop_tab);
-                    } else {
-                        setIcon(film_stop_sw_tab);
-                    }
+                    final Icon icon;
+                    if (isSelected)
+                        icon = film_stop_tab;
+                    else
+                        icon = film_stop_sw_tab;
+
+                    setIcon(icon);
                 }
             }
         }
+
         if (getIcon() == null) {
             setToolTipText("Film abspielen");
-            if (isSelected) {
-                setIcon(film_start_tab);
-            } else {
-                setIcon(film_start_sw_tab);
-            }
+            final Icon icon;
+            if (isSelected)
+                icon = film_start_tab;
+            else
+                icon = film_start_sw_tab;
+
+            setIcon(icon);
         }
     }
 
@@ -285,24 +207,12 @@ public class CellRendererFilme extends DefaultTableCellRenderer {
         // Button Aufzeichnen
         setHorizontalAlignment(SwingConstants.CENTER);
         setToolTipText("Film aufzeichnen");
-        if (isSelected) {
-            setIcon(film_rec_tab);
-        } else {
-            setIcon(film_rec_sw_tab);
-        }
-    }
+        final Icon icon;
+        if (isSelected)
+            icon = film_rec_tab;
+        else
+            icon = film_rec_sw_tab;
 
-    /**
-     * Draws the sender icon in the sender model column.
-     *
-     * @param sender Name of the sender.
-     */
-    private void handleSenderColumn(String sender, boolean small) {
-        setHorizontalAlignment(SwingConstants.CENTER);
-        ImageIcon icon = senderIconCache.get(sender, small);
-        if (icon != null) {
-            setText("");
-            setIcon(icon);
-        }
+        setIcon(icon);
     }
 }

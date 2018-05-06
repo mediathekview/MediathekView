@@ -17,55 +17,46 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.tool;
+package mediathek.tool.cellrenderer;
 
 import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
-import org.apache.commons.configuration2.Configuration;
+import mediathek.tool.MVSenderIconCache;
+import mediathek.tool.MVTable;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicProgressBarUI;
-import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
 @SuppressWarnings("serial")
-public class CellRendererDownloads extends DefaultTableCellRenderer {
+public class CellRendererDownloads extends CellRendererBaseWithStart {
     private final static String DOWNLOAD_STARTEN = "Download starten";
     private final static String DOWNLOAD_LOESCHEN = "Download aus Liste entfernen";
     private final static String DOWNLOAD_STOPPEN = "Download stoppen";
     private final static String DOWNLOAD_ENTFERNEN = "Download entfernen";
     private final static String PLAY_DOWNLOADED_FILM = "gespeicherten Film abspielen";
-    private static ImageIcon ja_16 = null;
-    private static ImageIcon nein_12 = null;
-    private static ImageIcon film_start_tab = null;
     private static ImageIcon download_stop_tab = null;
     private static ImageIcon download_start_tab = null;
-    private static ImageIcon film_start_sw_tab = null;
     private static ImageIcon download_stop_sw_tab = null;
     private static ImageIcon download_start_sw_tab = null;
     private static ImageIcon download_clear_tab = null;
     private static ImageIcon download_clear_sw_tab = null;
     private static ImageIcon download_del_tab = null;
     private static ImageIcon download_del_sw_tab = null;
-    private boolean geoMelden;
-    private final JProgressBar progressBar;
+    private JProgressBar progressBar;
     private final Border emptyBorder = BorderFactory.createEmptyBorder();
     private final Border largeBorder = BorderFactory.createEmptyBorder(9, 2, 9, 2);
     private final JPanel panel;
-    private final MVSenderIconCache senderIconCache;
 
-    public CellRendererDownloads() {
-        ja_16 = Icons.ICON_TABELLE_EIN;
-        nein_12 = Icons.ICON_TABELLE_AUS;
-        film_start_tab = Icons.ICON_TABELLE_FILM_START;
-        film_start_sw_tab = Icons.ICON_TABELLE_FILM_START_SW;
+    public CellRendererDownloads(MVSenderIconCache cache) {
+        super(cache);
+
         download_stop_tab = Icons.ICON_TABELLE_DOWNOAD_STOP;
         download_stop_sw_tab = Icons.ICON_TABELLE_DOWNOAD_STOP_SW;
         download_start_tab = Icons.ICON_TABELLE_DOWNOAD_START;
@@ -75,16 +66,13 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
         download_del_tab = Icons.ICON_TABELLE_DOWNOAD_DEL;
         download_del_sw_tab = Icons.ICON_TABELLE_DOWNOAD_DEL_SW;
 
-        final Configuration config = ApplicationConfiguration.getConfiguration();
-        geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT);
+        setupProgressBar();
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_GEO, CellRendererDownloads.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT);
-            }
-        });
+        panel = new JPanel(new BorderLayout());
+        panel.add(progressBar);
+    }
 
+    private void setupProgressBar() {
         progressBar = new JProgressBar(0, 1000);
         progressBar.setStringPainted(true);
         //on OSX the OS provided progress bar looks much better...
@@ -101,11 +89,6 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                 }
             });
         }
-
-        panel = new JPanel(new BorderLayout());
-        panel.add(progressBar);
-
-        senderIconCache = new MVSenderIconCache();
     }
 
     @Override
@@ -147,28 +130,15 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                         if (columnModelIndex == DatenDownload.DOWNLOAD_ABO) {
                             handleAboColumn(textArea, datenDownload);
                         }
-                        setColor(textArea, datenDownload.start, isSelected);
+                        setBackgroundColor(textArea, datenDownload.start, isSelected);
                         handleGeoBlocking(textArea, datenDownload, isSelected);
-                        if (!SystemInfo.isMacOSX()) {
-                            // On OS X do not change fonts as it violates HIG...
-                            if (isSelected) {
-                                textArea.setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
-                            } else {
-                                textArea.setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
-                            }
-                        }
+                        setSelectionFont(textArea, isSelected);
                         return textArea;
                 }
             }
 
-            if (!SystemInfo.isMacOSX()) {
-                // On OS X do not change fonts as it violates HIG...
-                if (isSelected) {
-                    setFont(new java.awt.Font("Dialog", Font.BOLD, MVFont.fontSize));
-                } else {
-                    setFont(new java.awt.Font("Dialog", Font.PLAIN, MVFont.fontSize));
-                }
-            }
+            setSelectionFont(this, isSelected);
+
             switch (columnModelIndex) {
                 case DatenDownload.DOWNLOAD_PROGRESS:
                     setHorizontalAlignment(SwingConstants.CENTER);
@@ -180,8 +150,8 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     if (datenDownload.start != null) {
                         if (1 < datenDownload.start.percent && datenDownload.start.percent < Start.PROGRESS_FERTIG) {
 
-                            setColor(panel, datenDownload.start, isSelected);
-                            setColor(progressBar, datenDownload.start, isSelected);
+                            setBackgroundColor(panel, datenDownload.start, isSelected);
+                            setBackgroundColor(progressBar, datenDownload.start, isSelected);
 
                             progressBar.setValue(datenDownload.start.percent);
 
@@ -213,20 +183,12 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
 
                 case DatenDownload.DOWNLOAD_PROGRAMM_RESTART:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (datenDownload.isRestart()) {
-                        setIcon(ja_16);
-                    } else {
-                        setIcon(nein_12);
-                    }
+                    setYesNoIcon(datenDownload.isRestart());
                     break;
 
                 case DatenDownload.DOWNLOAD_PROGRAMM_DOWNLOADMANAGER:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (datenDownload.isDownloadManager()) {
-                        setIcon(ja_16);
-                    } else {
-                        setIcon(nein_12);
-                    }
+                    setYesNoIcon(datenDownload.isDownloadManager());
                     break;
 
                 case DatenDownload.DOWNLOAD_ART:
@@ -257,47 +219,27 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     break;
                 case DatenDownload.DOWNLOAD_UNTERBROCHEN:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (datenDownload.isInterrupted()) {
-                        setIcon(ja_16);
-                    } else {
-                        setIcon(nein_12);
-                    }
+                    setYesNoIcon(datenDownload.isInterrupted());
                     break;
 
                 case DatenDownload.DOWNLOAD_ZURUECKGESTELLT:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (datenDownload.istZurueckgestellt()) {
-                        setIcon(ja_16);
-                    } else {
-                        setIcon(nein_12);
-                    }
+                    setYesNoIcon(datenDownload.istZurueckgestellt());
                     break;
 
                 case DatenDownload.DOWNLOAD_INFODATEI:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (datenDownload.isInfoFile()) {
-                        setIcon(ja_16);
-                    } else {
-                        setIcon(nein_12);
-                    }
+                    setYesNoIcon(datenDownload.isInfoFile());
                     break;
 
                 case DatenDownload.DOWNLOAD_SUBTITLE:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (datenDownload.isSubtitle()) {
-                        setIcon(ja_16);
-                    } else {
-                        setIcon(nein_12);
-                    }
+                    setYesNoIcon(datenDownload.isSubtitle());
                     break;
 
                 case DatenDownload.DOWNLOAD_SPOTLIGHT:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (datenDownload.isSpotlight()) {
-                        setIcon(ja_16);
-                    } else {
-                        setIcon(nein_12);
-                    }
+                    setYesNoIcon(datenDownload.isSpotlight());
                     break;
 
                 case DatenDownload.DOWNLOAD_BUTTON_START:
@@ -331,26 +273,18 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
                     break;
                 case DatenDownload.DOWNLOAD_HD:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (datenDownload.film != null && datenDownload.film.isHD()) {
-                        setIcon(ja_16);
-                    } else {
-                        setIcon(nein_12);
-                    }
+                    setYesNoIcon(datenDownload.film != null && datenDownload.film.isHD());
                     setText("");//im Modle brauchen wir den Text zum Sortieren
                     break;
 
                 case DatenDownload.DOWNLOAD_UT:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (datenDownload.film != null && datenDownload.film.hasSubtitle()) {
-                        setIcon(ja_16);
-                    } else {
-                        setIcon(nein_12);
-                    }
+                    setYesNoIcon(datenDownload.film != null && datenDownload.film.hasSubtitle());
                     setText("");//im Modle brauchen wir den Text zum Sortieren
                     break;
             }
 
-            setColor(this, datenDownload.start, isSelected);
+            setBackgroundColor(this, datenDownload.start, isSelected);
             handleGeoBlocking(this, datenDownload, isSelected);
         } catch (Exception ex) {
             Log.errorLog(758200166, ex);
@@ -358,71 +292,50 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
         return this;
     }
 
-    /**
-     * Draws the sender icon in the sender model column.
-     *
-     * @param sender Name of the sender.
-     */
-    private void handleSenderColumn(String sender, boolean small) {
-        setHorizontalAlignment(SwingConstants.CENTER);
-        ImageIcon icon = senderIconCache.get(sender, small);
-        if (icon != null) {
-            setText("");
-            setIcon(icon);
-        }
-    }
-
     private void handleButtonStartColumn(final DatenDownload datenDownload, final boolean isSelected) {
         setHorizontalAlignment(SwingConstants.CENTER);
         if (isSelected) {
             if (datenDownload.start != null && !datenDownload.isDownloadManager()) {
-                if (datenDownload.start.status == Start.STATUS_FERTIG) {
-                    setIcon(film_start_tab);
-                    setToolTipText(PLAY_DOWNLOADED_FILM);
-                } else if (datenDownload.start.status == Start.STATUS_ERR) {
-                    setIcon(download_start_tab);
-                    setToolTipText(DOWNLOAD_STARTEN);
-                } else {
-                    setIcon(download_stop_tab);
-                    setToolTipText(DOWNLOAD_STOPPEN);
+                switch (datenDownload.start.status) {
+                    case Start.STATUS_FERTIG:
+                        setIcon(film_start_tab);
+                        setToolTipText(PLAY_DOWNLOADED_FILM);
+                        break;
+
+                    case Start.STATUS_ERR:
+                        setIcon(download_start_tab);
+                        setToolTipText(DOWNLOAD_STARTEN);
+                        break;
+
+                    default:
+                        setIcon(download_stop_tab);
+                        setToolTipText(DOWNLOAD_STOPPEN);
+                        break;
                 }
             } else {
                 setIcon(download_start_tab);
                 setToolTipText(DOWNLOAD_STARTEN);
             }
         } else if (datenDownload.start != null && !datenDownload.isDownloadManager()) {
-            if (datenDownload.start.status == Start.STATUS_FERTIG) {
-                setIcon(film_start_sw_tab);
-                setToolTipText(PLAY_DOWNLOADED_FILM);
-            } else if (datenDownload.start.status == Start.STATUS_ERR) {
-                setIcon(download_start_sw_tab);
-                setToolTipText(DOWNLOAD_STARTEN);
-            } else {
-                setIcon(download_stop_sw_tab);
-                setToolTipText(DOWNLOAD_STOPPEN);
+            switch (datenDownload.start.status) {
+                case Start.STATUS_FERTIG:
+                    setIcon(film_start_sw_tab);
+                    setToolTipText(PLAY_DOWNLOADED_FILM);
+                    break;
+
+                case Start.STATUS_ERR:
+                    setIcon(download_start_sw_tab);
+                    setToolTipText(DOWNLOAD_STARTEN);
+                    break;
+
+                default:
+                    setIcon(download_stop_sw_tab);
+                    setToolTipText(DOWNLOAD_STOPPEN);
+                    break;
             }
         } else {
             setIcon(download_start_sw_tab);
             setToolTipText(DOWNLOAD_STARTEN);
-        }
-    }
-
-    private void handleButtonDeleteColumn(final DatenDownload datenDownload, final boolean isSelected) {
-        setHorizontalAlignment(SwingConstants.CENTER);
-        if (datenDownload.start != null) {
-            if (datenDownload.start.status >= Start.STATUS_FERTIG) {
-                if (isSelected) {
-                    setIcon(download_clear_tab);
-                    setToolTipText(DOWNLOAD_ENTFERNEN);
-                } else {
-                    setIcon(download_clear_sw_tab);
-                    setToolTipText(DOWNLOAD_ENTFERNEN);
-                }
-            } else {
-                setupDownloadLoeschen(isSelected);
-            }
-        } else {
-            setupDownloadLoeschen(isSelected);
         }
     }
 
@@ -446,61 +359,38 @@ public class CellRendererDownloads extends DefaultTableCellRenderer {
     }
 
     private void handleGeoBlocking(Component c, final DatenDownload datenDownload, final boolean isSelected) {
-        final String geoLocation = ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.GEO_LOCATION);
-        if (datenDownload.start == null
-                && geoMelden
+        final String geoLocation = config.getString(ApplicationConfiguration.GEO_LOCATION);
+        if (datenDownload.start == null && geoMelden
                 && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO].isEmpty()
-                && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO].contains(geoLocation)) {
-            if (isSelected) {
-                c.setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND_SEL.color);
+                && !datenDownload.arr[DatenDownload.DOWNLOAD_GEO].contains(geoLocation))
+            setGeoblockingBackgroundColor(c, isSelected);
+    }
+
+    private void handleButtonDeleteColumn(final DatenDownload datenDownload, final boolean isSelected) {
+        setHorizontalAlignment(SwingConstants.CENTER);
+        if (datenDownload.start != null) {
+            if (datenDownload.start.status >= Start.STATUS_FERTIG) {
+                setIcons(download_clear_tab, download_clear_sw_tab, DOWNLOAD_ENTFERNEN, isSelected);
             } else {
-                c.setBackground(MVColor.FILM_GEOBLOCK_BACKGROUND.color);
+                setupDownloadLoeschen(isSelected);
             }
+        } else {
+            setupDownloadLoeschen(isSelected);
         }
+    }
+
+    private void setIcons(Icon tab, Icon tab_sw, String text, final boolean isSelected) {
+        final Icon icon;
+        if (isSelected) {
+            icon = tab;
+        } else {
+            icon = tab_sw;
+        }
+        setIcon(icon);
+        setToolTipText(text);
     }
 
     private void setupDownloadLoeschen(final boolean isSelected) {
-        if (isSelected) {
-            setIcon(download_del_tab);
-            setToolTipText(DOWNLOAD_LOESCHEN);
-        } else {
-            setIcon(download_del_sw_tab);
-            setToolTipText(DOWNLOAD_LOESCHEN);
-        }
-    }
-
-    private void setColor(Component c, Start s, boolean isSelected) {
-        if (s != null) {
-            switch (s.status) {
-                case Start.STATUS_INIT:
-                    if (isSelected) {
-                        c.setBackground(MVColor.DOWNLOAD_WAIT_SEL.color);
-                    } else {
-                        c.setBackground(MVColor.DOWNLOAD_WAIT.color);
-                    }
-                    break;
-                case Start.STATUS_RUN:
-                    if (isSelected) {
-                        c.setBackground(MVColor.DOWNLOAD_RUN_SEL.color);
-                    } else {
-                        c.setBackground(MVColor.DOWNLOAD_RUN.color);
-                    }
-                    break;
-                case Start.STATUS_FERTIG:
-                    if (isSelected) {
-                        c.setBackground(MVColor.DOWNLOAD_FERTIG_SEL.color);
-                    } else {
-                        c.setBackground(MVColor.DOWNLOAD_FERTIG.color);
-                    }
-                    break;
-                case Start.STATUS_ERR:
-                    if (isSelected) {
-                        c.setBackground(MVColor.DOWNLOAD_FEHLER_SEL.color);
-                    } else {
-                        c.setBackground(MVColor.DOWNLOAD_FEHLER.color);
-                    }
-                    break;
-            }
-        }
+        setIcons(download_del_tab, download_del_sw_tab, DOWNLOAD_LOESCHEN, isSelected);
     }
 }

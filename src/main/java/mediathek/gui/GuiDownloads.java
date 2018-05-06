@@ -39,6 +39,7 @@ import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.messages.StartEvent;
 import mediathek.tool.*;
+import mediathek.tool.cellrenderer.CellRendererDownloads;
 import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
@@ -81,10 +82,7 @@ public class GuiDownloads extends PanelVorlage {
      */
     private TModelDownload model;
 
-    public GuiDownloads(Daten aDaten, MediathekGui aMediathekGui) {
-        super(aDaten, aMediathekGui);
-        initComponents();
-
+    private void setupF4Key(MediathekGui mediathekGui) {
         if (SystemInfo.isWindows()) {
             // zum Abfangen der Win-F4 für comboboxen
             InputMap im = cbDisplayCategories.getInputMap();
@@ -93,17 +91,25 @@ public class GuiDownloads extends PanelVorlage {
             am.put("einstellungen", new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    aMediathekGui.showSettingsDialog();
+                    mediathekGui.showSettingsDialog();
                 }
             });
         }
+    }
+
+    public GuiDownloads(Daten aDaten, MediathekGui mediathekGui) {
+        super(aDaten, mediathekGui);
+        initComponents();
+
+        setupF4Key(mediathekGui);
 
         tabelle = new MVTable(MVTable.TableType.DOWNLOADS);
         jScrollPane1.setViewportView(tabelle);
 
         setupDescriptionPanel();
 
-        init();
+        init(mediathekGui);
+
         tabelle.initTabelle();
         tabelle.setSpalten();
         if (tabelle.getRowCount() > 0) {
@@ -292,13 +298,13 @@ public class GuiDownloads extends PanelVorlage {
         });
     }
 
-    private void init() {
+    private void init(MediathekGui mediathekGui) {
         setupKeyMappings();
         //Tabelle einrichten
 
         panelBeschreibungSetzen();
 
-        final CellRendererDownloads cellRenderer = new CellRendererDownloads();
+        final CellRendererDownloads cellRenderer = new CellRendererDownloads(mediathekGui.getSenderIconCache());
         tabelle.setDefaultRenderer(Object.class, cellRenderer);
         tabelle.setDefaultRenderer(Datum.class, cellRenderer);
         tabelle.setDefaultRenderer(MVFilmSize.class, cellRenderer);
