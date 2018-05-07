@@ -495,6 +495,13 @@ public class GuiFilme extends PanelVorlage {
         tabelle.getActionMap().put("film_starten", playAction);
     }
 
+    private void setupCellRenderer(MediathekGui mediathekGui) {
+        final CellRendererFilme cellRenderer = new CellRendererFilme(daten, mediathekGui.getSenderIconCache());
+        tabelle.setDefaultRenderer(Object.class, cellRenderer);
+        tabelle.setDefaultRenderer(Datum.class, cellRenderer);
+        tabelle.setDefaultRenderer(Integer.class, cellRenderer);
+    }
+
     private void start_init(MediathekGui mediathekGui) {
         showDescriptionPanel();
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
@@ -523,15 +530,13 @@ public class GuiFilme extends PanelVorlage {
             }
         });
 
-        final CellRendererFilme cellRenderer = new CellRendererFilme(daten, mediathekGui.getSenderIconCache());
-        tabelle.setDefaultRenderer(Object.class, cellRenderer);
-        tabelle.setDefaultRenderer(Datum.class, cellRenderer);
-        tabelle.setDefaultRenderer(Integer.class, cellRenderer);
+        setupCellRenderer(mediathekGui);
+
         tabelle.lineBreak = MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK);
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenFilm.COLUMN_NAMES, DatenFilm.spaltenAnzeigen,
                 new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_DATUM_LONG, DatenFilm.FILM_REF},
                 new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN},
-                true /*Icon*/, MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK));
+                true, MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK));
 
         jCheckBoxProgamme.setIcon(Icons.ICON_CHECKBOX_CLOSE);
         jCheckBoxProgamme.addActionListener(e -> {
