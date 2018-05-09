@@ -33,6 +33,8 @@ import mediathek.gui.dialog.DialogNewSet;
 import mediathek.tool.GuiFunktionenProgramme;
 
 import javax.swing.*;
+import java.io.IOException;
+import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -50,17 +52,24 @@ public class CheckUpdate extends Thread {
 
     public void run() {
         try {
-            final MediathekGui gui = daten.getMediathekGui();
-            if (gui != null)
-                SwingUtilities.invokeLater(() -> gui.enableUpdateMenuItem(false));
+            //first check if network is available...
+            InetAddress serverAddr = InetAddress.getByName("res.mediathekview.de");
+            if (serverAddr.isReachable(1000)) {
+                //we have internet...
+                final MediathekGui gui = daten.getMediathekGui();
+                if (gui != null)
+                    SwingUtilities.invokeLater(() -> gui.enableUpdateMenuItem(false));
 
-            searchForProgramUpdate();
+                searchForProgramUpdate();
 
-            checkForPsetUpdates();
+                checkForPsetUpdates();
 
-            if (gui != null)
-                SwingUtilities.invokeLater(() -> gui.enableUpdateMenuItem(true));
-        } catch (Exception ex) {
+                if (gui != null)
+                    SwingUtilities.invokeLater(() -> gui.enableUpdateMenuItem(true));
+
+            }
+        } catch (IOException ex) {
+            //no network
             Log.errorLog(794612801, ex);
         }
     }
