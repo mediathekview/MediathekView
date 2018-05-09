@@ -2,7 +2,10 @@ package mediathek.gui.filmInformation;
 
 import com.jidesoft.swing.MultilineLabel;
 import mSearch.daten.DatenFilm;
+import mSearch.filmeSuchen.ListenerFilmeLaden;
+import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.ApplicationConfiguration;
+import mediathek.config.Daten;
 import mediathek.gui.HyperlinkButton;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.tool.MVSenderIconCache;
@@ -81,6 +84,8 @@ public class InfoDialog extends JDialog {
             }
         });
 
+        addFilmlistLoadListener();
+
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentMoved(ComponentEvent e) {
@@ -90,6 +95,32 @@ public class InfoDialog extends JDialog {
         });
     }
 
+    private void addFilmlistLoadListener() {
+        Daten.getInstance().getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
+            private boolean tempVisibility;
+
+            @Override
+            public void start(ListenerFilmeLadenEvent event) {
+                tempVisibility = isVisible();
+                if (isVisible()) {
+                    setVisible(!tempVisibility);
+                }
+            }
+
+            @Override
+            public void progress(ListenerFilmeLadenEvent event) {
+            }
+
+            @Override
+            public void fertig(ListenerFilmeLadenEvent event) {
+                setVisible(tempVisibility);
+            }
+
+            @Override
+            public void fertigOnlyOne(ListenerFilmeLadenEvent event) {
+            }
+        });
+    }
     /**
      * Restore window position from config settings.
      */
@@ -322,7 +353,7 @@ public class InfoDialog extends JDialog {
         contentPane.add(btnLinkWebsite, "cell 1 11,growx,wmax 250");
 
         label = new JLabel();
-        label.setText("Bechreibung:");
+        label.setText("Beschreibung:");
         label.setHorizontalAlignment(SwingConstants.RIGHT);
         contentPane.add(label, "cell 0 12");
 
