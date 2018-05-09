@@ -47,6 +47,7 @@ import mediathek.gui.messages.StartEvent;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererFilme;
+import mediathek.tool.table.MVFilmTable;
 import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
@@ -67,7 +68,7 @@ public class GuiFilme extends PanelVorlage {
         super(aDaten, mediathekGui);
         initComponents();
 
-        tabelle = new MVTable(MVTable.TableType.FILME);
+        tabelle = new MVFilmTable();
         jScrollPane1.setViewportView(tabelle);
 
         setupPanelVideoplayer();

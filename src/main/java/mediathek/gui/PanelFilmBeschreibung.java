@@ -30,7 +30,9 @@ import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.MVFont;
-import mediathek.tool.MVTable;
+import mediathek.tool.table.MVDownloadsTable;
+import mediathek.tool.table.MVFilmTable;
+import mediathek.tool.table.MVTable;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -41,7 +43,7 @@ import java.net.URISyntaxException;
 @SuppressWarnings("serial")
 public class PanelFilmBeschreibung extends JPanel implements ListSelectionListener {
     private DatenFilm currentFilm = null;
-    private MVTable table = null;
+    private MVTable table;
 
     public PanelFilmBeschreibung(Daten daten, MVTable table, boolean film) {
         initComponents();
@@ -98,20 +100,15 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
             final TableModel model = table.getModel();
             final int modelIndex = table.convertRowIndexToModel(selectedTableRow);
 
-            switch (table.getTableType()) {
-                case FILME:
-                    film = (DatenFilm) model.getValueAt(modelIndex, DatenFilm.FILM_REF);
-                    break;
-
-                case DOWNLOADS:
-                    film = ((DatenDownload) model.getValueAt(modelIndex, DatenDownload.DOWNLOAD_REF)).film;
-                    break;
-
-                default:
-                    DbgMsg.print("UNHANDLED TABLE TYPE!!!");
-                    film = null;
-                    break;
+            if (table instanceof MVFilmTable) {
+                film = (DatenFilm) model.getValueAt(modelIndex, DatenFilm.FILM_REF);
+            } else if (table instanceof MVDownloadsTable) {
+                film = ((DatenDownload) model.getValueAt(modelIndex, DatenDownload.DOWNLOAD_REF)).film;
+            } else {
+                DbgMsg.print("UNHANDLED TABLE TYPE!!!");
+                film = null;
             }
+
             displayFilmData(film);
         } else {
             displayFilmData(null);

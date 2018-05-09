@@ -34,6 +34,9 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.*;
+import mediathek.tool.table.MVProgTable;
+import mediathek.tool.table.MVPsetTable;
+import mediathek.tool.table.MVTable;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -60,9 +63,9 @@ public class PanelPsetLang extends PanelVorlage {
         super(d, parentComponent);
         initComponents();
         modalHilfe = false;
-        tabellePset = new MVTable(MVTable.TableType.PSET);
+        tabellePset = new MVPsetTable();
         jScrollPane3.setViewportView(tabellePset);
-        tabelleProgramme = new MVTable(MVTable.TableType.PROG);
+        tabelleProgramme = new MVProgTable();
         jScrollPane1.setViewportView(tabelleProgramme);
         listePset = Daten.listePset;
         init();
@@ -72,9 +75,9 @@ public class PanelPsetLang extends PanelVorlage {
         super(d, parentComponent);
         initComponents();
         modalHilfe = true;
-        tabellePset = new MVTable(MVTable.TableType.PSET);
+        tabellePset = new MVPsetTable();
         jScrollPane3.setViewportView(tabellePset);
-        tabelleProgramme = new MVTable(MVTable.TableType.PROG);
+        tabelleProgramme = new MVProgTable();
         jScrollPane1.setViewportView(tabelleProgramme);
         listePset = llistePset;
         init();
@@ -95,7 +98,7 @@ public class PanelPsetLang extends PanelVorlage {
         jLabelMeldungAbspielen.setIcon(Icons.ICON_ACHTUNG_16);
         jLabelMeldungSeichern.setIcon(Icons.ICON_ACHTUNG_16);
         //Programme
-        tabellePset.setAutoResizeMode(MVTable.AUTO_RESIZE_OFF);
+        tabellePset.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName()) {
             @Override
             public void ping() {

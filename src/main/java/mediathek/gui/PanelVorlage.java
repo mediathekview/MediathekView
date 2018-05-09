@@ -20,7 +20,7 @@
 package mediathek.gui;
 
 import mediathek.config.Daten;
-import mediathek.tool.MVTable;
+import mediathek.tool.table.MVTable;
 
 import javax.swing.*;
 

@@ -20,6 +20,7 @@
 package mediathek.tool;
 
 import mediathek.config.MVConfig;
+import mediathek.tool.table.MVTable;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -101,15 +102,15 @@ public class BeobTableHeader extends MouseAdapter {
             //##Trenner##
             jPopupMenu.addSeparator();
             final JCheckBoxMenuItem item3 = new JCheckBoxMenuItem("Icons anzeigen");
-            item3.setSelected(tabelle.iconAnzeigen);
+            item3.setSelected(tabelle.getShowIcons());
             item3.addActionListener(e -> {
-                tabelle.iconAnzeigen = item3.isSelected();
+                tabelle.setShowIcon(item3.isSelected());
                 setSpalten();
             });
             jPopupMenu.add(item3);
             final JCheckBoxMenuItem item2 = new JCheckBoxMenuItem("kleine Icons anzeigen");
             item2.setSelected(tabelle.iconKlein);
-            if (!tabelle.iconAnzeigen) {
+            if (!tabelle.getShowIcons()) {
                 item2.setEnabled(false);
             } else {
                 item2.addActionListener(e -> {

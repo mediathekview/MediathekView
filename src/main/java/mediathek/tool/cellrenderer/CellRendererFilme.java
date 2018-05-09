@@ -29,7 +29,7 @@ import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.MVSenderIconCache;
-import mediathek.tool.MVTable;
+import mediathek.tool.table.MVTable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -112,7 +112,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     handleButtonDownloadColumn(isSelected);
                     break;
                 case DatenFilm.FILM_SENDER:
-                    if (((MVTable) table).iconAnzeigen) {
+                    if (((MVTable) table).getShowIcons()) {
                         handleSenderColumn((String) value, ((MVTable) table).iconKlein);
                     }
                     break;

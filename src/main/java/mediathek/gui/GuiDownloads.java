@@ -40,6 +40,7 @@ import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.messages.StartEvent;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
+import mediathek.tool.table.MVDownloadsTable;
 import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
@@ -103,7 +104,7 @@ public class GuiDownloads extends PanelVorlage {
 
         setupF4Key(mediathekGui);
 
-        tabelle = new MVTable(MVTable.TableType.DOWNLOADS);
+        tabelle = new MVDownloadsTable();
         jScrollPane1.setViewportView(tabelle);
 
         setupDescriptionPanel();
