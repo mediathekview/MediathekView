@@ -84,7 +84,7 @@ public class InfoDialog extends JDialog {
             }
         });
 
-        addFilmlistLoadListener();
+        //addFilmlistLoadListener();
 
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -96,6 +96,7 @@ public class InfoDialog extends JDialog {
     }
 
     private void addFilmlistLoadListener() {
+        //TODO here is a bug with displaying film data
         Daten.getInstance().getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             private boolean tempVisibility;
 
