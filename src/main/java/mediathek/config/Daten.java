@@ -66,7 +66,6 @@ public class Daten
 
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     // flags
-    private static boolean debug = false; // Debugmodus
     private static boolean startMaximized = false; // Fenster maximieren
     private static boolean auto = false; // Version: MediathekAuto
     private static boolean reset = false; // Programm auf Starteinstellungen zurücksetzen
@@ -106,11 +105,6 @@ public class Daten
 
     private boolean alreadyMadeBackup = false;
 
-    public static void setDebug(final boolean aIsDebug)
-    {
-        debug = aIsDebug;
-    }
-
     public static void setStartMaximized(final boolean aIsStartMaximized)
     {
         startMaximized = aIsStartMaximized;
@@ -124,11 +118,6 @@ public class Daten
     public static void setReset(final boolean aIsReset)
     {
         reset = aIsReset;
-    }
-
-    public static boolean isDebug()
-    {
-        return debug;
     }
 
     public static boolean isStartMaximized()

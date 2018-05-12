@@ -20,6 +20,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
+import mSearch.Config;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
@@ -82,7 +83,7 @@ public class PanelPsetImport extends PanelVorlage {
         });
         jTableVorlagen.getSelectionModel().addListSelectionListener(new BeobTableSelect());
         jTableVorlagen.setModel(new TModel(new Object[][]{}, ListePsetVorlagen.PGR_COLUMN_NAMES));
-        if (!Daten.getInstance().isDebug()) {
+        if (!Config.isDebuggingEnabled()) {
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMinWidth(0);
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setPreferredWidth(0);
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMaxWidth(0);
@@ -123,7 +124,7 @@ public class PanelPsetImport extends PanelVorlage {
 
     private void tabelleLaden() {
         jTableVorlagen.setModel(listePsetVorlagen.getTModel(jComboBoxBs.getSelectedItem().toString()));
-        if (!Daten.getInstance().isDebug()) {
+        if (!Config.isDebuggingEnabled()) {
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMinWidth(0);
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setPreferredWidth(0);
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMaxWidth(0);

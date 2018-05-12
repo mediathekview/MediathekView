@@ -162,7 +162,7 @@ public class Main {
                 cleanupOsxFiles();
             }
 
-            if (Daten.isDebug()) {
+            if (Config.isDebuggingEnabled()) {
                 // use for debugging EDT violations
                 RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
 
@@ -252,8 +252,7 @@ public class Main {
                     break;
 
                 case ProgramArguments.STARTUPMODE_DEBUG:
-                    Daten.setDebug(true);
-                    Config.debug = true;
+                    Config.enableDebugMode();
                     break;
 
                 case ProgramArguments.STARTUPMODE_MAXIMIZED:

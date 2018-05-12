@@ -20,6 +20,7 @@
 package mediathek.config;
 
 import com.jidesoft.utils.SystemInfo;
+import mSearch.Config;
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Log;
 import mediathek.controller.MVBandwidthTokenBucket;
@@ -247,7 +248,7 @@ public class MVConfig {
             }
         }
 
-        if (Daten.isDebug()) {
+        if (Config.isDebuggingEnabled()) {
             MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUS));
         }
         MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen

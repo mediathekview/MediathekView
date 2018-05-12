@@ -2,6 +2,7 @@ package mediathek.gui;
 
 import com.explodingpixels.macwidgets.BottomBar;
 import com.explodingpixels.macwidgets.BottomBarSize;
+import mSearch.Config;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Functions;
@@ -46,7 +47,7 @@ public final class MVStatusBar extends JPanel {
         lblLeft = new JLabel();
         bottomBar.addComponentToLeft(lblLeft);
 
-        if (Daten.isDebug()) {
+        if (Config.isDebuggingEnabled()) {
             bottomBar.addComponentToCenter(new MVMemoryUsageButton());
         }
 
@@ -142,7 +143,7 @@ public final class MVStatusBar extends JPanel {
             progress.setStringPainted(true);
             progress.setString(event.text);
         }
-        if (Daten.isDebug()) {
+        if (Config.isDebuggingEnabled()) {
             lblRight.setText(Functions.textLaenge(60, event.senderUrl, true /* mitte */, true /*addVorne*/));
         } else {
             lblRight.setVisible(false);

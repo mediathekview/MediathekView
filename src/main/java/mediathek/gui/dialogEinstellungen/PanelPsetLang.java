@@ -216,7 +216,8 @@ public class PanelPsetLang extends PanelVorlage {
                 nurtabellePset();
             }
         });
-        jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX() || Daten.getInstance().isDebug());
+
+        jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX());
         jCheckBoxSpotlight.addActionListener(e -> {
             DatenPset pset = getPset();
             if (pset != null) {
@@ -372,7 +373,7 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxThema.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN]));
             jCheckBoxInfodatei.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_INFODATEI]));
             jCheckBoxSubtitle.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE]));
-            jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX() || Daten.getInstance().isDebug());
+            jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX());
             jCheckBoxSpotlight.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT]));
             jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Set Name: " + pSet.arr[DatenPset.PROGRAMMSET_NAME], javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
             jTextFieldSetName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME]);
