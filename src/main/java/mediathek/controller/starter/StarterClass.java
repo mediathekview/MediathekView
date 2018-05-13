@@ -226,14 +226,16 @@ public class StarterClass {
         if (GraphicsEnvironment.isHeadless()) {
             return; // dann gibts keine GUI
         }
+
+        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_NOTIFICATION)))
+            return;
+
+
         final String[] m = {
                 "Film:   " + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
                 "Sender: " + datenDownload.arr[DatenDownload.DOWNLOAD_SENDER],
                 "Größe:  " + MVFilmSize.humanReadableByteCount(datenDownload.mVFilmSize.getSize(), true)
         };
-
-        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_NOTIFICATION)))
-            return;
 
         StringBuilder meldung = new StringBuilder();
         for (String s : m) {
@@ -242,15 +244,16 @@ public class StarterClass {
 
         Platform.runLater(() -> {
             Notifications msg = Notifications.create();
-            if (erfolgreich)
-                msg.title("Download war erfolgreich");
-            else
-                msg.title("Download war fehlerhaft");
             msg.text(meldung.toString());
-            if (erfolgreich)
+
+            if (erfolgreich) {
+                msg.title("Download war erfolgreich");
                 msg.showInformation();
-            else
+            } else {
+                msg.title("Download war fehlerhaft");
                 msg.showError();
+            }
+
         });
     }
 
