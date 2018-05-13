@@ -304,9 +304,7 @@ public class DirectHttpDownload extends Thread {
                     Log.errorLog(316598941, ex, "Fehler");
                     start.status = Start.STATUS_ERR;
                     if (!Daten.isAuto()) {
-                        SwingUtilities.invokeLater(() -> {
-                            new MeldungDownloadfehler(Daten.getInstance().getMediathekGui(), exMessage, datenDownload).setVisible(true);
-                        });
+                        SwingUtilities.invokeLater(() -> new MeldungDownloadfehler(Daten.getInstance().getMediathekGui(), exMessage, datenDownload).setVisible(true));
                     }
                 }
             }
