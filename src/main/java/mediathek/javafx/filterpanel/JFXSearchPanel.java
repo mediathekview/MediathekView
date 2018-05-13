@@ -1,4 +1,4 @@
-package mediathek.javafx;
+package mediathek.javafx.filterpanel;
 
 import javafx.beans.property.StringProperty;
 import javafx.scene.Cursor;

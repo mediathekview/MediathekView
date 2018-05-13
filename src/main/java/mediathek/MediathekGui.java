@@ -26,6 +26,7 @@ import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.FilmlistenSuchen;
 import mSearch.tool.*;
 import mSearch.tool.Functions.OperatingSystemType;
+import mSearch.tool.javafx.FXErrorDialog;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.Konstanten;
@@ -52,8 +53,6 @@ import mediathek.update.CheckUpdate;
 import mediathek.update.ProgrammUpdateSuchen;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -68,7 +67,6 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 
 import static mSearch.tool.Functions.getOs;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
@@ -920,16 +918,10 @@ public class MediathekGui extends JFrame {
                         d.browse(new URI(Konstanten.ADRESSE_ONLINE_HELP));
                     }
                 } catch (Exception ex) {
-                    final ErrorInfo info = new ErrorInfo("Online-Hilfe",
-                            "<html>Es trat ein Fehler beim Öffnen der Online-Hilfe auf.<br>" +
-                                    "Sollte dieser häufiger auftreten kontaktieren Sie bitte " +
-                                    "das Entwicklerteam.</html>",
-                            null,
-                            null,
-                            ex,
-                            Level.SEVERE,
-                            null);
-                    JXErrorPane.showDialog(daten.getMediathekGui(), info);
+                    FXErrorDialog.showErrorDialog("Online-Hilfe",
+                            "Fehler beim Öffnen der Online-Hilfe",
+                            "Es trat ein Fehler beim Öffnen der Online-Hilfe auf.\nSollte dies häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
+                            ex);
                 }
             }
         });

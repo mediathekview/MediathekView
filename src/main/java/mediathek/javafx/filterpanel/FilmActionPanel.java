@@ -22,7 +22,6 @@ import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.ApplicationConfiguration;
 import mediathek.config.Daten;
-import mediathek.javafx.JFXSearchPanel;
 import mediathek.tool.Filter;
 import org.apache.commons.configuration2.Configuration;
 import org.controlsfx.control.PopOver;
