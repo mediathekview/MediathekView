@@ -330,7 +330,7 @@ public class StarterClass {
 
         public Starten() {
             super();
-            setName("DownloadStarter Daemon Thread");
+            setName(Starten.class.getName() + " Thread");
             setDaemon(true);
             bandwidthCalculationTimer = new java.util.Timer("BandwidthCalculationTimer");
         }
