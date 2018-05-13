@@ -41,6 +41,7 @@ import java.awt.*;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class StarterClass {
     private final Daten daten;
@@ -149,7 +150,7 @@ public class StarterClass {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF]);
             text.add("Programmaufruf[]: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]);
         }
-        SysMsg.sysMsg(text.toArray(new String[text.size()]));
+        SysMsg.sysMsg(text.toArray(new String[0]));
     }
 
     private void reStartmeldung(DatenDownload datenDownload) {
@@ -157,7 +158,7 @@ public class StarterClass {
         text.add("Fehlerhaften Download neu starten - Restart (Summe Starts: " + datenDownload.start.countRestarted + ')');
         text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
-        SysMsg.sysMsg(text.toArray(new String[text.size()]));
+        SysMsg.sysMsg(text.toArray(new String[0]));
     }
 
     private static void fertigmeldung(final DatenDownload datenDownload, final Start start, boolean abgebrochen) {
@@ -210,7 +211,7 @@ public class StarterClass {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF]);
             text.add("Programmaufruf[]: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]);
         }
-        SysMsg.sysMsg(text.toArray(new String[text.size()]));
+        SysMsg.sysMsg(text.toArray(new String[0]));
         if (!start.stoppen && !abgebrochen) {
             if (datenDownload.quelle != DatenDownload.QUELLE_BUTTON) {
                 addNotification(datenDownload, start.status != Start.STATUS_ERR);
@@ -338,10 +339,10 @@ public class StarterClass {
                     while ((datenDownload = getNextStart()) != null) {
                         startStarten(datenDownload);
                         //alle 5 Sekunden einen Download starten
-                        sleep(5 * 1000);
+                        TimeUnit.SECONDS.sleep(5);
                     }
                     daten.getListeDownloadsButton().buttonStartsPutzen(); // Button Starts aus der Liste löschen
-                    sleep(3 * 1000);
+                    TimeUnit.SECONDS.sleep(3);
                 } catch (Exception ex) {
                     Log.errorLog(613822015, ex);
                 }
@@ -354,7 +355,7 @@ public class StarterClass {
             if (pause) {
                 // beim Löschen der Downloads, kann das Starten etwas "pausiert" werden
                 // damit ein zu Löschender Download nicht noch schnell gestartet wird
-                sleep(5 * 1000);
+                TimeUnit.SECONDS.sleep(5);
                 pause = false;
             }
 
