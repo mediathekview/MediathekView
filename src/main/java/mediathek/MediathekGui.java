@@ -31,7 +31,7 @@ import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
-import mediathek.controller.ProgStart;
+import mediathek.controller.UIFilmlistLoaderThread;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.ListeMediaDB;
@@ -43,9 +43,8 @@ import mediathek.gui.dialog.*;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.filmInformation.InfoDialog;
-import mediathek.gui.messages.DownloadFinishedEvent;
-import mediathek.gui.messages.DownloadStartEvent;
-import mediathek.gui.messages.InstallTabSwitchListenerEvent;
+import mediathek.gui.messages.*;
+import mediathek.javafx.FXProgressPanel;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
 import mediathek.tool.threads.IndicatorThread;
@@ -205,9 +204,33 @@ public class MediathekGui extends JFrame {
 
         Duration.staticPing(LOG_TEXT_GUI_STEHT);
 
-        ProgStart.loadDataProgStart();
+        loadFilmlist();
 
         splashScreenManager.closeSplashScreen();
+    }
+
+    private void loadFilmlist() {
+        Thread programStart = new UIFilmlistLoaderThread();
+        programStart.start();
+    }
+
+    @Handler
+    protected void handleFilmlistReadStartEvent(FilmListReadStartEvent msg) {
+        SwingUtilities.invokeLater(() -> {
+            //activate glass pane
+            setGlassPane(new FXProgressPanel(true));
+            getGlassPane().setVisible(true);
+        });
+    }
+
+    @Handler
+    protected void handleFilmlistReadStopEvent(FilmListReadStopEvent msg) {
+        SwingUtilities.invokeLater(() -> {
+            //deactivate glass pane
+            getGlassPane().setVisible(false);
+            //reset the glass pane to free memory
+            setGlassPane(new JPanel());
+        });
     }
 
     /**
