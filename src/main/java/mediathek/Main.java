@@ -43,14 +43,7 @@ import java.nio.file.Paths;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 public class Main {
-    private final class ProgramArguments {
-        private static final String STARTUPMODE_AUTO = "-auto";
-        private static final String STARTUPMODE_FASTAUTO = "-fastauto";
-        private static final String STARTUPMODE_DEBUG = "-d";
-        private static final String STARTUPMODE_MAXIMIZED = "-m";
-        private static final String STARTUPMODE_VERBOSE = "-v";
-    }
-
+    public static final String TEXT_LINE = "===========================================";
     private static final String JAVAFX_CLASSNAME_APPLICATION_PLATFORM = "javafx.application.Platform";
     private static final String LOG_TEXT_SYSTEMMELDUNG = "Systemmeldung";
     private static final String LOG_TEXT_FEHLERMELDUNG = "Fehlermeldung";
@@ -61,14 +54,8 @@ public class Main {
     private static final String LOG_TEXT_PROXY_PASSWORD_NOT_SET = "Proxy Authentication: Password is not set";
     private static final String LOG_TEXT_PROXY_AUTHENTICATION_CANNOT_ACCESS_PROXY_USER_PROXY_PW = "Proxy Authentication: cannot access proxyUser / proxyPassword";
     private static final String MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR = "apple.laf.useScreenMenuBar";
-    private static final String LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING = "MediathekView is already running!";
+    private static final String LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING = "MediathekView wird bereits ausgeführt!";
     private static final String X11_AWT_APP_CLASS_NAME = "awtAppClassName";
-    public static final String TEXT_LINE = "===========================================";
-
-    private enum StartupMode {
-
-        GUI, AUTO, FASTAUTO
-    }
 
     /**
      * Ensures that old film lists in .mediathek directory get deleted because they were moved to
@@ -99,18 +86,6 @@ public class Main {
         }
     }
 
-    /*
-     * Aufruf:
-     * java -jar Mediathek [Pfad zur Konfigdatei, sonst homeverzeichnis] [Schalter]
-     *
-     * Programmschalter:
-     *
-     * -M Fenster maximiert starten
-     * -A Automodus
-     * -noGui ohne GUI starten und die Filmliste laden
-     *
-     * */
-
     /**
      * @param args the command line arguments
      */
@@ -131,6 +106,18 @@ public class Main {
             startUI(startupMode, args);
         }
     }
+
+    /*
+     * Aufruf:
+     * java -jar Mediathek [Pfad zur Konfigdatei, sonst homeverzeichnis] [Schalter]
+     *
+     * Programmschalter:
+     *
+     * -M Fenster maximiert starten
+     * -A Automodus
+     * -noGui ohne GUI starten und die Filmliste laden
+     *
+     * */
 
     private void startUI(StartupMode aStartupMode, final String... aArguments) {
         aStartupMode = switchToCLIModeIfNecessary(aStartupMode);
@@ -165,27 +152,35 @@ public class Main {
             if (Config.isDebuggingEnabled()) {
                 // use for debugging EDT violations
                 RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
-
-                if (SystemInfo.isMacOSX()) {
-                    //prevent startup of multiple instances...useful during debugging :(
-                    SingleInstance singleInstanceWatcher = new SingleInstance();
-                    if (singleInstanceWatcher.isAppAlreadyActive()) {
-                        JOptionPane.showMessageDialog(null, LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING);
-                    }
-                }
             }
 
-            if (SystemInfo.isMacOSX()) {
-                new MediathekGuiMac(args).setVisible(true);
-            } else if (SystemInfo.isWindows()) {
-                new MediathekGuiWindows(args).setVisible(true);
-            } else {
-                if (SystemInfo.isUnix()) {
-                    setupX11WindowManagerClassName();
-                }
-                new MediathekGui(args).setVisible(true);
+            //prevent startup of multiple instances...useful during debugging :(
+            SingleInstance singleInstanceWatcher = new SingleInstance();
+            if (singleInstanceWatcher.isAppAlreadyActive()) {
+                JOptionPane.showMessageDialog(null, LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING);
+                System.exit(1);
             }
+
+
+            getPlatformWindow(args).setVisible(true);
         });
+    }
+
+    private MediathekGui getPlatformWindow(final String[] args) {
+        MediathekGui window;
+
+        if (SystemInfo.isMacOSX()) {
+            window = new MediathekGuiMac(args);
+        } else if (SystemInfo.isWindows()) {
+            window = new MediathekGuiWindows(args);
+        } else {
+            if (SystemInfo.isUnix()) {
+                setupX11WindowManagerClassName();
+            }
+            window = new MediathekGui(args);
+        }
+
+        return window;
     }
 
     /**
@@ -287,5 +282,18 @@ public class Main {
         } catch (SecurityException se) {
             SysMsg.sysMsg(LOG_TEXT_PROXY_AUTHENTICATION_CANNOT_ACCESS_PROXY_USER_PROXY_PW + se.toString());
         }
+    }
+
+    private enum StartupMode {
+
+        GUI, AUTO, FASTAUTO
+    }
+
+    private final class ProgramArguments {
+        private static final String STARTUPMODE_AUTO = "-auto";
+        private static final String STARTUPMODE_FASTAUTO = "-fastauto";
+        private static final String STARTUPMODE_DEBUG = "-d";
+        private static final String STARTUPMODE_MAXIMIZED = "-m";
+        private static final String STARTUPMODE_VERBOSE = "-v";
     }
 }
