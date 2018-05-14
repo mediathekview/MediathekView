@@ -204,9 +204,9 @@ public class MediathekGui extends JFrame {
 
         Duration.staticPing(LOG_TEXT_GUI_STEHT);
 
-        loadFilmlist();
-
         splashScreenManager.closeSplashScreen();
+
+        loadFilmlist();
     }
 
     private void loadFilmlist() {
@@ -216,21 +216,27 @@ public class MediathekGui extends JFrame {
 
     @Handler
     protected void handleFilmlistReadStartEvent(FilmListReadStartEvent msg) {
-        SwingUtilities.invokeLater(() -> {
-            //activate glass pane
-            setGlassPane(new FXProgressPanel(true));
-            getGlassPane().setVisible(true);
-        });
+        //do not use javafx in low mem environment...
+        if (!MemoryUtils.isLowMemoryEnvironment()) {
+            SwingUtilities.invokeLater(() -> {
+                //activate glass pane
+                setGlassPane(new FXProgressPanel(true));
+                getGlassPane().setVisible(true);
+            });
+        }
     }
 
     @Handler
     protected void handleFilmlistReadStopEvent(FilmListReadStopEvent msg) {
-        SwingUtilities.invokeLater(() -> {
-            //deactivate glass pane
-            getGlassPane().setVisible(false);
-            //reset the glass pane to free memory
-            setGlassPane(new JPanel());
-        });
+        //do not use javafx in low mem environment...
+        if (!MemoryUtils.isLowMemoryEnvironment()) {
+            SwingUtilities.invokeLater(() -> {
+                //deactivate glass pane
+                getGlassPane().setVisible(false);
+                //reset the glass pane to free memory
+                setGlassPane(new JPanel());
+            });
+        }
     }
 
     /**
