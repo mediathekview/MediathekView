@@ -21,7 +21,7 @@ package mediathek.config;
 
 import com.jidesoft.utils.SystemInfo;
 import mSearch.daten.ListeFilme;
-import mSearch.filmlisten.WriteFilmlistJson;
+import mSearch.filmlisten.FilmListWriter;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.ReplaceList;
@@ -307,7 +307,7 @@ public class Daten
 
     public void filmlisteSpeichern()
     {
-        new WriteFilmlistJson().filmlisteSchreibenJson(getDateiFilmliste(), listeFilme);
+        new FilmListWriter().writeFilmList(getDateiFilmliste(), listeFilme);
     }
 
     /**

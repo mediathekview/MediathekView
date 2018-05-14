@@ -20,7 +20,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.filmlisten.WriteFilmlistJson;
+import mSearch.filmlisten.FilmListWriter;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
@@ -73,7 +73,7 @@ public class PanelExportFilmliste extends PanelVorlage {
                 if (ret == JOptionPane.OK_OPTION) {
                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     updateUI();
-                    new WriteFilmlistJson().filmlisteSchreibenJson(exporDatei, daten.getListeFilme());
+                    new FilmListWriter().writeFilmList(exporDatei, daten.getListeFilme());
                     if (!new File(exporDatei).exists()) {
                         MVMessageDialog.showMessageDialog(parentComponent, "Datei:  " + "\"" + exporDatei + "\"" + "  Konnte nicht erstellt werden!", "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
