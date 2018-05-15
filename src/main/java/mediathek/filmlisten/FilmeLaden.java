@@ -28,6 +28,7 @@ import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.FilmListReader;
 import mSearch.filmlisten.FilmlistenSuchen;
 import mSearch.filmlisten.ListeFilmlistenUrls;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Duration;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
@@ -36,6 +37,7 @@ import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
+import mediathek.javafx.FXProgressPanel;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 
@@ -227,6 +229,9 @@ public class FilmeLaden {
         SysMsg.sysMsg("  Anzahl Filme: " + daten.getListeFilme().size());
         SysMsg.sysMsg("  Anzahl Neue:  " + daten.getListeFilme().countNewFilms());
         SysMsg.sysMsg("");
+
+        //update filmlist size for startup Progress panel...
+        ApplicationConfiguration.getConfiguration().setProperty(FXProgressPanel.CONFIG_STRING, daten.getListeFilme().size());
 
         daten.getFilmeLaden().notifyProgress(new ListenerFilmeLadenEvent("", "Themen suchen", 0, 0, 0, false/*Fehler*/));
         daten.getListeFilme().themenLaden();
