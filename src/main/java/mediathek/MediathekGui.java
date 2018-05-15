@@ -52,6 +52,8 @@ import mediathek.update.CheckUpdate;
 import mediathek.update.ProgrammUpdateSuchen;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -74,7 +76,6 @@ import static mediathek.tool.MVFunctionSys.startMeldungen;
 public class MediathekGui extends JFrame {
 
     private static final String TEXT_LINE = "==========================================";
-    private static final String LOG_TEXT_STARTPARAMETER_PATTERN = "Startparameter: %s";
     private static final String ICON_NAME = "MediathekView.png";
     private static final String ICON_PATH = "/mediathek/res/";
     private static final int ICON_WIDTH = 58;
@@ -307,14 +308,12 @@ public class MediathekGui extends JFrame {
 
     private void printArguments(final String[] aArguments)
     {
-        SysMsg.sysMsg("");
-        SysMsg.sysMsg(TEXT_LINE);
         for (String argument : aArguments) {
-            SysMsg.sysMsg(String.format(LOG_TEXT_STARTPARAMETER_PATTERN, argument));
+            logger.info("Startparameter: {}", argument);
         }
-        SysMsg.sysMsg(TEXT_LINE);
-        SysMsg.sysMsg("");
     }
+
+    private static final Logger logger = LogManager.getLogger(MediathekGui.class);
 
     protected void createBandwidthMonitor(JFrame parent)
     {

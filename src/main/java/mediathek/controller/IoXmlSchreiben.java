@@ -20,7 +20,6 @@
 package mediathek.controller;
 
 import mSearch.filmlisten.DatenFilmlisteUrl;
-import mSearch.tool.Duration;
 import mSearch.tool.Log;
 import mSearch.tool.ReplaceList;
 import mSearch.tool.SysMsg;
@@ -28,6 +27,8 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -245,9 +246,10 @@ public class IoXmlSchreiben {
         }
     }
 
+    private static final Logger logger = LogManager.getLogger(IoXmlSchreiben.class);
+
     private void xmlDatenSchreiben(Path xmlFilePath) {
-        SysMsg.sysMsg("Start Schreiben nach: " + xmlFilePath.toAbsolutePath());
-        Duration.counterStart("Config schreiben");
+        logger.info("Config Schreiben nach: {} startet", xmlFilePath.toAbsolutePath());
 
         try (OutputStream os = Files.newOutputStream(xmlFilePath);
              OutputStreamWriter out = new OutputStreamWriter(os, StandardCharsets.UTF_8)) {
@@ -275,10 +277,9 @@ public class IoXmlSchreiben {
 
             writeFileEnd(writer);
 
-            SysMsg.sysMsg("geschrieben!");
+            logger.info("Config Schreiben beendet");
         } catch (Exception ex) {
             Log.errorLog(656328109, ex);
         }
-        Duration.counterStop("Config schreiben");
     }
 }

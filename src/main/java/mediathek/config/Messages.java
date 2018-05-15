@@ -10,7 +10,7 @@ public enum Messages
 
     ERROR_CANT_CREATE_FOLDER(Types.ERROR, "Der Ordner \"%s\" konnte nicht angelegt werden.%n Bitte prüfen Sie die " +
             "Dateirechte."),
-    ERROR_NO_JAVAFX_INSTALLED(Types.ERROR, "JavaFX wurde nicht im klassenpfad gefunden. %n Stellen Sie sicher, dass Sie " +
+    ERROR_NO_JAVAFX_INSTALLED(Types.ERROR, "JavaFX wurde nicht im Klassenpfad gefunden. %n Stellen Sie sicher, dass Sie " +
             "ein Java JRE ab Version 8 benutzen. %n Falls Sie Linux nutzen, installieren Sie das openjfx-Paket ihres " +
             "Package-Managers,%n oder nutzen Sie eine eigene JRE-Installation.%n");
 

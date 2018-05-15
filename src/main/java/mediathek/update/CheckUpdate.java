@@ -19,9 +19,7 @@
  */
 package mediathek.update;
 
-import mSearch.tool.Duration;
 import mSearch.tool.Listener;
-import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
@@ -31,6 +29,8 @@ import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.dialog.DialogNewSet;
 import mediathek.tool.GuiFunktionenProgramme;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -41,16 +41,17 @@ import java.util.Date;
 public class CheckUpdate extends Thread {
     private final Daten daten;
     private final JFrame parent;
+    private static final Logger logger = LogManager.getLogger(CheckUpdate.class);
 
     public CheckUpdate(JFrame parent, Daten daten) {
         this.daten = daten;
         this.parent = parent;
 
-        Duration.staticPing("CheckUpdate");
         setName("CheckUpdate Thread");
     }
 
     public void run() {
+        logger.info("CheckUpdate started.");
         try {
             //first check if network is available...
             InetAddress serverAddr = InetAddress.getByName("res.mediathekview.de");
@@ -68,10 +69,10 @@ public class CheckUpdate extends Thread {
                     SwingUtilities.invokeLater(() -> gui.enableUpdateMenuItem(true));
 
             }
-        } catch (IOException ex) {
-            //no network
-            Log.errorLog(794612801, ex);
+        } catch (IOException ignored) {
+            //do not log errors as we expect them here...
         }
+        logger.info("CheckUpdate finished.");
     }
 
     private void searchForProgramUpdate() {

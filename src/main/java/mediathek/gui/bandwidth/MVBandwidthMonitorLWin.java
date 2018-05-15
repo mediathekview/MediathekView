@@ -24,30 +24,33 @@ import info.monitorenter.gui.chart.IAxis;
 import info.monitorenter.gui.chart.labelformatters.LabelFormatterAutoUnits;
 import info.monitorenter.gui.chart.rangepolicies.RangePolicyForcedPoint;
 import info.monitorenter.gui.chart.traces.Trace2DLtd;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.TimerTask;
-import javax.swing.*;
-import mSearch.tool.DbgMsg;
 import mSearch.tool.Functions.OperatingSystemType;
-import static mSearch.tool.Functions.getOs;
 import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.MVBandwidthTokenBucket;
 import mediathek.tool.GuiFunktionen;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.TimerTask;
+
+import static mSearch.tool.Functions.getOs;
 
 @SuppressWarnings("serial")
 public class MVBandwidthMonitorLWin extends JPanel implements IBandwidthMonitor {
     private final Daten daten;
     private double counter = 0; // double sonst "läuft" die Chart nicht
-    private Trace2DLtd m_trace = new Trace2DLtd(300);
-    private IAxis<?> x_achse = null;
+    private final Trace2DLtd m_trace = new Trace2DLtd(300);
+    private final IAxis<?> x_achse;
     private boolean stopBeob = false;
-    private JDialog jDialog = null;
-    private JFrame frameParent = null;
+    private final JDialog jDialog;
+    private final JFrame frameParent;
     private static Point mouseDownCompCoords;
-    private JPanel panel;
+    private final JPanel panel;
 
     /**
      * Timer for collecting sample data.
@@ -196,7 +199,7 @@ public class MVBandwidthMonitorLWin extends JPanel implements IBandwidthMonitor 
         slider.setValue(bandbreiteKByte / 10);
     }
 
-    public static String setTextBandwith(String txtBefore, JLabel label, JTextField txt) {
+    public static void setTextBandwith(String txtBefore, JLabel label, JTextField txt) {
         int bandbreiteKByte;
         String ret;
         try {
@@ -226,7 +229,6 @@ public class MVBandwidthMonitorLWin extends JPanel implements IBandwidthMonitor 
                 txt.setForeground(Color.black);
             }
         }
-        return ret;
     }
 
     /**
@@ -244,7 +246,6 @@ public class MVBandwidthMonitorLWin extends JPanel implements IBandwidthMonitor 
                         counter++;
                         m_trace.addPoint(counter / 60, daten.getDownloadInfos().bandwidth); // minutes
                         x_achse.getAxisTitle().setTitle(daten.getDownloadInfos().roundBandwidth((long) counter));
-//                        SwingUtilities.invokeLater(() -> setInfoText(daten.getDownloadInfos()));
                     }
                 };
                 timer.schedule(timerTask, 0, 1_000);
@@ -254,98 +255,20 @@ public class MVBandwidthMonitorLWin extends JPanel implements IBandwidthMonitor 
                 }
                 timer.purge();
             }
-        } catch (IllegalStateException ignored) {
-            DbgMsg.print(ignored.getMessage());
+        } catch (IllegalStateException ex) {
+            logger.debug(ex);
         }
         if (!isVis) {
             jDialog.dispose();
         }
     }
 
+    private static final Logger logger = LogManager.getLogger(MVBandwidthMonitorLWin.class);
+
     @Override
     public void writeConfig() {
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_INFODIALOG, getDialog());
     }
-
-//    public static String setInfoText(DownloadInfos di) {
-//        final String HEAD = "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head>"
-//                + "<style type=\"text/css\" .sans {font-family: Verdana, Geneva, sans-serif;}</style></head><body>";
-//        final String END = "</body></html>";
-//
-//        String info = HEAD;
-//        info += getInfoText();
-//        if (di.timeRestAktDownloads > 0 && di.timeRestAllDownloads > 0) {
-//            info += "<span class=\"sans\"><b>Restzeit: </b>" + "laufende: " + di.getRestzeit() + ", alle: " + di.getGesamtRestzeit() + "<br /></span>";
-//        } else if (di.timeRestAktDownloads > 0) {
-//            info += "<span class=\"sans\"><b>Restzeit: </b>laufende: " + di.getRestzeit() + "<br /></span>";
-//        } else if (di.timeRestAllDownloads > 0) {
-//            info += "<span class=\"sans\"><b>Restzeit: </b>alle: " + di.getGesamtRestzeit() + "<br /></span>";
-//        }
-//
-//        if (di.byteAlleDownloads > 0 || di.byteAktDownloads > 0) {
-//            info += "<span class=\"sans\"><b>Größe: </b>";
-//            if (di.byteAktDownloads > 0) {
-//                info += MVFilmSize.getGroesse(di.byteAktDownloads) + " von " + MVFilmSize.getGroesse(di.byteAlleDownloads) + " MByte" + "<br /></span>";
-//            } else {
-//                info += MVFilmSize.getGroesse(di.byteAlleDownloads) + " MByte" + "<br /></span>";
-//            }
-//        }
-//        if (di.bandwidth > 0) {
-//            info += "<span class=\"sans\"><b>Bandbreite: </b>";
-//            info += di.bandwidthStr + "<br /></span>";
-//        }
-//        info += END;
-//        return info;
-//    }
-//
-//    private static String getInfoText() {
-//        String textLinks;
-//        // Text links: Zeilen Tabelle
-//        // nicht gestarted, laufen, fertig OK, fertig fehler
-//        int[] starts = daten.getDownloadInfos().downloadStarts;
-//        if (starts[0] == 1) {
-//            textLinks = "<span class=\"sans\"><b>Download:</b> 1";
-//        } else {
-//            textLinks = "<span class=\"sans\"><b>Downloads:</b> " + starts[0];
-//        }
-//        boolean print = false;
-//        for (int ii = 1; ii < starts.length; ++ii) {
-//            if (starts[ii] > 0) {
-//                print = true;
-//                break;
-//            }
-//        }
-//        if (print) {
-//            textLinks += "&nbsp;&nbsp;( ";
-//            if (starts[4] == 1) {
-//                textLinks += "1 läuft";
-//            } else {
-//                textLinks += starts[4] + " laufen";
-//            }
-//            if (starts[3] == 1) {
-//                textLinks += ", 1 wartet";
-//            } else {
-//                textLinks += ", " + starts[3] + " warten";
-//            }
-//            if (starts[5] > 0) {
-//                if (starts[5] == 1) {
-//                    textLinks += ", 1 fertig";
-//                } else {
-//                    textLinks += ", " + starts[5] + " fertig";
-//                }
-//            }
-//            if (starts[6] > 0) {
-//                if (starts[6] == 1) {
-//                    textLinks += ", 1 fehlerhaft";
-//                } else {
-//                    textLinks += ", " + starts[6] + " fehlerhaft";
-//                }
-//            }
-//            textLinks += " )";
-//        }
-//        textLinks += "<br /></span>";
-//        return textLinks;
-//    }
 
     private class BeobMaus extends MouseAdapter {
 

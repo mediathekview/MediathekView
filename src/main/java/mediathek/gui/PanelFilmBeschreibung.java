@@ -20,7 +20,6 @@
 package mediathek.gui;
 
 import mSearch.daten.DatenFilm;
-import mSearch.tool.DbgMsg;
 import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
@@ -31,6 +30,8 @@ import mediathek.gui.dialog.DialogFilmBeschreibung;
 import mediathek.tool.BeobMausUrl;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVTable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -108,7 +109,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
                     break;
 
                 default:
-                    DbgMsg.print("UNHANDLED TABLE TYPE!!!");
+                    logger.debug("Unhandled table type: {}", table.getTableType());
                     film = null;
                     break;
             }
@@ -117,6 +118,8 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
             displayFilmData(null);
         }
     }
+
+    private static final Logger logger = LogManager.getLogger(PanelFilmBeschreibung.class);
 
     private void displayFilmData(DatenFilm aaktFilm) {
         currentFilm = aaktFilm;

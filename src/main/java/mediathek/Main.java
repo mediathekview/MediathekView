@@ -31,6 +31,8 @@ import mediathek.config.Konstanten;
 import mediathek.config.Messages;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.windows.MediathekGuiWindows;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,6 +59,8 @@ public class Main {
     private static final String LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING = "MediathekView wird bereits ausgeführt!";
     private static final String X11_AWT_APP_CLASS_NAME = "awtAppClassName";
 
+    private static final Logger logger = LogManager.getLogger(Main.class);
+
     /**
      * Ensures that old film lists in .mediathek directory get deleted because they were moved to
      * ~/Library/Caches/MediathekView
@@ -78,6 +82,7 @@ public class Main {
             return true;
 
         } catch (ClassNotFoundException e) {
+            logger.error("JavaFX was not found on system.", e);
             System.out.println(TEXT_LINE);
             System.out.printf(Messages.ERROR_NO_JAVAFX_INSTALLED.getText());
             System.out.println(TEXT_LINE);
@@ -87,9 +92,19 @@ public class Main {
     }
 
     /**
+     * Configure the environement variable used in log4j2.xml
+     */
+    private static void setupLogging() {
+        //TODO delete old log file on startup
+        //setup app logging
+        System.setProperty("mvApp.root", "/Users/christianfranzke/Desktop");
+    }
+    /**
      * @param args the command line arguments
      */
     public static void main(final String args[]) {
+        setupLogging();
+
         new Main().start(args);
     }
 
@@ -154,7 +169,7 @@ public class Main {
                 RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
             }
 
-            //prevent startup of multiple instances...useful during debugging :(
+            //prevent startup of multiple instances...
             SingleInstance singleInstanceWatcher = new SingleInstance();
             if (singleInstanceWatcher.isAppAlreadyActive()) {
                 JOptionPane.showMessageDialog(null, LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING);
@@ -194,7 +209,7 @@ public class Main {
             awtAppClassNameField.setAccessible(true);
             awtAppClassNameField.set(xToolkit, Konstanten.PROGRAMMNAME);
         } catch (Exception ignored) {
-            System.err.println("Couldn't set awtAppClassName");
+            logger.warn("Could not set awtAppClassName");
         }
     }
 
@@ -214,6 +229,7 @@ public class Main {
      instead of crashing while trying to open Swing windows, just change to CLI mode and warn the user.
      */
         if (GraphicsEnvironment.isHeadless() && (aState == StartupMode.GUI)) {
+            logger.warn("Headless environment detected but -auto was not specified.");
             System.err.println("MediathekView wurde nicht als Kommandozeilenprogramm gestartet.");
             System.err.println("Startmodus wurde auf -auto geändert.");
             System.err.println();
@@ -272,15 +288,15 @@ public class Main {
                         return authenticator;
                     }
                 });
-                SysMsg.sysMsg(String.format(LOG_TEXT_PROXY_AUTHENTICATION_SUCESSFUL, prxUser));
+                logger.info(String.format(LOG_TEXT_PROXY_AUTHENTICATION_SUCESSFUL, prxUser));
             } else if (prxUser != null && prxPassword == null) {
-                SysMsg.sysMsg(LOG_TEXT_PROXY_PASSWORD_NOT_SET);
+                logger.info(LOG_TEXT_PROXY_PASSWORD_NOT_SET);
             } else {
-                SysMsg.sysMsg(LOG_TEXT_PROXY_AUTHENTICATION_NOT_CONFIGURED);
+                logger.info(LOG_TEXT_PROXY_AUTHENTICATION_NOT_CONFIGURED);
             }
 
         } catch (SecurityException se) {
-            SysMsg.sysMsg(LOG_TEXT_PROXY_AUTHENTICATION_CANNOT_ACCESS_PROXY_USER_PROXY_PW + se.toString());
+            logger.warn(LOG_TEXT_PROXY_AUTHENTICATION_CANNOT_ACCESS_PROXY_USER_PROXY_PW + se.toString());
         }
     }
 
