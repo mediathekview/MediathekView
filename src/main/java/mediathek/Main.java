@@ -92,19 +92,9 @@ public class Main {
     }
 
     /**
-     * Configure the environement variable used in log4j2.xml
-     */
-    private static void setupLogging() {
-        //TODO delete old log file on startup
-        //setup app logging
-        System.setProperty("mvApp.root", "/Users/christianfranzke/Desktop");
-    }
-    /**
      * @param args the command line arguments
      */
     public static void main(final String args[]) {
-        setupLogging();
-
         new Main().start(args);
     }
 

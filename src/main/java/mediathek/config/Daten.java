@@ -44,6 +44,11 @@ import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVMessageDialog;
 import net.engio.mbassy.bus.MBassador;
+import net.engio.mbassy.bus.config.BusConfiguration;
+import net.engio.mbassy.bus.config.Feature;
+import net.engio.mbassy.bus.config.IBusConfiguration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.io.File;
@@ -135,7 +140,7 @@ public class Daten
         return reset;
     }
 
-    private final MBassador<BaseEvent> messageBus = new MBassador<>();
+    private MBassador<BaseEvent> messageBus;
 
     public MBassador<BaseEvent> getMessageBus() {
         return messageBus;
@@ -176,8 +181,25 @@ public class Daten
         start();
     }
 
+    private static final Logger logger = LogManager.getLogger(Daten.class);
+
+    /**
+     * Set up message bus to log errors to our default logger
+     */
+    private void setupMessageBus() {
+        BusConfiguration config = new BusConfiguration();
+        messageBus = new MBassador<>(new BusConfiguration()
+                .addFeature(Feature.SyncPubSub.Default())
+                .addFeature(Feature.AsynchronousHandlerInvocation.Default())
+                .addFeature(Feature.AsynchronousMessageDispatch.Default())
+                .addPublicationErrorHandler(error -> logger.error(error.getMessage(), error.getCause()))
+                .setProperty(IBusConfiguration.Properties.BusId, "global bus"));
+    }
+
     private void start()
     {
+        setupMessageBus();
+
         listeFilme = new ListeFilme();
         filmeLaden = new FilmeLaden(this);
         listeFilmeHistory = new ListeFilme();
