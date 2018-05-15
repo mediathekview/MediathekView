@@ -6,12 +6,13 @@ import mSearch.Config;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Functions;
-import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
+import mediathek.gui.messages.TimerEvent;
+import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -36,7 +37,10 @@ public final class MVStatusBar extends JPanel {
 
     public MVStatusBar() {
         daten = Daten.getInstance();
-                EmptyBorder eBorder = new EmptyBorder(0, 5, 0, 5); // oben, rechts, unten, links
+
+        daten.getMessageBus().subscribe(this);
+
+        EmptyBorder eBorder = new EmptyBorder(0, 5, 0, 5); // oben, rechts, unten, links
         bottomBar = new BottomBar(BottomBarSize.LARGE);
         SoftBevelBorder sbb = new SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED);
 
@@ -72,19 +76,7 @@ public final class MVStatusBar extends JPanel {
         bottomBar.addComponentToRight(progressPanel);
 
         hideProgressIndicators();
-        Listener.addListener(new Listener(Listener.EREIGNIS_TIMER, MVStatusBar.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setTextForLeftDisplay();
-                try {
-                    if (!stopTimer) {
-                        setTextForRightDisplay();
-                    }
-                } catch (Exception ex) {
-                    Log.errorLog(936251087, ex);
-                }
-            }
-        });
+
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
@@ -99,6 +91,21 @@ public final class MVStatusBar extends JPanel {
             public void fertig(ListenerFilmeLadenEvent event) {
                 hideProgressIndicators();
             }
+        });
+    }
+
+    @Handler
+    private void handleTimerEvent(TimerEvent msg) {
+        SwingUtilities.invokeLater(() -> {
+            setTextForLeftDisplay();
+            try {
+                if (!stopTimer) {
+                    setTextForRightDisplay();
+                }
+            } catch (Exception ex) {
+                Log.errorLog(936251087, ex);
+            }
+
         });
     }
 

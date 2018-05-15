@@ -40,6 +40,7 @@ import mediathek.gui.GuiMeldungen;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.BaseEvent;
+import mediathek.gui.messages.TimerEvent;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVMessageDialog;
@@ -233,7 +234,7 @@ public class Daten
         Timer timer = new Timer(1000, e ->
         {
             downloadInfos.makeDownloadInfos();
-            Listener.notify(Listener.EREIGNIS_TIMER, Daten.class.getName());
+            messageBus.publishAsync(new TimerEvent());
         });
         timer.setInitialDelay(4000); // damit auch alles geladen ist
         timer.start();

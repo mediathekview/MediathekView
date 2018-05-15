@@ -25,20 +25,57 @@ import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
+import mediathek.gui.messages.TimerEvent;
+import net.engio.mbassy.listener.Handler;
 import org.controlsfx.control.Notifications;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public final class MVTray {
 
+    private final Daten daten;
     private int trayState = 0; // 0, 1=Download, 2=Download mit Fehler
     private SystemTray tray = null;
     private TrayIcon trayIcon = null;
-    private Daten daten;
+    private int count = 0;
 
     public MVTray() {
+        daten = Daten.getInstance();
+        daten.getMessageBus().subscribe(this);
+    }
+
+    @Handler
+    private void handleTimerEvent(TimerEvent msg) {
+        SwingUtilities.invokeLater(() -> {
+            ++count;
+            if (count > 3) {
+                // nur alle 3s ändern
+                trayIcon.setToolTip(getInfoTextDownloads());
+                count = 0;
+            }
+
+            // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
+            int[] starts = daten.getDownloadInfos().downloadStarts;
+            if (starts[6] > 0) {
+                // es gibt welche mit Fehler
+                if (trayState != 2) {
+                    trayState = 2;
+                    trayIcon.setImage(Icons.ICON_TRAY_ERROR);
+                }
+            } else if (starts[4] > 0) {
+                // es laufen welche
+                if (trayState != 1) {
+                    trayState = 1;
+                    trayIcon.setImage(Icons.ICON_TRAY_DOWNLOAD);
+                }
+            } else if (trayState != 0) {
+                trayState = 0;
+                trayIcon.setImage(Icons.ICON_TRAY);
+            }
+        });
     }
 
     public void beenden() {
@@ -48,7 +85,6 @@ public final class MVTray {
     }
 
     public MVTray systemTray() {
-        daten = Daten.getInstance();
         if (!SystemTray.isSupported()) {
             SysMsg.sysMsg("Tray wird nicht unterstützt!");
             return null;
@@ -104,38 +140,6 @@ public final class MVTray {
                             daten.getMediathekGui().requestFocus();
                         }
                     }
-                }
-            }
-        });
-
-        Listener.addListener(new Listener(Listener.EREIGNIS_TIMER, MVStatusBar.class.getSimpleName()) {
-            int count = 0;
-
-            @Override
-            public void ping() {
-                ++count;
-                if (count > 3) {
-                    // nur alle 3s ändern
-                    trayIcon.setToolTip(getInfoTextDownloads());
-                }
-
-                // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
-                int[] starts = daten.getDownloadInfos().downloadStarts;
-                if (starts[6] > 0) {
-                    // es gibt welche mit Fehler
-                    if (trayState != 2) {
-                        trayState = 2;
-                        trayIcon.setImage(Icons.ICON_TRAY_ERROR);
-                    }
-                } else if (starts[4] > 0) {
-                    // es laufen welche
-                    if (trayState != 1) {
-                        trayState = 1;
-                        trayIcon.setImage(Icons.ICON_TRAY_DOWNLOAD);
-                    }
-                } else if (trayState != 0) {
-                    trayState = 0;
-                    trayIcon.setImage(Icons.ICON_TRAY);
                 }
             }
         });

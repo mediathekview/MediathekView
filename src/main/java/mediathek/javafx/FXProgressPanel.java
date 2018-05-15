@@ -7,8 +7,9 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.Listener;
 import mediathek.config.Daten;
+import mediathek.gui.messages.TimerEvent;
+import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,29 +23,31 @@ public class FXProgressPanel extends JFXPanel {
     private final Daten daten = Daten.getInstance();
     private ProgressIndicator progress;
     private boolean infiniteProgress = false;
+    private final double lastSize;
 
     public FXProgressPanel() {
         super();
+
+        daten.getMessageBus().subscribe(this);
+
         Configuration config = ApplicationConfiguration.getConfiguration();
 
-        final double lastSize = config.getInt(CONFIG_STRING, 0);
+        lastSize = config.getInt(CONFIG_STRING, 0);
         if (lastSize == 0.0)
             infiniteProgress = true;
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_TIMER, FXProgressPanel.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                final int currentSize = daten.getListeFilme().size();
-                Platform.runLater(() -> {
-                    if (currentSize > 0 && lastSize != 0.0) {
-                        final double percent = currentSize / lastSize;
-                        increaseProgress(percent);
-                    }
-                });
+        Platform.runLater(this::initFX);
+    }
+
+    @Handler
+    private void handleTimerEvent(TimerEvent msg) {
+        Platform.runLater(() -> {
+            final int currentSize = daten.getListeFilme().size();
+            if (currentSize > 0 && lastSize != 0.0) {
+                final double percent = currentSize / lastSize;
+                increaseProgress(percent);
             }
         });
-
-        Platform.runLater(this::initFX);
     }
 
     private void initFX() {
