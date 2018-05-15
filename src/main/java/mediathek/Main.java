@@ -91,10 +91,28 @@ public class Main {
         }
     }
 
+    private static void printBanner() {
+        if (!SystemInfo.isMacOSX()) {
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println("___  ___         _ _       _   _          _    _   _ _               ");
+            System.out.println("|  \\/  |        | (_)     | | | |        | |  | | | (_)              ");
+            System.out.println("| .  . | ___  __| |_  __ _| |_| |__   ___| | _| | | |_  _____      __");
+            System.out.println("| |\\/| |/ _ \\/ _` | |/ _` | __| '_ \\ / _ \\ |/ / | | | |/ _ \\ \\ /\\ / /");
+            System.out.println("| |  | |  __/ (_| | | (_| | |_| | | |  __/   <\\ \\_/ / |  __/\\ V  V / ");
+            System.out.println("\\_|  |_/\\___|\\__,_|_|\\__,_|\\__|_| |_|\\___|_|\\_\\\\___/|_|\\___| \\_/\\_/  ");
+            System.out.println();
+            System.out.println();
+        }
+    }
     /**
      * @param args the command line arguments
      */
     public static void main(final String args[]) {
+        printBanner();
         new Main().start(args);
     }
 

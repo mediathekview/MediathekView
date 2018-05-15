@@ -20,6 +20,7 @@
 package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
+import javafx.application.Platform;
 import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
@@ -221,21 +222,35 @@ public class MediathekGui extends JFrame {
         if (!MemoryUtils.isLowMemoryEnvironment()) {
             SwingUtilities.invokeLater(() -> {
                 //activate glass pane
-                setGlassPane(new FXProgressPanel(true));
+                panel = new FXProgressPanel();
+                setGlassPane(panel);
                 getGlassPane().setVisible(true);
             });
         }
     }
 
+    private FXProgressPanel panel;
+
     @Handler
     protected void handleFilmlistReadStopEvent(FilmListReadStopEvent msg) {
-        //do not use javafx in low mem environment...
         if (!MemoryUtils.isLowMemoryEnvironment()) {
+            //set to complete and wait a little bit...
+            Platform.runLater(() -> panel.increaseProgress(1.0));
+            try {
+                TimeUnit.MILLISECONDS.sleep(250);
+            } catch (InterruptedException ignored) {
+            }
+
             SwingUtilities.invokeLater(() -> {
                 //deactivate glass pane
                 getGlassPane().setVisible(false);
+
                 //reset the glass pane to free memory
                 setGlassPane(new JPanel());
+                panel = null;
+
+                //save the filmlist size for next time
+                config.setProperty(FXProgressPanel.CONFIG_STRING, daten.getListeFilme().size());
             });
         }
     }
