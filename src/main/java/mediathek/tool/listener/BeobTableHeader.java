@@ -17,9 +17,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.tool;
+package mediathek.tool.listener;
 
 import mediathek.config.MVConfig;
+import mediathek.tool.MVTable;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;

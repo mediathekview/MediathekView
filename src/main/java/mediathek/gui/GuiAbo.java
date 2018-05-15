@@ -29,6 +29,7 @@ import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererAbo;
+import mediathek.tool.listener.BeobTableHeader;
 
 import javax.swing.*;
 import java.awt.*;

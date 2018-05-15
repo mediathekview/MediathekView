@@ -27,9 +27,9 @@ import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
-import mediathek.tool.BeobMausUrl;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVTable;
+import mediathek.tool.listener.BeobMausUrl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

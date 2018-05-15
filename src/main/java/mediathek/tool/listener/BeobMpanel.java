@@ -17,14 +17,14 @@
  *    You should have received a copy of the GNU General Public License
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mediathek.tool;
+package mediathek.tool.listener;
 
-import java.awt.Dimension;
+import mediathek.config.Icons;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
-import mediathek.config.Icons;
 
 public class BeobMpanel implements ActionListener {
 

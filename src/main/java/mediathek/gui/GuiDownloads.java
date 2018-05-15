@@ -43,6 +43,7 @@ import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.messages.StartEvent;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
+import mediathek.tool.listener.BeobTableHeader;
 import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
