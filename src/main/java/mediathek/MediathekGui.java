@@ -229,13 +229,16 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    private FXProgressPanel panel;
+    private FXProgressPanel panel = null;
 
     @Handler
     protected void handleFilmlistReadStopEvent(FilmListReadStopEvent msg) {
         if (!MemoryUtils.isLowMemoryEnvironment()) {
             //set to complete and wait a little bit...
-            Platform.runLater(() -> panel.increaseProgress(1.0));
+            Platform.runLater(() -> {
+                if (panel != null)
+                    panel.increaseProgress(1.0);
+            });
             try {
                 TimeUnit.MILLISECONDS.sleep(250);
             } catch (InterruptedException ignored) {
@@ -794,7 +797,6 @@ public class MediathekGui extends JFrame {
     /**
      * Handle the install/or remove event sent from settings dialog
      *
-     * @param msg
      */
     @Handler
     protected void handleInstallTabSwitchListenerEvent(InstallTabSwitchListenerEvent msg) {
