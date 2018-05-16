@@ -23,7 +23,6 @@ import com.jidesoft.utils.SystemInfo;
 import mSearch.daten.ListeFilme;
 import mSearch.filmlisten.FilmListWriter;
 import mSearch.tool.Listener;
-import mSearch.tool.Log;
 import mSearch.tool.ReplaceList;
 import mSearch.tool.SysMsg;
 import mediathek.MediathekGui;
@@ -352,12 +351,12 @@ public class Daten
 
         if (!load())
         {
-            SysMsg.sysMsg("Weder Konfig noch Backup konnte geladen werden!");
+            logger.info("Weder Konfig noch Backup konnte geladen werden!");
             // teils geladene Reste entfernen
             clearKonfig();
             return false;
         }
-        SysMsg.sysMsg("Konfig wurde gelesen!");
+        logger.info("Konfig wurde gelesen!");
         mVColor.load(); // Farben einrichten
         MVFont.initFont(); // Fonts einrichten
 
@@ -389,12 +388,12 @@ public class Daten
             } else
             {
                 // dann hat das Laden nicht geklappt
-                SysMsg.sysMsg("Konfig konnte nicht gelesen werden!");
+                logger.info("Konfig konnte nicht gelesen werden!");
             }
         } else
         {
             // dann hat das Laden nicht geklappt
-            SysMsg.sysMsg("Konfig existiert nicht!");
+            logger.info("Konfig existiert nicht!");
         }
 
         // versuchen das Backup zu laden
@@ -412,12 +411,12 @@ public class Daten
         Daten.getMediathekXmlCopyFilePath(path);
         if (path.isEmpty())
         {
-            SysMsg.sysMsg("Es gibt kein Backup");
+            logger.info("Es gibt kein Backup");
             return false;
         }
 
         // dann gibts ein Backup
-        SysMsg.sysMsg("Es gibt ein Backup");
+        logger.info("Es gibt ein Backup");
         mediathekGui.closeSplashScreen();
         int r = JOptionPane.showConfirmDialog(null, "Die Einstellungen sind beschädigt\n"
                 + "und können nicht geladen werden.\n"
@@ -428,7 +427,7 @@ public class Daten
 
         if (r != JOptionPane.OK_OPTION)
         {
-            SysMsg.sysMsg("User will kein Backup laden.");
+            logger.info("User will kein Backup laden.");
             return false;
         }
 
@@ -475,7 +474,7 @@ public class Daten
                 Files.deleteIfExists(path1);
             } catch (IOException e)
             {
-                SysMsg.sysMsg("Die Einstellungen konnten nicht zurückgesetzt werden.");
+                logger.error("Die Einstellungen konnten nicht zurückgesetzt werden.", e);
                 if (mediathekGui != null)
                 {
                     MVMessageDialog.showMessageDialog(mediathekGui, "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
@@ -484,7 +483,6 @@ public class Daten
                             + "von Hand löschen und dann das Programm wieder starten.\n\n"
                             + "Im Forum finden Sie weitere Hilfe.", "Fehler", JOptionPane.ERROR_MESSAGE);
                 }
-                Log.errorLog(465690123, e);
             }
         }
     }
@@ -502,8 +500,8 @@ public class Daten
         if (!alreadyMadeBackup)
         {
             // nur einmal pro Programmstart machen
-            SysMsg.sysMsg("-------------------------------------------------------");
-            SysMsg.sysMsg("Einstellungen sichern");
+            logger.info("-------------------------------------------------------");
+            logger.info("Einstellungen sichern");
 
             try
             {
@@ -534,19 +532,18 @@ public class Daten
                     {
                         Files.move(xmlFilePath, Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1), StandardCopyOption.REPLACE_EXISTING);
                     }
-                    SysMsg.sysMsg("Einstellungen wurden gesichert");
+                    logger.info("Einstellungen wurden gesichert");
                 } else
                 {
-                    SysMsg.sysMsg("Einstellungen wurden heute schon gesichert");
+                    logger.info("Einstellungen wurden heute schon gesichert");
                 }
             } catch (IOException e)
             {
-                SysMsg.sysMsg("Die Einstellungen konnten nicht komplett gesichert werden!");
-                Log.errorLog(795623147, e);
+                logger.error("Die Einstellungen konnten nicht komplett gesichert werden!", e);
             }
 
             alreadyMadeBackup = true;
-            SysMsg.sysMsg("-------------------------------------------------------");
+            logger.info("-------------------------------------------------------");
         }
     }
 

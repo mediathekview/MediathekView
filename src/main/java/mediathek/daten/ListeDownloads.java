@@ -21,7 +21,6 @@ package mediathek.daten;
 
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Listener;
-import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -30,6 +29,8 @@ import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.messages.StartEvent;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelDownload;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.net.URL;
@@ -47,14 +48,16 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     }
 
     public synchronized void addMitNummer(DatenDownload e) {
-        super.add(e);
+        add(e);
         listeNummerieren();
     }
+
+    private static final Logger logger = LogManager.getLogger(ListeDownloads.class);
 
     public synchronized void filmEintragen() {
         // bei einmal Downloads nach einem Programmstart/Neuladen der Filmliste
         // den Film wieder eintragen
-        SysMsg.sysMsg("Filme in Downloads eintragen");
+        logger.info("Filme in Downloads eintragen");
         this.stream().filter(d -> d.film == null)
                 .forEach(d ->
                 {

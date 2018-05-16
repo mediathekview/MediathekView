@@ -22,7 +22,6 @@ package mediathek.controller;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.FilmListReader;
-import mSearch.tool.Duration;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -43,11 +42,11 @@ public class UIFilmlistLoaderThread extends Thread {
 
     public UIFilmlistLoaderThread() {
         setName("UIFilmlistLoaderThread");
-        Duration.staticPing("Programmstart Daten laden");
     }
 
     @Override
     public void run() {
+        logger.debug("Programmstart Daten laden");
         try {
             //give the UI some time to set up...
             TimeUnit.MILLISECONDS.sleep(500);
@@ -90,6 +89,9 @@ public class UIFilmlistLoaderThread extends Thread {
             daten.getMessageBus().publishAsync(new FilmListReadStopEvent());
         } catch (InterruptedException ignored) {
         }
+
+        logger.debug("Programmende Daten laden");
+
     }
 
 }
