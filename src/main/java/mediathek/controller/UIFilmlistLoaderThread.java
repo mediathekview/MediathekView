@@ -23,7 +23,6 @@ import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.FilmListReader;
 import mSearch.tool.Duration;
-import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -31,12 +30,16 @@ import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.messages.FilmListReadStartEvent;
 import mediathek.gui.messages.FilmListReadStopEvent;
 import mediathek.tool.GuiFunktionen;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class UIFilmlistLoaderThread extends Thread {
+
+    private static final Logger logger = LogManager.getLogger(UIFilmlistLoaderThread.class);
 
     public UIFilmlistLoaderThread() {
         setName("UIFilmlistLoaderThread");
@@ -58,15 +61,15 @@ public class UIFilmlistLoaderThread extends Thread {
 
             try (FilmListReader reader = new FilmListReader()) {
                 reader.readFilmListe(Daten.getDateiFilmliste(), listeFilme, tageFilmliste);
-                SysMsg.sysMsg("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-                SysMsg.sysMsg("  erstellt am: " + listeFilme.genDate());
-                SysMsg.sysMsg("  Anzahl Filme: " + listeFilme.size());
-                SysMsg.sysMsg("  Anzahl Neue: " + listeFilme.countNewFilms());
+                logger.info("Liste Filme gelesen am: {}", new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+                logger.info("  erstellt am: {}", listeFilme.genDate());
+                logger.info("  Anzahl Filme: {}", listeFilme.size());
+                logger.info("  Anzahl Neue: {}", listeFilme.countNewFilms());
 
             }
 
             if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO && listeFilme.isTooOld()) {
-                SysMsg.sysMsg("Filmliste zu alt, neue Filmliste laden");
+                logger.info("Filmliste zu alt, neue Filmliste laden");
                 filmeLaden.loadFilmlist("", true);
             } else {
                 // beim Neuladen wird es dann erst gemacht
