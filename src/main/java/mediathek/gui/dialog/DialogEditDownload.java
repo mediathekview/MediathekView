@@ -27,7 +27,7 @@ import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenProg;
 import mediathek.file.GetFile;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.MVMessageDialog;
 
 import javax.swing.*;
@@ -79,17 +79,14 @@ public class DialogEditDownload extends JDialog {
         jRadioButtonResLo.addActionListener(e -> changeRes());
         jButtonOk.addActionListener(e -> {
             if (check()) {
-                beenden();
+                dispose();
             }
         });
-        jButtonAbbrechen.addActionListener(e -> beenden());
+        jButtonAbbrechen.addActionListener(e -> dispose());
         getRootPane().setDefaultButton(jButtonOk);
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                beenden();
-            }
-        };
+
+        EscapeKeyHandler.installHandler(this, this::dispose);
+
         setupResolutionButtons();
         setExtra();
     }
@@ -507,10 +504,6 @@ public class DialogEditDownload extends JDialog {
             ok = true;
         }
         return ok;
-    }
-
-    private void beenden() {
-        this.dispose();
     }
 
     /** This method is called from within the constructor to

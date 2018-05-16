@@ -22,7 +22,7 @@ package mediathek.gui.dialog;
 import mSearch.daten.DatenFilm;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.MVInfoFile;
 
 import javax.swing.*;
@@ -43,12 +43,9 @@ public class DialogFilmBeschreibung extends JDialog {
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                dispose();
-            }
-        };
+
+        EscapeKeyHandler.installHandler(this, this::dispose);
+
         jTextArea1.setText(datenFilm.getDescription());
         jTextFieldTitel.setText(datenFilm.arr[DatenFilm.FILM_TITEL]);
 

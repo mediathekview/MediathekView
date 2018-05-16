@@ -25,7 +25,7 @@ import mediathek.config.Konstanten;
 import mediathek.gui.HyperlinkButton;
 import mediathek.gui.actions.DisposeDialogAction;
 import mediathek.gui.actions.UrlHyperlinkAction;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
@@ -133,12 +133,7 @@ public class AboutDialog extends JDialog {
         setModal(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-        new EscBeenden(this) {
-            @Override
-            public void beenden_(JDialog d) {
-                d.dispose();
-            }
-        };
+        EscapeKeyHandler.installHandler(this, this::dispose);
 
         initMarqueePane();
 

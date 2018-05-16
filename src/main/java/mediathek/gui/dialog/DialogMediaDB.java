@@ -107,12 +107,9 @@ public class DialogMediaDB extends JDialog {
         jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_MEDIA_DB)).setVisible(true));
         jButtonSearch.addActionListener(e -> searchFilmInDb());
         jButtonBeenden.addActionListener(e -> beenden());
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                beenden();
-            }
-        };
+
+        EscapeKeyHandler.installHandler(this, this::beenden);
+
         GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, this, parent);
     }
 
@@ -124,11 +121,6 @@ public class DialogMediaDB extends JDialog {
         if (vis && daten.getListeMediaPath().isEmpty()) {
             JOptionPane.showMessageDialog(parent, "Erst in den Einstellungen eine Mediensammlung einrichten.", "Mediensammlung leer!", JOptionPane.ERROR_MESSAGE);
         }
-//        if (!init) {
-//            // beim ersten anzeigen den Index bauen
-//            Daten.mVMediaDB.makeIndex();
-//            init = true;
-//        }
     }
 
     public final void setVis() {

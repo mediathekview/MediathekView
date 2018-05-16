@@ -5,7 +5,7 @@ import com.jidesoft.dialog.StandardDialog;
 import mediathek.config.Daten;
 import mediathek.gui.ResetSettingsPanel;
 import mediathek.gui.actions.DisposeDialogAction;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -22,12 +22,7 @@ public class ResetSettingsDialog extends StandardDialog {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setResizable(false);
 
-        new EscBeenden(this) {
-            @Override
-            public void beenden_(JDialog d) {
-                d.dispose();
-            }
-        };
+        EscapeKeyHandler.installHandler(this, this::dispose);
 
         pack();
     }

@@ -24,7 +24,7 @@ import mediathek.config.Icons;
 import mediathek.config.Konstanten;
 import mediathek.file.GetFile;
 import mediathek.gui.actions.UrlHyperlinkAction;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 
 import javax.swing.*;
 import java.net.URISyntaxException;
@@ -83,13 +83,11 @@ public class DialogNewSet extends JDialog {
         });
         jButtonSetHelp.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonSetHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_RESET_SET)).setVisible(true));
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                ok = false;
-                beenden();
-            }
-        };
+
+        EscapeKeyHandler.installHandler(this, () -> {
+            ok = false;
+            dispose();
+        });
     }
 
     private void beenden() {

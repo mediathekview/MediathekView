@@ -27,7 +27,7 @@ import mSearch.tool.Log;
 import mediathek.config.*;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.MVFilmSize;
 import mediathek.tool.MVMessageDialog;
@@ -107,14 +107,13 @@ public class DialogAddDownload extends JDialog {
                 beenden();
             }
         });
-        getRootPane().setDefaultButton(jButtonOk); //TH
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                ok = false;
-                beenden();
-            }
-        };
+        getRootPane().setDefaultButton(jButtonOk);
+
+        EscapeKeyHandler.installHandler(this, () -> {
+            ok = false;
+            beenden();
+        });
+
         jButtonAbbrechen.addActionListener(e -> {
             ok = false;
             beenden();

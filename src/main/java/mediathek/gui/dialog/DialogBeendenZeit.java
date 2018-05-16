@@ -25,7 +25,7 @@ import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.file.GetFile;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 import org.jdesktop.swingx.JXBusyLabel;
 
 import javax.swing.*;
@@ -91,12 +91,8 @@ public class DialogBeendenZeit extends JDialog {
         if (frameParent != null) {
             setLocationRelativeTo(frameParent);
         }
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                escapeHandler();
-            }
-        };
+
+        EscapeKeyHandler.installHandler(this, this::escapeHandler);
 
         addWindowListener(new WindowAdapter() {
             @Override

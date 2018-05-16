@@ -25,7 +25,7 @@ import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialogEinstellungen.allgemein.PanelEinstellungen;
 import mediathek.res.GetIcon;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionen;
 
 import javax.swing.*;
@@ -107,12 +107,8 @@ public class DialogEinstellungen extends JFrame {
         GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, this, Daten.getInstance().getMediathekGui());
         this. setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
         jButtonBeenden.addActionListener(e -> beenden());
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                beenden();
-            }
-        };
+
+        EscapeKeyHandler.installHandler(this, this::beenden);
     }
 
     private void init() {

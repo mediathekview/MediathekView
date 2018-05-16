@@ -21,7 +21,7 @@ package mediathek.update;
 
 import mediathek.config.Konstanten;
 import mediathek.gui.actions.UrlHyperlinkAction;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -49,16 +49,8 @@ public class DialogHinweisUpdate extends JDialog {
         }
         jButtonOk.addActionListener(new BeobBeenden());
         jTextArea1.setText(text);
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                beenden();
-            }
-        };
-    }
 
-    private void beenden() {
-        this.dispose();
+        EscapeKeyHandler.installHandler(this, this::dispose);
     }
 
     /** This method is called from within the constructor to
@@ -134,7 +126,7 @@ public class DialogHinweisUpdate extends JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            beenden();
+            dispose();
         }
     }
 }

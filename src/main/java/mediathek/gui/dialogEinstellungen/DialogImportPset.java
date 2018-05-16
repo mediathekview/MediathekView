@@ -21,7 +21,7 @@ package mediathek.gui.dialogEinstellungen;
 
 import mediathek.config.Daten;
 import mediathek.daten.ListePset;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 
 import javax.swing.*;
 
@@ -40,21 +40,11 @@ public class DialogImportPset extends JDialog {
         this.setTitle("Programmset");
         liste = lliste;
         jScrollPane1.setViewportView(new PanelPsetKurz(ddaten, parentComponent, liste));
-        jButtonOk.addActionListener(e -> {
-            ok = true;
-            beenden();
-        });
-        jButtonAbbrechen.addActionListener(e -> {
-            ok = false;
-            beenden();
-        });
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                ok = false;
-                beenden();
-            }
-        };
+        jButtonOk.addActionListener(e -> disposeWithCode(true));
+        jButtonAbbrechen.addActionListener(e -> disposeWithCode(false));
+
+        EscapeKeyHandler.installHandler(this, () -> disposeWithCode(false));
+
         jCheckBoxAlleEinstellungen.addActionListener(e -> {
             if (jCheckBoxAlleEinstellungen.isSelected()) {
                 jScrollPane1.setViewportView(new PanelPsetLang(ddaten, parentComponent, liste));
@@ -64,8 +54,9 @@ public class DialogImportPset extends JDialog {
         });
     }
 
-    private void beenden() {
-        this.dispose();
+    private void disposeWithCode(boolean ok) {
+        this.ok = ok;
+        dispose();
     }
 
     /** This method is called from within the constructor to
