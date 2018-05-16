@@ -24,7 +24,6 @@ import mSearch.daten.ListeFilme;
 import mSearch.filmlisten.FilmListWriter;
 import mSearch.tool.Listener;
 import mSearch.tool.ReplaceList;
-import mSearch.tool.SysMsg;
 import mediathek.MediathekGui;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
@@ -435,11 +434,11 @@ public class Daten
         {
             // teils geladene Reste entfernen
             clearKonfig();
-            SysMsg.sysMsg(new String[]{"Versuch Backup zu laden:", p.toString()});
+            logger.info("Versuch Backup zu laden: {}", p.toString());
             final IoXmlLesen configReader = new IoXmlLesen();
             if (configReader.datenLesen(p))
             {
-                SysMsg.sysMsg(new String[]{"Backup hat geklappt:", p.toString()});
+                logger.info("Backup hat geklappt: {}", p.toString());
                 ret = true;
                 break;
             }
