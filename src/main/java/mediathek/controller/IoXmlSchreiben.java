@@ -217,12 +217,12 @@ public class IoXmlSchreiben {
             writer.writeEndElement();
             writeNewLine(writer);
         } catch (Exception ex) {
-            Log.errorLog(951230478, ex);
+            logger.error(ex);
         }
     }
 
     public synchronized void writeConfigurationFile(Path xmlFilePath) {
-        SysMsg.sysMsg("Daten Schreiben nach: " + xmlFilePath.toString());
+        logger.info("Daten Schreiben nach: {}", xmlFilePath.toString());
         xmlDatenSchreiben(xmlFilePath);
     }
 

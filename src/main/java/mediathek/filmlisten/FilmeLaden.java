@@ -114,8 +114,7 @@ public class FilmeLaden {
      *
      * @return true if newer is availble, otherwise false.
      */
-    private boolean checkIfNewerFilmlistExists() {
-        logger.debug("checkIfNewerFilmlistExists start");
+    private boolean hasNewRemoteFilmlist() {
         boolean result = false;
 
         final String id = Daten.getInstance().getListeFilme().metaDaten[ListeFilme.FILMLISTE_ID_NR];
@@ -130,11 +129,8 @@ public class FilmeLaden {
              ResponseBody body = response.body()) {
             if (body != null && response.isSuccessful()) {
                 String remoteId = body.string();
-                if (!remoteId.isEmpty() && !remoteId.equalsIgnoreCase(id)) {
-                    logger.debug("remote id is not equal, we have an update...");
+                if (!remoteId.isEmpty() && !remoteId.equalsIgnoreCase(id))
                     result = true; // we have an update...
-                } else
-                    logger.debug("remote id is equal, we will remain silent...");
             }
 
             if (!result) {
@@ -158,7 +154,33 @@ public class FilmeLaden {
             logger.error("check for filmliste.id failed", ex);
         }
 
-        logger.debug("checkIfNewerFilmlistExists stop");
+        return result;
+    }
+
+    /**
+     * Determin whether we want to perform a remote update check.
+     * This will be done if we are:
+     * 1. dont have film entries
+     * 2. dateiUrl is either empty or string starts with http
+     * 3. our filmlist is old enough that we dont use diff list - we dont check them.
+     *
+     * @return true if we need to load a new list, false if we should not load a remote list
+     */
+    private boolean performUpdateCheck(ListeFilme listeFilme, String dateiUrl) {
+        boolean result = true;
+
+        //always perform update when list is empty
+        if (!listeFilme.isEmpty()) {
+            //remote download is using an empty file name!...
+            //or somebody put a web adress into the text field
+            if (dateiUrl.isEmpty() || dateiUrl.startsWith("http")) {
+                //perform check only if we dont want to use DIFF list...
+                if (listeFilme.isTooOldForDiff()) {
+                    if (!hasNewRemoteFilmlist())
+                        result = false;
+                }
+            }
+        }
 
         return result;
     }
@@ -166,32 +188,36 @@ public class FilmeLaden {
     public void loadFilmlist(String dateiUrl, boolean immerNeuLaden) {
         // damit wird die Filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
 
+        ListeFilme listeFilme = daten.getListeFilme();
+
+        if (!performUpdateCheck(listeFilme, dateiUrl))
+            return;
+
         logger.debug("Filme laden, start");
         logger.info("");
-        logger.info("Alte Liste erstellt am: {}", Daten.getInstance().getListeFilme().genDate());
-        logger.info("  Anzahl Filme: {}", daten.getListeFilme().size());
-        logger.info("  Anzahl Neue: {}", daten.getListeFilme().countNewFilms());
+        logger.info("Alte Liste erstellt am: {}", listeFilme.genDate());
+        logger.info("  Anzahl Filme: {}", listeFilme.size());
+        logger.info("  Anzahl Neue: {}", listeFilme.countNewFilms());
         if (!istAmLaufen) {
             // nicht doppelt starten
-
             istAmLaufen = true;
             // Hash mit URLs füllen
             hashSet.clear();
-            fillHash(daten.getListeFilme());
+            fillHash(listeFilme);
             if (immerNeuLaden) {
                 // dann die alte löschen, damit immer komplett geladen wird, aber erst nach dem Hash!!
-                daten.getListeFilme().clear(); // sonst wird eine "zu kurze" Liste wieder nur mit einer Diff-Liste aufgefüllt, wenn das Alter noch passt
+                listeFilme.clear(); // sonst wird eine "zu kurze" Liste wieder nur mit einer Diff-Liste aufgefüllt, wenn das Alter noch passt
             }
             daten.getListeFilmeNachBlackList().clear();
             if (dateiUrl.isEmpty()) {
                 // Filme als Liste importieren, Url automatisch ermitteln
                 logger.info("Filmliste laden (auto)");
-                importFilmliste.importFromUrl(daten.getListeFilme(), diffListe, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+                importFilmliste.importFromUrl(listeFilme, diffListe, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
             } else {
                 // Filme als Liste importieren, feste URL/Datei
                 logger.info("Filmliste laden von: {}", dateiUrl);
-                daten.getListeFilme().clear();
-                importFilmliste.importFromFile(dateiUrl, daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+                listeFilme.clear();
+                importFilmliste.importFromFile(dateiUrl, listeFilme, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
             }
         }
     }
