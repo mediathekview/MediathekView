@@ -49,6 +49,7 @@ import javax.swing.*;
 import javax.swing.event.EventListenerList;
 import java.awt.*;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -131,6 +132,11 @@ public class FilmeLaden {
                 String remoteId = body.string();
                 if (!remoteId.isEmpty() && !remoteId.equalsIgnoreCase(id))
                     result = true; // we have an update...
+            } else {
+                //we were not successful to load the id file
+                //if not found, pretend we need to update
+                if (response.code() == HttpURLConnection.HTTP_NOT_FOUND)
+                    result = true;
             }
 
             if (!result) {
