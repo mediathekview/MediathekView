@@ -72,7 +72,8 @@ public class FXProgressPanel extends JFXPanel {
     }
 
     public void increaseProgress(double value) {
-        progress.setProgress(value);
+        if (progress != null)
+            progress.setProgress(value);
     }
 
     public boolean isInfiniteProgress() {
