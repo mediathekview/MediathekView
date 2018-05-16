@@ -22,7 +22,6 @@ package mediathek.controller;
 import mSearch.filmlisten.DatenFilmlisteUrl;
 import mSearch.tool.Log;
 import mSearch.tool.ReplaceList;
-import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -232,17 +231,17 @@ public class IoXmlSchreiben {
              OutputStreamWriter out = new OutputStreamWriter(os, StandardCharsets.UTF_8)
         ) {
             XMLStreamWriter writer = outFactory.createXMLStreamWriter(out);
-            SysMsg.sysMsg("Pset exportieren nach: " + xmlFilePath.toString());
-            SysMsg.sysMsg("Start Schreiben nach: " + xmlFilePath.toAbsolutePath());
+            logger.info("Pset exportieren nach: {}", xmlFilePath.toString());
+            logger.info("Start Schreiben nach: {}", xmlFilePath.toAbsolutePath());
 
             writeFileHeader(writer);
 
             xmlSchreibenPset(writer, pSet);
 
             writeFileEnd(writer);
-            SysMsg.sysMsg("geschrieben!");
+            logger.info("geschrieben!");
         } catch (Exception ex) {
-            Log.errorLog(392846204, ex, "nach: " + datei);
+            logger.error("nach {}", datei, ex);
         }
     }
 

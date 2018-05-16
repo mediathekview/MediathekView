@@ -29,7 +29,6 @@ import mSearch.filmlisten.FilmListReader;
 import mSearch.filmlisten.FilmlistenSuchen;
 import mSearch.filmlisten.ListeFilmlistenUrls;
 import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.Duration;
 import mSearch.tool.MVHttpClient;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
@@ -88,11 +87,12 @@ public class FilmeLaden {
             @Override
             public synchronized void fertig(ListenerFilmeLadenEvent event) {
                 // Ergebnisliste listeFilme eintragen -> Feierabend!
-                Duration.staticPing("Filme laden, ende");
+                logger.debug("Filme laden, ende");
                 undEnde(event);
             }
         });
     }
+
 
     public void loadFilmlistDialog(Daten daten, boolean manuell) {
         if (manuell || GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUS) {

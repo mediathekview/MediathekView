@@ -19,16 +19,15 @@
  */
 package mediathek.daten;
 
-import mSearch.tool.Duration;
 import mSearch.tool.Listener;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.tool.Filter;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelMediaDB;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.io.BufferedWriter;
@@ -80,8 +79,18 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
     }
 
     public synchronized void cleanList() {
-        new Thread(() -> {
-            Duration.counterStart("Clean MediaDB");
+        CleanerThread thread = new CleanerThread();
+        thread.start();
+    }
+
+    class CleanerThread extends Thread {
+        public CleanerThread() {
+            setName("Clean MediaDB");
+        }
+
+        @Override
+        public void run() {
+            logger.info("Clean MediaDB start");
             Listener.notify(Listener.EREIGNIS_MEDIA_DB_START, ListeMediaDB.class.getSimpleName());
             makeIndex = true;
 
@@ -89,8 +98,8 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
 
             makeIndex = false;
             Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
-            Duration.counterStop("Clean MediaDB");
-        }).start();
+            logger.info("Clean MediaDB stop");
+        }
     }
 
     private void clean() {
@@ -146,7 +155,14 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
         if (pfad.isEmpty()) {
             del(true /*ohneSave*/);
         }
-        new Thread(new Index(pfad)).start();
+
+        createIndexThread(new Index(pfad));
+    }
+
+    private void createIndexThread(Index runner) {
+        Thread starter = new Thread(runner);
+        starter.setName("Index Thread");
+        starter.start();
     }
 
     public synchronized void loadSavedList() {
@@ -161,14 +177,14 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                 }
             }
         } catch (Exception ex) {
-            Log.errorLog(461203787, ex);
+            logger.error(ex);
         }
     }
 
     public synchronized void exportListe(String datei) {
         Path logFilePath = null;
         boolean export = false;
-        SysMsg.sysMsg("MediaDB schreiben (" + daten.getListeMediaDB().size() + " Dateien) :");
+        logger.info("MediaDB schreiben ({}) Dateien :", daten.getListeMediaDB().size());
         if (!datei.isEmpty()) {
             export = true;
             try {
@@ -176,16 +192,16 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                 File dir = new File(file.getParent());
                 if (!dir.exists()) {
                     if (!dir.mkdirs()) {
-                        Log.errorLog(945120365, "Kann den Pfad nicht anlegen: " + dir.toString());
+                        logger.error("Kann den Pfad nicht anlegen: {}", dir.toString());
                     }
                 }
-                SysMsg.sysMsg("   --> Start Schreiben nach: " + datei);
+                logger.info("   --> Start Schreiben nach: {}", datei);
                 logFilePath = file.toPath();
             } catch (Exception ex) {
-                Log.errorLog(102035478, ex, "nach: " + datei);
+                logger.error("nach: {}", datei, ex);
             }
         } else {
-            SysMsg.sysMsg("   --> Start Schreiben nach: " + getFilePath().toString());
+            logger.info("   --> Start Schreiben nach: {}", getFilePath().toString());
             logFilePath = getFilePath();
         }
 
@@ -210,21 +226,11 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
             SwingUtilities.invokeLater(() -> MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!",
                     "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE));
         }
-        SysMsg.sysMsg("   --> geschrieben!");
+        logger.info("   --> geschrieben!");
     }
 
-    //    private boolean exists(DatenMediaDB mdb) {
-//        boolean ret = false;
-//        try {
-//            DatenMediaDB get = this.stream().filter(media -> media.equal(mdb)).findFirst().get();
-//            if (get != null) {
-//                ret = true;
-//            }
-//        } catch (NoSuchElementException ignore) {
-//            ret = false;
-//        }
-//        return ret;
-//    }
+    private static final Logger logger = LogManager.getLogger(ListeMediaDB.class);
+
     private class Index implements Runnable {
 
         String pfad;
@@ -237,7 +243,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
 
         @Override
         public synchronized void run() {
-            Duration.counterStart("Mediensammlung erstellen");
+            logger.debug("Mediensammlung erstellen");
             try {
                 if (!pfad.isEmpty()) {
                     // dann nur einen Pfad hinzufügen
@@ -275,12 +281,13 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                     daten.getListeMediaPath().stream().filter((mp) -> (!mp.savePath())).forEach((mp) -> searchFile(new File(mp.arr[DatenMediaPath.MEDIA_PATH_PATH]), false));
                 }
             } catch (Exception ex) {
-                Log.errorLog(120321254, ex);
+                logger.error(ex);
             }
 
             daten.getListeMediaDB().exportListe("");
             makeIndex = false;
-            Duration.counterStop("Mediensammlung erstellen");
+            logger.debug("Ende Mediensammlung erstellen");
+
             Listener.notify(Listener.EREIGNIS_MEDIA_DB_STOP, ListeMediaDB.class.getSimpleName());
         }
 
@@ -364,7 +371,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                 urlPath = Files.createFile(urlPath);
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            logger.warn(ex);
         }
         return urlPath;
     }
@@ -391,7 +398,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
             }
             return new DatenMediaDB(name, pfad, size, true /*extern*/);
         } catch (Exception ex) {
-            Log.errorLog(912035647, ex);
+            logger.error(ex);
         }
         return null;
     }

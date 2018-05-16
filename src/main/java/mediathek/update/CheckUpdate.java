@@ -20,7 +20,6 @@
 package mediathek.update;
 
 import mSearch.tool.Listener;
-import mSearch.tool.SysMsg;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
@@ -101,13 +100,13 @@ public class CheckUpdate extends Thread {
                             DialogNewSet dialogNewSet = new DialogNewSet(parent);
                             dialogNewSet.setVisible(true);
                             if (!dialogNewSet.ok) {
-                                SysMsg.sysMsg("Setanlegen: Abbruch");
+                                logger.info("Setanlegen: Abbruch");
                                 if (!dialogNewSet.morgen) {
                                     // dann auch die Versionsnummer aktualisieren
-                                    SysMsg.sysMsg("Setanlegen: Nicht wieder nachfragen");
+                                    logger.info("Setanlegen: Nicht wieder nachfragen");
                                     MVConfig.add(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
                                 }
-                                SysMsg.sysMsg("==========================================");
+                                logger.info("==========================================");
                                 // dann halt nicht
                                 return;
                             }
@@ -146,8 +145,8 @@ public class CheckUpdate extends Thread {
                         listePsetStandard.forEach((psNew) -> psNew.arr[DatenPset.PROGRAMMSET_NAME] = psNew.arr[DatenPset.PROGRAMMSET_NAME] + ", neu: " + date);
                     }
                     GuiFunktionenProgramme.addSetVorlagen(daten.getMediathekGui(), daten, listePsetStandard, true /*auto*/, true /*setVersion*/); // damit auch AddOns geladen werden
-                    SysMsg.sysMsg("Setanlegen: OK");
-                    SysMsg.sysMsg("==========================================");
+                    logger.info("Setanlegen: OK");
+                    logger.info("==========================================");
                 }
             });
         } catch (Exception ignored) {
