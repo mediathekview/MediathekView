@@ -1,9 +1,9 @@
-/*    
+/*
  *    MediathekView
  *    Copyright (C) 2008   W. Xaver
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
- *    
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -130,6 +130,14 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     setHorizontalAlignment(SwingConstants.CENTER);
                     setYesNoIcon(datenFilm.hasSubtitle());
                     setText("");
+                    break;
+
+                case DatenFilm.FILM_WEBSEITE:
+                    setText(datenFilm.getWebsiteLink());
+                    break;
+
+                case DatenFilm.FILM_BESCHREIBUNG:
+                    setText(datenFilm.getDescription());
                     break;
             }
             setColor(this, datenFilm, datenDownload, isSelected);
