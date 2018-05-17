@@ -534,8 +534,23 @@ public class GuiFilme extends PanelVorlage {
         setupCellRenderer(mediathekGui);
 
         tabelle.lineBreak = MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK);
-        tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenFilm.COLUMN_NAMES, DatenFilm.spaltenAnzeigen,
-                new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN, DatenFilm.FILM_DATUM_LONG, DatenFilm.FILM_REF},
+        final int[] hiddenColumns = new int[]{DatenFilm.FILM_ABSPIELEN,
+                DatenFilm.FILM_AUFZEICHNEN,
+                DatenFilm.FILM_DATUM_LONG,
+                DatenFilm.FILM_REF,
+                DatenFilm.FILM_URL_RTMP,
+                DatenFilm.FILM_URL_RTMP_KLEIN,
+                DatenFilm.FILM_URL_RTMP_HD,
+                DatenFilm.FILM_URL_AUTH,
+                DatenFilm.FILM_URL_HISTORY,
+                DatenFilm.FILM_BESCHREIBUNG
+        };
+
+        tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle,
+                DatenFilm.COLUMN_NAMES,
+                DatenFilm.spaltenAnzeigen,
+                hiddenColumns,
+                //buttons
                 new int[]{DatenFilm.FILM_ABSPIELEN, DatenFilm.FILM_AUFZEICHNEN},
                 true, MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK));
 
