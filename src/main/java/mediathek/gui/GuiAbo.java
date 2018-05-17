@@ -29,6 +29,7 @@ import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererAbo;
+import mediathek.tool.table.MVAbosTable;
 import mediathek.tool.listener.BeobTableHeader;
 
 import javax.swing.*;
@@ -45,7 +46,7 @@ public class GuiAbo extends PanelVorlage {
     public GuiAbo(Daten d, JFrame parentComponent) {
         super(d, parentComponent);
         initComponents();
-        tabelle = new MVTable(MVTable.TableType.ABOS);
+        tabelle = new MVAbosTable();
         jScrollPane1.setViewportView(tabelle);
         initListeners();
         tabelleLaden();

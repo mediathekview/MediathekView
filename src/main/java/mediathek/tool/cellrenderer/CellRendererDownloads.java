@@ -26,7 +26,7 @@ import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.MVSenderIconCache;
-import mediathek.tool.MVTable;
+import mediathek.tool.table.MVTable;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -141,7 +141,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
             switch (columnModelIndex) {
                 case DatenDownload.DOWNLOAD_PROGRESS:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (((MVTable) table).iconAnzeigen && !((MVTable) table).iconKlein) {
+                    if (((MVTable) table).getShowIcons() && !((MVTable) table).iconKlein) {
                         progressBar.setBorder(largeBorder);
                     } else {
                         progressBar.setBorder(emptyBorder);
@@ -266,7 +266,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                     break;
 
                 case DatenDownload.DOWNLOAD_SENDER:
-                    if (((MVTable) table).iconAnzeigen) {
+                    if (((MVTable) table).getShowIcons()) {
                         handleSenderColumn((String) value, ((MVTable) table).iconKlein);
                     }
                     break;

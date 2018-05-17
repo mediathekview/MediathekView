@@ -25,7 +25,7 @@ import mediathek.config.Daten;
 import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
 import mediathek.tool.MVSenderIconCache;
-import mediathek.tool.MVTable;
+import mediathek.tool.table.MVTable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -93,7 +93,7 @@ public class CellRendererAbo extends CellRendererBase {
                     break;
 
                 case DatenAbo.ABO_SENDER:
-                    if (((MVTable) table).iconAnzeigen) {
+                    if (((MVTable) table).getShowIcons()) {
                         handleSenderColumn((String) value, ((MVTable) table).iconKlein);
                     }
                     break;

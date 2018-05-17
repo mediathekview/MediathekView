@@ -29,6 +29,8 @@ import mediathek.config.MVConfig;
 import mediathek.daten.DatenMediaDB;
 import mediathek.file.GetFile;
 import mediathek.tool.*;
+import mediathek.tool.table.MVMediaDbTable;
+import mediathek.tool.table.MVTable;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -80,7 +82,7 @@ public class DialogMediaDB extends JDialog {
             }
         });
 
-        tabelleFilme = new MVTable(MVTable.TableType.MEDIA_DB);
+        tabelleFilme = new MVMediaDbTable();
         jScrollPane3.setViewportView(tabelleFilme);
 
         TModelMediaDB modelFilm = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
@@ -89,7 +91,7 @@ public class DialogMediaDB extends JDialog {
         tabelleFilme.setModel(modelFilm);
         tabelleFilme.addMouseListener(new BeobMausTabelle());
         tabelleFilme.getSelectionModel().addListSelectionListener(new BeobTableSelect());
-        tabelleFilme.setAutoResizeMode(MVTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+        tabelleFilme.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         tabelleFilme.initTabelle();
 
         progress.setVisible(false);
