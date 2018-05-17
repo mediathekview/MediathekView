@@ -70,12 +70,8 @@ public class MVFilmTable extends MVTable {
                 case DatenFilm.FILM_BESCHREIBUNG:
                 case DatenFilm.FILM_WEBSEITE:
                 case DatenFilm.FILM_NEU:
-                case DatenFilm.FILM_URL_RTMP:
-                case DatenFilm.FILM_URL_AUTH:
                 case DatenFilm.FILM_URL_HD:
-                case DatenFilm.FILM_URL_RTMP_HD:
                 case DatenFilm.FILM_URL_KLEIN:
-                case DatenFilm.FILM_URL_RTMP_KLEIN:
                 case DatenFilm.FILM_DATUM_LONG:
                 case DatenFilm.FILM_URL_HISTORY:
                 case DatenFilm.FILM_URL_SUBTITLE:

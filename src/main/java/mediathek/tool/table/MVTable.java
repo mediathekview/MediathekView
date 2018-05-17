@@ -34,9 +34,9 @@ import java.util.List;
 
 @SuppressWarnings("serial")
 public abstract class MVTable extends JTable {
-    public static final String FELDTRENNER = "|";
-    public static final String SORT_ASCENDING = "ASCENDING";
-    public static final String SORT_DESCENDING = "DESCENDING";
+    private static final String FELDTRENNER = "|";
+    private static final String SORT_ASCENDING = "ASCENDING";
+    private static final String SORT_DESCENDING = "DESCENDING";
     protected final int[] breite;
     protected final int[] reihe;
     protected boolean iconAnzeigen = false;
@@ -89,7 +89,7 @@ public abstract class MVTable extends JTable {
         });
     }
 
-    public static SortKey sortKeyLesen(String s, String upDown) {
+    private static SortKey sortKeyLesen(String s, String upDown) {
         SortKey sk;
 
         try {
@@ -216,13 +216,13 @@ public abstract class MVTable extends JTable {
         return spaltenAnzeigen[i];
     }
 
-    protected void setSpaltenEinAus(int[] nr, boolean[] spaltenAnzeigen) {
+    private void setSpaltenEinAus(int[] nr, boolean[] spaltenAnzeigen) {
         for (int i = 0; i < spaltenAnzeigen.length; ++i) {
             spaltenAnzeigen[i] = nr[i] > 0;
         }
     }
 
-    protected boolean[] getSpaltenEinAus(boolean[] spaltenAnzeigen, int MAX_ELEM) {
+    boolean[] getSpaltenEinAus(boolean[] spaltenAnzeigen, int MAX_ELEM) {
         for (int i = 0; i < MAX_ELEM; ++i) {
             spaltenAnzeigen[i] = true;
         }
@@ -263,6 +263,7 @@ public abstract class MVTable extends JTable {
         }
     }
 
+/*
     protected void setSelRow(int i) {
         // Sel auf zeile i in der TABELLE! (nicht Modell) setzten oder erste-letzt Zeile
         final int rowCount = getRowCount();
@@ -278,6 +279,7 @@ public abstract class MVTable extends JTable {
             scrollToSelection(i);
         }
     }
+*/
 
     public void scrollToSelection() {
         final int rowCount = getRowCount();

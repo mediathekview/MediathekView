@@ -28,10 +28,10 @@ import mediathek.daten.DatenDownload;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
 import mediathek.tool.MVFont;
+import mediathek.tool.listener.BeobMausUrl;
 import mediathek.tool.table.MVDownloadsTable;
 import mediathek.tool.table.MVFilmTable;
 import mediathek.tool.table.MVTable;
-import mediathek.tool.listener.BeobMausUrl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

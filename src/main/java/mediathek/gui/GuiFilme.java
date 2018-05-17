@@ -47,8 +47,8 @@ import mediathek.gui.messages.StartEvent;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererFilme;
-import mediathek.tool.table.MVFilmTable;
 import mediathek.tool.listener.BeobTableHeader;
+import mediathek.tool.table.MVFilmTable;
 import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;

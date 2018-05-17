@@ -21,7 +21,6 @@ package mediathek.tool.listener;
 
 import mediathek.config.MVConfig;
 import mediathek.tool.table.MVTable;
-import mediathek.tool.MVTable;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;

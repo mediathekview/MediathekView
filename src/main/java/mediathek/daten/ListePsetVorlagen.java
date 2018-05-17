@@ -35,6 +35,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import java.io.*;
+import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
@@ -171,7 +172,7 @@ public class ListePsetVorlagen extends LinkedList<String[]> {
                 } else //unsuccessful...
                     return false;
             }
-        } catch (UnknownHostException ignored) {
+        } catch (UnknownHostException | ConnectException ignored) {
             return false;
         } catch (Exception ex) {
             Log.errorLog(398001963, ex);

@@ -43,8 +43,8 @@ import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.messages.StartEvent;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
-import mediathek.tool.table.MVDownloadsTable;
 import mediathek.tool.listener.BeobTableHeader;
+import mediathek.tool.table.MVDownloadsTable;
 import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -1139,7 +1139,7 @@ public class GuiDownloads extends PanelVorlage {
 
         txtBandwidth.setEditable(false);
 
-        cbView.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbView.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Item 1", "Item 2", "Item 3", "Item 4"}));
 
         btnClear.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-clear.png"))); // NOI18N
         btnClear.setToolTipText("Alles löschen");
