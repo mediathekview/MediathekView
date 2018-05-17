@@ -37,21 +37,21 @@ public abstract class MVTable extends JTable {
     private static final String FELDTRENNER = "|";
     private static final String SORT_ASCENDING = "ASCENDING";
     private static final String SORT_DESCENDING = "DESCENDING";
-    protected final int[] breite;
-    protected final int[] reihe;
-    protected boolean iconAnzeigen = false;
+    final int[] breite;
+    final int[] reihe;
+    private boolean iconAnzeigen = false;
     public boolean iconKlein = false;
     public boolean lineBreak = true;
-    protected int maxSpalten;
-    protected List<? extends RowSorter.SortKey> listeSortKeys = null;
-    protected int indexSpalte = 0;
-    protected int[] selRows;
-    protected int[] selIndexes = null;
-    protected int selRow = -1;
+    int maxSpalten;
+    private List<? extends RowSorter.SortKey> listeSortKeys = null;
+    int indexSpalte = 0;
+    int[] selRows;
+    int[] selIndexes = null;
+    int selRow = -1;
     protected boolean[] spaltenAnzeigen;
-    protected MVConfig.Configs nrDatenSystem = null;
-    protected MVConfig.Configs iconAnzeigenStr = null;
-    protected MVConfig.Configs iconKleinStr = null;
+    MVConfig.Configs nrDatenSystem = null;
+    MVConfig.Configs iconAnzeigenStr = null;
+    MVConfig.Configs iconKleinStr = null;
 
     public boolean getShowIcons() {
         return iconAnzeigen;
@@ -262,24 +262,6 @@ public abstract class MVTable extends JTable {
             jScrollPane.getVerticalScrollBar().setValue(cellLocation.y);
         }
     }
-
-/*
-    protected void setSelRow(int i) {
-        // Sel auf zeile i in der TABELLE! (nicht Modell) setzten oder erste-letzt Zeile
-        final int rowCount = getRowCount();
-
-        if (rowCount > 0) {
-            if (i < 0) {
-                i = 0;
-            }
-            if (i >= rowCount) {
-                i = rowCount - 1;
-            }
-            setRowSelectionInterval(i, i);
-            scrollToSelection(i);
-        }
-    }
-*/
 
     public void scrollToSelection() {
         final int rowCount = getRowCount();
