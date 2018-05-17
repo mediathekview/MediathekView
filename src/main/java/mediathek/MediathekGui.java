@@ -76,7 +76,6 @@ import static mediathek.tool.MVFunctionSys.startMeldungen;
 @SuppressWarnings("serial")
 public class MediathekGui extends JFrame {
 
-    private static final String TEXT_LINE = "==========================================";
     private static final String ICON_NAME = "MediathekView.png";
     private static final String ICON_PATH = "/mediathek/res/";
     private static final int ICON_WIDTH = 58;
@@ -104,7 +103,6 @@ public class MediathekGui extends JFrame {
     private static final String CHECKBOX_TEXT_DOWNLOADS_IN_EXTRAFENSTER = "Downloads in Extrafenster";
     private static final String CHECKBOX_TEXT_ABOS_IN_EXTRAFENSTER = "Abos in Extrafenster";
     private static final String CHECKBOX_TEXT_MELDUNGEN_ANZEIGEN = "Meldungen anzeigen";
-    private static final String CHECKBOX_TEXT_IN_EXTRAFENSTER = "in Extrafenster";
 
 
     private final Daten daten;
@@ -112,11 +110,9 @@ public class MediathekGui extends JFrame {
     private MVStatusBar statusBar;
     private MVFrame frameDownload;
     private MVFrame frameAbo;
-    private MVFrame frameMeldungen;
     private final JCheckBoxMenuItem jCheckBoxDownloadExtrafenster = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxAboExtrafenster = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxMeldungenAnzeigen = new JCheckBoxMenuItem();
-    private final JCheckBoxMenuItem jCheckBoxMeldungenExtrafenster = new JCheckBoxMenuItem();
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
     private final MVSenderIconCache senderIconCache;
@@ -342,7 +338,7 @@ public class MediathekGui extends JFrame {
     /**
      * Create the film information tool window.
      */
-    protected void createFilmInformationHUD() {
+    private void createFilmInformationHUD() {
         Daten.filmInfo = new InfoDialog(this, senderIconCache);
     }
 
@@ -561,9 +557,7 @@ public class MediathekGui extends JFrame {
                 break;
             case TAB_MELDUNGEN:
                 jCheckBoxMeldungenAnzeigen.setSelected(true);
-                jCheckBoxMeldungenExtrafenster.setSelected(false);
                 MVConfig.add(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN, Boolean.toString(true));
-                MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_MELDUNGEN, Boolean.toString(false));
                 break;
         }
         initFrames();
@@ -578,30 +572,39 @@ public class MediathekGui extends JFrame {
         miSearchForProgramUpdate.setEnabled(enable);
     }
 
-    private void initFrames() {
-        // Downloads
-        int nr = 1;
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_DOWNLOAD))) {
-            frameDownload = setFrame(frameDownload, MVConfig.Configs.SYSTEM_GROESSE_DOWNLOAD, Daten.guiDownloads, TABS.TAB_DOWNLOADS);
+    private void initMeldungenFrame() {
+        // Meldungen
+        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN))) {
+            hide(null, Daten.guiMeldungen);
         } else {
-            setTab(frameDownload, Daten.guiDownloads, TABNAME_DOWNLOADS, nr++);
+            setTab(null, Daten.guiMeldungen, TABNAME_MELDUNGEN, 3);
         }
 
+    }
+
+    private void initAboFrame() {
         // Abos
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_ABO))) {
             frameAbo = setFrame(frameAbo, MVConfig.Configs.SYSTEM_GROESSE_ABO, Daten.guiAbo, TABS.TAB_ABOS);
         } else {
-            setTab(frameAbo, Daten.guiAbo, TABNAME_ABOS, nr++);
+            setTab(frameAbo, Daten.guiAbo, TABNAME_ABOS, 2);
         }
+    }
 
-        // Meldungen
-        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN))) {
-            hide(frameMeldungen, Daten.guiMeldungen);
-        } else if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_MELDUNGEN))) {
-            frameMeldungen = setFrame(frameMeldungen, MVConfig.Configs.SYSTEM_GROESSE_MELDUNGEN, Daten.guiMeldungen, TABS.TAB_MELDUNGEN);
+    private void initDownloadFrame() {
+        // Downloads
+        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_DOWNLOAD))) {
+            frameDownload = setFrame(frameDownload, MVConfig.Configs.SYSTEM_GROESSE_DOWNLOAD, Daten.guiDownloads, TABS.TAB_DOWNLOADS);
         } else {
-            setTab(frameMeldungen, Daten.guiMeldungen, TABNAME_MELDUNGEN, nr);
+            setTab(frameDownload, Daten.guiDownloads, TABNAME_DOWNLOADS, 1);
         }
+    }
+
+    private void initFrames() {
+        initDownloadFrame();
+        initAboFrame();
+        initMeldungenFrame();
+
         jTabbedPane.updateUI();
         designTabs();
         jTabbedPane.setSelectedIndex(0);
@@ -730,7 +733,7 @@ public class MediathekGui extends JFrame {
     /**
      * Progress indicator thread for OS X and windows.
      */
-    protected IndicatorThread progressIndicatorThread = null;
+    private IndicatorThread progressIndicatorThread = null;
 
     /**
      * Create the platform-specific instance of the progress indicator thread.
@@ -775,7 +778,7 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    protected HashMap<JMenu, MenuLST> menuListeners = new HashMap<>();
+    private HashMap<JMenu, MenuLST> menuListeners = new HashMap<>();
 
     /**
      * Install the listeners which will cause automatic tab switching based on associated Menu item.
@@ -884,26 +887,10 @@ public class MediathekGui extends JFrame {
         jCheckBoxMeldungenAnzeigen.setText(CHECKBOX_TEXT_MELDUNGEN_ANZEIGEN);
         jCheckBoxMeldungenAnzeigen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN)));
         jCheckBoxMeldungenAnzeigen.addActionListener(e -> {
-            if (!jCheckBoxMeldungenAnzeigen.isSelected()) {
-                jCheckBoxMeldungenExtrafenster.setSelected(false);
-            }
             MVConfig.add(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN, Boolean.toString(jCheckBoxMeldungenAnzeigen.isSelected()));
-            MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_MELDUNGEN, Boolean.toString(jCheckBoxMeldungenExtrafenster.isSelected()));
-            initFrames();
-        });
-        jCheckBoxMeldungenExtrafenster.setText(CHECKBOX_TEXT_IN_EXTRAFENSTER);
-        jCheckBoxMeldungenExtrafenster.setBorder(BorderFactory.createEmptyBorder(1, 10, 5, 1));
-        jCheckBoxMeldungenExtrafenster.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_MELDUNGEN)));
-        jCheckBoxMeldungenExtrafenster.addActionListener(e -> {
-            if (jCheckBoxMeldungenExtrafenster.isSelected()) {
-                jCheckBoxMeldungenAnzeigen.setSelected(true);
-            }
-            MVConfig.add(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN, Boolean.toString(jCheckBoxMeldungenAnzeigen.isSelected()));
-            MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_MELDUNGEN, Boolean.toString(jCheckBoxMeldungenExtrafenster.isSelected()));
             initFrames();
         });
         jMenuAnsicht.add(jCheckBoxMeldungenAnzeigen);
-        jMenuAnsicht.add(jCheckBoxMeldungenExtrafenster);
 
         cbBandwidthDisplay.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE)));
         cbBandwidthDisplay.addActionListener(e -> {
@@ -1171,7 +1158,6 @@ public class MediathekGui extends JFrame {
         // Frames
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_DOWNLOAD, frameDownload);
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_ABO, frameAbo);
-        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_MELDUNGEN, frameMeldungen);
 
         DatenFilm.Database.closeDatabase();
 
@@ -1212,17 +1198,17 @@ public class MediathekGui extends JFrame {
                 break;
 
             default:
-                Log.errorLog(465321789, "Shutdown unsupported operating system ...");
+                logger.error("Shutdown unsupported operating system ...");
                 break;
         }
 
         //only run if we have a proper shutdown command...
         if (!strShutdownCommand.isEmpty()) {
             try {
-                SysMsg.sysMsg("Shutdown: " + strShutdownCommand);
+                logger.info("Shutdown: {}", strShutdownCommand);
                 Runtime.getRuntime().exec(strShutdownCommand);
             } catch (IOException ex) {
-                Log.errorLog(915263047, ex);
+                logger.error(ex);
             }
         }
     }
@@ -1235,7 +1221,7 @@ public class MediathekGui extends JFrame {
 
         private final TABS tabs;
 
-        public MenuLST(TABS tabs) {
+        MenuLST(TABS tabs) {
             this.tabs = tabs;
         }
 
