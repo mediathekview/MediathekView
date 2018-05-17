@@ -1325,9 +1325,7 @@ public class GuiDownloads extends PanelVorlage {
                                 DatenFilm filmDownload = datenDownload1.film.getCopy();
                                 // und jetzt die tatsächlichen URLs des Downloads eintragen
                                 filmDownload.arr[DatenFilm.FILM_URL] = datenDownload1.arr[DatenDownload.DOWNLOAD_URL];
-                                filmDownload.arr[DatenFilm.FILM_URL_RTMP] = datenDownload1.arr[DatenDownload.DOWNLOAD_URL_RTMP];
                                 filmDownload.arr[DatenFilm.FILM_URL_KLEIN] = "";
-                                filmDownload.arr[DatenFilm.FILM_URL_RTMP_KLEIN] = "";
                                 // und starten
                                 daten.starterClass.urlMitProgrammStarten(gruppe, filmDownload, "" /*Auflösung*/);
                             }

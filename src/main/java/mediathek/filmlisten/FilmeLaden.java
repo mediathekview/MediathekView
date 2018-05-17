@@ -118,7 +118,7 @@ public class FilmeLaden {
     private boolean hasNewRemoteFilmlist() {
         boolean result = false;
 
-        final String id = Daten.getInstance().getListeFilme().metaDaten[ListeFilme.FILMLISTE_ID_NR];
+        final String id = Daten.getInstance().getListeFilme().getId();
 
         boolean showDialogs = true;
         //we might be CLI...this is used in -auto as well
@@ -296,7 +296,7 @@ public class FilmeLaden {
             logger.info("  Anzahl Filme: {}", diffListe.size());
 
             daten.getListeFilme().updateListe(diffListe, true/* Vergleich über Index, sonst nur URL */, true /*ersetzen*/);
-            daten.getListeFilme().metaDaten = diffListe.metaDaten;
+            daten.getListeFilme().setMetaDaten(diffListe.metaDaten);
             daten.getListeFilme().sort(); // jetzt sollte alles passen
             diffListe.clear();
         } else {

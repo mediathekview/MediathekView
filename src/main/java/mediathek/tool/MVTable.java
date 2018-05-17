@@ -698,12 +698,8 @@ public final class MVTable extends JTable {
         if (i == DatenFilm.FILM_BESCHREIBUNG
                 || i == DatenFilm.FILM_WEBSEITE
                 || i == DatenFilm.FILM_NEU
-                || i == DatenFilm.FILM_URL_RTMP
-                || i == DatenFilm.FILM_URL_AUTH
                 || i == DatenFilm.FILM_URL_HD
-                || i == DatenFilm.FILM_URL_RTMP_HD
                 || i == DatenFilm.FILM_URL_KLEIN
-                || i == DatenFilm.FILM_URL_RTMP_KLEIN
                 || i == DatenFilm.FILM_DATUM_LONG
                 || i == DatenFilm.FILM_URL_HISTORY
                 || i == DatenFilm.FILM_URL_SUBTITLE

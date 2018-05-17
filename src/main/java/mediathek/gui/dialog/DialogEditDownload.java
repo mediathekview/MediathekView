@@ -147,9 +147,7 @@ public class DialogEditDownload extends JDialog {
             res = DatenFilm.AUFLOESUNG_NORMAL;
         }
         datenDownload.arr[DatenDownload.DOWNLOAD_URL] = datenDownload.film.getUrlFuerAufloesung(res);
-        datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP] = datenDownload.film.getUrlRtmpFuerAufloesung(res);
         textfeldListe[DatenDownload.DOWNLOAD_URL].setText(datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
-        textfeldListe[DatenDownload.DOWNLOAD_URL_RTMP].setText(datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP]);
 
         final String size;
         if (jRadioButtonResHd.isSelected()) {

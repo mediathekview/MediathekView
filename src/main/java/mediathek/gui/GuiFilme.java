@@ -538,10 +538,6 @@ public class GuiFilme extends PanelVorlage {
                 DatenFilm.FILM_AUFZEICHNEN,
                 DatenFilm.FILM_DATUM_LONG,
                 DatenFilm.FILM_REF,
-                DatenFilm.FILM_URL_RTMP,
-                DatenFilm.FILM_URL_RTMP_KLEIN,
-                DatenFilm.FILM_URL_RTMP_HD,
-                DatenFilm.FILM_URL_AUTH,
                 DatenFilm.FILM_URL_HISTORY,
                 DatenFilm.FILM_BESCHREIBUNG
         };

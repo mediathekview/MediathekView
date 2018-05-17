@@ -148,7 +148,6 @@ public final class DatenDownload extends MVData<DatenDownload> {
         arr[DOWNLOAD_URL_SUBTITLE] = film.getUrlSubtitle();
         arr[DOWNLOAD_DATUM] = film.arr[DatenFilm.FILM_DATUM];
         arr[DOWNLOAD_ZEIT] = film.arr[DatenFilm.FILM_ZEIT];
-        arr[DOWNLOAD_URL_RTMP] = film.arr[DatenFilm.FILM_URL_RTMP];
         arr[DOWNLOAD_DAUER] = film.arr[DatenFilm.FILM_DAUER];
         arr[DOWNLOAD_HD] = film.isHD() ? "1" : "0";
         arr[DOWNLOAD_UT] = film.hasSubtitle() ? "1" : "0";
@@ -156,10 +155,8 @@ public final class DatenDownload extends MVData<DatenDownload> {
         arr[DOWNLOAD_HISTORY_URL] = film.getUrlHistory();
         if (aufloesung.isEmpty()) {
             arr[DOWNLOAD_URL] = film.getUrlFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG]);
-            arr[DOWNLOAD_URL_RTMP] = film.getUrlRtmpFuerAufloesung(pSet.arr[DatenPset.PROGRAMMSET_AUFLOESUNG]);
         } else {
             arr[DOWNLOAD_URL] = film.getUrlFuerAufloesung(aufloesung);
-            arr[DOWNLOAD_URL_RTMP] = film.getUrlRtmpFuerAufloesung(aufloesung);
         }
         arr[DatenDownload.DOWNLOAD_INFODATEI] = pSet.arr[DatenPset.PROGRAMMSET_INFODATEI];
         arr[DatenDownload.DOWNLOAD_SUBTITLE] = pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE];
@@ -660,12 +657,6 @@ public final class DatenDownload extends MVData<DatenDownload> {
         } else if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD))) {
             res = "HD";
         } else if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN))) {
-            res = "L";
-        } else if (arr[DOWNLOAD_URL].equals(film.getUrlRtmpFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL))) {
-            res = "H";
-        } else if (arr[DOWNLOAD_URL].equals(film.getUrlRtmpFuerAufloesung(DatenFilm.AUFLOESUNG_HD))) {
-            res = "HD";
-        } else if (arr[DOWNLOAD_URL].equals(film.getUrlRtmpFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN))) {
             res = "L";
         }
         replStr = StringUtils.replace(replStr, "%q", res);
