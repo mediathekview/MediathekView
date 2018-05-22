@@ -235,10 +235,6 @@ public class MediathekGui extends JFrame {
                 if (panel != null)
                     panel.increaseProgress(1.0);
             });
-            try {
-                TimeUnit.MILLISECONDS.sleep(250);
-            } catch (InterruptedException ignored) {
-            }
 
             SwingUtilities.invokeLater(() -> {
                 //deactivate glass pane
