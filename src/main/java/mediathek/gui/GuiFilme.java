@@ -291,7 +291,7 @@ public class GuiFilme extends PanelVorlage {
                     object[m] = film.datumFilm;
                     break;
                 case DatenFilm.FILM_GROESSE:
-                    object[m] = film.dateigroesseL;
+                    object[m] = film.getFilmSize();
                     break;
                 case DatenFilm.FILM_REF:
                     object[m] = film;
