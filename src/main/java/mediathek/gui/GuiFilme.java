@@ -295,9 +295,6 @@ public class GuiFilme extends PanelVorlage {
                 case DatenFilm.FILM_REF:
                     object[m] = film;
                     break;
-                case DatenFilm.FILM_NEU:
-                    object[m] = film.isNew() ? "1" : "0";
-                    break;
                 case DatenFilm.FILM_HD:
                     object[m] = film.isHD() ? "1" : "0";
                     break;
@@ -541,6 +538,10 @@ public class GuiFilme extends PanelVorlage {
                 DatenFilm.FILM_DATUM_LONG,
                 DatenFilm.FILM_REF,
                 DatenFilm.FILM_URL_HISTORY,
+                DatenFilm.FILM_URL_SUBTITLE,
+                DatenFilm.FILM_URL_KLEIN,
+                DatenFilm.FILM_URL_HD,
+                DatenFilm.FILM_WEBSEITE
         };
 
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle,
