@@ -67,6 +67,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -1121,6 +1122,8 @@ public class MediathekGui extends JFrame {
         //do not search for updates anymore
         updateCheckTimer.stop();
 
+        waitForCommonPoolToComplete();
+        
         // Tabelleneinstellungen merken
         Daten.guiFilme.tabelleSpeichern();
         Daten.guiDownloads.tabelleSpeichern();
@@ -1168,7 +1171,20 @@ public class MediathekGui extends JFrame {
         dispose();
 
         System.exit(0);
-    return false;
+
+        return false;
+    }
+
+    private void waitForCommonPoolToComplete() {
+        while (ForkJoinPool.commonPool().hasQueuedSubmissions()) {
+            try {
+                logger.debug("POOL SUBMISSIONS: {}", ForkJoinPool.commonPool().getQueuedSubmissionCount());
+                TimeUnit.MILLISECONDS.sleep(250);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     /**

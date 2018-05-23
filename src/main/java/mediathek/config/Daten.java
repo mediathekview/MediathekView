@@ -62,6 +62,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class Daten
 {
@@ -326,9 +328,21 @@ public class Daten
         }
     }
 
+    private CompletableFuture<Void> writeFuture = null;
+
     public void filmlisteSpeichern()
     {
-        new FilmListWriter().writeFilmList(getDateiFilmliste(), listeFilme);
+        try {
+            if (writeFuture != null) {
+                if (!writeFuture.isDone())
+                    writeFuture.get();
+                writeFuture = null;
+            }
+
+            writeFuture = CompletableFuture.runAsync(() -> new FilmListWriter().writeFilmList(getDateiFilmliste(), listeFilme));
+        } catch (InterruptedException | ExecutionException ex) {
+            logger.error(ex);
+        }
     }
 
     /**

@@ -71,9 +71,9 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
         jCheckBoxChange.setIcon(Icons.ICON_CHECKBOX_EDIT);
         jCheckBoxChange.addActionListener(e -> {
             if (currentFilm != null) {
-                final String akt = currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG];
+                final String oldDescription = currentFilm.getDescription();
                 new DialogFilmBeschreibung(daten.getMediathekGui(), daten, currentFilm).setVisible(true);
-                if (!currentFilm.arr[DatenFilm.FILM_BESCHREIBUNG].equals(akt)) {
+                if (!currentFilm.getDescription().equals(oldDescription)) {
                     // dann hat sich die Beschreibung geändert
                     setText();
                     daten.filmlisteSpeichern();
