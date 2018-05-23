@@ -98,7 +98,7 @@ public class Filter {
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_TITEL])) {
                             if (mitLaenge) {
                                 // die Länge soll mit gefrüft werden
-                                if (laengePruefen(laengeMinutenSuchen, film.dauerL, min)) {
+                                if (laengePruefen(laengeMinutenSuchen, film.getFilmLength(), min)) {
                                     result = true;
                                 }
                             } else {

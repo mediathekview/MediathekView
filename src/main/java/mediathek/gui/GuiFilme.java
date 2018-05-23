@@ -196,12 +196,13 @@ public class GuiFilme extends PanelVorlage {
                 }
 
                 for (DatenFilm film : listeFilme) {
+                    final long filmLength = film.getFilmLength();
 
-                    if (film.dauerL < TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES))
+                    if (filmLength < TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES))
                         continue;
 
                     if (maxLength < FilmActionPanel.UNLIMITED_VALUE) {
-                        if (film.dauerL > TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES))
+                        if (filmLength > TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES))
                             continue;
 
                     }

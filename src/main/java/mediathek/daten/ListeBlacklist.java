@@ -364,7 +364,8 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      * @return true if film should be displayed
      */
     private boolean checkFilmLength(DatenFilm film) {
-        return !(filmlaengeSoll != 0 && film.dauerL != 0 && filmlaengeSoll > film.dauerL);
+        final long filmLength = film.getFilmLength();
+        return !(filmlaengeSoll != 0 && filmLength != 0 && filmlaengeSoll > filmLength);
 
     }
 
