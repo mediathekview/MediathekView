@@ -535,12 +535,12 @@ public class GuiFilme extends PanelVorlage {
         setupCellRenderer(mediathekGui);
 
         tabelle.lineBreak = MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_FILME_LINEBREAK);
-        final int[] hiddenColumns = new int[]{DatenFilm.FILM_ABSPIELEN,
+        final int[] hiddenColumns = new int[]{
+                DatenFilm.FILM_ABSPIELEN,
                 DatenFilm.FILM_AUFZEICHNEN,
                 DatenFilm.FILM_DATUM_LONG,
                 DatenFilm.FILM_REF,
                 DatenFilm.FILM_URL_HISTORY,
-                DatenFilm.FILM_BESCHREIBUNG
         };
 
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle,

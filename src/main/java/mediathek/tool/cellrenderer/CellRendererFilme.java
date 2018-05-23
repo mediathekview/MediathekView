@@ -21,7 +21,6 @@ package mediathek.tool.cellrenderer;
 
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
-import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
@@ -30,6 +29,8 @@ import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.MVSenderIconCache;
 import mediathek.tool.table.MVTable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -76,7 +77,6 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             if (((MVTable) table).lineBreak) {
                 JTextArea textArea;
                 switch (columnModelIndex) {
-                    case DatenFilm.FILM_BESCHREIBUNG:
                     case DatenFilm.FILM_THEMA:
                     case DatenFilm.FILM_TITEL:
                     case DatenFilm.FILM_URL:
@@ -135,17 +135,15 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                 case DatenFilm.FILM_WEBSEITE:
                     setText(datenFilm.getWebsiteLink());
                     break;
-
-                case DatenFilm.FILM_BESCHREIBUNG:
-                    setText(datenFilm.getDescription());
-                    break;
             }
             setColor(this, datenFilm, datenDownload, isSelected);
         } catch (Exception ex) {
-            Log.errorLog(630098552, ex);
+            logger.error("Fehler", ex);
         }
         return this;
     }
+
+    private static final Logger logger = LogManager.getLogger(CellRendererFilme.class);
 
     private void setColor(Component c, DatenFilm datenFilm, DatenDownload datenDownload, boolean isSelected) {
         final boolean live = datenFilm.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE);

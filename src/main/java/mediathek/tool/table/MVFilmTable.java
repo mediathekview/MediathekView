@@ -31,9 +31,6 @@ public class MVFilmTable extends MVTable {
             case DatenFilm.FILM_TITEL:
                 breite[i] = 300;
                 break;
-            case DatenFilm.FILM_BESCHREIBUNG:
-                breite[i] = 400;
-                break;
             case DatenFilm.FILM_DATUM:
             case DatenFilm.FILM_ZEIT:
             case DatenFilm.FILM_SENDER:
@@ -67,7 +64,6 @@ public class MVFilmTable extends MVTable {
     protected void spaltenAusschalten() {
         for (int i = 0; i < maxSpalten; ++i) {
             switch (i) {
-                case DatenFilm.FILM_BESCHREIBUNG:
                 case DatenFilm.FILM_WEBSEITE:
                 case DatenFilm.FILM_NEU:
                 case DatenFilm.FILM_URL_HD:
@@ -86,12 +82,6 @@ public class MVFilmTable extends MVTable {
     protected int getSizeArea() {
         int sizeArea = 0;
 
-        if (spaltenAnzeigen[DatenFilm.FILM_BESCHREIBUNG]) {
-            sizeArea = MVFont.fontSize * 5;
-        } else if (lineBreak) {
-            sizeArea = MVFont.fontSize * 4;
-        }
-        //TODO check if this logic is really correct, otherwise simplfy
         if (lineBreak) {
             sizeArea = MVFont.fontSize * 4;
         }
