@@ -8,6 +8,7 @@ import mSearch.tool.ApplicationConfiguration;
 import mediathek.config.Daten;
 import mediathek.gui.HyperlinkButton;
 import mediathek.gui.actions.UrlHyperlinkAction;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVSenderIconCache;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.configuration2.Configuration;
@@ -15,8 +16,6 @@ import org.apache.commons.configuration2.sync.LockMode;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
@@ -48,11 +47,7 @@ public class InfoDialog extends JDialog {
 
     private JMenuItem createCopyLinkToClipboardItem() {
         JMenuItem item = new JMenuItem("URL kopieren");
-        item.addActionListener(e -> {
-            StringSelection selection = new StringSelection(currentFilm.getWebsiteLink());
-            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            clipboard.setContents(selection, null);
-        });
+        item.addActionListener(e -> GuiFunktionen.copyToClipboard(currentFilm.getWebsiteLink()));
 
         return item;
     }
