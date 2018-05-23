@@ -15,6 +15,8 @@ import org.apache.commons.configuration2.sync.LockMode;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
@@ -44,6 +46,17 @@ public class InfoDialog extends JDialog {
     private HyperlinkButton btnLinkWebsite;
     private JTextArea lblDescription;
 
+    private JMenuItem createCopyLinkToClipboardItem() {
+        JMenuItem item = new JMenuItem("URL kopieren");
+        item.addActionListener(e -> {
+            StringSelection selection = new StringSelection(currentFilm.getWebsiteLink());
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(selection, null);
+        });
+
+        return item;
+    }
+
     public InfoDialog(Window parent, MVSenderIconCache cache) {
         super(parent);
         senderIconCache = cache;
@@ -64,6 +77,11 @@ public class InfoDialog extends JDialog {
                 }
             }
         });
+
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.add(createCopyLinkToClipboardItem());
+        btnLinkWebsite.setComponentPopupMenu(popupMenu);
+
         updateTextFields();
 
         restoreLocation();
