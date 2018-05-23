@@ -140,7 +140,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
         this.film = film;
         this.pSet = pSet;
         this.abo = abo;
-        arr[DOWNLOAD_FILM_NR] = film.arr[DatenFilm.FILM_NR];
+        arr[DOWNLOAD_FILM_NR] = Integer.toString(film.getFilmNr());
         arr[DOWNLOAD_SENDER] = film.arr[DatenFilm.FILM_SENDER];
         arr[DOWNLOAD_THEMA] = film.arr[DatenFilm.FILM_THEMA];
         arr[DOWNLOAD_TITEL] = film.getTitle();
