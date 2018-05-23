@@ -540,8 +540,7 @@ public class GuiFilme extends PanelVorlage {
                 DatenFilm.FILM_URL_HISTORY,
                 DatenFilm.FILM_URL_SUBTITLE,
                 DatenFilm.FILM_URL_KLEIN,
-                DatenFilm.FILM_URL_HD,
-                DatenFilm.FILM_WEBSEITE
+                DatenFilm.FILM_URL_HD
         };
 
         tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle,

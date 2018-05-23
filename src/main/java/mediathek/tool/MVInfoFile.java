@@ -86,7 +86,7 @@ public class MVInfoFile {
             br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_GROESSE] + ":  " + film.arr[DatenFilm.FILM_GROESSE]);
             br.write("\n\n");
 
-            br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_WEBSEITE] + '\n');
+            br.write("Website\n");
             br.write(film.getWebsiteLink());
             br.write("\n\n");
 
@@ -136,7 +136,7 @@ public class MVInfoFile {
                 br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_GROESSE] + ":  " + datenDownload.mVFilmSize);
                 br.write("\n\n");
 
-                br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_WEBSEITE] + '\n');
+                br.write("Website\\n");
                 br.write(datenDownload.film.getWebsiteLink());
                 br.write("\n\n");
             }

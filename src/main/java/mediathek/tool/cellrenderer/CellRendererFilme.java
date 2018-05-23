@@ -131,11 +131,8 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     setYesNoIcon(datenFilm.hasSubtitle());
                     setText("");
                     break;
-
-                case DatenFilm.FILM_WEBSEITE:
-                    setText(datenFilm.getWebsiteLink());
-                    break;
             }
+
             setColor(this, datenFilm, datenDownload, isSelected);
         } catch (Exception ex) {
             logger.error("Fehler", ex);

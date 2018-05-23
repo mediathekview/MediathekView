@@ -64,7 +64,6 @@ public class MVFilmTable extends MVTable {
     protected void spaltenAusschalten() {
         for (int i = 0; i < maxSpalten; ++i) {
             switch (i) {
-                case DatenFilm.FILM_WEBSEITE:
                 case DatenFilm.FILM_NEU:
                 case DatenFilm.FILM_URL_HD:
                 case DatenFilm.FILM_URL_KLEIN:
