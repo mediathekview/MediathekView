@@ -52,6 +52,7 @@ import java.net.HttpURLConnection;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.stream.Collectors;
@@ -295,9 +296,10 @@ public class FilmeLaden {
             logger.info("  Liste Diff erstellt am: {}", diffListe.genDate());
             logger.info("  Anzahl Filme: {}", diffListe.size());
 
-            daten.getListeFilme().updateListe(diffListe, true/* Vergleich über Index, sonst nur URL */, true /*ersetzen*/);
-            daten.getListeFilme().setMetaDaten(diffListe.metaDaten);
-            daten.getListeFilme().sort(); // jetzt sollte alles passen
+            final ListeFilme listeFilme = daten.getListeFilme();
+            listeFilme.updateListe(diffListe, true/* Vergleich über Index, sonst nur URL */, true /*ersetzen*/);
+            listeFilme.setMetaDaten(diffListe.metaDaten);
+            Collections.sort(listeFilme);
             diffListe.clear();
         } else {
             logger.info("Liste Kompl. gelesen am: {}", new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
