@@ -86,16 +86,16 @@ public class Filter {
         if (senderSuchen.isEmpty() || film.arr[DatenFilm.FILM_SENDER].compareTo(senderSuchen) == 0) {
             if (themaSuchen.isEmpty() || film.arr[DatenFilm.FILM_THEMA].equalsIgnoreCase(themaSuchen)) {
 
-                if (titelSuchen.length == 0 || pruefen(titelSuchen, film.arr[DatenFilm.FILM_TITEL])) {
+                if (titelSuchen.length == 0 || pruefen(titelSuchen, film.getTitle())) {
 
                     if (themaTitelSuchen.length == 0
                             || pruefen(themaTitelSuchen, film.arr[DatenFilm.FILM_THEMA])
-                            || pruefen(themaTitelSuchen, film.arr[DatenFilm.FILM_TITEL])) {
+                            || pruefen(themaTitelSuchen, film.getTitle())) {
 
                         if (irgendwoSuchen.length == 0
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_DATUM])
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_THEMA])
-                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_TITEL])) {
+                                || pruefen(irgendwoSuchen, film.getTitle())) {
                             if (mitLaenge) {
                                 // die Länge soll mit gefrüft werden
                                 if (laengePruefen(laengeMinutenSuchen, film.getFilmLength(), min)) {

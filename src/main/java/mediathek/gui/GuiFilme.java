@@ -238,20 +238,20 @@ public class GuiFilme extends PanelVorlage {
                     }
 
                     if (dontShowTrailers) {
-                        String titel = film.arr[DatenFilm.FILM_TITEL];
+                        String titel = film.getTitle();
                         if (titel.contains("Trailer") || titel.contains("Teaser") || titel.contains("Vorschau") ||
                                 titel.contains("trailer") || titel.contains("teaser") || titel.contains("vorschau"))
                             continue;
                     }
 
                     if (dontShowGebaerdensprache) {
-                        String titel = film.arr[DatenFilm.FILM_TITEL];
+                        String titel = film.getTitle();
                         if (titel.contains("Gebärden"))
                             continue;
                     }
 
                     if (dontShowAudioVersions) {
-                        String titel = film.arr[DatenFilm.FILM_TITEL];
+                        String titel = film.getTitle();
                         if (titel.contains("Hörfassung") || titel.contains("Audiodeskription"))
                             continue;
                     }
@@ -463,7 +463,7 @@ public class GuiFilme extends PanelVorlage {
             filmSelection.ifPresent(film -> {
                 MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.TRUE.toString());
                 daten.getDialogMediaDB().setVis();
-                daten.getDialogMediaDB().setFilter(film.arr[DatenFilm.FILM_TITEL]);
+                daten.getDialogMediaDB().setFilter(film.getTitle());
             });
         }
     }
@@ -1142,7 +1142,7 @@ public class GuiFilme extends PanelVorlage {
 
             private void updateHistory(DatenFilm film) {
                 if (eintragen) {
-                    daten.history.zeileSchreiben(film.arr[DatenFilm.FILM_THEMA], film.arr[DatenFilm.FILM_TITEL], film.getUrlHistory());
+                    daten.history.zeileSchreiben(film.arr[DatenFilm.FILM_THEMA], film.getTitle(), film.getUrlHistory());
                     daten.getListeFilmeHistory().add(film);
                 } else {
                     daten.history.urlAusLogfileLoeschen(film.getUrlHistory());
@@ -1226,7 +1226,7 @@ public class GuiFilme extends PanelVorlage {
                             {
                                 if (mitTitel) {
                                     daten.getListeAbo().addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
-                                            film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], film.arr[DatenFilm.FILM_TITEL]);
+                                            film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], film.getTitle());
                                 } else {
                                     daten.getListeAbo().addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
                                             film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], "");

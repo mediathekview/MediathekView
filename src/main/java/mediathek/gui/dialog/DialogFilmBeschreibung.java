@@ -47,7 +47,7 @@ public class DialogFilmBeschreibung extends JDialog {
         EscapeKeyHandler.installHandler(this, this::dispose);
 
         jTextArea1.setText(datenFilm.getDescription());
-        jTextFieldTitel.setText(datenFilm.arr[DatenFilm.FILM_TITEL]);
+        jTextFieldTitel.setText(datenFilm.getTitle());
 
         jButtonOk.addActionListener(e -> {
             datenFilm.setDescription(jTextArea1.getText());

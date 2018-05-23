@@ -42,7 +42,7 @@ public class MVInfoFile {
     private static final Logger logger = LogManager.getLogger(MVInfoFile.class);
 
     public void writeInfoFile(JFrame paFrame, DatenFilm film) {
-        String titel = FilenameUtils.replaceLeerDateiname(film.arr[DatenFilm.FILM_TITEL], false,
+        String titel = FilenameUtils.replaceLeerDateiname(film.getTitle(), false,
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
         String pfad = "";
@@ -75,7 +75,7 @@ public class MVInfoFile {
             br.write("\n");
             br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_THEMA] + ":       " + film.arr[DatenFilm.FILM_THEMA]);
             br.write("\n\n");
-            br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_TITEL] + ":       " + film.arr[DatenFilm.FILM_TITEL]);
+            br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_TITEL] + ":       " + film.getTitle());
             br.write("\n\n");
             br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_DATUM] + ":       " + film.arr[DatenFilm.FILM_DATUM]);
             br.write("\n");
@@ -125,7 +125,7 @@ public class MVInfoFile {
                 br.write("\n");
                 br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_THEMA] + ":       " + datenDownload.film.arr[DatenFilm.FILM_THEMA]);
                 br.write("\n\n");
-                br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_TITEL] + ":       " + datenDownload.film.arr[DatenFilm.FILM_TITEL]);
+                br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_TITEL] + ":       " + datenDownload.film.getTitle());
                 br.write("\n\n");
                 br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_DATUM] + ":       " + datenDownload.film.arr[DatenFilm.FILM_DATUM]);
                 br.write("\n");

@@ -132,7 +132,7 @@ public class DialogAddDownload extends JDialog {
         } else {
             jComboBoxPset.addActionListener(e -> setupResolutionButtons());
         }
-        jTextFieldSender.setText(' ' + datenFilm.arr[DatenFilm.FILM_SENDER] + ":   " + datenFilm.arr[DatenFilm.FILM_TITEL]);
+        jTextFieldSender.setText(' ' + datenFilm.arr[DatenFilm.FILM_SENDER] + ":   " + datenFilm.getTitle());
         jTextFieldName.getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
