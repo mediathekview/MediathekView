@@ -649,7 +649,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
         replStr = StringUtils.replace(replStr, "%5", getHMS("%5", film.arr[DatenFilm.FILM_ZEIT].isEmpty() ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT]));
         replStr = StringUtils.replace(replStr, "%6", getHMS("%6", film.arr[DatenFilm.FILM_ZEIT].isEmpty() ? getJetzt_HH_MM_SS() : film.arr[DatenFilm.FILM_ZEIT]));
 
-        replStr = StringUtils.replace(replStr, "%i", String.valueOf(film.nr));
+        replStr = StringUtils.replace(replStr, "%i", String.valueOf(film.getFilmNr()));
 
         String res = "";
         if (arr[DOWNLOAD_URL].equals(film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL))) {

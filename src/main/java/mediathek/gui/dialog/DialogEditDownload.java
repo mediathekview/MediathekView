@@ -404,7 +404,7 @@ public class DialogEditDownload extends JDialog {
                             break;
                         case DatenDownload.DOWNLOAD_FILM_NR:
                             if (datenDownload.film != null) {
-                                textfeldListe[i].setText(String.valueOf(datenDownload.film.nr));
+                                textfeldListe[i].setText(String.valueOf(datenDownload.film.getFilmNr()));
                             }
                             break;
                         case DatenDownload.DOWNLOAD_URL:

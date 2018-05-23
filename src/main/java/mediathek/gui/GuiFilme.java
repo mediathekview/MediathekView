@@ -285,7 +285,7 @@ public class GuiFilme extends PanelVorlage {
         for (int m = 0; m < DatenFilm.MAX_ELEM; ++m) {
             switch (m) {
                 case DatenFilm.FILM_NR:
-                    object[m] = film.nr;
+                    object[m] = film.getFilmNr();
                     break;
                 case DatenFilm.FILM_DATUM:
                     object[m] = film.datumFilm;

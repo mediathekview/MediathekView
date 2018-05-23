@@ -271,7 +271,7 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
                     object[i] = download.nr;
                 } else if (i == DatenDownload.DOWNLOAD_FILM_NR) {
                     if (download.film != null) {
-                        object[i] = download.film.nr;
+                        object[i] = download.film.getFilmNr();
                     } else {
                         object[i] = 0;
                     }
