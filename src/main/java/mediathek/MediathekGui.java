@@ -1080,6 +1080,9 @@ public class MediathekGui extends JFrame {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 new FilmListWriter().writeFilmList(selectedFile.getAbsolutePath(), daten.getListeFilme());
                 setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(this,
+                        "Filmliste erfolgreich exportiert.",
+                        "Filmliste exportieren", JOptionPane.INFORMATION_MESSAGE));
             }
         });
     }
