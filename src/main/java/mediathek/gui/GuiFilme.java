@@ -1226,10 +1226,10 @@ public class GuiFilme extends PanelVorlage {
                             {
                                 if (mitTitel) {
                                     daten.getListeAbo().addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
-                                            film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], film.getTitle());
+                                            film.getSender(), film.arr[DatenFilm.FILM_THEMA], film.getTitle());
                                 } else {
                                     daten.getListeAbo().addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
-                                            film.arr[DatenFilm.FILM_SENDER], film.arr[DatenFilm.FILM_THEMA], "");
+                                            film.getSender(), film.arr[DatenFilm.FILM_THEMA], "");
                                 }
                             }
                         });
@@ -1256,7 +1256,7 @@ public class GuiFilme extends PanelVorlage {
                     Optional<DatenFilm> res = getFilm(nr);
                     res.ifPresent(film -> {
                         final String th = film.arr[DatenFilm.FILM_THEMA];
-                        final String se = film.arr[DatenFilm.FILM_SENDER];
+                        final String se = film.getSender();
                         // Blackliste für alle Fälle einschalten, notify kommt beim add()
                         MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.TRUE.toString());
                         if (!sender) {

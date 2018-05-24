@@ -21,6 +21,8 @@ package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.stage.Modality;
 import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
@@ -67,6 +69,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -1122,8 +1127,11 @@ public class MediathekGui extends JFrame {
         //do not search for updates anymore
         updateCheckTimer.stop();
 
+        createBackgroundTaskAlert();
+
+        waitForFilmListWriterToComplete();
         waitForCommonPoolToComplete();
-        
+
         // Tabelleneinstellungen merken
         Daten.guiFilme.tabelleSpeichern();
         Daten.guiDownloads.tabelleSpeichern();
@@ -1139,7 +1147,8 @@ public class MediathekGui extends JFrame {
                 }
             }
         }
-        if (this.getExtendedState() == JFrame.MAXIMIZED_BOTH) {
+
+        if (getExtendedState() == JFrame.MAXIMIZED_BOTH) {
             MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_MAX, Boolean.TRUE.toString());
         } else {
             MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_MAX, Boolean.FALSE.toString());
@@ -1161,6 +1170,9 @@ public class MediathekGui extends JFrame {
         DatenFilm.Database.closeDatabase();
 
         daten.allesSpeichern();
+
+        closeBackgroundTaskAlert();
+
         Log.endMsg();
         Duration.printCounter();
 
@@ -1175,11 +1187,52 @@ public class MediathekGui extends JFrame {
         return false;
     }
 
+    /**
+     * An optional alert that may be displayed when there is a filmlist write running.
+     */
+    private Optional<Alert> waitAlert = Optional.empty();
+
+    private void closeBackgroundTaskAlert() {
+        waitAlert.ifPresent((alert) -> {
+            Platform.runLater(alert::hide);
+        });
+    }
+
+    private void createBackgroundTaskAlert() {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("MediathekView");
+            alert.setHeaderText("Abschluss der Hintergrund-Tasks");
+            alert.setContentText("MediathekView muss auf den Abschluss der laufenden Hintergrund-Tasks warten.\n" +
+                    "Dies kann einige Sekunden dauern");
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.getButtonTypes().clear();
+
+            waitAlert = Optional.of(alert);
+
+            alert.show();
+        });
+    }
+
+    private void waitForFilmListWriterToComplete() {
+        //TODO display wait dialog here as this may take several seconds
+        CompletableFuture<Void> writeFuture = daten.getWriteFuture();
+        try {
+            if (writeFuture != null) {
+                logger.debug("waiting for filmlist completion");
+                writeFuture.get();
+                logger.debug("done waiting");
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error(e);
+        }
+    }
+
     private void waitForCommonPoolToComplete() {
         while (ForkJoinPool.commonPool().hasQueuedSubmissions()) {
             try {
                 logger.debug("POOL SUBMISSIONS: {}", ForkJoinPool.commonPool().getQueuedSubmissionCount());
-                TimeUnit.MILLISECONDS.sleep(250);
+                TimeUnit.MILLISECONDS.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

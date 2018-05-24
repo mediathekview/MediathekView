@@ -141,7 +141,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
         this.pSet = pSet;
         this.abo = abo;
         arr[DOWNLOAD_FILM_NR] = Integer.toString(film.getFilmNr());
-        arr[DOWNLOAD_SENDER] = film.arr[DatenFilm.FILM_SENDER];
+        arr[DOWNLOAD_SENDER] = film.getSender();
         arr[DOWNLOAD_THEMA] = film.arr[DatenFilm.FILM_THEMA];
         arr[DOWNLOAD_TITEL] = film.getTitle();
         arr[DOWNLOAD_FILM_URL] = film.arr[DatenFilm.FILM_URL];
@@ -633,7 +633,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
 
         replStr = StringUtils.replace(replStr, "%t", getField(film.arr[DatenFilm.FILM_THEMA], laenge));
         replStr = StringUtils.replace(replStr, "%T", getField(film.getTitle(), laenge));
-        replStr = StringUtils.replace(replStr, "%s", getField(film.arr[DatenFilm.FILM_SENDER], laenge));
+        replStr = StringUtils.replace(replStr, "%s", getField(film.getSender(), laenge));
         replStr = StringUtils.replace(replStr, "%N", getField(GuiFunktionen.getDateiName(this.arr[DatenDownload.DOWNLOAD_URL]), laenge));
 
         //Felder mit fester Länge werden immer ganz geschrieben

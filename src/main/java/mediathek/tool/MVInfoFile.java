@@ -55,7 +55,7 @@ public class MVInfoFile {
             pfad = GuiFunktionen.getStandardDownloadPath();
         }
         if (titel.isEmpty()) {
-            titel = StringUtils.replace(film.arr[DatenFilm.FILM_SENDER], " ", "-") + ".txt";
+            titel = StringUtils.replace(film.getSender(), " ", "-") + ".txt";
         } else {
             titel = titel + ".txt";
         }
@@ -71,7 +71,7 @@ public class MVInfoFile {
              DataOutputStream dos = new DataOutputStream(os);
              OutputStreamWriter osw = new OutputStreamWriter(dos);
              BufferedWriter br = new BufferedWriter(osw)) {
-            br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_SENDER] + ":      " + film.arr[DatenFilm.FILM_SENDER]);
+            br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_SENDER] + ":      " + film.getSender());
             br.write("\n");
             br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_THEMA] + ":       " + film.arr[DatenFilm.FILM_THEMA]);
             br.write("\n\n");
@@ -121,7 +121,7 @@ public class MVInfoFile {
              OutputStreamWriter osw = new OutputStreamWriter(dos);
              BufferedWriter br = new BufferedWriter(osw)) {
             if (datenDownload.film != null) {
-                br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_SENDER] + ":      " + datenDownload.film.arr[DatenFilm.FILM_SENDER]);
+                br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_SENDER] + ":      " + datenDownload.film.getSender());
                 br.write("\n");
                 br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_THEMA] + ":       " + datenDownload.film.arr[DatenFilm.FILM_THEMA]);
                 br.write("\n\n");

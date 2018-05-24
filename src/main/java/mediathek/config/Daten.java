@@ -21,7 +21,7 @@ package mediathek.config;
 
 import com.jidesoft.utils.SystemInfo;
 import mSearch.daten.ListeFilme;
-import mSearch.filmlisten.FilmListWriter;
+import mSearch.filmlisten.writer.FilmListWriter;
 import mSearch.tool.Listener;
 import mSearch.tool.ReplaceList;
 import mediathek.MediathekGui;
@@ -326,6 +326,10 @@ public class Daten
                 xmlFilePath.add(path);
             }
         }
+    }
+
+    public CompletableFuture<Void> getWriteFuture() {
+        return writeFuture;
     }
 
     private CompletableFuture<Void> writeFuture = null;

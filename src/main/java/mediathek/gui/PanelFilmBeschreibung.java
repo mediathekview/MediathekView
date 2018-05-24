@@ -133,7 +133,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
                     "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
                     + "<head><style type=\"text/css\">.sans { font-family: Verdana, Geneva, sans-serif; font-size: " + MVFont.fontSize + "pt; }</style></head>\n"
                     + "<body>"
-                    + "<span class=\"sans\"><b>" + (currentFilm.arr[DatenFilm.FILM_SENDER].isEmpty() ? "" : currentFilm.arr[DatenFilm.FILM_SENDER] + "  -  ")
+                            + "<span class=\"sans\"><b>" + (currentFilm.getSender().isEmpty() ? "" : currentFilm.getSender() + "  -  ")
                             + currentFilm.getTitle() + "</b><br /></span>"
                             + "<span class=\"sans\">" + currentFilm.getDescription() + "</span>"
                     + "</body>"

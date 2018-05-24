@@ -20,7 +20,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.filmlisten.FilmListWriter;
+import mSearch.filmlisten.writer.FilmListWriter;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Icons;

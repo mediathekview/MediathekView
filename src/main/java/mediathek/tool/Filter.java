@@ -83,7 +83,7 @@ public class Filter {
         // titelSuchen muss im Titel nur enthalten sein
         boolean result = false;
 
-        if (senderSuchen.isEmpty() || film.arr[DatenFilm.FILM_SENDER].compareTo(senderSuchen) == 0) {
+        if (senderSuchen.isEmpty() || film.getSender().compareTo(senderSuchen) == 0) {
             if (themaSuchen.isEmpty() || film.arr[DatenFilm.FILM_THEMA].equalsIgnoreCase(themaSuchen)) {
 
                 if (titelSuchen.length == 0 || pruefen(titelSuchen, film.getTitle())) {
