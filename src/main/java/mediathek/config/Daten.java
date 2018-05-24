@@ -62,6 +62,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -188,7 +189,6 @@ public class Daten
      * Set up message bus to log errors to our default logger
      */
     private void setupMessageBus() {
-        BusConfiguration config = new BusConfiguration();
         messageBus = new MBassador<>(new BusConfiguration()
                 .addFeature(Feature.SyncPubSub.Default())
                 .addFeature(Feature.AsynchronousHandlerInvocation.Default())
@@ -328,25 +328,28 @@ public class Daten
         }
     }
 
-    public CompletableFuture<Void> getWriteFuture() {
+    public Optional<CompletableFuture<Void>> getFilmListWriterFuture() {
         return writeFuture;
     }
 
-    private CompletableFuture<Void> writeFuture = null;
+    private Optional<CompletableFuture<Void>> writeFuture = Optional.empty();
 
     public void filmlisteSpeichern()
     {
-        try {
-            if (writeFuture != null) {
-                if (!writeFuture.isDone())
-                    writeFuture.get();
-                writeFuture = null;
+        writeFuture.ifPresent(future -> {
+            if (!future.isDone()) {
+                try {
+                    future.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    logger.error(e);
+                } finally {
+                    writeFuture = Optional.empty();
+                }
             }
+        });
 
-            writeFuture = CompletableFuture.runAsync(() -> new FilmListWriter().writeFilmList(getDateiFilmliste(), listeFilme));
-        } catch (InterruptedException | ExecutionException ex) {
-            logger.error(ex);
-        }
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> new FilmListWriter().writeFilmList(getDateiFilmliste(), listeFilme));
+        writeFuture = Optional.of(future);
     }
 
     /**

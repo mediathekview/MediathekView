@@ -68,7 +68,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
@@ -1187,17 +1186,15 @@ public class MediathekGui extends JFrame {
     }
 
     private void waitForFilmListWriterToComplete() {
-        //TODO display wait dialog here as this may take several seconds
-        CompletableFuture<Void> writeFuture = daten.getWriteFuture();
-        try {
-            if (writeFuture != null) {
-                logger.debug("waiting for filmlist completion");
-                writeFuture.get();
-                logger.debug("done waiting");
+        daten.getFilmListWriterFuture().ifPresent(future -> {
+            logger.debug("waiting for filmlist completion");
+            try {
+                future.get();
+            } catch (InterruptedException | ExecutionException e) {
+                logger.error(e);
             }
-        } catch (InterruptedException | ExecutionException e) {
-            logger.error(e);
-        }
+            logger.debug("done waiting");
+        });
     }
 
     private void waitForCommonPoolToComplete() {
