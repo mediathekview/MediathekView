@@ -22,6 +22,8 @@ package mediathek;
 import com.jidesoft.utils.SystemInfo;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import javafx.application.Platform;
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mSearch.Config;
 import mSearch.tool.Log;
 import mSearch.tool.SingleInstance;
@@ -112,6 +114,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(final String args[]) {
+        IconFontSwing.register(FontAwesome.getIconFont());
         printBanner();
         new Main().start(args);
     }

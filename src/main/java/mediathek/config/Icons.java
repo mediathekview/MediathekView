@@ -19,12 +19,13 @@
  */
 package mediathek.config;
 
-import java.awt.Image;
-import javax.swing.ImageIcon;
 import mediathek.res.GetIcon;
 
-public class Icons {
+import javax.swing.*;
+import java.awt.*;
 
+public class Icons {
+    //TODO überflüssige Icons löschen und die Ressourcen
     public static final ImageIcon ICON_FILTER_AKT_1 = GetIcon.getProgramIcon("filter-akt-1.png", 32, 32);
     public static final ImageIcon ICON_FILTER_AKT_2 = GetIcon.getProgramIcon("filter-akt-2.png", 32, 32);
     public static final ImageIcon ICON_FILTER_AKT_3 = GetIcon.getProgramIcon("filter-akt-3.png", 32, 32);

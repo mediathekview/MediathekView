@@ -19,10 +19,11 @@
  */
 package mediathek.tool.cellrenderer;
 
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mediathek.config.Daten;
-import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.Start;
@@ -37,20 +38,27 @@ import java.awt.*;
 
 @SuppressWarnings("serial")
 public class CellRendererFilme extends CellRendererBaseWithStart {
-    private static ImageIcon film_rec_tab = null;
-    private static ImageIcon film_rec_sw_tab = null;
-    private static ImageIcon film_stop_tab = null;
-    private static ImageIcon film_stop_sw_tab = null;
+    private static final Logger logger = LogManager.getLogger(CellRendererFilme.class);
+    private final Icon selectedStopIcon;
+    private final Icon normalStopIcon;
     private final MVUsedUrls history;
+    private final Icon selectedDownloadIcon;
+    private final Icon normalDownloadIcon;
+    private final Icon selectedPlayIcon;
+    private final Icon normalPlayIcon;
 
     public CellRendererFilme(Daten d, MVSenderIconCache cache) {
         super(cache);
 
+        selectedDownloadIcon = IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16, new Color(255, 255, 255));
+        normalDownloadIcon = IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16);
+
+        selectedPlayIcon = IconFontSwing.buildIcon(FontAwesome.PLAY, 16, new Color(255, 255, 255));
+        normalPlayIcon = IconFontSwing.buildIcon(FontAwesome.PLAY, 16);
+
         history = d.history;
-        film_rec_tab = Icons.ICON_TABELLE_FILM_REC;
-        film_rec_sw_tab = Icons.ICON_TABELLE_FILM_REC_SW;
-        film_stop_tab = Icons.ICON_TABELLE_FILM_STOP;
-        film_stop_sw_tab = Icons.ICON_TABELLE_FILM_STOP_SW;
+        selectedStopIcon = IconFontSwing.buildIcon(FontAwesome.STOP, 16, new Color(255, 255, 255));
+        normalStopIcon = IconFontSwing.buildIcon(FontAwesome.STOP, 16);
     }
 
     @Override
@@ -113,22 +121,22 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     break;
                 case DatenFilm.FILM_SENDER:
                     if (((MVTable) table).getShowIcons()) {
-                        handleSenderColumn((String) value, ((MVTable) table).iconKlein);
+                        setSenderIcon((String) value, ((MVTable) table).iconKlein);
                     }
                     break;
                 case DatenFilm.FILM_NEU:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    setYesNoIcon(datenFilm.isNew());
+                    setCheckedOrUncheckedIcon(datenFilm.isNew());
                     setText("");
                     break;
                 case DatenFilm.FILM_HD:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    setYesNoIcon(datenFilm.isHD());
+                    setCheckedOrUncheckedIcon(datenFilm.isHD());
                     setText("");//im Modle brauchen wir den Text zum Sortieren
                     break;
                 case DatenFilm.FILM_UT:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    setYesNoIcon(datenFilm.hasSubtitle());
+                    setCheckedOrUncheckedIcon(datenFilm.hasSubtitle());
                     setText("");
                     break;
             }
@@ -139,8 +147,6 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         }
         return this;
     }
-
-    private static final Logger logger = LogManager.getLogger(CellRendererFilme.class);
 
     private void setColor(Component c, DatenFilm datenFilm, DatenDownload datenDownload, boolean isSelected) {
         final boolean live = datenFilm.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE);
@@ -182,9 +188,9 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     setToolTipText("Film stoppen");
                     final Icon icon;
                     if (isSelected)
-                        icon = film_stop_tab;
+                        icon = selectedStopIcon;
                     else
-                        icon = film_stop_sw_tab;
+                        icon = normalStopIcon;
 
                     setIcon(icon);
                 }
@@ -195,9 +201,9 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
             setToolTipText("Film abspielen");
             final Icon icon;
             if (isSelected)
-                icon = film_start_tab;
+                icon = selectedPlayIcon;
             else
-                icon = film_start_sw_tab;
+                icon = normalPlayIcon;
 
             setIcon(icon);
         }
@@ -209,9 +215,9 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
         setToolTipText("Film aufzeichnen");
         final Icon icon;
         if (isSelected)
-            icon = film_rec_tab;
+            icon = selectedDownloadIcon;
         else
-            icon = film_rec_sw_tab;
+            icon = normalDownloadIcon;
 
         setIcon(icon);
     }

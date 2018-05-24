@@ -1,7 +1,8 @@
 package mediathek.tool.cellrenderer;
 
 import com.jidesoft.utils.SystemInfo;
-import mediathek.config.Icons;
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVSenderIconCache;
 
@@ -14,13 +15,16 @@ import java.awt.*;
  */
 public class CellRendererBase extends DefaultTableCellRenderer {
     private static final long serialVersionUID = 4187677730323830219L;
-    protected final MVSenderIconCache senderIconCache;
-    protected static final ImageIcon ja_16 = Icons.ICON_TABELLE_EIN;
-    protected static final ImageIcon nein_12 = Icons.ICON_TABELLE_AUS;
+    private final MVSenderIconCache senderIconCache;
+    private final Icon checkedIcon;
+    private final Icon uncheckedIcon;
 
     public CellRendererBase(MVSenderIconCache cache) {
         super();
         senderIconCache = cache;
+
+        checkedIcon = IconFontSwing.buildIcon(FontAwesome.CHECK, 12);
+        uncheckedIcon = IconFontSwing.buildIcon(FontAwesome.MINUS, 12);
     }
 
     /**
@@ -28,7 +32,7 @@ public class CellRendererBase extends DefaultTableCellRenderer {
      *
      * @param sender Name of the sender.
      */
-    protected void handleSenderColumn(String sender, boolean small) {
+    protected void setSenderIcon(String sender, boolean small) {
         setHorizontalAlignment(SwingConstants.CENTER);
         final ImageIcon icon = senderIconCache.get(sender, small);
         if (icon != null) {
@@ -61,12 +65,12 @@ public class CellRendererBase extends DefaultTableCellRenderer {
      *
      * @param condition yes if true, no if false
      */
-    protected void setYesNoIcon(final boolean condition) {
+    protected void setCheckedOrUncheckedIcon(final boolean condition) {
         final Icon icon;
         if (condition)
-            icon = ja_16;
+            icon = checkedIcon;
         else
-            icon = nein_12;
+            icon = uncheckedIcon;
 
         setIcon(icon);
     }

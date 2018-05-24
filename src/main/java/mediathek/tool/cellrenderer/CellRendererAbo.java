@@ -89,12 +89,12 @@ public class CellRendererAbo extends CellRendererBase {
 
                 case DatenAbo.ABO_EINGESCHALTET:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    setYesNoIcon(aboIstEingeschaltet);
+                    setCheckedOrUncheckedIcon(aboIstEingeschaltet);
                     break;
 
                 case DatenAbo.ABO_SENDER:
                     if (((MVTable) table).getShowIcons()) {
-                        handleSenderColumn((String) value, ((MVTable) table).iconKlein);
+                        setSenderIcon((String) value, ((MVTable) table).iconKlein);
                     }
                     break;
             }

@@ -22,6 +22,7 @@ package mediathek;
 import com.jidesoft.utils.SystemInfo;
 import javafx.application.Platform;
 import javafx.stage.FileChooser;
+import mSearch.Config;
 import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
@@ -49,6 +50,7 @@ import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.*;
 import mediathek.javafx.BackgroundTaskAlert;
 import mediathek.javafx.FXProgressPanel;
+import mediathek.javafx.LivestreamTab;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
 import mediathek.tool.threads.IndicatorThread;
@@ -527,14 +529,20 @@ public class MediathekGui extends JFrame {
 
     private static boolean geklickt;
 
+    private LivestreamTab livestreamTab;
+
     private void initTabs() {
         Daten.guiDownloads = new GuiDownloads(daten, this);
         Daten.guiAbo = new GuiAbo(daten, this);
         Daten.guiMeldungen = new GuiMeldungen(daten, this);
         Daten.guiFilme = new GuiFilme(daten, this);
 
-        //jTabbedPane.addTab("Filme", Icons.ICON_TAB_FILM, Daten.guiFilme);
         jTabbedPane.addTab(TABNAME_FILME, Daten.guiFilme);
+
+        if (Config.isDebuggingEnabled()) {
+            livestreamTab = new LivestreamTab();
+            jTabbedPane.addTab("Livestreams", livestreamTab);
+        }
 
         initFrames();
         jTabbedPane.addChangeListener(l -> {
@@ -573,16 +581,6 @@ public class MediathekGui extends JFrame {
         miSearchForProgramUpdate.setEnabled(enable);
     }
 
-    private void initMeldungenFrame() {
-        // Meldungen
-        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN))) {
-            hide(null, Daten.guiMeldungen);
-        } else {
-            setTab(null, Daten.guiMeldungen, TABNAME_MELDUNGEN, 3);
-        }
-
-    }
-
     private void initAboFrame() {
         // Abos
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_ABO))) {
@@ -601,10 +599,18 @@ public class MediathekGui extends JFrame {
         }
     }
 
+    private void showOrHideMeldungenTab() {
+        final boolean visible = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN));
+        if (visible)
+            setTab(null, Daten.guiMeldungen, TABNAME_MELDUNGEN, 3);
+        else
+            hide(null, Daten.guiMeldungen);
+    }
+
     private void initFrames() {
         initDownloadFrame();
         initAboFrame();
-        initMeldungenFrame();
+        showOrHideMeldungenTab();
 
         jTabbedPane.updateUI();
         designTabs();
@@ -886,10 +892,11 @@ public class MediathekGui extends JFrame {
     {
         //Ansicht Meldungen
         jCheckBoxMeldungenAnzeigen.setText(CHECKBOX_TEXT_MELDUNGEN_ANZEIGEN);
+
         jCheckBoxMeldungenAnzeigen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN)));
         jCheckBoxMeldungenAnzeigen.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN, Boolean.toString(jCheckBoxMeldungenAnzeigen.isSelected()));
-            initFrames();
+            showOrHideMeldungenTab();
         });
         jMenuAnsicht.add(jCheckBoxMeldungenAnzeigen);
 
@@ -1058,9 +1065,7 @@ public class MediathekGui extends JFrame {
         jMenuItemEinstellungen.addActionListener(e -> showSettingsDialog());
         jMenuItemBeenden.addActionListener(e -> beenden(false, false));
 
-        jMenuItemExportFilmlist.addActionListener(e -> {
-            exportFilmList();
-        });
+        jMenuItemExportFilmlist.addActionListener(e -> exportFilmList());
     }
 
     /**
