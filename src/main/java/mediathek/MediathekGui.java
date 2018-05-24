@@ -21,8 +21,6 @@ package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import javafx.stage.Modality;
 import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
@@ -47,6 +45,7 @@ import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.*;
+import mediathek.javafx.BackgroundTaskAlert;
 import mediathek.javafx.FXProgressPanel;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
@@ -69,7 +68,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
@@ -1127,7 +1125,8 @@ public class MediathekGui extends JFrame {
         //do not search for updates anymore
         updateCheckTimer.stop();
 
-        createBackgroundTaskAlert();
+        BackgroundTaskAlert alert = new BackgroundTaskAlert();
+        alert.show();
 
         waitForFilmListWriterToComplete();
         waitForCommonPoolToComplete();
@@ -1171,7 +1170,7 @@ public class MediathekGui extends JFrame {
 
         daten.allesSpeichern();
 
-        closeBackgroundTaskAlert();
+        alert.hide();
 
         Log.endMsg();
         Duration.printCounter();
@@ -1185,33 +1184,6 @@ public class MediathekGui extends JFrame {
         System.exit(0);
 
         return false;
-    }
-
-    /**
-     * An optional alert that may be displayed when there is a filmlist write running.
-     */
-    private Optional<Alert> waitAlert = Optional.empty();
-
-    private void closeBackgroundTaskAlert() {
-        waitAlert.ifPresent((alert) -> {
-            Platform.runLater(alert::hide);
-        });
-    }
-
-    private void createBackgroundTaskAlert() {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("MediathekView");
-            alert.setHeaderText("Abschluss der Hintergrund-Tasks");
-            alert.setContentText("MediathekView muss auf den Abschluss der laufenden Hintergrund-Tasks warten.\n" +
-                    "Dies kann einige Sekunden dauern");
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.getButtonTypes().clear();
-
-            waitAlert = Optional.of(alert);
-
-            alert.show();
-        });
     }
 
     private void waitForFilmListWriterToComplete() {
