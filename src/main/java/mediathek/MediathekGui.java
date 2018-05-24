@@ -21,10 +21,12 @@ package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
 import javafx.application.Platform;
+import javafx.stage.FileChooser;
 import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.FilmlistenSuchen;
+import mSearch.filmlisten.writer.FilmListWriter;
 import mSearch.tool.*;
 import mSearch.tool.Functions.OperatingSystemType;
 import mSearch.tool.javafx.FXErrorDialog;
@@ -1052,11 +1054,34 @@ public class MediathekGui extends JFrame {
         jMenuItemFilmeMediensammlung.addActionListener(Daten.guiFilme.mediensammlungAction);
     }
 
-    private void initializeDateiMenu()
-    {
-        // Datei
+    private void initializeDateiMenu() {
         jMenuItemEinstellungen.addActionListener(e -> showSettingsDialog());
         jMenuItemBeenden.addActionListener(e -> beenden(false, false));
+
+        jMenuItemExportFilmlist.addActionListener(e -> {
+            exportFilmList();
+        });
+    }
+
+    /**
+     * Export the current filmlist to a user-specified file.
+     */
+    private void exportFilmList() {
+        Platform.runLater(() -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Datei sichern");
+            fileChooser.setInitialFileName("filme");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Unkomprimiert", "*.json"),
+                    new FileChooser.ExtensionFilter("XZ Komprimiert (Standard)", "*.xz")
+            );
+            File selectedFile = fileChooser.showSaveDialog(null);
+            if (selectedFile != null) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                new FilmListWriter().writeFilmList(selectedFile.getAbsolutePath(), daten.getListeFilme());
+                setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            }
+        });
     }
 
     public void showSettingsDialog()
@@ -1308,6 +1333,7 @@ public class MediathekGui extends JFrame {
         jMenuBar = new javax.swing.JMenuBar();
         jMenuDatei = new javax.swing.JMenu();
         jMenuItemFilmlisteLaden = new javax.swing.JMenuItem();
+        jMenuItemExportFilmlist = new javax.swing.JMenuItem();
         jMenuItemEinstellungen = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jMenuItemBeenden = new javax.swing.JMenuItem();
@@ -1386,8 +1412,11 @@ public class MediathekGui extends JFrame {
         jMenuDatei.setText("Datei");
 
         jMenuItemFilmlisteLaden.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
-        jMenuItemFilmlisteLaden.setText("neue Filmliste laden");
+        jMenuItemFilmlisteLaden.setText("Neue Filmliste laden");
         jMenuDatei.add(jMenuItemFilmlisteLaden);
+
+        jMenuItemExportFilmlist.setText("Filmliste exportieren...");
+        jMenuDatei.add(jMenuItemExportFilmlist);
 
         jMenuItemEinstellungen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
         jMenuItemEinstellungen.setText("Einstellungen");
@@ -1653,6 +1682,7 @@ public class MediathekGui extends JFrame {
     private javax.swing.JMenuItem jMenuItemDownloadsLoeschen;
     private javax.swing.JMenuItem jMenuItemDownloadsZurueckstellen;
     protected javax.swing.JMenuItem jMenuItemEinstellungen;
+    private javax.swing.JMenuItem jMenuItemExportFilmlist;
     protected javax.swing.JMenuItem jMenuItemFilmAbspielen;
     protected javax.swing.JMenuItem jMenuItemFilmAufzeichnen;
     private javax.swing.JMenuItem jMenuItemFilmeGesehen;
