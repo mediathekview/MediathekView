@@ -409,7 +409,7 @@ public class FilmListReader implements AutoCloseable {
             if (response.isSuccessful()) {
                 try (ResponseBody body = response.body();
                      InputStream input = new ProgressMonitorInputStream(body.byteStream(), body.contentLength(), monitor);
-                     InputStream is = new XZInputStream(input);
+                     InputStream is = selectDecompressor(source.toString(), input);
                      JsonParser jp = new JsonFactory().createParser(is)) {
                     readData(jp, listeFilme);
                 }
