@@ -22,6 +22,7 @@ package mediathek.update;
 import mSearch.tool.Log;
 import mSearch.tool.MVHttpClient;
 import mSearch.tool.Version;
+import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import okhttp3.Request;
@@ -69,16 +70,8 @@ public class ProgrammUpdateSuchen {
                 else {
                     if (checkForNewerVersion(progInfo.getVersion())) {
                         neueVersion = true;
-                        //TODO beautify this dialog. Looks really ugly.
-                        new DialogHinweisUpdate(null, true, "Eine neue Version liegt vor",
-                                "   ==================================================\n"
-                                        + "   Neue Version:\n" + "   " + progInfo.getVersion() + "\n\n"
-                                        + "   ==================================================\n"
-                                        + "   Änderungen:\n" + "   " + progInfo.getReleaseNotes() + "\n\n"
-                                        + "   ==================================================\n"
-                                        + "   URL:\n"
-                                        + "   " + progInfo.getUpdateUrl() + "\n\n").setVisible(true);
-
+                        UpdateNotificationDialog dlg = new UpdateNotificationDialog(Daten.getInstance().getMediathekGui(), "Software Update", progInfo);
+                        dlg.setVisible(true);
                     } else if (anzeigen) {
                         JOptionPane.showMessageDialog(null, "Sie benutzen die neueste Version von MediathekView.", UPDATE_SEARCH_TITLE, JOptionPane.INFORMATION_MESSAGE);
                     }
@@ -116,8 +109,9 @@ public class ProgrammUpdateSuchen {
                     }
                 }
                 if (text.length() > 0) {
+                    //TODO add new dialog here!
                     new DialogHinweisUpdate(null, true, "Infos", text.toString()).setVisible(true);
-                    MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(index));
+                    /*MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(index));*/
                 }
             } catch (Exception ex) {
                 Log.errorLog(693298731, ex);
