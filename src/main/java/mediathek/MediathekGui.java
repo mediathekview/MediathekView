@@ -540,7 +540,7 @@ public class MediathekGui extends JFrame {
         jTabbedPane.addTab(TABNAME_FILME, Daten.guiFilme);
 
         if (Config.isDebuggingEnabled()) {
-            livestreamTab = new LivestreamTab();
+            livestreamTab = new LivestreamTab(daten.getLivestreamList());
             jTabbedPane.addTab("Livestreams", livestreamTab);
         }
 

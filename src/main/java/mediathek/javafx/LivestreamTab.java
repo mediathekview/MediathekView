@@ -1,24 +1,82 @@
 package mediathek.javafx;
 
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
+import mSearch.daten.DatenFilm;
+import mSearch.daten.ListeFilme;
+import mediathek.config.Daten;
+import mediathek.daten.LiveStreamItem;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class LivestreamTab extends JFXPanel {
-    public LivestreamTab() {
+    private static final Logger logger = LogManager.getLogger(LivestreamTab.class);
+    private ListView<LiveStreamItem> listView;
+    private Text entriesLabel;
+    private ObservableList<LiveStreamItem> liveStreamList;
+
+    public LivestreamTab(ObservableList<LiveStreamItem> list) {
+        liveStreamList = list;
         setScene(createScene());
     }
 
     private Scene createScene() {
-        VBox root = new VBox();
-        root.setFillWidth(true);
+        listView = new ListView<>(liveStreamList);
+        BorderPane pane = new BorderPane();
+        pane.setCenter(listView);
 
-        ListView<String> listView = new ListView<>();
-        listView.getItems().addAll("Hello", "World", "Humpdi", "Dumpdi", "Media", "thekView", "bla");
-        root.getChildren().addAll(listView);
+        HBox hb = new HBox();
+        hb.setSpacing(5d);
+
+        entriesLabel = new Text();
+        entriesLabel.setText(Integer.toString(liveStreamList.size()) + " livestreams");
+
+        listView.getItems().addListener((ListChangeListener<LiveStreamItem>) c -> {
+                    entriesLabel.setText(Integer.toString(c.getList().size()) + " Livestreams");
+                }
+        );
+
+        Button btnFill = new Button("Get livestreams from current filmlist");
+        btnFill.setOnAction(e -> {
+            liveStreamList.clear();
+
+            ListeFilme listeFilme = Daten.getInstance().getListeFilme();
+            List<DatenFilm> livestreamFilmList = listeFilme.parallelStream()
+                    .filter(film -> film.getThema().equalsIgnoreCase(ListeFilme.THEMA_LIVE))
+                    .collect(Collectors.toList());
+
+            for (DatenFilm film : livestreamFilmList) {
+                try {
+                    LiveStreamItem item = new LiveStreamItem();
+                    item.setSender(film.getSender());
+                    item.setTitel(film.getTitle());
+                    item.setUrl(new URL(film.getUrl()));
+                    liveStreamList.add(item);
+                } catch (MalformedURLException ex) {
+                    logger.error(ex);
+                }
+            }
+            livestreamFilmList.clear();
+
+        });
+
+        hb.getChildren().addAll(btnFill, entriesLabel);
+
+        pane.setBottom(hb);
 
         listView.requestFocus();
-        return new Scene(root);
+        return new Scene(pane);
     }
 }

@@ -20,6 +20,8 @@
 package mediathek.config;
 
 import com.jidesoft.utils.SystemInfo;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import mSearch.daten.ListeFilme;
 import mSearch.filmlisten.writer.FilmListWriter;
 import mSearch.tool.Listener;
@@ -91,6 +93,12 @@ public class Daten
     private ListeMediaPath listeMediaPath = null;
     private ListeAbo listeAbo = null;
     private DownloadInfos downloadInfos = null;
+
+    private ObservableList<LiveStreamItem> liveStreamList = FXCollections.observableArrayList();
+
+    public ObservableList<LiveStreamItem> getLivestreamList() {
+        return liveStreamList;
+    }
 
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis;
