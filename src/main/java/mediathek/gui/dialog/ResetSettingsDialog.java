@@ -19,11 +19,6 @@ public class ResetSettingsDialog extends StandardCloseDialog {
     }
 
     @Override
-    public JComponent createBannerPanel() {
-        return null;
-    }
-
-    @Override
     public JComponent createContentPanel() {
         return new ResetSettingsPanel(null, daten);
     }

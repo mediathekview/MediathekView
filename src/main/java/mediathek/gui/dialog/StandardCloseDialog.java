@@ -23,6 +23,11 @@ public abstract class StandardCloseDialog extends StandardDialog {
     public abstract JComponent createContentPanel();
 
     @Override
+    public JComponent createBannerPanel() {
+        return null;
+    }
+
+    @Override
     public final ButtonPanel createButtonPanel() {
         ButtonPanel pnl = new ButtonPanel();
         JButton btn = new JButton(new DisposeDialogAction(this, "Schließen", "Dialog schließen"));
