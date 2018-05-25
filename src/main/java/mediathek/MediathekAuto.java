@@ -21,8 +21,8 @@ package mediathek;
 
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.filmlisten.FastAutoFilmListReader;
-import mSearch.filmlisten.FilmListReader;
+import mSearch.filmlisten.reader.FastAutoFilmListReader;
+import mSearch.filmlisten.reader.FilmListReader;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
 import mediathek.config.Daten;

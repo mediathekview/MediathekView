@@ -23,8 +23,8 @@ import mSearch.Config;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.filmlisten.FilmListReader;
 import mSearch.filmlisten.FilmlistenSuchen;
+import mSearch.filmlisten.reader.FilmListReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

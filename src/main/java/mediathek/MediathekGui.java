@@ -35,7 +35,6 @@ import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
-import mediathek.controller.UIFilmlistLoaderThread;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.ListeMediaDB;
@@ -54,6 +53,7 @@ import mediathek.javafx.LivestreamTab;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
 import mediathek.tool.threads.IndicatorThread;
+import mediathek.tool.threads.UIFilmlistLoaderThread;
 import mediathek.update.CheckUpdate;
 import mediathek.update.ProgrammUpdateSuchen;
 import net.engio.mbassy.listener.Handler;
@@ -540,7 +540,7 @@ public class MediathekGui extends JFrame {
         jTabbedPane.addTab(TABNAME_FILME, Daten.guiFilme);
 
         if (Config.isDebuggingEnabled()) {
-            livestreamTab = new LivestreamTab(daten.getLivestreamList());
+            livestreamTab = new LivestreamTab(daten.getLivestreamList(), daten);
             jTabbedPane.addTab("Livestreams", livestreamTab);
         }
 
