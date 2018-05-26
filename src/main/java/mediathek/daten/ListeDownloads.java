@@ -309,11 +309,11 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
     private String setProgress(DatenDownload download) {
         if (download.start != null) {
             if (1 < download.start.percent && download.start.percent < Start.PROGRESS_FERTIG) {
-                String s = Double.toString(download.start.percent / 10.0) + '%';
+                StringBuilder s = new StringBuilder(Double.toString(download.start.percent / 10.0) + '%');
                 while (s.length() < 5) {
-                    s = '0' + s;
+                    s.insert(0, '0');
                 }
-                return s;
+                return s.toString();
             } else {
                 return Start.getTextProgress(download.isDownloadManager(), download.start);
             }
@@ -324,11 +324,10 @@ public class ListeDownloads extends LinkedList<DatenDownload> {
 
     @SuppressWarnings("unchecked")
     public synchronized void setModelProgress(TModelDownload tModel) {
-        Iterator<List<?>> it = tModel.getDataVector().iterator();
         int row = 0;
-        while (it.hasNext()) {
-            List<?> l = it.next();
-            DatenDownload datenDownload = (DatenDownload) l.get(DatenDownload.DOWNLOAD_REF);
+
+        for (Vector item : (Iterable<Vector>) tModel.getDataVector()) {
+            DatenDownload datenDownload = (DatenDownload) item.get(DatenDownload.DOWNLOAD_REF);
             if (datenDownload.start != null) {
                 if (datenDownload.start.status == Start.STATUS_RUN) {
                     tModel.setValueAt(datenDownload.getTextRestzeit(), row, DatenDownload.DOWNLOAD_RESTZEIT);
