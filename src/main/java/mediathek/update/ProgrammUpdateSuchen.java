@@ -111,7 +111,7 @@ public class ProgrammUpdateSuchen {
                 if (text.length() > 0) {
                     //TODO add new dialog here!
                     new DialogHinweisUpdate(null, true, "Infos", text.toString()).setVisible(true);
-                    /*MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(index));*/
+                    MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(index));
                 }
             } catch (Exception ex) {
                 Log.errorLog(693298731, ex);
