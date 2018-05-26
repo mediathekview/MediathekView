@@ -34,15 +34,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @SuppressWarnings("serial")
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
-    /**
-     * List for dynamic application of filters
-     */
-    final List<Predicate<DatenFilm>> filterList = new ArrayList<>();
     private long days = 0;
     private boolean doNotShowFutureFilms, doNotShowGeoBlockedFilms;
     private boolean blacklistIsActive;
@@ -152,30 +147,31 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             });
             listeRet.neueFilme = false;
 
-            Stream<DatenFilm> initialStream = listeFilme.parallelStream()
-                    //always filter for date
-                    .filter(this::checkDate);
+            List<Predicate<DatenFilm>> allPredicates = new ArrayList<>();
+            //always filter for date
+            allPredicates.add(this::checkDate);
 
-            filterList.clear();
             if (blacklistIsActive) {
                 //add the filter predicates to the list
                 if (doNotShowGeoBlockedFilms) {
-                    filterList.add(this::checkGeoBlockedFilm);
+                    allPredicates.add(this::checkGeoBlockedFilm);
                 }
                 if (doNotShowFutureFilms) {
-                    filterList.add(this::checkIfFilmIsInFuture);
-                }
-                filterList.add(this::checkFilmLength);
-                if (!isEmpty()) {
-                    filterList.add(this::applyBlacklistFilters);
+                    allPredicates.add(this::checkIfFilmIsInFuture);
                 }
 
-                for (Predicate<DatenFilm> pred : filterList) {
-                    initialStream = initialStream.filter(pred);
+                allPredicates.add(this::checkFilmLength);
+
+                if (!isEmpty()) {
+                    allPredicates.add(this::applyBlacklistFilters);
                 }
             }
 
-            final List<DatenFilm> col = initialStream.collect(Collectors.toList());
+            Predicate<DatenFilm> compositePredicate = allPredicates.stream().reduce(w -> true, Predicate::and);
+            List<DatenFilm> col = listeFilme.parallelStream()
+                    .filter(compositePredicate)
+                    .collect(Collectors.toList());
+
             //are there new film entries?
             col.parallelStream()
                     .filter(DatenFilm::isNew)
