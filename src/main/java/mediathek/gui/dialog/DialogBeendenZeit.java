@@ -25,6 +25,7 @@ import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.file.GetFile;
+import mediathek.javafx.AppTerminationIndefiniteProgress;
 import mediathek.tool.EscapeKeyHandler;
 import org.jdesktop.swingx.JXBusyLabel;
 
@@ -225,19 +226,11 @@ public class DialogBeendenZeit extends JDialog {
      * @return The {@link javax.swing.JPanel} for the glassPane.
      */
     private JPanel createGlassPane() {
-        String strMessage = "<html>Warte auf Abschluss der Downloads...";
-        if (isShutdownRequested()) {
-            strMessage += "<br><b>Der Rechner wird danach heruntergefahren.</b>";
-        }
-        strMessage += "<br>Sie können den Vorgang mit Escape abbrechen.</html>";
-
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout(5, 5));
-        lblGlassPane.setText(strMessage);
-        lblGlassPane.setBusy(true);
-        lblGlassPane.setVerticalAlignment(SwingConstants.CENTER);
-        lblGlassPane.setHorizontalAlignment(SwingConstants.CENTER);
-        panel.add(lblGlassPane, BorderLayout.CENTER);
+
+        AppTerminationIndefiniteProgress progPanel = new AppTerminationIndefiniteProgress(isShutdownRequested());
+        panel.add(progPanel, BorderLayout.CENTER);
 
         return panel;
     }
