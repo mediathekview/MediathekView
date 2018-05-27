@@ -13,12 +13,17 @@ import org.tbee.javafx.scene.layout.MigPane;
  */
 public class AppTerminationIndefiniteProgress extends JFXPanel {
     private boolean willBeShutDown;
+    private Label lblMessage;
 
     public AppTerminationIndefiniteProgress(boolean willbeShutDown) {
         super();
         this.willBeShutDown = willbeShutDown;
 
         Platform.runLater(this::initFX);
+    }
+
+    public void setMessage(String text) {
+        Platform.runLater(() -> lblMessage.setText(text));
     }
 
     private void initFX() {
@@ -35,7 +40,8 @@ public class AppTerminationIndefiniteProgress extends JFXPanel {
                         "[]");
 
         migPane.add(new ProgressIndicator(), "cell 0 0 1 3");
-        migPane.add(new Label("Warte auf Abschluss der Downloads..."), "cell 1 0");
+        lblMessage = new Label("Warte auf Abschluss der Downloads...");
+        migPane.add(lblMessage, "cell 1 0");
         if (willBeShutDown) {
             Label lblShutdown = new Label("Der Rechner wird danach heruntergefahren.");
             migPane.add(lblShutdown, "cell 1 1");
