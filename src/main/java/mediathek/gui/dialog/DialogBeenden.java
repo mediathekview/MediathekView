@@ -20,11 +20,16 @@
  */
 package mediathek.gui.dialog;
 
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.file.GetFile;
 import mediathek.tool.EscapeKeyHandler;
-import org.jdesktop.swingx.JXBusyLabel;
+import org.tbee.javafx.scene.layout.MigPane;
 
 import javax.swing.*;
 import java.awt.*;
@@ -187,22 +192,52 @@ public class DialogBeenden extends JDialog {
      * @return The {@link javax.swing.JPanel} for the glassPane.
      */
     private JPanel createGlassPane() {
-        String strMessage = "<html>Warte auf Abschluss der Downloads...";
-        if (isShutdownRequested()) {
-            strMessage += "<br><b>Der Rechner wird danach heruntergefahren.</b>";
-        }
-        strMessage += "<br>Sie können den Vorgang mit Escape abbrechen.</html>";
-
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout(5, 5));
-        JXBusyLabel lbl = new JXBusyLabel();
-        lbl.setText(strMessage);
-        lbl.setBusy(true);
-        lbl.setVerticalAlignment(SwingConstants.CENTER);
-        lbl.setHorizontalAlignment(SwingConstants.CENTER);
-        panel.add(lbl, BorderLayout.CENTER);
+
+        IndefiniteProgress progPanel = new IndefiniteProgress(isShutdownRequested());
+        panel.add(progPanel, BorderLayout.CENTER);
 
         return panel;
+    }
+
+    /**
+     * This will display a JFXPanel with a indefinite progress indicator and some status
+     * messages used as a glass pane overlay during app termination.
+     */
+    class IndefiniteProgress extends JFXPanel {
+        private boolean willBeShutDown;
+
+        IndefiniteProgress(boolean willbeShutDown) {
+            super();
+            this.willBeShutDown = willbeShutDown;
+
+            Platform.runLater(this::initFX);
+        }
+
+        private void initFX() {
+            setScene(createScene());
+        }
+
+        private Scene createScene() {
+            MigPane migPane = new MigPane(
+                    "hidemode 3",
+                    "[fill]" +
+                            "[fill]",
+                    "[]" +
+                            "[]" +
+                            "[]");
+
+            migPane.add(new ProgressIndicator(), "cell 0 0 1 3");
+            migPane.add(new Label("Warte auf Abschluss der Downloads..."), "cell 1 0");
+            if (willBeShutDown) {
+                Label lblShutdown = new Label("Der Rechner wird danach heruntergefahren.");
+                migPane.add(lblShutdown, "cell 1 1");
+            }
+            migPane.add(new Label("Sie können den Vorgang mit Escape abbrechen."), "cell 1 2");
+
+            return new Scene(migPane/*, Color.TRANSPARENT*/);
+        }
     }
 
     /**
