@@ -1,0 +1,41 @@
+JFDML JFormDesigner: "7.0.0.0.92" Java: "1.8.0_152-release" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp jScrollPane1::l::0:x, seq l {comp btnWebsite:::p::p, space :0:0:x}, seq t {space :0:324:x, comp jButtonOk:::p:97:p}}, space :::p}}"
+			"$verticalGroup": "par l {seq t {space :p::p, comp jScrollPane1::::183:x, space :::p, comp btnWebsite:::p::p, space :::p, comp jButtonOk:::p::p, space :::p}}"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			"title": "Programminformationen"
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "jScrollPane1"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JTextArea" ) {
+					name: "jTextArea1"
+					"editable": false
+					"columns": 20
+					"lineWrap": true
+					"rows": 5
+					"text": "\n\n"
+					"wrapStyleWord": true
+				} )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "jButtonOk"
+				"text": "Schließen"
+			} )
+			add( new FormComponent( "mediathek.gui.HyperlinkButton" ) {
+				name: "btnWebsite"
+				"text": "Link zur Webseite"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 435, 280 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}

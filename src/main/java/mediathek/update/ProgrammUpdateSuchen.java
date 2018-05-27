@@ -82,41 +82,48 @@ public class ProgrammUpdateSuchen {
         return neueVersion;
     }
 
+    private void displayInfoMessages(boolean showAll) {
+        //display available info...
+        try {
+            int angezeigt = 0;
+            if (MVConfig.get(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT).isEmpty()) {
+                MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(-1));
+            } else {
+                angezeigt = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT));
+            }
+
+            StringBuilder text = new StringBuilder();
+            int index = 0;
+            for (String[] h : listInfos) {
+                index = Integer.parseInt(h[0]);
+                if (showAll || angezeigt < index) {
+                    text.append("=======================================\n");
+                    text.append(h[1]);
+                    text.append('\n');
+                    text.append('\n');
+                }
+            }
+            if (text.length() > 0) {
+                //TODO add new dialog with web view here!
+                JDialog dlg = new DialogHinweisUpdate(null, text.toString());
+                dlg.setVisible(true);
+                MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(index));
+            }
+        } catch (Exception ex) {
+            Log.errorLog(693298731, ex);
+        }
+    }
+
+    private void displayNoNewInfoMessage() {
+        JOptionPane.showMessageDialog(null, "Es liegen keine Programminfos vor.", UPDATE_SEARCH_TITLE, JOptionPane.INFORMATION_MESSAGE);
+    }
+
     private void showProgramInformation(boolean showAll) {
         if (listInfos.isEmpty()) {
-            //no info available
-            if (showAll) {
-                JOptionPane.showMessageDialog(null, "Es liegen keine Programminfos vor.", UPDATE_SEARCH_TITLE, JOptionPane.INFORMATION_MESSAGE);
-            }
-        } else {
-            //display available info...
-            try {
-                StringBuilder text = new StringBuilder();
-                int angezeigt = 0;
-                if (MVConfig.get(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT).isEmpty()) {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(-1));
-                } else {
-                    angezeigt = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT));
-                }
-                int index = 0;
-                for (String[] h : listInfos) {
-                    index = Integer.parseInt(h[0]);
-                    if (showAll || angezeigt < index) {
-                        text.append("=======================================\n");
-                        text.append(h[1]);
-                        text.append('\n');
-                        text.append('\n');
-                    }
-                }
-                if (text.length() > 0) {
-                    //TODO add new dialog here!
-                    new DialogHinweisUpdate(null, true, "Infos", text.toString()).setVisible(true);
-                    MVConfig.add(MVConfig.Configs.SYSTEM_HINWEIS_NR_ANGEZEIGT, Integer.toString(index));
-                }
-            } catch (Exception ex) {
-                Log.errorLog(693298731, ex);
-            }
-        }
+            if (showAll)
+                displayNoNewInfoMessage();
+        } else
+            displayInfoMessages(showAll);
     }
 
     /**
