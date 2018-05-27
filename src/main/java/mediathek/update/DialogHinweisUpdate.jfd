@@ -4,7 +4,7 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq {space :::p, par l {comp jScrollPane1::l::0:x, seq l {comp btnWebsite:::p::p, space :0:0:x}, seq t {space :0:324:x, comp jButtonOk:::p:97:p}}, space :::p}}"
+			"$horizontalGroup": "par l {seq {space :p::p, par l {comp jScrollPane1::l:::x, comp btnWebsite::l:::x, seq t {space ::379:x, comp jButtonOk:::p::p}}, space :p:5:p}}"
 			"$verticalGroup": "par l {seq t {space :p::p, comp jScrollPane1::::183:x, space :::p, comp btnWebsite:::p::p, space :::p, comp jButtonOk:::p::p, space :::p}}"
 		} ) {
 			name: "this"
@@ -34,7 +34,7 @@ new FormModel {
 				"text": "Link zur Webseite"
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"size": new java.awt.Dimension( 435, 280 )
+			"size": new java.awt.Dimension( 475, 280 )
 			"location": new java.awt.Point( 0, 0 )
 		} )
 	}
