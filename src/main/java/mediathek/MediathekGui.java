@@ -21,9 +21,16 @@ package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
 import javafx.application.Platform;
+import javafx.event.Event;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import mSearch.Config;
 import mSearch.daten.DatenFilm;
+import mSearch.daten.PooledDatabaseConnection;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.FilmlistenSuchen;
@@ -47,7 +54,6 @@ import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.*;
-import mediathek.javafx.BackgroundTaskAlert;
 import mediathek.javafx.LivestreamTab;
 import mediathek.javafx.StartupProgressPanel;
 import mediathek.res.GetIcon;
@@ -60,6 +66,7 @@ import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.tbee.javafx.scene.layout.MigPane;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -73,6 +80,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -1136,6 +1144,62 @@ public class MediathekGui extends JFrame {
      */
     protected Configuration config = ApplicationConfiguration.getConfiguration();
 
+    /**
+     * Display a wait dialog with some status message to inform user what is happening currently.
+     */
+    private class ShutdownDialog {
+        private Label lblStatusText;
+        private Stage window;
+
+        ShutdownDialog() {
+            Platform.runLater(() -> {
+                window = new Stage();
+                window.setAlwaysOnTop(true);
+                window.setResizable(false);
+                window.setOnCloseRequest(Event::consume);
+                window.initStyle(StageStyle.UNIFIED);
+                window.setTitle("Programm beenden");
+                window.setScene(createScene());
+                window.sizeToScene();
+            });
+        }
+
+        void show() {
+            Platform.runLater(() -> {
+                window.show();
+                window.centerOnScreen();
+            });
+        }
+
+        void hide() {
+            Platform.runLater(() -> window.hide());
+        }
+
+        void setStatusText(String text) {
+            Platform.runLater(() -> {
+                lblStatusText.setText(text);
+                window.sizeToScene();
+            });
+        }
+
+        private Scene createScene() {
+            MigPane migPane = new MigPane(
+                    "hidemode 3",
+                    "[fill]" +
+                            "[fill]",
+                    "[]" +
+                            "[]" +
+                            "[]");
+
+            migPane.add(new ProgressIndicator(), "cell 0 0 1 3");
+            lblStatusText = new Label("Offene Operationen müssen noch beendet werden.");
+            migPane.add(lblStatusText, "cell 1 0");
+            migPane.add(new Label(""), "cell 1 1");
+            migPane.add(new Label("Dies kann einige Sekunden dauern."), "cell 1 2");
+
+            return new Scene(migPane);
+        }
+    }
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
         //write all settings if not done already...
         ApplicationConfiguration.getInstance().writeConfiguration();
@@ -1157,18 +1221,32 @@ public class MediathekGui extends JFrame {
         //do not search for updates anymore
         updateCheckTimer.stop();
 
-        BackgroundTaskAlert alert = new BackgroundTaskAlert();
-        alert.show();
+        ShutdownDialog dialog = new ShutdownDialog();
+        dialog.show();
 
+        dialog.setStatusText("Warte auf das Schreiben der Filmliste");
         waitForFilmListWriterToComplete();
+
+        dialog.setStatusText("Warte auf commonPool()");
         waitForCommonPoolToComplete();
 
+        dialog.setStatusText("Warte auf Abschluss der Datenbank-Operationen");
+        waitForDatabasePoolToComplete();
+
         // Tabelleneinstellungen merken
+        dialog.setStatusText("Film-Daten sichern");
         Daten.guiFilme.tabelleSpeichern();
+
+        dialog.setStatusText("Download-Daten sichern");
         Daten.guiDownloads.tabelleSpeichern();
+
+        dialog.setStatusText("Abo-Daten sichern");
         Daten.guiAbo.tabelleSpeichern();
+
+        dialog.setStatusText("MediaDB sichern");
         daten.getDialogMediaDB().tabelleSpeichern();
 
+        dialog.setStatusText("Downloads stopen");
         if (daten.getListeDownloads() != null) {
             // alle laufenden Downloads/Programme stoppen
             for (DatenDownload download : daten.getListeDownloads()) {
@@ -1198,11 +1276,13 @@ public class MediathekGui extends JFrame {
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_DOWNLOAD, frameDownload);
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_ABO, frameAbo);
 
+        dialog.setStatusText("Datenbank schließen");
         DatenFilm.Database.closeDatabase();
 
+        dialog.setStatusText("Programmdaten sichern");
         daten.allesSpeichern();
 
-        alert.hide();
+        dialog.hide();
 
         Log.endMsg();
         Duration.printCounter();
@@ -1216,6 +1296,27 @@ public class MediathekGui extends JFrame {
         System.exit(0);
 
         return false;
+    }
+
+    private void waitForDatabasePoolToComplete() {
+        logger.debug("waiting for database pool to complete");
+
+        ExecutorService pool = PooledDatabaseConnection.getInstance().getDatabaseExecutor();
+        pool.shutdown();
+        try {
+            if (!pool.awaitTermination(120, TimeUnit.SECONDS)) {
+                pool.shutdownNow();
+                if (!pool.awaitTermination(60, TimeUnit.SECONDS))
+                    logger.error("Pool did not terminate");
+            }
+        } catch (InterruptedException ie) {
+            // (Re-)Cancel if current thread also interrupted
+            pool.shutdownNow();
+            // Preserve interrupt status
+            Thread.currentThread().interrupt();
+        }
+
+        logger.debug("done waiting database pool");
     }
 
     private void waitForFilmListWriterToComplete() {
