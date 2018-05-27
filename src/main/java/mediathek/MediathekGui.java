@@ -48,8 +48,8 @@ import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.*;
 import mediathek.javafx.BackgroundTaskAlert;
-import mediathek.javafx.FXProgressPanel;
 import mediathek.javafx.LivestreamTab;
+import mediathek.javafx.StartupProgressPanel;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
 import mediathek.tool.threads.IndicatorThread;
@@ -225,14 +225,14 @@ public class MediathekGui extends JFrame {
         if (!MemoryUtils.isLowMemoryEnvironment()) {
             SwingUtilities.invokeLater(() -> {
                 //activate glass pane
-                panel = new FXProgressPanel();
+                panel = new StartupProgressPanel();
                 setGlassPane(panel);
                 getGlassPane().setVisible(true);
             });
         }
     }
 
-    private FXProgressPanel panel = null;
+    private StartupProgressPanel panel = null;
 
     @Handler
     protected void handleFilmlistReadStopEvent(FilmListReadStopEvent msg) {
@@ -252,7 +252,7 @@ public class MediathekGui extends JFrame {
                 panel = null;
 
                 //save the filmlist size for next time
-                config.setProperty(FXProgressPanel.CONFIG_STRING, daten.getListeFilme().size());
+                config.setProperty(StartupProgressPanel.CONFIG_STRING, daten.getListeFilme().size());
             });
         }
     }

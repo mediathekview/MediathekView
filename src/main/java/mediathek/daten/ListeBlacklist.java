@@ -53,13 +53,13 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      * @param b {@link DatenBlacklist} item.
      */
     public synchronized void addWithoutNotification(DatenBlacklist b) {
-        b.arr[DatenBlacklist.BLACKLIST_NR] = getNr(nr++);
+        b.arr[DatenBlacklist.BLACKLIST_NR] = Integer.toString(nr++);
         super.add(b);
     }
 
     @Override
     public synchronized boolean add(DatenBlacklist b) {
-        b.arr[DatenBlacklist.BLACKLIST_NR] = getNr(nr++);
+        b.arr[DatenBlacklist.BLACKLIST_NR] = Integer.toString(nr++);
         boolean ret = super.add(b);
         filterListAndNotifyListeners();
         return ret;
@@ -363,9 +363,5 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         final long filmLength = film.getFilmLength();
         return !(filmlaengeSoll != 0 && filmLength != 0 && filmlaengeSoll > filmLength);
 
-    }
-
-    private String getNr(int nr) {
-        return String.valueOf(nr);
     }
 }

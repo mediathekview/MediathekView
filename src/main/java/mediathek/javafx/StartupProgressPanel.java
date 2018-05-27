@@ -14,10 +14,10 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class FXProgressPanel extends JFXPanel {
+public class StartupProgressPanel extends JFXPanel {
     public static final String CONFIG_STRING = "application.last_filmlist_size";
     private static final long serialVersionUID = -1753371357306901205L;
-    private static final Logger logger = LogManager.getLogger(FXProgressPanel.class);
+    private static final Logger logger = LogManager.getLogger(StartupProgressPanel.class);
     private static final double STEP_SIZE = 0.01;
     private final BorderPane rootPane = new BorderPane();
     private final Daten daten = Daten.getInstance();
@@ -25,7 +25,7 @@ public class FXProgressPanel extends JFXPanel {
     private boolean infiniteProgress = false;
     private final double lastSize;
 
-    public FXProgressPanel() {
+    public StartupProgressPanel() {
         super();
 
         daten.getMessageBus().subscribe(this);

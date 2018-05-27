@@ -35,7 +35,7 @@ import mediathek.config.MVConfig;
 import mediathek.filmlisten.reader.FilmListReader;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
-import mediathek.javafx.FXProgressPanel;
+import mediathek.javafx.StartupProgressPanel;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 import okhttp3.Request;
@@ -331,7 +331,7 @@ public class FilmeLaden {
         logger.info("");
 
         //update filmlist size for startup Progress panel...
-        ApplicationConfiguration.getConfiguration().setProperty(FXProgressPanel.CONFIG_STRING, daten.getListeFilme().size());
+        ApplicationConfiguration.getConfiguration().setProperty(StartupProgressPanel.CONFIG_STRING, daten.getListeFilme().size());
 
         daten.getFilmeLaden().notifyProgress(new ListenerFilmeLadenEvent("", "Themen suchen", 0, 0, 0, false/*Fehler*/));
         daten.getListeFilme().themenLaden();
