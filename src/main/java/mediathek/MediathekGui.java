@@ -24,6 +24,7 @@ import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -1149,37 +1150,50 @@ public class MediathekGui extends JFrame {
      */
     private class ShutdownDialog {
         private Label lblStatusText;
-        private Stage window;
+        private Stage stage;
+        private ProgressBar progress;
+        private double maxTasks;
 
-        ShutdownDialog() {
+        ShutdownDialog(int maxTasks) {
+            this.maxTasks = maxTasks;
+
             Platform.runLater(() -> {
-                window = new Stage();
-                window.setAlwaysOnTop(true);
-                window.setResizable(false);
-                window.setOnCloseRequest(Event::consume);
-                window.initStyle(StageStyle.UNIFIED);
-                window.setTitle("Programm beenden");
-                window.setScene(createScene());
-                window.sizeToScene();
+                stage = new Stage();
+                stage.setAlwaysOnTop(true);
+                stage.setResizable(false);
+                stage.setOnCloseRequest(Event::consume);
+                stage.initStyle(StageStyle.UNDECORATED);
+                stage.setTitle("Programm beenden");
+                stage.setScene(createScene());
             });
         }
 
         void show() {
             Platform.runLater(() -> {
-                window.show();
-                window.centerOnScreen();
+                stage.show();
+                stage.centerOnScreen();
             });
+            setEnabled(false);
         }
 
         void hide() {
-            Platform.runLater(() -> window.hide());
+            Platform.runLater(() -> stage.hide());
+            setEnabled(true);
         }
 
-        void setStatusText(String text) {
+        void setStatusText(int task, String text) {
             Platform.runLater(() -> {
-                lblStatusText.setText(text);
-                window.sizeToScene();
+                final double percent = task / maxTasks;
+                progress.setProgress(percent);
+                String message = "(" + Integer.toString(task) + "/" + Integer.toString((int) maxTasks) + ") "
+                        + text;
+                lblStatusText.setText(message);
             });
+            //give the user some time to read the messages
+            try {
+                Thread.sleep(250);
+            } catch (InterruptedException ignored) {
+            }
         }
 
         private Scene createScene() {
@@ -1191,11 +1205,16 @@ public class MediathekGui extends JFrame {
                             "[]" +
                             "[]");
 
+            progress = new ProgressBar();
+            progress.setProgress(0d);
+            progress.setPrefWidth(450d);
+            progress.setMinWidth(350d);
+
             migPane.add(new ProgressIndicator(), "cell 0 0 1 3");
             lblStatusText = new Label("Offene Operationen müssen noch beendet werden.");
             migPane.add(lblStatusText, "cell 1 0");
-            migPane.add(new Label(""), "cell 1 1");
-            migPane.add(new Label("Dies kann einige Sekunden dauern."), "cell 1 2");
+            migPane.add(progress, "cell 1 1");
+            migPane.add(new Label(""), "cell 1 2");
 
             return new Scene(migPane);
         }
@@ -1221,32 +1240,32 @@ public class MediathekGui extends JFrame {
         //do not search for updates anymore
         updateCheckTimer.stop();
 
-        ShutdownDialog dialog = new ShutdownDialog();
+        ShutdownDialog dialog = new ShutdownDialog(12);
         dialog.show();
 
-        dialog.setStatusText("Warte auf das Schreiben der Filmliste");
+        dialog.setStatusText(1, "Warte auf das Schreiben der Filmliste");
         waitForFilmListWriterToComplete();
 
-        dialog.setStatusText("Warte auf commonPool()");
+        dialog.setStatusText(2, "Warte auf commonPool()");
         waitForCommonPoolToComplete();
 
-        dialog.setStatusText("Warte auf Abschluss der Datenbank-Operationen");
+        dialog.setStatusText(3, "Warte auf Abschluss der Datenbank-Operationen");
         waitForDatabasePoolToComplete();
 
         // Tabelleneinstellungen merken
-        dialog.setStatusText("Film-Daten sichern");
+        dialog.setStatusText(4, "Film-Daten sichern");
         Daten.guiFilme.tabelleSpeichern();
 
-        dialog.setStatusText("Download-Daten sichern");
+        dialog.setStatusText(5, "Download-Daten sichern");
         Daten.guiDownloads.tabelleSpeichern();
 
-        dialog.setStatusText("Abo-Daten sichern");
+        dialog.setStatusText(6, "Abo-Daten sichern");
         Daten.guiAbo.tabelleSpeichern();
 
-        dialog.setStatusText("MediaDB sichern");
+        dialog.setStatusText(7, "MediaDB sichern");
         daten.getDialogMediaDB().tabelleSpeichern();
 
-        dialog.setStatusText("Downloads stopen");
+        dialog.setStatusText(8, "Downloads anhalten");
         if (daten.getListeDownloads() != null) {
             // alle laufenden Downloads/Programme stoppen
             for (DatenDownload download : daten.getListeDownloads()) {
@@ -1257,6 +1276,7 @@ public class MediathekGui extends JFrame {
             }
         }
 
+        dialog.setStatusText(9, "Programmkonfiguration schreiben");
         if (getExtendedState() == JFrame.MAXIMIZED_BOTH) {
             MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_MAX, Boolean.TRUE.toString());
         } else {
@@ -1276,12 +1296,13 @@ public class MediathekGui extends JFrame {
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_DOWNLOAD, frameDownload);
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_ABO, frameAbo);
 
-        dialog.setStatusText("Datenbank schließen");
+        dialog.setStatusText(10, "Datenbank schließen");
         DatenFilm.Database.closeDatabase();
 
-        dialog.setStatusText("Programmdaten sichern");
+        dialog.setStatusText(11, "Programmdaten sichern");
         daten.allesSpeichern();
 
+        dialog.setStatusText(12, "Fertig.");
         dialog.hide();
 
         Log.endMsg();
