@@ -19,16 +19,17 @@
  */
 package mediathek.gui;
 
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Listener;
 import mediathek.config.Daten;
-import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
+import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFont;
-import mediathek.tool.listener.BeobMausUrl;
 import mediathek.tool.table.MVDownloadsTable;
 import mediathek.tool.table.MVFilmTable;
 import mediathek.tool.table.MVTable;
@@ -36,9 +37,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
+import java.awt.*;
 import java.net.URISyntaxException;
 
 @SuppressWarnings("serial")
@@ -46,11 +50,22 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
     private DatenFilm currentFilm = null;
     private MVTable table;
 
+    private JMenuItem createCopyLinkToClipboardItem() {
+        JMenuItem item = new JMenuItem("URL kopieren");
+        item.addActionListener(e -> {
+            if (currentFilm != null)
+                GuiFunktionen.copyToClipboard(currentFilm.getWebsiteLink());
+        });
+
+        return item;
+    }
+
     public PanelFilmBeschreibung(Daten daten, MVTable table, boolean film) {
         initComponents();
         this.table = table;
 
-        jCheckBoxBeschreibung.setIcon(Icons.ICON_CHECKBOX_CLOSE);
+        Icon closeIcon = IconFontSwing.buildIcon(FontAwesome.TIMES_CIRCLE_O, 16);
+        jCheckBoxBeschreibung.setIcon(closeIcon);
         jCheckBoxBeschreibung.addActionListener(e -> {
             if (film) {
                 MVConfig.add(MVConfig.Configs.SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN, Boolean.FALSE.toString());
@@ -61,14 +76,21 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
             }
         });
 
-        try {
-            jXHyperlinkWebsite.setAction(new UrlHyperlinkAction(daten.getMediathekGui(), ""));
-        } catch (URISyntaxException ignored) {
-            jXHyperlinkWebsite.setText("");
-        }
-        jXHyperlinkWebsite.addMouseListener(new BeobMausUrl(jXHyperlinkWebsite));
+        hyperlinkButton.addActionListener(e -> {
+            try {
+                if (currentFilm != null)
+                    UrlHyperlinkAction.openURL(null, currentFilm.getWebsiteLink());
+            } catch (URISyntaxException e1) {
+                logger.error(e1);
+            }
+        });
 
-        jCheckBoxChange.setIcon(Icons.ICON_CHECKBOX_EDIT);
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.add(createCopyLinkToClipboardItem());
+        hyperlinkButton.setComponentPopupMenu(popupMenu);
+
+        Icon editIcon = IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16);
+        jCheckBoxChange.setIcon(editIcon);
         jCheckBoxChange.addActionListener(e -> {
             if (currentFilm != null) {
                 final String oldDescription = currentFilm.getDescription();
@@ -126,7 +148,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
     private void setText() {
         if (currentFilm == null) {
             jEditorPane.setText("");
-            jXHyperlinkWebsite.setText("");
+            hyperlinkButton.setToolTipText("");
         } else {
             // Beschreibung setzen
             jEditorPane.setText(
@@ -139,7 +161,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
                     + "</body>"
                     + "</html>");
 
-            jXHyperlinkWebsite.setText(currentFilm.getWebsiteLink());
+            hyperlinkButton.setToolTipText(currentFilm.getWebsiteLink());
         }
     }
 
@@ -151,85 +173,89 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // Generated using JFormDesigner non-commercial license
     private void initComponents() {
+        jCheckBoxBeschreibung = new JCheckBox();
+        JPanel jPanel1 = new JPanel();
+        JScrollPane jScrollPane2 = new JScrollPane();
+        jEditorPane = new JEditorPane();
+        jCheckBoxChange = new JCheckBox();
+        hyperlinkButton = new HyperlinkButton();
 
-        jCheckBoxBeschreibung = new javax.swing.JCheckBox();
-        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
-        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
-        jEditorPane = new javax.swing.JEditorPane();
-        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
-        jXHyperlinkWebsite = new org.jdesktop.swingx.JXHyperlink();
-        jCheckBoxChange = new javax.swing.JCheckBox();
+        //======== this ========
 
+        //---- jCheckBoxBeschreibung ----
         jCheckBoxBeschreibung.setToolTipText("Beschreibung ausblenden");
 
-        jLabel1.setText("zur Website:");
+        //======== jPanel1 ========
+        {
 
-        jScrollPane2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+            //======== jScrollPane2 ========
+            {
+                jScrollPane2.setBorder(new LineBorder(new Color(153, 153, 153)));
 
-        jEditorPane.setEditable(false);
-        jEditorPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 4, 4, 4));
-        jEditorPane.setContentType("text/html"); // NOI18N
-        jEditorPane.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
-        jScrollPane2.setViewportView(jEditorPane);
+                //---- jEditorPane ----
+                jEditorPane.setEditable(false);
+                jEditorPane.setBorder(new EmptyBorder(4, 4, 4, 4));
+                jEditorPane.setContentType("text/html");
+                jEditorPane.setFont(new Font(Font.DIALOG, Font.PLAIN, 24));
+                jScrollPane2.setViewportView(jEditorPane);
+            }
 
-        jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+            //---- jCheckBoxChange ----
+            jCheckBoxChange.setToolTipText("Beschreibung \u00e4ndern");
+            jCheckBoxChange.setIcon(null);
 
-        jXHyperlinkWebsite.setText("");
-        jScrollPane1.setViewportView(jXHyperlinkWebsite);
+            //---- hyperlinkButton ----
+            hyperlinkButton.setText("Link zur Webseite");
 
-        jCheckBoxChange.setToolTipText("Beschreibung ändern");
+            GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
+            jPanel1.setLayout(jPanel1Layout);
+            jPanel1Layout.setHorizontalGroup(
+                    jPanel1Layout.createParallelGroup()
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addContainerGap()
+                                    .addComponent(hyperlinkButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 218, Short.MAX_VALUE)
+                                    .addComponent(jCheckBoxChange)
+                                    .addContainerGap())
+                            .addComponent(jScrollPane2)
+            );
+            jPanel1Layout.setVerticalGroup(
+                    jPanel1Layout.createParallelGroup()
+                            .addGroup(GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 84, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(jPanel1Layout.createParallelGroup()
+                                            .addComponent(jCheckBoxChange)
+                                            .addComponent(hyperlinkButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                    .addContainerGap())
+            );
+        }
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBoxChange)
-                .addContainerGap())
-            .addComponent(jScrollPane2)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel1)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jCheckBoxChange))
-                .addContainerGap())
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
+        GroupLayout layout = new GroupLayout(this);
+        setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jCheckBoxBeschreibung)
-                .addGap(5, 5, 5)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(5, 5, 5))
+                layout.createParallelGroup()
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(jCheckBoxBeschreibung)
+                                .addGap(5, 5, 5)
+                                .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(5, 5, 5))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jCheckBoxBeschreibung)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                layout.createParallelGroup()
+                        .addComponent(jCheckBoxBeschreibung)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox jCheckBoxBeschreibung;
-    private javax.swing.JCheckBox jCheckBoxChange;
-    private javax.swing.JEditorPane jEditorPane;
-    private org.jdesktop.swingx.JXHyperlink jXHyperlinkWebsite;
+    // Generated using JFormDesigner non-commercial license
+    private JCheckBox jCheckBoxBeschreibung;
+    private JEditorPane jEditorPane;
+    private JCheckBox jCheckBoxChange;
+    private HyperlinkButton hyperlinkButton;
     // End of variables declaration//GEN-END:variables
 }

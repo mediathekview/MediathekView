@@ -80,8 +80,6 @@ public class Icons {
     public static final ImageIcon ICON_MENUE_DOWNLOAD_ZURUECKSTELLEN = GetIcon.getProgramIcon("menue-download-zurueckstellen.png", 16, 16);
     public static final ImageIcon ICON_MENUE_AKTUALISIEREN = GetIcon.getProgramIcon("menue-aktualisieren.png", 16, 16);
 
-    public static final ImageIcon ICON_CHECKBOX_CLOSE = GetIcon.getProgramIcon("checkbox-close.png", 15, 15);
-    public static final ImageIcon ICON_CHECKBOX_EDIT = GetIcon.getProgramIcon("checkbox-edit.png", 16, 16);
     public static final ImageIcon ICON_STATUSBAR_STOP = GetIcon.getProgramIcon("statusbar-stop.png", 13, 13);
 
     public static final ImageIcon ICON_TABELLE_EIN = GetIcon.getProgramIcon("tabelle-ein.png", 16, 16);
