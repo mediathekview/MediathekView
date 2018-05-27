@@ -13,7 +13,7 @@ new FormModel {
 				"toolTipText": "Beschreibung ausblenden"
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq l {space :::p, comp hyperlinkButton:::p::p, space ::218:x, comp jCheckBoxChange:::p::p, space :::p}, comp jScrollPane2::l:::x}"
+				"$horizontalGroup": "par l {seq l {space :p::p, comp hyperlinkButton:::::x, space :p:218:p, comp jCheckBoxChange:::p::p, space :p::p}, comp jScrollPane2::l:::x}"
 				"$verticalGroup": "par l {seq t {comp jScrollPane2:::p:84:p, space :::p, par l {comp jCheckBoxChange:::p::p, comp hyperlinkButton:::p::p}, space :::p}}"
 			} ) {
 				name: "jPanel1"
