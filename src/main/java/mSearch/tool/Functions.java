@@ -134,10 +134,6 @@ public class Functions {
         return s;
     }
 
-    public static String getProgVersionString() {
-        return " [Vers.: " + getProgVersion().toString() + ']';
-    }
-
     public static String[] getJavaVersion() {
         String[] ret = new String[4];
         ret[0] = "Vendor: " + System.getProperty("java.vendor");
@@ -160,20 +156,6 @@ public class Functions {
             Log.errorLog(807293847, e);
         }
         return msg;
-    }
-
-    public static Version getProgVersion() {
-        String TOKEN_VERSION = "VERSION";
-        try {
-            ResourceBundle.clearCache();
-            ResourceBundle rb = ResourceBundle.getBundle(RBVERSION);
-            if (rb.containsKey(TOKEN_VERSION)) {
-                return new Version(rb.getString(TOKEN_VERSION));
-            }
-        } catch (Exception e) {
-            Log.errorLog(134679898, e);
-        }
-        return new Version("");
     }
 
     @Deprecated

@@ -26,22 +26,6 @@ import java.awt.*;
 
 public class Icons {
     //TODO überflüssige Icons löschen und die Ressourcen
-    public static final ImageIcon ICON_FILTER_AKT_1 = GetIcon.getProgramIcon("filter-akt-1.png", 32, 32);
-    public static final ImageIcon ICON_FILTER_AKT_2 = GetIcon.getProgramIcon("filter-akt-2.png", 32, 32);
-    public static final ImageIcon ICON_FILTER_AKT_3 = GetIcon.getProgramIcon("filter-akt-3.png", 32, 32);
-    public static final ImageIcon ICON_FILTER_AKT_4 = GetIcon.getProgramIcon("filter-akt-4.png", 32, 32);
-    public static final ImageIcon ICON_FILTER_AKT_5 = GetIcon.getProgramIcon("filter-akt-5.png", 32, 32);
-    public static final ImageIcon ICON_FILTER_OFF_1 = GetIcon.getProgramIcon("filter-off-1.png", 32, 32);
-    public static final ImageIcon ICON_FILTER_OFF_2 = GetIcon.getProgramIcon("filter-off-2.png", 32, 32);
-    public static final ImageIcon ICON_FILTER_OFF_3 = GetIcon.getProgramIcon("filter-off-3.png", 32, 32);
-    public static final ImageIcon ICON_FILTER_OFF_4 = GetIcon.getProgramIcon("filter-off-4.png", 32, 32);
-    public static final ImageIcon ICON_FILTER_OFF_5 = GetIcon.getProgramIcon("filter-off-5.png", 32, 32);
-    public static final ImageIcon ICON_FILTER_ON_1 = GetIcon.getProgramIcon("filter-on-1.png", 32, 32);
-    public static final ImageIcon ICON_FILTER_ON_2 = GetIcon.getProgramIcon("filter-on-2.png", 32, 32);
-    public static final ImageIcon ICON_FILTER_ON_3 = GetIcon.getProgramIcon("filter-on-3.png", 32, 32);
-    public static final ImageIcon ICON_FILTER_ON_4 = GetIcon.getProgramIcon("filter-on-4.png", 32, 32);
-    public static final ImageIcon ICON_FILTER_ON_5 = GetIcon.getProgramIcon("filter-on-5.png", 32, 32);
-
     public static final ImageIcon ICON_DIALOG_PLUS = GetIcon.getProgramIcon("dialog-plus.png", 16, 16);
     public static final ImageIcon ICON_DIALOG_MINUS = GetIcon.getProgramIcon("dialog-minus.png", 16, 16);
     public static final ImageIcon ICON_DIALOG_ADD = GetIcon.getProgramIcon("dialog-add.png", 16, 16);
