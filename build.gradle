@@ -64,7 +64,7 @@ repositories {
 }
 
 dependencies {
-    compile 'de.mediathekview:MLib:2.5.0'
+    compile 'de.mediathekview:MLib:2.5.1'
 
     compile "$swingxGroup:swingx-action:$swingxVersion"
     compile "$swingxGroup:swingx-autocomplete:$swingxVersion"
@@ -127,15 +127,6 @@ task updateVersion << {
 
 processResources.dependsOn updateVersion
 
-/*
-licenseReport {
-    outputDir = "res/Copyright/"
-    excludes = [':MSearch', 'MediathekView:MSearch']
-    configurations = ['compile']
-}
-
-processResources.dependsOn generateLicenseReport
-*/
 tasks.withType(Zip) { task ->
     task.doLast {
         ant.checksum(algorithm: 'SHA-1', file: it.archivePath)
@@ -146,27 +137,7 @@ tasks.withType(Tar) { task ->
         ant.checksum(algorithm: 'SHA-1', file: it.archivePath)
     }
 }
-/*
-task copyProgrammIconsInRes(type: Copy) {
-    logger.lifecycle 'Copying Programm icons.'
-    from 'src/main/resources/mediathek/res/programm'
-    into 'res/Icons/Programm/Version-' + version
-    include '*.png'
-    exclude 'about'
-}
 
-processResources.dependsOn copyProgrammIconsInRes
-
-task copySenderIconsInRes(type: Copy) {
-    logger.lifecycle 'Copying Sender icons.'
-    from 'src/main/resources/mediathek/res/sender'
-    into 'res/Icons/Sender'
-    include '*.png'
-    exclude '*.xcv'
-}
-
-processResources.dependsOn copySenderIconsInRes
-*/
 [distZip, distTar]*.shouldRunAfter compileJava, updateVersion, jar
 
 jar {
@@ -212,7 +183,7 @@ distributions {
 //Windows executable generation
 launch4j {
     mainClassName = mainClass
-    icon = "../../res/Info/MediathekView.ico"
+    icon = "../../res/MediathekView.ico"
     jar = jarName
     dontWrapJar = true
     outfile = "MediathekView_ohne_feste_Speicherzuweisung.exe"
