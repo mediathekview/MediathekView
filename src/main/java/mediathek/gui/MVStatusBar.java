@@ -51,10 +51,6 @@ public final class MVStatusBar extends JPanel {
         lblLeft = new JLabel();
         bottomBar.addComponentToLeft(lblLeft);
 
-        if (Config.isDebuggingEnabled()) {
-            bottomBar.addComponentToCenter(new MVMemoryUsageButton());
-        }
-
         //Progress controls and Filminfo must be packed in a panel
         JPanel progressPanel = new JPanel();
         progressPanel.setBackground(bottomBar.getComponent().getBackground());

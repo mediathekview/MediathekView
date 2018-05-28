@@ -56,6 +56,7 @@ import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.*;
 import mediathek.javafx.LivestreamTab;
+import mediathek.javafx.MemoryMonitor;
 import mediathek.javafx.StartupProgressPanel;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
@@ -166,6 +167,13 @@ public class MediathekGui extends JFrame {
         return senderIconCache;
     }
 
+    private void memoryMonitor() {
+        Platform.runLater(() -> {
+            MemoryMonitor stage = new MemoryMonitor();
+            stage.show();
+        });
+    }
+
     public MediathekGui(String... aArguments) {
         super();
 
@@ -213,6 +221,9 @@ public class MediathekGui extends JFrame {
         daten.getMessageBus().subscribe(this);
 
         setFocusOnSearchField();
+
+        if (Config.isDebuggingEnabled())
+            memoryMonitor();
 
         createBandwidthMonitor(this);
 
