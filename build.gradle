@@ -64,7 +64,7 @@ repositories {
 }
 
 dependencies {
-    compile 'de.mediathekview:MLib:2.5.0'
+    compile 'de.mediathekview:MLib:2.5.1'
 
     compile "$swingxGroup:swingx-action:$swingxVersion"
     compile "$swingxGroup:swingx-autocomplete:$swingxVersion"
@@ -183,7 +183,7 @@ distributions {
 //Windows executable generation
 launch4j {
     mainClassName = mainClass
-    icon = "../../res/Info/MediathekView.ico"
+    icon = "../../res/MediathekView.ico"
     jar = jarName
     dontWrapJar = true
     outfile = "MediathekView_ohne_feste_Speicherzuweisung.exe"
