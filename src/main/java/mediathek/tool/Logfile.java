@@ -19,6 +19,7 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.Functions;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
 
@@ -30,8 +31,6 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import static mSearch.tool.Functions.*;
 
 public class Logfile {
 
@@ -76,14 +75,14 @@ public class Logfile {
             bw.newLine();
             bw.write(progVersion);
             bw.newLine();
-            bw.write("Compiled: " + getCompileDate());
+            bw.write("Compiled: " + Functions.getCompileDate());
             bw.newLine();
             bw.newLine();
             bw.write("=====================================================");
             bw.newLine();
             bw.write("Java");
             bw.newLine();
-            String[] java = getJavaVersion();
+            String[] java = Functions.getJavaVersion();
             for (String ja : java) {
                 bw.write(ja);
                 bw.newLine();
@@ -100,7 +99,7 @@ public class Logfile {
             bw.newLine();
             bw.write("=====================================================");
             bw.newLine();
-            bw.write("Programmpfad: " + getPathJar());
+            bw.write("Programmpfad: " + Functions.getPathJar());
             bw.newLine();
             bw.write("Verzeichnis Einstellungen: " + settingsDir);
             bw.newLine();

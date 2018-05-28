@@ -6,14 +6,15 @@ import javafx.animation.Timeline;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleLongProperty;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
@@ -21,6 +22,7 @@ import javafx.util.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MemoryMonitor extends Stage {
+    private static final int TIMELINE_SIZE = 60;
     private Timeline updateMemoryTimer;
     private AtomicInteger time = new AtomicInteger();
     private LongProperty totalMemory;
@@ -32,14 +34,10 @@ public class MemoryMonitor extends Stage {
     public MemoryMonitor() {
         super();
         initComponents();
-
-        btnPerformGc.setOnAction(e -> {
-            System.gc();
-        });
     }
 
     private void initComponents() {
-        setTitle("Memory");
+        setTitle("Speicherverbrauch");
         setAlwaysOnTop(true);
         initStyle(StageStyle.UTILITY);
 
@@ -63,8 +61,6 @@ public class MemoryMonitor extends Stage {
 
         usedMemory = totalMemory.subtract(freeMemory);
     }
-
-    private static final int TIMELINE_SIZE = 60;
 
     private void createUpdateTimer() {
         updateMemoryTimer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
@@ -90,13 +86,7 @@ public class MemoryMonitor extends Stage {
         return new BorderPane(createChart(), createLabels(), null, null, null);
     }
 
-    private Button btnPerformGc = new Button("Perform GC");
-
-    private HBox createLabels() {
-        HBox hb = new HBox();
-        hb.setSpacing(5d);
-        hb.getChildren().add(btnPerformGc);
-
+    private Pane createLabels() {
         Label lblUsed = new Label();
         lblUsed.textProperty().bind(usedMemory.asString("Used: %,d"));
 
@@ -109,11 +99,10 @@ public class MemoryMonitor extends Stage {
         Label lblMax = new Label();
         lblMax.textProperty().bind(maxMemory.asString("Max: %,d"));
 
-        VBox labels = new VBox(lblUsed, lblFree, lblTotal, lblMax);
-        labels.setAlignment(Pos.CENTER);
+        HBox labels = new HBox(lblUsed, lblFree, lblTotal, lblMax);
+        labels.setSpacing(10d);
 
-        hb.getChildren().add(labels);
-        return hb;
+        return labels;
     }
 
     private Region createChart() {

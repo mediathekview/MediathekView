@@ -21,8 +21,10 @@ package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
 import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 import javafx.event.Event;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
@@ -55,6 +57,7 @@ import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.*;
+import mediathek.javafx.GarbageCollectionButton;
 import mediathek.javafx.LivestreamTab;
 import mediathek.javafx.MemoryMonitor;
 import mediathek.javafx.StartupProgressPanel;
@@ -68,6 +71,7 @@ import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.controlsfx.control.StatusBar;
 import org.tbee.javafx.scene.layout.MigPane;
 
 import javax.swing.*;
@@ -319,6 +323,26 @@ public class MediathekGui extends JFrame {
         js.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         js.setViewportView(statusBar.getComponent());
         jPanelInfo.add(js, BorderLayout.CENTER);
+
+        if (Config.isDebuggingEnabled()) {
+            JFXPanel jfxPanel = new JFXPanel();
+            Platform.runLater(() -> jfxPanel.setScene(createStatusBarScene()));
+            jPanelInfo.add(jfxPanel, BorderLayout.NORTH);
+        }
+    }
+
+    private Scene createStatusBarScene() {
+        StatusBar bar = new StatusBar();
+        if (Config.isDebuggingEnabled()) {
+            Button btnGc = new GarbageCollectionButton();
+            bar.getLeftItems().add(btnGc);
+            bar.getRightItems().add(new Button("?"));
+            bar.setProgress(0.0d);
+            //bar.setGraphic();
+        }
+        bar.setText("");
+
+        return new Scene(bar);
     }
 
     private String readPfadFromArguments(final String[] aArguments) {
