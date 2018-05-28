@@ -127,15 +127,6 @@ task updateVersion << {
 
 processResources.dependsOn updateVersion
 
-/*
-licenseReport {
-    outputDir = "res/Copyright/"
-    excludes = [':MSearch', 'MediathekView:MSearch']
-    configurations = ['compile']
-}
-
-processResources.dependsOn generateLicenseReport
-*/
 tasks.withType(Zip) { task ->
     task.doLast {
         ant.checksum(algorithm: 'SHA-1', file: it.archivePath)
@@ -146,27 +137,7 @@ tasks.withType(Tar) { task ->
         ant.checksum(algorithm: 'SHA-1', file: it.archivePath)
     }
 }
-/*
-task copyProgrammIconsInRes(type: Copy) {
-    logger.lifecycle 'Copying Programm icons.'
-    from 'src/main/resources/mediathek/res/programm'
-    into 'res/Icons/Programm/Version-' + version
-    include '*.png'
-    exclude 'about'
-}
 
-processResources.dependsOn copyProgrammIconsInRes
-
-task copySenderIconsInRes(type: Copy) {
-    logger.lifecycle 'Copying Sender icons.'
-    from 'src/main/resources/mediathek/res/sender'
-    into 'res/Icons/Sender'
-    include '*.png'
-    exclude '*.xcv'
-}
-
-processResources.dependsOn copySenderIconsInRes
-*/
 [distZip, distTar]*.shouldRunAfter compileJava, updateVersion, jar
 
 jar {
