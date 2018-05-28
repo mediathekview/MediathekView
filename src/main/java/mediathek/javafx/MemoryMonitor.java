@@ -64,7 +64,7 @@ public class MemoryMonitor extends Stage {
         usedMemory = totalMemory.subtract(freeMemory);
     }
 
-    private static final int TIMELINE_SIZE = 30;
+    private static final int TIMELINE_SIZE = 60;
 
     private void createUpdateTimer() {
         updateMemoryTimer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
