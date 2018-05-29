@@ -21,10 +21,11 @@ package mediathek;
 
 import com.jidesoft.utils.SystemInfo;
 import javafx.application.Platform;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.Event;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
@@ -57,10 +58,10 @@ import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.*;
-import mediathek.javafx.GarbageCollectionButton;
 import mediathek.javafx.LivestreamTab;
 import mediathek.javafx.MemoryMonitor;
 import mediathek.javafx.StartupProgressPanel;
+import mediathek.javafx.StatusBarController;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
 import mediathek.tool.threads.IndicatorThread;
@@ -71,7 +72,6 @@ import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.controlsfx.control.StatusBar;
 import org.tbee.javafx.scene.layout.MigPane;
 
 import javax.swing.*;
@@ -171,13 +171,6 @@ public class MediathekGui extends JFrame {
         return senderIconCache;
     }
 
-    private void memoryMonitor() {
-        Platform.runLater(() -> {
-            MemoryMonitor stage = new MemoryMonitor();
-            stage.show();
-        });
-    }
-
     public MediathekGui(String... aArguments) {
         super();
 
@@ -226,8 +219,10 @@ public class MediathekGui extends JFrame {
 
         setFocusOnSearchField();
 
+        createMemoryMonitor();
+
         if (Config.isDebuggingEnabled())
-            memoryMonitor();
+            Platform.runLater(() -> memoryMonitor.show());
 
         createBandwidthMonitor(this);
 
@@ -236,6 +231,12 @@ public class MediathekGui extends JFrame {
         splashScreenManager.closeSplashScreen();
 
         loadFilmlist();
+    }
+
+    private MemoryMonitor memoryMonitor;
+
+    private void createMemoryMonitor() {
+        Platform.runLater(() -> memoryMonitor = new MemoryMonitor());
     }
 
     private void loadFilmlist() {
@@ -312,37 +313,35 @@ public class MediathekGui extends JFrame {
         }
     }
 
+    private StatusBarController statusBarController;
+    private JFXPanel statusBarPanel;
+
+    /**
+     * this property keeps track how many items are currently selected in the active table view
+     */
+    private IntegerProperty selectedItemsProperty = new SimpleIntegerProperty(0);
+
+    public IntegerProperty getSelectedItemsProperty() {
+        return selectedItemsProperty;
+    }
+
     /**
      * Create the status bar item.
      */
     private void createStatusBar() {
         statusBar = new MVStatusBar();
         JScrollPane js = new JScrollPane();
-        js.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        js.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        js.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        js.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        js.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        js.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         js.setViewportView(statusBar.getComponent());
-        jPanelInfo.add(js, BorderLayout.CENTER);
+        jPanelInfo.add(js, BorderLayout.NORTH);
 
-        if (Config.isDebuggingEnabled()) {
-            JFXPanel jfxPanel = new JFXPanel();
-            Platform.runLater(() -> jfxPanel.setScene(createStatusBarScene()));
-            jPanelInfo.add(jfxPanel, BorderLayout.NORTH);
-        }
-    }
+        statusBarPanel = new JFXPanel();
+        statusBarController = new StatusBarController(daten, memoryMonitor, selectedItemsProperty);
+        statusBarController.installStatusBar(statusBarPanel);
 
-    private Scene createStatusBarScene() {
-        StatusBar bar = new StatusBar();
-        if (Config.isDebuggingEnabled()) {
-            Button btnGc = new GarbageCollectionButton();
-            bar.getLeftItems().add(btnGc);
-            bar.getRightItems().add(new Button("?"));
-            bar.setProgress(0.0d);
-            //bar.setGraphic();
-        }
-        bar.setText("");
-
-        return new Scene(bar);
+        jPanelInfo.add(statusBarPanel, BorderLayout.CENTER);
     }
 
     private String readPfadFromArguments(final String[] aArguments) {

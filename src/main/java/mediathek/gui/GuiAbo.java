@@ -19,6 +19,7 @@
  */
 package mediathek.gui;
 
+import javafx.application.Platform;
 import mSearch.tool.Datum;
 import mSearch.tool.Listener;
 import mediathek.MediathekGui;
@@ -37,20 +38,41 @@ import mediathek.tool.table.MVAbosTable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 @SuppressWarnings("serial")
 public class GuiAbo extends PanelVorlage {
     private final ToolBar toolBar;
 
-    public GuiAbo(Daten d, JFrame parentComponent) {
+    /**
+     * Update the property with the current number of selected entries from the JTable.
+     */
+    private void setupFilmSelectionPropertyListener(MediathekGui mediathekGui) {
+        tabelle.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                final int sel = tabelle.getSelectedRowCount();
+                Platform.runLater(() -> mediathekGui.getSelectedItemsProperty().setValue(sel));
+            }
+        });
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                final int sel = tabelle.getSelectedRowCount();
+                Platform.runLater(() -> mediathekGui.getSelectedItemsProperty().setValue(sel));
+            }
+        });
+    }
+
+    public GuiAbo(Daten d, MediathekGui parentComponent) {
         super(d, parentComponent);
         initComponents();
+
         tabelle = new MVAbosTable();
         jScrollPane1.setViewportView(tabelle);
+
+        setupFilmSelectionPropertyListener(parentComponent);
+
         initListeners();
         tabelleLaden();
         tabelle.initTabelle();

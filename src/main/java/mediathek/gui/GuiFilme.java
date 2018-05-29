@@ -67,12 +67,34 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("serial")
 public class GuiFilme extends PanelVorlage {
 
+    /**
+     * Update the property with the current number of selected entries from the JTable.
+     */
+    private void setupFilmSelectionPropertyListener(MediathekGui mediathekGui) {
+        tabelle.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                final int sel = tabelle.getSelectedRowCount();
+                Platform.runLater(() -> mediathekGui.getSelectedItemsProperty().setValue(sel));
+            }
+        });
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                final int sel = tabelle.getSelectedRowCount();
+                Platform.runLater(() -> mediathekGui.getSelectedItemsProperty().setValue(sel));
+            }
+        });
+    }
+
     public GuiFilme(Daten aDaten, MediathekGui mediathekGui) {
         super(aDaten, mediathekGui);
         initComponents();
 
         tabelle = new MVFilmTable();
         jScrollPane1.setViewportView(tabelle);
+
+        setupFilmSelectionPropertyListener(mediathekGui);
 
         setupPanelVideoplayer();
         setupDescriptionPanel();

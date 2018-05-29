@@ -20,6 +20,7 @@
 package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
+import javafx.application.Platform;
 import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
@@ -104,6 +105,25 @@ public class GuiDownloads extends PanelVorlage {
         }
     }
 
+    /**
+     * Update the property with the current number of selected entries from the JTable.
+     */
+    private void setupFilmSelectionPropertyListener(MediathekGui mediathekGui) {
+        tabelle.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                final int sel = tabelle.getSelectedRowCount();
+                Platform.runLater(() -> mediathekGui.getSelectedItemsProperty().setValue(sel));
+            }
+        });
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                final int sel = tabelle.getSelectedRowCount();
+                Platform.runLater(() -> mediathekGui.getSelectedItemsProperty().setValue(sel));
+            }
+        });
+    }
+
     public GuiDownloads(Daten aDaten, MediathekGui mediathekGui) {
         super(aDaten, mediathekGui);
         initComponents();
@@ -117,11 +137,14 @@ public class GuiDownloads extends PanelVorlage {
 
         init(mediathekGui);
 
+        setupFilmSelectionPropertyListener(mediathekGui);
+
         tabelle.initTabelle();
         tabelle.setSpalten();
         if (tabelle.getRowCount() > 0) {
             tabelle.setRowSelectionInterval(0, 0);
         }
+
         addListenerMediathekView();
         cbDisplayCategories.setModel(getDisplaySelectionModel());
         cbDisplayCategories.addActionListener(new DisplayCategoryListener());
