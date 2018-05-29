@@ -22,7 +22,9 @@ package mediathek;
 import com.jidesoft.utils.SystemInfo;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.Event;
 import javafx.scene.Scene;
@@ -128,7 +130,6 @@ public class MediathekGui extends JFrame {
 
     private final Daten daten;
     private final SplashScreenManager splashScreenManager;
-    private MVStatusBar statusBar;
     private MVFrame frameDownload;
     private MVFrame frameAbo;
     private final JCheckBoxMenuItem jCheckBoxDownloadExtrafenster = new JCheckBoxMenuItem();
@@ -156,10 +157,6 @@ public class MediathekGui extends JFrame {
      * Bandwidth monitoring for downloads.
      */
     protected IBandwidthMonitor bandwidthMonitor;
-
-    public MVStatusBar getStatusBar() {
-        return statusBar;
-    }
 
     private void remapF10Key() {
         //Hier wird F10 default Funktion unterbunden:
@@ -314,7 +311,6 @@ public class MediathekGui extends JFrame {
     }
 
     private StatusBarController statusBarController;
-    private JFXPanel statusBarPanel;
 
     /**
      * this property keeps track how many items are currently selected in the active table view
@@ -329,19 +325,28 @@ public class MediathekGui extends JFrame {
      * Create the status bar item.
      */
     private void createStatusBar() {
-        statusBar = new MVStatusBar();
-        JScrollPane js = new JScrollPane();
-        js.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        js.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        js.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        js.setViewportView(statusBar.getComponent());
-        jPanelInfo.add(js, BorderLayout.NORTH);
-
-        statusBarPanel = new JFXPanel();
+        JFXPanel statusBarPanel = new JFXPanel();
         statusBarController = new StatusBarController(daten, memoryMonitor, selectedItemsProperty);
         statusBarController.installStatusBar(statusBarPanel);
 
         jPanelInfo.add(statusBarPanel, BorderLayout.CENTER);
+    }
+
+    public StatusBarController getStatusBarController() {
+        return statusBarController;
+    }
+
+    public enum TabPaneIndex {
+        NONE, FILME, DOWNLOAD, ABO
+    }
+
+    /**
+     * Helper to determine what tab is currently active
+     */
+    private ObjectProperty<TabPaneIndex> tabPaneIndexProperty = new SimpleObjectProperty<>(TabPaneIndex.NONE);
+
+    public ObjectProperty<TabPaneIndex> tabPaneIndexProperty() {
+        return tabPaneIndexProperty;
     }
 
     private String readPfadFromArguments(final String[] aArguments) {

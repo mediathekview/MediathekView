@@ -46,6 +46,7 @@ import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.StartEvent;
+import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererFilme;
@@ -344,7 +345,9 @@ public class GuiFilme extends PanelVorlage {
     @Override
     public void isShown() {
         super.isShown();
-        daten.getMediathekGui().getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.FILME);
+
+        daten.getMediathekGui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.FILME);
+
         updateFilmData();
         setInfoStatusbar();
         Listener.notify(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
@@ -782,13 +785,9 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void setInfoStatusbar() {
-        // Infopanel setzen
-        daten.getMediathekGui().getStatusBar().setTextForLeftDisplay();
+        daten.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
     }
 
-    // ############################################
-    // Panel mit den Extra-Videoprogrammen
-    // ############################################
     private void setupPanelVideoplayer() {
         // erst sauber machen
         // zum Anlegen der Button:

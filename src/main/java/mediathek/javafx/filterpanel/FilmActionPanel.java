@@ -9,7 +9,6 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -22,6 +21,7 @@ import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.ApplicationConfiguration;
 import mediathek.config.Daten;
+import mediathek.javafx.VerticalSeparator;
 import mediathek.tool.Filter;
 import org.apache.commons.configuration2.Configuration;
 import org.controlsfx.control.PopOver;
@@ -448,12 +448,4 @@ public class FilmActionPanel {
 
         return new Scene(hb);
     }
-
-    private class VerticalSeparator extends Separator {
-        public VerticalSeparator() {
-            super();
-            setOrientation(Orientation.VERTICAL);
-        }
-    }
-
 }

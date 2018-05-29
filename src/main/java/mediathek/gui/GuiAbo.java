@@ -28,6 +28,7 @@ import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
+import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.MVSenderIconCache;
@@ -89,7 +90,7 @@ public class GuiAbo extends PanelVorlage {
     public void isShown() {
         super.isShown();
         if (!solo) {
-            daten.getMediathekGui().getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.ABO);
+            daten.getMediathekGui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.ABO);
         }
     }
 
@@ -312,8 +313,7 @@ public class GuiAbo extends PanelVorlage {
     }
 
     private void setInfo() {
-        // Infopanel setzen
-        daten.getMediathekGui().getStatusBar().setTextForLeftDisplay();
+        daten.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
     }
     private class BeobMausTabelle1 extends MouseAdapter {
 

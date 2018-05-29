@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class FilmlistAgeLabel extends Label {
     private AtomicBoolean timerStopped = new AtomicBoolean(false);
     private Daten daten;
+    private double width = 0d;
 
     public FilmlistAgeLabel(Daten daten) {
         super();
@@ -83,8 +84,6 @@ public class FilmlistAgeLabel extends Label {
                 setVisible(false);
         });
     }
-
-    private double width = 0d;
 
     /**
      * This sets the text of the label and adjusts the width of the label to prevent "jumping" text.

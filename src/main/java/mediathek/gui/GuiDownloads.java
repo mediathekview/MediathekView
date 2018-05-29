@@ -42,6 +42,7 @@ import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.messages.StartEvent;
+import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
 import mediathek.tool.listener.BeobTableHeader;
@@ -167,7 +168,7 @@ public class GuiDownloads extends PanelVorlage {
     public void isShown() {
         super.isShown();
         if (!solo) {
-            daten.getMediathekGui().getStatusBar().setIndexForLeftDisplay(MVStatusBar.StatusbarIndex.DOWNLOAD);
+            daten.getMediathekGui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.DOWNLOAD);
         }
         updateFilmData();
         Listener.notify(Listener.EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
@@ -1057,8 +1058,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void setInfo() {
-        // Infopanel setzen
-        daten.getMediathekGui().getStatusBar().setTextForLeftDisplay();
+        daten.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
     }
 
     /**
