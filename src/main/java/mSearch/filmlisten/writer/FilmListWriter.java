@@ -29,6 +29,7 @@ import mSearch.daten.ListeFilme;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -101,8 +102,10 @@ public class FilmListWriter {
             Path filePath = Paths.get(datei);
             Files.deleteIfExists(filePath);
             long start = System.nanoTime();
+
             try (OutputStream fos = Files.newOutputStream(filePath);
-                 JsonGenerator jg = getJsonGenerator(fos)) {
+                 BufferedOutputStream bos = new BufferedOutputStream(fos, 64 * 1024);
+                 JsonGenerator jg = getJsonGenerator(bos)) {
 
                 jg.writeStartObject();
 

@@ -21,11 +21,11 @@ package mediathek.tool.threads;
 
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
+import mSearch.filmlisten.reader.FilmListReader;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.filmlisten.FilmeLaden;
-import mediathek.filmlisten.reader.FilmListReader;
 import mediathek.gui.messages.FilmListReadStartEvent;
 import mediathek.gui.messages.FilmListReadStopEvent;
 import mediathek.tool.GuiFunktionen;

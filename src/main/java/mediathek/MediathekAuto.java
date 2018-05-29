@@ -21,14 +21,14 @@ package mediathek;
 
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
+import mSearch.filmlisten.reader.FastAutoFilmListReader;
+import mSearch.filmlisten.reader.FilmListReader;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.IoXmlLesen;
 import mediathek.daten.DatenDownload;
-import mediathek.filmlisten.reader.FastAutoFilmListReader;
-import mediathek.filmlisten.reader.FilmListReader;
 import mediathek.tool.MVFilmSize;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
