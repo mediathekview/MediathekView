@@ -39,7 +39,7 @@ public class MemoryMonitor extends Stage {
     private void initComponents() {
         setTitle("Speicherverbrauch");
         setAlwaysOnTop(true);
-        initStyle(StageStyle.UTILITY);
+        initStyle(StageStyle.UNIFIED);
 
         createPropertiesAndBindings();
 
