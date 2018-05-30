@@ -6,7 +6,6 @@ import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
@@ -16,16 +15,10 @@ import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.config.Daten;
 import org.controlsfx.control.StatusBar;
-import org.controlsfx.glyphfont.FontAwesome;
-import org.controlsfx.glyphfont.GlyphFont;
-import org.controlsfx.glyphfont.GlyphFontRegistry;
-
-import javax.swing.*;
 
 public class StatusBarController {
     private Label progressLabel = new Label("");
     private ProgressBar progressBar = new ProgressBar();
-    private Button progressStopButton;
     private Pane progressPane;
     /**
      * The new javafx based status bar
@@ -37,16 +30,14 @@ public class StatusBarController {
     private SelectedItemsLabel selectedItemsLabel;
     private GarbageCollectionButton btnGc = new GarbageCollectionButton();
     private MemoryMonitorButton memButton = new MemoryMonitorButton(memoryMonitor);
-    private Daten daten;
 
     public StatusBarController(Daten daten, MemoryMonitor memoryMonitor, IntegerProperty selectedItemsProperty) {
         this.memoryMonitor = memoryMonitor;
-        this.daten = daten;
+
         selectedItemsLabel = new SelectedItemsLabel(selectedItemsProperty);
         filmlistAgeLabel = new FilmlistAgeLabel(daten);
         filmListInformationLabel = new FilmListInformationLabel(daten, daten.getMediathekGui().tabPaneIndexProperty());
 
-        createStopButton();
         createProgressPane();
 
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
@@ -78,25 +69,16 @@ public class StatusBarController {
         hb.setSpacing(5d);
         hb.getChildren().addAll(new VerticalSeparator(),
                 new CenteredBorderPane(progressLabel),
-                new CenteredBorderPane(progressBar),
-                new CenteredBorderPane(progressStopButton)
+                new CenteredBorderPane(progressBar)
         );
 
         progressPane = hb;
     }
 
-    private void createStopButton() {
-        GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
-        progressStopButton = new Button("", fontAwesome.create(FontAwesome.Glyph.STOP));
-        progressStopButton.setOnAction(e -> SwingUtilities.invokeLater(() -> daten.getFilmeLaden().setStop(true)));
-    }
-
     private void updateProgressBar(ListenerFilmeLadenEvent event) {
         Platform.runLater(() -> {
-            if (!progressBar.isVisible()) {
+            if (!progressBar.isVisible())
                 progressBar.setVisible(true);
-                progressStopButton.setVisible(true);
-            }
 
             if (event.max == 0 || event.progress == event.max) {
                 progressBar.setProgress(-1d);
