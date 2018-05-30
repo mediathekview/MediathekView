@@ -9,7 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import mSearch.Config;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
@@ -22,9 +23,10 @@ import org.controlsfx.glyphfont.GlyphFontRegistry;
 import javax.swing.*;
 
 public class StatusBarController {
-    private Label debugLabel = new Label("");
+    private Label progressLabel = new Label("");
     private ProgressBar progressBar = new ProgressBar();
-    private Button btnFilmListStop;
+    private Button progressStopButton;
+    private Pane progressPane;
     /**
      * The new javafx based status bar
      */
@@ -35,17 +37,17 @@ public class StatusBarController {
     private SelectedItemsLabel selectedItemsLabel;
     private GarbageCollectionButton btnGc = new GarbageCollectionButton();
     private MemoryMonitorButton memButton = new MemoryMonitorButton(memoryMonitor);
+    private Daten daten;
 
     public StatusBarController(Daten daten, MemoryMonitor memoryMonitor, IntegerProperty selectedItemsProperty) {
         this.memoryMonitor = memoryMonitor;
+        this.daten = daten;
         selectedItemsLabel = new SelectedItemsLabel(selectedItemsProperty);
-
         filmlistAgeLabel = new FilmlistAgeLabel(daten);
         filmListInformationLabel = new FilmListInformationLabel(daten, daten.getMediathekGui().tabPaneIndexProperty());
 
-        GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
-        btnFilmListStop = new Button("", fontAwesome.create(FontAwesome.Glyph.STOP));
-        btnFilmListStop.setOnAction(e -> SwingUtilities.invokeLater(() -> daten.getFilmeLaden().setStop(true)));
+        createStopButton();
+        createProgressPane();
 
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
@@ -57,7 +59,7 @@ public class StatusBarController {
 
             @Override
             public void progress(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> debugLabel.setText(event.senderUrl));
+                Platform.runLater(() -> progressLabel.setText(event.senderUrl));
 
                 updateProgressBar(event);
             }
@@ -71,22 +73,40 @@ public class StatusBarController {
         });
     }
 
+    private void createProgressPane() {
+        HBox hb = new HBox();
+        hb.setSpacing(5d);
+        hb.getChildren().addAll(new VerticalSeparator(),
+                new CenteredBorderPane(progressLabel),
+                new CenteredBorderPane(progressBar),
+                new CenteredBorderPane(progressStopButton)
+        );
+
+        progressPane = hb;
+    }
+
+    private void createStopButton() {
+        GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
+        progressStopButton = new Button("", fontAwesome.create(FontAwesome.Glyph.STOP));
+        progressStopButton.setOnAction(e -> SwingUtilities.invokeLater(() -> daten.getFilmeLaden().setStop(true)));
+    }
+
     private void updateProgressBar(ListenerFilmeLadenEvent event) {
         Platform.runLater(() -> {
             if (!progressBar.isVisible()) {
                 progressBar.setVisible(true);
-                btnFilmListStop.setVisible(true);
+                progressStopButton.setVisible(true);
             }
 
             if (event.max == 0 || event.progress == event.max) {
                 progressBar.setProgress(-1d);
-                debugLabel.setText(event.text);
+                progressLabel.setText(event.text);
             } else {
                 final double max = (double) event.max;
                 final double progress = (double) event.progress;
 
                 progressBar.setProgress(progress / max);
-                debugLabel.setText(event.text);
+                progressLabel.setText(event.text);
             }
         });
     }
@@ -94,30 +114,21 @@ public class StatusBarController {
     private void addProgressItems() {
         Platform.runLater(() -> {
             ObservableList<Node> rightItems = statusBar.getRightItems();
-            //CenteredBorderPane pane = new CenteredBorderPane(debugLabel);
-            rightItems.add(debugLabel);
+            rightItems.add(progressPane);
 
-            //pane = new CenteredBorderPane(progressBar);
-            rightItems.add(progressBar);
-
-            //pane = new CenteredBorderPane(btnFilmListStop);
-            rightItems.add(btnFilmListStop);
         });
     }
 
     private void removeProgressItems() {
         Platform.runLater(() -> {
             ObservableList<Node> rightItems = statusBar.getRightItems();
-            rightItems.remove(debugLabel);
-            rightItems.remove(progressBar);
-            rightItems.remove(btnFilmListStop);
+            rightItems.remove(progressPane);
         });
     }
 
     private void setupLeftPane() {
         ObservableList<Node> leftItems = statusBar.getLeftItems();
-        CenteredBorderPane pane = new CenteredBorderPane(selectedItemsLabel);
-        leftItems.add(pane);
+        leftItems.add(new CenteredBorderPane(selectedItemsLabel));
         leftItems.add(new VerticalSeparator());
 
         if (Config.isDebuggingEnabled()) {
@@ -125,21 +136,13 @@ public class StatusBarController {
             leftItems.add(memButton);
             leftItems.add(new VerticalSeparator());
         }
-        pane = new CenteredBorderPane(filmListInformationLabel);
+        CenteredBorderPane pane = new CenteredBorderPane(filmListInformationLabel);
         leftItems.add(pane);
         leftItems.add(new VerticalSeparator());
     }
 
     private void setupRightPane() {
         ObservableList<Node> rightItems = statusBar.getRightItems();
-
-        /*CenteredBorderPane pane = new CenteredBorderPane(debugLabel);
-        rightItems.add(pane);
-        progressBar.setProgress(-1d);
-        pane = new CenteredBorderPane(progressBar);
-        rightItems.add(pane);
-        rightItems.add(btnFilmListStop);*/
-        rightItems.add(new VerticalSeparator());
         CenteredBorderPane pane = new CenteredBorderPane(filmlistAgeLabel);
         rightItems.add(pane);
     }
@@ -156,16 +159,5 @@ public class StatusBarController {
 
     public void installStatusBar(JFXPanel jfxPanel) {
         Platform.runLater(() -> jfxPanel.setScene(createStatusBarScene()));
-    }
-
-    /**
-     * A BorderPane subclass which automatically centers nodes
-     */
-    class CenteredBorderPane extends BorderPane {
-        public CenteredBorderPane(Node node) {
-            super();
-            setCenter(node);
-            setCenterShape(true);
-        }
     }
 }
