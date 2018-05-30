@@ -42,7 +42,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     /**
      * List for dynamic application of filters
      */
-    final List<Predicate<DatenFilm>> filterList = new ArrayList<>();
+    private final List<Predicate<DatenFilm>> filterList = new ArrayList<>();
     private long days = 0;
     private boolean doNotShowFutureFilms, doNotShowGeoBlockedFilms;
     private boolean blacklistIsActive;
@@ -273,9 +273,9 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         for (DatenBlacklist blacklistEntry : this) {
             if (Filter.filterAufFilmPruefen(blacklistEntry.arr[DatenBlacklist.BLACKLIST_SENDER], blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA],
                     Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL])
-                    ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL].toLowerCase().split(","),
+                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL].toLowerCase().split(","),
                     Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL])
-                    ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL].toLowerCase().split(","),
+                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL].toLowerCase().split(","),
                     new String[]{""}, 0, true /*min*/, film, true /*auch die Länge prüfen*/
             )) {
                 return Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));

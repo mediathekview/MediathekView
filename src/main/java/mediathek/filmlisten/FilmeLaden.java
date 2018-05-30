@@ -251,14 +251,8 @@ public class FilmeLaden {
         }
     }
 
-    // #######################################
-    // #######################################
     public void addAdListener(ListenerFilmeLaden listener) {
         listeners.add(ListenerFilmeLaden.class, listener);
-    }
-
-    public synchronized void setStop(boolean set) {
-        Config.setStop(set);
     }
 
     public String[] getSenderNamen() {
@@ -282,8 +276,6 @@ public class FilmeLaden {
         return importFilmliste.msFilmlistenSuchen.suchenAkt(new ArrayList<>());
     }
 
-    // #######################################
-    // #######################################
     private void undEnde(ListenerFilmeLadenEvent event) {
         // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
         // beim Ändern von Abos gemacht wird
