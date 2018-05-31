@@ -19,7 +19,7 @@
  */
 package mediathek;
 
-import com.sun.javafx.application.PlatformImpl;
+import javafx.application.Application;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.reader.FastAutoFilmListReader;
@@ -49,9 +49,11 @@ public class MediathekAuto {
     private boolean bFastAuto = false;
 
     public MediathekAuto(String[] ar) {
-        //HACK: initialize JavaFX toolkit for CLI applications only.
-        PlatformImpl.startup(() -> {
+        Thread fxThread = new Thread(() -> {
+            Application.launch(DummyFXApp.class);
         });
+        fxThread.setName("DummyFXApp Thread");
+        fxThread.start();
 
         if (ar != null) {
             if (ar.length > 0) {
