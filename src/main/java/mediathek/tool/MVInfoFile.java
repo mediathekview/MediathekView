@@ -67,6 +67,8 @@ public class MVInfoFile {
         }
 
         Path path = Paths.get(dialog.ziel);
+        path.toFile().getParentFile().mkdirs();
+
         try (OutputStream os = Files.newOutputStream(path);
              DataOutputStream dos = new DataOutputStream(os);
              OutputStreamWriter osw = new OutputStreamWriter(dos);
