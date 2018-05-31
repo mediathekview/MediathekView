@@ -23,6 +23,7 @@ import mSearch.tool.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.h2.jdbc.JdbcSQLException;
 import org.jetbrains.annotations.NotNull;
 import sun.misc.Cleaner;
 
@@ -318,6 +319,10 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
             insertStatement.setString(2, link);
             insertStatement.executeUpdate();
         } catch (SQLIntegrityConstraintViolationException ignored) {
+        } catch (JdbcSQLException ex) {
+            if (!ex.getMessage().contains("primary key violation")) {
+                logger.error("JdbcSQLException: ", ex);
+            }
         } catch (SQLException ex) {
             logger.error(ex);
         }
@@ -337,13 +342,17 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
 
             insertStatement.setInt(1, databaseFilmNumber);
             insertStatement.setString(2, cleanedDesc);
-            insertStatement.execute();
+            insertStatement.executeUpdate();
 
 
         } catch (SQLIntegrityConstraintViolationException ignored) {
             //this will happen in UPSERT operation
+        } catch (JdbcSQLException ex) {
+            if (!ex.getMessage().contains("primary key violation")) {
+                logger.error("JdbcSQLException: ", ex);
+            }
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("SQLException: ", ex);
         }
 
     }
