@@ -19,6 +19,7 @@
  */
 package mediathek;
 
+import com.sun.javafx.application.PlatformImpl;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.reader.FastAutoFilmListReader;
@@ -48,6 +49,10 @@ public class MediathekAuto {
     private boolean bFastAuto = false;
 
     public MediathekAuto(String[] ar) {
+        //HACK: initialize JavaFX toolkit for CLI applications only.
+        PlatformImpl.startup(() -> {
+        });
+
         if (ar != null) {
             if (ar.length > 0) {
                 if (!ar[0].startsWith("-")) {
