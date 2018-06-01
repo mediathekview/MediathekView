@@ -230,6 +230,10 @@ public class MediathekGui extends JFrame {
         loadFilmlist();
     }
 
+    /**
+     * Memory display for debugging purposes.
+     * Only visible when debug mode is enabled
+     */
     private MemoryMonitor memoryMonitor;
 
     private void createMemoryMonitor() {
@@ -330,10 +334,6 @@ public class MediathekGui extends JFrame {
         statusBarController.installStatusBar(statusBarPanel);
 
         jPanelInfo.add(statusBarPanel, BorderLayout.CENTER);
-    }
-
-    public StatusBarController getStatusBarController() {
-        return statusBarController;
     }
 
     public enum TabPaneIndex {
