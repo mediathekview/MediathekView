@@ -602,23 +602,23 @@ public class MediathekGui extends JFrame {
         });
     }
 
-    public void hideFrame(TABS state) {
-        switch (state) {
-            case TAB_DOWNLOADS:
-                jCheckBoxDownloadExtrafenster.setSelected(false);
-                MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_DOWNLOAD, Boolean.toString(false));
-                break;
-            case TAB_ABOS:
-                jCheckBoxAboExtrafenster.setSelected(false);
-                MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_ABO, Boolean.toString(false));
-                break;
-            case TAB_MELDUNGEN:
-                jCheckBoxMeldungenAnzeigen.setSelected(true);
-                MVConfig.add(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN, Boolean.toString(true));
-                break;
-        }
-        initFrames();
-    }
+//    public void hideFrame(TABS state) {
+//        switch (state) {
+//            case TAB_DOWNLOADS:
+//                jCheckBoxDownloadExtrafenster.setSelected(false);
+//                MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_DOWNLOAD, Boolean.toString(false));
+//                break;
+//            case TAB_ABOS:
+//                jCheckBoxAboExtrafenster.setSelected(false);
+//                MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_ABO, Boolean.toString(false));
+//                break;
+//            case TAB_MELDUNGEN:
+//                jCheckBoxMeldungenAnzeigen.setSelected(true);
+//                MVConfig.add(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN, Boolean.toString(true));
+//                break;
+//        }
+//        initFrames();
+//    }
 
     /**
      * Enable/Disable the update related menu item.
@@ -629,35 +629,37 @@ public class MediathekGui extends JFrame {
         miSearchForProgramUpdate.setEnabled(enable);
     }
 
-    private void initAboFrame() {
-        // Abos
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_ABO))) {
-            frameAbo = setFrame(frameAbo, MVConfig.Configs.SYSTEM_GROESSE_ABO, Daten.guiAbo, TABS.TAB_ABOS);
-        } else {
-            setTab(frameAbo, Daten.guiAbo, TABNAME_ABOS, 2);
-        }
-    }
+//    private void initAboFrame() {
+//        // Abos
+//        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_ABO))) {
+//            frameAbo = setFrame(frameAbo, MVConfig.Configs.SYSTEM_GROESSE_ABO, Daten.guiAbo, TABS.TAB_ABOS);
+//        } else {
+//            setTab(frameAbo, Daten.guiAbo, TABNAME_ABOS, 2);
+//        }
+//    }
 
-    private void initDownloadFrame() {
-        // Downloads
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_DOWNLOAD))) {
-            frameDownload = setFrame(frameDownload, MVConfig.Configs.SYSTEM_GROESSE_DOWNLOAD, Daten.guiDownloads, TABS.TAB_DOWNLOADS);
-        } else {
-            setTab(frameDownload, Daten.guiDownloads, TABNAME_DOWNLOADS, 1);
-        }
-    }
+//    private void initDownloadFrame() {
+//        // Downloads
+//        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_DOWNLOAD))) {
+//            frameDownload = setFrame(frameDownload, MVConfig.Configs.SYSTEM_GROESSE_DOWNLOAD, Daten.guiDownloads, TABS.TAB_DOWNLOADS);
+//        } else {
+//            setTab(frameDownload, Daten.guiDownloads, TABNAME_DOWNLOADS, 1);
+//        }
+//    }
 
     private void showOrHideMeldungenTab() {
         final boolean visible = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN));
-        if (visible)
+        if (visible) {
             setTab(null, Daten.guiMeldungen, TABNAME_MELDUNGEN, 3);
-        else
+            designTabs();
+        } else {
             hide(null, Daten.guiMeldungen);
+        }
     }
 
     private void initFrames() {
-        initDownloadFrame();
-        initAboFrame();
+        setTab(frameDownload, Daten.guiDownloads, TABNAME_DOWNLOADS, 1);
+        setTab(frameAbo, Daten.guiAbo, TABNAME_ABOS, 2);
         showOrHideMeldungenTab();
 
         jTabbedPane.updateUI();
@@ -989,13 +991,13 @@ public class MediathekGui extends JFrame {
     private void initializeAnsichtAbos()
     {
         //Ansicht Abos
-        jCheckBoxAboExtrafenster.setText(CHECKBOX_TEXT_ABOS_IN_EXTRAFENSTER);
-        jMenuAnsicht.add(jCheckBoxAboExtrafenster);
-        jCheckBoxAboExtrafenster.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_ABO)));
-        jCheckBoxAboExtrafenster.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_ABO, Boolean.toString(jCheckBoxAboExtrafenster.isSelected()));
-            initFrames();
-        });
+//        jCheckBoxAboExtrafenster.setText(CHECKBOX_TEXT_ABOS_IN_EXTRAFENSTER);
+//        jMenuAnsicht.add(jCheckBoxAboExtrafenster);
+//        jCheckBoxAboExtrafenster.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_ABO)));
+//        jCheckBoxAboExtrafenster.addActionListener(e -> {
+//            MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_ABO, Boolean.toString(jCheckBoxAboExtrafenster.isSelected()));
+//            initFrames();
+//        });
 
         jMenuItemShowOnlineHelp.setIcon(Icons.ICON_MENUE_HELP);
         jMenuItemShowOnlineHelp.addActionListener(e -> {
@@ -1040,15 +1042,15 @@ public class MediathekGui extends JFrame {
 
     private void initializeAnsichtDownloads()
     {
-        jMenuAnsicht.add(new JSeparator());
-
-        jCheckBoxDownloadExtrafenster.setText(CHECKBOX_TEXT_DOWNLOADS_IN_EXTRAFENSTER);
-        jMenuAnsicht.add(jCheckBoxDownloadExtrafenster);
-        jCheckBoxDownloadExtrafenster.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_DOWNLOAD)));
-        jCheckBoxDownloadExtrafenster.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_DOWNLOAD, Boolean.toString(jCheckBoxDownloadExtrafenster.isSelected()));
-            initFrames();
-        });
+//        jMenuAnsicht.add(new JSeparator());
+//
+//        jCheckBoxDownloadExtrafenster.setText(CHECKBOX_TEXT_DOWNLOADS_IN_EXTRAFENSTER);
+//        jMenuAnsicht.add(jCheckBoxDownloadExtrafenster);
+//        jCheckBoxDownloadExtrafenster.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_DOWNLOAD)));
+//        jCheckBoxDownloadExtrafenster.addActionListener(e -> {
+//            MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_DOWNLOAD, Boolean.toString(jCheckBoxDownloadExtrafenster.isSelected()));
+//            initFrames();
+//        });
     }
 
     private void initializeAboMenu()
