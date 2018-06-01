@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import mSearch.Config;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
@@ -45,13 +46,12 @@ public class StatusBarController {
             public void start(ListenerFilmeLadenEvent event) {
                 addProgressItems();
 
-                Platform.runLater(() -> statusBar.setText(event.senderUrl));
+                if (Config.isDebuggingEnabled())
+                    Platform.runLater(() -> statusBar.setText(event.senderUrl));
             }
 
             @Override
             public void progress(ListenerFilmeLadenEvent event) {
-                Platform.runLater(() -> progressLabel.setText(event.senderUrl));
-
                 updateProgressBar(event);
             }
 
@@ -59,7 +59,8 @@ public class StatusBarController {
             public void fertig(ListenerFilmeLadenEvent event) {
                 Platform.runLater(() -> progressBar.setProgress(0d));
                 removeProgressItems();
-                Platform.runLater(() -> statusBar.setText(""));
+                if (Config.isDebuggingEnabled())
+                    Platform.runLater(() -> statusBar.setText(""));
             }
         });
     }
@@ -67,6 +68,7 @@ public class StatusBarController {
     private void createProgressPane() {
         HBox hb = new HBox();
         hb.setSpacing(5d);
+        hb.setMinWidth(Region.USE_PREF_SIZE);
         hb.getChildren().addAll(new VerticalSeparator(),
                 new CenteredBorderPane(progressLabel),
                 new CenteredBorderPane(progressBar)
