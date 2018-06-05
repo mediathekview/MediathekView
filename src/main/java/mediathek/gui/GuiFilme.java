@@ -1408,7 +1408,7 @@ public class GuiFilme extends PanelVorlage {
 
     private String[] getThemen(String ssender) {
         for (int i = 1; i < daten.getListeFilmeNachBlackList().themenPerSender.length; ++i) {
-            if (daten.getListeFilmeNachBlackList().sender[i].equals(ssender)) {
+            if (daten.getListeFilmeNachBlackList().senderList.get(i).equals(ssender)) {
                 return daten.getListeFilmeNachBlackList().themenPerSender[i];
             }
         }

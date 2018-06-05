@@ -234,7 +234,7 @@ public class PanelBlacklist extends PanelVorlage {
 
     private String[] getThemen(String ssender) {
         for (int i = 1; i < daten.getListeFilme().themenPerSender.length; ++i) {
-            if (daten.getListeFilme().sender[i].equals(ssender)) {
+            if (daten.getListeFilme().senderList.get(i).equals(ssender)) {
                 return daten.getListeFilme().themenPerSender[i];
             }
         }

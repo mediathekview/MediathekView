@@ -48,12 +48,6 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     public int nr = 1;
     public String[] metaDaten = new String[]{"", "", "", "", ""};
     /**
-     * List of available senders.
-     * Note that this is the old way. Please use {@link #senderList} in the future
-     */
-    @Deprecated
-    public String[] sender = {""}; //replace with senderList in future
-    /**
      * List of available senders which notifies its users.
      */
     public ObservableList<String> senderList = FXCollections.observableArrayList();
@@ -291,23 +285,11 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         return this.stream().filter(DatenFilm::isNew).count();
     }
 
-    private List<String> fetchSenders() {
-        ArrayList<String> senderList = new ArrayList<>();
+    private void fillSenderList() {
+        senderList.clear();
         // der erste Sender ist ""
         senderList.add("");
         senderList.addAll(stream().map(DatenFilm::getSender).distinct().collect(Collectors.toList()));
-
-        return senderList;
-    }
-
-    private void fillSenderList() {
-        List<String> newSenderList = fetchSenders();
-        senderList.clear();
-        senderList.addAll(newSenderList);
-        newSenderList.clear();
-        //TODO umbauen auf ObservableList
-        sender = senderList.toArray(new String[0]);
-        logger.debug("SENDER LENGTH: {}, SENDERLIST SIZE {}", sender.length, senderList.size());
     }
 
     /**
@@ -344,7 +326,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
                 tree[0].add(filmThema);
             }
             for (int i = 1; i < senderLength; ++i) {
-                if (filmSender.equals(sender[i])) {
+                if (filmSender.equals(senderList.get(i))) {
                     if (!hashSet[i].contains(filmThema)) {
                         hashSet[i].add(filmThema);
                         tree[i].add(filmThema);
