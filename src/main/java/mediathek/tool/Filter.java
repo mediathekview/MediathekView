@@ -22,6 +22,7 @@ package mediathek.tool;
 import mSearch.daten.DatenFilm;
 import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,6 +31,7 @@ import java.util.regex.Pattern;
 
 public class Filter {
 
+    //TODO make pattern cache time-dependent
     /**
      * The cache for already compiled RegExp.
      */
@@ -41,9 +43,11 @@ public class Filter {
 
         String senderExistiert = aboExistiert.arr[DatenAbo.ABO_SENDER];
         String themaExistiert = aboExistiert.arr[DatenAbo.ABO_THEMA];
-        String[] titelExistiert = aboExistiert.arr[DatenAbo.ABO_TITEL].toLowerCase().split(",");
-        String[] themaTitelExistiert = aboExistiert.arr[DatenAbo.ABO_THEMA_TITEL].toLowerCase().split(",");
-        String[] irgendwoExistiert = aboExistiert.arr[DatenAbo.ABO_IRGENDWO].toLowerCase().split(",");
+
+        String[] titelExistiert = StringUtils.split(aboExistiert.arr[DatenAbo.ABO_TITEL].toLowerCase(), ",");
+        String[] themaTitelExistiert = StringUtils.split(aboExistiert.arr[DatenAbo.ABO_THEMA_TITEL].toLowerCase(), ",");
+        String[] irgendwoExistiert = StringUtils.split(aboExistiert.arr[DatenAbo.ABO_IRGENDWO].toLowerCase(), ",");
+
         // Abos sollen sich nicht nur in der Länge unterscheiden
         String senderPruefen = aboPruefen.arr[DatenAbo.ABO_SENDER];
         String themaPruefen = aboPruefen.arr[DatenAbo.ABO_THEMA];
@@ -82,22 +86,24 @@ public class Filter {
         // themaSuchen exakt mit thema
         // titelSuchen muss im Titel nur enthalten sein
         boolean result = false;
+        String thema = film.getThema();
+        String title = film.getTitle();
 
         if (senderSuchen.isEmpty() || film.getSender().compareTo(senderSuchen) == 0) {
-            if (themaSuchen.isEmpty() || film.arr[DatenFilm.FILM_THEMA].equalsIgnoreCase(themaSuchen)) {
+            if (themaSuchen.isEmpty() || thema.equalsIgnoreCase(themaSuchen)) {
 
-                if (titelSuchen.length == 0 || pruefen(titelSuchen, film.getTitle())) {
+                if (titelSuchen.length == 0 || pruefen(titelSuchen, title)) {
 
                     if (themaTitelSuchen.length == 0
-                            || pruefen(themaTitelSuchen, film.arr[DatenFilm.FILM_THEMA])
-                            || pruefen(themaTitelSuchen, film.getTitle())) {
+                            || pruefen(themaTitelSuchen, thema)
+                            || pruefen(themaTitelSuchen, title)) {
 
                         if (irgendwoSuchen.length == 0
                                 || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_DATUM])
-                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_THEMA])
-                                || pruefen(irgendwoSuchen, film.getTitle())) {
+                                || pruefen(irgendwoSuchen, thema)
+                                || pruefen(irgendwoSuchen, title)) {
                             if (mitLaenge) {
-                                // die Länge soll mit gefrüft werden
+                                // die Länge soll mit geprüft werden
                                 if (laengePruefen(laengeMinutenSuchen, film.getFilmLength(), min)) {
                                     result = true;
                                 }
@@ -109,16 +115,35 @@ public class Filter {
                 }
             }
         }
-        
+
         return result;
     }
 
+    private static boolean lengthCheck(int filterLaengeInMinuten, long filmLaenge) {
+        return filterLaengeInMinuten == 0 || filmLaenge == 0;
+    }
+
+    private static boolean checkLengthNoMin(int filterLaengeInMinuten, long filmLaenge) {
+        final int filterLength = filterLaengeInMinuten * 60;
+
+        return lengthCheck(filterLaengeInMinuten, filmLaenge) || filmLaenge < filterLength;
+    }
+
+    private static boolean checkLengthWithMin(int filterLaengeInMinuten, long filmLaenge) {
+        final int filterLength = filterLaengeInMinuten * 60;
+
+        return lengthCheck(filterLaengeInMinuten, filmLaenge) || filmLaenge > filterLength;
+    }
+
     public static boolean laengePruefen(int filterLaengeInMinuten, long filmLaenge, boolean min) {
-        if (min) {
-            return filterLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge > (filterLaengeInMinuten * 60);
-        } else {
-            return filterLaengeInMinuten == 0 || filmLaenge == 0 || filmLaenge < (filterLaengeInMinuten * 60);
-        }
+        boolean result;
+
+        if (min)
+            result = checkLengthWithMin(filterLaengeInMinuten, filmLaenge);
+        else
+            result = checkLengthNoMin(filterLaengeInMinuten, filmLaenge);
+
+        return result;
     }
 
     private static boolean pruefen(String[] filter, final String im) {
@@ -134,17 +159,25 @@ public class Filter {
             }
         }
 
-        final String lowerCase = im.toLowerCase();
+        return checkLowercase(filter, im.toLowerCase());
+    }
+
+    /**
+     * @param filter the filters array
+     * @param im     checked String IN LOWERCASE!!!!!
+     * @return true or false
+     */
+    private static boolean checkLowercase(String[] filter, String im) {
         for (String s : filter) {
             // dann jeden Suchbegriff checken
-            if (lowerCase.contains(s)) {
+            if (im.contains(s)) {
                 return true;
             }
         }
 
-        // nix wars
         return false;
     }
+
 
     public static boolean isPattern(final String textSuchen) {
         return textSuchen.startsWith("#:");

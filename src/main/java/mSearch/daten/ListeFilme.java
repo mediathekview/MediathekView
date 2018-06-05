@@ -47,7 +47,12 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     private final SimpleDateFormat sdf = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
     public int nr = 1;
     public String[] metaDaten = new String[]{"", "", "", "", ""};
-    public String[] sender = {""};
+    /**
+     * List of available senders.
+     * Note that this is the old way. Please use {@link #senderList} in the future
+     */
+    @Deprecated
+    public String[] sender = {""}; //replace with senderList in future
     /**
      * List of available senders which notifies its users.
      */
@@ -295,24 +300,30 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         return senderList;
     }
 
+    private void fillSenderList() {
+        List<String> newSenderList = fetchSenders();
+        senderList.clear();
+        senderList.addAll(newSenderList);
+        newSenderList.clear();
+        //TODO umbauen auf ObservableList
+        sender = senderList.toArray(new String[0]);
+        logger.debug("SENDER LENGTH: {}, SENDERLIST SIZE {}", sender.length, senderList.size());
+    }
+
     /**
      * Erstellt ein StringArray der Themen eines Senders oder wenn "sender" leer, aller Sender.
      * Ist für die Filterfelder in GuiFilme.
      */
     @SuppressWarnings("unchecked")
     public synchronized void themenLaden() {
+        //TODO is this still used somewhere or needs to be replaced for new search???
         logger.debug(THEME_SEARCH_TEXT);
 
-        List<String> senderSet = fetchSenders();
-
-        //TODO umbauen auf ObservableList
-        sender = senderSet.toArray(new String[0]);
-        senderList.clear();
-        senderList.addAll(senderSet);
-        senderSet.clear();
+        fillSenderList();
 
         //für den Sender "" sind alle Themen im themenPerSender[0]
-        final int senderLength = sender.length;
+        final int senderLength = senderList.size();
+
         themenPerSender = new String[senderLength][];
         TreeSet<String>[] tree = (TreeSet<String>[]) new TreeSet<?>[senderLength];
         HashSet<String>[] hashSet = (HashSet<String>[]) new HashSet<?>[senderLength];
