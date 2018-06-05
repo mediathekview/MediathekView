@@ -107,12 +107,12 @@ public class GuiFilme extends PanelVorlage {
 
         setupActionListeners();
 
-        daten.getListeFilmeNachBlackList().senderList.addListener((ListChangeListener<String>) c -> {
+        daten.getListeFilmeNachBlackList().getSenders().addListener((ListChangeListener<String>) c -> {
             String selectedItem = fap.senderBox.getSelectionModel().getSelectedItem();
             if (selectedItem != null) {
                 ObservableList<String> list = fap.senderBox.getItems();
                 list.clear();
-                list.addAll(daten.getListeFilmeNachBlackList().senderList);
+                list.addAll(daten.getListeFilmeNachBlackList().getSenders());
                 fap.senderBox.getSelectionModel().select(selectedItem);
                 SwingUtilities.invokeLater(this::reloadTable);
             }
@@ -151,7 +151,7 @@ public class GuiFilme extends PanelVorlage {
     private void setupThemaEntries(String sender) {
         ObservableList<String> list = fap.themaBox.getItems();
         list.clear();
-        list.addAll(Arrays.asList(getThemen(sender)));
+        list.addAll(Arrays.asList(daten.getListeFilmeNachBlackList().getThemen(sender)));
     }
 
     /**
@@ -1406,120 +1406,6 @@ public class GuiFilme extends PanelVorlage {
         });
     }
 
-    private String[] getThemen(String ssender) {
-        for (int i = 1; i < daten.getListeFilmeNachBlackList().themenPerSender.length; ++i) {
-            if (daten.getListeFilmeNachBlackList().senderList.get(i).equals(ssender)) {
-                return daten.getListeFilmeNachBlackList().themenPerSender[i];
-            }
-        }
-        return daten.getListeFilmeNachBlackList().themenPerSender[0];
-    }
-
-    // ############################################
-    // Filterprofile
-    // ############################################
-    /*private void setFilterProfile(int filter) {
-        stopBeob = true;
-        boolean bChanged = false;
-
-        fap.dontShowAbos.setValue(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_ABO, filter)));
-        fap.showUnseenOnly.setValue(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_GESEHENE, filter)));
-        fap.showOnlyHd.setValue(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_HD, filter)));
-        fap.showSubtitlesOnly.setValue(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_UT, filter)));
-        fap.showNewOnly.setValue(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_NEUE, filter)));
-
-        mVFilterPanel.get_jSliderTage().setValue(MVConfig.getInt(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TAGE, filter));
-
-        // Blackliste
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__BLACKLIST_ON, filter))
-                != Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON))) {
-            bChanged = true;
-            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__BLACKLIST_ON, filter));
-        }
-
-        setTextSlider();
-
-        // und jetzt wieder laden
-        daten.getListeBlacklist().filterListe();
-
-        // erst jetzt da Sender/Thema evtl. in der Blacklist
-        mVFilterPanel.get_jComboBoxFilterThema().setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
-        mVFilterPanel.get_jComboBoxFilterThema().setSelectedItem(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA, filter));
-
-        SortKey sk = sortKeyLesen(MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SORT_KEY, filter),
-                MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SORT_KEY_UPDOWN, filter));
-        if (sk != null) {
-            ArrayList<SortKey> lst = new ArrayList<>();
-            lst.add(sk);
-            tabelle.getRowSorter().setSortKeys(lst);
-        }
-
-        stopBeob = false;
-
-        if (bChanged) {
-            Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiFilme.class.getSimpleName());
-        }
-        //dann laden
-        loadTable();
-        //beim Filter umschalten immer auf die erste Zeile setzen
-        tabelle.setSelRow(0);
-    }
-
-    private void delFilterProfile(int filter) {
-        // jetzt noch speichern
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SENDER, String.valueOf(""), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA, String.valueOf(""), filter);
-
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TITEL, String.valueOf(""), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA_TITEL, String.valueOf(""), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TT, Boolean.toString(true), filter);
-
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_ABO, String.valueOf(false), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_GESEHENE, String.valueOf(false), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_HD, String.valueOf(false), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_NEUE, String.valueOf(false), filter);
-
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TAGE, MVConfig.Configs.SYSTEM_FILTER_PROFILE__TAGE.initValue, filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER, MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER.initValue, filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER_MIN, MVConfig.Configs.SYSTEM_FILTER_PROFILE__DAUER_MIN.initValue, filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__BLACKLIST_ON, Boolean.FALSE.toString(), filter);
-
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SORT_KEY, "", filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SORT_KEY_UPDOWN, "", filter);
-    }
-
-    private void saveFilterProfile(int filter) {
-        // jetzt noch speichern
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__THEMA, String.valueOf(mVFilterPanel.get_jComboBoxFilterThema().getSelectedItem()), filter);
-
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_ABO, String.valueOf(fap.dontShowAbos.getValue()), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__KEINE_GESEHENE, String.valueOf(fap.showUnseenOnly.getValue()), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_HD, String.valueOf(fap.showOnlyHd.getValue()), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_UT, String.valueOf(fap.showSubtitlesOnly.getValue()), filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__NUR_NEUE, String.valueOf(fap.showNewOnly.getValue()), filter);
-
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__TAGE, String.valueOf(mVFilterPanel.get_jSliderTage().getValue()), filter);
-
-        java.util.List<? extends RowSorter.SortKey> listeSortKeys;
-        listeSortKeys = tabelle.getRowSorter().getSortKeys();
-        String key = "";
-        String upDown = "";
-
-        if (listeSortKeys != null) {
-            if (!listeSortKeys.isEmpty()) {
-                SortKey sk = listeSortKeys.get(0);
-                key = String.valueOf(sk.getColumn());
-                upDown = sk.getSortOrder().equals(SortOrder.ASCENDING) ? SORT_ASCENDING : SORT_DESCENDING;
-            }
-        }
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SORT_KEY, key, filter);
-        MVConfig.add(MVConfig.Configs.SYSTEM_FILTER_PROFILE__SORT_KEY_UPDOWN, upDown, filter);
-
-    }*/
-
-    // ####################################
-    // Tabelle laden
-    // ####################################
     private synchronized void loadTable() {
         try {
             stopBeob = true;

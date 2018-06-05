@@ -45,18 +45,21 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     private static final Logger logger = LogManager.getLogger(ListeFilme.class);
     private static final String THEME_SEARCH_TEXT = "Themen in Filmliste suchen";
     private final SimpleDateFormat sdf = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
-    public int nr = 1;
-    public String[] metaDaten = new String[]{"", "", "", "", ""};
     /**
      * List of available senders which notifies its users.
      */
-    public ObservableList<String> senderList = FXCollections.observableArrayList();
+    private final ObservableList<String> senderList = FXCollections.observableArrayList();
+    public String[] metaDaten = new String[]{"", "", "", "", ""};
+    @Deprecated
     public String[][] themenPerSender = {{""}};
     public boolean neueFilme = false;
-
     public ListeFilme() {
         super();
         sdf_.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
+    }
+
+    public ObservableList<String> getSenders() {
+        return senderList;
     }
 
     public synchronized void importFilmliste(DatenFilm film) {
@@ -71,6 +74,27 @@ public class ListeFilme extends ArrayList<DatenFilm> {
             hash.add(f.getIndex());
         } else {
             hash.add(f.getUrl());
+        }
+    }
+
+    /**
+     * Get the available themas for selected sender.
+     */
+    public String[] getThemen(String ssender) {
+        if (!senderList.contains(ssender))
+            return themenPerSender[0];
+        else {
+            try {
+                for (int i = 1; i < themenPerSender.length; ++i) {
+                    if (senderList.get(i).equals(ssender)) {
+                        return themenPerSender[i];
+                    }
+                }
+                return themenPerSender[0];
+            } catch (IndexOutOfBoundsException ex) {
+                ex.printStackTrace();
+                return themenPerSender[0];
+            }
         }
     }
 
@@ -134,7 +158,6 @@ public class ListeFilme extends ArrayList<DatenFilm> {
 
     @Override
     public synchronized void clear() {
-        nr = 1;
         neueFilme = false;
 
         super.clear();
