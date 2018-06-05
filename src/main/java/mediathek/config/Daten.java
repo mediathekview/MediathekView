@@ -67,6 +67,7 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class Daten
 {
@@ -356,7 +357,14 @@ public class Daten
             }
         });
 
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> new FilmListWriter().writeFilmList(getDateiFilmliste(), listeFilme));
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+            //sleep for 3 seconds to give database a chance to write out changes
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException ignored) {
+            }
+            new FilmListWriter().writeFilmList(getDateiFilmliste(), listeFilme);
+        });
         writeFuture = Optional.of(future);
     }
 

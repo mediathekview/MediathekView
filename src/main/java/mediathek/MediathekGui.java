@@ -319,7 +319,7 @@ public class MediathekGui extends JFrame {
     /**
      * this property keeps track how many items are currently selected in the active table view
      */
-    private IntegerProperty selectedItemsProperty = new SimpleIntegerProperty(0);
+    private final IntegerProperty selectedItemsProperty = new SimpleIntegerProperty(0);
 
     public IntegerProperty getSelectedItemsProperty() {
         return selectedItemsProperty;
@@ -835,7 +835,7 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    private HashMap<JMenu, MenuLST> menuListeners = new HashMap<>();
+    private final HashMap<JMenu, MenuLST> menuListeners = new HashMap<>();
 
     /**
      * Install the listeners which will cause automatic tab switching based on associated Menu item.
@@ -1193,7 +1193,7 @@ public class MediathekGui extends JFrame {
         private Label lblStatusText;
         private Stage stage;
         private ProgressBar progress;
-        private double maxTasks;
+        private final double maxTasks;
 
         ShutdownDialog(int maxTasks) {
             this.maxTasks = maxTasks;
