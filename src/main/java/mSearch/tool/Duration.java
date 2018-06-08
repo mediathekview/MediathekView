@@ -19,6 +19,9 @@
  */
 package mSearch.tool;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -108,19 +111,18 @@ public class Duration {
         max++;
         for (Counter c : COUNTER_LIST) {
             while (c.text.length() < max) {
-                c.text = c.text + ' ';
+                c.text += ' ';
             }
         }
 
-        System.out.println("");
-        System.out.println("");
-        System.out.println("#################################################################");
+        logger.info("#################################################################");
         for (Counter c : COUNTER_LIST) {
-            System.out.println(c.text + " Anzahl: " + c.count + "   Gesamtdauer: " + roundDuration(c.time));
+            logger.info(c.text + " Anzahl: " + c.count + "   Gesamtdauer: " + roundDuration(c.time));
         }
-        System.out.println("#################################################################");
-        System.out.println("");
+        logger.info("#################################################################");
     }
+
+    private static final Logger logger = LogManager.getLogger(Duration.class);
 
     public synchronized static void staticPing(String text) {
         final Throwable t = new Throwable();
@@ -150,15 +152,14 @@ public class Duration {
         } catch (Exception ex) {
             sekunden = -1;
         }
-        System.out.println("");
-        System.out.println("========== ========== ========== ========== ==========");
-        System.out.println("DURATION " + sum++ + ":  " + text + "  [" + roundDuration(sekunden) + ']');
-        System.out.println("   Klasse:  " + klasse);
+
+        logger.info("========== ========== ========== ========== ==========");
+        logger.info("DURATION " + sum++ + ":  " + text + "  [" + roundDuration(sekunden) + ']');
+        logger.info("   Klasse:  " + klasse);
         if (!extra.isEmpty()) {
-            System.out.println("   " + extra);
+            logger.info("   " + extra);
         }
-        System.out.println("========== ========== ========== ========== ==========");
-        System.out.println("");
+        logger.info("========== ========== ========== ========== ==========");
 
         stopZeitStatic = now;
     }

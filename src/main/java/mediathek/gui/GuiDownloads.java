@@ -27,7 +27,6 @@ import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Datum;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
@@ -818,14 +817,14 @@ public class GuiDownloads extends PanelVorlage {
             if (ret == JOptionPane.OK_OPTION) {
 
                 // und jetzt die Datei löschen
-                SysMsg.sysMsg(new String[]{"Datei löschen: ", file.getAbsolutePath()});
+                logger.info(new String[]{"Datei löschen: ", file.getAbsolutePath()});
                 if (!file.delete()) {
                     throw new Exception();
                 }
             }
         } catch (Exception ex) {
             MVMessageDialog.showMessageDialog(parentComponent, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
-            Log.errorLog(915236547, "Fehler beim löschen: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+            logger.error("Fehler beim löschen: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
     }
 

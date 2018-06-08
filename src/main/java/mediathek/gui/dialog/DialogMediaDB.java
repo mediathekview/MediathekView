@@ -21,8 +21,6 @@ package mediathek.gui.dialog;
 
 import mSearch.tool.FilenameUtils;
 import mSearch.tool.Listener;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -31,6 +29,8 @@ import mediathek.file.GetFile;
 import mediathek.tool.*;
 import mediathek.tool.table.MVMediaDbTable;
 import mediathek.tool.table.MVTable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -215,15 +215,17 @@ public class DialogMediaDB extends JDialog {
             }
 
             // und jetzt die Datei löschen
-            SysMsg.sysMsg(new String[]{"Datei löschen: ", delFile.getAbsolutePath()});
+            logger.info(new String[]{"Datei löschen: ", delFile.getAbsolutePath()});
             if (!delFile.delete()) {
                 throw new Exception();
             }
         } catch (Exception ex) {
             MVMessageDialog.showMessageDialog(parent, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
-            Log.errorLog(984512036, "Fehler beim löschen: " + del);
+            logger.error("Fehler beim löschen: " + del);
         }
     }
+
+    private static final Logger logger = LogManager.getLogger(DialogMediaDB.class);
 
     private void beenden() {
         MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.FALSE.toString());

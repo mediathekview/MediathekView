@@ -24,6 +24,8 @@ import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
 import mediathek.tool.MVFilmSize;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -73,25 +75,24 @@ public class RuntimeExec {
         strProgCall = p;
     }
 
-    //===================================
-    // Public
-    //===================================
+    private static final Logger logger = LogManager.getLogger(RuntimeExec.class);
+
     public Process exec(boolean log) {
         try {
             if (arrProgCallArray != null) {
                 if (log) {
-                    SysMsg.sysMsg("=====================");
-                    SysMsg.sysMsg("Starte Array: ");
-                    SysMsg.sysMsg(" -> " + strProgCallArray);
-                    SysMsg.sysMsg("=====================");
+                    logger.info("=====================");
+                    logger.info("Starte Array: ");
+                    logger.info(" -> " + strProgCallArray);
+                    logger.info("=====================");
                 }
                 process = Runtime.getRuntime().exec(arrProgCallArray);
             } else {
                 if (log) {
-                    SysMsg.sysMsg("=====================");
-                    SysMsg.sysMsg("Starte nicht als Array:");
-                    SysMsg.sysMsg(" -> " + strProgCall);
-                    SysMsg.sysMsg("=====================");
+                    logger.info("=====================");
+                    logger.info("Starte nicht als Array:");
+                    logger.info(" -> " + strProgCall);
+                    logger.info("=====================");
                 }
                 process = Runtime.getRuntime().exec(strProgCall);
             }

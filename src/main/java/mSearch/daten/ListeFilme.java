@@ -92,7 +92,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
                 }
                 return themenPerSender[0];
             } catch (IndexOutOfBoundsException ex) {
-                ex.printStackTrace();
+                logger.debug("getThemen:", ex);
                 return themenPerSender[0];
             }
         }
@@ -107,6 +107,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         if (ersetzen) {
             listeEinsortieren.forEach((DatenFilm f) -> addHash(f, hash, index));
 
+            //TODO check if still necessary
             Iterator<DatenFilm> it = this.iterator();
             while (it.hasNext()) {
                 DatenFilm f = it.next();
