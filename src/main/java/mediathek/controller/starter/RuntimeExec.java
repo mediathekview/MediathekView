@@ -39,10 +39,8 @@ public class RuntimeExec {
     public static final String TRENNER_PROG_ARRAY = "<>";
     private static final int INPUT = 1;
     private static final int ERROR = 2;
-    Thread clearIn;
-    Thread clearOut;
     private Process process = null;
-    Start start;
+    private Start start;
     private static int procnr = 0; //TH
     private static final Pattern patternFlvstreamer = Pattern.compile("([0-9]*.[0-9]{1}%)");
     private static final Pattern patternFlvstreamerComplete = Pattern.compile("Download complete");
@@ -97,8 +95,8 @@ public class RuntimeExec {
                 process = Runtime.getRuntime().exec(strProgCall);
             }
 
-            clearIn = new Thread(new ClearInOut(INPUT, process));
-            clearOut = new Thread(new ClearInOut(ERROR, process));
+            Thread clearIn = new Thread(new ClearInOut(INPUT, process));
+            Thread clearOut = new Thread(new ClearInOut(ERROR, process));
             clearIn.start();
             clearOut.start();
         } catch (Exception ex) {

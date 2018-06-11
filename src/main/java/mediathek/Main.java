@@ -27,7 +27,6 @@ import jiconfont.swing.IconFontSwing;
 import mSearch.Config;
 import mSearch.tool.Log;
 import mSearch.tool.SingleInstance;
-import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.Messages;
@@ -47,10 +46,8 @@ import java.nio.file.Paths;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 public class Main {
-    public static final String TEXT_LINE = "===========================================";
+    private static final String TEXT_LINE = "===========================================";
     private static final String JAVAFX_CLASSNAME_APPLICATION_PLATFORM = "javafx.application.Platform";
-    private static final String LOG_TEXT_SYSTEMMELDUNG = "Systemmeldung";
-    private static final String LOG_TEXT_FEHLERMELDUNG = "Fehlermeldung";
     private static final String HTTP_PROXY_USER = "http.proxyUser";
     private static final String HTTP_PROXY_PW = "http.proxyPassword";
     private static final String LOG_TEXT_PROXY_AUTHENTICATION_SUCESSFUL = "Proxy Authentication: (%s)";
@@ -266,8 +263,8 @@ public class Main {
                     EventQueue.invokeLater(() ->
                     {
                         startMeldungen();
-                        SysMsg.sysMsg(LOG_TEXT_SYSTEMMELDUNG);
-                        Log.errorLog(100000000, LOG_TEXT_FEHLERMELDUNG);
+                        logger.info("Systemmeldung");
+                        Log.errorLog(100000000, "Fehlermeldung");
                         Log.endMsg();
                         System.exit(0);
                     });

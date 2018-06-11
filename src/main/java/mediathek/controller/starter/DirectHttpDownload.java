@@ -19,7 +19,10 @@
  */
 package mediathek.controller.starter;
 
-import mSearch.tool.*;
+import mSearch.tool.ApplicationConfiguration;
+import mSearch.tool.Listener;
+import mSearch.tool.Log;
+import mSearch.tool.MVHttpClient;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.MVBandwidthTokenBucket;
@@ -35,6 +38,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.io.File;
@@ -45,7 +50,6 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 
@@ -339,13 +343,12 @@ public class DirectHttpDownload extends Thread {
     }
 
     private void printTimeoutMessage(final int restartCount) {
-        //Timeout Fehlermeldung für zxd :)
-        ArrayList<String> text = new ArrayList<>();
-        text.add("Timeout, Download Restarts: " + restartCount);
-        text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
-        text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
-        SysMsg.sysMsg(text.toArray(new String[0]));
+        logger.error("Timeout, Download Restarts: {}", restartCount);
+        logger.error("Ziel: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+        logger.error("URL: {}", datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
     }
+
+    private static final Logger logger = LogManager.getLogger(DirectHttpDownload.class);
 
     private boolean cancelDownload() {
         if (!file.exists()) {

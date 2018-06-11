@@ -155,19 +155,6 @@ public class Logfile {
             //
             bw.write("#####################################################");
             bw.newLine();
-            bw.write("## Systemmeldungen ##################################");
-            bw.newLine();
-            bw.write("#####################################################");
-            bw.newLine();
-            bw.newLine();
-            bw.write(SysMsg.textSystem.toString());
-            bw.newLine();
-            bw.newLine();
-            bw.newLine();
-            bw.newLine();
-            //
-            bw.write("#####################################################");
-            bw.newLine();
             bw.write("## Programmausgabe ##################################");
             bw.newLine();
             bw.write("#####################################################");

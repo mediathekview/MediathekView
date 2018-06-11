@@ -21,9 +21,10 @@ package mediathek.tool;
 
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
 import mSearch.tool.TimedTextMarkupLanguageParser;
 import mediathek.daten.DatenDownload;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,12 +38,14 @@ import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
 public class MVSubtitle {
+    private static final Logger logger = LogManager.getLogger(MVSubtitle.class);
+
     public static void writeSubtitle( DatenDownload datenDownload) {
         final String SUFFIX_TTML = "ttml";
         final String SUFFIX_SRT = "srt";
-        String suffix = SUFFIX_TTML;// txt käme dem Infofile in die Quere
+        String suffix;// txt käme dem Infofile in die Quere
         String urlSubtitle = "";
-        String strSubtitelFile = null;
+        String strSubtitelFile;
         File subtitelFile;
         HttpURLConnection conn = null;
         InputStream in = null;
@@ -52,8 +55,8 @@ public class MVSubtitle {
             return;
         }
         try {
-            SysMsg.sysMsg(new String[]{"Untertitel: ", datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE],
-                "schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]});
+            logger.info("Untertitel {} schreiben nach {}", datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE],
+                    datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]);
 
             urlSubtitle = datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE];
             suffix = GuiFunktionen.getSuffixFromUrl(urlSubtitle);
@@ -98,12 +101,12 @@ public class MVSubtitle {
             }
 
             try (FileOutputStream fos = new FileOutputStream(subtitelFile)) {
-                final byte[] buffer = new byte[1024];
+                final byte[] buffer = new byte[64 * 1024];
                 int n;
                 while ((n = in.read(buffer)) != -1) {
                     fos.write(buffer, 0, n);
                 }
-                SysMsg.sysMsg(new String[]{"Untertitel", "  geschrieben"});
+                logger.info("Untertitel wurde geschrieben");
             }
         } catch (IOException ex) {
             strSubtitelFile = null;
@@ -138,8 +141,8 @@ public class MVSubtitle {
                     }
                 }
             }
-        } catch (Exception ignored) {
-            Log.errorLog(461203210, ignored, "SubtitelUrl: " + urlSubtitle);
+        } catch (Exception ex) {
+            logger.error("Fehler bei Untertitel schreiben:", ex);
         }
     }
 }

@@ -21,12 +21,13 @@ package mediathek.gui;
 
 import javafx.application.Platform;
 import mSearch.tool.Listener;
-import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.gui.messages.TimerEvent;
 import net.engio.mbassy.listener.Handler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.Notifications;
 
 import javax.swing.*;
@@ -86,7 +87,7 @@ public final class MVTray {
 
     public MVTray systemTray() {
         if (!SystemTray.isSupported()) {
-            SysMsg.sysMsg("Tray wird nicht unterstützt!");
+            logger.info("Tray wird nicht unterstützt");
             return null;
         } else {
             tray = SystemTray.getSystemTray();
@@ -121,12 +122,14 @@ public final class MVTray {
                 tray.add(trayIcon);
                 return this;
             } catch (AWTException e) {
-                SysMsg.sysMsg("Tray konnte nicht geladen werden!");
+                logger.error("Tray konnte nicht geladen werden", e);
             }
 
         }
         return null;
     }
+
+    private static final Logger logger = LogManager.getLogger(MVTray.class);
 
     private void addListener() {
         trayIcon.addMouseListener(new MouseAdapter() {
