@@ -106,7 +106,6 @@ public class CheckUpdate extends Thread {
                                     logger.info("Setanlegen: Nicht wieder nachfragen");
                                     MVConfig.add(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
                                 }
-                                logger.info("==========================================");
                                 // dann halt nicht
                                 return;
                             }

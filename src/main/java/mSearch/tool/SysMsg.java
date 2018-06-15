@@ -58,9 +58,10 @@ public class SysMsg {
         addText(textProgramm, "[" + getNr(zeilenNrProgramm++) + "]   " + zeile);
     }
 
+    private static final int MAX_STELLEN = 5;
+    private static final String FUELL_ZEICHEN = "0";
+
     private static String getNr(int nr) {
-        final int MAX_STELLEN = 5;
-        final String FUELL_ZEICHEN = "0";
         String str = String.valueOf(nr);
         while (str.length() < MAX_STELLEN) {
             str = FUELL_ZEICHEN + str;

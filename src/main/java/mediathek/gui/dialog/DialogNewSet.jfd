@@ -1,0 +1,117 @@
+JFDML JFormDesigner: "7.0.0.0.92" Java: "1.8.0_152-release" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp jPanel1::l:::x, comp jPanel3::l:::x, comp jPanel4::l:::x, comp jScrollPane3::l:::x, seq l {comp jCheckBoxMorgen:::p::p, space :::x, comp jButtonAbbrechen:::p::p, space u:::p, comp jButtonSetHelp:::p::p}}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :p::p, comp jPanel1:::p::p, space u:::p, comp jScrollPane3:::p:75:p, space u:p::p, comp jPanel3:::::x, space u:p::p, comp jPanel4:::::x, space u:p::p, par l {par b {comp jButtonAbbrechen::b:p::p, comp jCheckBoxMorgen::b:p::p}, comp jButtonSetHelp:::p::p}, space :p::p}}"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 2
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "jButtonAbbrechen"
+				"text": "Abbrechen"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq t {space :p::p, comp jLabel7:::p::p, space :p::p, comp hyperlinkButton::::142:x, space :p:335:p}}"
+				"$verticalGroup": "par l {seq l {space :::p, par c {comp jLabel7::c:p::p, comp hyperlinkButton::c:p::p}, space ::11:x}}"
+			} ) {
+				name: "jPanel1"
+				"border": new javax.swing.border.TitledBorder( "" )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "jLabel7"
+					"text": "Anleitung:"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+				} )
+				add( new FormComponent( "mediathek.gui.HyperlinkButton" ) {
+					name: "hyperlinkButton"
+					"text": "text"
+				} )
+			} )
+			add( new FormComponent( "javax.swing.JCheckBox" ) {
+				name: "jCheckBoxMorgen"
+				"selected": true
+				"text": "Morgen wieder fragen"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq {space :::p, par l {comp jScrollPane1:::::x, seq l {comp jButtonAdd:3::p::p, space :0:0:x}}, space :::p}}"
+				"$verticalGroup": "par l {seq l {space :::p, comp jScrollPane1::::99:x, space u:::p, comp jButtonAdd:::p::p, space :::p}}"
+			} ) {
+				name: "jPanel3"
+				"border": new javax.swing.border.TitledBorder( null, "Entweder", 4, 0, null, new java.awt.Color( 0, 102, 204, 255 ) )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "jScrollPane1"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "jTextArea1"
+						"editable": false
+						"columns": 20
+						"rows": 5
+					} )
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonAdd"
+					"text": "Neue Sets hinzufügen"
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq {space :p::p, par l {seq l {comp jButtonReplace:::p::p, space :0:243:x}, comp jScrollPane2:::::x}, space :p::p}}"
+				"$verticalGroup": "par l {seq l {space :p::p, comp jScrollPane2::::100:x, space u:p::p, comp jButtonReplace:::p::p, space :p:13:p}}"
+			} ) {
+				name: "jPanel4"
+				"border": new javax.swing.border.TitledBorder( null, "Oder", 4, 0, null, new java.awt.Color( 0, 102, 204, 255 ) )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "jButtonReplace"
+					"text": "Bestehende Sets durch die neuen ersetzen"
+				} )
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "jScrollPane2"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "jTextArea2"
+						"editable": false
+						"columns": 20
+						"rows": 5
+					} )
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "jScrollPane3"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormComponent( "javax.swing.JTextArea" ) {
+					name: "jTextArea3"
+					"editable": false
+					"background": new java.awt.Color( 244, 244, 244, 255 )
+					"columns": 20
+					"rows": 3
+				} )
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "jButtonSetHelp"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/muster/button-help.png" )
+				"toolTipText": "Hilfe anzeigen"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 570, 585 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}
