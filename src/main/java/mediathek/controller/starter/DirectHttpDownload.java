@@ -42,6 +42,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
+
 import static mediathek.controller.starter.StarterClass.*;
 
 public class DirectHttpDownload extends Thread {
@@ -55,6 +59,7 @@ public class DirectHttpDownload extends Thread {
     private File file = null;
     private String responseCode;
     private String exMessage;
+    private boolean ignoreSslHostname = false;
 
     private FileOutputStream fos = null;
 
@@ -90,6 +95,15 @@ public class DirectHttpDownload extends Thread {
         HttpURLConnection connection = null;
         try {
             connection = (HttpURLConnection) url.openConnection();
+            if(ignoreSslHostname && connection instanceof HttpsURLConnection) {
+                HttpsURLConnection httpsUrlConnection = (HttpsURLConnection) connection;
+                HostnameVerifier allHostsValid = new HostnameVerifier() {
+                    public boolean verify(String hostname, SSLSession session) {
+                        return true;
+                    }
+                };
+                httpsUrlConnection.setHostnameVerifier(allHostsValid);
+            }
             connection.setRequestProperty("User-Agent", Daten.getUserAgent());
             connection.setReadTimeout(TIMEOUT_LENGTH);
             connection.setConnectTimeout(TIMEOUT_LENGTH);
@@ -101,6 +115,10 @@ public class DirectHttpDownload extends Thread {
                 ret = -1;
             }
         } catch (Exception ex) {
+            if(!ignoreSslHostname && ex.getMessage().contains(MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_IGNORE_SSL_HOST_ON_THIS_MESSAGE))) {
+                ignoreSslHostname = true;
+                return -1;
+            }
             ret = -1;
             Log.errorLog(643298301, ex);
         } finally {
@@ -121,6 +139,15 @@ public class DirectHttpDownload extends Thread {
         conn.setRequestProperty("User-Agent", Daten.getUserAgent());
         conn.setDoInput(true);
         conn.setDoOutput(true);
+        if(ignoreSslHostname && conn instanceof HttpsURLConnection) {
+            HttpsURLConnection httpsUrlConnection = (HttpsURLConnection) conn;
+            HostnameVerifier allHostsValid = new HostnameVerifier() {
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;
+                }
+            };
+            httpsUrlConnection.setHostnameVerifier(allHostsValid);
+        }
     }
 
     /**
