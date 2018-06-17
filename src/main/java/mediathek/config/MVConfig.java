@@ -70,6 +70,7 @@ public class MVConfig {
         SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN("__system-parameter__download-fehlermeldung-sekunden_120__", "120"),//Downloadfehlermeldung wird xx Sedunden lang angezeigt
         SYSTEM_PARAMETER_USERAGENT("__system-parameter__useragent_" + Konstanten.MVVERSION.toString() + "__", Konstanten.USER_AGENT_DEFAULT),//Useragent für direkte Downloads
         SYSTEM_PARAMETER_DOWNLOAD_PROGRESS("__system-parameter__dl_progress_", Boolean.TRUE.toString()), //Downloadprogress im Terminal (-auto) anzeigen
+        SYSTEM_PARAMETER_IGNORE_SSL_HOST_ON_THIS_MESSAGE("__system-parameter__ignore_ssl_host_on_this_message__", "No subject alternative DNS name matching apasfpd.apa.at found."),//ignoriere host bei SSL-Check wenn diese Exception.getMessage() kommt
 
         //============================================
         //Programm-Configs, änderbar über Gui
@@ -301,7 +302,7 @@ public class MVConfig {
         Log.sysLog("max. Download-Restart-Http: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP));
         Log.sysLog("Download weiterführen in [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN));
         Log.sysLog("Download Fehlermeldung anzeigen [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN));
-        Log.sysLog("Downoadprogress anzeigen: " + MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS));
+        Log.sysLog("Downloadprogress anzeigen: " + MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS));
         Log.sysLog("Useragent: " + MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_USERAGENT));
         Log.sysLog("=======================================");
         Log.sysLog("");
