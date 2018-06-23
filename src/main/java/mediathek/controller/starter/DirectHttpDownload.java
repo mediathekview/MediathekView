@@ -42,6 +42,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -71,7 +72,7 @@ public class DirectHttpDownload extends Thread {
     private File file = null;
     private String responseCode;
     private String exMessage;
-    private FileOutputStream fos = null;
+    private BufferedOutputStream bos = null;
     private boolean retAbbrechen;
     private boolean dialogAbbrechenIsVis;
 
@@ -149,7 +150,7 @@ public class DirectHttpDownload extends Thread {
 
         start.mVInputStream = new MVInputStream(conn.getInputStream(), bandwidthCalculationTimer);
 
-        fos = new FileOutputStream(file, (downloaded != 0));
+        bos = new BufferedOutputStream(new FileOutputStream(file, (downloaded != 0)), MVBandwidthTokenBucket.DEFAULT_BUFFER_SIZE);
 
         datenDownload.mVFilmSize.addAktSize(downloaded);
         final byte[] buffer = new byte[MVBandwidthTokenBucket.DEFAULT_BUFFER_SIZE];
@@ -160,7 +161,7 @@ public class DirectHttpDownload extends Thread {
 
         while ((len = start.mVInputStream.read(buffer)) != -1 && (!start.stoppen)) {
             downloaded += len;
-            fos.write(buffer, 0, len);
+            bos.write(buffer, 0, len);
             datenDownload.mVFilmSize.addAktSize(len);
 
             //für die Anzeige prüfen ob sich was geändert hat
@@ -318,8 +319,8 @@ public class DirectHttpDownload extends Thread {
             if (start.mVInputStream != null) {
                 start.mVInputStream.close();
             }
-            if (fos != null) {
-                fos.close();
+            if (bos != null) {
+                bos.close();
             }
             if (conn != null) {
                 conn.disconnect();
