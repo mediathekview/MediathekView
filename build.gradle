@@ -27,21 +27,11 @@ ext {
     if (!propsFile.exists()) {
         Files.createFile(propsFile.toPath())
     }
-    repoZugangFile = file('scripte/deploy/RepoZugang.properties').absoluteFile
-    if (!repoZugangFile.exists()) {
-        Files.createFile(repoZugangFile.toPath())
-    }
 }
 
 def loadVersionProperties() {
     Properties props = new Properties()
     props.load(propsFile.newDataInputStream())
-    return props
-}
-
-def loadRepoZugangProperties() {
-    Properties props = new Properties()
-    props.load(repoZugangFile.newDataInputStream())
     return props
 }
 
@@ -55,9 +45,6 @@ compileTestJava {
 repositories {
     mavenLocal()
     mavenCentral()
-    maven {
-        url "https://oss.sonatype.org/content/repositories/snapshots/"
-    }
     flatDir {
         dirs 'libs'
     }
@@ -96,31 +83,20 @@ dependencies {
     compileOnly group: 'org.jetbrains', name: 'annotations', version: '15.0'
 }
 
-uploadArchives {
-    repositories.mavenDeployer {
-        Properties props = loadRepoZugangProperties()
-        def nexusUser = props.getProperty('repoUser')
-        def nexusPw = props.getProperty('repoPw')
-        repository(url: "https://repo.mediathekview.de/repository/maven-releases/") {
-            authentication(userName:  nexusUser, password:  nexusPw)
-        }
-        snapshotRepository(url: "https://repo.mediathekview.de/repository/maven-snapshots/") {
-            authentication(userName:  nexusUser, password:  nexusPw)
-        }
-    }
-}
 build.dependsOn(install)
 
-task updateVersion << {
-    Properties props = loadVersionProperties()
+task updateVersion {
+    doLast {
+        Properties props = loadVersionProperties()
 
-    def oldVersion = props.getProperty('VERSION')
-    if (!oldVersion.equals(project.version)) {
-        logger.lifecycle "==msearch======================"
-        logger.lifecycle "Version: $project.version"
-        logger.lifecycle "==msearch======================"
-        props.setProperty('VERSION', project.version)
-        props.store(propsFile.newWriter(), null)
+        def oldVersion = props.getProperty('VERSION')
+        if (!oldVersion.equals(project.version)) {
+            logger.lifecycle "==MediathekView======================"
+            logger.lifecycle "Version: $project.version"
+            logger.lifecycle "==MediathekView======================"
+            props.setProperty('VERSION', project.version)
+            props.store(propsFile.newWriter(), null)
+        }
     }
 }
 
@@ -128,13 +104,18 @@ processResources.dependsOn updateVersion
 
 tasks.withType(Zip) { task ->
     task.doLast {
-        ant.checksum(algorithm: 'SHA-1', file: it.archivePath)
+        ant.checksum(algorithm: 'SHA-512', file: it.archivePath)
     }
 }
 tasks.withType(Tar) { task ->
     task.doLast {
-        ant.checksum(algorithm: 'SHA-1', file: it.archivePath)
+        ant.checksum(algorithm: 'SHA-512', file: it.archivePath)
     }
+}
+
+tasks.withType(Tar) {
+    compression = Compression.GZIP
+    extension = "tar.gz"
 }
 
 [distZip, distTar]*.shouldRunAfter compileJava, updateVersion, jar
@@ -158,13 +139,10 @@ distributions {
                 from configurations.compile
             }
             from('res') {
-                filesMatching('**/*.sh') {
-                    filter(ReplaceTokens, tokens: [JARNAME: jarName])
-                }
                 filesMatching('**/*.txt') {
                     filter(ReplaceTokens, tokens: [JARNAME: jarName])
                 }
-                filesMatching('**/*.command') {
+                filesMatching('**/*.sh') {
                     filter(ReplaceTokens, tokens: [JARNAME: jarName])
                 }
             }
@@ -243,31 +221,5 @@ task debug(type: JavaExec, dependsOn: classes) {
 
     if (project.hasProperty('args')) {
         args(project.args.split(','))
-    }
-}
-
-/**
- * <b>You don't have to call this. Travis will do it for you if a new releass (tag) will be build!<b/>
- * Call this so: './gradlew build release -PnexusUser=[NEXUS_USER] -PnexusPw=[NEXUS_PASSWORD]'
- */
-task release(dependsOn: 'uploadArchives') {
-    doLast {
-        println 'Released Version '+version
-    }
-}
-
-/**
- * <b>You don't have to call this. Travis will do it for you if you push to develop!<b/>
- * Call this so: './gradlew build releaseSnapshot -PnexusUser=[NEXUS_USER] -PnexusPw=[NEXUS_PASSWORD]'
- */
-task releaseSnapshot(dependsOn: 'uploadArchives') {
-    doLast {
-        println 'Released Snapshot Version '+version
-    }
-}
-
-gradle.taskGraph.whenReady {taskGraph ->
-    if (taskGraph.hasTask(releaseSnapshot)) {
-        version = version+'-SNAPSHOT'
     }
 }
