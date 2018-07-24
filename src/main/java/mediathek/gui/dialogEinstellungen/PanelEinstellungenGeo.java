@@ -20,13 +20,14 @@
 package mediathek.gui.dialogEinstellungen;
 
 import mSearch.daten.DatenFilm;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
-import mediathek.config.MVConfig;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
+import org.apache.commons.configuration2.Configuration;
 
 import javax.swing.*;
 
@@ -40,7 +41,9 @@ public class PanelEinstellungenGeo extends PanelVorlage {
     }
 
     private void init() {
-        switch (MVConfig.get(MVConfig.Configs.SYSTEM_GEO_STANDORT)) {
+        final Configuration config = ApplicationConfiguration.getConfiguration();
+
+        switch (config.getString(ApplicationConfiguration.GEO_LOCATION)) {
             case DatenFilm.GEO_CH:
                 jRadioButtonCH.setSelected(true);
                 break;
@@ -57,28 +60,29 @@ public class PanelEinstellungenGeo extends PanelVorlage {
                 jRadioButtonDe.setSelected(true);
         }
         jRadioButtonDe.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_DE);
+            config.setProperty(ApplicationConfiguration.GEO_LOCATION, DatenFilm.GEO_DE);
             melden();
         });
         jRadioButtonCH.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_CH);
+            config.setProperty(ApplicationConfiguration.GEO_LOCATION, DatenFilm.GEO_CH);
             melden();
         });
         jRadioButtonAt.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_AT);
+            config.setProperty(ApplicationConfiguration.GEO_LOCATION, DatenFilm.GEO_AT);
             melden();
         });
         jRadioButtonEu.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_EU);
+            config.setProperty(ApplicationConfiguration.GEO_LOCATION, DatenFilm.GEO_EU);
             melden();
         });
         jRadioButtonSonst.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_GEO_STANDORT, DatenFilm.GEO_WELT);
+            config.setProperty(ApplicationConfiguration.GEO_LOCATION, DatenFilm.GEO_WELT);
             melden();
         });
-        jCheckBoxMarkieren.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_GEO_MELDEN)));
+
+        jCheckBoxMarkieren.setSelected(config.getBoolean(ApplicationConfiguration.GEO_REPORT));
         jCheckBoxMarkieren.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_GEO_MELDEN, String.valueOf(jCheckBoxMarkieren.isSelected()));
+            config.setProperty(ApplicationConfiguration.GEO_REPORT, jCheckBoxMarkieren.isSelected());
             melden();
         });
         jButtonHilfe.setIcon(Icons.ICON_BUTTON_HELP);
@@ -104,7 +108,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
         javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
         jCheckBoxMarkieren = new javax.swing.JCheckBox();
         jRadioButtonDe = new javax.swing.JRadioButton();
-        jLabel1 = new javax.swing.JLabel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jRadioButtonCH = new javax.swing.JRadioButton();
         jRadioButtonAt = new javax.swing.JRadioButton();
         jRadioButtonEu = new javax.swing.JRadioButton();
@@ -198,7 +202,6 @@ public class PanelEinstellungenGeo extends PanelVorlage {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonHilfe;
     private javax.swing.JCheckBox jCheckBoxMarkieren;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JRadioButton jRadioButtonAt;
     private javax.swing.JRadioButton jRadioButtonCH;
     private javax.swing.JRadioButton jRadioButtonDe;

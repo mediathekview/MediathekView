@@ -19,14 +19,16 @@
  */
 package mediathek.gui;
 
+import javafx.application.Platform;
 import mSearch.tool.Listener;
-import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
-import net.sf.jcarrierpigeon.Notification;
-import net.sf.jcarrierpigeon.NotificationQueue;
-import net.sf.jcarrierpigeon.WindowPosition;
+import mediathek.gui.messages.TimerEvent;
+import net.engio.mbassy.listener.Handler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.controlsfx.control.Notifications;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,12 +37,46 @@ import java.awt.event.MouseEvent;
 
 public final class MVTray {
 
+    private final Daten daten;
     private int trayState = 0; // 0, 1=Download, 2=Download mit Fehler
     private SystemTray tray = null;
     private TrayIcon trayIcon = null;
-    private Daten daten;
+    private int count = 0;
 
     public MVTray() {
+        daten = Daten.getInstance();
+        daten.getMessageBus().subscribe(this);
+    }
+
+    @Handler
+    private void handleTimerEvent(TimerEvent msg) {
+        SwingUtilities.invokeLater(() -> {
+            ++count;
+            if (count > 3) {
+                // nur alle 3s ändern
+                trayIcon.setToolTip(getInfoTextDownloads());
+                count = 0;
+            }
+
+            // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
+            int[] starts = daten.getDownloadInfos().downloadStarts;
+            if (starts[6] > 0) {
+                // es gibt welche mit Fehler
+                if (trayState != 2) {
+                    trayState = 2;
+                    trayIcon.setImage(Icons.ICON_TRAY_ERROR);
+                }
+            } else if (starts[4] > 0) {
+                // es laufen welche
+                if (trayState != 1) {
+                    trayState = 1;
+                    trayIcon.setImage(Icons.ICON_TRAY_DOWNLOAD);
+                }
+            } else if (trayState != 0) {
+                trayState = 0;
+                trayIcon.setImage(Icons.ICON_TRAY);
+            }
+        });
     }
 
     public void beenden() {
@@ -50,9 +86,8 @@ public final class MVTray {
     }
 
     public MVTray systemTray() {
-        daten = Daten.getInstance();
         if (!SystemTray.isSupported()) {
-            SysMsg.sysMsg("Tray wird nicht unterstützt!");
+            logger.info("Tray wird nicht unterstützt");
             return null;
         } else {
             tray = SystemTray.getSystemTray();
@@ -84,19 +119,17 @@ public final class MVTray {
 
             trayIcon.setPopupMenu(popup);
             try {
-//                if (SystemInfo.isLinux()) {
-//                    new HackyLinuxTrayIconInitialiser(trayIcon).execute();
-//                } else {
                 tray.add(trayIcon);
-//                }
                 return this;
             } catch (AWTException e) {
-                SysMsg.sysMsg("Tray konnte nicht geladen werden!");
+                logger.error("Tray konnte nicht geladen werden", e);
             }
 
         }
         return null;
     }
+
+    private static final Logger logger = LogManager.getLogger(MVTray.class);
 
     private void addListener() {
         trayIcon.addMouseListener(new MouseAdapter() {
@@ -113,52 +146,17 @@ public final class MVTray {
                 }
             }
         });
-
-        Listener.addListener(new Listener(Listener.EREIGNIS_TIMER, MVStatusBar.class.getSimpleName()) {
-            int count = 0;
-
-            @Override
-            public void ping() {
-                ++count;
-                if (count > 3) {
-                    // nur alle 3s ändern
-                    trayIcon.setToolTip(getInfoTextDownloads());
-                }
-
-                // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
-                int[] starts = daten.getDownloadInfos().downloadStarts;
-                if (starts[6] > 0) {
-                    // es gibt welche mit Fehler
-                    if (trayState != 2) {
-                        trayState = 2;
-                        trayIcon.setImage(Icons.ICON_TRAY_ERROR);
-                    }
-                } else if (starts[4] > 0) {
-                    // es laufen welche
-                    if (trayState != 1) {
-                        trayState = 1;
-                        trayIcon.setImage(Icons.ICON_TRAY_DOWNLOAD);
-                    }
-                } else if (trayState != 0) {
-                    trayState = 0;
-                    trayIcon.setImage(Icons.ICON_TRAY);
-                }
-            }
-        });
     }
 
     private String getTextInfos() {
-        String strText = "<html><head></head><body><p>";
+        String strText = "";
 
         strText += "Filmliste erstellt: " + daten.getListeFilme().genDate() + " Uhr  ";
-
-        strText += "<br />";
+        strText += "\n";
         strText += "Anz. Filme: " + daten.getListeFilme().size();
-
-        strText += "<br />";
+        strText += "\n";
         strText += getInfoTextDownloads();
 
-        strText += "</p></body></html>";
         return strText;
     }
 
@@ -214,86 +212,13 @@ public final class MVTray {
     private void addNotification(String meldung) {
         if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_NOTIFICATION))) {
 
-            final JWindow messageFrame = new JWindow();
-            messageFrame.setLayout(new BorderLayout());
-            final JPanel panel = new JPanel();
-            panel.setBackground(Color.BLACK);
-
-            messageFrame.setContentPane(panel);
-
-            final JLabel iconLabel = new JLabel(Icons.ICON_NOTIFICATION);
-            iconLabel.setVerticalAlignment(SwingConstants.TOP);
-            messageFrame.getContentPane().add(iconLabel, BorderLayout.WEST);
-            final JLabel meldungsLabel = new JLabel(meldung);
-            meldungsLabel.setForeground(Color.WHITE);
-
-            messageFrame.getContentPane().add(meldungsLabel, BorderLayout.CENTER);
-            messageFrame.pack();
-            messageFrame.setFocusableWindowState(false);
-
-            Notification notification = new Notification(messageFrame, WindowPosition.BOTTOMRIGHT, 20, 20, 6000);
-            NotificationQueue q = new NotificationQueue();
-            q.add(notification);
+            Platform.runLater(() -> {
+                Notifications msg = Notifications.create();
+                msg.title("Programminfos");
+                msg.text(meldung);
+                msg.showInformation();
+            });
         }
     }
 
-//    public class HackyLinuxTrayIconInitialiser extends SwingWorker<Void, TrayIcon> {
-//
-//        private static final int MAX_ADD_ATTEMPTS = 4;
-//        private static final long ADD_ICON_DELAY = 200;
-//        private static final long ADD_FAILED_DELAY = 1000;
-//
-//        private TrayIcon[] icons;
-//
-//        public HackyLinuxTrayIconInitialiser(TrayIcon... ic) {
-//            icons = ic;
-//        }
-//
-//        @Override
-//        protected Void doInBackground() {
-//            try {
-//                Method addNotify = TrayIcon.class.getDeclaredMethod("addNotify", (Class<?>[]) null);
-//                addNotify.setAccessible(true);
-//                for (TrayIcon icon : icons) {
-//                    for (int attempt = 1; attempt < MAX_ADD_ATTEMPTS; attempt++) {
-//                        try {
-//                            addNotify.invoke(icon, (Object[]) null);
-//                            publish(icon);
-//                            pause(ADD_ICON_DELAY);
-//                            break;
-//                        } catch (NullPointerException | IllegalAccessException | IllegalArgumentException e) {
-//                            System.err.println("Failed to add icon. Giving up.");
-//                            e.printStackTrace();
-//                            break;
-//                        } catch (InvocationTargetException e) {
-//                            System.err.println("Failed to add icon, attempt " + attempt);
-//                            pause(ADD_FAILED_DELAY);
-//                        }
-//                    }
-//                }
-//            } catch (NoSuchMethodException | SecurityException e1) {
-//                e1.printStackTrace();
-//            }
-//            return null;
-//        }
-//
-//        private void pause(long delay) {
-//            try {
-//                Thread.sleep(delay);
-//            } catch (InterruptedException e1) {
-//                e1.printStackTrace();
-//            }
-//        }
-//
-//        @Override
-//        protected void process(List<TrayIcon> icons) {
-//            for (TrayIcon icon : icons) {
-//                try {
-//                    tray.add(icon);
-//                } catch (AWTException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
 }

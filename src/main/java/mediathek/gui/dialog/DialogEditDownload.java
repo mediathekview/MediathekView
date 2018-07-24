@@ -20,15 +20,15 @@
 package mediathek.gui.dialog;
 
 import mSearch.daten.DatenFilm;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
 import mediathek.config.Icons;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenProg;
 import mediathek.file.GetFile;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.MVMessageDialog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -79,17 +79,14 @@ public class DialogEditDownload extends JDialog {
         jRadioButtonResLo.addActionListener(e -> changeRes());
         jButtonOk.addActionListener(e -> {
             if (check()) {
-                beenden();
+                dispose();
             }
         });
-        jButtonAbbrechen.addActionListener(e -> beenden());
+        jButtonAbbrechen.addActionListener(e -> dispose());
         getRootPane().setDefaultButton(jButtonOk);
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                beenden();
-            }
-        };
+
+        EscapeKeyHandler.installHandler(this, this::dispose);
+
         setupResolutionButtons();
         setExtra();
     }
@@ -150,9 +147,7 @@ public class DialogEditDownload extends JDialog {
             res = DatenFilm.AUFLOESUNG_NORMAL;
         }
         datenDownload.arr[DatenDownload.DOWNLOAD_URL] = datenDownload.film.getUrlFuerAufloesung(res);
-        datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP] = datenDownload.film.getUrlRtmpFuerAufloesung(res);
         textfeldListe[DatenDownload.DOWNLOAD_URL].setText(datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
-        textfeldListe[DatenDownload.DOWNLOAD_URL_RTMP].setText(datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP]);
 
         final String size;
         if (jRadioButtonResHd.isSelected()) {
@@ -330,7 +325,7 @@ public class DialogEditDownload extends JDialog {
                     gridbag.setConstraints(jLabelFilmUT, c);
                     jPanelExtra.add(jLabelFilmUT);
                     if (datenDownload.film != null) {
-                        jLabelFilmUT.setVisible(datenDownload.film.hasUT());
+                        jLabelFilmUT.setVisible(datenDownload.film.hasSubtitle());
                     } else {
                         jLabelFilmUT.setVisible(false);
                     }
@@ -405,11 +400,11 @@ public class DialogEditDownload extends JDialog {
                 default:
                     switch (i) {
                         case DatenDownload.DOWNLOAD_NR:
-                            textfeldListe[i].setText(datenDownload.nr + "");
+                            textfeldListe[i].setText(String.valueOf(datenDownload.nr));
                             break;
                         case DatenDownload.DOWNLOAD_FILM_NR:
                             if (datenDownload.film != null) {
-                                textfeldListe[i].setText(datenDownload.film.nr + "");
+                                textfeldListe[i].setText(String.valueOf(datenDownload.film.getFilmNr()));
                             }
                             break;
                         case DatenDownload.DOWNLOAD_URL:
@@ -470,6 +465,8 @@ public class DialogEditDownload extends JDialog {
         }
     }
 
+    private static final Logger logger = LogManager.getLogger(DialogEditDownload.class);
+
     private boolean downloadDateiLoeschen(DatenDownload datenDownload) {
         try {
             File file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
@@ -485,13 +482,13 @@ public class DialogEditDownload extends JDialog {
             }
 
             // und jetzt die Datei löschen
-            SysMsg.sysMsg(new String[]{"Datei löschen: ", file.getAbsolutePath()});
+            logger.info("Datei löschen: {}", file.getAbsolutePath());
             if (!file.delete()) {
                 throw new Exception();
             }
         } catch (Exception ex) {
             MVMessageDialog.showMessageDialog(parent, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
-            Log.errorLog(812036789, "Fehler beim löschen: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+            logger.error("Fehler beim löschen: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
         return true;
     }
@@ -507,10 +504,6 @@ public class DialogEditDownload extends JDialog {
             ok = true;
         }
         return ok;
-    }
-
-    private void beenden() {
-        this.dispose();
     }
 
     /** This method is called from within the constructor to

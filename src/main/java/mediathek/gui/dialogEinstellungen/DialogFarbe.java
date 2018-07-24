@@ -19,7 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -41,13 +41,8 @@ public class DialogFarbe extends JDialog {
         jColorChooser.getSelectionModel().addChangeListener(new BeobachterFarbe());
         jButtonOk.addActionListener(new BeobachterOk());
         jButtonAbbrechen.addActionListener(new BeobachterAbbrechen());
-        new EscBeenden(this) {
 
-            @Override
-            public void beenden_() {
-                abbrechen();
-            }
-        };
+        EscapeKeyHandler.installHandler(this, this::abbrechen);
     }
 
     private void ok() {

@@ -25,7 +25,7 @@ import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
 import mediathek.file.GetFile;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 
@@ -109,12 +109,9 @@ public class DialogEditAbo extends JDialog {
         });
         jButtonAbbrechen.addActionListener(e -> beenden());
         getRootPane().setDefaultButton(jButtonBeenden);
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                beenden();
-            }
-        };
+
+        EscapeKeyHandler.installHandler(this, this::dispose);
+
         jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
         jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_ADD_ABO)).setVisible(true));
 

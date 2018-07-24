@@ -20,6 +20,7 @@
 package mediathek.tool;
 
 import mSearch.Const;
+import mSearch.tool.ApplicationConfiguration;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.RuntimeExec;
@@ -281,7 +282,8 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
                 conn = new URL(datei).openConnection();
                 conn.setConnectTimeout(timeout);
                 conn.setReadTimeout(timeout);
-                conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+                conn.setRequestProperty("User-Agent", ApplicationConfiguration.getConfiguration()
+                        .getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
                 if (datei.endsWith(Const.FORMAT_ZIP)) {
 
                     File tmpFile = File.createTempFile("mediathek", null);

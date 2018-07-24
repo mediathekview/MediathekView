@@ -21,6 +21,7 @@ package mediathek.daten;
 
 import mediathek.config.Daten;
 import mediathek.tool.MVMediaDBFileSize;
+import org.apache.commons.lang3.StringUtils;
 
 public class DatenMediaDB extends MVData<DatenMediaDB> {
 
@@ -72,9 +73,10 @@ public class DatenMediaDB extends MVData<DatenMediaDB> {
     }
 
     private static String putzen(String s) {
-        s = s.replace("\n", "");
-        s = s.replace("|", "");
-        s = s.replace(ListeMediaDB.TRENNER, "");
+        s = StringUtils.replace(s, "\n", "");
+        s = StringUtils.replace(s, "|", "");
+        s = StringUtils.replace(s, ListeMediaDB.TRENNER, "");
+
         return s;
     }
 

@@ -287,7 +287,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
             } else {
                 int returnVal;
                 JFileChooser chooser = new JFileChooser();
-                if (!jTextFieldUrl.getText().equals("")) {
+                if (!jTextFieldUrl.getText().isEmpty()) {
                     chooser.setCurrentDirectory(new File(jTextFieldUrl.getText()));
                 }
                 chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);

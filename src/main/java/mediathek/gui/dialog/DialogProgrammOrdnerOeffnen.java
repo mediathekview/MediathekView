@@ -22,7 +22,7 @@ package mediathek.gui.dialog;
 import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 
@@ -36,7 +36,7 @@ import java.io.File;
 public class DialogProgrammOrdnerOeffnen extends JDialog {
     public boolean ok = false;
     public String ziel;
-    private Frame parentComponent = null;
+    private final Frame parentComponent;
 
     public DialogProgrammOrdnerOeffnen(java.awt.Frame parent, boolean modal, String zziel, String titel, String text) {
         super(parent, modal);
@@ -53,13 +53,11 @@ public class DialogProgrammOrdnerOeffnen extends JDialog {
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                ok = false;
-                beenden();
-            }
-        };
+
+        EscapeKeyHandler.installHandler(this, () -> {
+            ok = false;
+            dispose();
+        });
     }
 
     private boolean check() {

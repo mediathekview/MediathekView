@@ -19,7 +19,7 @@
  */
 package mediathek.gui.dialog;
 
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
@@ -36,12 +36,7 @@ public class DialogHilfe extends JDialog {
         caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         jTextArea1.setText(text);
 
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                dispose();
-            }
-        };
+        EscapeKeyHandler.installHandler(this, this::dispose);
 
         jButtonOk.addActionListener(e -> dispose());
         getRootPane().setDefaultButton(jButtonOk);

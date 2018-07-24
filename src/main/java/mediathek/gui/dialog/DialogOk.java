@@ -19,7 +19,7 @@
  */
 package mediathek.gui.dialog;
 
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,17 +36,9 @@ public class DialogOk extends JDialog {
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
-        jButtonBeenden.addActionListener(e -> beenden());
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                beenden();
-            }
-        };
-    }
+        jButtonBeenden.addActionListener(e -> dispose());
 
-    private void beenden() {
-        this.dispose();
+        EscapeKeyHandler.installHandler(this, this::dispose);
     }
 
     /** This method is called from within the constructor to

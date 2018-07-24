@@ -34,6 +34,9 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.*;
+import mediathek.tool.table.MVProgTable;
+import mediathek.tool.table.MVPsetTable;
+import mediathek.tool.table.MVTable;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -60,9 +63,9 @@ public class PanelPsetLang extends PanelVorlage {
         super(d, parentComponent);
         initComponents();
         modalHilfe = false;
-        tabellePset = new MVTable(MVTable.TableType.PSET);
+        tabellePset = new MVPsetTable();
         jScrollPane3.setViewportView(tabellePset);
-        tabelleProgramme = new MVTable(MVTable.TableType.PROG);
+        tabelleProgramme = new MVProgTable();
         jScrollPane1.setViewportView(tabelleProgramme);
         listePset = Daten.listePset;
         init();
@@ -72,9 +75,9 @@ public class PanelPsetLang extends PanelVorlage {
         super(d, parentComponent);
         initComponents();
         modalHilfe = true;
-        tabellePset = new MVTable(MVTable.TableType.PSET);
+        tabellePset = new MVPsetTable();
         jScrollPane3.setViewportView(tabellePset);
-        tabelleProgramme = new MVTable(MVTable.TableType.PROG);
+        tabelleProgramme = new MVProgTable();
         jScrollPane1.setViewportView(tabelleProgramme);
         listePset = llistePset;
         init();
@@ -95,7 +98,7 @@ public class PanelPsetLang extends PanelVorlage {
         jLabelMeldungAbspielen.setIcon(Icons.ICON_ACHTUNG_16);
         jLabelMeldungSeichern.setIcon(Icons.ICON_ACHTUNG_16);
         //Programme
-        tabellePset.setAutoResizeMode(MVTable.AUTO_RESIZE_OFF);
+        tabellePset.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -216,7 +219,8 @@ public class PanelPsetLang extends PanelVorlage {
                 nurtabellePset();
             }
         });
-        jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX() || Daten.getInstance().isDebug());
+
+        jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX());
         jCheckBoxSpotlight.addActionListener(e -> {
             DatenPset pset = getPset();
             if (pset != null) {
@@ -372,7 +376,7 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxThema.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN]));
             jCheckBoxInfodatei.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_INFODATEI]));
             jCheckBoxSubtitle.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE]));
-            jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX() || Daten.getInstance().isDebug());
+            jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX());
             jCheckBoxSpotlight.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT]));
             jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Set Name: " + pSet.arr[DatenPset.PROGRAMMSET_NAME], javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
             jTextFieldSetName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME]);
@@ -586,7 +590,9 @@ public class PanelPsetLang extends PanelVorlage {
                 if (dialogZiel.ziel.contains(File.separator)) {
                     exportPfad = dialogZiel.ziel.substring(0, dialogZiel.ziel.lastIndexOf(File.separator));
                 }
-                IoXmlSchreiben.exportPset(liste.toArray(new DatenPset[liste.size()]), dialogZiel.ziel);
+
+                final IoXmlSchreiben configWriter = new IoXmlSchreiben();
+                configWriter.exportPset(liste.toArray(new DatenPset[liste.size()]), dialogZiel.ziel);
             }
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);

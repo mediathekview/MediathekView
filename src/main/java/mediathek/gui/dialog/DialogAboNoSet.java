@@ -22,7 +22,7 @@ package mediathek.gui.dialog;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.daten.ListePsetVorlagen;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionenProgramme;
 
 import javax.swing.*;
@@ -39,12 +39,9 @@ public class DialogAboNoSet extends JDialog {
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                beenden();
-            }
-        };
+
+        EscapeKeyHandler.installHandler(this, this::dispose);
+
         jTextArea1.setText("Ein Set von Programmen zum Aufzeichnen\n"
                 + "wurde nicht angelegt.\n\n"
                 + "Im Menü unter:\n"
@@ -54,14 +51,10 @@ public class DialogAboNoSet extends JDialog {
         jButtonImport.addActionListener(l
                 -> GuiFunktionenProgramme.addSetVorlagen(parent, daten,
                         ListePsetVorlagen.getStandarset(parent, daten, true /*replaceMuster*/), false /*auto*/, true /*setVersion*/));
-        jButtonOk.addActionListener((ActionEvent e) -> beenden());
+        jButtonOk.addActionListener((ActionEvent e) -> dispose());
         jLabelIcon.setText("");
         jLabelIcon.setIcon(Icons.ICON_ACHTUNG_32);
         pack();
-    }
-
-    private void beenden() {
-        this.dispose();
     }
 
     /** This method is called from within the constructor to

@@ -19,18 +19,17 @@
  */
 package mediathek.config;
 
+import com.jidesoft.utils.SystemInfo;
+import mSearch.Config;
+import mSearch.tool.ApplicationConfiguration;
+import mSearch.tool.Log;
+import mediathek.controller.MVBandwidthTokenBucket;
+import mediathek.tool.GuiFunktionenProgramme;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
-
-import com.jidesoft.utils.SystemInfo;
-
-import mSearch.daten.DatenFilm;
-import mSearch.tool.Log;
-import mediathek.controller.MVBandwidthTokenBucket;
-import mediathek.gui.MVFilter;
-import mediathek.tool.GuiFunktionenProgramme;
 
 public class MVConfig {
 
@@ -38,27 +37,29 @@ public class MVConfig {
     public static final String SYSTEM = "system";
     private static final HashMap<String, String> HASHMAP = new HashMap<>();
 
-    public static String PARAMETER_INFO = "\n"
+    //das kann zukünftig entfernt werden da keine Erklärungen in der config drin sein müssen
+    /*public static String PARAMETER_INFO = '\n'
             + "\t" + "\"__system-parameter__xxx\" können nur im Konfigfile geändert werden\n"
-            + "\t" + "und sind auch nicht für ständige Änderungen gedacht.\n"
-            + "\t" + "Wird eine Zeile gelöscht, wird der Parameter wieder mit dem Standardwert angelegt.\n"
-            + "\n"
-            + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.cValue + "\n"
-            + "\t" + "Timeout für direkte Downloads, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.initValue + "\n\n"
-            + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART.cValue + "\n"
-            + "\t" + "max. Startversuche für fehlgeschlagene Downloads, am Ende aller Downloads\n"
-            + "\t" + "(Versuche insgesamt: DOWNLOAD_MAX_RESTART * DOWNLOAD_MAX_RESTART_HTTP), Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART.initValue + "\n\n"
-            + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP.cValue + "\n"
-            + "\t" + "max. Startversuche für fehlgeschlagene Downloads, direkt beim Download,\n"
-            + "\t" + "(Versuche insgesamt: DOWNLOAD_MAX_RESTART * DOWNLOAD_MAX_RESTART_HTTP), Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP.initValue + "\n\n"
-            + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN.cValue + "\n"
-            + "\t" + "Beim Dialog \"Download weiterführen\" wird nach dieser Zeit der Download weitergeführt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN.initValue + "\n\n"
-            + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.cValue + "\n"
-            + "\t" + "Downloadfehlermeldung wird xx Sedunden lang angezeigt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.initValue + "\n\n"
-            + "\t" + Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS.cValue + "\n"
-            + "\t" + "Downloadprogress im Terminal (-auto) anzeigen: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS.initValue + "\n\n"
-            + "\t" + Configs.SYSTEM_PARAMETER_USERAGENT.cValue + "\n"
-            + "\t" + "Useragent für direkte Downloads, Standardwert: " + Configs.SYSTEM_PARAMETER_USERAGENT.initValue + "\n";
+            + '\t' + "und sind auch nicht für ständige Änderungen gedacht.\n"
+            + '\t' + "Wird eine Zeile gelöscht, wird der Parameter wieder mit dem Standardwert angelegt.\n"
+            + '\n'
+            + '\t' + Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.cValue + '\n'
+            + '\t' + "Timeout für direkte Downloads, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.initValue + "\n\n"
+            + '\t' + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART.cValue + '\n'
+            + '\t' + "max. Startversuche für fehlgeschlagene Downloads, am Ende aller Downloads\n"
+            + '\t' + "(Versuche insgesamt: DOWNLOAD_MAX_RESTART * DOWNLOAD_MAX_RESTART_HTTP), Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART.initValue + "\n\n"
+            + '\t' + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP.cValue + '\n'
+            + '\t' + "max. Startversuche für fehlgeschlagene Downloads, direkt beim Download,\n"
+            + '\t' + "(Versuche insgesamt: DOWNLOAD_MAX_RESTART * DOWNLOAD_MAX_RESTART_HTTP), Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP.initValue + "\n\n"
+            + '\t' + Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN.cValue + '\n'
+            + '\t' + "Beim Dialog \"Download weiterführen\" wird nach dieser Zeit der Download weitergeführt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN.initValue + "\n\n"
+            + '\t' + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.cValue + '\n'
+            + '\t' + "Downloadfehlermeldung wird xx Sedunden lang angezeigt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.initValue + "\n\n"
+            + '\t' + Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS.cValue + '\n'
+            + '\t' + "Downloadprogress im Terminal (-auto) anzeigen: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS.initValue + "\n\n"
+            + '\t' + Configs.SYSTEM_PARAMETER_USERAGENT.cValue + '\n'
+            + '\t' + "Useragent für direkte Downloads, Standardwert: " + Configs.SYSTEM_PARAMETER_USERAGENT.initValue + '\n';
+            */
 
     public enum Configs {
         //============================================
@@ -68,21 +69,15 @@ public class MVConfig {
         SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP("__system-parameter__download-max-restart-http_10__", "10"),// max. Startversuche für fehlgeschlagene Downloads, direkt beim Download
         SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN("__system-parameter__download-weiterfuehren-sekunden_60__", "60"), //Beim Dialog "Download weiterführen" wird in dieser Zeit der Download weitergeführt
         SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN("__system-parameter__download-fehlermeldung-sekunden_120__", "120"),//Downloadfehlermeldung wird xx Sedunden lang angezeigt
-        SYSTEM_PARAMETER_USERAGENT("__system-parameter__useragent_" + Konstanten.MVVERSION.toString() + "__", Konstanten.USER_AGENT_DEFAULT),//Useragent für direkte Downloads
         SYSTEM_PARAMETER_DOWNLOAD_PROGRESS("__system-parameter__dl_progress_", Boolean.TRUE.toString()), //Downloadprogress im Terminal (-auto) anzeigen
 
         //============================================
         //Programm-Configs, änderbar über Gui
-        SYSTEM_BUILD_NR("BuildNr"),
-        SYSTEM_ECHTZEITSUCHE("Echtzeitsuche", Boolean.TRUE.toString()),
         SYSTEM_TABS_TOP("Tabs-oben", SystemInfo.isMacOSX() ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),
         SYSTEM_TABS_ICON("Tabs-Icon", SystemInfo.isMacOSX() ? Boolean.FALSE.toString() : Boolean.TRUE.toString()),
         SYSTEM_USE_TRAY("Tray-anzeigen", Boolean.FALSE.toString()),
         SYSTEM_LOOK("System-look", "0"),
-        SYSTEM_UPDATE_SUCHEN("update-suchen", Boolean.TRUE.toString()),
-        SYSTEM_UPDATE_DATUM("update-datum"),
         SYSTEM_ABOS_SOFORT_SUCHEN("Abos-sofort-suchen", Boolean.TRUE.toString()),
-        SYSTEM_ZIELNAMEN_ANPASSEN("Zielnamen-anpassen"),
         SYSTEM_USE_REPLACETABLE("Ersetzungstabelle-verwenden", SystemInfo.isLinux() || SystemInfo.isMacOSX() ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),// wegen des Problems mit ext. Programmaufrufen und Leerzeichen
         SYSTEM_ONLY_ASCII("nur-ascii", Boolean.FALSE.toString()),
         SYSTEM_HINWEIS_NR_ANGEZEIGT("Hinweis-Nr-angezeigt"),
@@ -91,27 +86,22 @@ public class MVConfig {
         SYSTEM_LINUX_SHUTDOWN("Programm-Linux-Shutdown"),
         SYSTEM_NOTIFICATION("Notification-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_PLAYER_ABSPIELEN("Player-zum-Abspielen"),
-        SYSTEM_GEO_MELDEN("Geo-melden", Boolean.TRUE.toString()),
-        SYSTEM_GEO_STANDORT("Geo-Standort", DatenFilm.GEO_DE),
         // Fenstereinstellungen
         SYSTEM_GROESSE_GUI("Groesse"),
         SYSTEM_GROESSE_EINSTELLUNGEN("Groesse-Einstellungen"),
         SYSTEM_GROESSE_INFODIALOG("Groesse-Infodialog"),
-        //        SYSTEM_DIVIDER_INFODIALOG("Divider-Infodialog"),
         SYSTEM_FENSTER_MAX("programmfenster-maximieren"),
         SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN("system-panel-videoplayer-anzeigen"),
-        SYSTEM_PANEL_MELDUNGEN_ANZEIGEN("system-panel-meldungen-anzeigen"),
-        SYSTEM_PANEL_FILME_DIVIDER("system-panel-filme-divider", Konstanten.GUIFILME_DIVIDER_LOCATION),
         SYSTEM_PANEL_DOWNLOAD_DIVIDER("system-panel-download-divider", Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION),
         SYSTEM_PANEL_ABO_DIVIDER("system-panel-abo-divider", Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION),
         SYSTEM_FONT_SIZE("system-font-size", "0"), // -5 ... 0 .... 5
         SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN("system-filme-beschreibung-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN("system-download-beschreibung-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_TAB_FILME_ANZAHL_BUTTON("system-tab-filme-anzahl-button", "4"),
-        SYSTEM_FILM_INFO_TOP("system-film-info-top", Boolean.TRUE.toString()), //immer onTop anzeigen
-        SYSTEM_FILM_INFO_DECORATED("system-film-info-border", Boolean.TRUE.toString()),
+
         SYSTEM_DOWNLOAD_INFO_TOP("system-download-info-top", Boolean.TRUE.toString()), //immer onTop anzeigen
         SYSTEM_DOWNLOAD_INFO_DECORATED("system-download-info-border", Boolean.FALSE.toString()),
+
         SYSTEM_EIGENSCHAFTEN_TABELLE_FILME("Eigenschaften-Tabellen-Filme"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_DOWNLOADS("Eigenschaften-Tabellen-Downloads"),
         SYSTEM_EIGENSCHAFTEN_TABELLE_ABOS("Eigenschaften-Tabellen-Abos"),
@@ -154,11 +144,8 @@ public class MVConfig {
         SYSTEM_GROESSE_DOWNLOAD("Groesse-Download"),
         SYSTEM_FENSTER_ABO("Fenster-Abo"),
         SYSTEM_GROESSE_ABO("Groesse-Abo"),
-        SYSTEM_FENSTER_MELDUNGEN("Fenster-Meldungen"),
         SYSTEM_VIS_MELDUNGEN("Vis-Meldungen"),
-        SYSTEM_GROESSE_MELDUNGEN("Groesse-Meldungen"),
         SYSTEM_FENSTER_FILTER("Fenster-Filter"),
-        SYSTEM_VIS_FILTER("Vis-Filter", Boolean.TRUE.toString()),
         SYSTEM_GROESSE_FILTER("Groesse-Filter"),
         //Einstellungen Filmliste
         SYSTEM_IMPORT_ART_FILME("update-filme"), // url automatisch suchen - oder nur manuell
@@ -166,28 +153,6 @@ public class MVConfig {
         SYSTEM_IMPORT_URL_MANUELL("system-import-url-manuell"),
         SYSTEM_EXPORT_DATEI("system-export-datei"),
         SYSTEM_ANZ_TAGE_FILMLISTE("system-anz-tage-filmilste", "0"), // es werden nur die x letzten Tage geladen
-        // Filter
-        SYSTEM_FILTER_TAGE("filter-tage-start", "15"), // in Tagen
-        SYSTEM_FILTER_DAUER("filter-dauer-start", "0"), // in Minuten
-        SYSTEM_FILTER_DAUER_MIN("filter-dauer-min-start", Boolean.TRUE.toString()), // Dauer ist Min 
-        SYSTEM_FILTER_PROFILE__DAUER("filter-dauer", "0"),
-        SYSTEM_FILTER_PROFILE__DAUER_MIN("filter-dauer-min", Boolean.TRUE.toString()),
-        SYSTEM_FILTER_PROFILE__TAGE("filter-tage", "15"), // index im Array GuiFilme.COMBO_ZEIT_INT
-        SYSTEM_FILTER_PROFILE__KEINE_ABO("filter-keineAbo"),
-        SYSTEM_FILTER_PROFILE__KEINE_GESEHENE("filter-keineGesehen"),
-        SYSTEM_FILTER_PROFILE__NUR_HD("filter-nurHd"),
-        SYSTEM_FILTER_PROFILE__NUR_UT("filter-nurUt"),
-        SYSTEM_FILTER_PROFILE__NUR_NEUE("filter-nurNeue"),
-        SYSTEM_FILTER_PROFILE__BLACKLIST_ON("filter-blacklist-aus"),
-        SYSTEM_FILTER_PROFILE__NAME("filter-name"),
-        SYSTEM_FILTER_PROFILE__SENDER("filter-sender"),
-        SYSTEM_FILTER_PROFILE__THEMA("filter-thema"),
-        SYSTEM_FILTER_PROFILE__TITEL("filter-titel"),
-        SYSTEM_FILTER_PROFILE__THEMA_TITEL("filter-themaTitel"),
-        SYSTEM_FILTER_PROFILE__TT("filter-TT-oder-irgendwo", Boolean.TRUE.toString()),
-        SYSTEM_FILTER_PROFILE__SORT_KEY("filter-sortkey"),
-        SYSTEM_FILTER_PROFILE__SORT_KEY_UPDOWN("filter-sortkey-updown"),
-        SYSTEM_FILTER_PROFILE__ANZAHL_FILTER("filter-anzahl"),
         // Programmpfade
         SYSTEM_PFAD_VLC("pfad-vlc", GuiFunktionenProgramme.getMusterPfadVlc()),
         SYSTEM_PFAD_FLVSTREAMER("pfad-flvstreamer", GuiFunktionenProgramme.getMusterPfadFlv()),
@@ -281,7 +246,7 @@ public class MVConfig {
             }
         }
 
-        if (Daten.isDebug()) {
+        if (Config.isDebuggingEnabled()) {
             MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUS));
         }
         MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
@@ -302,7 +267,7 @@ public class MVConfig {
         Log.sysLog("Download weiterführen in [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN));
         Log.sysLog("Download Fehlermeldung anzeigen [s]: " + MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN));
         Log.sysLog("Downoadprogress anzeigen: " + MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS));
-        Log.sysLog("Useragent: " + MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_USERAGENT));
+        Log.sysLog("User-Agent: " + ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
         Log.sysLog("=======================================");
         Log.sysLog("");
     }
@@ -322,13 +287,14 @@ public class MVConfig {
         HASHMAP.put(key.cValue, value);
     }
 
+    private static final int MAX_FILTER = 5; //old filter profile code setting
     public static synchronized void add(Configs key, String value, int i) {
         boolean ok = false;
         String[] sa = {""};
         String s = HASHMAP.get(key.cValue);
         if (s != null) {
             sa = split(s);
-            if (sa.length == MVFilter.MAX_FILTER) {
+            if (sa.length == MAX_FILTER) {
                 sa[i] = value;
                 ok = true;
             }
@@ -381,20 +347,6 @@ public class MVConfig {
         }
     }
 
-    public static synchronized int getInt(Configs key, int i) {
-        int ret;
-        try {
-            ret = Integer.parseInt(get(key, i));
-        } catch (Exception ignore) {
-            ret = 0;
-        }
-        return ret;
-    }
-
-    public static synchronized boolean getBool(Configs key, int i) {
-        return Boolean.parseBoolean(get(key, i));
-    }
-
     public static synchronized String[][] getAll() {
         final LinkedList<String[]> liste = new LinkedList<>();
         final Set<String> strings = HASHMAP.keySet();
@@ -405,7 +357,8 @@ public class MVConfig {
             s[1] = HASHMAP.get(entry);
             liste.add(s);
         }
-        listeSort(liste, 0);
+        listeSort(liste);
+
         return liste.toArray(new String[][]{});
     }
 
@@ -417,6 +370,7 @@ public class MVConfig {
             s = s.substring(s.indexOf(TRENNER) + TRENNER.length());
         }
         l.add(s);
+
         return l.toArray(new String[l.size()]);
 
     }
@@ -437,14 +391,14 @@ public class MVConfig {
     }
 
     private static String[] initArray(Configs key) {
-        String[] sa = new String[MVFilter.MAX_FILTER];
-        for (int k = 0; k < MVFilter.MAX_FILTER; ++k) {
+        String[] sa = new String[MAX_FILTER];
+        for (int k = 0; k < MAX_FILTER; ++k) {
             sa[k] = key.initValue;
         }
         return sa;
     }
 
-    private static void listeSort(LinkedList<String[]> liste, int stelle) {
+    private static void listeSort(LinkedList<String[]> liste) {
         //Stringliste alphabetisch sortieren
         mSearch.tool.GermanStringSorter sorter = mSearch.tool.GermanStringSorter.getInstance();
         if (liste != null) {
@@ -452,8 +406,8 @@ public class MVConfig {
             String str2;
             for (int i = 1; i < liste.size(); ++i) {
                 for (int k = i; k > 0; --k) {
-                    str1 = liste.get(k - 1)[stelle];
-                    str2 = liste.get(k)[stelle];
+                    str1 = liste.get(k - 1)[0];
+                    str2 = liste.get(k)[0];
                     // if (str1.compareToIgnoreCase(str2) > 0) {
                     if (sorter.compare(str1, str2) > 0) {
                         liste.add(k - 1, liste.remove(k));
