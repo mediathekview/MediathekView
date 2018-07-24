@@ -95,7 +95,7 @@ public class Daten
     private ListeAbo listeAbo = null;
     private DownloadInfos downloadInfos = null;
 
-    private ObservableList<LiveStreamItem> liveStreamList = FXCollections.observableArrayList();
+    private final ObservableList<LiveStreamItem> liveStreamList = FXCollections.observableArrayList();
 
     public ObservableList<LiveStreamItem> getLivestreamList() {
         return liveStreamList;
@@ -277,7 +277,7 @@ public class Daten
      * @return Path to the settings directory
      * @throws IllegalStateException Will be thrown if settings directory don't exist and if there is an error on creating it.
      */
-    public static Path getSettingsDirectory() throws IllegalStateException
+    private static Path getSettingsDirectory() throws IllegalStateException
     {
         final Path baseDirectoryPath;
         if (basisverzeichnis == null || basisverzeichnis.isEmpty())
@@ -325,7 +325,7 @@ public class Daten
      *
      * @param xmlFilePath Path to file.
      */
-    public static void getMediathekXmlCopyFilePath(ArrayList<Path> xmlFilePath)
+    private static void getMediathekXmlCopyFilePath(ArrayList<Path> xmlFilePath)
     {
         for (int i = 1; i <= MAX_COPY; ++i)
         {
@@ -588,7 +588,7 @@ public class Daten
      *
      * @return Number of milliseconds from today´s midnight.
      */
-    public static long getHeute_0Uhr()
+    private static long getHeute_0Uhr()
     {
         final Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);

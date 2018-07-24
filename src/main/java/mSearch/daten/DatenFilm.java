@@ -103,10 +103,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     }
 
     static {
-        try {
             Database.initializeDatabase();
-        } catch (SQLException ignored) {
-        }
     }
 
     /**
@@ -133,7 +130,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      */
     private int databaseFilmNumber;
     private boolean neuerFilm = false;
-    private Cleaner cleaner;
+    private final Cleaner cleaner;
     /**
      * Future used for writing description into database.
      * Will be checked before each read if finished
@@ -559,7 +556,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
             PooledDatabaseConnection.getInstance().close();
         }
 
-        private static void initializeDatabase() throws SQLException {
+        private static void initializeDatabase() {
             try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
                  Statement statement = connection.createStatement()) {
                 statement.executeUpdate("SET MULTI_THREADED 1");

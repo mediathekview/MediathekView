@@ -1,6 +1,9 @@
 package mSearch.daten;
 
 import com.jidesoft.utils.SystemInfo;
+import mSearch.tool.MemoryUtils;
+import mediathek.config.Daten;
+import mediathek.tool.GuiFunktionen;
 import org.apache.commons.dbcp2.*;
 import org.apache.commons.pool2.ObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPool;
@@ -53,19 +56,50 @@ public class PooledDatabaseConnection implements Closeable {
 
     private ObjectPool<PoolableConnection> connectionPool;
 
-    private DataSource setupDataSource() {
-        final String CACHE_PATH;
-        if (SystemInfo.isMacOSX()) {
-            CACHE_PATH = System.getProperty("user.home") + "/Library/Caches/MediathekView/database/";
-        } else
-            CACHE_PATH = System.getProperty("user.home") + File.separatorChar + ".mediathek3" + File.separatorChar
-                    + "database" + File.separatorChar;
+    /**
+     * Get the location of the filmlist database
+     *
+     * @return string to database location based on OS
+     */
+    private String getDatabaseLocation() {
+        String strDatabase;
 
+        if (SystemInfo.isMacOSX()) {
+            //place database into OS X user cache directory in order not to backup it all the time in TimeMachine...
+            strDatabase = GuiFunktionen.getHomePath() + File.separator + "Library/Caches/MediathekView/database" + File.separator;
+        } else {
+            strDatabase = Daten.getSettingsDirectory_String() + File.separator + "database" + File.separator;
+        }
+
+        return strDatabase;
+    }
+
+    private String configureDatabaseParams() {
+        final String dbParams;
+        //windows doesn´t like memory mapped IO....
+        if (SystemInfo.isWindows())
+            dbParams = "file";
+        else {
+            //more speed for the rest, prevent 2GB mem limit by splitting
+            if (MemoryUtils.isLowMemoryEnvironment()) {
+                //split into 2^27 = 128MB pieces...
+                dbParams = "split:27:nioMapped";
+            } else {
+                //1GB split pieces by default
+                dbParams = "split:nioMapped";
+            }
+        }
+
+        return dbParams;
+    }
+
+    private DataSource setupDataSource() {
         Properties props = new Properties();
         //props.put("defaultAutoCommit","false");
         props.put("maxTotal", String.valueOf(Runtime.getRuntime().availableProcessors()));
         props.put("poolPreparedStatements", "true");
-        final String driverCommand = "jdbc:h2:file:" + CACHE_PATH + "mediathekview;MVCC=TRUE";
+
+        final String driverCommand = "jdbc:h2:" + configureDatabaseParams() + ":" + getDatabaseLocation() + "mediathekview;MVCC=TRUE;PAGE_SIZE=4096";
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(driverCommand, props);
 
         PoolableConnectionFactory poolableConnectionFactory =

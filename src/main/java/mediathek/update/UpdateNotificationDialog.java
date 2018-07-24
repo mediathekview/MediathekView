@@ -12,8 +12,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class UpdateNotificationDialog extends StandardCloseDialog {
-    private ServerProgramInformation programInformation;
-    private UpdateNotificationPanel panel = new UpdateNotificationPanel();
+    private final ServerProgramInformation programInformation;
+    private final UpdateNotificationPanel panel = new UpdateNotificationPanel();
     private WebView browser;
     private WebEngine webEngine;
 
