@@ -245,9 +245,8 @@ public class GuiFunktionen extends MVFunctionSys {
 
     public static String getHash(String pfad) {
         //Hash eines Dateinamens zB. 1433245578
-        int h = pfad.hashCode(); // kann auch negativ sein
-        h = Math.abs(h);
-        String hh = h + "";
+        final int h = Math.abs(pfad.hashCode());
+        String hh = Integer.toString(h);
         while (hh.length() < 10) {
             hh = '0' + hh;
         }

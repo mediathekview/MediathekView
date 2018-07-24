@@ -19,11 +19,12 @@
  */
 package mediathek.tool;
 
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
 import mSearch.tool.TimedTextMarkupLanguageParser;
-import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,16 +38,14 @@ import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
 public class MVSubtitle {
-
-    private static final int timeout = 10000;
-    public static final String KODIERUNG_UTF = "UTF-8";
+    private static final Logger logger = LogManager.getLogger(MVSubtitle.class);
 
     public static void writeSubtitle( DatenDownload datenDownload) {
         final String SUFFIX_TTML = "ttml";
         final String SUFFIX_SRT = "srt";
-        String suffix = SUFFIX_TTML;// txt käme dem Infofile in die Quere
+        String suffix;// txt käme dem Infofile in die Quere
         String urlSubtitle = "";
-        String strSubtitelFile = null;
+        String strSubtitelFile;
         File subtitelFile;
         HttpURLConnection conn = null;
         InputStream in = null;
@@ -56,24 +55,27 @@ public class MVSubtitle {
             return;
         }
         try {
-            SysMsg.sysMsg(new String[]{"Untertitel: ", datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE],
-                "schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]});
+            logger.info("Untertitel {} schreiben nach {}", datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE],
+                    datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]);
 
             urlSubtitle = datenDownload.arr[DatenDownload.DOWNLOAD_URL_SUBTITLE];
             suffix = GuiFunktionen.getSuffixFromUrl(urlSubtitle);
             if (!suffix.endsWith(SUFFIX_SRT)) {
                 suffix = SUFFIX_TTML;
             }
-            strSubtitelFile = datenDownload.getFileNameWithoutSuffix() + "." + suffix;
+            strSubtitelFile = datenDownload.getFileNameWithoutSuffix() + '.' + suffix;
             subtitelFile = new File(strSubtitelFile);
 
             new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]).mkdirs();
 
             conn = (HttpURLConnection) new URL(urlSubtitle).openConnection();
-            conn.setRequestProperty("User-Agent", Daten.getUserAgent());
+            conn.setRequestProperty("User-Agent",
+                    ApplicationConfiguration.getConfiguration()
+                            .getString(ApplicationConfiguration.APPLICATION_USER_AGENT));
+
             conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
-            conn.setReadTimeout(timeout);
-            conn.setConnectTimeout(timeout);
+            conn.setReadTimeout(10_000);
+            conn.setConnectTimeout(10_000);
             // the encoding returned by the server
             encoding = conn.getContentEncoding();
             if ((conn.getResponseCode()) < 400) {
@@ -99,12 +101,12 @@ public class MVSubtitle {
             }
 
             try (FileOutputStream fos = new FileOutputStream(subtitelFile)) {
-                final byte[] buffer = new byte[1024];
+                final byte[] buffer = new byte[64 * 1024];
                 int n;
                 while ((n = in.read(buffer)) != -1) {
                     fos.write(buffer, 0, n);
                 }
-                SysMsg.sysMsg(new String[]{"Untertitel", "  geschrieben"});
+                logger.info("Untertitel wurde geschrieben");
             }
         } catch (IOException ex) {
             strSubtitelFile = null;
@@ -126,10 +128,10 @@ public class MVSubtitle {
             } catch (Exception ignored) {
             }
         }
-        try {
+
+        try (TimedTextMarkupLanguageParser ttmlp = new TimedTextMarkupLanguageParser()) {
             if (strSubtitelFile != null) {
-                if (!strSubtitelFile.endsWith("." + SUFFIX_SRT)) {
-                    TimedTextMarkupLanguageParser ttmlp = new TimedTextMarkupLanguageParser();
+                if (!strSubtitelFile.endsWith('.' + SUFFIX_SRT)) {
                     Path p = new File(strSubtitelFile).toPath();
                     Path srt = new File(datenDownload.getFileNameWithoutSuffix() + "." + SUFFIX_SRT).toPath();
                     if (ttmlp.parse(p)) {
@@ -137,11 +139,10 @@ public class MVSubtitle {
                     } else if (ttmlp.parseXmlFlash(p)) {
                         ttmlp.toSrt(srt);
                     }
-                    ttmlp.cleanup();
                 }
             }
-        } catch (Exception ignored) {
-            Log.errorLog(461203210, ignored, "SubtitelUrl: " + urlSubtitle);
+        } catch (Exception ex) {
+            logger.error("Fehler bei Untertitel schreiben:", ex);
         }
     }
 }

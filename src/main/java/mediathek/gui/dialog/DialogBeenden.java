@@ -23,8 +23,8 @@ package mediathek.gui.dialog;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.file.GetFile;
-import mediathek.tool.EscBeenden;
-import org.jdesktop.swingx.JXBusyLabel;
+import mediathek.javafx.AppTerminationIndefiniteProgress;
+import mediathek.tool.EscapeKeyHandler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -74,12 +74,8 @@ public class DialogBeenden extends JDialog {
         if (parent != null) {
             setLocationRelativeTo(parent);
         }
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                escapeHandler();
-            }
-        };
+
+        EscapeKeyHandler.installHandler(this, this::escapeHandler);
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -191,20 +187,11 @@ public class DialogBeenden extends JDialog {
      * @return The {@link javax.swing.JPanel} for the glassPane.
      */
     private JPanel createGlassPane() {
-        String strMessage = "<html>Warte auf Abschluss der Downloads...";
-        if (isShutdownRequested()) {
-            strMessage += "<br><b>Der Rechner wird danach heruntergefahren.</b>";
-        }
-        strMessage += "<br>Sie können den Vorgang mit Escape abbrechen.</html>";
-
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout(5, 5));
-        JXBusyLabel lbl = new JXBusyLabel();
-        lbl.setText(strMessage);
-        lbl.setBusy(true);
-        lbl.setVerticalAlignment(SwingConstants.CENTER);
-        lbl.setHorizontalAlignment(SwingConstants.CENTER);
-        panel.add(lbl, BorderLayout.CENTER);
+
+        AppTerminationIndefiniteProgress progPanel = new AppTerminationIndefiniteProgress(isShutdownRequested());
+        panel.add(progPanel, BorderLayout.CENTER);
 
         return panel;
     }
@@ -271,7 +258,7 @@ public class DialogBeenden extends JDialog {
 
         cbShutdownComputer.setText("Rechner herunterfahren");
 
-        btnCancel.setText("Zurück");
+        btnCancel.setText("Abbrechen");
 
         jButtonHilfe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
         jButtonHilfe.setToolTipText("Hilfe anzeigen");

@@ -1,8 +1,9 @@
 package mediathek.controller;
 
-import java.util.concurrent.Semaphore;
 import mSearch.tool.Listener;
 import mediathek.config.MVConfig;
+
+import java.util.concurrent.Semaphore;
 
 /**
  * This singleton class provides the necessary tokens for direct file downloads.
@@ -11,7 +12,7 @@ import mediathek.config.MVConfig;
  */
 public class MVBandwidthTokenBucket {
 
-    public static final int DEFAULT_BUFFER_SIZE = 4 * 1024; // default byte buffer size
+    public static final int DEFAULT_BUFFER_SIZE = 64 * 1024; // default byte buffer size
     private final Semaphore bucketSize = new Semaphore(0, false);
 
     public static final int BANDWIDTH_MAX_RED_KBYTE = 500; // 500 kByte/s

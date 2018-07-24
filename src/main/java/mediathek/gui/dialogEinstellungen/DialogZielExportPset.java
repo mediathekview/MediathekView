@@ -23,7 +23,7 @@ import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
 
@@ -53,13 +53,11 @@ public class DialogZielExportPset extends javax.swing.JDialog {
             name = "name.xml";
         }
         jTextFieldPfad.setText(GuiFunktionen.addsPfad(pfad.isEmpty() ? GuiFunktionen.getHomePath() : pfad, name));
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                ok = false;
-                beenden();
-            }
-        };
+
+        EscapeKeyHandler.installHandler(this, () -> {
+            ok = false;
+            dispose();
+        });
     }
 
     private boolean check() {
@@ -75,10 +73,6 @@ public class DialogZielExportPset extends javax.swing.JDialog {
         }
         ziel = pfad;
         return true;
-    }
-
-    private void beenden() {
-        this.dispose();
     }
 
     /** This method is called from within the constructor to
@@ -169,7 +163,7 @@ public class DialogZielExportPset extends javax.swing.JDialog {
         public void actionPerformed(ActionEvent e) {
             if (check()) {
                 ok = true;
-                beenden();
+                dispose();
             }
         }
     }

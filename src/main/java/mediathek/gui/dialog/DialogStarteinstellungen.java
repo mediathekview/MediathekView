@@ -30,8 +30,8 @@ import mediathek.gui.dialogEinstellungen.PanelPsetLang;
 import mediathek.tool.GuiFunktionenProgramme;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import static mSearch.tool.Functions.getOs;
 
@@ -44,7 +44,6 @@ public class DialogStarteinstellungen extends JDialog {
     private final static int STAT_FERTIG = 4;
     private int status = STAT_START;
     private final JFrame parentComponent;
-    private JCheckBox jCheckBox = new JCheckBox("Einmal am Tag nach einer neuen Programmversion suchen");
     private boolean anpassen = false;
 
     public DialogStarteinstellungen(JFrame parent, Daten dd) {
@@ -63,39 +62,14 @@ public class DialogStarteinstellungen extends JDialog {
             status = STAT_PSET;
             weiter();
         });
-        MVConfig.add(MVConfig.Configs.SYSTEM_UPDATE_SUCHEN, Boolean.TRUE.toString());
 
         // setzt die Standardpfade für die wichtigsten Programme
         MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_VLC, GuiFunktionenProgramme.getMusterPfadVlc());
         MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER, GuiFunktionenProgramme.getMusterPfadFlv());
         MVConfig.add(MVConfig.Configs.SYSTEM_PFAD_FFMPEG, GuiFunktionenProgramme.getMusterPfadFFmpeg());
 
-        PanelEinstellungenGeo panelEinstellungenGeo = new PanelEinstellungenGeo(dd, parentComponent);
-        jCheckBox = new JCheckBox("Einmal am Tag nach einer neuen Programmversion suchen");
-        jCheckBox.setSelected(true);
-        jCheckBox.addActionListener(new BeobCheckBoxSuchen());
-        GroupLayout extraLayout = new javax.swing.GroupLayout(jPanelExtra);
-        jPanelExtra.setLayout(extraLayout);
-        extraLayout.setHorizontalGroup(
-                extraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(extraLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(extraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(panelEinstellungenGeo)
-                                .addComponent(jCheckBox)
-                        )
-                        .addContainerGap()
-                ));
+        createLayout();
 
-        extraLayout.setVerticalGroup(
-                extraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(extraLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(panelEinstellungenGeo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jCheckBox)
-                        .addContainerGap())
-        );
         if (MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_VLC).isEmpty()
                 || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FLVSTREAMER).isEmpty()
                 || MVConfig.get(MVConfig.Configs.SYSTEM_PFAD_FFMPEG).isEmpty()) {
@@ -103,6 +77,12 @@ public class DialogStarteinstellungen extends JDialog {
             jButtonStandard.setEnabled(false);
             anpassen = true;
         }
+    }
+
+    private void createLayout() {
+        PanelEinstellungenGeo panelEinstellungenGeo = new PanelEinstellungenGeo(daten, parentComponent);
+        jPanelExtra.setLayout(new BorderLayout());
+        jPanelExtra.add(panelEinstellungenGeo, BorderLayout.CENTER);
     }
 
     private void weiter() {
@@ -280,12 +260,4 @@ public class DialogStarteinstellungen extends JDialog {
     private javax.swing.JPanel jPanelExtra;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
-
-    private class BeobCheckBoxSuchen implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_UPDATE_SUCHEN, Boolean.toString(jCheckBox.isSelected()));
-        }
-    }
 }

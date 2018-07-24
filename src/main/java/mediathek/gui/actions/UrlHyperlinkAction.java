@@ -19,6 +19,7 @@
  */
 package mediathek.gui.actions;
 
+import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.MVConfig;
@@ -27,6 +28,7 @@ import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -64,8 +66,24 @@ public class UrlHyperlinkAction extends AbstractAction {
                     d.browse(new URI(url));
                     return;
                 }
-            } catch (Exception ignored) {
+            } catch (RuntimeException ex) {
+                //catch bug that certain urls will cause Desktop.browse to fail on OS X.
+                //try to use applescript to launch safari
+                if (SystemInfo.isMacOSX()) {
+                    try {
+                        final ProcessBuilder builder = new ProcessBuilder("/usr/bin/osascript", "-e");
+                        String command = "tell application \"Safari\" to open location \"" + url + '"';
+                        builder.command().add(command);
+                        command = "-e tell application \"Safari\" to activate";
+                        builder.command().add(command);
+                        builder.start();
+                        return;
+                    } catch (Exception ignored) {
+                    }
+                }
+            } catch (IOException ignored) {
             }
+
             try {
                 String programm = "";
                 if (MVConfig.get(MVConfig.Configs.SYSTEM_URL_OEFFNEN).isEmpty()) {

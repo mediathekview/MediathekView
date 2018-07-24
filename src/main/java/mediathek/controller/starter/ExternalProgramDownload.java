@@ -26,6 +26,8 @@ import mediathek.controller.starter.DirectHttpDownload.HttpDownloadState;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
 import mediathek.gui.dialog.MeldungDownloadfehler;
+import mediathek.gui.messages.DownloadFinishedEvent;
+import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.tool.MVInfoFile;
 import mediathek.tool.MVSubtitle;
 
@@ -67,7 +69,8 @@ public class ExternalProgramDownload extends Thread
         {
             if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI]))
             {
-                MVInfoFile.writeInfoFile(datenDownload);
+                MVInfoFile infoFile = new MVInfoFile();
+                infoFile.writeInfoFile(datenDownload);
             }
             if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE]))
             {
@@ -96,6 +99,8 @@ public class ExternalProgramDownload extends Thread
         final int stat_fertig_fehler = 11;
         final int stat_ende = 99;
         int stat = stat_start;
+
+        daten.getMessageBus().publishAsync(new DownloadStartEvent());
         try
         {
             if (!cancelDownload())
@@ -231,6 +236,7 @@ public class ExternalProgramDownload extends Thread
             });
         }
         finalizeDownload(datenDownload, start, state);
+        daten.getMessageBus().publish(new DownloadFinishedEvent());
     }
 
     private boolean starten()

@@ -25,8 +25,8 @@ import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.file.GetFile;
-import mediathek.tool.EscBeenden;
-import org.jdesktop.swingx.JXBusyLabel;
+import mediathek.javafx.AppTerminationIndefiniteProgress;
+import mediathek.tool.EscapeKeyHandler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("serial")
 public class DialogBeendenZeit extends JDialog {
@@ -57,7 +58,9 @@ public class DialogBeendenZeit extends JDialog {
      * JPanel for displaying the glassPane with the busy indicator label.
      */
     private JPanel glassPane = null;
-    private final JXBusyLabel lblGlassPane = new JXBusyLabel();
+
+    private AppTerminationIndefiniteProgress progressPanel;
+
     /**
      * The download monitoring {@link javax.swing.SwingWorker}.
      */
@@ -91,12 +94,8 @@ public class DialogBeendenZeit extends JDialog {
         if (frameParent != null) {
             setLocationRelativeTo(frameParent);
         }
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                escapeHandler();
-            }
-        };
+
+        EscapeKeyHandler.installHandler(this, this::escapeHandler);
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -229,19 +228,11 @@ public class DialogBeendenZeit extends JDialog {
      * @return The {@link javax.swing.JPanel} for the glassPane.
      */
     private JPanel createGlassPane() {
-        String strMessage = "<html>Warte auf Abschluss der Downloads...";
-        if (isShutdownRequested()) {
-            strMessage += "<br><b>Der Rechner wird danach heruntergefahren.</b>";
-        }
-        strMessage += "<br>Sie können den Vorgang mit Escape abbrechen.</html>";
-
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout(5, 5));
-        lblGlassPane.setText(strMessage);
-        lblGlassPane.setBusy(true);
-        lblGlassPane.setVerticalAlignment(SwingConstants.CENTER);
-        lblGlassPane.setHorizontalAlignment(SwingConstants.CENTER);
-        panel.add(lblGlassPane, BorderLayout.CENTER);
+
+        progressPanel = new AppTerminationIndefiniteProgress(isShutdownRequested());
+        panel.add(progressPanel, BorderLayout.CENTER);
 
         return panel;
     }
@@ -252,32 +243,8 @@ public class DialogBeendenZeit extends JDialog {
         Date sp = (Date) jSpinnerTime.getValue();
         String strDate = format.format(sp);
 
-        String strMessage = "<html>Downloads starten:<br><br><b>" + strDate + "</b><br>";
-        if (isShutdownRequested()) {
-            strMessage += "<br><b>Der Rechner wird danach heruntergefahren.</b>";
-        }
-        strMessage += "<br>Sie können den Vorgang mit Escape abbrechen.</html>";
-        lblGlassPane.setText(strMessage);
-    }
-
-    private void setTextDownload_() {
-        String strMessage = "<html>Warte auf Abschluss der Downloads...";
-        if (isShutdownRequested()) {
-            strMessage += "<br><b>Der Rechner wird danach heruntergefahren.</b>";
-        }
-        strMessage += "<br>Sie können den Vorgang mit Escape abbrechen.</html>";
-        lblGlassPane.setText(strMessage);
-    }
-
-    private void setTextDownload() {
-        try {
-            if (SwingUtilities.isEventDispatchThread()) {
-                setTextDownload_();
-            } else {
-                SwingUtilities.invokeLater(this::setTextDownload_);
-            }
-        } catch (Exception ignored) {
-        }
+        String strMessage = "Downloads starten:" + strDate;
+        progressPanel.setMessage(strMessage);
     }
 
     /**
@@ -294,13 +261,14 @@ public class DialogBeendenZeit extends JDialog {
             @Override
             protected Void doInBackground() throws Exception {
                 while ((((Date) jSpinnerTime.getValue())).after(new Date())) {
-                    Thread.sleep(1000);
+                    TimeUnit.SECONDS.sleep(1);
                 }
-                setTextDownload();
+
+                progressPanel.setMessage("Warte auf Abschluss der Downloads...");
                 DatenDownload.startenDownloads(daten, listeDownloadsStarten);
 
                 while ((Daten.getInstance().getListeDownloads().nochNichtFertigeDownloads() > 0) && !isCancelled()) {
-                    Thread.sleep(1000);
+                    TimeUnit.SECONDS.sleep(1);
                 }
 
                 return null;

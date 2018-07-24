@@ -26,7 +26,7 @@ import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -116,13 +116,10 @@ public class DialogAddMoreDownload extends JDialog {
                 }
             }
         });
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                beenden();
-            }
-        };
-        this.pack();
+
+        EscapeKeyHandler.installHandler(this, this::beenden);
+
+        pack();
     }
 
     public String getPath() {
@@ -135,7 +132,7 @@ public class DialogAddMoreDownload extends JDialog {
 
     private void beenden() {
         DialogAddDownload.saveComboPfad(jComboBoxPath, orgPfad);
-        this.dispose();
+        dispose();
     }
 
     /** This method is called from within the constructor to

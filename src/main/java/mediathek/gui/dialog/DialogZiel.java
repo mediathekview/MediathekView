@@ -22,7 +22,7 @@ package mediathek.gui.dialog;
 import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionen;
 
 import javax.swing.*;
@@ -51,13 +51,11 @@ public class DialogZiel extends JDialog {
         if (pparent != null) {
             setLocationRelativeTo(pparent);
         }
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                ok = false;
-                beenden();
-            }
-        };
+
+        EscapeKeyHandler.installHandler(this, () -> {
+            ok = false;
+            dispose();
+        });
     }
 
     void check() {
@@ -83,7 +81,7 @@ public class DialogZiel extends JDialog {
     }
 
     private void beenden() {
-        this.dispose();
+        dispose();
     }
 
     /** This method is called from within the constructor to

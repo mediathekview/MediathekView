@@ -22,14 +22,18 @@ package mediathek;
 import com.jidesoft.utils.SystemInfo;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import javafx.application.Platform;
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mSearch.Config;
 import mSearch.tool.Log;
 import mSearch.tool.SingleInstance;
-import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.Messages;
 import mediathek.mac.MediathekGuiMac;
+import mediathek.windows.MediathekGuiWindows;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,17 +46,8 @@ import java.nio.file.Paths;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 public class Main {
-    private final class ProgramArguments {
-        private static final String STARTUPMODE_AUTO = "-auto";
-        private static final String STARTUPMODE_FASTAUTO = "-fastauto";
-        private static final String STARTUPMODE_DEBUG = "-d";
-        private static final String STARTUPMODE_MAXIMIZED = "-m";
-        private static final String STARTUPMODE_VERBOSE = "-v";
-    }
-
+    private static final String TEXT_LINE = "===========================================";
     private static final String JAVAFX_CLASSNAME_APPLICATION_PLATFORM = "javafx.application.Platform";
-    private static final String LOG_TEXT_SYSTEMMELDUNG = "Systemmeldung";
-    private static final String LOG_TEXT_FEHLERMELDUNG = "Fehlermeldung";
     private static final String HTTP_PROXY_USER = "http.proxyUser";
     private static final String HTTP_PROXY_PW = "http.proxyPassword";
     private static final String LOG_TEXT_PROXY_AUTHENTICATION_SUCESSFUL = "Proxy Authentication: (%s)";
@@ -60,14 +55,10 @@ public class Main {
     private static final String LOG_TEXT_PROXY_PASSWORD_NOT_SET = "Proxy Authentication: Password is not set";
     private static final String LOG_TEXT_PROXY_AUTHENTICATION_CANNOT_ACCESS_PROXY_USER_PROXY_PW = "Proxy Authentication: cannot access proxyUser / proxyPassword";
     private static final String MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR = "apple.laf.useScreenMenuBar";
-    private static final String LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING = "MediathekView is already running!";
+    private static final String LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING = "MediathekView wird bereits ausgeführt!";
     private static final String X11_AWT_APP_CLASS_NAME = "awtAppClassName";
-    public static final String TEXT_LINE = "===========================================";
 
-    private enum StartupMode {
-
-        GUI, AUTO, FASTAUTO
-    }
+    private static final Logger logger = LogManager.getLogger(Main.class);
 
     /**
      * Ensures that old film lists in .mediathek directory get deleted because they were moved to
@@ -90,6 +81,7 @@ public class Main {
             return true;
 
         } catch (ClassNotFoundException e) {
+            logger.error("JavaFX was not found on system.", e);
             System.out.println(TEXT_LINE);
             System.out.printf(Messages.ERROR_NO_JAVAFX_INSTALLED.getText());
             System.out.println(TEXT_LINE);
@@ -98,22 +90,29 @@ public class Main {
         }
     }
 
-    /*
-     * Aufruf:
-     * java -jar Mediathek [Pfad zur Konfigdatei, sonst homeverzeichnis] [Schalter]
-     *
-     * Programmschalter:
-     *
-     * -M Fenster maximiert starten
-     * -A Automodus
-     * -noGui ohne GUI starten und die Filmliste laden
-     *
-     * */
-
+    private static void printBanner() {
+        if (!SystemInfo.isMacOSX()) {
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println("___  ___         _ _       _   _          _    _   _ _               ");
+            System.out.println("|  \\/  |        | (_)     | | | |        | |  | | | (_)              ");
+            System.out.println("| .  . | ___  __| |_  __ _| |_| |__   ___| | _| | | |_  _____      __");
+            System.out.println("| |\\/| |/ _ \\/ _` | |/ _` | __| '_ \\ / _ \\ |/ / | | | |/ _ \\ \\ /\\ / /");
+            System.out.println("| |  | |  __/ (_| | | (_| | |_| | | |  __/   <\\ \\_/ / |  __/\\ V  V / ");
+            System.out.println("\\_|  |_/\\___|\\__,_|_|\\__,_|\\__|_| |_|\\___|_|\\_\\\\___/|_|\\___| \\_/\\_/  ");
+            System.out.println();
+            System.out.println();
+        }
+    }
     /**
      * @param args the command line arguments
      */
     public static void main(final String args[]) {
+        IconFontSwing.register(FontAwesome.getIconFont());
+        printBanner();
         new Main().start(args);
     }
 
@@ -130,6 +129,18 @@ public class Main {
             startUI(startupMode, args);
         }
     }
+
+    /*
+     * Aufruf:
+     * java -jar Mediathek [Pfad zur Konfigdatei, sonst homeverzeichnis] [Schalter]
+     *
+     * Programmschalter:
+     *
+     * -M Fenster maximiert starten
+     * -A Automodus
+     * -noGui ohne GUI starten und die Filmliste laden
+     *
+     * */
 
     private void startUI(StartupMode aStartupMode, final String... aArguments) {
         aStartupMode = switchToCLIModeIfNecessary(aStartupMode);
@@ -161,27 +172,38 @@ public class Main {
                 cleanupOsxFiles();
             }
 
-            if (Daten.isDebug()) {
+            if (Config.isDebuggingEnabled()) {
                 // use for debugging EDT violations
                 RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
+            }
 
-                if (SystemInfo.isMacOSX()) {
-                    //prevent startup of multiple instances...useful during debugging :(
-                    SingleInstance singleInstanceWatcher = new SingleInstance();
-                    if (singleInstanceWatcher.isAppAlreadyActive()) {
-                        JOptionPane.showMessageDialog(null, LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING);
-                    }
-                }
+            //prevent startup of multiple instances...
+            SingleInstance singleInstanceWatcher = new SingleInstance();
+            if (singleInstanceWatcher.isAppAlreadyActive()) {
+                JOptionPane.showMessageDialog(null, LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING);
+                System.exit(1);
             }
-            if (SystemInfo.isMacOSX()) {
-                new MediathekGuiMac(args).setVisible(true);
-            } else {
-                if (SystemInfo.isUnix()) {
-                    setupX11WindowManagerClassName();
-                }
-                new MediathekGui(args).setVisible(true);
-            }
+
+
+            getPlatformWindow(args).setVisible(true);
         });
+    }
+
+    private MediathekGui getPlatformWindow(final String[] args) {
+        MediathekGui window;
+
+        if (SystemInfo.isMacOSX()) {
+            window = new MediathekGuiMac(args);
+        } else if (SystemInfo.isWindows()) {
+            window = new MediathekGuiWindows(args);
+        } else {
+            if (SystemInfo.isUnix()) {
+                setupX11WindowManagerClassName();
+            }
+            window = new MediathekGui(args);
+        }
+
+        return window;
     }
 
     /**
@@ -195,7 +217,7 @@ public class Main {
             awtAppClassNameField.setAccessible(true);
             awtAppClassNameField.set(xToolkit, Konstanten.PROGRAMMNAME);
         } catch (Exception ignored) {
-            System.err.println("Couldn't set awtAppClassName");
+            logger.warn("Could not set awtAppClassName");
         }
     }
 
@@ -215,6 +237,7 @@ public class Main {
      instead of crashing while trying to open Swing windows, just change to CLI mode and warn the user.
      */
         if (GraphicsEnvironment.isHeadless() && (aState == StartupMode.GUI)) {
+            logger.warn("Headless environment detected but -auto was not specified.");
             System.err.println("MediathekView wurde nicht als Kommandozeilenprogramm gestartet.");
             System.err.println("Startmodus wurde auf -auto geändert.");
             System.err.println();
@@ -240,16 +263,15 @@ public class Main {
                     EventQueue.invokeLater(() ->
                     {
                         startMeldungen();
-                        SysMsg.sysMsg(LOG_TEXT_SYSTEMMELDUNG);
-                        Log.errorLog(100000000, LOG_TEXT_FEHLERMELDUNG);
+                        logger.info("Systemmeldung");
+                        Log.errorLog(100000000, "Fehlermeldung");
                         Log.endMsg();
                         System.exit(0);
                     });
                     break;
 
                 case ProgramArguments.STARTUPMODE_DEBUG:
-                    Daten.setDebug(true);
-                    Config.debug = true;
+                    Config.enableDebugMode();
                     break;
 
                 case ProgramArguments.STARTUPMODE_MAXIMIZED:
@@ -262,6 +284,7 @@ public class Main {
     }
 
     private void proxyAuthentication() {
+        //TODO remove if not used anymore by URLConnection
         try {
             final String prxUser = System.getProperty(HTTP_PROXY_USER, null);
             final String prxPassword = System.getProperty(HTTP_PROXY_PW, null);
@@ -273,15 +296,28 @@ public class Main {
                         return authenticator;
                     }
                 });
-                SysMsg.sysMsg(String.format(LOG_TEXT_PROXY_AUTHENTICATION_SUCESSFUL, prxUser));
+                logger.info(String.format(LOG_TEXT_PROXY_AUTHENTICATION_SUCESSFUL, prxUser));
             } else if (prxUser != null && prxPassword == null) {
-                SysMsg.sysMsg(LOG_TEXT_PROXY_PASSWORD_NOT_SET);
+                logger.info(LOG_TEXT_PROXY_PASSWORD_NOT_SET);
             } else {
-                SysMsg.sysMsg(LOG_TEXT_PROXY_AUTHENTICATION_NOT_CONFIGURED);
+                logger.info(LOG_TEXT_PROXY_AUTHENTICATION_NOT_CONFIGURED);
             }
 
         } catch (SecurityException se) {
-            SysMsg.sysMsg(LOG_TEXT_PROXY_AUTHENTICATION_CANNOT_ACCESS_PROXY_USER_PROXY_PW + se.toString());
+            logger.warn(LOG_TEXT_PROXY_AUTHENTICATION_CANNOT_ACCESS_PROXY_USER_PROXY_PW + se.toString());
         }
+    }
+
+    private enum StartupMode {
+
+        GUI, AUTO, FASTAUTO
+    }
+
+    private final class ProgramArguments {
+        private static final String STARTUPMODE_AUTO = "-auto";
+        private static final String STARTUPMODE_FASTAUTO = "-fastauto";
+        private static final String STARTUPMODE_DEBUG = "-d";
+        private static final String STARTUPMODE_MAXIMIZED = "-m";
+        private static final String STARTUPMODE_VERBOSE = "-v";
     }
 }

@@ -1,0 +1,62 @@
+JFDML JFormDesigner: "7.0.0.0.92" Java: "1.8.0_152-release" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+			"$layoutConstraints": "hidemode 3"
+			"$columnConstraints": "[fill][grow,fill]"
+			"$rowConstraints": "[][][][grow]"
+		} ) {
+			name: "this"
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label1"
+				"text": "Eine neue Version von MediathekView ist verfügbar!"
+				"font": new com.jformdesigner.model.SwingDerivedFont( null, 1, 5, false )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 0,aligny bottom,growy 0"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblAppIcon"
+				"icon": new com.jformdesigner.model.SwingIcon( 1, "/Users/christianfranzke/development/IntelliJ Projekte/MediathekView/src/main/resources/mediathek/res/MediathekView_k.png" )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 0 1 2"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label3"
+				"text": "text"
+				"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, -1, false )
+				auxiliary() {
+					"JavaCodeGenerator.variableName": "lblReleaseInfo"
+				}
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 1,aligny top,growy 0"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label4"
+				"text": "Release Notes:"
+				"font": new com.jformdesigner.model.SwingDerivedFont( null, 1, -2, false )
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 2"
+			} )
+			add( new FormComponent( "javafx.embed.swing.JFXPanel" ) {
+				name: "fxPanel"
+				"preferredSize": new java.awt.Dimension( 480, 240 )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 3,grow"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 580, 385 )
+		} )
+	}
+}

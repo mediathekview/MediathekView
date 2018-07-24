@@ -27,7 +27,7 @@ import mSearch.tool.Log;
 import mediathek.config.*;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.MVFilmSize;
 import mediathek.tool.MVMessageDialog;
@@ -107,14 +107,13 @@ public class DialogAddDownload extends JDialog {
                 beenden();
             }
         });
-        getRootPane().setDefaultButton(jButtonOk); //TH
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                ok = false;
-                beenden();
-            }
-        };
+        getRootPane().setDefaultButton(jButtonOk);
+
+        EscapeKeyHandler.installHandler(this, () -> {
+            ok = false;
+            beenden();
+        });
+
         jButtonAbbrechen.addActionListener(e -> {
             ok = false;
             beenden();
@@ -133,7 +132,7 @@ public class DialogAddDownload extends JDialog {
         } else {
             jComboBoxPset.addActionListener(e -> setupResolutionButtons());
         }
-        jTextFieldSender.setText(" " + datenFilm.arr[DatenFilm.FILM_SENDER] + ":   " + datenFilm.arr[DatenFilm.FILM_TITEL]);
+        jTextFieldSender.setText(' ' + datenFilm.getSender() + ":   " + datenFilm.getTitle());
         jTextFieldName.getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
@@ -234,7 +233,7 @@ public class DialogAddDownload extends JDialog {
             // nur wenn vom Benutzer noch nicht geänert!
             stopBeob = true;
             datenDownload = new DatenDownload(pSet, datenFilm, DatenDownload.QUELLE_DOWNLOAD, null, "", "", getFilmResolution());
-            if (datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME].equals("")) {
+            if (datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_DATEINAME].isEmpty()) {
                 // dann wird nicht gespeichert ==> eigenntlich falsche Seteinstellungen??
                 jTextFieldName.setEnabled(false);
                 jComboBoxPfad.setEnabled(false);

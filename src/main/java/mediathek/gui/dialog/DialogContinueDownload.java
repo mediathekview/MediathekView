@@ -21,7 +21,7 @@ package mediathek.gui.dialog;
 
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.MVMessageDialog;
 
 import javax.swing.*;
@@ -87,12 +87,8 @@ public class DialogContinueDownload extends JDialog {
         });
 
         jButtonAbbrechen.addActionListener(e -> abbrechen());
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                abbrechen();
-            }
-        };
+
+        EscapeKeyHandler.installHandler(this, this::abbrechen);
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -142,7 +138,7 @@ public class DialogContinueDownload extends JDialog {
         if (countdownTimer != null) {
             countdownTimer.stop();
         }
-//        mVPanelDownloadZiel.saveComboPfad();
+
         dispose();
     }
 

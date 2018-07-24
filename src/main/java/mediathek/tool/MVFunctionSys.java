@@ -19,28 +19,32 @@
  */
 package mediathek.tool;
 
-import static mSearch.tool.Log.LILNE;
+import mSearch.tool.Log;
+import mediathek.Main;
+import mediathek.config.Daten;
+import mediathek.config.Konstanten;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.security.CodeSource;
 
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
-import mediathek.Main;
-import mediathek.config.Daten;
-import mediathek.config.Konstanten;
+import static mSearch.tool.Log.LILNE;
 
 public class MVFunctionSys {
 
     public static synchronized void startMeldungen() {
         Log.versionMsg(MVFunctionSys.getProgName());
-        SysMsg.sysMsg("Programmpfad: " + MVFunctionSys.getPathJar());
-        SysMsg.sysMsg("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
-        SysMsg.sysMsg("");
-        SysMsg.sysMsg(LILNE);
-        SysMsg.sysMsg("");
-        SysMsg.sysMsg("");
+        logger.info("Programmpfad: " + MVFunctionSys.getPathJar());
+        logger.info("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
+        logger.info("");
+        logger.info(LILNE);
+        logger.info("");
+        logger.info("");
     }
+
+    private static final Logger logger = LogManager.getLogger(MVFunctionSys.class);
 
     /**
      * Retrieve the path to the program jar file.
@@ -60,7 +64,7 @@ public class MVFunctionSys {
             } catch (Exception ignored) {
             }
         }
-        String s = propFile.getAbsolutePath().replace(pFilePath, "");
+        String s = StringUtils.replace(propFile.getAbsolutePath(), pFilePath, "");
         if (!s.endsWith(File.separator)) {
             s = s + File.separator;
         }

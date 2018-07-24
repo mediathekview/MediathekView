@@ -1,0 +1,52 @@
+JFDML JFormDesigner: "7.0.0.0.92" Java: "1.8.0_152-release" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {comp jCheckBoxBeschreibung:::p::p, space :p:5:p, comp jPanel1:::::x, space :p:5:p}}"
+			"$verticalGroup": "par l {comp jCheckBoxBeschreibung:::p::p, seq l {space :p:5:p, comp jPanel1:::p::p}}"
+		} ) {
+			name: "this"
+			add( new FormComponent( "javax.swing.JCheckBox" ) {
+				name: "jCheckBoxBeschreibung"
+				"toolTipText": "Beschreibung ausblenden"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq l {space :p::p, comp hyperlinkButton:::::x, space :p:218:p, comp jCheckBoxChange:::p::p, space :p::p}, comp jScrollPane2::l:::x}"
+				"$verticalGroup": "par l {seq t {comp jScrollPane2:::p:84:p, space :::p, par l {comp jCheckBoxChange:::p::p, comp hyperlinkButton:::p::p}, space :::p}}"
+			} ) {
+				name: "jPanel1"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "jScrollPane2"
+					"border": new javax.swing.border.LineBorder( new java.awt.Color( 153, 153, 153, 255 ), 1, false )
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JEditorPane" ) {
+						name: "jEditorPane"
+						"editable": false
+						"border": new javax.swing.border.EmptyBorder( 4, 4, 4, 4 )
+						"contentType": "text/html"
+						"font": new java.awt.Font( "Dialog", 0, 24 )
+					} )
+				} )
+				add( new FormComponent( "javax.swing.JCheckBox" ) {
+					name: "jCheckBoxChange"
+					"toolTipText": "Beschreibung ändern"
+					"icon": sfield com.jformdesigner.model.FormObject NULL_VALUE
+				} )
+				add( new FormComponent( "mediathek.gui.HyperlinkButton" ) {
+					name: "hyperlinkButton"
+					"text": "Link zur Webseite"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 400, 135 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}

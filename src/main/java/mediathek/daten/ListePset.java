@@ -26,6 +26,7 @@ import mediathek.gui.dialogEinstellungen.PanelProgrammPfade;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.TModel;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -169,7 +170,7 @@ public class ListePset extends LinkedList<DatenPset> {
     }
 
     private static boolean progMusterErsetzen(JFrame parent, DatenPset pSet) {
-        pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD].replace(MUSTER_PFAD_ZIEL, GuiFunktionen.getStandardDownloadPath());
+        pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD] = StringUtils.replace(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD], MUSTER_PFAD_ZIEL, GuiFunktionen.getStandardDownloadPath());
         String vlc = "";
         String flvstreamer = "";
         String ffmpeg = "";

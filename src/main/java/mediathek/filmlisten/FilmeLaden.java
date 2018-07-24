@@ -25,38 +25,46 @@ import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.filmlisten.FilmlisteLesen;
+import mSearch.filmlisten.FilmlistenSuchen;
 import mSearch.filmlisten.ListeFilmlistenUrls;
-import mSearch.tool.Duration;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
+import mSearch.filmlisten.reader.FilmListReader;
+import mSearch.tool.ApplicationConfiguration;
+import mSearch.tool.MVHttpClient;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
+import mediathek.javafx.StartupProgressPanel;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
+import java.awt.*;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
 public class FilmeLaden {
 
+    private static final Logger logger = LogManager.getLogger(FilmeLaden.class);
+    private static final String NETWORK_NOT_AVAILABLE = "Netzwerk nicht verfügbar";
+    private static final String DIALOG_TITLE = "Filmliste laden";
+    private static final String NO_UPDATE_AVAILABLE = "Keine aktuellere Liste verfügbar";
     private final HashSet<String> hashSet = new HashSet<>();
     private final ListeFilme diffListe = new ListeFilme();
-
-    private enum ListenerMelden {
-
-        START, PROGRESS, FINISHED
-    }
-
-    // private
     private final Daten daten;
     private final ImportFilmliste importFilmliste;
     private final EventListenerList listeners = new EventListenerList();
@@ -80,50 +88,13 @@ public class FilmeLaden {
             @Override
             public synchronized void fertig(ListenerFilmeLadenEvent event) {
                 // Ergebnisliste listeFilme eintragen -> Feierabend!
-                Duration.staticPing("Filme laden, ende");
+                logger.debug("Filme laden, ende");
                 undEnde(event);
             }
         });
     }
 
-    //    // #########################################################
-    //    // Filmliste beim Programmstart!! laden
-    //    // #########################################################
-    //    public void loadFilmlistProgStart() {
-    //        // Gui startet ein wenig flüssiger
-    //        new Thread(new loadFilmlistProgStart_()).start();
-    //    }
-    //    private class loadFilmlistProgStart_ implements Runnable {
-    //
-    //        @Override
-    //        public synchronized void run() {
-    //            Duration.staticPing("Thread: Filmliste laden");
-    //            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
-    //
-    //            SysMsg.sysMsg("Liste Filme gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-    //            SysMsg.sysMsg("  erstellt am: " + daten.getListeFilme().genDate());
-    //            SysMsg.sysMsg("  Anzahl Filme: " + daten.getListeFilme().size());
-    //            SysMsg.sysMsg("  Anzahl Neue: " + daten.getListeFilme().countNewFilms());
-    //
-    //            daten.getListeFilme().themenLaden();
-    //            Daten.listeAbo.setAboFuerFilm(daten.getListeFilme(), false /*aboLoeschen*/);
-    //            daten.getListeDownloads().filmEintragen(); // Filme bei einmalDownloads eintragen
-    //            MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_START_ON)); // Zustand Blacklist beim Start setzen
-    //
-    //            if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO && daten.getListeFilme().isTooOld()) {
-    //                SysMsg.sysMsg("Neue Filmliste laden");
-    //                loadFilmlist("", true);
-    //            } else {
-    //                // entweder neue Liste laden oder es ist schon fertig, dann melden
-    //                daten.getListeBlacklist().filterListe(); // beim Neuladen wird es dann erst gemacht
-    //                notifyFertig(new ListenerFilmeLadenEvent("", "", 0, 0, 0, false/*Fehler*/));
-    //            }
-    //        }
-    //
-    //    }
-    // #########################################################
-    // Filmliste importieren
-    // #########################################################
+
     public void loadFilmlistDialog(Daten daten, boolean manuell) {
         if (manuell || GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUS) {
             // Dialog zum Laden der Filme anzeigen
@@ -140,33 +111,120 @@ public class FilmeLaden {
         loadFilmlist(dateiUrl, false);
     }
 
+    /**
+     * Check if a newer filmlist id is available on the remote server in order to prevent unnecessary filmlist downloads...
+     *
+     * @return true if newer is availble, otherwise false.
+     */
+    private boolean hasNewRemoteFilmlist() {
+        boolean result = false;
+
+        final String id = Daten.getInstance().getListeFilme().getId();
+
+        boolean showDialogs = true;
+        //we might be CLI...this is used in -auto as well
+        if (GraphicsEnvironment.isHeadless() || GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO)
+            showDialogs = false;
+
+        final Request request = new Request.Builder().url("https://verteiler1.mediathekview.de/filmliste.id").get().build();
+        try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
+             ResponseBody body = response.body()) {
+            if (body != null && response.isSuccessful()) {
+                String remoteId = body.string();
+                if (!remoteId.isEmpty() && !remoteId.equalsIgnoreCase(id))
+                    result = true; // we have an update...
+            } else {
+                //we were not successful to load the id file
+                //if not found, pretend we need to update
+                if (response.code() == HttpURLConnection.HTTP_NOT_FOUND)
+                    result = true;
+            }
+
+            if (!result) {
+                if (showDialogs)
+                    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null,
+                            NO_UPDATE_AVAILABLE, DIALOG_TITLE, JOptionPane.INFORMATION_MESSAGE));
+                else
+                    logger.info(NO_UPDATE_AVAILABLE);
+            }
+        } catch (UnknownHostException ex) {
+            logger.debug(ex);
+            if (showDialogs)
+                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null,
+                        NETWORK_NOT_AVAILABLE, DIALOG_TITLE, JOptionPane.ERROR_MESSAGE));
+            else
+                logger.warn(NETWORK_NOT_AVAILABLE);
+
+        } catch (IOException ex) {
+            logger.error("IOxception:", ex);
+        } catch (Exception ex) {
+            logger.error("check for filmliste.id failed", ex);
+        }
+
+        return result;
+    }
+
+    /**
+     * Determin whether we want to perform a remote update check.
+     * This will be done if we are:
+     * 1. dont have film entries
+     * 2. dateiUrl is either empty or string starts with http
+     * 3. our filmlist is old enough that we dont use diff list - we dont check them.
+     *
+     * @return true if we need to load a new list, false if we should not load a remote list
+     */
+    private boolean performUpdateCheck(ListeFilme listeFilme, String dateiUrl) {
+        boolean result = true;
+
+        //always perform update when list is empty
+        if (!listeFilme.isEmpty()) {
+            //remote download is using an empty file name!...
+            //or somebody put a web adress into the text field
+            if (dateiUrl.isEmpty() || dateiUrl.startsWith("http")) {
+                //perform check only if we dont want to use DIFF list...
+                if (listeFilme.isTooOldForDiff()) {
+                    if (!hasNewRemoteFilmlist())
+                        result = false;
+                }
+            }
+        }
+
+        return result;
+    }
+
     public void loadFilmlist(String dateiUrl, boolean immerNeuLaden) {
         // damit wird die Filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
-        Duration.staticPing("Filme laden, start");
-        SysMsg.sysMsg("");
-        SysMsg.sysMsg("Alte Liste erstellt am: " + Daten.getInstance().getListeFilme().genDate());
-        SysMsg.sysMsg("  Anzahl Filme: " + daten.getListeFilme().size());
-        SysMsg.sysMsg("  Anzahl Neue: " + daten.getListeFilme().countNewFilms());
+
+        ListeFilme listeFilme = daten.getListeFilme();
+
+        if (!performUpdateCheck(listeFilme, dateiUrl))
+            return;
+
+        logger.debug("Filme laden, start");
+        logger.info("");
+        logger.info("Alte Liste erstellt am: {}", listeFilme.genDate());
+        logger.info("  Anzahl Filme: {}", listeFilme.size());
+        logger.info("  Anzahl Neue: {}", listeFilme.countNewFilms());
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
             // Hash mit URLs füllen
             hashSet.clear();
-            fillHash(daten.getListeFilme());
+            fillHash(listeFilme);
             if (immerNeuLaden) {
                 // dann die alte löschen, damit immer komplett geladen wird, aber erst nach dem Hash!!
-                daten.getListeFilme().clear(); // sonst wird eine "zu kurze" Liste wieder nur mit einer Diff-Liste aufgefüllt, wenn das Alter noch passt
+                listeFilme.clear(); // sonst wird eine "zu kurze" Liste wieder nur mit einer Diff-Liste aufgefüllt, wenn das Alter noch passt
             }
             daten.getListeFilmeNachBlackList().clear();
             if (dateiUrl.isEmpty()) {
                 // Filme als Liste importieren, Url automatisch ermitteln
-                SysMsg.sysMsg("Filmliste laden (auto)");
-                importFilmliste.filmeImportierenAuto(daten.getListeFilme(), diffListe, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+                logger.info("Filmliste laden (auto)");
+                importFilmliste.importFromUrl(listeFilme, diffListe, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
             } else {
                 // Filme als Liste importieren, feste URL/Datei
-                SysMsg.sysMsg("Filmliste laden von: " + dateiUrl);
-                daten.getListeFilme().clear();
-                importFilmliste.filmeImportierenDatei(dateiUrl, daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+                logger.info("Filmliste laden von: {}", dateiUrl);
+                listeFilme.clear();
+                importFilmliste.importFromFile(dateiUrl, listeFilme, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
             }
         }
     }
@@ -174,11 +232,11 @@ public class FilmeLaden {
     public void updateFilmlist(String dateiUrl) {
         // damit wird die Filmliste mit einer weiteren aktualisiert (die bestehende bleibt
         // erhalten) UND auch gleich im Konfig-Ordner gespeichert
-        Duration.staticPing("Filme laden (Update), start");
-        SysMsg.sysMsg("");
-        SysMsg.sysMsg("Alte Liste erstellt am: " + daten.getListeFilme().genDate());
-        SysMsg.sysMsg("  Anzahl Filme: " + daten.getListeFilme().size());
-        SysMsg.sysMsg("  Anzahl Neue: " + daten.getListeFilme().countNewFilms());
+        logger.debug("Filme laden (Update), start");
+        logger.info("");
+        logger.info("Alte Liste erstellt am: {}", daten.getListeFilme().genDate());
+        logger.info("  Anzahl Filme: {}", daten.getListeFilme().size());
+        logger.info("  Anzahl Neue: {}", daten.getListeFilme().countNewFilms());
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
@@ -188,28 +246,18 @@ public class FilmeLaden {
             //daten.getListeFilme().clear();
             daten.getListeFilmeNachBlackList().clear();
             // Filme als Liste importieren, feste URL/Datei
-            SysMsg.sysMsg("Filmliste laden von: " + dateiUrl);
-            importFilmliste.filmeImportierenDatei(dateiUrl, diffListe, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+            logger.info("Filmliste laden von: " + dateiUrl);
+            importFilmliste.importFromFile(dateiUrl, diffListe, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
         }
     }
 
-    // #######################################
-    // #######################################
     public void addAdListener(ListenerFilmeLaden listener) {
         listeners.add(ListenerFilmeLaden.class, listener);
-    }
-
-    public synchronized void setStop(boolean set) {
-        Config.setStop(set);
     }
 
     public String[] getSenderNamen() {
         return Const.SENDER;
         //return FilmeSuchen.getNamenSender();
-    }
-
-    public void updateDownloadUrlsFilmlisten(boolean akt) {
-        importFilmliste.updateDownloadUrlsFilmlisten(akt);
     }
 
     public ListeFilmlistenUrls getDownloadUrlsFilmlisten_akt() {
@@ -220,54 +268,62 @@ public class FilmeLaden {
         return importFilmliste.msFilmlistenSuchen.listeFilmlistenUrls_diff;
     }
 
+    public FilmlistenSuchen getFilmlistenSuchen() {
+        return importFilmliste.msFilmlistenSuchen;
+    }
+
     public String getDownloadUrl_akt() {
         return importFilmliste.msFilmlistenSuchen.suchenAkt(new ArrayList<>());
     }
 
-    // #######################################
-    // #######################################
     private void undEnde(ListenerFilmeLadenEvent event) {
         // Abos eintragen in der gesamten Liste vor Blacklist da das nur beim Ändern der Filmliste oder
         // beim Ändern von Abos gemacht wird
 
-        SysMsg.sysMsg("");
+        logger.info("");
 
         // wenn nur ein Update
         if (!diffListe.isEmpty()) {
-            SysMsg.sysMsg("Liste Diff gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-            SysMsg.sysMsg("  Liste Diff erstellt am: " + diffListe.genDate());
-            SysMsg.sysMsg("  Anzahl Filme: " + diffListe.size());
+            logger.info("Liste Diff gelesen am: {}", new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+            logger.info("  Liste Diff erstellt am: {}", diffListe.genDate());
+            logger.info("  Anzahl Filme: {}", diffListe.size());
 
-            daten.getListeFilme().updateListe(diffListe, true/* Vergleich über Index, sonst nur URL */, true /*ersetzen*/);
-            daten.getListeFilme().metaDaten = diffListe.metaDaten;
-            daten.getListeFilme().sort(); // jetzt sollte alles passen
+            final ListeFilme listeFilme = daten.getListeFilme();
+            listeFilme.updateListe(diffListe, true/* Vergleich über Index, sonst nur URL */, true /*ersetzen*/);
+            listeFilme.setMetaDaten(diffListe.metaDaten);
+            Collections.sort(listeFilme);
             diffListe.clear();
         } else {
-            SysMsg.sysMsg("Liste Kompl. gelesen am: " + new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-            SysMsg.sysMsg("  Liste Kompl erstellt am: " + daten.getListeFilme().genDate());
-            SysMsg.sysMsg("  Anzahl Filme: " + daten.getListeFilme().size());
+            logger.info("Liste Kompl. gelesen am: {}", new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+            logger.info("  Liste Kompl erstellt am: {}", daten.getListeFilme().genDate());
+            logger.info("  Anzahl Filme: {}", daten.getListeFilme().size());
         }
 
         findAndMarkNewFilms(daten.getListeFilme());
 
         istAmLaufen = false;
         if (event.fehler) {
-            SysMsg.sysMsg("");
-            SysMsg.sysMsg("Filmliste laden war fehlerhaft, alte Liste wird wieder geladen");
+            logger.info("");
+            logger.info("Filmliste laden war fehlerhaft, alte Liste wird wieder geladen");
             MVMessageDialog.showMessageDialog(null, "Das Laden der Filmliste hat nicht geklappt!", "Fehler", JOptionPane.ERROR_MESSAGE);
             // dann die alte Liste wieder laden
             daten.getListeFilme().clear();
             Config.setStop(false);
-            new FilmlisteLesen().readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
-            SysMsg.sysMsg("");
+            try (FilmListReader reader = new FilmListReader()) {
+                reader.readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+            }
+            logger.info("");
         } else {
             daten.filmlisteSpeichern();
         }
-        SysMsg.sysMsg("");
-        SysMsg.sysMsg("Jetzige Liste erstellt am: " + daten.getListeFilme().genDate());
-        SysMsg.sysMsg("  Anzahl Filme: " + daten.getListeFilme().size());
-        SysMsg.sysMsg("  Anzahl Neue:  " + daten.getListeFilme().countNewFilms());
-        SysMsg.sysMsg("");
+        logger.info("");
+        logger.info("Jetzige Liste erstellt am: {}", daten.getListeFilme().genDate());
+        logger.info("  Anzahl Filme: {}", daten.getListeFilme().size());
+        logger.info("  Anzahl Neue:  {}", daten.getListeFilme().countNewFilms());
+        logger.info("");
+
+        //update filmlist size for startup Progress panel...
+        ApplicationConfiguration.getConfiguration().setProperty(StartupProgressPanel.CONFIG_STRING, daten.getListeFilme().size());
 
         daten.getFilmeLaden().notifyProgress(new ListenerFilmeLadenEvent("", "Themen suchen", 0, 0, 0, false/*Fehler*/));
         daten.getListeFilme().themenLaden();
@@ -282,13 +338,11 @@ public class FilmeLaden {
     }
 
     private void fillHash(ListeFilme listeFilme) {
-        hashSet.addAll(listeFilme.stream().map(DatenFilm::getUrlHistory).collect(Collectors.toList()));
+        hashSet.addAll(listeFilme.parallelStream().map(DatenFilm::getUrlHistory).collect(Collectors.toList()));
     }
 
     /**
      * Search through history and mark new films.
-     *
-     * @param listeFilme
      */
     private void findAndMarkNewFilms(ListeFilme listeFilme) {
         listeFilme.neueFilme = false;
@@ -313,7 +367,7 @@ public class FilmeLaden {
                 }
             });
         } catch (Exception ex) {
-            Log.errorLog(765213654, ex);
+            logger.error(ex);
         }
     }
 
@@ -327,7 +381,7 @@ public class FilmeLaden {
                 }
             });
         } catch (Exception ex) {
-            Log.errorLog(201020369, ex);
+            logger.error(ex);
         }
     }
 
@@ -341,7 +395,7 @@ public class FilmeLaden {
                 }
             });
         } catch (Exception ex) {
-            Log.errorLog(945120303, ex);
+            logger.error(ex);
         }
         try {
             if (!onlyOne) {
@@ -354,7 +408,7 @@ public class FilmeLaden {
                 });
             }
         } catch (Exception ex) {
-            Log.errorLog(912045120, ex);
+            logger.error(ex);
         }
     }
 }
