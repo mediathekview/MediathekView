@@ -4,6 +4,7 @@ import com.jidesoft.utils.SystemInfo;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 import mSearch.daten.DatenFilm;
+import mediathek.config.Daten;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.event.ConfigurationEvent;
@@ -100,7 +101,9 @@ public class ApplicationConfiguration {
     private void createFileHandler() {
         handler = new FileHandler(config);
         handler.setEncoding("UTF-8");
-        handler.setPath(System.getProperty("user.home") + File.separatorChar + ".mediathek3" + File.separatorChar + "settings.xml");
+        final String path = Daten.getSettingsDirectory_String() + File.separatorChar;
+
+        handler.setPath(path + "settings.xml");
     }
 
     private void loadOrCreateConfiguration() {
