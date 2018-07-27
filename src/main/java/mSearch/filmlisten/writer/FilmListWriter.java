@@ -23,7 +23,6 @@ import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.jidesoft.utils.SystemInfo;
-import mSearch.Config;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import org.apache.logging.log4j.LogManager;
@@ -49,9 +48,7 @@ public class FilmListWriter {
     private JsonGenerator getJsonGenerator(OutputStream os) throws IOException {
         final JsonFactory jsonF = new JsonFactory();
         JsonGenerator jg = jsonF.createGenerator(os, JsonEncoding.UTF8);
-        if (Config.isDebuggingEnabled()) {
             jg = jg.useDefaultPrettyPrinter();
-        }
 
         return jg;
     }
