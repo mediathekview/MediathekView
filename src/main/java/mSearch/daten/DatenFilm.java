@@ -130,7 +130,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      */
     private int databaseFilmNumber;
     private boolean neuerFilm = false;
-    private final Cleaner cleaner;
+    private Cleaner cleaner = null;
     /**
      * Future used for writing description into database.
      * Will be checked before each read if finished
@@ -159,8 +159,12 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         filmSize = new MSLong(0); // Dateigröße in MByte
         databaseFilmNumber = FILM_COUNTER.getAndIncrement();
 
-        DatenFilmCleanupTask task = new DatenFilmCleanupTask(databaseFilmNumber);
-        cleaner = Cleaner.create(this, task);
+        //if we are not on WIN32, create the cleanup task, otherwise just let the database grow...
+        //circumvents an out ouf thread ressources bug on fucking windows systems with not enough memory.
+        if (Functions.getOs() != Functions.OperatingSystemType.WIN32) {
+            DatenFilmCleanupTask task = new DatenFilmCleanupTask(databaseFilmNumber);
+            cleaner = Cleaner.create(this, task);
+        }
     }
 
     /**
@@ -211,7 +215,9 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
 
     @Override
     public void close() {
-        cleaner.clean();
+
+        if (cleaner != null)
+            cleaner.clean();
     }
 
     /**
