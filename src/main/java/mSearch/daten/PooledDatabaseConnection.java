@@ -1,7 +1,6 @@
 package mSearch.daten;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.tool.MemoryUtils;
 import mediathek.config.Daten;
 import mediathek.tool.GuiFunktionen;
 import org.apache.commons.dbcp2.*;
@@ -74,32 +73,16 @@ public class PooledDatabaseConnection implements Closeable {
         return strDatabase;
     }
 
-    private String configureDatabaseParams() {
-        final String dbParams;
-        //windows doesn´t like memory mapped IO....
-        if (SystemInfo.isWindows())
-            dbParams = "file";
-        else {
-            //more speed for the rest, prevent 2GB mem limit by splitting
-            if (MemoryUtils.isLowMemoryEnvironment()) {
-                //split into 2^27 = 128MB pieces...
-                dbParams = "split:27:nioMapped";
-            } else {
-                //1GB split pieces by default
-                dbParams = "split:nioMapped";
-            }
-        }
-
-        return dbParams;
-    }
-
     private DataSource setupDataSource() {
         Properties props = new Properties();
         //props.put("defaultAutoCommit","false");
-        props.put("maxTotal", String.valueOf(Runtime.getRuntime().availableProcessors()));
-        props.put("poolPreparedStatements", "true");
+        props.put("maxTotal", String.valueOf(Runtime.getRuntime().availableProcessors() * 2 + 1));
+        //System.out.println("MAX CPU POOL: " + String.valueOf(Runtime.getRuntime().availableProcessors() * 2 + 1));
+        props.put("poolPreparedStatements", "false");
+        props.put("maxIdle", "-1");
+        props.put("testOnBorrow", "true");
 
-        final String driverCommand = "jdbc:h2:" + configureDatabaseParams() + ":" + getDatabaseLocation() + "mediathekview;MVCC=TRUE;PAGE_SIZE=4096";
+        final String driverCommand = "jdbc:h2:file:" + getDatabaseLocation() + "mediathekview;MVCC=TRUE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE";
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(driverCommand, props);
 
         PoolableConnectionFactory poolableConnectionFactory =
