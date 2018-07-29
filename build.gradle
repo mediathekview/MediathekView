@@ -170,7 +170,7 @@ task creatMitSpeicherExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
     outfile = "MediathekView.exe"
 
     initialHeapSize = 256
-    maxHeapSize = 2048
+    maxHeapSize = 1024
     maxHeapPercent = 80
 }
 
@@ -179,7 +179,7 @@ task createIpv4Exe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
     opt = "-Djava.net.preferIPv4Stack=true"
 
     initialHeapSize = 256
-    maxHeapSize = 2048
+    maxHeapSize = 1024
     maxHeapPercent = 80
 }
 
@@ -188,7 +188,7 @@ task createPortableExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
     cmdLine = "Einstellungen/.mediathek3"
 
     initialHeapSize = 256
-    maxHeapSize = 2048
+    maxHeapSize = 1024
     maxHeapPercent = 80
 }
 
