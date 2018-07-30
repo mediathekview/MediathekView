@@ -29,7 +29,6 @@ import mSearch.tool.Log;
 import mSearch.tool.SingleInstance;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
-import mediathek.config.Messages;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.windows.MediathekGuiWindows;
 import org.apache.logging.log4j.LogManager;
@@ -46,7 +45,6 @@ import java.nio.file.Paths;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 public class Main {
-    private static final String TEXT_LINE = "===========================================";
     private static final String JAVAFX_CLASSNAME_APPLICATION_PLATFORM = "javafx.application.Platform";
     private static final String HTTP_PROXY_USER = "http.proxyUser";
     private static final String HTTP_PROXY_PW = "http.proxyPassword";
@@ -75,18 +73,22 @@ public class Main {
     /**
      * Tests if javafx is in the classpath by loading a well known class.
      */
-    private static boolean hasJavaFx() {
+    private static void checkForJavaFX() {
+        final String message = "MediathekView benötigt ein installiertes JavaFX.";
+
         try {
             Class.forName(JAVAFX_CLASSNAME_APPLICATION_PLATFORM);
-            return true;
-
         } catch (ClassNotFoundException e) {
             logger.error("JavaFX was not found on system.", e);
-            System.out.println(TEXT_LINE);
-            System.out.printf(Messages.ERROR_NO_JAVAFX_INSTALLED.getText());
-            System.out.println(TEXT_LINE);
-
-            return false;
+            if (GraphicsEnvironment.isHeadless()) {
+                System.err.println(message);
+            } else {
+                //we have a screen
+                JOptionPane.showMessageDialog(null,
+                        message,
+                        "JavaFX nicht gefunden", JOptionPane.ERROR_MESSAGE);
+            }
+            System.exit(3);
         }
     }
 
@@ -107,14 +109,17 @@ public class Main {
             System.out.println();
         }
     }
+
     /**
      * @param args the command line arguments
      */
     public static void main(final String args[]) {
+        checkForJavaFX();
         //check for proper runtime
         checkJava8Compatibility();
 
         System.out.println("LOGFILE LOCATION: " + System.getProperty("java.io.tmpdir"));
+
         IconFontSwing.register(FontAwesome.getIconFont());
         printBanner();
         new Main().start(args);
@@ -122,9 +127,10 @@ public class Main {
 
     private static void checkJava8Compatibility() {
         if (SystemInfo.isJdk9Above()) {
+            logger.error("JVM is not Java 8");
             if (GraphicsEnvironment.isHeadless()) {
-                System.out.println("MediathekView ist NUR mit Java 8 kompatibel.");
-                System.out.println("Bitte stellen Sie sicher das Sie Java 8 auf Ihrem System nutzen");
+                System.err.println("MediathekView ist NUR mit Java 8 kompatibel.");
+                System.err.println("Bitte stellen Sie sicher das Sie Java 8 auf Ihrem System nutzen");
             } else {
                 //we have a screen
                 JOptionPane.showMessageDialog(null,
@@ -136,17 +142,15 @@ public class Main {
     }
 
     private void start(String... args) {
-        if (hasJavaFx()) {
-            StartupMode startupMode = StartupMode.GUI;
+        StartupMode startupMode = StartupMode.GUI;
 
-            proxyAuthentication();
+        proxyAuthentication();
 
-            if (args != null) {
-                startupMode = processArgs(startupMode, args);
-            }
-
-            startUI(startupMode, args);
+        if (args != null) {
+            startupMode = processArgs(startupMode, args);
         }
+
+        startUI(startupMode, args);
     }
 
     /*
