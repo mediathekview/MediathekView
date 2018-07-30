@@ -18,8 +18,7 @@ public class DatenFilmCleanupTask implements Runnable {
                 statement.addBatch("DELETE FROM mediathekview.website_links WHERE id = " + filmNr);
                 statement.addBatch("DELETE FROM mediathekview.description WHERE id = " + filmNr);
                 statement.executeBatch();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (SQLException | IllegalStateException | NullPointerException ignored) {
             }
     }
 }

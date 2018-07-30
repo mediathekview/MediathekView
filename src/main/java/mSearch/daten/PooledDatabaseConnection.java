@@ -49,7 +49,9 @@ public class PooledDatabaseConnection implements Closeable {
             con = dataSource.getConnection();
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (IllegalStateException ignored) {
         }
+
         return con;
     }
 
