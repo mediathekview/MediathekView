@@ -111,9 +111,28 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(final String args[]) {
+        //check for proper runtime
+        checkJava8Compatibility();
+
+        System.out.println("LOGFILE LOCATION: " + System.getProperty("java.io.tmpdir"));
         IconFontSwing.register(FontAwesome.getIconFont());
         printBanner();
         new Main().start(args);
+    }
+
+    private static void checkJava8Compatibility() {
+        if (SystemInfo.isJdk9Above()) {
+            if (GraphicsEnvironment.isHeadless()) {
+                System.out.println("MediathekView ist NUR mit Java 8 kompatibel.");
+                System.out.println("Bitte stellen Sie sicher das Sie Java 8 auf Ihrem System nutzen");
+            } else {
+                //we have a screen
+                JOptionPane.showMessageDialog(null,
+                        "MediathekView ist NUR mit Java 8 kompatibel.",
+                        "Falsche Java-Version", JOptionPane.ERROR_MESSAGE);
+            }
+            System.exit(3);
+        }
     }
 
     private void start(String... args) {
