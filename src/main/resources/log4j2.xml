@@ -5,7 +5,7 @@
             <PatternLayout pattern=". %msg%n"></PatternLayout>
         </Console>
 
-        <File name="LogFile" filename="${sys:java.io.tmpdir}/mediathekview.log" append="false">
+        <File name="LogFile" filename="${sys:user.home}/.mediathek3/mediathekview.log" append="false">
             <PatternLayout>
                 <Pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c - %msg%n</Pattern>
             </PatternLayout>
