@@ -123,6 +123,16 @@ public class Main {
         new Main().start(args);
     }
 
+    private static void checkForOfficialOSXAppUse() {
+        final String osxOfficialApp = System.getProperty("OSX_OFFICIAL_APP");
+        if (osxOfficialApp == null || osxOfficialApp.isEmpty() || osxOfficialApp.equalsIgnoreCase("false")) {
+            JOptionPane.showMessageDialog(null,
+                    "Bitte nutzen Sie die offizielle macOS Applikation für das beste Nutzererlebnis.",
+                    "Anwendungshinweis",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
     private static void checkMemoryRequirements() {
         final long maxMem = Runtime.getRuntime().maxMemory();
         // more than 450MB avail...
@@ -203,6 +213,9 @@ public class Main {
     private void startGuiMode(final String[] args) {
         EventQueue.invokeLater(() ->
         {
+            if (SystemInfo.isMacOSX())
+                checkForOfficialOSXAppUse();
+
             //JavaFX stuff
             Platform.setImplicitExit(false);
 
