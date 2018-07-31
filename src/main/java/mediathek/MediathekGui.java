@@ -1260,6 +1260,7 @@ public class MediathekGui extends JFrame {
             return new Scene(migPane);
         }
     }
+
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
         //write all settings if not done already...
         ApplicationConfiguration.getInstance().writeConfiguration();
@@ -1307,15 +1308,7 @@ public class MediathekGui extends JFrame {
         daten.getDialogMediaDB().tabelleSpeichern();
 
         dialog.setStatusText(8, "Downloads anhalten");
-        if (daten.getListeDownloads() != null) {
-            // alle laufenden Downloads/Programme stoppen
-            for (DatenDownload download : daten.getListeDownloads()) {
-                Start s = download.start;
-                if (s != null) {
-                    s.stoppen = true;
-                }
-            }
-        }
+        stopDownloads();
 
         dialog.setStatusText(9, "Programmkonfiguration schreiben");
         if (getExtendedState() == JFrame.MAXIMIZED_BOTH) {
@@ -1358,6 +1351,18 @@ public class MediathekGui extends JFrame {
         System.exit(0);
 
         return false;
+    }
+
+    private void stopDownloads() {
+        if (daten.getListeDownloads() != null) {
+            // alle laufenden Downloads/Programme stoppen
+            for (DatenDownload download : daten.getListeDownloads()) {
+                Start s = download.start;
+                if (s != null) {
+                    s.stoppen = true;
+                }
+            }
+        }
     }
 
     private void waitForDatabasePoolToComplete() {
