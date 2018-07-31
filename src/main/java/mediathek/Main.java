@@ -115,9 +115,8 @@ public class Main {
      */
     public static void main(final String args[]) {
         checkMemoryRequirements();
-        checkForJavaFX();
-        //check for proper runtime
         checkJava8Compatibility();
+        checkForJavaFX();
 
         IconFontSwing.register(FontAwesome.getIconFont());
         printBanner();
