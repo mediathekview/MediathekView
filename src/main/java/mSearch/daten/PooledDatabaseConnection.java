@@ -84,7 +84,7 @@ public class PooledDatabaseConnection implements Closeable {
         props.put("maxIdle", "-1");
         props.put("testOnBorrow", "true");
 
-        final String driverCommand = "jdbc:h2:file:" + getDatabaseLocation() + "mediathekview;MVCC=TRUE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE";
+        final String driverCommand = "jdbc:h2:file:" + getDatabaseLocation() + "mediathekview;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE";
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(driverCommand, props);
 
         PoolableConnectionFactory poolableConnectionFactory =
