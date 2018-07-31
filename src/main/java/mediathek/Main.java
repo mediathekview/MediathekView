@@ -114,15 +114,32 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(final String args[]) {
+        checkMemoryRequirements();
         checkForJavaFX();
         //check for proper runtime
         checkJava8Compatibility();
 
-        System.out.println("LOGFILE LOCATION: " + System.getProperty("java.io.tmpdir"));
-
         IconFontSwing.register(FontAwesome.getIconFont());
         printBanner();
         new Main().start(args);
+    }
+
+    private static void checkMemoryRequirements() {
+        final long maxMem = Runtime.getRuntime().maxMemory();
+        // more than 450MB avail...
+        if (maxMem < 450 * 1024 * 1024) {
+            if (GraphicsEnvironment.isHeadless()) {
+                System.err.println("Die VM hat nicht genügend Arbeitsspeicher zugewiesen.");
+                System.err.println("Nutzen Sie den Startparameter -Xmx512M für Minimumspeicher");
+            } else {
+                JOptionPane.showMessageDialog(null,
+                        "MediathekView hat nicht genügend Arbeitsspeicher zugewiesen bekommen.",
+                        "Speicherwarnung",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
+            System.exit(3);
+        }
     }
 
     private static void checkJava8Compatibility() {
