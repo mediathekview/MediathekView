@@ -15,7 +15,7 @@ apply from: "${project.rootDir}/gradle/eclipse.gradle"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 group = 'de.mediathekview'
-version = '13.1.0'
+version = '13.1.1'
 
 def jarName = 'MediathekView.jar'
 def mainClass = 'mediathek.Main'
@@ -163,29 +163,17 @@ launch4j {
     icon = "../../res/MediathekView.ico"
     jar = jarName
     dontWrapJar = true
-    outfile = "MediathekView_ohne_feste_Speicherzuweisung.exe"
-}
-
-task creatMitSpeicherExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
     outfile = "MediathekView.exe"
-
     initialHeapSize = 256
     maxHeapSize = 1024
     maxHeapPercent = 80
+
 }
+
 
 task createIpv4Exe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
     outfile = "MediathekView_ipv4.exe"
     opt = "-Djava.net.preferIPv4Stack=true"
-
-    initialHeapSize = 256
-    maxHeapSize = 1024
-    maxHeapPercent = 80
-}
-
-task createPortableExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
-    outfile = "MediathekView_Portable.exe"
-    cmdLine = "Einstellungen/.mediathek3"
 
     initialHeapSize = 256
     maxHeapSize = 1024
