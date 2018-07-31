@@ -358,9 +358,9 @@ public class Daten
         });
 
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-            //sleep for 3 seconds to give database a chance to write out changes
+            //sleep for 10 seconds to give database a chance to write out changes
             try {
-                TimeUnit.SECONDS.sleep(3);
+                TimeUnit.SECONDS.sleep(10);
             } catch (InterruptedException ignored) {
             }
             new FilmListWriter().writeFilmList(getDateiFilmliste(), listeFilme);
