@@ -7,8 +7,8 @@ dir=`dirname "$0"`
 cd "$dir"
 
 if [ -n "$JAVA_HOME" ]; then
-	$JAVA_HOME/bin/java -Xdock:name="MediathekView" -jar ./@JARNAME@ $*
+	$JAVA_HOME/bin/java -Xdock:name="MediathekView" -Xmx1G -jar ./@JARNAME@ $*
 else
-	java -Xdock:name="MediathekView" -jar ./@JARNAME@ $*
+	java -Xdock:name="MediathekView" -Xmx1G -jar ./@JARNAME@ $*
 fi
 cd $OLDPWD
