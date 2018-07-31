@@ -159,7 +159,11 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         filmSize = new MSLong(0); // Dateigröße in MByte
         databaseFilmNumber = FILM_COUNTER.getAndIncrement();
 
-        if (!MemoryUtils.isLowMemoryEnvironment()) {
+        setupDatabaseCleanup();
+    }
+
+    private void setupDatabaseCleanup() {
+        /*if (!MemoryUtils.isLowMemoryEnvironment()) {
             //only on at least dual core with hyper-threading or better machines
             final int numCpus = Runtime.getRuntime().availableProcessors();
             if (numCpus >= 4) {
@@ -180,7 +184,10 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
                         break;
                 }
             }
-        }
+        }*/
+        final boolean useCleaner = ApplicationConfiguration.getConfiguration().getBoolean("database.cleanup.use_cleaner", false);
+        if (useCleaner)
+            installCleanupTask();
     }
 
     private void installCleanupTask() {
@@ -587,7 +594,11 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         private static void initializeDatabase() {
             try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
                  Statement statement = connection.createStatement()) {
-                statement.executeUpdate("SET MULTI_THREADED 1");
+                final boolean useMultithreaded = ApplicationConfiguration.getConfiguration().getBoolean("database.multithreaded", false);
+                if (useMultithreaded) {
+                    statement.executeUpdate("SET MULTI_THREADED 1");
+                }
+
                 if (!MemoryUtils.isLowMemoryEnvironment()) {
                     statement.executeUpdate("SET WRITE_DELAY 2000");
                     statement.executeUpdate("SET MAX_OPERATION_MEMORY 0");
