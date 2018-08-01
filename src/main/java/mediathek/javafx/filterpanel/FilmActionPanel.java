@@ -446,8 +446,9 @@ public class FilmActionPanel {
         PopOver popover = new PopOver();
         popover.setTitle("Erweiterte Filtereinstellungen");
         popover.setAnimated(true);
-        popover.setCloseButtonEnabled(false);
-        popover.setDetachable(false);
+        popover.setCloseButtonEnabled(true);
+        popover.setAutoFix(true);
+        popover.setDetachable(true);
         popover.setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
         popover.setPrefWidth(200);
 
