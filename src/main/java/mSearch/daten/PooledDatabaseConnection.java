@@ -76,15 +76,20 @@ public class PooledDatabaseConnection implements Closeable {
     }
 
     private DataSource setupDataSource() {
+
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
         Properties props = new Properties();
-        //props.put("defaultAutoCommit","false");
         props.put("maxTotal", String.valueOf(Runtime.getRuntime().availableProcessors() * 2 + 1));
-        //System.out.println("MAX CPU POOL: " + String.valueOf(Runtime.getRuntime().availableProcessors() * 2 + 1));
         props.put("poolPreparedStatements", "false");
         props.put("maxIdle", "-1");
         props.put("testOnBorrow", "true");
 
-        final String driverCommand = "jdbc:h2:file:" + getDatabaseLocation() + "mediathekview;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE";
+        final String driverCommand = "jdbc:h2:file:" + getDatabaseLocation() + "mediathekview;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE";
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(driverCommand, props);
 
         PoolableConnectionFactory poolableConnectionFactory =
@@ -93,7 +98,7 @@ public class PooledDatabaseConnection implements Closeable {
         connectionPool = new GenericObjectPool<>(poolableConnectionFactory);
 
         poolableConnectionFactory.setPool(connectionPool);
-
+        
         return new PoolingDataSource<>(connectionPool);
     }
 }
