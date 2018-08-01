@@ -49,6 +49,7 @@ public class ApplicationConfiguration {
     public static final String GEO_LOCATION = "geo.location";
 
     public static final String DATABASE_USE_CLEANER_INTERFACE = "database.cleanup.use_cleaner";
+    public static final String FILMLISTE_SAVE_HUMAN_READABLE = "filmlist.save.human_readable";
 
     private static final ApplicationConfiguration ourInstance = new ApplicationConfiguration();
 
