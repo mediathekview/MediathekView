@@ -25,6 +25,9 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.jidesoft.utils.SystemInfo;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
+import mediathek.config.Daten;
+import mediathek.gui.messages.FilmListWriteStartEvent;
+import mediathek.gui.messages.FilmListWriteStopEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -75,6 +78,8 @@ public class FilmListWriter {
     }
 
     public void writeFilmList(String datei, ListeFilme listeFilme) {
+        Daten.getInstance().getMessageBus().publishAsync(new FilmListWriteStartEvent());
+
         //wait until DB has written all futures...
         while (ForkJoinPool.commonPool().hasQueuedSubmissions()) {
             try {
@@ -145,6 +150,8 @@ public class FilmListWriter {
         } catch (Exception ex) {
             logger.error("nach: {}", datei, ex);
         }
+
+        Daten.getInstance().getMessageBus().publishAsync(new FilmListWriteStopEvent());
     }
 
     private void skipEntry(JsonGenerator jg) throws IOException {
