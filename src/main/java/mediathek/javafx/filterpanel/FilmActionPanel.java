@@ -23,8 +23,11 @@ import mSearch.tool.ApplicationConfiguration;
 import mediathek.config.Daten;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
+import mediathek.gui.messages.FilmListWriteStartEvent;
+import mediathek.gui.messages.FilmListWriteStopEvent;
 import mediathek.javafx.VerticalSeparator;
 import mediathek.tool.Filter;
+import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.RangeSlider;
@@ -80,6 +83,8 @@ public class FilmActionPanel {
         restoreConfigSettings();
 
         setupConfigListeners();
+
+        Daten.getInstance().getMessageBus().subscribe(this);
     }
 
     private void restoreConfigSettings() {
@@ -160,6 +165,16 @@ public class FilmActionPanel {
         });
 
         return hb;
+    }
+
+    @Handler
+    private void handleFilmlistWriteStartEvent(FilmListWriteStartEvent e) {
+        Platform.runLater(() -> btnDownload.setDisable(true));
+    }
+
+    @Handler
+    private void handleFilmlistWriteStopEvent(FilmListWriteStopEvent e) {
+        Platform.runLater(() -> btnDownload.setDisable(false));
     }
 
     private Button createDownloadButton() {

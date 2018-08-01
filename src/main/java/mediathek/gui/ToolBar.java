@@ -26,6 +26,9 @@ import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
+import mediathek.gui.messages.FilmListWriteStartEvent;
+import mediathek.gui.messages.FilmListWriteStopEvent;
+import net.engio.mbassy.listener.Handler;
 
 import javax.swing.Box.Filler;
 import javax.swing.*;
@@ -79,6 +82,8 @@ public final class ToolBar extends JToolBar {
                 setIcon(Boolean.parseBoolean(MVConfig.get(nrIconKlein)));
             }
         });
+
+        ddaten.getMessageBus().subscribe(this);
     }
 
     private void startup() {
@@ -190,6 +195,22 @@ public final class ToolBar extends JToolBar {
             Listener.notify(Listener.EREIGNIS_PANEL_ABO_FILTER_ANZEIGEN, ToolBar.class.getName());
         });
 
+    }
+
+    @Handler
+    private void handleFilmListWriteStartEvent(FilmListWriteStartEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            if (jButtonFilmlisteLaden != null)
+                jButtonFilmlisteLaden.setEnabled(false);
+        });
+    }
+
+    @Handler
+    private void handleFilmListWriteStopEvent(FilmListWriteStopEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            if (jButtonFilmlisteLaden != null)
+                jButtonFilmlisteLaden.setEnabled(true);
+        });
     }
 
     private void setFilmlisteLaden() {
