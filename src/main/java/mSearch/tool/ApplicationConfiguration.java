@@ -48,6 +48,8 @@ public class ApplicationConfiguration {
     public static final String GEO_REPORT = "geo.report";
     public static final String GEO_LOCATION = "geo.location";
 
+    public static final String DATABASE_USE_CLEANER_INTERFACE = "database.cleanup.use_cleaner";
+
     private static final ApplicationConfiguration ourInstance = new ApplicationConfiguration();
 
     private XMLConfiguration config;

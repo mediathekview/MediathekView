@@ -163,29 +163,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     }
 
     private void setupDatabaseCleanup() {
-        /*if (!MemoryUtils.isLowMemoryEnvironment()) {
-            //only on at least dual core with hyper-threading or better machines
-            final int numCpus = Runtime.getRuntime().availableProcessors();
-            if (numCpus >= 4) {
-                switch (Functions.getOs()) {
-                    //on windows install only on quad core machines with HT or better
-                    case WIN64:
-                        if (numCpus >= 8)
-                            installCleanupTask();
-                        break;
-
-                    case WIN32:
-                        //do nothing here...
-                        break;
-
-                    //non-windows machines do better...
-                    default:
-                        installCleanupTask();
-                        break;
-                }
-            }
-        }*/
-        final boolean useCleaner = ApplicationConfiguration.getConfiguration().getBoolean("database.cleanup.use_cleaner", false);
+        final boolean useCleaner = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DATABASE_USE_CLEANER_INTERFACE, false);
         if (useCleaner)
             installCleanupTask();
     }

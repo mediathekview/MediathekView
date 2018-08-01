@@ -124,6 +124,12 @@ public class PanelEinstellungen extends PanelVorlage {
         }
     }
 
+    private void setupDatabaseCleanerCheckbox() {
+        final Configuration config = ApplicationConfiguration.getConfiguration();
+        cbUseDatabaseCleaner.setSelected(config.getBoolean(ApplicationConfiguration.DATABASE_USE_CLEANER_INTERFACE, false));
+        cbUseDatabaseCleaner.addActionListener(l -> config.setProperty(ApplicationConfiguration.DATABASE_USE_CLEANER_INTERFACE, cbUseDatabaseCleaner.isSelected()));
+    }
+
     public PanelEinstellungen(Daten d, JFrame parent) {
         super(d, parent);
         daten = d;
@@ -133,6 +139,8 @@ public class PanelEinstellungen extends PanelVorlage {
         setupUserAgentSettings();
 
         setupProxySettings();
+
+        setupDatabaseCleanerCheckbox();
 
         jButtonLoad.addActionListener(ae -> {
             daten.getListeFilme().clear(); // sonst wird evtl. nur eine Diff geladen
@@ -357,6 +365,8 @@ public class PanelEinstellungen extends PanelVorlage {
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jComboBoxIcons = new javax.swing.JComboBox<>();
         jButtonRefresh = new javax.swing.JButton();
+        javax.swing.JPanel jPanel7 = new javax.swing.JPanel();
+        cbUseDatabaseCleaner = new javax.swing.JCheckBox();
 
         setMinimumSize(getPreferredSize());
         setLayout(new org.jdesktop.swingx.VerticalLayout());
@@ -516,11 +526,35 @@ public class PanelEinstellungen extends PanelVorlage {
         );
 
         add(jPanel1);
+
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Datenbank (Neustart erforderlich!)"));
+
+        cbUseDatabaseCleaner.setText("Bereinigung während Laufzeit");
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+                jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(cbUseDatabaseCleaner)
+                                .addContainerGap(381, Short.MAX_VALUE))
+        );
+        jPanel7Layout.setVerticalGroup(
+                jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(cbUseDatabaseCleaner)
+                                .addContainerGap(71, Short.MAX_VALUE))
+        );
+
+        add(jPanel7);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox cbAutomaticMenuTabSwitching;
+    private javax.swing.JCheckBox cbUseDatabaseCleaner;
     private javax.swing.JButton jButtonHelpDays;
     private javax.swing.JButton jButtonLoad;
     private javax.swing.JButton jButtonRefresh;
