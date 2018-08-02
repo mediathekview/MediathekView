@@ -38,6 +38,7 @@ import org.controlsfx.glyphfont.GlyphFontRegistry;
 import org.controlsfx.tools.Borders;
 
 import javax.swing.*;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -371,6 +372,20 @@ public class FilmActionPanel {
         hb.getChildren().add(themaBox);
         hb.setAlignment(Pos.CENTER_LEFT);
         vBox.getChildren().add(hb);
+
+        /*
+        whenever the senderbox selected value changes, reload the thema from filtered list.
+         */
+        senderBox.valueProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    if (newValue != null) {
+                        themaBox.getItems().clear();
+                        themaBox.getItems().add("");
+                        final List<String> lst = daten.getListeFilmeNachBlackList().getThemen(newValue);
+                        themaBox.getItems().addAll(lst);
+                    }
+                }
+        );
 
         return new TitledPane("Allgemeine Anzeigeeinstellungen", vBox);
     }

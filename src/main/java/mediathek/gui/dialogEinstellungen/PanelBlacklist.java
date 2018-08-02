@@ -225,14 +225,18 @@ public class PanelBlacklist extends PanelVorlage {
 
     private void comboThemaLaden() {
         String filterSender = Objects.requireNonNull(jComboBoxSender.getSelectedItem()).toString();
-        String[] thema;
 
         if (filterSender.isEmpty())
-            thema = daten.getListeFilmeNachBlackList().getThemen("");
-        else
-            thema = daten.getListeFilmeNachBlackList().getThemen(filterSender);
+            filterSender = "";
 
-        jComboBoxThema.setModel(new DefaultComboBoxModel<>(thema));
+        java.util.List<String> lst = daten.getListeFilmeNachBlackList().getThemen(filterSender);
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        model.addElement("");
+        for (String item : lst)
+            model.addElement(item);
+        jComboBoxThema.setModel(model);
+
+        lst.clear();
     }
 
     private void initCombo() {
