@@ -134,7 +134,9 @@ public class StatusBarController {
     private void addProgressItems() {
         Platform.runLater(() -> {
             ObservableList<Node> rightItems = statusBar.getRightItems();
-            rightItems.add(progressPane);
+            //fix strange exception that duplicate was added...
+            if (!rightItems.contains(progressPane))
+                rightItems.add(progressPane);
 
         });
     }
