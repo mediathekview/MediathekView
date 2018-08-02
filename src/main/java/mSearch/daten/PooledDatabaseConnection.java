@@ -14,7 +14,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class PooledDatabaseConnection implements Closeable {
     private static PooledDatabaseConnection INSTANCE;
@@ -25,7 +27,9 @@ public class PooledDatabaseConnection implements Closeable {
     private PooledDatabaseConnection() {
         dataSource = setupDataSource();
 
-        databaseExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        final int cpu = Runtime.getRuntime().availableProcessors();
+        databaseExecutor = new ThreadPoolExecutor(cpu, 2 * cpu + 1, 15, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+        ((ThreadPoolExecutor) databaseExecutor).allowCoreThreadTimeOut(true);
     }
 
     public ExecutorService getDatabaseExecutor() {
