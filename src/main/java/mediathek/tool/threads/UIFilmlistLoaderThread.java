@@ -75,7 +75,7 @@ public class UIFilmlistLoaderThread extends Thread {
                 filmeLaden.notifyStart(new ListenerFilmeLadenEvent("", "", 0, 0, 0, false/*Fehler*/));
 
                 filmeLaden.notifyProgress(new ListenerFilmeLadenEvent("", "Themen suchen", 0, 0, 0, false/*Fehler*/));
-                listeFilme.themenLaden();
+                listeFilme.fillSenderList();
 
                 filmeLaden.notifyProgress(new ListenerFilmeLadenEvent("", "Abos eintragen", 0, 0, 0, false/*Fehler*/));
                 daten.getListeAbo().setAboFuerFilm(daten.getListeFilme(), false /*aboLoeschen*/);
