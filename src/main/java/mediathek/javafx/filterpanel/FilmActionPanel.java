@@ -252,6 +252,7 @@ public class FilmActionPanel {
     private void setupSearchField() {
         jfxSearchField = new JFXSearchPanel();
         jfxSearchField.setTooltip(new Tooltip("Thema/Titel durchsuchen"));
+        jfxSearchField.setPromptText("Titel/Thema");
 
         final StringProperty textProperty = jfxSearchField.textProperty();
 
