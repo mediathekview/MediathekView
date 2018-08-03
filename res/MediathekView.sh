@@ -9,8 +9,8 @@ dir=$(dirname $(readlink -f "$0"))
 cd "$dir"
 
 if [ -n "$JAVA_HOME" ]; then
-  $JAVA_HOME/bin/java -jar ./@JARNAME@ "$@"
+  $JAVA_HOME/bin/java -Xmx1G -jar ./@JARNAME@ "$@"
 else
-  java -jar ./@JARNAME@ "$@"
+  java -Xmx1G -jar ./@JARNAME@ "$@"
 fi
 cd $OLDPWD

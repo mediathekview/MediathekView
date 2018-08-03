@@ -23,7 +23,6 @@ import com.jidesoft.utils.SystemInfo;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.util.Duration;
 import jiconfont.icons.FontAwesome;
@@ -53,6 +52,8 @@ import mediathek.tool.cellrenderer.CellRendererFilme;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.table.MVFilmTable;
 import net.engio.mbassy.listener.Handler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
@@ -61,7 +62,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -107,12 +107,13 @@ public class GuiFilme extends PanelVorlage {
 
         setupActionListeners();
 
+        //FIXME ist der listener korrekt?
+        //FIXME move to filmactionpanel
         daten.getListeFilmeNachBlackList().getSenders().addListener((ListChangeListener<String>) c -> {
             String selectedItem = fap.senderBox.getSelectionModel().getSelectedItem();
             if (selectedItem != null) {
-                ObservableList<String> list = fap.senderBox.getItems();
-                list.clear();
-                list.addAll(daten.getListeFilmeNachBlackList().getSenders());
+                fap.senderBox.getItems().clear();
+                fap.senderBox.getItems().addAll(daten.getListeFilmeNachBlackList().getSenders());
                 fap.senderBox.getSelectionModel().select(selectedItem);
                 SwingUtilities.invokeLater(this::reloadTable);
             }
@@ -128,31 +129,29 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void setupSenderBox() {
+        logger.debug("setupSenderBox");
         fap.senderBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            //senderList changes, reload Thema as well...
-            String selectedItem = fap.themaBox.getSelectionModel().getSelectedItem();
-            String sender;
-            if (selectedItem == null)
-                selectedItem = "";
+            Platform.runLater(() -> {
+                //senderList changes, reload Thema as well...
+                String selectedItem = fap.themaBox.getSelectionModel().getSelectedItem();
+                String sender;
+                if (selectedItem == null)
+                    selectedItem = "";
 
-            if (newValue == null)
-                sender = "";
-            else
-                sender = newValue;
+                if (newValue == null)
+                    sender = "";
+                else
+                    sender = newValue;
 
-            setupThemaEntries(sender);
-            if (fap.themaBox.getItems().contains(selectedItem))
-                fap.themaBox.getSelectionModel().select(selectedItem);
-            else
-                fap.themaBox.getSelectionModel().select("");
+                if (fap.themaBox.getItems().contains(selectedItem))
+                    fap.themaBox.getSelectionModel().select(selectedItem);
+                else
+                    fap.themaBox.getSelectionModel().select("");
+            });
         });
     }
 
-    private void setupThemaEntries(String sender) {
-        ObservableList<String> list = fap.themaBox.getItems();
-        list.clear();
-        list.addAll(Arrays.asList(daten.getListeFilmeNachBlackList().getThemen(sender)));
-    }
+    private static final Logger logger = LogManager.getLogger(GuiFilme.class);
 
     /**
      * The JavaFx Film action popup panel.
@@ -540,7 +539,6 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 loadTable();
-                setupThemaEntries("");
             }
         });
 
@@ -1393,6 +1391,7 @@ public class GuiFilme extends PanelVorlage {
             });
             fap.senderBox.setOnAction(evt -> SwingUtilities.invokeLater(this::reloadTable));
 
+            //FIXME split correctly and fix javafx violation
             PauseTransition trans = new PauseTransition(Duration.millis(250));
             fap.zeitraumProperty.addListener((observable, oldValue, newValue) -> {
                 trans.setOnFinished(evt -> SwingUtilities.invokeLater(() -> {

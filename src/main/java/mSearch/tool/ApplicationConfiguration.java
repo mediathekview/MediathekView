@@ -4,6 +4,7 @@ import com.jidesoft.utils.SystemInfo;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 import mSearch.daten.DatenFilm;
+import mediathek.config.Daten;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.event.ConfigurationEvent;
@@ -46,6 +47,9 @@ public class ApplicationConfiguration {
 
     public static final String GEO_REPORT = "geo.report";
     public static final String GEO_LOCATION = "geo.location";
+
+    public static final String DATABASE_USE_CLEANER_INTERFACE = "database.cleanup.use_cleaner";
+    public static final String FILMLISTE_SAVE_HUMAN_READABLE = "filmlist.save.human_readable";
 
     private static final ApplicationConfiguration ourInstance = new ApplicationConfiguration();
 
@@ -100,7 +104,9 @@ public class ApplicationConfiguration {
     private void createFileHandler() {
         handler = new FileHandler(config);
         handler.setEncoding("UTF-8");
-        handler.setPath(System.getProperty("user.home") + File.separatorChar + ".mediathek3" + File.separatorChar + "settings.xml");
+        final String path = Daten.getSettingsDirectory_String() + File.separatorChar;
+
+        handler.setPath(path + "settings.xml");
     }
 
     private void loadOrCreateConfiguration() {

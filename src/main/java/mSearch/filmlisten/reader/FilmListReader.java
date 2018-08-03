@@ -52,6 +52,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
@@ -363,7 +364,10 @@ public class FilmListReader implements AutoCloseable {
         };
 
         try {
-            final long fileSize = Files.size(Paths.get(source));
+            final Path filePath = Paths.get(source);
+            final long fileSize = Files.size(filePath);
+            if (fileSize == 0)
+                Files.deleteIfExists(filePath);
 
             try (FileInputStream fis = new FileInputStream(source);
                  InputStream input = new ProgressMonitorInputStream(fis, fileSize, monitor);

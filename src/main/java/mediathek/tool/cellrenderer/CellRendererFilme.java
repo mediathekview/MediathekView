@@ -124,11 +124,6 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                         setSenderIcon((String) value, ((MVTable) table).iconKlein);
                     }
                     break;
-                case DatenFilm.FILM_NEU:
-                    setHorizontalAlignment(SwingConstants.CENTER);
-                    setCheckedOrUncheckedIcon(datenFilm.isNew());
-                    setText("");
-                    break;
                 case DatenFilm.FILM_HD:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     setCheckedOrUncheckedIcon(datenFilm.isHD());
@@ -169,7 +164,9 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     c.setBackground(MVColor.FILM_HISTORY.color);
                 }
             } else if (datenFilm.isNew()) {
-                c.setForeground(MVColor.FILM_NEU.color);
+                // fix #259
+                if (!isSelected)
+                    c.setForeground(MVColor.FILM_NEU.color);
             }
         }
 

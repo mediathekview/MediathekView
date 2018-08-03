@@ -15,7 +15,7 @@ apply from: "${project.rootDir}/gradle/eclipse.gradle"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 group = 'de.mediathekview'
-version = '13.1.0'
+version = '13.1.1'
 
 def jarName = 'MediathekView.jar'
 def mainClass = 'mediathek.Main'
@@ -59,10 +59,12 @@ dependencies {
     compile "$swingxGroup:swingx-graphics:$swingxVersion"
     compile "$swingxGroup:swingx-painters:$swingxVersion"
     compile "$swingxGroup:swingx-plaf:$swingxVersion"
+    
+    compile ":jide-oss:3.7.4"
 
     compile 'org.apache.commons:commons-lang3:3.6'
-    compile 'com.fasterxml.jackson.core:jackson-core:2.9.4'
-    compile 'com.jidesoft:jide-oss:3.6.18'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.9.6'
+    compile 'com.jidesoft:jide-oss:3.7.4'
     compile 'org.tukaani:xz:1.6'
     compile 'net.sf.jchart2d:jchart2d:3.3.2'
     compile 'org.apache.logging.log4j:log4j-core:2.8.1'
@@ -76,8 +78,8 @@ dependencies {
     compile 'com.miglayout:miglayout-swing:5.1'
     compile 'com.miglayout:miglayout-core:5.1'
     compile 'com.miglayout:miglayout-javafx:5.1'
-    compile 'com.squareup.okhttp3:okhttp:3.9.1'
-    compile group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.3.0'
+    compile 'com.squareup.okhttp3:okhttp:3.11.0'
+    compile group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.5.0'
 
     compileOnly 'com.yuvimasory:orange-extensions:1.3.0'
     compileOnly group: 'org.jetbrains', name: 'annotations', version: '15.0'
@@ -163,32 +165,20 @@ launch4j {
     icon = "../../res/MediathekView.ico"
     jar = jarName
     dontWrapJar = true
-    outfile = "MediathekView_ohne_feste_Speicherzuweisung.exe"
-}
-
-task creatMitSpeicherExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
     outfile = "MediathekView.exe"
-
     initialHeapSize = 256
-    maxHeapSize = 2048
+    maxHeapSize = 1024
     maxHeapPercent = 80
+
 }
+
 
 task createIpv4Exe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
     outfile = "MediathekView_ipv4.exe"
     opt = "-Djava.net.preferIPv4Stack=true"
 
     initialHeapSize = 256
-    maxHeapSize = 2048
-    maxHeapPercent = 80
-}
-
-task createPortableExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
-    outfile = "MediathekView_Portable.exe"
-    cmdLine = "Einstellungen/.mediathek3"
-
-    initialHeapSize = 256
-    maxHeapSize = 2048
+    maxHeapSize = 1024
     maxHeapPercent = 80
 }
 

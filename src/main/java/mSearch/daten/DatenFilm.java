@@ -27,6 +27,7 @@ import org.h2.jdbc.JdbcSQLException;
 import org.jetbrains.annotations.NotNull;
 import sun.misc.Cleaner;
 
+import java.lang.ref.WeakReference;
 import java.sql.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -130,17 +131,18 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      */
     private int databaseFilmNumber;
     private boolean neuerFilm = false;
-    private final Cleaner cleaner;
+    private Cleaner cleaner = null;
     /**
      * Future used for writing description into database.
      * Will be checked before each read if finished
      */
-    private CompletableFuture<Void> descriptionFuture;
+    private WeakReference<CompletableFuture<Void>> descriptionFutureReference = null;
+
     /**
      * Future used for writing website link into database.
      * Will be checked before each read if finished
      */
-    private CompletableFuture<Void> websiteFuture;
+    private WeakReference<CompletableFuture<Void>> websiteFutureReference = null;
 
     /**
      * Get the film number.
@@ -159,6 +161,17 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         filmSize = new MSLong(0); // Dateigröße in MByte
         databaseFilmNumber = FILM_COUNTER.getAndIncrement();
 
+        setupDatabaseCleanup();
+    }
+
+    private void setupDatabaseCleanup() {
+        final boolean useCleaner = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DATABASE_USE_CLEANER_INTERFACE, false);
+        if (useCleaner)
+            installCleanupTask();
+    }
+
+    private void installCleanupTask() {
+        //FIXME with Java 9, use RateLimitedThreadFactory to throttle cleanup tasks
         DatenFilmCleanupTask task = new DatenFilmCleanupTask(databaseFilmNumber);
         cleaner = Cleaner.create(this, task);
     }
@@ -211,7 +224,9 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
 
     @Override
     public void close() {
-        cleaner.clean();
+
+        if (cleaner != null)
+            cleaner.clean();
     }
 
     /**
@@ -226,12 +241,16 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
              PreparedStatement statement = connection.prepareStatement("SELECT desc FROM mediathekview.description WHERE id = ?")) {
             statement.setInt(1, databaseFilmNumber);
 
-            if (descriptionFuture != null) {
-                if (!descriptionFuture.isDone()) {
-                    descriptionFuture.get();
+            if (descriptionFutureReference != null) {
+                final CompletableFuture<Void> descriptionFuture = descriptionFutureReference.get();
+                if (descriptionFuture != null) {
+                    if (!descriptionFuture.isDone()) {
+                        descriptionFuture.get();
+                    }
+                    //set to null when finished as we don´t need it anymore...
+                    descriptionFutureReference.clear();
+                    descriptionFutureReference = null;
                 }
-                //set to null when finished as we don´t need it anymore...
-                descriptionFuture = null;
             }
 
             try (ResultSet rs = statement.executeQuery()) {
@@ -258,8 +277,10 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         if (desc != null && !desc.isEmpty()) {
             if (MemoryUtils.isLowMemoryEnvironment())
                 writeDescriptionToDatabase(desc);
-            else
-                descriptionFuture = CompletableFuture.runAsync(() -> writeDescriptionToDatabase(desc), PooledDatabaseConnection.getInstance().getDatabaseExecutor());
+            else {
+                final CompletableFuture<Void> descriptionFuture = CompletableFuture.runAsync(() -> writeDescriptionToDatabase(desc), PooledDatabaseConnection.getInstance().getDatabaseExecutor());
+                descriptionFutureReference = new WeakReference<>(descriptionFuture);
+            }
         }
     }
 
@@ -270,14 +291,18 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
              PreparedStatement statement = connection.prepareStatement("SELECT link FROM mediathekview.website_links WHERE id = ?")) {
             statement.setInt(1, databaseFilmNumber);
 
-            if (websiteFuture != null) {
-                if (!websiteFuture.isDone()) {
-                    //make sure async op has finished before...
-                    websiteFuture.get();
-                }
+            if (websiteFutureReference != null) {
+                final CompletableFuture<Void> websiteFuture = websiteFutureReference.get();
+                if (websiteFuture != null) {
+                    if (!websiteFuture.isDone()) {
+                        //make sure async op has finished before...
+                        websiteFuture.get();
+                    }
 
-                //we don´t need it anymore...
-                websiteFuture = null;
+                    //we don´t need it anymore...
+                    websiteFutureReference.clear();
+                    websiteFutureReference = null;
+                }
             }
 
             try (ResultSet rs = statement.executeQuery()) {
@@ -298,8 +323,10 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         if (link != null && !link.isEmpty()) {
             if (MemoryUtils.isLowMemoryEnvironment())
                 writeWebsiteLinkToDatabase(link);
-            else
-                websiteFuture = CompletableFuture.runAsync(() -> writeWebsiteLinkToDatabase(link), PooledDatabaseConnection.getInstance().getDatabaseExecutor());
+            else {
+                CompletableFuture<Void> websiteFuture = CompletableFuture.runAsync(() -> writeWebsiteLinkToDatabase(link), PooledDatabaseConnection.getInstance().getDatabaseExecutor());
+                websiteFutureReference = new WeakReference<>(websiteFuture);
+            }
         }
     }
 
@@ -559,7 +586,11 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         private static void initializeDatabase() {
             try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
                  Statement statement = connection.createStatement()) {
-                statement.executeUpdate("SET MULTI_THREADED 1");
+                final boolean useMultithreaded = ApplicationConfiguration.getConfiguration().getBoolean("database.multithreaded", false);
+                if (useMultithreaded) {
+                    statement.executeUpdate("SET MULTI_THREADED 1");
+                }
+
                 if (!MemoryUtils.isLowMemoryEnvironment()) {
                     statement.executeUpdate("SET WRITE_DELAY 2000");
                     statement.executeUpdate("SET MAX_OPERATION_MEMORY 0");

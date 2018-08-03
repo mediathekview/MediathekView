@@ -124,6 +124,18 @@ public class PanelEinstellungen extends PanelVorlage {
         }
     }
 
+    private void setupDatabaseCleanerCheckbox() {
+        final Configuration config = ApplicationConfiguration.getConfiguration();
+        cbUseDatabaseCleaner.setSelected(config.getBoolean(ApplicationConfiguration.DATABASE_USE_CLEANER_INTERFACE, false));
+        cbUseDatabaseCleaner.addActionListener(l -> config.setProperty(ApplicationConfiguration.DATABASE_USE_CLEANER_INTERFACE, cbUseDatabaseCleaner.isSelected()));
+    }
+
+    private void setupSaveHumanReadableFilmlistCheckbox() {
+        final Configuration config = ApplicationConfiguration.getConfiguration();
+        cbSaveHumanReadableFilmlist.setSelected(config.getBoolean(ApplicationConfiguration.FILMLISTE_SAVE_HUMAN_READABLE, false));
+        cbSaveHumanReadableFilmlist.addActionListener(l -> config.setProperty(ApplicationConfiguration.FILMLISTE_SAVE_HUMAN_READABLE, cbSaveHumanReadableFilmlist.isSelected()));
+    }
+
     public PanelEinstellungen(Daten d, JFrame parent) {
         super(d, parent);
         daten = d;
@@ -133,6 +145,10 @@ public class PanelEinstellungen extends PanelVorlage {
         setupUserAgentSettings();
 
         setupProxySettings();
+
+        setupDatabaseCleanerCheckbox();
+
+        setupSaveHumanReadableFilmlistCheckbox();
 
         jButtonLoad.addActionListener(ae -> {
             daten.getListeFilme().clear(); // sonst wird evtl. nur eine Diff geladen
@@ -357,6 +373,10 @@ public class PanelEinstellungen extends PanelVorlage {
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jComboBoxIcons = new javax.swing.JComboBox<>();
         jButtonRefresh = new javax.swing.JButton();
+        javax.swing.JPanel jPanel7 = new javax.swing.JPanel();
+        cbUseDatabaseCleaner = new javax.swing.JCheckBox();
+        javax.swing.JPanel jPanel8 = new javax.swing.JPanel();
+        cbSaveHumanReadableFilmlist = new javax.swing.JCheckBox();
 
         setMinimumSize(getPreferredSize());
         setLayout(new org.jdesktop.swingx.VerticalLayout());
@@ -516,11 +536,59 @@ public class PanelEinstellungen extends PanelVorlage {
         );
 
         add(jPanel1);
+
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Datenbank (Neustart erforderlich!)"));
+
+        cbUseDatabaseCleaner.setText("Bereinigung während Laufzeit");
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+                jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(cbUseDatabaseCleaner)
+                                .addContainerGap(381, Short.MAX_VALUE))
+        );
+        jPanel7Layout.setVerticalGroup(
+                jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(cbUseDatabaseCleaner)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        add(jPanel7);
+
+        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("Speicherung der Filmliste"));
+
+        cbSaveHumanReadableFilmlist.setText("in les- und editierbarem Format speichern");
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+                jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(cbSaveHumanReadableFilmlist)
+                                .addContainerGap(300, Short.MAX_VALUE))
+        );
+        jPanel8Layout.setVerticalGroup(
+                jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(cbSaveHumanReadableFilmlist)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        add(jPanel8);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox cbAutomaticMenuTabSwitching;
+    private javax.swing.JCheckBox cbSaveHumanReadableFilmlist;
+    private javax.swing.JCheckBox cbUseDatabaseCleaner;
     private javax.swing.JButton jButtonHelpDays;
     private javax.swing.JButton jButtonLoad;
     private javax.swing.JButton jButtonRefresh;

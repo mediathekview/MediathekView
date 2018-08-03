@@ -22,7 +22,7 @@ package mediathek.config;
 import mSearch.tool.Version;
 
 public class Konstanten {
-    public static final Version MVVERSION = new Version(13, 1, 0);
+    public static final Version MVVERSION = new Version(13, 1, 1);
     public static final String PROGRAMMNAME = "MediathekView";
     public static final String CONFIG_FILE = "mediathek.xml";
     public static final String CONFIG_FILE_COPY = "mediathek.xml_copy_";

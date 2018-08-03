@@ -28,6 +28,8 @@ import mediathek.config.MVConfig;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.xml.stream.XMLInputFactory;
@@ -51,13 +53,17 @@ public class ProgrammUpdateSuchen {
     private final ArrayList<String[]> listInfos = new ArrayList<>();
     private boolean neueVersion = false;
 
+    private static final Logger logger = LogManager.getLogger(ProgrammUpdateSuchen.class);
+
     public boolean checkVersion(boolean anzeigen, boolean showProgramInformation, boolean showAllInformation) {
         // prüft auf neue Version, aneigen: wenn true, dann AUCH wenn es keine neue Version gibt ein Fenster
         neueVersion = false;
 
         Optional<ServerProgramInformation> opt = retrieveProgramInformation();
-        if (!opt.isPresent())
+        if (!opt.isPresent()) {
+            logger.warn("did not receive ServerProgramInformation");
             SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, UPDATE_ERROR_MESSAGE, UPDATE_SEARCH_TITLE, JOptionPane.ERROR_MESSAGE));
+        }
         else {
             // Update-Info anzeigen
             final ServerProgramInformation progInfo = opt.get();
@@ -65,8 +71,10 @@ public class ProgrammUpdateSuchen {
                 if (showProgramInformation)
                     showProgramInformation(showAllInformation);
 
-                if (progInfo.getVersion().toNumber() == 0)
+                if (progInfo.getVersion().toNumber() == 0) {
                     JOptionPane.showMessageDialog(null, UPDATE_ERROR_MESSAGE, UPDATE_SEARCH_TITLE, JOptionPane.ERROR_MESSAGE);
+                    logger.warn("getVersion().toNumber() == 0");
+                }
                 else {
                     if (checkForNewerVersion(progInfo.getVersion())) {
                         neueVersion = true;
