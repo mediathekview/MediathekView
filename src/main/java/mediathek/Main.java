@@ -29,7 +29,6 @@ import mSearch.tool.Log;
 import mSearch.tool.SingleInstance;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
-import mediathek.config.Messages;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.windows.MediathekGuiWindows;
 import org.apache.logging.log4j.LogManager;
@@ -46,7 +45,6 @@ import java.nio.file.Paths;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 public class Main {
-    private static final String TEXT_LINE = "===========================================";
     private static final String JAVAFX_CLASSNAME_APPLICATION_PLATFORM = "javafx.application.Platform";
     private static final String HTTP_PROXY_USER = "http.proxyUser";
     private static final String HTTP_PROXY_PW = "http.proxyPassword";
@@ -75,18 +73,22 @@ public class Main {
     /**
      * Tests if javafx is in the classpath by loading a well known class.
      */
-    private static boolean hasJavaFx() {
+    private static void checkForJavaFX() {
+        final String message = "MediathekView benötigt ein installiertes JavaFX.";
+
         try {
             Class.forName(JAVAFX_CLASSNAME_APPLICATION_PLATFORM);
-            return true;
-
         } catch (ClassNotFoundException e) {
             logger.error("JavaFX was not found on system.", e);
-            System.out.println(TEXT_LINE);
-            System.out.printf(Messages.ERROR_NO_JAVAFX_INSTALLED.getText());
-            System.out.println(TEXT_LINE);
-
-            return false;
+            if (GraphicsEnvironment.isHeadless()) {
+                System.err.println(message);
+            } else {
+                //we have a screen
+                JOptionPane.showMessageDialog(null,
+                        message,
+                        "JavaFX nicht gefunden", JOptionPane.ERROR_MESSAGE);
+            }
+            System.exit(3);
         }
     }
 
@@ -107,27 +109,74 @@ public class Main {
             System.out.println();
         }
     }
+
     /**
      * @param args the command line arguments
      */
     public static void main(final String args[]) {
+        checkMemoryRequirements();
+        checkJava8Compatibility();
+        checkForJavaFX();
+
         IconFontSwing.register(FontAwesome.getIconFont());
         printBanner();
         new Main().start(args);
     }
 
-    private void start(String... args) {
-        if (hasJavaFx()) {
-            StartupMode startupMode = StartupMode.GUI;
+    private static void checkForOfficialOSXAppUse() {
+        final String osxOfficialApp = System.getProperty("OSX_OFFICIAL_APP");
+        if (osxOfficialApp == null || osxOfficialApp.isEmpty() || osxOfficialApp.equalsIgnoreCase("false")) {
+            JOptionPane.showMessageDialog(null,
+                    "Bitte nutzen Sie die offizielle macOS Applikation für das beste Nutzererlebnis.",
+                    "Anwendungshinweis",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+    }
 
-            proxyAuthentication();
-
-            if (args != null) {
-                startupMode = processArgs(startupMode, args);
+    private static void checkMemoryRequirements() {
+        final long maxMem = Runtime.getRuntime().maxMemory();
+        // more than 450MB avail...
+        if (maxMem < 450 * 1024 * 1024) {
+            if (GraphicsEnvironment.isHeadless()) {
+                System.err.println("Die VM hat nicht genügend Arbeitsspeicher zugewiesen.");
+                System.err.println("Nutzen Sie den Startparameter -Xmx512M für Minimumspeicher");
+            } else {
+                JOptionPane.showMessageDialog(null,
+                        "MediathekView hat nicht genügend Arbeitsspeicher zugewiesen bekommen.",
+                        "Speicherwarnung",
+                        JOptionPane.ERROR_MESSAGE);
             }
 
-            startUI(startupMode, args);
+            System.exit(3);
         }
+    }
+
+    private static void checkJava8Compatibility() {
+        if (SystemInfo.isJdk9Above()) {
+            logger.error("JVM is not Java 8");
+            if (GraphicsEnvironment.isHeadless()) {
+                System.err.println("MediathekView ist NUR mit Java 8 kompatibel.");
+                System.err.println("Bitte stellen Sie sicher das Sie Java 8 auf Ihrem System nutzen");
+            } else {
+                //we have a screen
+                JOptionPane.showMessageDialog(null,
+                        "MediathekView ist NUR mit Java 8 kompatibel.",
+                        "Falsche Java-Version", JOptionPane.ERROR_MESSAGE);
+            }
+            System.exit(3);
+        }
+    }
+
+    private void start(String... args) {
+        StartupMode startupMode = StartupMode.GUI;
+
+        proxyAuthentication();
+
+        if (args != null) {
+            startupMode = processArgs(startupMode, args);
+        }
+
+        startUI(startupMode, args);
     }
 
     /*
@@ -164,6 +213,9 @@ public class Main {
     private void startGuiMode(final String[] args) {
         EventQueue.invokeLater(() ->
         {
+            if (SystemInfo.isMacOSX())
+                checkForOfficialOSXAppUse();
+
             //JavaFX stuff
             Platform.setImplicitExit(false);
 

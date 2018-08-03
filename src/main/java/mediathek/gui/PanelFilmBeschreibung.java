@@ -48,7 +48,7 @@ import java.net.URISyntaxException;
 @SuppressWarnings("serial")
 public class PanelFilmBeschreibung extends JPanel implements ListSelectionListener {
     private DatenFilm currentFilm = null;
-    private MVTable table;
+    private final MVTable table;
 
     private JMenuItem createCopyLinkToClipboardItem() {
         JMenuItem item = new JMenuItem("URL kopieren");
@@ -160,6 +160,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
                             + "<span class=\"sans\">" + currentFilm.getDescription() + "</span>"
                     + "</body>"
                     + "</html>");
+            jEditorPane.setCaretPosition(0);
 
             hyperlinkButton.setToolTipText(currentFilm.getWebsiteLink());
         }

@@ -22,6 +22,7 @@ package mSearch.daten;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mSearch.Const;
+import mSearch.tool.GermanStringSorter;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,6 +31,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressWarnings("serial")
 public class ListeFilme extends ArrayList<DatenFilm> {
@@ -43,16 +45,14 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     private final static String DATUM_ZEIT_FORMAT = "dd.MM.yyyy, HH:mm";
     private static final SimpleDateFormat sdf_ = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
     private static final Logger logger = LogManager.getLogger(ListeFilme.class);
-    private static final String THEME_SEARCH_TEXT = "Themen in Filmliste suchen";
     private final SimpleDateFormat sdf = new SimpleDateFormat(DATUM_ZEIT_FORMAT);
     /**
      * List of available senders which notifies its users.
      */
     private final ObservableList<String> senderList = FXCollections.observableArrayList();
     public String[] metaDaten = new String[]{"", "", "", "", ""};
-    @Deprecated
-    public String[][] themenPerSender = {{""}};
     public boolean neueFilme = false;
+
     public ListeFilme() {
         super();
         sdf_.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
@@ -66,6 +66,25 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         addInit(film);
     }
 
+    /**
+     * Search all themas within list based on sender.
+     * If sender is empty, return full list of themas.
+     *
+     * @param sender sender name as String
+     * @return List of themas as String.
+     */
+    public List<String> getThemen(String sender) {
+        Stream<DatenFilm> mystream = parallelStream();
+        //if sender is empty return all themas...
+        if (!sender.isEmpty())
+            mystream = mystream.filter(f -> f.getSender().equals(sender));
+
+        return mystream.map(DatenFilm::getThema)
+                .distinct()
+                .sorted(GermanStringSorter.getInstance())
+                .collect(Collectors.toList());
+    }
+
     private void addHash(DatenFilm f, HashSet<String> hash, boolean index) {
         if (f.getSender().equals(Const.KIKA)) {
             // beim KIKA ändern sich die URLs laufend
@@ -74,27 +93,6 @@ public class ListeFilme extends ArrayList<DatenFilm> {
             hash.add(f.getIndex());
         } else {
             hash.add(f.getUrl());
-        }
-    }
-
-    /**
-     * Get the available themas for selected sender.
-     */
-    public String[] getThemen(String ssender) {
-        if (!senderList.contains(ssender))
-            return themenPerSender[0];
-        else {
-            try {
-                for (int i = 1; i < themenPerSender.length; ++i) {
-                    if (senderList.get(i).equals(ssender)) {
-                        return themenPerSender[i];
-                    }
-                }
-                return themenPerSender[0];
-            } catch (IndexOutOfBoundsException ex) {
-                logger.debug("getThemen:", ex);
-                return themenPerSender[0];
-            }
         }
     }
 
@@ -309,62 +307,11 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         return this.stream().filter(DatenFilm::isNew).count();
     }
 
-    private void fillSenderList() {
+    public void fillSenderList() {
+        //FIXME we have JavaFX thread violation here
         senderList.clear();
         // der erste Sender ist ""
         senderList.add("");
         senderList.addAll(stream().map(DatenFilm::getSender).distinct().collect(Collectors.toList()));
-    }
-
-    /**
-     * Erstellt ein StringArray der Themen eines Senders oder wenn "sender" leer, aller Sender.
-     * Ist für die Filterfelder in GuiFilme.
-     */
-    @SuppressWarnings("unchecked")
-    public synchronized void themenLaden() {
-        //TODO is this still used somewhere or needs to be replaced for new search???
-        logger.debug(THEME_SEARCH_TEXT);
-
-        fillSenderList();
-
-        //für den Sender "" sind alle Themen im themenPerSender[0]
-        final int senderLength = senderList.size();
-
-        themenPerSender = new String[senderLength][];
-        TreeSet<String>[] tree = (TreeSet<String>[]) new TreeSet<?>[senderLength];
-        HashSet<String>[] hashSet = (HashSet<String>[]) new HashSet<?>[senderLength];
-        for (int i = 0; i < tree.length; ++i) {
-            tree[i] = new TreeSet<>(mSearch.tool.GermanStringSorter.getInstance());
-            tree[i].add("");
-            hashSet[i] = new HashSet<>();
-        }
-
-        //alle Themen
-        String filmThema, filmSender;
-        for (DatenFilm film : this) {
-            filmSender = film.getSender();
-            filmThema = film.getThema();
-            //hinzufügen
-            if (!hashSet[0].contains(filmThema)) {
-                hashSet[0].add(filmThema);
-                tree[0].add(filmThema);
-            }
-            for (int i = 1; i < senderLength; ++i) {
-                if (filmSender.equals(senderList.get(i))) {
-                    if (!hashSet[i].contains(filmThema)) {
-                        hashSet[i].add(filmThema);
-                        tree[i].add(filmThema);
-                    }
-                }
-            }
-        }
-
-        for (int i = 0; i < themenPerSender.length; ++i) {
-            themenPerSender[i] = tree[i].toArray(new String[0]);
-            tree[i].clear();
-            hashSet[i].clear();
-        }
-
-        logger.debug(THEME_SEARCH_TEXT);
     }
 }

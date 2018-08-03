@@ -1,7 +1,6 @@
 package mSearch.daten;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.tool.MemoryUtils;
 import mediathek.config.Daten;
 import mediathek.tool.GuiFunktionen;
 import org.apache.commons.dbcp2.*;
@@ -15,7 +14,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class PooledDatabaseConnection implements Closeable {
     private static PooledDatabaseConnection INSTANCE;
@@ -26,7 +27,9 @@ public class PooledDatabaseConnection implements Closeable {
     private PooledDatabaseConnection() {
         dataSource = setupDataSource();
 
-        databaseExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        final int cpu = Runtime.getRuntime().availableProcessors();
+        databaseExecutor = new ThreadPoolExecutor(cpu, 2 * cpu + 1, 15, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+        ((ThreadPoolExecutor) databaseExecutor).allowCoreThreadTimeOut(true);
     }
 
     public ExecutorService getDatabaseExecutor() {
@@ -50,7 +53,9 @@ public class PooledDatabaseConnection implements Closeable {
             con = dataSource.getConnection();
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (IllegalStateException ignored) {
         }
+
         return con;
     }
 
@@ -74,32 +79,21 @@ public class PooledDatabaseConnection implements Closeable {
         return strDatabase;
     }
 
-    private String configureDatabaseParams() {
-        final String dbParams;
-        //windows doesn´t like memory mapped IO....
-        if (SystemInfo.isWindows())
-            dbParams = "file";
-        else {
-            //more speed for the rest, prevent 2GB mem limit by splitting
-            if (MemoryUtils.isLowMemoryEnvironment()) {
-                //split into 2^27 = 128MB pieces...
-                dbParams = "split:27:nioMapped";
-            } else {
-                //1GB split pieces by default
-                dbParams = "split:nioMapped";
-            }
+    private DataSource setupDataSource() {
+
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
 
-        return dbParams;
-    }
-
-    private DataSource setupDataSource() {
         Properties props = new Properties();
-        //props.put("defaultAutoCommit","false");
-        props.put("maxTotal", String.valueOf(Runtime.getRuntime().availableProcessors()));
-        props.put("poolPreparedStatements", "true");
+        props.put("maxTotal", String.valueOf(Runtime.getRuntime().availableProcessors() * 2 + 1));
+        props.put("poolPreparedStatements", "false");
+        props.put("maxIdle", "-1");
+        props.put("testOnBorrow", "true");
 
-        final String driverCommand = "jdbc:h2:" + configureDatabaseParams() + ":" + getDatabaseLocation() + "mediathekview;MVCC=TRUE;PAGE_SIZE=4096";
+        final String driverCommand = "jdbc:h2:file:" + getDatabaseLocation() + "mediathekview;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE";
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(driverCommand, props);
 
         PoolableConnectionFactory poolableConnectionFactory =
@@ -108,7 +102,7 @@ public class PooledDatabaseConnection implements Closeable {
         connectionPool = new GenericObjectPool<>(poolableConnectionFactory);
 
         poolableConnectionFactory.setPool(connectionPool);
-
+        
         return new PoolingDataSource<>(connectionPool);
     }
 }

@@ -33,7 +33,7 @@ public class UpdateNotificationDialog extends StandardCloseDialog {
             browser = new WebView();
             Scene scene = new Scene(browser);
             webEngine = browser.getEngine();
-            webEngine.load("http://mediathekview.crystalpalace.info/Update_MediathekView_Dummy.html");
+            webEngine.load("https://mediathekview.de/changelogs");
 
 
             panel.getFxPanel().setScene(scene);

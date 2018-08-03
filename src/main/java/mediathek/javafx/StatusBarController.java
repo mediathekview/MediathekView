@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -15,22 +16,26 @@ import mSearch.Config;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.config.Daten;
+import mediathek.gui.messages.FilmListWriteStartEvent;
+import mediathek.gui.messages.FilmListWriteStopEvent;
+import net.engio.mbassy.listener.Handler;
 import org.controlsfx.control.StatusBar;
 
 public class StatusBarController {
-    private Label progressLabel = new Label("");
-    private ProgressBar progressBar = new ProgressBar();
-    private Pane progressPane;
+    private final Label progressLabel = new Label("");
+    private final ProgressBar progressBar = new ProgressBar();
     /**
      * The new javafx based status bar
      */
-    private StatusBar statusBar = new StatusBar();
+    private final StatusBar statusBar = new StatusBar();
+    private final FilmlistAgeLabel filmlistAgeLabel;
+    private final FilmListInformationLabel filmListInformationLabel;
+    private final SelectedItemsLabel selectedItemsLabel;
+    private final GarbageCollectionButton btnGc = new GarbageCollectionButton();
+    private Pane progressPane;
     private MemoryMonitor memoryMonitor;
-    private FilmlistAgeLabel filmlistAgeLabel;
-    private FilmListInformationLabel filmListInformationLabel;
-    private SelectedItemsLabel selectedItemsLabel;
-    private GarbageCollectionButton btnGc = new GarbageCollectionButton();
-    private MemoryMonitorButton memButton = new MemoryMonitorButton(memoryMonitor);
+    private final MemoryMonitorButton memButton = new MemoryMonitorButton(memoryMonitor);
+    private Pane filmListWriterProgressPane = null;
 
     public StatusBarController(Daten daten, MemoryMonitor memoryMonitor, IntegerProperty selectedItemsProperty) {
         this.memoryMonitor = memoryMonitor;
@@ -38,6 +43,8 @@ public class StatusBarController {
         selectedItemsLabel = new SelectedItemsLabel(selectedItemsProperty);
         filmlistAgeLabel = new FilmlistAgeLabel(daten);
         filmListInformationLabel = new FilmListInformationLabel(daten, daten.getMediathekGui().tabPaneIndexProperty());
+
+        daten.getMessageBus().subscribe(this);
 
         createProgressPane();
 
@@ -62,6 +69,35 @@ public class StatusBarController {
                 if (Config.isDebuggingEnabled())
                     Platform.runLater(() -> statusBar.setText(""));
             }
+        });
+    }
+
+    private Pane createFilmListWriterProgress() {
+        filmListWriterProgressPane = new HBox();
+        filmListWriterProgressPane.setMinWidth(Region.USE_PREF_SIZE);
+        filmListWriterProgressPane.getChildren().addAll(
+                new CenteredBorderPane(new ProgressIndicator()),
+                new CenteredBorderPane(new Label("Schreibe Filmliste...")),
+                new VerticalSeparator());
+
+        return filmListWriterProgressPane;
+    }
+
+    @Handler
+    private void handleFilmListWriterStartEvent(FilmListWriteStartEvent e) {
+        Platform.runLater(() -> {
+            if (filmListWriterProgressPane == null)
+                filmListWriterProgressPane = createFilmListWriterProgress();
+
+            statusBar.getRightItems().add(filmListWriterProgressPane);
+        });
+    }
+
+    @Handler
+    private void handleFilmListWriterStopEvent(FilmListWriteStopEvent e) {
+        Platform.runLater(() -> {
+            statusBar.getRightItems().remove(filmListWriterProgressPane);
+            filmListWriterProgressPane = null;
         });
     }
 
@@ -98,7 +134,9 @@ public class StatusBarController {
     private void addProgressItems() {
         Platform.runLater(() -> {
             ObservableList<Node> rightItems = statusBar.getRightItems();
-            rightItems.add(progressPane);
+            //fix strange exception that duplicate was added...
+            if (!rightItems.contains(progressPane))
+                rightItems.add(progressPane);
 
         });
     }

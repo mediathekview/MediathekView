@@ -326,7 +326,7 @@ public class FilmeLaden {
         ApplicationConfiguration.getConfiguration().setProperty(StartupProgressPanel.CONFIG_STRING, daten.getListeFilme().size());
 
         daten.getFilmeLaden().notifyProgress(new ListenerFilmeLadenEvent("", "Themen suchen", 0, 0, 0, false/*Fehler*/));
-        daten.getListeFilme().themenLaden();
+        daten.getListeFilme().fillSenderList();
 
         daten.getFilmeLaden().notifyProgress(new ListenerFilmeLadenEvent("", "Abos eintragen", 0, 0, 0, false/*Fehler*/));
         daten.getListeAbo().setAboFuerFilm(daten.getListeFilme(), false/*aboLoeschen*/);

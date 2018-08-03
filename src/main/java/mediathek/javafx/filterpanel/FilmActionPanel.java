@@ -21,8 +21,13 @@ import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.ApplicationConfiguration;
 import mediathek.config.Daten;
+import mediathek.gui.dialog.DialogLeer;
+import mediathek.gui.dialogEinstellungen.PanelBlacklist;
+import mediathek.gui.messages.FilmListWriteStartEvent;
+import mediathek.gui.messages.FilmListWriteStopEvent;
 import mediathek.javafx.VerticalSeparator;
 import mediathek.tool.Filter;
+import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.RangeSlider;
@@ -33,6 +38,7 @@ import org.controlsfx.glyphfont.GlyphFontRegistry;
 import org.controlsfx.tools.Borders;
 
 import javax.swing.*;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -41,7 +47,7 @@ import java.util.NoSuchElementException;
  */
 public class FilmActionPanel {
     public final static int UNLIMITED_VALUE = 110;
-    public final PopOver filterPopover;
+    private final PopOver filterPopover;
     private final Daten daten;
     private final Configuration config = ApplicationConfiguration.getConfiguration();
     private final PauseTransition pause2 = new PauseTransition(Duration.millis(150));
@@ -60,7 +66,7 @@ public class FilmActionPanel {
     public ComboBox<String> senderBox;
     public ComboBox<String> themaBox;
     public RangeSlider filmLengthSlider;
-    public Spinner<String> zeitraumSpinner;
+    private Spinner<String> zeitraumSpinner;
     private CustomTextField jfxSearchField;
     private Button btnDownload;
     private Button btnFilmInformation;
@@ -68,6 +74,7 @@ public class FilmActionPanel {
     private Button btnRecord;
     private Button btnNewFilter;
     private BlacklistButton btnBlacklist;
+    private Button btnEditBlacklist;
 
     public FilmActionPanel(Daten daten) {
         this.daten = daten;
@@ -77,6 +84,8 @@ public class FilmActionPanel {
         restoreConfigSettings();
 
         setupConfigListeners();
+
+        Daten.getInstance().getMessageBus().subscribe(this);
     }
 
     private void restoreConfigSettings() {
@@ -121,41 +130,28 @@ public class FilmActionPanel {
         zeitraumSpinner.valueProperty().addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_ZEITRAUM, newValue)));
     }
 
+    private final GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
+
     private Parent createLeft() {
-        GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
-
-        btnDownload = new Button("", fontAwesome.create(FontAwesome.Glyph.CLOUD_DOWNLOAD));
-        btnDownload.setTooltip(new Tooltip("Neue Filmliste laden"));
-        btnDownload.setOnAction(e -> SwingUtilities.invokeLater(() -> daten.getFilmeLaden().loadFilmlistDialog(daten, false)));
-
-        btnFilmInformation = new Button("", fontAwesome.create(FontAwesome.Glyph.INFO_CIRCLE));
-        btnFilmInformation.setTooltip(new Tooltip("Filminformation anzeigen"));
-        btnFilmInformation.setOnAction(e -> SwingUtilities.invokeLater(Daten.filmInfo::showInfo));
-
         HBox hb = new HBox();
         hb.setPadding(new Insets(5, 5, 5, 5));
         hb.setSpacing(4.0);
         hb.setAlignment(Pos.CENTER_LEFT);
 
         ObservableList<Node> list = hb.getChildren();
-        list.add(btnDownload);
-
-        list.add(new VerticalSeparator());
-        list.add(btnFilmInformation);
+        list.add(createDownloadButton());
         list.add(new VerticalSeparator());
 
-        btnPlay = new Button("", fontAwesome.create(FontAwesome.Glyph.PLAY));
-        btnPlay.setTooltip(new Tooltip("Film abspielen"));
-        btnPlay.setOnAction(evt -> SwingUtilities.invokeLater(() -> Daten.guiFilme.playAction.actionPerformed(null)));
-        list.add(btnPlay);
-
-        btnRecord = new Button("", fontAwesome.create(FontAwesome.Glyph.DOWNLOAD));
-        btnRecord.setOnAction(e -> SwingUtilities.invokeLater(() -> Daten.guiFilme.saveFilmAction.actionPerformed(null)));
-        btnRecord.setTooltip(new Tooltip("Film aufzeichnen"));
-        list.add(btnRecord);
+        list.add(createFilmInformationButton());
         list.add(new VerticalSeparator());
+
+        list.add(createPlayButton());
+        list.add(createRecordButton());
+        list.add(new VerticalSeparator());
+
         btnBlacklist = new BlacklistButton(daten);
         list.add(btnBlacklist);
+        list.add(createEditBlacklistButton());
 
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
@@ -172,12 +168,67 @@ public class FilmActionPanel {
         return hb;
     }
 
+    @Handler
+    private void handleFilmlistWriteStartEvent(FilmListWriteStartEvent e) {
+        Platform.runLater(() -> btnDownload.setDisable(true));
+    }
+
+    @Handler
+    private void handleFilmlistWriteStopEvent(FilmListWriteStopEvent e) {
+        Platform.runLater(() -> btnDownload.setDisable(false));
+    }
+
+    private Button createDownloadButton() {
+        btnDownload = new Button("", fontAwesome.create(FontAwesome.Glyph.CLOUD_DOWNLOAD));
+        btnDownload.setTooltip(new Tooltip("Neue Filmliste laden"));
+        btnDownload.setOnAction(e -> SwingUtilities.invokeLater(() -> daten.getFilmeLaden().loadFilmlistDialog(daten, false)));
+
+        return btnDownload;
+    }
+
+    private Button createPlayButton() {
+        btnPlay = new Button("", fontAwesome.create(FontAwesome.Glyph.PLAY));
+        btnPlay.setTooltip(new Tooltip("Film abspielen"));
+        btnPlay.setOnAction(evt -> SwingUtilities.invokeLater(() -> Daten.guiFilme.playAction.actionPerformed(null)));
+
+        return btnPlay;
+    }
+
+    private Button createFilmInformationButton() {
+        btnFilmInformation = new Button("", fontAwesome.create(FontAwesome.Glyph.INFO_CIRCLE));
+        btnFilmInformation.setTooltip(new Tooltip("Filminformation anzeigen"));
+        btnFilmInformation.setOnAction(e -> SwingUtilities.invokeLater(Daten.filmInfo::showInfo));
+
+        return btnFilmInformation;
+    }
+
+    private Button createRecordButton() {
+        btnRecord = new Button("", fontAwesome.create(FontAwesome.Glyph.DOWNLOAD));
+        btnRecord.setOnAction(e -> SwingUtilities.invokeLater(() -> Daten.guiFilme.saveFilmAction.actionPerformed(null)));
+        btnRecord.setTooltip(new Tooltip("Film aufzeichnen"));
+
+        return btnRecord;
+    }
+
+    private Button createEditBlacklistButton() {
+        btnEditBlacklist = new Button("", fontAwesome.create(FontAwesome.Glyph.SKYATLAS));
+        btnEditBlacklist.setTooltip(new Tooltip("Blacklist bearbeiten"));
+        btnEditBlacklist.setOnAction(e -> SwingUtilities.invokeLater(() -> {
+            DialogLeer dialog = new DialogLeer(null, true);
+            dialog.init("Blacklist", new PanelBlacklist(daten, null, PanelBlacklist.class.getName() + "_3"));
+            dialog.setVisible(true);
+        }));
+
+        return btnEditBlacklist;
+    }
+
     private void setupLeftButtons(boolean disabled) {
         Platform.runLater(() -> {
             btnDownload.setDisable(disabled);
             btnFilmInformation.setDisable(disabled);
             btnPlay.setDisable(disabled);
             btnRecord.setDisable(disabled);
+            btnEditBlacklist.setDisable(disabled);
         });
     }
 
@@ -201,6 +252,7 @@ public class FilmActionPanel {
     private void setupSearchField() {
         jfxSearchField = new JFXSearchPanel();
         jfxSearchField.setTooltip(new Tooltip("Thema/Titel durchsuchen"));
+        jfxSearchField.setPromptText("Titel/Thema");
 
         final StringProperty textProperty = jfxSearchField.textProperty();
 
@@ -214,8 +266,6 @@ public class FilmActionPanel {
     }
 
     private Parent createRight() {
-        GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
-
         setupSearchField();
 
         HBox hb = new HBox();
@@ -324,6 +374,20 @@ public class FilmActionPanel {
         hb.setAlignment(Pos.CENTER_LEFT);
         vBox.getChildren().add(hb);
 
+        /*
+        whenever the senderbox selected value changes, reload the thema from filtered list.
+         */
+        senderBox.valueProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    if (newValue != null) {
+                        themaBox.getItems().clear();
+                        themaBox.getItems().add("");
+                        final List<String> lst = daten.getListeFilmeNachBlackList().getThemen(newValue);
+                        themaBox.getItems().addAll(lst);
+                    }
+                }
+        );
+
         return new TitledPane("Allgemeine Anzeigeeinstellungen", vBox);
     }
 
@@ -409,12 +473,13 @@ public class FilmActionPanel {
         return accordion;
     }
 
-    public PopOver createFilterPopover() {
+    private PopOver createFilterPopover() {
         PopOver popover = new PopOver();
         popover.setTitle("Erweiterte Filtereinstellungen");
         popover.setAnimated(true);
-        popover.setCloseButtonEnabled(false);
-        popover.setDetachable(false);
+        popover.setCloseButtonEnabled(true);
+        popover.setAutoFix(true);
+        popover.setDetachable(true);
         popover.setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
         popover.setPrefWidth(200);
 

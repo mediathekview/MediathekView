@@ -23,9 +23,12 @@ import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.jidesoft.utils.SystemInfo;
-import mSearch.Config;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
+import mSearch.tool.ApplicationConfiguration;
+import mediathek.config.Daten;
+import mediathek.gui.messages.FilmListWriteStartEvent;
+import mediathek.gui.messages.FilmListWriteStopEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,9 +52,10 @@ public class FilmListWriter {
     private JsonGenerator getJsonGenerator(OutputStream os) throws IOException {
         final JsonFactory jsonF = new JsonFactory();
         JsonGenerator jg = jsonF.createGenerator(os, JsonEncoding.UTF8);
-        if (Config.isDebuggingEnabled()) {
+
+        final boolean readable = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILMLISTE_SAVE_HUMAN_READABLE, false);
+        if (readable)
             jg = jg.useDefaultPrettyPrinter();
-        }
 
         return jg;
     }
@@ -78,6 +82,8 @@ public class FilmListWriter {
     }
 
     public void writeFilmList(String datei, ListeFilme listeFilme) {
+        Daten.getInstance().getMessageBus().publishAsync(new FilmListWriteStartEvent());
+
         //wait until DB has written all futures...
         while (ForkJoinPool.commonPool().hasQueuedSubmissions()) {
             try {
@@ -148,6 +154,8 @@ public class FilmListWriter {
         } catch (Exception ex) {
             logger.error("nach: {}", datei, ex);
         }
+
+        Daten.getInstance().getMessageBus().publishAsync(new FilmListWriteStopEvent());
     }
 
     private void skipEntry(JsonGenerator jg) throws IOException {

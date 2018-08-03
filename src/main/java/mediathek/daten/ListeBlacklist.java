@@ -186,7 +186,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             col.clear();
 
             // Array mit Sendernamen/Themen füllen
-            listeRet.themenLaden();
+            listeRet.fillSenderList();
         }
         Duration.counterStop("Blacklist filtern");
     }
