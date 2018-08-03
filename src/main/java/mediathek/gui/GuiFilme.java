@@ -52,8 +52,6 @@ import mediathek.tool.cellrenderer.CellRendererFilme;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.table.MVFilmTable;
 import net.engio.mbassy.listener.Handler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
@@ -118,8 +116,6 @@ public class GuiFilme extends PanelVorlage {
                 SwingUtilities.invokeLater(this::reloadTable);
             }
         });
-
-        setupSenderBox();
     }
 
     private void setupFilmActionPanel() {
@@ -128,30 +124,7 @@ public class GuiFilme extends PanelVorlage {
         Platform.runLater(() -> fxPanel.setScene(fap.getFilmActionPanelScene()));
     }
 
-    private void setupSenderBox() {
-        logger.debug("setupSenderBox");
-        fap.senderBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            Platform.runLater(() -> {
-                //senderList changes, reload Thema as well...
-                String selectedItem = fap.themaBox.getSelectionModel().getSelectedItem();
-                String sender;
-                if (selectedItem == null)
-                    selectedItem = "";
-
-                if (newValue == null)
-                    sender = "";
-                else
-                    sender = newValue;
-
-                if (fap.themaBox.getItems().contains(selectedItem))
-                    fap.themaBox.getSelectionModel().select(selectedItem);
-                else
-                    fap.themaBox.getSelectionModel().select("");
-            });
-        });
-    }
-
-    private static final Logger logger = LogManager.getLogger(GuiFilme.class);
+    //private static final Logger logger = LogManager.getLogger(GuiFilme.class);
 
     /**
      * The JavaFx Film action popup panel.

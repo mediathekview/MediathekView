@@ -374,21 +374,39 @@ public class FilmActionPanel {
         hb.setAlignment(Pos.CENTER_LEFT);
         vBox.getChildren().add(hb);
 
-        /*
-        whenever the senderbox selected value changes, reload the thema from filtered list.
-         */
+        // whenever the senderbox selected value changes, reload the thema from filtered list.
         senderBox.valueProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     if (newValue != null) {
-                        themaBox.getItems().clear();
-                        themaBox.getItems().add("");
-                        final List<String> lst = daten.getListeFilmeNachBlackList().getThemen(newValue);
-                        themaBox.getItems().addAll(lst);
+                        //save current selection
+                        String selectedItem = themaBox.getSelectionModel().getSelectedItem();
+                        if (selectedItem == null)
+                            selectedItem = "";
+
+                        //update thema content
+                        updateThemaBox(newValue);
+                        //restore selection
+                        restoreThemaBoxSelection(selectedItem);
                     }
                 }
         );
 
         return new TitledPane("Allgemeine Anzeigeeinstellungen", vBox);
+    }
+
+    private void restoreThemaBoxSelection(String selectedItem) {
+        if (themaBox.getItems().contains(selectedItem))
+            themaBox.getSelectionModel().select(selectedItem);
+        else
+            themaBox.getSelectionModel().select("");
+    }
+
+    private void updateThemaBox(String sender) {
+        themaBox.getItems().clear();
+        themaBox.getItems().add("");
+        final List<String> lst = daten.getListeFilmeNachBlackList().getThemen(sender);
+        themaBox.getItems().addAll(lst);
+        lst.clear();
     }
 
     private Node createFilmLengthSlider() {
