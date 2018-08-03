@@ -71,8 +71,7 @@ public class GuiFilmeModelHelper {
         return ret;
     }
 
-    //TODO is synchronized really necessary?
-    public synchronized void prepareTableModel() {
+    private void performTableFiltering(ListeFilme listeFilme, TModel tModel) {
         final boolean nurNeue = fap.showNewOnly.getValue();
         final boolean nurUt = fap.showSubtitlesOnly.getValue();
         final boolean showOnlyHd = fap.showOnlyHd.getValue();
@@ -89,92 +88,105 @@ public class GuiFilmeModelHelper {
         final String filterSender = fap.senderBox.getSelectionModel().getSelectedItem();
         String filterThema = getFilterThema();
 
+        // ThemaTitel
+        String[] arrThemaTitel = evaluateThemaTitel();
+
+        final TrailerTeaserChecker ttc = new TrailerTeaserChecker();
+        for (DatenFilm film : listeFilme) {
+            final long filmLength = film.getFilmLength();
+
+            if (filmLength < TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES))
+                continue;
+
+            if (maxLength < FilmActionPanel.UNLIMITED_VALUE) {
+                if (filmLength > TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES))
+                    continue;
+
+            }
+            if (nurNeue) {
+                if (!film.isNew()) {
+                    continue;
+                }
+            }
+            if (showOnlyLivestreams) {
+                if (!film.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE)) {
+                    continue;
+                }
+            }
+            if (showOnlyHd) {
+                if (!film.isHD()) {
+                    continue;
+                }
+            }
+            if (nurUt) {
+                if (!film.hasSubtitle()) {
+                    continue;
+                }
+            }
+            if (keineAbos) {
+                if (!film.arr[DatenFilm.FILM_ABO_NAME].isEmpty()) {
+                    continue;
+                }
+            }
+            if (kGesehen) {
+                if (daten.history.urlPruefen(film.getUrlHistory())) {
+                    continue;
+                }
+            }
+
+            if (dontShowTrailers) {
+                if (ttc.check(film.getTitle()))
+                    continue;
+            }
+
+            if (dontShowGebaerdensprache) {
+                String titel = film.getTitle();
+                if (titel.contains("Gebärden"))
+                    continue;
+            }
+
+            if (dontShowAudioVersions) {
+                if (checkForAudioVersions(film.getTitle()))
+                    continue;
+            }
+
+            //filter mitLaenge false dann aufrufen
+            //je nachdem dann das ganze herausoperieren
+            String[] arrIrgendwo = {};
+            String[] arrTitel = {};
+            if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, 0, true, film, false)) {
+                addObjectDataTabFilme(tModel, film);
+            }
+        }
+    }
+
+    private void fillTableModel(TModel tModel, ListeFilme listeFilme) {
+        // dann ein neues Model anlegen
+        if (noFiltersAreSet()) {
+            // dann ganze Liste laden
+            addObjectDataTabFilme(listeFilme, tModel);
+        } else {
+            performTableFiltering(listeFilme, tModel);
+        }
+        tabelle.setModel(tModel);
+    }
+
+    /**
+     * Check if string contains specific keywords.
+     */
+    private boolean checkForAudioVersions(String titel) {
+        return titel.contains("Hörfassung") || titel.contains("Audiodeskription");
+    }
+
+    //TODO is synchronized really necessary?
+    public synchronized void prepareTableModel() {
         ListeFilme listeFilme = daten.getListeFilmeNachBlackList();
 
         TModel tModel = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
-        if (listeFilme.isEmpty()) {
-            // wenn die Liste leer ist, leeres Modell erzeugen
-            tabelle.setModel(tModel);
-        } else {
-            // dann ein neues Model anlegen
-            if (noFiltersAreSet()) {
-                // dann ganze Liste laden
-                addObjectDataTabFilme(listeFilme, tModel);
-            } else {
-                // ThemaTitel
-                String[] arrThemaTitel = evaluateThemaTitel();
+        if (!listeFilme.isEmpty())
+            fillTableModel(tModel, listeFilme);
 
-                final TrailerTeaserChecker ttc = new TrailerTeaserChecker();
-                for (DatenFilm film : listeFilme) {
-                    final long filmLength = film.getFilmLength();
-
-                    if (filmLength < TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES))
-                        continue;
-
-                    if (maxLength < FilmActionPanel.UNLIMITED_VALUE) {
-                        if (filmLength > TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES))
-                            continue;
-
-                    }
-                    if (nurNeue) {
-                        if (!film.isNew()) {
-                            continue;
-                        }
-                    }
-                    if (showOnlyLivestreams) {
-                        if (!film.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE)) {
-                            continue;
-                        }
-                    }
-                    if (showOnlyHd) {
-                        if (!film.isHD()) {
-                            continue;
-                        }
-                    }
-                    if (nurUt) {
-                        if (!film.hasSubtitle()) {
-                            continue;
-                        }
-                    }
-                    if (keineAbos) {
-                        if (!film.arr[DatenFilm.FILM_ABO_NAME].isEmpty()) {
-                            continue;
-                        }
-                    }
-                    if (kGesehen) {
-                        if (daten.history.urlPruefen(film.getUrlHistory())) {
-                            continue;
-                        }
-                    }
-
-                    if (dontShowTrailers) {
-                        if (ttc.check(film.getTitle()))
-                            continue;
-                    }
-
-                    if (dontShowGebaerdensprache) {
-                        String titel = film.getTitle();
-                        if (titel.contains("Gebärden"))
-                            continue;
-                    }
-
-                    if (dontShowAudioVersions) {
-                        String titel = film.getTitle();
-                        if (titel.contains("Hörfassung") || titel.contains("Audiodeskription"))
-                            continue;
-                    }
-
-                    //filter mitLaenge false dann aufrufen
-                    //je nachdem dann das ganze herausoperieren
-                    String[] arrIrgendwo = {};
-                    String[] arrTitel = {};
-                    if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, 0, true, film, false)) {
-                        addObjectDataTabFilme(tModel, film);
-                    }
-                }
-            }
-            tabelle.setModel(tModel);
-        }
+        tabelle.setModel(tModel);
     }
 
     private void addObjectDataTabFilme(ListeFilme listefilme, TModel tModel) {
