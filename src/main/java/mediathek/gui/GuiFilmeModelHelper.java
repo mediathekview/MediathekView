@@ -82,8 +82,8 @@ public class GuiFilmeModelHelper {
         final boolean dontShowGebaerdensprache = fap.dontShowSignLanguage.getValue();
         final boolean dontShowAudioVersions = fap.dontShowAudioVersions.getValue();
 
-        final int minLength = (int) fap.filmLengthSlider.getLowValue();
-        final int maxLength = (int) fap.filmLengthSlider.getHighValue();
+        final long minLength = (long) fap.filmLengthSlider.getLowValue();
+        final long maxLength = (long) fap.filmLengthSlider.getHighValue();
 
         final String filterSender = fap.senderBox.getSelectionModel().getSelectedItem();
         String filterThema = getFilterThema();
@@ -91,15 +91,16 @@ public class GuiFilmeModelHelper {
         // ThemaTitel
         String[] arrThemaTitel = evaluateThemaTitel();
 
+        final long minLengthInSeconds = TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES);
+        final long maxLengthInSeconds = TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES);
         final TrailerTeaserChecker ttc = new TrailerTeaserChecker();
         for (DatenFilm film : listeFilme) {
             final long filmLength = film.getFilmLength();
-
-            if (filmLength < TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES))
+            if (filmLength < minLengthInSeconds)
                 continue;
 
             if (maxLength < FilmActionPanel.UNLIMITED_VALUE) {
-                if (filmLength > TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES))
+                if (filmLength > maxLengthInSeconds)
                     continue;
 
             }
@@ -109,7 +110,7 @@ public class GuiFilmeModelHelper {
                 }
             }
             if (showOnlyLivestreams) {
-                if (!film.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE)) {
+                if (!film.getThema().equals(ListeFilme.THEMA_LIVE)) {
                     continue;
                 }
             }
@@ -178,8 +179,7 @@ public class GuiFilmeModelHelper {
         return titel.contains("Hörfassung") || titel.contains("Audiodeskription");
     }
 
-    //TODO is synchronized really necessary?
-    public synchronized void prepareTableModel() {
+    public void prepareTableModel() {
         ListeFilme listeFilme = daten.getListeFilmeNachBlackList();
 
         TModel tModel = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
