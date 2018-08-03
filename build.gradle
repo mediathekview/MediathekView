@@ -59,6 +59,8 @@ dependencies {
     compile "$swingxGroup:swingx-graphics:$swingxVersion"
     compile "$swingxGroup:swingx-painters:$swingxVersion"
     compile "$swingxGroup:swingx-plaf:$swingxVersion"
+    
+    compile ":jide-oss:3.7.4"
 
     compile 'org.apache.commons:commons-lang3:3.6'
     compile 'com.fasterxml.jackson.core:jackson-core:2.9.6'
