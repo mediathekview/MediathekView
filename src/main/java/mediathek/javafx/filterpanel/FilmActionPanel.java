@@ -1,5 +1,6 @@
 package mediathek.javafx.filterpanel;
 
+import impl.org.controlsfx.autocompletion.SuggestionProvider;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -32,6 +33,7 @@ import org.apache.commons.configuration2.Configuration;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.CustomTextField;
+import org.controlsfx.control.textfield.TextFields;
 import org.controlsfx.glyphfont.FontAwesome;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
@@ -52,6 +54,7 @@ public class FilmActionPanel {
     private final Configuration config = ApplicationConfiguration.getConfiguration();
     private final PauseTransition pause2 = new PauseTransition(Duration.millis(150));
     private final PauseTransition pause3 = new PauseTransition(Duration.millis(500));
+    private final GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
     public ReadOnlyStringWrapper roSearchStringProperty = new ReadOnlyStringWrapper();
     public BooleanProperty showOnlyHd;
     public BooleanProperty showSubtitlesOnly;
@@ -75,6 +78,10 @@ public class FilmActionPanel {
     private Button btnNewFilter;
     private BlacklistButton btnBlacklist;
     private Button btnEditBlacklist;
+    /**
+     * Stores the list of thema strings used for autocompletion.
+     */
+    private SuggestionProvider<String> themaSuggestionProvider;
 
     public FilmActionPanel(Daten daten) {
         this.daten = daten;
@@ -129,8 +136,6 @@ public class FilmActionPanel {
 
         zeitraumSpinner.valueProperty().addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_ZEITRAUM, newValue)));
     }
-
-    private final GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
 
     private Parent createLeft() {
         HBox hb = new HBox();
@@ -370,6 +375,11 @@ public class FilmActionPanel {
         themaBox.getItems().addAll("");
         themaBox.getSelectionModel().select(0);
         themaBox.setPrefWidth(200);
+
+        themaBox.setEditable(true);
+        themaSuggestionProvider = SuggestionProvider.create(themaBox.getItems());
+        TextFields.bindAutoCompletion(themaBox.getEditor(), themaSuggestionProvider);
+
         hb.getChildren().add(themaBox);
         hb.setAlignment(Pos.CENTER_LEFT);
         vBox.getChildren().add(hb);
@@ -407,6 +417,9 @@ public class FilmActionPanel {
         final List<String> lst = daten.getListeFilmeNachBlackList().getThemen(sender);
         themaBox.getItems().addAll(lst);
         lst.clear();
+
+        themaSuggestionProvider.clearSuggestions();
+        themaSuggestionProvider.addPossibleSuggestions(themaBox.getItems());
     }
 
     private Node createFilmLengthSlider() {
