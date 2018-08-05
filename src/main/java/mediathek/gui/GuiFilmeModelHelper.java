@@ -33,6 +33,14 @@ public class GuiFilmeModelHelper {
         return filterThema;
     }
 
+    private String getFilterSender() {
+        String filterSender = fap.senderBox.getSelectionModel().getSelectedItem();
+        if (filterSender == null)
+            filterSender = "";
+
+        return filterSender;
+    }
+
     private String[] evaluateThemaTitel() {
         String[] arrThemaTitel;
 
@@ -52,8 +60,8 @@ public class GuiFilmeModelHelper {
     private boolean noFiltersAreSet() {
         boolean ret = false;
 
-        if (fap.senderBox.getSelectionModel().getSelectedItem().isEmpty()
-                && fap.themaBox.getSelectionModel().getSelectedItem().isEmpty()
+        if (getFilterSender().isEmpty()
+                && getFilterThema().isEmpty()
                 && fap.roSearchStringProperty.getValueSafe().isEmpty()
                 && ((int) fap.filmLengthSlider.getLowValue() == 0)
                 && ((int) fap.filmLengthSlider.getHighValue() == FilmActionPanel.UNLIMITED_VALUE)
