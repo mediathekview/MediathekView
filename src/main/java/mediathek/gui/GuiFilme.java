@@ -163,7 +163,10 @@ public class GuiFilme extends PanelVorlage {
         final int minLength = (int) fap.filmLengthSlider.getLowValue();
         final int maxLength = (int) fap.filmLengthSlider.getHighValue();
 
-        final String filterSender = fap.senderBox.getSelectionModel().getSelectedItem();
+        String filterSender = fap.senderBox.getSelectionModel().getSelectedItem();
+        if (filterSender == null)
+            filterSender = "";
+
         String filterThema = fap.themaBox.getSelectionModel().getSelectedItem();
         if (filterThema == null) {
             filterThema = "";
@@ -1368,13 +1371,12 @@ public class GuiFilme extends PanelVorlage {
             });
             fap.senderBox.setOnAction(evt -> SwingUtilities.invokeLater(this::reloadTable));
 
-            //FIXME split correctly and fix javafx violation
             PauseTransition trans = new PauseTransition(Duration.millis(250));
+            trans.setOnFinished(evt -> SwingUtilities.invokeLater(() -> {
+                daten.getListeBlacklist().filterListe();
+                loadTable();
+            }));
             fap.zeitraumProperty.addListener((observable, oldValue, newValue) -> {
-                trans.setOnFinished(evt -> SwingUtilities.invokeLater(() -> {
-                    daten.getListeBlacklist().filterListe();
-                    loadTable();
-                }));
                 trans.playFromStart();
             });
 
