@@ -93,8 +93,8 @@ public class GuiFilmeModelHelper {
         final long minLength = (long) fap.filmLengthSlider.getLowValue();
         final long maxLength = (long) fap.filmLengthSlider.getHighValue();
 
-        final String filterSender = fap.senderBox.getSelectionModel().getSelectedItem();
-        String filterThema = getFilterThema();
+        final String filterSender = getFilterSender();
+        final String filterThema = getFilterThema();
 
         // ThemaTitel
         String[] arrThemaTitel = evaluateThemaTitel();
