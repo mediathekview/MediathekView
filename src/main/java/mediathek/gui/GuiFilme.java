@@ -112,7 +112,11 @@ public class GuiFilme extends PanelVorlage {
             if (selectedItem != null) {
                 fap.senderBox.getItems().clear();
                 fap.senderBox.getItems().addAll(daten.getListeFilmeNachBlackList().getSenders());
-                fap.senderBox.getSelectionModel().select(selectedItem);
+                if (fap.senderBox.getItems().contains(selectedItem))
+                    fap.senderBox.getSelectionModel().select(selectedItem);
+                else
+                    fap.senderBox.getSelectionModel().select("");
+
                 SwingUtilities.invokeLater(this::reloadTable);
             }
         });
