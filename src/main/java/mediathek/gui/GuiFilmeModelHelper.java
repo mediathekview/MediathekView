@@ -16,11 +16,16 @@ public class GuiFilmeModelHelper {
     private final FilmActionPanel fap;
     private final Daten daten;
     private final MVTable tabelle;
+    private final TModel tModel;
+    private final ListeFilme listeFilme;
 
     public GuiFilmeModelHelper(FilmActionPanel fap, Daten daten, MVTable tabelle) {
         this.fap = fap;
         this.daten = daten;
         this.tabelle = tabelle;
+
+        tModel = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
+        listeFilme = daten.getListeFilmeNachBlackList();
 
     }
 
@@ -79,7 +84,7 @@ public class GuiFilmeModelHelper {
         return ret;
     }
 
-    private void performTableFiltering(ListeFilme listeFilme, TModel tModel) {
+    private void performTableFiltering() {
         final boolean nurNeue = fap.showNewOnly.getValue();
         final boolean nurUt = fap.showSubtitlesOnly.getValue();
         final boolean showOnlyHd = fap.showOnlyHd.getValue();
@@ -164,18 +169,18 @@ public class GuiFilmeModelHelper {
             String[] arrIrgendwo = {};
             String[] arrTitel = {};
             if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, 0, true, film, false)) {
-                addObjectDataTabFilme(tModel, film);
+                addObjectDataTabFilme(film);
             }
         }
     }
 
-    private void fillTableModel(TModel tModel, ListeFilme listeFilme) {
+    private void fillTableModel() {
         // dann ein neues Model anlegen
         if (noFiltersAreSet()) {
             // dann ganze Liste laden
-            addObjectDataTabFilme(listeFilme, tModel);
+            addObjectDataTabFilme();
         } else {
-            performTableFiltering(listeFilme, tModel);
+            performTableFiltering();
         }
         tabelle.setModel(tModel);
     }
@@ -188,24 +193,22 @@ public class GuiFilmeModelHelper {
     }
 
     public void prepareTableModel() {
-        ListeFilme listeFilme = daten.getListeFilmeNachBlackList();
-
-        TModel tModel = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
         if (!listeFilme.isEmpty())
-            fillTableModel(tModel, listeFilme);
+            fillTableModel();
 
+        //use empty model
         tabelle.setModel(tModel);
     }
 
-    private void addObjectDataTabFilme(ListeFilme listefilme, TModel tModel) {
-        if (!listefilme.isEmpty()) {
-            for (DatenFilm film : listefilme) {
-                addObjectDataTabFilme(tModel, film);
+    private void addObjectDataTabFilme() {
+        if (!listeFilme.isEmpty()) {
+            for (DatenFilm film : listeFilme) {
+                addObjectDataTabFilme(film);
             }
         }
     }
 
-    private void addObjectDataTabFilme(TModel tModel, DatenFilm film) {
+    private void addObjectDataTabFilme(DatenFilm film) {
         Object[] object = new Object[DatenFilm.MAX_ELEM];
         for (int m = 0; m < DatenFilm.MAX_ELEM; ++m) {
             switch (m) {
@@ -232,6 +235,7 @@ public class GuiFilmeModelHelper {
                     break;
             }
         }
+
         tModel.addRow(object);
     }
 }
