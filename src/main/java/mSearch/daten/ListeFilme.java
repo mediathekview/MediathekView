@@ -19,6 +19,7 @@
  */
 package mSearch.daten;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mSearch.Const;
@@ -307,11 +308,12 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         return this.stream().filter(DatenFilm::isNew).count();
     }
 
-    public void fillSenderList() {
-        //FIXME we have JavaFX thread violation here
-        senderList.clear();
-        // der erste Sender ist ""
-        senderList.add("");
-        senderList.addAll(stream().map(DatenFilm::getSender).distinct().collect(Collectors.toList()));
+    public synchronized void fillSenderList() {
+        Platform.runLater(() -> {
+            senderList.clear();
+            // der erste Sender ist ""
+            senderList.add("");
+            senderList.addAll(stream().map(DatenFilm::getSender).distinct().collect(Collectors.toList()));
+        });
     }
 }

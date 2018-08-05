@@ -143,20 +143,16 @@ public class FilmActionPanel {
         hb.setSpacing(4.0);
         hb.setAlignment(Pos.CENTER_LEFT);
 
-        ObservableList<Node> list = hb.getChildren();
-        list.add(createDownloadButton());
-        list.add(new VerticalSeparator());
-
-        list.add(createFilmInformationButton());
-        list.add(new VerticalSeparator());
-
-        list.add(createPlayButton());
-        list.add(createRecordButton());
-        list.add(new VerticalSeparator());
-
         btnBlacklist = new BlacklistButton(daten);
-        list.add(btnBlacklist);
-        list.add(createEditBlacklistButton());
+        hb.getChildren().addAll(createDownloadButton(),
+                new VerticalSeparator(),
+                createFilmInformationButton(),
+                new VerticalSeparator(),
+                createPlayButton(),
+                createRecordButton(),
+                new VerticalSeparator(),
+                btnBlacklist,
+                createEditBlacklistButton());
 
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
@@ -281,11 +277,10 @@ public class FilmActionPanel {
         btnNewFilter = new Button("", fontAwesome.create(FontAwesome.Glyph.FILTER));
         btnNewFilter.setTooltip(new Tooltip("Filtereinstellungen anzeigen"));
         btnNewFilter.setOnAction(e -> filterPopover.show(btnNewFilter));
-        ObservableList<Node> list = hb.getChildren();
 
-        list.add(btnNewFilter);
-        list.add(new VerticalSeparator());
-        list.add(jfxSearchField);
+        hb.getChildren().addAll(btnNewFilter,
+                new VerticalSeparator(),
+                jfxSearchField);
 
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
@@ -311,66 +306,92 @@ public class FilmActionPanel {
 
     }
 
-    private TitledPane createCommonViewSettingsPane() {
-        VBox vBox = new VBox();
-        vBox.setSpacing(4.0);
-
+    private VBox createCommonViewSettingsPane() {
         CheckBox cbShowOnlyHd = new CheckBox("Nur HD-Filme anzeigen");
         showOnlyHd = cbShowOnlyHd.selectedProperty();
-        vBox.getChildren().add(cbShowOnlyHd);
 
         CheckBox cbShowSubtitlesOnly = new CheckBox("Nur Filme mit Untertitel anzeigen");
         showSubtitlesOnly = cbShowSubtitlesOnly.selectedProperty();
-        vBox.getChildren().add(cbShowSubtitlesOnly);
 
         CheckBox cbShowNewOnly = new CheckBox("Nur neue Filme anzeigen");
         showNewOnly = cbShowNewOnly.selectedProperty();
-        vBox.getChildren().add(cbShowNewOnly);
 
         CheckBox cbShowOnlyLivestreams = new CheckBox("Nur Live Streams anzeigen");
         showLivestreamsOnly = cbShowOnlyLivestreams.selectedProperty();
-        vBox.getChildren().add(cbShowOnlyLivestreams);
-
-        Separator sep = new Separator();
-        vBox.getChildren().add(sep);
 
         CheckBox cbShowUnseenOnly = new CheckBox("Gesehene Filme nicht anzeigen");
         showUnseenOnly = cbShowUnseenOnly.selectedProperty();
-        vBox.getChildren().add(cbShowUnseenOnly);
 
         CheckBox cbDontShowAbos = new CheckBox("Abos nicht anzeigen");
         dontShowAbos = cbDontShowAbos.selectedProperty();
-        vBox.getChildren().add(cbDontShowAbos);
 
         CheckBox cbDontShowGebaerdensprache = new CheckBox("Gebärdensprache nicht anzeigen");
         dontShowSignLanguage = cbDontShowGebaerdensprache.selectedProperty();
-        vBox.getChildren().add(cbDontShowGebaerdensprache);
 
         CheckBox cbDontShowTrailers = new CheckBox("Trailer/Teaser/Vorschau nicht anzeigen");
         dontShowTrailers = cbDontShowTrailers.selectedProperty();
-        vBox.getChildren().add(cbDontShowTrailers);
 
         CheckBox cbDontShowAudioVersions = new CheckBox("Hörfassungen ausblenden");
         dontShowAudioVersions = cbDontShowAudioVersions.selectedProperty();
-        vBox.getChildren().add(cbDontShowAudioVersions);
 
-        sep = new Separator();
-        vBox.getChildren().add(sep);
+        VBox vBox = new VBox();
+        vBox.setSpacing(4.0);
+        vBox.getChildren().addAll(cbShowOnlyHd,
+                cbShowSubtitlesOnly,
+                cbShowNewOnly,
+                cbShowOnlyLivestreams,
+                new Separator(),
+                cbShowUnseenOnly,
+                cbDontShowAbos,
+                cbDontShowGebaerdensprache,
+                cbDontShowTrailers,
+                cbDontShowAudioVersions,
+                new Separator(),
+                createSenderBox(),
+                createThemaBox(),
+                new Separator(),
+                createFilmLengthSlider(),
+                new Separator(),
+                createZeitraumPane());
 
+        // whenever the senderbox selected value changes, reload the thema from filtered list.
+        senderBox.valueProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    if (newValue != null)
+                        reloadThemaBox(newValue);
+                }
+        );
+
+        return vBox;
+    }
+
+    private void reloadThemaBox(String newValue) {
+        //save current selection
+        String selectedItem = themaBox.getSelectionModel().getSelectedItem();
+        if (selectedItem == null)
+            selectedItem = "";
+
+        //update thema content
+        updateThemaBox(newValue);
+        //restore selection
+        restoreThemaBoxSelection(selectedItem);
+    }
+
+    private Node createSenderBox() {
         FlowPane root = new FlowPane();
         root.setHgap(4);
-        root.getChildren().add(new Label("Sender:"));
         senderBox = new ComboBox<>();
         senderBox.getItems().addAll("");
         senderBox.getSelectionModel().select(0);
-        root.getChildren().add(senderBox);
-
+        root.getChildren().addAll(new Label("Sender:"), senderBox);
         root.setAlignment(Pos.CENTER_LEFT);
-        vBox.getChildren().add(root);
 
+        return root;
+    }
+
+    private Node createThemaBox() {
         FlowPane hb = new FlowPane();
         hb.setHgap(4);
-        hb.getChildren().add(new Label("Thema:"));
         themaBox = new ComboBox<>();
         themaBox.getItems().addAll("");
         themaBox.getSelectionModel().select(0);
@@ -380,28 +401,10 @@ public class FilmActionPanel {
         themaSuggestionProvider = SuggestionProvider.create(themaBox.getItems());
         TextFields.bindAutoCompletion(themaBox.getEditor(), themaSuggestionProvider);
 
-        hb.getChildren().add(themaBox);
+        hb.getChildren().addAll(new Label("Thema:"), themaBox);
         hb.setAlignment(Pos.CENTER_LEFT);
-        vBox.getChildren().add(hb);
 
-        // whenever the senderbox selected value changes, reload the thema from filtered list.
-        senderBox.valueProperty().addListener(
-                (observable, oldValue, newValue) -> {
-                    if (newValue != null) {
-                        //save current selection
-                        String selectedItem = themaBox.getSelectionModel().getSelectedItem();
-                        if (selectedItem == null)
-                            selectedItem = "";
-
-                        //update thema content
-                        updateThemaBox(newValue);
-                        //restore selection
-                        restoreThemaBoxSelection(selectedItem);
-                    }
-                }
-        );
-
-        return new TitledPane("Allgemeine Anzeigeeinstellungen", vBox);
+        return hb;
     }
 
     private void restoreThemaBoxSelection(String selectedItem) {
@@ -492,21 +495,9 @@ public class FilmActionPanel {
         return root;
     }
 
-    private Accordion createAccordion() {
-        TitledPane t1 = createCommonViewSettingsPane();
-        TitledPane t2 = new TitledPane("Filmlänge", createFilmLengthSlider());
-        TitledPane t3 = new TitledPane("Zeitraum", createZeitraumPane());
-
-
-        Accordion accordion = new Accordion();
-        accordion.getPanes().addAll(t1, t2, t3);
-        accordion.setExpandedPane(t1);
-        return accordion;
-    }
-
     private PopOver createFilterPopover() {
         PopOver popover = new PopOver();
-        popover.setTitle("Erweiterte Filtereinstellungen");
+        popover.setTitle("Filter");
         popover.setAnimated(true);
         popover.setCloseButtonEnabled(true);
         popover.setAutoFix(true);
@@ -517,7 +508,7 @@ public class FilmActionPanel {
         VBox vb = new VBox();
         vb.setSpacing(4.0);
         vb.setPadding(new Insets(5, 5, 5, 5));
-        vb.getChildren().add(createAccordion());
+        vb.getChildren().add(createCommonViewSettingsPane());
         popover.setContentNode(vb);
 
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
