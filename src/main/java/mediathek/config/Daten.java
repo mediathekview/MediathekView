@@ -20,12 +20,12 @@
 package mediathek.config;
 
 import com.jidesoft.utils.SystemInfo;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import mSearch.daten.ListeFilme;
-import mSearch.filmlisten.WriteFilmlistJson;
+import mSearch.filmlisten.writer.FilmListWriter;
 import mSearch.tool.Listener;
-import mSearch.tool.Log;
 import mSearch.tool.ReplaceList;
-import mSearch.tool.SysMsg;
 import mediathek.MediathekGui;
 import mediathek.controller.IoXmlLesen;
 import mediathek.controller.IoXmlSchreiben;
@@ -33,12 +33,23 @@ import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.filmlisten.FilmeLaden;
-import mediathek.gui.*;
+import mediathek.gui.GuiAbo;
+import mediathek.gui.GuiDownloads;
+import mediathek.gui.GuiFilme;
+import mediathek.gui.GuiMeldungen;
 import mediathek.gui.dialog.DialogMediaDB;
-import mediathek.gui.filmInformation.IFilmInformation;
+import mediathek.gui.filmInformation.InfoDialog;
+import mediathek.gui.messages.BaseEvent;
+import mediathek.gui.messages.TimerEvent;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVMessageDialog;
+import net.engio.mbassy.bus.MBassador;
+import net.engio.mbassy.bus.config.BusConfiguration;
+import net.engio.mbassy.bus.config.Feature;
+import net.engio.mbassy.bus.config.IBusConfiguration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.io.File;
@@ -53,6 +64,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class Daten
 {
@@ -61,7 +76,6 @@ public class Daten
 
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     // flags
-    private static boolean debug = false; // Debugmodus
     private static boolean startMaximized = false; // Fenster maximieren
     private static boolean auto = false; // Version: MediathekAuto
     private static boolean reset = false; // Programm auf Starteinstellungen zurücksetzen
@@ -81,6 +95,12 @@ public class Daten
     private ListeAbo listeAbo = null;
     private DownloadInfos downloadInfos = null;
 
+    private final ObservableList<LiveStreamItem> liveStreamList = FXCollections.observableArrayList();
+
+    public ObservableList<LiveStreamItem> getLivestreamList() {
+        return liveStreamList;
+    }
+
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis;
     public static ListePset listePset = null;
@@ -90,22 +110,16 @@ public class Daten
     public StarterClass starterClass = null; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
 
     // Gui
-    private MediathekGui mediathekGui; // JFrame der Gui
+    private final MediathekGui mediathekGui; // JFrame der Gui
     public static GuiFilme guiFilme = null; // Tab mit den Filmen
     public static GuiDownloads guiDownloads = null; // Tab mit den Downloads
     public static GuiAbo guiAbo = null; // Tab mit den Abos
-    public static GuiDebug guiDebug = null;
     public static GuiMeldungen guiMeldungen = null;
 
-    public static IFilmInformation filmInfo = null; // Infos zum Film
+    public static InfoDialog filmInfo = null; // Infos zum Film
     private DialogMediaDB dialogMediaDB;
 
     private boolean alreadyMadeBackup = false;
-
-    public static void setDebug(final boolean aIsDebug)
-    {
-        debug = aIsDebug;
-    }
 
     public static void setStartMaximized(final boolean aIsStartMaximized)
     {
@@ -120,11 +134,6 @@ public class Daten
     public static void setReset(final boolean aIsReset)
     {
         reset = aIsReset;
-    }
-
-    public static boolean isDebug()
-    {
-        return debug;
     }
 
     public static boolean isStartMaximized()
@@ -142,24 +151,30 @@ public class Daten
         return reset;
     }
 
-    public static final Daten getInstance(String aBasisverzeichnis)
+    private MBassador<BaseEvent> messageBus;
+
+    public MBassador<BaseEvent> getMessageBus() {
+        return messageBus;
+    }
+
+    public static Daten getInstance(String aBasisverzeichnis)
     {
         basisverzeichnis = aBasisverzeichnis;
         return getInstance();
     }
 
-    public static final Daten getInstance(String aBasisverzeichnis, MediathekGui aMediathekGui1)
+    public static Daten getInstance(String aBasisverzeichnis, MediathekGui aMediathekGui1)
     {
         basisverzeichnis = aBasisverzeichnis;
         return getInstance(aMediathekGui1);
     }
 
-    private static final Daten getInstance(MediathekGui aMediathekGui)
+    private static Daten getInstance(MediathekGui aMediathekGui)
     {
         return instance == null ? instance = new Daten(aMediathekGui) : instance;
     }
 
-    public static final Daten getInstance()
+    public static Daten getInstance()
     {
         return instance == null ? instance =  new Daten() : instance;
     }
@@ -177,8 +192,24 @@ public class Daten
         start();
     }
 
+    private static final Logger logger = LogManager.getLogger(Daten.class);
+
+    /**
+     * Set up message bus to log errors to our default logger
+     */
+    private void setupMessageBus() {
+        messageBus = new MBassador<>(new BusConfiguration()
+                .addFeature(Feature.SyncPubSub.Default())
+                .addFeature(Feature.AsynchronousHandlerInvocation.Default())
+                .addFeature(Feature.AsynchronousMessageDispatch.Default())
+                .addPublicationErrorHandler(error -> logger.error(error.getMessage(), error.getCause()))
+                .setProperty(IBusConfiguration.Properties.BusId, "global bus"));
+    }
+
     private void start()
     {
+        setupMessageBus();
+
         listeFilme = new ListeFilme();
         filmeLaden = new FilmeLaden(this);
         listeFilmeHistory = new ListeFilme();
@@ -212,15 +243,10 @@ public class Daten
         Timer timer = new Timer(1000, e ->
         {
             downloadInfos.makeDownloadInfos();
-            Listener.notify(Listener.EREIGNIS_TIMER, Daten.class.getName());
+            messageBus.publishAsync(new TimerEvent());
         });
         timer.setInitialDelay(4000); // damit auch alles geladen ist
         timer.start();
-    }
-
-    public static String getUserAgent()
-    {
-        return MVConfig.get(MVConfig.Configs.SYSTEM_PARAMETER_USERAGENT);
     }
 
     /**
@@ -251,7 +277,7 @@ public class Daten
      * @return Path to the settings directory
      * @throws IllegalStateException Will be thrown if settings directory don't exist and if there is an error on creating it.
      */
-    public static Path getSettingsDirectory() throws IllegalStateException
+    private static Path getSettingsDirectory() throws IllegalStateException
     {
         final Path baseDirectoryPath;
         if (basisverzeichnis == null || basisverzeichnis.isEmpty())
@@ -299,7 +325,7 @@ public class Daten
      *
      * @param xmlFilePath Path to file.
      */
-    public static void getMediathekXmlCopyFilePath(ArrayList<Path> xmlFilePath)
+    private static void getMediathekXmlCopyFilePath(ArrayList<Path> xmlFilePath)
     {
         for (int i = 1; i <= MAX_COPY; ++i)
         {
@@ -311,9 +337,35 @@ public class Daten
         }
     }
 
+    public Optional<CompletableFuture<Void>> getFilmListWriterFuture() {
+        return writeFuture;
+    }
+
+    private Optional<CompletableFuture<Void>> writeFuture = Optional.empty();
+
     public void filmlisteSpeichern()
     {
-        new WriteFilmlistJson().filmlisteSchreibenJson(getDateiFilmliste(), listeFilme);
+        writeFuture.ifPresent(future -> {
+            if (!future.isDone()) {
+                try {
+                    future.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    logger.error(e);
+                } finally {
+                    writeFuture = Optional.empty();
+                }
+            }
+        });
+
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+            //sleep for 10 seconds to give database a chance to write out changes
+            try {
+                TimeUnit.SECONDS.sleep(10);
+            } catch (InterruptedException ignored) {
+            }
+            new FilmListWriter().writeFilmList(getDateiFilmliste(), listeFilme);
+        });
+        writeFuture = Optional.of(future);
     }
 
     /**
@@ -335,12 +387,12 @@ public class Daten
 
         if (!load())
         {
-            SysMsg.sysMsg("Weder Konfig noch Backup konnte geladen werden!");
+            logger.info("Weder Konfig noch Backup konnte geladen werden!");
             // teils geladene Reste entfernen
             clearKonfig();
             return false;
         }
-        SysMsg.sysMsg("Konfig wurde gelesen!");
+        logger.info("Konfig wurde gelesen!");
         mVColor.load(); // Farben einrichten
         MVFont.initFont(); // Fonts einrichten
 
@@ -365,18 +417,19 @@ public class Daten
 
         if (Files.exists(xmlFilePath))
         {
-            if (IoXmlLesen.datenLesen(xmlFilePath))
+            final IoXmlLesen configReader = new IoXmlLesen();
+            if (configReader.datenLesen(xmlFilePath))
             {
                 return true;
             } else
             {
                 // dann hat das Laden nicht geklappt
-                SysMsg.sysMsg("Konfig konnte nicht gelesen werden!");
+                logger.info("Konfig konnte nicht gelesen werden!");
             }
         } else
         {
             // dann hat das Laden nicht geklappt
-            SysMsg.sysMsg("Konfig existiert nicht!");
+            logger.info("Konfig existiert nicht!");
         }
 
         // versuchen das Backup zu laden
@@ -394,12 +447,12 @@ public class Daten
         Daten.getMediathekXmlCopyFilePath(path);
         if (path.isEmpty())
         {
-            SysMsg.sysMsg("Es gibt kein Backup");
+            logger.info("Es gibt kein Backup");
             return false;
         }
 
         // dann gibts ein Backup
-        SysMsg.sysMsg("Es gibt ein Backup");
+        logger.info("Es gibt ein Backup");
         mediathekGui.closeSplashScreen();
         int r = JOptionPane.showConfirmDialog(null, "Die Einstellungen sind beschädigt\n"
                 + "und können nicht geladen werden.\n"
@@ -410,7 +463,7 @@ public class Daten
 
         if (r != JOptionPane.OK_OPTION)
         {
-            SysMsg.sysMsg("User will kein Backup laden.");
+            logger.info("User will kein Backup laden.");
             return false;
         }
 
@@ -418,10 +471,11 @@ public class Daten
         {
             // teils geladene Reste entfernen
             clearKonfig();
-            SysMsg.sysMsg(new String[]{"Versuch Backup zu laden:", p.toString()});
-            if (IoXmlLesen.datenLesen(p))
+            logger.info("Versuch Backup zu laden: {}", p.toString());
+            final IoXmlLesen configReader = new IoXmlLesen();
+            if (configReader.datenLesen(p))
             {
-                SysMsg.sysMsg(new String[]{"Backup hat geklappt:", p.toString()});
+                logger.info("Backup hat geklappt: {}", p.toString());
                 ret = true;
                 break;
             }
@@ -433,7 +487,10 @@ public class Daten
     public void allesSpeichern()
     {
         konfigCopy();
-        IoXmlSchreiben.datenSchreiben();
+
+        final IoXmlSchreiben configWriter = new IoXmlSchreiben();
+        configWriter.writeConfigurationFile(getMediathekXmlFilePath());
+
         if (Daten.isReset())
         {
             // das Programm soll beim nächsten Start mit den Standardeinstellungen gestartet werden
@@ -453,7 +510,7 @@ public class Daten
                 Files.deleteIfExists(path1);
             } catch (IOException e)
             {
-                SysMsg.sysMsg("Die Einstellungen konnten nicht zurückgesetzt werden.");
+                logger.error("Die Einstellungen konnten nicht zurückgesetzt werden.", e);
                 if (mediathekGui != null)
                 {
                     MVMessageDialog.showMessageDialog(mediathekGui, "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
@@ -462,7 +519,6 @@ public class Daten
                             + "von Hand löschen und dann das Programm wieder starten.\n\n"
                             + "Im Forum finden Sie weitere Hilfe.", "Fehler", JOptionPane.ERROR_MESSAGE);
                 }
-                Log.errorLog(465690123, e);
             }
         }
     }
@@ -480,8 +536,8 @@ public class Daten
         if (!alreadyMadeBackup)
         {
             // nur einmal pro Programmstart machen
-            SysMsg.sysMsg("-------------------------------------------------------");
-            SysMsg.sysMsg("Einstellungen sichern");
+            logger.info("-------------------------------------------------------");
+            logger.info("Einstellungen sichern");
 
             try
             {
@@ -512,19 +568,18 @@ public class Daten
                     {
                         Files.move(xmlFilePath, Daten.getSettingsDirectory().resolve(Konstanten.CONFIG_FILE_COPY + 1), StandardCopyOption.REPLACE_EXISTING);
                     }
-                    SysMsg.sysMsg("Einstellungen wurden gesichert");
+                    logger.info("Einstellungen wurden gesichert");
                 } else
                 {
-                    SysMsg.sysMsg("Einstellungen wurden heute schon gesichert");
+                    logger.info("Einstellungen wurden heute schon gesichert");
                 }
             } catch (IOException e)
             {
-                SysMsg.sysMsg("Die Einstellungen konnten nicht komplett gesichert werden!");
-                Log.errorLog(795623147, e);
+                logger.error("Die Einstellungen konnten nicht komplett gesichert werden!", e);
             }
 
             alreadyMadeBackup = true;
-            SysMsg.sysMsg("-------------------------------------------------------");
+            logger.info("-------------------------------------------------------");
         }
     }
 
@@ -533,7 +588,7 @@ public class Daten
      *
      * @return Number of milliseconds from today´s midnight.
      */
-    public static long getHeute_0Uhr()
+    private static long getHeute_0Uhr()
     {
         final Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -602,11 +657,6 @@ public class Daten
     public MediathekGui getMediathekGui()
     {
         return mediathekGui;
-    }
-
-    public void setListeFilme(final ListeFilme listeFilme)
-    {
-        this.listeFilme = listeFilme;
     }
 
     public void setDialogMediaDB(final DialogMediaDB aDialogMediaDB)

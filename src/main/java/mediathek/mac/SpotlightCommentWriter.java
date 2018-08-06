@@ -1,17 +1,14 @@
 package mediathek.mac;
 
-import mSearch.daten.DatenFilm;
 import mSearch.tool.Log;
+import mSearch.tool.javafx.FXErrorDialog;
 import mediathek.config.Daten;
 import mediathek.daten.DatenDownload;
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
+import org.apache.commons.lang3.StringUtils;
 
-import javax.swing.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.logging.Level;
 
 /**
  * Writes spotlight comments to the downloaded file on OS X.
@@ -45,7 +42,7 @@ public class SpotlightCommentWriter {
         final Path filmPath = Paths.get(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         if (Files.exists(filmPath)) {
             final String strFilePath = filmPath.toString();
-            String strComment = datenDownload.film.arr[DatenFilm.FILM_BESCHREIBUNG];
+            String strComment = datenDownload.film.getDescription();
             if (strComment != null) {
                 //no need to write spotlight data when there is no description...
                 if (strComment.isEmpty()) {
@@ -53,7 +50,7 @@ public class SpotlightCommentWriter {
                 }
 
                 //replace quotation marks...
-                strComment = strComment.replace("\"", "\\\"");
+                strComment = StringUtils.replace(strComment, "\"", "\\\"");
 
                 final String script = "tell application \"Finder\"\n"
                         + "set my_file to POSIX file \"" + strFilePath + "\" as alias\n"
@@ -65,18 +62,11 @@ public class SpotlightCommentWriter {
                     builder.start();
                 } catch (Exception ex) {
                     if (daten.getMediathekGui() != null) {
-                        SwingUtilities.invokeLater(() -> {
-                            final ErrorInfo info = new ErrorInfo(null,
-                                    "<html>Es trat ein Fehler beim Schreiben des Spotlight-Kommentars auf.<br>" +
-                                            "Sollte dieser häufiger auftreten kontaktieren Sie bitte " +
-                                            "das Entwicklerteam.</html>",
-                                    null,
-                                    null,
-                                    ex,
-                                    Level.SEVERE,
-                                    null);
-                            JXErrorPane.showDialog(daten.getMediathekGui(), info);
-                        });
+                        FXErrorDialog.showErrorDialog("Fehler",
+                                "Fehler beim Schreiben des Spotlight-Kommentars",
+                                "Es trat ein Fehler beim Schreiben des Spotlight-Kommentars auf.\n" +
+                                        "Sollte dieser häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
+                                ex);
                     }
                     Log.errorLog(915263987, "Fehler beim Spotlight schreiben" + filmPath.toString());
                     //AppleScript may not be available if user does not use the official MacApp.

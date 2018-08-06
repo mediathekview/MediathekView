@@ -21,14 +21,16 @@ package mediathek.gui.dialog;
 
 import mSearch.tool.FilenameUtils;
 import mSearch.tool.Listener;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenMediaDB;
 import mediathek.file.GetFile;
 import mediathek.tool.*;
+import mediathek.tool.table.MVMediaDbTable;
+import mediathek.tool.table.MVTable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -80,7 +82,7 @@ public class DialogMediaDB extends JDialog {
             }
         });
 
-        tabelleFilme = new MVTable(MVTable.TableType.MEDIA_DB);
+        tabelleFilme = new MVMediaDbTable();
         jScrollPane3.setViewportView(tabelleFilme);
 
         TModelMediaDB modelFilm = new TModelMediaDB(new Object[][]{}, DatenMediaDB.COLUMN_NAMES);
@@ -89,7 +91,7 @@ public class DialogMediaDB extends JDialog {
         tabelleFilme.setModel(modelFilm);
         tabelleFilme.addMouseListener(new BeobMausTabelle());
         tabelleFilme.getSelectionModel().addListSelectionListener(new BeobTableSelect());
-        tabelleFilme.setAutoResizeMode(MVTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+        tabelleFilme.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         tabelleFilme.initTabelle();
 
         progress.setVisible(false);
@@ -107,12 +109,9 @@ public class DialogMediaDB extends JDialog {
         jButtonHelp.addActionListener(e -> new DialogHilfe(parent, true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_DIALOG_MEDIA_DB)).setVisible(true));
         jButtonSearch.addActionListener(e -> searchFilmInDb());
         jButtonBeenden.addActionListener(e -> beenden());
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                beenden();
-            }
-        };
+
+        EscapeKeyHandler.installHandler(this, this::beenden);
+
         GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, this, parent);
     }
 
@@ -124,11 +123,6 @@ public class DialogMediaDB extends JDialog {
         if (vis && daten.getListeMediaPath().isEmpty()) {
             JOptionPane.showMessageDialog(parent, "Erst in den Einstellungen eine Mediensammlung einrichten.", "Mediensammlung leer!", JOptionPane.ERROR_MESSAGE);
         }
-//        if (!init) {
-//            // beim ersten anzeigen den Index bauen
-//            Daten.mVMediaDB.makeIndex();
-//            init = true;
-//        }
     }
 
     public final void setVis() {
@@ -221,15 +215,17 @@ public class DialogMediaDB extends JDialog {
             }
 
             // und jetzt die Datei löschen
-            SysMsg.sysMsg(new String[]{"Datei löschen: ", delFile.getAbsolutePath()});
+            logger.info(new String[]{"Datei löschen: ", delFile.getAbsolutePath()});
             if (!delFile.delete()) {
                 throw new Exception();
             }
         } catch (Exception ex) {
             MVMessageDialog.showMessageDialog(parent, "Konnte die Datei nicht löschen!", "Film löschen", JOptionPane.ERROR_MESSAGE);
-            Log.errorLog(984512036, "Fehler beim löschen: " + del);
+            logger.error("Fehler beim löschen: " + del);
         }
     }
+
+    private static final Logger logger = LogManager.getLogger(DialogMediaDB.class);
 
     private void beenden() {
         MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, Boolean.FALSE.toString());

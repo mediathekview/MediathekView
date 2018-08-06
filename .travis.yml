@@ -36,9 +36,6 @@ script:
   - ./gradlew check build
 after_success:
   - sonar-scanner
-  - gzip build/distributions/MediathekView-*.tar;
-  - rm build/distributions/MediathekView-*.tar.SHA-1;
-  - cd build/distributions;for i in `ls -x -1 |grep *.tar.gz`; do sha1sum $i|cut -d' ' -f1 > $i.SHA-1; done; cd ../../;
 
 #Cache
 before_cache:

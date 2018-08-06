@@ -21,14 +21,15 @@ package mediathek.tool;
 
 import mSearch.daten.DatenFilm;
 import mSearch.tool.FilenameUtils;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.gui.dialog.DialogZiel;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.io.*;
@@ -38,9 +39,10 @@ import java.nio.file.Paths;
 
 public class MVInfoFile {
 
-    public static void writeInfoFile(JFrame paFrame, Daten daten, DatenFilm film) {
-        String titel = film.arr[DatenFilm.FILM_TITEL];
-        titel = FilenameUtils.replaceLeerDateiname(titel, false /*pfad*/,
+    private static final Logger logger = LogManager.getLogger(MVInfoFile.class);
+
+    public void writeInfoFile(JFrame paFrame, DatenFilm film) {
+        String titel = FilenameUtils.replaceLeerDateiname(film.getTitle(), false,
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
         String pfad = "";
@@ -53,7 +55,7 @@ public class MVInfoFile {
             pfad = GuiFunktionen.getStandardDownloadPath();
         }
         if (titel.isEmpty()) {
-            titel = film.arr[DatenFilm.FILM_SENDER].replace(" ", "-") + ".txt";
+            titel = StringUtils.replace(film.getSender(), " ", "-") + ".txt";
         } else {
             titel = titel + ".txt";
         }
@@ -65,12 +67,17 @@ public class MVInfoFile {
         }
 
         Path path = Paths.get(dialog.ziel);
-        try (BufferedWriter br = new BufferedWriter(new OutputStreamWriter(new DataOutputStream(Files.newOutputStream(path))))) {
-            br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_SENDER] + ":      " + film.arr[DatenFilm.FILM_SENDER]);
+        path.toFile().getParentFile().mkdirs();
+
+        try (OutputStream os = Files.newOutputStream(path);
+             DataOutputStream dos = new DataOutputStream(os);
+             OutputStreamWriter osw = new OutputStreamWriter(dos);
+             BufferedWriter br = new BufferedWriter(osw)) {
+            br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_SENDER] + ":      " + film.getSender());
             br.write("\n");
             br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_THEMA] + ":       " + film.arr[DatenFilm.FILM_THEMA]);
             br.write("\n\n");
-            br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_TITEL] + ":       " + film.arr[DatenFilm.FILM_TITEL]);
+            br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_TITEL] + ":       " + film.getTitle());
             br.write("\n\n");
             br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_DATUM] + ":       " + film.arr[DatenFilm.FILM_DATUM]);
             br.write("\n");
@@ -81,21 +88,16 @@ public class MVInfoFile {
             br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_GROESSE] + ":  " + film.arr[DatenFilm.FILM_GROESSE]);
             br.write("\n\n");
 
-            br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_WEBSEITE] + '\n');
-            br.write(film.arr[DatenFilm.FILM_WEBSEITE]);
+            br.write("Website\n");
+            br.write(film.getWebsiteLink());
             br.write("\n\n");
 
             br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_URL] + '\n');
             br.write(film.arr[DatenFilm.FILM_URL]);
             br.write("\n\n");
-            if (!film.arr[DatenFilm.FILM_URL_RTMP].isEmpty()) {
-                br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_URL_RTMP] + '\n');
-                br.write(film.arr[DatenFilm.FILM_URL_RTMP]);
-                br.write("\n\n");
-            }
 
             int anz = 0;
-            for (String s : film.arr[DatenFilm.FILM_BESCHREIBUNG].split(" ")) {
+            for (String s : film.getDescription().split(" ")) {
                 anz += s.length();
                 br.write(s + ' ');
                 if (anz > 50) {
@@ -106,24 +108,26 @@ public class MVInfoFile {
             br.write("\n\n");
             br.flush();
         } catch (IOException ex) {
-            Log.errorLog(632656214, dialog.ziel);
+            logger.error("Ziel: {}", dialog.ziel, ex);
         }
     }
 
-    public static void writeInfoFile(DatenDownload datenDownload) {
-        SysMsg.sysMsg(new String[]{"Infofile schreiben nach: ", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]});
+    public void writeInfoFile(DatenDownload datenDownload) {
+        logger.info("Infofile schreiben nach: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]);
 
         new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD]).mkdirs();
         Path path = Paths.get(datenDownload.getFileNameWithoutSuffix() + ".txt");
-        try (DataOutputStream dos = new DataOutputStream(Files.newOutputStream(path));
+
+        try (OutputStream os = Files.newOutputStream(path);
+             DataOutputStream dos = new DataOutputStream(os);
              OutputStreamWriter osw = new OutputStreamWriter(dos);
              BufferedWriter br = new BufferedWriter(osw)) {
             if (datenDownload.film != null) {
-                br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_SENDER] + ":      " + datenDownload.film.arr[DatenFilm.FILM_SENDER]);
+                br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_SENDER] + ":      " + datenDownload.film.getSender());
                 br.write("\n");
                 br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_THEMA] + ":       " + datenDownload.film.arr[DatenFilm.FILM_THEMA]);
                 br.write("\n\n");
-                br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_TITEL] + ":       " + datenDownload.film.arr[DatenFilm.FILM_TITEL]);
+                br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_TITEL] + ":       " + datenDownload.film.getTitle());
                 br.write("\n\n");
                 br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_DATUM] + ":       " + datenDownload.film.arr[DatenFilm.FILM_DATUM]);
                 br.write("\n");
@@ -134,24 +138,18 @@ public class MVInfoFile {
                 br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_GROESSE] + ":  " + datenDownload.mVFilmSize);
                 br.write("\n\n");
 
-                br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_WEBSEITE] + '\n');
-                br.write(datenDownload.film.arr[DatenFilm.FILM_WEBSEITE]);
+                br.write("Website\\n");
+                br.write(datenDownload.film.getWebsiteLink());
                 br.write("\n\n");
             }
 
             br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_URL] + '\n');
             br.write(datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
             br.write("\n\n");
-            if (!datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP].isEmpty()
-                    && !datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP].equals(datenDownload.arr[DatenDownload.DOWNLOAD_URL])) {
-                br.write(DatenDownload.COLUMN_NAMES[DatenDownload.DOWNLOAD_URL_RTMP] + '\n');
-                br.write(datenDownload.arr[DatenDownload.DOWNLOAD_URL_RTMP]);
-                br.write("\n\n");
-            }
 
             if (datenDownload.film != null) {
                 int anz = 0;
-                for (String s : datenDownload.film.arr[DatenFilm.FILM_BESCHREIBUNG].split(" ")) {
+                for (String s : datenDownload.film.getDescription().split(" ")) {
                     anz += s.length();
                     br.write(s + ' ');
                     if (anz > 50) {
@@ -162,9 +160,10 @@ public class MVInfoFile {
             }
             br.write("\n\n");
             br.flush();
-            SysMsg.sysMsg(new String[]{"Infofile", "  geschrieben"});
+
+            logger.info("Infofile geschrieben");
         } catch (IOException ex) {
-            Log.errorLog(975410369, datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+            logger.error("Ziel: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         }
     }
 

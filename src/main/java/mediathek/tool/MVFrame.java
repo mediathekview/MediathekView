@@ -28,8 +28,6 @@ import mediathek.res.GetIcon;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 @SuppressWarnings("serial")
 public class MVFrame extends JFrame {
@@ -59,7 +57,7 @@ public class MVFrame extends JFrame {
         jPanelExtra.setLayout(new BorderLayout());
         jPanelExtra.add(jPanel, BorderLayout.CENTER);
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
+        /*addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent evt) {
                 daten.getMediathekGui().hideFrame(tabsState);
@@ -70,7 +68,7 @@ public class MVFrame extends JFrame {
 //                daten.getMediathekGui().hideFrame(state);
 //                dispose();
 //            }
-        });
+        });*/
         pack();
     }
 
@@ -92,7 +90,7 @@ public class MVFrame extends JFrame {
     private void initComponents() {
 
         jPanelExtra = new javax.swing.JPanel();
-        jPanelInfo = new javax.swing.JPanel();
+        javax.swing.JPanel jPanelInfo = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -138,6 +136,5 @@ public class MVFrame extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanelExtra;
-    private javax.swing.JPanel jPanelInfo;
     // End of variables declaration//GEN-END:variables
 }

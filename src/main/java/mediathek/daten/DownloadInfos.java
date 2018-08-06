@@ -19,13 +19,14 @@
  */
 package mediathek.daten;
 
-import java.text.DecimalFormat;
-import java.util.LinkedList;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.tool.MVFilmSize;
+
+import java.text.DecimalFormat;
+import java.util.LinkedList;
 
 public class DownloadInfos {
 
@@ -46,8 +47,6 @@ public class DownloadInfos {
 
     // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
     public int[] downloadStarts = new int[]{0, 0, 0, 0, 0, 0, 0};
-
-    private LinkedList<DatenDownload> aktivDownloads; // Liste gestarteter Downloads
 
     public DownloadInfos(Daten aDaten)
     {
@@ -103,7 +102,8 @@ public class DownloadInfos {
 
         downloadStarts = daten.getListeDownloads().getStarts();
 
-        aktivDownloads = daten.getListeDownloads().getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
+        // Liste gestarteter Downloads
+        LinkedList<DatenDownload> aktivDownloads = daten.getListeDownloads().getListOfStartsNotFinished(DatenDownload.QUELLE_ALLE);
         for (DatenDownload download : aktivDownloads) {
             ++daten.getDownloadInfos().anzDownloadsRun;
             daten.getDownloadInfos().byteAlleDownloads += (download.mVFilmSize.getSize() > 0 ? download.mVFilmSize.getSize() : 0);

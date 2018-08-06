@@ -5,36 +5,58 @@ import info.monitorenter.gui.chart.IAxis;
 import info.monitorenter.gui.chart.labelformatters.LabelFormatterAutoUnits;
 import info.monitorenter.gui.chart.rangepolicies.RangePolicyForcedPoint;
 import info.monitorenter.gui.chart.traces.Trace2DLtd;
+import mSearch.tool.Listener;
+import mediathek.config.Daten;
+import mediathek.config.MVConfig;
+import mediathek.controller.starter.Start;
+import mediathek.daten.DatenDownload;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.TimerTask;
-import javax.swing.*;
-import mSearch.tool.DbgMsg;
-import mSearch.tool.Listener;
-import mediathek.config.Daten;
-import mediathek.config.MVConfig;
-import mediathek.controller.starter.Start;
-import mediathek.daten.DatenDownload;
 
 /**
  * This class will manage and display the download bandwidth chart display.
  */
 public class MVBandwidthMonitorOSX implements IBandwidthMonitor {
 
-    private double counter = 0; // double sonst "läuft" die Chart nicht
-    private JDialog hudDialog = null;
+    private static final int DEFAULT_WIDTH = 300;
+    private static final int DEFAULT_HEIGHT = 150;
+    private static final Logger logger = LogManager.getLogger(MVBandwidthMonitorOSX.class);
     private final Trace2DLtd m_trace = new Trace2DLtd(300);
-    private IAxis<?> x_achse = null;
-
     /**
      * Timer for collecting sample data.
      */
     private final java.util.Timer timer = new java.util.Timer(false);
+    private double counter = 0; // double sonst "läuft" die Chart nicht
+    private JDialog hudDialog = null;
+    private IAxis<?> x_achse = null;
     private TimerTask timerTask = null;
+
+    public MVBandwidthMonitorOSX(JFrame parent) {
+        createDialog(parent);
+
+        hudDialog.setLayout(new BorderLayout(0, 0));
+        hudDialog.getContentPane().add(createChart(), BorderLayout.CENTER);
+        hudDialog.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+
+        Listener.addListener(new Listener(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitorOSX.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                setVisibility();
+            }
+        });
+
+        calculateHudPosition();
+
+        setVisibility();
+    }
 
     private void createDialog(JFrame parent) {
         hudDialog = new JDialog(parent);
@@ -88,28 +110,6 @@ public class MVBandwidthMonitorOSX implements IBandwidthMonitor {
         return chart;
     }
 
-    public MVBandwidthMonitorOSX(JFrame parent) {
-        createDialog(parent);
-
-        hudDialog.setLayout(new BorderLayout(0, 0));
-        hudDialog.getContentPane().add(createChart(),BorderLayout.CENTER);
-        hudDialog.setSize(DEFAULT_WIDTH,DEFAULT_HEIGHT);
-
-        Listener.addListener(new Listener(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitorOSX.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setVisibility();
-            }
-        });
-
-        calculateHudPosition();
-
-        setVisibility();
-    }
-
-    private static final int DEFAULT_WIDTH = 300;
-    private static final int DEFAULT_HEIGHT = 150;
-
     private void beenden() {
         MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(false));
         Listener.notify(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitorLWin.class.getSimpleName());
@@ -153,8 +153,8 @@ public class MVBandwidthMonitorOSX implements IBandwidthMonitor {
                 }
                 timer.purge();
             }
-        } catch (IllegalStateException ignored) {
-            DbgMsg.print(ignored.getMessage());
+        } catch (IllegalStateException ex) {
+            logger.debug(ex);
         }
         if (!isVis) {
             hudDialog.dispose();

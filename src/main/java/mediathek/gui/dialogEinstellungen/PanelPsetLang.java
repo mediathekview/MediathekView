@@ -31,9 +31,11 @@ import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
-import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.*;
+import mediathek.tool.table.MVProgTable;
+import mediathek.tool.table.MVPsetTable;
+import mediathek.tool.table.MVTable;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -44,7 +46,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.LinkedList;
 
 @SuppressWarnings("serial")
@@ -54,27 +55,15 @@ public class PanelPsetLang extends PanelVorlage {
     private final ListePset listePset;
     private final MVTable tabellePset;
     private final MVTable tabelleProgramme;
-    private boolean modalHilfe = false;
-
-    public PanelPsetLang(Daten d, JFrame parentComponent) {
-        super(d, parentComponent);
-        initComponents();
-        modalHilfe = false;
-        tabellePset = new MVTable(MVTable.TableType.PSET);
-        jScrollPane3.setViewportView(tabellePset);
-        tabelleProgramme = new MVTable(MVTable.TableType.PROG);
-        jScrollPane1.setViewportView(tabelleProgramme);
-        listePset = Daten.listePset;
-        init();
-    }
+    private final boolean modalHilfe;
 
     public PanelPsetLang(Daten d, JFrame parentComponent, ListePset llistePset) {
         super(d, parentComponent);
         initComponents();
         modalHilfe = true;
-        tabellePset = new MVTable(MVTable.TableType.PSET);
+        tabellePset = new MVPsetTable();
         jScrollPane3.setViewportView(tabellePset);
-        tabelleProgramme = new MVTable(MVTable.TableType.PROG);
+        tabelleProgramme = new MVProgTable();
         jScrollPane1.setViewportView(tabelleProgramme);
         listePset = llistePset;
         init();
@@ -95,7 +84,7 @@ public class PanelPsetLang extends PanelVorlage {
         jLabelMeldungAbspielen.setIcon(Icons.ICON_ACHTUNG_16);
         jLabelMeldungSeichern.setIcon(Icons.ICON_ACHTUNG_16);
         //Programme
-        tabellePset.setAutoResizeMode(MVTable.AUTO_RESIZE_OFF);
+        tabellePset.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, PanelPsetLang.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -216,7 +205,8 @@ public class PanelPsetLang extends PanelVorlage {
                 nurtabellePset();
             }
         });
-        jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX() || Daten.getInstance().isDebug());
+
+        jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX());
         jCheckBoxSpotlight.addActionListener(e -> {
             DatenPset pset = getPset();
             if (pset != null) {
@@ -269,25 +259,6 @@ public class PanelPsetLang extends PanelVorlage {
             tabellePset.setRowSelectionInterval(0, 0);
             tabellePset.scrollRectToVisible(tabellePset.getCellRect(0, 0, false));
         }
-        jXHyperlinkInfo.setText("");
-        try {
-            jXHyperlinkInfo.setAction(new UrlHyperlinkAction(parentComponent, ""));
-        } catch (URISyntaxException ignored) {
-        }
-        setHyperLink(""); // zum löschen
-
-    }
-
-    private void setHyperLink(String uurl) {
-        if (!uurl.equals("")) {
-            jLabelInfo.setVisible(true);
-            jXHyperlinkInfo.setVisible(true);
-            jXHyperlinkInfo.setText(uurl);
-        } else {
-            jLabelInfo.setVisible(false);
-            jXHyperlinkInfo.setVisible(false);
-        }
-
     }
 
     private void setAufloesung() {
@@ -372,7 +343,7 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxThema.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN]));
             jCheckBoxInfodatei.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_INFODATEI]));
             jCheckBoxSubtitle.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE]));
-            jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX() || Daten.getInstance().isDebug());
+            jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX());
             jCheckBoxSpotlight.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT]));
             jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Set Name: " + pSet.arr[DatenPset.PROGRAMMSET_NAME], javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
             jTextFieldSetName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME]);
@@ -381,7 +352,6 @@ public class PanelPsetLang extends PanelVorlage {
             jTextFieldGruppeZielName.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_DATEINAME]);
             jTextFieldGruppeZielPfad.setText(pSet.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD]);
             jTextAreaSetBeschreibung.setText(pSet.arr[DatenPset.PROGRAMMSET_BESCHREIBUNG]);
-            setHyperLink(pSet.arr[DatenPset.PROGRAMMSET_INFO_URL]);
 
             jCheckBoxSpeichern.setSelected(pSet.istSpeichern());
             jCheckBoxButton.setSelected(pSet.istButton());
@@ -419,7 +389,6 @@ public class PanelPsetLang extends PanelVorlage {
             jTextFieldGruppeZielName.setText("");
             jTextFieldGruppeZielPfad.setText("");
             jTextAreaSetBeschreibung.setText("");
-            setHyperLink("");
             tabelleProgramme.setModel(new TModel(new Object[0][DatenProg.MAX_ELEM], DatenProg.COLUMN_NAMES));
         }
         stopBeob = false;
@@ -586,7 +555,9 @@ public class PanelPsetLang extends PanelVorlage {
                 if (dialogZiel.ziel.contains(File.separator)) {
                     exportPfad = dialogZiel.ziel.substring(0, dialogZiel.ziel.lastIndexOf(File.separator));
                 }
-                IoXmlSchreiben.exportPset(liste.toArray(new DatenPset[liste.size()]), dialogZiel.ziel);
+
+                final IoXmlSchreiben configWriter = new IoXmlSchreiben();
+                configWriter.exportPset(liste.toArray(new DatenPset[liste.size()]), dialogZiel.ziel);
             }
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
@@ -615,6 +586,406 @@ public class PanelPsetLang extends PanelVorlage {
 
     }
 
+    private class BeobProgRestart implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!stopBeob) {
+                int rows = tabelleProgramme.getSelectedRow();
+                if (rows != -1) {
+                    int row = tabelleProgramme.convertRowIndexToModel(rows);
+                    DatenProg prog = getPset().getListeProg().get(row);
+                    prog.arr[DatenProg.PROGRAMM_RESTART] = Boolean.toString(jCheckBoxRestart.isSelected());
+                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRestart.isSelected()), row, DatenProg.PROGRAMM_RESTART);
+                }
+            }
+
+        }
+    }
+
+    private class BeobProgRemoteDownload implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!stopBeob) {
+                int rows = tabelleProgramme.getSelectedRow();
+                if (rows != -1) {
+                    int row = tabelleProgramme.convertRowIndexToModel(rows);
+                    DatenProg prog = getPset().getListeProg().get(row);
+                    prog.arr[DatenProg.PROGRAMM_DOWNLOADMANAGER] = Boolean.toString(jCheckBoxRemoteDownload.isSelected());
+                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRemoteDownload.isSelected()), row, DatenProg.PROGRAMM_DOWNLOADMANAGER);
+                }
+            }
+
+        }
+    }
+
+    private class BeobProgDoc implements DocumentListener {
+
+        @Override
+        public void insertUpdate(DocumentEvent arg0) {
+            eingabe();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent arg0) {
+            eingabe();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent arg0) {
+            eingabe();
+        }
+
+        private void eingabe() {
+            if (!stopBeob) {
+                int rows = tabelleProgramme.getSelectedRow();
+                if (rows != -1) {
+                    int row = tabelleProgramme.convertRowIndexToModel(rows);
+                    DatenProg prog = getPset().getListeProg().get(row);
+                    prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD] = jTextFieldProgPfad.getText();
+                    prog.arr[DatenProg.PROGRAMM_SCHALTER] = jTextFieldProgSchalter.getText();
+                    prog.arr[DatenProg.PROGRAMM_NAME] = jTextFieldProgName.getText();
+                    prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME] = jTextFieldProgZielDateiName.getText();
+                    prog.arr[DatenProg.PROGRAMM_SUFFIX] = jTextFieldProgSuffix.getText();
+                    prog.arr[DatenProg.PROGRAMM_PRAEFIX] = jTextFieldProgPraefix.getText();
+                    tabelleProgramme.getModel().setValueAt(jTextFieldProgPfad.getText(), row, DatenProg.PROGRAMM_PROGRAMMPFAD);
+                    tabelleProgramme.getModel().setValueAt(jTextFieldProgSchalter.getText(), row, DatenProg.PROGRAMM_SCHALTER);
+                    tabelleProgramme.getModel().setValueAt(jTextFieldProgName.getText(), row, DatenProg.PROGRAMM_NAME);
+                    tabelleProgramme.getModel().setValueAt(jTextFieldProgZielDateiName.getText(), row, DatenProg.PROGRAMM_ZIEL_DATEINAME);
+                    tabelleProgramme.getModel().setValueAt(jTextFieldProgSuffix.getText(), row, DatenProg.PROGRAMM_SUFFIX);
+                    tabelleProgramme.getModel().setValueAt(jTextFieldProgPraefix.getText(), row, DatenProg.PROGRAMM_PRAEFIX);
+//                    progNamePruefen();
+                }
+            }
+        }
+    }
+
+    private class BeobTableSelectPset implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent event) {
+            if (!stopBeob) {
+                if (!event.getValueIsAdjusting()) {
+                    tabelleProgramme();
+                    DatenPset datenPset;
+                    int row = tabellePset.getSelectedRow();
+                    if (row != -1) {
+                        datenPset = listePset.get(tabellePset.convertRowIndexToModel(row));
+                        tabellePset.getModel().setValueAt(jTextFieldSetName.getText(), tabellePset.convertRowIndexToModel(row), DatenPset.PROGRAMMSET_NAME);
+                        jTabbedPane.setTitleAt(0, "Set Name: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME]);
+                    }
+                }
+            }
+        }
+    }
+
+    private class BeobDateiDialogProg implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //we can use native chooser on Mac...
+            if (SystemInfo.isMacOSX()) {
+                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Programm auswählen");
+                chooser.setMode(FileDialog.LOAD);
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    try {
+                        jTextFieldProgPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.errorLog(369047894, ex);
+                    }
+                }
+            } else {
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                if (!jTextFieldProgPfad.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(jTextFieldProgPfad.getText()));
+                }
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        String str = chooser.getSelectedFile().getPath();
+                        jTextFieldProgPfad.setText(str);
+                    } catch (Exception ex) {
+                        Log.errorLog(825630443, ex);
+                    }
+                }
+            }
+        }
+    }
+
+    private class BeobDateiDialogPfad implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //we can use native directory chooser on Mac...
+            if (SystemInfo.isMacOSX()) {
+                //we want to select a directory only, so temporarily change properties
+                System.setProperty("apple.awt.fileDialogForDirectories", "true");
+                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Film speichern");
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    //A directory was selected, that means Cancel was not pressed
+                    try {
+                        jTextFieldGruppeZielPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.errorLog(392847589, ex);
+                    }
+                }
+                System.setProperty("apple.awt.fileDialogForDirectories", "false");
+            } else {
+                //use the cross-platform swing chooser
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                if (!jTextFieldGruppeZielPfad.getText().equals("")) {
+                    chooser.setCurrentDirectory(new File(jTextFieldGruppeZielPfad.getText()));
+                }
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        jTextFieldGruppeZielPfad.setText(chooser.getSelectedFile().getPath());
+                    } catch (Exception ex) {
+                        Log.errorLog(319860075, ex);
+                    }
+                }
+            }
+        }
+    }
+
+    private class BeobProgNeueZeile implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            DatenProg prog = new DatenProg();
+            progNeueZeile(prog);
+        }
+    }
+
+    private class BeobProgDuplizieren implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int rows = tabelleProgramme.getSelectedRow();
+            if (rows != -1) {
+                int row = tabelleProgramme.convertRowIndexToModel(rows);
+                DatenProg prog = getPset().getListeProg().get(row);
+                progNeueZeile(prog.copy());
+            } else {
+                new HinweisKeineAuswahl().zeigen(parentComponent);
+            }
+        }
+    }
+
+    private class BeobDoc implements DocumentListener {
+
+        JTextField textfeld = null;
+        JTextArea textArea = null;
+        int nr;
+
+        public BeobDoc(JTextField ttextfeld, int nnr) {
+            textfeld = ttextfeld;
+            nr = nnr;
+        }
+
+        public BeobDoc(JTextArea tt, int nnr) {
+            textArea = tt;
+            nr = nnr;
+        }
+
+        @Override
+        public void insertUpdate(DocumentEvent arg0) {
+            eingabe();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent arg0) {
+            eingabe();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent arg0) {
+            eingabe();
+        }
+
+        private void eingabe() {
+            if (!stopBeob) {
+                DatenPset datenPset;
+                int row = tabellePset.getSelectedRow();
+                if (row != -1) {
+                    datenPset = listePset.get(tabellePset.convertRowIndexToModel(row));
+                    stopBeob = true;
+                    if (textfeld != null) {
+                        datenPset.arr[nr] = textfeld.getText();
+                    } else {
+                        datenPset.arr[nr] = textArea.getText();
+                    }
+                    if (nr == DatenPset.PROGRAMMSET_NAME) {
+                        tabellePset.getModel().setValueAt(jTextFieldSetName.getText(), tabellePset.convertRowIndexToModel(row), DatenPset.PROGRAMMSET_NAME);
+                        jTabbedPane.setTitleAt(0, "Set Name: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME]);
+                    }
+                    notifyPset();
+                    stopBeob = false;
+                } else {
+                    new HinweisKeineAuswahl().zeigen(parentComponent);
+                }
+            }
+            setNamePruefen();
+        }
+    }
+
+    private class BeobGruppeDuplizieren implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            DatenPset gruppe;
+            int row = tabellePset.getSelectedRow();
+            if (row != -1) {
+                gruppe = listePset.get(tabellePset.convertRowIndexToModel(row));
+                listePset.addPset(gruppe.copy());
+                tabellePset();
+                notifyPset();
+            } else {
+                new HinweisKeineAuswahl().zeigen(parentComponent);
+            }
+        }
+    }
+
+    private class BeobProgLoeschen implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int rows[] = tabelleProgramme.getSelectedRows();
+            if (rows.length > 0) {
+                DatenPset pSet = getPset();
+                String text;
+                if (rows.length == 1) {
+                    int delRow = tabelleProgramme.convertRowIndexToModel(rows[0]);
+                    text = pSet.getProg(delRow).arr[DatenProg.PROGRAMM_NAME];
+                } else {
+                    text = rows.length + " Programme löschen?";
+                }
+                int ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION);
+                if (ret == JOptionPane.OK_OPTION) {
+                    for (int i = rows.length - 1; i >= 0; --i) {
+                        int delRow = tabelleProgramme.convertRowIndexToModel(rows[i]);
+                        pSet.getListeProg().remove(delRow);
+                    }
+                    tabelleProgramme();
+                }
+            } else {
+                new HinweisKeineAuswahl().zeigen(parentComponent);
+            }
+        }
+    }
+
+    private class BeobPuefen implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            GuiFunktionenProgramme.programmePruefen(parentComponent, daten);
+        }
+    }
+
+    private class BeobProgAufAb implements ActionListener {
+
+        boolean auf;
+
+        public BeobProgAufAb(boolean a) {
+            auf = a;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            progAufAb(auf);
+        }
+    }
+
+    private class BeobGruppeAufAb implements ActionListener {
+
+        boolean auf;
+
+        public BeobGruppeAufAb(boolean a) {
+            auf = a;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            setAufAb(auf);
+        }
+    }
+
+    private class BeobGruppeNeu implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            setNeu();
+        }
+    }
+
+    private class BeobGruppeLoeschen implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            setLoeschen();
+        }
+    }
+
+    private class BeobGruppeExport implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            setExport();
+        }
+    }
+
+    private class BeobachterFarbe implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            DatenPset pSet = getPset();
+            if (pSet != null) {
+                DialogFarbe dialog = new DialogFarbe(parentComponent, true, pSet.getFarbe());
+                dialog.setVisible(true);
+                if (dialog.farbe != null) {
+                    pSet.setFarbe(dialog.farbe);
+                    tabellePset();
+                    notifyPset();
+                }
+            }
+
+        }
+    }
+
+    private class BeobStandardfarbe implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            DatenPset pSet = getPset();
+            if (pSet != null) {
+                pSet.arr[DatenPset.PROGRAMMSET_FARBE] = "";
+                tabellePset();
+                notifyPset();
+            }
+
+        }
+    }
+
+    public class BeobTableSelect implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent event) {
+            if (!event.getValueIsAdjusting()) {
+                if (!stopBeob) {
+                    fillTextProgramme();
+                }
+            }
+
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -635,8 +1006,6 @@ public class PanelPsetLang extends PanelVorlage {
         javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
         javax.swing.JScrollPane jScrollPane2 = new javax.swing.JScrollPane();
         jTextAreaSetBeschreibung = new javax.swing.JTextArea();
-        jLabelInfo = new javax.swing.JLabel();
-        jXHyperlinkInfo = new org.jdesktop.swingx.JXHyperlink();
         javax.swing.JPanel jPanel6 = new javax.swing.JPanel();
         jCheckBoxSpeichern = new javax.swing.JCheckBox();
         jCheckBoxButton = new javax.swing.JCheckBox();
@@ -736,32 +1105,19 @@ public class PanelPsetLang extends PanelVorlage {
         jTextAreaSetBeschreibung.setRows(8);
         jScrollPane2.setViewportView(jTextAreaSetBeschreibung);
 
-        jLabelInfo.setText("Infos:");
-
-        jXHyperlinkInfo.setText("jXHyperlink1");
-
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
                 jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE)
-                                        .addGroup(jPanel4Layout.createSequentialGroup()
-                                                .addComponent(jLabelInfo)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jXHyperlinkInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 571, Short.MAX_VALUE)
                                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
                 jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabelInfo)
-                                        .addComponent(jXHyperlinkInfo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 322, Short.MAX_VALUE)
                                 .addContainerGap())
         );
 
@@ -773,7 +1129,7 @@ public class PanelPsetLang extends PanelVorlage {
 
         jCheckBoxAbo.setText("Abo");
 
-        jButtonAbspielen.setText("Abspielen via grünem Play-Button");
+        jButtonAbspielen.setText("Abspielen via schwarzem Play-Button");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -788,7 +1144,7 @@ public class PanelPsetLang extends PanelVorlage {
                                 .addComponent(jCheckBoxButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jCheckBoxAbo)
-                                .addContainerGap(55, Short.MAX_VALUE))
+                                .addContainerGap(38, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
                 jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1367,10 +1723,10 @@ public class PanelPsetLang extends PanelVorlage {
         jSplitPane1.setRightComponent(jTabbedPane);
 
         jTablePset.setModel(new javax.swing.table.DefaultTableModel(
-                new Object [][] {
+                new Object[][]{
                         {null, null, null}
                 },
-                new String [] {
+                new String[]{
                         "Title 1", "Title 2", "Title 3"
                 }
         ));
@@ -1493,7 +1849,6 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxSpotlight;
     private javax.swing.JCheckBox jCheckBoxSubtitle;
     private javax.swing.JCheckBox jCheckBoxThema;
-    private javax.swing.JLabel jLabelInfo;
     private javax.swing.JLabel jLabelMeldungAbspielen;
     private javax.swing.JLabel jLabelMeldungSeichern;
     private javax.swing.JRadioButton jRadioButtonAufloesungHD;
@@ -1516,406 +1871,5 @@ public class PanelPsetLang extends PanelVorlage {
     private javax.swing.JTextField jTextFieldProgSuffix;
     private javax.swing.JTextField jTextFieldProgZielDateiName;
     private javax.swing.JTextField jTextFieldSetName;
-    private org.jdesktop.swingx.JXHyperlink jXHyperlinkInfo;
     // End of variables declaration//GEN-END:variables
-
-    private class BeobProgRestart implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (!stopBeob) {
-                int rows = tabelleProgramme.getSelectedRow();
-                if (rows != -1) {
-                    int row = tabelleProgramme.convertRowIndexToModel(rows);
-                    DatenProg prog = getPset().getListeProg().get(row);
-                    prog.arr[DatenProg.PROGRAMM_RESTART] = Boolean.toString(jCheckBoxRestart.isSelected());
-                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRestart.isSelected()), row, DatenProg.PROGRAMM_RESTART);
-                }
-            }
-
-        }
-    }
-
-    private class BeobProgRemoteDownload implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (!stopBeob) {
-                int rows = tabelleProgramme.getSelectedRow();
-                if (rows != -1) {
-                    int row = tabelleProgramme.convertRowIndexToModel(rows);
-                    DatenProg prog = getPset().getListeProg().get(row);
-                    prog.arr[DatenProg.PROGRAMM_DOWNLOADMANAGER] = Boolean.toString(jCheckBoxRemoteDownload.isSelected());
-                    tabelleProgramme.getModel().setValueAt(Boolean.toString(jCheckBoxRemoteDownload.isSelected()), row, DatenProg.PROGRAMM_DOWNLOADMANAGER);
-                }
-            }
-
-        }
-    }
-
-    private class BeobProgDoc implements DocumentListener {
-
-        @Override
-        public void insertUpdate(DocumentEvent arg0) {
-            eingabe();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent arg0) {
-            eingabe();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent arg0) {
-            eingabe();
-        }
-
-        private void eingabe() {
-            if (!stopBeob) {
-                int rows = tabelleProgramme.getSelectedRow();
-                if (rows != -1) {
-                    int row = tabelleProgramme.convertRowIndexToModel(rows);
-                    DatenProg prog = getPset().getListeProg().get(row);
-                    prog.arr[DatenProg.PROGRAMM_PROGRAMMPFAD] = jTextFieldProgPfad.getText();
-                    prog.arr[DatenProg.PROGRAMM_SCHALTER] = jTextFieldProgSchalter.getText();
-                    prog.arr[DatenProg.PROGRAMM_NAME] = jTextFieldProgName.getText();
-                    prog.arr[DatenProg.PROGRAMM_ZIEL_DATEINAME] = jTextFieldProgZielDateiName.getText();
-                    prog.arr[DatenProg.PROGRAMM_SUFFIX] = jTextFieldProgSuffix.getText();
-                    prog.arr[DatenProg.PROGRAMM_PRAEFIX] = jTextFieldProgPraefix.getText();
-                    tabelleProgramme.getModel().setValueAt(jTextFieldProgPfad.getText(), row, DatenProg.PROGRAMM_PROGRAMMPFAD);
-                    tabelleProgramme.getModel().setValueAt(jTextFieldProgSchalter.getText(), row, DatenProg.PROGRAMM_SCHALTER);
-                    tabelleProgramme.getModel().setValueAt(jTextFieldProgName.getText(), row, DatenProg.PROGRAMM_NAME);
-                    tabelleProgramme.getModel().setValueAt(jTextFieldProgZielDateiName.getText(), row, DatenProg.PROGRAMM_ZIEL_DATEINAME);
-                    tabelleProgramme.getModel().setValueAt(jTextFieldProgSuffix.getText(), row, DatenProg.PROGRAMM_SUFFIX);
-                    tabelleProgramme.getModel().setValueAt(jTextFieldProgPraefix.getText(), row, DatenProg.PROGRAMM_PRAEFIX);
-//                    progNamePruefen();
-                }
-            }
-        }
-    }
-
-    private class BeobTableSelectPset implements ListSelectionListener {
-
-        @Override
-        public void valueChanged(ListSelectionEvent event) {
-            if (!stopBeob) {
-                if (!event.getValueIsAdjusting()) {
-                    tabelleProgramme();
-                    DatenPset datenPset;
-                    int row = tabellePset.getSelectedRow();
-                    if (row != -1) {
-                        datenPset = listePset.get(tabellePset.convertRowIndexToModel(row));
-                        tabellePset.getModel().setValueAt(jTextFieldSetName.getText(), tabellePset.convertRowIndexToModel(row), DatenPset.PROGRAMMSET_NAME);
-                        jTabbedPane.setTitleAt(0, "Set Name: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME]);
-                    }
-                }
-            }
-        }
-    }
-
-    private class BeobDateiDialogProg implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //we can use native chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Programm auswählen");
-                chooser.setMode(FileDialog.LOAD);
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    try {
-                        jTextFieldProgPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(369047894, ex);
-                    }
-                }
-            } else {
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                if (!jTextFieldProgPfad.getText().equals("")) {
-                    chooser.setCurrentDirectory(new File(jTextFieldProgPfad.getText()));
-                }
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        String str = chooser.getSelectedFile().getPath();
-                        jTextFieldProgPfad.setText(str);
-                    } catch (Exception ex) {
-                        Log.errorLog(825630443, ex);
-                    }
-                }
-            }
-        }
-    }
-
-    private class BeobDateiDialogPfad implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //we can use native directory chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
-                //we want to select a directory only, so temporarily change properties
-                System.setProperty("apple.awt.fileDialogForDirectories", "true");
-                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Film speichern");
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    //A directory was selected, that means Cancel was not pressed
-                    try {
-                        jTextFieldGruppeZielPfad.setText(new File(chooser.getDirectory() + chooser.getFile()).getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(392847589, ex);
-                    }
-                }
-                System.setProperty("apple.awt.fileDialogForDirectories", "false");
-            } else {
-                //use the cross-platform swing chooser
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                if (!jTextFieldGruppeZielPfad.getText().equals("")) {
-                    chooser.setCurrentDirectory(new File(jTextFieldGruppeZielPfad.getText()));
-                }
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        jTextFieldGruppeZielPfad.setText(chooser.getSelectedFile().getPath());
-                    } catch (Exception ex) {
-                        Log.errorLog(319860075, ex);
-                    }
-                }
-            }
-        }
-    }
-
-    private class BeobProgNeueZeile implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            DatenProg prog = new DatenProg();
-            progNeueZeile(prog);
-        }
-    }
-
-    private class BeobProgDuplizieren implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int rows = tabelleProgramme.getSelectedRow();
-            if (rows != -1) {
-                int row = tabelleProgramme.convertRowIndexToModel(rows);
-                DatenProg prog = getPset().getListeProg().get(row);
-                progNeueZeile(prog.copy());
-            } else {
-                new HinweisKeineAuswahl().zeigen(parentComponent);
-            }
-        }
-    }
-
-    private class BeobDoc implements DocumentListener {
-
-        JTextField textfeld = null;
-        JTextArea textArea = null;
-        int nr;
-
-        public BeobDoc(JTextField ttextfeld, int nnr) {
-            textfeld = ttextfeld;
-            nr = nnr;
-        }
-
-        public BeobDoc(JTextArea tt, int nnr) {
-            textArea = tt;
-            nr = nnr;
-        }
-
-        @Override
-        public void insertUpdate(DocumentEvent arg0) {
-            eingabe();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent arg0) {
-            eingabe();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent arg0) {
-            eingabe();
-        }
-
-        private void eingabe() {
-            if (!stopBeob) {
-                DatenPset datenPset;
-                int row = tabellePset.getSelectedRow();
-                if (row != -1) {
-                    datenPset = listePset.get(tabellePset.convertRowIndexToModel(row));
-                    stopBeob = true;
-                    if (textfeld != null) {
-                        datenPset.arr[nr] = textfeld.getText();
-                    } else {
-                        datenPset.arr[nr] = textArea.getText();
-                    }
-                    if (nr == DatenPset.PROGRAMMSET_NAME) {
-                        tabellePset.getModel().setValueAt(jTextFieldSetName.getText(), tabellePset.convertRowIndexToModel(row), DatenPset.PROGRAMMSET_NAME);
-                        jTabbedPane.setTitleAt(0, "Set Name: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME]);
-                    }
-                    notifyPset();
-                    stopBeob = false;
-                } else {
-                    new HinweisKeineAuswahl().zeigen(parentComponent);
-                }
-            }
-            setNamePruefen();
-        }
-    }
-
-    private class BeobGruppeDuplizieren implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            DatenPset gruppe;
-            int row = tabellePset.getSelectedRow();
-            if (row != -1) {
-                gruppe = listePset.get(tabellePset.convertRowIndexToModel(row));
-                listePset.addPset(gruppe.copy());
-                tabellePset();
-                notifyPset();
-            } else {
-                new HinweisKeineAuswahl().zeigen(parentComponent);
-            }
-        }
-    }
-
-    private class BeobProgLoeschen implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int rows[] = tabelleProgramme.getSelectedRows();
-            if (rows.length > 0) {
-                DatenPset pSet = getPset();
-                String text;
-                if (rows.length == 1) {
-                    int delRow = tabelleProgramme.convertRowIndexToModel(rows[0]);
-                    text = pSet.getProg(delRow).arr[DatenProg.PROGRAMM_NAME];
-                } else {
-                    text = rows.length + " Programme löschen?";
-                }
-                int ret = JOptionPane.showConfirmDialog(parentComponent, text, "Löschen?", JOptionPane.YES_NO_OPTION);
-                if (ret == JOptionPane.OK_OPTION) {
-                    for (int i = rows.length - 1; i >= 0; --i) {
-                        int delRow = tabelleProgramme.convertRowIndexToModel(rows[i]);
-                        pSet.getListeProg().remove(delRow);
-                    }
-                    tabelleProgramme();
-                }
-            } else {
-                new HinweisKeineAuswahl().zeigen(parentComponent);
-            }
-        }
-    }
-
-    private class BeobPuefen implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            GuiFunktionenProgramme.programmePruefen(parentComponent, daten);
-        }
-    }
-
-    private class BeobProgAufAb implements ActionListener {
-
-        boolean auf;
-
-        public BeobProgAufAb(boolean a) {
-            auf = a;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            progAufAb(auf);
-        }
-    }
-
-    private class BeobGruppeAufAb implements ActionListener {
-
-        boolean auf;
-
-        public BeobGruppeAufAb(boolean a) {
-            auf = a;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            setAufAb(auf);
-        }
-    }
-
-    private class BeobGruppeNeu implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            setNeu();
-        }
-    }
-
-    private class BeobGruppeLoeschen implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            setLoeschen();
-        }
-    }
-
-    private class BeobGruppeExport implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            setExport();
-        }
-    }
-
-    private class BeobachterFarbe implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            DatenPset pSet = getPset();
-            if (pSet != null) {
-                DialogFarbe dialog = new DialogFarbe(parentComponent, true, pSet.getFarbe());
-                dialog.setVisible(true);
-                if (dialog.farbe != null) {
-                    pSet.setFarbe(dialog.farbe);
-                    tabellePset();
-                    notifyPset();
-                }
-            }
-
-        }
-    }
-
-    private class BeobStandardfarbe implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            DatenPset pSet = getPset();
-            if (pSet != null) {
-                pSet.arr[DatenPset.PROGRAMMSET_FARBE] = "";
-                tabellePset();
-                notifyPset();
-            }
-
-        }
-    }
-
-    public class BeobTableSelect implements ListSelectionListener {
-
-        @Override
-        public void valueChanged(ListSelectionEvent event) {
-            if (!event.getValueIsAdjusting()) {
-                if (!stopBeob) {
-                    fillTextProgramme();
-                }
-            }
-
-        }
-    }
 }

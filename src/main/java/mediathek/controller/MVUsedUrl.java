@@ -22,6 +22,7 @@ package mediathek.controller;
 import mSearch.tool.Functions;
 import mSearch.tool.GermanStringSorter;
 import mSearch.tool.Log;
+import org.apache.commons.lang3.StringUtils;
 
 public class MVUsedUrl implements Comparable<MVUsedUrl> {
 
@@ -102,9 +103,10 @@ public class MVUsedUrl implements Comparable<MVUsedUrl> {
     }
 
     private static String putzen(String s) {
-        s = s.replace("\n", "");
-        s = s.replace("|", "");
-        s = s.replace(TRENNER, "");
+        s = StringUtils.replace(s, "\n", "");
+        s = StringUtils.replace(s, "|", "");
+        s = StringUtils.replace(s, TRENNER, "");
+
         return s;
     }
 }

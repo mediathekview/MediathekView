@@ -44,6 +44,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Objects;
 
 @SuppressWarnings("serial")
 public class PanelBlacklist extends PanelVorlage {
@@ -223,29 +224,25 @@ public class PanelBlacklist extends PanelVorlage {
     }
 
     private void comboThemaLaden() {
-        String filterSender = jComboBoxSender.getSelectedItem().toString();
-        if (filterSender.isEmpty()) {
-            jComboBoxThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen("")));
-        } else {
-            jComboBoxThema.setModel(new javax.swing.DefaultComboBoxModel<>(getThemen(filterSender)));
-        }
+        String filterSender = Objects.requireNonNull(jComboBoxSender.getSelectedItem()).toString();
 
-    }
+        if (filterSender.isEmpty())
+            filterSender = "";
 
-    private String[] getThemen(String ssender) {
-        for (int i = 1; i < daten.getListeFilme().themenPerSender.length; ++i) {
-            if (daten.getListeFilme().sender[i].equals(ssender)) {
-                return daten.getListeFilme().themenPerSender[i];
-            }
-        }
-        //return alleThemen;
-        return daten.getListeFilme().themenPerSender[0];
+        java.util.List<String> lst = daten.getListeFilmeNachBlackList().getThemen(filterSender);
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        model.addElement("");
+        for (String item : lst)
+            model.addElement(item);
+        jComboBoxThema.setModel(model);
+
+        lst.clear();
     }
 
     private void initCombo() {
         // der erste Sender ist ""
         final String[] sender = GuiFunktionen.addLeerListe(daten.getFilmeLaden().getSenderNamen());
-        jComboBoxSender.setModel(new javax.swing.DefaultComboBoxModel<>(sender));
+        jComboBoxSender.setModel(new DefaultComboBoxModel<>(sender));
     }
 
     private void tabelleLaden() {
@@ -268,16 +265,14 @@ public class PanelBlacklist extends PanelVorlage {
         }
     }
 
-    private DatenBlacklist tabelleZeileLoeschen() {
-        DatenBlacklist ret = null;
+    private void tabelleZeileLoeschen() {
         int selectedTableRow = jTableBlacklist.getSelectedRow();
         if (selectedTableRow >= 0) {
             int del = jTableBlacklist.convertRowIndexToModel(selectedTableRow);
             String delNr = jTableBlacklist.getModel().getValueAt(del, DatenBlacklist.BLACKLIST_NR).toString();
-            ret = daten.getListeBlacklist().remove(delNr);
+            daten.getListeBlacklist().remove(delNr);
             tabelleLaden();
         }
-        return ret;
     }
 
     /** This method is called from within the constructor to

@@ -1,9 +1,9 @@
-/*    
+/*
  *    MediathekView
  *    Copyright (C) 2008   W. Xaver
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
- *    
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -21,60 +21,39 @@ package mediathek.controller.starter;
 
 import com.apple.eawt.Application;
 import com.jidesoft.utils.SystemInfo;
+import javafx.application.Platform;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Datum;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
+import mediathek.gui.messages.StartEvent;
 import mediathek.mac.SpotlightCommentWriter;
 import mediathek.tool.MVFilmSize;
-import mediathek.tool.MVNotification;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.controlsfx.control.Notifications;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class StarterClass {
-    //Tags Filme
-
+    private static final Logger logger = LogManager.getLogger(StarterClass.class);
     private final Daten daten;
-    private Starten starten = null;
+    private final Starten starten;
     private boolean pause = false;
 
-    //===================================
-    // Public
-    //===================================
     public StarterClass(Daten daten) {
         this.daten = daten;
         starten = new Starten();
         starten.start();
-    }
-
-    public synchronized void urlMitProgrammStarten(DatenPset pSet, DatenFilm ersterFilm, String aufloesung) {
-        // url mit dem Programm mit der Nr. starten (Button oder TabDownload "rechte Maustaste")
-        // Quelle "Button" ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
-        String url = ersterFilm.arr[DatenFilm.FILM_URL];
-        if (!url.isEmpty()) {
-            DatenDownload d = new DatenDownload(pSet, ersterFilm, DatenDownload.QUELLE_BUTTON, null, "", "", aufloesung);
-            d.start = new Start();
-            starten.startStarten(d);
-            // gestartete Filme (originalURL des Films) auch in die History eintragen
-            daten.history.zeileSchreiben(ersterFilm.arr[DatenFilm.FILM_THEMA], ersterFilm.arr[DatenFilm.FILM_TITEL], d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
-            daten.getListeFilmeHistory().add(ersterFilm);
-            // und jetzt noch in die Downloadliste damit die Farbe im Tab Filme passt
-            daten.getListeDownloadsButton().addMitNummer(d);
-        }
-    }
-
-    public void pause() {
-        pause = true;
     }
 
     static boolean pruefen(Daten daten, DatenDownload datenDownload, Start start) {
@@ -115,19 +94,19 @@ public class StarterClass {
                 // zum Wiederstarten/Aufräumen die leer/zu kleine Datei löschen, alles auf Anfang
                 if (file.length() == 0) {
                     // zum Wiederstarten/Aufräumen die leer/zu kleine Datei löschen, alles auf Anfang
-                    SysMsg.sysMsg(new String[]{"Restart/Aufräumen: leere Datei löschen", file.getAbsolutePath()});
+                    logger.info("Restart/Aufräumen: leere Datei löschen: {}", file.getAbsolutePath());
                     if (!file.delete()) {
                         throw new Exception();
                     }
                 } else if (file.length() < Konstanten.MIN_DATEI_GROESSE_FILM) {
-                    SysMsg.sysMsg(new String[]{"Restart/Aufräumen: Zu kleine Datei löschen", file.getAbsolutePath()});
+                    logger.info("Restart/Aufräumen: Zu kleine Datei löschen ({})", file.getAbsolutePath());
                     if (!file.delete()) {
                         throw new Exception();
                     }
                 }
             }
         } catch (Exception ex) {
-            Log.errorLog(795632500, "Fehler beim löschen" + file.getAbsolutePath());
+            logger.error("Fehler beim Löschen: {}", file.getAbsolutePath());
         }
     }
 
@@ -153,15 +132,7 @@ public class StarterClass {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF]);
             text.add("Programmaufruf[]: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]);
         }
-        SysMsg.sysMsg(text.toArray(new String[text.size()]));
-    }
-
-    private void reStartmeldung(DatenDownload datenDownload) {
-        ArrayList<String> text = new ArrayList<>();
-        text.add("Fehlerhaften Download neu starten - Restart (Summe Starts: " + datenDownload.start.countRestarted + ')');
-        text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
-        text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
-        SysMsg.sysMsg(text.toArray(new String[text.size()]));
+        logger.info(text);
     }
 
     private static void fertigmeldung(final DatenDownload datenDownload, final Start start, boolean abgebrochen) {
@@ -214,12 +185,50 @@ public class StarterClass {
             text.add("Programmaufruf: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF]);
             text.add("Programmaufruf[]: " + datenDownload.arr[DatenDownload.DOWNLOAD_PROGRAMM_AUFRUF_ARRAY]);
         }
-        SysMsg.sysMsg(text.toArray(new String[text.size()]));
+        logger.info(text);
         if (!start.stoppen && !abgebrochen) {
             if (datenDownload.quelle != DatenDownload.QUELLE_BUTTON) {
-                SwingUtilities.invokeLater(() -> MVNotification.addNotification(datenDownload, start.status != Start.STATUS_ERR));
+                addNotification(datenDownload, start.status != Start.STATUS_ERR);
             }
         }
+    }
+
+    /**
+     * Post a notification dialog whether download was successful or not.
+     */
+    private static void addNotification(DatenDownload datenDownload, boolean erfolgreich) {
+        if (GraphicsEnvironment.isHeadless()) {
+            return; // dann gibts keine GUI
+        }
+
+        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_NOTIFICATION)))
+            return;
+
+
+        final String[] m = {
+                "Film:   " + datenDownload.arr[DatenDownload.DOWNLOAD_TITEL],
+                "Sender: " + datenDownload.arr[DatenDownload.DOWNLOAD_SENDER],
+                "Größe:  " + MVFilmSize.humanReadableByteCount(datenDownload.mVFilmSize.getSize(), true)
+        };
+
+        StringBuilder meldung = new StringBuilder();
+        for (String s : m) {
+            meldung.append(s).append('\n');
+        }
+
+        Platform.runLater(() -> {
+            Notifications msg = Notifications.create();
+            msg.text(meldung.toString());
+
+            if (erfolgreich) {
+                msg.title("Download war erfolgreich");
+                msg.showInformation();
+            } else {
+                msg.title("Download war fehlerhaft");
+                msg.showError();
+            }
+
+        });
     }
 
     static void finalizeDownload(DatenDownload datenDownload, Start start /* wegen "datenDownload.start=null" beim stoppen */, DirectHttpDownload.HttpDownloadState state) {
@@ -257,7 +266,7 @@ public class StarterClass {
      *
      * @param datenDownload {@link DatenDownload} with the info of the file
      */
-    static void setFileSize(DatenDownload datenDownload) {
+    private static void setFileSize(DatenDownload datenDownload) {
         try {
             final File testFile = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
             if (testFile.exists()) {
@@ -272,12 +281,40 @@ public class StarterClass {
     }
 
     static void notifyStartEvent(DatenDownload datenDownload) {
-        Listener.notify(Listener.EREIGNIS_START_EVENT, StarterClass.class.getSimpleName());
+        Daten.getInstance().getMessageBus().publishAsync(new StartEvent());
         if (datenDownload != null) {
             if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON) {
                 Listener.notify(Listener.EREIGNIS_START_EVENT_BUTTON, StarterClass.class.getSimpleName());
             }
         }
+    }
+
+    public synchronized void urlMitProgrammStarten(DatenPset pSet, DatenFilm ersterFilm, String aufloesung) {
+        // url mit dem Programm mit der Nr. starten (Button oder TabDownload "rechte Maustaste")
+        // Quelle "Button" ist immer ein vom User gestarteter Film, also Quelle_Button!!!!!!!!!!!
+        String url = ersterFilm.arr[DatenFilm.FILM_URL];
+        if (!url.isEmpty()) {
+            DatenDownload d = new DatenDownload(pSet, ersterFilm, DatenDownload.QUELLE_BUTTON, null, "", "", aufloesung);
+            d.start = new Start();
+            starten.startStarten(d);
+            // gestartete Filme (originalURL des Films) auch in die History eintragen
+            daten.history.zeileSchreiben(ersterFilm.arr[DatenFilm.FILM_THEMA], ersterFilm.getTitle(), d.arr[DatenDownload.DOWNLOAD_HISTORY_URL]);
+            daten.getListeFilmeHistory().add(ersterFilm);
+            // und jetzt noch in die Downloadliste damit die Farbe im Tab Filme passt
+            daten.getListeDownloadsButton().addMitNummer(d);
+        }
+    }
+
+    public void pause() {
+        pause = true;
+    }
+
+    private void reStartmeldung(DatenDownload datenDownload) {
+        ArrayList<String> text = new ArrayList<>();
+        text.add("Fehlerhaften Download neu starten - Restart (Summe Starts: " + datenDownload.start.countRestarted + ')');
+        text.add("Ziel: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
+        text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
+        logger.info(text);
     }
 
     // ********************************************
@@ -286,16 +323,16 @@ public class StarterClass {
     // ********************************************
     private class Starten extends Thread {
 
-        private DatenDownload datenDownload;
         /**
          * The only {@link java.util.Timer} used for all {@link mediathek.controller.MVInputStream.BandwidthCalculationTask}
          * calculation tasks.
          */
-        private java.util.Timer bandwidthCalculationTimer;
+        private final java.util.Timer bandwidthCalculationTimer;
+        private DatenDownload datenDownload;
 
         public Starten() {
             super();
-            setName("DownloadStarter Daemon Thread");
+            setName(Starten.class.getName() + " Thread");
             setDaemon(true);
             bandwidthCalculationTimer = new java.util.Timer("BandwidthCalculationTimer");
         }
@@ -307,10 +344,10 @@ public class StarterClass {
                     while ((datenDownload = getNextStart()) != null) {
                         startStarten(datenDownload);
                         //alle 5 Sekunden einen Download starten
-                        sleep(5 * 1000);
+                        TimeUnit.SECONDS.sleep(5);
                     }
                     daten.getListeDownloadsButton().buttonStartsPutzen(); // Button Starts aus der Liste löschen
-                    sleep(3 * 1000);
+                    TimeUnit.SECONDS.sleep(3);
                 } catch (Exception ex) {
                     Log.errorLog(613822015, ex);
                 }
@@ -323,7 +360,7 @@ public class StarterClass {
             if (pause) {
                 // beim Löschen der Downloads, kann das Starten etwas "pausiert" werden
                 // damit ein zu Löschender Download nicht noch schnell gestartet wird
-                sleep(5 * 1000);
+                TimeUnit.SECONDS.sleep(5);
                 pause = false;
             }
 

@@ -19,21 +19,27 @@
  */
 package mediathek;
 
-import java.awt.SplashScreen;
-import java.io.File;
-import java.nio.file.Path;
-import java.util.concurrent.TimeUnit;
+import javafx.application.Application;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.filmlisten.FilmlisteLesen;
+import mSearch.filmlisten.reader.FastAutoFilmListReader;
+import mSearch.filmlisten.reader.FilmListReader;
 import mSearch.tool.Log;
-import static mSearch.tool.Log.LILNE;
 import mSearch.tool.SysMsg;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.IoXmlLesen;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.MVFilmSize;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.awt.*;
+import java.io.File;
+import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
+
+import static mSearch.tool.Log.LILNE;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 public class MediathekAuto {
@@ -43,6 +49,12 @@ public class MediathekAuto {
     private boolean bFastAuto = false;
 
     public MediathekAuto(String[] ar) {
+        Thread fxThread = new Thread(() -> {
+            Application.launch(DummyFXApp.class);
+        });
+        fxThread.setName("DummyFXApp Thread");
+        fxThread.start();
+
         if (ar != null) {
             if (ar.length > 0) {
                 if (!ar[0].startsWith("-")) {
@@ -58,10 +70,12 @@ public class MediathekAuto {
             if (splash != null) {
                 splash.close();
             }
-        } catch (Exception ignored) {
-            SysMsg.sysMsg("NoSplashscreen");
+        } catch (Exception ex) {
+            logger.warn(ex);
         }
     }
+
+    private static final Logger logger = LogManager.getLogger(MediathekAuto.class);
 
     /**
      * Set fast auto mode for reading film list.
@@ -74,37 +88,44 @@ public class MediathekAuto {
         this.bFastAuto = bFastAuto;
     }
 
+    @SuppressWarnings("resource")
     public void starten() {
         daten = Daten.getInstance(pfad);
-        daten.setAuto(true);
+        Daten.setAuto(true);
         startMeldungen();
 
-        if (!IoXmlLesen.einstellungenExistieren()) {
+        final IoXmlLesen configReader = new IoXmlLesen();
+        if (!configReader.einstellungenExistieren()) {
             // Programm erst mit der GuiVersion einrichten
-            Log.errorLog(834986137, "Das Programm muss erst mit der Gui-Version eingerichtet werden!");
+            logger.error("Das Programm muss erst mit der Gui-Version eingerichtet werden!");
             System.exit(1);
         }
 
         // Einstellungen laden
         Path xmlFilePath = Daten.getMediathekXmlFilePath();
-        SysMsg.sysMsg("Einstellungen laden: " + xmlFilePath.toString());
-        if (!IoXmlLesen.datenLesen(xmlFilePath)) {
+        logger.info("Einstellungen laden: {}", xmlFilePath.toString());
+        if (!configReader.datenLesen(xmlFilePath)) {
             // dann hat das Laden nicht geklappt
-            Log.errorLog(834986137, "Einstellungen konnten nicht geladen werden: " + xmlFilePath.toString());
+            logger.error("Einstellungen konnten nicht geladen werden: {}", xmlFilePath.toString());
             System.exit(1);
         }
 
         // Filmliste laden
-        FilmlisteLesen filmList = new FilmlisteLesen();
-        if (bFastAuto) {
-            //do not read film descriptions in FASTAUTO mode as they won´t be used...
-            FilmlisteLesen.setWorkMode(FilmlisteLesen.WorkMode.FASTAUTO);
+        FilmListReader filmList = null;
+        try {
+            if (bFastAuto)
+                filmList = new FastAutoFilmListReader();
+            else
+                filmList = new FilmListReader();
+            filmList.readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
+        } finally {
+            if (filmList != null) {
+                filmList.close();
+            }
         }
-        filmList.readFilmListe(Daten.getDateiFilmliste(), daten.getListeFilme(), Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
-
         if (daten.getListeFilme().isTooOld()) {
             // erst neue Filmliste laden
-            SysMsg.sysMsg("Neue Filmliste laden");
+            logger.info("Neue Filmliste laden");
             daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
                 @Override
                 public void fertig(ListenerFilmeLadenEvent event) {
@@ -114,7 +135,7 @@ public class MediathekAuto {
             daten.getFilmeLaden().loadFilmlist("", true);
         } else {
             // mit aktueller Filmliste starten
-            SysMsg.sysMsg("aktuelle Filmliste verwenden");
+            logger.info("aktuelle Filmliste verwenden");
             // Liste erst mal aufbereiten
             daten.getListeAbo().setAboFuerFilm(daten.getListeFilme(), false /*aboLoeschen*/);
             daten.getListeBlacklist().filterListe();
@@ -131,22 +152,22 @@ public class MediathekAuto {
             daten.getListeDownloads().abosSuchen(null);
             daten.getListeDownloads().filmEintragen(); //für gespeicherte Downloads
 
-            SysMsg.sysMsg(daten.getListeDownloads().size() + " Filme zum Laden");
-            SysMsg.sysMsg("");
+            logger.info("{} Filme zum Laden", daten.getListeDownloads().size());
+            logger.info("");
             // erst mal die Filme schreiben
             int i = 1;
             for (DatenDownload d : daten.getListeDownloads()) {
-                SysMsg.sysMsg("Film " + (i++) + ": ");
-                SysMsg.sysMsg("\tSender: " + d.arr[DatenDownload.DOWNLOAD_SENDER]);
-                SysMsg.sysMsg("\tThema: " + d.arr[DatenDownload.DOWNLOAD_THEMA]);
-                SysMsg.sysMsg("\tTitel: " + d.arr[DatenDownload.DOWNLOAD_TITEL]);
+                logger.info("Film " + (i++) + ": ");
+                logger.info("\tSender: " + d.arr[DatenDownload.DOWNLOAD_SENDER]);
+                logger.info("\tThema: " + d.arr[DatenDownload.DOWNLOAD_THEMA]);
+                logger.info("\tTitel: " + d.arr[DatenDownload.DOWNLOAD_TITEL]);
                 String size = MVFilmSize.getGroesse(d.mVFilmSize.getSize());
                 if (!size.isEmpty()) {
-                    SysMsg.sysMsg("\tGröße: " + size + " MByte");
+                    logger.info("\tGröße: " + size + " MByte");
                 }
-                SysMsg.sysMsg("");
+                logger.info("");
             }
-            SysMsg.sysMsg(LILNE);
+            logger.info(LILNE);
             // und jetzt starten
             for (DatenDownload d : daten.getListeDownloads()) {
                 d.startDownload(daten);

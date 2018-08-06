@@ -296,10 +296,10 @@ public class PanelMediaDB extends PanelVorlage {
         jLabel5.setText("In den Pfaden nach Medien suchen");
 
         jTablePath.setModel(new javax.swing.table.DefaultTableModel(
-                new Object [][] {
+                new Object[][]{
 
                 },
-                new String [] {
+                new String[]{
 
                 }
         ));
@@ -618,10 +618,10 @@ public class PanelMediaDB extends PanelVorlage {
         jToggleButtonLoad.setText("Laden");
 
         jTableMediaDB.setModel(new javax.swing.table.DefaultTableModel(
-                new Object [][] {
+                new Object[][]{
                         {null}
                 },
-                new String [] {
+                new String[]{
                         "Title 1"
                 }
         ));
@@ -634,8 +634,10 @@ public class PanelMediaDB extends PanelVorlage {
                         .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jToggleButtonLoad)
-                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE))
+                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
+                                        .addGroup(jPanel5Layout.createSequentialGroup()
+                                                .addComponent(jToggleButtonLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(0, 0, Short.MAX_VALUE)))
                                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(

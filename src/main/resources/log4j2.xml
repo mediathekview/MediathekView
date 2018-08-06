@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration xmlns="http://logging.apache.org/log4j/2.0/config" status="INFO">
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern=". %msg%n"></PatternLayout>
+        </Console>
+
+        <File name="LogFile" filename="${sys:user.home}/.mediathek3/mediathekview.log" append="false">
+            <PatternLayout>
+                <Pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c - %msg%n</Pattern>
+            </PatternLayout>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="console"></AppenderRef>
+            <AppenderRef ref="LogFile"></AppenderRef>
+        </Root>
+
+        <Logger name="hsqldb.db" level="warn">
+            <AppenderRef ref="console"></AppenderRef>
+        </Logger>
+    </Loggers>
+</Configuration>

@@ -27,6 +27,7 @@ import mediathek.controller.IoXmlLesen;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TextCopyPaste;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -61,11 +62,12 @@ public class PanelImport extends PanelVorlage {
 
     private void importDatei(String datei) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        int[] found = IoXmlLesen.importAboBlacklist(datei, jCheckBoxAbo.isSelected(), jCheckBoxBlack.isSelected(), jCheckBoxErsetzungstabelle.isSelected());
+        final IoXmlLesen configReader = new IoXmlLesen();
+        final ImmutableTriple<Integer, Integer, Integer> result = configReader.importAboBlacklist(datei, jCheckBoxAbo.isSelected(), jCheckBoxBlack.isSelected(), jCheckBoxErsetzungstabelle.isSelected());
         String text = "Es wurden\n"
-                + found[0] + " Abos und\n"
-                + found[1] + " Blacklisteinträge\n"
-                + found[2] + " Ersetzungen\n"
+                + result.left + " Abos und\n"
+                + result.middle + " Blacklisteinträge\n"
+                + result.right + " Ersetzungen\n"
                 + "hinzugefügt";
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         MVMessageDialog.showMessageDialog(parentComponent, text, "Import", JOptionPane.INFORMATION_MESSAGE);

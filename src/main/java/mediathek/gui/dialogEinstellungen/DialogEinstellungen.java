@@ -23,8 +23,9 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
+import mediathek.gui.dialogEinstellungen.allgemein.PanelEinstellungen;
 import mediathek.res.GetIcon;
-import mediathek.tool.EscBeenden;
+import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionen;
 
 import javax.swing.*;
@@ -44,7 +45,6 @@ public class DialogEinstellungen extends JFrame {
     private PanelImport panelImport;
     private PanelEinstellungenColor panelEinstellungenColor;
     private PanelFilmlisteLaden panelImportFilme;
-    private PanelExportFilmliste panelExportFilmliste;
     private PanelBlacklist panelBlacklist;
     private PanelErledigteUrls panelErledigteAbos;
     private PanelErledigteUrls panelHistory;
@@ -63,7 +63,6 @@ public class DialogEinstellungen extends JFrame {
     private static final String NAME_allgemeineEinstellungenColor = "Farben";
     private static final String NAME_filmListe = "Filmliste";
     private static final String NAME_filmListeLaden = "Filmliste laden";
-    private static final String NAME_filmListeExportieren = "Filmliste exportieren";
     private static final String NAME_blacklist = "Blacklist";
     private static final String NAME_aufzeichnen = "Aufzeichnen und Abspielen";
     private static final String NAME_dateiname = "Datei- und Pfadnamen";
@@ -82,7 +81,6 @@ public class DialogEinstellungen extends JFrame {
     // ######## Filme ###############
     private final DefaultMutableTreeNode treeNodeFilme = new DefaultMutableTreeNode("Filmliste");
     private final DefaultMutableTreeNode treeNodeFilmliste = new DefaultMutableTreeNode(NAME_filmListeLaden);
-    private final DefaultMutableTreeNode treeNodeFilmlisteExport = new DefaultMutableTreeNode(NAME_filmListeExportieren);
     private final DefaultMutableTreeNode treeNodeBlacklist = new DefaultMutableTreeNode(NAME_blacklist);
     // ########### Programme ##############
     private final DefaultMutableTreeNode treeNodeDownload = new DefaultMutableTreeNode("Aufzeichnen und Abspielen");
@@ -106,12 +104,8 @@ public class DialogEinstellungen extends JFrame {
         GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, this, Daten.getInstance().getMediathekGui());
         this. setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
         jButtonBeenden.addActionListener(e -> beenden());
-        new EscBeenden(this) {
-            @Override
-            public void beenden_() {
-                beenden();
-            }
-        };
+
+        EscapeKeyHandler.installHandler(this, this::beenden);
     }
 
     private void init() {
@@ -123,7 +117,6 @@ public class DialogEinstellungen extends JFrame {
         panelImport = new PanelImport(ddaten, this);
         panelEinstellungenColor = new PanelEinstellungenColor(ddaten, this);
         panelImportFilme = new PanelFilmlisteLaden(ddaten, this);
-        panelExportFilmliste = new PanelExportFilmliste(ddaten, this);
         panelBlacklist = new PanelBlacklist(ddaten, this, PanelBlacklist.class.getName());
         panelHistory = new PanelErledigteUrls(ddaten, this);
         panelHistory.initHistory();
@@ -149,7 +142,6 @@ public class DialogEinstellungen extends JFrame {
         // ===============================================================================
         // ######## Filme ###############
         treeNodeFilme.add(treeNodeFilmliste);
-        treeNodeFilme.add(treeNodeFilmlisteExport);
         treeNodeFilme.add(treeNodeBlacklist);
         treeNodeStart.add(treeNodeFilme);
         // ===============================================================================
@@ -218,10 +210,6 @@ public class DialogEinstellungen extends JFrame {
                     case NAME_filmListeLaden:
                         jPanelExtra.removeAll();
                         jPanelExtra.add(panelImportFilme);
-                        break;
-                    case NAME_filmListeExportieren:
-                        jPanelExtra.removeAll();
-                        jPanelExtra.add(panelExportFilmliste);
                         break;
                     case NAME_blacklist:
                         jPanelExtra.removeAll();

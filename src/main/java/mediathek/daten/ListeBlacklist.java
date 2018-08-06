@@ -19,14 +19,9 @@
  */
 package mediathek.daten;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Duration;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
@@ -34,13 +29,20 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.tool.Filter;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 @SuppressWarnings("serial")
 public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
     /**
      * List for dynamic application of filters
      */
-    final List<Predicate<DatenFilm>> filterList = new ArrayList<>();
+    private final List<Predicate<DatenFilm>> filterList = new ArrayList<>();
     private long days = 0;
     private boolean doNotShowFutureFilms, doNotShowGeoBlockedFilms;
     private boolean blacklistIsActive;
@@ -54,16 +56,15 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      * Add item without notifying registered listeners.
      *
      * @param b {@link DatenBlacklist} item.
-     * @return true if collection is changed
      */
-    public synchronized boolean addWithoutNotification(DatenBlacklist b) {
-        b.arr[DatenBlacklist.BLACKLIST_NR] = getNr(nr++);
-        return super.add(b);
+    public synchronized void addWithoutNotification(DatenBlacklist b) {
+        b.arr[DatenBlacklist.BLACKLIST_NR] = Integer.toString(nr++);
+        super.add(b);
     }
 
     @Override
     public synchronized boolean add(DatenBlacklist b) {
-        b.arr[DatenBlacklist.BLACKLIST_NR] = getNr(nr++);
+        b.arr[DatenBlacklist.BLACKLIST_NR] = Integer.toString(nr++);
         boolean ret = super.add(b);
         filterListAndNotifyListeners();
         return ret;
@@ -145,7 +146,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         if (listeFilme != null) {
             listeRet.setMeta(listeFilme);
 
-            forEach(entry -> {
+            this.parallelStream().forEach(entry -> {
                 entry.toLower();
                 entry.hasPattern();
             });
@@ -185,7 +186,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             col.clear();
 
             // Array mit Sendernamen/Themen füllen
-            listeRet.themenLaden();
+            listeRet.fillSenderList();
         }
         Duration.counterStop("Blacklist filtern");
     }
@@ -219,11 +220,11 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      */
     private void loadCurrentFilterSettings() {
         try {
-            //if (MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_TAGE).equals("") || MVConfig.get(MVConfig.Configs.SYSTEM_FILTER_TAGE).equals("0")) {
-            if (Daten.guiFilme.getFilterTage() == 0) {
+            final String val = Daten.guiFilme.fap.zeitraumProperty.getValue();
+            if (val.equals("∞"))
                 days = 0;
-            } else {
-                final long max = 1000L * 60L * 60L * 24L * Daten.guiFilme.getFilterTage();
+            else {
+                final long max = 1000L * 60L * 60L * 24L * Integer.parseInt(val);
                 days = System.currentTimeMillis() - max;
             }
         } catch (Exception ex) {
@@ -272,9 +273,9 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
         for (DatenBlacklist blacklistEntry : this) {
             if (Filter.filterAufFilmPruefen(blacklistEntry.arr[DatenBlacklist.BLACKLIST_SENDER], blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA],
                     Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL])
-                    ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL].toLowerCase().split(","),
+                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_TITEL].toLowerCase().split(","),
                     Filter.isPattern(blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL])
-                    ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL].toLowerCase().split(","),
+                            ? new String[]{blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL]} : blacklistEntry.arr[DatenBlacklist.BLACKLIST_THEMA_TITEL].toLowerCase().split(","),
                     new String[]{""}, 0, true /*min*/, film, true /*auch die Länge prüfen*/
             )) {
                 return Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_IST_WHITELIST));
@@ -291,7 +292,8 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      */
     private boolean checkGeoBlockedFilm(DatenFilm film) {
         boolean result = true;
-        if (!film.arr[DatenFilm.FILM_GEO].isEmpty() && !film.arr[DatenFilm.FILM_GEO].contains(MVConfig.get(MVConfig.Configs.SYSTEM_GEO_STANDORT))) {
+        final String geoLocation = ApplicationConfiguration.getConfiguration().getString(ApplicationConfiguration.GEO_LOCATION);
+        if (!film.arr[DatenFilm.FILM_GEO].isEmpty() && !film.arr[DatenFilm.FILM_GEO].contains(geoLocation)) {
             result = false;
         }
 
@@ -362,11 +364,8 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      * @return true if film should be displayed
      */
     private boolean checkFilmLength(DatenFilm film) {
-        return !(filmlaengeSoll != 0 && film.dauerL != 0 && filmlaengeSoll > film.dauerL);
+        final long filmLength = film.getFilmLength();
+        return !(filmlaengeSoll != 0 && filmLength != 0 && filmlaengeSoll > filmLength);
 
-    }
-
-    private String getNr(int nr) {
-        return String.valueOf(nr);
     }
 }

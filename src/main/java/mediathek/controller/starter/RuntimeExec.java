@@ -23,6 +23,9 @@ import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
 import mediathek.tool.MVFilmSize;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,10 +39,8 @@ public class RuntimeExec {
     public static final String TRENNER_PROG_ARRAY = "<>";
     private static final int INPUT = 1;
     private static final int ERROR = 2;
-    Thread clearIn;
-    Thread clearOut;
     private Process process = null;
-    Start start;
+    private Start start;
     private static int procnr = 0; //TH
     private static final Pattern patternFlvstreamer = Pattern.compile("([0-9]*.[0-9]{1}%)");
     private static final Pattern patternFlvstreamerComplete = Pattern.compile("Download complete");
@@ -72,31 +73,30 @@ public class RuntimeExec {
         strProgCall = p;
     }
 
-    //===================================
-    // Public
-    //===================================
+    private static final Logger logger = LogManager.getLogger(RuntimeExec.class);
+
     public Process exec(boolean log) {
         try {
             if (arrProgCallArray != null) {
                 if (log) {
-                    SysMsg.sysMsg("=====================");
-                    SysMsg.sysMsg("Starte Array: ");
-                    SysMsg.sysMsg(" -> " + strProgCallArray);
-                    SysMsg.sysMsg("=====================");
+                    logger.info("=====================");
+                    logger.info("Starte Array: ");
+                    logger.info(" -> " + strProgCallArray);
+                    logger.info("=====================");
                 }
                 process = Runtime.getRuntime().exec(arrProgCallArray);
             } else {
                 if (log) {
-                    SysMsg.sysMsg("=====================");
-                    SysMsg.sysMsg("Starte nicht als Array:");
-                    SysMsg.sysMsg(" -> " + strProgCall);
-                    SysMsg.sysMsg("=====================");
+                    logger.info("=====================");
+                    logger.info("Starte nicht als Array:");
+                    logger.info(" -> " + strProgCall);
+                    logger.info("=====================");
                 }
                 process = Runtime.getRuntime().exec(strProgCall);
             }
 
-            clearIn = new Thread(new ClearInOut(INPUT, process));
-            clearOut = new Thread(new ClearInOut(ERROR, process));
+            Thread clearIn = new Thread(new ClearInOut(INPUT, process));
+            Thread clearOut = new Thread(new ClearInOut(ERROR, process));
             clearIn.start();
             clearOut.start();
         } catch (Exception ex) {
@@ -197,7 +197,7 @@ public class RuntimeExec {
                     String s = matcher.group().trim();
                     if (!s.isEmpty()) {
                         try {
-                            final long aktSize = Integer.parseInt(s.replace("kB", ""));
+                            final long aktSize = Integer.parseInt(StringUtils.replace(s, "kB", ""));
                             mVFilmSize.setAktSize(aktSize * 1_000);
                             long akt = start.startZeit.diffInSekunden();
                             if (oldSecs < akt - 5) {

@@ -19,82 +19,69 @@
  */
 package mediathek.update;
 
-import static java.lang.Thread.sleep;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
 import mSearch.tool.Listener;
-import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
-import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.dialog.DialogNewSet;
 import mediathek.tool.GuiFunktionenProgramme;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class CheckUpdate {
+import javax.swing.*;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-    private static boolean updateCheckAlreadyPerformed = false;
+public class CheckUpdate extends Thread {
     private final Daten daten;
     private final JFrame parent;
+    private static final Logger logger = LogManager.getLogger(CheckUpdate.class);
 
     public CheckUpdate(JFrame parent, Daten daten) {
         this.daten = daten;
         this.parent = parent;
+
+        setName("CheckUpdate Thread");
     }
 
-    public void checkProgUpdate() {
-        new Thread(this::prog).start();
-    }
-
-    private synchronized void prog() {
+    public void run() {
+        logger.info("CheckUpdate started.");
         try {
-            if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_UPDATE_SUCHEN))) {
-                // will der User nicht
-                return;
-            }
+            //first check if network is available...
+            InetAddress serverAddr = InetAddress.getByName("res.mediathekview.de");
+            if (serverAddr.isReachable(1000)) {
+                //we have internet...
+                final MediathekGui gui = daten.getMediathekGui();
+                if (gui != null)
+                    SwingUtilities.invokeLater(() -> gui.enableUpdateMenuItem(false));
 
-            if (MVConfig.get(MVConfig.Configs.SYSTEM_BUILD_NR).equals(Konstanten.MVVERSION.toString())
-                    && MVConfig.get(MVConfig.Configs.SYSTEM_UPDATE_DATUM).equals(new SimpleDateFormat("yyyyMMdd").format(new Date()))) {
-                // keine neue Version und heute schon gemacht
-                return;
-            }
-            // damit geänderte Sets gleich gemeldet werden und nicht erst morgen
-            final ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
-            if (pgrUpdate.checkVersion(false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
-                Listener.notify(Listener.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, CheckUpdate.class.getSimpleName());
-            } else {
-                Listener.notify(Listener.EREIGNIS_MEDIATHEKGUI_PROGRAMM_AKTUELL, CheckUpdate.class.getSimpleName());
-            }
+                searchForProgramUpdate();
 
-            //==============================================
-            // Sets auf Update prüfen
-            checkForPsetUpdates();
+                checkForPsetUpdates();
 
-            try {
-                sleep(10_000);
-            } catch (InterruptedException ignored) {
+                if (gui != null)
+                    SwingUtilities.invokeLater(() -> gui.enableUpdateMenuItem(true));
+
             }
-            Listener.notify(Listener.EREIGNIS_MEDIATHEKGUI_ORG_TITEL, CheckUpdate.class.getSimpleName());
+        } catch (IOException ignored) {
+            //do not log errors as we expect them here...
+        }
+        logger.info("CheckUpdate finished.");
+    }
 
-        } catch (Exception ex) {
-            Log.errorLog(794612801, ex);
+    private void searchForProgramUpdate() {
+        final ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
+        if (pgrUpdate.checkVersion(false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
+            Listener.notify(Listener.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, CheckUpdate.class.getSimpleName());
         }
     }
 
     private void checkForPsetUpdates() {
-        if (updateCheckAlreadyPerformed) {
-            return;// nur einmal laufen
-        } else
-            updateCheckAlreadyPerformed = true;
-
         try {
             SwingUtilities.invokeLater(() -> {
                 ListePset listePsetStandard = ListePsetVorlagen.getStandarset(parent, daten, false /*replaceMuster*/);
@@ -106,20 +93,19 @@ public class CheckUpdate {
                             // dann hat das Laden der aktuellen Standardversion nicht geklappt
                             return;
                         }
-                        if (/*!Daten.delSets &&*/version.equals(listePsetStandard.version)) {
+                        if (version.equals(listePsetStandard.version)) {
                             // dann passt alles
                             return;
                         } else {
                             DialogNewSet dialogNewSet = new DialogNewSet(parent);
                             dialogNewSet.setVisible(true);
                             if (!dialogNewSet.ok) {
-                                SysMsg.sysMsg("Setanlegen: Abbruch");
+                                logger.info("Setanlegen: Abbruch");
                                 if (!dialogNewSet.morgen) {
                                     // dann auch die Versionsnummer aktualisieren
-                                    SysMsg.sysMsg("Setanlegen: Nicht wieder nachfragen");
+                                    logger.info("Setanlegen: Nicht wieder nachfragen");
                                     MVConfig.add(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET, listePsetStandard.version);
                                 }
-                                SysMsg.sysMsg("==========================================");
                                 // dann halt nicht
                                 return;
                             }
@@ -158,8 +144,8 @@ public class CheckUpdate {
                         listePsetStandard.forEach((psNew) -> psNew.arr[DatenPset.PROGRAMMSET_NAME] = psNew.arr[DatenPset.PROGRAMMSET_NAME] + ", neu: " + date);
                     }
                     GuiFunktionenProgramme.addSetVorlagen(daten.getMediathekGui(), daten, listePsetStandard, true /*auto*/, true /*setVersion*/); // damit auch AddOns geladen werden
-                    SysMsg.sysMsg("Setanlegen: OK");
-                    SysMsg.sysMsg("==========================================");
+                    logger.info("Setanlegen: OK");
+                    logger.info("==========================================");
                 }
             });
         } catch (Exception ignored) {

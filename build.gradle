@@ -8,39 +8,28 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'distribution'
 apply plugin: 'maven'
+apply plugin: 'idea'
 apply from: "${project.rootDir}/gradle/eclipse.gradle"
 
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 group = 'de.mediathekview'
-version = '13.0.6'
+version = '13.1.2'
 
 def jarName = 'MediathekView.jar'
 def mainClass = 'mediathek.Main'
 
 ext {
-    swingxVersion = '1.6.6-SNAPSHOT'
-    swingxGroup = ''
     propsFile = file('src/main/resources/version.properties').absoluteFile
     if (!propsFile.exists()) {
         Files.createFile(propsFile.toPath())
-    }
-    repoZugangFile = file('scripte/deploy/RepoZugang.properties').absoluteFile
-    if (!repoZugangFile.exists()) {
-        Files.createFile(repoZugangFile.toPath())
     }
 }
 
 def loadVersionProperties() {
     Properties props = new Properties()
     props.load(propsFile.newDataInputStream())
-    return props
-}
-
-def loadRepoZugangProperties() {
-    Properties props = new Properties()
-    props.load(repoZugangFile.newDataInputStream())
     return props
 }
 
@@ -54,106 +43,72 @@ compileTestJava {
 repositories {
     mavenLocal()
     mavenCentral()
-    maven {
-        url "https://oss.sonatype.org/content/repositories/snapshots/"
-    }
     flatDir {
         dirs 'libs'
     }
 }
 
 dependencies {
-    compile 'de.mediathekview:MLib:2.4.4'
+    compile ":jide-oss:3.7.4"
 
-    compile "$swingxGroup:swingx-action:$swingxVersion"
-    compile "$swingxGroup:swingx-autocomplete:$swingxVersion"
-    compile "$swingxGroup:swingx-beaninfo:$swingxVersion"
-    compile "$swingxGroup:swingx-common:$swingxVersion"
-    compile "$swingxGroup:swingx-core:$swingxVersion"
-    compile "$swingxGroup:swingx-graphics:$swingxVersion"
-    compile "$swingxGroup:swingx-painters:$swingxVersion"
-    compile "$swingxGroup:swingx-plaf:$swingxVersion"
-
-    compile 'org.apache.commons:commons-lang3:3.5'
-    compile 'com.fasterxml.jackson.core:jackson-core:2.9.3'
-    compile 'com.jidesoft:jide-oss:3.6.16'
+    compile 'org.apache.commons:commons-lang3:3.6'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.9.6'
+    compile 'com.jidesoft:jide-oss:3.7.4'
     compile 'org.tukaani:xz:1.6'
-    compile 'com.jgoodies:jgoodies-forms:1.9.0'
     compile 'net.sf.jchart2d:jchart2d:3.3.2'
+    compile 'org.apache.logging.log4j:log4j-core:2.8.1'
+    compile 'net.engio:mbassador:1.3.0'
+    compile 'org.controlsfx:controlsfx:8.40.14'
+    compile 'com.h2database:h2:1.4.197'
+    compile 'org.apache.commons:commons-configuration2:2.2'
+    compile 'com.github.jiconfont:jiconfont-swing:1.0.1'
+    compile 'com.github.jiconfont:jiconfont-font_awesome:4.7.0.0'
+    compile 'com.nativelibs4java:bridj:0.7.0'
+    compile 'com.miglayout:miglayout-swing:5.1'
+    compile 'com.miglayout:miglayout-core:5.1'
+    compile 'com.miglayout:miglayout-javafx:5.1'
+    compile 'com.squareup.okhttp3:okhttp:3.11.0'
+    compile group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.5.0'
 
     compileOnly 'com.yuvimasory:orange-extensions:1.3.0'
+    compileOnly group: 'org.jetbrains', name: 'annotations', version: '15.0'
 }
 
-uploadArchives {
-    repositories.mavenDeployer {
-        Properties props = loadRepoZugangProperties()
-        def nexusUser = props.getProperty('repoUser')
-        def nexusPw = props.getProperty('repoPw')
-        repository(url: "https://repo.mediathekview.de/repository/maven-releases/") {
-            authentication(userName:  nexusUser, password:  nexusPw)
-        }
-        snapshotRepository(url: "https://repo.mediathekview.de/repository/maven-snapshots/") {
-            authentication(userName:  nexusUser, password:  nexusPw)
-        }
-    }
-}
 build.dependsOn(install)
 
-task updateVersion << {
-    Properties props = loadVersionProperties()
+task updateVersion {
+    doLast {
+        Properties props = loadVersionProperties()
 
-    def oldVersion = props.getProperty('VERSION')
-    if (!oldVersion.equals(project.version)) {
-        logger.lifecycle "==msearch======================"
-        logger.lifecycle "Version: $project.version"
-        logger.lifecycle "==msearch======================"
-        props.setProperty('VERSION', project.version)
-        props.store(propsFile.newWriter(), null)
+        def oldVersion = props.getProperty('VERSION')
+        if (!oldVersion.equals(project.version)) {
+            logger.lifecycle "==MediathekView======================"
+            logger.lifecycle "Version: $project.version"
+            logger.lifecycle "==MediathekView======================"
+            props.setProperty('VERSION', project.version)
+            props.store(propsFile.newWriter(), null)
+        }
     }
 }
 
 processResources.dependsOn updateVersion
 
-/*
-licenseReport {
-    outputDir = "res/Copyright/"
-    excludes = [':MSearch', 'MediathekView:MSearch']
-    configurations = ['compile']
-}
-
-processResources.dependsOn generateLicenseReport
-*/
 tasks.withType(Zip) { task ->
     task.doLast {
-        ant.checksum(algorithm: 'SHA-1', file: it.archivePath)
+        ant.checksum(algorithm: 'SHA-512', file: it.archivePath)
     }
 }
 tasks.withType(Tar) { task ->
     task.doLast {
-        ant.checksum(algorithm: 'SHA-1', file: it.archivePath)
+        ant.checksum(algorithm: 'SHA-512', file: it.archivePath)
     }
 }
-/*
-task copyProgrammIconsInRes(type: Copy) {
-    logger.lifecycle 'Copying Programm icons.'
-    from 'src/main/resources/mediathek/res/programm'
-    into 'res/Icons/Programm/Version-' + version
-    include '*.png'
-    exclude 'about'
+
+tasks.withType(Tar) {
+    compression = Compression.GZIP
+    extension = "tar.gz"
 }
 
-processResources.dependsOn copyProgrammIconsInRes
-
-task copySenderIconsInRes(type: Copy) {
-    logger.lifecycle 'Copying Sender icons.'
-    from 'src/main/resources/mediathek/res/sender'
-    into 'res/Icons/Sender'
-    include '*.png'
-    exclude '*.xcv'
-}
-
-processResources.dependsOn copySenderIconsInRes
-*/
 [distZip, distTar]*.shouldRunAfter compileJava, updateVersion, jar
 
 jar {
@@ -175,13 +130,10 @@ distributions {
                 from configurations.compile
             }
             from('res') {
-                filesMatching('**/*.sh') {
-                    filter(ReplaceTokens, tokens: [JARNAME: jarName])
-                }
                 filesMatching('**/*.txt') {
                     filter(ReplaceTokens, tokens: [JARNAME: jarName])
                 }
-                filesMatching('**/*.command') {
+                filesMatching('**/*.sh') {
                     filter(ReplaceTokens, tokens: [JARNAME: jarName])
                 }
             }
@@ -199,35 +151,23 @@ distributions {
 //Windows executable generation
 launch4j {
     mainClassName = mainClass
-    icon = "../../res/Info/MediathekView.ico"
+    icon = "../../res/MediathekView.ico"
     jar = jarName
     dontWrapJar = true
-    outfile = "MediathekView_ohne_feste_Speicherzuweisung.exe"
-}
-
-task creatMitSpeicherExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
     outfile = "MediathekView.exe"
-
     initialHeapSize = 256
-    maxHeapSize = 2048
+    maxHeapSize = 1024
     maxHeapPercent = 80
+
 }
+
 
 task createIpv4Exe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
     outfile = "MediathekView_ipv4.exe"
     opt = "-Djava.net.preferIPv4Stack=true"
 
     initialHeapSize = 256
-    maxHeapSize = 2048
-    maxHeapPercent = 80
-}
-
-task createPortableExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
-    outfile = "MediathekView_Portable.exe"
-    cmdLine = "Einstellungen/.mediathek3"
-
-    initialHeapSize = 256
-    maxHeapSize = 2048
+    maxHeapSize = 1024
     maxHeapPercent = 80
 }
 
@@ -260,31 +200,5 @@ task debug(type: JavaExec, dependsOn: classes) {
 
     if (project.hasProperty('args')) {
         args(project.args.split(','))
-    }
-}
-
-/**
- * <b>You don't have to call this. Travis will do it for you if a new releass (tag) will be build!<b/>
- * Call this so: './gradlew build release -PnexusUser=[NEXUS_USER] -PnexusPw=[NEXUS_PASSWORD]'
- */
-task release(dependsOn: 'uploadArchives') {
-    doLast {
-        println 'Released Version '+version
-    }
-}
-
-/**
- * <b>You don't have to call this. Travis will do it for you if you push to develop!<b/>
- * Call this so: './gradlew build releaseSnapshot -PnexusUser=[NEXUS_USER] -PnexusPw=[NEXUS_PASSWORD]'
- */
-task releaseSnapshot(dependsOn: 'uploadArchives') {
-    doLast {
-        println 'Released Snapshot Version '+version
-    }
-}
-
-gradle.taskGraph.whenReady {taskGraph ->
-    if (taskGraph.hasTask(releaseSnapshot)) {
-        version = version+'-SNAPSHOT'
     }
 }

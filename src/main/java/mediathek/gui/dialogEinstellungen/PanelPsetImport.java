@@ -20,13 +20,13 @@
 package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
+import mSearch.Config;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.daten.ListePset;
 import mediathek.daten.ListePsetVorlagen;
 import mediathek.gui.PanelVorlage;
-import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.TModel;
@@ -41,7 +41,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.net.URISyntaxException;
 
 @SuppressWarnings("serial")
 public class PanelPsetImport extends PanelVorlage {
@@ -82,7 +81,7 @@ public class PanelPsetImport extends PanelVorlage {
         });
         jTableVorlagen.getSelectionModel().addListSelectionListener(new BeobTableSelect());
         jTableVorlagen.setModel(new TModel(new Object[][]{}, ListePsetVorlagen.PGR_COLUMN_NAMES));
-        if (!Daten.getInstance().isDebug()) {
+        if (!Config.isDebuggingEnabled()) {
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMinWidth(0);
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setPreferredWidth(0);
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMaxWidth(0);
@@ -91,13 +90,6 @@ public class PanelPsetImport extends PanelVorlage {
             //GuiFunktionenProgramme.addVorlagen(ddaten, GuiFunktionenProgramme.getStandardprogramme(ddaten), false /* auto */);
             GuiFunktionenProgramme.addSetVorlagen(parentComponent, daten, ListePsetVorlagen.getStandarset(parentComponent, daten, true /*replaceMuster*/), false /*auto*/, true /*setVersion*/);
         });
-
-        jXHyperlinkInfos.setText("");
-        try {
-            jXHyperlinkInfos.setAction(new UrlHyperlinkAction(parentComponent, ""));
-        } catch (URISyntaxException ignored) {
-        }
-        setHyperLink(""); // zum löschen
     }
 
     private void importDatei(String datei) {
@@ -123,7 +115,7 @@ public class PanelPsetImport extends PanelVorlage {
 
     private void tabelleLaden() {
         jTableVorlagen.setModel(listePsetVorlagen.getTModel(jComboBoxBs.getSelectedItem().toString()));
-        if (!Daten.getInstance().isDebug()) {
+        if (!Config.isDebuggingEnabled()) {
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMinWidth(0);
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setPreferredWidth(0);
             jTableVorlagen.getColumnModel().getColumn(jTableVorlagen.convertColumnIndexToView(ListePsetVorlagen.PGR_VERSION_NR)).setMaxWidth(0);
@@ -146,19 +138,6 @@ public class PanelPsetImport extends PanelVorlage {
         jTextFieldBs.setText(vorlage[ListePsetVorlagen.PGR_BS_NR]);
         jTextFieldUrl.setText(vorlage[ListePsetVorlagen.PGR_URL_NR]);
         jTextAreaBeschreibung.setText(vorlage[ListePsetVorlagen.PGR_BESCHREIBUNG_NR]);
-        setHyperLink(vorlage[ListePsetVorlagen.PGR_INFO_NR]);
-    }
-
-    private void setHyperLink(String uurl) {
-        if (!uurl.equals("")) {
-            jLabelInfo.setVisible(true);
-            jXHyperlinkInfos.setVisible(true);
-            jXHyperlinkInfos.setText(uurl);
-        } else {
-            jLabelInfo.setVisible(false);
-            jXHyperlinkInfos.setVisible(false);
-        }
-
     }
 
     /** This method is called from within the constructor to
@@ -184,8 +163,6 @@ public class PanelPsetImport extends PanelVorlage {
         jButtonImportVorlage = new javax.swing.JButton();
         javax.swing.JLabel jLabel6 = new javax.swing.JLabel();
         jTextFieldBs = new javax.swing.JTextField();
-        jLabelInfo = new javax.swing.JLabel();
-        jXHyperlinkInfos = new org.jdesktop.swingx.JXHyperlink();
         jButtonAktualisieren = new javax.swing.JButton();
         javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
         javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
@@ -230,10 +207,6 @@ public class PanelPsetImport extends PanelVorlage {
 
         jTextFieldBs.setEditable(false);
 
-        jLabelInfo.setText("Infos:");
-
-        jXHyperlinkInfos.setText("Info-Url");
-
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -255,13 +228,11 @@ public class PanelPsetImport extends PanelVorlage {
                                         .addGroup(jPanel4Layout.createSequentialGroup()
                                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                         .addComponent(jLabel2)
-                                                        .addComponent(jLabel3)
-                                                        .addComponent(jLabelInfo))
+                                                        .addComponent(jLabel3))
                                                 .addGap(26, 26, 26)
                                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                         .addComponent(jTextFieldUrl)
-                                                        .addComponent(jScrollPane3)
-                                                        .addComponent(jXHyperlinkInfos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE))))
                                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -283,16 +254,12 @@ public class PanelPsetImport extends PanelVorlage {
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jLabel3)
                                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jXHyperlinkInfos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabelInfo))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jButtonImportVorlage)
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButtonImportVorlage, jTextFieldBs, jTextFieldName, jTextFieldUrl, jXHyperlinkInfos});
+        jPanel4Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[]{jButtonImportVorlage, jTextFieldBs, jTextFieldName, jTextFieldUrl});
 
         jButtonAktualisieren.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-aktualisieren.png"))); // NOI18N
         jButtonAktualisieren.setToolTipText("Neu laden");
@@ -330,7 +297,7 @@ public class PanelPsetImport extends PanelVorlage {
                                         .addComponent(jLabel5)
                                         .addComponent(jComboBoxBs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap())
@@ -441,7 +408,7 @@ public class PanelPsetImport extends PanelVorlage {
                 jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jTextAreaImport, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
+                                .addComponent(jTextAreaImport, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jButtonImportText)
                                 .addContainerGap())
@@ -496,7 +463,6 @@ public class PanelPsetImport extends PanelVorlage {
     private javax.swing.JButton jButtonImportVorlage;
     private javax.swing.JButton jButtonPfad;
     private javax.swing.JComboBox<String> jComboBoxBs;
-    private javax.swing.JLabel jLabelInfo;
     private javax.swing.JTable jTableVorlagen;
     private javax.swing.JTextArea jTextAreaBeschreibung;
     private javax.swing.JTextArea jTextAreaImport;
@@ -504,7 +470,6 @@ public class PanelPsetImport extends PanelVorlage {
     private javax.swing.JTextField jTextFieldDatei;
     private javax.swing.JTextField jTextFieldName;
     private javax.swing.JTextField jTextFieldUrl;
-    private org.jdesktop.swingx.JXHyperlink jXHyperlinkInfos;
     // End of variables declaration//GEN-END:variables
 
     private class BeobPfadDoc implements DocumentListener {

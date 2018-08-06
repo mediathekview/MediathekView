@@ -35,24 +35,19 @@ import java.awt.event.ActionListener;
 
 @SuppressWarnings("serial")
 public class PanelMeldungen extends PanelVorlage {
-    private final int logArt;
     private int firstScroll = 25;
     private static final Color cGruen = new Color(0, 153, 51);
     private static final Color cRot = new Color(255, 0, 0);
 
-    public PanelMeldungen(Daten d, JFrame parentComponent, int logArt, String header) {
+    public PanelMeldungen(Daten d, JFrame parentComponent, String header) {
         super(d, parentComponent);
         initComponents();
         jLabelHeader.setText(header);
-        this.logArt = logArt;
+
         ObservableList<String> text;
-        if (logArt == SysMsg.LOG_SYSTEM) {
-            text = SysMsg.textSystem;
-            jCheckBoxAuto.setSelected(true);
-        } else {
             text = SysMsg.textProgramm;
             jCheckBoxAuto.setSelected(false);
-        }
+
         jCheckBoxAuto.setForeground(jCheckBoxAuto.isSelected() ? cGruen : cRot);
         jButtonLoeschen.addActionListener(new BeobLoeschen());
         jCheckBoxAuto.addActionListener((ActionEvent e) -> {
@@ -109,20 +104,11 @@ public class PanelMeldungen extends PanelVorlage {
     }
 
     private MVConfig.Configs getNrSystem() {
-        MVConfig.Configs nr = MVConfig.Configs.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN;
-        switch (logArt) {
-            case SysMsg.LOG_SYSTEM:
-                nr = MVConfig.Configs.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_SYSTEMMELDUNGEN;
-                break;
-            case SysMsg.LOG_PLAYER:
-                nr = MVConfig.Configs.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN;
-                break;
-        }
-        return nr;
+        return MVConfig.Configs.SYSTEM_MEDUNGSFENSTER_UMBRECHEN_PLAYERMELDUNGEN;
     }
 
     private synchronized void setText() {
-        jTextArea.setText(SysMsg.getText(logArt));
+        jTextArea.setText(SysMsg.getText());
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -196,7 +182,7 @@ public class PanelMeldungen extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent arg0) {
-            SysMsg.clearText(logArt);
+            SysMsg.clearText();
             setText();
         }
     }
