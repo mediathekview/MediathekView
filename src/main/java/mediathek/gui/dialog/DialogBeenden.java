@@ -197,7 +197,7 @@ public class DialogBeenden extends JDialog {
     }
 
     /**
-     * Handler which will wait untill all downloads have finished.
+     * Handler which will wait until all downloads have finished.
      * Uses a {@link javax.swing.SwingWorker} to properly handle EDT stuff.
      */
     private void waitUntilDownloadsHaveFinished() {
