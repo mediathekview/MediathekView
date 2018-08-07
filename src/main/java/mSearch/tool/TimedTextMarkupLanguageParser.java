@@ -89,7 +89,7 @@ public class TimedTextMarkupLanguageParser implements AutoCloseable {
                 if (beginNode != null && endNode != null) {
                     subtitle.begin = ttmlFormat.parse(beginNode.getNodeValue());
                     //HACK:: Don´t know why this is set like this...
-                    //but we have to subract 10 hours from the XML
+                    //but we have to subtract 10 hours from the XML
                     if (subtitle.begin.getHours() >= 10) {
                         subtitle.begin.setHours(subtitle.begin.getHours() - 10);
                     }
