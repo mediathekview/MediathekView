@@ -165,11 +165,11 @@ public class FilmeLaden {
     }
 
     /**
-     * Determin whether we want to perform a remote update check.
+     * Determine whether we want to perform a remote update check.
      * This will be done if we are:
-     * 1. dont have film entries
+     * 1. don't have film entries
      * 2. dateiUrl is either empty or string starts with http
-     * 3. our filmlist is old enough that we dont use diff list - we dont check them.
+     * 3. our filmlist is old enough that we don't use diff list - we don't check them.
      *
      * @return true if we need to load a new list, false if we should not load a remote list
      */
@@ -179,9 +179,9 @@ public class FilmeLaden {
         //always perform update when list is empty
         if (!listeFilme.isEmpty()) {
             //remote download is using an empty file name!...
-            //or somebody put a web adress into the text field
+            //or somebody put a web address into the text field
             if (dateiUrl.isEmpty() || dateiUrl.startsWith("http")) {
-                //perform check only if we dont want to use DIFF list...
+                //perform check only if we don't want to use DIFF list...
                 if (listeFilme.isTooOldForDiff()) {
                     if (!hasNewRemoteFilmlist())
                         result = false;
