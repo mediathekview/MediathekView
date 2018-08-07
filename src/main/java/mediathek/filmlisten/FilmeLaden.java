@@ -114,7 +114,7 @@ public class FilmeLaden {
     /**
      * Check if a newer filmlist id is available on the remote server in order to prevent unnecessary filmlist downloads...
      *
-     * @return true if newer is availble, otherwise false.
+     * @return true if newer is available, otherwise false.
      */
     private boolean hasNewRemoteFilmlist() {
         boolean result = false;
