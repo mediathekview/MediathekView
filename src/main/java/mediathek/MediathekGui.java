@@ -214,9 +214,6 @@ public class MediathekGui extends JFrame {
 
         createMemoryMonitor();
 
-        if (Config.isDebuggingEnabled())
-            Platform.runLater(() -> memoryMonitor.show());
-
         createBandwidthMonitor(this);
 
         Duration.staticPing(LOG_TEXT_GUI_STEHT);
@@ -234,6 +231,8 @@ public class MediathekGui extends JFrame {
 
     private void createMemoryMonitor() {
         Platform.runLater(() -> memoryMonitor = new MemoryMonitor());
+        if (Config.isDebuggingEnabled())
+            Platform.runLater(() -> memoryMonitor.show());
     }
 
     private void loadFilmlist() {
