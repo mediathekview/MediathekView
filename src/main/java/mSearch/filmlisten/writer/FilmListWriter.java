@@ -178,11 +178,11 @@ public class FilmListWriter {
     }
 
     private void writeThema(JsonGenerator jg, DatenFilm datenFilm) throws IOException {
-        if (datenFilm.arr[DatenFilm.FILM_THEMA].equals(thema)) {
+        if (datenFilm.getThema().equals(thema)) {
             jg.writeString("");
         } else {
-            thema = datenFilm.arr[DatenFilm.FILM_THEMA];
-            jg.writeString(datenFilm.arr[DatenFilm.FILM_THEMA]);
+            thema = datenFilm.getThema();
+            jg.writeString(datenFilm.getThema());
         }
     }
 

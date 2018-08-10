@@ -123,8 +123,6 @@ public class MediathekGui extends JFrame {
     private static final String LOG_TEXT_KEINE_LAUFENDEN_DOWNLOADS = "Keine laufenden Downloads!";
     private static final String DIALOG_TITLE_BLACKLIST = "Blacklist";
     private static final String PANEL_BLACKLIST_NAME_POSTFIX = "_2";
-    //private static final String CHECKBOX_TEXT_DOWNLOADS_IN_EXTRAFENSTER = "Downloads in Extrafenster";
-    //private static final String CHECKBOX_TEXT_ABOS_IN_EXTRAFENSTER = "Abos in Extrafenster";
     private static final String CHECKBOX_TEXT_MELDUNGEN_ANZEIGEN = "Meldungen anzeigen";
 
 
@@ -132,8 +130,6 @@ public class MediathekGui extends JFrame {
     private final SplashScreenManager splashScreenManager;
     private MVFrame frameDownload;
     private MVFrame frameAbo;
-    //private final JCheckBoxMenuItem jCheckBoxDownloadExtrafenster = new JCheckBoxMenuItem();
-    //private final JCheckBoxMenuItem jCheckBoxAboExtrafenster = new JCheckBoxMenuItem();
     private final JCheckBoxMenuItem jCheckBoxMeldungenAnzeigen = new JCheckBoxMenuItem();
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
@@ -218,9 +214,6 @@ public class MediathekGui extends JFrame {
 
         createMemoryMonitor();
 
-        if (Config.isDebuggingEnabled())
-            Platform.runLater(() -> memoryMonitor.show());
-
         createBandwidthMonitor(this);
 
         Duration.staticPing(LOG_TEXT_GUI_STEHT);
@@ -238,6 +231,8 @@ public class MediathekGui extends JFrame {
 
     private void createMemoryMonitor() {
         Platform.runLater(() -> memoryMonitor = new MemoryMonitor());
+        if (Config.isDebuggingEnabled())
+            Platform.runLater(() -> memoryMonitor.show());
     }
 
     private void loadFilmlist() {
@@ -314,8 +309,6 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    private StatusBarController statusBarController;
-
     /**
      * this property keeps track how many items are currently selected in the active table view
      */
@@ -330,7 +323,7 @@ public class MediathekGui extends JFrame {
      */
     private void createStatusBar() {
         JFXPanel statusBarPanel = new JFXPanel();
-        statusBarController = new StatusBarController(daten, memoryMonitor, selectedItemsProperty);
+        StatusBarController statusBarController = new StatusBarController(daten, memoryMonitor, selectedItemsProperty);
         statusBarController.installStatusBar(statusBarPanel);
 
         jPanelInfo.add(statusBarPanel, BorderLayout.CENTER);
@@ -343,7 +336,7 @@ public class MediathekGui extends JFrame {
     /**
      * Helper to determine what tab is currently active
      */
-    private ObjectProperty<TabPaneIndex> tabPaneIndexProperty = new SimpleObjectProperty<>(TabPaneIndex.NONE);
+    private final ObjectProperty<TabPaneIndex> tabPaneIndexProperty = new SimpleObjectProperty<>(TabPaneIndex.NONE);
 
     public ObjectProperty<TabPaneIndex> tabPaneIndexProperty() {
         return tabPaneIndexProperty;
@@ -577,8 +570,6 @@ public class MediathekGui extends JFrame {
 
     private static boolean geklickt;
 
-    private LivestreamTab livestreamTab;
-
     private void initTabs() {
         Daten.guiDownloads = new GuiDownloads(daten, this);
         Daten.guiAbo = new GuiAbo(daten, this);
@@ -588,7 +579,7 @@ public class MediathekGui extends JFrame {
         jTabbedPane.addTab(TABNAME_FILME, Daten.guiFilme);
 
         if (Config.isDebuggingEnabled()) {
-            livestreamTab = new LivestreamTab(daten.getLivestreamList());
+            LivestreamTab livestreamTab = new LivestreamTab(daten.getLivestreamList());
             jTabbedPane.addTab("Livestreams", livestreamTab);
         }
 
@@ -602,24 +593,6 @@ public class MediathekGui extends JFrame {
         });
     }
 
-//    public void hideFrame(TABS state) {
-//        switch (state) {
-//            case TAB_DOWNLOADS:
-//                jCheckBoxDownloadExtrafenster.setSelected(false);
-//                MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_DOWNLOAD, Boolean.toString(false));
-//                break;
-//            case TAB_ABOS:
-//                jCheckBoxAboExtrafenster.setSelected(false);
-//                MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_ABO, Boolean.toString(false));
-//                break;
-//            case TAB_MELDUNGEN:
-//                jCheckBoxMeldungenAnzeigen.setSelected(true);
-//                MVConfig.add(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN, Boolean.toString(true));
-//                break;
-//        }
-//        initFrames();
-//    }
-
     /**
      * Enable/Disable the update related menu item.
      *
@@ -628,24 +601,6 @@ public class MediathekGui extends JFrame {
     public void enableUpdateMenuItem(boolean enable) {
         miSearchForProgramUpdate.setEnabled(enable);
     }
-
-//    private void initAboFrame() {
-//        // Abos
-//        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_ABO))) {
-//            frameAbo = setFrame(frameAbo, MVConfig.Configs.SYSTEM_GROESSE_ABO, Daten.guiAbo, TABS.TAB_ABOS);
-//        } else {
-//            setTab(frameAbo, Daten.guiAbo, TABNAME_ABOS, 2);
-//        }
-//    }
-
-//    private void initDownloadFrame() {
-//        // Downloads
-//        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_DOWNLOAD))) {
-//            frameDownload = setFrame(frameDownload, MVConfig.Configs.SYSTEM_GROESSE_DOWNLOAD, Daten.guiDownloads, TABS.TAB_DOWNLOADS);
-//        } else {
-//            setTab(frameDownload, Daten.guiDownloads, TABNAME_DOWNLOADS, 1);
-//        }
-//    }
 
     private void showOrHideMeldungenTab() {
         final boolean visible = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN));
@@ -678,18 +633,8 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    private MVFrame setFrame(MVFrame frame, MVConfig.Configs nrGroesse, PanelVorlage panel, TABS sparte) {
-        hide(frame, panel);
-        panel.solo = true;
-        frame = new MVFrame(daten, panel, sparte);
-        frame.setSize(nrGroesse);
-        frame.setVisible(true);
-        return frame;
-    }
-
     private void setTab(MVFrame frame, PanelVorlage panel, String titel, int nrTab) {
         hide(frame, panel);
-        //jTabbedPane.add(panel, spacerIcon, nrTab);
         jTabbedPane.add(panel, nrTab);
         jTabbedPane.setTitleAt(nrTab, titel);
         panel.solo = false;

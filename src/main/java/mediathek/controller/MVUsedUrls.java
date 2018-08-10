@@ -232,8 +232,8 @@ public class MVUsedUrls {
             for (DatenFilm film : arrayFilms) {
                 // film.arr[DatenFilm.FILM_THEMA_NR], film.arr[DatenFilm.FILM_TITEL_NR], film.getUrlHistory()
                 listeUrls.add(film.getUrlHistory());
-                listeUrlsSortDate.add(new MVUsedUrl(datum, film.arr[DatenFilm.FILM_THEMA], film.getTitle(), film.getUrlHistory()));
-                text = MVUsedUrl.getUsedUrl(datum, film.arr[DatenFilm.FILM_THEMA], film.getTitle(), film.getUrlHistory());
+                listeUrlsSortDate.add(new MVUsedUrl(datum, film.getThema(), film.getTitle(), film.getUrlHistory()));
+                text = MVUsedUrl.getUsedUrl(datum, film.getThema(), film.getTitle(), film.getUrlHistory());
                 bufferedWriter.write(text);
             }
 
