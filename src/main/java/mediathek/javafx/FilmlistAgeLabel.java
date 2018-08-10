@@ -1,56 +1,50 @@
 package mediathek.javafx;
 
 import javafx.application.Platform;
-import javafx.scene.control.Label;
+import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.config.Daten;
 import mediathek.gui.messages.TimerEvent;
+import mediathek.javafx.tool.ComputedLabel;
 import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Computed label which will display the creation date and age of the current film list.
  */
-public class FilmlistAgeLabel extends Label {
-    private AtomicBoolean timerStopped = new AtomicBoolean(false);
-    private Daten daten;
-    private double width = 0d;
+public class FilmlistAgeLabel extends ComputedLabel {
+    private final Daten daten;
 
     public FilmlistAgeLabel(Daten daten) {
         super();
         this.daten = daten;
         daten.getMessageBus().subscribe(this);
 
-        SwingUtilities.invokeLater(() -> {
-            daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
-                @Override
-                public void start(ListenerFilmeLadenEvent event) {
-                    timerStopped.set(true);
-                    daten.getMessageBus().unsubscribe(this);
-                }
+        SwingUtilities.invokeLater(() -> daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
+            @Override
+            public void start(ListenerFilmeLadenEvent event) {
+                daten.getMessageBus().unsubscribe(this);
+                Platform.runLater(() -> setVisible(false));
+            }
 
-                @Override
-                public void progress(ListenerFilmeLadenEvent event) {
-                }
-
-                @Override
-                public void fertig(ListenerFilmeLadenEvent event) {
-                    timerStopped.set(false);
-                    daten.getMessageBus().subscribe(this);
-                }
-            });
-        });
+            @Override
+            public void fertig(ListenerFilmeLadenEvent event) {
+                daten.getMessageBus().subscribe(this);
+                Platform.runLater(() -> setVisible(true));
+            }
+        }));
     }
 
     private void computeAge() {
+        final ListeFilme listeFilme = daten.getListeFilme();
+
         String strText = "Filmliste erstellt: ";
-        strText += daten.getListeFilme().genDate();
+        strText += listeFilme.genDate();
         strText += " Uhr  ";
 
-        final int sekunden = daten.getListeFilme().getAge();
+        final int sekunden = listeFilme.getAge();
 
         if (sekunden != 0) {
             strText += "||  Alter: ";
@@ -75,28 +69,6 @@ public class FilmlistAgeLabel extends Label {
 
     @Handler
     public void handleTimerEvent(TimerEvent e) {
-        Platform.runLater(() -> {
-            if (!timerStopped.get()) {
-                if (!isVisible())
-                    setVisible(true);
-                computeAge();
-            } else
-                setVisible(false);
-        });
-    }
-
-    /**
-     * This sets the text of the label and adjusts the width of the label to prevent "jumping" text.
-     *
-     * @param text
-     */
-    public void setComputedText(String text) {
-        setText(text);
-        double curWidth = getWidth();
-        if (curWidth >= width) {
-            width = curWidth;
-            setMinWidth(width);
-        }
-
+        Platform.runLater(this::computeAge);
     }
 }
