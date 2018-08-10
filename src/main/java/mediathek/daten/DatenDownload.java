@@ -102,7 +102,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
     public static final int DOWNLOAD_PROGRAMM_DOWNLOADMANAGER = 38;
     public static final int DOWNLOAD_REF = 39;
     //
-    public static final String TAG = "Downlad";
+    public static final String TAG = "Download";
     public static final int MAX_ELEM = 40;
     public static final String[] COLUMN_NAMES = {"Nr", "Filmnr", "Abo", "Sender", "Thema", "Titel", "", "",
         "Fortschritt", "Restzeit", "Geschwindigkeit", "Größe [MB]",

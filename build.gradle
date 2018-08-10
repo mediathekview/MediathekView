@@ -15,14 +15,12 @@ apply from: "${project.rootDir}/gradle/eclipse.gradle"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 group = 'de.mediathekview'
-version = '13.1.1'
+version = '13.1.2'
 
 def jarName = 'MediathekView.jar'
 def mainClass = 'mediathek.Main'
 
 ext {
-    swingxVersion = '1.6.6-SNAPSHOT'
-    swingxGroup = ''
     propsFile = file('src/main/resources/version.properties').absoluteFile
     if (!propsFile.exists()) {
         Files.createFile(propsFile.toPath())
@@ -51,15 +49,6 @@ repositories {
 }
 
 dependencies {
-    compile "$swingxGroup:swingx-action:$swingxVersion"
-    compile "$swingxGroup:swingx-autocomplete:$swingxVersion"
-    compile "$swingxGroup:swingx-beaninfo:$swingxVersion"
-    compile "$swingxGroup:swingx-common:$swingxVersion"
-    compile "$swingxGroup:swingx-core:$swingxVersion"
-    compile "$swingxGroup:swingx-graphics:$swingxVersion"
-    compile "$swingxGroup:swingx-painters:$swingxVersion"
-    compile "$swingxGroup:swingx-plaf:$swingxVersion"
-    
     compile ":jide-oss:3.7.4"
 
     compile 'org.apache.commons:commons-lang3:3.6'

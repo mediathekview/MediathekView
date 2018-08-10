@@ -139,7 +139,7 @@ public class MVBandwidthTokenBucket {
                 while (!isInterrupted()) {
                     // run 2times per second, its more regular
                     final int bucketCapacity = getBucketCapacity();
-                    //for unlimited speed we dont need the thread
+                    // for unlimited speed we don't need the thread
                     if (bucketCapacity == MVBandwidthTokenBucket.BANDWIDTH_MAX_BYTE) {
                         break;
                     }
