@@ -974,7 +974,7 @@ public class GuiFilme extends PanelVorlage {
 
             private void updateHistory(DatenFilm film) {
                 if (eintragen) {
-                    daten.history.zeileSchreiben(film.arr[DatenFilm.FILM_THEMA], film.getTitle(), film.getUrlHistory());
+                    daten.history.zeileSchreiben(film.getThema(), film.getTitle(), film.getUrlHistory());
                     daten.getListeFilmeHistory().add(film);
                 } else {
                     daten.history.urlAusLogfileLoeschen(film.getUrlHistory());
@@ -1057,11 +1057,11 @@ public class GuiFilme extends PanelVorlage {
                             } else //neues Abo anlegen
                             {
                                 if (mitTitel) {
-                                    daten.getListeAbo().addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
-                                            film.getSender(), film.arr[DatenFilm.FILM_THEMA], film.getTitle());
+                                    daten.getListeAbo().addAbo(film.getThema()/*aboname*/,
+                                            film.getSender(), film.getThema(), film.getTitle());
                                 } else {
-                                    daten.getListeAbo().addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
-                                            film.getSender(), film.arr[DatenFilm.FILM_THEMA], "");
+                                    daten.getListeAbo().addAbo(film.getThema()/*aboname*/,
+                                            film.getSender(), film.getThema(), "");
                                 }
                             }
                         });
@@ -1087,7 +1087,7 @@ public class GuiFilme extends PanelVorlage {
                 if (nr >= 0) {
                     Optional<DatenFilm> res = getFilm(nr);
                     res.ifPresent(film -> {
-                        final String th = film.arr[DatenFilm.FILM_THEMA];
+                        final String th = film.getThema();
                         final String se = film.getSender();
                         // Blackliste für alle Fälle einschalten, notify kommt beim add()
                         MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.TRUE.toString());

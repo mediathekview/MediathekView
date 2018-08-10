@@ -144,7 +144,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
     }
 
     private void setColor(Component c, DatenFilm datenFilm, DatenDownload datenDownload, boolean isSelected) {
-        final boolean live = datenFilm.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE);
+        final boolean live = datenFilm.getThema().equals(ListeFilme.THEMA_LIVE);
         boolean start = false;
 
         if (datenDownload != null) {
