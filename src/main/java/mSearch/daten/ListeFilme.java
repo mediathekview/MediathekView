@@ -89,7 +89,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     private void addHash(DatenFilm f, HashSet<String> hash, boolean index) {
         if (f.getSender().equals(Const.KIKA)) {
             // beim KIKA ändern sich die URLs laufend
-            hash.add(f.arr[DatenFilm.FILM_THEMA] + f.getTitle());
+            hash.add(f.getThema() + f.getTitle());
         } else if (index) {
             hash.add(f.getIndex());
         } else {
@@ -112,7 +112,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
                 DatenFilm f = it.next();
                 if (f.getSender().equals(Const.KIKA)) {
                     // beim KIKA ändern sich die URLs laufend
-                    if (hash.contains(f.arr[DatenFilm.FILM_THEMA] + f.getTitle())) {
+                    if (hash.contains(f.getThema() + f.getTitle())) {
                         it.remove();
                     }
                 } else if (index) {
@@ -131,7 +131,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
 
             for (DatenFilm f : listeEinsortieren) {
                 if (f.getSender().equals(Const.KIKA)) {
-                    if (!hash.contains(f.arr[DatenFilm.FILM_THEMA] + f.getTitle())) {
+                    if (!hash.contains(f.getThema() + f.getTitle())) {
                         addInit(f);
                     }
                 } else if (index) {
@@ -146,9 +146,9 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         hash.clear();
     }
 
-    private boolean addInit(DatenFilm film) {
+    private void addInit(DatenFilm film) {
         film.init();
-        return add(film);
+        add(film);
     }
 
     @Override
