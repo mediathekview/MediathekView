@@ -218,14 +218,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="jScrollPane2" alignment="0" pref="553" max="32767" attributes="0"/>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="jLabelInfo" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jXHyperlinkInfo" max="32767" attributes="0"/>
-                                      </Group>
-                                  </Group>
+                                  <Component id="jScrollPane2" pref="571" max="32767" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -233,13 +226,8 @@
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jScrollPane2" pref="281" max="32767" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="jLabelInfo" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jXHyperlinkInfo" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="jScrollPane2" pref="322" max="32767" attributes="0"/>
+                                  <EmptySpace min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -262,16 +250,6 @@
                             </Component>
                           </SubComponents>
                         </Container>
-                        <Component class="javax.swing.JLabel" name="jLabelInfo">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="Infos:"/>
-                          </Properties>
-                        </Component>
-                        <Component class="org.jdesktop.swingx.JXHyperlink" name="jXHyperlinkInfo">
-                          <Properties>
-                            <Property name="text" type="java.lang.String" value="jXHyperlink1"/>
-                          </Properties>
-                        </Component>
                       </SubComponents>
                     </Container>
                     <Container class="javax.swing.JPanel" name="jPanel6">
@@ -299,7 +277,7 @@
                                   <Component id="jCheckBoxButton" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="jCheckBoxAbo" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="55" max="32767" attributes="0"/>
+                                  <EmptySpace pref="38" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -336,7 +314,7 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="jButtonAbspielen">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Abspielen via gr&#xfc;nem Play-Button"/>
+                            <Property name="text" type="java.lang.String" value="Abspielen via schwarzem Play-Button"/>
                           </Properties>
                         </Component>
                       </SubComponents>

@@ -52,8 +52,6 @@ import mediathek.tool.cellrenderer.CellRendererFilme;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.table.MVFilmTable;
 import net.engio.mbassy.listener.Handler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
@@ -114,12 +112,14 @@ public class GuiFilme extends PanelVorlage {
             if (selectedItem != null) {
                 fap.senderBox.getItems().clear();
                 fap.senderBox.getItems().addAll(daten.getListeFilmeNachBlackList().getSenders());
-                fap.senderBox.getSelectionModel().select(selectedItem);
+                if (fap.senderBox.getItems().contains(selectedItem))
+                    fap.senderBox.getSelectionModel().select(selectedItem);
+                else
+                    fap.senderBox.getSelectionModel().select("");
+
                 SwingUtilities.invokeLater(this::reloadTable);
             }
         });
-
-        setupSenderBox();
     }
 
     private void setupFilmActionPanel() {
@@ -128,30 +128,7 @@ public class GuiFilme extends PanelVorlage {
         Platform.runLater(() -> fxPanel.setScene(fap.getFilmActionPanelScene()));
     }
 
-    private void setupSenderBox() {
-        logger.debug("setupSenderBox");
-        fap.senderBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            Platform.runLater(() -> {
-                //senderList changes, reload Thema as well...
-                String selectedItem = fap.themaBox.getSelectionModel().getSelectedItem();
-                String sender;
-                if (selectedItem == null)
-                    selectedItem = "";
-
-                if (newValue == null)
-                    sender = "";
-                else
-                    sender = newValue;
-
-                if (fap.themaBox.getItems().contains(selectedItem))
-                    fap.themaBox.getSelectionModel().select(selectedItem);
-                else
-                    fap.themaBox.getSelectionModel().select("");
-            });
-        });
-    }
-
-    private static final Logger logger = LogManager.getLogger(GuiFilme.class);
+    //private static final Logger logger = LogManager.getLogger(GuiFilme.class);
 
     /**
      * The JavaFx Film action popup panel.
@@ -186,7 +163,10 @@ public class GuiFilme extends PanelVorlage {
         final int minLength = (int) fap.filmLengthSlider.getLowValue();
         final int maxLength = (int) fap.filmLengthSlider.getHighValue();
 
-        final String filterSender = fap.senderBox.getSelectionModel().getSelectedItem();
+        String filterSender = fap.senderBox.getSelectionModel().getSelectedItem();
+        if (filterSender == null)
+            filterSender = "";
+
         String filterThema = fap.themaBox.getSelectionModel().getSelectedItem();
         if (filterThema == null) {
             filterThema = "";
@@ -1391,13 +1371,12 @@ public class GuiFilme extends PanelVorlage {
             });
             fap.senderBox.setOnAction(evt -> SwingUtilities.invokeLater(this::reloadTable));
 
-            //FIXME split correctly and fix javafx violation
             PauseTransition trans = new PauseTransition(Duration.millis(250));
+            trans.setOnFinished(evt -> SwingUtilities.invokeLater(() -> {
+                daten.getListeBlacklist().filterListe();
+                loadTable();
+            }));
             fap.zeitraumProperty.addListener((observable, oldValue, newValue) -> {
-                trans.setOnFinished(evt -> SwingUtilities.invokeLater(() -> {
-                    daten.getListeBlacklist().filterListe();
-                    loadTable();
-                }));
                 trans.playFromStart();
             });
 
