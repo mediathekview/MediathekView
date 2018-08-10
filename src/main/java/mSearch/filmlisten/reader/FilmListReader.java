@@ -149,7 +149,7 @@ public class FilmListReader implements AutoCloseable {
             datenFilm.arr[DatenFilm.FILM_THEMA] = thema;
         else {
             datenFilm.arr[DatenFilm.FILM_THEMA] = value;
-            thema = datenFilm.arr[DatenFilm.FILM_THEMA];
+            thema = datenFilm.getThema();
         }
     }
 

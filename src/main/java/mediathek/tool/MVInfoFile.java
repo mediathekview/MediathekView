@@ -75,7 +75,7 @@ public class MVInfoFile {
              BufferedWriter br = new BufferedWriter(osw)) {
             br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_SENDER] + ":      " + film.getSender());
             br.write("\n");
-            br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_THEMA] + ":       " + film.arr[DatenFilm.FILM_THEMA]);
+            br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_THEMA] + ":       " + film.getThema());
             br.write("\n\n");
             br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_TITEL] + ":       " + film.getTitle());
             br.write("\n\n");
@@ -125,7 +125,7 @@ public class MVInfoFile {
             if (datenDownload.film != null) {
                 br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_SENDER] + ":      " + datenDownload.film.getSender());
                 br.write("\n");
-                br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_THEMA] + ":       " + datenDownload.film.arr[DatenFilm.FILM_THEMA]);
+                br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_THEMA] + ":       " + datenDownload.film.getThema());
                 br.write("\n\n");
                 br.write(DatenFilm.COLUMN_NAMES[DatenFilm.FILM_TITEL] + ":       " + datenDownload.film.getTitle());
                 br.write("\n\n");

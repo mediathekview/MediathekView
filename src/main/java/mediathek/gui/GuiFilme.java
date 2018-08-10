@@ -28,7 +28,6 @@ import javafx.util.Duration;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mSearch.daten.DatenFilm;
-import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Datum;
@@ -61,7 +60,6 @@ import java.awt.event.*;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("serial")
 public class GuiFilme extends PanelVorlage {
@@ -144,174 +142,6 @@ public class GuiFilme extends PanelVorlage {
         PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten, tabelle, true /*film*/);
         jPanelBeschreibung.setLayout(new BorderLayout());
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
-    }
-
-    /**
-     * Model für die Tabelle Filme zusammenbauen.
-     */
-    private synchronized void prepareTableModel() {
-        final boolean nurNeue = fap.showNewOnly.getValue();
-        final boolean nurUt = fap.showSubtitlesOnly.getValue();
-        final boolean showOnlyHd = fap.showOnlyHd.getValue();
-        final boolean kGesehen = fap.showUnseenOnly.getValue();
-        final boolean keineAbos = fap.dontShowAbos.getValue();
-        final boolean showOnlyLivestreams = fap.showLivestreamsOnly.getValue();
-        final boolean dontShowTrailers = fap.dontShowTrailers.getValue();
-        final boolean dontShowGebaerdensprache = fap.dontShowSignLanguage.getValue();
-        final boolean dontShowAudioVersions = fap.dontShowAudioVersions.getValue();
-
-        final int minLength = (int) fap.filmLengthSlider.getLowValue();
-        final int maxLength = (int) fap.filmLengthSlider.getHighValue();
-
-        String filterSender = fap.senderBox.getSelectionModel().getSelectedItem();
-        if (filterSender == null)
-            filterSender = "";
-
-        String filterThema = fap.themaBox.getSelectionModel().getSelectedItem();
-        if (filterThema == null) {
-            filterThema = "";
-        }
-        String filterThemaTitel = fap.roSearchStringProperty.getValueSafe();
-
-        ListeFilme listeFilme = daten.getListeFilmeNachBlackList();
-
-        TModel tModel = new TModelFilm(new Object[][]{}, DatenFilm.COLUMN_NAMES);
-        if (listeFilme.isEmpty()) {
-            // wenn die Liste leer ist, leeres Modell erzeugen
-            tabelle.setModel(tModel);
-        } else {
-            // dann ein neues Model anlegen
-            if (filterSender.isEmpty() && filterThema.isEmpty() && filterThemaTitel.isEmpty()
-                    && minLength == 0 && maxLength == FilmActionPanel.UNLIMITED_VALUE
-                    && !keineAbos && !kGesehen && !showOnlyHd && !nurUt && !showOnlyLivestreams && !nurNeue
-                    && !dontShowTrailers && !dontShowGebaerdensprache && !dontShowAudioVersions) {
-                // dann ganze Liste laden
-                addObjectDataTabFilme(listeFilme, tModel);
-            } else {
-                // ThemaTitel
-                String[] arrThemaTitel;
-                if (Filter.isPattern(filterThemaTitel)) {
-                    arrThemaTitel = new String[]{filterThemaTitel};
-                } else {
-                    arrThemaTitel = filterThemaTitel.split(",");
-                    for (int i = 0; i < arrThemaTitel.length; ++i) {
-                        arrThemaTitel[i] = arrThemaTitel[i].trim().toLowerCase();
-                    }
-                }
-
-                for (DatenFilm film : listeFilme) {
-                    final long filmLength = film.getFilmLength();
-
-                    if (filmLength < TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES))
-                        continue;
-
-                    if (maxLength < FilmActionPanel.UNLIMITED_VALUE) {
-                        if (filmLength > TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES))
-                            continue;
-
-                    }
-                    if (nurNeue) {
-                        if (!film.isNew()) {
-                            continue;
-                        }
-                    }
-                    if (showOnlyLivestreams) {
-                        if (!film.arr[DatenFilm.FILM_THEMA].equals(ListeFilme.THEMA_LIVE)) {
-                            continue;
-                        }
-                    }
-                    if (showOnlyHd) {
-                        if (!film.isHD()) {
-                            continue;
-                        }
-                    }
-                    if (nurUt) {
-                        if (!film.hasSubtitle()) {
-                            continue;
-                        }
-                    }
-                    if (keineAbos) {
-                        if (!film.arr[DatenFilm.FILM_ABO_NAME].isEmpty()) {
-                            continue;
-                        }
-                    }
-                    if (kGesehen) {
-                        if (daten.history.urlPruefen(film.getUrlHistory())) {
-                            continue;
-                        }
-                    }
-
-                    if (dontShowTrailers) {
-                        String titel = film.getTitle();
-                        if (titel.contains("Trailer") || titel.contains("Teaser") || titel.contains("Vorschau") ||
-                                titel.contains("trailer") || titel.contains("teaser") || titel.contains("vorschau"))
-                            continue;
-                    }
-
-                    if (dontShowGebaerdensprache) {
-                        String titel = film.getTitle();
-                        if (titel.contains("Gebärden"))
-                            continue;
-                    }
-
-                    if (dontShowAudioVersions) {
-                        String titel = film.getTitle();
-                        if (titel.contains("Hörfassung") || titel.contains("Audiodeskription"))
-                            continue;
-                    }
-
-                    //filter mitLaenge false dann aufrufen
-                    //je nachdem dann das ganze herausoperieren
-                    String[] arrIrgendwo = {};
-                    String[] arrTitel = {};
-                    if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, 0, true, film, false)) {
-                        addObjectDataTabFilme(tModel, film);
-                    }
-                }
-                // listeFilme.stream().filter((DatenFilm film) -> Filter.filterAufFilmPruefen(filterSender,
-                //      filterThema, arrTitel, arrThemaTitel, arrIrgendwo, laenge, film, true /*länge nicht prüfen*/)).forEach(f -> addObjectDataTabFilme(tModel, f));
-
-            }
-            tabelle.setModel(tModel);
-        }
-    }
-
-    private void addObjectDataTabFilme(ListeFilme listefilme, TModel tModel) {
-        if (!listefilme.isEmpty()) {
-            for (DatenFilm film : listefilme) {
-                addObjectDataTabFilme(tModel, film);
-            }
-        }
-    }
-
-    private void addObjectDataTabFilme(TModel tModel, DatenFilm film) {
-        Object[] object = new Object[DatenFilm.MAX_ELEM];
-        for (int m = 0; m < DatenFilm.MAX_ELEM; ++m) {
-            switch (m) {
-                case DatenFilm.FILM_NR:
-                    object[m] = film.getFilmNr();
-                    break;
-                case DatenFilm.FILM_DATUM:
-                    object[m] = film.datumFilm;
-                    break;
-                case DatenFilm.FILM_GROESSE:
-                    object[m] = film.getFilmSize();
-                    break;
-                case DatenFilm.FILM_REF:
-                    object[m] = film;
-                    break;
-                case DatenFilm.FILM_HD:
-                    object[m] = film.isHD() ? "1" : "0";
-                    break;
-                case DatenFilm.FILM_UT:
-                    object[m] = film.hasSubtitle() ? "1" : "0";
-                    break;
-                default:
-                    object[m] = film.arr[m];
-                    break;
-            }
-        }
-        tModel.addRow(object);
     }
 
     /**
@@ -1144,7 +974,7 @@ public class GuiFilme extends PanelVorlage {
 
             private void updateHistory(DatenFilm film) {
                 if (eintragen) {
-                    daten.history.zeileSchreiben(film.arr[DatenFilm.FILM_THEMA], film.getTitle(), film.getUrlHistory());
+                    daten.history.zeileSchreiben(film.getThema(), film.getTitle(), film.getUrlHistory());
                     daten.getListeFilmeHistory().add(film);
                 } else {
                     daten.history.urlAusLogfileLoeschen(film.getUrlHistory());
@@ -1227,11 +1057,11 @@ public class GuiFilme extends PanelVorlage {
                             } else //neues Abo anlegen
                             {
                                 if (mitTitel) {
-                                    daten.getListeAbo().addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
-                                            film.getSender(), film.arr[DatenFilm.FILM_THEMA], film.getTitle());
+                                    daten.getListeAbo().addAbo(film.getThema()/*aboname*/,
+                                            film.getSender(), film.getThema(), film.getTitle());
                                 } else {
-                                    daten.getListeAbo().addAbo(film.arr[DatenFilm.FILM_THEMA]/*aboname*/,
-                                            film.getSender(), film.arr[DatenFilm.FILM_THEMA], "");
+                                    daten.getListeAbo().addAbo(film.getThema()/*aboname*/,
+                                            film.getSender(), film.getThema(), "");
                                 }
                             }
                         });
@@ -1257,7 +1087,7 @@ public class GuiFilme extends PanelVorlage {
                 if (nr >= 0) {
                     Optional<DatenFilm> res = getFilm(nr);
                     res.ifPresent(film -> {
-                        final String th = film.arr[DatenFilm.FILM_THEMA];
+                        final String th = film.getThema();
                         final String se = film.getSender();
                         // Blackliste für alle Fälle einschalten, notify kommt beim add()
                         MVConfig.add(MVConfig.Configs.SYSTEM_BLACKLIST_ON, Boolean.TRUE.toString());
@@ -1376,9 +1206,7 @@ public class GuiFilme extends PanelVorlage {
                 daten.getListeBlacklist().filterListe();
                 loadTable();
             }));
-            fap.zeitraumProperty.addListener((observable, oldValue, newValue) -> {
-                trans.playFromStart();
-            });
+            fap.zeitraumProperty.addListener((observable, oldValue, newValue) -> trans.playFromStart());
 
             fap.themaBox.setOnAction(evt -> SwingUtilities.invokeLater(this::reloadTable));
         });
@@ -1389,7 +1217,8 @@ public class GuiFilme extends PanelVorlage {
             stopBeob = true;
             tabelle.getSpalten();
 
-            prepareTableModel();
+            GuiFilmeModelHelper helper = new GuiFilmeModelHelper(fap, daten, tabelle);
+            helper.prepareTableModel();
 
             setInfoStatusbar();
             tabelle.setSpalten();
