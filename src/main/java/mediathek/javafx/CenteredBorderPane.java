@@ -6,7 +6,7 @@ import javafx.scene.layout.BorderPane;
 /**
  * A BorderPane subclass which automatically centers nodes
  */
-class CenteredBorderPane extends BorderPane {
+public class CenteredBorderPane extends BorderPane {
     public CenteredBorderPane(Node node) {
         super();
         setCenter(node);
