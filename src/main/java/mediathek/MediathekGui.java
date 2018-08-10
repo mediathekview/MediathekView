@@ -285,7 +285,7 @@ public class MediathekGui extends JFrame {
 
     /**
      * Setup the keyboard for search field on macOS.
-     * Ununsed on other platforms.
+     * Unused on other platforms.
      */
     protected void setupSearchKeyForMac()
     {

@@ -421,7 +421,7 @@ public class GuiFunktionenProgramme extends GuiFunktionen {
         for (DatenPset datenPset : Daten.listePset) {
             ret = true;
             if (!datenPset.isFreeLine() && !datenPset.isLable()) {
-                // nur wenn kein Lable oder freeline
+                // nur wenn kein Label oder freeline
                 text += "++++++++++++++++++++++++++++++++++++++++++++" + '\n';
                 text += PIPE + "Programmgruppe: " + datenPset.arr[DatenPset.PROGRAMMSET_NAME] + '\n';
                 String zielPfad = datenPset.arr[DatenPset.PROGRAMMSET_ZIEL_PFAD];
