@@ -87,10 +87,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     }
 
     private void addHash(DatenFilm f, HashSet<String> hash, boolean index) {
-        if (f.getSender().equals(Const.KIKA)) {
-            // beim KIKA ändern sich die URLs laufend
-            hash.add(f.getThema() + f.getTitle());
-        } else if (index) {
+        if (index) {
             hash.add(f.getIndex());
         } else {
             hash.add(f.getUrl());
@@ -106,16 +103,10 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         if (ersetzen) {
             listeEinsortieren.forEach((DatenFilm f) -> addHash(f, hash, index));
 
-            //TODO check if still necessary
             Iterator<DatenFilm> it = this.iterator();
             while (it.hasNext()) {
                 DatenFilm f = it.next();
-                if (f.getSender().equals(Const.KIKA)) {
-                    // beim KIKA ändern sich die URLs laufend
-                    if (hash.contains(f.getThema() + f.getTitle())) {
-                        it.remove();
-                    }
-                } else if (index) {
+                if (index) {
                     if (hash.contains(f.getIndex())) {
                         it.remove();
                     }
@@ -130,11 +121,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
             this.forEach(f -> addHash(f, hash, index));
 
             for (DatenFilm f : listeEinsortieren) {
-                if (f.getSender().equals(Const.KIKA)) {
-                    if (!hash.contains(f.getThema() + f.getTitle())) {
-                        addInit(f);
-                    }
-                } else if (index) {
+                if (index) {
                     if (!hash.contains(f.getIndex())) {
                         addInit(f);
                     }
