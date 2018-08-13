@@ -164,6 +164,15 @@ public class MediathekGui extends JFrame {
         return senderIconCache;
     }
 
+    /**
+     * Initialize JavaFX runtime by calling swing interop class.
+     * This will start JavaFX thread in case no window has been started yet.
+     * Necessary in case no config is found.
+     */
+    private void fakeInitializeJavaFXRuntime() {
+        final JFXPanel dummyPanel = new JFXPanel();
+    }
+
     public MediathekGui(String... aArguments) {
         super();
 
@@ -188,6 +197,8 @@ public class MediathekGui extends JFrame {
 
         startMeldungen();
         Duration.staticPing(LOG_TEXT_START);
+
+        fakeInitializeJavaFXRuntime();
 
         loadDaten();
 
