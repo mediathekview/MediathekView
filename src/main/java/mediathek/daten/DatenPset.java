@@ -142,7 +142,7 @@ public class DatenPset extends MVData<DatenPset> {
     }
 
     public boolean isLable() {
-        // wenn die Programmliste leer ist und einen Namen hat, ist es ein Label
+        // wenn die Programmliste leer ist und einen Namen hat, ist es ein Lable
         if (this.listeProg.isEmpty()) {
             if (!this.arr[PROGRAMMSET_NAME].equals("")) {
                 return true;
