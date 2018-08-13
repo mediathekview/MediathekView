@@ -194,7 +194,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     /**
      * Filterfunction for Abos dialog.
      *
-     * @param film item to be tested
+     * @param film item to te tested
      * @return true if item should be displayed.
      */
     public synchronized boolean checkBlackOkFilme_Downloads(DatenFilm film) {

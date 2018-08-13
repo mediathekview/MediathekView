@@ -21,7 +21,7 @@ public class SpotlightCommentWriter {
     }
 
     /**
-     * Log that MV wasn't used via the official mac app.
+     * Log that MV wasn´t used via the official mac app.
      * This is relevant to know for bug reports.
      */
     private void logUnofficialMacAppUse() {

@@ -127,7 +127,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                 case DatenFilm.FILM_HD:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     setCheckedOrUncheckedIcon(datenFilm.isHD());
-                    setText("");//im Model brauchen wir den Text zum Sortieren
+                    setText("");//im Modle brauchen wir den Text zum Sortieren
                     break;
                 case DatenFilm.FILM_UT:
                     setHorizontalAlignment(SwingConstants.CENTER);
