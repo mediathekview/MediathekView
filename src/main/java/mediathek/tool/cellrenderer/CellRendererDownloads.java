@@ -273,13 +273,13 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
                 case DatenDownload.DOWNLOAD_HD:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     setCheckedOrUncheckedIcon(datenDownload.film != null && datenDownload.film.isHD());
-                    setText("");//im Model brauchen wir den Text zum Sortieren
+                    setText("");//im Modle brauchen wir den Text zum Sortieren
                     break;
 
                 case DatenDownload.DOWNLOAD_UT:
                     setHorizontalAlignment(SwingConstants.CENTER);
                     setCheckedOrUncheckedIcon(datenDownload.film != null && datenDownload.film.hasSubtitle());
-                    setText("");//im Model brauchen wir den Text zum Sortieren
+                    setText("");//im Modle brauchen wir den Text zum Sortieren
                     break;
             }
 
