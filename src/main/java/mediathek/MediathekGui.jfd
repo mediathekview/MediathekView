@@ -1,0 +1,393 @@
+JFDML JFormDesigner: "7.0.0.0.92" Java: "1.8.0_152-release" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {comp jPanelCont::::398:x}"
+			"$verticalGroup": "par l {seq t {space :p:6:p, comp jPanelCont::::248:x}}"
+		} ) {
+			name: "this"
+			"defaultCloseOperation": 0
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "jPanelCont"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+					name: "jPanelInfo"
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Last"
+				} )
+				add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+					name: "jTabbedPane"
+					"border": new javax.swing.border.EmptyBorder( 5, 1, 1, 1 )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+			} )
+			menuBar: new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {
+				name: "jMenuBar"
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "jMenuDatei"
+					"mnemonic": 100
+					"text": "Datei"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemFilmlisteLaden"
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 116, 0, false )
+						"text": "Neue Filmliste laden"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemExportFilmlist"
+						"text": "Filmliste exportieren..."
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemEinstellungen"
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 115, 0, false )
+						"text": "Einstellungen"
+						"toolTipText": "allgemeine Programmeinstellungen"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormComponent( "javax.swing.JSeparator" ) {
+						name: "jSeparator2"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemBeenden"
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 81, 130, false )
+						"text": "Beenden"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "jMenuFilme"
+					"mnemonic": 70
+					"text": "Filme"
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemFilmAbspielen"
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 80, 130, false )
+						"text": "Film abspielen"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemFilmAufzeichnen"
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 68, 130, false )
+						"text": "Film aufzeichnen"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemBlacklist"
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 66, 130, false )
+						"text": "Blacklist öffnen"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
+						name: "jSeparator6"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemFilmeGesehen"
+						"accelerator": &KeyStroke0 static javax.swing.KeyStroke getKeyStroke( 71, 130, false )
+						"text": "Filme als gesehen markieren"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemFilmeUngesehen"
+						"accelerator": &KeyStroke1 static javax.swing.KeyStroke getKeyStroke( 78, 130, false )
+						"text": "Filme als ungesehen markieren"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemFilmeMediensammlung"
+						"accelerator": &KeyStroke2 static javax.swing.KeyStroke getKeyStroke( 77, 130, false )
+						"text": "Titel in der Mediensammlung suchen"
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "jMenuDownload"
+					"mnemonic": 79
+					"text": "Downloads"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemDownloadsAlleStarten"
+						"text": "alle Downloads starten"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemDownloadStartTime"
+						"text": "alle Downloads um xx:yy Uhr starten"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemDownloadAlleStoppen"
+						"text": "alle stoppen"
+						"toolTipText": "alle Downloads stoppen"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemDownloadWartendeStoppen"
+						"text": "wartende stoppen"
+						"toolTipText": "wartende Downloads stoppen"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemDownloadsAktualisieren"
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 87, 130, false )
+						"text": "Liste der Downloads aktualisieren"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemDownloadsAufraeumen"
+						"text": "Liste der Downloads aufräumen"
+					} )
+					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
+						name: "jSeparator3"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemDownloadStarten"
+						"text": "Downloads starten"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemDownloadStoppen"
+						"text": "Downloads stoppen"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemDownloadVorziehen"
+						"text": "Downloads vorziehen"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemDownloadsZurueckstellen"
+						"text": "Downloads zurückstellen"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemDownloadsLoeschen"
+						"text": "Downloads aus Liste entfernen"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemDownloadAendern"
+						"text": "Download ändern"
+					} )
+					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
+						name: "jSeparator1"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemDownloadGesehen"
+						"accelerator": #KeyStroke0
+						"text": "Filme als gesehen markieren"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemDownloadUngesehen"
+						"accelerator": #KeyStroke1
+						"text": "Filme als ungesehen markieren"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemDownloadAbspielen"
+						"text": "gespeicherten Film abspielen"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemDownloadMediensammlung"
+						"accelerator": #KeyStroke2
+						"text": "Titel in der Mediensammlung suchen"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemDownloadInvertSelection"
+						"text": "Auswahl umkehren"
+					} )
+					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
+						name: "jSeparator7"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemDownloadShutDown"
+						"text": "Rechner nach Downloads herunterfahren"
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "jMenuAbos"
+					"mnemonic": 98
+					"text": "Abos"
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemAbosEinschalten"
+						"text": "einschalten"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemAbosAusschalten"
+						"text": "ausschalten"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemAbosLoeschen"
+						"text": "löschen"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemAbosAendern"
+						"text": "ändern"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemAboNeu"
+						"text": "neues Abo anlegen"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemAboInvertSelection"
+						"text": "Auswahl umkehren"
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "jMenuAnsicht"
+					"mnemonic": 97
+					"text": "Ansicht"
+					auxiliary() {
+						"JavaCodeGenerator.variableLocal": true
+					}
+					add( new FormComponent( "javax.swing.JCheckBoxMenuItem" ) {
+						name: "jCheckBoxMenuItemToolBar"
+						"selected": true
+						"text": "Toolbar"
+					} )
+					add( new FormComponent( "javax.swing.JCheckBoxMenuItem" ) {
+						name: "cbkBeschreibung"
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 121, 0, false )
+						"foreground": new java.awt.Color( 0, 51, 153, 255 )
+						"text": "Beschreibung anzeigen"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormComponent( "javax.swing.JCheckBoxMenuItem" ) {
+						name: "jCheckBoxMenuItemVideoplayer"
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 122, 0, false )
+						"text": "Buttons anzeigen"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+						name: "jMenu1"
+						"text": "Schriftgröße"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+						add( new FormComponent( "javax.swing.JMenuItem" ) {
+							name: "jMenuItemSchriftGr"
+							"accelerator": static javax.swing.KeyStroke getKeyStroke( 107, 130, false )
+							"text": "vergrößern"
+						} )
+						add( new FormComponent( "javax.swing.JMenuItem" ) {
+							name: "jMenuItemSchriftKl"
+							"accelerator": static javax.swing.KeyStroke getKeyStroke( 109, 130, false )
+							"text": "verkleinern"
+						} )
+						add( new FormComponent( "javax.swing.JMenuItem" ) {
+							name: "jMenuItemSchriftNormal"
+							"accelerator": static javax.swing.KeyStroke getKeyStroke( 48, 130, false )
+							"text": "Normalgröße"
+						} )
+					} )
+					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
+						name: "jSeparator5"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JCheckBoxMenuItem" ) {
+						name: "cbBandwidthDisplay"
+						"text": "Bandbreitennutzung"
+					} )
+					add( new FormComponent( "javax.swing.JCheckBoxMenuItem" ) {
+						name: "jCheckBoxMenuItemMediaDb"
+						"text": "Mediensammlung durchsuchen"
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "jMenuHilfe"
+					"mnemonic": 104
+					"text": "Hilfe"
+					auxiliary() {
+						"JavaCodeGenerator.variableModifiers": 4
+					}
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemShowOnlineHelp"
+						"text": "Online-Hilfe anzeigen"
+					} )
+					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
+						name: "jSeparator4"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemCreateProtocolFile"
+						"text": "Protokolldatei erstellen..."
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemResetSettings"
+						"text": "Einstellungen zurücksetzen..."
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
+						name: "jSeparator8"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "miSearchForProgramUpdate"
+						"text": "Nach Update suchen..."
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "miShowProgramInfos"
+						"text": "Programminfos anzeigen..."
+					} )
+					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
+						name: "jSeparator9"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "miUpdateServers"
+						"text": "Update-Server aktualisieren..."
+					} )
+					add( new FormComponent( "javax.swing.JSeparator" ) {
+						name: "jSeparatorAboutApplication"
+						auxiliary() {
+							"JavaCodeGenerator.variableName": "jSeparatorAboutApplication"
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "jMenuItemAboutApplication"
+						"text": "Über dieses Programm..."
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+				} )
+			}
+		}, new FormLayoutConstraints( null ) {
+			"size": new java.awt.Dimension( 400, 300 )
+			"location": new java.awt.Point( 0, 0 )
+		} )
+	}
+}
