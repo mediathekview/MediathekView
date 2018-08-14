@@ -39,10 +39,6 @@ public class Konstanten {
     public static final String ADRESSE_WEBSITE = "https://mediathekview.de/";
     public static final String ADRESSE_FORUM = "https://forum.mediathekview.de/";
     public static final String ADRESSE_DONATION = "https://mediathekview.de/spenden/";
-    // ProgrammUrls
-    public static final String ADRESSE_WEBSITE_VLC = "http://www.videolan.org";
-    public static final String ADRESSE_WEBSITE_FLVSTREAMER = "https://savannah.nongnu.org/projects/flvstreamer";
-    public static final String ADRESSE_WEBSITE_FFMPEG = "http://ffmpeg.org";
     // Dateien/Verzeichnisse
     public static final String VERZEICHNIS_PROGRAMM_ICONS = "Icons/Programm"; // Unterverzeichnis im Programmverzeichnis in dem die Iconsets liegen
     public static final String VERZEICHNIS_SENDER_ICONS = "Icons/Sender"; // Unterverzeichnis im Programmverzeichnis in dem die Icons (Sender) liegen
