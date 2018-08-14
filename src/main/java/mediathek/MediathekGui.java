@@ -569,12 +569,14 @@ public class MediathekGui extends JFrame {
 
     private static boolean geklickt;
 
+    public GuiFilme tabFilme;
+
     private void initTabs() {
         Daten.guiDownloads = new GuiDownloads(daten, this);
         Daten.guiAbo = new GuiAbo(daten, this);
-        Daten.guiFilme = new GuiFilme(daten, this);
+        tabFilme = new GuiFilme(daten, this);
 
-        jTabbedPane.addTab(TABNAME_FILME, Daten.guiFilme);
+        jTabbedPane.addTab(TABNAME_FILME, tabFilme);
 
         if (Config.isDebuggingEnabled()) {
             LivestreamTab livestreamTab = new LivestreamTab(daten.getLivestreamList());
@@ -607,7 +609,7 @@ public class MediathekGui extends JFrame {
         jTabbedPane.updateUI();
         designTabs();
         jTabbedPane.setSelectedIndex(0);
-        Daten.guiFilme.isShown();
+        tabFilme.isShown();
     }
 
     private void hide(MVFrame frame, PanelVorlage panelVorlage) {
@@ -649,7 +651,7 @@ public class MediathekGui extends JFrame {
         for (int i = 0; i < jTabbedPane.getTabCount(); ++i) {
             Component c = jTabbedPane.getComponentAt(i);
             ImageIcon ic = null;
-            if (c.equals(Daten.guiFilme)) {
+            if (c.equals(tabFilme)) {
                 if (jTabbedPane.getSelectedIndex() == i) {
                     ic = top ? Icons.ICON_TAB_TOP_FILM : Icons.ICON_TAB_FILM;
                 } else {
@@ -1014,16 +1016,16 @@ public class MediathekGui extends JFrame {
     {
         // Filme
         jMenuItemFilmlisteLaden.addActionListener(e -> daten.getFilmeLaden().loadFilmlistDialog(daten, false));
-        jMenuItemFilmAbspielen.addActionListener(Daten.guiFilme.playAction);
-        jMenuItemFilmAufzeichnen.addActionListener(Daten.guiFilme.saveFilmAction);
+        jMenuItemFilmAbspielen.addActionListener(tabFilme.playAction);
+        jMenuItemFilmAufzeichnen.addActionListener(tabFilme.saveFilmAction);
         jMenuItemBlacklist.addActionListener(e -> {
             DialogLeer dialog = new DialogLeer(daten.getMediathekGui(), true);
             dialog.init(DIALOG_TITLE_BLACKLIST, new PanelBlacklist(daten, daten.getMediathekGui(), PanelBlacklist.class.getName() + PANEL_BLACKLIST_NAME_POSTFIX));
             dialog.setVisible(true);
         });
-        jMenuItemFilmeGesehen.addActionListener(Daten.guiFilme.markFilmAsSeenAction);
-        jMenuItemFilmeUngesehen.addActionListener(Daten.guiFilme.markFilmAsUnseenAction);
-        jMenuItemFilmeMediensammlung.addActionListener(Daten.guiFilme.mediensammlungAction);
+        jMenuItemFilmeGesehen.addActionListener(tabFilme.markFilmAsSeenAction);
+        jMenuItemFilmeUngesehen.addActionListener(tabFilme.markFilmAsUnseenAction);
+        jMenuItemFilmeMediensammlung.addActionListener(tabFilme.mediensammlungAction);
     }
 
     private void initializeDateiMenu() {
@@ -1211,7 +1213,7 @@ public class MediathekGui extends JFrame {
 
         // Tabelleneinstellungen merken
         dialog.setStatusText(4, "Film-Daten sichern");
-        Daten.guiFilme.tabelleSpeichern();
+        tabFilme.tabelleSpeichern();
 
         dialog.setStatusText(5, "Download-Daten sichern");
         Daten.guiDownloads.tabelleSpeichern();
@@ -1396,7 +1398,7 @@ public class MediathekGui extends JFrame {
                 case TAB_NIX:
                     break;
                 case TAB_FILME:
-                    setTabIfContain(Daten.guiFilme);
+                    setTabIfContain(tabFilme);
                     break;
                 case TAB_DOWNLOADS:
                     setTabIfContain(Daten.guiDownloads);
