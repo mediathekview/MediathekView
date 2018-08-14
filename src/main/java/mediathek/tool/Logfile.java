@@ -24,6 +24,7 @@ import mSearch.tool.Log;
 import mSearch.tool.SysMsg;
 
 import java.io.BufferedWriter;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,7 +40,9 @@ public class Logfile {
 
         ArrayList<String> retList;
         Path logFilePath = Paths.get(ziel);
-        try (final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(logFilePath)))) {
+        try (OutputStream os = Files.newOutputStream(logFilePath);
+             OutputStreamWriter osw = new OutputStreamWriter(os);
+             BufferedWriter bw = new BufferedWriter(osw)) {
             bw.write("");
             bw.newLine();
 
