@@ -40,7 +40,6 @@ public class Listener implements EventListener {
     public static final int EREIGNIS_START_EVENT_BUTTON = 15;
 
     public static final int EREIGNIS_PROGRAMM_OEFFNEN = 16;
-    public static final int EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR = 19;
     public static final int EREIGNIS_PANEL_DOWNLOAD_FILTER_ANZEIGEN = 21;
     public static final int EREIGNIS_PANEL_ABO_FILTER_ANZEIGEN = 22;
     public static final int EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN = 23;
