@@ -21,7 +21,6 @@ package mediathek.tool;
 
 import mSearch.tool.Functions;
 import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
 
 import java.io.BufferedWriter;
 import java.io.OutputStream;
@@ -153,34 +152,7 @@ public class Logfile {
             }
             bw.newLine();
             bw.newLine();
-            bw.newLine();
-            bw.newLine();
-            //
-            bw.write("#####################################################");
-            bw.newLine();
-            bw.write("## Programmausgabe ##################################");
-            bw.newLine();
-            bw.write("#####################################################");
-            bw.newLine();
-            bw.newLine();
-            bw.write(SysMsg.textProgramm.toString());
-            bw.newLine();
-            bw.newLine();
-            bw.newLine();
-            bw.newLine();
-            //
-            bw.write("#########################################################");
-            bw.newLine();
-            bw.write("## Fehlermeldungen                                       ");
-            bw.newLine();
-            retList = Log.printErrorMsg();
-            for (String s : retList) {
-                bw.write(s);
-                bw.newLine();
-            }
-            bw.newLine();
-            bw.newLine();
-            //
+
             ret = true;
         } catch (Exception ex) {
             Log.errorLog(319865493, ex);
