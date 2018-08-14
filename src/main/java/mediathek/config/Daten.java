@@ -33,7 +33,6 @@ import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.filmlisten.FilmeLaden;
-import mediathek.gui.GuiAbo;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.BaseEvent;
@@ -108,7 +107,6 @@ public class Daten
 
     // Gui
     private final MediathekGui mediathekGui; // JFrame der Gui
-    public static GuiAbo guiAbo = null; // Tab mit den Abos
 
     public static InfoDialog filmInfo = null; // Infos zum Film
     private DialogMediaDB dialogMediaDB;

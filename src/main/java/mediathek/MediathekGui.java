@@ -571,10 +571,11 @@ public class MediathekGui extends JFrame {
 
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
+    public GuiAbo tabAbos;
 
     private void initTabs() {
         tabDownloads = new GuiDownloads(daten, this);
-        Daten.guiAbo = new GuiAbo(daten, this);
+        tabAbos = new GuiAbo(daten, this);
         tabFilme = new GuiFilme(daten, this);
 
         jTabbedPane.addTab(TABNAME_FILME, tabFilme);
@@ -605,7 +606,7 @@ public class MediathekGui extends JFrame {
 
     private void initFrames() {
         setTab(frameDownload, tabDownloads, TABNAME_DOWNLOADS, 1);
-        setTab(frameAbo, Daten.guiAbo, TABNAME_ABOS, 2);
+        setTab(frameAbo, tabAbos, TABNAME_ABOS, 2);
 
         jTabbedPane.updateUI();
         designTabs();
@@ -666,7 +667,7 @@ public class MediathekGui extends JFrame {
                     ic = top ? Icons.ICON_TAB_TOP_DOWNLOAD_SW : Icons.ICON_TAB_DOWNLOAD_SW;
                 }
             }
-            if (c.equals(Daten.guiAbo)) {
+            if (c.equals(tabAbos)) {
                 if (jTabbedPane.getSelectedIndex() == i) {
                     ic = top ? Icons.ICON_TAB_TOP_ABO : Icons.ICON_TAB_ABO;
                 } else {
@@ -974,12 +975,12 @@ public class MediathekGui extends JFrame {
     private void initializeAboMenu()
     {
         // Abo
-        jMenuItemAbosEinschalten.addActionListener(e -> Daten.guiAbo.einAus(true));
-        jMenuItemAbosAusschalten.addActionListener(e -> Daten.guiAbo.einAus(false));
-        jMenuItemAbosLoeschen.addActionListener(e -> Daten.guiAbo.loeschen());
-        jMenuItemAbosAendern.addActionListener(e -> Daten.guiAbo.aendern());
-        jMenuItemAboNeu.addActionListener(e -> Daten.guiAbo.neu());
-        jMenuItemAboInvertSelection.addActionListener(e -> Daten.guiAbo.invertSelection());
+        jMenuItemAbosEinschalten.addActionListener(e -> tabAbos.einAus(true));
+        jMenuItemAbosAusschalten.addActionListener(e -> tabAbos.einAus(false));
+        jMenuItemAbosLoeschen.addActionListener(e -> tabAbos.loeschen());
+        jMenuItemAbosAendern.addActionListener(e -> tabAbos.aendern());
+        jMenuItemAboNeu.addActionListener(e -> tabAbos.neu());
+        jMenuItemAboInvertSelection.addActionListener(e -> tabAbos.invertSelection());
     }
 
     private void initializeDownloadsMenu()
@@ -1220,7 +1221,7 @@ public class MediathekGui extends JFrame {
         tabDownloads.tabelleSpeichern();
 
         dialog.setStatusText(6, "Abo-Daten sichern");
-        Daten.guiAbo.tabelleSpeichern();
+        tabAbos.tabelleSpeichern();
 
         dialog.setStatusText(7, "MediaDB sichern");
         daten.getDialogMediaDB().tabelleSpeichern();
@@ -1405,7 +1406,7 @@ public class MediathekGui extends JFrame {
                     setTabIfContain(tabDownloads);
                     break;
                 case TAB_ABOS:
-                    setTabIfContain(Daten.guiAbo);
+                    setTabIfContain(tabAbos);
                     break;
             }
         }
