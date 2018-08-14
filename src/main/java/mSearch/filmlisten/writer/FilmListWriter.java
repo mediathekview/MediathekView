@@ -39,7 +39,6 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 
 public class FilmListWriter {
@@ -83,14 +82,6 @@ public class FilmListWriter {
 
     public void writeFilmList(String datei, ListeFilme listeFilme) {
         Daten.getInstance().getMessageBus().publishAsync(new FilmListWriteStartEvent());
-
-        //wait until DB has written all futures...
-        while (ForkJoinPool.commonPool().hasQueuedSubmissions()) {
-            try {
-                TimeUnit.MILLISECONDS.sleep(500);
-            } catch (InterruptedException ignored) {
-            }
-        }
 
         try {
             logger.info("Filme schreiben ({} Filme) :", listeFilme.size());
@@ -178,11 +169,11 @@ public class FilmListWriter {
     }
 
     private void writeThema(JsonGenerator jg, DatenFilm datenFilm) throws IOException {
-        if (datenFilm.arr[DatenFilm.FILM_THEMA].equals(thema)) {
+        if (datenFilm.getThema().equals(thema)) {
             jg.writeString("");
         } else {
-            thema = datenFilm.arr[DatenFilm.FILM_THEMA];
-            jg.writeString(datenFilm.arr[DatenFilm.FILM_THEMA]);
+            thema = datenFilm.getThema();
+            jg.writeString(datenFilm.getThema());
         }
     }
 

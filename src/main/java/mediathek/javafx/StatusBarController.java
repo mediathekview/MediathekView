@@ -18,6 +18,7 @@ import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.config.Daten;
 import mediathek.gui.messages.FilmListWriteStartEvent;
 import mediathek.gui.messages.FilmListWriteStopEvent;
+import mediathek.javafx.filmlist.FilmListInfoPane;
 import net.engio.mbassy.listener.Handler;
 import org.controlsfx.control.StatusBar;
 
@@ -28,7 +29,7 @@ public class StatusBarController {
      * The new javafx based status bar
      */
     private final StatusBar statusBar = new StatusBar();
-    private final FilmlistAgeLabel filmlistAgeLabel;
+    private final FilmListInfoPane filmListInfoPane;
     private final FilmListInformationLabel filmListInformationLabel;
     private final SelectedItemsLabel selectedItemsLabel;
     private final GarbageCollectionButton btnGc = new GarbageCollectionButton();
@@ -41,7 +42,7 @@ public class StatusBarController {
         this.memoryMonitor = memoryMonitor;
 
         selectedItemsLabel = new SelectedItemsLabel(selectedItemsProperty);
-        filmlistAgeLabel = new FilmlistAgeLabel(daten);
+        filmListInfoPane = new FilmListInfoPane(daten);
         filmListInformationLabel = new FilmListInformationLabel(daten, daten.getMediathekGui().tabPaneIndexProperty());
 
         daten.getMessageBus().subscribe(this);
@@ -164,9 +165,7 @@ public class StatusBarController {
     }
 
     private void setupRightPane() {
-        ObservableList<Node> rightItems = statusBar.getRightItems();
-        CenteredBorderPane pane = new CenteredBorderPane(filmlistAgeLabel);
-        rightItems.add(pane);
+        statusBar.getRightItems().add(filmListInfoPane);
     }
 
     private Scene createStatusBarScene() {
