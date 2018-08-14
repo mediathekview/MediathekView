@@ -41,7 +41,6 @@ import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.FilmlistenSuchen;
 import mSearch.tool.*;
 import mSearch.tool.Functions.OperatingSystemType;
-import mSearch.tool.javafx.FXErrorDialog;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.Konstanten;
@@ -51,6 +50,8 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.ListeMediaDB;
 import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.*;
+import mediathek.gui.actions.CreateProtocolFileAction;
+import mediathek.gui.actions.ShowOnlineHelpAction;
 import mediathek.gui.actions.export.FilmListExportAction;
 import mediathek.gui.bandwidth.IBandwidthMonitor;
 import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
@@ -85,7 +86,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -867,7 +867,6 @@ public class MediathekGui extends JFrame {
         jMenuItemSchriftKl.addActionListener(e -> MVFont.setFontSize(false));
         jMenuItemSchriftNormal.addActionListener(e -> MVFont.resetFontSize());
 
-        initializeAnsichtDownloads();
         initializeAnsichtAbos();
         initializeAnsicht();
     }
@@ -914,42 +913,9 @@ public class MediathekGui extends JFrame {
 
     private void initializeAnsichtAbos()
     {
-        //Ansicht Abos
-//        jCheckBoxAboExtrafenster.setText(CHECKBOX_TEXT_ABOS_IN_EXTRAFENSTER);
-//        jMenuAnsicht.add(jCheckBoxAboExtrafenster);
-//        jCheckBoxAboExtrafenster.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_ABO)));
-//        jCheckBoxAboExtrafenster.addActionListener(e -> {
-//            MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_ABO, Boolean.toString(jCheckBoxAboExtrafenster.isSelected()));
-//            initFrames();
-//        });
+        jMenuItemShowOnlineHelp.setAction(new ShowOnlineHelpAction());
 
-        jMenuItemShowOnlineHelp.setIcon(Icons.ICON_MENUE_HELP);
-        jMenuItemShowOnlineHelp.addActionListener(e -> {
-            if (Desktop.isDesktopSupported()) {
-                Desktop d = Desktop.getDesktop();
-                try {
-                    if (d.isSupported(Desktop.Action.BROWSE)) {
-                        d.browse(new URI(Konstanten.ADRESSE_ONLINE_HELP));
-                    }
-                } catch (Exception ex) {
-                    FXErrorDialog.showErrorDialog("Online-Hilfe",
-                            "Fehler beim Öffnen der Online-Hilfe",
-                            "Es trat ein Fehler beim Öffnen der Online-Hilfe auf.\nSollte dies häufiger auftreten kontaktieren Sie bitte das Entwicklerteam.",
-                            ex);
-                }
-            }
-        });
-
-        jMenuItemCreateProtocolFile.addActionListener(e -> {
-            DialogZiel dialog = new DialogZiel(this, true, GuiFunktionen.getHomePath() + File.separator + "Mediathek.log", "Logdatei speichern");
-            dialog.setVisible(true);
-            if (!dialog.ok) {
-                return;
-            }
-            if (!Logfile.LogDateiSchreiben(dialog.ziel, MVFunctionSys.getProgVersionString(), Daten.getSettingsDirectory_String(), Daten.listePset.getListProg(), MVConfig.getAll())) {
-                MVMessageDialog.showMessageDialog(null, "Datei konnte nicht geschrieben werden!", "Fehler beim Schreiben", JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        jMenuItemCreateProtocolFile.setAction(new CreateProtocolFileAction());
 
         jMenuItemAboutApplication.addActionListener(e -> showAboutDialog());
     }
@@ -962,19 +928,6 @@ public class MediathekGui extends JFrame {
         GuiFunktionen.centerOnScreen(aboutDialog, false);
         aboutDialog.setVisible(true);
         aboutDialog.dispose();
-    }
-
-    private void initializeAnsichtDownloads()
-    {
-//        jMenuAnsicht.add(new JSeparator());
-//
-//        jCheckBoxDownloadExtrafenster.setText(CHECKBOX_TEXT_DOWNLOADS_IN_EXTRAFENSTER);
-//        jMenuAnsicht.add(jCheckBoxDownloadExtrafenster);
-//        jCheckBoxDownloadExtrafenster.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FENSTER_DOWNLOAD)));
-//        jCheckBoxDownloadExtrafenster.addActionListener(e -> {
-//            MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_DOWNLOAD, Boolean.toString(jCheckBoxDownloadExtrafenster.isSelected()));
-//            initFrames();
-//        });
     }
 
     private void initializeAboMenu()
