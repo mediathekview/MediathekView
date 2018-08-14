@@ -570,9 +570,10 @@ public class MediathekGui extends JFrame {
     private static boolean geklickt;
 
     public GuiFilme tabFilme;
+    public GuiDownloads tabDownloads;
 
     private void initTabs() {
-        Daten.guiDownloads = new GuiDownloads(daten, this);
+        tabDownloads = new GuiDownloads(daten, this);
         Daten.guiAbo = new GuiAbo(daten, this);
         tabFilme = new GuiFilme(daten, this);
 
@@ -603,7 +604,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void initFrames() {
-        setTab(frameDownload, Daten.guiDownloads, TABNAME_DOWNLOADS, 1);
+        setTab(frameDownload, tabDownloads, TABNAME_DOWNLOADS, 1);
         setTab(frameAbo, Daten.guiAbo, TABNAME_ABOS, 2);
 
         jTabbedPane.updateUI();
@@ -658,7 +659,7 @@ public class MediathekGui extends JFrame {
                     ic = top ? Icons.ICON_TAB_TOP_FILM_SW : Icons.ICON_TAB_FILM_SW;
                 }
             }
-            if (c.equals(Daten.guiDownloads)) {
+            if (c.equals(tabDownloads)) {
                 if (jTabbedPane.getSelectedIndex() == i) {
                     ic = top ? Icons.ICON_TAB_TOP_DOWNLOAD : Icons.ICON_TAB_DOWNLOAD;
                 } else {
@@ -984,19 +985,19 @@ public class MediathekGui extends JFrame {
     private void initializeDownloadsMenu()
     {
         // Downloads
-        jMenuItemDownloadsAktualisieren.addActionListener(e -> Daten.guiDownloads.aktualisieren());
-        jMenuItemDownloadAbspielen.addActionListener(e -> Daten.guiDownloads.filmAbspielen());
-        jMenuItemDownloadsAufraeumen.addActionListener(e -> Daten.guiDownloads.aufraeumen());
-        jMenuItemDownloadsLoeschen.addActionListener(e -> Daten.guiDownloads.loeschen());
-        jMenuItemDownloadsAlleStarten.addActionListener(e -> Daten.guiDownloads.starten(true /* alle */));
-        jMenuItemDownloadStartTime.addActionListener(e -> Daten.guiDownloads.startAtTime());
-        jMenuItemDownloadStarten.addActionListener(e -> Daten.guiDownloads.starten(false /* alle */));
-        jMenuItemDownloadsZurueckstellen.addActionListener(e -> Daten.guiDownloads.zurueckstellen());
-        jMenuItemDownloadVorziehen.addActionListener(e -> Daten.guiDownloads.vorziehen());
-        jMenuItemDownloadAendern.addActionListener(e -> Daten.guiDownloads.aendern());
-        jMenuItemDownloadAlleStoppen.addActionListener(e -> Daten.guiDownloads.stoppen(true /* alle */));
-        jMenuItemDownloadWartendeStoppen.addActionListener(e -> Daten.guiDownloads.wartendeStoppen());
-        jMenuItemDownloadStoppen.addActionListener(e -> Daten.guiDownloads.stoppen(false /* alle */));
+        jMenuItemDownloadsAktualisieren.addActionListener(e -> tabDownloads.aktualisieren());
+        jMenuItemDownloadAbspielen.addActionListener(e -> tabDownloads.filmAbspielen());
+        jMenuItemDownloadsAufraeumen.addActionListener(e -> tabDownloads.aufraeumen());
+        jMenuItemDownloadsLoeschen.addActionListener(e -> tabDownloads.loeschen());
+        jMenuItemDownloadsAlleStarten.addActionListener(e -> tabDownloads.starten(true /* alle */));
+        jMenuItemDownloadStartTime.addActionListener(e -> tabDownloads.startAtTime());
+        jMenuItemDownloadStarten.addActionListener(e -> tabDownloads.starten(false /* alle */));
+        jMenuItemDownloadsZurueckstellen.addActionListener(e -> tabDownloads.zurueckstellen());
+        jMenuItemDownloadVorziehen.addActionListener(e -> tabDownloads.vorziehen());
+        jMenuItemDownloadAendern.addActionListener(e -> tabDownloads.aendern());
+        jMenuItemDownloadAlleStoppen.addActionListener(e -> tabDownloads.stoppen(true /* alle */));
+        jMenuItemDownloadWartendeStoppen.addActionListener(e -> tabDownloads.wartendeStoppen());
+        jMenuItemDownloadStoppen.addActionListener(e -> tabDownloads.stoppen(false /* alle */));
         jMenuItemDownloadShutDown.addActionListener(e -> {
             if (daten.getListeDownloads().nochNichtFertigeDownloads() > 0) {
                 // ansonsten gibts keine laufenden Downloads auf die man warten sollte
@@ -1006,10 +1007,10 @@ public class MediathekGui extends JFrame {
                         LOG_TEXT_KEINE_LAUFENDEN_DOWNLOADS, JOptionPane.ERROR_MESSAGE);
             }
         });
-        jMenuItemDownloadGesehen.addActionListener(e -> Daten.guiDownloads.filmGesehen());
-        jMenuItemDownloadUngesehen.addActionListener(e -> Daten.guiDownloads.filmUngesehen());
-        jMenuItemDownloadMediensammlung.addActionListener(e -> Daten.guiDownloads.guiFilmMediensammlung());
-        jMenuItemDownloadInvertSelection.addActionListener(e -> Daten.guiDownloads.invertSelection());
+        jMenuItemDownloadGesehen.addActionListener(e -> tabDownloads.filmGesehen());
+        jMenuItemDownloadUngesehen.addActionListener(e -> tabDownloads.filmUngesehen());
+        jMenuItemDownloadMediensammlung.addActionListener(e -> tabDownloads.guiFilmMediensammlung());
+        jMenuItemDownloadInvertSelection.addActionListener(e -> tabDownloads.invertSelection());
     }
 
     private void initializeFilmeMenu()
@@ -1216,7 +1217,7 @@ public class MediathekGui extends JFrame {
         tabFilme.tabelleSpeichern();
 
         dialog.setStatusText(5, "Download-Daten sichern");
-        Daten.guiDownloads.tabelleSpeichern();
+        tabDownloads.tabelleSpeichern();
 
         dialog.setStatusText(6, "Abo-Daten sichern");
         Daten.guiAbo.tabelleSpeichern();
@@ -1401,7 +1402,7 @@ public class MediathekGui extends JFrame {
                     setTabIfContain(tabFilme);
                     break;
                 case TAB_DOWNLOADS:
-                    setTabIfContain(Daten.guiDownloads);
+                    setTabIfContain(tabDownloads);
                     break;
                 case TAB_ABOS:
                     setTabIfContain(Daten.guiAbo);

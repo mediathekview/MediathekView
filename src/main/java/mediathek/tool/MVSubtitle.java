@@ -44,8 +44,6 @@ public class MVSubtitle {
     private static final String SUFFIX_TTML = "ttml";
     private static final String SUFFIX_VTT = "vtt";
 
-    public static final String KODIERUNG_UTF = "UTF-8";
-
     private static final Logger logger = LogManager.getLogger(MVSubtitle.class);
 
     public static void writeSubtitle( DatenDownload datenDownload) {

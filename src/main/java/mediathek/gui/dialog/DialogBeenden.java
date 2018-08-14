@@ -206,7 +206,7 @@ public class DialogBeenden extends JDialog {
         glassPane.setVisible(true);
 
         if (onlyRunningDownloads) {
-            Daten.guiDownloads.wartendeStoppen();
+            Daten.getInstance().getMediathekGui().tabDownloads.wartendeStoppen();
             onlyRunningDownloads = false;
         }
 
