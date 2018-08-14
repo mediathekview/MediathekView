@@ -144,7 +144,6 @@ public class MVConfig {
         SYSTEM_GROESSE_DOWNLOAD("Groesse-Download"),
         SYSTEM_FENSTER_ABO("Fenster-Abo"),
         SYSTEM_GROESSE_ABO("Groesse-Abo"),
-        SYSTEM_VIS_MELDUNGEN("Vis-Meldungen"),
         SYSTEM_FENSTER_FILTER("Fenster-Filter"),
         SYSTEM_GROESSE_FILTER("Groesse-Filter"),
         //Einstellungen Filmliste

@@ -92,7 +92,7 @@ public class FilmActionPanel {
 
         setupConfigListeners();
 
-        Daten.getInstance().getMessageBus().subscribe(this);
+        daten.getMessageBus().subscribe(this);
     }
 
     private void restoreConfigSettings() {
@@ -190,7 +190,7 @@ public class FilmActionPanel {
     private Button createPlayButton() {
         btnPlay = new Button("", fontAwesome.create(FontAwesome.Glyph.PLAY));
         btnPlay.setTooltip(new Tooltip("Film abspielen"));
-        btnPlay.setOnAction(evt -> SwingUtilities.invokeLater(() -> Daten.guiFilme.playAction.actionPerformed(null)));
+        btnPlay.setOnAction(evt -> SwingUtilities.invokeLater(() -> daten.getMediathekGui().tabFilme.playAction.actionPerformed(null)));
 
         return btnPlay;
     }
@@ -205,7 +205,7 @@ public class FilmActionPanel {
 
     private Button createRecordButton() {
         btnRecord = new Button("", fontAwesome.create(FontAwesome.Glyph.DOWNLOAD));
-        btnRecord.setOnAction(e -> SwingUtilities.invokeLater(() -> Daten.guiFilme.saveFilmAction.actionPerformed(null)));
+        btnRecord.setOnAction(e -> SwingUtilities.invokeLater(() -> daten.getMediathekGui().tabFilme.saveFilmAction.actionPerformed(null)));
         btnRecord.setTooltip(new Tooltip("Film aufzeichnen"));
 
         return btnRecord;
@@ -260,7 +260,7 @@ public class FilmActionPanel {
         pause2.setOnFinished(evt -> checkPatternValidity());
         textProperty.addListener((observable, oldValue, newValue) -> pause2.playFromStart());
 
-        pause3.setOnFinished(evt -> SwingUtilities.invokeLater(() -> Daten.guiFilme.filterFilmAction.actionPerformed(null)));
+        pause3.setOnFinished(evt -> SwingUtilities.invokeLater(() -> daten.getMediathekGui().tabFilme.filterFilmAction.actionPerformed(null)));
         textProperty.addListener((observable, oldValue, newValue) -> pause3.playFromStart());
 
         roSearchStringProperty.bind(textProperty);

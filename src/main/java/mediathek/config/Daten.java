@@ -33,10 +33,6 @@ import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.filmlisten.FilmeLaden;
-import mediathek.gui.GuiAbo;
-import mediathek.gui.GuiDownloads;
-import mediathek.gui.GuiFilme;
-import mediathek.gui.GuiMeldungen;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.BaseEvent;
@@ -111,10 +107,6 @@ public class Daten
 
     // Gui
     private final MediathekGui mediathekGui; // JFrame der Gui
-    public static GuiFilme guiFilme = null; // Tab mit den Filmen
-    public static GuiDownloads guiDownloads = null; // Tab mit den Downloads
-    public static GuiAbo guiAbo = null; // Tab mit den Abos
-    public static GuiMeldungen guiMeldungen = null;
 
     public static InfoDialog filmInfo = null; // Infos zum Film
     private DialogMediaDB dialogMediaDB;
@@ -363,7 +355,7 @@ public class Daten
                 TimeUnit.SECONDS.sleep(10);
             } catch (InterruptedException ignored) {
             }
-            new FilmListWriter().writeFilmList(getDateiFilmliste(), listeFilme);
+            new FilmListWriter().writeFilmList(getDateiFilmliste(), listeFilme, null);
         });
         writeFuture = Optional.of(future);
     }
