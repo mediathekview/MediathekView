@@ -2,27 +2,19 @@ package mediathek.javafx;
 
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
-import javafx.scene.control.Label;
-import mSearch.filmeSuchen.ListenerFilmeLaden;
-import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
+import mediathek.javafx.tool.ComputedLabel;
 import net.engio.mbassy.listener.Handler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import javax.swing.*;
-
-public class FilmListInformationLabel extends Label {
-    private static final Logger logger = LogManager.getLogger(FilmListInformationLabel.class);
+public class FilmListInformationLabel extends ComputedLabel {
     private static final String TRENNER = "  ||  ";
-    private Daten daten;
-    private double width = 0d;
-    private ObjectProperty<MediathekGui.TabPaneIndex> tabPaneIndexProperty;
+    private final Daten daten;
+    private final ObjectProperty<MediathekGui.TabPaneIndex> tabPaneIndexProperty;
 
     public FilmListInformationLabel(Daten daten, ObjectProperty<MediathekGui.TabPaneIndex> tabPaneIndexProperty) {
         super();
@@ -30,22 +22,6 @@ public class FilmListInformationLabel extends Label {
         this.daten = daten;
 
         daten.getMessageBus().subscribe(this);
-
-        SwingUtilities.invokeLater(() -> {
-            daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
-                @Override
-                public void start(ListenerFilmeLadenEvent event) {
-                }
-
-                @Override
-                public void progress(ListenerFilmeLadenEvent event) {
-                }
-
-                @Override
-                public void fertig(ListenerFilmeLadenEvent event) {
-                }
-            });
-        });
     }
 
     private void setInfoDefault() {
@@ -225,18 +201,5 @@ public class FilmListInformationLabel extends Label {
     @Handler
     public void handleTimerEvent(TimerEvent e) {
         Platform.runLater(this::setTextForLeftDisplay);
-    }
-
-    /**
-     * This sets the text of the label and adjusts the width of the label to prevent "jumping" text.
-     */
-    private void setComputedText(String text) {
-        setText(text);
-        double curWidth = getWidth();
-        if (curWidth >= width) {
-            width = curWidth;
-            setMinWidth(width);
-        }
-
     }
 }
