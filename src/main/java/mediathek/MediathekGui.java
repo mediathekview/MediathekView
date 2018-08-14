@@ -114,7 +114,6 @@ public class MediathekGui extends JFrame {
     private static final String LOG_TEXT_INIT_GUI = "Init GUI";
     private static final String LOG_TEXT_GUI_STEHT = "Gui steht!";
     private static final String ARGUMENT_PREFIX = "-";
-    private static final String TITLE_TEXT_EIN_PROGRAMMUPDATE_IST_VERFUEGBAR = "Ein Programmupdate ist verfügbar";
     private static final String TABNAME_FILME = "Filme";
     private static final String TABNAME_DOWNLOADS = "Downloads";
     private static final String TABNAME_ABOS = "Abos";
@@ -178,6 +177,9 @@ public class MediathekGui extends JFrame {
         splashScreenManager.initializeSplashScreen();
 
         initComponents();
+
+        setWindowTitle();
+
         String pfad = readPfadFromArguments(aArguments);
 
         Duration.counterStart(LOG_TEXT_PROGRAMMSTART);
@@ -205,7 +207,6 @@ public class MediathekGui extends JFrame {
 
         createFilmInformationHUD();
 
-        setOrgTitel();
         setLookAndFeel();
         init();
         setSize();
@@ -396,17 +397,6 @@ public class MediathekGui extends JFrame {
     }
 
     private void addListener() {
-        Listener.addListener(new Listener(Listener.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setTitle(TITLE_TEXT_EIN_PROGRAMMUPDATE_IST_VERFUEGBAR);
-                // after ten seconds, restore the original window title
-                Timer restoreTitleTimer = new Timer((int) TimeUnit.MILLISECONDS.convert(10, TimeUnit.SECONDS),
-                        e -> setOrgTitel());
-                restoreTitleTimer.setRepeats(false); //run once only...
-                restoreTitleTimer.start();
-            }
-        });
         Listener.addListener(new Listener(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -474,7 +464,7 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    private void setOrgTitel() {
+    private void setWindowTitle() {
         setTitle(Konstanten.PROGRAMMNAME + ' ' + Konstanten.MVVERSION);
     }
 

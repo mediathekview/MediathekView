@@ -19,7 +19,6 @@
  */
 package mediathek.update;
 
-import mSearch.tool.Listener;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
@@ -76,9 +75,7 @@ public class CheckUpdate extends Thread {
 
     private void searchForProgramUpdate() {
         final ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
-        if (pgrUpdate.checkVersion(false /* bei aktuell anzeigen */, true /* Hinweis */, false /* hinweiseAlleAnzeigen */)) {
-            Listener.notify(Listener.EREIGNIS_MEDIATHEKGUI_UPDATE_VERFUEGBAR, CheckUpdate.class.getSimpleName());
-        }
+        pgrUpdate.checkVersion(false, true, false);
     }
 
     private void checkForPsetUpdates() {
