@@ -150,7 +150,7 @@ public class ProgrammUpdateSuchen {
         inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
 
         final Request request = new Request.Builder().url(Konstanten.ADRESSE_PROGRAMM_VERSION).get().build();
-        try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
+        try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
              ResponseBody body = response.body()) {
             if (response.isSuccessful() && body != null) {
                 try (InputStream is = body.byteStream();
