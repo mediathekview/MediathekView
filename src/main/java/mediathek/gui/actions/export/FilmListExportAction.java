@@ -1,14 +1,15 @@
-package mediathek.gui.actions;
+package mediathek.gui.actions.export;
 
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
-import mSearch.filmlisten.writer.FilmListWriter;
 import mediathek.MediathekGui;
-import mediathek.config.Daten;
+import mediathek.javafx.CenteredBorderPane;
+import mediathek.javafx.VerticalSeparator;
 import org.controlsfx.control.StatusBar;
 
 import javax.swing.*;
@@ -31,15 +32,19 @@ public class FilmListExportAction extends AbstractAction {
     private void export(File selectedFile) {
         StatusBar bar = gui.getStatusBarController().getStatusBar();
         ProgressBar progBar = new ProgressBar();
-        progBar.setProgress(0d);
-        progBar.setVisible(true);
-        bar.getRightItems().add(progBar);
 
-        WorkerTask task = new WorkerTask(selectedFile);
+        HBox hb = new HBox();
+        hb.setSpacing(4d);
+        hb.getChildren().addAll(new VerticalSeparator(),
+                new CenteredBorderPane(new Label("Exportiere FilmListe...")),
+                new CenteredBorderPane(progBar));
+        bar.getRightItems().add(hb);
+
+        FilmListExportWorkerTask task = new FilmListExportWorkerTask(selectedFile);
         task.stateProperty().addListener((observableValue, oldState, newState) -> {
             switch (newState) {
                 case SUCCEEDED:
-                    bar.getRightItems().remove(progBar);
+                    bar.getRightItems().remove(hb);
                     showSuccess();
                     break;
             }
@@ -80,22 +85,4 @@ public class FilmListExportAction extends AbstractAction {
         setEnabled(true);
     }
 
-    class WorkerTask extends Task<Void> {
-        private final File selectedFile;
-
-        public WorkerTask(File selectedFile) {
-            super();
-            this.selectedFile = selectedFile;
-        }
-
-        @Override
-        protected Void call() {
-            FilmListWriter writer = new FilmListWriter();
-            writer.disableEvents();
-            writer.writeFilmList(selectedFile.getAbsolutePath(),
-                    Daten.getInstance().getListeFilme(),
-                    prog -> updateProgress(prog, 1d));
-            return null;
-        }
-    }
 }
