@@ -42,7 +42,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "jMenuItemExportFilmlist"
-						"text": "Filmliste exportieren..."
+						"text": "export"
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "jMenuItemEinstellungen"

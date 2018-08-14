@@ -73,6 +73,10 @@ public class StatusBarController {
         });
     }
 
+    public StatusBar getStatusBar() {
+        return statusBar;
+    }
+
     private Pane createFilmListWriterProgress() {
         filmListWriterProgressPane = new HBox();
         filmListWriterProgressPane.setMinWidth(Region.USE_PREF_SIZE);
