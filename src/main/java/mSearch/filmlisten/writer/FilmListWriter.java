@@ -63,7 +63,7 @@ public class FilmListWriter {
     public void disableEvents() {
         fireEvents = false;
     }
-    
+
     private void checkOsxCacheDirectory() {
         final Path filePath = Paths.get(System.getProperty("user.home") + File.separator + "Library/Caches/MediathekView");
         if (Files.notExists(filePath)) {
