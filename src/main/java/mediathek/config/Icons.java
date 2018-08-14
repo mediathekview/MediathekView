@@ -127,11 +127,9 @@ public class Icons {
     public static final ImageIcon ICON_TAB_TOP_FILM = GetIcon.getProgramIcon("tab-film-top.png", WT, HT);
     public static final ImageIcon ICON_TAB_TOP_DOWNLOAD = GetIcon.getProgramIcon("tab-download-top.png", WT, HT);
     public static final ImageIcon ICON_TAB_TOP_ABO = GetIcon.getProgramIcon("tab-abo-top.png", WT, HT);
-    public static final ImageIcon ICON_TAB_TOP_MELDUNG = GetIcon.getProgramIcon("tab-meldung-top.png", WT, HT);
     public static final ImageIcon ICON_TAB_TOP_FILM_SW = GetIcon.getProgramIcon("tab-film-top-sw.png", WT, HT);
     public static final ImageIcon ICON_TAB_TOP_DOWNLOAD_SW = GetIcon.getProgramIcon("tab-download-top-sw.png", WT, HT);
     public static final ImageIcon ICON_TAB_TOP_ABO_SW = GetIcon.getProgramIcon("tab-abo-top-sw.png", WT, HT);
-    public static final ImageIcon ICON_TAB_TOP_MELDUNG_SW = GetIcon.getProgramIcon("tab-meldung-top-sw.png", WT, HT);
 
     public static final Image ICON_TRAY = GetIcon.getProgramIcon("tray.png", 256, 256).getImage();
     public static final Image ICON_TRAY_ERROR = GetIcon.getProgramIcon("tray-fehler.png", 256, 256).getImage();

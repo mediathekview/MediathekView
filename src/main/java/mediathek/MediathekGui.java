@@ -118,19 +118,16 @@ public class MediathekGui extends JFrame {
     private static final String TABNAME_FILME = "Filme";
     private static final String TABNAME_DOWNLOADS = "Downloads";
     private static final String TABNAME_ABOS = "Abos";
-    private static final String TABNAME_MELDUNGEN = "Meldungen";
     private static final String LOG_TEXT_DIE_DOWNLOADS_MUESSEN_ZUERST_GESTARTET_WERDEN = "Die Downloads müssen zuerst gestartet werden.";
     private static final String LOG_TEXT_KEINE_LAUFENDEN_DOWNLOADS = "Keine laufenden Downloads!";
     private static final String DIALOG_TITLE_BLACKLIST = "Blacklist";
     private static final String PANEL_BLACKLIST_NAME_POSTFIX = "_2";
-    private static final String CHECKBOX_TEXT_MELDUNGEN_ANZEIGEN = "Meldungen anzeigen";
 
 
     private final Daten daten;
     private final SplashScreenManager splashScreenManager;
     private MVFrame frameDownload;
     private MVFrame frameAbo;
-    private final JCheckBoxMenuItem jCheckBoxMeldungenAnzeigen = new JCheckBoxMenuItem();
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
     private final MVSenderIconCache senderIconCache;
@@ -146,7 +143,7 @@ public class MediathekGui extends JFrame {
     }
 
     public enum TABS {
-        TAB_NIX, TAB_FILME, TAB_DOWNLOADS, TAB_ABOS, TAB_MELDUNGEN
+        TAB_NIX, TAB_FILME, TAB_DOWNLOADS, TAB_ABOS
     }
 
     /**
@@ -169,6 +166,7 @@ public class MediathekGui extends JFrame {
      * This will start JavaFX thread in case no window has been started yet.
      * Necessary in case no config is found.
      */
+    @SuppressWarnings("unused")
     private void fakeInitializeJavaFXRuntime() {
         final JFXPanel dummyPanel = new JFXPanel();
     }
@@ -584,7 +582,6 @@ public class MediathekGui extends JFrame {
     private void initTabs() {
         Daten.guiDownloads = new GuiDownloads(daten, this);
         Daten.guiAbo = new GuiAbo(daten, this);
-        Daten.guiMeldungen = new GuiMeldungen(daten, this);
         Daten.guiFilme = new GuiFilme(daten, this);
 
         jTabbedPane.addTab(TABNAME_FILME, Daten.guiFilme);
@@ -613,20 +610,9 @@ public class MediathekGui extends JFrame {
         miSearchForProgramUpdate.setEnabled(enable);
     }
 
-    private void showOrHideMeldungenTab() {
-        final boolean visible = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN));
-        if (visible) {
-            setTab(null, Daten.guiMeldungen, TABNAME_MELDUNGEN, 3);
-            designTabs();
-        } else {
-            hide(null, Daten.guiMeldungen);
-        }
-    }
-
     private void initFrames() {
         setTab(frameDownload, Daten.guiDownloads, TABNAME_DOWNLOADS, 1);
         setTab(frameAbo, Daten.guiAbo, TABNAME_ABOS, 2);
-        showOrHideMeldungenTab();
 
         jTabbedPane.updateUI();
         designTabs();
@@ -692,13 +678,6 @@ public class MediathekGui extends JFrame {
                     ic = top ? Icons.ICON_TAB_TOP_ABO : Icons.ICON_TAB_ABO;
                 } else {
                     ic = top ? Icons.ICON_TAB_TOP_ABO_SW : Icons.ICON_TAB_ABO_SW;
-                }
-            }
-            if (c.equals(Daten.guiMeldungen)) {
-                if (jTabbedPane.getSelectedIndex() == i) {
-                    ic = top ? Icons.ICON_TAB_TOP_MELDUNG : Icons.ICON_TAB_MELDUNG;
-                } else {
-                    ic = top ? Icons.ICON_TAB_TOP_MELDUNG_SW : Icons.ICON_TAB_MELDUNG_SW;
                 }
             }
 
@@ -891,21 +870,11 @@ public class MediathekGui extends JFrame {
 
         initializeAnsichtDownloads();
         initializeAnsichtAbos();
-        initializeAnsichtMeldungen();
+        initializeAnsicht();
     }
 
-    private void initializeAnsichtMeldungen()
+    private void initializeAnsicht()
     {
-        //Ansicht Meldungen
-        jCheckBoxMeldungenAnzeigen.setText(CHECKBOX_TEXT_MELDUNGEN_ANZEIGEN);
-
-        jCheckBoxMeldungenAnzeigen.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN)));
-        jCheckBoxMeldungenAnzeigen.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_VIS_MELDUNGEN, Boolean.toString(jCheckBoxMeldungenAnzeigen.isSelected()));
-            showOrHideMeldungenTab();
-        });
-        jMenuAnsicht.add(jCheckBoxMeldungenAnzeigen);
-
         cbBandwidthDisplay.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE)));
         cbBandwidthDisplay.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(cbBandwidthDisplay.isSelected()));

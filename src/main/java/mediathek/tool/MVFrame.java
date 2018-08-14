@@ -48,27 +48,13 @@ public class MVFrame extends JFrame {
             case TAB_ABOS:
                 this.setTitle("Abos");
                 break;
-            case TAB_MELDUNGEN:
-                this.setTitle("Meldungen");
-                break;
             default:
                 this.setTitle(Konstanten.PROGRAMMNAME);
         }
         jPanelExtra.setLayout(new BorderLayout());
         jPanelExtra.add(jPanel, BorderLayout.CENTER);
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        /*addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent evt) {
-                daten.getMediathekGui().hideFrame(tabsState);
-                dispose();
-            }
 
-//            public void windowClosed(WindowEvent evt) {
-//                daten.getMediathekGui().hideFrame(state);
-//                dispose();
-//            }
-        });*/
         pack();
     }
 
