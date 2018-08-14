@@ -31,7 +31,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import mSearch.Config;
@@ -40,7 +39,6 @@ import mSearch.daten.PooledDatabaseConnection;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.FilmlistenSuchen;
-import mSearch.filmlisten.writer.FilmListWriter;
 import mSearch.tool.*;
 import mSearch.tool.Functions.OperatingSystemType;
 import mSearch.tool.javafx.FXErrorDialog;
@@ -53,6 +51,7 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.ListeMediaDB;
 import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.*;
+import mediathek.gui.actions.FilmListExportAction;
 import mediathek.gui.bandwidth.IBandwidthMonitor;
 import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
 import mediathek.gui.dialog.*;
@@ -333,10 +332,16 @@ public class MediathekGui extends JFrame {
      */
     private void createStatusBar() {
         JFXPanel statusBarPanel = new JFXPanel();
-        StatusBarController statusBarController = new StatusBarController(daten, memoryMonitor, selectedItemsProperty);
+        statusBarController = new StatusBarController(daten, memoryMonitor, selectedItemsProperty);
         statusBarController.installStatusBar(statusBarPanel);
 
         jPanelInfo.add(statusBarPanel, BorderLayout.CENTER);
+    }
+
+    private StatusBarController statusBarController;
+
+    public StatusBarController getStatusBarController() {
+        return statusBarController;
     }
 
     public enum TabPaneIndex {
@@ -1034,31 +1039,7 @@ public class MediathekGui extends JFrame {
         jMenuItemEinstellungen.addActionListener(e -> showSettingsDialog());
         jMenuItemBeenden.addActionListener(e -> beenden(false, false));
 
-        jMenuItemExportFilmlist.addActionListener(e -> exportFilmList());
-    }
-
-    /**
-     * Export the current filmlist to a user-specified file.
-     */
-    private void exportFilmList() {
-        Platform.runLater(() -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Datei sichern");
-            fileChooser.setInitialFileName("filme");
-            fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Unkomprimiert", "*.json"),
-                    new FileChooser.ExtensionFilter("XZ Komprimiert (Standard)", "*.xz")
-            );
-            File selectedFile = fileChooser.showSaveDialog(null);
-            if (selectedFile != null) {
-                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                new FilmListWriter().writeFilmList(selectedFile.getAbsolutePath(), daten.getListeFilme());
-                setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(this,
-                        "Filmliste erfolgreich exportiert.",
-                        "Filmliste exportieren", JOptionPane.INFORMATION_MESSAGE));
-            }
-        });
+        jMenuItemExportFilmlist.setAction(new FilmListExportAction(this));
     }
 
     public void showSettingsDialog()
@@ -1506,7 +1487,7 @@ public class MediathekGui extends JFrame {
                 jMenuDatei.add(jMenuItemFilmlisteLaden);
 
                 //---- jMenuItemExportFilmlist ----
-                jMenuItemExportFilmlist.setText("Filmliste exportieren...");
+                jMenuItemExportFilmlist.setText("export");
                 jMenuDatei.add(jMenuItemExportFilmlist);
 
                 //---- jMenuItemEinstellungen ----

@@ -47,6 +47,7 @@ public class FilmListWriter {
     private static final String TAG_JSON_LIST = "X";
     private String sender = "";
     private String thema = "";
+    private boolean fireEvents = true;
 
     private JsonGenerator getJsonGenerator(OutputStream os) throws IOException {
         final JsonFactory jsonF = new JsonFactory();
@@ -59,6 +60,10 @@ public class FilmListWriter {
         return jg;
     }
 
+    public void disableEvents() {
+        fireEvents = false;
+    }
+    
     private void checkOsxCacheDirectory() {
         final Path filePath = Paths.get(System.getProperty("user.home") + File.separator + "Library/Caches/MediathekView");
         if (Files.notExists(filePath)) {
@@ -80,8 +85,9 @@ public class FilmListWriter {
         jg.writeEndArray();
     }
 
-    public void writeFilmList(String datei, ListeFilme listeFilme) {
-        Daten.getInstance().getMessageBus().publishAsync(new FilmListWriteStartEvent());
+    public void writeFilmList(String datei, ListeFilme listeFilme, IProgressListener listener) {
+        if (fireEvents)
+            Daten.getInstance().getMessageBus().publishAsync(new FilmListWriteStartEvent());
 
         try {
             logger.info("Filme schreiben ({} Filme) :", listeFilme.size());
@@ -109,34 +115,21 @@ public class FilmListWriter {
                 writeFormatHeader(jg, listeFilme);
                 writeFormatDescription(jg);
 
-                //Filme schreiben
+                final long filmEntries = listeFilme.size();
+                double curEntry = 0d;
+
                 for (DatenFilm datenFilm : listeFilme) {
-                    jg.writeArrayFieldStart(TAG_JSON_LIST);
-
-                    writeSender(jg, datenFilm);
-                    writeThema(jg, datenFilm);
-                    writeTitel(jg, datenFilm);
-                    jg.writeString(datenFilm.arr[DatenFilm.FILM_DATUM]);
-                    writeZeit(jg, datenFilm);
-                    jg.writeString(datenFilm.arr[DatenFilm.FILM_DAUER]);
-                    jg.writeString(datenFilm.arr[DatenFilm.FILM_GROESSE]);
-                    jg.writeString(datenFilm.getDescription());
-                    jg.writeString(datenFilm.arr[DatenFilm.FILM_URL]);
-                    jg.writeString(datenFilm.getWebsiteLink());
-                    jg.writeString(datenFilm.arr[DatenFilm.FILM_URL_SUBTITLE]);
-                    skipEntry(jg); //DatenFilm.FILM_URL_RTMP
-                    jg.writeString(datenFilm.arr[DatenFilm.FILM_URL_KLEIN]);
-                    skipEntry(jg); //DatenFilm.URL_RTMP_KLEIN
-                    jg.writeString(datenFilm.arr[DatenFilm.FILM_URL_HD]);
-                    skipEntry(jg); //DatenFilm.FILM_URL_RTMP_HD
-                    jg.writeString(datenFilm.arr[DatenFilm.FILM_DATUM_LONG]);
-                    jg.writeString(datenFilm.arr[DatenFilm.FILM_URL_HISTORY]);
-                    jg.writeString(datenFilm.arr[DatenFilm.FILM_GEO]);
-                    jg.writeString(Boolean.toString(datenFilm.isNew()));
-
-                    jg.writeEndArray();
+                    writeEntry(datenFilm, jg);
+                    if (listener != null) {
+                        listener.progress(curEntry / filmEntries);
+                        curEntry++;
+                    }
                 }
                 jg.writeEndObject();
+
+                if (listener != null)
+                    listener.progress(1d);
+
                 long end = System.nanoTime();
 
                 logger.info("   --> geschrieben!");
@@ -146,7 +139,35 @@ public class FilmListWriter {
             logger.error("nach: {}", datei, ex);
         }
 
-        Daten.getInstance().getMessageBus().publishAsync(new FilmListWriteStopEvent());
+        if (fireEvents)
+            Daten.getInstance().getMessageBus().publishAsync(new FilmListWriteStopEvent());
+    }
+
+    private void writeEntry(DatenFilm datenFilm, JsonGenerator jg) throws IOException {
+        jg.writeArrayFieldStart(TAG_JSON_LIST);
+
+        writeSender(jg, datenFilm);
+        writeThema(jg, datenFilm);
+        writeTitel(jg, datenFilm);
+        jg.writeString(datenFilm.arr[DatenFilm.FILM_DATUM]);
+        writeZeit(jg, datenFilm);
+        jg.writeString(datenFilm.arr[DatenFilm.FILM_DAUER]);
+        jg.writeString(datenFilm.arr[DatenFilm.FILM_GROESSE]);
+        jg.writeString(datenFilm.getDescription());
+        jg.writeString(datenFilm.arr[DatenFilm.FILM_URL]);
+        jg.writeString(datenFilm.getWebsiteLink());
+        jg.writeString(datenFilm.arr[DatenFilm.FILM_URL_SUBTITLE]);
+        skipEntry(jg); //DatenFilm.FILM_URL_RTMP
+        jg.writeString(datenFilm.arr[DatenFilm.FILM_URL_KLEIN]);
+        skipEntry(jg); //DatenFilm.URL_RTMP_KLEIN
+        jg.writeString(datenFilm.arr[DatenFilm.FILM_URL_HD]);
+        skipEntry(jg); //DatenFilm.FILM_URL_RTMP_HD
+        jg.writeString(datenFilm.arr[DatenFilm.FILM_DATUM_LONG]);
+        jg.writeString(datenFilm.arr[DatenFilm.FILM_URL_HISTORY]);
+        jg.writeString(datenFilm.arr[DatenFilm.FILM_GEO]);
+        jg.writeString(Boolean.toString(datenFilm.isNew()));
+
+        jg.writeEndArray();
     }
 
     private void skipEntry(JsonGenerator jg) throws IOException {
@@ -197,5 +218,10 @@ public class FilmListWriter {
         jg.writeArrayFieldStart(ListeFilme.FILMLISTE);
         jg.writeString("");
         jg.writeEndArray();
+    }
+
+    @FunctionalInterface
+    public interface IProgressListener {
+        void progress(double current);
     }
 }

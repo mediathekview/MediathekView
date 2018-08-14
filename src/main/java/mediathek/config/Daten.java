@@ -355,7 +355,7 @@ public class Daten
                 TimeUnit.SECONDS.sleep(10);
             } catch (InterruptedException ignored) {
             }
-            new FilmListWriter().writeFilmList(getDateiFilmliste(), listeFilme);
+            new FilmListWriter().writeFilmList(getDateiFilmliste(), listeFilme, null);
         });
         writeFuture = Optional.of(future);
     }
