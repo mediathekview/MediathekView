@@ -169,10 +169,10 @@ public final class ToolBar extends JToolBar {
         this.add(jButtonAbosAusschalten);
         this.add(jButtonAbosLoeschen);
         this.add(jButtonAboAendern);
-        jButtonAbosEinschalten.addActionListener(e -> Daten.guiAbo.einAus(true));
-        jButtonAbosAusschalten.addActionListener(e -> Daten.guiAbo.einAus(false));
-        jButtonAbosLoeschen.addActionListener(e -> Daten.guiAbo.loeschen());
-        jButtonAboAendern.addActionListener(e -> Daten.guiAbo.aendern());
+        jButtonAbosEinschalten.addActionListener(e -> daten.getMediathekGui().tabAbos.einAus(true));
+        jButtonAbosAusschalten.addActionListener(e -> daten.getMediathekGui().tabAbos.einAus(false));
+        jButtonAbosLoeschen.addActionListener(e -> daten.getMediathekGui().tabAbos.loeschen());
+        jButtonAboAendern.addActionListener(e -> daten.getMediathekGui().tabAbos.aendern());
 
         this.add(filler__trenner);
 
