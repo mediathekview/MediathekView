@@ -88,7 +88,7 @@ public class FilmListInformationLabel extends ComputedLabel {
     private void setInfoFilme() {
         String textLinks;
         final int gesamt = daten.getListeFilme().size();
-        final int anzListe = Daten.guiFilme.getTableRowCount();
+        final int anzListe = daten.getMediathekGui().tabFilme.getTableRowCount();
         final int runs = daten.getListeDownloadsButton().getListOfStartsNotFinished(DatenDownload.QUELLE_BUTTON).size();
 
         // Anzahl der Filme

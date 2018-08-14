@@ -220,7 +220,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
      */
     private void loadCurrentFilterSettings() {
         try {
-            final String val = Daten.guiFilme.fap.zeitraumProperty.getValue();
+            final String val = Daten.getInstance().getMediathekGui().tabFilme.fap.zeitraumProperty.getValue();
             if (val.equals("∞"))
                 days = 0;
             else {
