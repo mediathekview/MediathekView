@@ -34,7 +34,6 @@ public class Icons {
     public static final ImageIcon ICON_ACHTUNG_32 = GetIcon.getProgramIcon("achtung.png", 32, 32);
     public static final ImageIcon ICON_ACHTUNG_16 = GetIcon.getProgramIcon("achtung.png", 16, 16);
     public static final ImageIcon ICON_MENUE_BEENDEN = GetIcon.getProgramIcon("menue-beenden.png", 16, 16);
-    public static final ImageIcon ICON_MENUE_BLACKLIST = GetIcon.getProgramIcon("menue-blacklist.png", 16, 16);
     public static final ImageIcon ICON_MENUE_CLEAR = GetIcon.getProgramIcon("menue-clear.png", 16, 16);
     public static final ImageIcon ICON_MENUE_DOWNLOAD_ALLE_STARTEN = GetIcon.getProgramIcon("menue-download-alle-starten.png", 16, 16);
     public static final ImageIcon ICON_MENUE_ABO_NEU = GetIcon.getProgramIcon("menue-abo-neu.png", 16, 16);
