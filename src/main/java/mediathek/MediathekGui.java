@@ -1112,6 +1112,27 @@ public class MediathekGui extends JFrame {
         }
     }
 
+    private void writeOldConfiguration() {
+        if (getExtendedState() == JFrame.MAXIMIZED_BOTH) {
+            MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_MAX, Boolean.TRUE.toString());
+        } else {
+            MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_MAX, Boolean.FALSE.toString());
+        }
+
+        // Hauptfenster
+        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_GUI, this);
+        // Dialog Einstellungen
+        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, dialogEinstellungen);
+        // Infodialog/Bandwidth
+        bandwidthMonitor.writeConfig();
+        // MediaDB
+        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, daten.getDialogMediaDB());
+
+        // Frames
+        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_DOWNLOAD, frameDownload);
+        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_ABO, frameAbo);
+    }
+
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
         //write all settings if not done already...
         ApplicationConfiguration.getInstance().writeConfiguration();
@@ -1164,24 +1185,7 @@ public class MediathekGui extends JFrame {
         stopDownloads();
 
         dialog.setStatusText(9, "Programmkonfiguration schreiben");
-        if (getExtendedState() == JFrame.MAXIMIZED_BOTH) {
-            MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_MAX, Boolean.TRUE.toString());
-        } else {
-            MVConfig.add(MVConfig.Configs.SYSTEM_FENSTER_MAX, Boolean.FALSE.toString());
-        }
-
-        // Hauptfenster
-        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_GUI, this);
-        // Dialog Einstellungen
-        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, dialogEinstellungen);
-        // Infodialog/Bandwidth
-        bandwidthMonitor.writeConfig();
-        // MediaDB
-        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, daten.getDialogMediaDB());
-
-        // Frames
-        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_DOWNLOAD, frameDownload);
-        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_ABO, frameAbo);
+        writeOldConfiguration();
 
         dialog.setStatusText(10, "Datenbank schließen");
         DatenFilm.Database.closeDatabase();
