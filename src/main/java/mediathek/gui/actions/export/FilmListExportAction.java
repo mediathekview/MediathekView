@@ -20,6 +20,8 @@ import java.io.File;
  * Exports the current film list to JSON file.
  */
 public class FilmListExportAction extends AbstractAction {
+    private final static String TITLE = "MediathekView";
+    private final static String HEADER = "Export der Filmliste";
     private final MediathekGui gui;
 
     public FilmListExportAction(MediathekGui gui) {
@@ -41,24 +43,33 @@ public class FilmListExportAction extends AbstractAction {
         bar.getRightItems().add(hb);
 
         FilmListExportWorkerTask task = new FilmListExportWorkerTask(selectedFile);
-        task.stateProperty().addListener((observableValue, oldState, newState) -> {
-            switch (newState) {
-                case SUCCEEDED:
-                    bar.getRightItems().remove(hb);
-                    showSuccess();
-                    break;
-            }
-
+        task.setOnSucceeded(e -> {
+            bar.getRightItems().remove(hb);
+            showSuccess();
         });
+        task.setOnFailed(e -> {
+            bar.getRightItems().remove(hb);
+            showError();
+        });
+
         progBar.progressProperty().bind(task.progressProperty());
 
         new Thread(task).start();
     }
 
+    private void showError() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(TITLE);
+        alert.setHeaderText(HEADER);
+        alert.setContentText("Es gab einen Fehler beim Export der Filmliste.");
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.showAndWait();
+    }
+
     private void showSuccess() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("MediathekView");
-        alert.setHeaderText("Export der Filmliste");
+        alert.setTitle(TITLE);
+        alert.setHeaderText(HEADER);
         alert.setContentText("Der Export wurde erfolgreich beendet.");
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.showAndWait();
