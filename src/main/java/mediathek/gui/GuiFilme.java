@@ -39,6 +39,7 @@ import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.daten.*;
+import mediathek.gui.actions.ShowFilmInformationAction;
 import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
@@ -103,6 +104,10 @@ public class GuiFilme extends PanelVorlage {
 
         setupActionListeners();
 
+        setupSenderBoxListener();
+    }
+
+    private void setupSenderBoxListener() {
         //FIXME ist der listener korrekt?
         //FIXME move to filmactionpanel
         daten.getListeFilmeNachBlackList().getSenders().addListener((ListChangeListener<String>) c -> {
@@ -192,16 +197,6 @@ public class GuiFilme extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             tabelle.getRowSorter().setSortKeys(listSortKeys);
             tabelle.requestFocusSelect(jScrollPane1, 0);
-        }
-    }
-
-    private class ShowFilmInformationAction extends AbstractAction {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (!Daten.filmInfo.isVisible()) {
-                Daten.filmInfo.showInfo();
-            }
         }
     }
 
