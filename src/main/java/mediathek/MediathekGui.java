@@ -51,13 +51,17 @@ import mediathek.daten.ListeMediaDB;
 import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.*;
 import mediathek.gui.actions.CreateProtocolFileAction;
+import mediathek.gui.actions.ResetSettingsAction;
+import mediathek.gui.actions.ShowBlacklistDialogAction;
 import mediathek.gui.actions.ShowOnlineHelpAction;
 import mediathek.gui.actions.export.FilmListExportAction;
 import mediathek.gui.bandwidth.IBandwidthMonitor;
 import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
-import mediathek.gui.dialog.*;
+import mediathek.gui.dialog.AboutDialog;
+import mediathek.gui.dialog.DialogBeenden;
+import mediathek.gui.dialog.DialogMediaDB;
+import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
-import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.*;
 import mediathek.javafx.LivestreamTab;
@@ -119,8 +123,6 @@ public class MediathekGui extends JFrame {
     private static final String TABNAME_ABOS = "Abos";
     private static final String LOG_TEXT_DIE_DOWNLOADS_MUESSEN_ZUERST_GESTARTET_WERDEN = "Die Downloads müssen zuerst gestartet werden.";
     private static final String LOG_TEXT_KEINE_LAUFENDEN_DOWNLOADS = "Keine laufenden Downloads!";
-    private static final String DIALOG_TITLE_BLACKLIST = "Blacklist";
-    private static final String PANEL_BLACKLIST_NAME_POSTFIX = "_2";
 
 
     private final Daten daten;
@@ -881,7 +883,7 @@ public class MediathekGui extends JFrame {
     }
 
     protected void setupHelpMenu() {
-        jMenuItemResetSettings.addActionListener(e -> resetSettings());
+        jMenuItemResetSettings.setAction(new ResetSettingsAction(this, daten));
 
         miSearchForProgramUpdate.addActionListener(e -> searchForUpdateOrShowProgramInfos(false));
         miShowProgramInfos.addActionListener(e -> searchForUpdateOrShowProgramInfos(true));
@@ -903,12 +905,6 @@ public class MediathekGui extends JFrame {
         list.updateURLsFilmlisten(false);
 
         JOptionPane.showMessageDialog(this, "Aktualisierung wurde durchgeführt.", "Update-Server aktualisieren", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    private void resetSettings() {
-        ResetSettingsDialog dialog = new ResetSettingsDialog(this, daten);
-        GuiFunktionen.centerOnScreen(dialog, false);
-        dialog.setVisible(true);
     }
 
     private void initializeAnsichtAbos()
@@ -978,11 +974,7 @@ public class MediathekGui extends JFrame {
         jMenuItemFilmlisteLaden.addActionListener(e -> daten.getFilmeLaden().loadFilmlistDialog(daten, false));
         jMenuItemFilmAbspielen.addActionListener(tabFilme.playAction);
         jMenuItemFilmAufzeichnen.addActionListener(tabFilme.saveFilmAction);
-        jMenuItemBlacklist.addActionListener(e -> {
-            DialogLeer dialog = new DialogLeer(daten.getMediathekGui(), true);
-            dialog.init(DIALOG_TITLE_BLACKLIST, new PanelBlacklist(daten, daten.getMediathekGui(), PanelBlacklist.class.getName() + PANEL_BLACKLIST_NAME_POSTFIX));
-            dialog.setVisible(true);
-        });
+        jMenuItemBlacklist.setAction(new ShowBlacklistDialogAction(this, daten));
         jMenuItemFilmeGesehen.addActionListener(tabFilme.markFilmAsSeenAction);
         jMenuItemFilmeUngesehen.addActionListener(tabFilme.markFilmAsUnseenAction);
         jMenuItemFilmeMediensammlung.addActionListener(tabFilme.mediensammlungAction);
@@ -1010,7 +1002,6 @@ public class MediathekGui extends JFrame {
         jMenuItemFilmAufzeichnen.setIcon(Icons.ICON_MENUE_FILM_REC);
         jMenuItemFilmeGesehen.setIcon(Icons.ICON_MENUE_HISTORY_ADD);
         jMenuItemFilmeUngesehen.setIcon(Icons.ICON_MENUE_HISTORY_REMOVE);
-        jMenuItemBlacklist.setIcon(Icons.ICON_MENUE_BLACKLIST);
         jMenuItemDownloadsAlleStarten.setIcon(Icons.ICON_MENUE_DOWNLOAD_ALLE_STARTEN);
         jMenuItemDownloadStartTime.setIcon(Icons.ICON_MENUE_DOWNLOAD_ALLE_STARTEN);
         jMenuItemDownloadAlleStoppen.setIcon(Icons.ICON_MENUE_DOWNOAD_STOP);
@@ -1114,6 +1105,13 @@ public class MediathekGui extends JFrame {
         }
     }
 
+    private void closeMemoryMonitor() {
+        if (Config.isDebuggingEnabled()) {
+            if (memoryMonitor != null)
+                Platform.runLater(() -> memoryMonitor.close());
+        }
+    }
+
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
         //write all settings if not done already...
         ApplicationConfiguration.getInstance().writeConfiguration();
@@ -1131,6 +1129,8 @@ public class MediathekGui extends JFrame {
             }
             shutDown = dialogBeenden.isShutdownRequested();
         }
+
+        closeMemoryMonitor();
 
         //do not search for updates anymore
         updateCheckTimer.stop();
