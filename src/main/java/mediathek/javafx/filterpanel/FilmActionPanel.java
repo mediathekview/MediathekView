@@ -8,6 +8,7 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,6 +22,7 @@ import javafx.util.StringConverter;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.ApplicationConfiguration;
+import mSearch.tool.GermanStringSorter;
 import mediathek.config.Daten;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
@@ -41,8 +43,10 @@ import org.controlsfx.glyphfont.GlyphFontRegistry;
 import org.controlsfx.tools.Borders;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 /**
  * This class sets up the GuiFilme tool panel and search bar.
@@ -67,7 +71,6 @@ public class FilmActionPanel {
     public BooleanProperty dontShowSignLanguage;
     public BooleanProperty dontShowAudioVersions;
     public ReadOnlyObjectProperty<String> zeitraumProperty;
-    public ComboBox<String> senderBox;
     public ComboBox<String> themaBox;
     public RangeSlider filmLengthSlider;
     private Spinner<String> zeitraumSpinner;
@@ -355,44 +358,63 @@ public class FilmActionPanel {
                 new Separator(),
                 createZeitraumPane());
 
-        // whenever the senderbox selected value changes, reload the thema from filtered list.
-        senderBox.valueProperty().addListener(
-                (observable, oldValue, newValue) -> {
-                    if (newValue != null)
-                        reloadThemaBox(newValue);
-                }
-        );
+        setupSenderListeners();
 
         return vBox;
     }
 
-    private void reloadThemaBox(String newValue) {
-        //save current selection
-        String selectedItem = themaBox.getSelectionModel().getSelectedItem();
-        if (selectedItem == null)
-            selectedItem = "";
+    private void setupSenderListeners() {
+        PauseTransition trans = new PauseTransition(Duration.millis(500d));
+        trans.setOnFinished(e -> updateThemaBox());
+        senderList.getCheckModel()
+                .getCheckedItems().
+                addListener((ListChangeListener<String>) c -> trans.playFromStart());
+    }
 
-        //update thema content
-        updateThemaBox(newValue);
-        //restore selection
-        restoreThemaBoxSelection(selectedItem);
+    public void updateThemaBox() {
+        System.out.println("UPDATE THEMA BOX");
+        themaBox.getItems().clear();
+        themaBox.getItems().add("");
+
+        List<String> finalList = new ArrayList<>();
+        List<String> selectedSenders = senderList.getCheckModel().getCheckedItems();
+
+        if (selectedSenders.isEmpty()) {
+            final List<String> lst = daten.getListeFilmeNachBlackList().getThemen("");
+            finalList.addAll(lst);
+            lst.clear();
+        } else {
+            for (String sender : selectedSenders) {
+                final List<String> lst = daten.getListeFilmeNachBlackList().getThemen(sender);
+                finalList.addAll(lst);
+                lst.clear();
+            }
+        }
+
+        themaBox.getItems()
+                .addAll(finalList.stream()
+                        .distinct()
+                        .sorted(GermanStringSorter.getInstance())
+                        .collect(Collectors.toList()));
+        finalList.clear();
+
+        themaSuggestionProvider.clearSuggestions();
+        themaSuggestionProvider.addPossibleSuggestions(themaBox.getItems());
+        themaBox.getSelectionModel().select(0);
     }
 
     public CheckListView<String> senderList;
 
     private Node createSenderBox() {
-        FlowPane root = new FlowPane();
-        root.setHgap(4);
-        senderBox = new ComboBox<>();
-        senderBox.getItems().addAll("");
-        senderBox.getSelectionModel().select(0);
-        root.getChildren().addAll(new Label("Sender:"), senderBox);
+        VBox root = new VBox();
         root.setAlignment(Pos.CENTER_LEFT);
 
         senderList = new CheckListView<>(daten.getListeFilmeNachBlackList().getSenders());
-        senderList.setPrefHeight(200d);
+        senderList.setPrefHeight(150d);
         senderList.setMinHeight(100d);
-        root.getChildren().add(senderList);
+        root.getChildren().addAll(
+                new Label("Sender:"),
+                senderList);
 
         return root;
     }
@@ -415,23 +437,18 @@ public class FilmActionPanel {
         return hb;
     }
 
-    private void restoreThemaBoxSelection(String selectedItem) {
-        if (themaBox.getItems().contains(selectedItem))
-            themaBox.getSelectionModel().select(selectedItem);
-        else
-            themaBox.getSelectionModel().select("");
-    }
-
-    private void updateThemaBox(String sender) {
+    /*private void updateThemaBoxCompleteList() {
         themaBox.getItems().clear();
         themaBox.getItems().add("");
-        final List<String> lst = daten.getListeFilmeNachBlackList().getThemen(sender);
+        final List<String> lst = daten.getListeFilmeNachBlackList().getThemen("");
         themaBox.getItems().addAll(lst);
         lst.clear();
 
         themaSuggestionProvider.clearSuggestions();
         themaSuggestionProvider.addPossibleSuggestions(themaBox.getItems());
-    }
+
+        themaBox.getSelectionModel().select(0);
+    }*/
 
     private Node createFilmLengthSlider() {
         HBox hb = new HBox();

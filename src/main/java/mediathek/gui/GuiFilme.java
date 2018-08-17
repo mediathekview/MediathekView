@@ -103,27 +103,8 @@ public class GuiFilme extends PanelVorlage {
         start_addListener();
 
         setupActionListeners();
-
-        setupSenderBoxListener();
     }
 
-    private void setupSenderBoxListener() {
-        //FIXME ist der listener korrekt?
-        //FIXME move to filmactionpanel
-        daten.getListeFilmeNachBlackList().getSenders().addListener((ListChangeListener<String>) c -> {
-            String selectedItem = fap.senderBox.getSelectionModel().getSelectedItem();
-            if (selectedItem != null) {
-                fap.senderBox.getItems().clear();
-                fap.senderBox.getItems().addAll(daten.getListeFilmeNachBlackList().getSenders());
-                if (fap.senderBox.getItems().contains(selectedItem))
-                    fap.senderBox.getSelectionModel().select(selectedItem);
-                else
-                    fap.senderBox.getSelectionModel().select("");
-
-                SwingUtilities.invokeLater(this::reloadTable);
-            }
-        });
-    }
 
     private void setupFilmActionPanel() {
         add(fxPanel, BorderLayout.NORTH);
@@ -1195,23 +1176,31 @@ public class GuiFilme extends PanelVorlage {
                     SwingUtilities.invokeLater(this::reloadTable);
             });
 
-            PauseTransition filterSenderDelay = new PauseTransition(Duration.millis(750d));
-            filterSenderDelay.setOnFinished(e -> {
-                SwingUtilities.invokeLater(this::reloadTable);
-            });
-            fap.senderList.getCheckModel()
-                    .getCheckedItems().
-                    addListener((ListChangeListener<String>) c -> filterSenderDelay.playFromStart());
+            setupSenderListListeners();
 
-            PauseTransition trans = new PauseTransition(Duration.millis(250));
-            trans.setOnFinished(evt -> SwingUtilities.invokeLater(() -> {
-                daten.getListeBlacklist().filterListe();
-                loadTable();
-            }));
-            fap.zeitraumProperty.addListener((observable, oldValue, newValue) -> trans.playFromStart());
+            setupZeitraumListener();
 
             fap.themaBox.setOnAction(evt -> SwingUtilities.invokeLater(this::reloadTable));
         });
+    }
+
+    private void setupZeitraumListener() {
+        PauseTransition trans = new PauseTransition(Duration.millis(250));
+        trans.setOnFinished(evt -> SwingUtilities.invokeLater(() -> {
+            daten.getListeBlacklist().filterListe();
+            loadTable();
+        }));
+        fap.zeitraumProperty.addListener((observable, oldValue, newValue) -> trans.playFromStart());
+    }
+
+    private void setupSenderListListeners() {
+        PauseTransition filterSenderDelay = new PauseTransition(Duration.millis(750d));
+        filterSenderDelay.setOnFinished(e -> {
+            SwingUtilities.invokeLater(this::reloadTable);
+        });
+        fap.senderList.getCheckModel()
+                .getCheckedItems().
+                addListener((ListChangeListener<String>) c -> filterSenderDelay.playFromStart());
     }
 
     private synchronized void loadTable() {
