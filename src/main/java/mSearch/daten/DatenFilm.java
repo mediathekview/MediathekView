@@ -241,17 +241,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
              PreparedStatement statement = connection.prepareStatement("SELECT desc FROM mediathekview.description WHERE id = ?")) {
             statement.setInt(1, databaseFilmNumber);
 
-            if (descriptionFutureReference != null) {
-                final CompletableFuture<Void> descriptionFuture = descriptionFutureReference.get();
-                if (descriptionFuture != null) {
-                    if (!descriptionFuture.isDone()) {
-                        descriptionFuture.get();
-                    }
-                    //set to null when finished as we don´t need it anymore...
-                    descriptionFutureReference.clear();
-                    descriptionFutureReference = null;
-                }
-            }
+            descriptionFutureReference = checkFutureCompletion(descriptionFutureReference);
 
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
@@ -284,6 +274,22 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         }
     }
 
+    private synchronized WeakReference<CompletableFuture<Void>> checkFutureCompletion(WeakReference<CompletableFuture<Void>> refVar) throws ExecutionException, InterruptedException {
+        if (refVar != null) {
+            final CompletableFuture<Void> refFuture = refVar.get();
+            if (refFuture != null) {
+                if (!refFuture.isDone()) {
+                    refFuture.get();
+                }
+                //set to null when finished as we don´t need it anymore...
+                refVar.clear();
+                return null;
+            }
+        }
+
+        return refVar;
+    }
+
     public String getWebsiteLink() {
         String res;
 
@@ -291,19 +297,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
              PreparedStatement statement = connection.prepareStatement("SELECT link FROM mediathekview.website_links WHERE id = ?")) {
             statement.setInt(1, databaseFilmNumber);
 
-            if (websiteFutureReference != null) {
-                final CompletableFuture<Void> websiteFuture = websiteFutureReference.get();
-                if (websiteFuture != null) {
-                    if (!websiteFuture.isDone()) {
-                        //make sure async op has finished before...
-                        websiteFuture.get();
-                    }
-
-                    //we don´t need it anymore...
-                    websiteFutureReference.clear();
-                    websiteFutureReference = null;
-                }
-            }
+            websiteFutureReference = checkFutureCompletion(websiteFutureReference);
 
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
