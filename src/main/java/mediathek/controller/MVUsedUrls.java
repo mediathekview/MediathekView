@@ -102,8 +102,7 @@ public class MVUsedUrls {
     }
 
     public synchronized LinkedList<MVUsedUrl> getSortList() {
-        LinkedList<MVUsedUrl> ret = new LinkedList<>();
-        ret.addAll(listeUrlsSortDate);
+        LinkedList<MVUsedUrl> ret = new LinkedList<>(listeUrlsSortDate);
         Collections.sort(ret);
 
         return ret;
