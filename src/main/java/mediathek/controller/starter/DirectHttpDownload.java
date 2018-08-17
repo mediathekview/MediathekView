@@ -85,6 +85,7 @@ public class DirectHttpDownload extends Thread {
     private boolean retAbbrechen;
     private boolean dialogAbbrechenIsVis;
     private CompletableFuture<Void> infoFuture = null;
+    private CompletableFuture<Void> subtitleFuture = null;
 
     public DirectHttpDownload(Daten daten, DatenDownload d, java.util.Timer bandwidthCalculationTimer) {
         super();
@@ -192,7 +193,10 @@ public class DirectHttpDownload extends Thread {
 
     private void downloadSubtitleFile() {
         if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE])) {
-            MVSubtitle.writeSubtitle(datenDownload);
+            subtitleFuture = CompletableFuture.runAsync(() -> {
+                MVSubtitle subtitleFile = new MVSubtitle();
+                subtitleFile.writeSubtitle(datenDownload);
+            });
         }
     }
 
@@ -388,18 +392,17 @@ public class DirectHttpDownload extends Thread {
 
     private void performCleanup() {
         try {
-            if (conn != null) {
+            if (conn != null)
                 conn.disconnect();
-            }
-        } catch (Exception ignored) {
-        }
 
-        if (infoFuture != null) {
-            try {
+            if (infoFuture != null)
                 infoFuture.get();
-            } catch (InterruptedException | ExecutionException e) {
-                logger.error("Error loading info file.", e);
-            }
+
+            if (subtitleFuture != null)
+                subtitleFuture.get();
+
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error("Error performing cleanup.", e);
         }
     }
 
