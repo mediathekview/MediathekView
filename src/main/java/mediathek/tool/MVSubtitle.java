@@ -46,7 +46,7 @@ public class MVSubtitle {
 
     private static final Logger logger = LogManager.getLogger(MVSubtitle.class);
 
-    public static void writeSubtitle( DatenDownload datenDownload) {
+    public void writeSubtitle(DatenDownload datenDownload) {
         String suffix;// txt käme dem Infofile in die Quere
 
         String urlSubtitle = "";
