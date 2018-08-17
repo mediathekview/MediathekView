@@ -299,7 +299,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         Platform.runLater(() -> {
             senderList.clear();
             // der erste Sender ist ""
-            senderList.add("");
+            //senderList.add("");
             senderList.addAll(stream().map(DatenFilm::getSender).distinct().collect(Collectors.toList()));
         });
     }

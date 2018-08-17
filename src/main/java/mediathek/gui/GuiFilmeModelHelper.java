@@ -40,11 +40,7 @@ public class GuiFilmeModelHelper {
     }
 
     private String getFilterSender() {
-        String filterSender = fap.senderBox.getSelectionModel().getSelectedItem();
-        if (filterSender == null)
-            filterSender = "";
-
-        return filterSender;
+        return "";
     }
 
     private String[] evaluateThemaTitel() {
