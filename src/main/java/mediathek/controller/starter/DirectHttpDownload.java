@@ -54,6 +54,8 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 
@@ -82,6 +84,7 @@ public class DirectHttpDownload extends Thread {
     private String exMessage;
     private boolean retAbbrechen;
     private boolean dialogAbbrechenIsVis;
+    private CompletableFuture<Void> infoFuture = null;
 
     public DirectHttpDownload(Daten daten, DatenDownload d, java.util.Timer bandwidthCalculationTimer) {
         super();
@@ -177,19 +180,32 @@ public class DirectHttpDownload extends Thread {
         conn.setDoOutput(true);
     }
 
+    private void startInfoFileDownload() {
+        final boolean downloadInfoFile = Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI]);
+        if (downloadInfoFile) {
+            infoFuture = CompletableFuture.runAsync(() -> {
+                MVInfoFile infoFile = new MVInfoFile();
+                infoFile.writeInfoFile(datenDownload);
+            });
+        }
+    }
+
+    private void downloadSubtitleFile() {
+        if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE])) {
+            MVSubtitle.writeSubtitle(datenDownload);
+        }
+    }
+
     /**
      * Start the actual download process here.
      *
      * @throws IOException the io errors that may occur.
      */
     private void downloadContent() throws IOException {
-        if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI])) {
-            MVInfoFile infoFile = new MVInfoFile();
-            infoFile.writeInfoFile(datenDownload);
-        }
-        if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE])) {
-            MVSubtitle.writeSubtitle(datenDownload);
-        }
+        startInfoFileDownload();
+
+        downloadSubtitleFile();
+
         datenDownload.interruptRestart();
 
         try (FileOutputStream fos = new FileOutputStream(file, (downloaded != 0));
@@ -361,6 +377,16 @@ public class DirectHttpDownload extends Thread {
             }
         }
 
+        performCleanup();
+
+        StarterClass.finalizeDownload(datenDownload, start, state);
+
+        daten.getMessageBus().publishAsync(new DownloadFinishedEvent());
+
+        daten.getMessageBus().unsubscribe(this);
+    }
+
+    private void performCleanup() {
         try {
             if (conn != null) {
                 conn.disconnect();
@@ -368,10 +394,13 @@ public class DirectHttpDownload extends Thread {
         } catch (Exception ignored) {
         }
 
-        StarterClass.finalizeDownload(datenDownload, start, state);
-        daten.getMessageBus().publishAsync(new DownloadFinishedEvent());
-
-        daten.getMessageBus().unsubscribe(this);
+        if (infoFuture != null) {
+            try {
+                infoFuture.get();
+            } catch (InterruptedException | ExecutionException e) {
+                logger.error("Error loading info file.", e);
+            }
+        }
     }
 
     private void displayErrorDialog() {
