@@ -70,6 +70,10 @@ public class DirectHttpDownload extends Thread {
      * The number of times how often the system should try a restart of the download.
      */
     private final int maxRestarts;
+    /**
+     * Instance which will limit the download speed
+     */
+    private final RateLimiter rateLimiter;
     private HttpURLConnection conn = null;
     private HttpDownloadState state = HttpDownloadState.DOWNLOAD;
     private long downloaded = 0;
@@ -78,12 +82,6 @@ public class DirectHttpDownload extends Thread {
     private String exMessage;
     private boolean retAbbrechen;
     private boolean dialogAbbrechenIsVis;
-    /**
-     * Instance which will limit the download speed
-     */
-    private final RateLimiter rateLimiter;
-
-    //TODO implement rate limiting message in GUI
 
     public DirectHttpDownload(Daten daten, DatenDownload d, java.util.Timer bandwidthCalculationTimer) {
         super();
@@ -111,9 +109,20 @@ public class DirectHttpDownload extends Thread {
      */
     @Handler
     private void handleRateLimitChanged(DownloadRateLimitChangedEvent evt) {
-        final long limit = evt.newLimit * FileUtils.ONE_KB;
-        logger.info("changing download speed limit to {} KB", limit);
+        final long limit = calculateDownloadLimit(evt.newLimit);
+        logger.info("thread changing download speed limit to {} KB", limit);
         rateLimiter.setRate(limit);
+    }
+
+    private long calculateDownloadLimit(long limit) {
+        long newLimit;
+
+        if (limit <= 0)
+            newLimit = 10 * FileUtils.ONE_GB;
+        else
+            newLimit = limit * FileUtils.ONE_KB;
+
+        return newLimit;
     }
 
     /**
@@ -123,13 +132,7 @@ public class DirectHttpDownload extends Thread {
      */
     private long getDownloadLimit() {
         final int downloadLimit = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_RATE_LIMIT, 0);
-        final long limit;
-        if (downloadLimit <= 0)
-            limit = FileUtils.ONE_GB; //HACK 1GByte/s download limit
-        else
-            limit = downloadLimit * FileUtils.ONE_KB;
-
-        return limit;
+        return calculateDownloadLimit(downloadLimit);
     }
 
     /**
@@ -367,6 +370,8 @@ public class DirectHttpDownload extends Thread {
 
         StarterClass.finalizeDownload(datenDownload, start, state);
         daten.getMessageBus().publishAsync(new DownloadFinishedEvent());
+
+        daten.getMessageBus().unsubscribe(this);
     }
 
     private void displayErrorDialog() {

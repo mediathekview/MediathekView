@@ -24,6 +24,7 @@ import javafx.application.Platform;
 import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Datum;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
@@ -36,10 +37,10 @@ import mediathek.controller.starter.Start;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
-import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
 import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
+import mediathek.gui.messages.DownloadRateLimitChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.tool.*;
@@ -157,9 +158,21 @@ public class GuiDownloads extends PanelVorlage {
 
         setToolbarVisible();
 
+        setupDownloadRateLimitSpinner();
+    }
+
+    private void setupDownloadRateLimitSpinner() {
+        //restore spinner setting from config
+        final int oldDownloadLimit = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_RATE_LIMIT, 0);
+        jSpinner1.setValue(oldDownloadLimit);
+
         jSpinner1.addChangeListener(e -> {
-            int limit = (int) jSpinner1.getValue();
-            System.out.println("SPINNER STATE CHANGED: " + limit);
+            final int downloadLimit = (int) jSpinner1.getValue();
+            logger.info("Saving download rate limit {} to config", downloadLimit);
+            ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.DOWNLOAD_RATE_LIMIT, downloadLimit);
+            DownloadRateLimitChangedEvent evt = new DownloadRateLimitChangedEvent();
+            evt.newLimit = downloadLimit;
+            daten.getMessageBus().publishAsync(evt);
         });
     }
 
@@ -379,7 +392,6 @@ public class GuiDownloads extends PanelVorlage {
             if (jScrollPaneFilter.isVisible()) {
                 MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_DOWNLOAD_DIVIDER, String.valueOf(jSplitPane1.getDividerLocation()));
             }
-//            setTimer();
         });
         jScrollPaneFilter.setVisible(MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS));
         Listener.addListener(new Listener(Listener.EREIGNIS_PANEL_DOWNLOAD_FILTER_ANZEIGEN, GuiDownloads.class.getSimpleName()) {
@@ -389,65 +401,6 @@ public class GuiDownloads extends PanelVorlage {
             }
         });
 
-        jSliderBandwidth.setMinimum(5); //50 kByte/s
-        jSliderBandwidth.setMaximum(100); //1.000 kByte/s
-        jSliderBandwidth.setMajorTickSpacing(10);
-        jSliderBandwidth.setMinorTickSpacing(10);
-        MVBandwidthMonitorLWin.setSliderBandwith(jSliderBandwidth);
-        MVBandwidthMonitorLWin.setTextBandwith("", null, txtBandwidth);
-        jSliderBandwidth.addChangeListener(e -> {
-            if (stopBeob) {
-                return;
-            }
-            int KByte = jSliderBandwidth.getValue() * 10;
-            txtBandwidth.setText(KByte + " kByte/s");
-            MVConfig.add(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE, String.valueOf(KByte));
-            Listener.notify(Listener.EREIGNIS_BANDBREITE, GuiDownloads.class.getName());
-        });
-        Listener.addListener(new Listener(Listener.EREIGNIS_BANDBREITE, GuiDownloads.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                MVBandwidthMonitorLWin.setSliderBandwith(jSliderBandwidth);
-                MVBandwidthMonitorLWin.setTextBandwith("", null, txtBandwidth);
-            }
-        });
-
-//        Chart2D chart = new Chart2D();
-//        chart.setPaintLabels(true);
-//        chart.setUseAntialiasing(true);
-//        chart.setToolTipType(Chart2D.ToolTipType.VALUE_SNAP_TO_TRACEPOINTS);
-//        if (getOs() == OperatingSystemType.LINUX) {
-//            chart.setOpaque(false);
-//        } else {
-//            //a transparent chart is a HUGE GPU performance killer and will BURN GPU resources :(
-//        }
-//
-//        x_achse = chart.getAxisX();
-//        x_achse.getAxisTitle().setTitle("Minuten");
-//        x_achse.setPaintScale(true);
-//        x_achse.setVisible(true);
-//        x_achse.setPaintGrid(false);
-//        x_achse.setMajorTickSpacing(10);
-//        x_achse.setMinorTickSpacing(1);
-//
-//        IAxis y_achse = chart.getAxisY();
-//        y_achse.getAxisTitle().setTitle("");
-//        y_achse.setPaintScale(true);
-//        y_achse.setVisible(true);
-//        y_achse.setPaintGrid(true);
-//        y_achse.setMajorTickSpacing(5);
-//        y_achse.setMinorTickSpacing(1);
-//        y_achse.setFormatter(new LabelFormatterAutoUnits());
-//        y_achse.setRangePolicy(new RangePolicyForcedPoint());
-//
-//        m_trace.setName("");
-//        m_trace.setColor(Color.RED);
-//        chart.addTrace(m_trace);
-//        jPanelChart.setMinimumSize(new java.awt.Dimension(100, 100));
-//        jPanelChart.setPreferredSize(new java.awt.Dimension(100, 250));
-////        jPanelChart.setBackground(Color.WHITE);
-//        jPanelChart.setLayout(new BorderLayout(0, 0));
-//        jPanelChart.add(chart, BorderLayout.CENTER);
         setTimer();
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
@@ -463,8 +416,6 @@ public class GuiDownloads extends PanelVorlage {
                     downloadsAktualisieren();
                 } else {
                     reloadTable(); // damit die Filmnummern richtig angezeigt werden
-                    // ToDo beim Neuladen ändert sich die Filmnummer aber der Link datenDonwnload.film existiert ja
-                    // noch, funktioniert auch damit, stimmt nur die FilmNr nicht
                 }
             }
         });
@@ -1491,19 +1442,19 @@ public class GuiDownloads extends PanelVorlage {
         javax.swing.JPanel jPanelFilterExtern = new javax.swing.JPanel();
         javax.swing.JLabel lblAnzeigen = new javax.swing.JLabel();
         cbDisplayCategories = new javax.swing.JComboBox<>();
-        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
-        jSpinnerAnzahlDownloads = new javax.swing.JSpinner();
-        javax.swing.JLabel lblBandwidth = new javax.swing.JLabel();
-        jSliderBandwidth = new javax.swing.JSlider();
-        txtBandwidth = new javax.swing.JTextField();
         cbView = new javax.swing.JComboBox<>();
         btnClear = new javax.swing.JButton();
         javax.swing.JSeparator jSeparator1 = new javax.swing.JSeparator();
         javax.swing.JScrollPane spDownload = new javax.swing.JScrollPane();
         txtDownload = new javax.swing.JEditorPane();
+        javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel3 = new javax.swing.JLabel();
+        jSpinnerAnzahlDownloads = new javax.swing.JSpinner();
+        javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
         javax.swing.JPanel jPanel3 = new javax.swing.JPanel();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         jSpinner1 = new javax.swing.JSpinner();
+        javax.swing.JLabel lblBandwidth = new javax.swing.JLabel();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
@@ -1524,15 +1475,11 @@ public class GuiDownloads extends PanelVorlage {
 
         setLayout(new java.awt.BorderLayout());
 
-        jSplitPane1.setDividerLocation(250);
+        jSplitPane1.setDividerLocation(400);
+
+        jPanelFilterExtern.setPreferredSize(new java.awt.Dimension(200, 644));
 
         lblAnzeigen.setText("Anzeigen:");
-
-        jLabel3.setText("<html>gleichzeitige<br>Downloads:</html>");
-
-        lblBandwidth.setText("max. Bandbreite je Download:");
-
-        txtBandwidth.setEditable(false);
 
         cbView.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Item 1", "Item 2", "Item 3", "Item 4"}));
 
@@ -1544,9 +1491,33 @@ public class GuiDownloads extends PanelVorlage {
         txtDownload.setPreferredSize(new java.awt.Dimension(10, 21));
         spDownload.setViewportView(txtDownload);
 
+        jLabel3.setText("gleichzeitige Downloads:");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+                jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jSpinnerAnzahlDownloads, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+                jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel3)
+                                        .addComponent(jSpinnerAnzahlDownloads, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap())
+        );
+
         jLabel1.setText("KB/s");
 
         jSpinner1.setModel(new javax.swing.SpinnerNumberModel(0, 0, 1048576, 1));
+        jSpinner1.setToolTipText("<html>\nBandbreitenbegrenzung eines Downloads in XX Kilobytes pro Sekunde.\n<b><br><u>WICHTIG:</u><br>ENTWEDER<br>den Wert über die Pfeiltasten ändern<br>ODER<br>Zahlen eingeben UND ENTER-Taste drücken!</b>\n</html>");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -1557,7 +1528,7 @@ public class GuiDownloads extends PanelVorlage {
                                 .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel1)
-                                .addContainerGap(24, Short.MAX_VALUE))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
                 jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1569,6 +1540,32 @@ public class GuiDownloads extends PanelVorlage {
                                 .addContainerGap())
         );
 
+        lblBandwidth.setText("max. Bandbreite je Download:");
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+                jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel5Layout.createSequentialGroup()
+                                                .addGap(6, 6, 6)
+                                                .addComponent(lblBandwidth)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+                jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(lblBandwidth)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanelFilterExternLayout = new javax.swing.GroupLayout(jPanelFilterExtern);
         jPanelFilterExtern.setLayout(jPanelFilterExternLayout);
         jPanelFilterExternLayout.setHorizontalGroup(
@@ -1577,24 +1574,17 @@ public class GuiDownloads extends PanelVorlage {
                                 .addContainerGap()
                                 .addGroup(jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(cbDisplayCategories, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(txtBandwidth, javax.swing.GroupLayout.Alignment.TRAILING)
                                         .addComponent(cbView, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGroup(jPanelFilterExternLayout.createSequentialGroup()
-                                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 119, Short.MAX_VALUE)
-                                                .addComponent(jSpinnerAnzahlDownloads, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFilterExternLayout.createSequentialGroup()
                                                 .addGap(0, 0, Short.MAX_VALUE)
                                                 .addComponent(btnClear))
                                         .addComponent(jSeparator1)
-                                        .addComponent(jSliderBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                                        .addComponent(spDownload, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
+                                        .addComponent(spDownload, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+                                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGroup(jPanelFilterExternLayout.createSequentialGroup()
-                                                .addGroup(jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(lblAnzeigen)
-                                                        .addComponent(lblBandwidth)
-                                                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addGap(0, 0, Short.MAX_VALUE)))
+                                                .addComponent(lblAnzeigen)
+                                                .addGap(0, 0, Short.MAX_VALUE))
+                                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addContainerGap())
         );
         jPanelFilterExternLayout.setVerticalGroup(
@@ -1604,26 +1594,18 @@ public class GuiDownloads extends PanelVorlage {
                                 .addComponent(lblAnzeigen)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(cbDisplayCategories, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(cbView, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnClear)
-                                .addGap(18, 18, 18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanelFilterExternLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jSpinnerAnzahlDownloads, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(30, 30, 30)
-                                .addComponent(lblBandwidth)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jSliderBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtBandwidth, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(10, 10, 10)
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(spDownload, javax.swing.GroupLayout.DEFAULT_SIZE, 245, Short.MAX_VALUE)
+                                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(36, 36, 36)
+                                .addComponent(spDownload, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
                                 .addContainerGap())
         );
 
@@ -1642,7 +1624,7 @@ public class GuiDownloads extends PanelVorlage {
         jPanel1Layout.setHorizontalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1665,11 +1647,9 @@ public class GuiDownloads extends PanelVorlage {
     private javax.swing.JPanel jPanelBeschreibung;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPaneFilter;
-    private javax.swing.JSlider jSliderBandwidth;
     private javax.swing.JSpinner jSpinner1;
     private javax.swing.JSpinner jSpinnerAnzahlDownloads;
     private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JTextField txtBandwidth;
     private javax.swing.JEditorPane txtDownload;
     // End of variables declaration//GEN-END:variables
 }
