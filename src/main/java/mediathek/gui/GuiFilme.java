@@ -1194,7 +1194,14 @@ public class GuiFilme extends PanelVorlage {
                 if (!newValue)
                     SwingUtilities.invokeLater(this::reloadTable);
             });
-            fap.senderBox.setOnAction(evt -> SwingUtilities.invokeLater(this::reloadTable));
+
+            PauseTransition filterSenderDelay = new PauseTransition(Duration.millis(750d));
+            filterSenderDelay.setOnFinished(e -> {
+                SwingUtilities.invokeLater(this::reloadTable);
+            });
+            fap.senderList.getCheckModel()
+                    .getCheckedItems().
+                    addListener((ListChangeListener<String>) c -> filterSenderDelay.playFromStart());
 
             PauseTransition trans = new PauseTransition(Duration.millis(250));
             trans.setOnFinished(evt -> SwingUtilities.invokeLater(() -> {

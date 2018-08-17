@@ -1,5 +1,6 @@
 package mediathek.gui;
 
+import javafx.collections.ObservableList;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mediathek.config.Daten;
@@ -65,7 +66,8 @@ public class GuiFilmeModelHelper {
     private boolean noFiltersAreSet() {
         boolean ret = false;
 
-        if (getFilterSender().isEmpty()
+        if (fap.senderList.getCheckModel().isEmpty()
+                && getFilterSender().isEmpty()
                 && getFilterThema().isEmpty()
                 && fap.roSearchStringProperty.getValueSafe().isEmpty()
                 && ((int) fap.filmLengthSlider.getLowValue() == 0)
@@ -107,7 +109,14 @@ public class GuiFilmeModelHelper {
         final long minLengthInSeconds = TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES);
         final long maxLengthInSeconds = TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES);
         final TrailerTeaserChecker ttc = new TrailerTeaserChecker();
+        final ObservableList<String> selectedSenders = fap.senderList.getCheckModel().getCheckedItems();
+
         for (DatenFilm film : listeFilme) {
+            if (!selectedSenders.isEmpty()) {
+                if (!selectedSenders.contains(film.getSender()))
+                    continue;
+            }
+
             final long filmLength = film.getFilmLength();
             if (filmLength < minLengthInSeconds)
                 continue;
@@ -163,6 +172,8 @@ public class GuiFilmeModelHelper {
                 if (checkForAudioVersions(film.getTitle()))
                     continue;
             }
+
+            //TODO add sender filtering here, remove from below
 
             //filter mitLaenge false dann aufrufen
             //je nachdem dann das ganze herausoperieren
