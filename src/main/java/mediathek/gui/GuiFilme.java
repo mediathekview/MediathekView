@@ -325,6 +325,7 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 loadTable();
+                Platform.runLater(() -> fap.updateThemaBox());
             }
         });
 

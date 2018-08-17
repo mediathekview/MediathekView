@@ -352,6 +352,7 @@ public class FilmActionPanel {
                 cbDontShowAudioVersions,
                 new Separator(),
                 createSenderBox(),
+                new Separator(),
                 createThemaBox(),
                 new Separator(),
                 createFilmLengthSlider(),
@@ -372,7 +373,6 @@ public class FilmActionPanel {
     }
 
     public void updateThemaBox() {
-        System.out.println("UPDATE THEMA BOX");
         themaBox.getItems().clear();
         themaBox.getItems().add("");
 
@@ -407,7 +407,7 @@ public class FilmActionPanel {
 
     private Node createSenderBox() {
         VBox root = new VBox();
-        root.setAlignment(Pos.CENTER_LEFT);
+        //root.setAlignment(Pos.CENTER_LEFT);
 
         senderList = new CheckListView<>(daten.getListeFilmeNachBlackList().getSenders());
         senderList.setPrefHeight(150d);
