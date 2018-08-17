@@ -28,6 +28,7 @@ import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.messages.FilmListWriteStartEvent;
 import mediathek.gui.messages.FilmListWriteStopEvent;
+import mediathek.javafx.CenteredBorderPane;
 import mediathek.javafx.VerticalSeparator;
 import mediathek.tool.Filter;
 import net.engio.mbassy.listener.Handler;
@@ -339,7 +340,7 @@ public class FilmActionPanel {
         dontShowAudioVersions = cbDontShowAudioVersions.selectedProperty();
 
         VBox vBox = new VBox();
-        vBox.setSpacing(4.0);
+        vBox.setSpacing(4d);
         vBox.getChildren().addAll(cbShowOnlyHd,
                 cbShowSubtitlesOnly,
                 cbShowNewOnly,
@@ -406,49 +407,35 @@ public class FilmActionPanel {
     public CheckListView<String> senderList;
 
     private Node createSenderBox() {
-        VBox root = new VBox();
-        //root.setAlignment(Pos.CENTER_LEFT);
+        VBox vb = new VBox();
 
         senderList = new CheckListView<>(daten.getListeFilmeNachBlackList().getSenders());
         senderList.setPrefHeight(150d);
         senderList.setMinHeight(100d);
-        root.getChildren().addAll(
+        vb.getChildren().addAll(
                 new Label("Sender:"),
                 senderList);
 
-        return root;
+        return vb;
     }
 
     private Node createThemaBox() {
-        FlowPane hb = new FlowPane();
-        hb.setHgap(4);
+        HBox hb = new HBox();
+        hb.setSpacing(4d);
+
         themaBox = new ComboBox<>();
         themaBox.getItems().addAll("");
         themaBox.getSelectionModel().select(0);
-        themaBox.setPrefWidth(200);
+        themaBox.setPrefWidth(350d);
 
         themaBox.setEditable(true);
         themaSuggestionProvider = SuggestionProvider.create(themaBox.getItems());
         TextFields.bindAutoCompletion(themaBox.getEditor(), themaSuggestionProvider);
 
-        hb.getChildren().addAll(new Label("Thema:"), themaBox);
-        hb.setAlignment(Pos.CENTER_LEFT);
+        hb.getChildren().addAll(new CenteredBorderPane(new Label("Thema:")), themaBox);
 
         return hb;
     }
-
-    /*private void updateThemaBoxCompleteList() {
-        themaBox.getItems().clear();
-        themaBox.getItems().add("");
-        final List<String> lst = daten.getListeFilmeNachBlackList().getThemen("");
-        themaBox.getItems().addAll(lst);
-        lst.clear();
-
-        themaSuggestionProvider.clearSuggestions();
-        themaSuggestionProvider.addPossibleSuggestions(themaBox.getItems());
-
-        themaBox.getSelectionModel().select(0);
-    }*/
 
     private Node createFilmLengthSlider() {
         HBox hb = new HBox();
