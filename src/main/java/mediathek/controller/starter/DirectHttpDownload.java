@@ -79,9 +79,9 @@ public class DirectHttpDownload extends Thread {
     private boolean retAbbrechen;
     private boolean dialogAbbrechenIsVis;
     /**
-     * Instance which will limmit the download speed
+     * Instance which will limit the download speed
      */
-    private RateLimiter rateLimiter = null;
+    private final RateLimiter rateLimiter;
 
     //TODO implement rate limiting message in GUI
 
@@ -107,11 +107,13 @@ public class DirectHttpDownload extends Thread {
     /**
      * Handles the rate limit change launched somewhere in the UI
      *
-     * @param evt
+     * @param evt the new limit
      */
     @Handler
     private void handleRateLimitChanged(DownloadRateLimitChangedEvent evt) {
-        rateLimiter.setRate(evt.newLimit * FileUtils.ONE_KB);
+        final long limit = evt.newLimit * FileUtils.ONE_KB;
+        logger.info("changing download speed limit to {} KB", limit);
+        rateLimiter.setRate(limit);
     }
 
     /**
