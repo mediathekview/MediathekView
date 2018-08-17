@@ -28,7 +28,6 @@ import mSearch.tool.Functions.OperatingSystemType;
 import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
-import mediathek.controller.MVBandwidthTokenBucket;
 import mediathek.tool.GuiFunktionen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,7 +45,6 @@ public class MVBandwidthMonitorLWin extends JPanel implements IBandwidthMonitor 
     private double counter = 0; // double sonst "läuft" die Chart nicht
     private final Trace2DLtd m_trace = new Trace2DLtd(300);
     private final IAxis<?> x_achse;
-    private boolean stopBeob = false;
     private final JDialog jDialog;
     private final JFrame frameParent;
     private static Point mouseDownCompCoords;
@@ -61,7 +59,6 @@ public class MVBandwidthMonitorLWin extends JPanel implements IBandwidthMonitor 
     /**
      * Creates new form MVBandwidthMonitorLWin
      *
-     * @param parent
      **/
     public MVBandwidthMonitorLWin(JFrame parent) {
         initComponents();
@@ -187,50 +184,6 @@ public class MVBandwidthMonitorLWin extends JPanel implements IBandwidthMonitor 
         return jDialog;
     }
 
-    public static void setSliderBandwith(JSlider slider) {
-        int bandbreiteKByte;
-
-        try {
-            bandbreiteKByte = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE));
-        } catch (Exception ex) {
-            bandbreiteKByte = MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE;
-            MVConfig.add(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE, MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE + "");
-        }
-        slider.setValue(bandbreiteKByte / 10);
-    }
-
-    public static void setTextBandwith(String txtBefore, JLabel label, JTextField txt) {
-        int bandbreiteKByte;
-        String ret;
-        try {
-            bandbreiteKByte = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE));
-        } catch (Exception ex) {
-            bandbreiteKByte = MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE;
-            MVConfig.add(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE, MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE + "");
-        }
-        if (bandbreiteKByte == MVBandwidthTokenBucket.BANDWIDTH_MAX_KBYTE) {
-            ret = "aus";
-        } else {
-            ret = bandbreiteKByte + " kByte/s";
-        }
-        if (label != null) {
-            label.setText(txtBefore + ret);
-            if (bandbreiteKByte > MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE) {
-                label.setForeground(Color.red);
-            } else {
-                label.setForeground(Color.black);
-            }
-        }
-        if (txt != null) {
-            txt.setText(txtBefore + ret);
-            if (bandbreiteKByte > MVBandwidthTokenBucket.BANDWIDTH_MAX_RED_KBYTE) {
-                txt.setForeground(Color.red);
-            } else {
-                txt.setForeground(Color.black);
-            }
-        }
-    }
-
     /**
      * Show/hide bandwidth display. Take also care about the used timer.
      */
@@ -271,12 +224,9 @@ public class MVBandwidthMonitorLWin extends JPanel implements IBandwidthMonitor 
     }
 
     private class BeobMaus extends MouseAdapter {
-
-        JCheckBox cbkTop = new JCheckBox("Immer im Vordergrund");
-        JCheckBox cbkBorder = new JCheckBox("Rand anzeigen");
-        JMenuItem itemClose = new JMenuItem("Ausblenden");
-        JSlider jSliderBandwidth = new JSlider();
-        JLabel lblBandwidth = new JLabel("Bandbreite");
+        private final JCheckBox cbkTop = new JCheckBox("Immer im Vordergrund");
+        private final JCheckBox cbkBorder = new JCheckBox("Rand anzeigen");
+        private final JMenuItem itemClose = new JMenuItem("Ausblenden");
 
         public BeobMaus() {
             cbkTop.setSelected(MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_TOP));
@@ -290,35 +240,6 @@ public class MVBandwidthMonitorLWin extends JPanel implements IBandwidthMonitor 
                 GuiFunktionen.setDialogDecorated(jDialog, panel, MVConfig.getBool(MVConfig.Configs.SYSTEM_DOWNLOAD_INFO_DECORATED));
             });
             itemClose.addActionListener(l -> beenden());
-
-            jSliderBandwidth.setMinimum(5); //50 kByte/s
-            jSliderBandwidth.setMaximum(100); //1_000 kByte/s
-            jSliderBandwidth.setToolTipText("");
-            setSlider();
-            jSliderBandwidth.addChangeListener(e -> {
-                if (stopBeob) {
-                    return;
-                }
-                int b = jSliderBandwidth.getValue() * 10;
-                MVConfig.add(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE, String.valueOf(b));
-                Listener.notify(Listener.EREIGNIS_BANDBREITE, MVBandwidthMonitorLWin.class.getName());
-                setTextBandwith("Bandbreite: ", lblBandwidth, null);
-            });
-//            // Slider zum Einstellen der Bandbreite
-//            Listener.addListener(new Listener(Listener.EREIGNIS_BANDBREITE, MVBandwidthMonitorLWin.class.getSimpleName()) {
-//                @Override
-//                public void ping() {
-//                    setSlider();
-//                }
-//            });
-        }
-
-        private void setSlider() {
-            stopBeob = true;
-            setSliderBandwith(jSliderBandwidth);
-            setTextBandwith("Bandbreite: ", lblBandwidth, null);
-            stopBeob = false;
-
         }
 
         @Override
@@ -338,9 +259,6 @@ public class MVBandwidthMonitorLWin extends JPanel implements IBandwidthMonitor 
         private void showMenu(MouseEvent evt) {
             JPopupMenu jPopupMenu = new JPopupMenu();
 
-            jPopupMenu.add(lblBandwidth);
-            jPopupMenu.add(jSliderBandwidth);
-            jPopupMenu.addSeparator();
             jPopupMenu.add(cbkTop);
             jPopupMenu.add(cbkBorder);
             jPopupMenu.addSeparator();
