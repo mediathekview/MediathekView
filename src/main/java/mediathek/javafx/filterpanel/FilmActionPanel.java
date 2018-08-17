@@ -30,6 +30,7 @@ import mediathek.javafx.VerticalSeparator;
 import mediathek.tool.Filter;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
+import org.controlsfx.control.CheckListView;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.CustomTextField;
@@ -377,6 +378,8 @@ public class FilmActionPanel {
         restoreThemaBoxSelection(selectedItem);
     }
 
+    public CheckListView<String> senderList;
+
     private Node createSenderBox() {
         FlowPane root = new FlowPane();
         root.setHgap(4);
@@ -385,6 +388,11 @@ public class FilmActionPanel {
         senderBox.getSelectionModel().select(0);
         root.getChildren().addAll(new Label("Sender:"), senderBox);
         root.setAlignment(Pos.CENTER_LEFT);
+
+        senderList = new CheckListView<>(daten.getListeFilmeNachBlackList().getSenders());
+        senderList.setPrefHeight(200d);
+        senderList.setMinHeight(100d);
+        root.getChildren().add(senderList);
 
         return root;
     }
