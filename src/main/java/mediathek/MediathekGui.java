@@ -350,7 +350,7 @@ public class MediathekGui extends JFrame {
      */
     private void createStatusBar() {
         JFXPanel statusBarPanel = new JFXPanel();
-        statusBarController = new StatusBarController(daten, memoryMonitor, selectedItemsProperty);
+        statusBarController = new StatusBarController(daten, selectedItemsProperty);
         statusBarController.installStatusBar(statusBarPanel);
 
         jPanelInfo.add(statusBarPanel, BorderLayout.CENTER);
@@ -849,7 +849,6 @@ public class MediathekGui extends JFrame {
 
     private void initializeAnsichtMenu()
     {
-        // Ansicht
         jCheckBoxMenuItemToolBar.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
         jCheckBoxMenuItemToolBar.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.toString(jCheckBoxMenuItemToolBar.isSelected()));
@@ -887,6 +886,11 @@ public class MediathekGui extends JFrame {
 
         initializeAnsichtAbos();
         initializeAnsicht();
+
+        miShowMemoryMonitor.addActionListener(e -> Platform.runLater(() -> {
+            if (!memoryMonitor.isShowing())
+                memoryMonitor.show();
+        }));
     }
 
     private void initializeAnsicht()
@@ -1427,6 +1431,7 @@ public class MediathekGui extends JFrame {
         jMenuItemSchriftGr = new JMenuItem();
         jMenuItemSchriftKl = new JMenuItem();
         jMenuItemSchriftNormal = new JMenuItem();
+        miShowMemoryMonitor = new JMenuItem();
         cbBandwidthDisplay = new JCheckBoxMenuItem();
         jCheckBoxMenuItemMediaDb = new JCheckBoxMenuItem();
         jMenuHilfe = new JMenu();
@@ -1677,6 +1682,10 @@ public class MediathekGui extends JFrame {
                 jMenuAnsicht.add(jMenu1);
                 jMenuAnsicht.addSeparator();
 
+                //---- miShowMemoryMonitor ----
+                miShowMemoryMonitor.setText("Speicherverbrauch anzeigen");
+                jMenuAnsicht.add(miShowMemoryMonitor);
+
                 //---- cbBandwidthDisplay ----
                 cbBandwidthDisplay.setText("Bandbreitennutzung");
                 jMenuAnsicht.add(cbBandwidthDisplay);
@@ -1809,6 +1818,7 @@ public class MediathekGui extends JFrame {
     private JMenuItem jMenuItemSchriftGr;
     private JMenuItem jMenuItemSchriftKl;
     private JMenuItem jMenuItemSchriftNormal;
+    private JMenuItem miShowMemoryMonitor;
     private JCheckBoxMenuItem cbBandwidthDisplay;
     private JCheckBoxMenuItem jCheckBoxMenuItemMediaDb;
     protected JMenu jMenuHilfe;
