@@ -1514,7 +1514,7 @@ public class GuiDownloads extends PanelVorlage {
                                 .addContainerGap())
         );
 
-        jLabel1.setText("KB/s");
+        jLabel1.setText("KiB/s");
 
         jSpinner1.setModel(new javax.swing.SpinnerNumberModel(0, 0, 1048576, 1));
         jSpinner1.setToolTipText("<html>\nBandbreitenbegrenzung eines Downloads in XX Kilobytes pro Sekunde.\n<b><br><u>WICHTIG:</u><br>ENTWEDER<br>den Wert über die Pfeiltasten ändern<br>ODER<br>Zahlen eingeben UND ENTER-Taste drücken!</b>\n</html>");
