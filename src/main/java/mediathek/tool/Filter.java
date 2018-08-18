@@ -146,7 +146,7 @@ public class Filter {
         return result;
     }
 
-    private static boolean pruefen(String[] filter, final String im) {
+    public static boolean pruefen(String[] filter, final String im) {
         // wenn einer passt, dann ists gut
         Pattern p;
         if (filter.length == 1) {
