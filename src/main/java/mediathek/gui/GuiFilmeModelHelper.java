@@ -9,7 +9,6 @@ import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.tool.Filter;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelFilm;
-import mediathek.tool.TrailerTeaserChecker;
 import mediathek.tool.table.MVTable;
 
 import java.util.concurrent.TimeUnit;
@@ -127,7 +126,6 @@ public class GuiFilmeModelHelper {
         final boolean searchFieldEmpty = arrIrgendwo.length == 0;
         final ObservableList<String> selectedSenders = fap.senderList.getCheckModel().getCheckedItems();
 
-        final TrailerTeaserChecker ttc = new TrailerTeaserChecker();
         for (DatenFilm film : listeFilme) {
             if (!selectedSenders.isEmpty()) {
                 if (!selectedSenders.contains(film.getSender()))
@@ -175,18 +173,17 @@ public class GuiFilmeModelHelper {
             }
 
             if (dontShowTrailers) {
-                if (ttc.check(film.getTitle()))
+                if (film.isTrailerTeaser())
                     continue;
             }
 
             if (dontShowGebaerdensprache) {
-                String titel = film.getTitle();
-                if (titel.contains("Gebärden"))
+                if (film.isSignLanguage())
                     continue;
             }
 
             if (dontShowAudioVersions) {
-                if (checkForAudioVersions(film.getTitle()))
+                if (film.isAudioVersion())
                     continue;
             }
 
@@ -240,13 +237,6 @@ public class GuiFilmeModelHelper {
             performTableFiltering();
         }
         tabelle.setModel(tModel);
-    }
-
-    /**
-     * Check if string contains specific keywords.
-     */
-    private boolean checkForAudioVersions(String titel) {
-        return titel.contains("Hörfassung") || titel.contains("Audiodeskription");
     }
 
     public void prepareTableModel() {
