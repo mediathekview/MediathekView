@@ -1,5 +1,6 @@
 package mediathek.gui;
 
+import com.codahale.metrics.Timer;
 import javafx.collections.ObservableList;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
@@ -10,10 +11,10 @@ import mediathek.tool.TModel;
 import mediathek.tool.TModelFilm;
 import mediathek.tool.TrailerTeaserChecker;
 import mediathek.tool.table.MVTable;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.concurrent.TimeUnit;
+
+import static com.codahale.metrics.MetricRegistry.name;
 
 public class GuiFilmeModelHelper {
     private final FilmActionPanel fap;
@@ -21,6 +22,7 @@ public class GuiFilmeModelHelper {
     private final MVTable tabelle;
     private final TModel tModel;
     private final ListeFilme listeFilme;
+    private final Timer responses = Daten.getInstance().getMetricRegistry().timer(name(GuiFilmeModelHelper.class, "performTableFiltering"));
 
     public GuiFilmeModelHelper(FilmActionPanel fap, Daten daten, MVTable tabelle) {
         this.fap = fap;
@@ -80,6 +82,8 @@ public class GuiFilmeModelHelper {
     }
 
     private void performTableFiltering() {
+        final Timer.Context context = responses.time();
+
         final boolean nurNeue = fap.showNewOnly.getValue();
         final boolean nurUt = fap.showSubtitlesOnly.getValue();
         final boolean showOnlyHd = fap.showOnlyHd.getValue();
@@ -95,6 +99,7 @@ public class GuiFilmeModelHelper {
 
         final String filterThema = getFilterThema();
         final String[] arrIrgendwo = evaluateThemaTitel();
+        final boolean searchFieldEmpty = arrIrgendwo.length == 0;
 
         final long minLengthInSeconds = TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES);
         final long maxLengthInSeconds = TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES);
@@ -168,41 +173,41 @@ public class GuiFilmeModelHelper {
                     continue;
             }
 
-            if (finalStageFiltering(arrIrgendwo, film)) {
-                addObjectDataTabFilme(film);
+            //minor speedup in case we don´t have search field entries...
+            if (searchFieldEmpty)
+                addFilmToTableModel(film);
+            else {
+                if (finalStageFiltering(arrIrgendwo, film)) {
+                    addFilmToTableModel(film);
+                }
             }
         }
+
+        context.stop();
     }
 
     /**
      * Perform the last stage of filtering.
      * Rework!!!
      */
-    public static boolean finalStageFiltering(final String[] irgendwoSuchen,
-                                              final DatenFilm film) {
+    public boolean finalStageFiltering(final String[] irgendwoSuchen,
+                                       final DatenFilm film) {
         boolean result = false;
-        long start, end;
 
-        start = System.nanoTime();
-        if (irgendwoSuchen.length == 0
-                || Filter.pruefen(irgendwoSuchen, film.getDescription())
+        if (Filter.pruefen(irgendwoSuchen, film.getDescription())
                 || Filter.pruefen(irgendwoSuchen, film.getThema())
                 || Filter.pruefen(irgendwoSuchen, film.getTitle())) {
             result = true;
         }
-        end = System.nanoTime();
-        logger.debug("FILTER TIME: {} usecs.", TimeUnit.MICROSECONDS.convert(end - start, TimeUnit.NANOSECONDS));
 
         return result;
     }
-
-    private final static Logger logger = LogManager.getLogger(GuiFilmeModelHelper.class);
 
     private void fillTableModel() {
         // dann ein neues Model anlegen
         if (noFiltersAreSet()) {
             // dann ganze Liste laden
-            addObjectDataTabFilme();
+            addAllFilmsToTableModel();
         } else {
             performTableFiltering();
         }
@@ -224,15 +229,15 @@ public class GuiFilmeModelHelper {
         tabelle.setModel(tModel);
     }
 
-    private void addObjectDataTabFilme() {
+    private void addAllFilmsToTableModel() {
         if (!listeFilme.isEmpty()) {
             for (DatenFilm film : listeFilme) {
-                addObjectDataTabFilme(film);
+                addFilmToTableModel(film);
             }
         }
     }
 
-    private void addObjectDataTabFilme(DatenFilm film) {
+    private void addFilmToTableModel(DatenFilm film) {
         Object[] object = new Object[DatenFilm.MAX_ELEM];
         for (int m = 0; m < DatenFilm.MAX_ELEM; ++m) {
             switch (m) {
