@@ -92,10 +92,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static mSearch.tool.Functions.getOs;
@@ -246,7 +243,7 @@ public class MediathekGui extends JFrame {
                     .convertRatesTo(TimeUnit.SECONDS)
                     .convertDurationsTo(TimeUnit.MILLISECONDS)
                     .build();
-            reporter.start(10, TimeUnit.SECONDS);
+            reporter.start(1, TimeUnit.MINUTES);
         }
     }
 
@@ -1267,15 +1264,16 @@ public class MediathekGui extends JFrame {
     }
 
     private void waitForFilmListWriterToComplete() {
-        daten.getFilmListWriterFuture().ifPresent(future -> {
+        FutureTask<Void> writerTask = daten.getWriterTask();
+        if (writerTask != null) {
             logger.debug("waiting for filmlist completion");
             try {
-                future.get();
+                writerTask.get();
             } catch (InterruptedException | ExecutionException e) {
-                logger.error(e);
+                e.printStackTrace();
             }
-            logger.debug("done waiting");
-        });
+        }
+        logger.debug("done waiting");
     }
 
     private void waitForCommonPoolToComplete() {

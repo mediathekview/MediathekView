@@ -20,7 +20,6 @@ class FilmListExportWorkerTask extends Task<Void> {
     @Override
     protected Void call() {
         FilmListWriter writer = new FilmListWriter();
-        writer.disableEvents();
         writer.writeFilmList(selectedFile.getAbsolutePath(),
                 Daten.getInstance().getListeFilme(),
                 prog -> updateProgress(prog, 1d));
