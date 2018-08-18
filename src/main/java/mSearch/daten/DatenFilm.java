@@ -104,7 +104,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     }
 
     static {
-            Database.initializeDatabase();
+        Database.initializeDatabase();
     }
 
     /**
@@ -123,6 +123,10 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      */
     private MSLong filmSize;
     /**
+     * Is this film an audio version? (aka Hörfassung)
+     */
+    private boolean isAudioVersion = false;
+    /**
      * film length in seconds.
      */
     private long filmLength = 0;
@@ -137,12 +141,53 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      * Will be checked before each read if finished
      */
     private WeakReference<CompletableFuture<Void>> descriptionFutureReference = null;
-
     /**
      * Future used for writing website link into database.
      * Will be checked before each read if finished
      */
     private WeakReference<CompletableFuture<Void>> websiteFutureReference = null;
+    /**
+     * Flag that this entry is in sign language (aka Gebärdensprache).
+     */
+    private boolean isSignLanguage = false;
+
+    /**
+     * Flag indicating a trailer, teaser or german Vorschau.
+     */
+    private boolean isTrailerTeaser = false;
+
+    public DatenFilm() {
+        setupArr();
+
+        filmSize = new MSLong(0); // Dateigröße in MByte
+        databaseFilmNumber = FILM_COUNTER.getAndIncrement();
+
+        setupDatabaseCleanup();
+    }
+
+    public boolean isTrailerTeaser() {
+        return isTrailerTeaser;
+    }
+
+    public void setTrailerTeaser(boolean val) {
+        isTrailerTeaser = val;
+    }
+
+    public boolean isAudioVersion() {
+        return isAudioVersion;
+    }
+
+    public void setAudioVersion(boolean val) {
+        isAudioVersion = val;
+    }
+
+    public boolean isSignLanguage() {
+        return isSignLanguage;
+    }
+
+    public void setSignLanguage(boolean val) {
+        isSignLanguage = val;
+    }
 
     /**
      * Get the film number.
@@ -153,15 +198,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      */
     public int getFilmNr() {
         return databaseFilmNumber;
-    }
-
-    public DatenFilm() {
-        setupArr();
-
-        filmSize = new MSLong(0); // Dateigröße in MByte
-        databaseFilmNumber = FILM_COUNTER.getAndIncrement();
-
-        setupDatabaseCleanup();
     }
 
     private void setupDatabaseCleanup() {
