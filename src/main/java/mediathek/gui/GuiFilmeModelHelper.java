@@ -93,6 +93,7 @@ public class GuiFilmeModelHelper {
         final boolean dontShowTrailers = fap.dontShowTrailers.getValue();
         final boolean dontShowGebaerdensprache = fap.dontShowSignLanguage.getValue();
         final boolean dontShowAudioVersions = fap.dontShowAudioVersions.getValue();
+        final boolean searchThroughDescriptions = fap.searchThroughDescription.getValue();
 
         final long minLength = (long) fap.filmLengthSlider.getLowValue();
         final long maxLength = (long) fap.filmLengthSlider.getHighValue();
@@ -177,7 +178,7 @@ public class GuiFilmeModelHelper {
             if (searchFieldEmpty)
                 addFilmToTableModel(film);
             else {
-                if (finalStageFiltering(arrIrgendwo, film)) {
+                if (finalStageFiltering(searchThroughDescriptions, arrIrgendwo, film)) {
                     addFilmToTableModel(film);
                 }
             }
@@ -190,14 +191,22 @@ public class GuiFilmeModelHelper {
      * Perform the last stage of filtering.
      * Rework!!!
      */
-    public boolean finalStageFiltering(final String[] irgendwoSuchen,
+    public boolean finalStageFiltering(final boolean searchThroughDescription,
+                                       final String[] irgendwoSuchen,
                                        final DatenFilm film) {
         boolean result = false;
 
-        if (Filter.pruefen(irgendwoSuchen, film.getDescription())
-                || Filter.pruefen(irgendwoSuchen, film.getThema())
-                || Filter.pruefen(irgendwoSuchen, film.getTitle())) {
-            result = true;
+        if (searchThroughDescription) {
+            if (Filter.pruefen(irgendwoSuchen, film.getDescription())
+                    || Filter.pruefen(irgendwoSuchen, film.getThema())
+                    || Filter.pruefen(irgendwoSuchen, film.getTitle())) {
+                result = true;
+            }
+        } else {
+            if (Filter.pruefen(irgendwoSuchen, film.getThema())
+                    || Filter.pruefen(irgendwoSuchen, film.getTitle())) {
+                result = true;
+            }
         }
 
         return result;
