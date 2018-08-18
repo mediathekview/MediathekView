@@ -23,6 +23,20 @@ public class GuiFilmeModelHelper {
     private final TModel tModel;
     private final ListeFilme listeFilme;
     private final Timer responses = Daten.getInstance().getMetricRegistry().timer(name(GuiFilmeModelHelper.class, "performTableFiltering"));
+    private boolean searchThroughDescriptions;
+    private boolean nurNeue;
+    private boolean nurUt;
+    private boolean showOnlyHd;
+    private boolean kGesehen;
+    private boolean keineAbos;
+    private boolean showOnlyLivestreams;
+    private boolean dontShowTrailers;
+    private boolean dontShowGebaerdensprache;
+    private boolean dontShowAudioVersions;
+    private long maxLength;
+    private String[] arrIrgendwo;
+    private long minLengthInSeconds;
+    private long maxLengthInSeconds;
 
     public GuiFilmeModelHelper(FilmActionPanel fap, Daten daten, MVTable tabelle) {
         this.fap = fap;
@@ -81,32 +95,39 @@ public class GuiFilmeModelHelper {
         return ret;
     }
 
+    private void updateFilterVars() {
+        nurNeue = fap.showNewOnly.getValue();
+        nurUt = fap.showSubtitlesOnly.getValue();
+        showOnlyHd = fap.showOnlyHd.getValue();
+        kGesehen = fap.showUnseenOnly.getValue();
+        keineAbos = fap.dontShowAbos.getValue();
+        showOnlyLivestreams = fap.showLivestreamsOnly.getValue();
+        dontShowTrailers = fap.dontShowTrailers.getValue();
+        dontShowGebaerdensprache = fap.dontShowSignLanguage.getValue();
+        dontShowAudioVersions = fap.dontShowAudioVersions.getValue();
+        searchThroughDescriptions = fap.searchThroughDescription.getValue();
+
+        arrIrgendwo = evaluateThemaTitel();
+    }
+
+    private void calculateFilmLengthSliderValues() {
+        final long minLength = (long) fap.filmLengthSlider.getLowValue();
+        maxLength = (long) fap.filmLengthSlider.getHighValue();
+        minLengthInSeconds = TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES);
+        maxLengthInSeconds = TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES);
+    }
+
     private void performTableFiltering() {
         final Timer.Context context = responses.time();
 
-        final boolean nurNeue = fap.showNewOnly.getValue();
-        final boolean nurUt = fap.showSubtitlesOnly.getValue();
-        final boolean showOnlyHd = fap.showOnlyHd.getValue();
-        final boolean kGesehen = fap.showUnseenOnly.getValue();
-        final boolean keineAbos = fap.dontShowAbos.getValue();
-        final boolean showOnlyLivestreams = fap.showLivestreamsOnly.getValue();
-        final boolean dontShowTrailers = fap.dontShowTrailers.getValue();
-        final boolean dontShowGebaerdensprache = fap.dontShowSignLanguage.getValue();
-        final boolean dontShowAudioVersions = fap.dontShowAudioVersions.getValue();
-        final boolean searchThroughDescriptions = fap.searchThroughDescription.getValue();
-
-        final long minLength = (long) fap.filmLengthSlider.getLowValue();
-        final long maxLength = (long) fap.filmLengthSlider.getHighValue();
+        updateFilterVars();
+        calculateFilmLengthSliderValues();
 
         final String filterThema = getFilterThema();
-        final String[] arrIrgendwo = evaluateThemaTitel();
         final boolean searchFieldEmpty = arrIrgendwo.length == 0;
-
-        final long minLengthInSeconds = TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES);
-        final long maxLengthInSeconds = TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES);
-        final TrailerTeaserChecker ttc = new TrailerTeaserChecker();
         final ObservableList<String> selectedSenders = fap.senderList.getCheckModel().getCheckedItems();
 
+        final TrailerTeaserChecker ttc = new TrailerTeaserChecker();
         for (DatenFilm film : listeFilme) {
             if (!selectedSenders.isEmpty()) {
                 if (!selectedSenders.contains(film.getSender()))
@@ -178,7 +199,7 @@ public class GuiFilmeModelHelper {
             if (searchFieldEmpty)
                 addFilmToTableModel(film);
             else {
-                if (finalStageFiltering(searchThroughDescriptions, arrIrgendwo, film)) {
+                if (finalStageFiltering(film)) {
                     addFilmToTableModel(film);
                 }
             }
@@ -191,20 +212,18 @@ public class GuiFilmeModelHelper {
      * Perform the last stage of filtering.
      * Rework!!!
      */
-    public boolean finalStageFiltering(final boolean searchThroughDescription,
-                                       final String[] irgendwoSuchen,
-                                       final DatenFilm film) {
+    public boolean finalStageFiltering(final DatenFilm film) {
         boolean result = false;
 
-        if (searchThroughDescription) {
-            if (Filter.pruefen(irgendwoSuchen, film.getDescription())
-                    || Filter.pruefen(irgendwoSuchen, film.getThema())
-                    || Filter.pruefen(irgendwoSuchen, film.getTitle())) {
+        if (searchThroughDescriptions) {
+            if (Filter.pruefen(arrIrgendwo, film.getDescription())
+                    || Filter.pruefen(arrIrgendwo, film.getThema())
+                    || Filter.pruefen(arrIrgendwo, film.getTitle())) {
                 result = true;
             }
         } else {
-            if (Filter.pruefen(irgendwoSuchen, film.getThema())
-                    || Filter.pruefen(irgendwoSuchen, film.getTitle())) {
+            if (Filter.pruefen(arrIrgendwo, film.getThema())
+                    || Filter.pruefen(arrIrgendwo, film.getTitle())) {
                 result = true;
             }
         }
