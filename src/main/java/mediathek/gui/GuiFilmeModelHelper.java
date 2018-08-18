@@ -10,6 +10,8 @@ import mediathek.tool.TModel;
 import mediathek.tool.TModelFilm;
 import mediathek.tool.TrailerTeaserChecker;
 import mediathek.tool.table.MVTable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.concurrent.TimeUnit;
 
@@ -39,10 +41,6 @@ public class GuiFilmeModelHelper {
         return filterThema;
     }
 
-    private String getFilterSender() {
-        return "";
-    }
-
     private String[] evaluateThemaTitel() {
         String[] arrThemaTitel;
 
@@ -63,7 +61,6 @@ public class GuiFilmeModelHelper {
         boolean ret = false;
 
         if (fap.senderList.getCheckModel().isEmpty()
-                && getFilterSender().isEmpty()
                 && getFilterThema().isEmpty()
                 && fap.roSearchStringProperty.getValueSafe().isEmpty()
                 && ((int) fap.filmLengthSlider.getLowValue() == 0)
@@ -96,11 +93,8 @@ public class GuiFilmeModelHelper {
         final long minLength = (long) fap.filmLengthSlider.getLowValue();
         final long maxLength = (long) fap.filmLengthSlider.getHighValue();
 
-        final String filterSender = getFilterSender();
         final String filterThema = getFilterThema();
-
-        // ThemaTitel
-        String[] arrThemaTitel = evaluateThemaTitel();
+        final String[] arrIrgendwo = evaluateThemaTitel();
 
         final long minLengthInSeconds = TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES);
         final long maxLengthInSeconds = TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES);
@@ -169,17 +163,40 @@ public class GuiFilmeModelHelper {
                     continue;
             }
 
-            //TODO add sender filtering here, remove from below
+            if (!filterThema.isEmpty()) {
+                if (!film.getThema().equalsIgnoreCase(filterThema))
+                    continue;
+            }
 
-            //filter mitLaenge false dann aufrufen
-            //je nachdem dann das ganze herausoperieren
-            String[] arrIrgendwo = {};
-            String[] arrTitel = {};
-            if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, 0, true, film, false)) {
+            if (finalStageFiltering(arrIrgendwo, film)) {
                 addObjectDataTabFilme(film);
             }
         }
     }
+
+    /**
+     * Perform the last stage of filtering.
+     * Rework!!!
+     */
+    public static boolean finalStageFiltering(final String[] irgendwoSuchen,
+                                              final DatenFilm film) {
+        boolean result = false;
+        long start, end;
+
+        start = System.nanoTime();
+        if (irgendwoSuchen.length == 0
+                || Filter.pruefen(irgendwoSuchen, film.getDescription())
+                || Filter.pruefen(irgendwoSuchen, film.getThema())
+                || Filter.pruefen(irgendwoSuchen, film.getTitle())) {
+            result = true;
+        }
+        end = System.nanoTime();
+        logger.debug("FILTER TIME: {} usecs.", TimeUnit.MICROSECONDS.convert(end - start, TimeUnit.NANOSECONDS));
+
+        return result;
+    }
+
+    private final static Logger logger = LogManager.getLogger(GuiFilmeModelHelper.class);
 
     private void fillTableModel() {
         // dann ein neues Model anlegen
