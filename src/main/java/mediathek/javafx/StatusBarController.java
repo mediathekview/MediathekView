@@ -34,13 +34,9 @@ public class StatusBarController {
     private final SelectedItemsLabel selectedItemsLabel;
     private final GarbageCollectionButton btnGc = new GarbageCollectionButton();
     private Pane progressPane;
-    private MemoryMonitor memoryMonitor;
-    private final MemoryMonitorButton memButton = new MemoryMonitorButton(memoryMonitor);
     private Pane filmListWriterProgressPane = null;
 
-    public StatusBarController(Daten daten, MemoryMonitor memoryMonitor, IntegerProperty selectedItemsProperty) {
-        this.memoryMonitor = memoryMonitor;
-
+    public StatusBarController(Daten daten, IntegerProperty selectedItemsProperty) {
         selectedItemsLabel = new SelectedItemsLabel(selectedItemsProperty);
         filmListInfoPane = new FilmListInfoPane(daten);
         filmListInformationLabel = new FilmListInformationLabel(daten, daten.getMediathekGui().tabPaneIndexProperty());
@@ -160,7 +156,6 @@ public class StatusBarController {
 
         if (Config.isDebuggingEnabled()) {
             leftItems.add(btnGc);
-            leftItems.add(memButton);
             leftItems.add(new VerticalSeparator());
         }
         CenteredBorderPane pane = new CenteredBorderPane(filmListInformationLabel);
