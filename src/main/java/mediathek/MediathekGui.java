@@ -238,14 +238,16 @@ public class MediathekGui extends JFrame {
     }
 
     /**
-     * Log performance statistics to console
+     * Log performance statistics to console when debugging is enabled
      */
     private void setupConsoleReporter() {
-        ConsoleReporter reporter = ConsoleReporter.forRegistry(daten.getMetricRegistry())
-                .convertRatesTo(TimeUnit.SECONDS)
-                .convertDurationsTo(TimeUnit.MILLISECONDS)
-                .build();
-        reporter.start(10, TimeUnit.SECONDS);
+        if (Config.isDebuggingEnabled()) {
+            ConsoleReporter reporter = ConsoleReporter.forRegistry(daten.getMetricRegistry())
+                    .convertRatesTo(TimeUnit.SECONDS)
+                    .convertDurationsTo(TimeUnit.MILLISECONDS)
+                    .build();
+            reporter.start(10, TimeUnit.SECONDS);
+        }
     }
 
     /**
