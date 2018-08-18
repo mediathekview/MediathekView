@@ -616,11 +616,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         private static void initializeDatabase() {
             try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
                  Statement statement = connection.createStatement()) {
-                final boolean useMultithreaded = ApplicationConfiguration.getConfiguration().getBoolean("database.multithreaded", false);
-                if (useMultithreaded) {
-                    statement.executeUpdate("SET MULTI_THREADED 1");
-                }
-
                 if (!MemoryUtils.isLowMemoryEnvironment()) {
                     statement.executeUpdate("SET WRITE_DELAY 2000");
                     statement.executeUpdate("SET MAX_OPERATION_MEMORY 0");
