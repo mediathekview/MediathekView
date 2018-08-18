@@ -196,7 +196,8 @@ public class Filter {
             if (p == null) {
                 //nothing in cache, so we have to compile...
                 try {
-                    p = Pattern.compile(textSuchen.substring(2), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+                    p = Pattern.compile(textSuchen.substring(2),
+                            Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.DOTALL);
                     PATTERN_CACHE.put(textSuchen, p);
                 } catch (Exception ignored) {
                     p = null;
