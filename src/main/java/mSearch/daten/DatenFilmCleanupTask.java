@@ -1,23 +1,14 @@
 package mSearch.daten;
 
-import com.codahale.metrics.Counter;
-import mediathek.config.Daten;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static com.codahale.metrics.MetricRegistry.name;
-
 public class DatenFilmCleanupTask implements Runnable {
     private final int filmNr;
 
-    private final Counter pendingJobs;
-
     public DatenFilmCleanupTask(int film) {
         filmNr = film;
-        pendingJobs = Daten.getInstance().getMetricRegistry().counter(name(DatenFilmCleanupTask.class, "pending-cleanup-jobs"));
-        pendingJobs.inc();
     }
 
     @Override
@@ -29,7 +20,5 @@ public class DatenFilmCleanupTask implements Runnable {
                 statement.executeBatch();
             } catch (SQLException | IllegalStateException | NullPointerException ignored) {
             }
-
-        pendingJobs.dec();
     }
 }
