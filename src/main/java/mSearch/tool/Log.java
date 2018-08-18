@@ -33,7 +33,7 @@ import java.util.Date;
 public class Log {
 
     private final static String FEHLER = "Fehler(" + Const.PROGRAMMNAME + "): ";
-    public final static String LILNE = "################################################################################";
+    public final static String LINE = "################################################################################";
 
     // private
     private static class Error {
@@ -113,18 +113,18 @@ public class Log {
 
         logger.info("");
         logger.info("");
-        logger.info(LILNE);
+        logger.info(LINE);
         logger.info("   --> Beginn: {}", dateFormatter.format(Log.startZeit));
         logger.info("   --> Fertig: {}", dateFormatter.format(stopZeit));
         logger.info("   --> Dauer[Min]: {}", (minuten == 0 ? "<1" : minuten));
-        logger.info(LILNE);
+        logger.info(LINE);
     }
 
     public static synchronized ArrayList<String> printErrorMsg() {
         int max = 0;
         ArrayList<String> retList = new ArrayList<>();
         retList.add("");
-        retList.add(LILNE);
+        retList.add(LINE);
         if (fehlerListe.isEmpty()) {
             retList.add(" Keine Fehler :)");
         } else {
@@ -164,7 +164,7 @@ public class Log {
                 retList.add(strEx + e.cl + " Fehlernummer: " + e.nr + " Anzahl: " + e.count);
             }
         }
-        retList.add(LILNE);
+        retList.add(LINE);
         return retList;
     }
 
