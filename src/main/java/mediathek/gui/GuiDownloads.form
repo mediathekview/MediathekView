@@ -314,7 +314,7 @@
                       <SubComponents>
                         <Component class="javax.swing.JLabel" name="jLabel1">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="KB/s"/>
+                            <Property name="text" type="java.lang.String" value="KiB/s"/>
                           </Properties>
                           <AuxValues>
                             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="true"/>
