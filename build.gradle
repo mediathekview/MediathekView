@@ -50,7 +50,7 @@ repositories {
 
 dependencies {
     compile ":jide-oss:3.7.4"
-
+    compile "io.dropwizard.metrics:metrics-core:4.0.0"
     compile 'org.apache.commons:commons-lang3:3.6'
     compile 'com.google.guava:guava:26.0-jre'
     compile 'org.apache.commons:commons-compress:1.17'
