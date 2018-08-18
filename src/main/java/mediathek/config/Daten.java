@@ -26,6 +26,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.HBox;
 import mSearch.daten.ListeFilme;
 import mSearch.filmlisten.writer.FilmListWriter;
@@ -342,8 +343,10 @@ public class Daten {
         if (mediathekGui != null) {
             Platform.runLater(() -> {
                 HBox hb = new HBox();
+                hb.setSpacing(4d);
                 Label lb = new Label("");
                 ProgressBar prog = new ProgressBar();
+                prog.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
                 hb.getChildren().addAll(
                         new VerticalSeparator(),
                         new CenteredBorderPane(lb),
@@ -356,12 +359,8 @@ public class Daten {
                     lb.textProperty().bind(writerTask.messageProperty());
                     prog.progressProperty().bind(writerTask.progressProperty());
                 });
-                writerTask.setOnSucceeded(e -> {
-                    mediathekGui.getStatusBarController().getStatusBar().getRightItems().remove(hb);
-                });
-                writerTask.setOnFailed(e -> {
-                    mediathekGui.getStatusBarController().getStatusBar().getRightItems().remove(hb);
-                });
+                writerTask.setOnSucceeded(e -> mediathekGui.getStatusBarController().getStatusBar().getRightItems().remove(hb));
+                writerTask.setOnFailed(e -> mediathekGui.getStatusBarController().getStatusBar().getRightItems().remove(hb));
                 new Thread(writerTask).start();
             });
         } else {
