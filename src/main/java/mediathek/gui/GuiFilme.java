@@ -1176,7 +1176,10 @@ public class GuiFilme extends PanelVorlage {
                 if (!newValue)
                     SwingUtilities.invokeLater(this::reloadTable);
             });
-            fap.searchThroughDescription.addListener((os, o, n) -> SwingUtilities.invokeLater(this::reloadTable));
+            fap.searchThroughDescription.addListener((os, o, n) -> {
+                if (!fap.roSearchStringProperty.getReadOnlyProperty().isEmpty().get())
+                    SwingUtilities.invokeLater(this::reloadTable);
+            });
 
             setupSenderListListeners();
 
