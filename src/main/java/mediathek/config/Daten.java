@@ -21,8 +21,12 @@ package mediathek.config;
 
 import com.codahale.metrics.MetricRegistry;
 import com.jidesoft.utils.SystemInfo;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.HBox;
 import mSearch.daten.ListeFilme;
 import mSearch.filmlisten.writer.FilmListWriter;
 import mSearch.tool.Listener;
@@ -34,10 +38,13 @@ import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.filmlisten.FilmeLaden;
+import mediathek.gui.actions.FilmListWriteWorkerTask;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
+import mediathek.javafx.CenteredBorderPane;
+import mediathek.javafx.VerticalSeparator;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVMessageDialog;
@@ -61,10 +68,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.FutureTask;
 
 public class Daten {
 
@@ -89,6 +94,7 @@ public class Daten {
     private final ObservableList<LiveStreamItem> liveStreamList = FXCollections.observableArrayList();
     // Gui
     private final MediathekGui mediathekGui; // JFrame der Gui
+    private final MetricRegistry metrics = new MetricRegistry();
     public MVUsedUrls history = null; // alle angesehenen Filme
     public MVUsedUrls erledigteAbos = null; // erfolgreich geladenen Abos
     public StarterClass starterClass = null; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
@@ -106,15 +112,7 @@ public class Daten {
     private DialogMediaDB dialogMediaDB;
     private boolean alreadyMadeBackup = false;
     private MBassador<BaseEvent> messageBus;
-    private Optional<CompletableFuture<Void>> writeFuture = Optional.empty();
-    private final MetricRegistry metrics = new MetricRegistry();
-
-    /**
-     * Return the DropWizard metrics instance used for performance measurement.
-     */
-    public MetricRegistry getMetricRegistry() {
-        return metrics;
-    }
+    private FilmListWriteWorkerTask writerTask = null;
 
     private Daten() {
         mediathekGui = null;
@@ -257,6 +255,17 @@ public class Daten {
         return cal.getTimeInMillis();
     }
 
+    public FutureTask<Void> getWriterTask() {
+        return writerTask;
+    }
+
+    /**
+     * Return the DropWizard metrics instance used for performance measurement.
+     */
+    public MetricRegistry getMetricRegistry() {
+        return metrics;
+    }
+
     public ObservableList<LiveStreamItem> getLivestreamList() {
         return liveStreamList;
     }
@@ -319,32 +328,46 @@ public class Daten {
         timer.start();
     }
 
-    public Optional<CompletableFuture<Void>> getFilmListWriterFuture() {
-        return writeFuture;
-    }
-
     public void filmlisteSpeichern() {
-        writeFuture.ifPresent(future -> {
-            if (!future.isDone()) {
-                try {
-                    future.get();
-                } catch (InterruptedException | ExecutionException e) {
-                    logger.error(e);
-                } finally {
-                    writeFuture = Optional.empty();
-                }
+        try {
+            if (writerTask != null) {
+                logger.info("Waiting for worker task");
+                writerTask.get();
             }
-        });
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            logger.error("Error waiting for worker task", e);
+        }
 
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-            //sleep for 10 seconds to give database a chance to write out changes
-            try {
-                TimeUnit.SECONDS.sleep(10);
-            } catch (InterruptedException ignored) {
-            }
-            new FilmListWriter().writeFilmList(getDateiFilmliste(), listeFilme, null);
-        });
-        writeFuture = Optional.of(future);
+        if (mediathekGui != null) {
+            Platform.runLater(() -> {
+                HBox hb = new HBox();
+                Label lb = new Label("");
+                ProgressBar prog = new ProgressBar();
+                hb.getChildren().addAll(
+                        new VerticalSeparator(),
+                        new CenteredBorderPane(lb),
+                        new CenteredBorderPane(prog)
+                );
+
+                writerTask = new FilmListWriteWorkerTask(this);
+                writerTask.setOnRunning(e -> {
+                    mediathekGui.getStatusBarController().getStatusBar().getRightItems().add(hb);
+                    lb.textProperty().bind(writerTask.messageProperty());
+                    prog.progressProperty().bind(writerTask.progressProperty());
+                });
+                writerTask.setOnSucceeded(e -> {
+                    mediathekGui.getStatusBarController().getStatusBar().getRightItems().remove(hb);
+                });
+                writerTask.setOnFailed(e -> {
+                    mediathekGui.getStatusBarController().getStatusBar().getRightItems().remove(hb);
+                });
+                new Thread(writerTask).start();
+            });
+        } else {
+            FilmListWriter writer = new FilmListWriter();
+            writer.writeFilmList(getDateiFilmliste(), listeFilme, null);
+        }
     }
 
     /**
@@ -580,4 +603,5 @@ public class Daten {
     public void setDialogMediaDB(final DialogMediaDB aDialogMediaDB) {
         dialogMediaDB = aDialogMediaDB;
     }
+
 }

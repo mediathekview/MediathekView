@@ -47,7 +47,6 @@ public class FilmListWriter {
     private static final String TAG_JSON_LIST = "X";
     private String sender = "";
     private String thema = "";
-    private boolean fireEvents = true;
 
     private JsonGenerator getJsonGenerator(OutputStream os) throws IOException {
         final JsonFactory jsonF = new JsonFactory();
@@ -58,10 +57,6 @@ public class FilmListWriter {
             jg = jg.useDefaultPrettyPrinter();
 
         return jg;
-    }
-
-    public void disableEvents() {
-        fireEvents = false;
     }
 
     private void checkOsxCacheDirectory() {
@@ -86,8 +81,7 @@ public class FilmListWriter {
     }
 
     public void writeFilmList(String datei, ListeFilme listeFilme, IProgressListener listener) {
-        if (fireEvents)
-            Daten.getInstance().getMessageBus().publishAsync(new FilmListWriteStartEvent());
+        Daten.getInstance().getMessageBus().publishAsync(new FilmListWriteStartEvent());
 
         try {
             logger.info("Filme schreiben ({} Filme) :", listeFilme.size());
@@ -139,8 +133,7 @@ public class FilmListWriter {
             logger.error("nach: {}", datei, ex);
         }
 
-        if (fireEvents)
-            Daten.getInstance().getMessageBus().publishAsync(new FilmListWriteStopEvent());
+        Daten.getInstance().getMessageBus().publishAsync(new FilmListWriteStopEvent());
     }
 
     private void writeEntry(DatenFilm datenFilm, JsonGenerator jg) throws IOException {
