@@ -47,7 +47,6 @@ public class Icons {
     public static final ImageIcon ICON_MENUE_FILE_OPEN = GetIcon.getProgramIcon("menue-file-open.png", 16, 16);
     public static final ImageIcon ICON_MENUE_FILM_REC = GetIcon.getProgramIcon("menue-film-rec.png", 16, 16);
     public static final ImageIcon ICON_MENUE_FILM_START = GetIcon.getProgramIcon("menue-film-start.png", 16, 16);
-    public static final ImageIcon ICON_MENUE_FILMLISTE_LADEN = GetIcon.getProgramIcon("menue-filmliste-laden.png", 16, 16);
     public static final ImageIcon ICON_MENUE_HISTORY_ADD = GetIcon.getProgramIcon("menue-history-add.png", 16, 16);
     public static final ImageIcon ICON_MENUE_HISTORY_REMOVE = GetIcon.getProgramIcon("menue-history-remove.png", 16, 16);
     public static final ImageIcon ICON_MENUE_EIN = GetIcon.getProgramIcon("menue-ein.png", 16, 16);

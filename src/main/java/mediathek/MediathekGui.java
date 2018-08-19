@@ -34,6 +34,8 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mSearch.Config;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.PooledDatabaseConnection;
@@ -1012,7 +1014,7 @@ public class MediathekGui extends JFrame {
     private void setMenuIcons()
     {
         //Icons setzen
-        jMenuItemFilmlisteLaden.setIcon(Icons.ICON_MENUE_FILMLISTE_LADEN);
+        jMenuItemFilmlisteLaden.setIcon(IconFontSwing.buildIcon(FontAwesome.CLOUD_DOWNLOAD, 16));
         jMenuItemEinstellungen.setIcon(Icons.ICON_MENUE_EINSTELLUNGEN);
         jMenuItemBeenden.setIcon(Icons.ICON_MENUE_BEENDEN);
         jMenuItemFilmAbspielen.setIcon(Icons.ICON_MENUE_FILM_START);
