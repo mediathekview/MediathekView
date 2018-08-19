@@ -31,7 +31,6 @@ import mediathek.gui.dialog.DialogFilmBeschreibung;
 import mediathek.tool.MVFont;
 import mediathek.tool.table.MVDownloadsTable;
 import mediathek.tool.table.MVFilmTable;
-import mediathek.tool.table.MVTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,9 +46,9 @@ import java.net.URISyntaxException;
 @SuppressWarnings("serial")
 public class PanelFilmBeschreibung extends JPanel implements ListSelectionListener {
     private DatenFilm currentFilm = null;
-    private final MVTable table;
+    private final JTable table;
 
-    public PanelFilmBeschreibung(Daten daten, MVTable table, boolean film) {
+    public PanelFilmBeschreibung(Daten daten, JTable table, boolean film) {
         initComponents();
         this.table = table;
 
@@ -73,8 +72,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
             }
         });
 
-        Icon editIcon = IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16);
-        jCheckBoxChange.setIcon(editIcon);
+        jCheckBoxChange.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
         jCheckBoxChange.addActionListener(e -> {
             if (currentFilm != null) {
                 final String oldDescription = currentFilm.getDescription();

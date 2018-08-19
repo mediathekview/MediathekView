@@ -1200,9 +1200,7 @@ public class GuiFilme extends PanelVorlage {
 
     private void setupSenderListListeners() {
         PauseTransition filterSenderDelay = new PauseTransition(Duration.millis(750d));
-        filterSenderDelay.setOnFinished(e -> {
-            SwingUtilities.invokeLater(this::reloadTable);
-        });
+        filterSenderDelay.setOnFinished(e -> SwingUtilities.invokeLater(this::reloadTable));
         fap.senderList.getCheckModel()
                 .getCheckedItems().
                 addListener((ListChangeListener<String>) c -> filterSenderDelay.playFromStart());
