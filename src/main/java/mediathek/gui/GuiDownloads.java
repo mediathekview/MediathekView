@@ -346,6 +346,13 @@ public class GuiDownloads extends PanelVorlage {
         });
     }
 
+    private final static int[] COLUMNS_DISABLED = new int[]{DatenDownload.DOWNLOAD_BUTTON_START,
+            DatenDownload.DOWNLOAD_BUTTON_DEL,
+            DatenDownload.DOWNLOAD_REF,
+            DatenDownload.DOWNLOAD_URL_RTMP,
+            DatenDownload.DOWNLOAD_FILM_NR,
+            DatenDownload.DOWNLOAD_NR};
+
     private void init(MediathekGui mediathekGui) {
         setupKeyMappings();
         //Tabelle einrichten
@@ -368,10 +375,12 @@ public class GuiDownloads extends PanelVorlage {
         });
 
         tabelle.lineBreak = MVConfig.getBool(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_LINEBREAK);
-        tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle, DatenDownload.COLUMN_NAMES, DatenDownload.spaltenAnzeigen,
-                new int[]{DatenDownload.DOWNLOAD_BUTTON_START, DatenDownload.DOWNLOAD_BUTTON_DEL, DatenDownload.DOWNLOAD_REF},
+        tabelle.getTableHeader().addMouseListener(new BeobTableHeader(tabelle,
+                DatenDownload.COLUMN_NAMES,
+                DatenDownload.spaltenAnzeigen,
+                COLUMNS_DISABLED,
                 new int[]{DatenDownload.DOWNLOAD_BUTTON_START, DatenDownload.DOWNLOAD_BUTTON_DEL},
-                true /*Icon*/, MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_LINEBREAK));
+                true, MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_LINEBREAK));
 
         btnClear.setIcon(Icons.ICON_BUTTON_CLEAR);
         btnClear.addActionListener(l -> {
@@ -379,7 +388,7 @@ public class GuiDownloads extends PanelVorlage {
             cbView.setSelectedIndex(0);
         });
 
-        jSpinnerAnzahlDownloads.setModel(new javax.swing.SpinnerNumberModel(1, 1, 9, 1));
+        jSpinnerAnzahlDownloads.setModel(new SpinnerNumberModel(1, 1, 9, 1));
         jSpinnerAnzahlDownloads.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)));
         jSpinnerAnzahlDownloads.addChangeListener(l -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD,
