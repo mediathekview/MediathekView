@@ -26,6 +26,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.HBox;
+import mSearch.Config;
 import mSearch.daten.ListeFilme;
 import mSearch.filmlisten.writer.FilmListWriter;
 import mSearch.tool.Listener;
@@ -80,36 +81,36 @@ public class Daten {
      * Maximum number of backup files to be stored.
      */
     private final static int MAX_COPY = 5;
-    public static ListePset listePset = null;
+    public static ListePset listePset;
     //alle Programmeinstellungen
-    public static InfoDialog filmInfo = null; // Infos zum Film
+    public static InfoDialog filmInfo; // Infos zum Film
     private static Daten instance;
     // flags
-    private static boolean startMaximized = false; // Fenster maximieren
-    private static boolean auto = false; // Version: MediathekAuto
-    private static boolean reset = false; // Programm auf Starteinstellungen zurücksetzen
+    private static boolean startMaximized; // Fenster maximieren
+    private static boolean auto; // Version: MediathekAuto
+    private static boolean reset; // Programm auf Starteinstellungen zurücksetzen
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis;
-    private final MediathekGui mediathekGui; // JFrame der Gui
+    private MediathekGui mediathekGui; // JFrame der Gui
     private final MetricRegistry metrics = new MetricRegistry();
-    public MVUsedUrls history = null; // alle angesehenen Filme
-    public MVUsedUrls erledigteAbos = null; // erfolgreich geladenen Abos
-    public StarterClass starterClass = null; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
+    public MVUsedUrls history; // alle angesehenen Filme
+    public MVUsedUrls erledigteAbos; // erfolgreich geladenen Abos
+    public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
     private FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
-    private ListeFilme listeFilme = null;
-    private ListeFilme listeFilmeNachBlackList = null; // ist DIE Filmliste
-    private ListeFilme listeFilmeHistory = null; // für die HEUTIGE HISTORY
-    private ListeDownloads listeDownloads = null; // Filme die als "Download: Tab Download" geladen werden sollen
-    private ListeDownloads listeDownloadsButton = null; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
-    private ListeBlacklist listeBlacklist = null;
-    private ListeMediaDB listeMediaDB = null;
-    private ListeMediaPath listeMediaPath = null;
-    private ListeAbo listeAbo = null;
-    private DownloadInfos downloadInfos = null;
+    private ListeFilme listeFilme;
+    private ListeFilme listeFilmeNachBlackList; // ist DIE Filmliste
+    private ListeFilme listeFilmeHistory; // für die HEUTIGE HISTORY
+    private ListeDownloads listeDownloads; // Filme die als "Download: Tab Download" geladen werden sollen
+    private ListeDownloads listeDownloadsButton; // Filme die über "Tab Filme" als Button/Film abspielen gestartet werden
+    private ListeBlacklist listeBlacklist;
+    private ListeMediaDB listeMediaDB;
+    private ListeMediaPath listeMediaPath;
+    private ListeAbo listeAbo;
+    private DownloadInfos downloadInfos;
     private DialogMediaDB dialogMediaDB;
-    private boolean alreadyMadeBackup = false;
+    private boolean alreadyMadeBackup;
     private MBassador<BaseEvent> messageBus;
-    private FilmListWriteWorkerTask writerTask = null;
+    private FilmListWriteWorkerTask writerTask;
 
     private Daten() {
         mediathekGui = null;
@@ -171,11 +172,15 @@ public class Daten {
     public static String getDateiFilmliste() {
         String strFile;
 
-        if (SystemInfo.isMacOSX()) {
-            //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
-            strFile = GuiFunktionen.getHomePath() + File.separator + "Library/Caches/MediathekView" + File.separator + Konstanten.JSON_DATEI_FILME;
-        } else {
+        if (Config.isPortableMode()) {
             strFile = getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME;
+        } else {
+            if (SystemInfo.isMacOSX()) {
+                //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
+                strFile = GuiFunktionen.getHomePath() + File.separator + "Library/Caches/MediathekView" + File.separator + Konstanten.JSON_DATEI_FILME;
+            } else {
+                strFile = getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME;
+            }
         }
 
         return strFile;
@@ -585,6 +590,10 @@ public class Daten {
 
     public MediathekGui getMediathekGui() {
         return mediathekGui;
+    }
+
+    public void setMediathekGui(MediathekGui gui) {
+        mediathekGui = gui;
     }
 
     public DialogMediaDB getDialogMediaDB() {

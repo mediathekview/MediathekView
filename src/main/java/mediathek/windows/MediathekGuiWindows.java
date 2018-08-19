@@ -5,8 +5,8 @@ import mediathek.tool.threads.IndicatorThread;
 
 @SuppressWarnings("serial")
 public class MediathekGuiWindows extends MediathekGui {
-    public MediathekGuiWindows(String... args) {
-        super(args);
+    public MediathekGuiWindows() {
+        super();
     }
 
     @Override
