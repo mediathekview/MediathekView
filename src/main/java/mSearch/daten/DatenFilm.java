@@ -31,7 +31,7 @@ import java.lang.ref.WeakReference;
 import java.sql.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     public static final String AUFLOESUNG_NORMAL = "normal";
@@ -74,7 +74,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     /**
      * The database instance for all descriptions.
      */
-    private final static AtomicLong FILM_COUNTER = new AtomicLong(0);
+    private final static AtomicInteger FILM_COUNTER = new AtomicInteger(0);
     private static final GermanStringSorter sorter = GermanStringSorter.getInstance();
     private static final Logger logger = LogManager.getLogger(DatenFilm.class);
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
@@ -133,7 +133,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     /**
      * Internal film number, used for storage in database
      */
-    private long databaseFilmNumber;
+    private int databaseFilmNumber;
     private boolean neuerFilm = false;
     private Cleaner cleaner = null;
     /**
@@ -170,7 +170,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
              PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO mediathekview.film VALUES (?)");
         ) {
-            insertStatement.setLong(1, databaseFilmNumber);
+            insertStatement.setInt(1, databaseFilmNumber);
             insertStatement.executeUpdate();
 
 
@@ -210,7 +210,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      *
      * @return the original internal film number
      */
-    public long getFilmNr() {
+    public int getFilmNr() {
         return databaseFilmNumber;
     }
 
@@ -379,10 +379,10 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
              PreparedStatement updateStatement = connection.prepareStatement("UPDATE mediathekview.website_links SET link=? WHERE id=?")) {
 
             updateStatement.setString(1, link);
-            updateStatement.setLong(2, databaseFilmNumber);
+            updateStatement.setInt(2, databaseFilmNumber);
             updateStatement.executeUpdate();
 
-            insertStatement.setLong(1, databaseFilmNumber);
+            insertStatement.setInt(1, databaseFilmNumber);
             insertStatement.setString(2, link);
             insertStatement.executeUpdate();
         } catch (SQLIntegrityConstraintViolationException ignored) {
@@ -404,10 +404,10 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
             cleanedDesc = StringUtils.replace(cleanedDesc, "\n", "<br />");
 
             updateStatement.setString(1, cleanedDesc);
-            updateStatement.setLong(2, databaseFilmNumber);
+            updateStatement.setInt(2, databaseFilmNumber);
             updateStatement.executeUpdate();
 
-            insertStatement.setLong(1, databaseFilmNumber);
+            insertStatement.setInt(1, databaseFilmNumber);
             insertStatement.setString(2, cleanedDesc);
             insertStatement.executeUpdate();
 
@@ -662,9 +662,9 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
                 statement.executeUpdate("DROP TABLE IF EXISTS mediathekview.website_links");
                 statement.executeUpdate("DROP TABLE IF EXISTS mediathekview.film");
 
-                statement.executeUpdate("CREATE TABLE IF NOT EXISTS film (id BIGINT NOT NULL PRIMARY KEY)");
-                statement.executeUpdate("CREATE TABLE IF NOT EXISTS description (id BIGINT NOT NULL PRIMARY KEY REFERENCES mediathekview.film ON DELETE CASCADE, desc VARCHAR(1024))");
-                statement.executeUpdate("CREATE TABLE IF NOT EXISTS website_links (id BIGINT NOT NULL PRIMARY KEY REFERENCES mediathekview.film ON DELETE CASCADE, link VARCHAR(1024))");
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS film (id INTEGER NOT NULL PRIMARY KEY)");
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS description (id INTEGER NOT NULL PRIMARY KEY REFERENCES mediathekview.film ON DELETE CASCADE, desc VARCHAR(1024))");
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS website_links (id INTEGER NOT NULL PRIMARY KEY REFERENCES mediathekview.film ON DELETE CASCADE, link VARCHAR(1024))");
 
             } catch (SQLException e) {
                 e.printStackTrace();
