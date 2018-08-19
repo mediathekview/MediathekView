@@ -22,8 +22,6 @@ package mSearch.filmlisten.reader;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import mSearch.Config;
 import mSearch.Const;
 import mSearch.daten.DatenFilm;
@@ -33,8 +31,6 @@ import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.InputStreamProgressMonitor;
 import mSearch.tool.MVHttpClient;
 import mSearch.tool.ProgressMonitorInputStream;
-import mediathek.config.Daten;
-import mediathek.daten.LiveStreamItem;
 import mediathek.tool.TrailerTeaserChecker;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -56,9 +52,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class FilmListReader implements AutoCloseable {
     private static final int PROGRESS_MAX = 100;
@@ -334,41 +328,9 @@ public class FilmListReader implements AutoCloseable {
             logger.warn(ex);
         }
 
-        extractLivestreams(listeFilme);
-
         DatenFilm.Database.createIndices();
 
         notifyFertig(source, listeFilme);
-    }
-
-    private void extractLivestreams(ListeFilme listeFilme) {
-        final Daten daten = Daten.getInstance();
-        ObservableList<LiveStreamItem> liveStreamList = daten.getLivestreamList();
-
-        Platform.runLater(liveStreamList::clear);
-
-        List<DatenFilm> tempFilteredFilmList = listeFilme.parallelStream()
-                .filter(film -> film.getThema().equalsIgnoreCase(ListeFilme.THEMA_LIVE))
-                .collect(Collectors.toList());
-
-        logger.debug("ListeFilme: {}", listeFilme.size());
-        for (DatenFilm film : tempFilteredFilmList) {
-            try {
-                LiveStreamItem item = new LiveStreamItem();
-                item.setSender(film.getSender());
-                item.setTitel(film.getTitle());
-                item.setUrl(new URL(film.getUrl()));
-                Platform.runLater(() -> liveStreamList.add(item));
-
-                //TODO wieder aktivieren nachdem speichern und lesen der Livestreams implementiert wurde
-                //listeFilme.remove(film);
-            } catch (MalformedURLException ex) {
-                logger.error(ex);
-            }
-        }
-
-        tempFilteredFilmList.clear();
-        logger.debug("ListeFilme: {}", listeFilme.size());
     }
 
     /**

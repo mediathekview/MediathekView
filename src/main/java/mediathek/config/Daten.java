@@ -22,8 +22,6 @@ package mediathek.config;
 import com.codahale.metrics.MetricRegistry;
 import com.jidesoft.utils.SystemInfo;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
@@ -92,8 +90,6 @@ public class Daten {
     private static boolean reset = false; // Programm auf Starteinstellungen zurücksetzen
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis;
-    private final ObservableList<LiveStreamItem> liveStreamList = FXCollections.observableArrayList();
-    // Gui
     private final MediathekGui mediathekGui; // JFrame der Gui
     private final MetricRegistry metrics = new MetricRegistry();
     public MVUsedUrls history = null; // alle angesehenen Filme
@@ -265,10 +261,6 @@ public class Daten {
      */
     public MetricRegistry getMetricRegistry() {
         return metrics;
-    }
-
-    public ObservableList<LiveStreamItem> getLivestreamList() {
-        return liveStreamList;
     }
 
     public MBassador<BaseEvent> getMessageBus() {
