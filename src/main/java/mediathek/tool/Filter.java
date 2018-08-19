@@ -107,7 +107,7 @@ public class Filter {
                             || pruefen(themaTitelSuchen, title)) {
 
                         if (irgendwoSuchen.length == 0
-                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_DATUM])
+                                || pruefen(irgendwoSuchen, film.getDescription())
                                 || pruefen(irgendwoSuchen, thema)
                                 || pruefen(irgendwoSuchen, title)) {
                             if (mitLaenge) {
