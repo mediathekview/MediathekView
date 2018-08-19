@@ -150,7 +150,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      * Flag that this entry is in sign language (aka Gebärdensprache).
      */
     private boolean isSignLanguage = false;
-
     /**
      * Flag indicating a trailer, teaser or german Vorschau.
      */
@@ -408,7 +407,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
 
     }
 
-
     private String cleanDescription(String s, String thema, String titel) {
         // die Beschreibung auf x Zeichen beschränken
 
@@ -536,22 +534,33 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         return filmLength;
     }
 
-    private void setFilmLength() {
-        //TODO OPTIMIZE ME!
+    /**
+     * Convert HH:MM:SS string into seconds.
+     *
+     * @return result in seconds or 0.
+     */
+    private long parseTimeToSeconds() {
+        long seconds = 0;
+        final String[] split = StringUtils.split(arr[FILM_DAUER], ':');
+
         try {
-            filmLength = 0;
-            if (!this.arr[DatenFilm.FILM_DAUER].isEmpty()) {
-                String[] parts = this.arr[DatenFilm.FILM_DAUER].split(":");
-                long power = 1;
-                for (int i = parts.length - 1; i >= 0; i--) {
-                    filmLength += Long.parseLong(parts[i]) * power;
-                    power *= 60;
-                }
-            }
-        } catch (Exception ex) {
-            filmLength = 0;
-            logger.error("Dauer: {}", this.arr[DatenFilm.FILM_DAUER], ex);
+            seconds += Long.parseLong(split[0]) * 3600; //hour
+            seconds += Long.parseLong(split[1]) * 60; //minute
+            seconds += Long.parseLong(split[2]); //second
+        } catch (Exception e) {
+            seconds = 0;
+            logger.error("Dauer: {}", this.arr[DatenFilm.FILM_DAUER], e);
         }
+
+        return seconds;
+    }
+
+    /**
+     * Set the film length.
+     * Convert dauer string from format HH:MM:SS into seconds.
+     */
+    private void calculateFilmLength() {
+        filmLength = parseTimeToSeconds();
     }
 
     private void setDatum() {
@@ -572,7 +581,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     public void init() {
         filmSize = new MSLong(this);
 
-        setFilmLength();
+        calculateFilmLength();
 
         setDatum();
     }
