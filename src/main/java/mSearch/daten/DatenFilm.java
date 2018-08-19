@@ -168,7 +168,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
 
     private void writeFilmNumberToDatabase() {
         try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
-             PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO mediathekview.film VALUES (?)");
+             PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO mediathekview.film VALUES (?)")
         ) {
             insertStatement.setInt(1, databaseFilmNumber);
             insertStatement.executeUpdate();
