@@ -336,6 +336,8 @@ public class FilmListReader implements AutoCloseable {
 
         extractLivestreams(listeFilme);
 
+        DatenFilm.Database.createIndices();
+
         notifyFertig(source, listeFilme);
     }
 
