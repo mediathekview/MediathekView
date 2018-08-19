@@ -41,7 +41,6 @@ public class Konstanten {
     public static final String ADRESSE_DONATION = "https://mediathekview.de/spenden/";
     // Dateien/Verzeichnisse
     public static final String VERZEICHNIS_PROGRAMM_ICONS = "Icons/Programm"; // Unterverzeichnis im Programmverzeichnis in dem die Iconsets liegen
-    public static final String VERZEICHNIS_SENDER_ICONS = "Icons/Sender"; // Unterverzeichnis im Programmverzeichnis in dem die Icons (Sender) liegen
     public static final String VERZEICHNIS_DOWNLOADS = PROGRAMMNAME; // Standard wenn nichts angeben, Verzeichnis wird im Homeverzeichnis angelegt
     public static final String VERZEICHNIS_EINSTELLUNGEN = ".mediathek3"; // im Homeverzeichnis
     public static final String JSON_DATEI_FILME = "filme.json";

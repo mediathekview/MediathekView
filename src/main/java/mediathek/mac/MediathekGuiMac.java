@@ -25,8 +25,8 @@ import java.net.URL;
 public class MediathekGuiMac extends MediathekGui {
     private static final String ACTION_KEY_MAC_F = "mac-f";
 
-    public MediathekGuiMac(String[] ar) {
-        super(ar);
+    public MediathekGuiMac() {
+        super();
 
         setupDockIcon();
 
