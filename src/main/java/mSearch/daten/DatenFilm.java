@@ -619,6 +619,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         public static void closeDatabase() {
             try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
                  Statement statement = connection.createStatement()) {
+                //statement.executeUpdate("DROP SCHEMA mediathekview");
                 statement.executeUpdate("SHUTDOWN COMPACT");
             } catch (SQLException e) {
                 logger.error(e);
@@ -640,6 +641,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         }
 
         private static void initializeDatabase() {
+            logger.info("initializeDatabase()");
             try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
                  Statement statement = connection.createStatement()) {
                 if (!MemoryUtils.isLowMemoryEnvironment()) {
@@ -663,9 +665,12 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS film (id BIGINT NOT NULL PRIMARY KEY)");
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS description (id BIGINT NOT NULL PRIMARY KEY REFERENCES mediathekview.film ON DELETE CASCADE, desc VARCHAR(1024))");
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS website_links (id BIGINT NOT NULL PRIMARY KEY REFERENCES mediathekview.film ON DELETE CASCADE, link VARCHAR(1024))");
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+            logger.info("initializeDatabase() done.");
+
         }
     }
 
