@@ -549,7 +549,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
             seconds += Long.parseLong(split[2]); //second
         } catch (Exception e) {
             seconds = 0;
-            logger.error("Dauer: {}", this.arr[DatenFilm.FILM_DAUER], e);
         }
 
         return seconds;
