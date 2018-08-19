@@ -375,21 +375,11 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
 
     private void writeWebsiteLinkToDatabase(String link) {
         try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
-             PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO mediathekview.website_links VALUES (?,?)");
-             PreparedStatement updateStatement = connection.prepareStatement("UPDATE mediathekview.website_links SET link=? WHERE id=?")) {
+             PreparedStatement mergeStatement = connection.prepareStatement("MERGE INTO mediathekview.website_links KEY(ID) VALUES (?,?)")) {
 
-            updateStatement.setString(1, link);
-            updateStatement.setInt(2, databaseFilmNumber);
-            updateStatement.executeUpdate();
-
-            insertStatement.setInt(1, databaseFilmNumber);
-            insertStatement.setString(2, link);
-            insertStatement.executeUpdate();
-        } catch (SQLIntegrityConstraintViolationException ignored) {
-        } catch (JdbcSQLException ex) {
-            if (!ex.getMessage().contains("primary key violation")) {
-                logger.error("JdbcSQLException: ", ex);
-            }
+            mergeStatement.setInt(1, databaseFilmNumber);
+            mergeStatement.setString(2, link);
+            mergeStatement.executeUpdate();
         } catch (SQLException ex) {
             logger.error(ex);
         }
@@ -397,20 +387,14 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
 
     private void writeDescriptionToDatabase(String desc) {
         try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
-             PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO mediathekview.description VALUES (?,?)");
-             PreparedStatement updateStatement = connection.prepareStatement("UPDATE mediathekview.description SET desc=? WHERE id =?")
+             PreparedStatement mergeStatement = connection.prepareStatement("MERGE INTO mediathekview.description KEY(ID) VALUES (?,?)")
         ) {
             String cleanedDesc = cleanDescription(desc, arr[FILM_THEMA], getTitle());
-            cleanedDesc = StringUtils.replace(cleanedDesc, "\n", "<br />");
+            cleanedDesc = StringUtils.replace(cleanedDesc, "\n", "<br/>");
 
-            updateStatement.setString(1, cleanedDesc);
-            updateStatement.setInt(2, databaseFilmNumber);
-            updateStatement.executeUpdate();
-
-            insertStatement.setInt(1, databaseFilmNumber);
-            insertStatement.setString(2, cleanedDesc);
-            insertStatement.executeUpdate();
-
+            mergeStatement.setInt(1, databaseFilmNumber);
+            mergeStatement.setString(2, cleanedDesc);
+            mergeStatement.executeUpdate();
 
         } catch (SQLIntegrityConstraintViolationException ignored) {
             //this will happen in UPSERT operation
