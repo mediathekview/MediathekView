@@ -67,7 +67,6 @@ import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.*;
-import mediathek.javafx.LivestreamTab;
 import mediathek.javafx.MemoryMonitor;
 import mediathek.javafx.StartupProgressPanel;
 import mediathek.javafx.StatusBarController;
@@ -601,11 +600,6 @@ public class MediathekGui extends JFrame {
         tabFilme = new GuiFilme(daten, this);
 
         jTabbedPane.addTab(TABNAME_FILME, tabFilme);
-
-        if (Config.isDebuggingEnabled()) {
-            LivestreamTab livestreamTab = new LivestreamTab(daten.getLivestreamList());
-            jTabbedPane.addTab("Livestreams", livestreamTab);
-        }
 
         initFrames();
         jTabbedPane.addChangeListener(l -> {
