@@ -241,7 +241,7 @@ public class MediathekGui extends JFrame {
         if (Config.isDebuggingEnabled()) {
             ConsoleReporter reporter = ConsoleReporter.forRegistry(daten.getMetricRegistry())
                     .convertRatesTo(TimeUnit.SECONDS)
-                    .convertDurationsTo(TimeUnit.MILLISECONDS)
+                    .convertDurationsTo(TimeUnit.MICROSECONDS)
                     .build();
             reporter.start(1, TimeUnit.MINUTES);
         }
