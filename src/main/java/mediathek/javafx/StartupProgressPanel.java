@@ -11,14 +11,10 @@ import mediathek.config.Daten;
 import mediathek.gui.messages.TimerEvent;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class StartupProgressPanel extends JFXPanel {
     public static final String CONFIG_STRING = "application.last_filmlist_size";
     private static final long serialVersionUID = -1753371357306901205L;
-    private static final Logger logger = LogManager.getLogger(StartupProgressPanel.class);
-    private static final double STEP_SIZE = 0.01;
     private final BorderPane rootPane = new BorderPane();
     private final Daten daten = Daten.getInstance();
     private ProgressIndicator progress;
@@ -74,9 +70,5 @@ public class StartupProgressPanel extends JFXPanel {
     public void increaseProgress(double value) {
         if (progress != null)
             progress.setProgress(value);
-    }
-
-    public boolean isInfiniteProgress() {
-        return infiniteProgress;
     }
 }
