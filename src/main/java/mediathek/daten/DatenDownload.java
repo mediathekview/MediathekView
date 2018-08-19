@@ -540,7 +540,7 @@ public final class DatenDownload extends MVData<DatenDownload> {
             name = FilenameUtils.replaceLeerDateiname(name, false /*pfad*/,
                     Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
                     Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
-            name = name + suff;
+            name += suff;
 
             // prüfen ob das Suffix 2x vorkommt
             if (name.length() > 8) {
