@@ -378,35 +378,66 @@ public class PanelEinstellungen extends PanelVorlage {
         javax.swing.JPanel jPanel8 = new javax.swing.JPanel();
         cbSaveHumanReadableFilmlist = new javax.swing.JCheckBox();
 
-        setMinimumSize(getPreferredSize());
-        setLayout(new org.jdesktop.swingx.VerticalLayout());
+        setMaximumSize(new java.awt.Dimension(10, 10));
+        setMinimumSize(getMaximumSize());
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Tab-Verhalten"));
-        jPanel5.setLayout(new org.jdesktop.swingx.VerticalLayout());
 
         jCheckBoxTabsTop.setText("Tabs oben anzeigen");
-        jPanel5.add(jCheckBoxTabsTop);
 
         jCheckBoxTabIcon.setText("Icons anzeigen");
         jCheckBoxTabIcon.setToolTipText("Im Tab keine Icons anzeigen");
-        jPanel5.add(jCheckBoxTabIcon);
 
         cbAutomaticMenuTabSwitching.setText("Tabs schalten automatisch bei Menünutzung um");
-        jPanel5.add(cbAutomaticMenuTabSwitching);
 
-        add(jPanel5);
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+                jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addComponent(jCheckBoxTabsTop)
+                                .addGap(5, 5, 5)
+                                .addComponent(jCheckBoxTabIcon)
+                                .addGap(5, 5, 5)
+                                .addComponent(cbAutomaticMenuTabSwitching))
+        );
+        jPanel5Layout.setVerticalGroup(
+                jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jCheckBoxTabsTop)
+                                        .addComponent(jCheckBoxTabIcon)
+                                        .addComponent(cbAutomaticMenuTabSwitching)))
+        );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Download"));
-        jPanel3.setLayout(new org.jdesktop.swingx.HorizontalLayout());
 
         jLabel3.setText("User-Agent:");
-        jPanel3.add(jLabel3);
 
         jtfUserAgent.setMinimumSize(new java.awt.Dimension(200, 26));
         jtfUserAgent.setPreferredSize(new java.awt.Dimension(520, 26));
-        jPanel3.add(jtfUserAgent);
 
-        add(jPanel3);
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addComponent(jLabel3)
+                                .addGap(5, 5, 5)
+                                .addComponent(jtfUserAgent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jPanel3Layout.setVerticalGroup(
+                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jLabel3))
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addComponent(jtfUserAgent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("HTTP-Proxy (Neustart erforderlich!)"));
         jPanel4.setToolTipText("");
@@ -464,34 +495,68 @@ public class PanelEinstellungen extends PanelVorlage {
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        add(jPanel4);
-
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        jPanel2.setLayout(new org.jdesktop.swingx.VerticalLayout());
 
         jCheckBoxTray.setText("Programm ins Tray minimieren");
-        jPanel2.add(jCheckBoxTray);
-
-        org.jdesktop.swingx.HorizontalLayout horizontalLayout1 = new org.jdesktop.swingx.HorizontalLayout();
-        horizontalLayout1.setGap(5);
-        jPanel6.setLayout(horizontalLayout1);
 
         jLabel6.setText("nur die Filme der letzten Tage laden:");
-        jPanel6.add(jLabel6);
 
         jSpinnerDays.setModel(new javax.swing.SpinnerListModel(new String[]{"Alles", "1", "2", "10", "15"}));
-        jPanel6.add(jSpinnerDays);
 
         jButtonHelpDays.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mediathek/res/muster/button-help.png"))); // NOI18N
         jButtonHelpDays.setToolTipText("Hilfe anzeigen");
-        jPanel6.add(jButtonHelpDays);
 
         jButtonLoad.setText("Filmliste jetzt neu laden");
-        jPanel6.add(jButtonLoad);
 
-        jPanel2.add(jPanel6);
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+                jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addComponent(jLabel6)
+                                .addGap(5, 5, 5)
+                                .addComponent(jSpinnerDays, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(5, 5, 5)
+                                .addComponent(jButtonHelpDays)
+                                .addGap(5, 5, 5)
+                                .addComponent(jButtonLoad))
+        );
+        jPanel6Layout.setVerticalGroup(
+                jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addGap(11, 11, 11)
+                                .addComponent(jLabel6))
+                        .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(jSpinnerDays, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addComponent(jButtonHelpDays))
+                        .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addComponent(jButtonLoad))
+        );
 
-        add(jPanel2);
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addComponent(jCheckBoxTray)
+                                .addGap(5, 5, 5)
+                                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jPanel2Layout.setVerticalGroup(
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(13, 13, 13)
+                                .addComponent(jCheckBoxTray))
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
@@ -535,8 +600,6 @@ public class PanelEinstellungen extends PanelVorlage {
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        add(jPanel1);
-
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Datenbank (Neustart erforderlich!)"));
 
         cbUseDatabaseCleaner.setText("Bereinigung während Laufzeit");
@@ -557,8 +620,6 @@ public class PanelEinstellungen extends PanelVorlage {
                                 .addComponent(cbUseDatabaseCleaner)
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        add(jPanel7);
 
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("Speicherung der Filmliste"));
 
@@ -581,7 +642,41 @@ public class PanelEinstellungen extends PanelVorlage {
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        add(jPanel8);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
     }// </editor-fold>//GEN-END:initComponents
 
 
