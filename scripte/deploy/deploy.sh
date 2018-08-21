@@ -5,6 +5,7 @@ LOCAL="build/distributions"
 REMOTE="upload"
 
 STATUSDATEI="build/upload.status"
+COMMITDATEI="build/gitcommithash.txt"
 
 PORT="22"
 ADRESSE="deploy@mediathekview.de"
@@ -16,6 +17,14 @@ chmod 600 $KEYFILE
 
 echo 1 > $STATUSDATEI
 
+if [ "$1" == "nightly" ]; then
+
+  echo 2 > $STATUSDATEI
+
+  echo $2 > $COMMITDATEI
+
+fi
+
 # Ins Verzeichnis wechseln Befehl
 echo "cd $REMOTE" >> $BATCHDATEI
 
@@ -25,6 +34,11 @@ for i in `ls -x -1 $LOCAL`; do
 done
 
 echo "cd ../" >> $BATCHDATEI
+
+if [ "$1" == "nightly" ]; then
+  echo "put $COMMITDATEI" >> $BATCHDATEI
+fi
+
 # Upload fertig bestätigen
 echo "put $STATUSDATEI" >> $BATCHDATEI 
 
