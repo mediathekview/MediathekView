@@ -18,17 +18,18 @@ import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import org.apache.commons.io.FileUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MemoryMonitor extends Stage {
     private static final int TIMELINE_SIZE = 60;
     private Timeline updateMemoryTimer;
-    private AtomicInteger time = new AtomicInteger();
+    private final AtomicInteger time = new AtomicInteger();
     private LongProperty totalMemory;
     private LongProperty freeMemory;
     private LongProperty maxMemory;
-    private XYChart.Series<Number, Number> series = new XYChart.Series<>();
+    private final XYChart.Series<Number, Number> series = new XYChart.Series<>();
     private NumberBinding usedMemory;
 
     public MemoryMonitor() {
@@ -39,7 +40,7 @@ public class MemoryMonitor extends Stage {
     private void initComponents() {
         setTitle("Speicherverbrauch");
         setAlwaysOnTop(true);
-        initStyle(StageStyle.UNIFIED);
+        initStyle(StageStyle.UTILITY);
 
         createPropertiesAndBindings();
 
@@ -51,7 +52,7 @@ public class MemoryMonitor extends Stage {
     }
 
     private long toMegabytes(long bytes) {
-        return bytes / (1024 * 1024);
+        return bytes / FileUtils.ONE_MB;
     }
 
     private void createPropertiesAndBindings() {
@@ -78,7 +79,6 @@ public class MemoryMonitor extends Stage {
     }
 
     private Pane createMemoryMonitor() {
-        //TODO implement GC button
         series.setName("Speicherverbrauch (MByte)");
 
         createUpdateTimer();
