@@ -109,6 +109,10 @@ public class FilmActionPanel {
         daten.getMessageBus().subscribe(this);
     }
 
+    public CustomTextField getSearchField() {
+        return jfxSearchField;
+    }
+
     private void restoreConfigSettings() {
         showOnlyHd.set(config.getBoolean(ApplicationConfiguration.FILTER_PANEL_SHOW_HD_ONLY, false));
         showSubtitlesOnly.set(config.getBoolean(ApplicationConfiguration.FILTER_PANEL_SHOW_SUBTITLES_ONLY, false));

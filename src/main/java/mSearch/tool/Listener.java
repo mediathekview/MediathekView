@@ -45,7 +45,6 @@ public class Listener implements EventListener {
     public static final int EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN = 23;
     public static final int EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN = 24;
 
-    public static final int EREIGNIS_SUCHFELD_FOCUS_SETZEN = 26;
     public static final int EREIGNIS_BLACKLIST_AUCH_FUER_ABOS = 27;
     public static final int EREIGNIS_REIHENFOLGE_DOWNLOAD = 29;
     public static final int EREIGNIS_GEO = 31;
