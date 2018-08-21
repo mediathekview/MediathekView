@@ -15,9 +15,8 @@ echo "Deploy zu Hauptserver";
 # Rechte am Key nur dem Benutzer geben, ansonsten meckert ssh
 chmod 600 $KEYFILE
 
-echo 1 > $STATUSDATEI
 
-if [ "$1" == "nightly" ]; then
+if [ "$1" = "nightly" ]; then
 
   echo "Deploye nightly Build mit commit '$2'"
 
@@ -25,6 +24,8 @@ if [ "$1" == "nightly" ]; then
 
   echo $2 > $COMMITDATEI
 
+else
+  echo 1 > $STATUSDATEI
 fi
 
 # Ins Verzeichnis wechseln Befehl
@@ -37,7 +38,7 @@ done
 
 echo "cd ../" >> $BATCHDATEI
 
-if [ "$1" == "nightly" ]; then
+if [ "$1" = "nightly" ]; then
   echo "put $COMMITDATEI" >> $BATCHDATEI
 fi
 
