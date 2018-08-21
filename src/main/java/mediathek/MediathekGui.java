@@ -19,6 +19,7 @@
  */
 package mediathek;
 
+import com.codahale.metrics.ConsoleReporter;
 import com.jidesoft.utils.SystemInfo;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
@@ -226,7 +227,22 @@ public class MediathekGui extends JFrame {
 
         splashScreenManager.closeSplashScreen();
 
+        setupConsoleReporter();
+
         loadFilmlist();
+    }
+
+    /**
+     * Log performance statistics to console when debugging is enabled
+     */
+    private void setupConsoleReporter() {
+        if (Config.isDebuggingEnabled()) {
+            ConsoleReporter reporter = ConsoleReporter.forRegistry(daten.getMetricRegistry())
+                    .convertRatesTo(TimeUnit.SECONDS)
+                    .convertDurationsTo(TimeUnit.MICROSECONDS)
+                    .build();
+            reporter.start(1, TimeUnit.MINUTES);
+        }
     }
 
     /**
