@@ -19,6 +19,8 @@ echo 1 > $STATUSDATEI
 
 if [ "$1" == "nightly" ]; then
 
+  echo "Deploye nightly Build mit commit '$2'"
+
   echo 2 > $STATUSDATEI
 
   echo $2 > $COMMITDATEI
