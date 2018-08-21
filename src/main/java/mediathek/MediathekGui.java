@@ -420,7 +420,7 @@ public class MediathekGui extends JFrame {
     }
 
     protected void setFocusOnSearchField() {
-        Listener.notify(Listener.EREIGNIS_SUCHFELD_FOCUS_SETZEN, MediathekGui.class.getName());
+        Platform.runLater(() -> tabFilme.fap.getSearchField().requestFocus());
     }
 
     /**
