@@ -182,7 +182,7 @@ public class AboutDialog extends JDialog {
         pnlJavaInformation.setBorder(border);
         pnlJavaInformation.setBackground(Color.WHITE);
 
-        JLabel lblDevelopmentSupportedBy = new JLabel("Development supported by JetBrains IntelliJ");
+        JLabel lblDevelopmentSupportedBy = new JLabel("Development supported by JetBrains IntelliJ and ej-technologies install4j");
         lblDevelopmentSupportedBy.setFont(UIManager.getFont("ToolTip.font"));
 
         GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
