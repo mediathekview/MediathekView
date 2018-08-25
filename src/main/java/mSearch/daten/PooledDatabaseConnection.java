@@ -11,6 +11,8 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
 import javax.sql.DataSource;
 import java.io.Closeable;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -81,7 +83,10 @@ public class PooledDatabaseConnection implements Closeable {
             }
         }
 
-        return strDatabase;
+        final Path filePath = Paths.get(strDatabase);
+        final Path absolutePath = filePath.toAbsolutePath();
+
+        return absolutePath.toString();
     }
 
     private DataSource setupDataSource() {
