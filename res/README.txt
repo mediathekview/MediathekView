@@ -98,17 +98,20 @@ OS X: Doppelklick auf die separate Startdatei "MediathekView.command"
 Starten mit zusätzlichen Parametern
 -----------------------------------------------------------
 
-java -jar MediathekView.jar [Pfad] [Parameter]
-java -jar MediathekView.jar c:\temp
-java -jar MediathekView.jar Einstellungen/.mediathek3
+
+java -Xmx1G -DmvLogOutputPath=[Pfad zum_Konfigurationsordner]/mediathekview.log -jar MediathekView.jar [Pfad] [Parameter]
+java -Xmx1G -DmvLogOutputPath=c:\temp\mediathekview.log -jar MediathekView.jar c:\temp
+java -Xmx1G -DmvLogOutputPath=Einstellungen/.mediathek3/mediathekview.log -jar MediathekView.jar Einstellungen/.mediathek3
 
 Das Programm verwendet das Verzeichnis "Einstellungen" (relativ zur Programmdatei)
 oder "c:\temp" für die Einstellungen.
 Die Programmeinstellungen (Filmliste, Einstellungen, gesehene Filme) werden 
 standardmäßig im Home-Verzeichnis (Benutzer-Verzeichnis) in einem Ordner ".mediathek3" 
 gespeichert (beim Start ohne die Angabe eines Pfades).
+Mit "-DmvLogOutputPath" wird die Logdatei angegeben.
+"-Xmx1G" setzt die maximale Heapgröße für Java. (Wie viel Ram darf Mediathekview verbrauchen, weniger als 512MB ist nicht möglich.)
 
-java -jar MediathekView.jar -v
+java -Xmx1G -jar MediathekView.jar -v
 Das Programm gibt nur die Versionsnummer aus.
 
 
@@ -124,15 +127,15 @@ https://mediathekview.de/anleitung/#starten-im-portablen-modus-mediathekview-por
 Auto
 -----------------------------------------------------------
 
-java -jar MediathekView.jar [Pfad] -auto
-java -jar MediathekView.jar -auto
-java -jar MediathekView.jar -fastauto
+java -Xmx1G -jar MediathekView.jar [Pfad] -auto
+java -Xmx1G -jar MediathekView.jar -auto
+java -Xmx1G -jar MediathekView.jar -fastauto
 
 Das Programm startet im Auto-Modus. Es wird die Filmliste aktualisiert und dann 
 alle neuen Abos geladen. Das Programm beendet sich dann selbst wieder. Diese 
 Funktion eignet sich dazu, alles automatisch aktuell zu halten.
 
-java -Djava.awt.headless=true -jar MediathekView.jar -auto
+java -Xmx1G -Djava.awt.headless=true -jar MediathekView.jar -auto
 Wird das Programm ohne GUI (-auto) auf einem Rechner mit grafischer Oberfläche 
 gestartet, kann man damit den Splashscreen unterdrücken.
 
