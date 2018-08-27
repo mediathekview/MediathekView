@@ -252,9 +252,12 @@ public class MediathekGui extends JFrame {
     private MemoryMonitor memoryMonitor;
 
     private void createMemoryMonitor() {
-        Platform.runLater(() -> memoryMonitor = new MemoryMonitor());
-        if (Config.isDebuggingEnabled())
-            Platform.runLater(() -> memoryMonitor.show());
+        Platform.runLater(() -> {
+            if (Config.isDebuggingEnabled()) {
+                memoryMonitor = new MemoryMonitor();
+                memoryMonitor.show();
+            }
+        });
     }
 
     private void loadFilmlist() {
@@ -849,7 +852,7 @@ public class MediathekGui extends JFrame {
         initializeAnsicht();
 
         miShowMemoryMonitor.addActionListener(e -> Platform.runLater(() -> {
-            if (!memoryMonitor.isShowing())
+            memoryMonitor = new MemoryMonitor();
                 memoryMonitor.show();
         }));
     }
@@ -1087,10 +1090,8 @@ public class MediathekGui extends JFrame {
     }
 
     private void closeMemoryMonitor() {
-        if (Config.isDebuggingEnabled()) {
             if (memoryMonitor != null)
                 Platform.runLater(() -> memoryMonitor.close());
-        }
     }
 
     private void writeOldConfiguration() {
