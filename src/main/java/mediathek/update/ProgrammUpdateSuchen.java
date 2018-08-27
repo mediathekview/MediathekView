@@ -49,16 +49,12 @@ public class ProgrammUpdateSuchen {
     /**
      * Connection timeout in milliseconds.
      */
-    private static final int TIMEOUT = 10_000;
     private final ArrayList<String[]> listInfos = new ArrayList<>();
-    private boolean neueVersion = false;
 
     private static final Logger logger = LogManager.getLogger(ProgrammUpdateSuchen.class);
 
-    public boolean checkVersion(boolean anzeigen, boolean showProgramInformation, boolean showAllInformation) {
+    public void checkVersion(boolean anzeigen, boolean showProgramInformation, boolean showAllInformation) {
         // prüft auf neue Version, aneigen: wenn true, dann AUCH wenn es keine neue Version gibt ein Fenster
-        neueVersion = false;
-
         Optional<ServerProgramInformation> opt = retrieveProgramInformation();
         if (!opt.isPresent()) {
             logger.warn("did not receive ServerProgramInformation");
@@ -77,7 +73,6 @@ public class ProgrammUpdateSuchen {
                 }
                 else {
                     if (checkForNewerVersion(progInfo.getVersion())) {
-                        neueVersion = true;
                         UpdateNotificationDialog dlg = new UpdateNotificationDialog(Daten.getInstance().getMediathekGui(), "Software Update", progInfo);
                         dlg.setVisible(true);
                     } else if (anzeigen) {
@@ -86,8 +81,6 @@ public class ProgrammUpdateSuchen {
                 }
             });
         }
-
-        return neueVersion;
     }
 
     private void displayInfoMessages(boolean showAll) {
@@ -157,7 +150,7 @@ public class ProgrammUpdateSuchen {
         inFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
 
         final Request request = new Request.Builder().url(Konstanten.ADRESSE_PROGRAMM_VERSION).get().build();
-        try (Response response = MVHttpClient.getInstance().getReducedTimeOutClient().newCall(request).execute();
+        try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
              ResponseBody body = response.body()) {
             if (response.isSuccessful() && body != null) {
                 try (InputStream is = body.byteStream();

@@ -30,8 +30,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.security.CodeSource;
 
-import static mSearch.tool.Log.LILNE;
-
 public class MVFunctionSys {
 
     public static synchronized void startMeldungen() {
@@ -39,7 +37,6 @@ public class MVFunctionSys {
         logger.info("Programmpfad: " + MVFunctionSys.getPathJar());
         logger.info("Verzeichnis Einstellungen: " + Daten.getSettingsDirectory_String());
         logger.info("");
-        logger.info(LILNE);
         logger.info("");
         logger.info("");
     }
@@ -66,17 +63,13 @@ public class MVFunctionSys {
         }
         String s = StringUtils.replace(propFile.getAbsolutePath(), pFilePath, "");
         if (!s.endsWith(File.separator)) {
-            s = s + File.separator;
+            s += File.separator;
         }
         return s;
     }
 
     public static String pathProgramIcons() {
         return getPathJar() + Konstanten.VERZEICHNIS_PROGRAMM_ICONS;
-    }
-
-    public static String pathSenderIcons() {
-        return getPathJar() + Konstanten.VERZEICHNIS_SENDER_ICONS;
     }
 
     public static String getProgVersionString() {

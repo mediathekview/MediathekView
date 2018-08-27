@@ -21,9 +21,9 @@ package mediathek.tool;
 
 import mSearch.tool.Functions;
 import mSearch.tool.Log;
-import mSearch.tool.SysMsg;
 
 import java.io.BufferedWriter;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,7 +39,9 @@ public class Logfile {
 
         ArrayList<String> retList;
         Path logFilePath = Paths.get(ziel);
-        try (final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(logFilePath)))) {
+        try (OutputStream os = Files.newOutputStream(logFilePath);
+             OutputStreamWriter osw = new OutputStreamWriter(os);
+             BufferedWriter bw = new BufferedWriter(osw)) {
             bw.write("");
             bw.newLine();
 
@@ -150,34 +152,7 @@ public class Logfile {
             }
             bw.newLine();
             bw.newLine();
-            bw.newLine();
-            bw.newLine();
-            //
-            bw.write("#####################################################");
-            bw.newLine();
-            bw.write("## Programmausgabe ##################################");
-            bw.newLine();
-            bw.write("#####################################################");
-            bw.newLine();
-            bw.newLine();
-            bw.write(SysMsg.textProgramm.toString());
-            bw.newLine();
-            bw.newLine();
-            bw.newLine();
-            bw.newLine();
-            //
-            bw.write("#########################################################");
-            bw.newLine();
-            bw.write("## Fehlermeldungen                                       ");
-            bw.newLine();
-            retList = Log.printErrorMsg();
-            for (String s : retList) {
-                bw.write(s);
-                bw.newLine();
-            }
-            bw.newLine();
-            bw.newLine();
-            //
+
             ret = true;
         } catch (Exception ex) {
             Log.errorLog(319865493, ex);

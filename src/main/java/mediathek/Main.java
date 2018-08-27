@@ -36,6 +36,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.nio.file.Files;
@@ -61,12 +62,15 @@ public class Main {
     /**
      * Ensures that old film lists in .mediathek directory get deleted because they were moved to
      * ~/Library/Caches/MediathekView
+     * In portable mode we MUST NOT delete the files.
      */
     private static void cleanupOsxFiles() {
-        try {
-            Path oldFilmList = Paths.get(Daten.getSettingsDirectory_String(), Konstanten.JSON_DATEI_FILME);
-            Files.deleteIfExists(oldFilmList);
-        } catch (Exception ignored) {
+        if (!Config.isPortableMode()) {
+            try {
+                Path oldFilmList = Paths.get(Daten.getSettingsDirectory_String(), Konstanten.JSON_DATEI_FILME);
+                Files.deleteIfExists(oldFilmList);
+            } catch (Exception ignored) {
+            }
         }
     }
 
@@ -110,16 +114,54 @@ public class Main {
         }
     }
 
+    private static void printArguments(final String... aArguments) {
+        for (String argument : aArguments) {
+            logger.info("Startparameter: {}", argument);
+        }
+    }
+
+    private static String readPfadFromArguments(final String... aArguments) {
+        String pfad = "";
+        if (aArguments != null && aArguments.length > 0) {
+            for (String arg : aArguments) {
+                if (!arg.startsWith("-")) {
+                    if (!arg.endsWith(File.separator)) {
+                        arg += File.separator;
+                    }
+                    pfad = arg;
+                }
+            }
+        }
+
+        return pfad;
+    }
+
+    private static void setupPortableMode(String... args) {
+        printArguments(args);
+        final String basePath = readPfadFromArguments(args);
+        if (!basePath.isEmpty()) {
+            Config.setPortableMode(true);
+            logger.info("Portable Mode: true");
+        } else
+            logger.info("Portable Mode: false");
+
+        //initialize Daten object now for database
+        Daten.getInstance(basePath);
+    }
+
     /**
      * @param args the command line arguments
      */
-    public static void main(final String args[]) {
+    public static void main(final String... args) {
+        printBanner();
+
+        setupPortableMode(args);
+
         checkMemoryRequirements();
         checkJava8Compatibility();
         checkForJavaFX();
 
         IconFontSwing.register(FontAwesome.getIconFont());
-        printBanner();
         new Main().start(args);
     }
 
@@ -203,14 +245,14 @@ public class Main {
                 break;
 
             case GUI:
-                startGuiMode(aArguments);
+                startGuiMode();
                 break;
             default:
                 startUI(StartupMode.GUI);
         }
     }
 
-    private void startGuiMode(final String[] args) {
+    private void startGuiMode() {
         EventQueue.invokeLater(() ->
         {
             if (SystemInfo.isMacOSX())
@@ -237,22 +279,22 @@ public class Main {
             }
 
 
-            getPlatformWindow(args).setVisible(true);
+            getPlatformWindow().setVisible(true);
         });
     }
 
-    private MediathekGui getPlatformWindow(final String[] args) {
+    private MediathekGui getPlatformWindow() {
         MediathekGui window;
 
         if (SystemInfo.isMacOSX()) {
-            window = new MediathekGuiMac(args);
+            window = new MediathekGuiMac();
         } else if (SystemInfo.isWindows()) {
-            window = new MediathekGuiWindows(args);
+            window = new MediathekGuiWindows();
         } else {
             if (SystemInfo.isUnix()) {
                 setupX11WindowManagerClassName();
             }
-            window = new MediathekGui(args);
+            window = new MediathekGui();
         }
 
         return window;

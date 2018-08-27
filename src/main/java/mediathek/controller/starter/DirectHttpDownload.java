@@ -19,30 +19,33 @@
  */
 package mediathek.controller.starter;
 
+import com.google.common.util.concurrent.RateLimiter;
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.MVHttpClient;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
-import mediathek.controller.MVBandwidthTokenBucket;
-import mediathek.controller.MVInputStream;
+import mediathek.controller.MVBandwidthCountingInputStream;
+import mediathek.controller.ThrottlingInputStream;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.dialog.DialogContinueDownload;
 import mediathek.gui.dialog.MeldungDownloadfehler;
 import mediathek.gui.messages.DownloadFinishedEvent;
+import mediathek.gui.messages.DownloadRateLimitChangedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.tool.MVInfoFile;
 import mediathek.tool.MVSubtitle;
+import net.engio.mbassy.listener.Handler;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -51,12 +54,15 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 
 public class DirectHttpDownload extends Thread {
 
     private static final int HTTP_RANGE_NOT_SATISFIABLE = 416;
+    private static final Logger logger = LogManager.getLogger(DirectHttpDownload.class);
     private final Daten daten;
     private final DatenDownload datenDownload;
     private final Start start;
@@ -66,18 +72,27 @@ public class DirectHttpDownload extends Thread {
      * The number of times how often the system should try a restart of the download.
      */
     private final int maxRestarts;
+    /**
+     * Instance which will limit the download speed
+     */
+    private final RateLimiter rateLimiter;
     private HttpURLConnection conn = null;
     private HttpDownloadState state = HttpDownloadState.DOWNLOAD;
     private long downloaded = 0;
     private File file = null;
     private String responseCode;
     private String exMessage;
-    private BufferedOutputStream bos = null;
     private boolean retAbbrechen;
     private boolean dialogAbbrechenIsVis;
+    private CompletableFuture<Void> infoFuture = null;
+    private CompletableFuture<Void> subtitleFuture = null;
 
     public DirectHttpDownload(Daten daten, DatenDownload d, java.util.Timer bandwidthCalculationTimer) {
         super();
+
+        rateLimiter = RateLimiter.create(getDownloadLimit());
+
+        daten.getMessageBus().subscribe(this);
 
         maxRestarts = MVConfig.getInt(MVConfig.Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP);
 
@@ -89,6 +104,39 @@ public class DirectHttpDownload extends Thread {
 
         start.status = Start.STATUS_RUN;
         StarterClass.notifyStartEvent(datenDownload);
+    }
+
+    /**
+     * Handles the rate limit change launched somewhere in the UI
+     *
+     * @param evt the new limit
+     */
+    @Handler
+    private void handleRateLimitChanged(DownloadRateLimitChangedEvent evt) {
+        final long limit = calculateDownloadLimit(evt.newLimit);
+        logger.info("thread changing download speed limit to {} KB", limit);
+        rateLimiter.setRate(limit);
+    }
+
+    private long calculateDownloadLimit(long limit) {
+        long newLimit;
+
+        if (limit <= 0)
+            newLimit = 10 * FileUtils.ONE_GB;
+        else
+            newLimit = limit * FileUtils.ONE_KB;
+
+        return newLimit;
+    }
+
+    /**
+     * Try to read the download limit from config file, other set to artificial limit 1GB/s!
+     *
+     * @return the limit in KB/s
+     */
+    private long getDownloadLimit() {
+        final int downloadLimit = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.DOWNLOAD_RATE_LIMIT, 0);
+        return calculateDownloadLimit(downloadLimit);
     }
 
     /**
@@ -133,80 +181,98 @@ public class DirectHttpDownload extends Thread {
         conn.setDoOutput(true);
     }
 
+    private void startInfoFileDownload() {
+        final boolean downloadInfoFile = Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI]);
+        if (downloadInfoFile) {
+            infoFuture = CompletableFuture.runAsync(() -> {
+                MVInfoFile infoFile = new MVInfoFile();
+                infoFile.writeInfoFile(datenDownload);
+            });
+        }
+    }
+
+    private void downloadSubtitleFile() {
+        if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE])) {
+            subtitleFuture = CompletableFuture.runAsync(() -> {
+                MVSubtitle subtitleFile = new MVSubtitle();
+                subtitleFile.writeSubtitle(datenDownload);
+            });
+        }
+    }
+
     /**
      * Start the actual download process here.
      *
      * @throws IOException the io errors that may occur.
      */
     private void downloadContent() throws IOException {
-        if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_INFODATEI])) {
-            MVInfoFile infoFile = new MVInfoFile();
-            infoFile.writeInfoFile(datenDownload);
-        }
-        if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SUBTITLE])) {
-            MVSubtitle.writeSubtitle(datenDownload);
-        }
+        startInfoFileDownload();
+
+        downloadSubtitleFile();
+
         datenDownload.interruptRestart();
 
-        start.mVInputStream = new MVInputStream(conn.getInputStream(), bandwidthCalculationTimer);
+        try (FileOutputStream fos = new FileOutputStream(file, (downloaded != 0));
+             ThrottlingInputStream tis = new ThrottlingInputStream(conn.getInputStream(), rateLimiter);
+             MVBandwidthCountingInputStream mvis = new MVBandwidthCountingInputStream(tis, bandwidthCalculationTimer)) {
+            start.mVBandwidthCountingInputStream = mvis;
+            datenDownload.mVFilmSize.addAktSize(downloaded);
+            final byte[] buffer = new byte[1024];
+            long p, pp = 0, startProzent = -1;
+            int len;
+            long aktBandwidth, aktSize = 0;
+            boolean melden = false;
 
-        bos = new BufferedOutputStream(new FileOutputStream(file, (downloaded != 0)), MVBandwidthTokenBucket.DEFAULT_BUFFER_SIZE);
+            while ((len = start.mVBandwidthCountingInputStream.read(buffer)) != -1 && (!start.stoppen)) {
+                downloaded += len;
+                fos.write(buffer, 0, len);
+                datenDownload.mVFilmSize.addAktSize(len);
 
-        datenDownload.mVFilmSize.addAktSize(downloaded);
-        final byte[] buffer = new byte[MVBandwidthTokenBucket.DEFAULT_BUFFER_SIZE];
-        long p, pp = 0, startProzent = -1;
-        int len;
-        long aktBandwidth, aktSize = 0;
-        boolean melden = false;
-
-        while ((len = start.mVInputStream.read(buffer)) != -1 && (!start.stoppen)) {
-            downloaded += len;
-            bos.write(buffer, 0, len);
-            datenDownload.mVFilmSize.addAktSize(len);
-
-            //für die Anzeige prüfen ob sich was geändert hat
-            if (aktSize != datenDownload.mVFilmSize.getAktSize()) {
-                aktSize = datenDownload.mVFilmSize.getAktSize();
-                melden = true;
-            }
-            if (datenDownload.mVFilmSize.getSize() > 0) {
-                p = (aktSize * (long) 1000) / datenDownload.mVFilmSize.getSize();
-                if (startProzent == -1) {
-                    startProzent = p;
-                }
-                // p muss zwischen 1 und 999 liegen
-                if (p == 0) {
-                    p = Start.PROGRESS_GESTARTET;
-                } else if (p >= 1000) {
-                    p = 999;
-                }
-                start.percent = (int) p;
-                if (p != pp) {
-                    pp = p;
-                    // Restzeit ermitteln
-                    if (p > 2 && p > startProzent) {
-                        // sonst macht es noch keinen Sinn
-                        int diffZeit = start.startZeit.diffInSekunden();
-                        int restProzent = 1000 - (int) p;
-                        start.restSekunden = (diffZeit * restProzent / (p - startProzent));
-                        // anfangen zum Schauen kann man, wenn die Restzeit kürzer ist
-                        // als die bereits geladene Speilzeit des Films
-                        bereitsAnschauen(datenDownload);
-                    }
+                //für die Anzeige prüfen ob sich was geändert hat
+                if (aktSize != datenDownload.mVFilmSize.getAktSize()) {
+                    aktSize = datenDownload.mVFilmSize.getAktSize();
                     melden = true;
                 }
-            }
-            aktBandwidth = start.mVInputStream.getBandwidth(); // bytes per second
-            if (aktBandwidth != start.bandbreite) {
-                start.bandbreite = aktBandwidth;
-                melden = true;
-            }
-            if (melden) {
-                Listener.notify(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
-                melden = false;
+                if (datenDownload.mVFilmSize.getSize() > 0) {
+                    p = (aktSize * (long) 1000) / datenDownload.mVFilmSize.getSize();
+                    if (startProzent == -1) {
+                        startProzent = p;
+                    }
+                    // p muss zwischen 1 und 999 liegen
+                    if (p == 0) {
+                        p = Start.PROGRESS_GESTARTET;
+                    } else if (p >= 1000) {
+                        p = 999;
+                    }
+                    start.percent = (int) p;
+                    if (p != pp) {
+                        pp = p;
+                        // Restzeit ermitteln
+                        if (p > 2 && p > startProzent) {
+                            // sonst macht es noch keinen Sinn
+                            int diffZeit = start.startZeit.diffInSekunden();
+                            int restProzent = 1000 - (int) p;
+                            start.restSekunden = (diffZeit * restProzent / (p - startProzent));
+                            // anfangen zum Schauen kann man, wenn die Restzeit kürzer ist
+                            // als die bereits geladene Speilzeit des Films
+                            bereitsAnschauen(datenDownload);
+                        }
+                        melden = true;
+                    }
+                }
+                aktBandwidth = start.mVBandwidthCountingInputStream.getBandwidth(); // bytes per second
+                if (aktBandwidth != start.bandbreite) {
+                    start.bandbreite = aktBandwidth;
+                    melden = true;
+                }
+                if (melden) {
+                    Listener.notify(Listener.EREIGNIS_ART_DOWNLOAD_PROZENT, StarterClass.class.getName());
+                    melden = false;
+                }
             }
         }
-        start.bandbreite = start.mVInputStream.getSumBandwidth();
+
+        start.bandbreite = start.mVBandwidthCountingInputStream.getSumBandwidth();
         if (!start.stoppen) {
             if (datenDownload.quelle == DatenDownload.QUELLE_BUTTON) {
                 // direkter Start mit dem Button
@@ -315,21 +381,29 @@ public class DirectHttpDownload extends Thread {
             }
         }
 
-        try {
-            if (start.mVInputStream != null) {
-                start.mVInputStream.close();
-            }
-            if (bos != null) {
-                bos.close();
-            }
-            if (conn != null) {
-                conn.disconnect();
-            }
-        } catch (Exception ignored) {
-        }
+        performCleanup();
 
         StarterClass.finalizeDownload(datenDownload, start, state);
+
         daten.getMessageBus().publishAsync(new DownloadFinishedEvent());
+
+        daten.getMessageBus().unsubscribe(this);
+    }
+
+    private void performCleanup() {
+        try {
+            if (conn != null)
+                conn.disconnect();
+
+            if (infoFuture != null)
+                infoFuture.get();
+
+            if (subtitleFuture != null)
+                subtitleFuture.get();
+
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error("Error performing cleanup.", e);
+        }
     }
 
     private void displayErrorDialog() {
@@ -348,8 +422,6 @@ public class DirectHttpDownload extends Thread {
         logger.error("Ziel: {}", datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
         logger.error("URL: {}", datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
     }
-
-    private static final Logger logger = LogManager.getLogger(DirectHttpDownload.class);
 
     private boolean cancelDownload() {
         if (!file.exists()) {

@@ -1,6 +1,7 @@
 package mSearch.daten;
 
 import com.jidesoft.utils.SystemInfo;
+import mSearch.Config;
 import mediathek.config.Daten;
 import mediathek.tool.GuiFunktionen;
 import org.apache.commons.dbcp2.*;
@@ -10,6 +11,8 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
 import javax.sql.DataSource;
 import java.io.Closeable;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -69,14 +72,21 @@ public class PooledDatabaseConnection implements Closeable {
     private String getDatabaseLocation() {
         String strDatabase;
 
-        if (SystemInfo.isMacOSX()) {
-            //place database into OS X user cache directory in order not to backup it all the time in TimeMachine...
-            strDatabase = GuiFunktionen.getHomePath() + File.separator + "Library/Caches/MediathekView/database" + File.separator;
-        } else {
+        if (Config.isPortableMode()) {
             strDatabase = Daten.getSettingsDirectory_String() + File.separator + "database" + File.separator;
+        } else {
+            if (SystemInfo.isMacOSX()) {
+                //place database into OS X user cache directory in order not to backup it all the time in TimeMachine...
+                strDatabase = GuiFunktionen.getHomePath() + File.separator + "Library/Caches/MediathekView/database" + File.separator;
+            } else {
+                strDatabase = Daten.getSettingsDirectory_String() + File.separator + "database" + File.separator;
+            }
         }
 
-        return strDatabase;
+        final Path filePath = Paths.get(strDatabase);
+        final Path absolutePath = filePath.toAbsolutePath();
+
+        return absolutePath.toString();
     }
 
     private DataSource setupDataSource() {

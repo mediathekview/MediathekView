@@ -1,13 +1,13 @@
-/*    
+/*
  *    MediathekView
  *    Copyright (C) 2013   W. Xaver
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
- * 
+ *
  *    org.apache.hadoop.tools.util.ThrottledInputStream
  *    unter http://www.apache.org/licenses/LICENSE-2.0
  *    diente als Vorlage
- *    
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -25,22 +25,20 @@ package mediathek.controller;
 
 import mediathek.daten.DatenDownload;
 import mediathek.tool.MVFilmSize;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.TimerTask;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class MVInputStream extends InputStream {
+public class MVBandwidthCountingInputStream extends InputStream {
 
     private final InputStream iStream;
-    private MVBandwidthTokenBucket bucket;
     private final BandwidthCalculationTask calculationTask;
 
-    public MVInputStream(InputStream in, java.util.Timer calculationTimer) {
+    public MVBandwidthCountingInputStream(InputStream in, java.util.Timer calculationTimer) {
         iStream = in;
-        bucket = new MVBandwidthTokenBucket();
-        bucket.ensureBucketThreadIsRunning();
 
         //start bandwidth calculation
         calculationTask = new BandwidthCalculationTask();
@@ -57,7 +55,6 @@ public class MVInputStream extends InputStream {
 
     @Override
     public int read() throws IOException {
-        bucket.takeBlocking();
         final int bytesRead = iStream.read();
         if (bytesRead != -1) {
             calculationTask.incrementBytesRead(1);
@@ -67,8 +64,7 @@ public class MVInputStream extends InputStream {
     }
 
     @Override
-    public int read(byte[] b) throws IOException {
-        bucket.takeBlocking(b.length);
+    public int read(@NotNull byte[] b) throws IOException {
         final int bytesRead = iStream.read(b);
         if (bytesRead != -1) {
             calculationTask.incrementBytesRead(bytesRead);

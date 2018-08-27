@@ -1,24 +1,23 @@
 package mSearch.daten;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class DatenFilmCleanupTask implements Runnable {
-    private final int filmNr;
+    private final long filmNr;
 
-    public DatenFilmCleanupTask(int film) {
+    public DatenFilmCleanupTask(long film) {
         filmNr = film;
     }
 
     @Override
     public void run() {
-            try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
-                 Statement statement = connection.createStatement()) {
-                statement.addBatch("DELETE FROM mediathekview.website_links WHERE id = " + filmNr);
-                statement.addBatch("DELETE FROM mediathekview.description WHERE id = " + filmNr);
-                statement.executeBatch();
-            } catch (SQLException | IllegalStateException | NullPointerException ignored) {
-            }
+        try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM mediathekview.film where ID = ?")) {
+            preparedStatement.setLong(1, filmNr);
+            preparedStatement.executeUpdate();
+        } catch (SQLException | IllegalStateException | NullPointerException ignored) {
+        }
     }
 }

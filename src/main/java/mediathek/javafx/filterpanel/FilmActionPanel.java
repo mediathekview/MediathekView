@@ -8,6 +8,7 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,15 +22,18 @@ import javafx.util.StringConverter;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.ApplicationConfiguration;
+import mSearch.tool.GermanStringSorter;
 import mediathek.config.Daten;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
 import mediathek.gui.messages.FilmListWriteStartEvent;
 import mediathek.gui.messages.FilmListWriteStopEvent;
+import mediathek.javafx.CenteredBorderPane;
 import mediathek.javafx.VerticalSeparator;
 import mediathek.tool.Filter;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
+import org.controlsfx.control.CheckListView;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.RangeSlider;
 import org.controlsfx.control.textfield.CustomTextField;
@@ -40,8 +44,10 @@ import org.controlsfx.glyphfont.GlyphFontRegistry;
 import org.controlsfx.tools.Borders;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 /**
  * This class sets up the GuiFilme tool panel and search bar.
@@ -49,12 +55,18 @@ import java.util.NoSuchElementException;
  */
 public class FilmActionPanel {
     public final static int UNLIMITED_VALUE = 110;
+    private static final String PROMPT_THEMA_TITEL = "Thema/Titel";
+    private static final String PROMPT_IRGENDWO = "Thema/Titel/Beschreibung";
     private final PopOver filterPopover;
     private final Daten daten;
     private final Configuration config = ApplicationConfiguration.getConfiguration();
     private final PauseTransition pause2 = new PauseTransition(Duration.millis(150));
     private final PauseTransition pause3 = new PauseTransition(Duration.millis(500));
     private final GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
+    private final Tooltip themaTitelTooltip = new Tooltip("Thema/Titel durchsuchen");
+    private final Tooltip irgendwoTooltip = new Tooltip("Thema/Titel/Beschreibung durchsuchen");
+    private final Tooltip TOOLTIP_SEARCH_IRGENDWO = new Tooltip("Suche in Beschreibung aktiviert");
+    private final Tooltip TOOLTIP_SEARCH_REGULAR = new Tooltip("Suche in Beschreibung deaktiviert");
     public ReadOnlyStringWrapper roSearchStringProperty = new ReadOnlyStringWrapper();
     public BooleanProperty showOnlyHd;
     public BooleanProperty showSubtitlesOnly;
@@ -65,10 +77,11 @@ public class FilmActionPanel {
     public BooleanProperty dontShowTrailers;
     public BooleanProperty dontShowSignLanguage;
     public BooleanProperty dontShowAudioVersions;
+    public BooleanProperty searchThroughDescription;
     public ReadOnlyObjectProperty<String> zeitraumProperty;
-    public ComboBox<String> senderBox;
     public ComboBox<String> themaBox;
     public RangeSlider filmLengthSlider;
+    public CheckListView<String> senderList;
     private Spinner<String> zeitraumSpinner;
     private CustomTextField jfxSearchField;
     private Button btnDownload;
@@ -82,6 +95,7 @@ public class FilmActionPanel {
      * Stores the list of thema strings used for autocompletion.
      */
     private SuggestionProvider<String> themaSuggestionProvider;
+    private ToggleButton btnSearchThroughDescription;
 
     public FilmActionPanel(Daten daten) {
         this.daten = daten;
@@ -92,7 +106,11 @@ public class FilmActionPanel {
 
         setupConfigListeners();
 
-        Daten.getInstance().getMessageBus().subscribe(this);
+        daten.getMessageBus().subscribe(this);
+    }
+
+    public CustomTextField getSearchField() {
+        return jfxSearchField;
     }
 
     private void restoreConfigSettings() {
@@ -190,7 +208,7 @@ public class FilmActionPanel {
     private Button createPlayButton() {
         btnPlay = new Button("", fontAwesome.create(FontAwesome.Glyph.PLAY));
         btnPlay.setTooltip(new Tooltip("Film abspielen"));
-        btnPlay.setOnAction(evt -> SwingUtilities.invokeLater(() -> Daten.guiFilme.playAction.actionPerformed(null)));
+        btnPlay.setOnAction(evt -> SwingUtilities.invokeLater(() -> daten.getMediathekGui().tabFilme.playAction.actionPerformed(null)));
 
         return btnPlay;
     }
@@ -205,7 +223,7 @@ public class FilmActionPanel {
 
     private Button createRecordButton() {
         btnRecord = new Button("", fontAwesome.create(FontAwesome.Glyph.DOWNLOAD));
-        btnRecord.setOnAction(e -> SwingUtilities.invokeLater(() -> Daten.guiFilme.saveFilmAction.actionPerformed(null)));
+        btnRecord.setOnAction(e -> SwingUtilities.invokeLater(() -> daten.getMediathekGui().tabFilme.saveFilmAction.actionPerformed(null)));
         btnRecord.setTooltip(new Tooltip("Film aufzeichnen"));
 
         return btnRecord;
@@ -252,18 +270,50 @@ public class FilmActionPanel {
 
     private void setupSearchField() {
         jfxSearchField = new JFXSearchPanel();
-        jfxSearchField.setTooltip(new Tooltip("Thema/Titel durchsuchen"));
-        jfxSearchField.setPromptText("Titel/Thema");
+        jfxSearchField.setTooltip(themaTitelTooltip);
+        jfxSearchField.setPromptText(PROMPT_THEMA_TITEL);
 
         final StringProperty textProperty = jfxSearchField.textProperty();
 
         pause2.setOnFinished(evt -> checkPatternValidity());
         textProperty.addListener((observable, oldValue, newValue) -> pause2.playFromStart());
 
-        pause3.setOnFinished(evt -> SwingUtilities.invokeLater(() -> Daten.guiFilme.filterFilmAction.actionPerformed(null)));
+        pause3.setOnFinished(evt -> SwingUtilities.invokeLater(() -> daten.getMediathekGui().tabFilme.filterFilmAction.actionPerformed(null)));
         textProperty.addListener((observable, oldValue, newValue) -> pause3.playFromStart());
 
         roSearchStringProperty.bind(textProperty);
+    }
+
+    private void setupSearchThroughDescriptionButton() {
+        btnSearchThroughDescription = new ToggleButton("", fontAwesome.create(FontAwesome.Glyph.BOOK));
+        final boolean enabled = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, false);
+        btnSearchThroughDescription.setSelected(enabled);
+
+        if (enabled)
+            setupForIrgendwoSearch();
+        else
+            setupForRegularSearch();
+
+        btnSearchThroughDescription.setOnAction(e -> {
+            ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.SEARCH_USE_FILM_DESCRIPTIONS, btnSearchThroughDescription.isSelected());
+            if (btnSearchThroughDescription.isSelected())
+                setupForIrgendwoSearch();
+            else
+                setupForRegularSearch();
+        });
+        searchThroughDescription = btnSearchThroughDescription.selectedProperty();
+    }
+
+    private void setupForRegularSearch() {
+        jfxSearchField.setTooltip(themaTitelTooltip);
+        jfxSearchField.setPromptText(PROMPT_THEMA_TITEL);
+        btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_REGULAR);
+    }
+
+    private void setupForIrgendwoSearch() {
+        jfxSearchField.setTooltip(irgendwoTooltip);
+        jfxSearchField.setPromptText(PROMPT_IRGENDWO);
+        btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_IRGENDWO);
     }
 
     private Parent createRight() {
@@ -278,9 +328,12 @@ public class FilmActionPanel {
         btnNewFilter.setTooltip(new Tooltip("Filtereinstellungen anzeigen"));
         btnNewFilter.setOnAction(e -> filterPopover.show(btnNewFilter));
 
+        setupSearchThroughDescriptionButton();
+
         hb.getChildren().addAll(btnNewFilter,
                 new VerticalSeparator(),
-                jfxSearchField);
+                jfxSearchField,
+                btnSearchThroughDescription);
 
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
@@ -302,6 +355,7 @@ public class FilmActionPanel {
             btnNewFilter.setDisable(disabled);
             btnBlacklist.setDisable(disabled);
             jfxSearchField.setDisable(disabled);
+            btnSearchThroughDescription.setDisable(disabled);
         });
 
     }
@@ -335,7 +389,7 @@ public class FilmActionPanel {
         dontShowAudioVersions = cbDontShowAudioVersions.selectedProperty();
 
         VBox vBox = new VBox();
-        vBox.setSpacing(4.0);
+        vBox.setSpacing(4d);
         vBox.getChildren().addAll(cbShowOnlyHd,
                 cbShowSubtitlesOnly,
                 cbShowNewOnly,
@@ -348,81 +402,86 @@ public class FilmActionPanel {
                 cbDontShowAudioVersions,
                 new Separator(),
                 createSenderBox(),
+                new Separator(),
                 createThemaBox(),
                 new Separator(),
                 createFilmLengthSlider(),
                 new Separator(),
                 createZeitraumPane());
 
-        // whenever the senderbox selected value changes, reload the thema from filtered list.
-        senderBox.valueProperty().addListener(
-                (observable, oldValue, newValue) -> {
-                    if (newValue != null)
-                        reloadThemaBox(newValue);
-                }
-        );
+        setupSenderListeners();
 
         return vBox;
     }
 
-    private void reloadThemaBox(String newValue) {
-        //save current selection
-        String selectedItem = themaBox.getSelectionModel().getSelectedItem();
-        if (selectedItem == null)
-            selectedItem = "";
+    private void setupSenderListeners() {
+        PauseTransition trans = new PauseTransition(Duration.millis(500d));
+        trans.setOnFinished(e -> updateThemaBox());
+        senderList.getCheckModel()
+                .getCheckedItems().
+                addListener((ListChangeListener<String>) c -> trans.playFromStart());
+    }
 
-        //update thema content
-        updateThemaBox(newValue);
-        //restore selection
-        restoreThemaBoxSelection(selectedItem);
+    public void updateThemaBox() {
+        themaBox.getItems().clear();
+        themaBox.getItems().add("");
+
+        List<String> finalList = new ArrayList<>();
+        List<String> selectedSenders = senderList.getCheckModel().getCheckedItems();
+
+        if (selectedSenders.isEmpty()) {
+            final List<String> lst = daten.getListeFilmeNachBlackList().getThemen("");
+            finalList.addAll(lst);
+            lst.clear();
+        } else {
+            for (String sender : selectedSenders) {
+                final List<String> lst = daten.getListeFilmeNachBlackList().getThemen(sender);
+                finalList.addAll(lst);
+                lst.clear();
+            }
+        }
+
+        themaBox.getItems()
+                .addAll(finalList.stream()
+                        .distinct()
+                        .sorted(GermanStringSorter.getInstance())
+                        .collect(Collectors.toList()));
+        finalList.clear();
+
+        themaSuggestionProvider.clearSuggestions();
+        themaSuggestionProvider.addPossibleSuggestions(themaBox.getItems());
+        themaBox.getSelectionModel().select(0);
     }
 
     private Node createSenderBox() {
-        FlowPane root = new FlowPane();
-        root.setHgap(4);
-        senderBox = new ComboBox<>();
-        senderBox.getItems().addAll("");
-        senderBox.getSelectionModel().select(0);
-        root.getChildren().addAll(new Label("Sender:"), senderBox);
-        root.setAlignment(Pos.CENTER_LEFT);
+        VBox vb = new VBox();
 
-        return root;
+        senderList = new CheckListView<>(daten.getListeFilmeNachBlackList().getSenders());
+        senderList.setPrefHeight(150d);
+        senderList.setMinHeight(100d);
+        vb.getChildren().addAll(
+                new Label("Sender:"),
+                senderList);
+
+        return vb;
     }
 
     private Node createThemaBox() {
-        FlowPane hb = new FlowPane();
-        hb.setHgap(4);
+        HBox hb = new HBox();
+        hb.setSpacing(4d);
+
         themaBox = new ComboBox<>();
         themaBox.getItems().addAll("");
         themaBox.getSelectionModel().select(0);
-        themaBox.setPrefWidth(200);
+        themaBox.setPrefWidth(350d);
 
         themaBox.setEditable(true);
         themaSuggestionProvider = SuggestionProvider.create(themaBox.getItems());
         TextFields.bindAutoCompletion(themaBox.getEditor(), themaSuggestionProvider);
 
-        hb.getChildren().addAll(new Label("Thema:"), themaBox);
-        hb.setAlignment(Pos.CENTER_LEFT);
+        hb.getChildren().addAll(new CenteredBorderPane(new Label("Thema:")), themaBox);
 
         return hb;
-    }
-
-    private void restoreThemaBoxSelection(String selectedItem) {
-        if (themaBox.getItems().contains(selectedItem))
-            themaBox.getSelectionModel().select(selectedItem);
-        else
-            themaBox.getSelectionModel().select("");
-    }
-
-    private void updateThemaBox(String sender) {
-        themaBox.getItems().clear();
-        themaBox.getItems().add("");
-        final List<String> lst = daten.getListeFilmeNachBlackList().getThemen(sender);
-        themaBox.getItems().addAll(lst);
-        lst.clear();
-
-        themaSuggestionProvider.clearSuggestions();
-        themaSuggestionProvider.addPossibleSuggestions(themaBox.getItems());
     }
 
     private Node createFilmLengthSlider() {

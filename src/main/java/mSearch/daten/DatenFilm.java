@@ -104,7 +104,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     }
 
     static {
-            Database.initializeDatabase();
+        Database.initializeDatabase();
     }
 
     /**
@@ -123,6 +123,10 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      */
     private MSLong filmSize;
     /**
+     * Is this film an audio version? (aka Hörfassung)
+     */
+    private boolean isAudioVersion = false;
+    /**
      * film length in seconds.
      */
     private long filmLength = 0;
@@ -137,12 +141,66 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      * Will be checked before each read if finished
      */
     private WeakReference<CompletableFuture<Void>> descriptionFutureReference = null;
-
     /**
      * Future used for writing website link into database.
      * Will be checked before each read if finished
      */
     private WeakReference<CompletableFuture<Void>> websiteFutureReference = null;
+    /**
+     * Flag that this entry is in sign language (aka Gebärdensprache).
+     */
+    private boolean isSignLanguage = false;
+    /**
+     * Flag indicating a trailer, teaser or german Vorschau.
+     */
+    private boolean isTrailerTeaser = false;
+
+    public DatenFilm() {
+        setupArr();
+
+        filmSize = new MSLong(0); // Dateigröße in MByte
+        databaseFilmNumber = FILM_COUNTER.getAndIncrement();
+        writeFilmNumberToDatabase();
+
+        setupDatabaseCleanup();
+    }
+
+    private void writeFilmNumberToDatabase() {
+        try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
+             PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO mediathekview.film VALUES (?)")
+        ) {
+            insertStatement.setInt(1, databaseFilmNumber);
+            insertStatement.executeUpdate();
+
+
+        } catch (SQLException ex) {
+            logger.error("SQLException: ", ex);
+        }
+    }
+
+    public boolean isTrailerTeaser() {
+        return isTrailerTeaser;
+    }
+
+    public void setTrailerTeaser(boolean val) {
+        isTrailerTeaser = val;
+    }
+
+    public boolean isAudioVersion() {
+        return isAudioVersion;
+    }
+
+    public void setAudioVersion(boolean val) {
+        isAudioVersion = val;
+    }
+
+    public boolean isSignLanguage() {
+        return isSignLanguage;
+    }
+
+    public void setSignLanguage(boolean val) {
+        isSignLanguage = val;
+    }
 
     /**
      * Get the film number.
@@ -155,15 +213,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         return databaseFilmNumber;
     }
 
-    public DatenFilm() {
-        setupArr();
-
-        filmSize = new MSLong(0); // Dateigröße in MByte
-        databaseFilmNumber = FILM_COUNTER.getAndIncrement();
-
-        setupDatabaseCleanup();
-    }
-
     private void setupDatabaseCleanup() {
         final boolean useCleaner = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DATABASE_USE_CLEANER_INTERFACE, false);
         if (useCleaner)
@@ -171,7 +220,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     }
 
     private void installCleanupTask() {
-        //FIXME with Java 9, use RateLimitedThreadFactory to throttle cleanup tasks
         DatenFilmCleanupTask task = new DatenFilmCleanupTask(databaseFilmNumber);
         cleaner = Cleaner.create(this, task);
     }
@@ -239,19 +287,9 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
 
         try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT desc FROM mediathekview.description WHERE id = ?")) {
-            statement.setInt(1, databaseFilmNumber);
+            statement.setLong(1, databaseFilmNumber);
 
-            if (descriptionFutureReference != null) {
-                final CompletableFuture<Void> descriptionFuture = descriptionFutureReference.get();
-                if (descriptionFuture != null) {
-                    if (!descriptionFuture.isDone()) {
-                        descriptionFuture.get();
-                    }
-                    //set to null when finished as we don´t need it anymore...
-                    descriptionFutureReference.clear();
-                    descriptionFutureReference = null;
-                }
-            }
+            descriptionFutureReference = checkFutureCompletion(descriptionFutureReference);
 
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
@@ -284,26 +322,30 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         }
     }
 
+    private synchronized WeakReference<CompletableFuture<Void>> checkFutureCompletion(WeakReference<CompletableFuture<Void>> refVar) throws ExecutionException, InterruptedException {
+        if (refVar != null) {
+            final CompletableFuture<Void> refFuture = refVar.get();
+            if (refFuture != null) {
+                if (!refFuture.isDone()) {
+                    refFuture.get();
+                }
+                //set to null when finished as we don´t need it anymore...
+                refVar.clear();
+                return null;
+            }
+        }
+
+        return refVar;
+    }
+
     public String getWebsiteLink() {
         String res;
 
         try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT link FROM mediathekview.website_links WHERE id = ?")) {
-            statement.setInt(1, databaseFilmNumber);
+            statement.setLong(1, databaseFilmNumber);
 
-            if (websiteFutureReference != null) {
-                final CompletableFuture<Void> websiteFuture = websiteFutureReference.get();
-                if (websiteFuture != null) {
-                    if (!websiteFuture.isDone()) {
-                        //make sure async op has finished before...
-                        websiteFuture.get();
-                    }
-
-                    //we don´t need it anymore...
-                    websiteFutureReference.clear();
-                    websiteFutureReference = null;
-                }
-            }
+            websiteFutureReference = checkFutureCompletion(websiteFutureReference);
 
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
@@ -332,21 +374,11 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
 
     private void writeWebsiteLinkToDatabase(String link) {
         try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
-             PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO mediathekview.website_links VALUES (?,?)");
-             PreparedStatement updateStatement = connection.prepareStatement("UPDATE mediathekview.website_links SET link=? WHERE id=?")) {
+             PreparedStatement mergeStatement = connection.prepareStatement("MERGE INTO mediathekview.website_links KEY(ID) VALUES (?,?)")) {
 
-            updateStatement.setString(1, link);
-            updateStatement.setInt(2, databaseFilmNumber);
-            updateStatement.executeUpdate();
-
-            insertStatement.setInt(1, databaseFilmNumber);
-            insertStatement.setString(2, link);
-            insertStatement.executeUpdate();
-        } catch (SQLIntegrityConstraintViolationException ignored) {
-        } catch (JdbcSQLException ex) {
-            if (!ex.getMessage().contains("primary key violation")) {
-                logger.error("JdbcSQLException: ", ex);
-            }
+            mergeStatement.setInt(1, databaseFilmNumber);
+            mergeStatement.setString(2, link);
+            mergeStatement.executeUpdate();
         } catch (SQLException ex) {
             logger.error(ex);
         }
@@ -354,20 +386,14 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
 
     private void writeDescriptionToDatabase(String desc) {
         try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
-             PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO mediathekview.description VALUES (?,?)");
-             PreparedStatement updateStatement = connection.prepareStatement("UPDATE mediathekview.description SET desc=? WHERE id =?")
+             PreparedStatement mergeStatement = connection.prepareStatement("MERGE INTO mediathekview.description KEY(ID) VALUES (?,?)")
         ) {
             String cleanedDesc = cleanDescription(desc, arr[FILM_THEMA], getTitle());
-            cleanedDesc = StringUtils.replace(cleanedDesc, "\n", "<br />");
+            cleanedDesc = StringUtils.replace(cleanedDesc, "\n", "<br/>");
 
-            updateStatement.setString(1, cleanedDesc);
-            updateStatement.setInt(2, databaseFilmNumber);
-            updateStatement.executeUpdate();
-
-            insertStatement.setInt(1, databaseFilmNumber);
-            insertStatement.setString(2, cleanedDesc);
-            insertStatement.executeUpdate();
-
+            mergeStatement.setInt(1, databaseFilmNumber);
+            mergeStatement.setString(2, cleanedDesc);
+            mergeStatement.executeUpdate();
 
         } catch (SQLIntegrityConstraintViolationException ignored) {
             //this will happen in UPSERT operation
@@ -380,7 +406,6 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         }
 
     }
-
 
     private String cleanDescription(String s, String thema, String titel) {
         // die Beschreibung auf x Zeichen beschränken
@@ -509,22 +534,32 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         return filmLength;
     }
 
-    private void setFilmLength() {
-        //TODO OPTIMIZE ME!
+    /**
+     * Convert HH:MM:SS string into seconds.
+     *
+     * @return result in seconds or 0.
+     */
+    private long parseTimeToSeconds() {
+        long seconds = 0;
+        final String[] split = StringUtils.split(arr[FILM_DAUER], ':');
+
         try {
-            filmLength = 0;
-            if (!this.arr[DatenFilm.FILM_DAUER].isEmpty()) {
-                String[] parts = this.arr[DatenFilm.FILM_DAUER].split(":");
-                long power = 1;
-                for (int i = parts.length - 1; i >= 0; i--) {
-                    filmLength += Long.parseLong(parts[i]) * power;
-                    power *= 60;
-                }
-            }
-        } catch (Exception ex) {
-            filmLength = 0;
-            logger.error("Dauer: {}", this.arr[DatenFilm.FILM_DAUER], ex);
+            seconds += Long.parseLong(split[0]) * 3600; //hour
+            seconds += Long.parseLong(split[1]) * 60; //minute
+            seconds += Long.parseLong(split[2]); //second
+        } catch (Exception e) {
+            seconds = 0;
         }
+
+        return seconds;
+    }
+
+    /**
+     * Set the film length.
+     * Convert dauer string from format HH:MM:SS into seconds.
+     */
+    private void calculateFilmLength() {
+        filmLength = parseTimeToSeconds();
     }
 
     private void setDatum() {
@@ -545,7 +580,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
     public void init() {
         filmSize = new MSLong(this);
 
-        setFilmLength();
+        calculateFilmLength();
 
         setDatum();
     }
@@ -576,6 +611,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         public static void closeDatabase() {
             try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
                  Statement statement = connection.createStatement()) {
+                //statement.executeUpdate("DROP SCHEMA mediathekview");
                 statement.executeUpdate("SHUTDOWN COMPACT");
             } catch (SQLException e) {
                 logger.error(e);
@@ -583,31 +619,50 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
             PooledDatabaseConnection.getInstance().close();
         }
 
-        private static void initializeDatabase() {
+        public static void createIndices() {
+            logger.info("Creating SQL indices");
             try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
                  Statement statement = connection.createStatement()) {
-                final boolean useMultithreaded = ApplicationConfiguration.getConfiguration().getBoolean("database.multithreaded", false);
-                if (useMultithreaded) {
-                    statement.executeUpdate("SET MULTI_THREADED 1");
-                }
+                statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_FILM_ID ON mediathekview.film (id)");
+                statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_DESC_ID ON mediathekview.description (id)");
+                statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_WEBSITE_LINKS_ID ON mediathekview.website_links (id)");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            logger.info("Finished creating SQL indices");
+        }
 
+        private static void initializeDatabase() {
+            logger.info("initializeDatabase()");
+            try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
+                 Statement statement = connection.createStatement()) {
                 if (!MemoryUtils.isLowMemoryEnvironment()) {
                     statement.executeUpdate("SET WRITE_DELAY 2000");
                     statement.executeUpdate("SET MAX_OPERATION_MEMORY 0");
                 }
+
+                statement.executeUpdate("SET LOG 0");
+
                 statement.executeUpdate("CREATE SCHEMA IF NOT EXISTS mediathekview");
                 statement.executeUpdate("SET SCHEMA mediathekview");
 
-                statement.executeUpdate("CREATE TABLE IF NOT EXISTS description (id INTEGER NOT NULL PRIMARY KEY, desc VARCHAR(1024))");
-                statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_DESC_ID ON mediathekview.description (id)");
-                statement.executeUpdate("TRUNCATE TABLE mediathekview.description");
+                statement.executeUpdate("DROP INDEX IF EXISTS IDX_FILM_ID");
+                statement.executeUpdate("DROP INDEX IF EXISTS IDX_DESC_ID");
+                statement.executeUpdate("DROP INDEX IF EXISTS IDX_WEBSITE_LINKS_ID");
 
-                statement.executeUpdate("CREATE TABLE IF NOT EXISTS website_links (id INTEGER NOT NULL PRIMARY KEY, link VARCHAR(1024))");
-                statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_WEBSITE_LINKS_ID ON mediathekview.website_links (id)");
-                statement.executeUpdate("TRUNCATE TABLE mediathekview.website_links");
+                statement.executeUpdate("DROP TABLE IF EXISTS mediathekview.description");
+                statement.executeUpdate("DROP TABLE IF EXISTS mediathekview.website_links");
+                statement.executeUpdate("DROP TABLE IF EXISTS mediathekview.film");
+
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS film (id INTEGER NOT NULL PRIMARY KEY)");
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS description (id INTEGER NOT NULL PRIMARY KEY REFERENCES mediathekview.film ON DELETE CASCADE, desc VARCHAR(1024))");
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS website_links (id INTEGER NOT NULL PRIMARY KEY REFERENCES mediathekview.film ON DELETE CASCADE, link VARCHAR(1024))");
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+            logger.info("initializeDatabase() done.");
+
         }
     }
 

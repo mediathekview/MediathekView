@@ -15,8 +15,8 @@
  */
 package mediathek.controller;
 
+import com.codahale.metrics.Timer;
 import mSearch.filmlisten.DatenFilmlisteUrl;
-import mSearch.tool.Duration;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.ReplaceList;
@@ -36,6 +36,8 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import static com.codahale.metrics.MetricRegistry.name;
 
 public class IoXmlLesen {
 
@@ -228,8 +230,11 @@ public class IoXmlLesen {
         }
     }
 
+    private final Timer responses = Daten.getInstance().getMetricRegistry().timer(name(IoXmlLesen.class, "readConfiguration"));
+
     public boolean datenLesen(Path xmlFilePath) {
-        Duration.counterStart("Konfig lesen");
+        final Timer.Context context = responses.time();
+
         boolean ret = false;
         if (Files.exists(xmlFilePath)) {
             DatenPset datenPset = null;
@@ -308,7 +313,8 @@ public class IoXmlLesen {
             MVConfig.loadSystemParameter();
         }
 
-        Duration.counterStop("Konfig lesen");
+        context.stop();
+
         return ret;
     }
 

@@ -57,7 +57,7 @@ public class MVInfoFile {
         if (titel.isEmpty()) {
             titel = StringUtils.replace(film.getSender(), " ", "-") + ".txt";
         } else {
-            titel = titel + ".txt";
+            titel += ".txt";
         }
         pfad = GuiFunktionen.addsPfad(pfad, titel);
         DialogZiel dialog = new DialogZiel(paFrame, true, pfad, "Infos speichern");

@@ -1,5 +1,7 @@
 package mediathek.gui;
 
+import com.codahale.metrics.Timer;
+import javafx.collections.ObservableList;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mediathek.config.Daten;
@@ -7,10 +9,11 @@ import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.tool.Filter;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelFilm;
-import mediathek.tool.TrailerTeaserChecker;
 import mediathek.tool.table.MVTable;
 
 import java.util.concurrent.TimeUnit;
+
+import static com.codahale.metrics.MetricRegistry.name;
 
 public class GuiFilmeModelHelper {
     private final FilmActionPanel fap;
@@ -18,6 +21,21 @@ public class GuiFilmeModelHelper {
     private final MVTable tabelle;
     private final TModel tModel;
     private final ListeFilme listeFilme;
+    private final Timer responses = Daten.getInstance().getMetricRegistry().timer(name(GuiFilmeModelHelper.class, "performTableFiltering"));
+    private boolean searchThroughDescriptions;
+    private boolean nurNeue;
+    private boolean nurUt;
+    private boolean showOnlyHd;
+    private boolean kGesehen;
+    private boolean keineAbos;
+    private boolean showOnlyLivestreams;
+    private boolean dontShowTrailers;
+    private boolean dontShowGebaerdensprache;
+    private boolean dontShowAudioVersions;
+    private long maxLength;
+    private String[] arrIrgendwo;
+    private long minLengthInSeconds;
+    private long maxLengthInSeconds;
 
     public GuiFilmeModelHelper(FilmActionPanel fap, Daten daten, MVTable tabelle) {
         this.fap = fap;
@@ -36,14 +54,6 @@ public class GuiFilmeModelHelper {
         }
 
         return filterThema;
-    }
-
-    private String getFilterSender() {
-        String filterSender = fap.senderBox.getSelectionModel().getSelectedItem();
-        if (filterSender == null)
-            filterSender = "";
-
-        return filterSender;
     }
 
     private String[] evaluateThemaTitel() {
@@ -65,7 +75,7 @@ public class GuiFilmeModelHelper {
     private boolean noFiltersAreSet() {
         boolean ret = false;
 
-        if (getFilterSender().isEmpty()
+        if (fap.senderList.getCheckModel().isEmpty()
                 && getFilterThema().isEmpty()
                 && fap.roSearchStringProperty.getValueSafe().isEmpty()
                 && ((int) fap.filmLengthSlider.getLowValue() == 0)
@@ -84,30 +94,44 @@ public class GuiFilmeModelHelper {
         return ret;
     }
 
-    private void performTableFiltering() {
-        final boolean nurNeue = fap.showNewOnly.getValue();
-        final boolean nurUt = fap.showSubtitlesOnly.getValue();
-        final boolean showOnlyHd = fap.showOnlyHd.getValue();
-        final boolean kGesehen = fap.showUnseenOnly.getValue();
-        final boolean keineAbos = fap.dontShowAbos.getValue();
-        final boolean showOnlyLivestreams = fap.showLivestreamsOnly.getValue();
-        final boolean dontShowTrailers = fap.dontShowTrailers.getValue();
-        final boolean dontShowGebaerdensprache = fap.dontShowSignLanguage.getValue();
-        final boolean dontShowAudioVersions = fap.dontShowAudioVersions.getValue();
+    private void updateFilterVars() {
+        nurNeue = fap.showNewOnly.getValue();
+        nurUt = fap.showSubtitlesOnly.getValue();
+        showOnlyHd = fap.showOnlyHd.getValue();
+        kGesehen = fap.showUnseenOnly.getValue();
+        keineAbos = fap.dontShowAbos.getValue();
+        showOnlyLivestreams = fap.showLivestreamsOnly.getValue();
+        dontShowTrailers = fap.dontShowTrailers.getValue();
+        dontShowGebaerdensprache = fap.dontShowSignLanguage.getValue();
+        dontShowAudioVersions = fap.dontShowAudioVersions.getValue();
+        searchThroughDescriptions = fap.searchThroughDescription.getValue();
 
+        arrIrgendwo = evaluateThemaTitel();
+    }
+
+    private void calculateFilmLengthSliderValues() {
         final long minLength = (long) fap.filmLengthSlider.getLowValue();
-        final long maxLength = (long) fap.filmLengthSlider.getHighValue();
+        maxLength = (long) fap.filmLengthSlider.getHighValue();
+        minLengthInSeconds = TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES);
+        maxLengthInSeconds = TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES);
+    }
 
-        final String filterSender = getFilterSender();
+    private void performTableFiltering() {
+        final Timer.Context context = responses.time();
+
+        updateFilterVars();
+        calculateFilmLengthSliderValues();
+
         final String filterThema = getFilterThema();
+        final boolean searchFieldEmpty = arrIrgendwo.length == 0;
+        final ObservableList<String> selectedSenders = fap.senderList.getCheckModel().getCheckedItems();
 
-        // ThemaTitel
-        String[] arrThemaTitel = evaluateThemaTitel();
-
-        final long minLengthInSeconds = TimeUnit.SECONDS.convert(minLength, TimeUnit.MINUTES);
-        final long maxLengthInSeconds = TimeUnit.SECONDS.convert(maxLength, TimeUnit.MINUTES);
-        final TrailerTeaserChecker ttc = new TrailerTeaserChecker();
         for (DatenFilm film : listeFilme) {
+            if (!selectedSenders.isEmpty()) {
+                if (!selectedSenders.contains(film.getSender()))
+                    continue;
+            }
+
             final long filmLength = film.getFilmLength();
             if (filmLength < minLengthInSeconds)
                 continue;
@@ -149,47 +173,70 @@ public class GuiFilmeModelHelper {
             }
 
             if (dontShowTrailers) {
-                if (ttc.check(film.getTitle()))
+                if (film.isTrailerTeaser())
                     continue;
             }
 
             if (dontShowGebaerdensprache) {
-                String titel = film.getTitle();
-                if (titel.contains("Gebärden"))
+                if (film.isSignLanguage())
                     continue;
             }
 
             if (dontShowAudioVersions) {
-                if (checkForAudioVersions(film.getTitle()))
+                if (film.isAudioVersion())
                     continue;
             }
 
-            //filter mitLaenge false dann aufrufen
-            //je nachdem dann das ganze herausoperieren
-            String[] arrIrgendwo = {};
-            String[] arrTitel = {};
-            if (Filter.filterAufFilmPruefen(filterSender, filterThema, arrTitel, arrThemaTitel, arrIrgendwo, 0, true, film, false)) {
-                addObjectDataTabFilme(film);
+            if (!filterThema.isEmpty()) {
+                if (!film.getThema().equalsIgnoreCase(filterThema))
+                    continue;
+            }
+
+            //minor speedup in case we don´t have search field entries...
+            if (searchFieldEmpty)
+                addFilmToTableModel(film);
+            else {
+                if (finalStageFiltering(film)) {
+                    addFilmToTableModel(film);
+                }
             }
         }
+
+        context.stop();
+    }
+
+    /**
+     * Perform the last stage of filtering.
+     * Rework!!!
+     */
+    public boolean finalStageFiltering(final DatenFilm film) {
+        boolean result = false;
+
+        if (searchThroughDescriptions) {
+            if (Filter.pruefen(arrIrgendwo, film.getDescription())
+                    || Filter.pruefen(arrIrgendwo, film.getThema())
+                    || Filter.pruefen(arrIrgendwo, film.getTitle())) {
+                result = true;
+            }
+        } else {
+            if (Filter.pruefen(arrIrgendwo, film.getThema())
+                    || Filter.pruefen(arrIrgendwo, film.getTitle())) {
+                result = true;
+            }
+        }
+
+        return result;
     }
 
     private void fillTableModel() {
         // dann ein neues Model anlegen
         if (noFiltersAreSet()) {
             // dann ganze Liste laden
-            addObjectDataTabFilme();
+            addAllFilmsToTableModel();
         } else {
             performTableFiltering();
         }
         tabelle.setModel(tModel);
-    }
-
-    /**
-     * Check if string contains specific keywords.
-     */
-    private boolean checkForAudioVersions(String titel) {
-        return titel.contains("Hörfassung") || titel.contains("Audiodeskription");
     }
 
     public void prepareTableModel() {
@@ -200,15 +247,15 @@ public class GuiFilmeModelHelper {
         tabelle.setModel(tModel);
     }
 
-    private void addObjectDataTabFilme() {
+    private void addAllFilmsToTableModel() {
         if (!listeFilme.isEmpty()) {
             for (DatenFilm film : listeFilme) {
-                addObjectDataTabFilme(film);
+                addFilmToTableModel(film);
             }
         }
     }
 
-    private void addObjectDataTabFilme(DatenFilm film) {
+    private void addFilmToTableModel(DatenFilm film) {
         Object[] object = new Object[DatenFilm.MAX_ELEM];
         for (int m = 0; m < DatenFilm.MAX_ELEM; ++m) {
             switch (m) {

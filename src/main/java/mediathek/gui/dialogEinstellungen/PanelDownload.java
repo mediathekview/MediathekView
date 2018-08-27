@@ -24,7 +24,6 @@ import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
-import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
 import mediathek.gui.dialog.DialogHilfe;
 
 import javax.swing.*;
@@ -57,12 +56,7 @@ public class PanelDownload extends PanelVorlage {
                 jSpinnerAnzahlDownload.setValue(Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_DOWNLOAD)));
             }
         });
-        Listener.addListener(new Listener(Listener.EREIGNIS_BANDBREITE, PanelDownload.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setSliderBandwith();
-            }
-        });
+
         jCheckBoxNotification.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_NOTIFICATION)));
         jCheckBoxNotification.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_NOTIFICATION, Boolean.toString(jCheckBoxNotification.isSelected())));
         cbkDownloadError.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG)));
@@ -72,25 +66,6 @@ public class PanelDownload extends PanelVorlage {
         jCheckBoxServer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER)));
         jCheckBoxServer.addActionListener(ae -> MVConfig.add(MVConfig.Configs.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER, String.valueOf(jCheckBoxServer.isSelected())));
         jButtonBeep.addActionListener(ae -> Toolkit.getDefaultToolkit().beep());
-        jSliderBandbreite.setMinimum(5); //50 kByte/s
-        jSliderBandbreite.setMaximum(100); //1.000 kByte/s
-        setSliderBandwith();
-        jSliderBandbreite.addChangeListener(e -> {
-            if (stopBeob) {
-                return;
-            }
-            int bandbreiteKByte = jSliderBandbreite.getValue() * 10;
-            jLabelBandwidth.setText(bandbreiteKByte + " kByte/s");
-            MVConfig.add(MVConfig.Configs.SYSTEM_BANDBREITE_KBYTE, String.valueOf(bandbreiteKByte));
-            Listener.notify(Listener.EREIGNIS_BANDBREITE, PanelDownload.class.getName());
-        });
-    }
-
-    private void setSliderBandwith() {
-        stopBeob = true;
-        MVBandwidthMonitorLWin.setSliderBandwith(jSliderBandbreite);
-        MVBandwidthMonitorLWin.setTextBandwith("", jLabelBandwidth, null);
-        stopBeob = false;
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -105,12 +80,6 @@ public class PanelDownload extends PanelVorlage {
         jButtonBeep = new javax.swing.JButton();
         jCheckBoxServer = new javax.swing.JCheckBox();
         cbkDownloadError = new javax.swing.JCheckBox();
-        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
-        javax.swing.JLabel jLabel4 = new javax.swing.JLabel();
-        jLabelBandwidth = new javax.swing.JLabel();
-        jSliderBandbreite = new javax.swing.JSlider();
-        javax.swing.JLabel jLabel5 = new javax.swing.JLabel();
-        javax.swing.JTextField jTextFieldWarnung = new javax.swing.JTextField();
 
         setMinimumSize(getPreferredSize());
 
@@ -159,7 +128,7 @@ public class PanelDownload extends PanelVorlage {
                                 .addComponent(jSpinnerAnzahlDownload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonHilfeAnzahl)))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                            .addGap(0, 131, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -182,71 +151,13 @@ public class PanelDownload extends PanelVorlage {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-
-        jLabel4.setText("Downloadgeschwindigkeit begrenzen:");
-
-        jLabelBandwidth.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabelBandwidth.setText("1000 kByte/s");
-        jLabelBandwidth.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-
-        jSliderBandbreite.setMajorTickSpacing(10);
-        jSliderBandbreite.setMaximum(1000);
-        jSliderBandbreite.setMinimum(50);
-        jSliderBandbreite.setMinorTickSpacing(5);
-        jSliderBandbreite.setToolTipText("");
-
-        jLabel5.setText("(max. Bandbreite pro Download, nur für direkte Downloads)");
-
-        jTextFieldWarnung.setEditable(false);
-        jTextFieldWarnung.setText("Bei zu hoher Bandbreite kann es zum Ausbremsen des Downloads durch den Server kommen.");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jLabel5)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldWarnung, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabelBandwidth, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jSliderBandbreite, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addContainerGap())))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabelBandwidth)
-                    .addComponent(jSliderBandbreite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel5)
-                .addGap(18, 18, 18)
-                .addComponent(jTextFieldWarnung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -254,9 +165,7 @@ public class PanelDownload extends PanelVorlage {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(260, Short.MAX_VALUE))
+                    .addContainerGap(403, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -268,8 +177,6 @@ public class PanelDownload extends PanelVorlage {
     private javax.swing.JCheckBox jCheckBoxBeep;
     private javax.swing.JCheckBox jCheckBoxNotification;
     private javax.swing.JCheckBox jCheckBoxServer;
-    private javax.swing.JLabel jLabelBandwidth;
-    private javax.swing.JSlider jSliderBandbreite;
     private javax.swing.JSpinner jSpinnerAnzahlDownload;
     // End of variables declaration//GEN-END:variables
 
