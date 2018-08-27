@@ -851,10 +851,12 @@ public class MediathekGui extends JFrame {
         initializeAnsichtAbos();
         initializeAnsicht();
 
-        miShowMemoryMonitor.addActionListener(e -> Platform.runLater(() -> {
-            memoryMonitor = new MemoryMonitor();
-                memoryMonitor.show();
-        }));
+        miShowMemoryMonitor.addActionListener(e -> Platform.runLater(this::showMemoryMonitor));
+    }
+
+    private void showMemoryMonitor() {
+        memoryMonitor = new MemoryMonitor();
+        memoryMonitor.show();
     }
 
     private void initializeAnsicht()
@@ -1115,6 +1117,12 @@ public class MediathekGui extends JFrame {
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_ABO, frameAbo);
     }
 
+    private void terminateUpdateTimer() {
+        //do not search for updates anymore
+        if (updateCheckTimer != null)
+            updateCheckTimer.stop();
+    }
+
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
         //write all settings if not done already...
         ApplicationConfiguration.getInstance().writeConfiguration();
@@ -1135,8 +1143,7 @@ public class MediathekGui extends JFrame {
 
         closeMemoryMonitor();
 
-        //do not search for updates anymore
-        updateCheckTimer.stop();
+        terminateUpdateTimer();
 
         ShutdownDialog dialog = new ShutdownDialog(12);
         dialog.show();
