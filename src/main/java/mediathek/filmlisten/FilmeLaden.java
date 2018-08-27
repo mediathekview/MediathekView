@@ -192,13 +192,21 @@ public class FilmeLaden {
         return result;
     }
 
-    public void loadFilmlist(String dateiUrl, boolean immerNeuLaden) {
-        // damit wird die Filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
+    /**
+     * Load a filmlist from the network.
+     *
+     * @return true if list was load, false if not.
+     */
+    public boolean loadFilmListFromNetwork() {
+        return loadFilmlist("", true);
+    }
 
+    public boolean loadFilmlist(String dateiUrl, boolean immerNeuLaden) {
+        // damit wird die Filmliste geladen UND auch gleich im Konfig-Ordner gespeichert
         ListeFilme listeFilme = daten.getListeFilme();
 
         if (!performUpdateCheck(listeFilme, dateiUrl))
-            return;
+            return false;
 
         logger.debug("Filme laden, start");
         logger.info("");
@@ -227,6 +235,7 @@ public class FilmeLaden {
                 importFilmliste.importFromFile(dateiUrl, listeFilme, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
             }
         }
+        return true;
     }
 
     public void updateFilmlist(String dateiUrl) {

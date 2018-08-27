@@ -261,7 +261,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void loadFilmlist() {
-        Thread programStart = new UIFilmlistLoaderThread();
+        Thread programStart = new UIFilmlistLoaderThread(daten);
         programStart.start();
     }
 
