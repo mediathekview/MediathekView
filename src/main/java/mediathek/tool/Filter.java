@@ -19,6 +19,8 @@
  */
 package mediathek.tool;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import mSearch.daten.DatenFilm;
 import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
@@ -26,16 +28,22 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class Filter {
 
-    //TODO make pattern cache time-dependent
     /**
      * The cache for already compiled RegExp.
+     * Entries will be removed if the haven´t been accessed for more than 10 minutes.
      */
-    private static final HashMap<String, Pattern> PATTERN_CACHE = new HashMap<>();
+    private static final Cache<String, Pattern> CACHE;
+
+    static {
+        CACHE = CacheBuilder.newBuilder()
+                .expireAfterAccess(10, TimeUnit.MINUTES)
+                .build();
+    }
 
     public static boolean aboExistiertBereits(DatenAbo aboExistiert, DatenAbo aboPruefen) {
         // prüfen ob "aboExistiert" das "aboPrüfen" mit abdeckt, also die gleichen (oder mehr)
@@ -99,7 +107,7 @@ public class Filter {
                             || pruefen(themaTitelSuchen, title)) {
 
                         if (irgendwoSuchen.length == 0
-                                || pruefen(irgendwoSuchen, film.arr[DatenFilm.FILM_DATUM])
+                                || pruefen(irgendwoSuchen, film.getDescription())
                                 || pruefen(irgendwoSuchen, thema)
                                 || pruefen(irgendwoSuchen, title)) {
                             if (mitLaenge) {
@@ -146,7 +154,7 @@ public class Filter {
         return result;
     }
 
-    private static boolean pruefen(String[] filter, final String im) {
+    public static boolean pruefen(String[] filter, final String im) {
         // wenn einer passt, dann ists gut
         Pattern p;
         if (filter.length == 1) {
@@ -192,12 +200,13 @@ public class Filter {
     public static Pattern makePattern(final String textSuchen) {
         Pattern p;
         if (isPattern(textSuchen)) {
-            p = PATTERN_CACHE.get(textSuchen);
+            p = CACHE.getIfPresent(textSuchen);
             if (p == null) {
                 //nothing in cache, so we have to compile...
                 try {
-                    p = Pattern.compile(textSuchen.substring(2), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
-                    PATTERN_CACHE.put(textSuchen, p);
+                    p = Pattern.compile(textSuchen.substring(2),
+                            Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.DOTALL);
+                    CACHE.put(textSuchen, p);
                 } catch (Exception ignored) {
                     p = null;
                 }

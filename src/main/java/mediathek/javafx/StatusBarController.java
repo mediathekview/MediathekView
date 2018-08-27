@@ -8,7 +8,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -16,10 +15,7 @@ import mSearch.Config;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mediathek.config.Daten;
-import mediathek.gui.messages.FilmListWriteStartEvent;
-import mediathek.gui.messages.FilmListWriteStopEvent;
 import mediathek.javafx.filmlist.FilmListInfoPane;
-import net.engio.mbassy.listener.Handler;
 import org.controlsfx.control.StatusBar;
 
 public class StatusBarController {
@@ -34,13 +30,8 @@ public class StatusBarController {
     private final SelectedItemsLabel selectedItemsLabel;
     private final GarbageCollectionButton btnGc = new GarbageCollectionButton();
     private Pane progressPane;
-    private MemoryMonitor memoryMonitor;
-    private final MemoryMonitorButton memButton = new MemoryMonitorButton(memoryMonitor);
-    private Pane filmListWriterProgressPane = null;
 
-    public StatusBarController(Daten daten, MemoryMonitor memoryMonitor, IntegerProperty selectedItemsProperty) {
-        this.memoryMonitor = memoryMonitor;
-
+    public StatusBarController(Daten daten, IntegerProperty selectedItemsProperty) {
         selectedItemsLabel = new SelectedItemsLabel(selectedItemsProperty);
         filmListInfoPane = new FilmListInfoPane(daten);
         filmListInformationLabel = new FilmListInformationLabel(daten, daten.getMediathekGui().tabPaneIndexProperty());
@@ -73,33 +64,8 @@ public class StatusBarController {
         });
     }
 
-    private Pane createFilmListWriterProgress() {
-        filmListWriterProgressPane = new HBox();
-        filmListWriterProgressPane.setMinWidth(Region.USE_PREF_SIZE);
-        filmListWriterProgressPane.getChildren().addAll(
-                new CenteredBorderPane(new ProgressIndicator()),
-                new CenteredBorderPane(new Label("Schreibe Filmliste...")),
-                new VerticalSeparator());
-
-        return filmListWriterProgressPane;
-    }
-
-    @Handler
-    private void handleFilmListWriterStartEvent(FilmListWriteStartEvent e) {
-        Platform.runLater(() -> {
-            if (filmListWriterProgressPane == null)
-                filmListWriterProgressPane = createFilmListWriterProgress();
-
-            statusBar.getRightItems().add(filmListWriterProgressPane);
-        });
-    }
-
-    @Handler
-    private void handleFilmListWriterStopEvent(FilmListWriteStopEvent e) {
-        Platform.runLater(() -> {
-            statusBar.getRightItems().remove(filmListWriterProgressPane);
-            filmListWriterProgressPane = null;
-        });
+    public StatusBar getStatusBar() {
+        return statusBar;
     }
 
     private void createProgressPane() {
@@ -156,7 +122,6 @@ public class StatusBarController {
 
         if (Config.isDebuggingEnabled()) {
             leftItems.add(btnGc);
-            leftItems.add(memButton);
             leftItems.add(new VerticalSeparator());
         }
         CenteredBorderPane pane = new CenteredBorderPane(filmListInformationLabel);

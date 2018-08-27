@@ -51,6 +51,10 @@ public class ApplicationConfiguration {
     public static final String DATABASE_USE_CLEANER_INTERFACE = "database.cleanup.use_cleaner";
     public static final String FILMLISTE_SAVE_HUMAN_READABLE = "filmlist.save.human_readable";
 
+    public static final String DOWNLOAD_RATE_LIMIT = "download.rate.limit";
+
+    public static final String SEARCH_USE_FILM_DESCRIPTIONS = "searchfield.film.search_through_description";
+
     private static final ApplicationConfiguration ourInstance = new ApplicationConfiguration();
 
     private XMLConfiguration config;

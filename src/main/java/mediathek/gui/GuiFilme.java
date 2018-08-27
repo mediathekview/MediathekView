@@ -39,6 +39,7 @@ import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.daten.*;
+import mediathek.gui.actions.ShowFilmInformationAction;
 import mediathek.gui.dialog.DialogAboNoSet;
 import mediathek.gui.dialog.DialogAddDownload;
 import mediathek.gui.dialog.DialogAddMoreDownload;
@@ -102,23 +103,8 @@ public class GuiFilme extends PanelVorlage {
         start_addListener();
 
         setupActionListeners();
-
-        //FIXME ist der listener korrekt?
-        //FIXME move to filmactionpanel
-        daten.getListeFilmeNachBlackList().getSenders().addListener((ListChangeListener<String>) c -> {
-            String selectedItem = fap.senderBox.getSelectionModel().getSelectedItem();
-            if (selectedItem != null) {
-                fap.senderBox.getItems().clear();
-                fap.senderBox.getItems().addAll(daten.getListeFilmeNachBlackList().getSenders());
-                if (fap.senderBox.getItems().contains(selectedItem))
-                    fap.senderBox.getSelectionModel().select(selectedItem);
-                else
-                    fap.senderBox.getSelectionModel().select("");
-
-                SwingUtilities.invokeLater(this::reloadTable);
-            }
-        });
     }
+
 
     private void setupFilmActionPanel() {
         add(fxPanel, BorderLayout.NORTH);
@@ -192,16 +178,6 @@ public class GuiFilme extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             tabelle.getRowSorter().setSortKeys(listSortKeys);
             tabelle.requestFocusSelect(jScrollPane1, 0);
-        }
-    }
-
-    private class ShowFilmInformationAction extends AbstractAction {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (!Daten.filmInfo.isVisible()) {
-                Daten.filmInfo.showInfo();
-            }
         }
     }
 
@@ -349,6 +325,7 @@ public class GuiFilme extends PanelVorlage {
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 loadTable();
+                Platform.runLater(() -> fap.updateThemaBox());
             }
         });
 
@@ -1199,17 +1176,34 @@ public class GuiFilme extends PanelVorlage {
                 if (!newValue)
                     SwingUtilities.invokeLater(this::reloadTable);
             });
-            fap.senderBox.setOnAction(evt -> SwingUtilities.invokeLater(this::reloadTable));
+            fap.searchThroughDescription.addListener((os, o, n) -> {
+                if (!fap.roSearchStringProperty.getReadOnlyProperty().isEmpty().get())
+                    SwingUtilities.invokeLater(this::reloadTable);
+            });
 
-            PauseTransition trans = new PauseTransition(Duration.millis(250));
-            trans.setOnFinished(evt -> SwingUtilities.invokeLater(() -> {
-                daten.getListeBlacklist().filterListe();
-                loadTable();
-            }));
-            fap.zeitraumProperty.addListener((observable, oldValue, newValue) -> trans.playFromStart());
+            setupSenderListListeners();
+
+            setupZeitraumListener();
 
             fap.themaBox.setOnAction(evt -> SwingUtilities.invokeLater(this::reloadTable));
         });
+    }
+
+    private void setupZeitraumListener() {
+        PauseTransition trans = new PauseTransition(Duration.millis(250));
+        trans.setOnFinished(evt -> SwingUtilities.invokeLater(() -> {
+            daten.getListeBlacklist().filterListe();
+            loadTable();
+        }));
+        fap.zeitraumProperty.addListener((observable, oldValue, newValue) -> trans.playFromStart());
+    }
+
+    private void setupSenderListListeners() {
+        PauseTransition filterSenderDelay = new PauseTransition(Duration.millis(750d));
+        filterSenderDelay.setOnFinished(e -> SwingUtilities.invokeLater(this::reloadTable));
+        fap.senderList.getCheckModel()
+                .getCheckedItems().
+                addListener((ListChangeListener<String>) c -> filterSenderDelay.playFromStart());
     }
 
     private synchronized void loadTable() {

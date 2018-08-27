@@ -28,11 +28,9 @@ import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.gui.dialog.DialogFilmBeschreibung;
-import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFont;
 import mediathek.tool.table.MVDownloadsTable;
 import mediathek.tool.table.MVFilmTable;
-import mediathek.tool.table.MVTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,24 +46,13 @@ import java.net.URISyntaxException;
 @SuppressWarnings("serial")
 public class PanelFilmBeschreibung extends JPanel implements ListSelectionListener {
     private DatenFilm currentFilm = null;
-    private final MVTable table;
+    private final JTable table;
 
-    private JMenuItem createCopyLinkToClipboardItem() {
-        JMenuItem item = new JMenuItem("URL kopieren");
-        item.addActionListener(e -> {
-            if (currentFilm != null)
-                GuiFunktionen.copyToClipboard(currentFilm.getWebsiteLink());
-        });
-
-        return item;
-    }
-
-    public PanelFilmBeschreibung(Daten daten, MVTable table, boolean film) {
+    public PanelFilmBeschreibung(Daten daten, JTable table, boolean film) {
         initComponents();
         this.table = table;
 
-        Icon closeIcon = IconFontSwing.buildIcon(FontAwesome.TIMES_CIRCLE_O, 16);
-        jCheckBoxBeschreibung.setIcon(closeIcon);
+        jCheckBoxBeschreibung.setIcon(IconFontSwing.buildIcon(FontAwesome.TIMES_CIRCLE_O, 16));
         jCheckBoxBeschreibung.addActionListener(e -> {
             if (film) {
                 MVConfig.add(MVConfig.Configs.SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN, Boolean.FALSE.toString());
@@ -85,12 +72,7 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
             }
         });
 
-        JPopupMenu popupMenu = new JPopupMenu();
-        popupMenu.add(createCopyLinkToClipboardItem());
-        hyperlinkButton.setComponentPopupMenu(popupMenu);
-
-        Icon editIcon = IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16);
-        jCheckBoxChange.setIcon(editIcon);
+        jCheckBoxChange.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
         jCheckBoxChange.addActionListener(e -> {
             if (currentFilm != null) {
                 final String oldDescription = currentFilm.getDescription();

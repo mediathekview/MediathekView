@@ -20,6 +20,7 @@
 package mediathek.daten;
 
 import mSearch.tool.Log;
+import org.jetbrains.annotations.NotNull;
 
 public class DatenAbo extends MVData<DatenAbo> {
     //Tags Abo
@@ -100,7 +101,7 @@ public class DatenAbo extends MVData<DatenAbo> {
     }
 
     public void setMindestDauerMinuten() {
-        if (this.arr[DatenAbo.ABO_MINDESTDAUER].equals("")) {
+        if (this.arr[DatenAbo.ABO_MINDESTDAUER].isEmpty()) {
             // für den ProgUpdate
             mindestdauerMinuten = 0;
             arr[ABO_MINDESTDAUER] = "0";
@@ -115,7 +116,7 @@ public class DatenAbo extends MVData<DatenAbo> {
     }
 
     public boolean aboIstEingeschaltet() {
-        if (arr[DatenAbo.ABO_EINGESCHALTET].equals("")) {
+        if (arr[DatenAbo.ABO_EINGESCHALTET].isEmpty()) {
             aboEin();
             return true;
         }
@@ -126,31 +127,8 @@ public class DatenAbo extends MVData<DatenAbo> {
         return spaltenAnzeigen == null || spaltenAnzeigen[i];
     }
 
-    /*
-     public boolean toggleAboEinAus() {
-     // Abo EinAus wird geändert und der Zustand NACH der Änderung
-     // wird zurückgegeben
-     if (arr[DatenAbo.ABO_EINGESCHALTET_NR].equals("")) {
-     aboEin();
-     }
-     arr[DatenAbo.ABO_EINGESCHALTET_NR] = String.valueOf(!Boolean.parseBoolean(arr[DatenAbo.ABO_EINGESCHALTET_NR]));
-     return Boolean.parseBoolean(arr[DatenAbo.ABO_EINGESCHALTET_NR]);
-     }
-     */
-
- /*
-     public void aboAus() {
-     arr[DatenAbo.ABO_EINGESCHALTET_NR] = String.valueOf(false);
-     }
-     */
-    public void aboEin() {
+    private void aboEin() {
         arr[DatenAbo.ABO_EINGESCHALTET] = String.valueOf(true);
-    }
-
-    public void aufMichKopieren(DatenAbo datenAbo) {
-        System.arraycopy(datenAbo.arr, 0, arr, 0, arr.length);
-        this.mindestdauerMinuten = datenAbo.mindestdauerMinuten;
-        this.min = datenAbo.min;
     }
 
     private void makeArr() {
@@ -163,7 +141,7 @@ public class DatenAbo extends MVData<DatenAbo> {
     }
 
     @Override
-    public int compareTo(DatenAbo arg0) {
+    public int compareTo(@NotNull DatenAbo arg0) {
         return sorter.compare(arr[ABO_NAME], arg0.arr[ABO_NAME]);
     }
 }

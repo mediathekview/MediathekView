@@ -128,12 +128,12 @@ public final class ToolBar extends JToolBar {
         this.add(jButtonDownloadLoeschen);
         this.add(jButtonDownloadAufraeumen);
         jButtonInfo.addActionListener(e -> Daten.filmInfo.showInfo());
-        jButtonDownloadAktualisieren.addActionListener(e -> Daten.guiDownloads.aktualisieren());
-        jButtonDownloadAufraeumen.addActionListener(e -> Daten.guiDownloads.aufraeumen());
-        jButtonDownloadLoeschen.addActionListener(e -> Daten.guiDownloads.loeschen());
-        jButtonDownloadAlleStarten.addActionListener(e -> Daten.guiDownloads.starten(true));
-        jButtonDownloadFilmStarten.addActionListener(e -> Daten.guiDownloads.filmAbspielen());
-        jButtonDownloadZurueckstellen.addActionListener(e -> Daten.guiDownloads.zurueckstellen());
+        jButtonDownloadAktualisieren.addActionListener(e -> daten.getMediathekGui().tabDownloads.aktualisieren());
+        jButtonDownloadAufraeumen.addActionListener(e -> daten.getMediathekGui().tabDownloads.aufraeumen());
+        jButtonDownloadLoeschen.addActionListener(e -> daten.getMediathekGui().tabDownloads.loeschen());
+        jButtonDownloadAlleStarten.addActionListener(e -> daten.getMediathekGui().tabDownloads.starten(true));
+        jButtonDownloadFilmStarten.addActionListener(e -> daten.getMediathekGui().tabDownloads.filmAbspielen());
+        jButtonDownloadZurueckstellen.addActionListener(e -> daten.getMediathekGui().tabDownloads.zurueckstellen());
 
         this.add(filler__trenner);
 
@@ -169,10 +169,10 @@ public final class ToolBar extends JToolBar {
         this.add(jButtonAbosAusschalten);
         this.add(jButtonAbosLoeschen);
         this.add(jButtonAboAendern);
-        jButtonAbosEinschalten.addActionListener(e -> Daten.guiAbo.einAus(true));
-        jButtonAbosAusschalten.addActionListener(e -> Daten.guiAbo.einAus(false));
-        jButtonAbosLoeschen.addActionListener(e -> Daten.guiAbo.loeschen());
-        jButtonAboAendern.addActionListener(e -> Daten.guiAbo.aendern());
+        jButtonAbosEinschalten.addActionListener(e -> daten.getMediathekGui().tabAbos.einAus(true));
+        jButtonAbosAusschalten.addActionListener(e -> daten.getMediathekGui().tabAbos.einAus(false));
+        jButtonAbosLoeschen.addActionListener(e -> daten.getMediathekGui().tabAbos.loeschen());
+        jButtonAboAendern.addActionListener(e -> daten.getMediathekGui().tabAbos.aendern());
 
         this.add(filler__trenner);
 

@@ -29,6 +29,7 @@ import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
+import mediathek.controller.MVBandwidthCountingInputStream;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.DatenPset;
 import mediathek.gui.messages.StartEvent;
@@ -173,9 +174,9 @@ public class StarterClass {
             text.add("Dauer: " + start.startZeit.diffInMinuten() + " Min");
         }
         if (datenDownload.art == DatenDownload.ART_DOWNLOAD) {
-            if (start.mVInputStream != null) {
-                text.add("Bytes gelesen: " + MVFilmSize.humanReadableByteCount(start.mVInputStream.getSumByte(), true));
-                text.add("Bandbreite: " + DatenDownload.getTextBandbreite(start.mVInputStream.getSumBandwidth()));
+            if (start.mVBandwidthCountingInputStream != null) {
+                text.add("Bytes gelesen: " + MVFilmSize.humanReadableByteCount(start.mVBandwidthCountingInputStream.getSumByte(), true));
+                text.add("Bandbreite: " + DatenDownload.getTextBandbreite(start.mVBandwidthCountingInputStream.getSumBandwidth()));
             }
         }
         text.add("URL: " + datenDownload.arr[DatenDownload.DOWNLOAD_URL]);
@@ -324,7 +325,7 @@ public class StarterClass {
     private class Starten extends Thread {
 
         /**
-         * The only {@link java.util.Timer} used for all {@link mediathek.controller.MVInputStream.BandwidthCalculationTask}
+         * The only {@link java.util.Timer} used for all {@link MVBandwidthCountingInputStream.BandwidthCalculationTask}
          * calculation tasks.
          */
         private final java.util.Timer bandwidthCalculationTimer;

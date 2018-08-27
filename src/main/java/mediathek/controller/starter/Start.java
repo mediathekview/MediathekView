@@ -20,7 +20,7 @@
 package mediathek.controller.starter;
 
 import mSearch.tool.Datum;
-import mediathek.controller.MVInputStream;
+import mediathek.controller.MVBandwidthCountingInputStream;
 
 public class Start {
 
@@ -39,7 +39,7 @@ public class Start {
 
     public Datum startZeit = null;
     public long restSekunden = -1;
-    public MVInputStream mVInputStream = null;
+    public MVBandwidthCountingInputStream mVBandwidthCountingInputStream = null;
     // Stati
     public static final byte STATUS_INIT = 1;
     public static final byte STATUS_RUN = 2;

@@ -22,8 +22,6 @@ package mSearch.filmlisten.reader;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import mSearch.Config;
 import mSearch.Const;
 import mSearch.daten.DatenFilm;
@@ -33,8 +31,7 @@ import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.InputStreamProgressMonitor;
 import mSearch.tool.MVHttpClient;
 import mSearch.tool.ProgressMonitorInputStream;
-import mediathek.config.Daten;
-import mediathek.daten.LiveStreamItem;
+import mediathek.tool.TrailerTeaserChecker;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -55,19 +52,19 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class FilmListReader implements AutoCloseable {
     private static final int PROGRESS_MAX = 100;
+    private static final Logger logger = LogManager.getLogger(FilmListReader.class);
+    private final EventListenerList listeners = new EventListenerList();
+    private final ListenerFilmeLadenEvent progressEvent = new ListenerFilmeLadenEvent("", "Download", 0, 0, 0, false);
+    private final int max;
+    private final TrailerTeaserChecker ttc = new TrailerTeaserChecker();
     /**
      * Memory limit for the xz decompressor. No limit by default.
      */
     protected int DECOMPRESSOR_MEMORY_LIMIT = -1;
-    private final EventListenerList listeners = new EventListenerList();
-    private final ListenerFilmeLadenEvent progressEvent = new ListenerFilmeLadenEvent("", "Download", 0, 0, 0, false);
-    private final int max;
     private int progress = 0;
     private long milliseconds = 0;
     private String sender = "";
@@ -216,8 +213,32 @@ public class FilmListReader implements AutoCloseable {
         datenFilm.arr[DatenFilm.FILM_ZEIT] = zeit;
     }
 
+    /**
+     * Check if the title contains keyword which specify an audio version
+     */
+    private void parseAudioVersion(String title, DatenFilm film) {
+        if (title.contains("Hörfassung") || title.contains("Audiodeskription"))
+            film.setAudioVersion(true);
+    }
+
+    private void parseSignLanguage(String title, DatenFilm film) {
+        if (title.contains("Gebärden"))
+            film.setSignLanguage(true);
+    }
+
+    private void parseTrailerTeaser(String title, DatenFilm film) {
+        if (ttc.check(title))
+            film.setTrailerTeaser(true);
+    }
+
     private void parseTitel(JsonParser jp, DatenFilm datenFilm) throws IOException {
-        datenFilm.setTitle(checkedString(jp));
+        final String title = checkedString(jp);
+        datenFilm.setTitle(title);
+        //check title if it is audio version
+        parseAudioVersion(title, datenFilm);
+        //check if it is in sign language
+        parseSignLanguage(title, datenFilm);
+        parseTrailerTeaser(title, datenFilm);
     }
 
     private void readData(JsonParser jp, ListeFilme listeFilme) throws IOException {
@@ -307,39 +328,9 @@ public class FilmListReader implements AutoCloseable {
             logger.warn(ex);
         }
 
-        extractLivestreams(listeFilme);
+        DatenFilm.Database.createIndices();
 
         notifyFertig(source, listeFilme);
-    }
-
-    private void extractLivestreams(ListeFilme listeFilme) {
-        final Daten daten = Daten.getInstance();
-        ObservableList<LiveStreamItem> liveStreamList = daten.getLivestreamList();
-
-        Platform.runLater(liveStreamList::clear);
-
-        List<DatenFilm> tempFilteredFilmList = listeFilme.parallelStream()
-                .filter(film -> film.getThema().equalsIgnoreCase(ListeFilme.THEMA_LIVE))
-                .collect(Collectors.toList());
-
-        logger.debug("ListeFilme: {}", listeFilme.size());
-        for (DatenFilm film : tempFilteredFilmList) {
-            try {
-                LiveStreamItem item = new LiveStreamItem();
-                item.setSender(film.getSender());
-                item.setTitel(film.getTitle());
-                item.setUrl(new URL(film.getUrl()));
-                Platform.runLater(() -> liveStreamList.add(item));
-
-                //TODO wieder aktivieren nachdem speichern und lesen der Livestreams implementiert wurde
-                //listeFilme.remove(film);
-            } catch (MalformedURLException ex) {
-                logger.error(ex);
-            }
-        }
-
-        tempFilteredFilmList.clear();
-        logger.debug("ListeFilme: {}", listeFilme.size());
     }
 
     /**
@@ -383,8 +374,6 @@ public class FilmListReader implements AutoCloseable {
             listeFilme.clear();
         }
     }
-
-    private static final Logger logger = LogManager.getLogger(FilmListReader.class);
 
     /**
      * Download and process a filmliste from the web.

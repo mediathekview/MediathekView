@@ -39,7 +39,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
-import static mSearch.tool.Log.LILNE;
+import static mSearch.tool.Log.LINE;
 import static mediathek.tool.MVFunctionSys.startMeldungen;
 
 public class MediathekAuto {
@@ -167,7 +167,7 @@ public class MediathekAuto {
                 }
                 logger.info("");
             }
-            logger.info(LILNE);
+            logger.info(LINE);
             // und jetzt starten
             for (DatenDownload d : daten.getListeDownloads()) {
                 d.startDownload(daten);
