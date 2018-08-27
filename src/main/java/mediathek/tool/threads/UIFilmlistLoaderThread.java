@@ -39,9 +39,44 @@ import java.util.concurrent.TimeUnit;
 public class UIFilmlistLoaderThread extends Thread {
 
     private static final Logger logger = LogManager.getLogger(UIFilmlistLoaderThread.class);
+    private final Daten daten;
+    private final ListeFilme listeFilme;
+    private final FilmeLaden filmeLaden;
+    private final int tageFilmliste;
 
-    public UIFilmlistLoaderThread() {
+    public UIFilmlistLoaderThread(Daten daten) {
+        this.daten = daten;
+        listeFilme = daten.getListeFilme();
+        filmeLaden = daten.getFilmeLaden();
+        tageFilmliste = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE));
+
+
         setName("UIFilmlistLoaderThread");
+    }
+
+    private void readLocalFilmList() {
+        try (FilmListReader reader = new FilmListReader()) {
+            reader.readFilmListe(Daten.getDateiFilmliste(), listeFilme, tageFilmliste);
+            logger.debug("Liste Filme gelesen am: {}", new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
+            logger.debug("  erstellt am: {}", listeFilme.genDate());
+            logger.debug("  Anzahl Filme: {}", listeFilme.size());
+            logger.debug("  Anzahl Neue: {}", listeFilme.countNewFilms());
+        }
+    }
+
+    private void performFilterOperations() {
+        filmeLaden.notifyStart(new ListenerFilmeLadenEvent("", "", 0, 0, 0, false));
+
+        filmeLaden.notifyProgress(new ListenerFilmeLadenEvent("", "Themen suchen", 0, 0, 0, false));
+        listeFilme.fillSenderList();
+
+        filmeLaden.notifyProgress(new ListenerFilmeLadenEvent("", "Abos eintragen", 0, 0, 0, false));
+        daten.getListeAbo().setAboFuerFilm(daten.getListeFilme(), false /*aboLoeschen*/);
+
+        filmeLaden.notifyProgress(new ListenerFilmeLadenEvent("", "Blacklist filtern", 0, 0, 0, false));
+        daten.getListeBlacklist().filterListe();
+
+        filmeLaden.notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, 0, false));
     }
 
     @Override
@@ -51,39 +86,20 @@ public class UIFilmlistLoaderThread extends Thread {
             //give the UI some time to set up...
             TimeUnit.MILLISECONDS.sleep(500);
 
-            final Daten daten = Daten.getInstance();
-            final ListeFilme listeFilme = daten.getListeFilme();
-            final FilmeLaden filmeLaden = daten.getFilmeLaden();
-            final int tageFilmliste = Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE));
-
             daten.getMessageBus().publishAsync(new FilmListReadStartEvent());
 
-            try (FilmListReader reader = new FilmListReader()) {
-                reader.readFilmListe(Daten.getDateiFilmliste(), listeFilme, tageFilmliste);
-                logger.info("Liste Filme gelesen am: {}", new SimpleDateFormat("dd.MM.yyyy, HH:mm").format(new Date()));
-                logger.info("  erstellt am: {}", listeFilme.genDate());
-                logger.info("  Anzahl Filme: {}", listeFilme.size());
-                logger.info("  Anzahl Neue: {}", listeFilme.countNewFilms());
-
-            }
+            readLocalFilmList();
 
             if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO && listeFilme.isTooOld()) {
                 logger.info("Filmliste zu alt, neue Filmliste laden");
-                filmeLaden.loadFilmlist("", true);
+                if (!filmeLaden.loadFilmListFromNetwork()) {
+                    //if we haven´t loaded anything, let´s continue with the current list and start filtering...
+                    logger.info("filmlist update not necessary, start filtering current filmlist");
+                    performFilterOperations();
+                }
             } else {
                 // beim Neuladen wird es dann erst gemacht
-                filmeLaden.notifyStart(new ListenerFilmeLadenEvent("", "", 0, 0, 0, false/*Fehler*/));
-
-                filmeLaden.notifyProgress(new ListenerFilmeLadenEvent("", "Themen suchen", 0, 0, 0, false/*Fehler*/));
-                listeFilme.fillSenderList();
-
-                filmeLaden.notifyProgress(new ListenerFilmeLadenEvent("", "Abos eintragen", 0, 0, 0, false/*Fehler*/));
-                daten.getListeAbo().setAboFuerFilm(daten.getListeFilme(), false /*aboLoeschen*/);
-
-                filmeLaden.notifyProgress(new ListenerFilmeLadenEvent("", "Blacklist filtern", 0, 0, 0, false/*Fehler*/));
-                daten.getListeBlacklist().filterListe();
-
-                filmeLaden.notifyFertig(new ListenerFilmeLadenEvent("", "", 100, 100, 0, false/*Fehler*/));
+                performFilterOperations();
             }
 
             daten.getMessageBus().publishAsync(new FilmListReadStopEvent());
@@ -91,7 +107,6 @@ public class UIFilmlistLoaderThread extends Thread {
         }
 
         logger.debug("Programmende Daten laden");
-
     }
 
 }
