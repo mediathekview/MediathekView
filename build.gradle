@@ -172,6 +172,16 @@ task createIpv4Exe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
     maxHeapPercent = 80
 }
 
+task createPortableExe(type: edu.sc.seis.launch4j.tasks.Launch4jLibraryTask) {
+    outfile = "MediathekView_Portable.exe"
+    opt = "-DmvLogOutputPath=Einstellungen/.mediathek3/mediathekview.log"
+    cmdLine = "Einstellungen/.mediathek3"
+
+    initialHeapSize = 256
+    maxHeapSize = 1024
+    maxHeapPercent = 80
+}
+
 assemble.dependsOn createAllExecutables
 
 /**
