@@ -58,7 +58,7 @@ public class Datum extends Date {
      * @return Differenz in Sekunden.
      */
     public int diffInSekunden() {
-        final int ret = new Long((this.getTime() - new Datum().getTime()) / (1000)).intValue();
+        final int ret = Long.valueOf((this.getTime() - new Datum().getTime()) / (1000)).intValue();
         return Math.abs(ret);
     }
 

@@ -43,6 +43,7 @@ import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.messages.DownloadRateLimitChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
+import mediathek.javafx.descriptionPanel.FXDescriptionPanel;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
 import mediathek.tool.listener.BeobTableHeader;
@@ -177,19 +178,15 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void setupDescriptionPanel() {
-        PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten, tabelle, false/*film*/);
-        jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
+        FXDescriptionPanel panel = new FXDescriptionPanel(tabelle);
+        jPanelBeschreibung.add(panel, BorderLayout.CENTER);
     }
 
     @Override
     public void isShown() {
         super.isShown();
-        if (!solo) {
-            daten.getMediathekGui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.DOWNLOAD);
-        }
+        daten.getMediathekGui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.DOWNLOAD);
         updateFilmData();
-        Listener.notify(Listener.EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
-
     }
 
     public void aktualisieren() {
@@ -356,8 +353,6 @@ public class GuiDownloads extends PanelVorlage {
     private void init(MediathekGui mediathekGui) {
         setupKeyMappings();
         //Tabelle einrichten
-
-        panelBeschreibungSetzen();
 
         final CellRendererDownloads cellRenderer = new CellRendererDownloads(mediathekGui.getSenderIconCache());
         tabelle.setDefaultRenderer(Object.class, cellRenderer);
@@ -621,16 +616,20 @@ public class GuiDownloads extends PanelVorlage {
                 }
             }
         });
-        Listener.addListener(new Listener(Listener.EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, GuiDownloads.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                panelBeschreibungSetzen();
-            }
-        });
+
+        setupShowFilmDescriptionMenuItem();
     }
 
-    private void panelBeschreibungSetzen() {
-        jPanelBeschreibung.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN)));
+    /**
+     * Setup and show film description panel.
+     * Most of the setup is done in {@link GuiFilme} function.
+     * Here we just display the panel
+     */
+    private void setupShowFilmDescriptionMenuItem() {
+        JCheckBoxMenuItem cbk = ((MediathekGui) parentComponent).getFilmDescriptionMenuItem();
+        cbk.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, true));
+        cbk.addActionListener(l -> jPanelBeschreibung.setVisible(cbk.isSelected()));
+        //most of the setup is done in GuiFilme function.
     }
 
     private synchronized void reloadTable() {

@@ -158,7 +158,6 @@ public class Main {
         setupPortableMode(args);
 
         checkMemoryRequirements();
-        checkJava8Compatibility();
         checkForJavaFX();
 
         IconFontSwing.register(FontAwesome.getIconFont());
@@ -189,22 +188,6 @@ public class Main {
                         JOptionPane.ERROR_MESSAGE);
             }
 
-            System.exit(3);
-        }
-    }
-
-    private static void checkJava8Compatibility() {
-        if (SystemInfo.isJdk9Above()) {
-            logger.error("JVM is not Java 8");
-            if (GraphicsEnvironment.isHeadless()) {
-                System.err.println("MediathekView ist NUR mit Java 8 kompatibel.");
-                System.err.println("Bitte stellen Sie sicher das Sie Java 8 auf Ihrem System nutzen");
-            } else {
-                //we have a screen
-                JOptionPane.showMessageDialog(null,
-                        "MediathekView ist NUR mit Java 8 kompatibel.",
-                        "Falsche Java-Version", JOptionPane.ERROR_MESSAGE);
-            }
             System.exit(3);
         }
     }

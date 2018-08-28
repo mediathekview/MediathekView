@@ -30,7 +30,6 @@ public class PanelVorlage extends JPanel {
     public boolean stopBeob = false;
     public JFrame parentComponent = null;
     MVTable tabelle = null;
-    public boolean solo = false; // nicht in einem eigenem Frame
 
     public PanelVorlage(Daten d, JFrame pparentComponent) {
         daten = d;
@@ -44,8 +43,6 @@ public class PanelVorlage extends JPanel {
     }
 
     public void isShown() {
-        //FIXME Das kann nicht wirklich eine korrekte Sache sein hier...
-        // immer wenn isShown
     }
 
     public void tabelleSpeichern() {

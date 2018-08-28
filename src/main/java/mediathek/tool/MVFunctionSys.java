@@ -68,10 +68,6 @@ public class MVFunctionSys {
         return s;
     }
 
-    public static String pathProgramIcons() {
-        return getPathJar() + Konstanten.VERZEICHNIS_PROGRAMM_ICONS;
-    }
-
     public static String getProgVersionString() {
         return Konstanten.PROGRAMMNAME + ' ' + Konstanten.MVVERSION;
     }
