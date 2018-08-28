@@ -698,6 +698,10 @@ public class MediathekGui extends JFrame {
         return cbkBeschreibung;
     }
 
+    public JCheckBoxMenuItem getDownloadFilmDescriptionMenuItem() {
+        return miShowDownloadDescription;
+    }
+
     /**
      * Handle the install/or remove event sent from settings dialog
      *
@@ -1182,6 +1186,8 @@ public class MediathekGui extends JFrame {
         jMenuItemFilmAbspielen = new JMenuItem();
         jMenuItemFilmAufzeichnen = new JMenuItem();
         jMenuItemBlacklist = new JMenuItem();
+        JSeparator separator1 = new JSeparator();
+        cbkBeschreibung = new JCheckBoxMenuItem();
         jMenuItemFilmeGesehen = new JMenuItem();
         jMenuItemFilmeUngesehen = new JMenuItem();
         jMenuItemFilmeMediensammlung = new JMenuItem();
@@ -1198,6 +1204,7 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadsZurueckstellen = new JMenuItem();
         jMenuItemDownloadsLoeschen = new JMenuItem();
         jMenuItemDownloadAendern = new JMenuItem();
+        miShowDownloadDescription = new JCheckBoxMenuItem();
         jMenuItemDownloadGesehen = new JMenuItem();
         jMenuItemDownloadUngesehen = new JMenuItem();
         jMenuItemDownloadAbspielen = new JMenuItem();
@@ -1213,7 +1220,6 @@ public class MediathekGui extends JFrame {
         jMenuItemAboInvertSelection = new JMenuItem();
         JMenu jMenuAnsicht = new JMenu();
         jCheckBoxMenuItemToolBar = new JCheckBoxMenuItem();
-        cbkBeschreibung = new JCheckBoxMenuItem();
         jCheckBoxMenuItemVideoplayer = new JCheckBoxMenuItem();
         JMenu jMenu1 = new JMenu();
         jMenuItemSchriftGr = new JMenuItem();
@@ -1264,7 +1270,7 @@ public class MediathekGui extends JFrame {
                 jMenuDatei.add(jSeparator2);
 
                 //---- jMenuItemBeenden ----
-                jMenuItemBeenden.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
+                jMenuItemBeenden.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_MASK));
                 jMenuItemBeenden.setText("Beenden");
                 jMenuDatei.add(jMenuItemBeenden);
             }
@@ -1276,33 +1282,39 @@ public class MediathekGui extends JFrame {
                 jMenuFilme.setText("Filme");
 
                 //---- jMenuItemFilmAbspielen ----
-                jMenuItemFilmAbspielen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK));
+                jMenuItemFilmAbspielen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_MASK));
                 jMenuItemFilmAbspielen.setText("Film abspielen");
                 jMenuFilme.add(jMenuItemFilmAbspielen);
 
                 //---- jMenuItemFilmAufzeichnen ----
-                jMenuItemFilmAufzeichnen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
+                jMenuItemFilmAufzeichnen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_MASK));
                 jMenuItemFilmAufzeichnen.setText("Film aufzeichnen");
                 jMenuFilme.add(jMenuItemFilmAufzeichnen);
 
                 //---- jMenuItemBlacklist ----
-                jMenuItemBlacklist.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_DOWN_MASK));
+                jMenuItemBlacklist.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.CTRL_MASK));
                 jMenuItemBlacklist.setText("Blacklist \u00f6ffnen");
                 jMenuFilme.add(jMenuItemBlacklist);
+                jMenuFilme.add(separator1);
+
+                //---- cbkBeschreibung ----
+                cbkBeschreibung.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0));
+                cbkBeschreibung.setText("Beschreibung anzeigen");
+                jMenuFilme.add(cbkBeschreibung);
                 jMenuFilme.addSeparator();
 
                 //---- jMenuItemFilmeGesehen ----
-                jMenuItemFilmeGesehen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
+                jMenuItemFilmeGesehen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_MASK));
                 jMenuItemFilmeGesehen.setText("Filme als gesehen markieren");
                 jMenuFilme.add(jMenuItemFilmeGesehen);
 
                 //---- jMenuItemFilmeUngesehen ----
-                jMenuItemFilmeUngesehen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
+                jMenuItemFilmeUngesehen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_MASK));
                 jMenuItemFilmeUngesehen.setText("Filme als ungesehen markieren");
                 jMenuFilme.add(jMenuItemFilmeUngesehen);
 
                 //---- jMenuItemFilmeMediensammlung ----
-                jMenuItemFilmeMediensammlung.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK));
+                jMenuItemFilmeMediensammlung.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_MASK));
                 jMenuItemFilmeMediensammlung.setText("Titel in der Mediensammlung suchen");
                 jMenuFilme.add(jMenuItemFilmeMediensammlung);
             }
@@ -1332,7 +1344,7 @@ public class MediathekGui extends JFrame {
                 jMenuDownload.add(jMenuItemDownloadWartendeStoppen);
 
                 //---- jMenuItemDownloadsAktualisieren ----
-                jMenuItemDownloadsAktualisieren.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_DOWN_MASK));
+                jMenuItemDownloadsAktualisieren.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_MASK));
                 jMenuItemDownloadsAktualisieren.setText("Liste der Downloads aktualisieren");
                 jMenuDownload.add(jMenuItemDownloadsAktualisieren);
 
@@ -1366,13 +1378,18 @@ public class MediathekGui extends JFrame {
                 jMenuDownload.add(jMenuItemDownloadAendern);
                 jMenuDownload.addSeparator();
 
+                //---- miShowDownloadDescription ----
+                miShowDownloadDescription.setText("Filmbeschreibung anzeigen");
+                jMenuDownload.add(miShowDownloadDescription);
+                jMenuDownload.addSeparator();
+
                 //---- jMenuItemDownloadGesehen ----
-                jMenuItemDownloadGesehen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
+                jMenuItemDownloadGesehen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_MASK));
                 jMenuItemDownloadGesehen.setText("Filme als gesehen markieren");
                 jMenuDownload.add(jMenuItemDownloadGesehen);
 
                 //---- jMenuItemDownloadUngesehen ----
-                jMenuItemDownloadUngesehen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
+                jMenuItemDownloadUngesehen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_MASK));
                 jMenuItemDownloadUngesehen.setText("Filme als ungesehen markieren");
                 jMenuDownload.add(jMenuItemDownloadUngesehen);
 
@@ -1381,7 +1398,7 @@ public class MediathekGui extends JFrame {
                 jMenuDownload.add(jMenuItemDownloadAbspielen);
 
                 //---- jMenuItemDownloadMediensammlung ----
-                jMenuItemDownloadMediensammlung.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK));
+                jMenuItemDownloadMediensammlung.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_MASK));
                 jMenuItemDownloadMediensammlung.setText("Titel in der Mediensammlung suchen");
                 jMenuDownload.add(jMenuItemDownloadMediensammlung);
 
@@ -1437,12 +1454,6 @@ public class MediathekGui extends JFrame {
                 jCheckBoxMenuItemToolBar.setText("Toolbar");
                 jMenuAnsicht.add(jCheckBoxMenuItemToolBar);
 
-                //---- cbkBeschreibung ----
-                cbkBeschreibung.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0));
-                cbkBeschreibung.setForeground(new Color(0, 51, 153));
-                cbkBeschreibung.setText("Beschreibung anzeigen");
-                jMenuAnsicht.add(cbkBeschreibung);
-
                 //---- jCheckBoxMenuItemVideoplayer ----
                 jCheckBoxMenuItemVideoplayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
                 jCheckBoxMenuItemVideoplayer.setText("Buttons anzeigen");
@@ -1453,17 +1464,17 @@ public class MediathekGui extends JFrame {
                     jMenu1.setText("Schriftgr\u00f6\u00dfe");
 
                     //---- jMenuItemSchriftGr ----
-                    jMenuItemSchriftGr.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ADD, KeyEvent.CTRL_DOWN_MASK));
+                    jMenuItemSchriftGr.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ADD, KeyEvent.CTRL_MASK));
                     jMenuItemSchriftGr.setText("vergr\u00f6\u00dfern");
                     jMenu1.add(jMenuItemSchriftGr);
 
                     //---- jMenuItemSchriftKl ----
-                    jMenuItemSchriftKl.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, KeyEvent.CTRL_DOWN_MASK));
+                    jMenuItemSchriftKl.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, KeyEvent.CTRL_MASK));
                     jMenuItemSchriftKl.setText("verkleinern");
                     jMenu1.add(jMenuItemSchriftKl);
 
                     //---- jMenuItemSchriftNormal ----
-                    jMenuItemSchriftNormal.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_0, KeyEvent.CTRL_DOWN_MASK));
+                    jMenuItemSchriftNormal.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_0, KeyEvent.CTRL_MASK));
                     jMenuItemSchriftNormal.setText("Normalgr\u00f6\u00dfe");
                     jMenu1.add(jMenuItemSchriftNormal);
                 }
@@ -1545,14 +1556,14 @@ public class MediathekGui extends JFrame {
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);
         contentPaneLayout.setHorizontalGroup(
-                contentPaneLayout.createParallelGroup()
-                        .addComponent(jPanelCont, GroupLayout.DEFAULT_SIZE, 398, Short.MAX_VALUE)
+            contentPaneLayout.createParallelGroup()
+                .addComponent(jPanelCont, GroupLayout.DEFAULT_SIZE, 398, Short.MAX_VALUE)
         );
         contentPaneLayout.setVerticalGroup(
-                contentPaneLayout.createParallelGroup()
-                        .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(jPanelCont, GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE))
+            contentPaneLayout.createParallelGroup()
+                .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+                    .addGap(6, 6, 6)
+                    .addComponent(jPanelCont, GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE))
         );
         pack();
         setLocationRelativeTo(getOwner());
@@ -1571,6 +1582,7 @@ public class MediathekGui extends JFrame {
     protected JMenuItem jMenuItemFilmAbspielen;
     protected JMenuItem jMenuItemFilmAufzeichnen;
     protected JMenuItem jMenuItemBlacklist;
+    protected JCheckBoxMenuItem cbkBeschreibung;
     private JMenuItem jMenuItemFilmeGesehen;
     private JMenuItem jMenuItemFilmeUngesehen;
     private JMenuItem jMenuItemFilmeMediensammlung;
@@ -1587,6 +1599,7 @@ public class MediathekGui extends JFrame {
     private JMenuItem jMenuItemDownloadsZurueckstellen;
     private JMenuItem jMenuItemDownloadsLoeschen;
     private JMenuItem jMenuItemDownloadAendern;
+    private JCheckBoxMenuItem miShowDownloadDescription;
     private JMenuItem jMenuItemDownloadGesehen;
     private JMenuItem jMenuItemDownloadUngesehen;
     private JMenuItem jMenuItemDownloadAbspielen;
@@ -1601,7 +1614,6 @@ public class MediathekGui extends JFrame {
     private JMenuItem jMenuItemAboNeu;
     private JMenuItem jMenuItemAboInvertSelection;
     private JCheckBoxMenuItem jCheckBoxMenuItemToolBar;
-    protected JCheckBoxMenuItem cbkBeschreibung;
     protected JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
     private JMenuItem jMenuItemSchriftGr;
     private JMenuItem jMenuItemSchriftKl;
