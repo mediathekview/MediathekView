@@ -41,7 +41,7 @@ public class TModel extends DefaultTableModel {
         // liefert die Zeile in der die erste Spalte idx enthält
         // die Indexspalte ist die SPALTE 0!!!!
         int ret = 0;
-        for (List<Integer> list : (Iterable<List<Integer>>) getDataVector()) {
+        for (List<Integer> list : getDataVector()) {
             if (list.get(0) == idxWert) {
                 return ret;
             }

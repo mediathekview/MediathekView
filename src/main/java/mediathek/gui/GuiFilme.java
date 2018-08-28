@@ -24,12 +24,16 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.embed.swing.JFXPanel;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.TabPane;
 import javafx.util.Duration;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Datum;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
@@ -46,6 +50,7 @@ import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.StartEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
+import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererFilme;
@@ -59,6 +64,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.print.PrinterException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -124,17 +130,42 @@ public class GuiFilme extends PanelVorlage {
      */
     private final JFXPanel fxPanel = new JFXPanel();
 
+    private DescriptionPanelController descriptionPanelController;
+
     private void setupDescriptionPanel() {
-        PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten, tabelle, true /*film*/);
-        jPanelBeschreibung.setLayout(new BorderLayout());
-        jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
+        Platform.runLater(() -> {
+            try {
+                URL url = getClass().getResource("/mediathek/res/programm/fxml/filmdescription.fxml");
+
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(url);
+
+                TabPane descriptionPane = loader.load();
+                descriptionPanelController = loader.getController();
+                descriptionPanelController.setOnCloseRequest(e -> {
+                    SwingUtilities.invokeLater(() -> jPanelBeschreibung.setVisible(false));
+                    e.consume();
+                });
+
+                JFXPanel panel = new JFXPanel();
+                panel.setScene(new Scene(descriptionPane));
+                tabelle.getSelectionModel().addListSelectionListener(e -> {
+                    Optional<DatenFilm> optFilm = getCurrentlySelectedFilm();
+                    Platform.runLater(() -> descriptionPanelController.showFilmDescription(optFilm));
+                });
+                SwingUtilities.invokeLater(() -> jPanelBeschreibung.add(panel, BorderLayout.CENTER));
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
     }
 
     /**
      * Show description panel based on settings.
      */
     private void showDescriptionPanel() {
-        jPanelBeschreibung.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN)));
+        jPanelBeschreibung.setVisible(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, true));
     }
 
     @Override
@@ -145,7 +176,6 @@ public class GuiFilme extends PanelVorlage {
 
         updateFilmData();
         setInfoStatusbar();
-        Listener.notify(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
     }
 
     public class FilterFilmAction extends AbstractAction {
@@ -422,12 +452,6 @@ public class GuiFilme extends PanelVorlage {
             public void ping() {
                 tabelle.fireTableDataChanged(true /*setSpalten*/);
                 setInfoStatusbar();
-            }
-        });
-        Listener.addListener(new Listener(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                showDescriptionPanel();
             }
         });
     }
@@ -1187,6 +1211,28 @@ public class GuiFilme extends PanelVorlage {
 
             fap.themaBox.setOnAction(evt -> SwingUtilities.invokeLater(this::reloadTable));
         });
+
+        setupShowFilmDescriptionMenuItem();
+    }
+
+    private void setupShowFilmDescriptionMenuItem() {
+        JCheckBoxMenuItem cbk = ((MediathekGui) parentComponent).getFilmDescriptionMenuItem();
+        cbk.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, true));
+        cbk.addActionListener(l -> jPanelBeschreibung.setVisible(cbk.isSelected()));
+        cbk.addItemListener(e -> ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, cbk.isSelected()));
+        jPanelBeschreibung.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                super.componentShown(e);
+                cbk.setSelected(true);
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                super.componentHidden(e);
+                cbk.setSelected(false);
+            }
+        });
     }
 
     private void setupZeitraumListener() {
@@ -1229,9 +1275,9 @@ public class GuiFilme extends PanelVorlage {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         javax.swing.JTable jTable1 = new javax.swing.JTable();
+        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         jPanelBeschreibung = new javax.swing.JPanel();
         jPanelExtra = new javax.swing.JPanel();
         jCheckBoxProgamme = new javax.swing.JCheckBox();
@@ -1244,16 +1290,12 @@ public class GuiFilme extends PanelVorlage {
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(jTable1);
 
-        javax.swing.GroupLayout jPanelBeschreibungLayout = new javax.swing.GroupLayout(jPanelBeschreibung);
-        jPanelBeschreibung.setLayout(jPanelBeschreibungLayout);
-        jPanelBeschreibungLayout.setHorizontalGroup(
-                jPanelBeschreibungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanelBeschreibungLayout.setVerticalGroup(
-                jPanelBeschreibungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 155, Short.MAX_VALUE)
-        );
+        add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        jPanel2.setLayout(new java.awt.BorderLayout());
+
+        jPanelBeschreibung.setLayout(new java.awt.BorderLayout());
+        jPanel2.add(jPanelBeschreibung, java.awt.BorderLayout.CENTER);
 
         jPanelExtra.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
@@ -1263,56 +1305,40 @@ public class GuiFilme extends PanelVorlage {
         javax.swing.GroupLayout jPanelExtraInnenLayout = new javax.swing.GroupLayout(jPanelExtraInnen);
         jPanelExtraInnen.setLayout(jPanelExtraInnenLayout);
         jPanelExtraInnenLayout.setHorizontalGroup(
-                jPanelExtraInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 597, Short.MAX_VALUE)
+            jPanelExtraInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 597, Short.MAX_VALUE)
         );
         jPanelExtraInnenLayout.setVerticalGroup(
-                jPanelExtraInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 0, Short.MAX_VALUE)
+            jPanelExtraInnenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanelExtraLayout = new javax.swing.GroupLayout(jPanelExtra);
         jPanelExtra.setLayout(jPanelExtraLayout);
         jPanelExtraLayout.setHorizontalGroup(
-                jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanelExtraLayout.createSequentialGroup()
-                                .addComponent(jCheckBoxProgamme)
-                                .addGap(5, 5, 5)
-                                .addComponent(jPanelExtraInnen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(5, 5, 5))
+            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelExtraLayout.createSequentialGroup()
+                .addComponent(jCheckBoxProgamme)
+                .addGap(5, 5, 5)
+                .addComponent(jPanelExtraInnen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(5, 5, 5))
         );
         jPanelExtraLayout.setVerticalGroup(
-                jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanelExtraLayout.createSequentialGroup()
-                                .addGroup(jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanelExtraLayout.createSequentialGroup()
-                                                .addComponent(jCheckBoxProgamme)
-                                                .addGap(0, 0, Short.MAX_VALUE))
-                                        .addGroup(jPanelExtraLayout.createSequentialGroup()
-                                                .addGap(5, 5, 5)
-                                                .addComponent(jPanelExtraInnen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                .addGap(5, 5, 5))
+            jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelExtraLayout.createSequentialGroup()
+                .addGroup(jPanelExtraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelExtraLayout.createSequentialGroup()
+                        .addComponent(jCheckBoxProgamme)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanelExtraLayout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(jPanelExtraInnen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(5, 5, 5))
         );
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanelExtra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 637, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanelExtra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        jPanel2.add(jPanelExtra, java.awt.BorderLayout.SOUTH);
 
-        add(jPanel1, java.awt.BorderLayout.CENTER);
+        add(jPanel2, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

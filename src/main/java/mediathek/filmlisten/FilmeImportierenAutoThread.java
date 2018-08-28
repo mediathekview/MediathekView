@@ -1,12 +1,12 @@
 package mediathek.filmlisten;
 
-import mSearch.Config;
 import mSearch.daten.ListeFilme;
 import mSearch.filmlisten.FilmlistenSuchen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 class FilmeImportierenAutoThread extends Thread {
     private static final Logger logger = LogManager.getLogger(FilmeImportierenAutoThread.class);
@@ -76,11 +76,10 @@ class FilmeImportierenAutoThread extends Thread {
             return false;
         }
 
-        // 5 mal mit einem anderen Server probieren, wenns nicht klappt
-        final int maxRetries = state == FilmListDownloadType.DIFF_ONLY ? 2 : 5; //bei diff nur 2x probieren, dann eine akt-liste laden
+        final int maxRetries = 2;
         for (int i = 0; i < maxRetries; ++i) {
             ret = downloadAction.performDownload(updateUrl, liste, days);
-            if (ret && i < 1 && liste.isOlderThan(5 * 60 * 60 /*sekunden*/)) {
+            if (ret && i < 1 && liste.isOlderThan(TimeUnit.SECONDS.convert(5, TimeUnit.HOURS))) {
                 // Laden hat geklappt ABER: Liste zu alt, dann gibts einen 2. Versuch
                 logger.info("Filmliste zu alt, neuer Versuch");
                 ret = false;
@@ -101,10 +100,6 @@ class FilmeImportierenAutoThread extends Thread {
             }
             versuchteUrls.add(updateUrl);
             // nur wenn nicht abgebrochen, weitermachen
-            if (Config.getStop()) {
-                break;
-            }
-
         }
         return ret;
     }

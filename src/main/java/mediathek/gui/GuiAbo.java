@@ -89,9 +89,7 @@ public class GuiAbo extends PanelVorlage {
     @Override
     public void isShown() {
         super.isShown();
-        if (!solo) {
-            daten.getMediathekGui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.ABO);
-        }
+        daten.getMediathekGui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.ABO);
     }
 
     public void aendern() {

@@ -20,13 +20,14 @@
 package mSearch.daten;
 
 import mSearch.tool.*;
+import mediathek.config.Daten;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.h2.jdbc.JdbcSQLException;
 import org.jetbrains.annotations.NotNull;
-import sun.misc.Cleaner;
 
+import java.lang.ref.Cleaner;
 import java.lang.ref.WeakReference;
 import java.sql.*;
 import java.util.concurrent.CompletableFuture;
@@ -135,7 +136,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
      */
     private int databaseFilmNumber;
     private boolean neuerFilm = false;
-    private Cleaner cleaner = null;
+    private Cleaner.Cleanable cleaner = null;
     /**
      * Future used for writing description into database.
      * Will be checked before each read if finished
@@ -221,7 +222,8 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
 
     private void installCleanupTask() {
         DatenFilmCleanupTask task = new DatenFilmCleanupTask(databaseFilmNumber);
-        cleaner = Cleaner.create(this, task);
+
+        cleaner = Daten.getInstance().getCleaner().register(this, task);
     }
 
     /**

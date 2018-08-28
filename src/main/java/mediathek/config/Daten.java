@@ -58,6 +58,7 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.Cleaner;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -91,11 +92,11 @@ public class Daten {
     private static boolean reset; // Programm auf Starteinstellungen zurücksetzen
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis;
-    private MediathekGui mediathekGui; // JFrame der Gui
     private final MetricRegistry metrics = new MetricRegistry();
     public MVUsedUrls history; // alle angesehenen Filme
     public MVUsedUrls erledigteAbos; // erfolgreich geladenen Abos
     public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
+    private MediathekGui mediathekGui; // JFrame der Gui
     private FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
     private ListeFilme listeFilme;
     private ListeFilme listeFilmeNachBlackList; // ist DIE Filmliste
@@ -111,6 +112,10 @@ public class Daten {
     private boolean alreadyMadeBackup;
     private MBassador<BaseEvent> messageBus;
     private FilmListWriteWorkerTask writerTask;
+    /**
+     * The "garbage collector" mainly for cleaning up {@link mSearch.daten.DatenFilm} objects.
+     */
+    private Cleaner cleaner = Cleaner.create();
 
     private Daten() {
         mediathekGui = null;
@@ -255,6 +260,10 @@ public class Daten {
         cal.set(Calendar.MILLISECOND, 0);
 
         return cal.getTimeInMillis();
+    }
+
+    public Cleaner getCleaner() {
+        return cleaner;
     }
 
     public FutureTask<Void> getWriterTask() {

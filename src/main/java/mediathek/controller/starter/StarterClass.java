@@ -19,7 +19,6 @@
  */
 package mediathek.controller.starter;
 
-import com.apple.eawt.Application;
 import com.jidesoft.utils.SystemInfo;
 import javafx.application.Platform;
 import mSearch.daten.DatenFilm;
@@ -258,7 +257,7 @@ public class StarterClass {
         notifyStartEvent(datenDownload);
 
         if (SystemInfo.isMacOSX() && Daten.getInstance().getMediathekGui() != null) {
-            Application.getApplication().requestUserAttention(false);
+            Taskbar.getTaskbar().requestUserAttention(true,false);
         }
     }
 
