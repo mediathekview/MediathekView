@@ -21,6 +21,10 @@ package mediathek.gui;
 
 import com.jidesoft.utils.SystemInfo;
 import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.TabPane;
 import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
@@ -43,7 +47,7 @@ import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.messages.DownloadRateLimitChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
-import mediathek.javafx.descriptionPanel.FXDescriptionPanel;
+import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
 import mediathek.tool.listener.BeobTableHeader;
@@ -56,11 +60,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.TimerTask;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class GuiDownloads extends PanelVorlage {
@@ -137,6 +139,8 @@ public class GuiDownloads extends PanelVorlage {
 
         setupDescriptionPanel();
 
+        showDescriptionPanel();
+
         init(mediathekGui);
 
         setupFilmSelectionPropertyListener(mediathekGui);
@@ -177,9 +181,35 @@ public class GuiDownloads extends PanelVorlage {
         });
     }
 
+    private DescriptionPanelController descriptionPanelController;
+
     private void setupDescriptionPanel() {
-        FXDescriptionPanel panel = new FXDescriptionPanel(tabelle);
-        jPanelBeschreibung.add(panel, BorderLayout.CENTER);
+        Platform.runLater(() -> {
+            try {
+                URL url = getClass().getResource("/mediathek/res/programm/fxml/filmdescription.fxml");
+
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(url);
+
+                TabPane descriptionPane = loader.load();
+                descriptionPanelController = loader.getController();
+                descriptionPanelController.setOnCloseRequest(e -> {
+                    SwingUtilities.invokeLater(() -> jPanelBeschreibung.setVisible(false));
+                    e.consume();
+                });
+
+                JFXPanel panel = new JFXPanel();
+                panel.setScene(new Scene(descriptionPane));
+                tabelle.getSelectionModel().addListSelectionListener(e -> {
+                    Optional<DatenFilm> optFilm = getCurrentlySelectedFilm();
+                    Platform.runLater(() -> descriptionPanelController.showFilmDescription(optFilm));
+                });
+                SwingUtilities.invokeLater(() -> jPanelBeschreibung.add(panel, BorderLayout.CENTER));
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
     }
 
     @Override
@@ -622,14 +652,33 @@ public class GuiDownloads extends PanelVorlage {
 
     /**
      * Setup and show film description panel.
-     * Most of the setup is done in {@link GuiFilme} function.
+     * Most of the setup is done in {@link GuiDownloads} function.
      * Here we just display the panel
      */
     private void setupShowFilmDescriptionMenuItem() {
-        JCheckBoxMenuItem cbk = ((MediathekGui) parentComponent).getFilmDescriptionMenuItem();
-        cbk.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, true));
+        JCheckBoxMenuItem cbk = ((MediathekGui) parentComponent).getDownloadFilmDescriptionMenuItem();
+        cbk.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, true));
         cbk.addActionListener(l -> jPanelBeschreibung.setVisible(cbk.isSelected()));
-        //most of the setup is done in GuiFilme function.
+        cbk.addItemListener(e -> ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, cbk.isSelected()));
+        jPanelBeschreibung.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                cbk.setSelected(true);
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                cbk.setSelected(false);
+            }
+        });
+    }
+
+
+    /**
+     * Show description panel based on settings.
+     */
+    private void showDescriptionPanel() {
+        jPanelBeschreibung.setVisible(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.DOWNLOAD_SHOW_DESCRIPTION, true));
     }
 
     private synchronized void reloadTable() {
@@ -699,6 +748,16 @@ public class GuiDownloads extends PanelVorlage {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
         return arrayDownloads;
+    }
+
+    private Optional<DatenFilm> getCurrentlySelectedFilm() {
+        final int selectedTableRow = tabelle.getSelectedRow();
+        if (selectedTableRow >= 0) {
+            final DatenDownload download = (DatenDownload) tabelle.getModel().getValueAt(tabelle.convertRowIndexToModel(selectedTableRow), DatenDownload.DOWNLOAD_REF);
+            return Optional.of(download.film);
+        } else {
+            return Optional.empty();
+        }
     }
 
     private DatenDownload getSelDownload() {

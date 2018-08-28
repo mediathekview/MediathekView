@@ -1215,6 +1215,11 @@ public class GuiFilme extends PanelVorlage {
         setupShowFilmDescriptionMenuItem();
     }
 
+    /**
+     * Setup and show film description panel.
+     * Most of the setup is done in {@link GuiFilme} function.
+     * Here we just display the panel
+     */
     private void setupShowFilmDescriptionMenuItem() {
         JCheckBoxMenuItem cbk = ((MediathekGui) parentComponent).getFilmDescriptionMenuItem();
         cbk.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, true));
@@ -1223,13 +1228,11 @@ public class GuiFilme extends PanelVorlage {
         jPanelBeschreibung.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
-                super.componentShown(e);
                 cbk.setSelected(true);
             }
 
             @Override
             public void componentHidden(ComponentEvent e) {
-                super.componentHidden(e);
                 cbk.setSelected(false);
             }
         });

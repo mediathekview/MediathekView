@@ -5,7 +5,7 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {comp jPanelCont::::398:x}"
-			"$verticalGroup": "par l {seq t {space :p:6:p, comp jPanelCont::::248:x}}"
+			"$verticalGroup": "par l {seq t {space :p:6:p, comp jPanelCont::::247:x}}"
 		} ) {
 			name: "this"
 			"defaultCloseOperation": 0
@@ -92,6 +92,20 @@ new FormModel {
 						name: "jMenuItemBlacklist"
 						"accelerator": static javax.swing.KeyStroke getKeyStroke( 66, 130, false )
 						"text": "Blacklist öffnen"
+						auxiliary() {
+							"JavaCodeGenerator.variableModifiers": 4
+						}
+					} )
+					add( new FormComponent( "javax.swing.JSeparator" ) {
+						name: "separator1"
+						auxiliary() {
+							"JavaCodeGenerator.variableLocal": true
+						}
+					} )
+					add( new FormComponent( "javax.swing.JCheckBoxMenuItem" ) {
+						name: "cbkBeschreibung"
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 121, 0, false )
+						"text": "Beschreibung anzeigen"
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -188,6 +202,13 @@ new FormModel {
 							"JavaCodeGenerator.variableLocal": true
 						}
 					} )
+					add( new FormComponent( "javax.swing.JCheckBoxMenuItem" ) {
+						name: "miShowDownloadDescription"
+						"text": "Filmbeschreibung anzeigen"
+					} )
+					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
+						name: "separator2"
+					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "jMenuItemDownloadGesehen"
 						"accelerator": #KeyStroke0
@@ -262,15 +283,6 @@ new FormModel {
 						name: "jCheckBoxMenuItemToolBar"
 						"selected": true
 						"text": "Toolbar"
-					} )
-					add( new FormComponent( "javax.swing.JCheckBoxMenuItem" ) {
-						name: "cbkBeschreibung"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 121, 0, false )
-						"foreground": new java.awt.Color( 0, 51, 153, 255 )
-						"text": "Beschreibung anzeigen"
-						auxiliary() {
-							"JavaCodeGenerator.variableModifiers": 4
-						}
 					} )
 					add( new FormComponent( "javax.swing.JCheckBoxMenuItem" ) {
 						name: "jCheckBoxMenuItemVideoplayer"

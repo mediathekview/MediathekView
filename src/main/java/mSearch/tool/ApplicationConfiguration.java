@@ -56,6 +56,7 @@ public class ApplicationConfiguration {
     public static final String SEARCH_USE_FILM_DESCRIPTIONS = "searchfield.film.search_through_description";
 
     public static final String FILM_SHOW_DESCRIPTION = "film.show_description";
+    public static final String DOWNLOAD_SHOW_DESCRIPTION = "download.show_description";
 
     private static final ApplicationConfiguration ourInstance = new ApplicationConfiguration();
 
