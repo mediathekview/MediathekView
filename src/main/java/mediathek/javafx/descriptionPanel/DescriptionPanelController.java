@@ -52,11 +52,12 @@ public class DescriptionPanelController {
                 }
             });
             //TODO HTML generation code is bad!
+            webEngine.setUserStyleSheetLocation(getClass().getResource("/mediathek/res/css/description.css").toString());
             webEngine.loadContent(
                     "<html>"
-                            + "<span style=\'font-family: Helvetica; font-weight: bold;font-size: 18\'>" + (film.getSender().isEmpty() ? "" : film.getSender() + "  -  ")
+                            + "<span class=\'headline\'>" + (film.getSender().isEmpty() ? "" : film.getSender() + "  -  ")
                             + film.getTitle() + "</span><br/><br/>"
-                            + "<span style=\'font-family: Helvetica; font-size: 16'>" + film.getDescription() + "</span>"
+                            + "<span class=\'description\'>" + film.getDescription() + "</span>"
                             + "</html>");
         }
     }

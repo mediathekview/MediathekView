@@ -1,0 +1,15 @@
+span {
+  font-family: -apple-system, BlinkMacSystemFont,
+    "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+    "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+}
+
+.headline {
+  font-weight: bold;
+  font-size: 1em;
+}
+
+.description {
+  font-size: 0.8em;
+}
