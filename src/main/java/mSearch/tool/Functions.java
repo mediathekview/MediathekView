@@ -125,7 +125,7 @@ public class Functions {
         }
         String s = StringUtils.replace(propFile.getAbsolutePath(), pFilePath, "");
         if (!s.endsWith(File.separator)) {
-            s = s + File.separator;
+            s += File.separator;
         }
         if (s.endsWith("/lib/")) {
             // dann sind wir in der msearch-lib

@@ -23,6 +23,7 @@ import mSearch.tool.Functions;
 import mSearch.tool.GermanStringSorter;
 import mSearch.tool.Log;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 public class MVUsedUrl implements Comparable<MVUsedUrl> {
 
@@ -98,7 +99,7 @@ public class MVUsedUrl implements Comparable<MVUsedUrl> {
     }
 
     @Override
-    public int compareTo(MVUsedUrl arg0) {
+    public int compareTo(@NotNull MVUsedUrl arg0) {
         return sorter.compare(uUrl[USED_URL_TITEL], arg0.uUrl[USED_URL_TITEL]);
     }
 

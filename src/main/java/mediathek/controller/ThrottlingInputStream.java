@@ -1,6 +1,7 @@
 package mediathek.controller;
 
 import com.google.common.util.concurrent.RateLimiter;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,13 +26,13 @@ public class ThrottlingInputStream extends InputStream {
     }
 
     @Override
-    public int read(byte[] b) throws IOException {
+    public int read(@NotNull byte[] b) throws IOException {
         maxBytesPerSecond.acquire(b.length);
         return target.read(b);
     }
 
     @Override
-    public int read(byte[] b, int off, int len) throws IOException {
+    public int read(@NotNull byte[] b, int off, int len) throws IOException {
         maxBytesPerSecond.acquire(len);
         return target.read(b, off, len);
     }

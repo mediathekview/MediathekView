@@ -46,7 +46,7 @@ public class MVUsedUrls {
         this.settingsDir = settingsDir;
         this.notifyEvent = notifyEvent;
         listeUrlsSortDate = new LinkedList<>();
-        listeUrls = new HashSet<String>() {
+        listeUrls = new HashSet<>() {
             @Override
             public void clear() {
                 listeUrlsSortDate.clear();

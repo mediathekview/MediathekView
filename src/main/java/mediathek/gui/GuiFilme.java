@@ -536,14 +536,14 @@ public class GuiFilme extends PanelVorlage {
             saveFilm(pSet);
         } else {
             // mit dem flvstreamer immer nur einen Filme starten
-            String aufloesung = "";
+            final String aufloesung;
             if (fap.showOnlyHd.getValue()) {
                 aufloesung = DatenFilm.AUFLOESUNG_HD;
-            }
+            } else
+                aufloesung = "";
+
             Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
-            if (filmSelection.isPresent()) {
-                daten.starterClass.urlMitProgrammStarten(pSet, filmSelection.get(), aufloesung);
-            }
+            filmSelection.ifPresent(film -> daten.starterClass.urlMitProgrammStarten(pSet, film, aufloesung));
         }
     }
 
@@ -756,7 +756,6 @@ public class GuiFilme extends PanelVorlage {
                 tabelle.setRowSelectionInterval(nr, nr);
             }
 
-            Optional<DatenFilm> res = getFilm(nr);
             JPopupMenu jPopupMenu = new JPopupMenu();
 
             //Thema laden
@@ -775,6 +774,7 @@ public class GuiFilme extends PanelVorlage {
             JMenuItem itemAboMitTitel = new JMenuItem("Abo mit Sender und Thema und Titel anlegen");
             JMenuItem itemChangeAboFilter = new JMenuItem("Abo ändern");
 
+            Optional<DatenFilm> res = getFilm(nr);
             res.ifPresent(film -> {
                 if ((daten.getListeAbo().getAboFuerFilm_schnell(film, false /*die Länge nicht prüfen*/)) != null) {
                     //gibts schon, dann löschen
@@ -860,9 +860,8 @@ public class GuiFilme extends PanelVorlage {
             submenueBlack.add(jCheckBoxBlackBoxStart);
 
             //Url
-            if (res.isPresent()) {
+            res.ifPresent(film -> {
                 JMenuItem item;
-                final DatenFilm film = res.get();
                 String uNormal = film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_NORMAL);
                 String uHd = film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_HD);
                 String uLow = film.getUrlFuerAufloesung(DatenFilm.AUFLOESUNG_KLEIN);
@@ -924,7 +923,7 @@ public class GuiFilme extends PanelVorlage {
                     item.addActionListener(e -> GuiFunktionen.copyToClipboard(film.getUrlSubtitle()));
                     jPopupMenu.add(item);
                 }
-            }
+            });
 
             //##Trenner##
             jPopupMenu.addSeparator();

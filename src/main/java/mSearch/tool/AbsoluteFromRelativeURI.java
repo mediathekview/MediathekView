@@ -120,8 +120,8 @@ public class AbsoluteFromRelativeURI {
             if (currentChar == ' ') {
                 buf.setCharAt(i, '%');
                 buf.insert(i + 1, "20");
-                length = length + 2;
-                i = i + 2;
+                length += 2;
+                i += 2;
             } // Replace backslash with forward slash
             else if (currentChar == '\\') {
                 buf.setCharAt(i, '/');

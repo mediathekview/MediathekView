@@ -250,9 +250,9 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                     File f = new File(pfad);
                     if (!f.canRead()) {
                         if (!error.isEmpty()) {
-                            error = error + '\n';
+                            error += '\n';
                         }
-                        error = error + f.getPath();
+                        error += f.getPath();
                     }
                     if (!error.isEmpty()) {
                         // Verzeichnisse können nicht durchsucht werden
@@ -268,10 +268,10 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                         File f = new File(mp.arr[DatenMediaPath.MEDIA_PATH_PATH]);
                         if (!f.canRead()) {
                             if (!error.isEmpty()) {
-                                error = error + '\n';
+                                error += '\n';
                                 more = true;
                             }
-                            error = error + f.getPath();
+                            error += f.getPath();
                         }
                     }
                     if (!error.isEmpty()) {

@@ -67,7 +67,7 @@ public class FilenameUtils {
                 str = str.replaceFirst(splitChar, ""); // wieder Regex
             }
             if (ret.endsWith(File.separator)) {
-                str = str + File.separator;
+                str += File.separator;
             }
             ret = str;
         } else {
@@ -77,7 +77,7 @@ public class FilenameUtils {
         if (isWindowsPath) {
             // c: wieder herstellen
             if (ret.length() == 1) {
-                ret = ret + ":";
+                ret += ":";
             } else if (ret.length() > 1) {
                 ret = ret.charAt(0) + ":" + ret.substring(1);
             }
@@ -344,7 +344,7 @@ public class FilenameUtils {
         if (isWindowsPath) {
             // c: wieder herstellen
             if (ret.length() == 1) {
-                ret = ret + ":";
+                ret += ":";
             } else if (ret.length() > 1) {
                 ret = ret.charAt(0) + ":" + ret.substring(1);
             }

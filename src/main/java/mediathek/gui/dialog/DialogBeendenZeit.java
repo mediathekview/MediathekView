@@ -117,7 +117,7 @@ public class DialogBeendenZeit extends JDialog {
         if (!MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT).isEmpty()) {
             try {
                 String heute = new SimpleDateFormat("yyyyMMdd").format(new Date());
-                heute = heute + MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT);
+                heute += MVConfig.get(MVConfig.Configs.SYSTEM_DIALOG_DOWNLOAD_STARTEN_ZEIT);
                 Date start = new SimpleDateFormat("yyyyMMddHH:mm").parse(heute);
 
                 if (start.after(startDate)) {
@@ -257,7 +257,7 @@ public class DialogBeendenZeit extends JDialog {
         setTextWait();
         glassPane.setVisible(true);
 
-        downloadMonitorWorker = new SwingWorker<Void, Void>() {
+        downloadMonitorWorker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
                 while ((((Date) jSpinnerTime.getValue())).after(new Date())) {
