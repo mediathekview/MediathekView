@@ -25,7 +25,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.HBox;
-import mSearch.Config;
 import mSearch.daten.ListeFilme;
 import mSearch.filmlisten.writer.FilmListWriter;
 import mSearch.tool.Listener;

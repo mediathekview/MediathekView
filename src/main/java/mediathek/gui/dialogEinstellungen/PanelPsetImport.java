@@ -20,8 +20,8 @@
 package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.Config;
 import mSearch.tool.Log;
+import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.daten.ListePset;
