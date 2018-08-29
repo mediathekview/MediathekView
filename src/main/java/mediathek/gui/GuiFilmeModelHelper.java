@@ -6,6 +6,7 @@ import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mediathek.config.Daten;
 import mediathek.javafx.filterpanel.FilmActionPanel;
+import mediathek.javafx.filterpanel.FilmLengthSlider;
 import mediathek.tool.Filter;
 import mediathek.tool.TModel;
 import mediathek.tool.TModelFilm;
@@ -79,7 +80,7 @@ public class GuiFilmeModelHelper {
                 && getFilterThema().isEmpty()
                 && fap.roSearchStringProperty.getValueSafe().isEmpty()
                 && ((int) fap.filmLengthSlider.getLowValue() == 0)
-                && ((int) fap.filmLengthSlider.getHighValue() == FilmActionPanel.UNLIMITED_VALUE)
+                && ((int) fap.filmLengthSlider.getHighValue() == FilmLengthSlider.UNLIMITED_VALUE)
                 && !fap.dontShowAbos.getValue()
                 && !fap.showUnseenOnly.getValue()
                 && !fap.showOnlyHd.getValue()
@@ -136,7 +137,7 @@ public class GuiFilmeModelHelper {
             if (filmLength < minLengthInSeconds)
                 continue;
 
-            if (maxLength < FilmActionPanel.UNLIMITED_VALUE) {
+            if (maxLength < FilmLengthSlider.UNLIMITED_VALUE) {
                 if (filmLength > maxLengthInSeconds)
                     continue;
 
