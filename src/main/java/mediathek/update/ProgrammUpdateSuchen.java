@@ -75,7 +75,7 @@ public class ProgrammUpdateSuchen {
                             alert.setTitle(Konstanten.PROGRAMMNAME);
                             alert.setHeaderText(UPDATE_SEARCH_TITLE);
                             alert.setContentText("Sie benutzen die neueste Version von MediathekView.");
-                            alert.showAndWait();
+                            alert.show();
                         });
                     }
                 }
