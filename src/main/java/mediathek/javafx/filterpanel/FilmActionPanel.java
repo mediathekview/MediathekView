@@ -7,9 +7,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -18,7 +16,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
-import javafx.util.StringConverter;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.ApplicationConfiguration;
@@ -54,7 +51,6 @@ import java.util.stream.Collectors;
  * search is exposed via a readonly property for filtering in GuiFilme.
  */
 public class FilmActionPanel {
-    public final static int UNLIMITED_VALUE = 110;
     private static final String PROMPT_THEMA_TITEL = "Thema/Titel";
     private static final String PROMPT_IRGENDWO = "Thema/Titel/Beschreibung";
     private final PopOver filterPopover;
@@ -473,25 +469,7 @@ public class FilmActionPanel {
         vb2.getChildren().add(hb);
         vb2.getChildren().add(hb2);
 
-        filmLengthSlider = new RangeSlider(0, UNLIMITED_VALUE, 0, UNLIMITED_VALUE);
-        filmLengthSlider.setShowTickMarks(true);
-        filmLengthSlider.setShowTickLabels(true);
-        filmLengthSlider.setBlockIncrement(1);
-        filmLengthSlider.setMajorTickUnit(10);
-        filmLengthSlider.setLabelFormatter(new StringConverter<Number>() {
-            @Override
-            public String toString(Number object) {
-                if (object.intValue() == UNLIMITED_VALUE)
-                    return "∞";
-                else
-                    return String.valueOf(object.intValue());
-            }
-
-            @Override
-            public Number fromString(String string) {
-                return Double.parseDouble(string);
-            }
-        });
+        filmLengthSlider = new FilmLengthSlider();
 
         lblMin.setText(String.valueOf((int) filmLengthSlider.getLowValue()));
         lblMax.setText(filmLengthSlider.getLabelFormatter().toString(filmLengthSlider.getHighValue()));
@@ -508,17 +486,9 @@ public class FilmActionPanel {
 
     private Node createZeitraumPane() {
         Label zeitraum = new Label("Zeitraum:");
-        ObservableList<String> months = FXCollections.observableArrayList("∞");
-        for (int i = 1; i <= 30; i++)
-            months.add(String.valueOf(i));
 
-        SpinnerValueFactory<String> valueFactory = new SpinnerValueFactory.ListSpinnerValueFactory<>(months);
 
-        valueFactory.setValue("∞");
-
-        zeitraumSpinner = new Spinner<>();
-        zeitraumSpinner.setValueFactory(valueFactory);
-        zeitraumSpinner.setEditable(false);
+        zeitraumSpinner = new ZeitraumSpinner();
         zeitraumProperty = zeitraumSpinner.valueProperty();
 
         Label days = new Label("Tage");

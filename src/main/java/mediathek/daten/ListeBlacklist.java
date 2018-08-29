@@ -27,6 +27,7 @@ import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
+import mediathek.javafx.filterpanel.ZeitraumSpinner;
 import mediathek.tool.Filter;
 
 import java.util.ArrayList;
@@ -221,7 +222,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
     private void loadCurrentFilterSettings() {
         try {
             final String val = Daten.getInstance().getMediathekGui().tabFilme.fap.zeitraumProperty.getValue();
-            if (val.equals("∞"))
+            if (val.equals(ZeitraumSpinner.UNLIMITED_VALUE))
                 days = 0;
             else {
                 final long max = 1000L * 60L * 60L * 24L * Integer.parseInt(val);
