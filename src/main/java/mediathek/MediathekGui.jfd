@@ -49,6 +49,7 @@ new FormModel {
 						"accelerator": static javax.swing.KeyStroke getKeyStroke( 115, 0, false )
 						"text": "Einstellungen"
 						"toolTipText": "allgemeine Programmeinstellungen"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/programm/menue-einstellungen.png" )
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
@@ -266,6 +267,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "jMenuItemAboNeu"
 						"text": "neues Abo anlegen"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/programm/menue-abo-neu.png" )
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "jMenuItemAboInvertSelection"
