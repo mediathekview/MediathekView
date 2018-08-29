@@ -118,7 +118,7 @@ public class PanelMediaDB extends PanelVorlage {
             daten.getListeMediaDB().createMediaDB("");
         });
         btnDel.addActionListener(l -> {
-            int ret = MVMessageDialog.showConfirmDialog(parentComponent, "Auch die Medien aus externen Laufwerken löschen?", "Löschen", JOptionPane.YES_NO_CANCEL_OPTION);
+            final int ret = JOptionPane.showConfirmDialog(parentComponent, "Auch die Medien aus externen Laufwerken löschen?", "Löschen", JOptionPane.YES_NO_CANCEL_OPTION);
             if (ret == JOptionPane.YES_OPTION) {
                 //alles löschen
                 daten.getListeMediaDB().delList(false);

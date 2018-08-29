@@ -374,9 +374,7 @@ public class DirectHttpDownload extends Thread {
                     exMessage = ex.getLocalizedMessage();
                     Log.errorLog(316598941, ex, "Fehler");
                     start.status = Start.STATUS_ERR;
-                    if (!Daten.isAuto()) {
                         SwingUtilities.invokeLater(() -> new MeldungDownloadfehler(Daten.getInstance().getMediathekGui(), exMessage, datenDownload).setVisible(true));
-                    }
                 }
             }
         }
@@ -407,14 +405,12 @@ public class DirectHttpDownload extends Thread {
     }
 
     private void displayErrorDialog() {
-        if (!Daten.isAuto()) {
             //i really don´t know why maxRestarts/2 has to be used...but it works now
             if (!(start.countRestarted < maxRestarts / 2)) {
                 SwingUtilities.invokeLater(() -> new MeldungDownloadfehler(Daten.getInstance().getMediathekGui(), "URL des Films:\n"
                         + datenDownload.arr[DatenDownload.DOWNLOAD_URL] + "\n\n"
                         + responseCode + '\n', datenDownload).setVisible(true));
             }
-        }
     }
 
     private void printTimeoutMessage(final int restartCount) {
@@ -427,9 +423,6 @@ public class DirectHttpDownload extends Thread {
         if (!file.exists()) {
             // dann ist alles OK
             return false;
-        }
-        if (Daten.isAuto()) {
-            return false; // immer überschreiben, keine GUI!!!
         }
 
         dialogAbbrechenIsVis = true;
