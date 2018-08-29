@@ -19,7 +19,6 @@
  */
 package mediathek.config;
 
-import com.codahale.metrics.MetricRegistry;
 import com.jidesoft.utils.SystemInfo;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
@@ -91,7 +90,6 @@ public class Daten {
     private static boolean reset; // Programm auf Starteinstellungen zurücksetzen
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis;
-    private final MetricRegistry metrics = new MetricRegistry();
     public MVUsedUrls history; // alle angesehenen Filme
     public MVUsedUrls erledigteAbos; // erfolgreich geladenen Abos
     public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
@@ -259,13 +257,6 @@ public class Daten {
 
     public FutureTask<Void> getWriterTask() {
         return writerTask;
-    }
-
-    /**
-     * Return the DropWizard metrics instance used for performance measurement.
-     */
-    public MetricRegistry getMetricRegistry() {
-        return metrics;
     }
 
     public MBassador<BaseEvent> getMessageBus() {
