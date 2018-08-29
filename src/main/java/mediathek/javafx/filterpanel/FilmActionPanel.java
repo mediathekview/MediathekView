@@ -96,11 +96,13 @@ public class FilmActionPanel {
      */
     private SuggestionProvider<String> themaSuggestionProvider;
     private ToggleButton btnSearchThroughDescription;
+    private PopOver popover;
 
     public FilmActionPanel(Daten daten) {
         this.daten = daten;
 
         filterPopover = createFilterPopover();
+        createFilterButton();
 
         restoreConfigSettings();
 
@@ -316,38 +318,10 @@ public class FilmActionPanel {
         btnSearchThroughDescription.setTooltip(TOOLTIP_SEARCH_IRGENDWO);
     }
 
-    private Parent createRight() {
-        setupSearchField();
-
-        HBox hb = new HBox();
-        hb.setPadding(new Insets(5, 5, 5, 5));
-        hb.setSpacing(4);
-        hb.setAlignment(Pos.CENTER_RIGHT);
-
+    private void createFilterButton() {
         btnNewFilter = new Button("", fontAwesome.create(FontAwesome.Glyph.FILTER));
         btnNewFilter.setTooltip(new Tooltip("Filtereinstellungen anzeigen"));
         btnNewFilter.setOnAction(e -> filterPopover.show(btnNewFilter));
-
-        setupSearchThroughDescriptionButton();
-
-        hb.getChildren().addAll(btnNewFilter,
-                new VerticalSeparator(),
-                jfxSearchField,
-                btnSearchThroughDescription);
-
-        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
-            @Override
-            public void start(ListenerFilmeLadenEvent event) {
-                setupRightButtons(true);
-            }
-
-            @Override
-            public void fertig(ListenerFilmeLadenEvent event) {
-                setupRightButtons(false);
-            }
-        });
-
-        return hb;
     }
 
     private void setupRightButtons(boolean disabled) {
@@ -459,6 +433,7 @@ public class FilmActionPanel {
         senderList = new CheckListView<>(daten.getListeFilmeNachBlackList().getSenders());
         senderList.setPrefHeight(150d);
         senderList.setMinHeight(100d);
+
         vb.getChildren().addAll(
                 new Label("Sender:"),
                 senderList);
@@ -555,7 +530,7 @@ public class FilmActionPanel {
     }
 
     private PopOver createFilterPopover() {
-        PopOver popover = new PopOver();
+        popover = new PopOver();
         popover.setTitle("Filter");
         popover.setAnimated(true);
         popover.setCloseButtonEnabled(true);
@@ -568,6 +543,7 @@ public class FilmActionPanel {
         vb.setSpacing(4.0);
         vb.setPadding(new Insets(5, 5, 5, 5));
         vb.getChildren().add(createCommonViewSettingsPane());
+
         popover.setContentNode(vb);
 
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
@@ -587,11 +563,31 @@ public class FilmActionPanel {
     }
 
     public Scene getFilmActionPanelScene() {
-        HBox hb = new HBox();
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-        hb.getChildren().addAll(createLeft(), spacer, createRight());
 
-        return new Scene(hb);
+        setupSearchField();
+
+        setupSearchThroughDescriptionButton();
+
+        daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
+            @Override
+            public void start(ListenerFilmeLadenEvent event) {
+                setupRightButtons(true);
+            }
+
+            @Override
+            public void fertig(ListenerFilmeLadenEvent event) {
+                setupRightButtons(false);
+            }
+        });
+
+        javafx.scene.control.ToolBar toolBar = new javafx.scene.control.ToolBar();
+        toolBar.getItems().addAll(createLeft(),
+                spacer,
+                btnNewFilter,
+                jfxSearchField,
+                btnSearchThroughDescription);
+        return new Scene(toolBar);
     }
 }
