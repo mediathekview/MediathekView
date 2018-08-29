@@ -130,7 +130,7 @@ public class TextCopyPaste extends MouseAdapter {
             int nx = e.getX();
 
             if (nx > 500) {
-                nx = nx - popup.getSize().width;
+                nx -= popup.getSize().width;
             }
 
             popup.show(e.getComponent(), nx, e.getY() - popup.getSize().height);

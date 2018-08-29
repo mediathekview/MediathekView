@@ -37,8 +37,6 @@ public class BackgroundTaskAlert {
     }
 
     private void closeBackgroundTaskAlert() {
-        waitAlert.ifPresent((alert) -> {
-            Platform.runLater(alert::hide);
-        });
+        waitAlert.ifPresent((alert) -> Platform.runLater(alert::hide));
     }
 }

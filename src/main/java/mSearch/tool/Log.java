@@ -139,7 +139,7 @@ public class Log {
             max++;
             for (Error e : fehlerListe) {
                 while (e.cl.length() < max) {
-                    e.cl = e.cl + ' ';
+                    e.cl += ' ';
                 }
             }
             for (int i = 1; i < fehlerListe.size(); ++i) {

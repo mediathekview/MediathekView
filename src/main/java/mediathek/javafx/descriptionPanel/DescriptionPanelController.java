@@ -32,12 +32,7 @@ public class DescriptionPanelController {
     private EventHandler<Event> closeHandler;
 
     public void showFilmDescription(@NotNull Optional<DatenFilm> optFilm) {
-        if (!optFilm.isPresent()) {
-            webEngine.loadContent("");
-            websiteLink.setTooltip(null);
-            websiteLink.setVisible(false);
-        } else {
-            DatenFilm film = optFilm.get();
+        optFilm.ifPresentOrElse(film -> {
             websiteLink.setVisible(true);
             websiteLink.setVisited(false);
             websiteLink.setTooltip(new Tooltip(film.getWebsiteLink()));
@@ -59,7 +54,11 @@ public class DescriptionPanelController {
                             + film.getTitle() + "</span><br/><br/>"
                             + "<span class=\'description\'>" + film.getDescription() + "</span>"
                             + "</html>");
-        }
+        }, () -> {
+            webEngine.loadContent("");
+            websiteLink.setTooltip(null);
+            websiteLink.setVisible(false);
+        });
     }
 
     public void setOnCloseRequest(EventHandler<Event> e) {

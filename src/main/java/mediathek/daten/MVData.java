@@ -20,6 +20,7 @@
 package mediathek.daten;
 
 import mSearch.tool.GermanStringSorter;
+import org.jetbrains.annotations.NotNull;
 
 public class MVData<E> implements Comparable<E> {
 
@@ -43,7 +44,7 @@ public class MVData<E> implements Comparable<E> {
     }
 
     @Override
-    public int compareTo(E o) {
+    public int compareTo(@NotNull E o) {
         return 0;
     }
 

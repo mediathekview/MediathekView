@@ -55,9 +55,7 @@ public class BlacklistButton extends Button {
             public void ping() {
                 //config was changed outside
                 final boolean on = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON));
-                Platform.runLater(() -> {
-                    activeProperty.setValue(on);
-                });
+                Platform.runLater(() -> activeProperty.setValue(on));
             }
         });
 

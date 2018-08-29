@@ -20,6 +20,7 @@
 package mediathek.tool;
 
 import mSearch.tool.Log;
+import org.jetbrains.annotations.NotNull;
 
 public class MVFilmSize implements Comparable<MVFilmSize> {
 
@@ -31,7 +32,7 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
     }
 
     @Override
-    public int compareTo(MVFilmSize ll) {
+    public int compareTo(@NotNull MVFilmSize ll) {
         return (sizeL.compareTo(ll.sizeL));
     }
 
@@ -49,7 +50,7 @@ public class MVFilmSize implements Comparable<MVFilmSize> {
         } else {
             try {
                 sizeL = Long.valueOf(size);
-                sizeL = sizeL * 1000 * 1000;
+                sizeL *= 1000 * 1000;
                 sizeStr = size;
             } catch (Exception ex) {
                 Log.errorLog(978745320, ex, "String: " + size);

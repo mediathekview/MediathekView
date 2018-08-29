@@ -210,7 +210,7 @@ public class DialogBeenden extends JDialog {
             onlyRunningDownloads = false;
         }
 
-        downloadMonitorWorker = new SwingWorker<Void, Void>() {
+        downloadMonitorWorker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
                 while ((Daten.getInstance().getListeDownloads().nochNichtFertigeDownloads() > 0) && !isCancelled()) {

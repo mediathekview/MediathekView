@@ -19,6 +19,8 @@
  */
 package mediathek.tool;
 
+import org.jetbrains.annotations.NotNull;
+
 public class MVMediaDBFileSize implements Comparable<MVMediaDBFileSize> {
 
     public Long sizeL = 0L;
@@ -30,7 +32,7 @@ public class MVMediaDBFileSize implements Comparable<MVMediaDBFileSize> {
     }
 
     @Override
-    public int compareTo(MVMediaDBFileSize ll) {
+    public int compareTo(@NotNull MVMediaDBFileSize ll) {
         return (sizeL.compareTo(ll.sizeL));
     }
 

@@ -55,13 +55,8 @@ public class ProgrammUpdateSuchen {
     public void checkVersion(boolean anzeigen, boolean showProgramInformation, boolean showAllInformation) {
         // prüft auf neue Version, aneigen: wenn true, dann AUCH wenn es keine neue Version gibt ein Fenster
         Optional<ServerProgramInformation> opt = retrieveProgramInformation();
-        if (!opt.isPresent()) {
-            logger.warn("did not receive ServerProgramInformation");
-            Exception ex = new RuntimeException("Did not receive ServerProgramInformation");
-            Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, UPDATE_SEARCH_TITLE, UPDATE_ERROR_MESSAGE, ex));
-        } else {
+        opt.ifPresentOrElse(progInfo -> {
             // Update-Info anzeigen
-            final ServerProgramInformation progInfo = opt.get();
             SwingUtilities.invokeLater(() -> {
                 if (showProgramInformation)
                     showProgramInformation(showAllInformation);
@@ -85,7 +80,11 @@ public class ProgrammUpdateSuchen {
                     }
                 }
             });
-        }
+        }, () -> {
+            logger.warn("did not receive ServerProgramInformation");
+            Exception ex = new RuntimeException("Did not receive ServerProgramInformation");
+            Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, UPDATE_SEARCH_TITLE, UPDATE_ERROR_MESSAGE, ex));
+        });
     }
 
     private void displayInfoMessages(boolean showAll) {
