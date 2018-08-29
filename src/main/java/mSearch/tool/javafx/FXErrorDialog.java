@@ -7,13 +7,14 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Modality;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 public class FXErrorDialog {
-    public static void showErrorDialog(String title, String header, String detailedErrorMessage, Exception ex) {
+    public static void showErrorDialog(String title, String header, String detailedErrorMessage, @NotNull Exception ex) {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(title);
