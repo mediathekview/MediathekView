@@ -229,12 +229,7 @@ public class ExternalProgramDownload extends Thread
             exMessage = ex.getLocalizedMessage();
             Log.errorLog(395623710, ex);
             SwingUtilities.invokeLater(() ->
-            {
-                if (!Daten.isAuto())
-                {
-                    new MeldungDownloadfehler(Daten.getInstance().getMediathekGui(), exMessage, datenDownload).setVisible(true);
-                }
-            });
+                    new MeldungDownloadfehler(Daten.getInstance().getMediathekGui(), exMessage, datenDownload).setVisible(true));
         }
         finalizeDownload(datenDownload, start, state);
         daten.getMessageBus().publish(new DownloadFinishedEvent());
@@ -267,20 +262,6 @@ public class ExternalProgramDownload extends Thread
         {
             // dann ist alles OK
             return false;
-        }
-        if (Daten.isAuto())
-        {
-            // dann mit gleichem Namen und Datei vorher löschen
-            try
-            {
-                Files.deleteIfExists(file.toPath());
-                file = new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
-            } catch (IOException ex)
-            {
-                // kann nicht gelöscht werden, evtl. klappt ja das Überschreiben
-                Log.errorLog(795623145, ex, "file exists: " + datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]);
-            }
-            return false; //auf keinen Fall den Dialog starten :)
         }
 
         dialogAbbrechenIsVis = true;

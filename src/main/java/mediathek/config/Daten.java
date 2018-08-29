@@ -88,7 +88,6 @@ public class Daten {
     private static Daten instance;
     // flags
     private static boolean startMaximized; // Fenster maximieren
-    private static boolean auto; // Version: MediathekAuto
     private static boolean reset; // Programm auf Starteinstellungen zurücksetzen
     // Verzeichnis zum Speichern der Programmeinstellungen
     private static String basisverzeichnis;
@@ -115,7 +114,7 @@ public class Daten {
     /**
      * The "garbage collector" mainly for cleaning up {@link mSearch.daten.DatenFilm} objects.
      */
-    private Cleaner cleaner = Cleaner.create();
+    private final Cleaner cleaner = Cleaner.create();
 
     private Daten() {
         mediathekGui = null;
@@ -133,14 +132,6 @@ public class Daten {
 
     public static void setStartMaximized(final boolean aIsStartMaximized) {
         startMaximized = aIsStartMaximized;
-    }
-
-    public static boolean isAuto() {
-        return auto;
-    }
-
-    public static void setAuto(final boolean aIsAuto) {
-        auto = aIsAuto;
     }
 
     public static boolean isReset() {

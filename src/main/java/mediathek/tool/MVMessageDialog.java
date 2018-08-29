@@ -1,9 +1,9 @@
-/*    
+/*
  *    MediathekView
  *    Copyright (C) 2008   W. Xaver
  *    W.Xaver[at]googlemail.com
  *    http://zdfmediathk.sourceforge.net/
- *    
+ *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
@@ -19,31 +19,16 @@
  */
 package mediathek.tool;
 
-import java.awt.Component;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import mediathek.config.Daten;
+import javax.swing.*;
+import java.awt.*;
 
 public class MVMessageDialog {
 
     public static void showMessageDialog(final Component parent, final String message, final String title, final int messageType) {
-        if (!Daten.getInstance().isAuto()) {
-            if (SwingUtilities.isEventDispatchThread()) {
-                JOptionPane.showMessageDialog(parent, message, title, messageType);
-            } else {
-                SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(parent, message, title, messageType));
-            }
-        }
-
-    }
-
-    public static int showConfirmDialog(Component parentComponent, Object message, String title, int optionType) {
-        final int ret;
-        if (!Daten.getInstance().isAuto()) {
-            ret = JOptionPane.showConfirmDialog(parentComponent, message, title, optionType);
+        if (SwingUtilities.isEventDispatchThread()) {
+            JOptionPane.showMessageDialog(parent, message, title, messageType);
         } else {
-            ret = 0;
+            SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(parent, message, title, messageType));
         }
-        return ret;
     }
 }
