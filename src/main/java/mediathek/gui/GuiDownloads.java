@@ -161,8 +161,6 @@ public class GuiDownloads extends PanelVorlage {
         toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_DOWNLOADS);
         add(toolBar, BorderLayout.NORTH);
 
-        setToolbarVisible();
-
         setupDownloadRateLimitSpinner();
     }
 
@@ -277,13 +275,6 @@ public class GuiDownloads extends PanelVorlage {
 
     public void invertSelection() {
         tabelle.invertSelection();
-    }
-
-    //===================================
-    //private
-    //===================================
-    private void setToolbarVisible() {
-        toolBar.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
     }
 
     private void setupKeyMappings() {
@@ -594,12 +585,6 @@ public class GuiDownloads extends PanelVorlage {
         //register message bus handler
         daten.getMessageBus().subscribe(this);
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_TOOLBAR_VIS, GuiDownloads.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setToolbarVisible();
-            }
-        });
         Listener.addListener(new Listener(Listener.EREIGNIS_BLACKLIST_GEAENDERT, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {

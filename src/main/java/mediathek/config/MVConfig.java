@@ -110,7 +110,6 @@ public class MVConfig {
         SYSTEM_ICON_STANDARD("Icon-Standard", Boolean.TRUE.toString()),
         SYSTEM_ICON_PFAD("Icon-Pfad"),
         SYSTEM_BREITE_MELDUNGEN("breite-Meldungen"),
-        SYSTEM_TOOLBAR_ALLES_ANZEIGEN("Toolbar-Alles-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_TOOLBAR_ALLES("Toolbar-Alles"),
         SYSTEM_TOOLBAR_DOWNLOAD_EXTERN("Toolbar-Download-Extern"),
         SYSTEM_TOOLBAR_ABO_EXTERN("Toolbar-Abo-Extern"),

@@ -61,7 +61,7 @@ public class StartupProgressPanel extends JFXPanel {
 
         progress.setMaxSize(256, 256);
         rootPane.setCenter(progress);
-        rootPane.setStyle("-fx-background-color: white");
+        rootPane.setStyle("-fx-background-color: black");
         rootPane.setOpacity(0.3);
 
         return scene;

@@ -34,7 +34,6 @@ import mSearch.daten.DatenFilm;
 import mSearch.daten.PooledDatabaseConnection;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.filmlisten.FilmlistenSuchen;
 import mSearch.tool.*;
 import mSearch.tool.Functions.OperatingSystemType;
 import mediathek.config.Daten;
@@ -44,12 +43,8 @@ import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.ListeMediaDB;
-import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.*;
-import mediathek.gui.actions.CreateProtocolFileAction;
-import mediathek.gui.actions.ResetSettingsAction;
-import mediathek.gui.actions.ShowBlacklistDialogAction;
-import mediathek.gui.actions.ShowOnlineHelpAction;
+import mediathek.gui.actions.*;
 import mediathek.gui.actions.export.FilmListExportAction;
 import mediathek.gui.bandwidth.IBandwidthMonitor;
 import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
@@ -222,7 +217,7 @@ public class MediathekGui extends JFrame {
 
         splashScreenManager.closeSplashScreen();
 
-        setupConsoleReporter();
+        //setupConsoleReporter();
 
         loadFilmlist();
     }
@@ -744,11 +739,6 @@ public class MediathekGui extends JFrame {
 
     private void initializeAnsichtMenu()
     {
-        jCheckBoxMenuItemToolBar.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
-        jCheckBoxMenuItemToolBar.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_TOOLBAR_ALLES_ANZEIGEN, Boolean.toString(jCheckBoxMenuItemToolBar.isSelected()));
-            Listener.notify(Listener.EREIGNIS_TOOLBAR_VIS, MediathekGui.class.getSimpleName());
-        });
         jCheckBoxMenuItemVideoplayer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
         jCheckBoxMenuItemVideoplayer.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, String.valueOf(jCheckBoxMenuItemVideoplayer.isSelected()));
@@ -801,23 +791,7 @@ public class MediathekGui extends JFrame {
         miSearchForProgramUpdate.addActionListener(e -> searchForUpdateOrShowProgramInfos(false));
         miShowProgramInfos.addActionListener(e -> searchForUpdateOrShowProgramInfos(true));
 
-        miUpdateServers.addActionListener(e -> updateFilmListServers());
-    }
-
-    /**
-     * "Force" update the list of filmlist servers.
-     */
-    private void updateFilmListServers() {
-        final FilmeLaden filmeLaden = daten.getFilmeLaden();
-        final FilmlistenSuchen list = filmeLaden.getFilmlistenSuchen();
-
-        filmeLaden.getDownloadUrlsFilmlisten_akt().clear();
-        filmeLaden.getDownloadUrlsFilmlisten_diff().clear();
-
-        list.updateURLsFilmlisten(true);
-        list.updateURLsFilmlisten(false);
-
-        JOptionPane.showMessageDialog(this, "Aktualisierung wurde durchgeführt.", "Update-Server aktualisieren", JOptionPane.INFORMATION_MESSAGE);
+        miUpdateServers.setAction(new UpdateFilmListServersAction());
     }
 
     private void initializeAnsichtAbos()
@@ -1219,7 +1193,6 @@ public class MediathekGui extends JFrame {
         jMenuItemAboNeu = new JMenuItem();
         jMenuItemAboInvertSelection = new JMenuItem();
         JMenu jMenuAnsicht = new JMenu();
-        jCheckBoxMenuItemToolBar = new JCheckBoxMenuItem();
         jCheckBoxMenuItemVideoplayer = new JCheckBoxMenuItem();
         JMenu jMenu1 = new JMenu();
         jMenuItemSchriftGr = new JMenuItem();
@@ -1449,11 +1422,6 @@ public class MediathekGui extends JFrame {
                 jMenuAnsicht.setMnemonic('a');
                 jMenuAnsicht.setText("Ansicht");
 
-                //---- jCheckBoxMenuItemToolBar ----
-                jCheckBoxMenuItemToolBar.setSelected(true);
-                jCheckBoxMenuItemToolBar.setText("Toolbar");
-                jMenuAnsicht.add(jCheckBoxMenuItemToolBar);
-
                 //---- jCheckBoxMenuItemVideoplayer ----
                 jCheckBoxMenuItemVideoplayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
                 jCheckBoxMenuItemVideoplayer.setText("Buttons anzeigen");
@@ -1613,7 +1581,6 @@ public class MediathekGui extends JFrame {
     private JMenuItem jMenuItemAbosAendern;
     private JMenuItem jMenuItemAboNeu;
     private JMenuItem jMenuItemAboInvertSelection;
-    private JCheckBoxMenuItem jCheckBoxMenuItemToolBar;
     protected JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
     private JMenuItem jMenuItemSchriftGr;
     private JMenuItem jMenuItemSchriftKl;

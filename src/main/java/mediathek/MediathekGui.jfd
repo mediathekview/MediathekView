@@ -280,11 +280,6 @@ new FormModel {
 						"JavaCodeGenerator.variableLocal": true
 					}
 					add( new FormComponent( "javax.swing.JCheckBoxMenuItem" ) {
-						name: "jCheckBoxMenuItemToolBar"
-						"selected": true
-						"text": "Toolbar"
-					} )
-					add( new FormComponent( "javax.swing.JCheckBoxMenuItem" ) {
 						name: "jCheckBoxMenuItemVideoplayer"
 						"accelerator": static javax.swing.KeyStroke getKeyStroke( 122, 0, false )
 						"text": "Buttons anzeigen"
