@@ -43,7 +43,6 @@ import java.awt.event.*;
 
 @SuppressWarnings("serial")
 public class GuiAbo extends PanelVorlage {
-    private final ToolBar toolBar;
 
     /**
      * Update the property with the current number of selected entries from the JTable.
@@ -81,9 +80,8 @@ public class GuiAbo extends PanelVorlage {
             tabelle.setRowSelectionInterval(0, 0);
         }
 
-        toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_ABOS);
+        ToolBar toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_ABOS);
         add(toolBar, BorderLayout.NORTH);
-        setToolbarVisible();
     }
 
     @Override
@@ -112,10 +110,6 @@ public class GuiAbo extends PanelVorlage {
         tabelle.invertSelection();
     }
 
-    private void setToolbarVisible() {
-        toolBar.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TOOLBAR_ALLES_ANZEIGEN)));
-    }
-
     private void setCellRenderer() {
         final MVSenderIconCache cache = daten.getMediathekGui().getSenderIconCache();
         final CellRendererAbo cellRenderer = new CellRendererAbo(cache);
@@ -125,12 +119,6 @@ public class GuiAbo extends PanelVorlage {
     }
 
     private void initListeners() {
-        Listener.addListener(new Listener(Listener.EREIGNIS_TOOLBAR_VIS, GuiAbo.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setToolbarVisible();
-            }
-        });
         Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_ABOS, GuiAbo.class.getSimpleName()) {
             @Override
             public void ping() {
