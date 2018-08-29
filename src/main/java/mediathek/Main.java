@@ -31,6 +31,7 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.windows.MediathekGuiWindows;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,7 +41,6 @@ import java.io.File;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static mediathek.tool.MVFunctionSys.startMeldungen;
@@ -67,7 +67,7 @@ public class Main {
     private static void cleanupOsxFiles() {
         if (!Config.isPortableMode()) {
             try {
-                Path oldFilmList = Paths.get(Daten.getSettingsDirectory_String(), Konstanten.JSON_DATEI_FILME);
+                var oldFilmList = Paths.get(Daten.getSettingsDirectory_String(), Konstanten.JSON_DATEI_FILME);
                 Files.deleteIfExists(oldFilmList);
             } catch (Exception ignored) {
             }
@@ -78,7 +78,7 @@ public class Main {
      * Tests if javafx is in the classpath by loading a well known class.
      */
     private static void checkForJavaFX() {
-        final String message = "MediathekView benötigt ein installiertes JavaFX.";
+        final var message = "MediathekView benötigt ein installiertes JavaFX.";
 
         try {
             Class.forName(JAVAFX_CLASSNAME_APPLICATION_PLATFORM);
@@ -103,7 +103,7 @@ public class Main {
     }
 
     private static String readPfadFromArguments(final String... aArguments) {
-        String pfad = "";
+        var pfad = "";
         if (aArguments != null && aArguments.length > 0) {
             for (String arg : aArguments) {
                 if (!arg.startsWith("-")) {
@@ -120,7 +120,7 @@ public class Main {
 
     private static void setupPortableMode(String... args) {
         printArguments(args);
-        final String basePath = readPfadFromArguments(args);
+        final var basePath = readPfadFromArguments(args);
         if (!basePath.isEmpty()) {
             Config.setPortableMode(true);
             logger.info("Portable Mode: true");
@@ -148,7 +148,7 @@ public class Main {
 
     private static void installSingleInstanceHandler() {
         //prevent startup of multiple instances...
-        SingleInstance singleInstanceWatcher = new SingleInstance();
+        var singleInstanceWatcher = new SingleInstance();
         if (singleInstanceWatcher.isAppAlreadyActive()) {
             JOptionPane.showMessageDialog(null, LOG_TEXT_MEDIATHEK_VIEW_IS_ALREADY_RUNNING);
             System.exit(1);
@@ -156,7 +156,7 @@ public class Main {
     }
 
     private static void checkForOfficialOSXAppUse() {
-        final String osxOfficialApp = System.getProperty("OSX_OFFICIAL_APP");
+        final var osxOfficialApp = System.getProperty("OSX_OFFICIAL_APP");
         if (osxOfficialApp == null || osxOfficialApp.isEmpty() || osxOfficialApp.equalsIgnoreCase("false")) {
             JOptionPane.showMessageDialog(null,
                     "Bitte nutzen Sie die offizielle macOS Applikation für das beste Nutzererlebnis.",
@@ -166,9 +166,9 @@ public class Main {
     }
 
     private static void checkMemoryRequirements() {
-        final long maxMem = Runtime.getRuntime().maxMemory();
+        final var maxMem = Runtime.getRuntime().maxMemory();
         // more than 450MB avail...
-        if (maxMem < 450 * 1024 * 1024) {
+        if (maxMem < 450 * FileUtils.ONE_MB) {
             if (GraphicsEnvironment.isHeadless()) {
                 System.err.println("Die VM hat nicht genügend Arbeitsspeicher zugewiesen.");
                 System.err.println("Nutzen Sie den Startparameter -Xmx512M für Minimumspeicher");
@@ -251,7 +251,7 @@ public class Main {
      */
     private void setupX11WindowManagerClassName() {
         try {
-            Toolkit xToolkit = Toolkit.getDefaultToolkit();
+            var xToolkit = Toolkit.getDefaultToolkit();
             java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField(X11_AWT_APP_CLASS_NAME);
             awtAppClassNameField.setAccessible(true);
             awtAppClassNameField.set(xToolkit, Konstanten.PROGRAMMNAME);
@@ -289,10 +289,10 @@ public class Main {
     private void proxyAuthentication() {
         //TODO remove if not used anymore by URLConnection
         try {
-            final String prxUser = System.getProperty(HTTP_PROXY_USER, null);
-            final String prxPassword = System.getProperty(HTTP_PROXY_PW, null);
+            final var prxUser = System.getProperty(HTTP_PROXY_USER, null);
+            final var prxPassword = System.getProperty(HTTP_PROXY_PW, null);
             if (prxUser != null && prxPassword != null) {
-                final PasswordAuthentication authenticator = new PasswordAuthentication(prxUser, prxPassword.toCharArray());
+                final var authenticator = new PasswordAuthentication(prxUser, prxPassword.toCharArray());
                 Authenticator.setDefault(new Authenticator() {
                     @Override
                     protected PasswordAuthentication getPasswordAuthentication() {
