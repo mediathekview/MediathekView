@@ -883,7 +883,6 @@ public class MediathekGui extends JFrame {
     {
         //Icons setzen
         jMenuItemFilmlisteLaden.setIcon(IconFontSwing.buildIcon(FontAwesome.CLOUD_DOWNLOAD, 16));
-        jMenuItemEinstellungen.setIcon(Icons.ICON_MENUE_EINSTELLUNGEN);
         jMenuItemBeenden.setIcon(Icons.ICON_MENUE_BEENDEN);
         jMenuItemFilmAbspielen.setIcon(Icons.ICON_MENUE_FILM_START);
         jMenuItemFilmAufzeichnen.setIcon(Icons.ICON_MENUE_FILM_REC);
@@ -909,7 +908,6 @@ public class MediathekGui extends JFrame {
         jMenuItemAbosAusschalten.setIcon(Icons.ICON_MENUE_AUS);
         jMenuItemAbosLoeschen.setIcon(Icons.ICON_MENUE_ABO_LOESCHEN);
         jMenuItemAbosAendern.setIcon(Icons.ICON_MENUE_ABO_AENDERN);
-        jMenuItemAboNeu.setIcon(Icons.ICON_MENUE_ABO_NEU);
     }
 
     /**
@@ -1239,6 +1237,7 @@ public class MediathekGui extends JFrame {
                 jMenuItemEinstellungen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0));
                 jMenuItemEinstellungen.setText("Einstellungen");
                 jMenuItemEinstellungen.setToolTipText("allgemeine Programmeinstellungen");
+                jMenuItemEinstellungen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/programm/menue-einstellungen.png")));
                 jMenuDatei.add(jMenuItemEinstellungen);
                 jMenuDatei.add(jSeparator2);
 
@@ -1409,6 +1408,7 @@ public class MediathekGui extends JFrame {
 
                 //---- jMenuItemAboNeu ----
                 jMenuItemAboNeu.setText("neues Abo anlegen");
+                jMenuItemAboNeu.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/programm/menue-abo-neu.png")));
                 jMenuAbos.add(jMenuItemAboNeu);
 
                 //---- jMenuItemAboInvertSelection ----

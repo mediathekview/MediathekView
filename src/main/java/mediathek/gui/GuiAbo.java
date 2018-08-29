@@ -214,19 +214,21 @@ public class GuiAbo extends PanelVorlage {
                 }
             }
             tabelleLaden();
-            zeileMarkieren(0);
+
+            selectFirstRow();
+
             daten.getListeAbo().aenderungMelden();
         } else {
             new HinweisKeineAuswahl().zeigen(parentComponent);
         }
     }
 
-    private void zeileMarkieren(int row) {
+    private void selectFirstRow() {
         if (tabelle.getRowCount() > 0) {
             // sonst ist schon eine Zeile markiert
             if (tabelle.getSelectedRow() == -1) {
                 tabelle.requestFocus();
-                tabelle.setRowSelectionInterval(row, row);
+                tabelle.setRowSelectionInterval(0, 0);
             }
         }
     }
@@ -301,18 +303,25 @@ public class GuiAbo extends PanelVorlage {
     private void setInfo() {
         daten.getMessageBus().publishAsync(new UpdateStatusBarLeftDisplayEvent());
     }
-    private class BeobMausTabelle1 extends MouseAdapter {
 
+    private class BeobMausTabelle1 extends MouseAdapter {
+        private JPopupMenu jPopupMenu;
         private Point p;
+        private JMenuItem itemEinschalten;
+        private JMenuItem itemDeaktivieren;
+
+        public BeobMausTabelle1() {
+            createPopupMenu();
+        }
 
         @Override
         public void mouseClicked(MouseEvent arg0) {
             if (arg0.getButton() == MouseEvent.BUTTON1) {
                 if (arg0.getClickCount() == 1) {
                     p = arg0.getPoint();
-                    int row = tabelle.rowAtPoint(p);
-                    int column = tabelle.columnAtPoint(p);
+                    final int row = tabelle.rowAtPoint(p);
                     if (row >= 0) {
+                        final int column = tabelle.columnAtPoint(p);
                         buttonTable(row, column);
                     }
                 } else if (arg0.getClickCount() > 1) {
@@ -349,29 +358,20 @@ public class GuiAbo extends PanelVorlage {
             }
         }
 
-        private void showMenu(MouseEvent evt) {
-            boolean ein = true;
-            p = evt.getPoint();
-            int nr = tabelle.rowAtPoint(p);
-            if (nr >= 0) {
-                tabelle.setRowSelectionInterval(nr, nr);
-                int modelRow = tabelle.convertRowIndexToModel(nr);
-                DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
-                ein = Boolean.parseBoolean(akt.arr[DatenAbo.ABO_EINGESCHALTET]);
-            }
-            JPopupMenu jPopupMenu = new JPopupMenu();
+        private void createPopupMenu() {
+            jPopupMenu = new JPopupMenu();
             // Abo einschalten
-            JMenuItem itemEinschalten = new JMenuItem("Abo einschalten");
+            itemEinschalten = new JMenuItem("Abo einschalten");
             itemEinschalten.setIcon(Icons.ICON_MENUE_EIN);
-            itemEinschalten.setEnabled(!ein);
             itemEinschalten.addActionListener(e -> aboEinAus(true));
             jPopupMenu.add(itemEinschalten);
+
             // Abo deaktivieren
-            JMenuItem itemDeaktivieren = new JMenuItem("Abo ausschalten");
+            itemDeaktivieren = new JMenuItem("Abo ausschalten");
             itemDeaktivieren.setIcon(Icons.ICON_MENUE_AUS);
-            itemDeaktivieren.setEnabled(ein);
             itemDeaktivieren.addActionListener(e -> aboEinAus(false));
             jPopupMenu.add(itemDeaktivieren);
+
             //Abo lösschen
             JMenuItem itemLoeschen = new JMenuItem("Abo löschen");
             itemLoeschen.setIcon(Icons.ICON_MENUE_ABO_LOESCHEN);
@@ -390,6 +390,21 @@ public class GuiAbo extends PanelVorlage {
             itemNeu.setIcon(Icons.ICON_MENUE_ABO_NEU);
             itemNeu.addActionListener(e -> aboNeu());
             jPopupMenu.add(itemNeu);
+        }
+
+        private void showMenu(MouseEvent evt) {
+            boolean ein = true;
+            p = evt.getPoint();
+            int nr = tabelle.rowAtPoint(p);
+            if (nr >= 0) {
+                tabelle.setRowSelectionInterval(nr, nr);
+                int modelRow = tabelle.convertRowIndexToModel(nr);
+                DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
+                ein = Boolean.parseBoolean(akt.arr[DatenAbo.ABO_EINGESCHALTET]);
+            }
+
+            itemEinschalten.setEnabled(!ein);
+            itemDeaktivieren.setEnabled(ein);
 
             //Menü anzeigen
             jPopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
