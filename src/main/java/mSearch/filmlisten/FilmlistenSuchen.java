@@ -19,11 +19,11 @@
  */
 package mSearch.filmlisten;
 
-import mSearch.Const;
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Functions;
 import mSearch.tool.Log;
 import mSearch.tool.MVHttpClient;
+import mediathek.config.Const;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;

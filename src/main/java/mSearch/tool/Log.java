@@ -19,20 +19,20 @@
  */
 package mSearch.tool;
 
-import mSearch.Config;
-import mSearch.Const;
+import mediathek.config.Config;
+import mediathek.config.Konstanten;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Log {
 
-    private final static String FEHLER = "Fehler(" + Const.PROGRAMMNAME + "): ";
+    private final static String FEHLER = "Fehler(" + Konstanten.PROGRAMMNAME + "): ";
     public final static String LINE = "################################################################################";
 
     // private
@@ -54,20 +54,7 @@ public class Log {
     private static final ArrayList<Error> fehlerListe = new ArrayList<>();
     private static boolean progress = false;
     public static final Date startZeit = new Date(System.currentTimeMillis());
-    private static File logFile = null;
     private static final ArrayList<String> logList = new ArrayList<>();
-
-    public static synchronized void setLogfile(String logFileString) {
-        logFile = new File(logFileString);
-        File dir = new File(logFile.getParent());
-        if (!dir.exists()) {
-            if (!dir.mkdirs()) {
-                logFile = null;
-                Log.errorLog(632012165, "Kann den Pfad nicht anlegen: " + dir.toString());
-            }
-        }
-
-    }
 
     private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
@@ -104,12 +91,7 @@ public class Log {
 
         // Laufzeit ausgeben
         Date stopZeit = new Date(System.currentTimeMillis());
-        int minuten;
-        try {
-            minuten = Math.round((stopZeit.getTime() - Log.startZeit.getTime()) / (1000 * 60));
-        } catch (Exception ex) {
-            minuten = -1;
-        }
+        final long minuten = (stopZeit.getTime() - Log.startZeit.getTime()) / (1000 * 60);
 
         logger.info("");
         logger.info("");
@@ -297,17 +279,6 @@ public class Log {
 
     private static void printLog() {
         logList.forEach(System.out::println);
-
-        if (logFile != null) {
-            try (OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(logFile, true), StandardCharsets.UTF_8)) {
-                for (String s : logList) {
-                    out.write(s);
-                    out.write("\n");
-                }
-            } catch (Exception ex) {
-                System.out.println(ex.getMessage());
-            }
-        }
         logList.clear();
     }
 }

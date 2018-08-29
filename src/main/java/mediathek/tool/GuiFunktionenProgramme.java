@@ -19,8 +19,8 @@
  */
 package mediathek.tool;
 
-import mSearch.Const;
 import mSearch.tool.ApplicationConfiguration;
+import mediathek.config.Const;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.RuntimeExec;

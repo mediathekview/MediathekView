@@ -19,12 +19,12 @@
  */
 package mediathek.filmlisten;
 
-import mSearch.Config;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.FilmlistenSuchen;
 import mSearch.filmlisten.reader.FilmListReader;
+import mediathek.config.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

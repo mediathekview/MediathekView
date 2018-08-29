@@ -1,7 +1,7 @@
 package mSearch.daten;
 
 import com.jidesoft.utils.SystemInfo;
-import mSearch.Config;
+import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.tool.GuiFunktionen;
 import org.apache.commons.dbcp2.*;
