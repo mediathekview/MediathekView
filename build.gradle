@@ -12,7 +12,7 @@ apply plugin: 'idea'
 apply from: "${project.rootDir}/gradle/eclipse.gradle"
 
 
-sourceCompatibility = 8
+sourceCompatibility = 10
 targetCompatibility = 10
 group = 'de.mediathekview'
 version = '13.3.0'
