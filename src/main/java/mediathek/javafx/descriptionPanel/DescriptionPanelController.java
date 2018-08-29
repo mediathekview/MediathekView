@@ -51,7 +51,7 @@ public class DescriptionPanelController {
                     ex.printStackTrace();
                 }
             });
-            //TODO HTML generation code is bad!
+
             webEngine.setUserStyleSheetLocation(getClass().getResource("/mediathek/res/css/description.css").toString());
             webEngine.loadContent(
                     "<html>"

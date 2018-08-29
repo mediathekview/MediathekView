@@ -19,9 +19,12 @@
  */
 package mediathek.update;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import mSearch.tool.Log;
 import mSearch.tool.MVHttpClient;
 import mSearch.tool.Version;
+import mSearch.tool.javafx.FXErrorDialog;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -44,23 +47,19 @@ import java.util.Optional;
 
 public class ProgrammUpdateSuchen {
     private static final String UPDATE_SEARCH_TITLE = "Software-Aktualisierung";
-    private static final String UPDATE_ERROR_MESSAGE = "<html>Es ist ein Fehler bei der Softwareaktualisierung aufgetreten.<br>" +
-            "Die aktuelle Version konnte nicht ermittelt werden.</html>";
-    /**
-     * Connection timeout in milliseconds.
-     */
-    private final ArrayList<String[]> listInfos = new ArrayList<>();
-
+    private static final String UPDATE_ERROR_MESSAGE = "Es ist ein Fehler bei der Softwareaktualisierung aufgetreten.\n" +
+            "Die aktuelle Version konnte nicht ermittelt werden.";
     private static final Logger logger = LogManager.getLogger(ProgrammUpdateSuchen.class);
+    private final ArrayList<String[]> listInfos = new ArrayList<>();
 
     public void checkVersion(boolean anzeigen, boolean showProgramInformation, boolean showAllInformation) {
         // prüft auf neue Version, aneigen: wenn true, dann AUCH wenn es keine neue Version gibt ein Fenster
         Optional<ServerProgramInformation> opt = retrieveProgramInformation();
         if (!opt.isPresent()) {
             logger.warn("did not receive ServerProgramInformation");
-            SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, UPDATE_ERROR_MESSAGE, UPDATE_SEARCH_TITLE, JOptionPane.ERROR_MESSAGE));
-        }
-        else {
+            Exception ex = new RuntimeException("Did not receive ServerProgramInformation");
+            Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, UPDATE_SEARCH_TITLE, UPDATE_ERROR_MESSAGE, ex));
+        } else {
             // Update-Info anzeigen
             final ServerProgramInformation progInfo = opt.get();
             SwingUtilities.invokeLater(() -> {
@@ -68,15 +67,21 @@ public class ProgrammUpdateSuchen {
                     showProgramInformation(showAllInformation);
 
                 if (progInfo.getVersion().toNumber() == 0) {
-                    JOptionPane.showMessageDialog(null, UPDATE_ERROR_MESSAGE, UPDATE_SEARCH_TITLE, JOptionPane.ERROR_MESSAGE);
+                    Exception ex = new RuntimeException("progInfo.getVersion() == 0");
+                    Platform.runLater(() -> FXErrorDialog.showErrorDialog(Konstanten.PROGRAMMNAME, UPDATE_SEARCH_TITLE, UPDATE_ERROR_MESSAGE, ex));
                     logger.warn("getVersion().toNumber() == 0");
-                }
-                else {
+                } else {
                     if (checkForNewerVersion(progInfo.getVersion())) {
                         UpdateNotificationDialog dlg = new UpdateNotificationDialog(Daten.getInstance().getMediathekGui(), "Software Update", progInfo);
                         dlg.setVisible(true);
                     } else if (anzeigen) {
-                        JOptionPane.showMessageDialog(null, "Sie benutzen die neueste Version von MediathekView.", UPDATE_SEARCH_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                        Platform.runLater(() -> {
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle(Konstanten.PROGRAMMNAME);
+                            alert.setHeaderText(UPDATE_SEARCH_TITLE);
+                            alert.setContentText("Sie benutzen die neueste Version von MediathekView.");
+                            alert.showAndWait();
+                        });
                     }
                 }
             });
@@ -116,7 +121,13 @@ public class ProgrammUpdateSuchen {
     }
 
     private void displayNoNewInfoMessage() {
-        JOptionPane.showMessageDialog(null, "Es liegen keine Programminfos vor.", UPDATE_SEARCH_TITLE, JOptionPane.INFORMATION_MESSAGE);
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(Konstanten.PROGRAMMNAME);
+            alert.setHeaderText(UPDATE_SEARCH_TITLE);
+            alert.setContentText("Es liegen keine Programminfos vor.");
+            alert.showAndWait();
+        });
     }
 
     private void showProgramInformation(boolean showAll) {
