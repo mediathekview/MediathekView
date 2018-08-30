@@ -26,14 +26,11 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.embed.swing.JFXPanel;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mSearch.daten.DatenFilm;
@@ -209,26 +206,14 @@ public class MediathekGui extends JFrame {
         loadFilmlist();
     }
 
-    private Stage controlsFxWorkaroundStage;
+    protected Stage controlsFxWorkaroundStage;
 
     /**
      * ControlsFX Notifications expect a stage to be open.
      * Create a utility window hidden and transparent as a stage for them.
      */
-    private void workaroundControlsFxNotificationBug() {
-        Platform.runLater(() -> {
-            controlsFxWorkaroundStage = new Stage(StageStyle.UTILITY);
-            StackPane root = new StackPane();
-            root.setStyle("-fx-background-color: TRANSPARENT");
-            Scene scene = new Scene(root, 1, 1);
-            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
-            controlsFxWorkaroundStage.setScene(scene);
-            controlsFxWorkaroundStage.setWidth(1);
-            controlsFxWorkaroundStage.setHeight(1);
-            controlsFxWorkaroundStage.toBack();
-            controlsFxWorkaroundStage.setOpacity(0d);
-            controlsFxWorkaroundStage.show();
-        });
+    protected void workaroundControlsFxNotificationBug() {
+        //does not work on windows and linux
     }
 
     /**
