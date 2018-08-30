@@ -94,12 +94,7 @@ public class MediathekGui extends JFrame {
     private static final String KEY_F10 = "F10";
     private static final String NONE = "none";
     private static final String SPLASHSCREEN_TEXT_ANWENDUNGSDATEN_LADEN = "Anwendungsdaten laden...";
-    private static final String LOG_TEXT_START = "Start";
     private static final String SPLASHSCREEN_TEXT_GUI_INITIALISIEREN = "GUI Initialisieren...";
-    private static final String LOG_TEXT_ERSTER_START = "Erster Start";
-    private static final String LOG_TEXT_START_GUI = "Start Gui";
-    private static final String LOG_TEXT_INIT_GUI = "Init GUI";
-    private static final String LOG_TEXT_GUI_STEHT = "Gui steht!";
     private static final String TABNAME_FILME = "Filme";
     private static final String TABNAME_DOWNLOADS = "Downloads";
     private static final String TABNAME_ABOS = "Abos";
@@ -182,13 +177,11 @@ public class MediathekGui extends JFrame {
         daten.setMediathekGui(this);
 
         startMeldungen();
-        Duration.staticPing(LOG_TEXT_START);
 
         fakeInitializeJavaFXRuntime();
 
         loadDaten();
 
-        Duration.staticPing(LOG_TEXT_START_GUI);
         createStatusBar();
 
         createFilmInformationHUD();
@@ -196,7 +189,7 @@ public class MediathekGui extends JFrame {
         setLookAndFeel();
         init();
         setSize();
-        Duration.staticPing(LOG_TEXT_INIT_GUI);
+
         initializeSettingsDialog();
 
 
@@ -211,8 +204,6 @@ public class MediathekGui extends JFrame {
         createMemoryMonitor();
 
         createBandwidthMonitor(this);
-
-        Duration.staticPing(LOG_TEXT_GUI_STEHT);
 
         splashScreenManager.closeSplashScreen();
 
@@ -342,7 +333,6 @@ public class MediathekGui extends JFrame {
             // alles geladen
             splashScreenManager.updateSplashScreenText(SPLASHSCREEN_TEXT_GUI_INITIALISIEREN);
         } else {
-            Duration.staticPing(LOG_TEXT_ERSTER_START);
             // erster Start
             ReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
             new DialogStarteinstellungen(this, daten).setVisible(true);
@@ -1033,7 +1023,6 @@ public class MediathekGui extends JFrame {
         dialog.hide();
 
         Log.endMsg();
-        Duration.printCounter();
 
         if (shutDown) {
             shutdownComputer();
