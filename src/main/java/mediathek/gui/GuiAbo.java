@@ -36,6 +36,7 @@ import mediathek.tool.TModelAbo;
 import mediathek.tool.cellrenderer.CellRendererAbo;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.table.MVAbosTable;
+import mediathek.tool.table.MVTable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,6 +44,13 @@ import java.awt.event.*;
 
 @SuppressWarnings("serial")
 public class GuiAbo extends PanelVorlage {
+    private final MVTable tabelle;
+
+    public void tabelleSpeichern() {
+        if (tabelle != null) {
+            tabelle.tabelleNachDatenSchreiben();
+        }
+    }
 
     /**
      * Update the property with the current number of selected entries from the JTable.
@@ -85,8 +93,7 @@ public class GuiAbo extends PanelVorlage {
     }
 
     @Override
-    public void isShown() {
-        super.isShown();
+    public void onComponentShown() {
         daten.getMediathekGui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.ABO);
     }
 

@@ -52,6 +52,7 @@ import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.table.MVDownloadsTable;
+import mediathek.tool.table.MVTable;
 import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -88,6 +89,7 @@ public class GuiDownloads extends PanelVorlage {
     private boolean loadFilmlist = false;
     private final java.util.Timer timer = new java.util.Timer(false);
     private TimerTask timerTask = null;
+    private final MVTable tabelle;
 
     /**
      * The internally used model.
@@ -210,9 +212,14 @@ public class GuiDownloads extends PanelVorlage {
         });
     }
 
+    public void tabelleSpeichern() {
+        if (tabelle != null) {
+            tabelle.tabelleNachDatenSchreiben();
+        }
+    }
+
     @Override
-    public void isShown() {
-        super.isShown();
+    public void onComponentShown() {
         daten.getMediathekGui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.DOWNLOAD);
         updateFilmData();
     }

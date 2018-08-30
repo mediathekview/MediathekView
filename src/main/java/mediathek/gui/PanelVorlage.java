@@ -20,34 +20,28 @@
 package mediathek.gui;
 
 import mediathek.config.Daten;
-import mediathek.tool.table.MVTable;
 
 import javax.swing.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 @SuppressWarnings("serial")
-public class PanelVorlage extends JPanel {
+public abstract class PanelVorlage extends JPanel {
     public Daten daten;
     public boolean stopBeob = false;
-    public JFrame parentComponent = null;
-    MVTable tabelle = null;
+    public JFrame parentComponent;
 
     public PanelVorlage(Daten d, JFrame pparentComponent) {
         daten = d;
         parentComponent = pparentComponent;
-        addComponentListener(new java.awt.event.ComponentAdapter() {
+        addComponentListener(new ComponentAdapter() {
             @Override
-            public void componentShown(java.awt.event.ComponentEvent evt) {
-                isShown();
+            public void componentShown(ComponentEvent evt) {
+                onComponentShown();
             }
         });
     }
 
-    public void isShown() {
-    }
-
-    public void tabelleSpeichern() {
-        if (tabelle != null) {
-            tabelle.tabelleNachDatenSchreiben();
-        }
+    public void onComponentShown() {
     }
 }
