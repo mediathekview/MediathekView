@@ -96,6 +96,7 @@ public class GuiFilme extends PanelVorlage {
             public void componentShown(ComponentEvent e) {
                 final int sel = tabelle.getSelectedRowCount();
                 Platform.runLater(() -> mediathekGui.getSelectedItemsProperty().setValue(sel));
+                onComponentShown();
             }
         });
     }
@@ -177,7 +178,6 @@ public class GuiFilme extends PanelVorlage {
         jPanelBeschreibung.setVisible(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, true));
     }
 
-    @Override
     public void onComponentShown() {
         daten.getMediathekGui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.FILME);
 

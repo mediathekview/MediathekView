@@ -26,6 +26,10 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.embed.swing.JFXPanel;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.layout.HBox;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mSearch.daten.DatenFilm;
@@ -50,14 +54,10 @@ import mediathek.gui.dialog.DialogStarteinstellungen;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.*;
-import mediathek.javafx.MemoryMonitor;
-import mediathek.javafx.ShutdownDialog;
-import mediathek.javafx.StartupProgressPanel;
-import mediathek.javafx.StatusBarController;
+import mediathek.javafx.*;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
 import mediathek.tool.threads.IndicatorThread;
-import mediathek.tool.threads.UIFilmlistLoaderThread;
 import mediathek.update.CheckUpdate;
 import mediathek.update.ProgrammUpdateSuchen;
 import net.engio.mbassy.listener.Handler;
@@ -212,8 +212,6 @@ public class MediathekGui extends JFrame {
 
         splashScreenManager.closeSplashScreen();
 
-        //setupConsoleReporter();
-
         loadFilmlist();
     }
 
@@ -233,8 +231,30 @@ public class MediathekGui extends JFrame {
     }
 
     private void loadFilmlist() {
-        Thread programStart = new UIFilmlistLoaderThread(daten);
-        programStart.start();
+        Platform.runLater(() -> {
+            HBox hb = new HBox();
+            hb.setSpacing(4d);
+            javafx.scene.control.Label lb = new Label("");
+            ProgressBar prog = new ProgressBar();
+            prog.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+            hb.getChildren().addAll(
+                    new VerticalSeparator(),
+                    new CenteredBorderPane(lb),
+                    new CenteredBorderPane(prog)
+            );
+
+            PerformFilmListFilterOperationsTask task = new PerformFilmListFilterOperationsTask();
+            task.setOnRunning(e -> {
+                getStatusBarController().getStatusBar().getRightItems().add(hb);
+                lb.textProperty().bind(task.messageProperty());
+                prog.progressProperty().bind(task.progressProperty());
+            });
+            task.setOnSucceeded(e -> getStatusBarController().getStatusBar().getRightItems().remove(hb));
+            task.setOnFailed(e -> getStatusBarController().getStatusBar().getRightItems().remove(hb));
+
+            new Thread(task).start();
+
+        });
     }
 
     @Handler
@@ -516,7 +536,7 @@ public class MediathekGui extends JFrame {
         jTabbedPane.setSelectedIndex(0);
         jTabbedPane.updateUI();
         designTabs();
-        tabFilme.isShown();
+        tabFilme.onComponentShown();
 
         jTabbedPane.addChangeListener(l -> {
             designTabs(); //damit das sel. Tab das richtige Icon bekommt

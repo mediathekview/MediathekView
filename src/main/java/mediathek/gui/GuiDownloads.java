@@ -126,6 +126,7 @@ public class GuiDownloads extends PanelVorlage {
             public void componentShown(ComponentEvent e) {
                 final int sel = tabelle.getSelectedRowCount();
                 Platform.runLater(() -> mediathekGui.getSelectedItemsProperty().setValue(sel));
+                onComponentShown();
             }
         });
     }
@@ -218,7 +219,6 @@ public class GuiDownloads extends PanelVorlage {
         }
     }
 
-    @Override
     public void onComponentShown() {
         daten.getMediathekGui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.DOWNLOAD);
         updateFilmData();

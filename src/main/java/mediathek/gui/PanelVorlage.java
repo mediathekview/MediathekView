@@ -22,8 +22,6 @@ package mediathek.gui;
 import mediathek.config.Daten;
 
 import javax.swing.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 
 @SuppressWarnings("serial")
 public abstract class PanelVorlage extends JPanel {
@@ -34,14 +32,5 @@ public abstract class PanelVorlage extends JPanel {
     public PanelVorlage(Daten d, JFrame pparentComponent) {
         daten = d;
         parentComponent = pparentComponent;
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentShown(ComponentEvent evt) {
-                onComponentShown();
-            }
-        });
-    }
-
-    public void onComponentShown() {
     }
 }
