@@ -29,10 +29,7 @@ import mediathek.config.MVConfig;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
-import mediathek.tool.GuiFunktionen;
-import mediathek.tool.HinweisKeineAuswahl;
-import mediathek.tool.MVSenderIconCache;
-import mediathek.tool.TModelAbo;
+import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererAbo;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.table.MVAbosTable;
@@ -90,7 +87,7 @@ public class GuiAbo extends PanelVorlage {
             tabelle.setRowSelectionInterval(0, 0);
         }
 
-        ToolBar toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_ABOS);
+        ToolBar toolBar = new ToolBar(daten, TABS.TAB_ABOS);
         add(toolBar, BorderLayout.NORTH);
     }
 

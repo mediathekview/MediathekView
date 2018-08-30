@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
@@ -66,6 +67,16 @@ public class PanelDownload extends PanelVorlage {
         jCheckBoxServer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER)));
         jCheckBoxServer.addActionListener(ae -> MVConfig.add(MVConfig.Configs.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER, String.valueOf(jCheckBoxServer.isSelected())));
         jButtonBeep.addActionListener(ae -> Toolkit.getDefaultToolkit().beep());
+
+        disableNotificationsOnWindows();
+    }
+
+    /**
+     * ControlsFX has a bug preventing notifications on windows
+     */
+    private void disableNotificationsOnWindows() {
+        if (SystemInfo.isWindows())
+            jCheckBoxNotification.setEnabled(false);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
