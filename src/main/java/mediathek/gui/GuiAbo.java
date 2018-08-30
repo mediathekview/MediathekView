@@ -68,6 +68,8 @@ public class GuiAbo extends PanelVorlage {
             public void componentShown(ComponentEvent e) {
                 final int sel = tabelle.getSelectedRowCount();
                 Platform.runLater(() -> mediathekGui.getSelectedItemsProperty().setValue(sel));
+
+                daten.getMediathekGui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.ABO);
             }
         });
     }
@@ -90,11 +92,6 @@ public class GuiAbo extends PanelVorlage {
 
         ToolBar toolBar = new ToolBar(daten, MediathekGui.TABS.TAB_ABOS);
         add(toolBar, BorderLayout.NORTH);
-    }
-
-    @Override
-    public void onComponentShown() {
-        daten.getMediathekGui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.ABO);
     }
 
     public void aendern() {
