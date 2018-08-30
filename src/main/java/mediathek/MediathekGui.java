@@ -26,10 +26,14 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mSearch.daten.DatenFilm;
@@ -212,9 +216,30 @@ public class MediathekGui extends JFrame {
 
         splashScreenManager.closeSplashScreen();
 
+        workaroundControlsFxNotificationBug();
+
         loadFilmlist();
     }
 
+    /**
+     * ControlsFX Notifications expect a stage to be open.
+     * Create a utility window hidden and transparent as a stage for them.
+     */
+    private void workaroundControlsFxNotificationBug() {
+        Platform.runLater(() -> {
+            Stage owner = new Stage(StageStyle.TRANSPARENT);
+            StackPane root = new StackPane();
+            root.setStyle("-fx-background-color: TRANSPARENT");
+            Scene scene = new Scene(root, 1, 1);
+            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+            owner.setScene(scene);
+            owner.setWidth(1);
+            owner.setHeight(1);
+            owner.toBack();
+            //owner.setOpacity(0d);
+            owner.show();
+        });
+    }
     /**
      * Memory display for debugging purposes.
      * Only visible when debug mode is enabled
@@ -1017,7 +1042,7 @@ public class MediathekGui extends JFrame {
         dispose();
 
         //shutdown JavaFX
-        Platform.exit();
+        Platform.runLater(Platform::exit);
 
         System.exit(0);
 
