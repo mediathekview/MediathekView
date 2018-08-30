@@ -46,6 +46,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -212,8 +213,8 @@ public class DirectHttpDownload extends Thread {
 
         datenDownload.interruptRestart();
 
-        //FIXME implement BufferedOutput
         try (FileOutputStream fos = new FileOutputStream(file, (downloaded != 0));
+             BufferedOutputStream bos = new BufferedOutputStream(fos);
              ThrottlingInputStream tis = new ThrottlingInputStream(conn.getInputStream(), rateLimiter);
              MVBandwidthCountingInputStream mvis = new MVBandwidthCountingInputStream(tis, bandwidthCalculationTimer)) {
             start.mVBandwidthCountingInputStream = mvis;
@@ -226,7 +227,7 @@ public class DirectHttpDownload extends Thread {
 
             while ((len = start.mVBandwidthCountingInputStream.read(buffer)) != -1 && (!start.stoppen)) {
                 downloaded += len;
-                fos.write(buffer, 0, len);
+                bos.write(buffer, 0, len);
                 datenDownload.mVFilmSize.addAktSize(len);
 
                 //für die Anzeige prüfen ob sich was geändert hat
