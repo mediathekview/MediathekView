@@ -1,6 +1,11 @@
 package mediathek.mac;
 
 import com.jidesoft.utils.SystemInfo;
+import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.gui.bandwidth.MVBandwidthMonitorOSX;
@@ -29,6 +34,22 @@ public class MediathekGuiMac extends MediathekGui {
 
         setupDockIcon();
     }
+
+    @Override
+    protected void workaroundControlsFxNotificationBug() {
+        Platform.runLater(() -> {
+            controlsFxWorkaroundStage = new Stage(StageStyle.UTILITY);
+            StackPane root = new StackPane();
+            root.setStyle("-fx-background-color: TRANSPARENT");
+            Scene scene = new Scene(root, 1, 1);
+            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+            controlsFxWorkaroundStage.setScene(scene);
+            controlsFxWorkaroundStage.setWidth(1);
+            controlsFxWorkaroundStage.setHeight(1);
+            controlsFxWorkaroundStage.toBack();
+            controlsFxWorkaroundStage.setOpacity(0d);
+            controlsFxWorkaroundStage.show();
+        });    }
 
     @Override
     protected void setupShutdownCommand() {
