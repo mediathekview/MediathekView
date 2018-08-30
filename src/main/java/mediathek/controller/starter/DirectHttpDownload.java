@@ -212,6 +212,7 @@ public class DirectHttpDownload extends Thread {
 
         datenDownload.interruptRestart();
 
+        //FIXME implement BufferedOutput
         try (FileOutputStream fos = new FileOutputStream(file, (downloaded != 0));
              ThrottlingInputStream tis = new ThrottlingInputStream(conn.getInputStream(), rateLimiter);
              MVBandwidthCountingInputStream mvis = new MVBandwidthCountingInputStream(tis, bandwidthCalculationTimer)) {

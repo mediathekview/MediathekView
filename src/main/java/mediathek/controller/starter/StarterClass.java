@@ -197,10 +197,6 @@ public class StarterClass {
      * Post a notification dialog whether download was successful or not.
      */
     private static void addNotification(DatenDownload datenDownload, boolean erfolgreich) {
-        if (GraphicsEnvironment.isHeadless()) {
-            return; // dann gibts keine GUI
-        }
-
         if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_NOTIFICATION)))
             return;
 

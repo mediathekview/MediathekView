@@ -22,12 +22,12 @@ package mediathek.gui;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Listener;
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.gui.messages.FilmListWriteStartEvent;
 import mediathek.gui.messages.FilmListWriteStopEvent;
+import mediathek.tool.TABS;
 import net.engio.mbassy.listener.Handler;
 
 import javax.swing.Box.Filler;
@@ -52,10 +52,10 @@ public final class ToolBar extends JToolBar {
     private final Daten daten;
     private final BeobMausToolBar beobMausToolBar = new BeobMausToolBar();
     //private boolean extern;
-    private final MediathekGui.TABS state;
+    private final TABS state;
     private final ArrayList<MVButton> buttonList = new ArrayList<>();
 
-    public ToolBar(Daten ddaten, MediathekGui.TABS state) {
+    public ToolBar(Daten ddaten, TABS state) {
         // für die Toolbar der Externen Fenster
         //extern = true;
         daten = ddaten;

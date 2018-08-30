@@ -118,10 +118,6 @@ public class MediathekGui extends JFrame {
         splashScreenManager.closeSplashScreen();
     }
 
-    public enum TABS {
-        TAB_NIX, TAB_FILME, TAB_DOWNLOADS, TAB_ABOS
-    }
-
     /**
      * Bandwidth monitoring for downloads.
      */
@@ -207,10 +203,13 @@ public class MediathekGui extends JFrame {
 
         splashScreenManager.closeSplashScreen();
 
-        workaroundControlsFxNotificationBug();
+        if (!SystemInfo.isWindows())
+            workaroundControlsFxNotificationBug();
 
         loadFilmlist();
     }
+
+    private Stage controlsFxWorkaroundStage;
 
     /**
      * ControlsFX Notifications expect a stage to be open.
@@ -218,19 +217,20 @@ public class MediathekGui extends JFrame {
      */
     private void workaroundControlsFxNotificationBug() {
         Platform.runLater(() -> {
-            Stage owner = new Stage(StageStyle.UTILITY);
+            controlsFxWorkaroundStage = new Stage(StageStyle.UTILITY);
             StackPane root = new StackPane();
             root.setStyle("-fx-background-color: TRANSPARENT");
             Scene scene = new Scene(root, 1, 1);
             scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
-            owner.setScene(scene);
-            owner.setWidth(1);
-            owner.setHeight(1);
-            owner.toBack();
-            owner.setOpacity(0d);
-            owner.show();
+            controlsFxWorkaroundStage.setScene(scene);
+            controlsFxWorkaroundStage.setWidth(1);
+            controlsFxWorkaroundStage.setHeight(1);
+            controlsFxWorkaroundStage.toBack();
+            controlsFxWorkaroundStage.setOpacity(0d);
+            controlsFxWorkaroundStage.show();
         });
     }
+
     /**
      * Memory display for debugging purposes.
      * Only visible when debug mode is enabled
@@ -960,6 +960,12 @@ public class MediathekGui extends JFrame {
             updateCheckTimer.stop();
     }
 
+    private void closeControlsFxWorkaroundStage() {
+        Platform.runLater(() -> {
+            if (controlsFxWorkaroundStage != null)
+                controlsFxWorkaroundStage.close();
+        });
+    }
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
         //write all settings if not done already...
         ApplicationConfiguration.getInstance().writeConfiguration();
@@ -979,6 +985,8 @@ public class MediathekGui extends JFrame {
         }
 
         closeMemoryMonitor();
+
+        closeControlsFxWorkaroundStage();
 
         terminateUpdateTimer();
 
@@ -1135,8 +1143,6 @@ public class MediathekGui extends JFrame {
 
         private void findTab(TABS state) {
             switch (state) {
-                case TAB_NIX:
-                    break;
                 case TAB_FILME:
                     setTabIfContain(tabFilme);
                     break;
@@ -1145,6 +1151,9 @@ public class MediathekGui extends JFrame {
                     break;
                 case TAB_ABOS:
                     setTabIfContain(tabAbos);
+                    break;
+
+                default:
                     break;
             }
         }
