@@ -19,15 +19,21 @@
  */
 package mediathek.daten;
 
+import com.google.common.base.Stopwatch;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
-import mSearch.tool.*;
+import mSearch.tool.Datum;
+import mSearch.tool.FilenameUtils;
+import mSearch.tool.GermanStringSorter;
+import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.tool.Filter;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TModelAbo;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.text.ParseException;
@@ -259,11 +265,12 @@ public class ListeAbo extends LinkedList<DatenAbo> {
         }
     }
 
+    private static final Logger logger = LogManager.getLogger(ListeAbo.class);
+
     public void setAboFuerFilm(ListeFilme listeFilme, boolean aboLoeschen) {
+        Stopwatch stopwatch = Stopwatch.createStarted();
         // hier wird tatsächlich für jeden Film die Liste der Abos durchsucht
         // braucht länger
-
-        Duration.counterStart("Abo in Filmliste eintragen");
 
         if (this.isEmpty() && aboLoeschen) {
             listeFilme.parallelStream().forEach(this::deleteAboInFilm);
@@ -286,6 +293,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
             datenAbo.irgendwo = LEER;
         });
 
-        Duration.counterStop("Abo in Filmliste eintragen");
+        stopwatch.stop();
+        logger.info("setAboFuerFilm: {}",stopwatch);
     }
 }

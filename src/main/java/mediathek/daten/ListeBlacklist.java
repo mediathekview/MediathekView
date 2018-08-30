@@ -19,16 +19,18 @@
  */
 package mediathek.daten;
 
+import com.google.common.base.Stopwatch;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.Duration;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.javafx.filterpanel.ZeitraumSpinner;
 import mediathek.tool.Filter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -141,7 +143,7 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
 
         loadCurrentFilterSettings();
 
-        Duration.counterStart("Blacklist filtern");
+        Stopwatch stopwatch = Stopwatch.createStarted();
         listeRet.clear();
 
         if (listeFilme != null) {
@@ -189,9 +191,11 @@ public class ListeBlacklist extends LinkedList<DatenBlacklist> {
             // Array mit Sendernamen/Themen füllen
             listeRet.fillSenderList();
         }
-        Duration.counterStop("Blacklist filtern");
+        stopwatch.stop();
+        logger.info("filterListe(): {}", stopwatch);
     }
 
+    private static final Logger logger = LogManager.getLogger(ListeBlacklist.class);
     /**
      * Filterfunction for Abos dialog.
      *
