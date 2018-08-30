@@ -218,7 +218,7 @@ public class MediathekGui extends JFrame {
      */
     private void workaroundControlsFxNotificationBug() {
         Platform.runLater(() -> {
-            Stage owner = new Stage(StageStyle.TRANSPARENT);
+            Stage owner = new Stage(StageStyle.UTILITY);
             StackPane root = new StackPane();
             root.setStyle("-fx-background-color: TRANSPARENT");
             Scene scene = new Scene(root, 1, 1);
@@ -227,7 +227,7 @@ public class MediathekGui extends JFrame {
             owner.setWidth(1);
             owner.setHeight(1);
             owner.toBack();
-            //owner.setOpacity(0d);
+            owner.setOpacity(0d);
             owner.show();
         });
     }
