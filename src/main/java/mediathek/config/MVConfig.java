@@ -82,7 +82,6 @@ public class MVConfig {
         SYSTEM_ORDNER_OEFFNEN("Download-Ordner-oeffnen"),
         SYSTEM_URL_OEFFNEN("Programm-Url-oeffnen"),
         SYSTEM_LINUX_SHUTDOWN("Programm-Linux-Shutdown"),
-        SYSTEM_NOTIFICATION("Notification-anzeigen", Boolean.TRUE.toString()),
         SYSTEM_PLAYER_ABSPIELEN("Player-zum-Abspielen"),
         // Fenstereinstellungen
         SYSTEM_GROESSE_GUI("Groesse"),

@@ -253,8 +253,7 @@ public class MediathekGui extends JFrame {
             task.setOnSucceeded(e -> getStatusBarController().getStatusBar().getRightItems().remove(hb));
             task.setOnFailed(e -> getStatusBarController().getStatusBar().getRightItems().remove(hb));
 
-            new Thread(task).start();
-
+            CompletableFuture.runAsync(task);
         });
     }
 
