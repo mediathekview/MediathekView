@@ -15,6 +15,7 @@ import org.controlsfx.control.StatusBar;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Exports the current film list to JSON file.
@@ -54,7 +55,7 @@ public class FilmListExportAction extends AbstractAction {
 
         progBar.progressProperty().bind(task.progressProperty());
 
-        new Thread(task).start();
+        CompletableFuture.runAsync(task);
     }
 
     private void showError() {

@@ -20,9 +20,9 @@ class FilmListAgeLabel extends ComputedLabel {
 
         String strText = "Alter: ";
 
-        final int sekunden = listeFilme.getAge();
+        final long sekunden = listeFilme.getAge();
         if (sekunden != 0) {
-            final int minuten = sekunden / 60;
+            final long minuten = sekunden / 60;
             String strSekunde = String.valueOf(sekunden % 60);
             if (strSekunde.length() < 2) {
                 strSekunde = '0' + strSekunde;

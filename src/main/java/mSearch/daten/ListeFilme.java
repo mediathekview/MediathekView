@@ -216,12 +216,12 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      *
      * @return Age in seconds.
      */
-    public int getAge() {
-        int ret = 0;
-        Date now = new Date(System.currentTimeMillis());
+    public long getAge() {
+        long ret = 0;
+
         Date filmDate = getAgeAsDate();
         if (filmDate != null) {
-            ret = Math.round((now.getTime() - filmDate.getTime()) / (1000));
+            ret = (System.currentTimeMillis() - filmDate.getTime()) / 1000;
             if (ret < 0) {
                 ret = 0;
             }
@@ -229,6 +229,8 @@ public class ListeFilme extends ArrayList<DatenFilm> {
         return ret;
     }
 
+    private static final SimpleTimeZone TIMEZONE = new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC");
+    
     /**
      * Get the age of the film list.
      *
@@ -236,7 +238,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
      */
     private Date getAgeAsDate() {
         String date = metaDaten[ListeFilme.FILMLISTE_DATUM_GMT_NR];
-        sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
+        sdf.setTimeZone(TIMEZONE);
 
         Date filmDate = null;
         try {
