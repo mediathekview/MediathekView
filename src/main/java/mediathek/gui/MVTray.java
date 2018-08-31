@@ -20,6 +20,7 @@
 package mediathek.gui;
 
 import javafx.application.Platform;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
@@ -210,8 +211,7 @@ public final class MVTray {
     }
 
     private void addNotification(String meldung) {
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_NOTIFICATION))) {
-
+        if (ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true)) {
             Platform.runLater(() -> {
                 Notifications msg = Notifications.create();
                 msg.title("Programminfos");

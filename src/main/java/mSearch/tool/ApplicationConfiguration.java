@@ -25,6 +25,7 @@ public class ApplicationConfiguration {
     public static final String APPLICATION_INSTALL_TAB_SWITCH_LISTENER = "application.ui.install_tab_listeners";
     public static final String APPLICATION_FORCE_UPDATE_SERVER_RELOAD_AKT = "application.force_update_server_reload.akt";
     public static final String APPLICATION_FORCE_UPDATE_SERVER_RELOAD_DIFF = "application.force_update_server_reload.diff";
+    public static final String APPLICATION_SHOW_NOTIFICATIONS = "application.show_notifications";
 
 
     public static final String HTTP_PROXY_HOSTNAME = "http.proxy.hostname";

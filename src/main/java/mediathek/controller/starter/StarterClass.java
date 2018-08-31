@@ -22,6 +22,7 @@ package mediathek.controller.starter;
 import com.jidesoft.utils.SystemInfo;
 import javafx.application.Platform;
 import mSearch.daten.DatenFilm;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Datum;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
@@ -197,7 +198,7 @@ public class StarterClass {
      * Post a notification dialog whether download was successful or not.
      */
     private static void addNotification(DatenDownload datenDownload, boolean erfolgreich) {
-        if (!Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_NOTIFICATION)))
+        if (!ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true))
             return;
 
 

@@ -20,6 +20,7 @@
 package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
@@ -58,8 +59,10 @@ public class PanelDownload extends PanelVorlage {
             }
         });
 
-        jCheckBoxNotification.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_NOTIFICATION)));
-        jCheckBoxNotification.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_NOTIFICATION, Boolean.toString(jCheckBoxNotification.isSelected())));
+        final boolean showNotification = ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,true);
+        jCheckBoxNotification.setSelected(showNotification);
+        jCheckBoxNotification.addActionListener(e -> ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,jCheckBoxNotification.isSelected()));
+
         cbkDownloadError.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG)));
         cbkDownloadError.addActionListener(e -> MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_ERRORMSG, Boolean.toString(cbkDownloadError.isSelected())));
         jCheckBoxBeep.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNLOAD_BEEP)));
@@ -68,14 +71,14 @@ public class PanelDownload extends PanelVorlage {
         jCheckBoxServer.addActionListener(ae -> MVConfig.add(MVConfig.Configs.SYSTEM_MAX_1_DOWNLOAD_PRO_SERVER, String.valueOf(jCheckBoxServer.isSelected())));
         jButtonBeep.addActionListener(ae -> Toolkit.getDefaultToolkit().beep());
 
-        disableNotificationsOnWindows();
+        disableNotifications();
     }
 
     /**
-     * ControlsFX has a bug preventing notifications on windows
+     * ControlsFX has a bug preventing notifications on windows & linux.
      */
-    private void disableNotificationsOnWindows() {
-        if (SystemInfo.isWindows())
+    private void disableNotifications() {
+        if (SystemInfo.isWindows() || SystemInfo.isLinux())
             jCheckBoxNotification.setEnabled(false);
     }
 

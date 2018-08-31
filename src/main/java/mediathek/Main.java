@@ -24,12 +24,12 @@ import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import javafx.application.Platform;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Log;
 import mSearch.tool.SingleInstance;
 import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
-import mediathek.config.MVConfig;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.windows.MediathekGuiWindows;
 import org.apache.commons.io.FileUtils;
@@ -135,16 +135,15 @@ public class Main {
     /**
      * Due to a controlsfx bug no notifications on windows
      */
-    private static void disableNotificationsOnWindows() {
-        //FIXME convert to ApplicationConfig as this shit does not work
-        MVConfig.add(MVConfig.Configs.SYSTEM_NOTIFICATION, Boolean.toString(false));
+    private static void disableNotifications() {
+        ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.APPLICATION_SHOW_NOTIFICATIONS,false);
     }
     /**
      * @param args the command line arguments
      */
     public static void main(final String... args) {
-        if (SystemInfo.isWindows())
-            disableNotificationsOnWindows();
+        if (SystemInfo.isWindows() || SystemInfo.isLinux())
+            disableNotifications();
 
         setupPortableMode(args);
         checkMemoryRequirements();
