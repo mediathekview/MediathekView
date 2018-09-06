@@ -48,12 +48,20 @@ public class FilmlistenSuchen {
 
     // damit werden die DownloadURLs zum Laden einer Filmliste gesucht
     // Liste mit den URLs zum Download der Filmliste
-    public ListeFilmlistenUrls listeFilmlistenUrls_akt = new ListeFilmlistenUrls();
-    public ListeFilmlistenUrls listeFilmlistenUrls_diff = new ListeFilmlistenUrls();
+    private ListeFilmlistenUrls listeFilmlistenUrls_akt = new ListeFilmlistenUrls();
+    private ListeFilmlistenUrls listeFilmlistenUrls_diff = new ListeFilmlistenUrls();
     private static boolean firstSearchAkt = true;
     private static boolean firstSearchDiff = true;
     private static final int UPDATE_LISTE_MAX = 10; // die Downloadliste für die Filmlisten nur jeden 10. Programmstart aktualisieren
 
+
+    public ListeFilmlistenUrls getFullServerList() {
+        return listeFilmlistenUrls_akt;
+    }
+
+    public ListeFilmlistenUrls getDiffServerList() {
+        return listeFilmlistenUrls_diff;
+    }
 
     /**
      * Force update of update server urls based on config.

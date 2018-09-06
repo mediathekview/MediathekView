@@ -22,6 +22,7 @@ package mediathek.gui.dialogEinstellungen;
 import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mediathek.MediathekGui;
 import mediathek.config.*;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
@@ -273,7 +274,7 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Filmliste laden");
+                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Filmliste laden");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {

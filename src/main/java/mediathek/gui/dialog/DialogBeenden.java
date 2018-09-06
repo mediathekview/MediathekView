@@ -20,6 +20,7 @@
  */
 package mediathek.gui.dialog;
 
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.file.GetFile;
@@ -206,7 +207,7 @@ public class DialogBeenden extends JDialog {
         glassPane.setVisible(true);
 
         if (onlyRunningDownloads) {
-            Daten.getInstance().getMediathekGui().tabDownloads.wartendeStoppen();
+            MediathekGui.ui().tabDownloads.wartendeStoppen();
             onlyRunningDownloads = false;
         }
 

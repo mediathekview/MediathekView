@@ -220,7 +220,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     public void onComponentShown() {
-        daten.getMediathekGui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.DOWNLOAD);
+        MediathekGui.ui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.DOWNLOAD);
         updateFilmData();
     }
 
@@ -937,11 +937,11 @@ public class GuiDownloads extends PanelVorlage {
 
         // und die Downloads starten oder stoppen
         //alle Downloads starten/wiederstarten
-        DialogBeendenZeit dialogBeenden = new DialogBeendenZeit(daten.getMediathekGui(), daten, listeDownloadsStarten);
+        DialogBeendenZeit dialogBeenden = new DialogBeendenZeit(MediathekGui.ui(), daten, listeDownloadsStarten);
         dialogBeenden.setVisible(true);
         if (dialogBeenden.applicationCanTerminate()) {
             // fertig und beenden
-            daten.getMediathekGui().beenden(false /*Dialog auf "sofort beenden" einstellen*/, dialogBeenden.isShutdownRequested());
+            MediathekGui.ui().beenden(false /*Dialog auf "sofort beenden" einstellen*/, dialogBeenden.isShutdownRequested());
         }
 
         reloadTable();
@@ -1328,7 +1328,7 @@ public class GuiDownloads extends PanelVorlage {
                     itemDelAbo.addActionListener(e -> daten.getListeAbo().aboLoeschen(datenAbo));
                     itemChangeAbo.addActionListener(e -> {
                         stopBeob = true;
-                        DialogEditAbo dialog = new DialogEditAbo(daten.getMediathekGui(), true, daten, datenAbo, false/*onlyOne*/);
+                        DialogEditAbo dialog = new DialogEditAbo(MediathekGui.ui(), true, daten, datenAbo, false/*onlyOne*/);
                         dialog.setVisible(true);
                         if (dialog.ok) {
                             daten.getListeAbo().aenderungMelden();

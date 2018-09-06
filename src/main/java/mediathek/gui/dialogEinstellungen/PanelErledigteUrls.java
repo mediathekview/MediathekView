@@ -21,6 +21,7 @@ package mediathek.gui.dialogEinstellungen;
 
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Listener;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.controller.MVUsedUrl;
 import mediathek.daten.DatenDownload;
@@ -136,7 +137,7 @@ public class PanelErledigteUrls extends PanelVorlage {
         if (!dialog.ok) {
             return;
         }
-        mVRun = new MVRun(daten.getMediathekGui(), "Datei: \"" + dialog.ziel + "\" erstellen");
+        mVRun = new MVRun(MediathekGui.ui(), "Datei: \"" + dialog.ziel + "\" erstellen");
         mVRun.setVisible(true);
         new Thread(new Export_(dialog.ziel, mVRun)).start();
     }
@@ -316,7 +317,7 @@ public class PanelErledigteUrls extends PanelVorlage {
                     }
                 }
                 // weiter
-                DialogAddDownload dialog = new DialogAddDownload(daten.getMediathekGui(), daten, film, null, "");
+                DialogAddDownload dialog = new DialogAddDownload(MediathekGui.ui(), daten, film, null, "");
                 dialog.setVisible(true);
             }
 

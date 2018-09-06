@@ -25,7 +25,7 @@ import mSearch.tool.Log;
 import mSearch.tool.MVHttpClient;
 import mSearch.tool.Version;
 import mSearch.tool.javafx.FXErrorDialog;
-import mediathek.config.Daten;
+import mediathek.MediathekGui;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import okhttp3.Request;
@@ -67,7 +67,7 @@ public class ProgrammUpdateSuchen {
                     logger.warn("getVersion().toNumber() == 0");
                 } else {
                     if (checkForNewerVersion(progInfo.getVersion())) {
-                        UpdateNotificationDialog dlg = new UpdateNotificationDialog(Daten.getInstance().getMediathekGui(), "Software Update", progInfo);
+                        UpdateNotificationDialog dlg = new UpdateNotificationDialog(MediathekGui.ui(), "Software Update", progInfo);
                         dlg.setVisible(true);
                     } else if (anzeigen) {
                         Platform.runLater(() -> {

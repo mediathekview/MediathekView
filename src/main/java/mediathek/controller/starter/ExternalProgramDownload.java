@@ -21,6 +21,7 @@ package mediathek.controller.starter;
 
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.controller.starter.DirectHttpDownload.HttpDownloadState;
 import mediathek.daten.DatenDownload;
@@ -229,7 +230,7 @@ public class ExternalProgramDownload extends Thread
             exMessage = ex.getLocalizedMessage();
             Log.errorLog(395623710, ex);
             SwingUtilities.invokeLater(() ->
-                    new MeldungDownloadfehler(Daten.getInstance().getMediathekGui(), exMessage, datenDownload).setVisible(true));
+                    new MeldungDownloadfehler(MediathekGui.ui(), exMessage, datenDownload).setVisible(true));
         }
         finalizeDownload(datenDownload, start, state);
         daten.getMessageBus().publish(new DownloadFinishedEvent());
@@ -294,7 +295,7 @@ public class ExternalProgramDownload extends Thread
         boolean result = false;
         if (file.exists())
         {
-            DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(Daten.getInstance().getMediathekGui(), datenDownload, false /*weiterführen*/);
+            DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(MediathekGui.ui(), datenDownload, false /*weiterführen*/);
             dialogContinueDownload.setVisible(true);
 
             switch (dialogContinueDownload.getResult())

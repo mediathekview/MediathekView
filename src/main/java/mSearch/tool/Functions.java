@@ -19,9 +19,10 @@
  */
 package mSearch.tool;
 
-import com.jidesoft.utils.SystemInfo;
 import mediathek.config.Const;
+import org.apache.commons.lang3.ArchUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -87,18 +88,14 @@ public class Functions {
     public static OperatingSystemType getOs() {
         OperatingSystemType os = OperatingSystemType.UNKNOWN;
 
-        if (SystemInfo.isWindows()) {
-            if (System.getenv("ProgramFiles(x86)") != null) {
-                // win 64Bit
+        if (SystemUtils.IS_OS_WINDOWS) {
+            if (ArchUtils.getProcessor().is64Bit())
                 os = OperatingSystemType.WIN64;
-            } else if (System.getenv("ProgramFiles") != null) {
-                // win 32Bit
+            else
                 os = OperatingSystemType.WIN32;
-            }
-
-        } else if (SystemInfo.isLinux() || System.getProperty("os.name").toLowerCase().contains("freebsd")) {
-            os = OperatingSystemType.LINUX;
-        } else if (SystemInfo.isMacOSX()) {
+        } else if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_FREE_BSD)
+            os = OperatingSystemType.LINUX; //This is a hack...
+        else if (SystemUtils.IS_OS_MAC_OSX) {
             os = OperatingSystemType.MAC;
         }
         return os;

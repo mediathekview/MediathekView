@@ -23,6 +23,7 @@ import javafx.application.Platform;
 import mSearch.tool.Datum;
 import mSearch.tool.Listener;
 import mediathek.MediathekGui;
+import mediathek.config.Const;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -66,7 +67,7 @@ public class GuiAbo extends PanelVorlage {
                 final int sel = tabelle.getSelectedRowCount();
                 Platform.runLater(() -> mediathekGui.getSelectedItemsProperty().setValue(sel));
 
-                daten.getMediathekGui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.ABO);
+                MediathekGui.ui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.ABO);
             }
         });
     }
@@ -112,7 +113,7 @@ public class GuiAbo extends PanelVorlage {
     }
 
     private void setCellRenderer() {
-        final MVSenderIconCache cache = daten.getMediathekGui().getSenderIconCache();
+        final MVSenderIconCache cache = MediathekGui.ui().getSenderIconCache();
         final CellRendererAbo cellRenderer = new CellRendererAbo(cache);
         tabelle.setDefaultRenderer(Object.class, cellRenderer);
         tabelle.setDefaultRenderer(Datum.class, cellRenderer);
@@ -161,7 +162,7 @@ public class GuiAbo extends PanelVorlage {
         });
 
         //Filter
-        final String[] sender = GuiFunktionen.addLeerListe(daten.getFilmeLaden().getSenderNamen());
+        final String[] sender = GuiFunktionen.addLeerListe(Const.SENDER);
         jcbSender.setModel(new javax.swing.DefaultComboBoxModel<>(sender));
         jcbSender.addActionListener(l -> tabelleLaden());
 
@@ -244,7 +245,7 @@ public class GuiAbo extends PanelVorlage {
         int[] rows = tabelle.getSelectedRows();
         int modelRow = tabelle.convertRowIndexToModel(tabelle.getSelectedRow());
         DatenAbo akt = daten.getListeAbo().getAboNr(modelRow);
-        DialogEditAbo dialog = new DialogEditAbo(daten.getMediathekGui(), true, daten, akt, tabelle.getSelectedRowCount() > 1 /*onlyOne*/);
+        DialogEditAbo dialog = new DialogEditAbo(MediathekGui.ui(), true, daten, akt, tabelle.getSelectedRowCount() > 1 /*onlyOne*/);
         dialog.setVisible(true);
         if (!dialog.ok) {
             return;

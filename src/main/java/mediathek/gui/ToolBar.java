@@ -22,13 +22,11 @@ package mediathek.gui;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.Listener;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
-import mediathek.gui.messages.FilmListWriteStartEvent;
-import mediathek.gui.messages.FilmListWriteStopEvent;
 import mediathek.tool.TABS;
-import net.engio.mbassy.listener.Handler;
 
 import javax.swing.Box.Filler;
 import javax.swing.*;
@@ -40,24 +38,20 @@ import java.util.ArrayList;
 @SuppressWarnings("serial")
 public final class ToolBar extends JToolBar {
 
-    private final Filler filler__5 = new Filler(new Dimension(5, 20), new Dimension(5, 20), new Dimension(5, 32767));
     private final Filler filler__10 = new Filler(new Dimension(10, 20), new Dimension(10, 20), new Dimension(10, 32767));
     private final Filler filler__trenner = new Filler(new Dimension(1, 5), new Dimension(1, 5), new Dimension(32767, 5));
 
     private MVButton jButtonDownloadAktualisieren = null;
-    private MVButton jButtonFilmlisteLaden = null;
 
     private final MVConfig.Configs nrToolbar;
     private MVConfig.Configs nrIconKlein = MVConfig.Configs.SYSTEM_ICON_KLEIN;
     private final Daten daten;
     private final BeobMausToolBar beobMausToolBar = new BeobMausToolBar();
-    //private boolean extern;
     private final TABS state;
     private final ArrayList<MVButton> buttonList = new ArrayList<>();
 
     public ToolBar(Daten ddaten, TABS state) {
         // für die Toolbar der Externen Fenster
-        //extern = true;
         daten = ddaten;
         this.state = state;
         switch (state) {
@@ -128,12 +122,12 @@ public final class ToolBar extends JToolBar {
         this.add(jButtonDownloadLoeschen);
         this.add(jButtonDownloadAufraeumen);
         jButtonInfo.addActionListener(e -> Daten.filmInfo.showInfo());
-        jButtonDownloadAktualisieren.addActionListener(e -> daten.getMediathekGui().tabDownloads.aktualisieren());
-        jButtonDownloadAufraeumen.addActionListener(e -> daten.getMediathekGui().tabDownloads.aufraeumen());
-        jButtonDownloadLoeschen.addActionListener(e -> daten.getMediathekGui().tabDownloads.loeschen());
-        jButtonDownloadAlleStarten.addActionListener(e -> daten.getMediathekGui().tabDownloads.starten(true));
-        jButtonDownloadFilmStarten.addActionListener(e -> daten.getMediathekGui().tabDownloads.filmAbspielen());
-        jButtonDownloadZurueckstellen.addActionListener(e -> daten.getMediathekGui().tabDownloads.zurueckstellen());
+        jButtonDownloadAktualisieren.addActionListener(e -> MediathekGui.ui().tabDownloads.aktualisieren());
+        jButtonDownloadAufraeumen.addActionListener(e -> MediathekGui.ui().tabDownloads.aufraeumen());
+        jButtonDownloadLoeschen.addActionListener(e -> MediathekGui.ui().tabDownloads.loeschen());
+        jButtonDownloadAlleStarten.addActionListener(e -> MediathekGui.ui().tabDownloads.starten(true));
+        jButtonDownloadFilmStarten.addActionListener(e -> MediathekGui.ui().tabDownloads.filmAbspielen());
+        jButtonDownloadZurueckstellen.addActionListener(e -> MediathekGui.ui().tabDownloads.zurueckstellen());
 
         this.add(filler__trenner);
 
@@ -169,10 +163,10 @@ public final class ToolBar extends JToolBar {
         this.add(jButtonAbosAusschalten);
         this.add(jButtonAbosLoeschen);
         this.add(jButtonAboAendern);
-        jButtonAbosEinschalten.addActionListener(e -> daten.getMediathekGui().tabAbos.einAus(true));
-        jButtonAbosAusschalten.addActionListener(e -> daten.getMediathekGui().tabAbos.einAus(false));
-        jButtonAbosLoeschen.addActionListener(e -> daten.getMediathekGui().tabAbos.loeschen());
-        jButtonAboAendern.addActionListener(e -> daten.getMediathekGui().tabAbos.aendern());
+        jButtonAbosEinschalten.addActionListener(e -> MediathekGui.ui().tabAbos.einAus(true));
+        jButtonAbosAusschalten.addActionListener(e -> MediathekGui.ui().tabAbos.einAus(false));
+        jButtonAbosLoeschen.addActionListener(e -> MediathekGui.ui().tabAbos.loeschen());
+        jButtonAboAendern.addActionListener(e -> MediathekGui.ui().tabAbos.aendern());
 
         this.add(filler__trenner);
 
@@ -197,31 +191,10 @@ public final class ToolBar extends JToolBar {
 
     }
 
-    @Handler
-    private void handleFilmListWriteStartEvent(FilmListWriteStartEvent e) {
-        SwingUtilities.invokeLater(() -> {
-            if (jButtonFilmlisteLaden != null)
-                jButtonFilmlisteLaden.setEnabled(false);
-        });
-    }
-
-    @Handler
-    private void handleFilmListWriteStopEvent(FilmListWriteStopEvent e) {
-        SwingUtilities.invokeLater(() -> {
-            if (jButtonFilmlisteLaden != null)
-                jButtonFilmlisteLaden.setEnabled(true);
-        });
-    }
-
     private void setFilmlisteLaden() {
-        jButtonFilmlisteLaden = new MVButton("Filmliste laden", "neue Filmliste laden", Icons.ICON_TOOLBAR_FILME_FILMLISTE_LADEN_GR, Icons.ICON_TOOLBAR_FILME_FILMLISTE_LADEN_KL);
-        this.add(filler__5);
-        this.add(jButtonFilmlisteLaden);
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
-                //ddaten.infoPanel.setProgress();
-                jButtonFilmlisteLaden.setEnabled(false);
                 if (jButtonDownloadAktualisieren != null) {
                     jButtonDownloadAktualisieren.setEnabled(false);
                 }
@@ -229,33 +202,11 @@ public final class ToolBar extends JToolBar {
 
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                jButtonFilmlisteLaden.setEnabled(true);
                 if (jButtonDownloadAktualisieren != null) {
                     jButtonDownloadAktualisieren.setEnabled(true);
                 }
             }
         });
-        jButtonFilmlisteLaden.addActionListener(e -> daten.getFilmeLaden().loadFilmlistDialog(daten, false));
-        jButtonFilmlisteLaden.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent arg0) {
-                if (arg0.isPopupTrigger()) {
-                    if (jButtonFilmlisteLaden.isEnabled()) {
-                        daten.getFilmeLaden().loadFilmlistDialog(daten, true);
-                    }
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent arg0) {
-                if (arg0.isPopupTrigger()) {
-                    if (jButtonFilmlisteLaden.isEnabled()) {
-                        daten.getFilmeLaden().loadFilmlistDialog(daten, true);
-                    }
-                }
-            }
-        });
-
     }
 
     private void setIcon(boolean klein) {

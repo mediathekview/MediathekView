@@ -20,6 +20,7 @@ import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.GermanStringSorter;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
@@ -206,7 +207,7 @@ public class FilmActionPanel {
     private Button createPlayButton() {
         btnPlay = new Button("", fontAwesome.create(FontAwesome.Glyph.PLAY));
         btnPlay.setTooltip(new Tooltip("Film abspielen"));
-        btnPlay.setOnAction(evt -> SwingUtilities.invokeLater(() -> daten.getMediathekGui().tabFilme.playAction.actionPerformed(null)));
+        btnPlay.setOnAction(evt -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.playAction.actionPerformed(null)));
 
         return btnPlay;
     }
@@ -221,7 +222,7 @@ public class FilmActionPanel {
 
     private Button createRecordButton() {
         btnRecord = new Button("", fontAwesome.create(FontAwesome.Glyph.DOWNLOAD));
-        btnRecord.setOnAction(e -> SwingUtilities.invokeLater(() -> daten.getMediathekGui().tabFilme.saveFilmAction.actionPerformed(null)));
+        btnRecord.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.saveFilmAction.actionPerformed(null)));
         btnRecord.setTooltip(new Tooltip("Film aufzeichnen"));
 
         return btnRecord;
@@ -276,7 +277,7 @@ public class FilmActionPanel {
         pause2.setOnFinished(evt -> checkPatternValidity());
         textProperty.addListener((observable, oldValue, newValue) -> pause2.playFromStart());
 
-        pause3.setOnFinished(evt -> SwingUtilities.invokeLater(() -> daten.getMediathekGui().tabFilme.filterFilmAction.actionPerformed(null)));
+        pause3.setOnFinished(evt -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.filterFilmAction.actionPerformed(null)));
         textProperty.addListener((observable, oldValue, newValue) -> pause3.playFromStart());
 
         roSearchStringProperty.bind(textProperty);

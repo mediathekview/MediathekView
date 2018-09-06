@@ -21,6 +21,7 @@ package mediathek.gui.dialogEinstellungen;
 
 import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Log;
+import mediathek.MediathekGui;
 import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
@@ -542,7 +543,7 @@ public class PanelPsetImport extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Programmset auswählen");
+                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Programmset auswählen");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {

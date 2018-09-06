@@ -13,6 +13,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
+import mediathek.MediathekGui;
 import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.javafx.filmlist.FilmListInfoPane;
@@ -34,7 +35,7 @@ public class StatusBarController {
     public StatusBarController(Daten daten, IntegerProperty selectedItemsProperty) {
         selectedItemsLabel = new SelectedItemsLabel(selectedItemsProperty);
         filmListInfoPane = new FilmListInfoPane(daten);
-        filmListInformationLabel = new FilmListInformationLabel(daten, daten.getMediathekGui().tabPaneIndexProperty());
+        filmListInformationLabel = new FilmListInformationLabel(daten, MediathekGui.ui().tabPaneIndexProperty());
 
         daten.getMessageBus().subscribe(this);
 

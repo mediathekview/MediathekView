@@ -230,7 +230,7 @@ public class ListeFilme extends ArrayList<DatenFilm> {
     }
 
     private static final SimpleTimeZone TIMEZONE = new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC");
-    
+
     /**
      * Get the age of the film list.
      *

@@ -19,7 +19,6 @@
  */
 package mediathek;
 
-import com.jidesoft.utils.SystemInfo;
 import com.jidesoft.utils.ThreadCheckingRepaintManager;
 import javafx.application.Platform;
 import jiconfont.icons.FontAwesome;
@@ -33,6 +32,7 @@ import mediathek.config.Konstanten;
 import mediathek.mac.MediathekGuiMac;
 import mediathek.windows.MediathekGuiWindows;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -142,7 +142,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(final String... args) {
-        if (SystemInfo.isWindows() || SystemInfo.isLinux())
+        if (SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_LINUX)
             disableNotifications();
 
         setupPortableMode(args);
@@ -218,13 +218,11 @@ public class Main {
     private void startGuiMode() {
         EventQueue.invokeLater(() ->
         {
-            if (SystemInfo.isMacOSX())
-                checkForOfficialOSXAppUse();
-
             //JavaFX stuff
             Platform.setImplicitExit(false);
 
-            if (SystemInfo.isMacOSX()) {
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                checkForOfficialOSXAppUse();
                 System.setProperty(MAC_SYSTEM_PROPERTY_APPLE_LAF_USE_SCREEN_MENU_BAR, Boolean.TRUE.toString());
                 cleanupOsxFiles();
             }
@@ -241,12 +239,12 @@ public class Main {
     private MediathekGui getPlatformWindow() {
         MediathekGui window;
 
-        if (SystemInfo.isMacOSX()) {
+        if (SystemUtils.IS_OS_MAC_OSX) {
             window = new MediathekGuiMac();
-        } else if (SystemInfo.isWindows()) {
+        } else if (SystemUtils.IS_OS_WINDOWS) {
             window = new MediathekGuiWindows();
         } else {
-            if (SystemInfo.isUnix()) {
+            if (SystemUtils.IS_OS_UNIX) {
                 setupX11WindowManagerClassName();
             }
             window = new MediathekGui();

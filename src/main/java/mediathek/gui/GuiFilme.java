@@ -179,7 +179,7 @@ public class GuiFilme extends PanelVorlage {
     }
 
     public void onComponentShown() {
-        daten.getMediathekGui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.FILME);
+        MediathekGui.ui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.FILME);
 
         updateFilmData();
         setInfoStatusbar();
@@ -245,7 +245,7 @@ public class GuiFilme extends PanelVorlage {
     }
 
     private void setupKeyMapping() {
-        final JRootPane rootPane = daten.getMediathekGui().getRootPane();
+        final JRootPane rootPane = MediathekGui.ui().getRootPane();
         final InputMap focusedWindowMap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         final ActionMap actionMap = getActionMap();
 
@@ -485,7 +485,7 @@ public class GuiFilme extends PanelVorlage {
             if (pSet == null) {
                 pSet = Daten.listePset.getListeSpeichern().getFirst();
             }
-            DialogAddMoreDownload damd = new DialogAddMoreDownload(daten.getMediathekGui(), pSet);
+            DialogAddMoreDownload damd = new DialogAddMoreDownload(MediathekGui.ui(), pSet);
             damd.setVisible(true);
             standard = damd.addAll;
             pfad = damd.getPath();
@@ -527,7 +527,7 @@ public class GuiFilme extends PanelVorlage {
                 if (fap.showOnlyHd.getValue()) {
                     aufloesung = DatenFilm.AUFLOESUNG_HD;
                 }
-                DialogAddDownload dialog = new DialogAddDownload(daten.getMediathekGui(), daten, datenFilm, pSet, aufloesung);
+                DialogAddDownload dialog = new DialogAddDownload(MediathekGui.ui(), daten, datenFilm, pSet, aufloesung);
                 dialog.setVisible(true);
             }
         }
@@ -1026,7 +1026,7 @@ public class GuiFilme extends PanelVorlage {
                             DatenAbo datenAbo;
                             if ((datenAbo = daten.getListeAbo().getAboFuerFilm_schnell(film, false /*ohne Länge*/)) != null) {
                                 //gibts schon, dann löschen
-                                DialogEditAbo dialog = new DialogEditAbo(daten.getMediathekGui(), true, daten, datenAbo, false/*onlyOne*/);
+                                DialogEditAbo dialog = new DialogEditAbo(MediathekGui.ui(), true, daten, datenAbo, false/*onlyOne*/);
                                 dialog.setVisible(true);
                                 if (dialog.ok) {
                                     daten.getListeAbo().aenderungMelden();

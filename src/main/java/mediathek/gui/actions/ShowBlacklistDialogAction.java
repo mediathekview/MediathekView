@@ -1,5 +1,6 @@
 package mediathek.gui.actions;
 
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.gui.dialog.DialogLeer;
 import mediathek.gui.dialogEinstellungen.PanelBlacklist;
@@ -24,7 +25,7 @@ public class ShowBlacklistDialogAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         DialogLeer dialog = new DialogLeer(parent, true);
-        dialog.init("Blacklist", new PanelBlacklist(daten, daten.getMediathekGui(), PanelBlacklist.class.getName() + PANEL_BLACKLIST_NAME_POSTFIX));
+        dialog.init("Blacklist", new PanelBlacklist(daten, MediathekGui.ui(), PanelBlacklist.class.getName() + PANEL_BLACKLIST_NAME_POSTFIX));
         dialog.setVisible(true);
     }
 }

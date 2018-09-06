@@ -75,7 +75,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static mSearch.tool.Functions.getOs;
@@ -147,8 +150,15 @@ public class MediathekGui extends JFrame {
         final JFXPanel dummyPanel = new JFXPanel();
     }
 
+    /**
+     * "Pointer" to UI
+     */
+    private static MediathekGui ui = null;
+
     public MediathekGui() {
         super();
+        ui = this;
+
         setupShutdownCommand();
 
         splashScreenManager = new SplashScreenManager();
@@ -167,7 +177,6 @@ public class MediathekGui extends JFrame {
         splashScreenManager.updateSplashScreenText(SPLASHSCREEN_TEXT_ANWENDUNGSDATEN_LADEN);
 
         daten = Daten.getInstance();
-        daten.setMediathekGui(this);
 
         startMeldungen();
 
@@ -204,6 +213,14 @@ public class MediathekGui extends JFrame {
             workaroundControlsFxNotificationBug();
 
         loadFilmlist();
+    }
+
+    /**
+     * Return the user interface instance
+     * @return the class instance or null.
+     */
+    public static MediathekGui ui() {
+        return ui;
     }
 
     protected Stage controlsFxWorkaroundStage;
@@ -250,10 +267,17 @@ public class MediathekGui extends JFrame {
                 lb.textProperty().bind(task.messageProperty());
                 prog.progressProperty().bind(task.progressProperty());
             });
-            task.setOnSucceeded(e -> getStatusBarController().getStatusBar().getRightItems().remove(hb));
-            task.setOnFailed(e -> getStatusBarController().getStatusBar().getRightItems().remove(hb));
 
-            CompletableFuture.runAsync(task);
+            FilmListFilterTask filterTask = new FilmListFilterTask(true);
+            filterTask.setOnRunning(e -> {
+                lb.textProperty().bind(filterTask.messageProperty());
+                prog.progressProperty().bind(filterTask.progressProperty());
+            });
+            filterTask.setOnSucceeded(e -> getStatusBarController().getStatusBar().getRightItems().remove(hb));
+            filterTask.setOnFailed(e -> getStatusBarController().getStatusBar().getRightItems().remove(hb));
+
+            CompletableFuture<Void> loaderTask = CompletableFuture.runAsync(task);
+            loaderTask.thenRun(filterTask);
         });
     }
 
@@ -458,10 +482,6 @@ public class MediathekGui extends JFrame {
             }
 
             @Override
-            public void progress(ListenerFilmeLadenEvent event) {
-            }
-
-            @Override
             public void fertig(ListenerFilmeLadenEvent event) {
                 jMenuItemFilmlisteLaden.setEnabled(true);
                 jMenuItemDownloadsAktualisieren.setEnabled(true);
@@ -478,7 +498,7 @@ public class MediathekGui extends JFrame {
             @Override
             public void windowClosing(WindowEvent evt) {
                 if (tray != null && !SystemInfo.isMacOSX() && Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY))) {
-                    daten.getMediathekGui().setVisible(false);
+                    setVisible(false);
                 } else {
                     beenden(false, false);
                 }
@@ -504,7 +524,7 @@ public class MediathekGui extends JFrame {
     private void setupUpdateCheck() {
         updateCheckTimer = new Timer(500, e -> {
             // Prüfen obs ein Programmupdate gibt
-            new CheckUpdate(daten.getMediathekGui(), daten).start();
+            new CheckUpdate(this, daten).start();
         });
         updateCheckTimer.setRepeats(true);
         updateCheckTimer.setDelay((int) TimeUnit.MILLISECONDS.convert(24, TimeUnit.HOURS));
@@ -846,7 +866,7 @@ public class MediathekGui extends JFrame {
                 // ansonsten gibts keine laufenden Downloads auf die man warten sollte
                 beenden(true /*Dialog auf "warten" einstellen*/, false /*shutdown computer*/);
             } else {
-                MVMessageDialog.showMessageDialog(daten.getMediathekGui(), LOG_TEXT_DIE_DOWNLOADS_MUESSEN_ZUERST_GESTARTET_WERDEN,
+                MVMessageDialog.showMessageDialog(this, LOG_TEXT_DIE_DOWNLOADS_MUESSEN_ZUERST_GESTARTET_WERDEN,
                         LOG_TEXT_KEINE_LAUFENDEN_DOWNLOADS, JOptionPane.ERROR_MESSAGE);
             }
         });
@@ -974,44 +994,41 @@ public class MediathekGui extends JFrame {
 
         terminateUpdateTimer();
 
-        ShutdownDialog dialog = new ShutdownDialog(this, 12);
+        ShutdownDialog dialog = new ShutdownDialog(this, 11);
         dialog.show();
 
-        dialog.setStatusText(1, "Warte auf das Schreiben der Filmliste");
-        waitForFilmListWriterToComplete();
-
-        dialog.setStatusText(2, "Warte auf commonPool()");
+        dialog.setStatusText(1, "Warte auf commonPool()");
         waitForCommonPoolToComplete();
 
-        dialog.setStatusText(3, "Warte auf Abschluss der Datenbank-Operationen");
+        dialog.setStatusText(2, "Warte auf Abschluss der Datenbank-Operationen");
         waitForDatabasePoolToComplete();
 
         // Tabelleneinstellungen merken
-        dialog.setStatusText(4, "Film-Daten sichern");
+        dialog.setStatusText(3, "Film-Daten sichern");
         tabFilme.tabelleSpeichern();
 
-        dialog.setStatusText(5, "Download-Daten sichern");
+        dialog.setStatusText(4, "Download-Daten sichern");
         tabDownloads.tabelleSpeichern();
 
-        dialog.setStatusText(6, "Abo-Daten sichern");
+        dialog.setStatusText(5, "Abo-Daten sichern");
         tabAbos.tabelleSpeichern();
 
-        dialog.setStatusText(7, "MediaDB sichern");
+        dialog.setStatusText(6, "MediaDB sichern");
         daten.getDialogMediaDB().tabelleSpeichern();
 
-        dialog.setStatusText(8, "Downloads anhalten");
+        dialog.setStatusText(7, "Downloads anhalten");
         stopDownloads();
 
-        dialog.setStatusText(9, "Programmkonfiguration schreiben");
+        dialog.setStatusText(8, "Programmkonfiguration schreiben");
         writeOldConfiguration();
 
-        dialog.setStatusText(10, "Datenbank schließen");
+        dialog.setStatusText(9, "Datenbank schließen");
         DatenFilm.Database.closeDatabase();
 
-        dialog.setStatusText(11, "Programmdaten sichern");
+        dialog.setStatusText(10, "Programmdaten sichern");
         daten.allesSpeichern();
 
-        dialog.setStatusText(12, "Fertig.");
+        dialog.setStatusText(11, "Fertig.");
         dialog.hide();
 
         Log.endMsg();
@@ -1061,19 +1078,6 @@ public class MediathekGui extends JFrame {
         }
 
         logger.debug("done waiting database pool");
-    }
-
-    private void waitForFilmListWriterToComplete() {
-        FutureTask<Void> writerTask = daten.getWriterTask();
-        if (writerTask != null) {
-            logger.debug("waiting for filmlist completion");
-            try {
-                writerTask.get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-        logger.debug("done waiting");
     }
 
     private void waitForCommonPoolToComplete() {

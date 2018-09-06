@@ -22,6 +22,7 @@ package mediathek.gui.dialogEinstellungen.allgemein;
 import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Listener;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -113,7 +114,7 @@ public class PanelEinstellungen extends PanelVorlage {
             jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY)));
             jCheckBoxTray.addActionListener(ae -> {
                 MVConfig.add(MVConfig.Configs.SYSTEM_USE_TRAY, Boolean.toString(jCheckBoxTray.isSelected()));
-                daten.getMediathekGui().setTray();
+                MediathekGui.ui().setTray();
             });
         }
     }
@@ -242,7 +243,7 @@ public class PanelEinstellungen extends PanelVorlage {
                 //and now switch it...
                 try {
                     UIManager.setLookAndFeel(lafClass);
-                    SwingUtilities.updateComponentTreeUI(daten.getMediathekGui());
+                    SwingUtilities.updateComponentTreeUI(MediathekGui.ui());
                     for (Frame f : Frame.getFrames()) {
                         SwingUtilities.updateComponentTreeUI(f);
                         for (Window w : f.getOwnedWindows()) {
