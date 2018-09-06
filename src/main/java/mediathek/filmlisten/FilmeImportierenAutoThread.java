@@ -92,10 +92,10 @@ class FilmeImportierenAutoThread extends Thread {
 
             switch (state) {
                 case FULL:
-                    updateUrl = msFilmlistenSuchen.listeFilmlistenUrls_akt.getRand(versuchteUrls); //nächste Adresse in der Liste wählen
+                    updateUrl = msFilmlistenSuchen.getFullServerList().getRand(versuchteUrls); //nächste Adresse in der Liste wählen
                     break;
                 case DIFF_ONLY:
-                    updateUrl = msFilmlistenSuchen.listeFilmlistenUrls_diff.getRand(versuchteUrls); //nächste Adresse in der Liste wählen
+                    updateUrl = msFilmlistenSuchen.getDiffServerList().getRand(versuchteUrls); //nächste Adresse in der Liste wählen
                     break;
             }
             versuchteUrls.add(updateUrl);

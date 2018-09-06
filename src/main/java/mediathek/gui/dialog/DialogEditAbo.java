@@ -20,6 +20,7 @@
 package mediathek.gui.dialog;
 
 import mSearch.tool.FilenameUtils;
+import mediathek.config.Const;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
@@ -70,14 +71,14 @@ public class DialogEditAbo extends JDialog {
             b = false;
         }
         jScrollPane1.getVerticalScrollBar().setUnitIncrement(16);
-        comboboxPSet.setModel(new javax.swing.DefaultComboBoxModel<>(Daten.listePset.getListeAbo().getObjectDataCombo()));
-        comboboxSender.setModel(new javax.swing.DefaultComboBoxModel<>(GuiFunktionen.addLeerListe(daten.getFilmeLaden().getSenderNamen())));
+        comboboxPSet.setModel(new DefaultComboBoxModel<>(Daten.listePset.getListeAbo().getObjectDataCombo()));
+        comboboxSender.setModel(new DefaultComboBoxModel<>(GuiFunktionen.addLeerListe(Const.SENDER)));
         // Zeilpfad ========================
         ArrayList<String> pfade = daten.getListeAbo().getPfade();
         if (!pfade.contains(aktAbo.arr[DatenAbo.ABO_ZIELPFAD])) {
             pfade.add(0, aktAbo.arr[DatenAbo.ABO_ZIELPFAD]);
         }
-        comboboxPfad.setModel(new javax.swing.DefaultComboBoxModel<>(pfade.toArray(new String[pfade.size()])));
+        comboboxPfad.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[pfade.size()])));
         comboboxPfad.setEditable(true);
         checkPfad();
         ((JTextComponent) comboboxPfad.getEditor().getEditorComponent()).setOpaque(true);

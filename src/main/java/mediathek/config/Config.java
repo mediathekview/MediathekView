@@ -19,12 +19,9 @@
  */
 package mediathek.config;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 public class Config {
 
     private static boolean debug; // Debugmodus
-    private static final AtomicBoolean stop = new AtomicBoolean(false); // damit kannn das Laden gestoppt werden
 
     public static boolean isPortableMode() {
         return portableMode;
@@ -35,25 +32,6 @@ public class Config {
     }
 
     private static boolean portableMode;
-
-    /**
-     * Damit kann "stop" gesetzt/rückgesetzt werden.
-     * Bei true wird die Suche abgebrochen.
-     *
-     * @param set
-     */
-    public static void setStop(boolean set) {
-        stop.set(set);
-    }
-
-    /**
-     * Abfrage, ob ein Abbruch erfogte
-     *
-     * @return true/false
-     */
-    public static boolean getStop() {
-        return stop.get();
-    }
 
     public static void enableDebugMode() {
         debug = true;

@@ -22,6 +22,7 @@ package mediathek.gui.dialogEinstellungen;
 import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.daten.DatenProg;
@@ -381,7 +382,7 @@ public class PanelPsetKurz extends PanelVorlage {
                 if (!file) {
                     System.setProperty("apple.awt.fileDialogForDirectories", "true");
                 }
-                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Film speichern");
+                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Film speichern");
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     //A directory was selected, that means Cancel was not pressed

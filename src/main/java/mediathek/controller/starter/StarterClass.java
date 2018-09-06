@@ -26,6 +26,7 @@ import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Datum;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -253,7 +254,7 @@ public class StarterClass {
         }
         notifyStartEvent(datenDownload);
 
-        if (SystemInfo.isMacOSX() && Daten.getInstance().getMediathekGui() != null) {
+        if (SystemInfo.isMacOSX() && MediathekGui.ui() != null) {
             Taskbar.getTaskbar().requestUserAttention(true,false);
         }
     }

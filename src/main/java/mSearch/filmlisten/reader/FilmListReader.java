@@ -29,7 +29,6 @@ import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.tool.InputStreamProgressMonitor;
 import mSearch.tool.MVHttpClient;
 import mSearch.tool.ProgressMonitorInputStream;
-import mediathek.config.Config;
 import mediathek.config.Const;
 import mediathek.tool.TrailerTeaserChecker;
 import okhttp3.Request;
@@ -254,7 +253,7 @@ public class FilmListReader implements AutoCloseable {
 
         long start = System.nanoTime();
 
-        while (!Config.getStop() && (jsonToken = jp.nextToken()) != null) {
+        while ((jsonToken = jp.nextToken()) != null) {
             if (jsonToken == JsonToken.END_OBJECT) {
                 break;
             }
@@ -318,11 +317,6 @@ public class FilmListReader implements AutoCloseable {
                 processFromWeb(sourceUrl, listeFilme);
             } else
                 processFromFile(source, listeFilme);
-
-            if (Config.getStop()) {
-                logger.info("--> Abbruch");
-                listeFilme.clear();
-            }
 
         } catch (MalformedURLException ex) {
             logger.warn(ex);

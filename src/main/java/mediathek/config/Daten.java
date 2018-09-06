@@ -20,13 +20,7 @@
 package mediathek.config;
 
 import com.jidesoft.utils.SystemInfo;
-import javafx.application.Platform;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.layout.HBox;
 import mSearch.daten.ListeFilme;
-import mSearch.filmlisten.writer.FilmListWriter;
 import mSearch.tool.Listener;
 import mSearch.tool.ReplaceList;
 import mediathek.MediathekGui;
@@ -36,13 +30,10 @@ import mediathek.controller.MVUsedUrls;
 import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.filmlisten.FilmeLaden;
-import mediathek.gui.actions.FilmListWriteWorkerTask;
 import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
-import mediathek.javafx.CenteredBorderPane;
-import mediathek.javafx.VerticalSeparator;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVFont;
 import mediathek.tool.MVMessageDialog;
@@ -67,8 +58,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
 
 public class Daten {
 
@@ -92,7 +81,6 @@ public class Daten {
     public MVUsedUrls history; // alle angesehenen Filme
     public MVUsedUrls erledigteAbos; // erfolgreich geladenen Abos
     public StarterClass starterClass; // Klasse zum Ausführen der Programme (für die Downloads): VLC, flvstreamer, ...
-    private MediathekGui mediathekGui; // JFrame der Gui
     private FilmeLaden filmeLaden; // erledigt das updaten der Filmliste
     private ListeFilme listeFilme;
     private ListeFilme listeFilmeNachBlackList; // ist DIE Filmliste
@@ -107,19 +95,12 @@ public class Daten {
     private DialogMediaDB dialogMediaDB;
     private boolean alreadyMadeBackup;
     private MBassador<BaseEvent> messageBus;
-    private FilmListWriteWorkerTask writerTask;
     /**
      * The "garbage collector" mainly for cleaning up {@link mSearch.daten.DatenFilm} objects.
      */
     private final Cleaner cleaner = Cleaner.create();
 
     private Daten() {
-        mediathekGui = null;
-        start();
-    }
-
-    private Daten(MediathekGui aMediathekGui) {
-        mediathekGui = aMediathekGui;
         start();
     }
 
@@ -142,15 +123,6 @@ public class Daten {
     public static Daten getInstance(String aBasisverzeichnis) {
         basisverzeichnis = aBasisverzeichnis;
         return getInstance();
-    }
-
-    public static Daten getInstance(String aBasisverzeichnis, MediathekGui aMediathekGui1) {
-        basisverzeichnis = aBasisverzeichnis;
-        return getInstance(aMediathekGui1);
-    }
-
-    private static Daten getInstance(MediathekGui aMediathekGui) {
-        return instance == null ? instance = new Daten(aMediathekGui) : instance;
     }
 
     public static Daten getInstance() {
@@ -254,10 +226,6 @@ public class Daten {
         return cleaner;
     }
 
-    public FutureTask<Void> getWriterTask() {
-        return writerTask;
-    }
-
     public MBassador<BaseEvent> getMessageBus() {
         return messageBus;
     }
@@ -316,54 +284,14 @@ public class Daten {
         timer.start();
     }
 
-    public void filmlisteSpeichern() {
-        try {
-            if (writerTask != null) {
-                logger.info("Waiting for worker task");
-                writerTask.get();
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            logger.error("Error waiting for worker task", e);
-        }
-
-        if (mediathekGui != null) {
-            Platform.runLater(() -> {
-                HBox hb = new HBox();
-                hb.setSpacing(4d);
-                Label lb = new Label("");
-                ProgressBar prog = new ProgressBar();
-                prog.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
-                hb.getChildren().addAll(
-                        new VerticalSeparator(),
-                        new CenteredBorderPane(lb),
-                        new CenteredBorderPane(prog)
-                );
-
-                writerTask = new FilmListWriteWorkerTask(this);
-                writerTask.setOnRunning(e -> {
-                    mediathekGui.getStatusBarController().getStatusBar().getRightItems().add(hb);
-                    lb.textProperty().bind(writerTask.messageProperty());
-                    prog.progressProperty().bind(writerTask.progressProperty());
-                });
-                writerTask.setOnSucceeded(e -> mediathekGui.getStatusBarController().getStatusBar().getRightItems().remove(hb));
-                writerTask.setOnFailed(e -> mediathekGui.getStatusBarController().getStatusBar().getRightItems().remove(hb));
-                new Thread(writerTask).start();
-            });
-        } else {
-            FilmListWriter writer = new FilmListWriter();
-            writer.writeFilmList(getDateiFilmliste(), listeFilme, null);
-        }
-    }
-
     /**
      * Update the {@link java.awt.SplashScreen} only if we have a Swing UI.
      *
      * @param text The displayed text on the splash graphics.
      */
     private void updateSplashScreen(String text) {
-        if (mediathekGui != null) {
-            mediathekGui.updateSplashScreenText(text);
+        if (MediathekGui.ui() != null) {
+            MediathekGui.ui().updateSplashScreenText(text);
         }
     }
 
@@ -428,7 +356,7 @@ public class Daten {
 
         // dann gibts ein Backup
         logger.info("Es gibt ein Backup");
-        mediathekGui.closeSplashScreen();
+        MediathekGui.ui().closeSplashScreen();
         int r = JOptionPane.showConfirmDialog(null, "Die Einstellungen sind beschädigt\n"
                 + "und können nicht geladen werden.\n"
                 + "Soll versucht werden, mit gesicherten\n"
@@ -478,8 +406,8 @@ public class Daten {
                 Files.deleteIfExists(path1);
             } catch (IOException e) {
                 logger.error("Die Einstellungen konnten nicht zurückgesetzt werden.", e);
-                if (mediathekGui != null) {
-                    MVMessageDialog.showMessageDialog(mediathekGui, "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
+                if (MediathekGui.ui() != null) {
+                    MVMessageDialog.showMessageDialog(MediathekGui.ui(), "Die Einstellungen konnten nicht zurückgesetzt werden.\n"
                             + "Sie müssen jetzt das Programm beenden und dann den Ordner:\n"
                             + getSettingsDirectory_String() + '\n'
                             + "von Hand löschen und dann das Programm wieder starten.\n\n"
@@ -576,14 +504,6 @@ public class Daten {
 
     public DownloadInfos getDownloadInfos() {
         return downloadInfos;
-    }
-
-    public MediathekGui getMediathekGui() {
-        return mediathekGui;
-    }
-
-    public void setMediathekGui(MediathekGui gui) {
-        mediathekGui = gui;
     }
 
     public DialogMediaDB getDialogMediaDB() {

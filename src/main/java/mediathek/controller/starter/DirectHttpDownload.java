@@ -24,6 +24,7 @@ import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mSearch.tool.MVHttpClient;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.MVBandwidthCountingInputStream;
@@ -213,8 +214,14 @@ public class DirectHttpDownload extends Thread {
 
         datenDownload.interruptRestart();
 
+        /*
+        This is a read-only property. Only experienced users should change it.
+        Therefore we don´t save it.
+         */
+        final int bufferSize = ApplicationConfiguration.getConfiguration().getInt(ApplicationConfiguration.APPLICATION_HTTP_DOWNLOAD_FILE_BUFFER_SIZE, 64 * 1024);
+
         try (FileOutputStream fos = new FileOutputStream(file, (downloaded != 0));
-             BufferedOutputStream bos = new BufferedOutputStream(fos);
+             BufferedOutputStream bos = new BufferedOutputStream(fos, bufferSize);
              ThrottlingInputStream tis = new ThrottlingInputStream(conn.getInputStream(), rateLimiter);
              MVBandwidthCountingInputStream mvis = new MVBandwidthCountingInputStream(tis, bandwidthCalculationTimer)) {
             start.mVBandwidthCountingInputStream = mvis;
@@ -376,7 +383,7 @@ public class DirectHttpDownload extends Thread {
                     exMessage = ex.getLocalizedMessage();
                     Log.errorLog(316598941, ex, "Fehler");
                     start.status = Start.STATUS_ERR;
-                        SwingUtilities.invokeLater(() -> new MeldungDownloadfehler(Daten.getInstance().getMediathekGui(), exMessage, datenDownload).setVisible(true));
+                        SwingUtilities.invokeLater(() -> new MeldungDownloadfehler(MediathekGui.ui(), exMessage, datenDownload).setVisible(true));
                 }
             }
         }
@@ -409,7 +416,7 @@ public class DirectHttpDownload extends Thread {
     private void displayErrorDialog() {
             //i really don´t know why maxRestarts/2 has to be used...but it works now
             if (!(start.countRestarted < maxRestarts / 2)) {
-                SwingUtilities.invokeLater(() -> new MeldungDownloadfehler(Daten.getInstance().getMediathekGui(), "URL des Films:\n"
+                SwingUtilities.invokeLater(() -> new MeldungDownloadfehler(MediathekGui.ui(), "URL des Films:\n"
                         + datenDownload.arr[DatenDownload.DOWNLOAD_URL] + "\n\n"
                         + responseCode + '\n', datenDownload).setVisible(true));
             }
@@ -450,7 +457,7 @@ public class DirectHttpDownload extends Thread {
     private boolean abbrechen_() {
         boolean result = false;
         if (file.exists()) {
-            DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(Daten.getInstance().getMediathekGui(), datenDownload, true /*weiterführen*/);
+            DialogContinueDownload dialogContinueDownload = new DialogContinueDownload(MediathekGui.ui(), datenDownload, true /*weiterführen*/);
             dialogContinueDownload.setVisible(true);
 
             switch (dialogContinueDownload.getResult()) {

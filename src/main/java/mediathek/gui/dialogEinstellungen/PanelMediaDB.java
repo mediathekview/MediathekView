@@ -22,6 +22,7 @@ package mediathek.gui.dialogEinstellungen;
 import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -134,7 +135,7 @@ public class PanelMediaDB extends PanelVorlage {
         jButtonAdd.addActionListener((ActionEvent e) -> addPath());
         jButtonRemove.addActionListener((ActionEvent e) -> removePath());
         jButtonHelp.setIcon(Icons.ICON_BUTTON_HELP);
-        jButtonHelp.addActionListener((ActionEvent e) -> new DialogHilfe(daten.getMediathekGui(), true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PANEL_MEDIA_DB)).setVisible(true));
+        jButtonHelp.addActionListener((ActionEvent e) -> new DialogHilfe(MediathekGui.ui(), true, new GetFile().getHilfeSuchen(GetFile.PFAD_HILFETEXT_PANEL_MEDIA_DB)).setVisible(true));
         jButtonExportPath.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonExport.addActionListener(new BeobExport());
         jButtonExportPath.addActionListener(new BeobPfad());
@@ -213,7 +214,7 @@ public class PanelMediaDB extends PanelVorlage {
     private void removePath() {
         int row = jTablePath.getSelectedRow();
         if (row < 0) {
-            new HinweisKeineAuswahl().zeigen(daten.getMediathekGui());
+            new HinweisKeineAuswahl().zeigen(MediathekGui.ui());
             return;
         }
         String path = jTablePath.getModel().getValueAt(jTablePath.convertRowIndexToModel(row), 0).toString();
@@ -733,7 +734,7 @@ public class PanelMediaDB extends PanelVorlage {
             if (SystemInfo.isMacOSX()) {
                 //we want to select a directory only, so temporarily change properties
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
-                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Pfad zu den Filmen wählen");
+                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Pfad zu den Filmen wählen");
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {
                     //A directory was selected, that means Cancel was not pressed
@@ -802,7 +803,7 @@ public class PanelMediaDB extends PanelVorlage {
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
             if (SystemInfo.isMacOSX()) {
-                FileDialog chooser = new FileDialog(daten.getMediathekGui(), "Filme exportieren");
+                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Filme exportieren");
                 chooser.setMode(FileDialog.SAVE);
                 chooser.setVisible(true);
                 if (chooser.getFile() != null) {

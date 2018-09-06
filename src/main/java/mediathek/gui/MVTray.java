@@ -22,6 +22,7 @@ package mediathek.gui;
 import javafx.application.Platform;
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Listener;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -106,16 +107,16 @@ public final class MVTray {
 
             MenuItem itemRemoveTray = new MenuItem("Trayicon ausblenden");
             itemRemoveTray.addActionListener(e -> {
-                daten.getMediathekGui().setVisible(true); // WICHTIG!!
+                MediathekGui.ui().setVisible(true); // WICHTIG!!
                 MVConfig.add(MVConfig.Configs.SYSTEM_USE_TRAY, Boolean.toString(false));
-                daten.getMediathekGui().setTray();
+                MediathekGui.ui().setTray();
                 Listener.notify(Listener.EREIGNIS_TRAYICON, MVTray.class.getSimpleName());
             });
             popup.add(itemRemoveTray);
 
             popup.addSeparator();
             MenuItem itemBeenden = new MenuItem("Programm beenden");
-            itemBeenden.addActionListener(e -> daten.getMediathekGui().beenden(false, false));
+            itemBeenden.addActionListener(e -> MediathekGui.ui().beenden(false, false));
             popup.add(itemBeenden);
 
             trayIcon.setPopupMenu(popup);
@@ -138,10 +139,11 @@ public final class MVTray {
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     if (e.getClickCount() == 1) {
-                        daten.getMediathekGui().setVisible(!daten.getMediathekGui().isVisible());
-                        if (daten.getMediathekGui().isVisible()) {
-                            daten.getMediathekGui().toFront();
-                            daten.getMediathekGui().requestFocus();
+                        final MediathekGui ui = MediathekGui.ui();
+                        ui.setVisible(!ui.isVisible());
+                        if (ui.isVisible()) {
+                            ui.toFront();
+                            ui.requestFocus();
                         }
                     }
                 }

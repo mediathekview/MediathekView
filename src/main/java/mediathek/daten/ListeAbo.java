@@ -26,6 +26,7 @@ import mSearch.tool.Datum;
 import mSearch.tool.FilenameUtils;
 import mSearch.tool.GermanStringSorter;
 import mSearch.tool.Listener;
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogEditAbo;
@@ -76,7 +77,7 @@ public class ListeAbo extends LinkedList<DatenAbo> {
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_REPLACETABLE)),
                 Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_ONLY_ASCII)));
         DatenAbo datenAbo = new DatenAbo(namePfad /* name */, filmSender, filmThema, filmTitel, filmThemaTitel, irgendwo, mindestdauer, min, namePfad, "");
-        DialogEditAbo dialogEditAbo = new DialogEditAbo(Daten.getInstance().getMediathekGui(), true, daten, datenAbo, false /*onlyOne*/);
+        DialogEditAbo dialogEditAbo = new DialogEditAbo(MediathekGui.ui(), true, daten, datenAbo, false /*onlyOne*/);
         dialogEditAbo.setVisible(true);
         if (dialogEditAbo.ok) {
             if (!aboExistiertBereits(datenAbo)) {

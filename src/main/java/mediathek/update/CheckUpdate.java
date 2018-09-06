@@ -55,7 +55,7 @@ public class CheckUpdate extends Thread {
             InetAddress serverAddr = InetAddress.getByName("res.mediathekview.de");
             if (serverAddr.isReachable(1000)) {
                 //we have internet...
-                final MediathekGui gui = daten.getMediathekGui();
+                final MediathekGui gui = MediathekGui.ui();
                 if (gui != null)
                     SwingUtilities.invokeLater(() -> gui.enableUpdateMenuItem(false));
 
@@ -140,7 +140,7 @@ public class CheckUpdate extends Thread {
                         String date = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
                         listePsetStandard.forEach((psNew) -> psNew.arr[DatenPset.PROGRAMMSET_NAME] = psNew.arr[DatenPset.PROGRAMMSET_NAME] + ", neu: " + date);
                     }
-                    GuiFunktionenProgramme.addSetVorlagen(daten.getMediathekGui(), daten, listePsetStandard, true /*auto*/, true /*setVersion*/); // damit auch AddOns geladen werden
+                    GuiFunktionenProgramme.addSetVorlagen(MediathekGui.ui(), daten, listePsetStandard, true /*auto*/, true /*setVersion*/); // damit auch AddOns geladen werden
                     logger.info("Setanlegen: OK");
                     logger.info("==========================================");
                 }

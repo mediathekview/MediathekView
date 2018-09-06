@@ -19,6 +19,7 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
+import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
@@ -101,7 +102,7 @@ public class DialogEinstellungen extends JFrame {
         ddaten = d;
         init();
         initTree();
-        GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, this, Daten.getInstance().getMediathekGui());
+        GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_EINSTELLUNGEN, this, MediathekGui.ui());
         this. setIconImage(GetIcon.getIcon("MediathekView.png", "/mediathek/res/", 58, 58).getImage());
         jButtonBeenden.addActionListener(e -> beenden());
 

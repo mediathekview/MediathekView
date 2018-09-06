@@ -94,9 +94,6 @@ public class Icons {
     public static final ImageIcon ICON_TOOLBAR_DOWNLOAD_ALLE_STARTEN_KL = GetIcon.getProgramIcon("toolbar-download-alle-starten.png", 16, 16);
     public static final ImageIcon ICON_TOOLBAR_DOWNLOAD_ALLE_STARTEN_GR = GetIcon.getProgramIcon("toolbar-download-alle-starten.png", 32, 32);
 
-    public static final ImageIcon ICON_TOOLBAR_FILME_FILMLISTE_LADEN_KL = GetIcon.getProgramIcon("toolbar-filme-filmliste-laden.png", 16, 16);
-    public static final ImageIcon ICON_TOOLBAR_FILME_FILMLISTE_LADEN_GR = GetIcon.getProgramIcon("toolbar-filme-filmliste-laden.png", 32, 32);
-
     public static final ImageIcon ICON_TOOLBAR_ABO_EIN_KL = GetIcon.getProgramIcon("toolbar-abo-ein.png", 16, 16);
     public static final ImageIcon ICON_TOOLBAR_ABO_EIN_GR = GetIcon.getProgramIcon("toolbar-abo-ein.png", 32, 32);
     public static final ImageIcon ICON_TOOLBAR_ABO_AUS_KL = GetIcon.getProgramIcon("toolbar-abo-aus.png", 16, 16);

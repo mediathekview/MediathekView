@@ -24,7 +24,6 @@ import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.FilmlistenSuchen;
 import mSearch.filmlisten.reader.FilmListReader;
-import mediathek.config.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -67,7 +66,6 @@ public class ImportFilmliste {
      * Filmeliste importieren, URL automatisch wählen
      */
     public void importFromUrl(ListeFilme listeFilme, ListeFilme listeFilmeDiff, int days) {
-        Config.setStop(false);
         Thread importThread = new FilmeImportierenAutoThread(msFilmlistenSuchen, listeFilme, listeFilmeDiff, days,
                 this::urlLaden, this::fertigMelden);
         importThread.start();
@@ -77,7 +75,6 @@ public class ImportFilmliste {
      * Filmeliste importieren, mit fester URL/Pfad
      */
     public void importFromFile(String pfad, ListeFilme listeFilme, int days) {
-        Config.setStop(false);
         Thread importThread = new FilmeImportierenDateiThread(pfad, listeFilme, days,
                 this::urlLaden, this::fertigMelden);
         importThread.start();
