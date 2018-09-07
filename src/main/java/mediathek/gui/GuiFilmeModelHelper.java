@@ -1,6 +1,5 @@
 package mediathek.gui;
 
-import com.codahale.metrics.Timer;
 import javafx.collections.ObservableList;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
@@ -13,15 +12,12 @@ import mediathek.tool.table.MVTable;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.codahale.metrics.MetricRegistry.name;
-
 public class GuiFilmeModelHelper {
     private final FilmActionPanel fap;
     private final Daten daten;
     private final MVTable tabelle;
     private final TModel tModel;
     private final ListeFilme listeFilme;
-    private final Timer responses = Daten.getInstance().getMetricRegistry().timer(name(GuiFilmeModelHelper.class, "performTableFiltering"));
     private boolean searchThroughDescriptions;
     private boolean nurNeue;
     private boolean nurUt;
@@ -117,8 +113,6 @@ public class GuiFilmeModelHelper {
     }
 
     private void performTableFiltering() {
-        final Timer.Context context = responses.time();
-
         updateFilterVars();
         calculateFilmLengthSliderValues();
 
@@ -201,8 +195,6 @@ public class GuiFilmeModelHelper {
                 }
             }
         }
-
-        context.stop();
     }
 
     /**
