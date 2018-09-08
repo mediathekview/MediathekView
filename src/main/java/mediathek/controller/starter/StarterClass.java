@@ -19,7 +19,6 @@
  */
 package mediathek.controller.starter;
 
-import com.jidesoft.utils.SystemInfo;
 import javafx.application.Platform;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.ApplicationConfiguration;
@@ -36,6 +35,7 @@ import mediathek.daten.DatenPset;
 import mediathek.gui.messages.StartEvent;
 import mediathek.mac.SpotlightCommentWriter;
 import mediathek.tool.MVFilmSize;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.controlsfx.control.Notifications;
@@ -229,11 +229,11 @@ public class StarterClass {
         });
     }
 
-    static void finalizeDownload(DatenDownload datenDownload, Start start /* wegen "datenDownload.start=null" beim stoppen */, DirectHttpDownload.HttpDownloadState state) {
+    static void finalizeDownload(DatenDownload datenDownload, Start start, DirectHttpDownload.HttpDownloadState state) {
         deleteIfEmpty(new File(datenDownload.arr[DatenDownload.DOWNLOAD_ZIEL_PFAD_DATEINAME]));
         setFileSize(datenDownload);
 
-        if (SystemInfo.isMacOSX() && state != DirectHttpDownload.HttpDownloadState.CANCEL) {
+        if (SystemUtils.IS_OS_MAC_OSX && state != DirectHttpDownload.HttpDownloadState.CANCEL) {
             //we don´t write comments if download was cancelled...
             if (Boolean.parseBoolean(datenDownload.arr[DatenDownload.DOWNLOAD_SPOTLIGHT])) {
                 final SpotlightCommentWriter writer = new SpotlightCommentWriter();
@@ -254,7 +254,7 @@ public class StarterClass {
         }
         notifyStartEvent(datenDownload);
 
-        if (SystemInfo.isMacOSX() && MediathekGui.ui() != null) {
+        if (SystemUtils.IS_OS_MAC_OSX && MediathekGui.ui() != null) {
             Taskbar.getTaskbar().requestUserAttention(true,false);
         }
     }

@@ -1,6 +1,5 @@
 package mediathek.javafx;
 
-import com.jidesoft.utils.SystemInfo;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -20,6 +19,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -41,7 +41,7 @@ public class MemoryMonitor extends Stage {
     private void initComponents() {
         setTitle("Speicherverbrauch");
         setAlwaysOnTop(true);
-        if (SystemInfo.isMacOSX())
+        if (SystemUtils.IS_OS_MAC_OSX)
             initStyle(StageStyle.UTILITY);
         else
             initStyle(StageStyle.UNIFIED);

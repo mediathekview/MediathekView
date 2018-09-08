@@ -1,10 +1,10 @@
 package mSearch.daten;
 
-import com.jidesoft.utils.SystemInfo;
 import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.tool.GuiFunktionen;
 import org.apache.commons.dbcp2.*;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.pool2.ObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 
@@ -75,7 +75,7 @@ public class PooledDatabaseConnection implements Closeable {
         if (Config.isPortableMode()) {
             strDatabase = Daten.getSettingsDirectory_String() + File.separator + "database" + File.separator;
         } else {
-            if (SystemInfo.isMacOSX()) {
+            if (SystemUtils.IS_OS_MAC_OSX) {
                 //place database into OS X user cache directory in order not to backup it all the time in TimeMachine...
                 strDatabase = GuiFunktionen.getHomePath() + File.separator + "Library/Caches/MediathekView/database" + File.separator;
             } else {

@@ -63,6 +63,7 @@ import mediathek.update.CheckUpdate;
 import mediathek.update.ProgrammUpdateSuchen;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -209,7 +210,7 @@ public class MediathekGui extends JFrame {
 
         splashScreenManager.closeSplashScreen();
 
-        if (!SystemInfo.isWindows())
+        if (!SystemUtils.IS_OS_WINDOWS)
             workaroundControlsFxNotificationBug();
 
         loadFilmlist();

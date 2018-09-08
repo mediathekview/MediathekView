@@ -19,7 +19,6 @@
  */
 package mediathek.tool.cellrenderer;
 
-import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
@@ -27,6 +26,7 @@ import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.MVSenderIconCache;
 import mediathek.tool.table.MVTable;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -75,7 +75,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
         progressBar = new JProgressBar(0, 1000);
         progressBar.setStringPainted(true);
         //on OSX the OS provided progress bar looks much better...
-        if (!SystemInfo.isMacOSX()) {
+        if (!SystemUtils.IS_OS_MAC_OSX) {
             progressBar.setUI(new BasicProgressBarUI() {
                 @Override
                 protected Color getSelectionBackground() {

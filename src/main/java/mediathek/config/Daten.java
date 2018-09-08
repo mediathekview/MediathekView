@@ -19,7 +19,6 @@
  */
 package mediathek.config;
 
-import com.jidesoft.utils.SystemInfo;
 import mSearch.daten.ListeFilme;
 import mSearch.tool.Listener;
 import mSearch.tool.ReplaceList;
@@ -41,6 +40,7 @@ import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
 import net.engio.mbassy.bus.config.IBusConfiguration;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -140,7 +140,7 @@ public class Daten {
         if (Config.isPortableMode()) {
             strFile = getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME;
         } else {
-            if (SystemInfo.isMacOSX()) {
+            if (SystemUtils.IS_OS_MAC_OSX) {
                 //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
                 strFile = GuiFunktionen.getHomePath() + File.separator + "Library/Caches/MediathekView" + File.separator + Konstanten.JSON_DATEI_FILME;
             } else {

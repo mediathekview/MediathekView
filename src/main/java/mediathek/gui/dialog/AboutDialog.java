@@ -19,13 +19,13 @@
 package mediathek.gui.dialog;
 
 import com.jidesoft.swing.MarqueePane;
-import com.jidesoft.utils.SystemInfo;
 import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.gui.HyperlinkButton;
 import mediathek.gui.actions.DisposeDialogAction;
 import mediathek.gui.actions.UrlHyperlinkAction;
 import mediathek.tool.EscapeKeyHandler;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
@@ -77,7 +77,6 @@ public class AboutDialog extends JDialog {
                 contentBuilder.append(str);
             }
         } catch (IOException ignored) {
-            ignored.printStackTrace();
         }
         content = contentBuilder.toString();
 
@@ -118,9 +117,8 @@ public class AboutDialog extends JDialog {
             lblFilmlistPath.setText(Daten.getDateiFilmliste());
 
             // auf dem Mac brauchen wir den Schließen Button nicht..
-            if (SystemInfo.isMacOSX()) {
+            if (SystemUtils.IS_OS_MAC_OSX)
                 this.remove(buttonPane);
-            }
 
         } catch (Exception e) {
             e.printStackTrace();
