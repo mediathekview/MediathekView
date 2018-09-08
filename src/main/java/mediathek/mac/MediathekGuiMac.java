@@ -1,6 +1,5 @@
 package mediathek.mac;
 
-import com.jidesoft.utils.SystemInfo;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
@@ -49,7 +48,8 @@ public class MediathekGuiMac extends MediathekGui {
             controlsFxWorkaroundStage.toBack();
             controlsFxWorkaroundStage.setOpacity(0d);
             controlsFxWorkaroundStage.show();
-        });    }
+        });
+    }
 
     @Override
     protected void setupShutdownCommand() {
@@ -159,13 +159,11 @@ public class MediathekGuiMac extends MediathekGui {
         desktop.setPreferencesHandler(e -> showSettingsDialog());
 
         //Remove all menu items which don´t need to be displayed due to OS X´s native menu support
-        if (SystemInfo.isMacOSX()) {
-            //Datei->Beenden
-            jMenuDatei.remove(jSeparator2);
-            jMenuDatei.remove(jMenuItemBeenden);
-            //Datei->Einstellungen
-            jMenuDatei.remove(jMenuItemEinstellungen);
-        }
+        //Datei->Beenden
+        jMenuDatei.remove(jSeparator2);
+        jMenuDatei.remove(jMenuItemBeenden);
+        //Datei->Einstellungen
+        jMenuDatei.remove(jMenuItemEinstellungen);
     }
 
     private void setupDockIcon() {

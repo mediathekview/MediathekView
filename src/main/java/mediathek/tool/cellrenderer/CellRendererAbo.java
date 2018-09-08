@@ -19,13 +19,13 @@
  */
 package mediathek.tool.cellrenderer;
 
-import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.config.MVColor;
 import mediathek.daten.DatenAbo;
 import mediathek.tool.MVSenderIconCache;
 import mediathek.tool.table.MVTable;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -117,7 +117,7 @@ public class CellRendererAbo extends CellRendererBase {
     }
 
     private void setFontItalic() {
-        if (!SystemInfo.isMacOSX()) {
+        if (!SystemUtils.IS_OS_MAC_OSX) {
             // On OS X do not change fonts as it violates HIG...
             setFont(new Font("Dialog", Font.ITALIC, getFont().getSize()));
         }
