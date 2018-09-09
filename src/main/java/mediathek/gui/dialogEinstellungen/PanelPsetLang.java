@@ -19,7 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import com.jidesoft.utils.SystemInfo;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.FilenameUtils;
 import mSearch.tool.Listener;
@@ -37,6 +36,7 @@ import mediathek.tool.*;
 import mediathek.tool.table.MVProgTable;
 import mediathek.tool.table.MVPsetTable;
 import mediathek.tool.table.MVTable;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -207,7 +207,7 @@ public class PanelPsetLang extends PanelVorlage {
             }
         });
 
-        jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX());
+        jCheckBoxSpotlight.setEnabled(SystemUtils.IS_OS_MAC_OSX);
         jCheckBoxSpotlight.addActionListener(e -> {
             DatenPset pset = getPset();
             if (pset != null) {
@@ -344,7 +344,7 @@ public class PanelPsetLang extends PanelVorlage {
             jCheckBoxThema.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_THEMA_ANLEGEN]));
             jCheckBoxInfodatei.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_INFODATEI]));
             jCheckBoxSubtitle.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SUBTITLE]));
-            jCheckBoxSpotlight.setEnabled(SystemInfo.isMacOSX());
+            jCheckBoxSpotlight.setEnabled(SystemUtils.IS_OS_MAC_OSX);
             jCheckBoxSpotlight.setSelected(Boolean.parseBoolean(pSet.arr[DatenPset.PROGRAMMSET_SPOTLIGHT]));
             jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Set Name: " + pSet.arr[DatenPset.PROGRAMMSET_NAME], javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP));
             jTextFieldSetName.setText(pSet.arr[DatenPset.PROGRAMMSET_NAME]);
@@ -686,7 +686,7 @@ public class PanelPsetLang extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
+            if (SystemUtils.IS_OS_MAC_OSX) {
                 FileDialog chooser = new FileDialog(MediathekGui.ui(), "Programm auswählen");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
@@ -722,7 +722,7 @@ public class PanelPsetLang extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native directory chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
+            if (SystemUtils.IS_OS_MAC_OSX) {
                 //we want to select a directory only, so temporarily change properties
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
                 FileDialog chooser = new FileDialog(MediathekGui.ui(), "Film speichern");
