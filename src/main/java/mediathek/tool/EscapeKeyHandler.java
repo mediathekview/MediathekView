@@ -19,7 +19,7 @@
  */
 package mediathek.tool;
 
-import com.jidesoft.utils.SystemInfo;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,7 +57,7 @@ public class EscapeKeyHandler {
             }
         });
         // für den Mac
-        if (SystemInfo.isMacOSX()) {
+        if (SystemUtils.IS_OS_MAC_OSX) {
             rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_W, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "mac-cancel");
             rootPane.getActionMap().put("mac-cancel", new AbstractAction() {
                 @Override

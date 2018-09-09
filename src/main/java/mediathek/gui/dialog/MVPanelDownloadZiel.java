@@ -19,7 +19,6 @@
  */
 package mediathek.gui.dialog;
 
-import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.FilenameUtils;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
@@ -28,6 +27,7 @@ import mediathek.config.MVConfig;
 import mediathek.daten.DatenDownload;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.MVMessageDialog;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -45,8 +45,8 @@ import java.util.Date;
 public class MVPanelDownloadZiel extends JPanel {
     public boolean nameGeaendert = false;
     private final DatenDownload datenDownload;
-    private JFrame parent = null;
-    boolean letztenPfadAnzeigen = false;
+    private final JFrame parent;
+    boolean letztenPfadAnzeigen;
 
     public MVPanelDownloadZiel(JFrame p, DatenDownload download, boolean letzterPfad) {
         initComponents();
@@ -146,7 +146,7 @@ public class MVPanelDownloadZiel extends JPanel {
                 pfade.add(pfad);
             }
         }
-        jComboBoxPath.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[pfade.size()])));
+        jComboBoxPath.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[0])));
     }
 
     private void checkPfadName() {
@@ -293,7 +293,7 @@ public class MVPanelDownloadZiel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native directory chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
+            if (SystemUtils.IS_OS_MAC_OSX) {
                 //we want to select a directory only, so temporarily change properties
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
                 FileDialog chooser = new FileDialog(parent, "Film speichern");

@@ -19,7 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
@@ -28,6 +27,7 @@ import mediathek.controller.IoXmlLesen;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.MVMessageDialog;
 import mediathek.tool.TextCopyPaste;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 
 import javax.swing.*;
@@ -240,7 +240,7 @@ public class PanelImport extends PanelVorlage {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
+            if (SystemUtils.IS_OS_MAC_OSX) {
                 FileDialog chooser = new FileDialog(MediathekGui.ui(), "Konfigdatei auswählen");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);

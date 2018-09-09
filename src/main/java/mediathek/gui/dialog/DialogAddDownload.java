@@ -19,7 +19,6 @@
  */
 package mediathek.gui.dialog;
 
-import com.jidesoft.utils.SystemInfo;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.FilenameUtils;
 import mSearch.tool.Listener;
@@ -32,6 +31,7 @@ import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.MVFilmSize;
 import mediathek.tool.MVMessageDialog;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -50,19 +50,19 @@ import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class DialogAddDownload extends JDialog {
-    private DatenPset pSet = null;
+    private DatenPset pSet;
     private boolean ok = false;
     private DatenDownload datenDownload = null;
     private final Daten daten;
     private final DatenFilm datenFilm;
     private String orgPfad = "";
-    private String aufloesung = "";
+    private final String aufloesung;
     private String dateiGroesse_HD = "";
     private String dateiGroesse_Hoch = "";
     private String dateiGroesse_Klein = "";
     private boolean nameGeaendert = false;
     private boolean stopBeob = false;
-    private JTextComponent cbPathTextComponent = null;
+    private final JTextComponent cbPathTextComponent;
 
     public DialogAddDownload(Frame parent, Daten daten, DatenFilm film, DatenPset pSet, String aufloesung) {
         super(parent, true);
@@ -345,7 +345,7 @@ public class DialogAddDownload extends JDialog {
                 pfade.add(pfad);
             }
         }
-        jcb.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[pfade.size()])));
+        jcb.setModel(new DefaultComboBoxModel<>(pfade.toArray(new String[0])));
     }
 
     public static void saveComboPfad(JComboBox<String> jcb, String orgPath) {
@@ -694,7 +694,7 @@ public class DialogAddDownload extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native directory chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
+            if (SystemUtils.IS_OS_MAC_OSX) {
                 //we want to select a directory only, so temporarily change properties
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
                 FileDialog chooser = new FileDialog(MediathekGui.ui(), "Film speichern");

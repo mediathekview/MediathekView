@@ -19,7 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
@@ -27,6 +26,7 @@ import mediathek.file.GetFile;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.GuiFunktionenProgramme;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -362,7 +362,7 @@ public class PanelProgrammPfade extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
+            if (SystemUtils.IS_OS_MAC_OSX) {
                 FileDialog chooser = new FileDialog(parentComponent, "Programmdatei auswählen");
                 chooser.setMode(FileDialog.LOAD);
                 chooser.setVisible(true);
