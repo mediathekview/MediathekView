@@ -19,7 +19,6 @@
  */
 package mediathek.gui;
 
-import com.jidesoft.utils.SystemInfo;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
@@ -58,6 +57,7 @@ import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.table.MVFilmTable;
 import mediathek.tool.table.MVTable;
 import net.engio.mbassy.listener.Handler;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
@@ -271,7 +271,7 @@ public class GuiFilme extends PanelVorlage {
         focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_U, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-copy");
         actionMap.put("url-copy", new CopyUrlToClipboardAction(DatenFilm.AUFLOESUNG_NORMAL));
 
-        if (SystemInfo.isMacOSX()) {
+        if (SystemUtils.IS_OS_MAC_OSX) {
             focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_H, Event.SHIFT_MASK + Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-hd-copy");
         } else {
             focusedWindowMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_H, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "url-hd-copy");
@@ -888,7 +888,7 @@ public class GuiFilme extends PanelVorlage {
                         if (!uHd.isEmpty()) {
                             item = new JMenuItem("in HD-Auflösung");
                             KeyStroke ctrlH;
-                            if (SystemInfo.isMacOSX()) {
+                            if (SystemUtils.IS_OS_MAC_OSX) {
                                 ctrlH = KeyStroke.getKeyStroke(KeyEvent.VK_H, Event.SHIFT_MASK + Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
                             } else {
                                 ctrlH = KeyStroke.getKeyStroke(KeyEvent.VK_H, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());

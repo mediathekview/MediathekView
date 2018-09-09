@@ -19,11 +19,11 @@
  */
 package mediathek.gui.actions;
 
-import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.config.MVConfig;
 import mediathek.gui.dialog.DialogProgrammOrdnerOeffnen;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,11 +37,10 @@ public class UrlHyperlinkAction extends AbstractAction {
 
     private final JFrame jFrameParent;
 
-    public UrlHyperlinkAction(JFrame jjFrameParent, String url) throws URISyntaxException {
+    public UrlHyperlinkAction(JFrame jjFrameParent, String url) {
         jFrameParent = jjFrameParent;
         super.putValue(Action.NAME, url);
         super.putValue(SHORT_DESCRIPTION, url);
-//        super.putValue(LONG_DESCRIPTION, url);
     }
 
     @Override
@@ -69,7 +68,7 @@ public class UrlHyperlinkAction extends AbstractAction {
             } catch (RuntimeException ex) {
                 //catch bug that certain urls will cause Desktop.browse to fail on OS X.
                 //try to use applescript to launch safari
-                if (SystemInfo.isMacOSX()) {
+                if (SystemUtils.IS_OS_MAC_OSX) {
                     try {
                         final ProcessBuilder builder = new ProcessBuilder("/usr/bin/osascript", "-e");
                         String command = "tell application \"Safari\" to open location \"" + url + '"';
