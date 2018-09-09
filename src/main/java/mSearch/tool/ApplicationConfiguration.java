@@ -1,6 +1,5 @@
 package mSearch.tool;
 
-import com.jidesoft.utils.SystemInfo;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 import mSearch.daten.DatenFilm;
@@ -12,6 +11,7 @@ import org.apache.commons.configuration2.event.EventListener;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.io.FileHandler;
 import org.apache.commons.configuration2.sync.ReadWriteSynchronizer;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
 import java.util.NoSuchElementException;
@@ -164,7 +164,7 @@ public class ApplicationConfiguration {
         try {
             boolean b = config.getBoolean(APPLICATION_INSTALL_TAB_SWITCH_LISTENER);
         } catch (NoSuchElementException ignored) {
-            if (SystemInfo.isMacOSX())
+            if (SystemUtils.IS_OS_MAC_OSX)
                 config.setProperty(APPLICATION_INSTALL_TAB_SWITCH_LISTENER, false);
             else
                 config.setProperty(APPLICATION_INSTALL_TAB_SWITCH_LISTENER, true);
