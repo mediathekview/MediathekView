@@ -19,7 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen.allgemein;
 
-import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Listener;
 import mediathek.MediathekGui;
@@ -30,6 +29,7 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.InstallTabSwitchListenerEvent;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -101,7 +101,7 @@ public class PanelEinstellungen extends PanelVorlage {
     }
 
     private void setupTray() {
-        if (SystemInfo.isMacOSX()) {
+        if (SystemUtils.IS_OS_MAC_OSX) {
             jCheckBoxTray.setSelected(false);
             jCheckBoxTray.setEnabled(false);
         } else {
@@ -169,7 +169,7 @@ public class PanelEinstellungen extends PanelVorlage {
     }
 
     private void setupTabSwitchListener() {
-        if (SystemInfo.isMacOSX()) {
+        if (SystemUtils.IS_OS_MAC_OSX) {
             //deactivated on OS X
             cbAutomaticMenuTabSwitching.setEnabled(false);
             config.setProperty(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, false);
