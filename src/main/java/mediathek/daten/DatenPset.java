@@ -19,12 +19,12 @@
  */
 package mediathek.daten;
 
-import com.jidesoft.utils.SystemInfo;
 import mSearch.daten.DatenFilm;
 import mSearch.tool.Log;
 import mediathek.config.Daten;
 import mediathek.tool.GuiFunktionenProgramme;
 import mediathek.tool.MVMessageDialog;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,7 +51,6 @@ public class DatenPset extends MVData<DatenPset> {
     public static final int PROGRAMMSET_AUFLOESUNG = 15;
     public static final int PROGRAMMSET_ADD_ON = 16;
     public static final int PROGRAMMSET_BESCHREIBUNG = 17;
-    public static final int PROGRAMMSET_INFO_URL = 18;
     public static final int PROGRAMMSET_INFODATEI = 19;
     public static final int PROGRAMMSET_SPOTLIGHT = 20;
     public static final int PROGRAMMSET_SUBTITLE = 21;
@@ -65,7 +64,7 @@ public class DatenPset extends MVData<DatenPset> {
     public static final String[] XML_NAMES = {"Name", "Praefix", "Suffix", "Farbe", "Zielpfad", "Zieldateiname", "Thema-anlegen",
         "Abspielen", "Speichern", "Button", "Abo", "Laenge", "Laenge-Feld", "max-Laenge", "max-Laenge-Feld", "Aufloesung", "AddOn",
         "Beschreibung", "Info-URL", "Infodatei", "Spotlight", "Untertitel"};
-    private ListeProg listeProg = new ListeProg();
+    private final ListeProg listeProg = new ListeProg();
     public static boolean[] spaltenAnzeigen = new boolean[MAX_ELEM];
     public String[] arr;
 
@@ -298,7 +297,7 @@ public class DatenPset extends MVData<DatenPset> {
         arr[PROGRAMMSET_LAENGE_BESCHRAENKEN] = Boolean.toString(false);
         arr[PROGRAMMSET_LAENGE_FIELD_BESCHRAENKEN] = Boolean.toString(false);
         arr[PROGRAMMSET_INFODATEI] = Boolean.toString(false);
-        arr[PROGRAMMSET_SPOTLIGHT] = Boolean.toString(SystemInfo.isMacOSX());
+        arr[PROGRAMMSET_SPOTLIGHT] = Boolean.toString(SystemUtils.IS_OS_MAC_OSX);
         arr[PROGRAMMSET_SUBTITLE] = Boolean.toString(false);
         arr[PROGRAMMSET_AUFLOESUNG] = DatenFilm.AUFLOESUNG_NORMAL;
     }

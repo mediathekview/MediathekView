@@ -19,10 +19,10 @@
  */
 package mediathek.config;
 
-import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Log;
 import mediathek.tool.GuiFunktionenProgramme;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,30 +34,6 @@ public class MVConfig {
     public final static String TRENNER = "#=#";
     public static final String SYSTEM = "system";
     private static final HashMap<String, String> HASHMAP = new HashMap<>();
-
-    //das kann zukünftig entfernt werden da keine Erklärungen in der config drin sein müssen
-    /*public static String PARAMETER_INFO = '\n'
-            + "\t" + "\"__system-parameter__xxx\" können nur im Konfigfile geändert werden\n"
-            + '\t' + "und sind auch nicht für ständige Änderungen gedacht.\n"
-            + '\t' + "Wird eine Zeile gelöscht, wird der Parameter wieder mit dem Standardwert angelegt.\n"
-            + '\n'
-            + '\t' + Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.cValue + '\n'
-            + '\t' + "Timeout für direkte Downloads, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_TIMEOUT_SEKUNDEN.initValue + "\n\n"
-            + '\t' + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART.cValue + '\n'
-            + '\t' + "max. Startversuche für fehlgeschlagene Downloads, am Ende aller Downloads\n"
-            + '\t' + "(Versuche insgesamt: DOWNLOAD_MAX_RESTART * DOWNLOAD_MAX_RESTART_HTTP), Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART.initValue + "\n\n"
-            + '\t' + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP.cValue + '\n'
-            + '\t' + "max. Startversuche für fehlgeschlagene Downloads, direkt beim Download,\n"
-            + '\t' + "(Versuche insgesamt: DOWNLOAD_MAX_RESTART * DOWNLOAD_MAX_RESTART_HTTP), Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_MAX_RESTART_HTTP.initValue + "\n\n"
-            + '\t' + Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN.cValue + '\n'
-            + '\t' + "Beim Dialog \"Download weiterführen\" wird nach dieser Zeit der Download weitergeführt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_WEITERFUEHREN_IN_SEKUNDEN.initValue + "\n\n"
-            + '\t' + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.cValue + '\n'
-            + '\t' + "Downloadfehlermeldung wird xx Sedunden lang angezeigt, Standardwert: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_ERRORMSG_IN_SEKUNDEN.initValue + "\n\n"
-            + '\t' + Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS.cValue + '\n'
-            + '\t' + "Downloadprogress im Terminal (-auto) anzeigen: " + Configs.SYSTEM_PARAMETER_DOWNLOAD_PROGRESS.initValue + "\n\n"
-            + '\t' + Configs.SYSTEM_PARAMETER_USERAGENT.cValue + '\n'
-            + '\t' + "Useragent für direkte Downloads, Standardwert: " + Configs.SYSTEM_PARAMETER_USERAGENT.initValue + '\n';
-            */
 
     public enum Configs {
         //============================================
@@ -71,12 +47,12 @@ public class MVConfig {
 
         //============================================
         //Programm-Configs, änderbar über Gui
-        SYSTEM_TABS_TOP("Tabs-oben", SystemInfo.isMacOSX() ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),
-        SYSTEM_TABS_ICON("Tabs-Icon", SystemInfo.isMacOSX() ? Boolean.FALSE.toString() : Boolean.TRUE.toString()),
+        SYSTEM_TABS_TOP("Tabs-oben", SystemUtils.IS_OS_MAC_OSX ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),
+        SYSTEM_TABS_ICON("Tabs-Icon", SystemUtils.IS_OS_MAC_OSX ? Boolean.FALSE.toString() : Boolean.TRUE.toString()),
         SYSTEM_USE_TRAY("Tray-anzeigen", Boolean.FALSE.toString()),
         SYSTEM_LOOK("System-look", "0"),
         SYSTEM_ABOS_SOFORT_SUCHEN("Abos-sofort-suchen", Boolean.TRUE.toString()),
-        SYSTEM_USE_REPLACETABLE("Ersetzungstabelle-verwenden", SystemInfo.isLinux() || SystemInfo.isMacOSX() ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),// wegen des Problems mit ext. Programmaufrufen und Leerzeichen
+        SYSTEM_USE_REPLACETABLE("Ersetzungstabelle-verwenden", SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC_OSX ? Boolean.TRUE.toString() : Boolean.FALSE.toString()),// wegen des Problems mit ext. Programmaufrufen und Leerzeichen
         SYSTEM_ONLY_ASCII("nur-ascii", Boolean.FALSE.toString()),
         SYSTEM_HINWEIS_NR_ANGEZEIGT("Hinweis-Nr-angezeigt"),
         SYSTEM_ORDNER_OEFFNEN("Download-Ordner-oeffnen"),
@@ -342,7 +318,7 @@ public class MVConfig {
     public static synchronized String[][] getAll() {
         final LinkedList<String[]> liste = new LinkedList<>();
         final Set<String> strings = HASHMAP.keySet();
-        final String[] setArray = strings.toArray(new String[strings.size()]);
+        final String[] setArray = strings.toArray(new String[0]);
         for (String entry : setArray) {
             String[] s = new String[2];
             s[0] = entry;
@@ -363,7 +339,7 @@ public class MVConfig {
         }
         l.add(s);
 
-        return l.toArray(new String[l.size()]);
+        return l.toArray(new String[0]);
 
     }
 
