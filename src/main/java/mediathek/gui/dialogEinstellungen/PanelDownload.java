@@ -19,7 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Listener;
 import mediathek.config.Daten;
@@ -27,6 +26,7 @@ import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -78,7 +78,7 @@ public class PanelDownload extends PanelVorlage {
      * ControlsFX has a bug preventing notifications on windows & linux.
      */
     private void disableNotifications() {
-        if (SystemInfo.isWindows() || SystemInfo.isLinux())
+        if (SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_LINUX)
             jCheckBoxNotification.setEnabled(false);
     }
 

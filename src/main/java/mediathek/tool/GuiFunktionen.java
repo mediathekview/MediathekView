@@ -19,13 +19,13 @@
  */
 package mediathek.tool;
 
-import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Functions.OperatingSystemType;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.config.MVConfig.Configs;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -191,7 +191,7 @@ public class GuiFunktionen extends MVFunctionSys {
     private final static int X_MAX_NAME_LENGTH = 255;
 
     public static String[] checkLengthPath(String[] pathName) {
-        if (SystemInfo.isWindows()) {
+        if (SystemUtils.IS_OS_WINDOWS) {
             // in Win dürfen die Pfade nicht länger als 260 Zeichen haben (für die Infodatei kommen noch ".txt" dazu)
             if ((pathName[0].length() + 10) > WIN_MAX_PATH_LENGTH) {
                 // es sollen für den Dateinamen mind. 10 Zeichen bleiben
@@ -289,22 +289,6 @@ public class GuiFunktionen extends MVFunctionSys {
         if (ret.isEmpty()) {
             ret = pfad;
             Log.errorLog(945123647, pfad);
-        }
-        return ret;
-    }
-
-    public static String getFileNameSuffix(String pfad) {
-        // Suffix einer Pfad/Dateinamen extrahieren
-        // FILENAME.SUFF
-        String ret = "";
-        if (pfad != null) {
-            if (!pfad.isEmpty() && pfad.contains(".")) {
-                ret = pfad.substring(pfad.lastIndexOf('.') + 1);
-            }
-        }
-        if (ret.isEmpty()) {
-            ret = pfad;
-            Log.errorLog(802103647, pfad);
         }
         return ret;
     }
