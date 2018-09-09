@@ -54,6 +54,7 @@ import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.table.MVDownloadsTable;
 import mediathek.tool.table.MVTable;
 import net.engio.mbassy.listener.Handler;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -97,7 +98,7 @@ public class GuiDownloads extends PanelVorlage {
     private TModelDownload model;
 
     private void setupF4Key(MediathekGui mediathekGui) {
-        if (SystemInfo.isWindows()) {
+        if (SystemUtils.IS_OS_WINDOWS) {
             // zum Abfangen der Win-F4 für comboboxen
             InputMap im = cbDisplayCategories.getInputMap();
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0), "einstellungen");
