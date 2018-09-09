@@ -19,7 +19,6 @@
  */
 package mediathek.gui.dialogEinstellungen;
 
-import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
@@ -31,6 +30,7 @@ import mediathek.daten.ListePset;
 import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.TextCopyPaste;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -377,7 +377,7 @@ public class PanelPsetKurz extends PanelVorlage {
                 return;
             }
             //we can use native directory chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
+            if (SystemUtils.IS_OS_MAC_OSX) {
                 //we want to select a directory only, so temporarily change properties
                 if (!file) {
                     System.setProperty("apple.awt.fileDialogForDirectories", "true");

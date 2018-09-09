@@ -22,13 +22,13 @@ package mSearch.filmlisten.writer;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.jidesoft.utils.SystemInfo;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.tool.ApplicationConfiguration;
 import mediathek.config.Daten;
 import mediathek.gui.messages.FilmListWriteStartEvent;
 import mediathek.gui.messages.FilmListWriteStopEvent;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -91,7 +91,7 @@ public class FilmListWriter {
             thema = "";
 
             //Check if Cache directory exists on OSX
-            if (SystemInfo.isMacOSX()) {
+            if (SystemUtils.IS_OS_MAC_OSX) {
                 checkOsxCacheDirectory();
             }
 

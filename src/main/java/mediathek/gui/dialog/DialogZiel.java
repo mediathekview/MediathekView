@@ -19,11 +19,11 @@
  */
 package mediathek.gui.dialog;
 
-import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
 import mediathek.tool.EscapeKeyHandler;
 import mediathek.tool.GuiFunktionen;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -199,7 +199,7 @@ public class DialogZiel extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
+            if (SystemUtils.IS_OS_MAC_OSX) {
                 FileDialog chooser = new FileDialog(parent, "Logdatei speichern");
                 chooser.setMode(FileDialog.SAVE);
                 chooser.setVisible(true);

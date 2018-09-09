@@ -19,7 +19,6 @@
  */
 package mediathek.gui.dialog;
 
-import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.FilenameUtils;
 import mSearch.tool.Log;
 import mediathek.config.Icons;
@@ -27,6 +26,7 @@ import mediathek.config.MVColor;
 import mediathek.config.MVConfig;
 import mediathek.daten.DatenPset;
 import mediathek.tool.EscapeKeyHandler;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -44,9 +44,9 @@ public class DialogAddMoreDownload extends JDialog {
     public boolean info;
     public boolean subtitle;
 
-    private JFrame parent = null;
+    private final JFrame parent;
     private final DatenPset pSet;
-    private String orgPfad = "";
+    private final String orgPfad;
 
     public DialogAddMoreDownload(JFrame parent, DatenPset pSet) {
         super(parent, true);
@@ -282,7 +282,7 @@ public class DialogAddMoreDownload extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             //we can use native directory chooser on Mac...
-            if (SystemInfo.isMacOSX()) {
+            if (SystemUtils.IS_OS_MAC_OSX) {
                 //we want to select a directory only, so temporarily change properties
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
                 FileDialog chooser = new FileDialog(parent, "Film speichern");

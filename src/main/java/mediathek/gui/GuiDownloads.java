@@ -19,7 +19,6 @@
  */
 package mediathek.gui;
 
-import com.jidesoft.utils.SystemInfo;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
@@ -1371,7 +1370,7 @@ public class GuiDownloads extends PanelVorlage {
                         }
                     } else {
                         String menuPath;
-                        if (SystemInfo.isMacOSX()) {
+                        if (SystemUtils.IS_OS_MAC_OSX) {
                             menuPath = "MediathekView->Einstellungen…->Aufzeichnen und Abspielen->Set bearbeiten";
                         } else {
                             menuPath = "Datei->Einstellungen->Set bearbeiten";
