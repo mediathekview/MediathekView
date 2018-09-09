@@ -30,7 +30,6 @@ import mediathek.tool.EscapeKeyHandler;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.net.URISyntaxException;
 
 @SuppressWarnings("serial")
 public class DialogNewSet extends JDialog {
@@ -64,10 +63,7 @@ public class DialogNewSet extends JDialog {
                 + '\n'
                 + "   (Wenn Sie die Einstellungen nicht verändert haben\n"
                 + "    ist das die Empfehlung)");
-        try {
-            hyperlinkButton.setAction(new UrlHyperlinkAction(pparent, Konstanten.ADRESSE_ANLEITUNG));
-        } catch (URISyntaxException ignored) {
-        }
+        hyperlinkButton.setAction(new UrlHyperlinkAction(pparent, Konstanten.ADRESSE_ANLEITUNG));
         jButtonAdd.addActionListener(e -> {
             ok = true;
             beenden();
