@@ -43,6 +43,7 @@ import java.awt.event.*;
 @SuppressWarnings("serial")
 public class GuiAbo extends PanelVorlage {
     private final MVTable tabelle;
+    public static final String NAME = "Abos";
 
     public void tabelleSpeichern() {
         if (tabelle != null) {
