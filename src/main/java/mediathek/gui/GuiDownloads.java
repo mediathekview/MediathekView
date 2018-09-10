@@ -90,6 +90,8 @@ public class GuiDownloads extends PanelVorlage {
     private final java.util.Timer timer = new java.util.Timer(false);
     private TimerTask timerTask = null;
     private final MVTable tabelle;
+    public static final String NAME = "Downloads";
+
 
     /**
      * The internally used model.

@@ -73,6 +73,7 @@ import java.util.Optional;
 public class GuiFilme extends PanelVorlage {
 
     private final MVTable tabelle;
+    public static final String NAME = "Filme";
 
     public void tabelleSpeichern() {
         if (tabelle != null) {

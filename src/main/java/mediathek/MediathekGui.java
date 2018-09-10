@@ -95,9 +95,6 @@ public class MediathekGui extends JFrame {
     private static final String NONE = "none";
     private static final String SPLASHSCREEN_TEXT_ANWENDUNGSDATEN_LADEN = "Anwendungsdaten laden...";
     private static final String SPLASHSCREEN_TEXT_GUI_INITIALISIEREN = "GUI Initialisieren...";
-    private static final String TABNAME_FILME = "Filme";
-    private static final String TABNAME_DOWNLOADS = "Downloads";
-    private static final String TABNAME_ABOS = "Abos";
     private static final String LOG_TEXT_DIE_DOWNLOADS_MUESSEN_ZUERST_GESTARTET_WERDEN = "Die Downloads müssen zuerst gestartet werden.";
     private static final String LOG_TEXT_KEINE_LAUFENDEN_DOWNLOADS = "Keine laufenden Downloads!";
 
@@ -542,17 +539,21 @@ public class MediathekGui extends JFrame {
         tabAbos = new GuiAbo(daten, this);
         tabFilme = new GuiFilme(daten, this);
 
-        jTabbedPane.addTab(TABNAME_FILME, tabFilme);
-        jTabbedPane.addTab(TABNAME_DOWNLOADS, tabDownloads);
-        jTabbedPane.addTab(TABNAME_ABOS,tabAbos);
+        jTabbedPane.addTab(GuiFilme.NAME, tabFilme);
+        jTabbedPane.addTab(GuiDownloads.NAME, tabDownloads);
+        jTabbedPane.addTab(GuiAbo.NAME,tabAbos);
         jTabbedPane.setSelectedIndex(0);
 
         setTabPlacement();
         addTabIcons();
 
+        installTabIconListener();
+    }
+
+    private void installTabIconListener() {
         jTabbedPane.addChangeListener(l -> {
             setTabPlacement();
-            addTabIcons(); //damit das sel. Tab das richtige Icon bekommt
+            addTabIcons();
         });
     }
 
