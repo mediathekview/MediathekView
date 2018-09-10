@@ -21,12 +21,12 @@ package mediathek.gui;
 
 import javafx.application.Platform;
 import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.Listener;
 import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.gui.messages.TimerEvent;
+import mediathek.gui.messages.TrayIconEvent;
 import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -110,7 +110,7 @@ public final class MVTray {
                 MediathekGui.ui().setVisible(true); // WICHTIG!!
                 MVConfig.add(MVConfig.Configs.SYSTEM_USE_TRAY, Boolean.toString(false));
                 MediathekGui.ui().setTray();
-                Listener.notify(Listener.EREIGNIS_TRAYICON, MVTray.class.getSimpleName());
+                daten.getMessageBus().publishAsync(new TrayIconEvent());
             });
             popup.add(itemRemoveTray);
 

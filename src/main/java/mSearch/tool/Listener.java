@@ -47,7 +47,6 @@ public class Listener implements EventListener {
     public static final int EREIGNIS_REIHENFOLGE_DOWNLOAD = 29;
     public static final int EREIGNIS_BESCHREIBUNG = 32;
     public static final int EREIGNIS_RESET_INTERRUPT = 33;
-    public static final int EREIGNIS_TRAYICON = 35;
     public static final int EREIGNIS_FONT = 36;
     public static final int EREIGNIS_DIALOG_MEDIA_DB = 37;
     public static final int EREIGNIS_REPLACELIST_CHANGED = 38;
