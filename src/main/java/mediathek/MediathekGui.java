@@ -414,7 +414,8 @@ public class MediathekGui extends JFrame {
         Listener.addListener(new Listener(Listener.EREIGNIS_TABS_TOP, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
-                designTabs();
+                setTabPlacement();
+                addTabIcons();
             }
         });
         Listener.addListener(new Listener(Listener.EREIGNIS_BANDWIDTH_MONITOR, MediathekGui.class.getSimpleName()) {
@@ -545,12 +546,13 @@ public class MediathekGui extends JFrame {
         jTabbedPane.addTab(TABNAME_DOWNLOADS, tabDownloads);
         jTabbedPane.addTab(TABNAME_ABOS,tabAbos);
         jTabbedPane.setSelectedIndex(0);
-        jTabbedPane.updateUI();
-        designTabs();
-        tabFilme.onComponentShown();
+
+        setTabPlacement();
+        addTabIcons();
 
         jTabbedPane.addChangeListener(l -> {
-            designTabs(); //damit das sel. Tab das richtige Icon bekommt
+            setTabPlacement();
+            addTabIcons(); //damit das sel. Tab das richtige Icon bekommt
         });
     }
 
@@ -563,74 +565,37 @@ public class MediathekGui extends JFrame {
         miSearchForProgramUpdate.setEnabled(enable);
     }
 
-    private void designTabs() {
+    /**
+     * Change placement of tabs based on settings
+     */
+    private void setTabPlacement() {
         final boolean top = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TABS_TOP));
+        if (top)
+            jTabbedPane.setTabPlacement(JTabbedPane.TOP);
+        else
+            jTabbedPane.setTabPlacement(JTabbedPane.LEFT);
+    }
+
+    private void addTabIcons() {
         final boolean icon = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TABS_ICON));
 
-        if (top) {
-            jTabbedPane.setTabPlacement(JTabbedPane.TOP);
+        //no icons...
+        if (!icon) {
+            setTabIcon(tabFilme, null);
+            setTabIcon(tabDownloads, null);
+            setTabIcon(tabAbos, null);
         } else {
-            jTabbedPane.setTabPlacement(JTabbedPane.LEFT);
-        }
-
-        for (int i = 0; i < jTabbedPane.getTabCount(); ++i) {
-            Component c = jTabbedPane.getComponentAt(i);
-            ImageIcon ic = null;
-            if (c.equals(tabFilme)) {
-                if (jTabbedPane.getSelectedIndex() == i) {
-                    ic = top ? Icons.ICON_TAB_TOP_FILM : Icons.ICON_TAB_FILM;
-                } else {
-                    ic = top ? Icons.ICON_TAB_TOP_FILM_SW : Icons.ICON_TAB_FILM_SW;
-                }
-            }
-            if (c.equals(tabDownloads)) {
-                if (jTabbedPane.getSelectedIndex() == i) {
-                    ic = top ? Icons.ICON_TAB_TOP_DOWNLOAD : Icons.ICON_TAB_DOWNLOAD;
-                } else {
-                    ic = top ? Icons.ICON_TAB_TOP_DOWNLOAD_SW : Icons.ICON_TAB_DOWNLOAD_SW;
-                }
-            }
-            if (c.equals(tabAbos)) {
-                if (jTabbedPane.getSelectedIndex() == i) {
-                    ic = top ? Icons.ICON_TAB_TOP_ABO : Icons.ICON_TAB_ABO;
-                } else {
-                    ic = top ? Icons.ICON_TAB_TOP_ABO_SW : Icons.ICON_TAB_ABO_SW;
-                }
-            }
-
-            String s = jTabbedPane.getTitleAt(i);
-            JLabel lbl = makeLable(s, ic, top);
-            if (icon) {
-                jTabbedPane.setTabComponentAt(i, lbl);
-            } else {
-                jTabbedPane.setTabComponentAt(i, null);
-            }
+            //setup icons for each tab here
+            setTabIcon(tabFilme, Icons.ICON_TAB_FILM);
+            setTabIcon(tabDownloads, Icons.ICON_TAB_DOWNLOAD);
+            setTabIcon(tabAbos, Icons.ICON_TAB_ABO);
         }
     }
 
-    private JLabel makeLable(String text, ImageIcon ic, boolean top) {
-        JLabel lbl = new JLabel(text);
-
-        lbl.setBorder(null);
-        lbl.setIcon(ic);
-        lbl.setOpaque(false);
-        lbl.setBorder(new EmptyBorder(10, 5, 10, 5));
-
-        if (top) {
-            lbl.setVerticalTextPosition(JLabel.CENTER);
-            lbl.setVerticalAlignment(JLabel.CENTER);
-            lbl.setHorizontalTextPosition(JLabel.RIGHT);
-            lbl.setHorizontalAlignment(JLabel.LEFT);
-        } else {
-            lbl.setVerticalTextPosition(JLabel.TOP);
-            lbl.setVerticalAlignment(JLabel.BOTTOM);
-            lbl.setHorizontalTextPosition(JLabel.CENTER);
-            lbl.setHorizontalAlignment(JLabel.CENTER);
-        }
-
-        return lbl;
+    private void setTabIcon(Component tab, Icon icon) {
+        final int index = jTabbedPane.indexOfComponent(tab);
+        jTabbedPane.setIconAt(index,icon);
     }
-
     /**
      * Number of active downloads
      */

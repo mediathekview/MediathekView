@@ -108,17 +108,6 @@ public class Icons {
     public static final ImageIcon ICON_TAB_FILM = GetIcon.getProgramIcon("tab-film.png", W, H);
     public static final ImageIcon ICON_TAB_DOWNLOAD = GetIcon.getProgramIcon("tab-download.png", W, H);
     public static final ImageIcon ICON_TAB_ABO = GetIcon.getProgramIcon("tab-abo.png", W, H);
-    public static final ImageIcon ICON_TAB_FILM_SW = GetIcon.getProgramIcon("tab-film-sw.png", W, H);
-    public static final ImageIcon ICON_TAB_DOWNLOAD_SW = GetIcon.getProgramIcon("tab-download-sw.png", W, H);
-    public static final ImageIcon ICON_TAB_ABO_SW = GetIcon.getProgramIcon("tab-abo-sw.png", W, H);
-
-    private static final int WT = 20, HT = 20;
-    public static final ImageIcon ICON_TAB_TOP_FILM = GetIcon.getProgramIcon("tab-film-top.png", WT, HT);
-    public static final ImageIcon ICON_TAB_TOP_DOWNLOAD = GetIcon.getProgramIcon("tab-download-top.png", WT, HT);
-    public static final ImageIcon ICON_TAB_TOP_ABO = GetIcon.getProgramIcon("tab-abo-top.png", WT, HT);
-    public static final ImageIcon ICON_TAB_TOP_FILM_SW = GetIcon.getProgramIcon("tab-film-top-sw.png", WT, HT);
-    public static final ImageIcon ICON_TAB_TOP_DOWNLOAD_SW = GetIcon.getProgramIcon("tab-download-top-sw.png", WT, HT);
-    public static final ImageIcon ICON_TAB_TOP_ABO_SW = GetIcon.getProgramIcon("tab-abo-top-sw.png", WT, HT);
 
     public static final Image ICON_TRAY = GetIcon.getProgramIcon("tray.png", 256, 256).getImage();
     public static final Image ICON_TRAY_ERROR = GetIcon.getProgramIcon("tray-fehler.png", 256, 256).getImage();
