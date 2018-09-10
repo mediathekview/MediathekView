@@ -1,11 +1,13 @@
 package mediathek.tool.cellrenderer;
 
 import mSearch.tool.ApplicationConfiguration;
-import mSearch.tool.Listener;
+import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVColor;
 import mediathek.controller.starter.Start;
+import mediathek.gui.messages.GeoStateChangedEvent;
 import mediathek.tool.MVSenderIconCache;
+import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 
 import javax.swing.*;
@@ -24,13 +26,14 @@ public class CellRendererBaseWithStart extends CellRendererBase {
     public CellRendererBaseWithStart(MVSenderIconCache cache) {
         super(cache);
 
+        Daten.getInstance().getMessageBus().subscribe(this);
+
         geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT, false);
-        Listener.addListener(new Listener(Listener.EREIGNIS_GEO, CellRendererBaseWithStart.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT, false);
-            }
-        });
+    }
+
+    @Handler
+    private void handleGeoStateChanged(GeoStateChangedEvent e) {
+        SwingUtilities.invokeLater(() -> geoMelden = config.getBoolean(ApplicationConfiguration.GEO_REPORT, false));
     }
 
     protected void setBackgroundColor(final Component c, final Start s, final boolean isSelected) {
