@@ -57,7 +57,7 @@ public class Listener implements EventListener {
     public static final int EREIGNIS_MEDIA_DB_START = 41;
     public static final int EREIGNIS_MEDIA_DB_STOP = 42;
     public static final int EREIGNIS_TOOLBAR_BUTTON_KLEIN = 45;
-    public static final int EREIGNIS_BANDWIDTH_MONITOR = 46;
+
     private static final EventListenerList listeners = new EventListenerList();
     private static final Logger logger = LogManager.getLogger(Listener.class);
     public int[] mvEreignis = {-1};

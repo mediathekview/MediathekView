@@ -5,12 +5,13 @@ import info.monitorenter.gui.chart.IAxis;
 import info.monitorenter.gui.chart.labelformatters.LabelFormatterAutoUnits;
 import info.monitorenter.gui.chart.rangepolicies.RangePolicyForcedPoint;
 import info.monitorenter.gui.chart.traces.Trace2DLtd;
-import mSearch.tool.Listener;
 import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
+import mediathek.gui.messages.BandwidthMonitorStateChangedEvent;
 import mediathek.tool.GuiFunktionen;
+import net.engio.mbassy.listener.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -50,14 +51,14 @@ public class MVBandwidthMonitor {
             calculateHudPosition();
         }
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitor.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setVisibility();
-            }
-        });
+        Daten.getInstance().getMessageBus().subscribe(this);
 
         setVisibility();
+    }
+
+    @Handler
+    private void handleBandwidthMonitorStateChangedEvent(BandwidthMonitorStateChangedEvent e) {
+        SwingUtilities.invokeLater(this::setVisibility);
     }
 
     private void createDialog(JFrame parent) {
@@ -114,7 +115,7 @@ public class MVBandwidthMonitor {
 
     private void beenden() {
         MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(false));
-        Listener.notify(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitor.class.getSimpleName());
+        Daten.getInstance().getMessageBus().publishAsync(new BandwidthMonitorStateChangedEvent());
         setVisibility();
     }
 
