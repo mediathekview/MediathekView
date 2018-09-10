@@ -307,7 +307,7 @@ public class ListeMediaDB extends LinkedList<DatenMediaDB> {
                     if (file.isDirectory()) {
                         searchFile(file, save);
                     } else if (checkSuffix(suffix, file.getName())) {
-                        daten.getListeMediaDB().add(new DatenMediaDB(file.getName(), file.getParent(), file.length(), save));
+                        daten.getListeMediaDB().add(new DatenMediaDB(file.getName(), file.getParent().intern(), file.length(), save));
                     }
                 }
             }
