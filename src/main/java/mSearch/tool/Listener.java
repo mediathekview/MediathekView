@@ -56,7 +56,6 @@ public class Listener implements EventListener {
     public static final int EREIGNIS_BLACKLIST_START_GEAENDERT = 40;
     public static final int EREIGNIS_MEDIA_DB_START = 41;
     public static final int EREIGNIS_MEDIA_DB_STOP = 42;
-    public static final int EREIGNIS_TABS_TOP = 43;
     public static final int EREIGNIS_TOOLBAR_BUTTON_KLEIN = 45;
     public static final int EREIGNIS_BANDWIDTH_MONITOR = 46;
     private static final EventListenerList listeners = new EventListenerList();

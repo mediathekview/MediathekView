@@ -400,6 +400,14 @@ public class MediathekGui extends JFrame {
         Daten.filmInfo = new InfoDialog(this, senderIconCache);
     }
 
+    @Handler
+    private void handleTabVisualSettingsChangedEvent(TabVisualSettingsChangedEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            configureTabPlacement();
+            configureTabIcons();
+        });
+    }
+
     private void addListener() {
         Listener.addListener(new Listener(Listener.EREIGNIS_DIALOG_MEDIA_DB, MediathekGui.class.getSimpleName()) {
             @Override
@@ -408,13 +416,6 @@ public class MediathekGui extends JFrame {
             }
         });
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_TABS_TOP, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setTabPlacement();
-                addTabIcons();
-            }
-        });
         Listener.addListener(new Listener(Listener.EREIGNIS_BANDWIDTH_MONITOR, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -544,17 +545,8 @@ public class MediathekGui extends JFrame {
         jTabbedPane.addTab(GuiAbo.NAME,tabAbos);
         jTabbedPane.setSelectedIndex(0);
 
-        setTabPlacement();
-        addTabIcons();
-
-        installTabIconListener();
-    }
-
-    private void installTabIconListener() {
-        jTabbedPane.addChangeListener(l -> {
-            setTabPlacement();
-            addTabIcons();
-        });
+        configureTabPlacement();
+        configureTabIcons();
     }
 
     /**
@@ -569,7 +561,7 @@ public class MediathekGui extends JFrame {
     /**
      * Change placement of tabs based on settings
      */
-    private void setTabPlacement() {
+    private void configureTabPlacement() {
         final boolean top = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TABS_TOP));
         if (top)
             jTabbedPane.setTabPlacement(JTabbedPane.TOP);
@@ -577,7 +569,7 @@ public class MediathekGui extends JFrame {
             jTabbedPane.setTabPlacement(JTabbedPane.LEFT);
     }
 
-    private void addTabIcons() {
+    private void configureTabIcons() {
         final boolean icon = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TABS_ICON));
 
         //no icons...
