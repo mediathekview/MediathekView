@@ -28,6 +28,7 @@ import mediathek.config.MVConfig;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.InstallTabSwitchListenerEvent;
+import mediathek.gui.messages.TabVisualSettingsChangedEvent;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -91,12 +92,12 @@ public class PanelEinstellungen extends PanelVorlage {
         jCheckBoxTabsTop.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TABS_TOP)));
         jCheckBoxTabsTop.addActionListener(ae -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_TABS_TOP, Boolean.toString(jCheckBoxTabsTop.isSelected()));
-            Listener.notify(Listener.EREIGNIS_TABS_TOP, PanelEinstellungen.class.getSimpleName());
+            Daten.getInstance().getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
         });
         jCheckBoxTabIcon.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TABS_ICON)));
         jCheckBoxTabIcon.addActionListener(ae -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_TABS_ICON, Boolean.toString(jCheckBoxTabIcon.isSelected()));
-            Listener.notify(Listener.EREIGNIS_TABS_TOP, PanelEinstellungen.class.getSimpleName());
+            Daten.getInstance().getMessageBus().publishAsync(new TabVisualSettingsChangedEvent());
         });
     }
 
