@@ -29,6 +29,8 @@ import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
 import mediathek.gui.messages.InstallTabSwitchListenerEvent;
 import mediathek.gui.messages.TabVisualSettingsChangedEvent;
+import mediathek.gui.messages.TrayIconEvent;
+import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -101,17 +103,18 @@ public class PanelEinstellungen extends PanelVorlage {
         });
     }
 
+    @Handler
+    private void handleTrayIconEvent(TrayIconEvent e) {
+        SwingUtilities.invokeLater(() -> jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY))));
+    }
+
     private void setupTray() {
         if (SystemUtils.IS_OS_MAC_OSX) {
             jCheckBoxTray.setSelected(false);
             jCheckBoxTray.setEnabled(false);
         } else {
-            Listener.addListener(new Listener(Listener.EREIGNIS_TRAYICON, PanelEinstellungen.class.getSimpleName()) {
-                @Override
-                public void ping() {
-                    jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY)));
-                }
-            });
+            daten.getMessageBus().subscribe(this);
+
             jCheckBoxTray.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY)));
             jCheckBoxTray.addActionListener(ae -> {
                 MVConfig.add(MVConfig.Configs.SYSTEM_USE_TRAY, Boolean.toString(jCheckBoxTray.isSelected()));
