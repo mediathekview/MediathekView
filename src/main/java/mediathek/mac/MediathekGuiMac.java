@@ -7,7 +7,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
-import mediathek.gui.bandwidth.MVBandwidthMonitorOSX;
 import mediathek.gui.messages.DownloadFinishedEvent;
 import mediathek.gui.messages.DownloadStartEvent;
 import mediathek.gui.messages.InstallTabSwitchListenerEvent;
@@ -124,11 +123,6 @@ public class MediathekGuiMac extends MediathekGui {
         //not needed on OSX, located in apple menu
         jMenuHilfe.remove(jSeparatorAboutApplication);
         jMenuHilfe.remove(jMenuItemAboutApplication);
-    }
-
-    @Override
-    protected void createBandwidthMonitor(JFrame parent) {
-        bandwidthMonitor = new MVBandwidthMonitorOSX(this);
     }
 
     /**

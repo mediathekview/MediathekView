@@ -10,6 +10,7 @@ import mediathek.config.Daten;
 import mediathek.config.MVConfig;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
+import mediathek.tool.GuiFunktionen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,11 +25,11 @@ import java.util.TimerTask;
 /**
  * This class will manage and display the download bandwidth chart display.
  */
-public class MVBandwidthMonitorOSX implements IBandwidthMonitor {
+public class MVBandwidthMonitor {
 
     private static final int DEFAULT_WIDTH = 300;
     private static final int DEFAULT_HEIGHT = 150;
-    private static final Logger logger = LogManager.getLogger(MVBandwidthMonitorOSX.class);
+    private static final Logger logger = LogManager.getLogger(MVBandwidthMonitor.class);
     private final Trace2DLtd m_trace = new Trace2DLtd(300);
     /**
      * Timer for collecting sample data.
@@ -39,21 +40,22 @@ public class MVBandwidthMonitorOSX implements IBandwidthMonitor {
     private IAxis<?> x_achse = null;
     private TimerTask timerTask = null;
 
-    public MVBandwidthMonitorOSX(JFrame parent) {
+    public MVBandwidthMonitor(JFrame parent) {
         createDialog(parent);
 
         hudDialog.setLayout(new BorderLayout(0, 0));
         hudDialog.getContentPane().add(createChart(), BorderLayout.CENTER);
-        hudDialog.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        if (!GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_INFODIALOG, hudDialog, null)) {
+            hudDialog.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+            calculateHudPosition();
+        }
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitorOSX.class.getSimpleName()) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitor.class.getSimpleName()) {
             @Override
             public void ping() {
                 setVisibility();
             }
         });
-
-        calculateHudPosition();
 
         setVisibility();
     }
@@ -112,7 +114,7 @@ public class MVBandwidthMonitorOSX implements IBandwidthMonitor {
 
     private void beenden() {
         MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(false));
-        Listener.notify(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitorLWin.class.getSimpleName());
+        Listener.notify(Listener.EREIGNIS_BANDWIDTH_MONITOR, MVBandwidthMonitor.class.getSimpleName());
         setVisibility();
     }
 
@@ -172,9 +174,8 @@ public class MVBandwidthMonitorOSX implements IBandwidthMonitor {
         }
     }
 
-    @Override
     public void writeConfig() {
-        //do nothing for OSX
+        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_INFODIALOG, hudDialog);
     }
 }
 
