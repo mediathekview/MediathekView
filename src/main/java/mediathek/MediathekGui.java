@@ -58,7 +58,7 @@ import mediathek.javafx.*;
 import mediathek.res.GetIcon;
 import mediathek.tool.*;
 import mediathek.tool.threads.IndicatorThread;
-import mediathek.update.CheckUpdate;
+import mediathek.update.ProgramUpdateCheck;
 import mediathek.update.ProgrammUpdateSuchen;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
@@ -514,22 +514,14 @@ public class MediathekGui extends JFrame {
     }
 
     /**
-     * 24 hour timer for repeating update checks
-     */
-    private Timer updateCheckTimer;
-
-    /**
      * This will setup a repeating update check every 24 hours.
      */
     private void setupUpdateCheck() {
-        updateCheckTimer = new Timer(500, e -> {
-            // Prüfen obs ein Programmupdate gibt
-            new CheckUpdate(this, daten).start();
-        });
-        updateCheckTimer.setRepeats(true);
-        updateCheckTimer.setDelay((int) TimeUnit.MILLISECONDS.convert(24, TimeUnit.HOURS));
-        updateCheckTimer.start();
+        programUpdateChecker = new ProgramUpdateCheck(daten);
+        programUpdateChecker.start();
     }
+
+    private ProgramUpdateCheck programUpdateChecker;
 
     public void setTray() {
         if (tray == null && Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_USE_TRAY))) {
@@ -572,8 +564,9 @@ public class MediathekGui extends JFrame {
     }
 
     private void designTabs() {
-        boolean top = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TABS_TOP));
-        boolean icon = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TABS_ICON));
+        final boolean top = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TABS_TOP));
+        final boolean icon = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TABS_ICON));
+
         if (top) {
             jTabbedPane.setTabPlacement(JTabbedPane.TOP);
         } else {
@@ -691,16 +684,16 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    private final HashMap<JMenu, MenuLST> menuListeners = new HashMap<>();
+    private final HashMap<JMenu, MenuTabSwitchListener> menuListeners = new HashMap<>();
 
     /**
      * Install the listeners which will cause automatic tab switching based on associated Menu item.
      */
     protected void installMenuTabSwitchListener() {
         //initial setup
-        menuListeners.put(jMenuFilme, new MenuLST(TABS.TAB_FILME));
-        menuListeners.put(jMenuDownload, new MenuLST(TABS.TAB_DOWNLOADS));
-        menuListeners.put(jMenuAbos, new MenuLST(TABS.TAB_ABOS));
+        menuListeners.put(jMenuFilme, new MenuTabSwitchListener(TABS.TAB_FILME));
+        menuListeners.put(jMenuDownload, new MenuTabSwitchListener(TABS.TAB_DOWNLOADS));
+        menuListeners.put(jMenuAbos, new MenuTabSwitchListener(TABS.TAB_ABOS));
 
         //now assign if really necessary
         if (config.getBoolean(ApplicationConfiguration.APPLICATION_INSTALL_TAB_SWITCH_LISTENER, true)) {
@@ -958,12 +951,6 @@ public class MediathekGui extends JFrame {
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, daten.getDialogMediaDB());
     }
 
-    private void terminateUpdateTimer() {
-        //do not search for updates anymore
-        if (updateCheckTimer != null)
-            updateCheckTimer.stop();
-    }
-
     private void closeControlsFxWorkaroundStage() {
         Platform.runLater(() -> {
             if (controlsFxWorkaroundStage != null)
@@ -992,7 +979,7 @@ public class MediathekGui extends JFrame {
 
         closeControlsFxWorkaroundStage();
 
-        terminateUpdateTimer();
+        programUpdateChecker.close();
 
         ShutdownDialog dialog = new ShutdownDialog(this, 11);
         dialog.show();
@@ -1108,11 +1095,11 @@ public class MediathekGui extends JFrame {
         new ProgrammUpdateSuchen().checkVersion(!infos, infos, true);
     }
 
-    private class MenuLST implements MenuListener {
+    private class MenuTabSwitchListener implements MenuListener {
 
         private final TABS tabs;
 
-        MenuLST(TABS tabs) {
+        MenuTabSwitchListener(TABS tabs) {
             this.tabs = tabs;
         }
 
