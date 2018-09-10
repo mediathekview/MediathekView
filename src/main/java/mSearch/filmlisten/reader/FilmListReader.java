@@ -133,7 +133,7 @@ public class FilmListReader implements AutoCloseable {
         if (parsedSender.isEmpty())
             datenFilm.setSender(sender);
         else {
-            datenFilm.setSender(parsedSender.intern());
+            datenFilm.setSender(parsedSender);
             //store for future reads
             sender = parsedSender;
         }
@@ -192,8 +192,7 @@ public class FilmListReader implements AutoCloseable {
     }
 
     private void parseGroesse(JsonParser jp, DatenFilm datenFilm) throws IOException {
-        String value = checkedString(jp);
-        datenFilm.arr[DatenFilm.FILM_GROESSE] = value.intern();
+        datenFilm.arr[DatenFilm.FILM_GROESSE] = checkedString(jp);
     }
 
     /**
