@@ -1,22 +1,3 @@
-/*
- *  MediathekView
- *  Copyright (C) 2008 W. Xaver
- *  W.Xaver[at]googlemail.com
- *  http://zdfmediathk.sourceforge.net/
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.update;
 
 import mediathek.MediathekGui;
@@ -33,54 +14,41 @@ import org.apache.logging.log4j.Logger;
 import javax.swing.*;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
 
-public class CheckUpdate extends Thread {
+/**
+ * Perform check for updates every 24 hours if program is running long enough.
+ */
+public class ProgramUpdateCheck implements AutoCloseable {
+    private static final Logger logger = LogManager.getLogger(ProgramUpdateCheck.class);
+    /**
+     * 24 hour timer for repeating update checks
+     */
+    private final Timer updateCheckTimer;
+
     private final Daten daten;
-    private final JFrame parent;
-    private static final Logger logger = LogManager.getLogger(CheckUpdate.class);
 
-    public CheckUpdate(JFrame parent, Daten daten) {
+    public ProgramUpdateCheck(Daten daten) {
         this.daten = daten;
-        this.parent = parent;
 
-        setName("CheckUpdate Thread");
-    }
-
-    public void run() {
-        logger.info("CheckUpdate started.");
-        try {
-            //first check if network is available...
-            InetAddress serverAddr = InetAddress.getByName("res.mediathekview.de");
-            if (serverAddr.isReachable(1000)) {
-                //we have internet...
-                final MediathekGui gui = MediathekGui.ui();
-                if (gui != null)
-                    SwingUtilities.invokeLater(() -> gui.enableUpdateMenuItem(false));
-
-                searchForProgramUpdate();
-
-                checkForPsetUpdates();
-
-                if (gui != null)
-                    SwingUtilities.invokeLater(() -> gui.enableUpdateMenuItem(true));
-
-            }
-        } catch (IOException ignored) {
-            //do not log errors as we expect them here...
-        }
-        logger.info("CheckUpdate finished.");
+        updateCheckTimer = new Timer(1000, e -> ForkJoinPool.commonPool().execute(this::performUpdateCheck));
+        updateCheckTimer.setRepeats(true);
+        updateCheckTimer.setDelay((int) TimeUnit.MILLISECONDS.convert(24, TimeUnit.HOURS));
     }
 
     private void searchForProgramUpdate() {
-        final ProgrammUpdateSuchen pgrUpdate = new ProgrammUpdateSuchen();
+        var pgrUpdate = new ProgrammUpdateSuchen();
         pgrUpdate.checkVersion(false, true, false);
     }
 
     private void checkForPsetUpdates() {
         try {
             SwingUtilities.invokeLater(() -> {
+                final var parent = MediathekGui.ui();
                 ListePset listePsetStandard = ListePsetVorlagen.getStandarset(parent, daten, false /*replaceMuster*/);
                 String version = MVConfig.get(MVConfig.Configs.SYSTEM_VERSION_PROGRAMMSET);
                 if (listePsetStandard != null) {
@@ -149,4 +117,43 @@ public class CheckUpdate extends Thread {
         }
     }
 
+    private void performUpdateCheck() {
+        logger.info("performUpdateCheck started.");
+        var gui = MediathekGui.ui();
+        try {
+            //first check if network is available...
+            InetAddress serverAddr = InetAddress.getByName("res.mediathekview.de");
+            if (serverAddr.isReachable(1000)) {
+                //we have internet...
+                SwingUtilities.invokeLater(() -> gui.enableUpdateMenuItem(false));
+
+                searchForProgramUpdate();
+
+                checkForPsetUpdates();
+            } else
+                logger.info("Network is not reachable.");
+        }
+        catch (UnknownHostException ignored) {
+        }
+        catch (IOException ex) {
+            //do not log errors as we expect them here...
+            logger.error("Update check caused exception:",ex);
+        } finally {
+            SwingUtilities.invokeLater(() -> gui.enableUpdateMenuItem(true));
+        }
+        logger.info("performUpdateCheck finished.");
+    }
+
+    public void start() {
+        logger.info("ProgramUpdateCheck Started.");
+        updateCheckTimer.start();
+    }
+
+    @Override
+    public void close() {
+        if (updateCheckTimer != null) {
+            updateCheckTimer.stop();
+        }
+        logger.info("ProgramUpdateCheck closed.");
+    }
 }
