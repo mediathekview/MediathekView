@@ -408,13 +408,11 @@ public class MediathekGui extends JFrame {
                 jCheckBoxMenuItemMediaDb.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
             }
         });
+    }
 
-        Listener.addListener(new Listener(Listener.EREIGNIS_BANDWIDTH_MONITOR, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                cbBandwidthDisplay.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE)));
-            }
-        });
+    @Handler
+    private void handleBandwidthMonitorStateChangedEvent(BandwidthMonitorStateChangedEvent e) {
+        SwingUtilities.invokeLater(() -> cbBandwidthDisplay.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE))));
     }
 
     protected void setFocusOnSearchField() {
@@ -746,7 +744,7 @@ public class MediathekGui extends JFrame {
         cbBandwidthDisplay.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE)));
         cbBandwidthDisplay.addActionListener(e -> {
             MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(cbBandwidthDisplay.isSelected()));
-            Listener.notify(Listener.EREIGNIS_BANDWIDTH_MONITOR, MediathekGui.class.getSimpleName());
+            daten.getMessageBus().publishAsync(new BandwidthMonitorStateChangedEvent());
         });
     }
 
