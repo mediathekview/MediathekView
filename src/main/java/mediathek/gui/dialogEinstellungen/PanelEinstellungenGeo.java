@@ -27,6 +27,7 @@ import mediathek.config.Icons;
 import mediathek.file.GetFile;
 import mediathek.gui.PanelVorlage;
 import mediathek.gui.dialog.DialogHilfe;
+import mediathek.gui.messages.GeoStateChangedEvent;
 import org.apache.commons.configuration2.Configuration;
 
 import javax.swing.*;
@@ -91,7 +92,7 @@ public class PanelEinstellungenGeo extends PanelVorlage {
 
     private void melden() {
         daten.getListeBlacklist().filterListe();
-        Listener.notify(Listener.EREIGNIS_GEO, PanelEinstellungenGeo.class.getName());
+        daten.getMessageBus().publishAsync(new GeoStateChangedEvent());
         Listener.notify(Listener.EREIGNIS_BLACKLIST_GEAENDERT, PanelEinstellungenGeo.class.getSimpleName());
 
     }

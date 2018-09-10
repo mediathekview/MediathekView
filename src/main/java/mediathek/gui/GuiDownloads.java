@@ -44,6 +44,7 @@ import mediathek.gui.dialog.DialogBeendenZeit;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.messages.DownloadRateLimitChangedEvent;
+import mediathek.gui.messages.GeoStateChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
@@ -621,13 +622,7 @@ public class GuiDownloads extends PanelVorlage {
                 daten.allesSpeichern(); // damit nichts verloren geht
             }
         });
-        Listener.addListener(new Listener(Listener.EREIGNIS_GEO, GuiDownloads.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                tabelle.fireTableDataChanged(true /*setSpalten*/);
-                setInfo();
-            }
-        });
+
         Listener.addListener(new Listener(new int[]{Listener.EREIGNIS_ART_DOWNLOAD_PROZENT}, GuiDownloads.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -642,6 +637,14 @@ public class GuiDownloads extends PanelVorlage {
         });
 
         setupShowFilmDescriptionMenuItem();
+    }
+
+    @Handler
+    private void handleGeoStateChangedEvent(GeoStateChangedEvent e) {
+        SwingUtilities.invokeLater(() -> {
+            tabelle.fireTableDataChanged(true);
+            setInfo();
+        });
     }
 
     /**
