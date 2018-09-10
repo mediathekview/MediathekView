@@ -45,8 +45,7 @@ import mediathek.daten.ListeMediaDB;
 import mediathek.gui.*;
 import mediathek.gui.actions.*;
 import mediathek.gui.actions.export.FilmListExportAction;
-import mediathek.gui.bandwidth.IBandwidthMonitor;
-import mediathek.gui.bandwidth.MVBandwidthMonitorLWin;
+import mediathek.gui.bandwidth.MVBandwidthMonitor;
 import mediathek.gui.dialog.AboutDialog;
 import mediathek.gui.dialog.DialogBeenden;
 import mediathek.gui.dialog.DialogMediaDB;
@@ -118,7 +117,7 @@ public class MediathekGui extends JFrame {
     /**
      * Bandwidth monitoring for downloads.
      */
-    protected IBandwidthMonitor bandwidthMonitor;
+    protected MVBandwidthMonitor bandwidthMonitor;
 
     private void remapF10Key() {
         //Hier wird F10 default Funktion unterbunden:
@@ -202,7 +201,7 @@ public class MediathekGui extends JFrame {
 
         createMemoryMonitor();
 
-        createBandwidthMonitor(this);
+        bandwidthMonitor = new MVBandwidthMonitor(this);
 
         splashScreenManager.closeSplashScreen();
 
@@ -386,12 +385,6 @@ public class MediathekGui extends JFrame {
     }
 
     private static final Logger logger = LogManager.getLogger(MediathekGui.class);
-
-    protected void createBandwidthMonitor(JFrame parent)
-    {
-        //klappte nicht auf allen Desktops
-        bandwidthMonitor = new MVBandwidthMonitorLWin(parent);
-    }
 
     /**
      * Create the film information tool window.
