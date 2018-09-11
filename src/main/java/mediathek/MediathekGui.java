@@ -24,7 +24,9 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
@@ -358,11 +360,22 @@ public class MediathekGui extends JFrame {
      * Create the status bar item.
      */
     private void createStatusBar() {
+        statusBarController = new StatusBarController(daten);
+
+        installSelectedItemsLabel();
+
         JFXPanel statusBarPanel = new JFXPanel();
-        statusBarController = new StatusBarController(daten, selectedItemsProperty);
         statusBarController.installStatusBar(statusBarPanel);
 
         jPanelInfo.add(statusBarPanel, BorderLayout.CENTER);
+    }
+
+    private void installSelectedItemsLabel() {
+        Platform.runLater(() -> {
+            ObservableList<Node> leftItems = statusBarController.getStatusBar().getLeftItems();
+            leftItems.add(new SelectedItemsLabel(selectedItemsProperty));
+            leftItems.add(new VerticalSeparator());
+        });
     }
 
     private StatusBarController statusBarController;
