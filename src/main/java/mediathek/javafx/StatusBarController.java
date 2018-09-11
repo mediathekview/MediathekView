@@ -1,7 +1,6 @@
 package mediathek.javafx;
 
 import javafx.application.Platform;
-import javafx.beans.property.IntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Node;
@@ -28,12 +27,10 @@ public class StatusBarController {
     private final StatusBar statusBar = new StatusBar();
     private final FilmListInfoPane filmListInfoPane;
     private final FilmListInformationLabel filmListInformationLabel;
-    private final SelectedItemsLabel selectedItemsLabel;
     private final GarbageCollectionButton btnGc = new GarbageCollectionButton();
     private Pane progressPane;
 
-    public StatusBarController(Daten daten, IntegerProperty selectedItemsProperty) {
-        selectedItemsLabel = new SelectedItemsLabel(selectedItemsProperty);
+    public StatusBarController(Daten daten) {
         filmListInfoPane = new FilmListInfoPane(daten);
         filmListInformationLabel = new FilmListInformationLabel(daten, MediathekGui.ui().tabPaneIndexProperty());
 
@@ -118,8 +115,6 @@ public class StatusBarController {
 
     private void setupLeftPane() {
         ObservableList<Node> leftItems = statusBar.getLeftItems();
-        leftItems.add(new CenteredBorderPane(selectedItemsLabel));
-        leftItems.add(new VerticalSeparator());
 
         if (Config.isDebuggingEnabled()) {
             leftItems.add(btnGc);
