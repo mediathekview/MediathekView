@@ -362,12 +362,11 @@ public class MediathekGui extends JFrame {
     private void createStatusBar() {
         statusBarController = new StatusBarController(daten);
 
-        installSelectedItemsLabel();
-
         JFXPanel statusBarPanel = new JFXPanel();
         statusBarController.installStatusBar(statusBarPanel);
 
         jPanelInfo.add(statusBarPanel, BorderLayout.CENTER);
+        installSelectedItemsLabel();
     }
 
     private void installSelectedItemsLabel() {
