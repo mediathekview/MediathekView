@@ -30,7 +30,10 @@ import mediathek.config.MVConfig;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
-import mediathek.tool.*;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.HinweisKeineAuswahl;
+import mediathek.tool.MVSenderIconCache;
+import mediathek.tool.TModelAbo;
 import mediathek.tool.cellrenderer.CellRendererAbo;
 import mediathek.tool.listener.BeobTableHeader;
 import mediathek.tool.table.MVAbosTable;
@@ -94,7 +97,7 @@ public class GuiAbo extends JPanel {
             tabelle.setRowSelectionInterval(0, 0);
         }
 
-        ToolBar toolBar = new ToolBar(daten, TABS.TAB_ABOS);
+        AboToolBar toolBar = new AboToolBar(daten);
         add(toolBar, BorderLayout.NORTH);
     }
 

@@ -86,7 +86,6 @@ public class GuiDownloads extends JPanel {
     private static final String COMBO_VIEW_WAITING = "nur wartende";
     private static final String COMBO_VIEW_RUN_ONLY = "nur laufende";
     private static final String COMBO_VIEW_FINISHED_ONLY = "nur abgeschlossene";
-    private final ToolBar toolBar;
     private boolean loadFilmlist = false;
     private final java.util.Timer timer = new java.util.Timer(false);
     private TimerTask timerTask = null;
@@ -170,7 +169,7 @@ public class GuiDownloads extends JPanel {
         cbView.setModel(getViewModel());
         cbView.addActionListener(new DisplayCategoryListener());
 
-        toolBar = new ToolBar(daten, TABS.TAB_DOWNLOADS);
+        DownloadToolBar toolBar = new DownloadToolBar(daten);
         add(toolBar, BorderLayout.NORTH);
 
         setupDownloadRateLimitSpinner();
