@@ -67,7 +67,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @SuppressWarnings("serial")
-public class GuiDownloads extends PanelVorlage {
+public class GuiDownloads extends JPanel {
     private long lastUpdate = 0;
     private boolean onlyAbos = false;
     private boolean onlyDownloads = false;
@@ -92,6 +92,9 @@ public class GuiDownloads extends PanelVorlage {
     private TimerTask timerTask = null;
     private final MVTable tabelle;
     public static final String NAME = "Downloads";
+    private final Daten daten;
+    private final JFrame parentComponent;
+
 
 
     /**
@@ -135,7 +138,10 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     public GuiDownloads(Daten aDaten, MediathekGui mediathekGui) {
-        super(aDaten, mediathekGui);
+        super();
+        daten = aDaten;
+        parentComponent = mediathekGui;
+
         initComponents();
 
         setupF4Key(mediathekGui);
@@ -680,12 +686,10 @@ public class GuiDownloads extends PanelVorlage {
 
     private synchronized void reloadTable() {
         // nur Downloads die schon in der Liste sind werden geladen
-        stopBeob = true;
         tabelle.getSpalten();
 
         daten.getListeDownloads().getModel(model, onlyAbos, onlyDownloads, onlyNotStarted, onlyStarted, onlyWaiting, onlyRun, onlyFinished);
         tabelle.setSpalten();
-        stopBeob = false;
         updateFilmData();
         setInfo();
     }
@@ -1332,13 +1336,11 @@ public class GuiDownloads extends PanelVorlage {
                     // dann können wir auch ändern
                     itemDelAbo.addActionListener(e -> daten.getListeAbo().aboLoeschen(datenAbo));
                     itemChangeAbo.addActionListener(e -> {
-                        stopBeob = true;
                         DialogEditAbo dialog = new DialogEditAbo(MediathekGui.ui(), true, daten, datenAbo, false/*onlyOne*/);
                         dialog.setVisible(true);
                         if (dialog.ok) {
                             daten.getListeAbo().aenderungMelden();
                         }
-                        stopBeob = false;
                     });
                 }
             }

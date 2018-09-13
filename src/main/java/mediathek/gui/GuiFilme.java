@@ -75,8 +75,8 @@ public class GuiFilme extends JPanel {
     private final MVTable tabelle;
     public static final String NAME = "Filme";
     private final Daten daten;
-    public boolean stopBeob = false;
-    public JFrame parentComponent;
+    private boolean stopBeob = false;
+    private final JFrame parentComponent;
 
     public void tabelleSpeichern() {
         if (tabelle != null) {
