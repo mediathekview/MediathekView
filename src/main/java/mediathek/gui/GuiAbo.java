@@ -41,9 +41,11 @@ import java.awt.*;
 import java.awt.event.*;
 
 @SuppressWarnings("serial")
-public class GuiAbo extends PanelVorlage {
+public class GuiAbo extends JPanel {
     private final MVTable tabelle;
     public static final String NAME = "Abos";
+    private final Daten daten;
+    private final JFrame parentComponent;
 
     public void tabelleSpeichern() {
         if (tabelle != null) {
@@ -74,7 +76,10 @@ public class GuiAbo extends PanelVorlage {
     }
 
     public GuiAbo(Daten d, MediathekGui parentComponent) {
-        super(d, parentComponent);
+        super();
+        daten = d;
+        this.parentComponent = parentComponent;
+
         initComponents();
 
         tabelle = new MVAbosTable();
