@@ -372,8 +372,8 @@ public class MediathekGui extends JFrame {
     private void installSelectedItemsLabel() {
         Platform.runLater(() -> {
             ObservableList<Node> leftItems = statusBarController.getStatusBar().getLeftItems();
-            leftItems.add(new SelectedItemsLabel(selectedItemsProperty));
-            leftItems.add(new VerticalSeparator());
+            leftItems.add(0,new SelectedItemsLabel(selectedItemsProperty));
+            leftItems.add(1, new VerticalSeparator());
         });
     }
 
