@@ -70,10 +70,13 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @SuppressWarnings("serial")
-public class GuiFilme extends PanelVorlage {
+public class GuiFilme extends JPanel {
 
     private final MVTable tabelle;
     public static final String NAME = "Filme";
+    private final Daten daten;
+    public boolean stopBeob = false;
+    public JFrame parentComponent;
 
     public void tabelleSpeichern() {
         if (tabelle != null) {
@@ -103,7 +106,10 @@ public class GuiFilme extends PanelVorlage {
     }
 
     public GuiFilme(Daten aDaten, MediathekGui mediathekGui) {
-        super(aDaten, mediathekGui);
+        super();
+        daten = aDaten;
+        
+        parentComponent = mediathekGui;
         initComponents();
 
         tabelle = new MVFilmTable();
