@@ -1,23 +1,4 @@
-/*
- * MediathekView
- * Copyright (C) 2008 W. Xaver
- * W.Xaver[at]googlemail.com
- * http://zdfmediathk.sourceforge.net/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
-package mediathek.gui;
+package mediathek.gui.toolbar;
 
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
@@ -26,51 +7,36 @@ import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.config.Icons;
 import mediathek.config.MVConfig;
-import mediathek.tool.TABS;
+import mediathek.gui.messages.ToolBarIconSizeChangedEvent;
+import net.engio.mbassy.listener.Handler;
 
 import javax.swing.*;
-import javax.swing.Box.Filler;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-
-import static mediathek.tool.TABS.TAB_DOWNLOADS;
 
 @SuppressWarnings("serial")
-public final class DownloadToolBar extends JToolBar {
-
-    private final Filler filler__10 = new Filler(new Dimension(10, 20), new Dimension(10, 20), new Dimension(10, 32767));
-    private final Filler filler__trenner = new Filler(new Dimension(1, 5), new Dimension(1, 5), new Dimension(32767, 5));
-    private final MVConfig.Configs nrToolbar;
+public final class DownloadToolBar extends ToolBarBase {
+    private final MVConfig.Configs nrToolbar = MVConfig.Configs.SYSTEM_TOOLBAR_DOWNLOAD;
     private final Daten daten;
     private final BeobMausToolBar beobMausToolBar = new BeobMausToolBar();
-    private final TABS state;
-    private final ArrayList<MVButton> buttonList = new ArrayList<>();
-    private final MVConfig.Configs nrIconKlein = MVConfig.Configs.SYSTEM_ICON_KLEIN;
     private MVButton jButtonDownloadAktualisieren = null;
 
     public DownloadToolBar(Daten ddaten) {
         daten = ddaten;
-        state = TAB_DOWNLOADS;
-        nrToolbar = MVConfig.Configs.SYSTEM_TOOLBAR_DOWNLOAD;
 
         startup();
-        setToolbar();
-        Listener.addListener(new Listener(Listener.EREIGNIS_TOOLBAR_BUTTON_KLEIN, DownloadToolBar.class.getSimpleName() + state) {
-            @Override
-            public void ping() {
-                setIcon(Boolean.parseBoolean(MVConfig.get(nrIconKlein)));
-            }
-        });
+        setButtonVisibility();
 
         ddaten.getMessageBus().subscribe(this);
     }
 
-    private void startup() {
-        // init
-        setFloatable(false);
+    @Handler
+    private void handleChangeIconSizeEvent(ToolBarIconSizeChangedEvent e) {
+        SwingUtilities.invokeLater(() -> setIcon(Boolean.parseBoolean(MVConfig.get(nrIconKlein))));
+    }
 
+    private void startup() {
+        setFloatable(false);
         startupDownload();
 
         add(filler__10);
@@ -81,15 +47,36 @@ public final class DownloadToolBar extends JToolBar {
     }
 
     private void startupDownload() {
-        // init
-        setFilmlisteLaden();
+        installFilmlistListener();
+
         MVButton jButtonInfo = new MVButton("Filminformation anzeigen", "Filminformation anzeigen", Icons.ICON_TOOLBAR_DOWNLOAD_FILM_INFO_GR, Icons.ICON_TOOLBAR_DOWNLOAD_FILM_INFO_KL);
+        jButtonInfo.addActionListener(e -> Daten.filmInfo.showInfo());
+        buttonList.add(jButtonInfo);
+
         jButtonDownloadAktualisieren = new MVButton("Liste der Downloads aktualisieren", "Liste der Downloads aktualisieren", Icons.ICON_TOOLBAR_DOWNLOAD_REFRESH_GR, Icons.ICON_TOOLBAR_DOWNLOAD_REFRESH_KL);
+        jButtonDownloadAktualisieren.addActionListener(e -> MediathekGui.ui().tabDownloads.aktualisieren());
+        buttonList.add(jButtonDownloadAktualisieren);
+
         MVButton jButtonDownloadAlleStarten = new MVButton("alle Downloads starten", "alle Downloads starten", Icons.ICON_TOOLBAR_DOWNLOAD_ALLE_STARTEN_GR, Icons.ICON_TOOLBAR_DOWNLOAD_ALLE_STARTEN_KL);
+        jButtonDownloadAlleStarten.addActionListener(e -> MediathekGui.ui().tabDownloads.starten(true));
+        buttonList.add(jButtonDownloadAlleStarten);
+
         MVButton jButtonDownloadFilmStarten = new MVButton("Film Starten", "gespeicherten Film abspielen", Icons.ICON_TOOLBAR_DOWNLOAD_FILM_START_GR, Icons.ICON_TOOLBAR_DOWNLOAD_FILM_START_KL);
+        jButtonDownloadFilmStarten.addActionListener(e -> MediathekGui.ui().tabDownloads.filmAbspielen());
+        buttonList.add(jButtonDownloadFilmStarten);
+
         MVButton jButtonDownloadZurueckstellen = new MVButton("Downloads zurückstellen", "Downloads zurückstellen", Icons.ICON_TOOLBAR_DOWNLOAD_UNDO_GR, Icons.ICON_TOOLBAR_DOWNLOAD_UNDO_KL);
+        jButtonDownloadZurueckstellen.addActionListener(e -> MediathekGui.ui().tabDownloads.zurueckstellen());
+        buttonList.add(jButtonDownloadZurueckstellen);
+
         MVButton jButtonDownloadLoeschen = new MVButton("Downloads aus Liste entfernen", "Downloads aus Liste entfernen", Icons.ICON_TOOLBAR_DOWNLOAD_DEL_GR, Icons.ICON_TOOLBAR_DOWNLOAD_DEL_KL);
+        jButtonDownloadLoeschen.addActionListener(e -> MediathekGui.ui().tabDownloads.loeschen());
+        buttonList.add(jButtonDownloadLoeschen);
+
         MVButton jButtonDownloadAufraeumen = new MVButton("Liste der Downloads aufräumen", "Liste der Downloads aufräumen", Icons.ICON_TOOLBAR_DOWNLOAD_CLEAR_GR, Icons.ICON_TOOLBAR_DOWNLOAD_CLEAR_KL);
+        jButtonDownloadAufraeumen.addActionListener(e -> MediathekGui.ui().tabDownloads.aufraeumen());
+        buttonList.add(jButtonDownloadAufraeumen);
+
         this.add(filler__10);
         this.add(jButtonInfo);
         this.add(filler__10);
@@ -99,28 +86,10 @@ public final class DownloadToolBar extends JToolBar {
         this.add(jButtonDownloadZurueckstellen);
         this.add(jButtonDownloadLoeschen);
         this.add(jButtonDownloadAufraeumen);
-        jButtonInfo.addActionListener(e -> Daten.filmInfo.showInfo());
-        jButtonDownloadAktualisieren.addActionListener(e -> MediathekGui.ui().tabDownloads.aktualisieren());
-        jButtonDownloadAufraeumen.addActionListener(e -> MediathekGui.ui().tabDownloads.aufraeumen());
-        jButtonDownloadLoeschen.addActionListener(e -> MediathekGui.ui().tabDownloads.loeschen());
-        jButtonDownloadAlleStarten.addActionListener(e -> MediathekGui.ui().tabDownloads.starten(true));
-        jButtonDownloadFilmStarten.addActionListener(e -> MediathekGui.ui().tabDownloads.filmAbspielen());
-        jButtonDownloadZurueckstellen.addActionListener(e -> MediathekGui.ui().tabDownloads.zurueckstellen());
-
         this.add(filler__trenner);
 
         // Button Filter
-        JButton jButtonFilterPanel = new JButton();
-        jButtonFilterPanel.setToolTipText("Filter anzeigen/ausblenden");
-        jButtonFilterPanel.setBorder(null);
-        jButtonFilterPanel.setBorderPainted(false);
-        jButtonFilterPanel.setHorizontalTextPosition(SwingConstants.CENTER);
-        jButtonFilterPanel.setMaximumSize(new Dimension(40, 40));
-        jButtonFilterPanel.setMinimumSize(new Dimension(40, 40));
-        jButtonFilterPanel.setOpaque(false);
-        jButtonFilterPanel.setPreferredSize(new Dimension(40, 40));
-        jButtonFilterPanel.setVerticalTextPosition(SwingConstants.BOTTOM);
-        jButtonFilterPanel.setIcon(Icons.ICON_BUTTON_FILTER_ANZEIGEN);
+        JButton jButtonFilterPanel = createFilterButton();
         this.add(jButtonFilterPanel);
         jButtonFilterPanel.addActionListener(e -> {
             boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS));
@@ -130,7 +99,7 @@ public final class DownloadToolBar extends JToolBar {
 
     }
 
-    private void setFilmlisteLaden() {
+    private void installFilmlistListener() {
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
@@ -151,70 +120,33 @@ public final class DownloadToolBar extends JToolBar {
     private void setIcon(boolean klein) {
         MVConfig.add(nrIconKlein, Boolean.toString(klein));
         beobMausToolBar.itemKlein.setSelected(klein);
-        for (MVButton b : buttonList) {
-            b.setIcon();
-        }
-        this.repaint();
-    }
 
-    private void setToolbar() {
-        for (MVButton b : buttonList) {
-            b.setVisible(b.anzeigen);
-        }
+        setButtonIcons();
+
+        repaint();
     }
 
     private void loadVisible() {
-        if (nrToolbar != null) {
-            String[] b = MVConfig.get(nrToolbar).split(":");
-            if (buttonList.size() == b.length) {
-                // ansonsten gibt es neue Button: dann alle anzeigen
-                for (int i = 0; i < b.length; ++i) {
-                    buttonList.get(i).anzeigen = Boolean.parseBoolean(b[i]);
-                    buttonList.get(i).setVisible(Boolean.parseBoolean(b[i]));
-                }
+        String[] b = MVConfig.get(nrToolbar).split(":");
+        if (buttonList.size() == b.length) {
+            // ansonsten gibt es neue Button: dann alle anzeigen
+            for (int i = 0; i < b.length; ++i) {
+                buttonList.get(i).setAnzeigen(Boolean.parseBoolean(b[i]));
+                buttonList.get(i).setVisible(Boolean.parseBoolean(b[i]));
             }
         }
-        setToolbar();
+
+        setButtonVisibility();
         setIcon(Boolean.parseBoolean(MVConfig.get(nrIconKlein)));
     }
 
     private void storeVisible() {
-        if (nrToolbar != null) {
-            MVConfig.add(nrToolbar, "");
-            for (MVButton b : buttonList) {
-                if (!MVConfig.get(nrToolbar).isEmpty()) {
-                    MVConfig.add(nrToolbar, MVConfig.get(nrToolbar) + ':');
-                }
-                MVConfig.add(nrToolbar, MVConfig.get(nrToolbar) + Boolean.toString(b.anzeigen));
+        MVConfig.add(nrToolbar, "");
+        for (MVButton b : buttonList) {
+            if (!MVConfig.get(nrToolbar).isEmpty()) {
+                MVConfig.add(nrToolbar, MVConfig.get(nrToolbar) + ':');
             }
-        }
-    }
-
-    private class MVButton extends JButton {
-        private final String name;
-        private final ImageIcon imageIconKlein;
-        private final ImageIcon imageIconNormal;
-        boolean anzeigen = true;
-
-        public MVButton(String nname, String ttoolTip,
-                        ImageIcon iimageIconNormal, ImageIcon iimageIconKlein) {
-            setToolTipText(ttoolTip);
-            name = nname;
-            imageIconKlein = iimageIconKlein;
-            imageIconNormal = iimageIconNormal;
-            setOpaque(false);
-            setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
-            setHorizontalTextPosition(SwingConstants.CENTER);
-            setVerticalTextPosition(SwingConstants.BOTTOM);
-            buttonList.add(this);
-        }
-
-        void setIcon() {
-            if (Boolean.parseBoolean(MVConfig.get(nrIconKlein))) {
-                this.setIcon(imageIconKlein);
-            } else {
-                this.setIcon(imageIconNormal);
-            }
+            MVConfig.add(nrToolbar, MVConfig.get(nrToolbar) + Boolean.toString(b.getAnzeigen()));
         }
     }
 
@@ -248,7 +180,7 @@ public final class DownloadToolBar extends JToolBar {
             JPopupMenu jPopupMenu = new JPopupMenu();
             itemKlein.addActionListener(e -> {
                 setIcon(itemKlein.isSelected());
-                Listener.notify(Listener.EREIGNIS_TOOLBAR_BUTTON_KLEIN, DownloadToolBar.class.getSimpleName() + state);
+                Daten.getInstance().getMessageBus().publishAsync(new ToolBarIconSizeChangedEvent());
             });
             jPopupMenu.add(itemKlein);
             //##Trenner##
@@ -259,11 +191,11 @@ public final class DownloadToolBar extends JToolBar {
             checkBoxMenuItems = new JCheckBoxMenuItem[buttonList.size()];
             for (int i = 0; i < checkBoxMenuItems.length; ++i) {
                 checkBoxMenuItems[i] = null;
-                checkBoxMenuItems[i] = new JCheckBoxMenuItem(buttonList.get(i).name);
+                checkBoxMenuItems[i] = new JCheckBoxMenuItem(buttonList.get(i).getName());
                 if (checkBoxMenuItems[i] != null) {
-                    checkBoxMenuItems[i] = new JCheckBoxMenuItem(buttonList.get(i).name);
-                    checkBoxMenuItems[i].setIcon(buttonList.get(i).imageIconKlein);
-                    checkBoxMenuItems[i].setSelected(buttonList.get(i).anzeigen);
+                    checkBoxMenuItems[i] = new JCheckBoxMenuItem(buttonList.get(i).getName());
+                    checkBoxMenuItems[i].setIcon(buttonList.get(i).getSmallIcon());
+                    checkBoxMenuItems[i].setSelected(buttonList.get(i).getAnzeigen());
                     checkBoxMenuItems[i].addActionListener(e -> {
                         setButtonList();
                         storeVisible();
@@ -277,7 +209,7 @@ public final class DownloadToolBar extends JToolBar {
             itemReset.addActionListener(e -> {
                 resetToolbar();
                 storeVisible();
-                Listener.notify(Listener.EREIGNIS_TOOLBAR_BUTTON_KLEIN, DownloadToolBar.class.getSimpleName() + state);
+                Daten.getInstance().getMessageBus().publishAsync(new ToolBarIconSizeChangedEvent());
             });
             jPopupMenu.add(itemReset);
 
@@ -293,10 +225,10 @@ public final class DownloadToolBar extends JToolBar {
                 if (checkBoxMenuItems[i] == null) {
                     continue;
                 }
-                buttonList.get(i).anzeigen = checkBoxMenuItems[i].isSelected();
+                buttonList.get(i).setAnzeigen(checkBoxMenuItems[i].isSelected());
                 buttonList.get(i).setVisible(checkBoxMenuItems[i].isSelected());
             }
-            setToolbar();
+            setButtonVisibility();
         }
 
         private void resetToolbar() {
@@ -307,10 +239,10 @@ public final class DownloadToolBar extends JToolBar {
                 if (checkBoxMenuItems[i] == null) {
                     continue;
                 }
-                buttonList.get(i).anzeigen = true;
+                buttonList.get(i).setAnzeigen(true);
                 buttonList.get(i).setVisible(true);
             }
-            setToolbar();
+            setButtonVisibility();
             setIcon(false);
         }
 
