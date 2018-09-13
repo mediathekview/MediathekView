@@ -28,49 +28,36 @@ import mediathek.config.Icons;
 import mediathek.config.MVConfig;
 import mediathek.tool.TABS;
 
-import javax.swing.Box.Filler;
 import javax.swing.*;
+import javax.swing.Box.Filler;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+import static mediathek.tool.TABS.TAB_DOWNLOADS;
+
 @SuppressWarnings("serial")
-public final class ToolBar extends JToolBar {
+public final class DownloadToolBar extends JToolBar {
 
     private final Filler filler__10 = new Filler(new Dimension(10, 20), new Dimension(10, 20), new Dimension(10, 32767));
     private final Filler filler__trenner = new Filler(new Dimension(1, 5), new Dimension(1, 5), new Dimension(32767, 5));
-
-    private MVButton jButtonDownloadAktualisieren = null;
-
     private final MVConfig.Configs nrToolbar;
-    private MVConfig.Configs nrIconKlein = MVConfig.Configs.SYSTEM_ICON_KLEIN;
     private final Daten daten;
     private final BeobMausToolBar beobMausToolBar = new BeobMausToolBar();
     private final TABS state;
     private final ArrayList<MVButton> buttonList = new ArrayList<>();
+    private final MVConfig.Configs nrIconKlein = MVConfig.Configs.SYSTEM_ICON_KLEIN;
+    private MVButton jButtonDownloadAktualisieren = null;
 
-    public ToolBar(Daten ddaten, TABS state) {
-        // für die Toolbar der Externen Fenster
+    public DownloadToolBar(Daten ddaten) {
         daten = ddaten;
-        this.state = state;
-        switch (state) {
-            case TAB_FILME:
-                nrToolbar = MVConfig.Configs.SYSTEM_TOOLBAR_FILME;
-                break;
-            case TAB_DOWNLOADS:
-                nrToolbar = MVConfig.Configs.SYSTEM_TOOLBAR_DOWNLOAD;
-                break;
-            case TAB_ABOS:
-                nrToolbar = MVConfig.Configs.SYSTEM_TOOLBAR_ABO;
-                break;
-            default:
-                nrToolbar = null;
-                nrIconKlein = null;
-        }
+        state = TAB_DOWNLOADS;
+        nrToolbar = MVConfig.Configs.SYSTEM_TOOLBAR_DOWNLOAD;
+
         startup();
         setToolbar();
-        Listener.addListener(new Listener(Listener.EREIGNIS_TOOLBAR_BUTTON_KLEIN, ToolBar.class.getSimpleName() + state) {
+        Listener.addListener(new Listener(Listener.EREIGNIS_TOOLBAR_BUTTON_KLEIN, DownloadToolBar.class.getSimpleName() + state) {
             @Override
             public void ping() {
                 setIcon(Boolean.parseBoolean(MVConfig.get(nrIconKlein)));
@@ -84,16 +71,7 @@ public final class ToolBar extends JToolBar {
         // init
         setFloatable(false);
 
-        switch (state) {
-            case TAB_DOWNLOADS:
-                startupDownload();
-                break;
-            case TAB_ABOS:
-                startupAbo();
-                break;
-            default:
-                break;
-        }
+        startupDownload();
 
         add(filler__10);
         // Icons
@@ -136,57 +114,18 @@ public final class ToolBar extends JToolBar {
         jButtonFilterPanel.setToolTipText("Filter anzeigen/ausblenden");
         jButtonFilterPanel.setBorder(null);
         jButtonFilterPanel.setBorderPainted(false);
-        jButtonFilterPanel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonFilterPanel.setMaximumSize(new java.awt.Dimension(40, 40));
-        jButtonFilterPanel.setMinimumSize(new java.awt.Dimension(40, 40));
+        jButtonFilterPanel.setHorizontalTextPosition(SwingConstants.CENTER);
+        jButtonFilterPanel.setMaximumSize(new Dimension(40, 40));
+        jButtonFilterPanel.setMinimumSize(new Dimension(40, 40));
         jButtonFilterPanel.setOpaque(false);
-        jButtonFilterPanel.setPreferredSize(new java.awt.Dimension(40, 40));
-        jButtonFilterPanel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButtonFilterPanel.setPreferredSize(new Dimension(40, 40));
+        jButtonFilterPanel.setVerticalTextPosition(SwingConstants.BOTTOM);
         jButtonFilterPanel.setIcon(Icons.ICON_BUTTON_FILTER_ANZEIGEN);
         this.add(jButtonFilterPanel);
         jButtonFilterPanel.addActionListener(e -> {
             boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS));
             MVConfig.add(MVConfig.Configs.SYSTEM_TAB_DOWNLOAD_FILTER_VIS, Boolean.toString(b));
-            Listener.notify(Listener.EREIGNIS_PANEL_DOWNLOAD_FILTER_ANZEIGEN, ToolBar.class.getName());
-        });
-
-    }
-
-    private void startupAbo() {
-        // init
-        MVButton jButtonAbosEinschalten = new MVButton("Abos einschalten", "Abos einschalten", Icons.ICON_TOOLBAR_ABO_EIN_GR, Icons.ICON_TOOLBAR_ABO_EIN_KL);
-        MVButton jButtonAbosAusschalten = new MVButton("Abos ausschalten", "Abos ausschalten", Icons.ICON_TOOLBAR_ABO_AUS_GR, Icons.ICON_TOOLBAR_ABO_AUS_KL);
-        MVButton jButtonAbosLoeschen = new MVButton("Abos löschen", "Abos löschen", Icons.ICON_TOOLBAR_ABO_DEL_GR, Icons.ICON_TOOLBAR_ABO_DEL_KL);
-        MVButton jButtonAboAendern = new MVButton("Abos ändern", "Abos ändern", Icons.ICON_TOOLBAR_ABO_CONFIG_GR, Icons.ICON_TOOLBAR_ABO_CONFIG_KL);
-        this.add(filler__10);
-        this.add(jButtonAbosEinschalten);
-        this.add(jButtonAbosAusschalten);
-        this.add(jButtonAbosLoeschen);
-        this.add(jButtonAboAendern);
-        jButtonAbosEinschalten.addActionListener(e -> MediathekGui.ui().tabAbos.einAus(true));
-        jButtonAbosAusschalten.addActionListener(e -> MediathekGui.ui().tabAbos.einAus(false));
-        jButtonAbosLoeschen.addActionListener(e -> MediathekGui.ui().tabAbos.loeschen());
-        jButtonAboAendern.addActionListener(e -> MediathekGui.ui().tabAbos.aendern());
-
-        this.add(filler__trenner);
-
-        // Button Filter
-        JButton jButtonFilterPanel = new JButton();
-        jButtonFilterPanel.setToolTipText("Filter anzeigen/ausblenden");
-        jButtonFilterPanel.setBorder(null);
-        jButtonFilterPanel.setBorderPainted(false);
-        jButtonFilterPanel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButtonFilterPanel.setMaximumSize(new java.awt.Dimension(40, 40));
-        jButtonFilterPanel.setMinimumSize(new java.awt.Dimension(40, 40));
-        jButtonFilterPanel.setOpaque(false);
-        jButtonFilterPanel.setPreferredSize(new java.awt.Dimension(40, 40));
-        jButtonFilterPanel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButtonFilterPanel.setIcon(Icons.ICON_BUTTON_FILTER_ANZEIGEN);
-        this.add(jButtonFilterPanel);
-        jButtonFilterPanel.addActionListener(e -> {
-            boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TAB_ABO_FILTER_VIS));
-            MVConfig.add(MVConfig.Configs.SYSTEM_TAB_ABO_FILTER_VIS, Boolean.toString(b));
-            Listener.notify(Listener.EREIGNIS_PANEL_ABO_FILTER_ANZEIGEN, ToolBar.class.getName());
+            Listener.notify(Listener.EREIGNIS_PANEL_DOWNLOAD_FILTER_ANZEIGEN, DownloadToolBar.class.getName());
         });
 
     }
@@ -236,9 +175,7 @@ public final class ToolBar extends JToolBar {
             }
         }
         setToolbar();
-        if (nrIconKlein != null) {
-            setIcon(Boolean.parseBoolean(MVConfig.get(nrIconKlein)));
-        }
+        setIcon(Boolean.parseBoolean(MVConfig.get(nrIconKlein)));
     }
 
     private void storeVisible() {
@@ -254,10 +191,10 @@ public final class ToolBar extends JToolBar {
     }
 
     private class MVButton extends JButton {
-        boolean anzeigen = true;
         private final String name;
         private final ImageIcon imageIconKlein;
         private final ImageIcon imageIconNormal;
+        boolean anzeigen = true;
 
         public MVButton(String nname, String ttoolTip,
                         ImageIcon iimageIconNormal, ImageIcon iimageIconKlein) {
@@ -266,19 +203,17 @@ public final class ToolBar extends JToolBar {
             imageIconKlein = iimageIconKlein;
             imageIconNormal = iimageIconNormal;
             setOpaque(false);
-            setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
-            setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-            setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+            setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+            setHorizontalTextPosition(SwingConstants.CENTER);
+            setVerticalTextPosition(SwingConstants.BOTTOM);
             buttonList.add(this);
         }
 
         void setIcon() {
-            if (nrIconKlein != null) {
-                if (Boolean.parseBoolean(MVConfig.get(nrIconKlein))) {
-                    this.setIcon(imageIconKlein);
-                } else {
-                    this.setIcon(imageIconNormal);
-                }
+            if (Boolean.parseBoolean(MVConfig.get(nrIconKlein))) {
+                this.setIcon(imageIconKlein);
+            } else {
+                this.setIcon(imageIconNormal);
             }
         }
     }
@@ -313,7 +248,7 @@ public final class ToolBar extends JToolBar {
             JPopupMenu jPopupMenu = new JPopupMenu();
             itemKlein.addActionListener(e -> {
                 setIcon(itemKlein.isSelected());
-                Listener.notify(Listener.EREIGNIS_TOOLBAR_BUTTON_KLEIN, ToolBar.class.getSimpleName() + state);
+                Listener.notify(Listener.EREIGNIS_TOOLBAR_BUTTON_KLEIN, DownloadToolBar.class.getSimpleName() + state);
             });
             jPopupMenu.add(itemKlein);
             //##Trenner##
@@ -342,7 +277,7 @@ public final class ToolBar extends JToolBar {
             itemReset.addActionListener(e -> {
                 resetToolbar();
                 storeVisible();
-                Listener.notify(Listener.EREIGNIS_TOOLBAR_BUTTON_KLEIN, ToolBar.class.getSimpleName() + state);
+                Listener.notify(Listener.EREIGNIS_TOOLBAR_BUTTON_KLEIN, DownloadToolBar.class.getSimpleName() + state);
             });
             jPopupMenu.add(itemReset);
 
