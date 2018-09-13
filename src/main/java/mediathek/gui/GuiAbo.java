@@ -30,6 +30,7 @@ import mediathek.config.MVConfig;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
+import mediathek.gui.toolbar.AboToolBar;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.MVSenderIconCache;

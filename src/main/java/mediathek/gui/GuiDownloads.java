@@ -47,6 +47,7 @@ import mediathek.gui.messages.DownloadRateLimitChangedEvent;
 import mediathek.gui.messages.GeoStateChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
+import mediathek.gui.toolbar.DownloadToolBar;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
