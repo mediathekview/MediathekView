@@ -40,8 +40,6 @@ import mediathek.config.Daten;
 import mediathek.config.Konstanten;
 import mediathek.config.MVConfig;
 import mediathek.gui.actions.FilmListWriteWorkerTask;
-import mediathek.gui.dialog.DialogLeer;
-import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.javafx.CenteredBorderPane;
 import mediathek.javafx.FilmListFilterTask;
 import mediathek.javafx.StartupProgressPanel;
@@ -101,19 +99,6 @@ public class FilmeLaden {
                 undEnde(event);
             }
         });
-    }
-
-
-    public void loadFilmlistDialog(Daten daten, boolean manuell) {
-        if (manuell || GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUS) {
-            // Dialog zum Laden der Filme anzeigen
-            DialogLeer dialog = new DialogLeer(MediathekGui.ui(), true);
-            dialog.init("Einstellungen zum Laden der Filme", new PanelFilmlisteLaden(daten, MediathekGui.ui()));
-            dialog.setVisible(true);
-        } else {
-            // Filme werden automatisch geladen
-            loadFilmlist("");
-        }
     }
 
     public void loadFilmlist(String dateiUrl) {
@@ -212,7 +197,6 @@ public class FilmeLaden {
 
     /**
      * Load a filmlist from the network.
-     *
      */
     public void loadFilmListFromNetwork() {
         loadFilmlist("", true);

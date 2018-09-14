@@ -1,22 +1,3 @@
-/*
- * MediathekView
- * Copyright (C) 2008 W. Xaver
- * W.Xaver[at]googlemail.com
- * http://zdfmediathk.sourceforge.net/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
 package mediathek.gui.dialogEinstellungen;
 
 import mSearch.tool.Listener;
@@ -87,6 +68,81 @@ public class PanelFilmlisteLaden extends PanelVorlage {
         } else {
             jTextAreaManuell.setBackground(null);
             jTextAreaAuto.setBackground(MVColor.FILMLISTE_LADEN_AKTIV.color);
+        }
+    }
+
+    private class BeobOption implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!stopBeob) {
+                if (jRadioButtonManuell.isSelected()) {
+                    MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUS));
+                } else {
+                    MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUTO));
+                }
+                // den Dialog gibts 2x
+                Listener.notify(Listener.EREIGNIS_ART_IMPORT_FILMLISTE, this.getClass().getSimpleName());
+            }
+        }
+    }
+
+    private class BeobPfad implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //we can use native chooser on Mac...
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Filmliste laden");
+                chooser.setMode(FileDialog.LOAD);
+                chooser.setVisible(true);
+                if (chooser.getFile() != null) {
+                    try {
+                        File destination = new File(chooser.getDirectory() + chooser.getFile());
+                        jTextFieldUrl.setText(destination.getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.errorLog(102036579, ex);
+                    }
+                }
+            } else {
+                int returnVal;
+                JFileChooser chooser = new JFileChooser();
+                if (!jTextFieldUrl.getText().isEmpty()) {
+                    chooser.setCurrentDirectory(new File(jTextFieldUrl.getText()));
+                }
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                chooser.setFileHidingEnabled(false);
+                returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    try {
+                        jTextFieldUrl.setText(chooser.getSelectedFile().getAbsolutePath());
+                    } catch (Exception ex) {
+                        Log.errorLog(733025319, ex);
+                    }
+                }
+            }
+        }
+    }
+
+    private class BeobDateiUrl implements DocumentListener {
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            tus();
+        }
+
+        private void tus() {
+            MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_URL_MANUELL, jTextFieldUrl.getText());
         }
     }
 
@@ -251,79 +307,4 @@ public class PanelFilmlisteLaden extends PanelVorlage {
     private javax.swing.JTextArea jTextAreaManuell;
     private javax.swing.JTextField jTextFieldUrl;
     // End of variables declaration//GEN-END:variables
-
-    private class BeobOption implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (!stopBeob) {
-                if (jRadioButtonManuell.isSelected()) {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUS));
-                } else {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUTO));
-                }
-                // den Dialog gibts 2x
-                Listener.notify(Listener.EREIGNIS_ART_IMPORT_FILMLISTE, this.getClass().getSimpleName());
-            }
-        }
-    }
-
-    private class BeobPfad implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //we can use native chooser on Mac...
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                FileDialog chooser = new FileDialog(MediathekGui.ui(), "Filmliste laden");
-                chooser.setMode(FileDialog.LOAD);
-                chooser.setVisible(true);
-                if (chooser.getFile() != null) {
-                    try {
-                        File destination = new File(chooser.getDirectory() + chooser.getFile());
-                        jTextFieldUrl.setText(destination.getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(102036579, ex);
-                    }
-                }
-            } else {
-                int returnVal;
-                JFileChooser chooser = new JFileChooser();
-                if (!jTextFieldUrl.getText().isEmpty()) {
-                    chooser.setCurrentDirectory(new File(jTextFieldUrl.getText()));
-                }
-                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                chooser.setFileHidingEnabled(false);
-                returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        jTextFieldUrl.setText(chooser.getSelectedFile().getAbsolutePath());
-                    } catch (Exception ex) {
-                        Log.errorLog(733025319, ex);
-                    }
-                }
-            }
-        }
-    }
-
-    private class BeobDateiUrl implements DocumentListener {
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            tus();
-        }
-
-        private void tus() {
-            MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_URL_MANUELL, jTextFieldUrl.getText());
-        }
-    }
 }

@@ -199,7 +199,7 @@ public class FilmActionPanel {
     private Button createDownloadButton() {
         btnDownload = new Button("", fontAwesome.create(FontAwesome.Glyph.CLOUD_DOWNLOAD));
         btnDownload.setTooltip(new Tooltip("Neue Filmliste laden"));
-        btnDownload.setOnAction(e -> SwingUtilities.invokeLater(() -> daten.getFilmeLaden().loadFilmlistDialog(daten, false)));
+        btnDownload.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().showLoadFilmListDialogOrDownloadFilmlist(false)));
 
         return btnDownload;
     }
