@@ -129,17 +129,21 @@ public class StatusBarController {
         statusBar.getRightItems().add(filmListInfoPane);
     }
 
-    private Scene createStatusBarScene() {
+    private StatusBar createStatusBar() {
         //reset text
         statusBar.setText("");
 
         setupLeftPane();
         setupRightPane();
 
-        return new Scene(statusBar);
+        return statusBar;
+    }
+
+    public void installStatusBar(Pane pane) {
+        pane.getChildren().add(createStatusBar());
     }
 
     public void installStatusBar(JFXPanel jfxPanel) {
-        Platform.runLater(() -> jfxPanel.setScene(createStatusBarScene()));
+        Platform.runLater(() -> jfxPanel.setScene(new Scene(createStatusBar())));
     }
 }

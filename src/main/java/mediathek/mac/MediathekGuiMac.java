@@ -67,8 +67,8 @@ public class MediathekGuiMac extends MediathekGui {
     }
 
     @Override
-    protected void initMenue() {
-        super.initMenue();
+    protected void initMenus() {
+        super.initMenus();
 
         setupUserInterfaceForOsx();
         setupAcceleratorsForOsx();
