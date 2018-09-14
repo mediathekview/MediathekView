@@ -50,7 +50,7 @@ public final class DownloadToolBar extends ToolBarBase {
         installFilmlistListener();
 
         MVButton jButtonInfo = new MVButton("Filminformation anzeigen", "Filminformation anzeigen", Icons.ICON_TOOLBAR_DOWNLOAD_FILM_INFO_GR, Icons.ICON_TOOLBAR_DOWNLOAD_FILM_INFO_KL);
-        jButtonInfo.addActionListener(e -> Daten.filmInfo.showInfo());
+        jButtonInfo.addActionListener(e -> MediathekGui.ui().getFilmInfoDialog().showInfo());
         buttonList.add(jButtonInfo);
 
         jButtonDownloadAktualisieren = new MVButton("Liste der Downloads aktualisieren", "Liste der Downloads aktualisieren", Icons.ICON_TOOLBAR_DOWNLOAD_REFRESH_GR, Icons.ICON_TOOLBAR_DOWNLOAD_REFRESH_KL);

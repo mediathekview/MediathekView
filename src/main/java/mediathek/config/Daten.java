@@ -30,7 +30,6 @@ import mediathek.controller.starter.StarterClass;
 import mediathek.daten.*;
 import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.dialog.DialogMediaDB;
-import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.tool.GuiFunktionen;
@@ -70,8 +69,6 @@ public class Daten {
      */
     private final static int MAX_COPY = 5;
     public static ListePset listePset;
-    //alle Programmeinstellungen
-    public static InfoDialog filmInfo; // Infos zum Film
     private static Daten instance;
     // flags
     private static boolean startMaximized; // Fenster maximieren

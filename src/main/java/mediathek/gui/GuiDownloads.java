@@ -329,8 +329,8 @@ public class GuiDownloads extends JPanel {
         this.getActionMap().put("info", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!Daten.filmInfo.isVisible()) {
-                    Daten.filmInfo.showInfo();
+                if (!MediathekGui.ui().getFilmInfoDialog().isVisible()) {
+                    MediathekGui.ui().getFilmInfoDialog().showInfo();
                 }
             }
         });
@@ -1107,7 +1107,7 @@ public class GuiDownloads extends JPanel {
                     aktFilm = datenDownload.film;
                 }
             }
-            Daten.filmInfo.updateCurrentFilm(aktFilm);
+            MediathekGui.ui().getFilmInfoDialog().updateCurrentFilm(aktFilm);
         }
     }
 
@@ -1406,8 +1406,8 @@ public class GuiDownloads extends JPanel {
             // Infos
             JMenuItem itemInfo = new JMenuItem("Filminformation anzeigen");
             itemInfo.addActionListener(e -> {
-                if (!Daten.filmInfo.isVisible()) {
-                    Daten.filmInfo.showInfo();
+                if (!MediathekGui.ui().getFilmInfoDialog().isVisible()) {
+                    MediathekGui.ui().getFilmInfoDialog().showInfo();
                 }
             });
             jPopupMenu.add(itemInfo);

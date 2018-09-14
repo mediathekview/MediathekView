@@ -215,7 +215,7 @@ public class FilmActionPanel {
     private Button createFilmInformationButton() {
         btnFilmInformation = new Button("", fontAwesome.create(FontAwesome.Glyph.INFO_CIRCLE));
         btnFilmInformation.setTooltip(new Tooltip("Filminformation anzeigen"));
-        btnFilmInformation.setOnAction(e -> SwingUtilities.invokeLater(Daten.filmInfo::showInfo));
+        btnFilmInformation.setOnAction(e -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
 
         return btnFilmInformation;
     }

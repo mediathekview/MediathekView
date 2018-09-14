@@ -604,7 +604,7 @@ public class GuiFilme extends JPanel {
      */
     private void updateFilmData() {
         final Optional<DatenFilm> filmSelection = getCurrentlySelectedFilm();
-        filmSelection.ifPresent(Daten.filmInfo::updateCurrentFilm);
+        filmSelection.ifPresent(MediathekGui.ui().getFilmInfoDialog()::updateCurrentFilm);
     }
 
     private void setInfoStatusbar() {
@@ -699,8 +699,8 @@ public class GuiFilme extends JPanel {
                     }
                 } else if (arg0.getClickCount() > 1) {
                     //filmAbspielen_();
-                    if (!Daten.filmInfo.isVisible()) {
-                        Daten.filmInfo.showInfo();
+                    if (!MediathekGui.ui().getFilmInfoDialog().isVisible()) {
+                        MediathekGui.ui().getFilmInfoDialog().showInfo();
                     }
                 }
             }
@@ -957,8 +957,8 @@ public class GuiFilme extends JPanel {
             //Infos
             item = new JMenuItem("Filminformation anzeigen");
             item.addActionListener(e -> {
-                if (!Daten.filmInfo.isVisible()) {
-                    Daten.filmInfo.showInfo();
+                if (!MediathekGui.ui().getFilmInfoDialog().isVisible()) {
+                    MediathekGui.ui().getFilmInfoDialog().showInfo();
                 }
             });
             jPopupMenu.add(item);

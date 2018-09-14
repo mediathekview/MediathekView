@@ -327,8 +327,8 @@ public class PanelErledigteUrls extends PanelVorlage {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Daten.filmInfo.updateCurrentFilm(film);
-                Daten.filmInfo.showInfo();
+                MediathekGui.ui().getFilmInfoDialog().updateCurrentFilm(film);
+                MediathekGui.ui().getFilmInfoDialog().showInfo();
             }
         }
 

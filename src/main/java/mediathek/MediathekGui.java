@@ -395,11 +395,17 @@ public class MediathekGui extends JFrame {
 
     private static final Logger logger = LogManager.getLogger(MediathekGui.class);
 
+    private InfoDialog filmInfo; // Infos zum Film
+
+    public InfoDialog getFilmInfoDialog() {
+        return filmInfo;
+    }
+
     /**
      * Create the film information tool window.
      */
     private void createFilmInformationHUD() {
-        Daten.filmInfo = new InfoDialog(this, senderIconCache);
+        filmInfo = new InfoDialog(this, senderIconCache);
     }
 
     @Handler
