@@ -6,6 +6,7 @@ import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.daten.DatenAbo;
 import mediathek.daten.DatenDownload;
+import mediathek.gui.TabPaneIndex;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.javafx.tool.ComputedLabel;
@@ -14,9 +15,9 @@ import net.engio.mbassy.listener.Handler;
 public class FilmListInformationLabel extends ComputedLabel {
     private static final String TRENNER = "  ||  ";
     private final Daten daten;
-    private final ObjectProperty<MediathekGui.TabPaneIndex> tabPaneIndexProperty;
+    private final ObjectProperty<TabPaneIndex> tabPaneIndexProperty;
 
-    public FilmListInformationLabel(Daten daten, ObjectProperty<MediathekGui.TabPaneIndex> tabPaneIndexProperty) {
+    public FilmListInformationLabel(Daten daten, ObjectProperty<TabPaneIndex> tabPaneIndexProperty) {
         super();
         this.tabPaneIndexProperty = tabPaneIndexProperty;
         this.daten = daten;

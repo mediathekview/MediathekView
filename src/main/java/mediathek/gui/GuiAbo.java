@@ -74,7 +74,7 @@ public class GuiAbo extends JPanel {
                 final int sel = tabelle.getSelectedRowCount();
                 Platform.runLater(() -> mediathekGui.getSelectedItemsProperty().setValue(sel));
 
-                MediathekGui.ui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.ABO);
+                MediathekGui.ui().tabPaneIndexProperty().setValue(TabPaneIndex.ABO);
             }
         });
     }

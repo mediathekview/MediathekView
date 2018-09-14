@@ -229,7 +229,7 @@ public class GuiDownloads extends JPanel {
     }
 
     public void onComponentShown() {
-        MediathekGui.ui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.DOWNLOAD);
+        MediathekGui.ui().tabPaneIndexProperty().setValue(TabPaneIndex.DOWNLOAD);
         updateFilmData();
     }
 
