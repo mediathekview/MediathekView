@@ -1,6 +1,5 @@
 package mediathek.gui.dialog;
 
-import mediathek.MediathekGui;
 import mediathek.config.Daten;
 import mediathek.gui.dialogEinstellungen.PanelFilmlisteLaden;
 import mediathek.tool.GuiFunktionen;
@@ -18,7 +17,6 @@ public class LoadFilmListDialog extends StandardCloseDialog {
 
     @Override
     public JComponent createContentPanel() {
-        //FIXME HACK!!! ui()
-        return new PanelFilmlisteLaden(Daten.getInstance(), MediathekGui.ui());
+        return new PanelFilmlisteLaden(Daten.getInstance());
     }
 }
