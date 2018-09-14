@@ -186,7 +186,7 @@ public class GuiFilme extends JPanel {
     }
 
     public void onComponentShown() {
-        MediathekGui.ui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.FILME);
+        MediathekGui.ui().tabPaneIndexProperty().setValue(TabPaneIndex.FILME);
 
         updateFilmData();
         setInfoStatusbar();

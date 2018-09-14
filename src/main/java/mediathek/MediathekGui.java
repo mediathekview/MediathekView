@@ -384,10 +384,6 @@ public class MediathekGui extends JFrame {
         return statusBarController;
     }
 
-    public enum TabPaneIndex {
-        NONE, FILME, DOWNLOAD, ABO
-    }
-
     /**
      * Helper to determine what tab is currently active
      */
