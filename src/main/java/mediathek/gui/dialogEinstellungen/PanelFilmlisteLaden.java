@@ -4,7 +4,6 @@ import mSearch.tool.Listener;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
 import mediathek.config.*;
-import mediathek.gui.PanelVorlage;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.TextCopyPaste;
 import org.apache.commons.lang3.SystemUtils;
@@ -18,20 +17,28 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 @SuppressWarnings("serial")
-public class PanelFilmlisteLaden extends PanelVorlage {
-    public PanelFilmlisteLaden(Daten d, JFrame parentComponent) {
-        super(d, parentComponent);
+public class PanelFilmlisteLaden extends JPanel {
+    private final Daten daten;
+
+    public PanelFilmlisteLaden(Daten d) {
+        super();
+        daten = d;
+
         initComponents();
         init();
     }
 
     private void init() {
-        jButtonDateiAuswaehlen.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
-        jButtonUrl.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
         initRadio();
+
+        jButtonUrl.setIcon(Icons.ICON_BUTTON_AKTUALISIEREN);
         jButtonUrl.addActionListener(e -> jTextFieldUrl.setText(daten.getFilmeLaden().getDownloadUrl_akt()));
+
         jButtonLoad.addActionListener(ae -> daten.getFilmeLaden().loadFilmlist(""));
+
+        jButtonDateiAuswaehlen.setIcon(Icons.ICON_BUTTON_FILE_OPEN);
         jButtonDateiAuswaehlen.addActionListener(new BeobPfad());
+
         jButtonFilmeLaden.addActionListener(e -> {
             if (jCheckBoxUpdate.isSelected()) {
                 daten.getFilmeLaden().updateFilmlist(jTextFieldUrl.getText());
@@ -39,10 +46,12 @@ public class PanelFilmlisteLaden extends PanelVorlage {
                 daten.getFilmeLaden().loadFilmlist(jTextFieldUrl.getText());
             }
         });
+
         jRadioButtonManuell.addActionListener(new BeobOption());
         jRadioButtonAuto.addActionListener(new BeobOption());
         jTextFieldUrl.getDocument().addDocumentListener(new BeobDateiUrl());
         jTextFieldUrl.addMouseListener(new TextCopyPaste());
+
         Listener.addListener(new Listener(Listener.EREIGNIS_ART_IMPORT_FILMLISTE, PanelFilmlisteLaden.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -75,15 +84,13 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (!stopBeob) {
-                if (jRadioButtonManuell.isSelected()) {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUS));
-                } else {
-                    MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUTO));
-                }
-                // den Dialog gibts 2x
-                Listener.notify(Listener.EREIGNIS_ART_IMPORT_FILMLISTE, this.getClass().getSimpleName());
+            if (jRadioButtonManuell.isSelected()) {
+                MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUS));
+            } else {
+                MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_ART_FILME, String.valueOf(Konstanten.UPDATE_FILME_AUTO));
             }
+            // den Dialog gibts 2x
+            Listener.notify(Listener.EREIGNIS_ART_IMPORT_FILMLISTE, this.getClass().getSimpleName());
         }
     }
 
@@ -128,20 +135,20 @@ public class PanelFilmlisteLaden extends PanelVorlage {
 
         @Override
         public void insertUpdate(DocumentEvent e) {
-            tus();
+            turnOnManualImport();
         }
 
         @Override
         public void removeUpdate(DocumentEvent e) {
-            tus();
+            turnOnManualImport();
         }
 
         @Override
         public void changedUpdate(DocumentEvent e) {
-            tus();
+            turnOnManualImport();
         }
 
-        private void tus() {
+        private void turnOnManualImport() {
             MVConfig.add(MVConfig.Configs.SYSTEM_IMPORT_URL_MANUELL, jTextFieldUrl.getText());
         }
     }
