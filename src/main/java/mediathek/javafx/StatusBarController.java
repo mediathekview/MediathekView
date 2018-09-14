@@ -2,9 +2,7 @@ package mediathek.javafx;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.JFXPanel;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
@@ -129,7 +127,7 @@ public class StatusBarController {
         statusBar.getRightItems().add(filmListInfoPane);
     }
 
-    private StatusBar createStatusBar() {
+    public StatusBar createStatusBar() {
         //reset text
         statusBar.setText("");
 
@@ -137,13 +135,5 @@ public class StatusBarController {
         setupRightPane();
 
         return statusBar;
-    }
-
-    public void installStatusBar(Pane pane) {
-        pane.getChildren().add(createStatusBar());
-    }
-
-    public void installStatusBar(JFXPanel jfxPanel) {
-        Platform.runLater(() -> jfxPanel.setScene(new Scene(createStatusBar())));
     }
 }
