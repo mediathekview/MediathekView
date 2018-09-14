@@ -48,20 +48,8 @@ public class DownloadInfos {
     // Anzahl, Anz-Abo, Anz-Down, nicht gestarted, laufen, fertig OK, fertig fehler
     public int[] downloadStarts = new int[]{0, 0, 0, 0, 0, 0, 0};
 
-    public DownloadInfos(Daten aDaten)
-    {
+    public DownloadInfos(Daten aDaten) {
         daten = aDaten;
-    }
-
-    public String roundBandwidth(long time) {
-        roundBandwidth();
-        if (bandwidth > 1_000_000.0) {
-            return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + bandwidthStr;
-        } else if (bandwidth > 1_000.0) {
-            return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + bandwidthStr;
-        } else {
-            return time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60) + " Minuten / " + bandwidthStr;
-        }
     }
 
     public String roundBandwidth() {
@@ -97,6 +85,7 @@ public class DownloadInfos {
         return "";
     }
 
+    //FIXME neu schreiben da die zugriffe komplett flasch sind, Kapseln!!!
     public synchronized void makeDownloadInfos() {
         clean();
 

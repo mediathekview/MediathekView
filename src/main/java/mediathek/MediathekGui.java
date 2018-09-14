@@ -45,14 +45,12 @@ import mediathek.config.*;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
 import mediathek.daten.ListeMediaDB;
+import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.*;
 import mediathek.gui.actions.*;
 import mediathek.gui.actions.export.FilmListExportAction;
 import mediathek.gui.bandwidth.MVBandwidthMonitor;
-import mediathek.gui.dialog.AboutDialog;
-import mediathek.gui.dialog.DialogBeenden;
-import mediathek.gui.dialog.DialogMediaDB;
-import mediathek.gui.dialog.DialogStarteinstellungen;
+import mediathek.gui.dialog.*;
 import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.*;
@@ -894,8 +892,20 @@ public class MediathekGui extends JFrame {
         jMenuItemFilmeMediensammlung.addActionListener(tabFilme.mediensammlungAction);
     }
 
+    public void showLoadFilmListDialogOrDownloadFilmlist(boolean manuell) {
+        if (manuell || GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUS) {
+            // Dialog zum Laden der Filme anzeigen
+            LoadFilmListDialog dlg = new LoadFilmListDialog(this);
+            dlg.setVisible(true);
+        } else {
+            // Filme werden automatisch geladen
+            FilmeLaden filmeLaden = new FilmeLaden(daten);
+            filmeLaden.loadFilmlist("");
+        }
+    }
+
     private void initializeDateiMenu() {
-        jMenuItemFilmlisteLaden.addActionListener(e -> daten.getFilmeLaden().loadFilmlistDialog(daten, false));
+        jMenuItemFilmlisteLaden.addActionListener(e -> showLoadFilmListDialogOrDownloadFilmlist(false));
         jMenuItemFilmlisteLaden.setIcon(IconFontSwing.buildIcon(FontAwesome.CLOUD_DOWNLOAD, 16));
 
         jMenuItemEinstellungen.addActionListener(e -> showSettingsDialog());
