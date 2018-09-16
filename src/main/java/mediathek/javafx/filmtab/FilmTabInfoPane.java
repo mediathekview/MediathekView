@@ -13,17 +13,17 @@ import mediathek.javafx.VerticalSeparator;
 import net.engio.mbassy.listener.Handler;
 
 public class FilmTabInfoPane extends HBox {
-    private final FilmTabInformationLabel infoLabel;
-    private final FilmInfoLabel filmLabel;
+    private final FilmTabDownloadInformationLabel downloadInformationLabel;
+    private final FilmInfoLabel filmInfoLabel;
 
     public FilmTabInfoPane(Daten daten, GuiFilme tabFilme) {
         super();
-        infoLabel = new FilmTabInformationLabel(daten);
-        filmLabel = new FilmInfoLabel(daten,tabFilme);
+        downloadInformationLabel = new FilmTabDownloadInformationLabel(daten);
+        filmInfoLabel = new FilmInfoLabel(daten,tabFilme);
 
-        getChildren().addAll(new CenteredBorderPane(filmLabel),
+        getChildren().addAll(new CenteredBorderPane(filmInfoLabel),
                 new VerticalSeparator(),
-                new CenteredBorderPane(infoLabel),
+                new CenteredBorderPane(downloadInformationLabel),
                 new VerticalSeparator());
 
         if (isVisible())
@@ -42,8 +42,8 @@ public class FilmTabInfoPane extends HBox {
     }
 
     private void updateLayout() {
-        infoLabel.setInfoFilme();
-        filmLabel.updateValues();
+        downloadInformationLabel.setInfoFilme();
+        filmInfoLabel.updateValues();
     }
 
     @Handler

@@ -3,10 +3,10 @@ package mediathek.javafx.filmtab;
 import javafx.scene.control.Label;
 import mediathek.config.Daten;
 
-public class FilmTabInformationLabel extends Label {
+public class FilmTabDownloadInformationLabel extends Label {
     private final Daten daten;
 
-    public FilmTabInformationLabel(Daten daten) {
+    public FilmTabDownloadInformationLabel(Daten daten) {
         super();
         this.daten = daten;
     }
