@@ -49,6 +49,7 @@ import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.StartEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
+import mediathek.javafx.FilmTabInformationLabel;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.tool.*;
@@ -105,6 +106,34 @@ public class GuiFilme extends JPanel {
         });
     }
 
+    private FilmTabInformationLabel filmInfoLabel;
+
+    private void installTabInfoStatusBarControl() {
+        Platform.runLater(() -> {
+            filmInfoLabel = new FilmTabInformationLabel(daten,this);
+            if (isVisible())
+                MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
+        });
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                Platform.runLater(() -> {
+                    filmInfoLabel.setVisible(true);
+                    MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
+                });
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                Platform.runLater(() -> {
+                    filmInfoLabel.setVisible(false);
+                    MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().remove(filmInfoLabel);
+                });
+            }
+        });
+    }
+
     public GuiFilme(Daten aDaten, MediathekGui mediathekGui) {
         super();
         daten = aDaten;
@@ -114,6 +143,8 @@ public class GuiFilme extends JPanel {
 
         tabelle = new MVFilmTable();
         jScrollPane1.setViewportView(tabelle);
+
+        installTabInfoStatusBarControl();
 
         setupFilmSelectionPropertyListener(mediathekGui);
 

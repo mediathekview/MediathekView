@@ -48,6 +48,7 @@ import mediathek.gui.messages.GeoStateChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.gui.toolbar.DownloadToolBar;
+import mediathek.javafx.DownloadTabInformationLabel;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
@@ -137,6 +138,34 @@ public class GuiDownloads extends JPanel {
         });
     }
 
+    private DownloadTabInformationLabel filmInfoLabel;
+
+    private void installTabInfoStatusBarControl() {
+        Platform.runLater(() -> {
+            filmInfoLabel = new DownloadTabInformationLabel(daten);
+            if (isVisible())
+                MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
+        });
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                Platform.runLater(() -> {
+                    filmInfoLabel.setVisible(true);
+                    MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
+                });
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                Platform.runLater(() -> {
+                    filmInfoLabel.setVisible(false);
+                    MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().remove(filmInfoLabel);
+                });
+            }
+        });
+    }
+
     public GuiDownloads(Daten aDaten, MediathekGui mediathekGui) {
         super();
         daten = aDaten;
@@ -154,6 +183,8 @@ public class GuiDownloads extends JPanel {
         showDescriptionPanel();
 
         init(mediathekGui);
+
+        installTabInfoStatusBarControl();
 
         setupFilmSelectionPropertyListener(mediathekGui);
 
