@@ -622,7 +622,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
         }
 
         public static void createIndices() {
-            logger.info("Creating SQL indices");
+            logger.debug("Creating SQL indices");
             try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
                  Statement statement = connection.createStatement()) {
                 statement.executeUpdate("CREATE INDEX IF NOT EXISTS IDX_FILM_ID ON mediathekview.film (id)");
@@ -631,11 +631,11 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            logger.info("Finished creating SQL indices");
+            logger.debug("Finished creating SQL indices");
         }
 
         private static void initializeDatabase() {
-            logger.info("initializeDatabase()");
+            logger.debug("initializeDatabase()");
             try (Connection connection = PooledDatabaseConnection.getInstance().getConnection();
                  Statement statement = connection.createStatement()) {
                 if (!MemoryUtils.isLowMemoryEnvironment()) {
@@ -663,7 +663,7 @@ public class DatenFilm implements AutoCloseable, Comparable<DatenFilm> {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            logger.info("initializeDatabase() done.");
+            logger.debug("initializeDatabase() done.");
 
         }
     }
