@@ -133,15 +133,16 @@ public class Daten {
      */
     public static String getDateiFilmliste() {
         String strFile;
+        final String filePart = File.separator + Konstanten.JSON_DATEI_FILME;
 
-        if (Config.isPortableMode()) {
-            strFile = getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME;
-        } else {
+        if (Config.isPortableMode())
+            strFile = getSettingsDirectory_String() + filePart;
+        else {
             if (SystemUtils.IS_OS_MAC_OSX) {
                 //place filmlist into OS X user cache directory in order not to backup it all the time in TimeMachine...
-                strFile = GuiFunktionen.getHomePath() + File.separator + "Library/Caches/MediathekView" + File.separator + Konstanten.JSON_DATEI_FILME;
+                strFile = GuiFunktionen.getHomePath() + File.separator + "Library/Caches/MediathekView" + filePart;
             } else {
-                strFile = getSettingsDirectory_String() + File.separator + Konstanten.JSON_DATEI_FILME;
+                strFile = getSettingsDirectory_String() + filePart;
             }
         }
 
