@@ -22,7 +22,6 @@ package mSearch.filmlisten.reader;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.github.luben.zstd.ZstdInputStream;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
@@ -94,10 +93,6 @@ public class FilmListReader implements AutoCloseable {
         switch (source.substring(source.lastIndexOf('.'))) {
             case Const.FORMAT_XZ:
                 is = new XZInputStream(in, DECOMPRESSOR_MEMORY_LIMIT, false);
-                break;
-
-            case Const.FORMAT_ZSTD:
-                is = new ZstdInputStream(in);
                 break;
 
             case ".json":
