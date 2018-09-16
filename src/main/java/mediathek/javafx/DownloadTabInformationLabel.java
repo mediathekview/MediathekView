@@ -76,6 +76,8 @@ public class DownloadTabInformationLabel extends Label {
             textLinks += starts[2] + " Downloads";
         }
 
+        textLinks +=" ";
+        
         if (print) {
             if (starts[4] == 1) {
                 textLinks += "1 läuft";
