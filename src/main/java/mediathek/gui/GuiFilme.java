@@ -49,8 +49,8 @@ import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.StartEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
-import mediathek.javafx.FilmTabInformationLabel;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
+import mediathek.javafx.filmtab.FilmTabInfoPane;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererFilme;
@@ -106,11 +106,11 @@ public class GuiFilme extends JPanel {
         });
     }
 
-    private FilmTabInformationLabel filmInfoLabel;
+    private FilmTabInfoPane filmInfoLabel;
 
     private void installTabInfoStatusBarControl() {
         Platform.runLater(() -> {
-            filmInfoLabel = new FilmTabInformationLabel(daten,this);
+            filmInfoLabel = new FilmTabInfoPane(daten,this);
             if (isVisible())
                 MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
         });
