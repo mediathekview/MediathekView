@@ -31,6 +31,7 @@ import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
 import mediathek.gui.toolbar.AboToolBar;
+import mediathek.javafx.AboTabInformationLabel;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.HinweisKeineAuswahl;
 import mediathek.tool.MVSenderIconCache;
@@ -79,6 +80,34 @@ public class GuiAbo extends JPanel {
         });
     }
 
+    private AboTabInformationLabel filmInfoLabel;
+
+    private void installTabInfoStatusBarControl() {
+        Platform.runLater(() -> {
+            filmInfoLabel = new AboTabInformationLabel(daten);
+            if (isVisible())
+                MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
+        });
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                Platform.runLater(() -> {
+                    filmInfoLabel.setVisible(true);
+                    MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().add(filmInfoLabel);
+                });
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                Platform.runLater(() -> {
+                    filmInfoLabel.setVisible(false);
+                    MediathekGui.ui().getStatusBarController().getStatusBar().getLeftItems().remove(filmInfoLabel);
+                });
+            }
+        });
+    }
+
     public GuiAbo(Daten d, MediathekGui parentComponent) {
         super();
         daten = d;
@@ -88,6 +117,8 @@ public class GuiAbo extends JPanel {
 
         tabelle = new MVAbosTable();
         jScrollPane1.setViewportView(tabelle);
+
+        installTabInfoStatusBarControl();
 
         setupFilmSelectionPropertyListener(parentComponent);
 

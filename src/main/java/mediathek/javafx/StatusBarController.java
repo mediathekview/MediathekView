@@ -10,7 +10,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mediathek.MediathekGui;
 import mediathek.config.Config;
 import mediathek.config.Daten;
 import mediathek.javafx.filmlist.FilmListInfoPane;
@@ -24,13 +23,11 @@ public class StatusBarController {
      */
     private final StatusBar statusBar = new StatusBar();
     private final FilmListInfoPane filmListInfoPane;
-    private final FilmListInformationLabel filmListInformationLabel;
     private final GarbageCollectionButton btnGc = new GarbageCollectionButton();
     private Pane progressPane;
 
     public StatusBarController(Daten daten) {
         filmListInfoPane = new FilmListInfoPane(daten);
-        filmListInformationLabel = new FilmListInformationLabel(daten, MediathekGui.ui().tabPaneIndexProperty());
 
         daten.getMessageBus().subscribe(this);
 
@@ -118,9 +115,6 @@ public class StatusBarController {
             leftItems.add(btnGc);
             leftItems.add(new VerticalSeparator());
         }
-        CenteredBorderPane pane = new CenteredBorderPane(filmListInformationLabel);
-        leftItems.add(pane);
-        leftItems.add(new VerticalSeparator());
     }
 
     private void setupRightPane() {
