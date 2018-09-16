@@ -22,6 +22,8 @@ package mediathek.config;
 import mSearch.tool.Version;
 
 public class Konstanten {
+    public static final String ROUTER_BASE_ADDRESS = "http://rtr.mdthk.de/";
+
     public static final Version MVVERSION = new Version(13, 3, 0);
     public static final String PROGRAMMNAME = "MediathekView";
     public static final String CONFIG_FILE = "mediathek.xml";

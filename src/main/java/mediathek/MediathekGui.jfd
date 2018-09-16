@@ -372,16 +372,6 @@ new FormModel {
 						name: "miShowProgramInfos"
 						"text": "Programminfos anzeigen..."
 					} )
-					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
-						name: "jSeparator9"
-						auxiliary() {
-							"JavaCodeGenerator.variableLocal": true
-						}
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "miUpdateServers"
-						"text": "Update-Server aktualisieren..."
-					} )
 					add( new FormComponent( "javax.swing.JSeparator" ) {
 						name: "jSeparatorAboutApplication"
 						auxiliary() {

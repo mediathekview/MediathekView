@@ -19,7 +19,6 @@
  */
 package mediathek.controller;
 
-import mSearch.filmlisten.DatenFilmlisteUrl;
 import mSearch.tool.Log;
 import mSearch.tool.ReplaceList;
 import mediathek.config.Daten;
@@ -40,6 +39,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class IoXmlSchreiben {
+    private static final Logger logger = LogManager.getLogger(IoXmlSchreiben.class);
     private final XMLOutputFactory outFactory;
 
     public IoXmlSchreiben() {
@@ -139,23 +139,6 @@ public class IoXmlSchreiben {
         }
     }
 
-    private void writeUpdateServerData(XMLStreamWriter writer) throws XMLStreamException {
-        writer.writeCharacters("\n\n");
-        writeNewLine(writer);
-        //FilmUpdate schreiben
-        writeNewLine(writer);
-        for (DatenFilmlisteUrl datenUrlFilmliste : Daten.getInstance().getFilmeLaden().getDownloadUrlsFilmlisten_akt()) {
-            datenUrlFilmliste.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR] = DatenFilmlisteUrl.SERVER_ART_AKT;
-            xmlSchreibenDaten(writer, DatenFilmlisteUrl.FILM_UPDATE_SERVER, DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
-        }
-
-        writeNewLine(writer);
-        for (DatenFilmlisteUrl datenUrlFilmliste : Daten.getInstance().getFilmeLaden().getDownloadUrlsFilmlisten_diff()) {
-            datenUrlFilmliste.arr[DatenFilmlisteUrl.FILM_UPDATE_SERVER_ART_NR] = DatenFilmlisteUrl.SERVER_ART_DIFF;
-            xmlSchreibenDaten(writer, DatenFilmlisteUrl.FILM_UPDATE_SERVER, DatenFilmlisteUrl.FILM_UPDATE_SERVER_COLUMN_NAMES, datenUrlFilmliste.arr, false);
-        }
-    }
-
     private void xmlSchreibenPset(XMLStreamWriter writer, DatenPset[] psetArray) throws XMLStreamException {
         // wird beim Export Sets verwendet
         writer.writeCharacters("\n\n");
@@ -245,8 +228,6 @@ public class IoXmlSchreiben {
         }
     }
 
-    private static final Logger logger = LogManager.getLogger(IoXmlSchreiben.class);
-
     private void xmlDatenSchreiben(Path xmlFilePath) {
         logger.info("Config Schreiben nach: {} startet", xmlFilePath.toAbsolutePath());
 
@@ -269,8 +250,6 @@ public class IoXmlSchreiben {
             writeDownloads(writer);
 
             writeMediaDatabase(writer);
-
-            writeUpdateServerData(writer);
 
             writer.writeCharacters("\n\n");
 

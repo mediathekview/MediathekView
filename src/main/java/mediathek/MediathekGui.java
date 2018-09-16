@@ -47,7 +47,10 @@ import mediathek.daten.DatenDownload;
 import mediathek.daten.ListeMediaDB;
 import mediathek.filmlisten.FilmeLaden;
 import mediathek.gui.*;
-import mediathek.gui.actions.*;
+import mediathek.gui.actions.CreateProtocolFileAction;
+import mediathek.gui.actions.ResetSettingsAction;
+import mediathek.gui.actions.ShowBlacklistDialogAction;
+import mediathek.gui.actions.ShowOnlineHelpAction;
 import mediathek.gui.actions.export.FilmListExportAction;
 import mediathek.gui.bandwidth.MVBandwidthMonitor;
 import mediathek.gui.dialog.*;
@@ -93,8 +96,6 @@ public class MediathekGui extends JFrame {
     private static final int ICON_HEIGHT = 58;
     private static final String KEY_F10 = "F10";
     private static final String NONE = "none";
-    private static final String SPLASHSCREEN_TEXT_ANWENDUNGSDATEN_LADEN = "Anwendungsdaten laden...";
-    private static final String SPLASHSCREEN_TEXT_GUI_INITIALISIEREN = "GUI Initialisieren...";
     private static final String LOG_TEXT_DIE_DOWNLOADS_MUESSEN_ZUERST_GESTARTET_WERDEN = "Die Downloads müssen zuerst gestartet werden.";
     private static final String LOG_TEXT_KEINE_LAUFENDEN_DOWNLOADS = "Keine laufenden Downloads!";
 
@@ -171,7 +172,7 @@ public class MediathekGui extends JFrame {
 
         remapF10Key();
 
-        splashScreenManager.updateSplashScreenText(SPLASHSCREEN_TEXT_ANWENDUNGSDATEN_LADEN);
+        splashScreenManager.updateSplashScreenText("Anwendungsdaten laden...");
 
         daten = Daten.getInstance();
 
@@ -258,11 +259,11 @@ public class MediathekGui extends JFrame {
                     new CenteredBorderPane(prog)
             );
 
-            PerformFilmListFilterOperationsTask task = new PerformFilmListFilterOperationsTask();
-            task.setOnRunning(e -> {
+            FilmListReaderTask filmListReaderTask = new FilmListReaderTask();
+            filmListReaderTask.setOnRunning(e -> {
                 getStatusBarController().getStatusBar().getRightItems().add(hb);
-                lb.textProperty().bind(task.messageProperty());
-                prog.progressProperty().bind(task.progressProperty());
+                lb.textProperty().bind(filmListReaderTask.messageProperty());
+                prog.progressProperty().bind(filmListReaderTask.progressProperty());
             });
 
             FilmListFilterTask filterTask = new FilmListFilterTask(true);
@@ -273,7 +274,7 @@ public class MediathekGui extends JFrame {
             filterTask.setOnSucceeded(e -> getStatusBarController().getStatusBar().getRightItems().remove(hb));
             filterTask.setOnFailed(e -> getStatusBarController().getStatusBar().getRightItems().remove(hb));
 
-            CompletableFuture<Void> loaderTask = CompletableFuture.runAsync(task);
+            CompletableFuture<Void> loaderTask = CompletableFuture.runAsync(filmListReaderTask);
             loaderTask.thenRun(filterTask);
         });
     }
@@ -336,13 +337,14 @@ public class MediathekGui extends JFrame {
     {
         if (daten.allesLaden()) {
             // alles geladen
-            splashScreenManager.updateSplashScreenText(SPLASHSCREEN_TEXT_GUI_INITIALISIEREN);
+            splashScreenManager.updateSplashScreenText("GUI Initialisieren...");
         } else {
             // erster Start
             ReplaceList.init(); // einmal ein Muster anlegen, für Linux/OS X ist es bereits aktiv!
             new DialogStarteinstellungen(this, daten).setVisible(true);
             MVConfig.loadSystemParameter();
-            this.pack();
+
+            pack();
         }
     }
 
@@ -770,8 +772,6 @@ public class MediathekGui extends JFrame {
 
         miSearchForProgramUpdate.addActionListener(e -> searchForUpdateOrShowProgramInfos(false));
         miShowProgramInfos.addActionListener(e -> searchForUpdateOrShowProgramInfos(true));
-
-        miUpdateServers.setAction(new UpdateFilmListServersAction());
     }
 
     private void initializeAnsichtAbos()
@@ -892,8 +892,8 @@ public class MediathekGui extends JFrame {
         jMenuItemFilmeMediensammlung.addActionListener(tabFilme.mediensammlungAction);
     }
 
-    public void showLoadFilmListDialogOrDownloadFilmlist(boolean manuell) {
-        if (manuell || GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUS) {
+    public void performFilmListLoadOperation(boolean manualMode) {
+        if (manualMode || GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUS) {
             // Dialog zum Laden der Filme anzeigen
             LoadFilmListDialog dlg = new LoadFilmListDialog(this);
             dlg.setVisible(true);
@@ -905,7 +905,7 @@ public class MediathekGui extends JFrame {
     }
 
     private void initializeDateiMenu() {
-        jMenuItemFilmlisteLaden.addActionListener(e -> showLoadFilmListDialogOrDownloadFilmlist(false));
+        jMenuItemFilmlisteLaden.addActionListener(e -> performFilmListLoadOperation(false));
         jMenuItemFilmlisteLaden.setIcon(IconFontSwing.buildIcon(FontAwesome.CLOUD_DOWNLOAD, 16));
 
         jMenuItemEinstellungen.addActionListener(e -> showSettingsDialog());
@@ -1153,7 +1153,7 @@ public class MediathekGui extends JFrame {
         jMenuItemFilmAbspielen = new JMenuItem();
         jMenuItemFilmAufzeichnen = new JMenuItem();
         jMenuItemBlacklist = new JMenuItem();
-        JSeparator separator1 = new JSeparator();
+        var separator1 = new JSeparator();
         cbkBeschreibung = new JCheckBoxMenuItem();
         jMenuItemFilmeGesehen = new JMenuItem();
         jMenuItemFilmeUngesehen = new JMenuItem();
@@ -1185,9 +1185,9 @@ public class MediathekGui extends JFrame {
         jMenuItemAbosAendern = new JMenuItem();
         jMenuItemAboNeu = new JMenuItem();
         jMenuItemAboInvertSelection = new JMenuItem();
-        JMenu jMenuAnsicht = new JMenu();
+        var jMenuAnsicht = new JMenu();
         jCheckBoxMenuItemVideoplayer = new JCheckBoxMenuItem();
-        JMenu jMenu1 = new JMenu();
+        var jMenu1 = new JMenu();
         jMenuItemSchriftGr = new JMenuItem();
         jMenuItemSchriftKl = new JMenuItem();
         jMenuItemSchriftNormal = new JMenuItem();
@@ -1200,16 +1200,15 @@ public class MediathekGui extends JFrame {
         jMenuItemResetSettings = new JMenuItem();
         miSearchForProgramUpdate = new JMenuItem();
         miShowProgramInfos = new JMenuItem();
-        miUpdateServers = new JMenuItem();
         jSeparatorAboutApplication = new JSeparator();
         jMenuItemAboutApplication = new JMenuItem();
-        JPanel jPanelCont = new JPanel();
+        var jPanelCont = new JPanel();
         jPanelInfo = new JPanel();
         jTabbedPane = new JTabbedPane();
 
         //======== this ========
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        Container contentPane = getContentPane();
+        var contentPane = getContentPane();
 
         //======== jMenuBar ========
         {
@@ -1484,11 +1483,6 @@ public class MediathekGui extends JFrame {
                 //---- miShowProgramInfos ----
                 miShowProgramInfos.setText("Programminfos anzeigen...");
                 jMenuHilfe.add(miShowProgramInfos);
-                jMenuHilfe.addSeparator();
-
-                //---- miUpdateServers ----
-                miUpdateServers.setText("Update-Server aktualisieren...");
-                jMenuHilfe.add(miUpdateServers);
                 jMenuHilfe.add(jSeparatorAboutApplication);
 
                 //---- jMenuItemAboutApplication ----
@@ -1589,7 +1583,6 @@ public class MediathekGui extends JFrame {
     protected JMenuItem jMenuItemResetSettings;
     private JMenuItem miSearchForProgramUpdate;
     private JMenuItem miShowProgramInfos;
-    private JMenuItem miUpdateServers;
     protected JSeparator jSeparatorAboutApplication;
     protected JMenuItem jMenuItemAboutApplication;
     private JPanel jPanelInfo;
