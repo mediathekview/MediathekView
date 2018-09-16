@@ -8,10 +8,10 @@ import mediathek.config.MVConfig;
 import mediathek.gui.messages.FilmListReadStartEvent;
 import mediathek.tool.GuiFunktionen;
 
-public class PerformFilmListFilterOperationsTask extends Task<Void> {
+public class FilmListReaderTask extends Task<Void> {
     private final Daten daten;
 
-    public PerformFilmListFilterOperationsTask() {
+    public FilmListReaderTask() {
         super();
         daten = Daten.getInstance();
     }
@@ -32,7 +32,7 @@ public class PerformFilmListFilterOperationsTask extends Task<Void> {
 
         if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO && daten.getListeFilme().isTooOld()) {
             updateMessage("Lese Filmliste Netzwerk");
-            daten.getFilmeLaden().loadFilmListFromNetwork();
+            daten.getFilmeLaden().loadFilmlist("", true);
         }
 
         return null;

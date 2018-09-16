@@ -22,6 +22,7 @@ package mSearch.filmlisten.reader;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.github.luben.zstd.ZstdInputStream;
 import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
@@ -93,6 +94,10 @@ public class FilmListReader implements AutoCloseable {
         switch (source.substring(source.lastIndexOf('.'))) {
             case Const.FORMAT_XZ:
                 is = new XZInputStream(in, DECOMPRESSOR_MEMORY_LIMIT, false);
+                break;
+
+            case Const.FORMAT_ZSTD:
+                is = new ZstdInputStream(in);
                 break;
 
             case ".json":
@@ -391,8 +396,8 @@ public class FilmListReader implements AutoCloseable {
             }
         };
 
-        final Request.Builder builder = new Request.Builder().url(source);
-        try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(builder.build()).execute()) {
+        final Request request = new Request.Builder().url(source).build();
+        try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute()) {
             if (response.isSuccessful()) {
                 try (ResponseBody body = response.body();
                      InputStream input = new ProgressMonitorInputStream(body.byteStream(), body.contentLength(), monitor);
@@ -400,7 +405,9 @@ public class FilmListReader implements AutoCloseable {
                      JsonParser jp = new JsonFactory().createParser(is)) {
                     readData(jp, listeFilme);
                 }
-            }
+            } else
+                logger.warn("processFromWeb HTTP Response Code: {} for {}", response.code(), response.request().url().url());
+
         } catch (Exception ex) {
             logger.error("FilmListe: {}", source, ex);
             listeFilme.clear();

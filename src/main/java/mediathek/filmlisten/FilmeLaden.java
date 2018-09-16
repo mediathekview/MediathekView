@@ -19,6 +19,7 @@
  */
 package mediathek.filmlisten;
 
+import com.google.common.base.Stopwatch;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -29,8 +30,6 @@ import mSearch.daten.DatenFilm;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.filmlisten.FilmlistenSuchen;
-import mSearch.filmlisten.ListeFilmlistenUrls;
 import mSearch.filmlisten.reader.FilmListReader;
 import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.MVHttpClient;
@@ -57,7 +56,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -112,6 +110,7 @@ public class FilmeLaden {
      */
     private boolean hasNewRemoteFilmlist() {
         boolean result = false;
+        logger.debug("hasNewRemoteFilmList()");
 
         final String id = Daten.getInstance().getListeFilme().getId();
 
@@ -120,7 +119,7 @@ public class FilmeLaden {
         if (GuiFunktionen.getImportArtFilme() == Konstanten.UPDATE_FILME_AUTO)
             showDialogs = false;
 
-        final Request request = new Request.Builder().url("https://verteiler1.mediathekview.de/filmliste.id").get().build();
+        final Request request = new Request.Builder().url(Konstanten.ROUTER_BASE_ADDRESS + "filmliste.id").get().build();
         try (Response response = MVHttpClient.getInstance().getHttpClient().newCall(request).execute();
              ResponseBody body = response.body()) {
             if (body != null && response.isSuccessful()) {
@@ -130,6 +129,7 @@ public class FilmeLaden {
             } else {
                 //we were not successful to load the id file
                 //if not found, pretend we need to update
+                logger.warn("hasNewRemoteFilmlist HTTP Response Code: {} for {}", response.code(), response.request().url());
                 if (response.code() == HttpURLConnection.HTTP_NOT_FOUND)
                     result = true;
             }
@@ -195,11 +195,9 @@ public class FilmeLaden {
         return result;
     }
 
-    /**
-     * Load a filmlist from the network.
-     */
-    public void loadFilmListFromNetwork() {
-        loadFilmlist("", true);
+    private void prepareHashTable() {
+        hashSet.clear();
+        fillHash(daten.getListeFilme());
     }
 
     public boolean loadFilmlist(String dateiUrl, boolean immerNeuLaden) {
@@ -209,7 +207,7 @@ public class FilmeLaden {
         if (!performUpdateCheck(listeFilme, dateiUrl))
             return false;
 
-        logger.debug("Filme laden, start");
+        logger.debug("loadFilmlist(String,boolean)");
         logger.info("");
         logger.info("Alte Liste erstellt am: {}", listeFilme.genDate());
         logger.info("  Anzahl Filme: {}", listeFilme.size());
@@ -217,9 +215,10 @@ public class FilmeLaden {
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
+
             // Hash mit URLs füllen
-            hashSet.clear();
-            fillHash(listeFilme);
+            prepareHashTable();
+
             if (immerNeuLaden) {
                 // dann die alte löschen, damit immer komplett geladen wird, aber erst nach dem Hash!!
                 listeFilme.clear(); // sonst wird eine "zu kurze" Liste wieder nur mit einer Diff-Liste aufgefüllt, wenn das Alter noch passt
@@ -227,7 +226,7 @@ public class FilmeLaden {
             daten.getListeFilmeNachBlackList().clear();
             if (dateiUrl.isEmpty()) {
                 // Filme als Liste importieren, Url automatisch ermitteln
-                logger.info("Filmliste laden (auto)");
+                logger.info("Filmliste laden (Netzwerk)");
                 importFilmliste.importFromUrl(listeFilme, diffListe, Integer.parseInt(MVConfig.get(MVConfig.Configs.SYSTEM_ANZ_TAGE_FILMLISTE)));
             } else {
                 // Filme als Liste importieren, feste URL/Datei
@@ -250,10 +249,10 @@ public class FilmeLaden {
         if (!istAmLaufen) {
             // nicht doppelt starten
             istAmLaufen = true;
+
             // Hash mit URLs füllen
-            hashSet.clear();
-            fillHash(daten.getListeFilme());
-            //daten.getListeFilme().clear();
+            prepareHashTable();
+
             daten.getListeFilmeNachBlackList().clear();
             // Filme als Liste importieren, feste URL/Datei
             logger.info("Filmliste laden von: " + dateiUrl);
@@ -263,22 +262,6 @@ public class FilmeLaden {
 
     public void addAdListener(ListenerFilmeLaden listener) {
         listeners.add(ListenerFilmeLaden.class, listener);
-    }
-
-    public ListeFilmlistenUrls getDownloadUrlsFilmlisten_akt() {
-        return importFilmliste.msFilmlistenSuchen.getFullServerList();
-    }
-
-    public ListeFilmlistenUrls getDownloadUrlsFilmlisten_diff() {
-        return importFilmliste.msFilmlistenSuchen.getDiffServerList();
-    }
-
-    public FilmlistenSuchen getFilmlistenSuchen() {
-        return importFilmliste.msFilmlistenSuchen;
-    }
-
-    public String getDownloadUrl_akt() {
-        return importFilmliste.msFilmlistenSuchen.suchenAkt(new ArrayList<>());
     }
 
     private void undEnde(ListenerFilmeLadenEvent event) {
@@ -375,7 +358,6 @@ public class FilmeLaden {
                 //TODO this is not beautiful
                 //manual cleanup as ui cleanup is not
                 MediathekGui.ui().getStatusBarController().getStatusBar().getRightItems().remove(hb);
-                MediathekGui.ui().getStatusBarController().getStatusBar().getRightItems().remove(hb);
             }
         });
     }
@@ -390,12 +372,17 @@ public class FilmeLaden {
     private void findAndMarkNewFilms(ListeFilme listeFilme) {
         listeFilme.neueFilme = false;
 
-        listeFilme.parallelStream().peek(film -> film.setNew(false)).filter(film -> !hashSet.contains(film.getUrlHistory()))
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        listeFilme.parallelStream()
+                .peek(film -> film.setNew(false))
+                .filter(film -> !hashSet.contains(film.getUrlHistory()))
                 .forEach(film
                         -> {
                     film.setNew(true);
                     listeFilme.neueFilme = true;
                 });
+        stopwatch.stop();
+        logger.debug("findAndMarkNewFilms() took: {}", stopwatch);
 
         hashSet.clear();
     }

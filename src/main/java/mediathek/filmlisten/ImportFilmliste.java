@@ -22,7 +22,6 @@ package mediathek.filmlisten;
 import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.filmlisten.FilmlistenSuchen;
 import mSearch.filmlisten.reader.FilmListReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,12 +33,11 @@ public class ImportFilmliste {
     private static final Logger logger = LogManager.getLogger(ImportFilmliste.class);
     private final EventListenerList listeners;
     private final FilmListReader msFilmListReader;
-    public FilmlistenSuchen msFilmlistenSuchen;
 
     public ImportFilmliste() {
         listeners = new EventListenerList();
         msFilmListReader = new FilmListReader();
-        msFilmlistenSuchen = new FilmlistenSuchen();
+
         msFilmListReader.addAdListener(new ListenerFilmeLaden() {
             @Override
             public synchronized void start(ListenerFilmeLadenEvent event) {
@@ -66,7 +64,7 @@ public class ImportFilmliste {
      * Filmeliste importieren, URL automatisch wählen
      */
     public void importFromUrl(ListeFilme listeFilme, ListeFilme listeFilmeDiff, int days) {
-        Thread importThread = new FilmeImportierenAutoThread(msFilmlistenSuchen, listeFilme, listeFilmeDiff, days,
+        Thread importThread = new FilmeImportierenAutoThread(listeFilme, listeFilmeDiff, days,
                 this::urlLaden, this::fertigMelden);
         importThread.start();
     }
