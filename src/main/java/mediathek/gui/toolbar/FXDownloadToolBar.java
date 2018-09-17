@@ -48,9 +48,9 @@ public class FXDownloadToolBar extends ToolBar {
         btnPlayFilm.setTooltip(new Tooltip("Film abspielen"));
         btnPlayFilm.setOnAction(e -> SwingUtilities.invokeLater(tabDownloads::filmAbspielen));
 
-        Button btnZurückstellen = new Button("",fontAwesome.create(FontAwesome.Glyph.CLOCK_ALT).size(16d));
-        btnZurückstellen.setTooltip(new Tooltip("Downloads zurückstellen"));
-        btnZurückstellen.setOnAction(e -> SwingUtilities.invokeLater(tabDownloads::zurueckstellen));
+        Button btnZurueckstellen = new Button("",fontAwesome.create(FontAwesome.Glyph.CLOCK_ALT).size(16d));
+        btnZurueckstellen.setTooltip(new Tooltip("Downloads zurückstellen"));
+        btnZurueckstellen.setOnAction(e -> SwingUtilities.invokeLater(tabDownloads::zurueckstellen));
 
         Button btnRemoveDownload = new Button("",fontAwesome.create(FontAwesome.Glyph.TRASH_ALT).size(16d));
         btnRemoveDownload.setTooltip(new Tooltip("Downloads entfernen"));
@@ -71,7 +71,7 @@ public class FXDownloadToolBar extends ToolBar {
                 btnUpdateDownloads,
                 btnStartAllDownloads,
                 btnPlayFilm,
-                btnZurückstellen,
+                btnZurueckstellen,
                 btnRemoveDownload,
                 btnCleanup,
                 spacer,
