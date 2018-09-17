@@ -120,7 +120,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     handleButtonDownloadColumn(isSelected);
                     break;
                 case DatenFilm.FILM_SENDER:
-                    if (((MVTable) table).getShowIcons()) {
+                    if (((MVTable) table).showSenderIcons()) {
                         setSenderIcon((String) value, ((MVTable) table).iconKlein);
                     }
                     break;
