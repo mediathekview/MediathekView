@@ -49,7 +49,6 @@ public class Icons {
     public static final ImageIcon ICON_MENUE_AUS = GetIcon.getProgramIcon("menue-aus.png", 16, 16);
     public static final ImageIcon ICON_MENUE_VORZIEHEN = GetIcon.getProgramIcon("menue-vorziehen.png", 16, 16);
     public static final ImageIcon ICON_MENUE_DOWNLOAD_ZURUECKSTELLEN = GetIcon.getProgramIcon("menue-download-zurueckstellen.png", 16, 16);
-    public static final ImageIcon ICON_MENUE_AKTUALISIEREN = GetIcon.getProgramIcon("menue-aktualisieren.png", 16, 16);
 
     public static final ImageIcon ICON_TABELLE_EIN = GetIcon.getProgramIcon("tabelle-ein.png", 16, 16);
     public static final ImageIcon ICON_TABELLE_AUS = GetIcon.getProgramIcon("tabelle-aus.png", 5, 5);

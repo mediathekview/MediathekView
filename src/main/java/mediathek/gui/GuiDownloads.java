@@ -24,6 +24,8 @@ import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TabPane;
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
@@ -1301,7 +1303,7 @@ public class GuiDownloads extends JPanel {
             //#######################################
 
             JMenuItem itemAlleStarten = new JMenuItem("alle Downloads starten");
-            itemAlleStarten.setIcon(Icons.ICON_MENUE_DOWNLOAD_ALLE_STARTEN);
+            itemAlleStarten.setIcon(IconFontSwing.buildIcon(FontAwesome.ANGLE_DOUBLE_DOWN, 16));
             jPopupMenu.add(itemAlleStarten);
             itemAlleStarten.addActionListener(arg0 -> filmStartenWiederholenStoppen(true /* alle */, true /* starten */));
             JMenuItem itemAlleStoppen = new JMenuItem("alle Downloads stoppen");
@@ -1312,10 +1314,12 @@ public class GuiDownloads extends JPanel {
             itemWartendeStoppen.setIcon(Icons.ICON_MENUE_DOWNOAD_STOP);
             jPopupMenu.add(itemWartendeStoppen);
             itemWartendeStoppen.addActionListener(arg0 -> wartendeDownloadsStoppen());
+
             JMenuItem itemAktualisieren = new JMenuItem("Liste der Downloads aktualisieren");
-            itemAktualisieren.setIcon(Icons.ICON_MENUE_AKTUALISIEREN);
+            itemAktualisieren.setIcon(IconFontSwing.buildIcon(FontAwesome.REFRESH, 16));
             jPopupMenu.add(itemAktualisieren);
             itemAktualisieren.addActionListener(arg0 -> downloadsAktualisieren());
+
             JMenuItem itemAufraeumen = new JMenuItem("Liste der Downloads aufräumen");
             itemAufraeumen.setIcon(Icons.ICON_MENUE_CLEAR);
             jPopupMenu.add(itemAufraeumen);
