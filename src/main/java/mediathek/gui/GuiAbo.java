@@ -134,9 +134,8 @@ public class GuiAbo extends JPanel {
         }
 
         JFXPanel toolBarPanel = new JFXPanel();
-        Platform.runLater(() -> toolBarPanel.setScene(new Scene(new FXAboToolBar(this))));
-
         add(toolBarPanel,BorderLayout.NORTH);
+        Platform.runLater(() -> toolBarPanel.setScene(new Scene(new FXAboToolBar(this))));
     }
 
     public void aendern() {
