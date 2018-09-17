@@ -67,7 +67,6 @@ public class MVConfig {
         SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN("system-panel-videoplayer-anzeigen"),
         SYSTEM_PANEL_DOWNLOAD_DIVIDER("system-panel-download-divider", Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION),
         SYSTEM_PANEL_ABO_DIVIDER("system-panel-abo-divider", Konstanten.GUIDOWNLOAD_DIVIDER_LOCATION),
-        SYSTEM_FONT_SIZE("system-font-size", "0"), // -5 ... 0 .... 5
         SYSTEM_TAB_FILME_ANZAHL_BUTTON("system-tab-filme-anzahl-button", "4"),
 
         SYSTEM_DOWNLOAD_INFO_TOP("system-download-info-top", Boolean.TRUE.toString()), //immer onTop anzeigen
