@@ -31,7 +31,6 @@ import mSearch.daten.ListeFilme;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
 import mSearch.filmlisten.reader.FilmListReader;
-import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.MVHttpClient;
 import mSearch.tool.javafx.FXErrorDialog;
 import mediathek.MediathekGui;
@@ -41,7 +40,6 @@ import mediathek.config.MVConfig;
 import mediathek.gui.actions.FilmListWriteWorkerTask;
 import mediathek.javafx.CenteredBorderPane;
 import mediathek.javafx.FilmListFilterTask;
-import mediathek.javafx.StartupProgressPanel;
 import mediathek.javafx.VerticalSeparator;
 import mediathek.tool.GuiFunktionen;
 import okhttp3.Request;
@@ -320,9 +318,6 @@ public class FilmeLaden {
         logger.info("  Anzahl Filme: {}", daten.getListeFilme().size());
         logger.info("  Anzahl Neue:  {}", daten.getListeFilme().countNewFilms());
         logger.info("");
-
-        //update filmlist size for startup Progress panel...
-        ApplicationConfiguration.getConfiguration().setProperty(StartupProgressPanel.CONFIG_STRING, daten.getListeFilme().size());
 
         Platform.runLater(() -> {
             HBox hb = new HBox();
