@@ -47,7 +47,7 @@ import mediathek.gui.messages.DownloadRateLimitChangedEvent;
 import mediathek.gui.messages.GeoStateChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
-import mediathek.gui.toolbar.DownloadToolBar;
+import mediathek.gui.toolbar.FXDownloadToolBar;
 import mediathek.javafx.DownloadTabInformationLabel;
 import mediathek.javafx.descriptionPanel.DescriptionPanelController;
 import mediathek.tool.*;
@@ -201,8 +201,10 @@ public class GuiDownloads extends JPanel {
         cbView.setModel(getViewModel());
         cbView.addActionListener(new DisplayCategoryListener());
 
-        DownloadToolBar toolBar = new DownloadToolBar(daten);
-        add(toolBar, BorderLayout.NORTH);
+        JFXPanel toolBarPanel = new JFXPanel();
+        Platform.runLater(() -> toolBarPanel.setScene(new Scene(new FXDownloadToolBar(this))));
+
+        add(toolBarPanel,BorderLayout.NORTH);
 
         setupDownloadRateLimitSpinner();
     }

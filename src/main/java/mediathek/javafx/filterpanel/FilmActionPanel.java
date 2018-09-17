@@ -26,6 +26,7 @@ import mediathek.gui.messages.FilmListWriteStartEvent;
 import mediathek.gui.messages.FilmListWriteStopEvent;
 import mediathek.javafx.CenteredBorderPane;
 import mediathek.javafx.VerticalSeparator;
+import mediathek.javafx.tool.FilmInformationButton;
 import mediathek.tool.Filter;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
@@ -206,8 +207,7 @@ public class FilmActionPanel {
     }
 
     private Button createFilmInformationButton() {
-        btnFilmInformation = new Button("", fontAwesome.create(FontAwesome.Glyph.INFO_CIRCLE).size(16d));
-        btnFilmInformation.setTooltip(new Tooltip("Filminformation anzeigen"));
+        btnFilmInformation = new FilmInformationButton();
         btnFilmInformation.setOnAction(e -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
 
         return btnFilmInformation;
