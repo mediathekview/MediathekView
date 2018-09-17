@@ -204,9 +204,8 @@ public class GuiDownloads extends JPanel {
         cbView.addActionListener(new DisplayCategoryListener());
 
         JFXPanel toolBarPanel = new JFXPanel();
-        Platform.runLater(() -> toolBarPanel.setScene(new Scene(new FXDownloadToolBar(this))));
-
         add(toolBarPanel,BorderLayout.NORTH);
+        Platform.runLater(() -> toolBarPanel.setScene(new Scene(new FXDownloadToolBar(this))));
 
         setupDownloadRateLimitSpinner();
     }
