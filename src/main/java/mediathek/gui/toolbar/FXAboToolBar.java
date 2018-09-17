@@ -11,6 +11,9 @@ import javafx.scene.layout.Region;
 import mSearch.tool.Listener;
 import mediathek.config.MVConfig;
 import mediathek.gui.GuiAbo;
+import org.controlsfx.glyphfont.FontAwesome;
+import org.controlsfx.glyphfont.GlyphFont;
+import org.controlsfx.glyphfont.GlyphFontRegistry;
 
 import javax.swing.*;
 
@@ -47,10 +50,9 @@ public class FXAboToolBar extends ToolBar {
         btnEdit.setGraphic(view);
         btnEdit.setOnAction(e -> SwingUtilities.invokeLater(tabAbo::aendern));
 
-        Button btnShowFilter = new Button();
+        GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
+        Button btnShowFilter = new Button("", fontAwesome.create(FontAwesome.Glyph.FILTER).size(16d));
         btnShowFilter.setTooltip(new Tooltip("Filter anzeigen/ausblenden"));
-        view = new ImageView(new Image("/mediathek/res/programm/button-filter-anzeigen.png", 0, 16, true, true));
-        btnShowFilter.setGraphic(view);
         btnShowFilter.setOnAction(e -> SwingUtilities.invokeLater(() -> {
             boolean b = !Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TAB_ABO_FILTER_VIS));
             MVConfig.add(MVConfig.Configs.SYSTEM_TAB_ABO_FILTER_VIS, Boolean.toString(b));
