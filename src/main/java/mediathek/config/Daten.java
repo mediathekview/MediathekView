@@ -33,7 +33,6 @@ import mediathek.gui.dialog.DialogMediaDB;
 import mediathek.gui.messages.BaseEvent;
 import mediathek.gui.messages.TimerEvent;
 import mediathek.tool.GuiFunktionen;
-import mediathek.tool.MVFont;
 import mediathek.tool.MVMessageDialog;
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
@@ -304,7 +303,6 @@ public class Daten {
         }
         logger.info("Konfig wurde gelesen!");
         mVColor.load(); // Farben einrichten
-        MVFont.initFont(); // Fonts einrichten
 
         // erst die Systemdaten, dann die Filmliste
         updateSplashScreen("Lade Filmliste...");
