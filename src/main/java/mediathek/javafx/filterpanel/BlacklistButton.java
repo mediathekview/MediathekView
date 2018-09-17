@@ -14,9 +14,9 @@ import mediathek.config.MVConfig;
 import javax.swing.*;
 
 public class BlacklistButton extends Button {
-    private final Image offImage = new Image(getClass().getResourceAsStream("/mediathek/res/programm/button-blacklist-aus.png"));
+    private final Image offImage = new Image(getClass().getResourceAsStream("/mediathek/res/programm/button-blacklist-aus.png"),0,18,true,true);
     private final ImageView offImageView = new ImageView(offImage);
-    private final Image onImage = new Image(getClass().getResourceAsStream("/mediathek/res/programm/button-blacklist-ein.png"));
+    private final Image onImage = new Image(getClass().getResourceAsStream("/mediathek/res/programm/button-blacklist-ein.png"),0,18,true,true);
     private final ImageView onImageView = new ImageView(onImage);
     private final BooleanProperty activeProperty = new SimpleBooleanProperty(false);
     private final Tooltip tooltipOn = new Tooltip("Blacklist ausschalten");
@@ -24,7 +24,7 @@ public class BlacklistButton extends Button {
 
 
     public BlacklistButton(Daten daten) {
-        super("");
+        super();
 
         final boolean isOn = Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BLACKLIST_ON));
         if (isOn)

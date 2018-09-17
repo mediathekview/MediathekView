@@ -9,9 +9,7 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -154,14 +152,10 @@ public class FilmActionPanel {
         zeitraumSpinner.valueProperty().addListener(((observable, oldValue, newValue) -> config.setProperty(ApplicationConfiguration.FILTER_PANEL_ZEITRAUM, newValue)));
     }
 
-    private Parent createLeft() {
-        HBox hb = new HBox();
-        hb.setPadding(new Insets(5, 5, 5, 5));
-        hb.setSpacing(4.0);
-        hb.setAlignment(Pos.CENTER_LEFT);
-
+    private void createLeft(ToolBar toolBar) {
         btnBlacklist = new BlacklistButton(daten);
-        hb.getChildren().addAll(createDownloadButton(),
+
+        toolBar.getItems().addAll(createDownloadButton(),
                 new VerticalSeparator(),
                 createFilmInformationButton(),
                 new VerticalSeparator(),
@@ -170,6 +164,7 @@ public class FilmActionPanel {
                 new VerticalSeparator(),
                 btnBlacklist,
                 createEditBlacklistButton());
+
 
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
@@ -182,8 +177,6 @@ public class FilmActionPanel {
                 setupLeftButtons(false);
             }
         });
-
-        return hb;
     }
 
     @Handler
@@ -197,7 +190,7 @@ public class FilmActionPanel {
     }
 
     private Button createDownloadButton() {
-        btnDownload = new Button("", fontAwesome.create(FontAwesome.Glyph.CLOUD_DOWNLOAD));
+        btnDownload = new Button("", fontAwesome.create(FontAwesome.Glyph.CLOUD_DOWNLOAD).size(16d));
         btnDownload.setTooltip(new Tooltip("Neue Filmliste laden"));
         btnDownload.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().performFilmListLoadOperation(false)));
 
@@ -205,7 +198,7 @@ public class FilmActionPanel {
     }
 
     private Button createPlayButton() {
-        btnPlay = new Button("", fontAwesome.create(FontAwesome.Glyph.PLAY));
+        btnPlay = new Button("", fontAwesome.create(FontAwesome.Glyph.PLAY).size(16d));
         btnPlay.setTooltip(new Tooltip("Film abspielen"));
         btnPlay.setOnAction(evt -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.playAction.actionPerformed(null)));
 
@@ -213,7 +206,7 @@ public class FilmActionPanel {
     }
 
     private Button createFilmInformationButton() {
-        btnFilmInformation = new Button("", fontAwesome.create(FontAwesome.Glyph.INFO_CIRCLE));
+        btnFilmInformation = new Button("", fontAwesome.create(FontAwesome.Glyph.INFO_CIRCLE).size(16d));
         btnFilmInformation.setTooltip(new Tooltip("Filminformation anzeigen"));
         btnFilmInformation.setOnAction(e -> SwingUtilities.invokeLater(MediathekGui.ui().getFilmInfoDialog()::showInfo));
 
@@ -221,7 +214,7 @@ public class FilmActionPanel {
     }
 
     private Button createRecordButton() {
-        btnRecord = new Button("", fontAwesome.create(FontAwesome.Glyph.DOWNLOAD));
+        btnRecord = new Button("", fontAwesome.create(FontAwesome.Glyph.DOWNLOAD).size(16d));
         btnRecord.setOnAction(e -> SwingUtilities.invokeLater(() -> MediathekGui.ui().tabFilme.saveFilmAction.actionPerformed(null)));
         btnRecord.setTooltip(new Tooltip("Film aufzeichnen"));
 
@@ -229,7 +222,7 @@ public class FilmActionPanel {
     }
 
     private Button createEditBlacklistButton() {
-        btnEditBlacklist = new Button("", fontAwesome.create(FontAwesome.Glyph.SKYATLAS));
+        btnEditBlacklist = new Button("", fontAwesome.create(FontAwesome.Glyph.SKYATLAS).size(16d));
         btnEditBlacklist.setTooltip(new Tooltip("Blacklist bearbeiten"));
         btnEditBlacklist.setOnAction(e -> SwingUtilities.invokeLater(() -> {
             DialogLeer dialog = new DialogLeer(null, true);
@@ -554,11 +547,13 @@ public class FilmActionPanel {
         });
 
         javafx.scene.control.ToolBar toolBar = new javafx.scene.control.ToolBar();
-        toolBar.getItems().addAll(createLeft(),
-                spacer,
+        createLeft(toolBar);
+
+        toolBar.getItems().addAll(spacer,
                 btnNewFilter,
                 jfxSearchField,
                 btnSearchThroughDescription);
+
         return new Scene(toolBar);
     }
 }

@@ -1,7 +1,6 @@
 package mediathek.gui.toolbar;
 
 import javafx.scene.control.Button;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -48,7 +47,7 @@ public class FXAboToolBar extends ToolBar {
         btnEdit.setGraphic(view);
         btnEdit.setOnAction(e -> SwingUtilities.invokeLater(tabAbo::aendern));
 
-        ToggleButton btnShowFilter = new ToggleButton();
+        Button btnShowFilter = new Button();
         btnShowFilter.setTooltip(new Tooltip("Filter anzeigen/ausblenden"));
         view = new ImageView(new Image("/mediathek/res/programm/button-filter-anzeigen.png", 0, 16, true, true));
         btnShowFilter.setGraphic(view);
