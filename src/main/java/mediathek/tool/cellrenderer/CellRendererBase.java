@@ -2,7 +2,6 @@ package mediathek.tool.cellrenderer;
 
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
-import mediathek.tool.MVFont;
 import mediathek.tool.MVSenderIconCache;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -52,9 +51,9 @@ public class CellRendererBase extends DefaultTableCellRenderer {
         if (!SystemUtils.IS_OS_MAC_OSX) {
             final Font font;
             if (isSelected)
-                font = new Font("Dialog", Font.BOLD, MVFont.fontSize);
+                font = c.getFont().deriveFont(Font.BOLD);
             else
-                font = new Font("Dialog", Font.PLAIN, MVFont.fontSize);
+                font = c.getFont().deriveFont(Font.PLAIN);
 
             c.setFont(font);
         }
