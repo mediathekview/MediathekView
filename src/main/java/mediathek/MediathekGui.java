@@ -782,7 +782,7 @@ public class MediathekGui extends JFrame {
 
     private void initializeDownloadsMenu()
     {
-        jMenuItemDownloadsAktualisieren.setIcon(Icons.ICON_MENUE_AKTUALISIEREN);
+        jMenuItemDownloadsAktualisieren.setIcon(IconFontSwing.buildIcon(FontAwesome.REFRESH, 16));
         jMenuItemDownloadsAktualisieren.addActionListener(e -> tabDownloads.aktualisieren());
 
         jMenuItemDownloadAbspielen.setIcon(Icons.ICON_MENUE_FILM_START);
@@ -794,7 +794,7 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadsLoeschen.setIcon(Icons.ICON_MENUE_DOWNOAD_LOESCHEN);
         jMenuItemDownloadsLoeschen.addActionListener(e -> tabDownloads.loeschen());
 
-        jMenuItemDownloadsAlleStarten.setIcon(Icons.ICON_MENUE_DOWNLOAD_ALLE_STARTEN);
+        jMenuItemDownloadsAlleStarten.setIcon(IconFontSwing.buildIcon(FontAwesome.ANGLE_DOUBLE_DOWN, 16));
         jMenuItemDownloadsAlleStarten.addActionListener(e -> tabDownloads.starten(true));
 
         jMenuItemDownloadStartTime.setIcon(Icons.ICON_MENUE_DOWNLOAD_ALLE_STARTEN);
