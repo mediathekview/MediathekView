@@ -22,11 +22,10 @@ package mediathek.tool;
 import javax.swing.*;
 
 public class MVFont {
+    private static final int fontNormal;
+    public static int fontSize;
 
-    public static int fontSize = 12;
-    private static int fontNormal = 12;
-
-    public static void initFont() {
+    static {
         fontNormal = new JTable().getFont().getSize();
         fontSize = getFontSize();
     }
