@@ -94,15 +94,6 @@ public class Icons {
     public static final ImageIcon ICON_TOOLBAR_DOWNLOAD_ALLE_STARTEN_KL = GetIcon.getProgramIcon("toolbar-download-alle-starten.png", 16, 16);
     public static final ImageIcon ICON_TOOLBAR_DOWNLOAD_ALLE_STARTEN_GR = GetIcon.getProgramIcon("toolbar-download-alle-starten.png", 32, 32);
 
-    public static final ImageIcon ICON_TOOLBAR_ABO_EIN_KL = GetIcon.getProgramIcon("toolbar-abo-ein.png", 16, 16);
-    public static final ImageIcon ICON_TOOLBAR_ABO_EIN_GR = GetIcon.getProgramIcon("toolbar-abo-ein.png", 32, 32);
-    public static final ImageIcon ICON_TOOLBAR_ABO_AUS_KL = GetIcon.getProgramIcon("toolbar-abo-aus.png", 16, 16);
-    public static final ImageIcon ICON_TOOLBAR_ABO_AUS_GR = GetIcon.getProgramIcon("toolbar-abo-aus.png", 32, 32);
-    public static final ImageIcon ICON_TOOLBAR_ABO_DEL_KL = GetIcon.getProgramIcon("toolbar-abo-del.png", 16, 16);
-    public static final ImageIcon ICON_TOOLBAR_ABO_DEL_GR = GetIcon.getProgramIcon("toolbar-abo-del.png", 32, 32);
-    public static final ImageIcon ICON_TOOLBAR_ABO_CONFIG_KL = GetIcon.getProgramIcon("toolbar-abo-config.png", 16, 16);
-    public static final ImageIcon ICON_TOOLBAR_ABO_CONFIG_GR = GetIcon.getProgramIcon("toolbar-abo-config.png", 32, 32);
-
     // Icons TABBED_PANE
     private static final int W = 30, H = 30;
     public static final ImageIcon ICON_TAB_FILM = GetIcon.getProgramIcon("tab-film.png", W, H);
