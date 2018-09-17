@@ -744,9 +744,6 @@ public class MediathekGui extends JFrame {
             MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, String.valueOf(jCheckBoxMenuItemMediaDb.isSelected()));
             daten.getDialogMediaDB().setVis();
         });
-        jMenuItemSchriftGr.addActionListener(e -> MVFont.setFontSize(true));
-        jMenuItemSchriftKl.addActionListener(e -> MVFont.setFontSize(false));
-        jMenuItemSchriftNormal.addActionListener(e -> MVFont.resetFontSize());
 
         initializeAnsichtAbos();
         initializeAnsicht();
@@ -1193,10 +1190,6 @@ public class MediathekGui extends JFrame {
         jMenuItemAboInvertSelection = new JMenuItem();
         var jMenuAnsicht = new JMenu();
         jCheckBoxMenuItemVideoplayer = new JCheckBoxMenuItem();
-        var jMenu1 = new JMenu();
-        jMenuItemSchriftGr = new JMenuItem();
-        jMenuItemSchriftKl = new JMenuItem();
-        jMenuItemSchriftNormal = new JMenuItem();
         miShowMemoryMonitor = new JMenuItem();
         cbBandwidthDisplay = new JCheckBoxMenuItem();
         jCheckBoxMenuItemMediaDb = new JCheckBoxMenuItem();
@@ -1426,27 +1419,6 @@ public class MediathekGui extends JFrame {
                 jCheckBoxMenuItemVideoplayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
                 jCheckBoxMenuItemVideoplayer.setText("Buttons anzeigen");
                 jMenuAnsicht.add(jCheckBoxMenuItemVideoplayer);
-
-                //======== jMenu1 ========
-                {
-                    jMenu1.setText("Schriftgr\u00f6\u00dfe");
-
-                    //---- jMenuItemSchriftGr ----
-                    jMenuItemSchriftGr.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ADD, KeyEvent.CTRL_MASK));
-                    jMenuItemSchriftGr.setText("vergr\u00f6\u00dfern");
-                    jMenu1.add(jMenuItemSchriftGr);
-
-                    //---- jMenuItemSchriftKl ----
-                    jMenuItemSchriftKl.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, KeyEvent.CTRL_MASK));
-                    jMenuItemSchriftKl.setText("verkleinern");
-                    jMenu1.add(jMenuItemSchriftKl);
-
-                    //---- jMenuItemSchriftNormal ----
-                    jMenuItemSchriftNormal.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_0, KeyEvent.CTRL_MASK));
-                    jMenuItemSchriftNormal.setText("Normalgr\u00f6\u00dfe");
-                    jMenu1.add(jMenuItemSchriftNormal);
-                }
-                jMenuAnsicht.add(jMenu1);
                 jMenuAnsicht.addSeparator();
 
                 //---- miShowMemoryMonitor ----
@@ -1526,7 +1498,7 @@ public class MediathekGui extends JFrame {
             contentPaneLayout.createParallelGroup()
                 .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
                     .addGap(6, 6, 6)
-                    .addComponent(jPanelCont, GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE))
+                    .addComponent(jPanelCont, GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE))
         );
         pack();
         setLocationRelativeTo(getOwner());
@@ -1577,9 +1549,6 @@ public class MediathekGui extends JFrame {
     private JMenuItem jMenuItemAboNeu;
     private JMenuItem jMenuItemAboInvertSelection;
     protected JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
-    private JMenuItem jMenuItemSchriftGr;
-    private JMenuItem jMenuItemSchriftKl;
-    private JMenuItem jMenuItemSchriftNormal;
     private JMenuItem miShowMemoryMonitor;
     private JCheckBoxMenuItem cbBandwidthDisplay;
     private JCheckBoxMenuItem jCheckBoxMenuItemMediaDb;

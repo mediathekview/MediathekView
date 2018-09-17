@@ -5,7 +5,7 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {comp jPanelCont::::398:x}"
-			"$verticalGroup": "par l {seq t {space :p:6:p, comp jPanelCont::::247:x}}"
+			"$verticalGroup": "par l {seq t {space :p:6:p, comp jPanelCont::::248:x}}"
 		} ) {
 			name: "this"
 			"defaultCloseOperation": 0
@@ -288,28 +288,6 @@ new FormModel {
 						auxiliary() {
 							"JavaCodeGenerator.variableModifiers": 4
 						}
-					} )
-					add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
-						name: "jMenu1"
-						"text": "Schriftgröße"
-						auxiliary() {
-							"JavaCodeGenerator.variableLocal": true
-						}
-						add( new FormComponent( "javax.swing.JMenuItem" ) {
-							name: "jMenuItemSchriftGr"
-							"accelerator": static javax.swing.KeyStroke getKeyStroke( 107, 130, false )
-							"text": "vergrößern"
-						} )
-						add( new FormComponent( "javax.swing.JMenuItem" ) {
-							name: "jMenuItemSchriftKl"
-							"accelerator": static javax.swing.KeyStroke getKeyStroke( 109, 130, false )
-							"text": "verkleinern"
-						} )
-						add( new FormComponent( "javax.swing.JMenuItem" ) {
-							name: "jMenuItemSchriftNormal"
-							"accelerator": static javax.swing.KeyStroke getKeyStroke( 48, 130, false )
-							"text": "Normalgröße"
-						} )
 					} )
 					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
 						name: "jSeparator5"
