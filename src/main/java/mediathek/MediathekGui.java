@@ -804,10 +804,10 @@ public class MediathekGui extends JFrame {
         jMenuItemAbosAusschalten.setIcon(Icons.ICON_MENUE_AUS);
         jMenuItemAbosAusschalten.addActionListener(e -> tabAbos.einAus(false));
 
-        jMenuItemAbosLoeschen.setIcon(Icons.ICON_MENUE_ABO_LOESCHEN);
+        jMenuItemAbosLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
         jMenuItemAbosLoeschen.addActionListener(e -> tabAbos.loeschen());
 
-        jMenuItemAbosAendern.setIcon(Icons.ICON_MENUE_ABO_AENDERN);
+        jMenuItemAbosAendern.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
         jMenuItemAbosAendern.addActionListener(e -> tabAbos.aendern());
 
         jMenuItemAboNeu.addActionListener(e -> tabAbos.neu());

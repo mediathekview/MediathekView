@@ -22,6 +22,8 @@ package mediathek.gui;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
+import jiconfont.icons.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 import mSearch.tool.Datum;
 import mSearch.tool.Listener;
 import mediathek.MediathekGui;
@@ -410,32 +412,29 @@ public class GuiAbo extends JPanel {
 
         private void createPopupMenu() {
             jPopupMenu = new JPopupMenu();
-            // Abo einschalten
+
             itemEinschalten = new JMenuItem("Abo einschalten");
             itemEinschalten.setIcon(Icons.ICON_MENUE_EIN);
             itemEinschalten.addActionListener(e -> aboEinAus(true));
             jPopupMenu.add(itemEinschalten);
 
-            // Abo deaktivieren
             itemDeaktivieren = new JMenuItem("Abo ausschalten");
             itemDeaktivieren.setIcon(Icons.ICON_MENUE_AUS);
             itemDeaktivieren.addActionListener(e -> aboEinAus(false));
             jPopupMenu.add(itemDeaktivieren);
 
-            //Abo lösschen
             JMenuItem itemLoeschen = new JMenuItem("Abo löschen");
-            itemLoeschen.setIcon(Icons.ICON_MENUE_ABO_LOESCHEN);
+            itemLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
             itemLoeschen.addActionListener(e -> aboLoeschen());
             jPopupMenu.add(itemLoeschen);
-            //Abo ändern
+
             JMenuItem itemAendern = new JMenuItem("Abo ändern");
-            itemAendern.setIcon(Icons.ICON_MENUE_ABO_AENDERN);
+            itemAendern.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
             itemAendern.addActionListener(e -> aboAendern());
             jPopupMenu.add(itemAendern);
 
-            //##Trenner##
             jPopupMenu.addSeparator();
-            //Abo ändern
+
             JMenuItem itemNeu = new JMenuItem("Abo anlegen");
             itemNeu.setIcon(Icons.ICON_MENUE_ABO_NEU);
             itemNeu.addActionListener(e -> aboNeu());

@@ -12,6 +12,9 @@ import mSearch.tool.Listener;
 import mediathek.config.MVConfig;
 import mediathek.gui.GuiAbo;
 import mediathek.javafx.tool.FilterButton;
+import org.controlsfx.glyphfont.FontAwesome;
+import org.controlsfx.glyphfont.GlyphFont;
+import org.controlsfx.glyphfont.GlyphFontRegistry;
 
 import javax.swing.*;
 
@@ -36,16 +39,14 @@ public class FXAboToolBar extends ToolBar {
         btnOff.setGraphic(view);
         btnOff.setOnAction(e -> SwingUtilities.invokeLater(() -> tabAbo.einAus(false)));
 
-        Button btnDelete = new Button();
+        GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
+
+        Button btnDelete = new Button("",fontAwesome.create(FontAwesome.Glyph.TRASH_ALT).size(16d));
         btnDelete.setTooltip(new Tooltip("Abos löschen"));
-        view = new ImageView(new Image("/mediathek/res/programm/toolbar-abo-del.png", 0, 16, true, true));
-        btnDelete.setGraphic(view);
         btnDelete.setOnAction(e -> SwingUtilities.invokeLater(tabAbo::loeschen));
 
-        Button btnEdit = new Button();
+        Button btnEdit = new Button("",fontAwesome.create(FontAwesome.Glyph.EDIT).size(16d));
         btnEdit.setTooltip(new Tooltip("Abo ändern"));
-        view = new ImageView(new Image("/mediathek/res/programm/toolbar-abo-config.png", 0, 16, true, true));
-        btnEdit.setGraphic(view);
         btnEdit.setOnAction(e -> SwingUtilities.invokeLater(tabAbo::aendern));
 
         Button btnShowFilter = new FilterButton();
