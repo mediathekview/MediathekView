@@ -149,6 +149,13 @@ public class Main {
         checkMemoryRequirements();
         checkForJavaFX();
 
+        try {
+            if (SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_WINDOWS)
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException e) {
+            e.printStackTrace();
+        }
+
         IconFontSwing.register(FontAwesome.getIconFont());
 
         installSingleInstanceHandler();

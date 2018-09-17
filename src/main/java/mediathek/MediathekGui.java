@@ -39,8 +39,11 @@ import mSearch.daten.DatenFilm;
 import mSearch.daten.PooledDatabaseConnection;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
-import mSearch.tool.*;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Functions.OperatingSystemType;
+import mSearch.tool.Listener;
+import mSearch.tool.Log;
+import mSearch.tool.ReplaceList;
 import mediathek.config.*;
 import mediathek.controller.starter.Start;
 import mediathek.daten.DatenDownload;
@@ -187,6 +190,7 @@ public class MediathekGui extends JFrame {
         createFilmInformationHUD();
 
         setLookAndFeel();
+
         init();
         setSize();
 
@@ -283,44 +287,6 @@ public class MediathekGui extends JFrame {
             CompletableFuture<Void> loaderTask = CompletableFuture.runAsync(filmListReaderTask);
             loaderTask.thenRun(filterTask);
         });
-    }
-
-    @Handler
-    protected void handleFilmlistReadStartEvent(FilmListReadStartEvent msg) {
-        //do not use javafx in low mem environment...
-        if (!MemoryUtils.isLowMemoryEnvironment()) {
-            SwingUtilities.invokeLater(() -> {
-                //activate glass pane
-                panel = new StartupProgressPanel();
-                setGlassPane(panel);
-                getGlassPane().setVisible(true);
-            });
-        }
-    }
-
-    private StartupProgressPanel panel;
-
-    @Handler
-    protected void handleFilmlistReadStopEvent(FilmListReadStopEvent msg) {
-        if (!MemoryUtils.isLowMemoryEnvironment()) {
-            //set to complete and wait a little bit...
-            Platform.runLater(() -> {
-                if (panel != null)
-                    panel.increaseProgress(1.0);
-            });
-
-            SwingUtilities.invokeLater(() -> {
-                //deactivate glass pane
-                getGlassPane().setVisible(false);
-
-                //reset the glass pane to free memory
-                setGlassPane(new JPanel());
-                panel = null;
-
-                //save the filmlist size for next time
-                config.setProperty(StartupProgressPanel.CONFIG_STRING, daten.getListeFilme().size());
-            });
-        }
     }
 
     /**
