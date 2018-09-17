@@ -141,7 +141,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
             switch (columnModelIndex) {
                 case DatenDownload.DOWNLOAD_PROGRESS:
                     setHorizontalAlignment(SwingConstants.CENTER);
-                    if (((MVTable) table).showSenderIcons() && !((MVTable) table).iconKlein) {
+                    if (((MVTable) table).showSenderIcons() && !((MVTable) table).useSmallSenderIcons) {
                         progressBar.setBorder(largeBorder);
                     } else {
                         progressBar.setBorder(emptyBorder);
@@ -267,7 +267,7 @@ public class CellRendererDownloads extends CellRendererBaseWithStart {
 
                 case DatenDownload.DOWNLOAD_SENDER:
                     if (((MVTable) table).showSenderIcons()) {
-                        setSenderIcon((String) value, ((MVTable) table).iconKlein);
+                        setSenderIcon((String) value, ((MVTable) table).useSmallSenderIcons);
                     }
                     break;
                 case DatenDownload.DOWNLOAD_HD:
