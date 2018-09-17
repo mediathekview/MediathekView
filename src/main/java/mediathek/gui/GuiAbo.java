@@ -233,9 +233,12 @@ public class GuiAbo extends JPanel {
 
     private void tabelleLaden() {
         tabelle.getSpalten();
-        daten.getListeAbo().addObjectData((TModelAbo) tabelle.getModel(), jcbSender.getSelectedItem().toString());
-        tabelle.setSpalten();
-        setInfo();
+        final Object selectedItem = jcbSender.getSelectedItem();
+        if (selectedItem != null) {
+            daten.getListeAbo().addObjectData((TModelAbo) tabelle.getModel(), selectedItem.toString());
+            tabelle.setSpalten();
+            setInfo();
+        }
     }
 
     private void aboLoeschen() {
