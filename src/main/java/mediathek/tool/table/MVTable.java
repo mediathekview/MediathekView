@@ -39,7 +39,7 @@ public abstract class MVTable extends JTable {
     private static final String SORT_DESCENDING = "DESCENDING";
     final int[] breite;
     final int[] reihe;
-    private boolean iconAnzeigen = false;
+    private boolean showSenderIcon = false;
     public boolean iconKlein = false;
     public boolean lineBreak = true;
     int maxSpalten;
@@ -53,12 +53,12 @@ public abstract class MVTable extends JTable {
     MVConfig.Configs iconAnzeigenStr = null;
     MVConfig.Configs iconKleinStr = null;
 
-    public boolean getShowIcons() {
-        return iconAnzeigen;
+    public boolean showSenderIcons() {
+        return showSenderIcon;
     }
 
     public void setShowIcon(boolean newVal) {
-        iconAnzeigen = newVal;
+        showSenderIcon = newVal;
     }
 
     public MVTable() {
@@ -74,7 +74,7 @@ public abstract class MVTable extends JTable {
         reihe = getArray(maxSpalten);
 
         if (iconAnzeigenStr != null) {
-            iconAnzeigen = Boolean.parseBoolean(MVConfig.get(iconAnzeigenStr));
+            showSenderIcon = Boolean.parseBoolean(MVConfig.get(iconAnzeigenStr));
         }
         if (iconKleinStr != null) {
             iconKlein = Boolean.parseBoolean(MVConfig.get(iconKleinStr));
@@ -138,7 +138,7 @@ public abstract class MVTable extends JTable {
         final int sizeArea = getSizeArea();
 
         int size;
-        if (!iconAnzeigen) {
+        if (!showSenderIcon) {
             if (MVFont.fontSize < 15) {
                 size = 18;
             } else {
@@ -449,7 +449,7 @@ public abstract class MVTable extends JTable {
 
         MVConfig.add(nrDatenSystem, b + FELDTRENNER + r + FELDTRENNER + s + FELDTRENNER + upDown);
         if (iconAnzeigenStr != null) {
-            MVConfig.add(iconAnzeigenStr, String.valueOf(iconAnzeigen));
+            MVConfig.add(iconAnzeigenStr, String.valueOf(showSenderIcon));
         }
         if (iconKleinStr != null) {
             MVConfig.add(iconKleinStr, String.valueOf(iconKlein));
