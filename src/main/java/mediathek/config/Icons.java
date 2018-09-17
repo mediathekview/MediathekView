@@ -25,7 +25,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Icons {
-    //TODO überflüssige Icons löschen und die Ressourcen
     public static final ImageIcon ICON_DIALOG_PLUS = GetIcon.getProgramIcon("dialog-plus.png", 16, 16);
     public static final ImageIcon ICON_DIALOG_MINUS = GetIcon.getProgramIcon("dialog-minus.png", 16, 16);
     public static final ImageIcon ICON_DIALOG_ADD = GetIcon.getProgramIcon("dialog-add.png", 16, 16);
@@ -77,22 +76,6 @@ public class Icons {
     public static final ImageIcon ICON_BUTTON_CLEAR = GetIcon.getProgramIcon("button-clear.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_DEL = GetIcon.getProgramIcon("button-del.png", 16, 16);
     public static final ImageIcon ICON_BUTTON_FILE_OPEN = GetIcon.getProgramIcon("button-file-open.png", 16, 16);
-    public static final ImageIcon ICON_BUTTON_FILTER_ANZEIGEN = GetIcon.getProgramIcon("button-filter-anzeigen.png", 22, 22);
-
-    public static final ImageIcon ICON_TOOLBAR_DOWNLOAD_CLEAR_KL = GetIcon.getProgramIcon("toolbar-download-clear.png", 16, 16);
-    public static final ImageIcon ICON_TOOLBAR_DOWNLOAD_CLEAR_GR = GetIcon.getProgramIcon("toolbar-download-clear.png", 32, 32);
-    public static final ImageIcon ICON_TOOLBAR_DOWNLOAD_DEL_KL = GetIcon.getProgramIcon("toolbar-download-del.png", 16, 16);
-    public static final ImageIcon ICON_TOOLBAR_DOWNLOAD_DEL_GR = GetIcon.getProgramIcon("toolbar-download-del.png", 32, 32);
-    public static final ImageIcon ICON_TOOLBAR_DOWNLOAD_UNDO_KL = GetIcon.getProgramIcon("toolbar-download-undo.png", 16, 16);
-    public static final ImageIcon ICON_TOOLBAR_DOWNLOAD_UNDO_GR = GetIcon.getProgramIcon("toolbar-download-undo.png", 32, 32);
-    public static final ImageIcon ICON_TOOLBAR_DOWNLOAD_FILM_START_KL = GetIcon.getProgramIcon("toolbar-download-film-start.png", 16, 16);
-    public static final ImageIcon ICON_TOOLBAR_DOWNLOAD_FILM_START_GR = GetIcon.getProgramIcon("toolbar-download-film-start.png", 32, 32);
-    public static final ImageIcon ICON_TOOLBAR_DOWNLOAD_FILM_INFO_KL = GetIcon.getProgramIcon("toolbar-download-film-info.png", 16, 16);
-    public static final ImageIcon ICON_TOOLBAR_DOWNLOAD_FILM_INFO_GR = GetIcon.getProgramIcon("toolbar-download-film-info.png", 32, 32);
-    public static final ImageIcon ICON_TOOLBAR_DOWNLOAD_REFRESH_KL = GetIcon.getProgramIcon("toolbar-download-refresh.png", 16, 16);
-    public static final ImageIcon ICON_TOOLBAR_DOWNLOAD_REFRESH_GR = GetIcon.getProgramIcon("toolbar-download-refresh.png", 32, 32);
-    public static final ImageIcon ICON_TOOLBAR_DOWNLOAD_ALLE_STARTEN_KL = GetIcon.getProgramIcon("toolbar-download-alle-starten.png", 16, 16);
-    public static final ImageIcon ICON_TOOLBAR_DOWNLOAD_ALLE_STARTEN_GR = GetIcon.getProgramIcon("toolbar-download-alle-starten.png", 32, 32);
 
     // Icons TABBED_PANE
     private static final int W = 30, H = 30;
