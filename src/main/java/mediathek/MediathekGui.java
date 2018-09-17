@@ -210,6 +210,12 @@ public class MediathekGui extends JFrame {
         if (!SystemUtils.IS_OS_WINDOWS)
             workaroundControlsFxNotificationBug();
 
+        /*Platform.runLater(() -> {
+            MainWindow window = new MainWindow();
+            window.show();
+            window.setMaximized(true);
+        });*/
+
         loadFilmlist();
     }
 
