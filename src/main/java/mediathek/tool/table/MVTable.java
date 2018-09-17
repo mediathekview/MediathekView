@@ -40,7 +40,7 @@ public abstract class MVTable extends JTable {
     final int[] breite;
     final int[] reihe;
     private boolean showSenderIcon = false;
-    public boolean iconKlein = false;
+    public boolean useSmallSenderIcons = false;
     public boolean lineBreak = true;
     int maxSpalten;
     private List<? extends RowSorter.SortKey> listeSortKeys = null;
@@ -77,7 +77,7 @@ public abstract class MVTable extends JTable {
             showSenderIcon = Boolean.parseBoolean(MVConfig.get(iconAnzeigenStr));
         }
         if (iconKleinStr != null) {
-            iconKlein = Boolean.parseBoolean(MVConfig.get(iconKleinStr));
+            useSmallSenderIcons = Boolean.parseBoolean(MVConfig.get(iconKleinStr));
         }
 
         setHeight();
@@ -144,7 +144,7 @@ public abstract class MVTable extends JTable {
             } else {
                 size = MVFont.fontSize + MVFont.fontSize / 3;
             }
-        } else if (iconKlein) {
+        } else if (useSmallSenderIcons) {
             if (MVFont.fontSize < 18) {
                 size = 20;
             } else {
@@ -452,7 +452,7 @@ public abstract class MVTable extends JTable {
             MVConfig.add(iconAnzeigenStr, String.valueOf(showSenderIcon));
         }
         if (iconKleinStr != null) {
-            MVConfig.add(iconKleinStr, String.valueOf(iconKlein));
+            MVConfig.add(iconKleinStr, String.valueOf(useSmallSenderIcons));
         }
     }
 

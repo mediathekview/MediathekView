@@ -121,7 +121,7 @@ public class CellRendererFilme extends CellRendererBaseWithStart {
                     break;
                 case DatenFilm.FILM_SENDER:
                     if (((MVTable) table).showSenderIcons()) {
-                        setSenderIcon((String) value, ((MVTable) table).iconKlein);
+                        setSenderIcon((String) value, ((MVTable) table).useSmallSenderIcons);
                     }
                     break;
                 case DatenFilm.FILM_HD:

@@ -94,7 +94,7 @@ public class CellRendererAbo extends CellRendererBase {
 
                 case DatenAbo.ABO_SENDER:
                     if (((MVTable) table).showSenderIcons()) {
-                        setSenderIcon((String) value, ((MVTable) table).iconKlein);
+                        setSenderIcon((String) value, ((MVTable) table).useSmallSenderIcons);
                     }
                     break;
             }
