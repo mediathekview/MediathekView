@@ -20,6 +20,8 @@
 package mediathek.gui;
 
 import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
 import mSearch.tool.Datum;
 import mSearch.tool.Listener;
 import mediathek.MediathekGui;
@@ -30,7 +32,7 @@ import mediathek.config.MVConfig;
 import mediathek.daten.DatenAbo;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
-import mediathek.gui.toolbar.AboToolBar;
+import mediathek.gui.toolbar.FXAboToolBar;
 import mediathek.javafx.AboTabInformationLabel;
 import mediathek.tool.GuiFunktionen;
 import mediathek.tool.HinweisKeineAuswahl;
@@ -129,8 +131,10 @@ public class GuiAbo extends JPanel {
             tabelle.setRowSelectionInterval(0, 0);
         }
 
-        AboToolBar toolBar = new AboToolBar(daten);
-        add(toolBar, BorderLayout.NORTH);
+        JFXPanel toolBarPanel = new JFXPanel();
+        Platform.runLater(() -> toolBarPanel.setScene(new Scene(new FXAboToolBar(this))));
+
+        add(toolBarPanel,BorderLayout.NORTH);
     }
 
     public void aendern() {
