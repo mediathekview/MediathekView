@@ -76,6 +76,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.*;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -191,6 +192,7 @@ public class MediathekGui extends JFrame {
         setLookAndFeel();
 
         init();
+
         setSize();
 
         initializeSettingsDialog();
@@ -390,7 +392,7 @@ public class MediathekGui extends JFrame {
         Listener.addListener(new Listener(Listener.EREIGNIS_DIALOG_MEDIA_DB, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
-                jCheckBoxMenuItemMediaDb.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
+                cbSearchMediaDb.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
             }
         });
     }
@@ -699,6 +701,52 @@ public class MediathekGui extends JFrame {
         }
     }
 
+    private final JCheckBoxMenuItem cbBandwidthDisplay = new JCheckBoxMenuItem("Bandbreitennutzung");
+    private final JCheckBoxMenuItem cbSearchMediaDb = new JCheckBoxMenuItem("Mediensammlung durchsuchen");
+
+    private void createViewMenu() {
+        JCheckBoxMenuItem cbVideoplayer = new JCheckBoxMenuItem("Buttons anzeigen");
+        if (SystemUtils.IS_OS_MAC_OSX)
+            cbVideoplayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, InputEvent.META_DOWN_MASK));
+        else
+            cbVideoplayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
+
+        cbVideoplayer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
+        cbVideoplayer.addActionListener(e -> {
+            MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, String.valueOf(cbVideoplayer.isSelected()));
+            Listener.notify(Listener.EREIGNIS_LISTE_PSET, MediathekGui.class.getSimpleName());
+        });
+
+        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, MediathekGui.class.getSimpleName()) {
+            @Override
+            public void ping() {
+                cbVideoplayer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
+            }
+        });
+
+        JMenuItem miShowMemoryMonitor = new JMenuItem("Speicherverbrauch anzeigen");
+        miShowMemoryMonitor.addActionListener(e -> showMemoryMonitor());
+
+        cbBandwidthDisplay.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE)));
+        cbBandwidthDisplay.addActionListener(e -> {
+            MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(cbBandwidthDisplay.isSelected()));
+            daten.getMessageBus().publishAsync(new BandwidthMonitorStateChangedEvent());
+        });
+
+        cbSearchMediaDb.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
+        cbSearchMediaDb.addActionListener(e -> {
+            MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, String.valueOf(cbSearchMediaDb.isSelected()));
+            daten.getDialogMediaDB().setVis();
+        });
+
+        jMenuAnsicht.add(cbVideoplayer);
+        jMenuAnsicht.addSeparator();
+        jMenuAnsicht.add(miShowMemoryMonitor);
+        jMenuAnsicht.add(cbBandwidthDisplay);
+        jMenuAnsicht.addSeparator();
+        jMenuAnsicht.add(cbSearchMediaDb);
+    }
+
     protected void initMenus() {
         installMenuTabSwitchListener();
 
@@ -707,36 +755,9 @@ public class MediathekGui extends JFrame {
         initializeDownloadsMenu();
         tabDownloads.installMenuEntries(jMenuDownload);
         tabAbos.installMenuEntries(jMenuAbos);
-        initializeAnsichtMenu();
+        createViewMenu();
 
-        // Hilfe
         setupHelpMenu();
-    }
-
-    private void initializeAnsichtMenu()
-    {
-        jCheckBoxMenuItemVideoplayer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
-        jCheckBoxMenuItemVideoplayer.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN, String.valueOf(jCheckBoxMenuItemVideoplayer.isSelected()));
-            Listener.notify(Listener.EREIGNIS_LISTE_PSET, MediathekGui.class.getSimpleName());
-        });
-        Listener.addListener(new Listener(Listener.EREIGNIS_LISTE_PSET, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                jCheckBoxMenuItemVideoplayer.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_PANEL_VIDEOPLAYER_ANZEIGEN)));
-            }
-        });
-
-        jCheckBoxMenuItemMediaDb.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
-        jCheckBoxMenuItemMediaDb.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN, String.valueOf(jCheckBoxMenuItemMediaDb.isSelected()));
-            daten.getDialogMediaDB().setVis();
-        });
-
-        initializeAnsichtAbos();
-        initializeAnsicht();
-
-        miShowMemoryMonitor.addActionListener(e -> showMemoryMonitor());
     }
 
     private void showMemoryMonitor() {
@@ -749,24 +770,12 @@ public class MediathekGui extends JFrame {
         });
     }
 
-    private void initializeAnsicht()
-    {
-        cbBandwidthDisplay.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE)));
-        cbBandwidthDisplay.addActionListener(e -> {
-            MVConfig.add(MVConfig.Configs.SYSTEM_BANDWIDTH_MONITOR_VISIBLE, Boolean.toString(cbBandwidthDisplay.isSelected()));
-            daten.getMessageBus().publishAsync(new BandwidthMonitorStateChangedEvent());
-        });
-    }
-
     protected void setupHelpMenu() {
         jMenuItemResetSettings.setAction(new ResetSettingsAction(this, daten));
 
         miSearchForProgramUpdate.addActionListener(e -> searchForUpdateOrShowProgramInfos(false));
         miShowProgramInfos.addActionListener(e -> searchForUpdateOrShowProgramInfos(true));
-    }
 
-    private void initializeAnsichtAbos()
-    {
         jMenuItemShowOnlineHelp.setAction(new ShowOnlineHelpAction());
 
         jMenuItemCreateProtocolFile.setAction(new CreateProtocolFileAction());
@@ -1110,11 +1119,7 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadInvertSelection = new JMenuItem();
         jMenuItemDownloadShutDown = new JMenuItem();
         jMenuAbos = new JMenu();
-        var jMenuAnsicht = new JMenu();
-        jCheckBoxMenuItemVideoplayer = new JCheckBoxMenuItem();
-        miShowMemoryMonitor = new JMenuItem();
-        cbBandwidthDisplay = new JCheckBoxMenuItem();
-        jCheckBoxMenuItemMediaDb = new JCheckBoxMenuItem();
+        jMenuAnsicht = new JMenu();
         jMenuHilfe = new JMenu();
         jMenuItemShowOnlineHelp = new JMenuItem();
         jMenuItemCreateProtocolFile = new JMenuItem();
@@ -1252,24 +1257,6 @@ public class MediathekGui extends JFrame {
             {
                 jMenuAnsicht.setMnemonic('a');
                 jMenuAnsicht.setText("Ansicht");
-
-                //---- jCheckBoxMenuItemVideoplayer ----
-                jCheckBoxMenuItemVideoplayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
-                jCheckBoxMenuItemVideoplayer.setText("Buttons anzeigen");
-                jMenuAnsicht.add(jCheckBoxMenuItemVideoplayer);
-                jMenuAnsicht.addSeparator();
-
-                //---- miShowMemoryMonitor ----
-                miShowMemoryMonitor.setText("Speicherverbrauch anzeigen");
-                jMenuAnsicht.add(miShowMemoryMonitor);
-
-                //---- cbBandwidthDisplay ----
-                cbBandwidthDisplay.setText("Bandbreitennutzung");
-                jMenuAnsicht.add(cbBandwidthDisplay);
-
-                //---- jCheckBoxMenuItemMediaDb ----
-                jCheckBoxMenuItemMediaDb.setText("Mediensammlung durchsuchen");
-                jMenuAnsicht.add(jCheckBoxMenuItemMediaDb);
             }
             jMenuBar.add(jMenuAnsicht);
 
@@ -1368,10 +1355,7 @@ public class MediathekGui extends JFrame {
     private JMenuItem jMenuItemDownloadInvertSelection;
     private JMenuItem jMenuItemDownloadShutDown;
     private JMenu jMenuAbos;
-    protected JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
-    private JMenuItem miShowMemoryMonitor;
-    private JCheckBoxMenuItem cbBandwidthDisplay;
-    private JCheckBoxMenuItem jCheckBoxMenuItemMediaDb;
+    private JMenu jMenuAnsicht;
     protected JMenu jMenuHilfe;
     private JMenuItem jMenuItemShowOnlineHelp;
     private JMenuItem jMenuItemCreateProtocolFile;
