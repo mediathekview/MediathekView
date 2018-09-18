@@ -35,39 +35,6 @@ new FormModel {
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 4
 					}
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemFilmlisteLaden"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 116, 0, false )
-						"text": "Neue Filmliste laden"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemExportFilmlist"
-						"text": "export"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemEinstellungen"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 115, 0, false )
-						"text": "Einstellungen"
-						"toolTipText": "allgemeine Programmeinstellungen"
-						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/programm/menue-einstellungen.png" )
-						auxiliary() {
-							"JavaCodeGenerator.variableModifiers": 4
-						}
-					} )
-					add( new FormComponent( "javax.swing.JSeparator" ) {
-						name: "jSeparator2"
-						auxiliary() {
-							"JavaCodeGenerator.variableModifiers": 4
-						}
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemBeenden"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 81, 130, false )
-						"text": "Beenden"
-						auxiliary() {
-							"JavaCodeGenerator.variableModifiers": 4
-						}
-					} )
 				} )
 				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
 					name: "jMenuFilme"

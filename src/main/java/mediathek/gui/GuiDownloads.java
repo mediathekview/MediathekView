@@ -225,6 +225,9 @@ public class GuiDownloads extends JPanel {
         });
     }
 
+    public void installMenuEntries(JMenu menu) {
+    }
+
     private DescriptionPanelController descriptionPanelController;
 
     private void setupDescriptionPanel() {
