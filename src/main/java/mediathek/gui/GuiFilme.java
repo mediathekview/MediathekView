@@ -207,12 +207,12 @@ public class GuiFilme extends JPanel {
 
         menu.add(miPlayFilm);
         menu.add(miRecordFilm);
+        menu.add(miMarkFilmAsSeen);
+        menu.add(miMarkFilmAsUnseen);
+        menu.addSeparator();
         menu.add(miOpenBlacklist);
         menu.addSeparator();
         menu.add(cbkShowDescription);
-        menu.addSeparator();
-        menu.add(miMarkFilmAsSeen);
-        menu.add(miMarkFilmAsUnseen);
         menu.addSeparator();
         menu.add(miSearchMediaCollection);
     }
@@ -984,7 +984,7 @@ public class GuiFilme extends JPanel {
                             item = new JMenuItem("in HD-Auflösung");
                             KeyStroke ctrlH;
                             if (SystemUtils.IS_OS_MAC_OSX) {
-                                ctrlH = KeyStroke.getKeyStroke(KeyEvent.VK_H, Event.SHIFT_MASK + Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+                                ctrlH = KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.SHIFT_DOWN_MASK + Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
                             } else {
                                 ctrlH = KeyStroke.getKeyStroke(KeyEvent.VK_H, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
                             }
