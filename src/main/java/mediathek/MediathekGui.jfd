@@ -73,65 +73,6 @@ new FormModel {
 					name: "jMenuFilme"
 					"mnemonic": 70
 					"text": "Filme"
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemFilmAbspielen"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 80, 130, false )
-						"text": "Film abspielen"
-						auxiliary() {
-							"JavaCodeGenerator.variableModifiers": 4
-						}
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemFilmAufzeichnen"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 68, 130, false )
-						"text": "Film aufzeichnen"
-						auxiliary() {
-							"JavaCodeGenerator.variableModifiers": 4
-						}
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemBlacklist"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 66, 130, false )
-						"text": "Blacklist öffnen"
-						auxiliary() {
-							"JavaCodeGenerator.variableModifiers": 4
-						}
-					} )
-					add( new FormComponent( "javax.swing.JSeparator" ) {
-						name: "separator1"
-						auxiliary() {
-							"JavaCodeGenerator.variableLocal": true
-						}
-					} )
-					add( new FormComponent( "javax.swing.JCheckBoxMenuItem" ) {
-						name: "cbkBeschreibung"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 121, 0, false )
-						"text": "Beschreibung anzeigen"
-						auxiliary() {
-							"JavaCodeGenerator.variableModifiers": 4
-						}
-					} )
-					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
-						name: "jSeparator6"
-						auxiliary() {
-							"JavaCodeGenerator.variableLocal": true
-						}
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemFilmeGesehen"
-						"accelerator": &KeyStroke0 static javax.swing.KeyStroke getKeyStroke( 71, 130, false )
-						"text": "Filme als gesehen markieren"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemFilmeUngesehen"
-						"accelerator": &KeyStroke1 static javax.swing.KeyStroke getKeyStroke( 78, 130, false )
-						"text": "Filme als ungesehen markieren"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemFilmeMediensammlung"
-						"accelerator": &KeyStroke2 static javax.swing.KeyStroke getKeyStroke( 77, 130, false )
-						"text": "Titel in der Mediensammlung suchen"
-					} )
 				} )
 				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
 					name: "jMenuDownload"
@@ -212,12 +153,12 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "jMenuItemDownloadGesehen"
-						"accelerator": #KeyStroke0
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 71, 130, false )
 						"text": "Filme als gesehen markieren"
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "jMenuItemDownloadUngesehen"
-						"accelerator": #KeyStroke1
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 78, 130, false )
 						"text": "Filme als ungesehen markieren"
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
@@ -226,7 +167,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "jMenuItemDownloadMediensammlung"
-						"accelerator": #KeyStroke2
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 77, 130, false )
 						"text": "Titel in der Mediensammlung suchen"
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
