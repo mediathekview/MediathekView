@@ -161,35 +161,6 @@ new FormModel {
 					name: "jMenuAnsicht"
 					"mnemonic": 97
 					"text": "Ansicht"
-					auxiliary() {
-						"JavaCodeGenerator.variableLocal": true
-					}
-					add( new FormComponent( "javax.swing.JCheckBoxMenuItem" ) {
-						name: "jCheckBoxMenuItemVideoplayer"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 122, 0, false )
-						"text": "Buttons anzeigen"
-						auxiliary() {
-							"JavaCodeGenerator.variableModifiers": 4
-						}
-					} )
-					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
-						name: "jSeparator5"
-						auxiliary() {
-							"JavaCodeGenerator.variableLocal": true
-						}
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "miShowMemoryMonitor"
-						"text": "Speicherverbrauch anzeigen"
-					} )
-					add( new FormComponent( "javax.swing.JCheckBoxMenuItem" ) {
-						name: "cbBandwidthDisplay"
-						"text": "Bandbreitennutzung"
-					} )
-					add( new FormComponent( "javax.swing.JCheckBoxMenuItem" ) {
-						name: "jCheckBoxMenuItemMediaDb"
-						"text": "Mediensammlung durchsuchen"
-					} )
 				} )
 				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
 					name: "jMenuHilfe"

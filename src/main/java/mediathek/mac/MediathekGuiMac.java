@@ -17,7 +17,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -71,7 +70,6 @@ public class MediathekGuiMac extends MediathekGui {
         super.initMenus();
 
         setupUserInterfaceForOsx();
-        setupAcceleratorsForOsx();
     }
 
     @Override
@@ -123,13 +121,6 @@ public class MediathekGuiMac extends MediathekGui {
         //not needed on OSX, located in apple menu
         jMenuHilfe.remove(jSeparatorAboutApplication);
         jMenuHilfe.remove(jMenuItemAboutApplication);
-    }
-
-    /**
-     * Keyboard shortcuts for some actions need to be changed for OS X
-     */
-    private void setupAcceleratorsForOsx() {
-        jCheckBoxMenuItemVideoplayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, InputEvent.META_DOWN_MASK));
     }
 
     /**
