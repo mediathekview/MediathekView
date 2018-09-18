@@ -825,10 +825,10 @@ public class MediathekGui extends JFrame {
 
     private void initializeFilmeMenu()
     {
-        jMenuItemFilmAbspielen.setIcon(Icons.ICON_MENUE_FILM_START);
+        jMenuItemFilmAbspielen.setIcon(IconFontSwing.buildIcon(FontAwesome.PLAY, 16));
         jMenuItemFilmAbspielen.addActionListener(tabFilme.playAction);
 
-        jMenuItemFilmAufzeichnen.setIcon(Icons.ICON_MENUE_FILM_REC);
+        jMenuItemFilmAufzeichnen.setIcon(IconFontSwing.buildIcon(FontAwesome.DOWNLOAD, 16));
         jMenuItemFilmAufzeichnen.addActionListener(tabFilme.saveFilmAction);
 
         jMenuItemBlacklist.setAction(new ShowBlacklistDialogAction(this, daten));
