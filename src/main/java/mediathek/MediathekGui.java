@@ -450,13 +450,13 @@ public class MediathekGui extends JFrame {
         daten.getFilmeLaden().addAdListener(new ListenerFilmeLaden() {
             @Override
             public void start(ListenerFilmeLadenEvent event) {
-                jMenuItemFilmlisteLaden.setEnabled(false);
+                miLoadFilmList.setEnabled(false);
                 jMenuItemDownloadsAktualisieren.setEnabled(false);
             }
 
             @Override
             public void fertig(ListenerFilmeLadenEvent event) {
-                jMenuItemFilmlisteLaden.setEnabled(true);
+                miLoadFilmList.setEnabled(true);
                 jMenuItemDownloadsAktualisieren.setEnabled(true);
                 daten.allesSpeichern(); // damit nichts verlorengeht
             }
@@ -672,12 +672,40 @@ public class MediathekGui extends JFrame {
         }
     }
 
+    private final JMenuItem miLoadFilmList = new JMenuItem("Neue Filmliste laden...");
+
+    private void createFileMenu() {
+        miLoadFilmList.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
+        miLoadFilmList.setIcon(IconFontSwing.buildIcon(FontAwesome.CLOUD_DOWNLOAD, 16));
+        miLoadFilmList.addActionListener(e -> performFilmListLoadOperation(false));
+        jMenuDatei.add(miLoadFilmList);
+
+        jMenuDatei.add(new FilmListExportAction(this));
+
+        //on macOS we will use native handlers instead...
+        if (!SystemUtils.IS_OS_MAC_OSX) {
+            JMenuItem miSettings = new JMenuItem("Einstellungen...");
+            miSettings.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0));
+            miSettings.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/programm/menue-einstellungen.png")));
+            miSettings.addActionListener(e -> showSettingsDialog());
+
+            JMenuItem miQuit = new JMenuItem("Beenden");
+            miQuit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
+            miQuit.addActionListener(e -> beenden(false, false));
+
+            jMenuDatei.add(miSettings);
+            jMenuDatei.addSeparator();
+            jMenuDatei.add(miQuit);
+        }
+    }
+
     protected void initMenus() {
         installMenuTabSwitchListener();
 
-        initializeDateiMenu();
+        createFileMenu();
         tabFilme.installMenuEntries(jMenuFilme);
         initializeDownloadsMenu();
+        tabDownloads.installMenuEntries(jMenuDownload);
         tabAbos.installMenuEntries(jMenuAbos);
         initializeAnsichtMenu();
 
@@ -828,16 +856,6 @@ public class MediathekGui extends JFrame {
             FilmeLaden filmeLaden = new FilmeLaden(daten);
             filmeLaden.loadFilmlist("");
         }
-    }
-
-    private void initializeDateiMenu() {
-        jMenuItemFilmlisteLaden.addActionListener(e -> performFilmListLoadOperation(false));
-        jMenuItemFilmlisteLaden.setIcon(IconFontSwing.buildIcon(FontAwesome.CLOUD_DOWNLOAD, 16));
-
-        jMenuItemEinstellungen.addActionListener(e -> showSettingsDialog());
-        jMenuItemBeenden.addActionListener(e -> beenden(false, false));
-
-        jMenuItemExportFilmlist.setAction(new FilmListExportAction(this));
     }
 
     public void showSettingsDialog()
@@ -1070,11 +1088,6 @@ public class MediathekGui extends JFrame {
     private void initComponents() {
         jMenuBar = new JMenuBar();
         jMenuDatei = new JMenu();
-        jMenuItemFilmlisteLaden = new JMenuItem();
-        jMenuItemExportFilmlist = new JMenuItem();
-        jMenuItemEinstellungen = new JMenuItem();
-        jSeparator2 = new JSeparator();
-        jMenuItemBeenden = new JMenuItem();
         jMenuFilme = new JMenu();
         jMenuDownload = new JMenu();
         jMenuItemDownloadsAlleStarten = new JMenuItem();
@@ -1125,28 +1138,6 @@ public class MediathekGui extends JFrame {
             {
                 jMenuDatei.setMnemonic('d');
                 jMenuDatei.setText("Datei");
-
-                //---- jMenuItemFilmlisteLaden ----
-                jMenuItemFilmlisteLaden.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
-                jMenuItemFilmlisteLaden.setText("Neue Filmliste laden");
-                jMenuDatei.add(jMenuItemFilmlisteLaden);
-
-                //---- jMenuItemExportFilmlist ----
-                jMenuItemExportFilmlist.setText("export");
-                jMenuDatei.add(jMenuItemExportFilmlist);
-
-                //---- jMenuItemEinstellungen ----
-                jMenuItemEinstellungen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0));
-                jMenuItemEinstellungen.setText("Einstellungen");
-                jMenuItemEinstellungen.setToolTipText("allgemeine Programmeinstellungen");
-                jMenuItemEinstellungen.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/programm/menue-einstellungen.png")));
-                jMenuDatei.add(jMenuItemEinstellungen);
-                jMenuDatei.add(jSeparator2);
-
-                //---- jMenuItemBeenden ----
-                jMenuItemBeenden.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_MASK));
-                jMenuItemBeenden.setText("Beenden");
-                jMenuDatei.add(jMenuItemBeenden);
             }
             jMenuBar.add(jMenuDatei);
 
@@ -1355,11 +1346,6 @@ public class MediathekGui extends JFrame {
     // Generated using JFormDesigner non-commercial license
     private JMenuBar jMenuBar;
     protected JMenu jMenuDatei;
-    private JMenuItem jMenuItemFilmlisteLaden;
-    private JMenuItem jMenuItemExportFilmlist;
-    protected JMenuItem jMenuItemEinstellungen;
-    protected JSeparator jSeparator2;
-    protected JMenuItem jMenuItemBeenden;
     private JMenu jMenuFilme;
     protected JMenu jMenuDownload;
     private JMenuItem jMenuItemDownloadsAlleStarten;

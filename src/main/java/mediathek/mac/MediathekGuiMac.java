@@ -147,13 +147,6 @@ public class MediathekGuiMac extends MediathekGui {
         });
         desktop.setAboutHandler(e -> showAboutDialog());
         desktop.setPreferencesHandler(e -> showSettingsDialog());
-
-        //Remove all menu items which don´t need to be displayed due to OS X´s native menu support
-        //Datei->Beenden
-        jMenuDatei.remove(jSeparator2);
-        jMenuDatei.remove(jMenuItemBeenden);
-        //Datei->Einstellungen
-        jMenuDatei.remove(jMenuItemEinstellungen);
     }
 
     private void setupDockIcon() {
