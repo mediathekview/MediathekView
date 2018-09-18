@@ -138,6 +138,39 @@ public class GuiAbo extends JPanel {
         Platform.runLater(() -> toolBarPanel.setScene(new Scene(new FXAboToolBar(this))));
     }
 
+    public void installMenuEntries(JMenu menu) {
+        JMenuItem miAboOn = new JMenuItem("Einschalten");
+        miAboOn.setIcon(Icons.ICON_MENUE_EIN);
+        miAboOn.addActionListener(e -> einAus(true));
+
+        JMenuItem miAboOff = new JMenuItem("Ausschalten");
+        miAboOff.setIcon(Icons.ICON_MENUE_AUS);
+        miAboOff.addActionListener(e -> einAus(false));
+
+        JMenuItem miAboDelete = new JMenuItem("Löschen");
+        miAboDelete.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
+        miAboDelete.addActionListener(e -> loeschen());
+
+        JMenuItem miAboEdit = new JMenuItem("Ändern");
+        miAboEdit.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
+        miAboEdit.addActionListener(e -> aendern());
+
+        JMenuItem miAboNew = new JMenuItem("Neues Abo anlegen");
+        miAboNew.setIcon(IconFontSwing.buildIcon(FontAwesome.PLUS, 16));
+        miAboNew.addActionListener(e -> neu());
+
+        JMenuItem miInvertSelection = new JMenuItem("Auswahl umkehren");
+        miInvertSelection.addActionListener(e -> invertSelection());
+
+        menu.add(miAboOn);
+        menu.add(miAboOff);
+        menu.add(miAboDelete);
+        menu.add(miAboEdit);
+        menu.add(miAboNew);
+        menu.addSeparator();
+        menu.add(miInvertSelection);
+    }
+
     public void aendern() {
         aboAendern();
     }

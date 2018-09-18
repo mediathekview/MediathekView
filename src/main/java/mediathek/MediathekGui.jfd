@@ -5,7 +5,7 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 			"$horizontalGroup": "par l {comp jPanelCont::::398:x}"
-			"$verticalGroup": "par l {seq t {space :p:6:p, comp jPanelCont::::248:x}}"
+			"$verticalGroup": "par l {seq t {space :p:6:p, comp jPanelCont::::247:x}}"
 		} ) {
 			name: "this"
 			"defaultCloseOperation": 0
@@ -248,31 +248,6 @@ new FormModel {
 					name: "jMenuAbos"
 					"mnemonic": 98
 					"text": "Abos"
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemAbosEinschalten"
-						"text": "einschalten"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemAbosAusschalten"
-						"text": "ausschalten"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemAbosLoeschen"
-						"text": "löschen"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemAbosAendern"
-						"text": "ändern"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemAboNeu"
-						"text": "neues Abo anlegen"
-						"icon": new com.jformdesigner.model.SwingIcon( 0, "/mediathek/res/programm/menue-abo-neu.png" )
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "jMenuItemAboInvertSelection"
-						"text": "Auswahl umkehren"
-					} )
 				} )
 				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
 					name: "jMenuAnsicht"

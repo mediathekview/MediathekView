@@ -683,7 +683,7 @@ public class MediathekGui extends JFrame {
         initializeDateiMenu();
         initializeFilmeMenu();
         initializeDownloadsMenu();
-        initializeAboMenu();
+        tabAbos.installMenuEntries(jMenuAbos);
         initializeAnsichtMenu();
 
         // Hilfe
@@ -759,24 +759,6 @@ public class MediathekGui extends JFrame {
         GuiFunktionen.centerOnScreen(aboutDialog, false);
         aboutDialog.setVisible(true);
         aboutDialog.dispose();
-    }
-
-    private void initializeAboMenu()
-    {
-        jMenuItemAbosEinschalten.setIcon(Icons.ICON_MENUE_EIN);
-        jMenuItemAbosEinschalten.addActionListener(e -> tabAbos.einAus(true));
-
-        jMenuItemAbosAusschalten.setIcon(Icons.ICON_MENUE_AUS);
-        jMenuItemAbosAusschalten.addActionListener(e -> tabAbos.einAus(false));
-
-        jMenuItemAbosLoeschen.setIcon(IconFontSwing.buildIcon(FontAwesome.TRASH_O, 16));
-        jMenuItemAbosLoeschen.addActionListener(e -> tabAbos.loeschen());
-
-        jMenuItemAbosAendern.setIcon(IconFontSwing.buildIcon(FontAwesome.PENCIL_SQUARE_O, 16));
-        jMenuItemAbosAendern.addActionListener(e -> tabAbos.aendern());
-
-        jMenuItemAboNeu.addActionListener(e -> tabAbos.neu());
-        jMenuItemAboInvertSelection.addActionListener(e -> tabAbos.invertSelection());
     }
 
     private void initializeDownloadsMenu()
@@ -1147,12 +1129,6 @@ public class MediathekGui extends JFrame {
         jMenuItemDownloadInvertSelection = new JMenuItem();
         jMenuItemDownloadShutDown = new JMenuItem();
         jMenuAbos = new JMenu();
-        jMenuItemAbosEinschalten = new JMenuItem();
-        jMenuItemAbosAusschalten = new JMenuItem();
-        jMenuItemAbosLoeschen = new JMenuItem();
-        jMenuItemAbosAendern = new JMenuItem();
-        jMenuItemAboNeu = new JMenuItem();
-        jMenuItemAboInvertSelection = new JMenuItem();
         var jMenuAnsicht = new JMenu();
         jCheckBoxMenuItemVideoplayer = new JCheckBoxMenuItem();
         miShowMemoryMonitor = new JMenuItem();
@@ -1347,31 +1323,6 @@ public class MediathekGui extends JFrame {
             {
                 jMenuAbos.setMnemonic('b');
                 jMenuAbos.setText("Abos");
-
-                //---- jMenuItemAbosEinschalten ----
-                jMenuItemAbosEinschalten.setText("einschalten");
-                jMenuAbos.add(jMenuItemAbosEinschalten);
-
-                //---- jMenuItemAbosAusschalten ----
-                jMenuItemAbosAusschalten.setText("ausschalten");
-                jMenuAbos.add(jMenuItemAbosAusschalten);
-
-                //---- jMenuItemAbosLoeschen ----
-                jMenuItemAbosLoeschen.setText("l\u00f6schen");
-                jMenuAbos.add(jMenuItemAbosLoeschen);
-
-                //---- jMenuItemAbosAendern ----
-                jMenuItemAbosAendern.setText("\u00e4ndern");
-                jMenuAbos.add(jMenuItemAbosAendern);
-
-                //---- jMenuItemAboNeu ----
-                jMenuItemAboNeu.setText("neues Abo anlegen");
-                jMenuItemAboNeu.setIcon(new ImageIcon(getClass().getResource("/mediathek/res/programm/menue-abo-neu.png")));
-                jMenuAbos.add(jMenuItemAboNeu);
-
-                //---- jMenuItemAboInvertSelection ----
-                jMenuItemAboInvertSelection.setText("Auswahl umkehren");
-                jMenuAbos.add(jMenuItemAboInvertSelection);
             }
             jMenuBar.add(jMenuAbos);
 
@@ -1463,7 +1414,7 @@ public class MediathekGui extends JFrame {
             contentPaneLayout.createParallelGroup()
                 .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
                     .addGap(6, 6, 6)
-                    .addComponent(jPanelCont, GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE))
+                    .addComponent(jPanelCont, GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE))
         );
         pack();
         setLocationRelativeTo(getOwner());
@@ -1507,12 +1458,6 @@ public class MediathekGui extends JFrame {
     private JMenuItem jMenuItemDownloadInvertSelection;
     private JMenuItem jMenuItemDownloadShutDown;
     private JMenu jMenuAbos;
-    private JMenuItem jMenuItemAbosEinschalten;
-    private JMenuItem jMenuItemAbosAusschalten;
-    private JMenuItem jMenuItemAbosLoeschen;
-    private JMenuItem jMenuItemAbosAendern;
-    private JMenuItem jMenuItemAboNeu;
-    private JMenuItem jMenuItemAboInvertSelection;
     protected JCheckBoxMenuItem jCheckBoxMenuItemVideoplayer;
     private JMenuItem miShowMemoryMonitor;
     private JCheckBoxMenuItem cbBandwidthDisplay;
