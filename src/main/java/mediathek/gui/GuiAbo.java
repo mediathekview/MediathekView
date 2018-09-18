@@ -140,11 +140,11 @@ public class GuiAbo extends JPanel {
 
     public void installMenuEntries(JMenu menu) {
         JMenuItem miAboOn = new JMenuItem("Einschalten");
-        miAboOn.setIcon(Icons.ICON_MENUE_EIN);
+        miAboOn.setIcon(IconFontSwing.buildIcon(FontAwesome.CHECK, 16));
         miAboOn.addActionListener(e -> einAus(true));
 
         JMenuItem miAboOff = new JMenuItem("Ausschalten");
-        miAboOff.setIcon(Icons.ICON_MENUE_AUS);
+        miAboOff.setIcon(IconFontSwing.buildIcon(FontAwesome.TIMES, 16));
         miAboOff.addActionListener(e -> einAus(false));
 
         JMenuItem miAboDelete = new JMenuItem("Löschen");
